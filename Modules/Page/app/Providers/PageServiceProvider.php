@@ -29,7 +29,6 @@ class PageServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(module_path('Page', 'routes/web.php'));
         $this->loadViewsFrom(module_path('Page', 'resources/views'), 'page');
         $this->loadMigrationsFrom(module_path('Page', 'database/migrations'));
-
     }
 
     /**

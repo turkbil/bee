@@ -10,6 +10,7 @@ class Tenant extends BaseModel
 
     protected $fillable = [
         'data',
+        'is_active',
         'created_at',
         'updated_at',
     ];

@@ -3,23 +3,56 @@
 @section('content')
 <div class="row row-cards">
     @foreach ($tenants as $tenant)
-    <div class="col-md-6 col-lg-3" id="row-{{ $tenant->id }}">
+    <div class="col-md-6">
         <div class="card">
-            <div class="card-body p-4 text-center">
-                <span class="avatar avatar-xl mb-3 rounded">{{ $tenant->id }}</span>
-                <h3 class="m-0 mb-1"><a href="#">{{ $tenant->data['name'] ?? 'Unnamed' }}</a></h3>
-                <div class="text-secondary">{{ $tenant->data['email'] ?? 'Email belirtilmedi' }}</div>
-                <div class="mt-3">
-                    <span class="badge {{ $tenant->is_active ? 'bg-green-lt' : 'bg-red-lt' }}">{{ $tenant->is_active ? 'Aktif' : 'Pasif' }}</span>
+            <div class="card-body">
+                <div class="row g-4 align-items-center">
+                    <!-- Avatar yerine ID -->
+                    <div class="col-auto">
+                        <div class="avatar avatar-lg bg-blue text-white text-center">
+                            <span class="avatar avatar-xl px-3 rounded">{{ $tenant->id }}</span>
+                        </div>
+                    </div>
+                    <!-- Ana Bilgiler -->
+                    <div class="col">
+                        <h4 class="card-title m-0">
+                            <a href="#">{{ $tenant->name }}</a>
+                        </h4>
+                        <div class="text-secondary">
+                            www.site.com
+                            <!-- Geçici açıklama -->
+                        </div>
+                        <div class="small mt-1">
+                            @if($tenant->is_active)
+                            <span class="badge bg-green fa-fade"></span> Online
+                            @else
+                            <span class="badge bg-red fa-fade"></span> Offline
+                            @endif
+                        </div>
+                    </div>
+                    <!-- Domainler Butonu -->
+                    <div class="col-auto">
+                        <a href="#" class="btn">
+                            Domainler
+                        </a>
+                    </div>
+                    <!-- Dropdown Menüsü -->
+                    <div class="col-auto">
+                        <div class="dropdown">
+                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end">
+                                <a href="#" class="dropdown-item btn-edit me-2" data-id="{{ $tenant->id }}" data-name="{{ $tenant->data['name'] ?? '' }}" data-fullname="{{ $tenant->data['fullname'] ?? '' }}" data-email="{{ $tenant->data['email'] ?? '' }}" data-phone="{{ $tenant->data['phone'] ?? '' }}" data-is_active="{{ $tenant->is_active }}" data-bs-toggle="modal" data-bs-target="#modal-tenant">
+                                    Düzenle
+                                </a>
+                                <a href="javascript:void(0);" class="dropdown-item btn-delete" data-id="{{ $tenant->id }}" data-title="{{ $tenant->data['name'] ?? 'Tenant' }}" data-module="tenant">
+                                    Sil
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="d-flex justify-content-center">
-                <a href="#" class="card-btn btn-edit me-2" data-id="{{ $tenant->id }}" data-name="{{ $tenant->data['name'] ?? '' }}" data-fullname="{{ $tenant->data['fullname'] ?? '' }}" data-email="{{ $tenant->data['email'] ?? '' }}" data-phone="{{ $tenant->data['phone'] ?? '' }}" data-is_active="{{ $tenant->is_active }}" data-bs-toggle="modal" data-bs-target="#modal-tenant">
-                    <i class="fa-solid fa-pen-to-square me-2 text-muted"></i>Düzenle
-                </a>
-                <a href="javascript:void(0);" class="card-btn btn-delete" data-id="{{ $tenant->id }}" data-title="{{ $tenant->data['name'] ?? 'Tenant' }}" data-module="tenant">
-                    <i class="fa-solid fa-trash me-2 text-muted"></i>Sil
-                </a>
             </div>
         </div>
     </div>
@@ -72,9 +105,9 @@
 @endsection
 @push('js')
 <script>
-$(document).ready(function() {
+$(document).ready(function () {
     // Yeni tenant ekleme için modal sıfırlama
-    $('#new-tenant-btn').on('click', function() {
+    $('#new-tenant-btn').on('click', function () {
         $('#tenant-id').val('');
         $('#tenant-name').val('');
         $('#tenant-fullname').val('');
@@ -83,14 +116,15 @@ $(document).ready(function() {
         $('#tenant-is-active').prop('checked', true); // Varsayılan olarak aktif
     });
 
-    // Düzenleme modalini doldur
-    $(document).on('click', '.btn-edit', function() {
+    // Düzenleme modalini dinamik olarak doldur
+    $(document).on('click', '.btn-edit', function () {
         const id = $(this).data('id');
-        const name = $(this).data('name');
+        const card = $(this).closest('.card');
+        const name = card.find('h4 a').text();
         const fullname = $(this).data('fullname');
         const email = $(this).data('email');
         const phone = $(this).data('phone');
-        const isActive = $(this).data('is_active') === 1; // Aktif mi?
+        const isActive = $(this).data('is_active') === 1;
 
         $('#tenant-id').val(id);
         $('#tenant-name').val(name);
@@ -101,7 +135,7 @@ $(document).ready(function() {
     });
 
     // Form gönderimi
-    $('#tenant-form').on('submit', function(e) {
+    $('#tenant-form').on('submit', function (e) {
         e.preventDefault();
         const formData = $(this).serialize(); // Form verilerini al
 
@@ -109,44 +143,91 @@ $(document).ready(function() {
             url: "{{ route('admin.tenant.manage') }}", // Backend rotası
             type: "POST",
             data: formData,
-            success: function(response) {
+            success: function (response) {
                 if (response.success) {
                     const tenantId = response.tenant.id;
                     const tenantData = response.tenant.data;
 
-                    if ($('#tenant-id').val() === '') {
-                        // Yeni tenant ekleme (listenin başına ekle)
+                    // Kart güncelleme işlemi
+                    if ($('#tenant-id').val() !== '') {
+                        const card = $(`.btn-edit[data-id="${tenantId}"]`).closest('.card');
+
+                        // Tenant ismini güncelle
+                        card.find('h4 a').text(tenantData.name);
+
+                        // Dropdown içindeki data- attribute'leri güncelle
+                        const btnEdit = card.find('.btn-edit');
+                        btnEdit.attr('data-name', tenantData.name);
+                        btnEdit.attr('data-fullname', tenantData.fullname);
+                        btnEdit.attr('data-email', tenantData.email);
+                        btnEdit.attr('data-phone', tenantData.phone);
+                        btnEdit.attr('data-is_active', response.tenant.is_active);
+
+                        const btnDelete = card.find('.btn-delete');
+                        btnDelete.attr('data-title', tenantData.name);
+
+                        // Online/Offline durumunu güncelle
+                        const badgeContainer = card.find('.small');
+                        badgeContainer.html(''); // Önceki içeriği temizle
+                        badgeContainer.append(`
+                            <span class="badge ${response.tenant.is_active ? 'bg-green fa-fade' : 'bg-red fa-fade'}"></span>
+                            ${response.tenant.is_active ? 'Online' : 'Offline'}
+                        `);
+
+                        card.hide().fadeIn(); // Güncelleme efekti
+                    } else {
+                        // Yeni tenant ekleme
                         const newCard = `
-                                <div class="col-md-6 col-lg-3 fade-in">
-                                    <div class="card">
-                                        <div class="card-body p-4 text-center">
-                                            <span class="avatar avatar-xl mb-3 rounded">${tenantId}</span>
-                                            <h3 class="m-0 mb-1"><a href="#">${tenantData.name}</a></h3>
-                                            <div class="text-secondary">${tenantData.email || 'Belirtilmedi'}</div>
-                                            <div class="mt-3">
-                                                <span class="badge ${response.tenant.is_active ? 'bg-green-lt' : 'bg-red-lt'}">${response.tenant.is_active ? 'Aktif' : 'Pasif'}</span>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row g-4 align-items-center">
+                                        <div class="col-auto">
+                                            <div class="avatar avatar-lg bg-blue text-white text-center">
+                                                <span class="avatar avatar-xl px-3 rounded">${tenantId}</span>
                                             </div>
                                         </div>
-                                        <div class="d-flex justify-content-center">
-                                            <a href="#" class="card-btn btn-edit me-2"
-                                                data-id="${tenantId}" data-name="${tenantData.name}" data-fullname="${tenantData.fullname}" data-email="${tenantData.email}" data-phone="${tenantData.phone}" data-is_active="${response.tenant.is_active}"
-                                                data-bs-toggle="modal" data-bs-target="#modal-tenant">
-                                                <i class="fa-solid fa-pen-to-square me-2 text-muted"></i>Düzenle
-                                            </a>
-                                            <a href="#" class="card-btn btn-delete" data-id="${tenantId}">
-                                                <i class="fa-solid fa-trash me-2 text-muted"></i>Sil
-                                            </a>
+                                        <div class="col">
+                                            <h4 class="card-title m-0">
+                                                <a href="#">${tenantData.name}</a>
+                                            </h4>
+                                            <div class="text-secondary">www.site.com</div>
+                                            <div class="small mt-1">
+                                                <span class="badge ${response.tenant.is_active ? 'bg-green fa-fade' : 'bg-red fa-fade'}"></span>
+                                                    ${response.tenant.is_active ? 'Online' : 'Offline'}
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <a href="#" class="btn">Domainler</a>
+                                        </div>
+                                        <div class="col-auto">
+                                            <div class="dropdown">
+                                                <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                </a>
+                                                <div class="dropdown-menu dropdown-menu-end">
+                                                    <a href="#" class="dropdown-item btn-edit me-2"
+                                                        data-id="${tenantId}"
+                                                        data-name="${tenantData.name}"
+                                                        data-fullname="${tenantData.fullname}"
+                                                        data-email="${tenantData.email}"
+                                                        data-phone="${tenantData.phone}"
+                                                        data-is_active="${response.tenant.is_active}">
+                                                        Düzenle
+                                                    </a>
+                                                    <a href="javascript:void(0);" class="dropdown-item btn-delete"
+                                                        data-id="${tenantId}"
+                                                        data-title="${tenantData.name}">
+                                                        Sil
+                                                    </a>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            `;
-                        $('.row.row-cards').prepend(newCard); // Yeni kartı listenin başına ekle
-                    } else {
-                        // Mevcut tenant güncelle
-                        const card = $(`.btn-edit[data-id="${tenantId}"]`).closest('.card');
-                        card.find('h3 a').text(tenantData.name); // Name güncelle
-                        card.find('.text-secondary').text(tenantData.email || 'Belirtilmedi'); // Email güncelle
-                        card.find('.badge').removeClass('bg-green-lt bg-red-lt').addClass(response.tenant.is_active ? 'bg-green-lt' : 'bg-red-lt').text(response.tenant.is_active ? 'Aktif' : 'Pasif'); // Aktiflik durumu
+                            </div>
+                        </div>`;
+                        $('.row.row-cards').prepend(newCard).hide().fadeIn(); // Yeni kartı ekle ve fade efekti
                     }
 
                     $('#modal-tenant').modal('hide'); // Modal'i kapat
@@ -155,13 +236,12 @@ $(document).ready(function() {
                     alert("Bir hata oluştu: " + response.message);
                 }
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 console.error('AJAX Hatası:', xhr.responseJSON);
                 alert("Bir hata oluştu. Lütfen tekrar deneyin.");
             }
         });
     });
 });
-
 </script>
 @endpush

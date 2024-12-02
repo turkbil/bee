@@ -23,4 +23,10 @@ class Tenant extends BaseModel
     {
         return $this->data['name'] ?? 'Bilinmeyen Ad';
     }
+
+    public function domains()
+    {
+        return $this->hasMany(Domain::class, 'tenant_id', 'id');
+    }
+
 }

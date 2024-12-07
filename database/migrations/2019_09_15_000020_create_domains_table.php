@@ -18,9 +18,11 @@ class CreateDomainsTable extends Migration
         Schema::create('domains', function (Blueprint $table) {
             $table->id(); // Primary key
             $table->string('domain', 255)->unique();
-            $table->unsignedBigInteger('tenant_id'); // Veri türü düzeltildi
+            $table->unsignedBigInteger('tenant_id'); // Foreign key to tenants table
 
             $table->timestamps();
+            $table->softDeletes(); // Adds the deleted_at column for soft deletes
+
             $table->foreign('tenant_id')
                 ->references('id')
                 ->on('tenants')

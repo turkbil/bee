@@ -3,6 +3,7 @@ namespace Modules\TenantManagement\App\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Livewire\Livewire;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -30,6 +31,7 @@ class TenantManagementServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(module_path('TenantManagement', 'routes/web.php'));
         $this->loadViewsFrom(module_path('TenantManagement', 'resources/views'), 'tenant');
         $this->loadMigrationsFrom(module_path('TenantManagement', 'database/migrations'));
+        Livewire::component('tenant-component', \Modules\TenantManagement\App\Http\Livewire\TenantComponent::class);
 
     }
 

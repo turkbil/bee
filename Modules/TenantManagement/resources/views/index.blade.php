@@ -1,5 +1,7 @@
-@extends('tenantmanagement::layouts.master')
+{{-- Modules/TenantManagement/resources/views/index.blade.php --}}
+@extends('admin.layout')
+@include('tenant::helper')
 
 @section('content')
-    @livewire('tenant-management::tenant-component')
+    @livewire('tenant-component')
 @endsection

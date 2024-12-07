@@ -1,9 +1,7 @@
-<?php
+<?php // TenantManagementController.php
 namespace Modules\TenantManagement\App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Modules\TenantManagement\App\Models\Domain;
 use Modules\TenantManagement\App\Models\Tenant;
 
 class TenantManagementController extends Controller
@@ -14,7 +12,7 @@ class TenantManagementController extends Controller
 
         return view('tenant::index', compact('tenants'));
     }
-
+/*
     public function manage(Request $request)
     {
         $data = $request->validate([
@@ -129,4 +127,5 @@ class TenantManagementController extends Controller
 
         return response()->json(['success' => true, 'domains' => $domains]);
     }
+*/
 }

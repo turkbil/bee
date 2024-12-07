@@ -88,6 +88,23 @@ $(document).ready(function() {
 });
 
 
+
+// Tüm modallar kapandığında form ve input alanlarını sıfırla
+$(document).on('hidden.bs.modal', '.modal', function() {
+    // Formları sıfırla
+    $(this).find('form').each(function() {
+        this.reset();
+    });
+
+    // Tüm input alanlarını sıfırla
+    $(this).find('input[type="text"], input[type="email"], input[type="number"], textarea').val('');
+    $(this).find('input[type="checkbox"], input[type="radio"]').prop('checked', false);
+    $(this).find('select').prop('selectedIndex', 0);
+});
+
+
+
+
 // Asagisi silme ve sonrasında toast olusturma ile ilgili.
 // CSRF Token'ı ayarla
 $.ajaxSetup({

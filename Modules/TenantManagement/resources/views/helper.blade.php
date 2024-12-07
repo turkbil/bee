@@ -3,7 +3,7 @@
 @section('module-menu')
 <ul class="nav">
     <li class="nav-item">
-        <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-tenant" id="new-tenant-btn">
+        <a href="javascript:void(0);" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-tenant" id="new-tenant-btn" wire:click="openAddModal">
             Yeni Tenant
         </a>
     </li>

@@ -1,11 +1,13 @@
+{{-- Modules/TenantManagement/resources/views/helper.blade.php --}}
+
 @section('pretitle', 'Tenants')
 @section('title', 'Tenant Listesi')
 @section('module-menu')
 <ul class="nav">
     <li class="nav-item">
-        <a href="javascript:void(0);" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-tenant" id="new-tenant-btn" wire:click="openAddModal">
-            Yeni Tenant
-        </a>
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modal-tenant-add" wire:click="reset">
+            Yeni Tenant Ekle
+        </button>
     </li>
 </ul>
 @endsection

@@ -1,4 +1,4 @@
-<?php
+<?php // Modules/TenantManagement/app/Http/Livewire/TenantComponent.php
 namespace Modules\TenantManagement\App\Http\Livewire;
 
 use Livewire\Component;
@@ -50,7 +50,7 @@ class TenantComponent extends Component
     {
         $this->validate();
 
-        Tenant::updateOrCreate(
+        $tenant = Tenant::updateOrCreate(
             ['id' => $this->tenantId],
             [
                 'data'      => [
@@ -63,11 +63,11 @@ class TenantComponent extends Component
             ]
         );
 
-        $this->fetchTenants();
+        // İşlem türüne göre log kaydı
+        $actionType = $tenant->wasRecentlyCreated ? 'eklendi' : 'güncellendi';
+        log_activity('Tenant', $actionType, $tenant);
 
-        if ($action === 'reset') {
-            $this->resetTenantFields();
-        }
+        $this->fetchTenants();
     }
 
     public function deleteTenant($id)
@@ -75,6 +75,9 @@ class TenantComponent extends Component
         $tenant = Tenant::find($id);
 
         if ($tenant) {
+            // Log kaydı
+            log_activity('Tenant', 'silindi', $tenant);
+
             $tenant->delete();
             $this->fetchTenants();
         }
@@ -90,10 +93,13 @@ class TenantComponent extends Component
     {
         $this->validateOnly('newDomain');
 
-        Domain::create([
+        $domain = Domain::create([
             'domain'    => $this->newDomain,
             'tenant_id' => $this->tenantId,
         ]);
+
+        // Log kaydı
+        log_activity('Domain', 'eklendi', $domain);
 
         $this->loadDomains($this->tenantId);
         $this->newDomain = '';
@@ -111,6 +117,10 @@ class TenantComponent extends Component
 
         if ($domain) {
             $domain->update(['domain' => $this->editingDomainValue]);
+
+            // Log kaydı
+            log_activity('Domain', 'güncellendi', $domain);
+
             $this->loadDomains($this->tenantId);
             $this->editingDomainId    = null;
             $this->editingDomainValue = '';
@@ -122,6 +132,9 @@ class TenantComponent extends Component
         $domain = Domain::find($domainId);
 
         if ($domain) {
+            // Log kaydı
+            log_activity('Domain', 'silindi', $domain);
+
             $domain->delete();
             $this->loadDomains($this->tenantId);
         }

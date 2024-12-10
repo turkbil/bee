@@ -2,6 +2,7 @@
 namespace Modules\Page\App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Livewire\Livewire;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -29,6 +30,8 @@ class PageServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(module_path('Page', 'routes/web.php'));
         $this->loadViewsFrom(module_path('Page', 'resources/views'), 'page');
         $this->loadMigrationsFrom(module_path('Page', 'database/migrations'));
+
+        Livewire::component('page-component', \Modules\Page\App\Http\Livewire\PageComponent::class);
     }
 
     /**

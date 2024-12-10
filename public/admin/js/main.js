@@ -89,22 +89,6 @@ $(document).ready(function() {
 
 
 
-// Tüm modallar kapandığında form ve input alanlarını sıfırla
-$(document).on('hidden.bs.modal', '.modal', function() {
-    // Formları sıfırla
-    $(this).find('form').each(function() {
-        this.reset();
-    });
-
-    // Tüm input alanlarını sıfırla
-    $(this).find('input[type="text"], input[type="email"], input[type="number"], textarea').val('');
-    $(this).find('input[type="checkbox"], input[type="radio"]').prop('checked', false);
-    $(this).find('select').prop('selectedIndex', 0);
-});
-
-
-
-
 // Asagisi silme ve sonrasında toast olusturma ile ilgili.
 // CSRF Token'ı ayarla
 $.ajaxSetup({
@@ -150,7 +134,7 @@ $(document).on('click', '.btn-delete', function() {
         </div>
     `;
 
-    // Modalı body'ye ekle ve göster
+// Modalı body'ye ekle ve göster
     $('body').append(modalHtml);
     const modal = new bootstrap.Modal(document.getElementById('modal-delete-item'));
     modal.show();
@@ -242,3 +226,59 @@ function showToast(itemTitle, type = 'success') {
         $(this).remove();
     });
 }
+
+
+
+
+
+
+
+
+
+
+
+// LIVEWIRE
+
+
+
+
+// Tüm modallar kapandığında form ve input alanlarını sıfırla
+$(document).on('hidden.bs.modal', '.modal', function() {
+    // Formları sıfırla
+    $(this).find('form').each(function() {
+        this.reset();
+    });
+
+    // Tüm input alanlarını sıfırla
+    $(this).find('input[type="text"], input[type="email"], input[type="number"], textarea').val('');
+    $(this).find('input[type="checkbox"], input[type="radio"]').prop('checked', false);
+    $(this).find('select').prop('selectedIndex', 0);
+});
+
+document.addEventListener('livewire:load', function () {
+    Livewire.on('openDeleteModal', () => {
+        const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+        modal.show();
+    });
+
+    Livewire.on('toast', (type, message) => {
+        const toastEl = document.createElement('div');
+        toastEl.classList.add('toast', 'align-items-center', 'text-bg-' + type, 'border-0');
+        toastEl.role = 'alert';
+        toastEl.innerHTML = `
+            <div class="d-flex">
+                <div class="toast-body">
+                    ${message}
+                </div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Kapat"></button>
+            </div>`;
+
+        document.body.appendChild(toastEl);
+        const toast = new bootstrap.Toast(toastEl);
+        toast.show();
+
+        toastEl.addEventListener('hidden.bs.toast', () => {
+            document.body.removeChild(toastEl);
+        });
+    });
+});

@@ -28,29 +28,21 @@
                     <div class="mb-3">
                         <textarea id="tinymce-mytextarea" name="body">{{ $page->body ?? '' }}</textarea>
                     </div>
-
                     <!-- Aktiflik Durumu (is_active) Toggle Switch -->
                     <div class="form-floating mb-3">
-
-
-<div class="pretty p-icon p-toggle p-plain">
-    <input type="checkbox" id="is_active" name="is_active" value="1" {{ isset($page) && $page->is_active ? 'checked' : '' }} />
-    <div class="state p-on">
-        <i class="icon fa-regular fa-square-check"></i>
-        <label>Aktif</label>
-    </div>
-    <div class="state p-off">
-        <i class="icon fa-regular fa-square"></i>
-        <label>Aktif Değil</label>
-    </div>
-</div>
-
-
-
-
+                        <div class="pretty p-icon p-toggle p-plain">
+                            <input type="checkbox" id="is_active" name="is_active" value="1" {{ isset($page) && $page->is_active ? 'checked' : '' }} />
+                            <div class="state p-on">
+                                <i class="icon fa-regular fa-square-check"></i>
+                                <label>Aktif</label>
+                            </div>
+                            <div class="state p-off">
+                                <i class="icon fa-regular fa-square"></i>
+                                <label>Aktif Değil</label>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
                 <!-- SEO -->
                 <div class="tab-pane fade" id="tabs-2">
                     <div class="form-floating mb-3">
@@ -72,7 +64,6 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- Kod Alanı -->
                 <div class="tab-pane fade" id="tabs-3">
                     <div class="row">
@@ -99,7 +90,6 @@
     </form>
 </div>
 @endsection
-
 @push('js')
 <script src="{{ asset('admin/libs/tinymce/tinymce.min.js') }}" defer></script>
 <script>
@@ -128,5 +118,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     tinyMCE.init(options);
 });
+
 </script>
 @endpush

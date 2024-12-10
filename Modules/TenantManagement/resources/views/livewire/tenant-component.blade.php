@@ -1,4 +1,4 @@
-<div>
+<div> // Modules/TenantManagement/resources/views/livewire/tenant-component.blade.php
     <!-- Tenant Listesi -->
     <div class="row row-cards">
         @foreach ($tenants as $tenant)
@@ -38,7 +38,7 @@
                             </div>
                         </div>
                         <div class="col-auto">
-                            <a href="javascript:void(0);" class="btn btn-primary btn-open-domain-modal" data-bs-toggle="modal" data-bs-target="#modal-domain-management" wire:click="loadDomains({{ $tenant->id }})">
+                            <a href="javascript:void(0);" class="btn btn-outline-info btn-open-domain-modal" data-bs-toggle="modal" data-bs-target="#modal-domain-management" wire:click="loadDomains({{ $tenant->id }})">
                                 Domainler
                             </a>
                         </div>
@@ -48,7 +48,7 @@
                                     <i class="fas fa-ellipsis-v"></i>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end">
-                                    <a href="javascript:void(0);" class="dropdown-item" wire:click.prevent="editTenant({{ $tenant->id }})" data-bs-toggle="modal" data-bs-target="#modal-tenant">
+                                    <a href="javascript:void(0);" class="dropdown-item" wire:click.prevent="editTenant({{ $tenant->id }})" data-bs-toggle="modal" data-bs-target="#modal-tenant-edit">
                                         Düzenle
                                     </a>
                                     <a href="javascript:void(0);" class="dropdown-item text-danger" wire:click.prevent="deleteTenant({{ $tenant->id }})">
@@ -63,14 +63,12 @@
         </div>
         @endforeach
     </div>
-    <!-- Tenant Modal -->
-    <div class="modal fade" id="modal-tenant" tabindex="-1" wire:ignore.self>
+    <!-- Tenant Düzenleme Modal -->
+    <div class="modal fade" id="modal-tenant-edit" tabindex="-1" wire:ignore.self>
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">
-                        @if($tenantId) Tenant Güncelleme @else Yeni Tenant Ekleme @endif
-                    </h5>
+                    <h5 class="modal-title">Tenant Güncelleme</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <form id="tenant-form">
@@ -106,13 +104,62 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-success" wire:click="saveTenant('reset')">Kaydet ve Yeni Ekle</button>
-                        <button type="button" class="btn btn-primary" wire:click="saveTenant('close')" data-bs-dismiss="modal">Kaydet ve Kapat</button>
+                        <button type="button" class="btn btn-primary" wire:click="saveTenant('close')" data-bs-dismiss="modal">Kaydet</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+    <!-- Tenant Ekleme Modal -->
+    <div class="modal fade" id="modal-tenant-add" tabindex="-1" wire:ignore.self>
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Yeni Tenant Ekleme</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="tenant-form">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Name</label>
+                            <input type="text" class="form-control" wire:model="name">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Yetkili Adı Soyadı</label>
+                            <input type="text" class="form-control" wire:model="fullname">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email Adresi</label>
+                            <input type="email" class="form-control" wire:model="email">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Telefon Numarası</label>
+                            <input type="text" class="form-control" wire:model="phone">
+                        </div>
+                        <div class="mb-3">
+                            <div class="pretty p-icon p-toggle p-plain">
+                                <input type="checkbox" id="is_active" name="is_active" wire:model="is_active" value="1" />
+                                <div class="state p-on">
+                                    <i class="icon fa-regular fa-square-check"></i>
+                                    <label>Aktif / Online</label>
+                                </div>
+                                <div class="state p-off">
+                                    <i class="icon fa-regular fa-square"></i>
+                                    <label>Aktif Değil / Offline</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" wire:click="saveTenant('close')" data-bs-dismiss="modal">Kaydet</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
     <!-- Domain Yönetimi Modal -->
     <div class="modal fade" id="modal-domain-management" tabindex="-1" wire:ignore.self>
         <div class="modal-dialog modal-lg modal-dialog-centered">

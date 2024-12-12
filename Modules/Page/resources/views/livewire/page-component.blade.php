@@ -1,56 +1,111 @@
-<div>
-    <div class="d-flex justify-content-between mb-3">
-        <input type="text" class="form-control w-50" placeholder="Ara..." wire:model.debounce.500ms="search">
-    </div>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Başlık</th>
-                <th>Durum</th>
-                <th>İşlemler</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse ($pages as $page)
-                <tr>
-                    <td>{{ $page->page_id }}</td>
-                    <td>{{ $page->title }}</td>
-                    <td>{{ $page->is_active ? 'Aktif' : 'Pasif' }}</td>
-                    <td>
-                        <a href="{{ route('admin.page.manage', $page->page_id) }}" class="btn btn-sm btn-info">Düzenle</a>
-                        <button class="btn btn-sm btn-danger" wire:click="confirmDelete({{ $page->page_id }})">Sil</button>
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="4" class="text-center">Kayıt bulunamadı.</td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
-
-    <div class="mt-3">
-        {{ $pages->links() }}
-    </div>
-
-    <!-- Delete Confirmation Modal -->
-    <div wire:ignore.self class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteModalLabel">Silme Onayı</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    Bu sayfayı silmek istediğinize emin misiniz?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Vazgeç</button>
-                    <button type="button" class="btn btn-danger" wire:click="deletePage" data-bs-dismiss="modal">Sil</button>
+@extends('admin.layout')
+@include('page::helper')
+@section('content')
+<div class="card">
+    <div class="card-body">
+        <div class="table-mode">
+            <input type="checkbox" id="table-switch" class="table-switch">
+            <div class="app">
+                <div class="switch-content">
+                    <div class="switch-label"></div>
+                    <label for="table-switch">
+                        <div class="toggle"></div>
+                        <div class="names">
+                            <p class="large" data-bs-toggle="tooltip" data-bs-placement="right" title="Satırları daralt">
+                                <i class="fa-thin fa-table-cells fa-lg fa-fade" style="--fa-animation-duration: 2s;"></i>
+                            </p>
+                            <p class="small" data-bs-toggle="tooltip" data-bs-placement="right" title="Satırları genişlet">
+                                <i class="fa-thin fa-table-cells-large fa-lg fa-fade" style="--fa-animation-duration: 2s;"></i>
+                            </p>
+                        </div>
+                    </label>
                 </div>
             </div>
         </div>
+
+        <table id="table"
+               class="table table-hover{{ (isset($_COOKIE['table']) && $_COOKIE['table'] == '1') ? ' table-sm' : '' }}"
+               data-toggle="table"
+               data-pagination="true"
+               data-search="true"
+               data-side-pagination="server"
+               data-page-list="[10, 50, 100, 500, 1000]"
+               data-cookie="true"
+               data-cookie-id-table="pages-table"
+               data-cookie-expires="30"
+               data-pagination-parts='["pageSize", "pageList"]'
+               data-url="{{ route('admin.page.list') }}?sort=created_at&order=desc"
+               data-sortable="true">
+            <thead>
+                <tr>
+                    <th data-field="page_id" data-sortable="true" data-width="25" data-width-unit="px" class="d-none d-lg-table-cell f12">ID</th>
+                    <th data-field="title" data-sortable="true" data-width="78" data-width-unit="%">Başlık</th>
+                    <th data-field="is_active" data-sortable="true" data-width="10" data-width-unit="%" data-formatter="activeFormatter" class="text-center">Durum</th>
+                    <th data-field="operate" data-width="10" data-width-unit="%" class="text-center" data-formatter="operateFormatter">İşlemler</th>
+                </tr>
+            </thead>
+        </table>
     </div>
 </div>
+@endsection
+
+@push('js')
+<script>
+    function activeFormatter(value, row) {
+        return `<button type="button"
+                  class="btn btn-link p-0 toggle-status"
+                  onclick="toggleStatus(${row.page_id})"
+                  title="${value == 1 ? 'Aktif' : 'Pasif'}">
+                <i class="fa-regular fa-lg ${value == 1 ? 'fa-circle-check text-success' : 'fa-circle-xmark text-danger'}"></i>
+               </button>`;
+    }
+
+    function operateFormatter(value, row) {
+        return `
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <a href="/admin/page/manage/${row.page_id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Düzenle">
+                            <i class="fa-solid fa-pen-to-square link-secondary fa-lg"></i>
+                        </a>
+                    </div>
+                    <div class="col lh-1">
+                        <div class="dropdown mt-1">
+                            <a class="dropdown-toggle text-secondary" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fa-solid fa-bars-sort fa-flip-horizontal fa-lg"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end">
+                                <a href="javascript:void(0);" class="dropdown-item link-danger"> Sil </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // Global değişkenler
+    var $table = $('#table');
+
+    // Toggle status function
+    function toggleStatus(pageId) {
+        const $button = $(`.toggle-status[onclick*="${pageId}"]`);
+        const $icon = $button.find('i');
+
+        // Loading durumunu göster
+        $icon.removeClass('fa-circle-check fa-circle-xmark text-success text-danger')
+             .addClass('fa-spinner fa-spin');
+        $button.prop('disabled', true);
+
+        // Livewire metodunu çağır
+        Livewire.dispatch('toggleActive', pageId);
+    }
+
+    // Initialize
+    document.addEventListener('livewire:initialized', () => {
+        Livewire.on('tableUpdated', () => {
+            $table.bootstrapTable('refresh');
+        });
+    });
+</script>
+@endpush

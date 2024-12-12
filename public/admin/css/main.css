@@ -29,6 +29,10 @@
     padding: 2px 8px !important;
 }
 
+.bootstrap-table .fixed-table-container .fixed-table-body .fixed-table-loading
+{
+    background: var(--tblr-table-striped-bg) !important;
+}
 
 .reorder_rows_onDragClass {
     transition: transform .3s ease !important;

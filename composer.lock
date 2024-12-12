@@ -3931,13 +3931,13 @@
             "type": "library",
             "extra": {
                 "laravel": {
-                    "providers": [
-                        "Stancl\\Tenancy\\TenancyServiceProvider"
-                    ],
                     "aliases": {
                         "Tenancy": "Stancl\\Tenancy\\Facades\\Tenancy",
                         "GlobalCache": "Stancl\\Tenancy\\Facades\\GlobalCache"
-                    }
+                    },
+                    "providers": [
+                        "Stancl\\Tenancy\\TenancyServiceProvider"
+                    ]
                 }
             },
             "autoload": {

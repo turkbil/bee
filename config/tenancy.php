@@ -1,19 +1,20 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types = 1);
 
 use Stancl\Tenancy\Database\Models\Domain;
 
 return [
-    'tenant_model' => \App\Models\Tenant::class,
-    'id_generator' => Stancl\Tenancy\UUIDGenerator::class,
+    'tenant_model'         => \App\Models\Tenant::class,
+    'id_generator'         => Stancl\Tenancy\UUIDGenerator::class,
 
-    'domain_model' => Domain::class,
+    'domain_model'         => Domain::class,
+    'tenant_id_column'     => 'tenant_id',
 
     /**
      * Central app domains list (non-tenant domains)
      */
-    'central_domains' => [
+    'central_domains'      => [
         '127.0.0.1',
         'localhost',
     ],
@@ -21,7 +22,7 @@ return [
     /**
      * Bootstrappers: These make Laravel features tenant-aware.
      */
-    'bootstrappers' => [
+    'bootstrappers'        => [
         Stancl\Tenancy\Bootstrappers\FilesystemTenancyBootstrapper::class,
         Stancl\Tenancy\Bootstrappers\QueueTenancyBootstrapper::class,
     ],
@@ -29,13 +30,13 @@ return [
     /**
      * Database configuration
      */
-    'database' => [
+    'database'             => [
         'central_connection' => env('DB_CONNECTION', 'mysql'),
 
         /**
          * Disable tenant-specific database creation as we use a single database.
          */
-        'managers' => [
+        'managers'           => [
             'mysql' => Stancl\Tenancy\TenantDatabaseManagers\NullDatabaseManager::class,
         ],
     ],
@@ -43,7 +44,7 @@ return [
     /**
      * Cache configuration
      */
-    'cache' => [
+    'cache'                => [
         'tag_base' => 'tenant', // Tags are used to separate tenants' cache data
         'store' => env('TENANCY_CACHE_DRIVER', env('CACHE_DRIVER', 'redis')),
     ],
@@ -51,9 +52,9 @@ return [
     /**
      * Filesystem configuration
      */
-    'filesystem' => [
-        'suffix_base' => 'tenant',
-        'disks' => [
+    'filesystem'           => [
+        'suffix_base'          => 'tenant',
+        'disks'                => [
             'local',
             'public',
         ],
@@ -63,7 +64,7 @@ return [
     /**
      * Redis tenancy configuration
      */
-    'redis' => [
+    'redis'                => [
         'prefix_base' => 'tenant', // Redis önbellek verilerini tenant bazında ayırır
         'connection' => 'default',
     ],
@@ -71,24 +72,24 @@ return [
     /**
      * Features are additional functionality.
      */
-    'features' => [
+    'features'             => [
         Stancl\Tenancy\Features\UniversalRoutes::class, // Makes routes shared across tenants
-        Stancl\Tenancy\Features\TenantConfig::class, // Allows tenant-specific configuration
+        Stancl\Tenancy\Features\TenantConfig::class,    // Allows tenant-specific configuration
     ],
 
     /**
      * Migration parameters for tenants
      */
     'migration_parameters' => [
-        '--force' => true,
-        '--path' => [database_path('migrations/tenant')],
+        '--force'    => true,
+        '--path'     => [database_path('migrations/tenant')],
         '--realpath' => true,
     ],
 
     /**
      * Seeder parameters for tenants
      */
-    'seeder_parameters' => [
+    'seeder_parameters'    => [
         '--class' => 'DatabaseSeeder',
     ],
 ];

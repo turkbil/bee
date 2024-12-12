@@ -1,6 +1,12 @@
+// Document Ready 
 $(document).ready(function() {
+    // Tooltip başlat
     $('[data-bs-toggle="tooltip"]').tooltip();
 
+    // Table varsa önce kaldır ve yeniden başlat
+    if ($('#table').data('bootstrap.table')) {
+        $('#table').bootstrapTable('destroy');
+    }
     $('#table').bootstrapTable();
 
     // Dark mode
@@ -13,7 +19,7 @@ $(document).ready(function() {
         $('.dark-switch').prop('checked', false);
     }
 
-    $('.dark-switch').change(function() {
+    $('.dark-switch').off('change').on('change', function() {
         if ($(this).is(":checked")) {
             $("body").removeClass("light").addClass("dark").attr('data-bs-theme', 'dark');
             Cookies.set("dark", "1", { expires: 365 });
@@ -22,7 +28,6 @@ $(document).ready(function() {
             Cookies.set("dark", "0", { expires: 365 });
         }
     });
-
 
     // Table mode
     var tableModeCookie = Cookies.get("table");
@@ -34,7 +39,7 @@ $(document).ready(function() {
         $('.table-switch').prop('checked', false);
     }
 
-    $('.table-switch').change(function() {
+    $('.table-switch').off('change').on('change', function() {
         if ($(this).is(":checked")) {
             $("table").addClass("table-sm");
             Cookies.set("table", "1", { expires: 365 });
@@ -44,31 +49,15 @@ $(document).ready(function() {
         }
     });
 
-
-
-    // Tablo ilk sayfaya dön bağlantısını kontrol et
+    // İlk sayfaya dön bağlantısını kontrol et
     var $table = $('#table');
-
-    // Sayfa yüklendiğinde kontrol et
-    $(document).ready(function() {
-        addFirstPageLink();
-        checkFirstPage();
-    });
-
-    // Tablo içeriği değiştikçe kontrol et
-    $table.on('post-body.bs.table', function() {
-        addFirstPageLink();
-        checkFirstPage();
-    });
-
-    // "İlk Sayfaya Dön" bağlantısını tabloya ekle
+    
     function addFirstPageLink() {
         if ($('#goToFirstPage').length === 0) {
             $('.fixed-table-toolbar').append('<a href="#" id="goToFirstPage" class="ml-3 btn btn-btn fw-lighter">İlk Sayfaya Dön</a>');
         }
     }
 
-    // Sayfa numarasına göre bağlantının görünürlüğünü ayarla
     function checkFirstPage() {
         var options = $table.bootstrapTable('getOptions');
         if (options.pageNumber === 1) {
@@ -78,32 +67,34 @@ $(document).ready(function() {
         }
     }
 
-    // "İlk Sayfaya Dön" bağlantısına tıklama olayı
+    $(document).ready(function() {
+        addFirstPageLink();
+        checkFirstPage();
+    });
+
+    $table.on('post-body.bs.table', function() {
+        addFirstPageLink();
+        checkFirstPage();
+    });
+
     $(document).on('click', '#goToFirstPage', function(e) {
         $table.bootstrapTable('selectPage', 1);
     });
-
-
-
 });
 
-
-
-// Asagisi silme ve sonrasında toast olusturma ile ilgili.
-// CSRF Token'ı ayarla
+// CSRF Token ayarla
 $.ajaxSetup({
     headers: {
         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
     }
 });
 
-// Silme butonuna tıklama olayı
+// Silme butonu işlemleri
 $(document).on('click', '.btn-delete', function() {
     const module = $(this).data('module');
     const itemId = $(this).data('id');
     const itemTitle = $(this).data('title') || 'Öğe';
 
-    // Dinamik modal oluşturma
     const modalHtml = `
         <div class="modal fade" id="modal-delete-item" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
@@ -124,7 +115,10 @@ $(document).on('click', '.btn-delete', function() {
                                     <button class="btn w-100" data-bs-dismiss="modal">Vazgeç</button>
                                 </div>
                                 <div class="col">
-                                    <button id="confirm-delete" class="btn btn-danger w-100" data-module="${module}" data-id="${itemId}" data-title="${itemTitle}">Sil</button>
+                                    <button id="confirm-delete" class="btn btn-danger w-100" 
+                                            data-module="${module}" 
+                                            data-id="${itemId}" 
+                                            data-title="${itemTitle}">Sil</button>
                                 </div>
                             </div>
                         </div>
@@ -134,31 +128,27 @@ $(document).on('click', '.btn-delete', function() {
         </div>
     `;
 
-// Modalı body'ye ekle ve göster
     $('body').append(modalHtml);
     const modal = new bootstrap.Modal(document.getElementById('modal-delete-item'));
     modal.show();
 
-    // Modal kapandıktan sonra DOM'dan kaldır
     $('#modal-delete-item').on('hidden.bs.modal', function() {
         $(this).remove();
     });
 });
 
-// Modal içinde Space tuşu ile silme
+// Space tuşu ile silme
 $(document).on('shown.bs.modal', '#modal-delete-item', function() {
-    // Modal gösterildiğinde keydown olayını dinle
     $(document).on('keydown.modal', function(event) {
-        if (event.code === 'Space') { // Space tuşuna basıldığında
-            event.preventDefault(); // Sayfanın kaymasını engelle
-            $('#confirm-delete').trigger('click'); // Silme butonunu tetikle
+        if (event.code === 'Space') {
+            event.preventDefault();
+            $('#confirm-delete').trigger('click');
         }
     });
 });
 
-// Modal kapandığında keydown olayını kaldır
 $(document).on('hidden.bs.modal', '#modal-delete-item', function() {
-    $(document).off('keydown.modal'); // Event listener'ı kaldır
+    $(document).off('keydown.modal');
 });
 
 // Silme işlemini onayla
@@ -167,7 +157,6 @@ $(document).on('click', '#confirm-delete', function() {
     const itemId = $(this).data('id');
     const itemTitle = $(this).data('title') || 'Öğe';
 
-    // AJAX DELETE isteği gönder
     $.ajax({
         url: `/admin/${module}/${itemId}`,
         method: 'DELETE',
@@ -189,7 +178,7 @@ $(document).on('click', '#confirm-delete', function() {
     });
 });
 
-// Dinamik Toast Mesajı Gösterimi
+// Toast mesajı gösterimi
 function showToast(itemTitle, type = 'success') {
     if (!$('.toast-container').length) {
         $('body').append('<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1055;"></div>');
@@ -227,58 +216,13 @@ function showToast(itemTitle, type = 'success') {
     });
 }
 
-
-
-
-
-
-
-
-
-
-
-// LIVEWIRE
-
-
-
-
-// Tüm modallar kapandığında form ve input alanlarını sıfırla
+// LIVEWIRE Modal işlemleri
 $(document).on('hidden.bs.modal', '.modal', function() {
-    // Formları sıfırla
     $(this).find('form').each(function() {
         this.reset();
     });
 
-    // Tüm input alanlarını sıfırla
     $(this).find('input[type="text"], input[type="email"], input[type="number"], textarea').val('');
     $(this).find('input[type="checkbox"], input[type="radio"]').prop('checked', false);
     $(this).find('select').prop('selectedIndex', 0);
-});
-
-document.addEventListener('livewire:load', function () {
-    Livewire.on('openDeleteModal', () => {
-        const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
-        modal.show();
-    });
-
-    Livewire.on('toast', (type, message) => {
-        const toastEl = document.createElement('div');
-        toastEl.classList.add('toast', 'align-items-center', 'text-bg-' + type, 'border-0');
-        toastEl.role = 'alert';
-        toastEl.innerHTML = `
-            <div class="d-flex">
-                <div class="toast-body">
-                    ${message}
-                </div>
-                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Kapat"></button>
-            </div>`;
-
-        document.body.appendChild(toastEl);
-        const toast = new bootstrap.Toast(toastEl);
-        toast.show();
-
-        toastEl.addEventListener('hidden.bs.toast', () => {
-            document.body.removeChild(toastEl);
-        });
-    });
 });

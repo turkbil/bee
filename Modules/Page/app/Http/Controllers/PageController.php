@@ -105,4 +105,32 @@ class PageController extends Controller
             'message' => 'Sayfa başarıyla silindi.',
         ]);
     }
+
+    public function list(Request $request)
+    {
+        $limit  = $request->input('limit', 10);
+        $offset = $request->input('offset', 0);
+        $sort   = $request->input('sort', 'created_at');
+        $order  = $request->input('order', 'desc');
+        $search = $request->input('search', '');
+
+        $query = Page::where('tenant_id', tenant('id'));
+
+        if ($search) {
+            $query->where('title', 'like', '%' . $search . '%');
+        }
+
+        $total = $query->count();
+
+        $rows = $query->orderBy($sort, $order)
+            ->offset($offset)
+            ->limit($limit)
+            ->get();
+
+        return response()->json([
+            'total'            => $total,
+            'totalNotFiltered' => Page::where('tenant_id', tenant('id'))->count(),
+            'rows'             => $rows,
+        ]);
+    }
 }

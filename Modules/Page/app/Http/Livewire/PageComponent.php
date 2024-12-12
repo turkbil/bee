@@ -1,54 +1,77 @@
 <?php
-namespace Modules\Page\App\Http\Livewire;
+namespace Modules\Page\app\Http\Livewire;
 
 use Livewire\Component;
-use Livewire\WithPagination;
-use Modules\Page\App\Models\Page;
+use Modules\Page\app\Models\Page;
 
 class PageComponent extends Component
 {
-    use WithPagination;
-
-    public $search = '';
-    public $pageId;
-
-    protected $queryString = [
-        'search' => ['except' => ''],
-    ];
-
-    protected $listeners = [
-        'deleteConfirmed' => 'deletePage',
-    ];
-
-    public function updatingSearch()
+    // Server-side paginasyon için
+    public function getData($params)
     {
-        $this->resetPage();
+        $query = Page::where('tenant_id', tenant('id'));
+
+        if (! empty($params['search'])) {
+            $query->where('title', 'like', '%' . $params['search'] . '%');
+        }
+
+        if (! empty($params['sort']) && ! empty($params['order'])) {
+            $query->orderBy($params['sort'], $params['order']);
+        } else {
+            $query->orderBy('created_at', 'desc');
+        }
+
+        $total = $query->count();
+
+        $result = $query->offset($params['offset'])
+            ->limit($params['limit'])
+            ->get();
+
+        return response()->json([
+            'total'            => $total,
+            'totalNotFiltered' => Page::where('tenant_id', tenant('id'))->count(),
+            'rows'             => $result,
+        ]);
     }
 
-    public function confirmDelete($id)
+    public function toggleActive($pageId)
     {
-        $this->pageId = $id;
-        $this->emit('openDeleteModal');
+        $page = Page::where('tenant_id', tenant('id'))
+            ->where('page_id', $pageId)
+            ->first();
+
+        if ($page) {
+            $page->is_active = ! $page->is_active;
+            $page->save();
+
+            activity()
+                ->causedBy(auth()->user())
+                ->log($page->title . " başlıklı sayfa " . ($page->is_active ? 'aktif' : 'pasif') . " duruma getirildi");
+
+            // Tabloyu yenile
+            $this->dispatch('tableUpdated');
+
+            return true;
+        }
+
+        return false;
     }
 
-    public function deletePage()
+    public function deletePage($pageId, $title)
     {
-        $page = Page::findOrFail($this->pageId);
+        Page::where('tenant_id', tenant('id'))
+            ->where('page_id', $pageId)
+            ->delete();
 
-        $page->delete();
+        activity()
+            ->causedBy(auth()->user())
+            ->log("$title başlıklı sayfa silindi");
 
-        $this->emit('toast', 'success', "{$page->title} başarıyla silindi.");
-        $this->resetPage();
+        $this->dispatch('refreshDatatable');
     }
 
     public function render()
     {
-        $tenantId = tenancy()->tenant->id;
-        $pages    = Page::where('tenant_id', $tenantId)
-            ->where('title', 'like', "%{$this->search}%")
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
-
-        return view('page::livewire.page-component', compact('pages'));
+        return view('page::livewire.page-component');
     }
 }

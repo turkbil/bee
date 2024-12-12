@@ -1,4 +1,5 @@
-<div> // Modules/TenantManagement/resources/views/livewire/tenant-component.blade.php
+<!--  Modules/TenantManagement/resources/views/livewire/tenant-component.blade.php -->
+<div>
     <!-- Tenant Listesi -->
     <div class="row row-cards">
         @foreach ($tenants as $tenant)

@@ -99,7 +99,9 @@ class TenantComponent extends Component
         ]);
 
         // Log kaydı
-        log_activity('Domain', 'eklendi', $domain);
+        log_activity('Domain', 'eklendi', $domain, [
+            'title' => $domain->domain,
+        ]);
 
         $this->loadDomains($this->tenantId);
         $this->newDomain = '';
@@ -119,7 +121,9 @@ class TenantComponent extends Component
             $domain->update(['domain' => $this->editingDomainValue]);
 
             // Log kaydı
-            log_activity('Domain', 'güncellendi', $domain);
+            log_activity('Domain', 'güncellendi', $domain, [
+                'title' => $domain->domain,
+            ]);
 
             $this->loadDomains($this->tenantId);
             $this->editingDomainId    = null;
@@ -133,7 +137,9 @@ class TenantComponent extends Component
 
         if ($domain) {
             // Log kaydı
-            log_activity('Domain', 'silindi', $domain);
+            log_activity('Domain', 'silindi', $domain, [
+                'title' => $domain->domain,
+            ]);
 
             $domain->delete();
             $this->loadDomains($this->tenantId);

@@ -2,12 +2,12 @@
 namespace Modules\Page\App\Models;
 
 use App\Models\BaseModel;
+use App\Scopes\TenantScope;
 use Cviebrock\EloquentSluggable\Sluggable;
-use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class Page extends BaseModel
 {
-    use Sluggable, BelongsToTenant;
+    use Sluggable;
 
     protected $primaryKey = 'page_id';
 
@@ -34,5 +34,17 @@ class Page extends BaseModel
                 'onUpdate' => true,
             ],
         ];
+    }
+
+    // Dinamik tenant ID sütunu tanımı
+    public function getTenantIdColumn()
+    {
+        return 'tenant_id';
+    }
+
+    // Global Scope ekleme
+    protected static function booted()
+    {
+        static::addGlobalScope(new TenantScope());
     }
 }

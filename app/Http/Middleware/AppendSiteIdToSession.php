@@ -12,16 +12,12 @@ class AppendSiteIdToSession
     {
         $response = $next($request);
 
-                                     // Tenant bilgisi alınıyor
-        $tenant = tenancy()->tenant; // Stancl Tenancy ile tenant bilgisi
+        $tenant = tenancy()->tenant;
 
-        // Tenant varsa
         if ($tenant) {
-            // Tenant ID'yi session'a kaydediyoruz
+            $sessionId = session()->getId();
             session(['tenant_id' => $tenant->id]);
 
-            // Eğer 'sessions' tablosu varsa, tenant ID'sini burada da güncelleyebiliriz
-            $sessionId = session()->getId();
             DB::table('sessions')->where('id', $sessionId)->update([
                 'tenant_id' => $tenant->id,
             ]);

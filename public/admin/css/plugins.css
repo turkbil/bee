@@ -97,7 +97,7 @@
 }
 
 .table-mode {
-    margin-top: 6px
+    margin-top: -4px
 }
 
 .table-mode .names p {
@@ -159,9 +159,6 @@
     display: none;
 }
 
-.table-mode {
-    position: absolute;
-}
 
 .form-check-input {
     clear: left;
@@ -249,4 +246,8 @@
     text-align: left;
 
     flex: auto;
+}
+
+.table-sm>:not(caption)>*>* {
+    padding: .25rem .75rem;
 }

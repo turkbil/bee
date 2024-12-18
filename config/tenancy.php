@@ -9,7 +9,6 @@ return [
     'id_generator'         => Stancl\Tenancy\UUIDGenerator::class,
 
     'domain_model'         => Domain::class,
-    'tenant_id_column'     => 'tenant_id',
 
     /**
      * Central app domains list (non-tenant domains)

@@ -7,21 +7,11 @@ use Modules\Page\App\Models\Page;
 
 class PageController extends Controller
 {
+
     public function index()
     {
-        $tenant = tenancy()->tenant;
 
-        if (! $tenant) {
-            // Tenant bulunamadığında hata
-            return redirect()->back()->withErrors(['tenant' => 'Tenant bilgisi bulunamadı. Lütfen sistem yöneticinize başvurun.']);
-        }
-
-        $tenantId = $tenant->id;
-
-        // En son eklenen sayfalar
-        $pages = Page::where('tenant_id', $tenantId)
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $pages = Page::get();
 
         return view('page::index', compact('pages'));
     }
@@ -71,12 +61,10 @@ class PageController extends Controller
         return view('page::manage', compact('page'));
     }
 
-    public function destroy($page_id)
+    public function delete($pageId)
     {
         $tenant = tenancy()->tenant;
-
         if (! $tenant) {
-            // Tenant bulunamadığında hata
             return response()->json([
                 'success' => false,
                 'message' => 'Tenant bilgisi bulunamadı.',
@@ -85,8 +73,9 @@ class PageController extends Controller
 
         $tenantId = $tenant->id;
 
-        // Burada da id yerine page_id kullanıyoruz
-        $page = Page::where('page_id', $page_id)->where('tenant_id', $tenantId)->first();
+        $page = Page::where('page_id', $pageId)
+            ->where('tenant_id', $tenantId)
+            ->first();
 
         if (! $page) {
             return response()->json([
@@ -95,7 +84,7 @@ class PageController extends Controller
             ], 404);
         }
 
-        // Manuel olarak modül adını "Page" olarak veriyoruz
+        // Log kaydı
         log_activity('Sayfa', 'silindi', $page);
 
         $page->delete();
@@ -103,34 +92,6 @@ class PageController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Sayfa başarıyla silindi.',
-        ]);
-    }
-
-    public function list(Request $request)
-    {
-        $limit  = $request->input('limit', 10);
-        $offset = $request->input('offset', 0);
-        $sort   = $request->input('sort', 'created_at');
-        $order  = $request->input('order', 'desc');
-        $search = $request->input('search', '');
-
-        $query = Page::where('tenant_id', tenant('id'));
-
-        if ($search) {
-            $query->where('title', 'like', '%' . $search . '%');
-        }
-
-        $total = $query->count();
-
-        $rows = $query->orderBy($sort, $order)
-            ->offset($offset)
-            ->limit($limit)
-            ->get();
-
-        return response()->json([
-            'total'            => $total,
-            'totalNotFiltered' => Page::where('tenant_id', tenant('id'))->count(),
-            'rows'             => $rows,
         ]);
     }
 }

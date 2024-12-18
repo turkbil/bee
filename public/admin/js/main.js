@@ -153,33 +153,77 @@ $(document).on('hidden.bs.modal', '#modal-delete-item', function() {
 
 // Silme işlemini onayla
 $(document).on('click', '#confirm-delete', function() {
-    const module = $(this).data('module');
-    const itemId = $(this).data('id');
-    const itemTitle = $(this).data('title') || 'Öğe';
-
-    $.ajax({
-        url: `/admin/${module}/${itemId}`,
-        method: 'DELETE',
-        success: function(response) {
-            if (response.success) {
-                $(`#row-${itemId}`).fadeOut(500, function() {
-                    $(this).remove();
-                });
-                showToast(`${itemTitle}`, 'success');
-                $('#modal-delete-item').modal('hide');
-            } else {
-                showToast(`${itemTitle}`, 'error');
-            }
-        },
-        error: function(xhr) {
-            console.error(xhr);
-            showToast(`${itemTitle}`, 'error');
-        }
-    });
+  const module = $(this).data('module');
+  const itemId = $(this).data('id');
+  const itemTitle = $(this).data('title') || 'Öğe';
+  
+  $.ajax({
+      url: `/admin/${module}/${itemId}`,
+      method: 'DELETE',
+      success: function(response) {
+          if (response.success) {
+              // Silinecek satırı seç 
+              const $row = $(`#table tr[data-uniqueid="${itemId}"]`);
+              
+              // Silinen satırın yüksekliğini al
+              const rowHeight = $row.outerHeight();
+              
+              // Bootstrap danger background
+              $row.addClass('bg-red text-red-fg');
+              
+              // Sonraki tüm satırları seç
+              const $nextRows = $row.nextAll('tr');
+              
+              // Sonraki satırların yukarı kayma animasyonu için hazırlık
+              $nextRows.css('position', 'relative');
+              
+              // Silinen satırın animasyonu ve sonraki satırların yukarı kayması
+              setTimeout(() => {
+                  $row.animate({
+                      opacity: 0,
+                      height: 0,
+                      paddingTop: 0,
+                      paddingBottom: 0
+                  }, 400);
+                  
+                  // Sonraki satırların yukarı kayma animasyonu
+                  $nextRows.each(function(index) {
+                      $(this).animate({
+                          top: -rowHeight
+                      }, {
+                          duration: 400,
+                          complete: function() {
+                              // Animasyon tamamlandığında
+                              if (index === $nextRows.length - 1) {
+                                  // Son satırın animasyonu bittiğinde satırı sil
+                                  $('#table').bootstrapTable('removeByUniqueId', itemId);
+                                  // Sonraki satırların pozisyonlarını resetle
+                                  $nextRows.css({
+                                      'position': '',
+                                      'top': ''
+                                  });
+                              }
+                          }
+                      });
+                  });
+              }, 300);
+              
+              showToast(`${itemTitle}`, 'success');
+              $('#modal-delete-item').modal('hide');
+          } else {
+              showToast(`${itemTitle}`, 'error');
+          }
+      },
+      error: function(xhr) {
+          console.error(xhr);
+          showToast(`${itemTitle}`, 'error');
+      }
+  });
 });
 
+
 // Toast mesajı gösterimi
-function showToast(itemTitle, type = 'success') {
+function showToast(itemTitle, action, status = 'success') {
     if (!$('.toast-container').length) {
         $('body').append('<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1055;"></div>');
     }
@@ -187,15 +231,26 @@ function showToast(itemTitle, type = 'success') {
     const currentTime = new Date();
     const time = currentTime.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
 
-    const message = type === 'success' ?
-        `<strong>${itemTitle}</strong> adlı öğe başarıyla silindi.` :
-        `<strong>${itemTitle}</strong> adlı öğe silinemedi.`;
+    const actionMessages = {
+        added: 'eklendi',
+        updated: 'güncellendi',
+        deleted: 'silindi',
+        activated: 'aktif hale getirildi',
+        deactivated: 'pasif hale getirildi'
+    };
+
+    const actionColors = {
+        success: 'text-success',
+        error: 'text-danger'
+    };
+
+    const message = `<strong>${itemTitle}</strong> adlı öğe ${actionMessages[action]} ${status === 'success' ? 'başarıyla' : 'başarısız.'}`;
 
     const toastHtml = `
         <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="5000">
             <div class="toast-header">
-                <i class="fa-solid ${type === 'success' ? 'fa-check-circle text-success' : 'fa-times-circle text-danger'} me-2"></i>
-                <strong class="me-auto">${type === 'success' ? 'Başarılı' : 'Hata!'}</strong>
+                <i class="fa-solid ${status === 'success' ? 'fa-check-circle' : 'fa-times-circle'} ${actionColors[status]} me-2"></i>
+                <strong class="me-auto">${status === 'success' ? 'Başarılı' : 'Hata!'}</strong>
                 <small>${time}</small>
                 <button type="button" class="ms-2 btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
@@ -215,6 +270,7 @@ function showToast(itemTitle, type = 'success') {
         $(this).remove();
     });
 }
+
 
 // LIVEWIRE Modal işlemleri
 $(document).on('hidden.bs.modal', '.modal', function() {

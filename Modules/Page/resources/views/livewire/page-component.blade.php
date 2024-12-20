@@ -81,13 +81,13 @@
                                 Başlık
                             </button>
                         </th>
-                        <th style="width: 100px">
+                        <th class="text-center" style="width: 80px">
                             <button class="table-sort {{ $sortField === 'is_active' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
                                     wire:click="sortBy('is_active')">
                                 Durum
                             </button>
                         </th>
-                        <th style="width: 100px">İşlemler</th>
+                        <th class="text-center" style="width: 120px">İşlemler</th>
                     </tr>
                 </thead>
                 <tbody class="table-tbody">
@@ -114,10 +114,23 @@
                                 </button>
                             </td>
                             <td class="text-center align-middle">
-                                <button class="btn btn-sm btn-ghost-primary">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                            </td>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col">
+                                    <a href="{{ route('admin.page.manage', $page->page_id) }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Düzenle">
+                                        <i class="fa-solid fa-pen-to-square link-secondary fa-lg"></i>
+                                    </a>
+                                </div>
+                                <div class="col lh-1">
+                                    <div class="dropdown mt-1">
+                                        <a class="dropdown-toggle text-secondary" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa-solid fa-bars-sort fa-flip-horizontal fa-lg"></i></a>
+                                        <div class="dropdown-menu dropdown-menu-end">
+                                            <a href="javascript:void(0);" class="dropdown-item btn-delete link-danger" data-module="page" data-id="{{ $page->page_id }}" data-title="{{ $page->title }}"> Sil </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                            </td>
                         </tr>
                     @empty
                         <tr>

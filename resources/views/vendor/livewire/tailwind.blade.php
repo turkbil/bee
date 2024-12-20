@@ -10,7 +10,6 @@ $scrollIntoViewJsSnippet = ($scrollTo !== false)
     : '';
 @endphp
 
-@if ($paginator->hasPages())
     <div class="card-footer d-flex align-items-center">
         <!-- Sol Taraf: Kayıt Bilgisi -->
         <p class="small text-muted m-0">
@@ -19,6 +18,8 @@ $scrollIntoViewJsSnippet = ($scrollTo !== false)
             arası, toplam <span class="fw-semibold">{{ $paginator->total() }}</span> sonuç
         </p>
 
+
+        @if ($paginator->hasPages())
         <!-- Sağ Taraf: Pagination -->
         <ul class="pagination m-0 ms-auto">
             {{-- Önceki Sayfa --}}
@@ -112,5 +113,5 @@ $scrollIntoViewJsSnippet = ($scrollTo !== false)
                 </li>
             @endif
         </ul>
+        @endif
     </div>
-@endif

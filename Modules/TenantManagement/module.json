@@ -1,0 +1,14 @@
+{
+    "name": "TenantManagement",
+    "alias": "tenantmanagement",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "active": true,
+    "providers": [
+        "Modules\\TenantManagement\\App\\Providers\\TenantManagementServiceProvider",
+        "Modules\\TenantManagement\\App\\Providers\\EventServiceProvider",
+        "Modules\\TenantManagement\\App\\Providers\\RouteServiceProvider"
+    ],
+    "files": []
+}

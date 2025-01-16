@@ -1,0 +1,12 @@
+{
+    "name": "User",
+    "alias": "user",
+    "description": "A module for managing users",
+    "keywords": [],
+    "priority": 0,
+    "active": true,
+    "providers": [
+        "Modules\\User\\App\\Providers\\UserServiceProvider"
+    ],
+    "files": []
+}

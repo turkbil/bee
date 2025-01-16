@@ -1,0 +1,12 @@
+{
+    "name": "Page",
+    "alias": "page",
+    "description": "A module for managing pages",
+    "keywords": [],
+    "priority": 0,
+    "active": true,
+    "providers": [
+        "Modules\\Page\\App\\Providers\\PageServiceProvider"
+    ],
+    "files": []
+}

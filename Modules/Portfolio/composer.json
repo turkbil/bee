@@ -1,5 +1,5 @@
 {
-    "name": "nwidart/user",
+    "name": "nwidart/portfolio",
     "description": "",
     "authors": [
         {
@@ -17,12 +17,14 @@
     },
     "autoload": {
         "psr-4": {
-            "Modules\\User\\": "app/"
+            "Modules\\Portfolio\\": "app/",
+            "Modules\\Portfolio\\Database\\Factories\\": "database/factories/",
+            "Modules\\Portfolio\\Database\\Seeders\\": "database/seeders/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Modules\\User\\Tests\\": "tests/"
+            "Modules\\Portfolio\\Tests\\": "tests/"
         }
     }
 }

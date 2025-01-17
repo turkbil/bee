@@ -1,5 +1,6 @@
 {
-    "Page": true,
     "TenantManagement": true,
-    "User": true
+    "User": true,
+    "Page": true,
+    "Portfolio": true
 }

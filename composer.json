@@ -15,6 +15,8 @@
         "nwidart/laravel-modules": "^11.1",
         "predis/predis": "^2.3",
         "spatie/laravel-activitylog": "^4.9",
+        "spatie/laravel-medialibrary": "^11.12",
+        "spatie/laravel-package-tools": "^1.18",
         "spatie/laravel-permission": "^6.10",
         "stancl/tenancy": "^3.8"
     },
@@ -36,9 +38,11 @@
         {
             "Modules\\": "Modules/",
             "App\\": "app/",
+            "Modules\\*\\App\\": "Modules/*/app/",
             "Modules\\Page\\App\\": "Modules/Page/app/",
             "Modules\\TenantManagement\\App\\": "Modules/TenantManagement/app/",
             "Modules\\User\\App\\": "Modules/User/app/",
+            "Modules\\Portfolio\\App\\": "Modules/Portfolio/app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         },

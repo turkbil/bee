@@ -15,7 +15,9 @@
             <div class="color-mode theme-color-mode me-2">
                 <div class="color-picker-container" style="position: relative;">
                     <div id="selectedColor" class="form-control form-control-color"
-                        style="width: 20px; height: 20px; cursor: pointer;" onclick="toggleColorPicker()"></div>
+                        style="width: 16px; height: 16px; border-radius: 16px; cursor: pointer;"
+                        onclick="toggleColorPicker()" data-bs-toggle="tooltip" data-bs-placement="left"
+                        title="Tema Rengi"></div>
                     <div id="colorPickerDropdown"
                         style="display: none; position: absolute; top: 100%; right: 0; width: 220px; background: var(--tblr-bg-surface); border: 1px solid var(--tblr-border-color); border-radius: 4px; padding: 10px; margin-top: 5px; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; flex-wrap: wrap; gap: 5px;">
                         <!-- Kırmızı tonları -->

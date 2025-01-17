@@ -11,13 +11,13 @@ return new class extends Migration
         Schema::create('pages', function (Blueprint $table) {
             $table->id('page_id');                       // Özel primary key
             $table->unsignedBigInteger('tenant_id');     // Tenancy için tenant ID
-            $table->string('title');                     // Sayfa başlığı
+            $table->string('title', 255);                // Sayfa başlığı (255 karakter)
             $table->string('slug')->unique();            // URL slug
             $table->text('body')->nullable();            // Sayfa içeriği
-            $table->string('css')->nullable();           // CSS alanı
-            $table->string('js')->nullable();            // JS alanı
-            $table->string('metakey')->nullable();       // Meta anahtar kelimeler
-            $table->string('metadesc')->nullable();      // Meta açıklama
+            $table->text('css')->nullable();             // CSS alanı (text olarak)
+            $table->text('js')->nullable();              // JS alanı (text olarak)
+            $table->string('metakey', 255)->nullable();  // Meta anahtar kelimeler (255 karakter)
+            $table->string('metadesc', 255)->nullable(); // Meta açıklama (255 karakter)
             $table->boolean('is_active')->default(true); // Aktiflik durumu
             $table->timestamps();                        // created_at ve updated_at
             $table->softDeletes();                       // deleted_at

@@ -39,7 +39,9 @@
                             </div>
                         </div>
                         <div class="col-auto">
-                            <a href="javascript:void(0);" class="btn btn-outline-info btn-open-domain-modal" data-bs-toggle="modal" data-bs-target="#modal-domain-management" wire:click="loadDomains({{ $tenant->id }})">
+                            <a href="javascript:void(0);" class="btn btn-outline-info btn-open-domain-modal"
+                                data-bs-toggle="modal" data-bs-target="#modal-domain-management"
+                                wire:click="loadDomains({{ $tenant->id }})">
                                 Domainler
                             </a>
                         </div>
@@ -49,10 +51,13 @@
                                     <i class="fas fa-ellipsis-v"></i>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end">
-                                    <a href="javascript:void(0);" class="dropdown-item" wire:click.prevent="editTenant({{ $tenant->id }})" data-bs-toggle="modal" data-bs-target="#modal-tenant-edit">
+                                    <a href="javascript:void(0);" class="dropdown-item"
+                                        wire:click.prevent="editTenant({{ $tenant->id }})" data-bs-toggle="modal"
+                                        data-bs-target="#modal-tenant-edit">
                                         Düzenle
                                     </a>
-                                    <a href="javascript:void(0);" class="dropdown-item text-danger" wire:click.prevent="deleteTenant({{ $tenant->id }})">
+                                    <a href="javascript:void(0);" class="dropdown-item text-danger"
+                                        wire:click.prevent="deleteTenant({{ $tenant->id }})">
                                         Sil
                                     </a>
                                 </div>
@@ -92,7 +97,8 @@
                         </div>
                         <div class="mb-3">
                             <div class="pretty p-icon p-toggle p-plain">
-                                <input type="checkbox" id="is_active" name="is_active" wire:model="is_active" value="1" />
+                                <input type="checkbox" id="is_active" name="is_active" wire:model="is_active"
+                                    value="1" />
                                 <div class="state p-on">
                                     <i class="icon fa-regular fa-square-check"></i>
                                     <label>Aktif / Online</label>
@@ -105,7 +111,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" wire:click="saveTenant('close')" data-bs-dismiss="modal">Kaydet</button>
+                        <button type="button" class="btn btn-primary" wire:click="saveTenant('close')"
+                            data-bs-dismiss="modal">Kaydet</button>
                     </div>
                 </form>
             </div>
@@ -139,7 +146,8 @@
                         </div>
                         <div class="mb-3">
                             <div class="pretty p-icon p-toggle p-plain">
-                                <input type="checkbox" id="is_active" name="is_active" wire:model="is_active" value="1" />
+                                <input type="checkbox" id="is_active" name="is_active" wire:model="is_active"
+                                    value="1" />
                                 <div class="state p-on">
                                     <i class="icon fa-regular fa-square-check"></i>
                                     <label>Aktif / Online</label>
@@ -152,7 +160,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" wire:click="saveTenant('close')" data-bs-dismiss="modal">Kaydet</button>
+                        <button type="button" class="btn btn-primary" wire:click="saveTenant('close')"
+                            data-bs-dismiss="modal">Kaydet</button>
                     </div>
                 </form>
             </div>
@@ -195,8 +204,10 @@
                                         <td>
                                             @if ($editingDomainId === $domain['id'])
                                             <div class="input-group">
-                                                <input type="text" class="form-control" wire:model.defer="editingDomainValue">
-                                                <button class="btn btn-primary" wire:click="updateDomain({{ $domain['id'] }})">Kaydet</button>
+                                                <input type="text" class="form-control"
+                                                    wire:model.defer="editingDomainValue">
+                                                <button class="btn btn-primary"
+                                                    wire:click="updateDomain({{ $domain['id'] }})">Kaydet</button>
                                             </div>
                                             @else
                                             {{ $domain['domain'] }}
@@ -204,8 +215,10 @@
                                         </td>
                                         <td>
                                             <div class="d-flex gap-2 justify-content-end">
-                                                <button class="btn btn-outline-secondary" wire:click="startEditingDomain({{ $domain['id'] }}, '{{ $domain['domain'] }}')">Düzenle</button>
-                                                <button class="btn btn-outline-danger" wire:click="deleteDomain({{ $domain['id'] }})">Sil</button>
+                                                <button class="btn btn-outline-secondary"
+                                                    wire:click="startEditingDomain({{ $domain['id'] }}, '{{ $domain['domain'] }}')">Düzenle</button>
+                                                <button class="btn btn-outline-danger"
+                                                    wire:click="deleteDomain({{ $domain['id'] }})">Sil</button>
                                             </div>
                                         </td>
                                     </tr>

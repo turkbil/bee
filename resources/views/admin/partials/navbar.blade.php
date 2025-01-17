@@ -21,8 +21,8 @@
                     </a>
                 </div>
                 <div class="dropdown-menu-column">
-                    <a class="dropdown-item" href="{{ route('admin.page.manage') }}">
-                        Sayfa Ekle
+                    <a class="dropdown-item" href="{{ route('admin.portfolio.index') }}">
+                        Portfolio
                     </a>
                     <a class="dropdown-item" href="./layout-fluid-vertical.html">
                         Fluid vertical

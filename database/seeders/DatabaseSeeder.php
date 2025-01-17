@@ -87,8 +87,10 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call([
-            UserSeeder::class,
-            \Modules\Page\Database\Seeders\PageSeeder::class,
+            UserSeeder::class, // Kullanıcı seed işlemi
+            \Modules\Page\Database\Seeders\PageSeeder::class, 
+            \Modules\Portfolio\Database\Seeders\PortfolioCategorySeeder::class,
+            \Modules\Portfolio\Database\Seeders\PortfolioSeeder::class
         ]);
     }
 }

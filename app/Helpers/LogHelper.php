@@ -3,7 +3,7 @@
 use Spatie\Activitylog\Models\Activity;
 
 if (! function_exists('log_activity')) {
-    function log_activity(string $moduleName, string $description, $model, array $additionalProperties = null, string $event = null): void
+    function log_activity(string $moduleName, string $description, $model, ?array $additionalProperties = null, ?string $event = null): void
     {
         $tenant = tenancy()->tenant;
 

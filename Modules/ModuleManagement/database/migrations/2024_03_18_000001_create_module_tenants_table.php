@@ -7,11 +7,19 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
+     * Migrasyonun central (merkezi) veritabanında çalışacağını belirt
+     */
+    public function getConnection()
+    {
+        return config('database.default');
+    }
+    
+    /**
      * Run the migrations.
      */
     public function up(): void
     {
-        Schema::create('tenant_modules', function (Blueprint $table) {
+        Schema::create('module_tenants', function (Blueprint $table) {
             $table->unsignedBigInteger('tenant_id');
             $table->unsignedBigInteger('module_id');
             $table->boolean('is_active')->default(true);
@@ -36,6 +44,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tenant_modules');
+        Schema::dropIfExists('module_tenants');
     }
 };

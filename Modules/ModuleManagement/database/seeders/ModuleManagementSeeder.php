@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 use Modules\ModuleManagement\App\Models\Module;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\App;
 use Stancl\Tenancy\Tenancy;
 
 class ModuleManagementSeeder extends Seeder
@@ -15,13 +14,12 @@ class ModuleManagementSeeder extends Seeder
     {
         Model::unguard();
 
-        try {
-            // Eğer tenant kontekstinde çalışıyorsa, seederi çalıştırma
-            if (App::runningInConsole() && app()->has('tenancy') && app(Tenancy::class)->initialized) {
-                $this->command->info('Bu seeder yalnızca ana veritabanında çalışmalıdır.');
-                return;
-            }
+        // Eğer tenant kontekstinde çalışıyorsa, seederi çalıştırma
+        if (app()->has('tenancy') && app(Tenancy::class)->initialized) {
+            return;
+        }
 
+        try {
             $modules = [
                 [
                     'name' => 'modulemanagement',
@@ -31,7 +29,6 @@ class ModuleManagementSeeder extends Seeder
                     'settings' => null,
                     'type' => 'system',
                     'group' => 'core',
-                    'domains' => '{}',
                     'is_active' => true
                 ],
                 [
@@ -42,7 +39,6 @@ class ModuleManagementSeeder extends Seeder
                     'settings' => null,
                     'type' => 'system',
                     'group' => 'core',
-                    'domains' => '{}',
                     'is_active' => true
                 ],
                 [
@@ -53,7 +49,6 @@ class ModuleManagementSeeder extends Seeder
                     'settings' => null,
                     'type' => 'management',
                     'group' => 'core',
-                    'domains' => '{}',
                     'is_active' => true
                 ],
                 [
@@ -64,7 +59,6 @@ class ModuleManagementSeeder extends Seeder
                     'settings' => '9',
                     'type' => 'content',
                     'group' => 'content',
-                    'domains' => '{}',
                     'is_active' => true
                 ],
                 [
@@ -75,7 +69,6 @@ class ModuleManagementSeeder extends Seeder
                     'settings' => '10',
                     'type' => 'content',
                     'group' => 'content',
-                    'domains' => '{}',
                     'is_active' => true
                 ],
                 [
@@ -86,7 +79,6 @@ class ModuleManagementSeeder extends Seeder
                     'settings' => null,
                     'type' => 'system',
                     'group' => 'core',
-                    'domains' => '{}',
                     'is_active' => true
                 ]
             ];
@@ -110,7 +102,6 @@ class ModuleManagementSeeder extends Seeder
                     'settings' => $moduleData['settings'],
                     'type' => $moduleData['type'],
                     'group' => $moduleData['group'],
-                    'domains' => $moduleData['domains'],
                     'is_active' => $moduleData['is_active'],
                     'created_at' => now(),
                     'updated_at' => now()

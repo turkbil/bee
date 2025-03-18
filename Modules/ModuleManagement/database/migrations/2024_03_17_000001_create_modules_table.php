@@ -8,6 +8,14 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
+     * Migrasyonun central (merkezi) veritabanında çalışacağını belirt
+     */
+    public function getConnection()
+    {
+        return config('database.default');
+    }
+    
+    /**
      * Run the migrations.
      */
     public function up(): void
@@ -21,7 +29,6 @@ return new class extends Migration
             $table->unsignedBigInteger('settings')->nullable();
             $table->enum('type', ['content', 'management', 'system'])->default('content');
             $table->string('group')->nullable();
-            $table->json('domains')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
             $table->softDeletes();

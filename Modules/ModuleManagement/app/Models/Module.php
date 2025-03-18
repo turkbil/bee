@@ -21,12 +21,10 @@ class Module extends BaseModel
         'settings',
         'type',
         'group',
-        'domains',
         'is_active'
     ];
 
     protected $casts = [
-        'domains' => 'array',
         'settings' => 'integer',
         'is_active' => 'boolean',
     ];
@@ -39,13 +37,21 @@ class Module extends BaseModel
             ->toArray();
     }
 
+    public function tenants()
+    {
+        return $this->belongsToMany(
+            \Stancl\Tenancy\Database\Models\Tenant::class,
+            'module_tenants',
+            'module_id',
+            'tenant_id'
+        )->withPivot('is_active')
+        ->withTimestamps();
+    }
+
     public function isDomainActive($domain)
     {
-        if (!is_array($this->domains)) {
-            return false;
-        }
-        
-        return isset($this->domains[$domain]) && $this->domains[$domain];
+        $tenant = $this->tenants()->where('id', $domain)->first();
+        return $tenant && $tenant->pivot->is_active;
     }
 
     public function getActivitylogOptions(): LogOptions

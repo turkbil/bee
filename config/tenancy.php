@@ -25,10 +25,11 @@ return [
     ],
     
     'database' => [
-        'central_connection' => env('DB_CONNECTION', 'central'),
+        'central_connection' => env('DB_CONNECTION', 'mysql'),
         'template_tenant_connection' => null,
         'prefix' => 'tenant',
         'suffix' => '',
+        'tenant_connection_driver' => 'mysql', // Tenant bağlantısı için varsayılan driver mysql olarak ayarlandı
         'managers' => [
             'sqlite' => Stancl\Tenancy\TenantDatabaseManagers\SQLiteDatabaseManager::class,
             'mysql' => Stancl\Tenancy\TenantDatabaseManagers\MySQLDatabaseManager::class,
@@ -46,6 +47,7 @@ return [
     
     'cache' => [
         'tag_base' => 'tenant',
+        'store' => 'redis', // Cache için redis store kullanılacak
     ],
     
     'filesystem' => [

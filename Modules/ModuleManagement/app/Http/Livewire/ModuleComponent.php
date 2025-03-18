@@ -90,23 +90,26 @@ class ModuleComponent extends Component
     {
         $module = Module::find($moduleId);
         if ($module) {
-            $domains = is_array($module->domains) ? $module->domains : [];
+            $tenant = $module->tenants()->where('id', $domain)->first();
             
-            if (isset($domains[$domain])) {
-                $domains[$domain] = !$domains[$domain];
+            if ($tenant) {
+                // Toggle the status in the pivot table
+                $module->tenants()->updateExistingPivot($domain, [
+                    'is_active' => !$tenant->pivot->is_active
+                ]);
             } else {
-                $domains[$domain] = true;
+                // Create a new relationship if it doesn't exist
+                $module->tenants()->attach($domain, [
+                    'is_active' => true
+                ]);
             }
-            
-            $module->domains = $domains;
-            $module->save();
             
             log_activity(
                 $module,
                 'domain durumu güncellendi',
                 [
                     'domain' => $domain,
-                    'status' => $domains[$domain]
+                    'status' => !($tenant?->pivot->is_active ?? false)
                 ]
             );
             

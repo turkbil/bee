@@ -12,6 +12,7 @@ class ModuleManageComponent extends Component
 {
     public $moduleId;
     public $domains = [];
+    public $selectedDomains = [];
     public $isSaving = false;
     public $availableSettings = [];
     
@@ -24,7 +25,6 @@ class ModuleManageComponent extends Component
         'group' => '',
         'settings' => null,
         'is_active' => true,
-        'domains' => [],
     ];
 
     public function mount($id = null)
@@ -59,9 +59,10 @@ class ModuleManageComponent extends Component
             
             $this->inputs = $module->toArray();
             
-            // domains array'ini düzenli şekilde işleme
-            if (empty($this->inputs['domains']) || !is_array($this->inputs['domains'])) {
-                $this->inputs['domains'] = [];
+            // Load the domains from the module_tenants table
+            $moduleTenants = $module->tenants;
+            foreach ($moduleTenants as $tenant) {
+                $this->selectedDomains[$tenant->id] = $tenant->pivot->is_active;
             }
         }
     }
@@ -77,8 +78,8 @@ class ModuleManageComponent extends Component
             'inputs.group' => 'nullable|string',
             'inputs.settings' => 'nullable|integer',
             'inputs.is_active' => 'boolean',
-            'inputs.domains' => 'array',
-            'inputs.domains.*' => 'boolean',
+            'selectedDomains' => 'array',
+            'selectedDomains.*' => 'boolean',
         ];
     }
 
@@ -122,6 +123,16 @@ class ModuleManageComponent extends Component
                 'oluşturuldu'
             );
         }
+        
+        // Update the tenant relationships
+        $syncData = [];
+        foreach ($this->selectedDomains as $tenantId => $isActive) {
+            if ($isActive) {
+                $syncData[$tenantId] = ['is_active' => true];
+            }
+        }
+        
+        $module->tenants()->sync($syncData);
 
         if ($redirect) {
             session()->flash('toast', [

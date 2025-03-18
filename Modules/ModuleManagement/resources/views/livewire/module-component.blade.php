@@ -147,7 +147,8 @@
                         @if($showDomains)
                         @foreach($domains as $domain)
                         @php
-                        $isActive = isset($module->domains[$domain]) && $module->domains[$domain] === true;
+                        $tenant = $module->tenants->where('id', $domain)->first();
+                        $isActive = $tenant && $tenant->pivot->is_active;
                         @endphp
                         <div class="list-group-item py-2 list-group-item-action">
                             <div class="d-flex align-items-center">
@@ -170,23 +171,18 @@
                         <div class="list-group-item py-3 px-2 mx-1">
                             <div class="domain-badges d-flex flex-wrap gap-2">
                                 @php
-                                $activeDomains = collect($module->domains ?? [])
-                                    ->filter(function ($active, $domain) {
-                                        return $active === true;
-                                    })
-                                    ->keys()
-                                    ->take(3);
+                                $activeDomains = $module->tenants->where('pivot.is_active', true)->take(3);
                                 @endphp
                                 
-                                @forelse($activeDomains as $domain)
-                                <span class="badge bg-blue-lt">{{ $domain }}</span>
+                                @forelse($activeDomains as $tenant)
+                                <span class="badge bg-blue-lt">{{ $tenant->id }}</span>
                                 @empty
                                 <span class="badge bg-secondary-lt">Atanmamış</span>
                                 @endforelse
                                 
-                                @if(collect($module->domains ?? [])->filter()->count() > 3)
+                                @if($module->tenants->where('pivot.is_active', true)->count() > 3)
                                 <span class="badge bg-blue-lt">
-                                    +{{ collect($module->domains ?? [])->filter()->count() - 3 }}
+                                    +{{ $module->tenants->where('pivot.is_active', true)->count() - 3 }}
                                 </span>
                                 @endif
                             </div>

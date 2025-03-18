@@ -14,16 +14,23 @@ const tomSelectConfig = {
         no_results: function () {
             return "";
         },
-    }
+    },
 };
 
 // Tom Select'i başlat
 function initializeTomSelect() {
-    const elements = document.querySelectorAll(".tags, .tomselect, .tom-select");
+    const elements = document.querySelectorAll(
+        ".tags, .tomselect, .tom-select"
+    );
     if (!elements.length) return;
 
     elements.forEach(function (input) {
-        if (!input || !input.tagName || input.tagName.toLowerCase() !== 'select') return;
+        if (
+            !input ||
+            !input.tagName ||
+            input.tagName.toLowerCase() !== "select"
+        )
+            return;
 
         try {
             if (input.tomselect) {
@@ -63,14 +70,14 @@ document.addEventListener("DOMContentLoaded", function () {
         body.classList.remove("light");
         body.classList.add("dark");
         body.setAttribute("data-bs-theme", "dark");
-        darkSwitches.forEach(function(switchEl) {
+        darkSwitches.forEach(function (switchEl) {
             switchEl.checked = true;
         });
     } else {
         body.classList.remove("dark");
         body.classList.add("light");
         body.setAttribute("data-bs-theme", "light");
-        darkSwitches.forEach(function(switchEl) {
+        darkSwitches.forEach(function (switchEl) {
             switchEl.checked = false;
         });
     }
@@ -102,13 +109,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.addEventListener("click", function (e) {
         if (!e.target.closest(".module-menu .dropdown")) {
-            dropdowns.forEach(function(dropdown) {
+            dropdowns.forEach(function (dropdown) {
                 dropdown.classList.remove("open");
             });
         }
     });
 
-    const moduleItems = document.querySelectorAll(".module-menu .dropdown-module-item");
+    const moduleItems = document.querySelectorAll(
+        ".module-menu .dropdown-module-item"
+    );
     moduleItems.forEach(function (item) {
         item.addEventListener("click", function (e) {
             e.stopPropagation();
@@ -153,7 +162,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 picker.on("selected", function (date) {
                     if (datepicker.classList.contains("datepicker-start")) {
                         // Livewire.emit("setFilter", "date_start", date.format("YYYY-MM-DD"));
-                    } else if (datepicker.classList.contains("datepicker-end")) {
+                    } else if (
+                        datepicker.classList.contains("datepicker-end")
+                    ) {
                         // Livewire.emit("setFilter", "date_end", date.format("YYYY-MM-DD"));
                     }
                 });
@@ -165,7 +176,9 @@ document.addEventListener("DOMContentLoaded", function () {
 // CSRF Token ayarla
 $.ajaxSetup({
     headers: {
-        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.getAttribute("content"),
+        "X-CSRF-TOKEN": document
+            .querySelector('meta[name="csrf-token"]')
+            ?.getAttribute("content"),
     },
 });
 
@@ -175,22 +188,105 @@ document.addEventListener("hidden.bs.modal", function (event) {
     if (!modal) return;
 
     const forms = modal.querySelectorAll("form");
-    forms.forEach(function(form) {
+    forms.forEach(function (form) {
         form.reset();
     });
 
-    const inputs = modal.querySelectorAll('input[type="text"], input[type="email"], input[type="number"], textarea');
-    inputs.forEach(function(input) {
+    const inputs = modal.querySelectorAll(
+        'input[type="text"], input[type="email"], input[type="number"], textarea'
+    );
+    inputs.forEach(function (input) {
         input.value = "";
     });
 
-    const checkboxes = modal.querySelectorAll('input[type="checkbox"], input[type="radio"]');
-    checkboxes.forEach(function(input) {
+    const checkboxes = modal.querySelectorAll(
+        'input[type="checkbox"], input[type="radio"]'
+    );
+    checkboxes.forEach(function (input) {
         input.checked = false;
     });
 
     const selects = modal.querySelectorAll("select");
-    selects.forEach(function(select) {
+    selects.forEach(function (select) {
         select.selectedIndex = 0;
     });
 });
+
+// Site rengi seçimi
+const selectedColor = document.getElementById("selectedColor");
+const colorPickerDropdown = document.getElementById("colorPickerDropdown");
+
+// Başlangıçta dropdown'ı kapalı tut
+colorPickerDropdown.style.display = "none";
+
+function toggleColorPicker() {
+    colorPickerDropdown.style.display =
+        colorPickerDropdown.style.display === "none" ? "flex" : "none";
+}
+
+// Dışarı tıklamada dropdown'ı kapat
+document.addEventListener("click", (e) => {
+    if (!e.target.closest(".color-picker-container")) {
+        colorPickerDropdown.style.display = "none";
+    }
+});
+
+function changeColor(newColor) {
+    const { r, g, b } = hexToRgbObj(newColor);
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+    const textColor = brightness > 170 ? "rgb(24, 36, 51)" : "#ffffff";
+    const rgbValue = `${r},${g},${b}`;
+
+    // CSS kurallarını oluştur
+    let styleSheet = document.getElementById("dynamic-colors");
+    if (!styleSheet) {
+        styleSheet = document.createElement("style");
+        styleSheet.id = "dynamic-colors";
+        document.head.appendChild(styleSheet);
+    }
+
+    // CSS kurallarını güncelle
+    styleSheet.textContent = `
+        :root {
+            --primary-color: ${newColor};
+            --primary-text-color: ${textColor};
+            --primary-rgb: ${rgbValue};
+            --tblr-primary: ${newColor};
+            --bs-primary: ${newColor};
+            --bs-primary-rgb: ${rgbValue};
+        }
+        
+        .btn-primary {
+            color: ${textColor} !important;
+            background-color: ${newColor} !important;
+            border-color: ${newColor} !important;
+        }
+        
+        .bg-primary {
+            color: ${textColor} !important;
+            background-color: ${newColor} !important;
+        }
+    `;
+
+    // Seçilen rengi güncelle
+    selectedColor.style.backgroundColor = newColor;
+    selectedColor.style.color = textColor;
+
+    // Cookie'leri güncelle
+    document.cookie = `siteColor=${newColor}; max-age=${
+        60 * 60 * 24 * 365
+    }; path=/`;
+    document.cookie = `siteTextColor=${textColor}; max-age=${
+        60 * 60 * 24 * 365
+    }; path=/`;
+
+    // Dropdown'ı kapat
+    colorPickerDropdown.style.display = "none";
+}
+
+function hexToRgbObj(hex) {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return { r, g, b };
+}

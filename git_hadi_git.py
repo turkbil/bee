@@ -26,19 +26,20 @@ def run_command(command):
     )
     
     # Çıktıyı gerçek zamanlı görüntüle
-    while True:
-        output = process.stdout.readline()
-        if output == '' and process.poll() is not None:
-            break
-        if output:
-            print(output.strip())
+    stdout_output = ""
+    stderr_output = ""
     
-    # Hata varsa göster
-    stderr = process.stderr.read()
-    if stderr:
-        print(f"HATA: {stderr}")
+    for line in process.stdout:
+        line = line.strip()
+        stdout_output += line + "\n"
+        print(line)
     
-    return process.poll()
+    # Hata çıktısını al
+    stderr_output = process.stderr.read()
+    if stderr_output:
+        print(f"HATA: {stderr_output}")
+    
+    return process.poll(), stdout_output, stderr_output
 
 def git_upload():
     """
@@ -95,55 +96,39 @@ def git_upload():
                 print("Uzak repo URL'si girilmedi. Push işlemi yapılamayacak.")
                 return False
         
+        print("\n--- UZAK DEĞİŞİKLİKLERİ ÇEK (PULL) ---")
+        print("Bu adım, uzak repo ve yerel repo arasındaki farklılıkları çözer...")
+        pull_code, pull_stdout, pull_stderr = run_command(f"git pull origin {branch_name}")
+        
+        # Merge conflict kontrolü
+        if "CONFLICT" in pull_stderr or "Automatic merge failed" in pull_stderr:
+            print("\nHATA: Çakışma (merge conflict) tespit edildi. Lütfen çakışmaları manuel olarak çözün.")
+            print("İşlem otomatik olarak devam edemez.")
+            return False
+        
         # Push işlemi
         print(f"\n--- GITHUB'A GÖNDER ({branch_name}) ---")
-        push_result = subprocess.run(f"git push origin {branch_name}", shell=True, capture_output=True, text=True)
+        push_code, push_stdout, push_stderr = run_command(f"git push origin {branch_name}")
         
-        # Push sonucunu kontrol et
-        if push_result.returncode != 0:
-            error_message = push_result.stderr
-            print(error_message)
-            
-            # Upstream branch hatası
-            if "fatal: The current branch" in error_message and "has no upstream branch" in error_message:
-                print(f"\nOtomatik olarak upstream branch ayarlanıyor: {branch_name}")
-                upstream_result = subprocess.run(f"git push --set-upstream origin {branch_name}", 
-                                               shell=True, capture_output=True, text=True)
-                
-                if upstream_result.returncode == 0:
-                    print("Upstream branch başarıyla ayarlandı ve push işlemi tamamlandı.")
-                    return True
-                else:
-                    # Rejected hatası
-                    if "! [rejected]" in upstream_result.stderr and "fetch first" in upstream_result.stderr:
-                        print("\n--- GIT PULL İLE UZAK DEĞİŞİKLİKLERİ ÇEKİLİYOR ---")
-                        pull_result = run_command(f"git pull origin {branch_name}")
-                        
-                        # Pull başarılı olduysa tekrar push dene
-                        if pull_result == 0:
-                            print("\n--- UZAK DEĞİŞİKLİKLER BİRLEŞTİRİLDİ, TEKRAR PUSH DENENIYOR ---")
-                            final_push = run_command(f"git push origin {branch_name}")
-                            if final_push == 0:
-                                print("Push işlemi başarıyla tamamlandı.")
-                                return True
-                            else:
-                                print("Son push işlemi başarısız oldu. Lütfen manuel olarak kontrol edin.")
-                                return False
-                        else:
-                            print("Pull işlemi başarısız oldu. Çakışmalar manuel olarak çözülmeli.")
-                            return False
-            
-            # Diğer push hataları
+        # Upstream hatası kontrolü
+        if push_code != 0 and "fatal: The current branch" in push_stderr and "has no upstream branch" in push_stderr:
+            print(f"\n--- UPSTREAM BRANCH AYARLANIYOR: {branch_name} ---")
+            up_code, up_stdout, up_stderr = run_command(f"git push --set-upstream origin {branch_name}")
+            if up_code == 0:
+                print("\nUpstream branch başarıyla ayarlandı.")
+                return True
             else:
-                print("Push işlemi başarısız oldu. Lütfen hata mesajını kontrol edin.")
+                print("\nHATA: Upstream branch ayarlanamadı.")
                 return False
-        else:
-            print(push_result.stdout)
-            if push_result.stderr:
-                print(push_result.stderr)
-            print("\nPush işlemi başarıyla tamamlandı.")
+                
+        # Push sonucu kontrol
+        if push_code == 0:
+            print("\nGitHub'a yükleme başarıyla tamamlandı!")
             return True
-        
+        else:
+            print("\nHATA: GitHub'a yükleme sırasında bir sorun oluştu.")
+            return False
+            
     except Exception as e:
         print(f"İşlem sırasında hata oluştu: {str(e)}")
         return False

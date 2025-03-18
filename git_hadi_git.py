@@ -70,9 +70,25 @@ def git_upload():
         print("\n--- COMMIT ---")
         run_command(f'git commit -m "{commit_message}"')
         
-        # Push
+        # Push - upstream branch kontrolü ile
         print("\n--- GITHUB'A GÖNDER ---")
-        run_command("git push")
+        push_result = subprocess.run("git push", shell=True, capture_output=True, text=True)
+        
+        # Upstream hatası varsa
+        if "fatal: The current branch" in push_result.stderr and "has no upstream branch" in push_result.stderr:
+            # Çıktıyı göster
+            print(push_result.stderr)
+            # Branch ismini al
+            branch_name = subprocess.check_output("git rev-parse --abbrev-ref HEAD", shell=True, text=True).strip()
+            print(f"\nOtomatik olarak upstream branch ayarlanıyor: {branch_name}")
+            # Upstream branch'i ayarla ve push et
+            run_command(f"git push --set-upstream origin {branch_name}")
+        else:
+            # Normal durumda push çıktısını göster
+            if push_result.stdout:
+                print(push_result.stdout)
+            if push_result.stderr:
+                print(push_result.stderr)
         
         print("\n\nİşlem tamamlandı! Tüm değişiklikler GitHub'a yüklendi.")
         return True

@@ -1,0 +1,8 @@
+{
+    "Page": true,
+    "Portfolio": true,
+    "UserManagement": true,
+    "ModuleManagement": true,
+    "SettingManagement": true,
+    "TenantManagement": true
+}

@@ -1,0 +1,126 @@
+<?php 
+namespace Modules\ModuleManagement\Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Illuminate\Database\Eloquent\Model;
+use Modules\ModuleManagement\App\Models\Module;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\App;
+use Stancl\Tenancy\Tenancy;
+
+class ModuleManagementSeeder extends Seeder
+{
+    public function run()
+    {
+        Model::unguard();
+
+        try {
+            // Eğer tenant kontekstinde çalışıyorsa, seederi çalıştırma
+            if (App::runningInConsole() && app()->has('tenancy') && app(Tenancy::class)->initialized) {
+                $this->command->info('Bu seeder yalnızca ana veritabanında çalışmalıdır.');
+                return;
+            }
+
+            $modules = [
+                [
+                    'name' => 'modulemanagement',
+                    'display_name' => 'Modüller Yönetimi',
+                    'description' => 'Sistem modüllerinin yönetimi',
+                    'version' => '1.0.0',
+                    'settings' => null,
+                    'type' => 'system',
+                    'group' => 'core',
+                    'domains' => '{}',
+                    'is_active' => true
+                ],
+                [
+                    'name' => 'tenantmanagement',
+                    'display_name' => 'Domainler Yönetimi', 
+                    'description' => 'Çoklu müşteri yönetim sistemi',
+                    'version' => '1.0.0',
+                    'settings' => null,
+                    'type' => 'system',
+                    'group' => 'core',
+                    'domains' => '{}',
+                    'is_active' => true
+                ],
+                [
+                    'name' => 'usermanagement',
+                    'display_name' => 'Kullanıcılar',
+                    'description' => 'Kullanıcı yönetim sistemi',
+                    'version' => '1.0.0',
+                    'settings' => null,
+                    'type' => 'management',
+                    'group' => 'core',
+                    'domains' => '{}',
+                    'is_active' => true
+                ],
+                [
+                    'name' => 'page',
+                    'display_name' => 'Sayfalar',
+                    'description' => 'Statik sayfa yönetim sistemi',
+                    'version' => '1.0.0',
+                    'settings' => '9',
+                    'type' => 'content',
+                    'group' => 'content',
+                    'domains' => '{}',
+                    'is_active' => true
+                ],
+                [
+                    'name' => 'portfolio',
+                    'display_name' => 'Portfolyo',
+                    'description' => 'Portföy yönetim sistemi',
+                    'version' => '1.0.0',
+                    'settings' => '10',
+                    'type' => 'content',
+                    'group' => 'content',
+                    'domains' => '{}',
+                    'is_active' => true
+                ],
+                [
+                    'name' => 'settingmanagement',
+                    'display_name' => 'Ayarlar Yönetimi',
+                    'description' => 'Sistem ayarlarının yönetimi',
+                    'version' => '1.0.0',
+                    'settings' => null,
+                    'type' => 'system',
+                    'group' => 'core',
+                    'domains' => '{}',
+                    'is_active' => true
+                ]
+            ];
+
+            // Foreign key constraint hatası için DISABLE FOREIGN_KEY_CHECKS
+            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+            
+            // Temizlik yapalım önce
+            DB::table('modules')->truncate();
+            
+            // Foreign key constraint'leri tekrar aktif et
+            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
+            // manuel olarak ekleyelim
+            foreach ($modules as $moduleData) {
+                DB::table('modules')->insert([
+                    'name' => $moduleData['name'],
+                    'display_name' => $moduleData['display_name'],
+                    'description' => $moduleData['description'],
+                    'version' => $moduleData['version'],
+                    'settings' => $moduleData['settings'],
+                    'type' => $moduleData['type'],
+                    'group' => $moduleData['group'],
+                    'domains' => $moduleData['domains'],
+                    'is_active' => $moduleData['is_active'],
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+            }
+            
+            $this->command->info('Modules seeded successfully!');
+        } catch (\Exception $e) {
+            Log::error('Module seeding failed: ' . $e->getMessage());
+            $this->command->error('Module seeding error: ' . $e->getMessage());
+        }
+    }
+}

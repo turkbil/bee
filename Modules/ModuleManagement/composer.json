@@ -1,0 +1,30 @@
+{
+    "name": "nwidart/modulemanagement",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\ModuleManagement\\": "app/",
+            "Modules\\ModuleManagement\\Database\\Factories\\": "database/factories/",
+            "Modules\\ModuleManagement\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\ModuleManagement\\Tests\\": "tests/"
+        }
+    }
+}

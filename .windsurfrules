@@ -1,0 +1,29 @@
+# Laravel 11 Multi-Tenancy Projesi İçin Windsurf Kurallari
+# Bu kurallar sadece bu çalişma alaninda geçerli olacaktir.
+
+## Olmalidir ✅
+1. Yanitlar ve tüm içerikler Türkçe olmalidir.
+2. Sistem Laravel 11 ile çalişmalidir.
+3. Multi-Tenancy aktif olmalidir ve Stancl Tenancy paketi kullanilmalidir.
+4. Tüm modüller Nwidart Laravel Modules yapisini kullanmalidir.
+5. Livewire 3 ve Livewire Volt kullanilmalidir.
+6. Kullanici arayüzü Tabler.io ile özelleştirilmelidir.
+7. Spatie Laravel Permission ile kullanici yetkilendirmeleri yapilmalidir.
+8. Spatie Laravel Activity Log ile tüm işlemler kaydedilmelidir.
+9. Spatie Laravel Response Cache ile önbellekleme yapilmalidir.
+10. Tenant bazli önbellekleme Redis ile yönetilmelidir.
+11. Laravel Breeze kimlik doğrulama için kullanilabilir.
+12. Spatie Laravel Media Library medya yönetimi için kullanilmalidir.
+13. BeyondCode Query Detector aktif olmalidir.
+14. Barryvdh Laravel Debugbar sadece geliştirme ortaminda kullanilmalidir.
+15. Laravel Telescope sadece geliştirme ortaminda aktif olmalidir.
+16. Cviebrock Eloquent Sluggable kullanilmalidir.
+17. PestPHP Laravel testi için kullanilmalidir.
+18. Nesbot Carbon tarih işlemleri için kullanilmalidir.
+19. Nunomaduro Collision hata yönetimi için aktif olmalidir.
+20. Nunomaduro Termwind kullanilmalidir.
+21. JSON API yanitlari PSR-4 standartlarina uygun olmalidir.
+
+## Olmamalidir ❌
+1. Laravel Tinker kullanilmamalidir.
+2. Gereksiz sorgu yükü oluşturmamak için tüm sorgular önbelleğe alinmalidir.

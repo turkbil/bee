@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Modules\TenantManagement\App\Http\Livewire\TenantComponent;
 use Modules\TenantManagement\App\Http\Livewire\TenantModuleComponent;
+use Modules\TenantManagement\App\Http\Livewire\Modals\DeleteModal;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -36,6 +37,7 @@ class TenantManagementServiceProvider extends ServiceProvider
 
         Livewire::component('tenant-component', TenantComponent::class);
         Livewire::component('tenant-module-component', TenantModuleComponent::class);
+        Livewire::component('modals.delete-modal', DeleteModal::class);
     }
 
     /**
@@ -111,15 +113,14 @@ class TenantManagementServiceProvider extends ServiceProvider
      */
     public function registerViews(): void
     {
-        $viewPath   = resource_path('views/modules/' . $this->nameLower);
-        $sourcePath = module_path($this->name, 'resources/views');
+        $viewPath   = resource_path('views/modules/tenantmanagement');
+        $sourcePath = module_path('TenantManagement', 'resources/views');
 
-        $this->publishes([$sourcePath => $viewPath], ['views', $this->nameLower . '-module-views']);
+        $this->publishes([
+            $sourcePath => $viewPath,
+        ], ['views', 'tenantmanagement-module-views']);
 
-        $this->loadViewsFrom(array_merge($this->getPublishableViewPaths(), [$sourcePath]), $this->nameLower);
-
-        $componentNamespace = $this->module_namespace($this->name, $this->app_path(config('modules.paths.generator.component-class.path')));
-        Blade::componentNamespace($componentNamespace, $this->nameLower);
+        $this->loadViewsFrom(array_merge($this->getPublishableViewPaths(), [$sourcePath]), 'tenantmanagement');
     }
 
     /**
@@ -134,8 +135,8 @@ class TenantManagementServiceProvider extends ServiceProvider
     {
         $paths = [];
         foreach (config('view.paths') as $path) {
-            if (is_dir($path . '/modules/' . $this->nameLower)) {
-                $paths[] = $path . '/modules/' . $this->nameLower;
+            if (is_dir($path . '/modules/tenantmanagement')) {
+                $paths[] = $path . '/modules/tenantmanagement';
             }
         }
 

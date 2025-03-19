@@ -39,4 +39,16 @@ class Tenant extends BaseTenant implements TenantWithDatabase
             'data',
         ];
     }
+
+    public function modules()
+    {
+        return $this->belongsToMany(
+            \Modules\ModuleManagement\App\Models\Module::class,
+            'module_tenants',
+            'tenant_id',
+            'module_id'
+        )->withPivot('is_active')
+        ->withTimestamps();
+    }
+
 }

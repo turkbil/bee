@@ -35,6 +35,7 @@ class TenantManagementServiceProvider extends ServiceProvider
         $this->loadViewsFrom(module_path('TenantManagement', 'resources/views'), 'tenantmanagement');
         $this->loadMigrationsFrom(module_path('TenantManagement', 'database/migrations'));
 
+        // LiveWire bileşenlerini kaydet
         Livewire::component('tenant-component', TenantComponent::class);
         Livewire::component('tenant-module-component', TenantModuleComponent::class);
         Livewire::component('modals.delete-modal', DeleteModal::class);

@@ -28,7 +28,6 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->unsignedBigInteger('settings')->nullable();
             $table->enum('type', ['content', 'management', 'system'])->default('content');
-            $table->string('group')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
             $table->softDeletes();

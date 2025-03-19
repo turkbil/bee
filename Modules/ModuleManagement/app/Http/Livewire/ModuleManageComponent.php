@@ -15,6 +15,7 @@ class ModuleManageComponent extends Component
     public $selectedDomains = [];
     public $isSaving = false;
     public $availableSettings = [];
+    public $oldInputs = [];
     
     public $inputs = [
         'name' => '',
@@ -22,9 +23,17 @@ class ModuleManageComponent extends Component
         'description' => '',
         'version' => '',
         'type' => 'content',
-        'group' => '',
-        'settings' => null,
         'is_active' => true,
+        'setting' => null,
+    ];
+
+    protected $messages = [
+        'inputs.name.required' => 'Modül adı zorunludur.',
+        'inputs.name.min' => 'Modül adı en az :min karakter olmalıdır.',
+        'inputs.display_name.required' => 'Görünen ad zorunludur.',
+        'inputs.display_name.min' => 'Görünen ad en az :min karakter olmalıdır.',
+        'inputs.type.required' => 'Modül tipi seçilmelidir.',
+        'inputs.type.in' => 'Geçerli bir modül tipi seçiniz.',
     ];
 
     public function mount($id = null)
@@ -40,7 +49,7 @@ class ModuleManageComponent extends Component
         $this->domains = collect($domainList)->mapWithKeys(function ($tenant) {
             return [$tenant->id => [
                 'id' => $tenant->id,
-                'name' => $tenant->id
+                'name' => $tenant->title ?? $tenant->id
             ]];
         })->toArray();
         
@@ -57,12 +66,30 @@ class ModuleManageComponent extends Component
             $this->moduleId = $id;
             $module = Module::findOrFail($id);
             
-            $this->inputs = $module->toArray();
+            $this->inputs = [
+                'name' => $module->name,
+                'display_name' => $module->display_name,
+                'description' => $module->description,
+                'version' => $module->version,
+                'type' => $module->type,
+                'is_active' => $module->is_active,
+                'setting' => $module->settings,
+            ];
+            
+            // Orijinal değerleri sakla
+            $this->oldInputs = $this->inputs;
             
             // Load the domains from the module_tenants table
             $moduleTenants = $module->tenants;
+            
+            // Başlangıçta tüm domainleri pasif olarak işaretle
+            foreach ($this->domains as $domainId => $domain) {
+                $this->selectedDomains[$domainId] = false;
+            }
+            
+            // Modüle atanmış domainleri aktif olarak işaretle
             foreach ($moduleTenants as $tenant) {
-                $this->selectedDomains[$tenant->id] = $tenant->pivot->is_active;
+                $this->selectedDomains[$tenant->id] = (bool)$tenant->pivot->is_active;
             }
         }
     }
@@ -75,8 +102,7 @@ class ModuleManageComponent extends Component
             'inputs.description' => 'nullable|string',
             'inputs.version' => 'nullable|string',
             'inputs.type' => 'required|in:content,management,system',
-            'inputs.group' => 'nullable|string',
-            'inputs.settings' => 'nullable|integer',
+            'inputs.setting' => 'nullable|integer',
             'inputs.is_active' => 'boolean',
             'selectedDomains' => 'array',
             'selectedDomains.*' => 'boolean',
@@ -106,10 +132,31 @@ class ModuleManageComponent extends Component
         $this->isSaving = true;
         $this->validate();
 
+        $moduleData = [
+            'name' => $this->inputs['name'],
+            'display_name' => $this->inputs['display_name'],
+            'description' => $this->inputs['description'],
+            'version' => $this->inputs['version'],
+            'type' => $this->inputs['type'],
+            'settings' => $this->inputs['setting'],
+            'is_active' => $this->inputs['is_active'],
+        ];
+        
+        // Hiçbir değişiklik yapılmadıysa uyarı ver
+        if ($this->moduleId && $this->oldInputs == $this->inputs && !count(array_filter($this->selectedDomains))) {
+            $this->dispatch('toast', [
+                'title' => 'Bilgi',
+                'message' => 'Herhangi bir değişiklik yapılmadı.',
+                'type' => 'info',
+            ]);
+            $this->isSaving = false;
+            return;
+        }
+
         if ($this->moduleId) {
             $module = Module::findOrFail($this->moduleId);
             $oldData = $module->toArray();
-            $module->update($this->inputs);
+            $module->update($moduleData);
             
             log_activity(
                 $module,
@@ -117,7 +164,17 @@ class ModuleManageComponent extends Component
                 array_diff_assoc($module->toArray(), $oldData)
             );
         } else {
-            $module = Module::create($this->inputs);
+            if (empty($this->inputs['name'])) {
+                $this->dispatch('toast', [
+                    'title' => 'Uyarı',
+                    'message' => 'Lütfen bir modül seçiniz veya bilgileri doldurunuz.',
+                    'type' => 'warning',
+                ]);
+                $this->isSaving = false;
+                return;
+            }
+            
+            $module = Module::create($moduleData);
             log_activity(
                 $module,
                 'oluşturuldu'
@@ -149,15 +206,18 @@ class ModuleManageComponent extends Component
             'type' => 'success',
         ]);
 
+        // Değişiklikleri orijinal değerler olarak güncelle
+        $this->oldInputs = $this->inputs;
+        
         $this->isSaving = false;
     }
 
     public function render()
     {
-        $existingGroups = Module::getGroups();
+        $types = Module::select('type')->distinct()->whereNotNull('type')->pluck('type');
         
         return view('modulemanagement::livewire.module-manage-component', [
-            'existingGroups' => $existingGroups
+            'types' => $types
         ]);
     }
 }

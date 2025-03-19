@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Modules\ModuleManagement\App\Http\Livewire\ModuleComponent;
 use Modules\ModuleManagement\App\Http\Livewire\ModuleManageComponent;
+use Modules\ModuleManagement\App\Http\Livewire\Modals\DeleteModal;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -34,8 +35,10 @@ class ModuleManagementServiceProvider extends ServiceProvider
         $this->loadViewsFrom(module_path('ModuleManagement', 'resources/views'), 'modulemanagement');
         $this->loadMigrationsFrom(module_path('ModuleManagement', 'database/migrations'));
 
+        // Livewire bileşenlerini kaydet
         Livewire::component('module-component', ModuleComponent::class);
         Livewire::component('module-manage-component', ModuleManageComponent::class);
+        Livewire::component('modals.delete-modal', DeleteModal::class);
     }
 
     /**

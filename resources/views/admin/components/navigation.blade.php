@@ -189,12 +189,6 @@
         <div class="collapse navbar-collapse" id="navbar-menu">
             <div class="d-flex flex-column flex-md-row flex-fill align-items-stretch align-items-md-center">
                 <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('admin.dashboard') }}">
-                            <span class="nav-link-title">Dashboard</span>
-                        </a>
-                    </li>
-                    
                     @if($groupedModules->has('content') && $groupedModules['content']->count() > 0)
                     <li class="nav-item {{ $activeType == 'content' ? 'active' : '' }} dropdown">
                         <a class="nav-link dropdown-toggle" href="#navbar-content" data-bs-toggle="dropdown"

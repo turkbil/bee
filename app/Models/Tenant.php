@@ -23,6 +23,11 @@ class Tenant extends BaseTenant implements TenantWithDatabase
         'data' => 'json',
     ];
     
+    public function domains()
+    {
+        return $this->hasMany(Domain::class, 'tenant_id', 'id');
+    }
+
     public function getDatabaseName()
     {
         return $this->tenancy_db_name;

@@ -31,4 +31,4 @@
     </div>
     <div class="modal-backdrop fade show"></div>
     @endif
-    </div>
+</div>

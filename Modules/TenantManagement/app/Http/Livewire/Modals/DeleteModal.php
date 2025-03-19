@@ -1,5 +1,4 @@
 <?php
-
 namespace Modules\TenantManagement\App\Http\Livewire\Modals;
 
 use Livewire\Component;
@@ -12,153 +11,74 @@ class DeleteModal extends Component
 {
     public $showModal = false;
     public $itemId;
-    public $type; // tenant, domain
+    public $type;
     public $title;
-    public $tenantId = null; // Domain silinince tenant'ı güncellemek için
+    public $tenantId = null;
 
     protected $listeners = ['showDeleteModal'];
 
-    public function showDeleteModal($data)
+    // DÜZELTME: Livewire 3'e uygun parametre işleme
+    public function handleShowDeleteModal($params)
     {
-        $this->type = $data['type'] ?? '';
-        $this->itemId = $data['id'] ?? null;
-        $this->title = $data['title'] ?? '';
-        
-        if (isset($data['tenantId'])) {
-            $this->tenantId = $data['tenantId'];
+        // Eski sürüm uyumluluğu için (parametre string gelirse decode et)
+        if (is_string($params)) {
+            $params = json_decode($params, true);
         }
-        
+
+        $this->type = $params['type'];
+        $this->itemId = $params['id'];
+        $this->title = $params['title'];
+        $this->tenantId = $params['tenantId'] ?? null;
         $this->showModal = true;
-        
-        Log::info('Delete Modal Açıldı', [
-            'type' => $this->type,
-            'id' => $this->itemId,
-            'title' => $this->title
-        ]);
     }
 
     public function delete()
     {
-        Log::info('Silme işlemi başlıyor. Tip: ' . $this->type . ', ID: ' . $this->itemId);
-        
-        if ($this->type === 'tenant') {
-            $tenant = Tenant::find($this->itemId);
-            
-            if (!$tenant) {
-                $this->dispatch('toast', [
-                    'title' => 'Hata!',
-                    'message' => 'Silinmek istenen tenant bulunamadı.',
-                    'type' => 'error',
-                ]);
-                $this->showModal = false;
-                return;
-            }
+        try {
+            DB::transaction(function () {
+                if ($this->type === 'tenant') {
+                    $tenant = Tenant::findOrFail($this->itemId);
+                    $tenant->domains()->delete();
+                    $tenant->delete();
 
-            try {
-                // Tenant verilerini al
-                $oldData = $tenant->toArray();
-                
-                // Domain bağlantılarını sil
-                $tenant->domains()->delete();
-                
-                // Tenant'ı sil
-                $tenant->delete();
-                
-                // Log ekle
-                activity()
-                    ->performedOn($tenant)
-                    ->causedBy(auth()->user())
-                    ->inLog(class_basename($tenant))
-                    ->withProperties(['old' => $oldData])
-                    ->log("\"" . ($tenant->title ?? 'Tenant') . "\" silindi");
-                
-                $this->showModal = false;
-                
-                $this->dispatch('toast', [
-                    'title' => 'Silindi!',
-                    'message' => 'Tenant başarıyla silindi.',
-                    'type' => 'danger',
-                ]);
-                
-                $this->dispatch('itemDeleted');
-            } catch (\Exception $e) {
-                Log::error('Tenant silme hatası: ' . $e->getMessage());
-                
-                $this->showModal = false;
-                
-                $this->dispatch('toast', [
-                    'title' => 'Hata!',
-                    'message' => 'Silme işlemi sırasında bir hata oluştu: ' . $e->getMessage(),
-                    'type' => 'error',
-                ]);
-            }
-        } elseif ($this->type === 'domain') {
-            $domain = Domain::find($this->itemId);
-            
-            if (!$domain) {
-                $this->dispatch('toast', [
-                    'title' => 'Hata!',
-                    'message' => 'Silinmek istenen domain bulunamadı.',
-                    'type' => 'error',
-                ]);
-                $this->showModal = false;
-                return;
-            }
+                    $this->dispatch('toast', [
+                        'title' => 'Başarılı!',
+                        'message' => 'Tenant silindi.',
+                        'type' => 'success'
+                    ]);
 
-            try {
-                // Domain verilerini al
-                $oldData = $domain->toArray();
-                
-                // Domain'i sil
-                $domain->delete();
-                
-                // Log ekle
-                activity()
-                    ->performedOn($domain)
-                    ->causedBy(auth()->user())
-                    ->inLog(class_basename($domain))
-                    ->withProperties(['old' => $oldData])
-                    ->log("\"" . ($domain->domain ?? 'Domain') . "\" silindi");
-                
-                $this->showModal = false;
-                
-                $this->dispatch('toast', [
-                    'title' => 'Silindi!',
-                    'message' => 'Domain başarıyla silindi.',
-                    'type' => 'danger',
-                ]);
-                
-                // Domain listesini güncellemek için tenantId gönderilmişse
-                if ($this->tenantId) {
-                    $this->dispatch('refreshDomains', $this->tenantId);
+                } elseif ($this->type === 'domain') {
+                    $domain = Domain::findOrFail($this->itemId);
+                    $domain->delete();
+
+                    $this->dispatch('toast', [
+                        'title' => 'Başarılı!',
+                        'message' => 'Domain silindi.',
+                        'type' => 'success'
+                    ]);
                 }
-                
-                $this->dispatch('itemDeleted');
-            } catch (\Exception $e) {
-                Log::error('Domain silme hatası: ' . $e->getMessage());
-                
-                $this->showModal = false;
-                
-                $this->dispatch('toast', [
-                    'title' => 'Hata!',
-                    'message' => 'Silme işlemi sırasında bir hata oluştu: ' . $e->getMessage(),
-                    'type' => 'error',
-                ]);
-            }
+            });
+
+            $this->closeModal();
+            $this->dispatch('itemDeleted');
+
+        } catch (\Exception $e) {
+            Log::error("Silme hatası: " . $e->getMessage());
+            $this->dispatch('toast', [
+                'title' => 'Hata!',
+                'message' => 'Silme işlemi başarısız: ' . $e->getMessage(),
+                'type' => 'error'
+            ]);
         }
     }
 
     public function closeModal()
     {
-        $this->showModal = false;
-        Log::info('Modal kapatıldı');
+        $this->reset(['showModal', 'itemId', 'type', 'title', 'tenantId']);
     }
 
     public function render()
     {
-        return view('tenantmanagement::modals.delete-modal', [
-            'showModal' => $this->showModal,
-            'title' => $this->title
-        ]);
+        return view('tenantmanagement::modals.delete-modal');
     }
 }

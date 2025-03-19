@@ -1,15 +1,35 @@
 <div>
-    @if($moduleGroups)
+    @if($modules && $modules->count() > 0)
     <div class="d-flex justify-content-between mb-3">
         <button type="button" class="btn btn-outline-primary" wire:click="toggleSelectAll">
             {{ count($selectedModules) === $modules->count() ? 'Tümünü Kaldır' : 'Tümünü Seç' }}
         </button>
+        
+        <span wire:loading wire:target="toggleSelectAll" class="spinner-border spinner-border-sm" role="status"></span>
     </div>
 
-    @foreach($moduleGroups as $group => $modules)
+    @foreach($moduleGroups as $type => $modules)
     <div class="card mb-3">
-        <div class="card-header">
-            <h3 class="card-title">{{ $group ?: 'Genel' }}</h3>
+        <div class="card-header d-flex align-items-center">
+            @switch($type)
+            @case('system')
+            <i class="fas fa-shield-alt me-2 text-muted"></i>
+            <h3 class="card-title mb-0">Sistem Modülleri</h3>
+            @break
+            @case('management')
+            <i class="fas fa-cogs me-2 text-muted"></i>
+            <h3 class="card-title mb-0">Yönetim Modülleri</h3>
+            @break
+            @case('content')
+            <i class="fas fa-file-alt me-2 text-muted"></i>
+            <h3 class="card-title mb-0">İçerik Modülleri</h3>
+            @break
+            @endswitch
+            <div class="ms-auto">
+                <span class="badge bg-primary">
+                    {{ $modules->count() }} modül
+                </span>
+            </div>
         </div>
         <div class="list-group list-group-flush">
             @foreach($modules as $module)
@@ -17,7 +37,7 @@
                 <div class="row align-items-center">
                     <div class="col-auto">
                         <label class="form-check">
-                            <input type="checkbox" class="form-check-input" wire:model="selectedModules"
+                            <input type="checkbox" class="form-check-input" wire:model.live="selectedModules"
                                 value="{{ $module->module_id }}" @if(in_array((string)$module->module_id,
                             $selectedModules)) checked @endif>
                         </label>
@@ -26,7 +46,7 @@
                         <div class="d-flex align-items-center">
                             <div class="flex-fill">
                                 <div class="font-weight-medium">{{ $module->display_name }}</div>
-                                <div class="text-muted">{{ $module->description }}</div>
+                                <div class="text-muted small">{{ $module->description }}</div>
                             </div>
                             <div class="text-muted ms-3">
                                 <span
@@ -44,9 +64,24 @@
     @endforeach
 
     <div class="modal-footer">
-        <button type="button" class="btn btn-primary" wire:click="save">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            İptal
+        </button>
+        <button type="button" class="btn btn-primary" wire:click="save" wire:loading.attr="disabled">
+            <span wire:loading wire:target="save" class="spinner-border spinner-border-sm me-2" role="status"></span>
             Kaydet
         </button>
+    </div>
+    @else
+    <div class="empty">
+        <div class="empty-img">
+            <img src="{{ asset('tabler/static/illustrations/undraw_no_data_re_kwbl.svg') }}" 
+                 height="128" alt="">
+        </div>
+        <p class="empty-title">Modül bulunamadı</p>
+        <p class="empty-subtitle text-muted">
+            Modül Yönetimi sayfasından yeni modüller ekleyebilirsiniz.
+        </p>
     </div>
     @endif
 </div>

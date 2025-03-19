@@ -1,4 +1,3 @@
-{{-- Modules/TenantManagement/resources/views/helper.blade.php --}}
 {{-- PreTitle --}}
 @push('pretitle')
 Tenantlar
@@ -15,7 +14,7 @@ Tenant Yönetimi
     <a href="#" class="btn dropdown-toggle d-inline-block d-lg-none" data-bs-toggle="dropdown">Menü</a>
     <div class="dropdown-menu dropdown-module-menu">
         <div class="module-menu-revert">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-tenant-add"
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-tenant-manage"
                 wire:click="resetForm">
                 Yeni Tenant Ekle
             </button>

@@ -20,13 +20,21 @@ class DeleteModal extends Component
 
     public function showDeleteModal($data)
     {
-        $this->type = $data['type'];
-        $this->itemId = $data['id'];
-        $this->title = $data['title'];
+        $this->type = $data['type'] ?? '';
+        $this->itemId = $data['id'] ?? null;
+        $this->title = $data['title'] ?? '';
+        
         if (isset($data['tenantId'])) {
             $this->tenantId = $data['tenantId'];
         }
+        
         $this->showModal = true;
+        
+        Log::info('Delete Modal Açıldı', [
+            'type' => $this->type,
+            'id' => $this->itemId,
+            'title' => $this->title
+        ]);
     }
 
     public function delete()
@@ -42,41 +50,27 @@ class DeleteModal extends Component
                     'message' => 'Silinmek istenen tenant bulunamadı.',
                     'type' => 'error',
                 ]);
+                $this->showModal = false;
                 return;
             }
 
-            // Tenant verilerini kaydet
-            $oldData = $tenant->toArray();
-            Log::info('Tenant bulundu: ' . $tenant->title);
-            
             try {
-                DB::beginTransaction();
-                Log::info('Transaction başlatıldı.');
-
+                // Tenant verilerini al
+                $oldData = $tenant->toArray();
+                
                 // Domain bağlantılarını sil
                 $tenant->domains()->delete();
-                Log::info('Tenant domainleri silindi.');
                 
                 // Tenant'ı sil
                 $tenant->delete();
-                Log::info('Tenant silindi.');
                 
-                // Log aktivitesi - doğrudan DB::table kullan
-                DB::table('activity_log')->insert([
-                    'log_name' => 'Tenant',
-                    'description' => 'silindi',
-                    'subject_type' => get_class($tenant),
-                    'subject_id' => $tenant->id,
-                    'causer_type' => auth()->check() ? get_class(auth()->user()) : null,
-                    'causer_id' => auth()->id(),
-                    'properties' => json_encode(['old' => $oldData]),
-                    'created_at' => now(),
-                    'updated_at' => now()
-                ]);
-                Log::info('Aktivite logu manuel kaydedildi.');
-                
-                DB::commit();
-                Log::info('Transaction commit edildi.');
+                // Log ekle
+                activity()
+                    ->performedOn($tenant)
+                    ->causedBy(auth()->user())
+                    ->inLog(class_basename($tenant))
+                    ->withProperties(['old' => $oldData])
+                    ->log("\"" . ($tenant->title ?? 'Tenant') . "\" silindi");
                 
                 $this->showModal = false;
                 
@@ -88,8 +82,9 @@ class DeleteModal extends Component
                 
                 $this->dispatch('itemDeleted');
             } catch (\Exception $e) {
-                DB::rollBack();
                 Log::error('Tenant silme hatası: ' . $e->getMessage());
+                
+                $this->showModal = false;
                 
                 $this->dispatch('toast', [
                     'title' => 'Hata!',
@@ -106,37 +101,24 @@ class DeleteModal extends Component
                     'message' => 'Silinmek istenen domain bulunamadı.',
                     'type' => 'error',
                 ]);
+                $this->showModal = false;
                 return;
             }
 
-            // Domain verilerini kaydet
-            $oldData = $domain->toArray();
-            Log::info('Domain bulundu: ' . $domain->domain);
-            
             try {
-                DB::beginTransaction();
-                Log::info('Domain silme transaction başlatıldı.');
+                // Domain verilerini al
+                $oldData = $domain->toArray();
                 
                 // Domain'i sil
                 $domain->delete();
-                Log::info('Domain silindi.');
                 
-                // Log aktivitesi - doğrudan DB::table kullan
-                DB::table('activity_log')->insert([
-                    'log_name' => 'Domain',
-                    'description' => 'silindi',
-                    'subject_type' => get_class($domain),
-                    'subject_id' => $domain->id,
-                    'causer_type' => auth()->check() ? get_class(auth()->user()) : null,
-                    'causer_id' => auth()->id(),
-                    'properties' => json_encode(['old' => $oldData]),
-                    'created_at' => now(),
-                    'updated_at' => now()
-                ]);
-                Log::info('Domain silme aktivite logu manuel kaydedildi.');
-                
-                DB::commit();
-                Log::info('Domain silme transaction commit edildi.');
+                // Log ekle
+                activity()
+                    ->performedOn($domain)
+                    ->causedBy(auth()->user())
+                    ->inLog(class_basename($domain))
+                    ->withProperties(['old' => $oldData])
+                    ->log("\"" . ($domain->domain ?? 'Domain') . "\" silindi");
                 
                 $this->showModal = false;
                 
@@ -153,8 +135,9 @@ class DeleteModal extends Component
                 
                 $this->dispatch('itemDeleted');
             } catch (\Exception $e) {
-                DB::rollBack();
                 Log::error('Domain silme hatası: ' . $e->getMessage());
+                
+                $this->showModal = false;
                 
                 $this->dispatch('toast', [
                     'title' => 'Hata!',
@@ -165,8 +148,17 @@ class DeleteModal extends Component
         }
     }
 
+    public function closeModal()
+    {
+        $this->showModal = false;
+        Log::info('Modal kapatıldı');
+    }
+
     public function render()
     {
-        return view('tenantmanagement::modals.delete-modal');
+        return view('tenantmanagement::modals.delete-modal', [
+            'showModal' => $this->showModal,
+            'title' => $this->title
+        ]);
     }
 }

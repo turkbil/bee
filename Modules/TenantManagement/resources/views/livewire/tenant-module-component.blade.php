@@ -64,13 +64,21 @@
     @endforeach
 
     <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-            İptal
-        </button>
-        <button type="button" class="btn btn-primary" wire:click="save" wire:loading.attr="disabled">
-            <span wire:loading wire:target="save" class="spinner-border spinner-border-sm me-2" role="status"></span>
-            Kaydet
-        </button>
+        <div class="w-100">
+            <div class="row">
+                <div class="col">
+                    <button type="button" class="btn w-100" data-bs-dismiss="modal">
+                        İptal
+                    </button>
+                </div>
+                <div class="col">
+                    <button type="button" class="btn btn-primary w-100" wire:click="save" wire:loading.attr="disabled">
+                        <span wire:loading wire:target="save" class="spinner-border spinner-border-sm me-2" role="status"></span>
+                        Kaydet
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
     @else
     <div class="empty">

@@ -2,9 +2,7 @@
 <div>
     <div class="card">
         <div class="card-body">
-            <!-- Header Bölümü -->
             <div class="row mb-3">
-                <!-- Arama Kutusu -->
                 <div class="col">
                     <div class="input-icon">
                         <span class="input-icon-addon">
@@ -14,7 +12,6 @@
                             placeholder="Aramak için yazmaya başlayın...">
                     </div>
                 </div>
-                <!-- Ortadaki Loading -->
                 <div class="col position-relative">
                     <div wire:loading
                         wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, saveTenant, loadDomains, addDomain, updateDomain"
@@ -26,10 +23,8 @@
                         </div>
                     </div>
                 </div>
-                <!-- Sağ Taraf -->
                 <div class="col">
                     <div class="d-flex align-items-center justify-content-end gap-3">
-                        <!-- Sayfa Adeti Seçimi -->
                         <div style="min-width: 70px">
                             <select wire:model.live="perPage" class="form-select">
                                 <option value="10">10</option>
@@ -43,7 +38,6 @@
                 </div>
             </div>
 
-            <!-- Tenant Listesi -->
             <div class="row row-cards">
                 @foreach ($tenants as $tenant)
                 <div class="col-md-6">
@@ -60,7 +54,7 @@
                                         <a href="#">{{ $tenant->data['name'] ?? $tenant->title ?? 'Bilinmeyen Ad' }}</a>
                                     </h4>
                                     <div class="text-secondary">
-                                        @if (method_exists($tenant, 'domains') && $tenant->domains && $tenant->domains->count() > 0)
+                                        @if ($tenant->domains->count() > 0)
                                         @php
                                         $domainCount = $tenant->domains->count();
                                         $firstDomain = $tenant->domains->first()->domain;
@@ -102,12 +96,16 @@
                                         </a>
                                         <div class="dropdown-menu dropdown-menu-end">
                                             <a href="javascript:void(0);" class="dropdown-item"
-                                                wire:click.prevent="editTenant('{{ $tenant->id }}')" data-bs-toggle="modal"
+                                                wire:click="editTenant('{{ $tenant->id }}')" data-bs-toggle="modal"
                                                 data-bs-target="#modal-tenant-manage">
                                                 Düzenle
                                             </a>
                                             <a href="javascript:void(0);" class="dropdown-item text-danger"
-                                                wire:click.prevent="triggerDeleteModal({'type': 'tenant', 'id': {{ $tenant->id }}, 'title': '{{ $tenant->data['name'] ?? $tenant->title ?? 'Bilinmeyen Ad' }}'})">
+                                                wire:click="$dispatch('showDeleteModal', { 
+                                                    type: 'tenant', 
+                                                    id: {{ $tenant->id }}, 
+                                                    title: '{{ addslashes($tenant->data['name'] ?? $tenant->title) }}'
+                                                })">
                                                 <i class="fas fa-trash me-2"></i>Sil
                                             </a>
                                         </div>
@@ -124,15 +122,11 @@
         {{ $tenants->links() }}
     </div>
     
-    <!-- Modalları dahil et -->
     @include('tenantmanagement::modals.tenant-modal')
     @include('tenantmanagement::modals.domain-modal')
     @include('tenantmanagement::modals.module-modal')
     
-    <!-- Delete Modal Component -->
-    <div>
-        @livewire('modals.delete-modal')
-    </div>
+    <livewire:modals.delete-modal />
 
     @push('scripts')
     <script>
@@ -145,16 +139,12 @@
                 }
             });
             
-            // Silme sonrası modal arka planını temizle
             Livewire.on('itemDeleted', () => {
                 setTimeout(() => {
-                    const modalBackdrop = document.querySelector('.modal-backdrop');
-                    if (modalBackdrop) {
-                        modalBackdrop.remove();
-                    }
+                    const modalBackdrops = document.querySelectorAll('.modal-backdrop');
+                    modalBackdrops.forEach(backdrop => backdrop.remove());
                     document.body.classList.remove('modal-open');
                     document.body.style.overflow = '';
-                    document.body.style.paddingRight = '';
                 }, 300);
             });
         });

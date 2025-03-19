@@ -30,7 +30,6 @@ return new class extends Migration
             $table->enum('type', ['content', 'management', 'system'])->default('content');
             $table->boolean('is_active')->default(true);
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

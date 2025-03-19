@@ -7,6 +7,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Modules\ModuleManagement\App\Models\Module;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 #[Layout('admin.layout')]
 class ModuleComponent extends Component
@@ -75,6 +76,15 @@ class ModuleComponent extends Component
                 $module,
                 $module->is_active ? 'aktif edildi' : 'pasif edildi'
             );
+            
+            // Cache'i temizle
+            Cache::forget("modules_tenant_central");
+            
+            // İlişkili tenantların cache'ini temizle
+            $tenantIds = $module->tenants()->pluck('tenant_id')->toArray();
+            foreach ($tenantIds as $tenantId) {
+                Cache::forget("modules_tenant_" . $tenantId);
+            }
 
             $this->dispatch('toast', [
                 'title' => 'Başarılı!',
@@ -110,6 +120,9 @@ class ModuleComponent extends Component
                     'status' => !($tenant?->pivot->is_active ?? false)
                 ]
             );
+            
+            // Domain için önbelleği temizle
+            Cache::forget("modules_tenant_" . $domain);
             
             $this->dispatch('toast', [
                 'title' => 'Başarılı!',

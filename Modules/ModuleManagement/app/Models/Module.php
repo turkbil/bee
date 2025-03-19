@@ -1,16 +1,15 @@
 <?php
 namespace Modules\ModuleManagement\App\Models;
 
-use App\Models\BaseModel;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
-class Module extends BaseModel
+class Module extends Model
 {
-    use SoftDeletes, LogsActivity;
+    use LogsActivity;
 
-    protected $connection = 'mysql'; // veya config('database.default')
+    protected $connection = 'mysql'; 
     protected $primaryKey = 'module_id';
 
     protected $fillable = [

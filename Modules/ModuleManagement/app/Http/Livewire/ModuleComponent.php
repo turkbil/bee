@@ -28,16 +28,14 @@ class ModuleComponent extends Component
     #[Url]
     public $typeFilter = '';
 
-    #[Url]
-    public $groupFilter = '';
-
     public $showDomains = false;
 
     protected function getListeners()
     {
         return [
             'moduleDeleted' => '$refresh',
-            'refresh' => '$refresh'
+            'refresh' => '$refresh',
+            'itemDeleted' => '$refresh'
         ];
     }
     
@@ -134,9 +132,6 @@ class ModuleComponent extends Component
             ->when($this->typeFilter, function ($query) {
                 $query->where('type', $this->typeFilter);
             })
-            ->when($this->groupFilter, function ($query) {
-                $query->where('group', $this->groupFilter);
-            })
             ->orderBy($this->sortField, $this->sortDirection);
     
         $modules = $query->paginate($this->perPage);
@@ -144,17 +139,17 @@ class ModuleComponent extends Component
         // Domain listesini almak için
         $domains = [];
         try {
-            $domains = DB::table('tenants')->pluck('id')->toArray();
+            $domains = DB::table('tenants')->get();
         } catch (\Exception $e) {
             // tenant tablosu olmayabilir, bu durumda sessiz geçiyoruz
         }
         
-        $groups = Module::select('group')->distinct()->whereNotNull('group')->pluck('group');
+        $types = Module::select('type')->distinct()->whereNotNull('type')->pluck('type');
     
         return view('modulemanagement::livewire.module-component', [
             'modules' => $modules,
             'domains' => $domains,
-            'groups' => $groups
+            'types' => $types
         ]);
     }
 }

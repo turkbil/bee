@@ -20,7 +20,6 @@ class Module extends BaseModel
         'version', 
         'settings',
         'type',
-        'group',
         'is_active'
     ];
 
@@ -29,11 +28,11 @@ class Module extends BaseModel
         'is_active' => 'boolean',
     ];
 
-    public static function getGroups()
+    public static function getTypes()
     {
-        return self::whereNotNull('group')
+        return self::whereNotNull('type')
             ->distinct()
-            ->pluck('group')
+            ->pluck('type')
             ->toArray();
     }
 
@@ -61,5 +60,15 @@ class Module extends BaseModel
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs()
             ->useLogName('Module');
+    }
+    
+    // Modül silinirken ilişkileri de sil
+    protected static function boot()
+    {
+        parent::boot();
+        
+        static::deleting(function($module) {
+            $module->tenants()->detach();
+        });
     }
 }

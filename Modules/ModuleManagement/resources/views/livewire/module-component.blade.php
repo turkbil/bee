@@ -3,10 +3,10 @@
     <div class="card-body">
         <div class="row mb-3">
             <!-- Sol Taraf (Arama ve Filtreler) -->
-            <div class="col-md-8">
+            <div class="col-md-6">
                 <div class="row g-2">
                     <!-- Arama Kutusu -->
-                    <div class="col-md-6">
+                    <div class="col-md-8">
                         <div class="input-icon">
                             <span class="input-icon-addon">
                                 <i class="fas fa-search"></i>
@@ -15,9 +15,8 @@
                                 placeholder="Modül ara...">
                         </div>
                     </div>
-                    <!-- Durum Filtresi -->
-                    <!-- Durum Filtresi yerine Type ve Group filtreleri -->
-                    <div class="col-md-3">
+                    <!-- Tip Filtresi -->
+                    <div class="col-md-4">
                         <select wire:model.live="typeFilter" class="form-select">
                             <option value="">Tüm Tipler</option>
                             <option value="content">İçerik Modülü</option>
@@ -25,36 +24,30 @@
                             <option value="system">Sistem Modülü</option>
                         </select>
                     </div>
-                    <div class="col-md-3">
-                        <select wire:model.live="groupFilter" class="form-select">
-                            <option value="">Tüm Gruplar</option>
-                            @foreach($groups as $group)
-                            <option value="{{ $group }}">{{ $group }}</option>
-                            @endforeach
-                        </select>
-                    </div>
                 </div>
             </div>
+            
             <!-- Ortadaki Loading -->
-            <div class="col-md-2 position-relative">
+            <div class="col-md-2 d-flex justify-content-center align-items-center">
                 <div wire:loading
-                    wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, statusFilter, toggleActive"
-                    class="position-absolute top-50 start-50 translate-middle text-center"
-                    style="width: 100%; max-width: 250px;">
-                    <div class="progress" style="height: 2px;">
-                        <div class="progress-bar progress-bar-indeterminate"></div>
+                    wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, typeFilter, toggleActive"
+                    class="text-center">
+                    <div class="spinner-border spinner-border-sm text-primary" role="status">
+                        <span class="visually-hidden">İşleniyor...</span>
                     </div>
+                    <span class="ms-2 text-muted">İşleniyor...</span>
                 </div>
             </div>
-            <!-- Sağ Taraf -->
-            <div class="col-md-2">
+            
+            <!-- Sağ Taraf (Domain Gösterim ve Sayfalama) -->
+            <div class="col-md-4">
                 <div class="d-flex align-items-center justify-content-end gap-3">
                     <button wire:click="toggleDomains" class="btn btn-outline-primary btn-icon" data-bs-toggle="tooltip"
                         title="{{ $showDomains ? 'Domainleri Gizle' : 'Domainleri Göster' }}">
                         <i class="fas fa-globe"></i>
                     </button>
 
-                    <select wire:model.live="perPage" class="form-select" style="max-width: 80px">
+                    <select wire:model.live="perPage" class="form-select" style="width: 80px">
                         <option value="10">10</option>
                         <option value="40">40</option>
                         <option value="100">100</option>
@@ -124,11 +117,7 @@
                                     class="dropdown-item">
                                     <i class="fas fa-edit me-2"></i>Düzenle
                                 </a>
-                                <button class="dropdown-item text-danger" wire:click="$dispatch('showDeleteModal', {
-                                                        module: 'module',
-                                                        id: {{ $module->module_id }},
-                                                        title: '{{ $module->display_name }}'
-                                                    })">
+                                <button class="dropdown-item text-danger" wire:click="$dispatch('showDeleteModal', ['module' => 'module', 'id' => {{ $module->module_id }}, 'title' => '{{ $module->display_name }}'])">
                                     <i class="fas fa-trash me-2"></i>Sil
                                 </button>
                             </div>
@@ -147,7 +136,7 @@
                         @if($showDomains)
                         @foreach($domains as $domain)
                         @php
-                        $tenant = $module->tenants->where('id', $domain)->first();
+                        $tenant = $module->tenants->where('id', $domain->id)->first();
                         $isActive = $tenant && $tenant->pivot->is_active;
                         @endphp
                         <div class="list-group-item py-2 list-group-item-action">
@@ -155,10 +144,10 @@
                                 <span class="avatar avatar-xs me-2 bg-{{ $isActive ? 'blue' : 'secondary' }}-lt">
                                     <i class="fas fa-globe fa-sm"></i>
                                 </span>
-                                <div class="flex-fill">{{ $domain }}</div>
+                                <div class="flex-fill">{{ $domain->title ?? $domain->id }}</div>
                                 <div class="pretty p-switch p-slim">
                                     <input type="checkbox"
-                                        wire:click="toggleDomainStatus({{ $module->module_id }}, '{{ $domain }}')"
+                                        wire:click="toggleDomainStatus({{ $module->module_id }}, '{{ $domain->id }}')"
                                         {{ $isActive ? 'checked' : '' }} />
                                     <div class="state p-warning">
                                         <label></label>
@@ -175,7 +164,7 @@
                                 @endphp
                                 
                                 @forelse($activeDomains as $tenant)
-                                <span class="badge bg-blue-lt">{{ $tenant->id }}</span>
+                                <span class="badge bg-blue-lt">{{ $tenant->title ?? $tenant->id }}</span>
                                 @empty
                                 <span class="badge bg-secondary-lt">Atanmamış</span>
                                 @endforelse
@@ -194,19 +183,22 @@
                     <div class="card-footer">
                         <div class="d-flex align-items-center justify-content-between">
                             <div class="d-flex gap-2">
-                                @if($module->group)
-                                <span class="badge bg-primary text-white">{{ $module->group }}</span>
-                                @endif
                                 <span
                                     class="badge bg-{{ $module->type === 'system' ? 'red' : ($module->type === 'management' ? 'yellow' : 'green') }}-lt">
                                     {{ ucfirst($module->type) }}
                                 </span>
                             </div>
                             <div class="d-flex align-items-center gap-3">
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" role="switch"
-                                        wire:click="toggleActive({{ $module->module_id }})"
-                                        {{ $module->is_active ? 'checked' : '' }}>
+                                <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
+                                    <input type="checkbox" wire:click="toggleActive({{ $module->module_id }})"
+                                        {{ $module->is_active ? 'checked' : '' }} value="1" />
+
+                                    <div class="state p-success p-on ms-2">
+                                        <label>Aktif</label>
+                                    </div>
+                                    <div class="state p-danger p-off ms-2">
+                                        <label>Aktif Değil </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -239,5 +231,4 @@
     @endif
 
     <livewire:modals.delete-modal />
-
 </div>

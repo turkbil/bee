@@ -28,7 +28,6 @@ class ModuleManagementSeeder extends Seeder
                     'version' => '1.0.0',
                     'settings' => null,
                     'type' => 'system',
-                    'group' => 'core',
                     'is_active' => true
                 ],
                 [
@@ -38,7 +37,6 @@ class ModuleManagementSeeder extends Seeder
                     'version' => '1.0.0',
                     'settings' => null,
                     'type' => 'system',
-                    'group' => 'core',
                     'is_active' => true
                 ],
                 [
@@ -48,7 +46,6 @@ class ModuleManagementSeeder extends Seeder
                     'version' => '1.0.0',
                     'settings' => null,
                     'type' => 'management',
-                    'group' => 'core',
                     'is_active' => true
                 ],
                 [
@@ -58,7 +55,6 @@ class ModuleManagementSeeder extends Seeder
                     'version' => '1.0.0',
                     'settings' => '9',
                     'type' => 'content',
-                    'group' => 'content',
                     'is_active' => true
                 ],
                 [
@@ -68,7 +64,6 @@ class ModuleManagementSeeder extends Seeder
                     'version' => '1.0.0',
                     'settings' => '10',
                     'type' => 'content',
-                    'group' => 'content',
                     'is_active' => true
                 ],
                 [
@@ -78,7 +73,6 @@ class ModuleManagementSeeder extends Seeder
                     'version' => '1.0.0',
                     'settings' => null,
                     'type' => 'system',
-                    'group' => 'core',
                     'is_active' => true
                 ]
             ];
@@ -101,7 +95,6 @@ class ModuleManagementSeeder extends Seeder
                     'version' => $moduleData['version'],
                     'settings' => $moduleData['settings'],
                     'type' => $moduleData['type'],
-                    'group' => $moduleData['group'],
                     'is_active' => $moduleData['is_active'],
                     'created_at' => now(),
                     'updated_at' => now()

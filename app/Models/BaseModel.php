@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Cviebrock\EloquentSluggable\Sluggable;
@@ -54,9 +55,9 @@ class BaseModel extends Model
      */
     protected function ensureUniqueSlug()
     {
-        if (! empty($this->slug)) {
+        if (!empty($this->slug)) {
             $originalSlug = $this->slug;
-            $suffix       = 1;
+            $suffix = 1;
 
             while ($this->slugExists($this->slug)) {
                 $this->slug = "{$originalSlug}-{$suffix}";

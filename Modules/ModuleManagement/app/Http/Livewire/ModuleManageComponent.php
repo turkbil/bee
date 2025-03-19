@@ -6,6 +6,7 @@ use Livewire\Attributes\Layout;
 use Illuminate\Validation\Rule;
 use Modules\ModuleManagement\App\Models\Module;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 #[Layout('admin.layout')]
 class ModuleManageComponent extends Component
@@ -154,7 +155,10 @@ class ModuleManageComponent extends Component
         }
 
         if ($this->moduleId) {
+            // Güncellemeden önce tenant ID'leri al
             $module = Module::findOrFail($this->moduleId);
+            $oldTenantIds = $module->tenants()->pluck('tenant_id')->toArray();
+            
             $oldData = $module->toArray();
             $module->update($moduleData);
             
@@ -163,6 +167,11 @@ class ModuleManageComponent extends Component
                 'güncellendi',
                 array_diff_assoc($module->toArray(), $oldData)
             );
+            
+            // Cache temizleme - aktif durumu değişirse tüm cache temizlenir
+            if ($oldData['is_active'] != $moduleData['is_active']) {
+                Cache::forget("modules_tenant_central");
+            }
         } else {
             if (empty($this->inputs['name'])) {
                 $this->dispatch('toast', [
@@ -179,6 +188,9 @@ class ModuleManageComponent extends Component
                 $module,
                 'oluşturuldu'
             );
+            
+            // Yeni modül eklendiyse central cache'i temizle
+            Cache::forget("modules_tenant_central");
         }
         
         // Update the tenant relationships
@@ -190,6 +202,18 @@ class ModuleManageComponent extends Component
         }
         
         $module->tenants()->sync($syncData);
+        
+        // Güncellenen veya eklenen tenant ID'leri için cache temizle
+        $updatedTenantIds = array_keys(array_filter($this->selectedDomains));
+        
+        // Eski tenant ID'leri varsa, onların cache'ini de temizle
+        if (isset($oldTenantIds)) {
+            $updatedTenantIds = array_unique(array_merge($updatedTenantIds, $oldTenantIds));
+        }
+        
+        foreach ($updatedTenantIds as $tenantId) {
+            Cache::forget("modules_tenant_" . $tenantId);
+        }
 
         if ($redirect) {
             session()->flash('toast', [

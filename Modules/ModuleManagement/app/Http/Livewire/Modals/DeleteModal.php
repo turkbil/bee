@@ -4,6 +4,7 @@ namespace Modules\ModuleManagement\App\Http\Livewire\Modals;
 
 use Livewire\Component;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class DeleteModal extends Component
@@ -15,7 +16,6 @@ class DeleteModal extends Component
 
     protected $listeners = ['showDeleteModal'];
 
-    // Parametre olarak data yerine doğrudan $data['module'], $data['id'], $data['title'] olarak alacak şekilde düzeltelim
     public function showDeleteModal($module, $id, $title)
     {
         $this->module = $module;
@@ -76,7 +76,19 @@ class DeleteModal extends Component
             
             // Module tenants bağlantılarını sil
             if ($this->module === 'module') {
+                // İlişkili tenantları al ve cache temizliği için sakla
+                $tenantIds = $item->tenants()->pluck('tenant_id')->toArray();
+                
+                // İlişkileri sil
                 $item->tenants()->detach();
+                
+                // Her tenant için önbelleği temizle
+                foreach ($tenantIds as $tenantId) {
+                    Cache::forget("modules_tenant_" . $tenantId);
+                }
+                
+                // Central cache'i temizle
+                Cache::forget("modules_tenant_central");
             }
             
             $item->delete();

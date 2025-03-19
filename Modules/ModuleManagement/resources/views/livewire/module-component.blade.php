@@ -28,21 +28,22 @@
             </div>
             
             <!-- Ortadaki Loading -->
-            <div class="col-md-2 d-flex justify-content-center align-items-center">
+            <div class="col-md-4 position-relative d-flex justify-content-center align-items-center">
                 <div wire:loading
-                    wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, typeFilter, toggleActive"
-                    class="text-center">
-                    <div class="spinner-border spinner-border-sm text-primary" role="status">
-                        <span class="visually-hidden">İşleniyor...</span>
+                    wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, selectedItems, selectAll, bulkDelete, bulkToggleActive, selectedCategory, typeFilter, toggleDomains"
+                    class="position-absolute top-50 start-50 translate-middle text-center"
+                    style="width: 100%; max-width: 250px;">
+                    <div class="small text-muted mb-2">Güncelleniyor...</div>
+                    <div class="progress mb-1">
+                        <div class="progress-bar progress-bar-indeterminate"></div>
                     </div>
-                    <span class="ms-2 text-muted">İşleniyor...</span>
                 </div>
             </div>
             
             <!-- Sağ Taraf (Domain Gösterim ve Sayfalama) -->
-            <div class="col-md-4">
+            <div class="col-md-2">
                 <div class="d-flex align-items-center justify-content-end gap-3">
-                    <button wire:click="toggleDomains" class="btn btn-outline-primary btn-icon" data-bs-toggle="tooltip"
+                    <button wire:click="toggleDomains" wire:model.live="toggleDomains" class="btn btn-outline-primary btn-icon" data-bs-toggle="tooltip"
                         title="{{ $showDomains ? 'Domainleri Gizle' : 'Domainleri Göster' }}">
                         <i class="fas fa-globe"></i>
                     </button>
@@ -98,26 +99,26 @@
                             <h3 class="card-title mb-0">{{ $module->display_name }}</h3>
                         </div>
                         <div class="dropdown">
-                            <a href="#" class="btn btn-ghost-secondary btn-icon btn-sm" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                <i class="fas fa-ellipsis-vertical"></i>
+                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
                             </a>
+                            
                             <div class="dropdown-menu dropdown-menu-end">
                                 @if($module->settings)
                                 {{-- Ayarlar bağlantısını geçici olarak kaldır veya kontrol ekle --}}
                                 @if(Route::has('admin.settingmanagement.values'))
                                 <a href="{{ route('admin.settingmanagement.values', ['group' => $module->settings]) }}"
                                     class="dropdown-item">
-                                    <i class="fas fa-cogs me-2"></i>Ayarlar
+                                    Ayarlar
                                 </a>
                                 @endif
                                 @endif
 
                                 <a href="{{ route('admin.modulemanagement.manage', $module->module_id) }}"
                                     class="dropdown-item">
-                                    <i class="fas fa-edit me-2"></i>Düzenle
+                                    Düzenle
                                 </a>
-                                <button class="dropdown-item text-danger" wire:click="$dispatch('showDeleteModal', ['module' => 'module', 'id' => {{ $module->module_id }}, 'title' => '{{ $module->display_name }}'])">
+                                <button class="dropdown-item text-danger" wire:click="$dispatch('showDeleteModal', {'module': 'module', 'id': {{ $module->module_id }}, 'title': '{{ $module->display_name }}'})">
                                     <i class="fas fa-trash me-2"></i>Sil
                                 </button>
                             </div>

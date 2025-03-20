@@ -1,12 +1,14 @@
 <?php
 
-namespace Modules\SettingManagement\App\Http\Livewire\Settings;
+namespace Modules\SettingManagement\App\Http\Livewire;
 
 use Livewire\Component;
+use Livewire\Attributes\Layout;
 use Modules\SettingManagement\App\Models\SettingGroup;
 use Illuminate\Support\Str;
 
-class GroupManage extends Component
+#[Layout('admin.layout')]
+class GroupManageComponent extends Component
 {
     protected static $recordEvents = ['created', 'updated', 'deleted'];
 
@@ -92,8 +94,8 @@ class GroupManage extends Component
 
     public function render()
     {
-        return view('settingmanagement::livewire.settings.group-manage', [
+        return view('settingmanagement::livewire.group-manage-component', [
             'groupId' => $this->groupId,
-        ])->extends('admin.layout');
+        ]);
     }
 }

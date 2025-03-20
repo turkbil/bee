@@ -46,6 +46,10 @@
                             <i class="fas fa-list"></i>
                         </button>
                     </div>
+
+                    <a href="{{ route('admin.settingmanagement.manage') }}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Yeni Ekle
+                    </a>
                 </div>
             </div>
         </div>
@@ -149,6 +153,12 @@
                                 <p class="empty-subtitle text-muted">
                                     Arama kriterlerinize uygun kayıt bulunmamaktadır.
                                 </p>
+                                <div class="empty-action">
+                                    <a href="{{ route('admin.settingmanagement.manage') }}" class="btn btn-primary">
+                                        <i class="fas fa-plus me-2"></i>
+                                        Yeni Ayar Ekle
+                                    </a>
+                                </div>
                             </div>
                         </td>
                     </tr>
@@ -162,10 +172,23 @@
             @php $activeSettings = $settings->where('is_active', true); @endphp
             @forelse($activeSettings as $setting)
             <div class="col-md-6">
-                <div class="card">
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h3 class="card-title d-flex align-items-center">
+                            {{ $setting->label }}
+                            <span class="ms-2 badge bg-blue-lt">{{ $setting->type }}</span>
+                        </h3>
+                        <div class="card-actions">
+                            <a href="{{ route('admin.settingmanagement.value', $setting->id) }}" class="btn btn-sm">
+                                <i class="fas fa-edit me-1"></i> Değer Düzenle
+                            </a>
+                        </div>
+                    </div>
                     <div class="card-body">
-                        <div class="form-group">
-                            <label class="form-label">{{ $setting->label }}</label>
+                        <div class="form-group mb-0">
+                            <small class="text-muted d-block mb-2">
+                                <code>{{ $setting->key }}</code>
+                            </small>
                             @switch($setting->type)
                             @case('text')
                             <input type="text" class="form-control" value="{{ $setting->getValue() }}" readonly>
@@ -206,6 +229,12 @@
                     <p class="empty-subtitle text-muted">
                         Arama kriterlerinize uygun aktif kayıt bulunmamaktadır.
                     </p>
+                    <div class="empty-action">
+                        <a href="{{ route('admin.settingmanagement.manage') }}" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>
+                            Yeni Ayar Ekle
+                        </a>
+                    </div>
                 </div>
             </div>
             @endforelse

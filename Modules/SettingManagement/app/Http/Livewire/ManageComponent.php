@@ -1,14 +1,16 @@
 <?php
 
-namespace Modules\SettingManagement\App\Http\Livewire\Settings;
+namespace Modules\SettingManagement\App\Http\Livewire;
 
 use Livewire\Component;
+use Livewire\Attributes\Layout;
 use Livewire\WithFileUploads;
 use Modules\SettingManagement\App\Models\Setting;
 use Modules\SettingManagement\App\Models\SettingGroup;
 use Illuminate\Support\Str;
 
-class Manage extends Component
+#[Layout('admin.layout')]
+class ManageComponent extends Component
 {
     use WithFileUploads;
 
@@ -35,7 +37,6 @@ class Manage extends Component
             'inputs.type' => 'required|in:text,textarea,number,select,checkbox,file,color,date,email,password,tel,url,time',
             'inputs.options' => 'nullable|required_if:inputs.type,select',
             'inputs.default_value' => 'nullable',
-            'inputs.sort_order' => 'required|integer|min:0',
             'inputs.is_active' => 'boolean',
         ];
     }
@@ -88,9 +89,8 @@ class Manage extends Component
         }
     }
 
-    public function save($redirect = false)
+    public function save($redirect = false, $resetForm = false)
     {
-        $this->redirect = $redirect;
         $this->validate();
         
         // Eğer select tipiyse, options string olarak geldiyse parse edelim
@@ -134,7 +134,7 @@ class Manage extends Component
             $message = 'Ayar oluşturuldu';
         }
     
-        if ($this->redirect) {
+        if ($redirect) {
             return redirect()->route('admin.settingmanagement.items', $setting->group_id);
         }
     
@@ -143,14 +143,19 @@ class Manage extends Component
             'message' => $message,
             'type' => 'success'
         ]);
+        
+        if ($resetForm && !$this->settingId) {
+            $this->reset();
+        }
     }
 
     public function render()
     {
         $groups = SettingGroup::all();
         
-        return view('settingmanagement::livewire.settings.manage', [
-            'groups' => $groups
-        ])->extends('admin.layout');
+        return view('settingmanagement::livewire.manage-component', [
+            'groups' => $groups,
+            'model' => $this->settingId ? Setting::find($this->settingId) : null
+        ]);
     }
 }

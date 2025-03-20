@@ -4,12 +4,13 @@ namespace Modules\SettingManagement\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
-use Modules\SettingManagement\App\Http\Livewire\Settings\GroupList;
-use Modules\SettingManagement\App\Http\Livewire\Settings\ItemList;
-use Modules\SettingManagement\App\Http\Livewire\Settings\Manage;
-use Modules\SettingManagement\App\Http\Livewire\Settings\TenantValue;
-use Modules\SettingManagement\App\Http\Livewire\Settings\GroupManage;
-use Modules\SettingManagement\App\Http\Livewire\Settings\Values;
+use Modules\SettingManagement\App\Http\Livewire\GroupListComponent;
+use Modules\SettingManagement\App\Http\Livewire\ItemListComponent;
+use Modules\SettingManagement\App\Http\Livewire\ManageComponent;
+use Modules\SettingManagement\App\Http\Livewire\TenantValueComponent;
+use Modules\SettingManagement\App\Http\Livewire\GroupManageComponent;
+use Modules\SettingManagement\App\Http\Livewire\ValuesComponent;
+use Modules\SettingManagement\App\Http\Livewire\TenantSettingsComponent;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
@@ -19,9 +20,9 @@ class SettingManagementServiceProvider extends ServiceProvider
 {
     use \Nwidart\Modules\Traits\PathNamespace;
     
-    protected string $moduleName = 'SettingManagement';
+    protected string $name = 'SettingManagement';
     
-    protected string $moduleNameLower = 'settingmanagement';
+    protected string $nameLower = 'settingmanagement';
 
     /**
      * Boot the application events.
@@ -36,18 +37,26 @@ class SettingManagementServiceProvider extends ServiceProvider
         
         // Central migrations
         $this->loadMigrationsFrom([
-            module_path($this->moduleName, 'database/migrations')
+            module_path($this->name, 'database/migrations')
         ]);
         
         // Tenant migrations - SADECE tenant_values tablosu
         if (app()->has('tenancy.migrator')) {
             app('tenancy.migrator')
-                ->path(module_path($this->moduleName, 'database/migrations/tenant'));
+                ->path(module_path($this->name, 'database/migrations/tenant'));
         }
 
-        $this->loadRoutesFrom(module_path($this->moduleName, 'routes/web.php'));
-        $this->loadViewsFrom(module_path($this->moduleName, 'resources/views'), $this->moduleNameLower);
-        $this->registerLivewireComponents();
+        $this->loadRoutesFrom(module_path($this->name, 'routes/web.php'));
+        $this->loadViewsFrom(module_path($this->name, 'resources/views'), $this->nameLower);
+        
+        // Livewire bileşenlerini kaydedelim
+        Livewire::component('group-list-component', GroupListComponent::class);
+        Livewire::component('item-list-component', ItemListComponent::class);
+        Livewire::component('manage-component', ManageComponent::class);
+        Livewire::component('tenant-value-component', TenantValueComponent::class);
+        Livewire::component('group-manage-component', GroupManageComponent::class);
+        Livewire::component('values-component', ValuesComponent::class);
+        Livewire::component('tenant-settings-component', TenantSettingsComponent::class);
     }
 
     public function register()
@@ -80,14 +89,14 @@ class SettingManagementServiceProvider extends ServiceProvider
      */
     public function registerTranslations(): void
     {
-        $langPath = resource_path('lang/modules/' . $this->moduleNameLower);
+        $langPath = resource_path('lang/modules/' . $this->nameLower);
 
         if (is_dir($langPath)) {
-            $this->loadTranslationsFrom($langPath, $this->moduleNameLower);
+            $this->loadTranslationsFrom($langPath, $this->nameLower);
             $this->loadJsonTranslationsFrom($langPath);
         } else {
-            $this->loadTranslationsFrom(module_path($this->moduleName, 'lang'), $this->moduleNameLower);
-            $this->loadJsonTranslationsFrom(module_path($this->moduleName, 'lang'));
+            $this->loadTranslationsFrom(module_path($this->name, 'lang'), $this->nameLower);
+            $this->loadJsonTranslationsFrom(module_path($this->name, 'lang'));
         }
     }
 
@@ -97,7 +106,7 @@ class SettingManagementServiceProvider extends ServiceProvider
     protected function registerConfig(): void
     {
         $relativeConfigPath = config('modules.paths.generator.config.path');
-        $configPath         = module_path($this->moduleName, $relativeConfigPath);
+        $configPath         = module_path($this->name, $relativeConfigPath);
 
         if (is_dir($configPath)) {
             $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($configPath));
@@ -105,8 +114,8 @@ class SettingManagementServiceProvider extends ServiceProvider
             foreach ($iterator as $file) {
                 if ($file->isFile() && $file->getExtension() === 'php') {
                     $relativePath = str_replace($configPath . DIRECTORY_SEPARATOR, '', $file->getPathname());
-                    $configKey    = $this->moduleNameLower . '.' . str_replace([DIRECTORY_SEPARATOR, '.php'], ['.', ''], $relativePath);
-                    $key          = ($relativePath === 'config.php') ? $this->moduleNameLower : $configKey;
+                    $configKey    = $this->nameLower . '.' . str_replace([DIRECTORY_SEPARATOR, '.php'], ['.', ''], $relativePath);
+                    $key          = ($relativePath === 'config.php') ? $this->nameLower : $configKey;
 
                     $this->publishes([$file->getPathname() => config_path($relativePath)], $configPath);
                     $this->mergeConfigFrom($file->getPathname(), $key);
@@ -145,18 +154,5 @@ class SettingManagementServiceProvider extends ServiceProvider
         }
 
         return $paths;
-    }
-
-    /**
-     * Register Livewire components
-     */
-    protected function registerLivewireComponents(): void
-    {
-        Livewire::component('settingmanagement::settings.group-list', GroupList::class);
-        Livewire::component('settingmanagement::settings.item-list', ItemList::class);
-        Livewire::component('settingmanagement::settings.manage', Manage::class);
-        Livewire::component('settingmanagement::settings.tenant-value', TenantValue::class);
-        Livewire::component('settingmanagement::settings.group-manage', GroupManage::class);
-        Livewire::component('settingmanagement::settings.values', Values::class);
     }
 }

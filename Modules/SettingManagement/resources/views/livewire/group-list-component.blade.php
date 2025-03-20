@@ -2,7 +2,7 @@
 <div>
     <div class="card">
         <div class="card-header">
-            <div class="d-flex align-items-center gap-3">
+            <div class="d-flex align-items-center justify-content-between gap-3">
                 <div class="input-icon flex-grow-1">
                     <span class="input-icon-addon">
                         <i class="fas fa-search"></i>
@@ -10,6 +10,9 @@
                     <input type="text" wire:model.live.debounce.300ms="search" class="form-control"
                         placeholder="Grup ara...">
                 </div>
+                <a href="{{ route('admin.settingmanagement.group.manage') }}" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i>Yeni Grup Ekle
+                </a>
             </div>
         </div>
 

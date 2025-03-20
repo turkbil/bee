@@ -1,15 +1,17 @@
 <?php
 
-namespace Modules\SettingManagement\App\Http\Livewire\Settings;
+namespace Modules\SettingManagement\App\Http\Livewire;
 
 use Livewire\Component;
+use Livewire\Attributes\Layout;
 use Livewire\WithFileUploads;
 use Modules\SettingManagement\App\Models\Setting;
 use Modules\SettingManagement\App\Models\SettingValue;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-class TenantValue extends Component
+#[Layout('admin.layout')]
+class TenantValueComponent extends Component
 {
     use WithFileUploads;
 
@@ -40,7 +42,7 @@ class TenantValue extends Component
         }
     }
 
-    public function save()
+    public function save($redirect = false)
     {
         $setting = Setting::find($this->settingId);
     
@@ -70,6 +72,10 @@ class TenantValue extends Component
             $message = 'Ayar değeri güncellendi.';
         }
     
+        if ($redirect) {
+            return redirect()->route('admin.settingmanagement.tenant.settings');
+        }
+    
         $this->dispatch('toast', [
             'title' => 'Başarılı!',
             'message' => $message,
@@ -90,8 +96,8 @@ class TenantValue extends Component
     {
         $setting = Setting::find($this->settingId);
         
-        return view('settingmanagement::livewire.settings.tenant-value', [
+        return view('settingmanagement::livewire.tenant-value-component', [
             'setting' => $setting
-        ])->extends('admin.layout');
+        ]);
     }
 }

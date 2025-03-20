@@ -103,15 +103,32 @@
 
         <!-- Footer -->
         <div class="card-footer d-flex justify-content-between align-items-center">
-            <a href="{{ route('admin.settingmanagement.index') }}" class="btn">
-                <i class="fas fa-arrow-left me-2"></i>Geri Dön
+            <a href="{{ route('admin.settingmanagement.index') }}" class="btn btn-link text-decoration-none">
+                <i class="fas fa-arrow-left me-2"></i>İptal
             </a>
-            <div class="btn-list">
-                <button type="submit" class="btn" wire:click="$set('redirect', false)">
-                    <i class="fas fa-save me-2"></i>Kaydet ve Devam Et
+
+            <div class="d-flex gap-2">
+                <button type="button" class="btn" wire:click="save(false)" wire:loading.attr="disabled"
+                    wire:target="save">
+                    <span class="d-flex align-items-center">
+                        <span class="ms-2" wire:loading.remove wire:target="save(false)">
+                            <i class="fa-thin fa-plus me-2"></i> Kaydet ve Devam Et
+                        </span>
+                        <span class="ms-2" wire:loading wire:target="save(false)">
+                            <i class="fa-duotone fa-solid fa-spinner fa-spin me-2"></i> Kaydet ve Devam Et
+                        </span>
+                    </span>
                 </button>
-                <button type="submit" class="btn btn-primary" wire:click="$set('redirect', true)">
-                    <i class="fas fa-save me-2"></i>Kaydet
+                <button type="button" class="btn btn-primary ms-4" wire:click="save(true)"
+                    wire:loading.attr="disabled" wire:target="save">
+                    <span class="d-flex align-items-center">
+                        <span class="ms-2" wire:loading.remove wire:target="save(true)">
+                            <i class="fa-thin fa-floppy-disk me-2"></i> Kaydet
+                        </span>
+                        <span class="ms-2" wire:loading wire:target="save(true)">
+                            <i class="fa-duotone fa-solid fa-spinner fa-spin me-2"></i> Kaydet
+                        </span>
+                    </span>
                 </button>
             </div>
         </div>

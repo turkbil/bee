@@ -56,7 +56,7 @@
                             </div>
                             <div class="col">
                                 <h4 class="card-title m-0">
-                                    <a href="#">{{ $tenant->data['name'] ?? $tenant->title ?? 'Bilinmeyen Ad' }}</a>
+                                    <a href="#">{{ $tenant->title ?? 'Bilinmeyen Ad' }}</a>
                                 </h4>
                                 <div class="text-secondary">
                                     @if (method_exists($tenant, 'domains') && $tenant->domains && $tenant->domains->count() > 0)

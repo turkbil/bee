@@ -21,26 +21,21 @@ class TenantModuleComponent extends Component
 
    public function loadModules()
    {
-       $this->modules = Module::orderBy('display_name')->get();
+       try {
+           $this->modules = Module::orderBy('display_name')->get();
 
-       if ($this->tenantId) {
-           $tenant = Tenant::find($this->tenantId);
-           if ($tenant) {
-               // Bu sorguyu bir try-catch bloğu içine koyup hata ayıklama ekleyelim
-               try {
-                   $selectedIds = DB::table('module_tenants')
-                       ->where('tenant_id', $this->tenantId)
-                       ->pluck('module_id')
-                       ->toArray();
-                   
-                   $this->selectedModules = collect($selectedIds)
+           if ($this->tenantId) {
+               $tenant = Tenant::find($this->tenantId);
+               if ($tenant) {
+                   $tenantModules = $tenant->modules()->get();
+                   $this->selectedModules = $tenantModules->pluck('module_id')
                        ->map(fn($id) => (string) $id)
                        ->toArray();
-               } catch (\Exception $e) {
-                   // Hata oluşursa boş dizi kullan
-                   $this->selectedModules = [];
                }
            }
+       } catch (\Exception $e) {
+           $this->modules = collect();
+           $this->selectedModules = [];
        }
    }
 
@@ -62,25 +57,24 @@ class TenantModuleComponent extends Component
    {
        if (!$this->tenantId) return;
 
-       $tenant = Tenant::find($this->tenantId);
-       if ($tenant) {
-           // Burada da daha güvenli bir yaklaşım kullanalım
-           try {
-               $oldModules = DB::table('module_tenants')
-                   ->where('tenant_id', $this->tenantId)
-                   ->pluck('module_id')
-                   ->toArray();
-               
+       try {
+           $tenant = Tenant::find($this->tenantId);
+           if ($tenant) {
+               // Seçilen modülleri hazırla
                $syncData = collect($this->selectedModules)
                    ->mapWithKeys(fn($id) => [$id => ['is_active' => true]])
                    ->toArray();
                    
+               // Modülleri güncelle
                $tenant->modules()->sync($syncData);
                
-               log_activity($tenant, 'modüller güncellendi', [
-                   'old' => $oldModules,
-                   'new' => $this->selectedModules
-               ]);
+               // Log işlemi
+               activity()
+                   ->performedOn($tenant)
+                   ->withProperties([
+                       'modules' => $this->selectedModules
+                   ])
+                   ->log('tenant modülleri güncellendi');
 
                $this->dispatch('toast', [
                    'title' => 'Başarılı!',
@@ -88,15 +82,16 @@ class TenantModuleComponent extends Component
                    'type' => 'success'
                ]);
 
+               // Modalı kapat
                $this->dispatch('hideModal', ['id' => 'modal-module-management']);
                $this->dispatch('modulesSaved');
-           } catch (\Exception $e) {
-               $this->dispatch('toast', [
-                   'title' => 'Hata!',
-                   'message' => 'Modül atamaları güncellenirken bir hata oluştu: ' . $e->getMessage(),
-                   'type' => 'error'
-               ]);
            }
+       } catch (\Exception $e) {
+           $this->dispatch('toast', [
+               'title' => 'Hata!',
+               'message' => 'Modül atamaları güncellenirken bir hata oluştu: ' . $e->getMessage(),
+               'type' => 'error'
+           ]);
        }
    }
 

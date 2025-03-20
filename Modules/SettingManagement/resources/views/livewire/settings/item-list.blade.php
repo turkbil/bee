@@ -22,7 +22,7 @@
             <!-- Ortadaki Loading -->
             <div class="col-md-1 position-relative">
                 <div wire:loading
-                    wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, viewType, toggleActive"
+                    wire:target="render, search, sortBy, delete, viewType, toggleActive"
                     class="position-absolute top-50 start-50 translate-middle text-center">
                     <div class="progress" style="height: 2px;">
                         <div class="progress-bar progress-bar-indeterminate"></div>
@@ -30,38 +30,9 @@
                 </div>
             </div>
 
-            <!-- Sağ Taraf (Görünüm Seçimi ve Sayfalama) -->
+            <!-- Sağ Taraf (Görünüm Seçimi) -->
             <div class="col-md-3">
                 <div class="d-flex align-items-center justify-content-end gap-3">
-                    <!-- Table Mode Switch (Sadece Tablo Görünümünde) -->
-                    @if($viewType == 'table')
-                    <div class="table-mode">
-                        <input type="checkbox" id="table-switch" class="table-switch" <?php echo
-                            (!isset($_COOKIE['tableCompact']) || $_COOKIE['tableCompact']=='1' ) ? 'checked' : '' ; ?>
-                        onchange="toggleTableMode(this.checked)">
-                        <div class="app">
-                            <div class="switch-content">
-                                <div class="switch-label"></div>
-                                <label for="table-switch">
-                                    <div class="toggle"></div>
-                                    <div class="names">
-                                        <p class="large" data-bs-toggle="tooltip" data-bs-placement="left"
-                                            title="Satırları daralt">
-                                            <i class="fa-thin fa-table-cells fa-lg fa-fade"
-                                                style="--fa-animation-duration: 2s;"></i>
-                                        </p>
-                                        <p class="small" data-bs-toggle="tooltip" data-bs-placement="left"
-                                            title="Satırları genişlet">
-                                            <i class="fa-thin fa-table-cells-large fa-lg fa-fade"
-                                                style="--fa-animation-duration: 2s;"></i>
-                                        </p>
-                                    </div>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    @endif
-
                     <!-- Görünüm Değiştirme -->
                     <div class="btn-group">
                         <button type="button"
@@ -74,15 +45,6 @@
                             wire:click="$set('viewType', 'table')" title="Tablo Görünümü">
                             <i class="fas fa-list"></i>
                         </button>
-                    </div>
-
-                    <!-- Sayfa Adeti Seçimi -->
-                    <div style="min-width: 70px">
-                        <select wire:model.live="perPage" class="form-select">
-                            <option value="10">10</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
-                        </select>
                     </div>
                 </div>
             </div>
@@ -105,7 +67,7 @@
                         <th>
                             <button
                                 class="table-sort {{ $sortField === 'label' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
-                                wire:click="sortBy('label')">Etiket</button>
+                                wire:click="sortBy('label')">Başlık</button>
                         </th>
                         <th>
                             <button
@@ -134,7 +96,7 @@
                         <td><span class="badge bg-blue-lt">{{ $setting->type }}</span></td>
                         <td class="text-center">
                             <button wire:click="toggleActive({{ $setting->id }})"
-                                class="btn btn-icon btn-sm {{ $setting->is_active ? 'text-success' : 'text-danger' }}">
+                                class="btn btn-icon btn-sm {{ $setting->is_active ? 'text-muted bg-transparent' : 'text-red bg-transparent' }}">
                                 <div wire:loading wire:target="toggleActive({{ $setting->id }})"
                                     class="spinner-border spinner-border-sm"></div>
                                 <div wire:loading.remove wire:target="toggleActive({{ $setting->id }})">
@@ -219,10 +181,15 @@
                             </select>
                             @break
                             @case('checkbox')
-                            <div class="form-check">
+                            <div class="pretty p-default p-curve p-toggle p-smooth">
                                 <input type="checkbox" class="form-check-input" @checked($setting->getValue())
                                 disabled>
-                                <label class="form-check-label">{{ $setting->label }}</label>
+                                <div class="state p-success p-on">
+                                    <label>Evet</label>
+                                </div>
+                                <div class="state p-danger p-off">
+                                    <label>Hayır</label>
+                                </div>
                             </div>
                             @break
                             @default
@@ -252,11 +219,6 @@
             </div>
         </div>
         @endif
-
-        <!-- Pagination -->
-        <div class="mt-3">
-            {{ $settings->links() }}
-        </div>
     </div>
 </div>
 

@@ -16,8 +16,6 @@ class ItemList extends Component
     #[Url]
     public $search = '';
     #[Url]
-    public $perPage = 10;
-    #[Url]
     public $sortField = 'id';
     #[Url]
     public $sortDirection = 'desc';
@@ -29,7 +27,6 @@ class ItemList extends Component
         'sortField' => ['except' => 'id'],
         'sortDirection' => ['except' => 'desc'],
         'search' => ['except' => ''],
-        'perPage' => ['except' => 10],
     ];
 
     protected $listeners = ['updateOrder'];
@@ -37,11 +34,6 @@ class ItemList extends Component
     public function mount($group)
     {
         $this->groupId = $group;
-    }
-
-    public function updatedPerPage()
-    {
-        $this->resetPage();
     }
 
     public function updatedSearch()
@@ -148,9 +140,9 @@ class ItemList extends Component
                         ->orWhere('key', 'like', '%' . $this->search . '%');
                 });
             })
-            ->orderBy('sort_order', 'asc') // Önce sort_order'a göre sırala
+            ->orderBy('sort_order', 'asc')
             ->orderBy($this->sortField, $this->sortDirection)
-            ->paginate($this->perPage);
+            ->get(); // Tüm kayıtları getir
 
         return view('settingmanagement::livewire.settings.item-list', [
             'settings' => $settings,

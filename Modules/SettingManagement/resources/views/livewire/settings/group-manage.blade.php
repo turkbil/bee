@@ -67,10 +67,16 @@
                         <div class="card-body">
                             <!-- Aktiflik Durumu -->
                             <div class="form-group">
-                                <label class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" wire:model="inputs.is_active">
-                                    <span class="form-check-label">Grup Aktif</span>
-                                </label>
+                                <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
+                                    <input type="checkbox" wire:model="inputs.is_active"
+                                        value="1" {{ $inputs['is_active'] ? 'checked' : '' }} />
+                                    <div class="state p-success p-on ms-2">
+                                        <label>Aktif</label>
+                                    </div>
+                                    <div class="state p-danger p-off ms-2">
+                                        <label>Aktif Değil</label>
+                                    </div>
+                                </div>
                             </div>
 
                             <!-- İkon -->

@@ -27,10 +27,15 @@
                         @endforeach
                     </select>
                     @elseif($setting->type === 'checkbox')
-                    <label class="form-check">
+                    <div class="pretty p-default p-curve p-toggle p-smooth">
                         <input type="checkbox" class="form-check-input" wire:model="values.{{ $setting->id }}">
-                        <span class="form-check-label">{{ $values[$setting->id] ? 'Evet' : 'Hayır' }}</span>
-                    </label>
+                        <div class="state p-success p-on">
+                            <label>Evet</label>
+                        </div>
+                        <div class="state p-danger p-off">
+                            <label>Hayır</label>
+                        </div>
+                    </div>
                     @else
                     <input type="{{ $setting->type }}" wire:model="values.{{ $setting->id }}" class="form-control">
                     @endif

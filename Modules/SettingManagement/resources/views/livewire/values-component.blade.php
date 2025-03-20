@@ -18,22 +18,17 @@
                     <div class="card-header">
                         <h3 class="card-title d-flex align-items-center">
                             {{ $setting->label }}
-                            <span class="ms-2 badge bg-blue-lt">{{ $setting->type }}</span>
                         </h3>
                         <div class="card-actions">
                             <button type="button" class="btn btn-sm" 
                                 wire:click="resetToDefault({{ $setting->id }})" 
                                 title="Varsayılan değere döndür">
-                                <i class="fas fa-undo me-1"></i> Varsayılan
+                                <i class="fas fa-undo"></i>
                             </button>
                         </div>
                     </div>
                     <div class="card-body">
                         <div class="form-group mb-0">
-                            <small class="text-muted d-block mb-2">
-                                <code>{{ $setting->key }}</code>
-                            </small>
-
                             @if($setting->type === 'textarea')
                             <textarea wire:model="values.{{ $setting->id }}" class="form-control" rows="3"></textarea>
                             @elseif($setting->type === 'select' && is_array($setting->options))
@@ -54,15 +49,6 @@
                             </div>
                             @else
                             <input type="{{ $setting->type }}" wire:model="values.{{ $setting->id }}" class="form-control">
-                            @endif
-
-                            @if($setting->default_value !== $values[$setting->id])
-                            <div class="mt-1">
-                                <span class="text-muted small">
-                                    <i class="fas fa-info-circle me-1"></i>
-                                    Varsayılan değer: {{ $setting->default_value }}
-                                </span>
-                            </div>
                             @endif
                         </div>
                     </div>

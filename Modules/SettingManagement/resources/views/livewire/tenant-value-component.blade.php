@@ -57,30 +57,13 @@
                 </div>
             </div>
             @else
-            <input type="{{ $setting->type }}" wire:model="value" class="form-control" {{ $useDefault ? 'disabled' : ''
-                }}>
+            <input type="{{ $setting->type }}" wire:model="value" class="form-control" {{ $useDefault ? 'disabled' : '' }}>
             @endif
         </div>
 
         <div class="row align-items-center mt-4">
             <div class="col">
                 <div class="datagrid">
-                    <div class="datagrid-item">
-                        <div class="datagrid-title">Ayar Tipi</div>
-                        <div class="datagrid-content">
-                            <span class="badge bg-blue-lt">{{ $setting->type }}</span>
-                        </div>
-                    </div>
-                    <div class="datagrid-item">
-                        <div class="datagrid-title">Varsayılan Değer</div>
-                        <div class="datagrid-content">
-                            @if($setting->default_value)
-                            {{ $setting->default_value }}
-                            @else
-                            <span class="text-muted">Tanımlanmamış</span>
-                            @endif
-                        </div>
-                    </div>
                     <div class="datagrid-item">
                         <div class="datagrid-title">Durum</div>
                         <div class="datagrid-content">

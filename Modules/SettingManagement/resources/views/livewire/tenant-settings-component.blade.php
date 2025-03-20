@@ -66,10 +66,8 @@
                             <thead>
                                 <tr>
                                     <th>Başlık</th>
-                                    <th>Anahtar</th>
-                                    <th>Tip</th>
                                     <th>Değer</th>
-                                    <th>Kullanılan</th>
+                                    <th>Kullanım</th>
                                     <th class="w-1"></th>
                                 </tr>
                             </thead>
@@ -81,8 +79,6 @@
                                             <span class="text-truncate" style="max-width: 200px;">{{ $setting->label }}</span>
                                         </div>
                                     </td>
-                                    <td><code>{{ $setting->key }}</code></td>
-                                    <td><span class="badge bg-blue-lt">{{ $setting->type }}</span></td>
                                     <td>
                                         <div class="text-muted text-truncate" style="max-width: 200px;">
                                             @if($setting->type === 'file' && $setting->current_value)
@@ -115,7 +111,7 @@
             </div>
             @empty
             <div class="col-12">
-                <div class="empty">
+                <div class="empty" style="min-height: 200px; display: flex; flex-direction: column; justify-content: center;">
                     <div class="empty-icon">
                         <i class="fas fa-cogs fa-3x text-muted"></i>
                     </div>

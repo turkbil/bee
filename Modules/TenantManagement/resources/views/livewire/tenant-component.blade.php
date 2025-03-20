@@ -126,7 +126,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Tenant Güncelleme</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" wire:click="resetForm"></button>
                 </div>
                 <form wire:submit.prevent="saveTenant('close')">
                     <div class="modal-body">
@@ -151,22 +151,55 @@
                             @error('phone') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                         <div class="mb-3">
-                            <div class="pretty p-icon p-toggle p-plain">
-                                <input type="checkbox" id="is_active" name="is_active" wire:model="is_active"
-                                    value="1" />
-                                <div class="state p-on">
-                                    <i class="icon fa-regular fa-square-check"></i>
-                                    <label>Aktif / Online</label>
+                            <div class="pretty p-default p-curve p-toggle p-smooth">
+                                <input type="checkbox" id="is_active" name="is_active" wire:model="is_active" />
+                                <div class="state p-success p-on">
+                                    <label>Aktif</label>
                                 </div>
-                                <div class="state p-off">
-                                    <i class="icon fa-regular fa-square"></i>
-                                    <label>Aktif Değil / Offline</label>
+                                <div class="state p-danger p-off">
+                                    <label>Aktif Değil</label>
                                 </div>
                             </div>
                         </div>
+                        
+                        @if($tenantId && $editingTenant)
+                        <div class="card bg-light">
+                            <div class="card-body p-3">
+                                <div class="row g-2">
+                                    <div class="col-md-6">
+                                        <div class="form-text mb-1">
+                                            <span class="text-secondary">
+                                                <i class="fas fa-database me-1"></i>
+                                                <strong>Tenant ID:</strong> {{ $tenantId }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-text mb-1">
+                                            <span class="text-secondary">
+                                                <i class="fas fa-server me-1"></i>
+                                                <strong>Veritabanı:</strong> {{ $editingTenant->tenancy_db_name }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Kaydet</button>
+                        <div class="w-100">
+                            <div class="row">
+                                <div class="col">
+                                    <button type="button" class="btn w-100" data-bs-dismiss="modal" wire:click="resetForm">
+                                        İptal
+                                    </button>
+                                </div>
+                                <div class="col">
+                                    <button type="submit" class="btn btn-primary w-100">Kaydet</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -179,7 +212,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Yeni Tenant Ekleme</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" wire:click="resetForm"></button>
                 </div>
                 <form wire:submit.prevent="saveTenant('close')">
                     <div class="modal-body">
@@ -219,7 +252,18 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Kaydet</button>
+                        <div class="w-100">
+                            <div class="row">
+                                <div class="col">
+                                    <button type="button" class="btn w-100" data-bs-dismiss="modal" wire:click="resetForm">
+                                        İptal
+                                    </button>
+                                </div>
+                                <div class="col">
+                                    <button type="submit" class="btn btn-primary w-100">Kaydet</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -236,7 +280,7 @@
                 </div>
                 <div class="modal-body">
                     @if($tenantId)
-                    <livewire:tenant-module-component :tenant-id="$tenantId" :key="time().$tenantId" />
+                    <livewire:tenant-module-component :tenant-id="$tenantId" :key="'tm-'.$tenantId.'-'.$refreshModuleKey" />
                     @endif
                 </div>
             </div>
@@ -313,13 +357,18 @@
     @push('scripts')
     <script>
         document.addEventListener('livewire:initialized', () => {
-            const modules_modal = document.getElementById('modal-module-management');
+            const modalEdit = document.getElementById('modal-tenant-edit');
+            const modalAdd = document.getElementById('modal-tenant-add');
+            const modalModule = document.getElementById('modal-module-management');
+            const modalDomain = document.getElementById('modal-domain-management');
             
-            Livewire.on('closeModal', () => {
-                const modalInstance = bootstrap.Modal.getInstance(modules_modal);
-                if (modalInstance) {
-                    modalInstance.hide();
-                }
+            // Modal kapanırken form resetleme
+            modalEdit.addEventListener('hidden.bs.modal', () => {
+                @this.resetForm();
+            });
+            
+            modalAdd.addEventListener('hidden.bs.modal', () => {
+                @this.resetForm();
             });
             
             Livewire.on('hideModal', ({ id }) => {

@@ -7,10 +7,22 @@
             </div>
             <div class="modal-body">
                 <!-- Yeni Domain Ekleme -->
-                <div class="input-group mb-4">
-                    <input type="text" class="form-control" placeholder="Yeni domain ekle" wire:model="newDomain">
-                    <button class="btn btn-primary" wire:click="addDomain">Ekle</button>
+                <div class="row mb-4">
+                    <div class="col">
+                        <div class="input-group">
+                            <input type="text" class="form-control @error('newDomain') is-invalid @enderror" 
+                                placeholder="Yeni domain adı" wire:model="newDomain" 
+                                wire:keydown.enter="addDomain">
+                            <button class="btn btn-primary" wire:click="addDomain">
+                                <i class="fas fa-plus me-1"></i> Ekle
+                            </button>
+                        </div>
+                        @error('newDomain') 
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
                 </div>
+                
                 <!-- Ekli Domainler Tablosu -->
                 @if (count($domains) > 0)
                 <div class="card">
@@ -32,22 +44,27 @@
                                         @if ($editingDomainId === $domain['id'])
                                         <div class="input-group">
                                             <input type="text" class="form-control"
-                                                wire:model.defer="editingDomainValue">
+                                                wire:model.defer="editingDomainValue"
+                                                wire:keydown.enter="updateDomain({{ $domain['id'] }})">
                                             <button class="btn btn-primary"
-                                                wire:click="updateDomain({{ $domain['id'] }})">Kaydet</button>
+                                                wire:click="updateDomain({{ $domain['id'] }})">
+                                                <i class="fas fa-check me-1"></i> Kaydet
+                                            </button>
                                         </div>
                                         @else
                                         {{ $domain['domain'] }}
                                         @endif
                                     </td>
                                     <td>
-                                        <div class="d-flex gap-2 justify-content-end">
+                                        <div class="btn-list">
                                             @if ($editingDomainId !== $domain['id'])
-                                            <button class="btn btn-outline-secondary"
-                                                wire:click="startEditingDomain({{ $domain['id'] }}, '{{ $domain['domain'] }}')">Düzenle</button>
-                                            <button class="btn btn-outline-danger"
+                                            <button class="btn btn-sm btn-outline-secondary"
+                                                wire:click="startEditingDomain({{ $domain['id'] }}, '{{ $domain['domain'] }}')">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger"
                                                 wire:click="$dispatch('showDeleteDomainModal', [{{ $domain['id'] }}, '{{ $domain['domain'] }}', {{ $tenantId }}])">
-                                                Sil
+                                                <i class="fas fa-trash"></i>
                                             </button>
                                             @endif
                                         </div>
@@ -59,13 +76,19 @@
                     </div>
                 </div>
                 @else
-                <div class="alert alert-secondary text-center">
-                    Ekli domain bulunmamaktadır.
+                <div class="empty">
+                    <div class="empty-img">
+                        <img src="{{ asset('tabler/static/illustrations/undraw_empty_re_opql.svg') }}" height="128" alt="">
+                    </div>
+                    <p class="empty-title">Henüz domain eklenmemiş</p>
+                    <p class="empty-subtitle text-muted">
+                        Bu tenant için domain eklemek üzere yukarıdaki formu kullanabilirsiniz.
+                    </p>
                 </div>
                 @endif
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Tamam</button>
             </div>
         </div>
     </div>

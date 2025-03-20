@@ -16,10 +16,10 @@ class DeleteTenantModal extends Component
 
     public function showDeleteTenantModal($data)
     {
-        if (is_array($data)) {
-            $this->tenantId = $data['id'] ?? null;
-            $this->tenantTitle = $data['title'] ?? 'Adsız Tenant';
-        } else {
+        $this->tenantId = is_array($data) ? ($data['id'] ?? null) : null;
+        $this->tenantTitle = is_array($data) ? ($data['title'] ?? 'Adsız Tenant') : 'Adsız Tenant';
+        
+        if (!$this->tenantId) {
             Log::error('DeleteTenantModal hatalı parametre formatı', ['data' => $data]);
             return;
         }

@@ -33,6 +33,10 @@ class TenantModuleComponent extends Component
 
     public function loadModules()
     {
+        if (!$this->tenantId) {
+            return;
+        }
+        
         try {
             $this->modules = Module::orderBy('display_name')->get();
 

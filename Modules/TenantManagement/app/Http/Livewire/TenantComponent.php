@@ -93,48 +93,52 @@ class TenantComponent extends Component
         $this->validate();
 
         try {
-            DB::transaction(function () {
-                if ($this->tenantId) {
-                    $tenant = Tenant::findOrFail($this->tenantId);
-                    $tenant->data = [
+            // Transaction başlat
+            DB::beginTransaction();
+
+            if ($this->tenantId) {
+                $tenant = Tenant::findOrFail($this->tenantId);
+                $tenant->data = [
+                    'name'     => $this->name,
+                    'fullname' => $this->fullname,
+                    'email'    => $this->email,
+                    'phone'    => $this->phone,
+                ];
+                $tenant->is_active = $this->is_active;
+                $tenant->save();
+                
+                activity()
+                    ->performedOn($tenant)
+                    ->causedBy(auth()->user())
+                    ->log("güncellendi");
+                
+                $message = 'Tenant başarıyla güncellendi.';
+            } else {
+                $dbName = 'tenant_' . strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $this->name));
+                
+                $tenant = Tenant::create([
+                    'title' => $this->name,
+                    'tenancy_db_name' => $dbName,
+                    'data' => [
                         'name'     => $this->name,
                         'fullname' => $this->fullname,
                         'email'    => $this->email,
                         'phone'    => $this->phone,
-                    ];
-                    $tenant->is_active = $this->is_active;
-                    $tenant->save();
+                    ],
+                    'is_active' => $this->is_active,
+                ]);
+                
+                activity()
+                    ->performedOn($tenant)
+                    ->causedBy(auth()->user())
+                    ->log("oluşturuldu");
                     
-                    activity()
-                        ->performedOn($tenant)
-                        ->causedBy(auth()->user())
-                        ->log("güncellendi");
-                    
-                    $message = 'Tenant başarıyla güncellendi.';
-                } else {
-                    $dbName = 'tenant_' . strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $this->name));
-                    
-                    $tenant = Tenant::create([
-                        'title' => $this->name,
-                        'tenancy_db_name' => $dbName,
-                        'data' => [
-                            'name'     => $this->name,
-                            'fullname' => $this->fullname,
-                            'email'    => $this->email,
-                            'phone'    => $this->phone,
-                        ],
-                        'is_active' => $this->is_active,
-                    ]);
-                    
-                    activity()
-                        ->performedOn($tenant)
-                        ->causedBy(auth()->user())
-                        ->log("oluşturuldu");
-                        
-                    $message = 'Tenant başarıyla oluşturuldu.';
-                }
-            });
+                $message = 'Tenant başarıyla oluşturuldu.';
+            }
 
+            // Transactionı commit et
+            DB::commit();
+            
             $this->resetForm();
             $this->dispatch('hideModal', ['id' => 'modal-tenant-manage']);
 
@@ -144,6 +148,9 @@ class TenantComponent extends Component
                 'type' => 'success'
             ]);
         } catch (\Exception $e) {
+            // Hata durumunda rollback yap
+            DB::rollBack();
+            
             Log::error('Tenant işlemi hatası: ' . $e->getMessage());
             
             $this->dispatch('toast', [

@@ -46,7 +46,7 @@
                                             <button class="btn btn-outline-secondary"
                                                 wire:click="startEditingDomain({{ $domain['id'] }}, '{{ $domain['domain'] }}')">Düzenle</button>
                                             <button class="btn btn-outline-danger"
-                                                wire:click="$dispatch('showDeleteModal', 'domain', {{ $domain['id'] }}, '{{ $domain['domain'] }}', '{{ $tenantId }}')">
+                                                wire:click="$dispatch('showDeleteDomainModal', [{{ $domain['id'] }}, '{{ $domain['domain'] }}', {{ $tenantId }}])">
                                                 Sil
                                             </button>
                                             @endif

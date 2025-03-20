@@ -6,7 +6,13 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <livewire:tenant-module-component :tenantId="$tenantId ?? null" />
+                @if($tenantId)
+                    <livewire:tenantmanagement::tenant-module-component :tenant-id="$tenantId" :wire:key="'module-tenant-'.$tenantId" />
+                @else
+                    <div class="alert alert-warning">
+                        Lütfen önce bir tenant seçin.
+                    </div>
+                @endif
             </div>
         </div>
     </div>

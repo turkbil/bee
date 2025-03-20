@@ -6,7 +6,8 @@ use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Modules\TenantManagement\App\Http\Livewire\TenantComponent;
 use Modules\TenantManagement\App\Http\Livewire\TenantModuleComponent;
-use Modules\TenantManagement\App\Http\Livewire\Modals\DeleteModal;
+use Modules\TenantManagement\App\Http\Livewire\Modals\DeleteTenantModal;
+use Modules\TenantManagement\App\Http\Livewire\Modals\DeleteDomainModal;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -36,9 +37,10 @@ class TenantManagementServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(module_path('TenantManagement', 'database/migrations'));
 
         // LiveWire bileşenlerini kaydet
-        Livewire::component('tenant-component', TenantComponent::class);
-        Livewire::component('tenant-module-component', TenantModuleComponent::class);
-        Livewire::component('modals.delete-modal', DeleteModal::class);
+        Livewire::component('tenantmanagement::tenant-component', TenantComponent::class);
+        Livewire::component('tenantmanagement::tenant-module-component', TenantModuleComponent::class);
+        Livewire::component('tenantmanagement::modals.delete-tenant-modal', DeleteTenantModal::class);
+        Livewire::component('tenantmanagement::modals.delete-domain-modal', DeleteDomainModal::class);
     }
 
     /**
@@ -109,9 +111,6 @@ class TenantManagementServiceProvider extends ServiceProvider
         }
     }
 
-    /**
-     * Register views.
-     */
     public function registerViews(): void
     {
         $viewPath   = resource_path('views/modules/tenantmanagement');

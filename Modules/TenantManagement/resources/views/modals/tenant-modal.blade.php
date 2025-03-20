@@ -8,7 +8,7 @@
             <form wire:submit.prevent="saveTenant">
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label">Name</label>
+                        <label class="form-label">Tenant Adı</label>
                         <input type="text" class="form-control" wire:model="name">
                         @error('name') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>

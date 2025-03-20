@@ -255,6 +255,47 @@ class TenantComponent extends Component
         }
     }
 
+    public function toggleActive($id)
+    {
+        try {
+            $tenant = Tenant::find($id);
+            
+            if ($tenant) {
+                // Mevcut durumun tersini ayarla
+                $newStatus = !$tenant->is_active;
+                
+                // Veritabanını güncelle
+                DB::table('tenants')
+                    ->where('id', $tenant->id)
+                    ->update([
+                        'is_active' => $newStatus ? 1 : 0,
+                        'updated_at' => now()
+                    ]);
+                
+                // Log işlemi
+                activity()
+                    ->performedOn($tenant)
+                    ->withProperties([
+                        'old_status' => $tenant->is_active,
+                        'new_status' => $newStatus
+                    ])
+                    ->log('tenant durumu değiştirildi');
+                
+                $this->dispatch('toast', [
+                    'title' => 'Başarılı!',
+                    'message' => 'Tenant durumu ' . ($newStatus ? 'aktif' : 'pasif') . ' olarak değiştirildi.',
+                    'type' => 'success'
+                ]);
+            }
+        } catch (\Exception $e) {
+            $this->dispatch('toast', [
+                'title' => 'Hata!',
+                'message' => 'Tenant durumu değiştirilirken bir hata oluştu: ' . $e->getMessage(),
+                'type' => 'error'
+            ]);
+        }
+    }
+
     public function manageModules($id)
     {
        $this->tenantId = $id;

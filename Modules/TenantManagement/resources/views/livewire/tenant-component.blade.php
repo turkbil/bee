@@ -56,7 +56,7 @@
                             </div>
                             <div class="col">
                                 <h4 class="card-title m-0">
-                                    <a href="#">{{ $tenant->title ?? 'Bilinmeyen Ad' }}</a>
+                                    <a href="javascript:void(0);" class="text-reset" wire:click.prevent="editTenant('{{ $tenant->id }}')" data-bs-toggle="modal" data-bs-target="#modal-tenant-edit">{{ $tenant->title ?? 'Bilinmeyen Ad' }}</a>
                                 </h4>
                                 <div class="text-secondary">
                                     @if (method_exists($tenant, 'domains') && $tenant->domains && $tenant->domains->count() > 0)
@@ -64,7 +64,7 @@
                                     $domainCount = $tenant->domains->count();
                                     $firstDomain = $tenant->domains->first()->domain;
                                     @endphp
-                                    {{ $firstDomain }}
+                                    <a href="http://{{ $firstDomain }}" class="text-muted" target="_blank">{{ $firstDomain }}</a>
                                     @if ($domainCount > 1)
                                     +{{ $domainCount - 1 }}
                                     @endif
@@ -73,11 +73,13 @@
                                     @endif
                                 </div>
                                 <div class="small mt-1">
-                                    @if($tenant->is_active)
-                                    <span class="badge bg-green fa-fade"></span> Online
-                                    @else
-                                    <span class="badge bg-red fa-fade"></span> Offline
-                                    @endif
+                                    <a href="javascript:void(0);" class="text-decoration-none" wire:click.prevent="toggleActive('{{ $tenant->id }}')">
+                                        @if($tenant->is_active)
+                                        <span class="badge bg-green fa-fade"></span> <span class="text-muted">Online</span>
+                                        @else
+                                        <span class="badge bg-red fa-fade"></span> <span class="text-muted">Offline</span>
+                                        @endif
+                                    </a>
                                 </div>
                             </div>
                             <div class="col-auto">

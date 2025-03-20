@@ -2,48 +2,28 @@
 namespace Modules\TenantManagement\App\Http\Livewire;
 
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Tenant;
 use Stancl\Tenancy\Database\Models\Domain;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
 
 #[Layout('admin.layout')]
 class TenantComponent extends Component
 {
     use WithPagination;
 
-    #[Url]
     public $search = '';
-    
-    #[Url]
     public $perPage = 10;
-    
-    #[Url]
     public $sortField = 'created_at';
-    
-    #[Url]
     public $sortDirection = 'desc';
 
-    public $name = '';
-    public $fullname = '';
-    public $email = '';
-    public $phone = '';
-    public $is_active = true;
-    public $newDomain = '';
-    public $editingDomainId = null;
-    public $editingDomainValue = '';
+    public $name, $fullname, $email, $phone, $is_active;
+    public $newDomain, $editingDomainId, $editingDomainValue;
+    public $selectedTenantForModules = null;
     public $tenantId = null;
     public $domains = [];
-    
-    protected $listeners = [
-        'modulesSaved' => '$refresh',
-        'itemDeleted' => '$refresh',
-        'refreshDomains' => 'loadDomains',
-        'refreshList' => '$refresh',
-    ];
+
+    protected $listeners = ['modulesSaved' => '$refresh'];
 
     protected $rules = [
         'name'      => 'required|string|max:255',
@@ -57,6 +37,20 @@ class TenantComponent extends Component
     public function mount()
     {
         $this->is_active = true;
+    }
+
+    public function getTenantsProperty()
+    {
+        return Tenant::with('domains')
+            ->orderBy($this->sortField, $this->sortDirection)
+            ->when($this->search, function($query) {
+                return $query->where(function ($q) {
+                    $q->where('id', 'like', '%' . $this->search . '%')
+                      ->orWhereJsonContains('data->name', $this->search)
+                      ->orWhereJsonContains('data->email', $this->search);
+                });
+            })
+            ->paginate($this->perPage);
     }
 
     public function updatedSearch()
@@ -81,7 +75,6 @@ class TenantComponent extends Component
 
     public function editTenant($id)
     {
-        $this->resetForm();
         $tenant = Tenant::find($id);
 
         if ($tenant) {
@@ -94,16 +87,17 @@ class TenantComponent extends Component
         }
     }
 
-    public function saveTenant()
+    public function saveTenant($action)
     {
         $this->validate();
 
-        try {
-            // Transaction başlat
-            DB::beginTransaction();
-
-            if ($this->tenantId) {
-                $tenant = Tenant::findOrFail($this->tenantId);
+        $oldData = null;
+        if ($this->tenantId) {
+            // Mevcut tenant'ı güncelle
+            $oldData = Tenant::find($this->tenantId)?->toArray();
+            
+            $tenant = Tenant::find($this->tenantId);
+            if ($tenant) {
                 $tenant->data = [
                     'name'     => $this->name,
                     'fullname' => $this->fullname,
@@ -113,95 +107,87 @@ class TenantComponent extends Component
                 $tenant->is_active = $this->is_active;
                 $tenant->save();
                 
-                activity()
-                    ->performedOn($tenant)
-                    ->causedBy(auth()->user())
-                    ->log("güncellendi");
+                log_activity($tenant, 'güncellendi', array_diff_assoc($tenant->toArray(), $oldData));
                 
-                $message = 'Tenant başarıyla güncellendi.';
-            } else {
-                $dbName = 'tenant_' . strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $this->name));
-                
-                $tenant = Tenant::create([
-                    'title' => $this->name,
-                    'tenancy_db_name' => $dbName,
-                    'data' => [
-                        'name'     => $this->name,
-                        'fullname' => $this->fullname,
-                        'email'    => $this->email,
-                        'phone'    => $this->phone,
-                    ],
-                    'is_active' => $this->is_active,
-                ]);
-                
-                activity()
-                    ->performedOn($tenant)
-                    ->causedBy(auth()->user())
-                    ->log("oluşturuldu");
-                    
-                $message = 'Tenant başarıyla oluşturuldu.';
+                $wasRecentlyCreated = false;
             }
-
-            // Transactionı commit et
-            DB::commit();
+        } else {
+            // Yeni tenant oluştur
+            $dbName = 'tenant_' . strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $this->name));
             
-            $this->resetForm();
-            $this->dispatch('hideModal', ['id' => 'modal-tenant-manage']);
+            $tenant = Tenant::create([
+                'title' => $this->name, // title alanını dolduruyoruz
+                'tenancy_db_name' => $dbName,
+                'data' => [
+                    'name'     => $this->name,
+                    'fullname' => $this->fullname,
+                    'email'    => $this->email,
+                    'phone'    => $this->phone,
+                ],
+                'is_active' => $this->is_active,
+            ]);
+            
+            log_activity($tenant, 'oluşturuldu');
+            
+            $wasRecentlyCreated = true;
+        }
 
+        $this->resetForm();
+
+        $this->dispatch('toast', [
+            'title' => 'Başarılı!',
+            'message' => $wasRecentlyCreated ? 'Tenant başarıyla oluşturuldu.' : 'Tenant başarıyla güncellendi.',
+            'type' => 'success'
+        ]);
+
+        if ($action === 'close') {
+            $this->dispatch('hideModal', ['id' => 'modal-tenant-edit']);
+            $this->dispatch('hideModal', ['id' => 'modal-tenant-add']);
+        }
+    }
+
+    public function deleteTenant($id)
+    {
+        $tenant = Tenant::find($id);
+
+        if ($tenant) {
+            log_activity($tenant, 'silindi');
+            $tenant->delete();
+            
             $this->dispatch('toast', [
                 'title' => 'Başarılı!',
-                'message' => $message,
+                'message' => 'Tenant başarıyla silindi.',
                 'type' => 'success'
-            ]);
-        } catch (\Exception $e) {
-            // Hata durumunda rollback yap
-            DB::rollBack();
-            
-            Log::error('Tenant işlemi hatası: ' . $e->getMessage());
-            
-            $this->dispatch('toast', [
-                'title' => 'Hata!',
-                'message' => 'İşlem sırasında bir hata oluştu: ' . $e->getMessage(),
-                'type' => 'error'
             ]);
         }
     }
 
+    public function manageModules($id)
+    {
+       $this->tenantId = $id;
+    }
+    
     public function loadDomains($tenantId)
     {
         $this->tenantId = $tenantId;
         $tenant = Tenant::find($tenantId);
         if ($tenant) {
             $this->domains = $tenant->domains()->get()->toArray();
-        } else {
-            $this->domains = [];
         }
     }
 
     public function addDomain()
     {
-        $this->validate([
-            'newDomain' => 'required|string|max:255|unique:domains,domain'
-        ]);
+        $this->validateOnly('newDomain');
 
-        try {
-            DB::beginTransaction();
-            
-            $tenant = Tenant::find($this->tenantId);
-            if (!$tenant) {
-                throw new \Exception("Tenant bulunamadı (ID: {$this->tenantId})");
-            }
-            
+        $tenant = Tenant::find($this->tenantId);
+        if ($tenant) {
             $domain = $tenant->domains()->create([
                 'domain' => $this->newDomain,
             ]);
 
-            activity()
-                ->performedOn($domain)
-                ->causedBy(auth()->user())
-                ->log("oluşturuldu");
-                
-            DB::commit();
+            log_activity($domain, 'oluşturuldu');
+            
             $this->loadDomains($this->tenantId);
             $this->newDomain = '';
             
@@ -209,15 +195,6 @@ class TenantComponent extends Component
                 'title' => 'Başarılı!',
                 'message' => 'Domain başarıyla eklendi.',
                 'type' => 'success'
-            ]);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('Domain ekleme hatası: ' . $e->getMessage());
-            
-            $this->dispatch('toast', [
-                'title' => 'Hata!',
-                'message' => 'Domain eklenirken bir hata oluştu: ' . $e->getMessage(),
-                'type' => 'error'
             ]);
         }
     }
@@ -230,25 +207,19 @@ class TenantComponent extends Component
 
     public function updateDomain($domainId)
     {
-        try {
-            DB::beginTransaction();
-            
-            $domain = Domain::find($domainId);
+        $domain = Domain::find($domainId);
 
-            if (!$domain) {
-                throw new \Exception("Domain bulunamadı (ID: {$domainId})");
-            }
-            
+        if ($domain) {
+            $oldDomain = $domain->domain;
             $domain->update(['domain' => $this->editingDomainValue]);
 
-            activity()
-                ->performedOn($domain)
-                ->causedBy(auth()->user())
-                ->log("güncellendi");
+            log_activity($domain, 'güncellendi', [
+                'old' => $oldDomain,
+                'new' => $this->editingDomainValue
+            ]);
 
-            DB::commit();
             $this->loadDomains($this->tenantId);
-            $this->editingDomainId = null;
+            $this->editingDomainId    = null;
             $this->editingDomainValue = '';
             
             $this->dispatch('toast', [
@@ -256,41 +227,40 @@ class TenantComponent extends Component
                 'message' => 'Domain başarıyla güncellendi.',
                 'type' => 'success'
             ]);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('Domain güncelleme hatası: ' . $e->getMessage());
+        }
+    }
+
+    public function deleteDomain($domainId)
+    {
+        $domain = Domain::find($domainId);
+
+        if ($domain) {
+            log_activity($domain, 'silindi');
+            $domain->delete();
+            $this->loadDomains($this->tenantId);
             
             $this->dispatch('toast', [
-                'title' => 'Hata!',
-                'message' => 'Domain güncellenirken bir hata oluştu: ' . $e->getMessage(),
-                'type' => 'error'
+                'title' => 'Başarılı!',
+                'message' => 'Domain başarıyla silindi.',
+                'type' => 'success'
             ]);
         }
     }
     
     public function resetForm()
     {
-        $this->reset(['tenantId', 'name', 'fullname', 'email', 'phone']);
+        $this->tenantId = null;
+        $this->name = '';
+        $this->fullname = '';
+        $this->email = '';
+        $this->phone = '';
         $this->is_active = true;
     }
 
     public function render()
     {
-        $query = Tenant::with('domains')
-            ->orderBy($this->sortField, $this->sortDirection)
-            ->when($this->search, function($query) {
-                return $query->where(function ($q) {
-                    $q->where('id', 'like', '%' . $this->search . '%')
-                      ->orWhere('title', 'like', '%' . $this->search . '%')
-                      ->orWhereJsonContains('data->name', $this->search)
-                      ->orWhereJsonContains('data->email', $this->search);
-                });
-            });
-            
-        $tenants = $query->paginate($this->perPage);
-        
         return view('tenantmanagement::livewire.tenant-component', [
-            'tenants' => $tenants
+            'tenants' => $this->tenants
         ]);
     }
 }

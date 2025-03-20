@@ -6,8 +6,6 @@ use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Modules\TenantManagement\App\Http\Livewire\TenantComponent;
 use Modules\TenantManagement\App\Http\Livewire\TenantModuleComponent;
-use Modules\TenantManagement\App\Http\Livewire\Modals\DeleteTenantModal;
-use Modules\TenantManagement\App\Http\Livewire\Modals\DeleteDomainModal;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -36,11 +34,8 @@ class TenantManagementServiceProvider extends ServiceProvider
         $this->loadViewsFrom(module_path('TenantManagement', 'resources/views'), 'tenantmanagement');
         $this->loadMigrationsFrom(module_path('TenantManagement', 'database/migrations'));
 
-        // LiveWire bileşenlerini kaydet
-        Livewire::component('tenantmanagement::tenant-component', TenantComponent::class);
-        Livewire::component('tenantmanagement::tenant-module-component', TenantModuleComponent::class);
-        Livewire::component('tenantmanagement::modals.delete-tenant-modal', DeleteTenantModal::class);
-        Livewire::component('tenantmanagement::modals.delete-domain-modal', DeleteDomainModal::class);
+        Livewire::component('tenant-component', TenantComponent::class);
+        Livewire::component('tenant-module-component', TenantModuleComponent::class);
     }
 
     /**
@@ -111,16 +106,20 @@ class TenantManagementServiceProvider extends ServiceProvider
         }
     }
 
+    /**
+     * Register views.
+     */
     public function registerViews(): void
     {
-        $viewPath   = resource_path('views/modules/tenantmanagement');
-        $sourcePath = module_path('TenantManagement', 'resources/views');
+        $viewPath   = resource_path('views/modules/' . $this->nameLower);
+        $sourcePath = module_path($this->name, 'resources/views');
 
-        $this->publishes([
-            $sourcePath => $viewPath,
-        ], ['views', 'tenantmanagement-module-views']);
+        $this->publishes([$sourcePath => $viewPath], ['views', $this->nameLower . '-module-views']);
 
-        $this->loadViewsFrom(array_merge($this->getPublishableViewPaths(), [$sourcePath]), 'tenantmanagement');
+        $this->loadViewsFrom(array_merge($this->getPublishableViewPaths(), [$sourcePath]), $this->nameLower);
+
+        $componentNamespace = $this->module_namespace($this->name, $this->app_path(config('modules.paths.generator.component-class.path')));
+        Blade::componentNamespace($componentNamespace, $this->nameLower);
     }
 
     /**
@@ -135,8 +134,8 @@ class TenantManagementServiceProvider extends ServiceProvider
     {
         $paths = [];
         foreach (config('view.paths') as $path) {
-            if (is_dir($path . '/modules/tenantmanagement')) {
-                $paths[] = $path . '/modules/tenantmanagement';
+            if (is_dir($path . '/modules/' . $this->nameLower)) {
+                $paths[] = $path . '/modules/' . $this->nameLower;
             }
         }
 

@@ -37,6 +37,11 @@ class InitializeTenancy extends BaseMiddleware
                 $tenant = $this->resolver->resolve($host);
                 
                 if ($tenant) {
+                    // Tenant aktif değilse özel hata sayfasını göster
+                    if (!$tenant->is_active) {
+                        return response()->view('errors.offline', [], 503);
+                    }
+                    
                     $this->tenancy->initialize($tenant);
                     
                     // Tenant başlatıldıktan sonra bağlantı ayarını mysql olarak düzelt

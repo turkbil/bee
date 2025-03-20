@@ -1,15 +1,15 @@
 <div>
-    @if($moduleGroups)
+    @if($modules && $modules->count() > 0)
     <div class="d-flex justify-content-between mb-3">
         <button type="button" class="btn btn-outline-primary" wire:click="toggleSelectAll">
             {{ count($selectedModules) === $modules->count() ? 'Tümünü Kaldır' : 'Tümünü Seç' }}
         </button>
     </div>
 
-    @foreach($moduleGroups as $group => $modules)
+    @foreach($moduleGroups as $type => $modules)
     <div class="card mb-3">
         <div class="card-header">
-            <h3 class="card-title">{{ $group ?: 'Genel' }}</h3>
+            <h3 class="card-title">{{ ucfirst($type) }}</h3>
         </div>
         <div class="list-group list-group-flush">
             @foreach($modules as $module)
@@ -44,9 +44,30 @@
     @endforeach
 
     <div class="modal-footer">
-        <button type="button" class="btn btn-primary" wire:click="save">
-            Kaydet
-        </button>
+        <div class="w-100">
+            <div class="row">
+                <div class="col">
+                    <button type="button" class="btn w-100" data-bs-dismiss="modal">
+                        İptal
+                    </button>
+                </div>
+                <div class="col">
+                    <button type="button" class="btn btn-primary w-100" wire:click="save">
+                        Kaydet
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @else
+    <div class="empty">
+        <div class="empty-icon">
+            <i class="fas fa-cube fa-3x text-muted"></i>
+        </div>
+        <p class="empty-title">Modül bulunamadı</p>
+        <p class="empty-subtitle text-muted">
+            Sistemde aktif modül bulunmamaktadır. Önce modül eklemeniz gerekmektedir.
+        </p>
     </div>
     @endif
 </div>

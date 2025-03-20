@@ -6,6 +6,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Tenant;
 use Stancl\Tenancy\Database\Models\Domain;
+use Illuminate\Support\Facades\DB;
 
 #[Layout('admin.layout')]
 class TenantComponent extends Component
@@ -22,8 +23,10 @@ class TenantComponent extends Component
     public $selectedTenantForModules = null;
     public $tenantId = null;
     public $domains = [];
+    public $editingTenant = null;
+    public $refreshModuleKey = 0;
 
-    protected $listeners = ['modulesSaved' => '$refresh'];
+    protected $listeners = ['modulesSaved' => '$refresh', 'itemDeleted' => '$refresh'];
 
     protected $rules = [
         'name'      => 'required|string|max:255',
@@ -78,54 +81,70 @@ class TenantComponent extends Component
         $tenant = Tenant::find($id);
 
         if ($tenant) {
-            $this->tenantId  = $tenant->id;
-            $this->name      = $tenant->data['name'] ?? '';
-            $this->fullname  = $tenant->data['fullname'] ?? '';
-            $this->email     = $tenant->data['email'] ?? '';
-            $this->phone     = $tenant->data['phone'] ?? '';
-            $this->is_active = $tenant->is_active;
+            $this->editingTenant = $tenant;
+            $this->tenantId = $tenant->id;
+            
+            // Data NULL olabilir, bu durumu ele alalım
+            $data = $tenant->data ?? [];
+            
+            // Form alanlarını doldur
+            $this->name = $data['name'] ?? ($tenant->title ?? '');
+            $this->fullname = $data['fullname'] ?? '';
+            $this->email = $data['email'] ?? '';
+            $this->phone = $data['phone'] ?? '';
+            $this->is_active = $tenant->is_active ?? true;
+        } else {
+            $this->dispatch('toast', [
+                'title' => 'Hata',
+                'message' => 'Tenant bulunamadı.',
+                'type' => 'error'
+            ]);
         }
     }
 
     public function saveTenant($action)
     {
         $this->validate();
-
-        $oldData = null;
+        
+        $wasRecentlyCreated = false;
+        
+        // Yeni tenant verileri
+        $newData = [
+            'name'     => $this->name,
+            'fullname' => $this->fullname,
+            'email'    => $this->email,
+            'phone'    => $this->phone,
+            'updated_at' => now()->toDateTimeString()
+        ];
+        
         if ($this->tenantId) {
             // Mevcut tenant'ı güncelle
-            $oldData = Tenant::find($this->tenantId)?->toArray();
-            
-            $tenant = Tenant::find($this->tenantId);
-            if ($tenant) {
-                $tenant->data = [
-                    'name'     => $this->name,
-                    'fullname' => $this->fullname,
-                    'email'    => $this->email,
-                    'phone'    => $this->phone,
-                ];
-                $tenant->is_active = $this->is_active;
-                $tenant->save();
+            // Veritabanında direkt SQL sorgusu kullanarak data sütununu JSON olarak güncelleyelim
+            $affected = DB::table('tenants')
+                ->where('id', $this->tenantId)
+                ->update([
+                    'data' => json_encode($newData),
+                    'is_active' => $this->is_active ? 1 : 0,
+                    'updated_at' => now()
+                ]);
                 
-                log_activity($tenant, 'güncellendi', array_diff_assoc($tenant->toArray(), $oldData));
-                
-                $wasRecentlyCreated = false;
+            if ($affected) {
+                $tenant = Tenant::find($this->tenantId);
+                log_activity($tenant, 'güncellendi');
             }
         } else {
             // Yeni tenant oluştur
             $dbName = 'tenant_' . strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $this->name));
             
-            $tenant = Tenant::create([
-                'title' => $this->name, // title alanını dolduruyoruz
-                'tenancy_db_name' => $dbName,
-                'data' => [
-                    'name'     => $this->name,
-                    'fullname' => $this->fullname,
-                    'email'    => $this->email,
-                    'phone'    => $this->phone,
-                ],
-                'is_active' => $this->is_active,
-            ]);
+            // Oluşturma zamanını ekle
+            $newData['created_at'] = now()->toDateTimeString();
+            
+            $tenant = new Tenant();
+            $tenant->title = $this->name;
+            $tenant->tenancy_db_name = $dbName;
+            $tenant->data = $newData; // Cast edilen sütun
+            $tenant->is_active = $this->is_active;
+            $tenant->save();
             
             log_activity($tenant, 'oluşturuldu');
             
@@ -159,12 +178,15 @@ class TenantComponent extends Component
                 'message' => 'Tenant başarıyla silindi.',
                 'type' => 'success'
             ]);
+            
+            $this->dispatch('itemDeleted');
         }
     }
 
     public function manageModules($id)
     {
        $this->tenantId = $id;
+       $this->refreshModuleKey++;
     }
     
     public function loadDomains($tenantId)
@@ -255,6 +277,7 @@ class TenantComponent extends Component
         $this->email = '';
         $this->phone = '';
         $this->is_active = true;
+        $this->editingTenant = null;
     }
 
     public function render()

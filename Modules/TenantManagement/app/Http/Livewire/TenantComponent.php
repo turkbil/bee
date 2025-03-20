@@ -49,8 +49,12 @@ class TenantComponent extends Component
             ->when($this->search, function($query) {
                 return $query->where(function ($q) {
                     $q->where('id', 'like', '%' . $this->search . '%')
-                      ->orWhereJsonContains('data->name', $this->search)
-                      ->orWhereJsonContains('data->email', $this->search);
+                      ->orWhere('title', 'like', '%' . $this->search . '%')
+                      ->orWhere(function ($q) {
+                          $q->whereRaw("JSON_EXTRACT(data, '$.fullname') LIKE ?", ['%' . $this->search . '%'])
+                            ->orWhereRaw("JSON_EXTRACT(data, '$.email') LIKE ?", ['%' . $this->search . '%'])
+                            ->orWhereRaw("JSON_EXTRACT(data, '$.phone') LIKE ?", ['%' . $this->search . '%']);
+                      });
                 });
             })
             ->paginate($this->perPage);
@@ -78,25 +82,33 @@ class TenantComponent extends Component
 
     public function editTenant($id)
     {
-        $tenant = Tenant::find($id);
-
-        if ($tenant) {
+        try {
+            $tenantData = DB::table('tenants')->where('id', $id)->first();
+            
+            if (!$tenantData) {
+                $this->dispatch('toast', [
+                    'title' => 'Hata',
+                    'message' => 'Tenant bulunamadı.',
+                    'type' => 'error'
+                ]);
+                return;
+            }
+            
+            $tenant = Tenant::find($id);
             $this->editingTenant = $tenant;
-            $this->tenantId = $tenant->id;
+            $this->tenantId = $id;
             
-            // Data NULL olabilir, bu durumu ele alalım
-            $data = $tenant->data ?? [];
+            $data = json_decode($tenantData->data, true) ?? [];
             
-            // Form alanlarını doldur
-            $this->name = $data['name'] ?? ($tenant->title ?? '');
+            $this->name = $tenantData->title ?? '';
             $this->fullname = $data['fullname'] ?? '';
             $this->email = $data['email'] ?? '';
             $this->phone = $data['phone'] ?? '';
-            $this->is_active = $tenant->is_active ?? true;
-        } else {
+            $this->is_active = (bool)$tenantData->is_active;
+        } catch (\Exception $e) {
             $this->dispatch('toast', [
                 'title' => 'Hata',
-                'message' => 'Tenant bulunamadı.',
+                'message' => 'Tenant verileri yüklenirken bir hata oluştu.',
                 'type' => 'error'
             ]);
         }
@@ -108,78 +120,138 @@ class TenantComponent extends Component
         
         $wasRecentlyCreated = false;
         
-        // Yeni tenant verileri
-        $newData = [
-            'name'     => $this->name,
-            'fullname' => $this->fullname,
-            'email'    => $this->email,
-            'phone'    => $this->phone,
-            'updated_at' => now()->toDateTimeString()
-        ];
-        
-        if ($this->tenantId) {
-            // Mevcut tenant'ı güncelle
-            // Veritabanında direkt SQL sorgusu kullanarak data sütununu JSON olarak güncelleyelim
-            $affected = DB::table('tenants')
-                ->where('id', $this->tenantId)
-                ->update([
-                    'data' => json_encode($newData),
+        try {
+            if ($this->tenantId) {
+                // Mevcut tenant'ı güncelle
+                $tenant = Tenant::find($this->tenantId);
+                
+                if ($tenant) {
+                    // Veri hazırla
+                    $data = [];
+                    
+                    // Sadece dolu alanları ekle
+                    if (!empty($this->fullname)) $data['fullname'] = $this->fullname;
+                    if (!empty($this->email)) $data['email'] = $this->email;
+                    if (!empty($this->phone)) $data['phone'] = $this->phone;
+                    
+                    // Güncelleme zamanı ekleyelim
+                    $data['updated_at'] = now()->toDateTimeString();
+                    
+                    // Direkt veritabanı güncelleme
+                    DB::table('tenants')
+                        ->where('id', $tenant->id)
+                        ->update([
+                            'title' => $this->name,
+                            'is_active' => $this->is_active ? 1 : 0,
+                            'data' => empty($data) ? null : json_encode($data),
+                            'updated_at' => now()
+                        ]);
+                    
+                    // Güncel tenant'ı yükle
+                    $tenant = Tenant::find($tenant->id);
+                    
+                    // Log işlemi
+                    activity()
+                        ->performedOn($tenant)
+                        ->withProperties([
+                            'title' => $this->name,
+                            'data' => $data
+                        ])
+                        ->log('tenant güncellendi');
+                } else {
+                    throw new \Exception("Tenant bulunamadı");
+                }
+            } else {
+                // Yeni tenant oluştur
+                $dbName = 'tenant_' . strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $this->name));
+                
+                // Veri hazırla
+                $data = [];
+                
+                // Sadece dolu alanları ekle
+                if (!empty($this->fullname)) $data['fullname'] = $this->fullname;
+                if (!empty($this->email)) $data['email'] = $this->email;
+                if (!empty($this->phone)) $data['phone'] = $this->phone;
+                
+                // Zaman bilgisi
+                $data['created_at'] = now()->toDateTimeString();
+                $data['updated_at'] = now()->toDateTimeString();
+                
+                // DB insertion
+                $tenantId = DB::table('tenants')->insertGetId([
+                    'title' => $this->name,
+                    'tenancy_db_name' => $dbName,
+                    'data' => empty($data) ? null : json_encode($data),
                     'is_active' => $this->is_active ? 1 : 0,
+                    'created_at' => now(),
                     'updated_at' => now()
                 ]);
                 
-            if ($affected) {
-                $tenant = Tenant::find($this->tenantId);
-                log_activity($tenant, 'güncellendi');
+                // Güncel tenant'ı yükle
+                $tenant = Tenant::find($tenantId);
+                
+                // Log işlemi
+                activity()
+                    ->performedOn($tenant)
+                    ->withProperties([
+                        'title' => $this->name,
+                        'data' => $data
+                    ])
+                    ->log('tenant oluşturuldu');
+                
+                $wasRecentlyCreated = true;
             }
-        } else {
-            // Yeni tenant oluştur
-            $dbName = 'tenant_' . strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $this->name));
-            
-            // Oluşturma zamanını ekle
-            $newData['created_at'] = now()->toDateTimeString();
-            
-            $tenant = new Tenant();
-            $tenant->title = $this->name;
-            $tenant->tenancy_db_name = $dbName;
-            $tenant->data = $newData; // Cast edilen sütun
-            $tenant->is_active = $this->is_active;
-            $tenant->save();
-            
-            log_activity($tenant, 'oluşturuldu');
-            
-            $wasRecentlyCreated = true;
-        }
 
-        $this->resetForm();
+            $this->resetForm();
 
-        $this->dispatch('toast', [
-            'title' => 'Başarılı!',
-            'message' => $wasRecentlyCreated ? 'Tenant başarıyla oluşturuldu.' : 'Tenant başarıyla güncellendi.',
-            'type' => 'success'
-        ]);
+            $this->dispatch('toast', [
+                'title' => 'Başarılı!',
+                'message' => $wasRecentlyCreated ? 'Tenant başarıyla oluşturuldu.' : 'Tenant başarıyla güncellendi.',
+                'type' => 'success'
+            ]);
 
-        if ($action === 'close') {
+            // Modali kapat
             $this->dispatch('hideModal', ['id' => 'modal-tenant-edit']);
             $this->dispatch('hideModal', ['id' => 'modal-tenant-add']);
+        } catch (\Exception $e) {
+            $this->dispatch('toast', [
+                'title' => 'Hata!',
+                'message' => 'Tenant kaydedilirken bir hata oluştu: ' . $e->getMessage(),
+                'type' => 'error'
+            ]);
         }
     }
 
     public function deleteTenant($id)
     {
-        $tenant = Tenant::find($id);
+        try {
+            $tenant = Tenant::find($id);
 
-        if ($tenant) {
-            log_activity($tenant, 'silindi');
-            $tenant->delete();
-            
+            if ($tenant) {
+                activity()
+                    ->performedOn($tenant)
+                    ->withProperties([
+                        'id' => $tenant->id,
+                        'title' => $tenant->title
+                    ])
+                    ->log('tenant silindi');
+                    
+                $tenant->delete();
+                
+                $this->dispatch('toast', [
+                    'title' => 'Başarılı!',
+                    'message' => 'Tenant başarıyla silindi.',
+                    'type' => 'success'
+                ]);
+                
+                $this->dispatch('itemDeleted');
+            }
+        } catch (\Exception $e) {
             $this->dispatch('toast', [
-                'title' => 'Başarılı!',
-                'message' => 'Tenant başarıyla silindi.',
-                'type' => 'success'
+                'title' => 'Hata!',
+                'message' => 'Tenant silinirken bir hata oluştu: ' . $e->getMessage(),
+                'type' => 'error'
             ]);
-            
-            $this->dispatch('itemDeleted');
         }
     }
 
@@ -202,21 +274,35 @@ class TenantComponent extends Component
     {
         $this->validateOnly('newDomain');
 
-        $tenant = Tenant::find($this->tenantId);
-        if ($tenant) {
-            $domain = $tenant->domains()->create([
-                'domain' => $this->newDomain,
-            ]);
+        try {
+            $tenant = Tenant::find($this->tenantId);
+            if ($tenant) {
+                $domain = $tenant->domains()->create([
+                    'domain' => $this->newDomain,
+                ]);
 
-            log_activity($domain, 'oluşturuldu');
-            
-            $this->loadDomains($this->tenantId);
-            $this->newDomain = '';
-            
+                activity()
+                    ->performedOn($domain)
+                    ->withProperties([
+                        'domain' => $domain->domain,
+                        'tenant_id' => $tenant->id
+                    ])
+                    ->log('domain oluşturuldu');
+                
+                $this->loadDomains($this->tenantId);
+                $this->newDomain = '';
+                
+                $this->dispatch('toast', [
+                    'title' => 'Başarılı!',
+                    'message' => 'Domain başarıyla eklendi.',
+                    'type' => 'success'
+                ]);
+            }
+        } catch (\Exception $e) {
             $this->dispatch('toast', [
-                'title' => 'Başarılı!',
-                'message' => 'Domain başarıyla eklendi.',
-                'type' => 'success'
+                'title' => 'Hata!',
+                'message' => 'Domain eklenirken bir hata oluştu: ' . $e->getMessage(),
+                'type' => 'error'
             ]);
         }
     }
@@ -229,42 +315,68 @@ class TenantComponent extends Component
 
     public function updateDomain($domainId)
     {
-        $domain = Domain::find($domainId);
+        try {
+            $domain = Domain::find($domainId);
 
-        if ($domain) {
-            $oldDomain = $domain->domain;
-            $domain->update(['domain' => $this->editingDomainValue]);
+            if ($domain) {
+                $oldDomain = $domain->domain;
+                $domain->update(['domain' => $this->editingDomainValue]);
 
-            log_activity($domain, 'güncellendi', [
-                'old' => $oldDomain,
-                'new' => $this->editingDomainValue
-            ]);
+                activity()
+                    ->performedOn($domain)
+                    ->withProperties([
+                        'old' => $oldDomain,
+                        'new' => $this->editingDomainValue
+                    ])
+                    ->log('domain güncellendi');
 
-            $this->loadDomains($this->tenantId);
-            $this->editingDomainId    = null;
-            $this->editingDomainValue = '';
-            
+                $this->loadDomains($this->tenantId);
+                $this->editingDomainId    = null;
+                $this->editingDomainValue = '';
+                
+                $this->dispatch('toast', [
+                    'title' => 'Başarılı!',
+                    'message' => 'Domain başarıyla güncellendi.',
+                    'type' => 'success'
+                ]);
+            }
+        } catch (\Exception $e) {
             $this->dispatch('toast', [
-                'title' => 'Başarılı!',
-                'message' => 'Domain başarıyla güncellendi.',
-                'type' => 'success'
+                'title' => 'Hata!',
+                'message' => 'Domain güncellenirken bir hata oluştu: ' . $e->getMessage(),
+                'type' => 'error'
             ]);
         }
     }
 
     public function deleteDomain($domainId)
     {
-        $domain = Domain::find($domainId);
+        try {
+            $domain = Domain::find($domainId);
 
-        if ($domain) {
-            log_activity($domain, 'silindi');
-            $domain->delete();
-            $this->loadDomains($this->tenantId);
-            
+            if ($domain) {
+                activity()
+                    ->performedOn($domain)
+                    ->withProperties([
+                        'domain' => $domain->domain,
+                        'tenant_id' => $domain->tenant_id
+                    ])
+                    ->log('domain silindi');
+                    
+                $domain->delete();
+                $this->loadDomains($this->tenantId);
+                
+                $this->dispatch('toast', [
+                    'title' => 'Başarılı!',
+                    'message' => 'Domain başarıyla silindi.',
+                    'type' => 'success'
+                ]);
+            }
+        } catch (\Exception $e) {
             $this->dispatch('toast', [
-                'title' => 'Başarılı!',
-                'message' => 'Domain başarıyla silindi.',
-                'type' => 'success'
+                'title' => 'Hata!',
+                'message' => 'Domain silinirken bir hata oluştu: ' . $e->getMessage(),
+                'type' => 'error'
             ]);
         }
     }

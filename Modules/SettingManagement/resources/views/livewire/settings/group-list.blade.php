@@ -86,11 +86,11 @@
                                                 </div>
                                                 @endif
                                             </div>
-                                            <div class="btn-list"><span class="badge badge-outline text-primary">{{
+                                            <div class="btn-list"><span class="badge py-2 px-3">{{
                                                     $child->settings->count()
                                                     }}</span>
                                                 <div class="dropdown">
-                                                    <a href="#" class="btn btn-icon btn-sm" data-bs-toggle="dropdown">
+                                                    <a href="#" class="btn btn-icon" data-bs-toggle="dropdown">
                                                         <i class="fas fa-ellipsis-v"></i>
                                                     </a>
                                                     <div class="dropdown-menu dropdown-menu-end">

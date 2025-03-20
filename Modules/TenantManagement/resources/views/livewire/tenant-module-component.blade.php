@@ -38,8 +38,7 @@
                     <div class="col-auto">
                         <label class="form-check">
                             <input type="checkbox" class="form-check-input" wire:model.live="selectedModules"
-                                value="{{ $module->module_id }}" @if(in_array((string)$module->module_id,
-                            $selectedModules)) checked @endif>
+                                value="{{ $module->module_id }}">
                         </label>
                     </div>
                     <div class="col">

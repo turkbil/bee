@@ -76,18 +76,18 @@
                                     </div>
                                 </div>
                                 <div class="col-auto">
-                                    <a href="javascript:void(0);" class="btn btn-outline-info btn-open-domain-modal"
-                                        data-bs-toggle="modal" data-bs-target="#modal-domain-management"
-                                        wire:click="loadDomains('{{ $tenant->id }}')">
-                                        Domainler
-                                    </a>
-                                </div>
-                                <div class="col-auto">
-                                    <a href="javascript:void(0);" class="btn btn-outline-primary btn-open-module-modal"
-                                        data-bs-toggle="modal" data-bs-target="#modal-module-management"
-                                        wire:click="$set('tenantId', '{{ $tenant->id }}')">
-                                        Modüller
-                                    </a>
+                                    <div class="btn-group">
+                                        <a href="javascript:void(0);" class="btn btn-outline-primary btn-open-module-modal"
+                                            data-bs-toggle="modal" data-bs-target="#modal-module-management"
+                                            wire:click="$set('tenantId', '{{ $tenant->id }}')">
+                                            <i class="fas fa-cubes me-1"></i> Modüller
+                                        </a>
+                                        <a href="javascript:void(0);" class="btn btn-outline-info btn-open-domain-modal"
+                                            data-bs-toggle="modal" data-bs-target="#modal-domain-management"
+                                            wire:click="loadDomains('{{ $tenant->id }}')">
+                                            <i class="fas fa-globe me-1"></i> Domainler
+                                        </a>
+                                    </div>
                                 </div>
                                 <div class="col-auto">
                                     <div class="dropdown">
@@ -98,15 +98,14 @@
                                             <a href="javascript:void(0);" class="dropdown-item"
                                                 wire:click="editTenant('{{ $tenant->id }}')" data-bs-toggle="modal"
                                                 data-bs-target="#modal-tenant-manage">
-                                                Düzenle
+                                                <i class="fas fa-edit me-2"></i> Düzenle
                                             </a>
                                             <a href="javascript:void(0);" class="dropdown-item text-danger"
-                                                wire:click="$dispatch('showDeleteModal', { 
-                                                    type: 'tenant', 
+                                                wire:click="$dispatch('showDeleteTenantModal', { 
                                                     id: {{ $tenant->id }}, 
                                                     title: '{{ addslashes($tenant->data['name'] ?? $tenant->title) }}'
                                                 })">
-                                                <i class="fas fa-trash me-2"></i>Sil
+                                                <i class="fas fa-trash me-2"></i> Sil
                                             </a>
                                         </div>
                                     </div>
@@ -126,7 +125,8 @@
     @include('tenantmanagement::modals.domain-modal')
     @include('tenantmanagement::modals.module-modal')
     
-    <livewire:modals.delete-modal />
+    <livewire:tenantmanagement::modals.delete-tenant-modal />
+    <livewire:tenantmanagement::modals.delete-domain-modal />
 
     @push('scripts')
     <script>
@@ -139,7 +139,9 @@
                 }
             });
             
-            Livewire.on('itemDeleted', () => {
+            Livewire.on('refreshList', () => {
+                Livewire.dispatch('$refresh');
+                
                 setTimeout(() => {
                     const modalBackdrops = document.querySelectorAll('.modal-backdrop');
                     modalBackdrops.forEach(backdrop => backdrop.remove());
@@ -147,6 +149,23 @@
                     document.body.style.overflow = '';
                 }, 300);
             });
+            
+            // Modal kapatıldığında resetleme işlemi
+            const domainModal = document.getElementById('modal-domain-management');
+            if (domainModal) {
+                domainModal.addEventListener('hidden.bs.modal', function () {
+                    Livewire.dispatch('refreshDomains', @this.tenantId);
+                });
+            }
+            
+            // Modal kapatıldığında resetleme işlemi
+            const moduleModal = document.getElementById('modal-module-management');
+            if (moduleModal) {
+                moduleModal.addEventListener('shown.bs.modal', function () {
+                    // Burada sadece modalın açıldığı olayını dinliyoruz
+                    // TenantModuleComponent içindeki loadModules metodu tenantId'yi güncellendiğinde otomatik çalışacak
+                });
+            }
         });
     </script>
     @endpush

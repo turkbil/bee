@@ -25,6 +25,10 @@
                 </div>
                 <div class="col">
                     <div class="d-flex align-items-center justify-content-end gap-3">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-tenant-manage"
+                            wire:click="resetForm">
+                            <i class="fas fa-plus me-2"></i>Yeni Tenant
+                        </button>
                         <div style="min-width: 70px">
                             <select wire:model.live="perPage" class="form-select">
                                 <option value="10">10</option>
@@ -64,7 +68,7 @@
                                         +{{ $domainCount - 1 }}
                                         @endif
                                         @else
-                                        -
+                                        <span class="text-muted fst-italic">Domain Tanımlanmamış</span>
                                         @endif
                                     </div>
                                     <div class="small mt-1">
@@ -76,7 +80,7 @@
                                     </div>
                                 </div>
                                 <div class="col-auto">
-                                    <div class="btn-group">
+                                    <div class="btn-list">
                                         <a href="javascript:void(0);" class="btn btn-outline-primary btn-open-module-modal"
                                             data-bs-toggle="modal" data-bs-target="#modal-module-management"
                                             wire:click="$set('tenantId', '{{ $tenant->id }}')">
@@ -115,6 +119,25 @@
                     </div>
                 </div>
                 @endforeach
+
+                @if($tenants->count() === 0)
+                <div class="col-12">
+                    <div class="empty">
+                        <div class="empty-img">
+                            <img src="{{ asset('tabler/static/illustrations/undraw_no_data_re_kwbl.svg') }}" height="128" alt="">
+                        </div>
+                        <p class="empty-title">Kayıt Bulunamadı</p>
+                        <p class="empty-subtitle text-muted">
+                            Henüz tenant eklenmemiş veya arama kriterlerinize uygun tenant bulunmuyor.
+                        </p>
+                        <div class="empty-action">
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-tenant-manage" wire:click="resetForm">
+                                <i class="fas fa-plus me-2"></i> Yeni Tenant Ekle
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                @endif
             </div>
         </div>
         
@@ -142,28 +165,47 @@
             Livewire.on('refreshList', () => {
                 Livewire.dispatch('$refresh');
                 
+                // Modal arka planını temizle
                 setTimeout(() => {
                     const modalBackdrops = document.querySelectorAll('.modal-backdrop');
                     modalBackdrops.forEach(backdrop => backdrop.remove());
                     document.body.classList.remove('modal-open');
                     document.body.style.overflow = '';
+                    document.body.style.paddingRight = '';
                 }, 300);
             });
             
-            // Modal kapatıldığında resetleme işlemi
-            const domainModal = document.getElementById('modal-domain-management');
-            if (domainModal) {
-                domainModal.addEventListener('hidden.bs.modal', function () {
-                    Livewire.dispatch('refreshDomains', @this.tenantId);
+            // Tenant modalı kapatıldığında form temizleyelim
+            const tenantModal = document.getElementById('modal-tenant-manage');
+            if (tenantModal) {
+                tenantModal.addEventListener('hidden.bs.modal', function () {
+                    Livewire.dispatch('resetTenantForm');
                 });
             }
             
-            // Modal kapatıldığında resetleme işlemi
+            // Domain modalı kapatıldığında güncelleyelim
+            const domainModal = document.getElementById('modal-domain-management');
+            if (domainModal) {
+                domainModal.addEventListener('hidden.bs.modal', function () {
+                    if (@this.tenantId) {
+                        Livewire.dispatch('refreshDomains', @this.tenantId);
+                    }
+                });
+            }
+            
+            // Modül modalı kapatıldığında listeyi güncelleyelim
             const moduleModal = document.getElementById('modal-module-management');
             if (moduleModal) {
+                moduleModal.addEventListener('hidden.bs.modal', function () {
+                    Livewire.dispatch('$refresh');
+                });
+                
                 moduleModal.addEventListener('shown.bs.modal', function () {
-                    // Burada sadece modalın açıldığı olayını dinliyoruz
-                    // TenantModuleComponent içindeki loadModules metodu tenantId'yi güncellendiğinde otomatik çalışacak
+                    // Modül komponenti yüklendikten sonra tenantId güncelleme olayını tetikle
+                    if (@this.tenantId) {
+                        // TenantModuleComponent'e tenantId değiştiğini bildir
+                        Livewire.dispatch('tenantIdUpdated', @this.tenantId);
+                    }
                 });
             }
         });

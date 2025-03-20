@@ -27,8 +27,14 @@ class TenantComponent extends Component
     #[Url]
     public $sortDirection = 'desc';
 
-    public $name, $fullname, $email, $phone, $is_active;
-    public $newDomain, $editingDomainId, $editingDomainValue;
+    public $name = '';
+    public $fullname = '';
+    public $email = '';
+    public $phone = '';
+    public $is_active = true;
+    public $newDomain = '';
+    public $editingDomainId = null;
+    public $editingDomainValue = '';
     public $tenantId = null;
     public $domains = [];
     
@@ -167,6 +173,8 @@ class TenantComponent extends Component
         $tenant = Tenant::find($tenantId);
         if ($tenant) {
             $this->domains = $tenant->domains()->get()->toArray();
+        } else {
+            $this->domains = [];
         }
     }
 
@@ -262,7 +270,7 @@ class TenantComponent extends Component
     
     public function resetForm()
     {
-        $this->reset(['tenantId', 'name', 'fullname', 'email', 'phone', 'newDomain', 'domains']);
+        $this->reset(['tenantId', 'name', 'fullname', 'email', 'phone']);
         $this->is_active = true;
     }
 

@@ -24,6 +24,9 @@
             <i class="fas fa-file-alt me-2 text-muted"></i>
             <h3 class="card-title mb-0">İçerik Modülleri</h3>
             @break
+            @default
+            <i class="fas fa-puzzle-piece me-2 text-muted"></i>
+            <h3 class="card-title mb-0">{{ ucfirst($type) }} Modüller</h3>
             @endswitch
             <div class="ms-auto">
                 <span class="badge bg-primary">

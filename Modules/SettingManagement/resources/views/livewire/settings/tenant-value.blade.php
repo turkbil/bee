@@ -9,11 +9,12 @@
                     <code>{{ $setting->key }}</code>
                 </p>
             </div>
-            <label class="form-check form-switch m-0">
-                <input class="form-check-input" type="checkbox" wire:model.live="useDefault"
-                    wire:change="toggleDefault">
-                <span class="form-check-label">Varsayılan Değeri Kullan</span>
-            </label>
+            <div class="pretty p-switch p-fill">
+                <input type="checkbox" wire:model.live="useDefault" wire:change="toggleDefault" />
+                <div class="state p-success">
+                    <label>Varsayılan Değeri Kullan</label>
+                </div>
+            </div>
         </div>
     </div>
     <div class="card-body">
@@ -46,10 +47,15 @@
                 </div>
             </div>
             @elseif($setting->type === 'checkbox')
-            <label class="form-check">
+            <div class="pretty p-default p-curve p-toggle p-smooth">
                 <input type="checkbox" class="form-check-input" wire:model="value" {{ $useDefault ? 'disabled' : '' }}>
-                <span class="form-check-label">{{ $value ? 'Evet' : 'Hayır' }}</span>
-            </label>
+                <div class="state p-success p-on">
+                    <label>Evet</label>
+                </div>
+                <div class="state p-danger p-off">
+                    <label>Hayır</label>
+                </div>
+            </div>
             @else
             <input type="{{ $setting->type }}" wire:model="value" class="form-control" {{ $useDefault ? 'disabled' : ''
                 }}>

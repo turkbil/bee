@@ -50,13 +50,34 @@ class Manage extends Component
                 'group_id', 'label', 'key', 'type', 'options', 
                 'default_value', 'sort_order', 'is_active'
             ]);
+        } else {
+            // Yeni kayıt için sort_order değerini en sona al
+            $this->inputs['sort_order'] = Setting::max('sort_order') + 1;
         }
     }
 
     public function updatedInputsLabel()
     {
         if (empty($this->inputs['key']) && !empty($this->inputs['label'])) {
-            $this->inputs['key'] = Str::snake($this->inputs['label']);
+            $selectedGroup = null;
+            if (!empty($this->inputs['group_id'])) {
+                $selectedGroup = SettingGroup::find($this->inputs['group_id']);
+            }
+            
+            $prefix = $selectedGroup ? Str::snake($selectedGroup->name) . '_' : 'setting_';
+            $this->inputs['key'] = $prefix . Str::snake($this->inputs['label']);
+        }
+    }
+
+    public function updatedInputsGroupId()
+    {
+        if (!empty($this->inputs['label']) && !empty($this->inputs['group_id'])) {
+            $selectedGroup = SettingGroup::find($this->inputs['group_id']);
+            if ($selectedGroup) {
+                $prefix = Str::snake($selectedGroup->name) . '_';
+                $key = Str::snake($this->inputs['label']);
+                $this->inputs['key'] = $prefix . $key;
+            }
         }
     }
 

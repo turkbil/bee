@@ -22,10 +22,15 @@
                             <div class="card-body">
                                 <div class="d-flex align-items-center">
                                     <div class="avatar bg-primary-lt me-2">
-                                        <i class="{{ $group->icon ?? 'fas fa-folder' }}"></i>
+                                        <i class="{{ $group->icon ?? 'fas fa-folder' }} {{ !$group->is_active ? 'text-danger' : '' }}"></i>
                                     </div>
                                     <div>
-                                        <h3 class="card-title mb-0">{{ $group->name }}</h3>
+                                        <h3 class="card-title mb-0 d-flex align-items-center">
+                                            {{ $group->name }}
+                                            @if(!$group->is_active)
+                                            <span class="badge bg-danger text-white ms-2">Pasif</span>
+                                            @endif
+                                        </h3>
                                         @if($group->description)
                                         <small class="text-muted">{{ Str::limit($group->description, 50) }}</small>
                                         @endif
@@ -46,8 +51,7 @@
                                                 </a>
                                                 <button wire:click="toggleActive({{ $group->id }})"
                                                     class="dropdown-item">
-                                                    <i
-                                                        class="fas fa-{{ $group->is_active ? 'ban' : 'check' }} me-2"></i>
+                                                    <i class="fas fa-{{ $group->is_active ? 'ban' : 'check' }} me-2"></i>
                                                     {{ $group->is_active ? 'Pasif Yap' : 'Aktif Yap' }}
                                                 </button>
                                                 @if($group->children->isEmpty())
@@ -71,25 +75,31 @@
                                 <div class="row align-items-center">
                                     <div class="col-auto">
                                         <span class="avatar avatar-sm bg-primary-lt">
-                                            <i class="{{ $child->icon ?? 'fas fa-circle' }}"></i>
+                                            <i class="{{ $child->icon ?? 'fas fa-circle' }} {{ !$child->is_active ? 'text-danger' : '' }}"></i>
                                         </span>
                                     </div>
                                     <div class="col">
                                         <div class="d-flex align-items-center">
                                             <div class="flex-fill">
-                                                <div class="font-weight-medium"> 
+                                                <div class="font-weight-medium d-flex align-items-center"> 
                                                     <a href="{{ route('admin.settingmanagement.items', $child->id) }}"
-                                                        class="text-reset">{{ $child->name }}</a>
+                                                        class="text-reset">
+                                                        {{ $child->name }}
+                                                    </a>
+                                                    @if(!$child->is_active)
+                                                    <span class="badge bg-danger text-white ms-2">Pasif</span>
+                                                    @endif
                                                 </div>
                                                 @if($child->description)
                                                 <div class="text-muted small">{{ Str::limit($child->description, 40) }}
                                                 </div>
                                                 @endif
                                             </div>
-                                            <div class="btn-list"><span class="badge py-2 px-3">{{
-                                                    $child->settings->count()
-                                                    }}</span>
-                                                <div class="dropdown">
+                                            <div class="d-flex align-items-center justify-content-end">
+                                                <span class="badge bg-primary text-white text-center align-middle d-flex align-items-center justify-content-center" style="min-width: 2.5rem; padding: 0.35rem 0.5rem;">
+                                                    {{ $child->settings->count() }}
+                                                </span>
+                                                <div class="dropdown ms-2">
                                                     <a href="#" class="btn btn-icon" data-bs-toggle="dropdown">
                                                         <i class="fas fa-ellipsis-v"></i>
                                                     </a>
@@ -100,8 +110,7 @@
                                                         </a>
                                                         <button wire:click="toggleActive({{ $child->id }})"
                                                             class="dropdown-item">
-                                                            <i
-                                                                class="fas fa-{{ $child->is_active ? 'ban' : 'check' }} me-2"></i>
+                                                            <i class="fas fa-{{ $child->is_active ? 'ban' : 'check' }} me-2"></i>
                                                             {{ $child->is_active ? 'Pasif Yap' : 'Aktif Yap' }}
                                                         </button>
                                                         @if($child->children->isEmpty())

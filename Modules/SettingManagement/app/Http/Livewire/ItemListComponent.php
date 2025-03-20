@@ -1,14 +1,16 @@
 <?php
 
-namespace Modules\SettingManagement\App\Http\Livewire\Settings;
+namespace Modules\SettingManagement\App\Http\Livewire;
 
 use Livewire\Attributes\Url;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Modules\SettingManagement\App\Models\Setting;
 use Modules\SettingManagement\App\Models\SettingGroup;
 
-class ItemList extends Component
+#[Layout('admin.layout')]
+class ItemListComponent extends Component
 {
     use WithPagination;
     
@@ -29,28 +31,7 @@ class ItemList extends Component
         'search' => ['except' => ''],
     ];
 
-    protected $listeners = ['updateOrder'];
-
-    public function mount($group)
-    {
-        $this->groupId = $group;
-    }
-
-    public function updatedSearch()
-    {
-        $this->resetPage();
-    }
-
-    public function sortBy($field)
-    {
-        if ($this->sortField === $field) {
-            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
-        } else {
-            $this->sortField = $field;
-            $this->sortDirection = 'asc';
-        }
-    }
-
+    #[On('updateOrder')]
     public function updateOrder($list)
     {
         $oldOrders = Setting::where('group_id', $this->groupId)
@@ -76,6 +57,26 @@ class ItemList extends Component
                     );
                 }
             }
+        }
+    }
+
+    public function mount($group)
+    {
+        $this->groupId = $group;
+    }
+
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function sortBy($field)
+    {
+        if ($this->sortField === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortField = $field;
+            $this->sortDirection = 'asc';
         }
     }
 
@@ -142,10 +143,10 @@ class ItemList extends Component
             })
             ->orderBy('sort_order', 'asc')
             ->orderBy($this->sortField, $this->sortDirection)
-            ->get(); // Tüm kayıtları getir
+            ->get();
 
-        return view('settingmanagement::livewire.settings.item-list', [
+        return view('settingmanagement::livewire.item-list-component', [
             'settings' => $settings,
-        ])->extends('admin.layout');
+        ]);
     }
 }

@@ -27,6 +27,9 @@ Ayar Yönetimi
                     <a class="dropdown-item" href="{{ route('admin.settingmanagement.group.manage') }}">
                         Yeni Ayar Grubu
                     </a>
+                    <a class="dropdown-item" href="{{ route('admin.settingmanagement.tenant.settings') }}">
+                        Tenant Ayarları
+                    </a>
                     <h6 class="dropdown-menu-header card-header-light">
                         <span class="dropdown-header">Ayar İşlemleri</span>
                     </h6>

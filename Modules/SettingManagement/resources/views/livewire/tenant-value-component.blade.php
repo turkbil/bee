@@ -96,7 +96,7 @@
         </div>
     </div>
     <div class="card-footer d-flex justify-content-between align-items-center">
-        <a href="{{ url()->previous() }}" class="btn">
+        <a href="{{ url()->previous() }}" class="btn btn-link text-decoration-none">
             <i class="fas fa-arrow-left me-2"></i>
             Geri Dön
         </a>
@@ -108,8 +108,14 @@
             </a>
             @endif
             <button type="button" class="btn btn-primary" wire:click="save">
-                <i class="fas fa-save me-2"></i>
-                Kaydet
+                <span class="d-flex align-items-center">
+                    <span wire:loading.remove wire:target="save">
+                        <i class="fas fa-save me-2"></i> Kaydet
+                    </span>
+                    <span wire:loading wire:target="save">
+                        <i class="fas fa-spinner fa-spin me-2"></i> Kaydediliyor...
+                    </span>
+                </span>
             </button>
         </div>
     </div>

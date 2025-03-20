@@ -1,14 +1,16 @@
 <?php
 
-namespace Modules\SettingManagement\App\Http\Livewire\Settings;
+namespace Modules\SettingManagement\App\Http\Livewire;
 
 use Livewire\Component;
+use Livewire\Attributes\Layout;
 use Livewire\WithPagination;
 use Modules\SettingManagement\App\Models\Setting;
 use Modules\SettingManagement\App\Models\SettingValue;
 use Modules\SettingManagement\App\Models\SettingGroup;
 
-class Values extends Component
+#[Layout('admin.layout')]
+class ValuesComponent extends Component
 {
     use WithPagination;
     
@@ -55,7 +57,7 @@ class Values extends Component
         }
     }
 
-    public function save()
+    public function save($redirect = false)
     {
         foreach ($this->values as $settingId => $value) {
             $setting = Setting::find($settingId);
@@ -89,6 +91,10 @@ class Values extends Component
         $this->originalValues = $this->values;
         $this->changes = [];
     
+        if ($redirect) {
+            return redirect()->route('admin.settingmanagement.tenant.settings');
+        }
+
         $this->dispatch('toast', [
             'title' => 'Başarılı!',
             'message' => 'Değişiklikler kaydedildi.',
@@ -102,8 +108,8 @@ class Values extends Component
             ->orderBy('sort_order', 'asc')
             ->get();
 
-        return view('settingmanagement::livewire.settings.values', [
+        return view('settingmanagement::livewire.values-component', [
             'settings' => $settings
-        ])->extends('admin.layout');
+        ]);
     }
 }

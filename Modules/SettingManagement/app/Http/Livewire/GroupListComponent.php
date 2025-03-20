@@ -1,13 +1,15 @@
 <?php
 
-namespace Modules\SettingManagement\App\Http\Livewire\Settings;
+namespace Modules\SettingManagement\App\Http\Livewire;
 
 use Livewire\Component;
+use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use Modules\SettingManagement\App\Models\SettingGroup;
 use Illuminate\Support\Str;
 
-class GroupList extends Component
+#[Layout('admin.layout')]
+class GroupListComponent extends Component
 {
     public $showAddForm = false;
     public $editingGroup = null;
@@ -175,8 +177,8 @@ class GroupList extends Component
             })
             ->get();
 
-        return view('settingmanagement::livewire.settings.group-list', [
+        return view('settingmanagement::livewire.group-list-component', [
             'groups' => $groups
-        ])->extends('admin.layout');
+        ]);
     }
 }

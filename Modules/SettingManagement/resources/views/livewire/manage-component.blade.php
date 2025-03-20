@@ -14,50 +14,28 @@
                             </h3>
                         </div>
                         <div class="card-body">
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label class="form-label required">Grup</label>
-                                    <select wire:model.live="inputs.group_id"
-                                        class="form-select @error('inputs.group_id') is-invalid @enderror">
-                                        <option value="">Grup Seçin</option>
-                                        @foreach($groups->sortBy('name') as $group)
-                                        @if(is_null($group->parent_id))
-                                        <option disabled>{{ $group->name }}</option>
-                                        @foreach($groups->sortBy('name') as $subGroup)
-                                        @if($subGroup->parent_id === $group->id)
-                                        <option value="{{ $subGroup->id }}">--- {{ $subGroup->name }}</option>
-                                        @endif
-                                        @endforeach
-                                        @endif
-                                        @endforeach
-                                    </select>
-                                    @error('inputs.group_id')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label required">Tip</label>
-                                    <select wire:model.live="inputs.type"
-                                        class="form-select @error('inputs.type') is-invalid @enderror">
-                                        <option value="text">Metin</option>
-                                        <option value="textarea">Uzun Metin</option>
-                                        <option value="number">Sayı</option>
-                                        <option value="select">Seçim Kutusu</option>
-                                        <option value="checkbox">Onay Kutusu</option>
-                                        <option value="file">Dosya</option>
-                                        <option value="color">Renk</option>
-                                        <option value="date">Tarih</option>
-                                        <option value="email">E-posta</option>
-                                        <option value="password">Şifre</option>
-                                        <option value="tel">Telefon</option>
-                                        <option value="url">URL</option>
-                                        <option value="time">Saat</option>
-                                    </select>
-                                    @error('inputs.type')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
+                            <!-- Grup Seçimi -->
+                            <div class="mb-3">
+                                <label class="form-label required">Grup</label>
+                                <select wire:model.live="inputs.group_id"
+                                    class="form-select @error('inputs.group_id') is-invalid @enderror">
+                                    <option value="">Grup Seçin</option>
+                                    @foreach($groups->sortBy('name') as $group)
+                                    @if(is_null($group->parent_id))
+                                    <option disabled>{{ $group->name }}</option>
+                                    @foreach($groups->sortBy('name') as $subGroup)
+                                    @if($subGroup->parent_id === $group->id)
+                                    <option value="{{ $subGroup->id }}">--- {{ $subGroup->name }}</option>
+                                    @endif
+                                    @endforeach
+                                    @endif
+                                    @endforeach
+                                </select>
+                                @error('inputs.group_id')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
+                            
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label class="form-label required">Başlık</label>
@@ -83,6 +61,29 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label required">Tip</label>
+                                <select wire:model.live="inputs.type"
+                                    class="form-select @error('inputs.type') is-invalid @enderror">
+                                    <option value="text">Metin</option>
+                                    <option value="textarea">Uzun Metin</option>
+                                    <option value="number">Sayı</option>
+                                    <option value="select">Seçim Kutusu</option>
+                                    <option value="checkbox">Onay Kutusu</option>
+                                    <option value="file">Dosya</option>
+                                    <option value="color">Renk</option>
+                                    <option value="date">Tarih</option>
+                                    <option value="email">E-posta</option>
+                                    <option value="password">Şifre</option>
+                                    <option value="tel">Telefon</option>
+                                    <option value="url">URL</option>
+                                    <option value="time">Saat</option>
+                                </select>
+                                @error('inputs.type')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             @if($inputs['type'] === 'select')

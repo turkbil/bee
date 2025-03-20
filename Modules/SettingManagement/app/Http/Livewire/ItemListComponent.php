@@ -30,6 +30,12 @@ class ItemListComponent extends Component
         'sortDirection' => ['except' => 'desc'],
         'search' => ['except' => ''],
     ];
+    
+    protected $listeners = [
+        'deleteConfirmed' => 'performDelete'
+    ];
+
+    public $itemToDelete = null;
 
     #[On('updateOrder')]
     public function updateOrder($list)
@@ -101,14 +107,23 @@ class ItemListComponent extends Component
         }
     }
 
-    public function preview($id)
-    {
-        $this->previewData = Setting::find($id);
-    }
-
     public function delete($id)
     {
-        $setting = Setting::where('group_id', $this->groupId)->find($id);
+        $setting = Setting::find($id);
+        
+        if ($setting) {
+            $this->itemToDelete = [
+                'id' => $setting->id,
+                'title' => $setting->label
+            ];
+            
+            $this->dispatch('openDeleteModal');
+        }
+    }
+    
+    public function performDelete($id)
+    {
+        $setting = Setting::find($id);
     
         if ($setting) {
             $deletedSetting = clone $setting;
@@ -121,9 +136,11 @@ class ItemListComponent extends Component
     
             $this->dispatch('toast', [
                 'title' => 'Başarılı!',
-                'message' => "\"{$setting->label}\" silindi.",
+                'message' => "\"{$deletedSetting->label}\" silindi.",
                 'type' => 'success',
             ]);
+            
+            $this->itemToDelete = null;
         }
     }
     

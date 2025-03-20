@@ -54,6 +54,11 @@ class ManageComponent extends Component
         } else {
             // Yeni kayıt için sort_order değerini en sona al
             $this->inputs['sort_order'] = Setting::max('sort_order') + 1;
+            
+            // URL'den group_id parametresi varsa inputs'a ekle
+            if (request()->has('group_id')) {
+                $this->inputs['group_id'] = request()->get('group_id');
+            }
         }
     }
 
@@ -65,8 +70,12 @@ class ManageComponent extends Component
                 $selectedGroup = SettingGroup::find($this->inputs['group_id']);
             }
             
-            $prefix = $selectedGroup ? Str::snake($selectedGroup->name) . '_' : 'setting_';
-            $this->inputs['key'] = $prefix . Str::snake($this->inputs['label']);
+            $prefix = '';
+            if ($selectedGroup) {
+                $prefix = Str::slug($selectedGroup->name, '_');
+            }
+            
+            $this->inputs['key'] = $prefix . '_' . Str::slug($this->inputs['label'], '_');
         }
     }
 
@@ -75,9 +84,9 @@ class ManageComponent extends Component
         if (!empty($this->inputs['label']) && !empty($this->inputs['group_id'])) {
             $selectedGroup = SettingGroup::find($this->inputs['group_id']);
             if ($selectedGroup) {
-                $prefix = Str::snake($selectedGroup->name) . '_';
-                $key = Str::snake($this->inputs['label']);
-                $this->inputs['key'] = $prefix . $key;
+                $prefix = Str::slug($selectedGroup->name, '_');
+                $key = Str::slug($this->inputs['label'], '_');
+                $this->inputs['key'] = $prefix . '_' . $key;
             }
         }
     }

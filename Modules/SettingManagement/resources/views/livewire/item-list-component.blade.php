@@ -47,7 +47,7 @@
                         </button>
                     </div>
 
-                    <a href="{{ route('admin.settingmanagement.manage') }}" class="btn btn-primary">
+                    <a href="{{ route('admin.settingmanagement.manage', ['group_id' => $groupId]) }}" class="btn btn-primary">
                         <i class="fas fa-plus me-2"></i>Yeni Ekle
                     </a>
                 </div>
@@ -83,7 +83,7 @@
                         <th class="text-center" style="width: 120px">İşlemler</th>
                     </tr>
                 </thead>
-                <tbody id="sortable-list">
+                <tbody id="sortable-list" style="min-height: 100px;">
                     @forelse($settings as $setting)
                     <tr wire:key="setting-{{ $setting->id }}" id="item-{{ $setting->id }}" data-id="{{ $setting->id }}"
                         class="hover-trigger">
@@ -133,9 +133,11 @@
                                                     <i class="fas fa-edit me-2"></i> Değer Düzenle
                                                 </a>
                                                 <a href="javascript:void(0);"
-                                                    wire:confirm="Silmek istediğinize emin misiniz?"
-                                                    wire:click="delete({{ $setting->id }})"
-                                                    class="dropdown-item link-danger">
+                                                    wire:click="$dispatch('showDeleteModal', {
+                                                        module: 'settingmanagement',
+                                                        id: {{ $setting->id }},
+                                                        title: '{{ $setting->label }}'
+                                                    })" class="dropdown-item link-danger">
                                                     <i class="fas fa-trash me-2"></i> Sil
                                                 </a>
                                             </div>
@@ -148,13 +150,13 @@
                     @empty
                     <tr>
                         <td colspan="6">
-                            <div class="empty">
+                            <div class="empty" style="min-height: 200px; display: flex; flex-direction: column; justify-content: center;">
                                 <p class="empty-title">Kayıt bulunamadı</p>
                                 <p class="empty-subtitle text-muted">
                                     Arama kriterlerinize uygun kayıt bulunmamaktadır.
                                 </p>
                                 <div class="empty-action">
-                                    <a href="{{ route('admin.settingmanagement.manage') }}" class="btn btn-primary">
+                                    <a href="{{ route('admin.settingmanagement.manage', ['group_id' => $groupId]) }}" class="btn btn-primary">
                                         <i class="fas fa-plus me-2"></i>
                                         Yeni Ayar Ekle
                                     </a>
@@ -224,13 +226,13 @@
             </div>
             @empty
             <div class="col-12">
-                <div class="empty">
+                <div class="empty" style="min-height: 200px; display: flex; flex-direction: column; justify-content: center;">
                     <p class="empty-title">Kayıt bulunamadı</p>
                     <p class="empty-subtitle text-muted">
                         Arama kriterlerinize uygun aktif kayıt bulunmamaktadır.
                     </p>
                     <div class="empty-action">
-                        <a href="{{ route('admin.settingmanagement.manage') }}" class="btn btn-primary">
+                        <a href="{{ route('admin.settingmanagement.manage', ['group_id' => $groupId]) }}" class="btn btn-primary">
                             <i class="fas fa-plus me-2"></i>
                             Yeni Ayar Ekle
                         </a>
@@ -272,6 +274,14 @@
     .table-sort.desc:after {
         content: " ↓";
     }
+    
+    .empty {
+        min-height: 200px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
 </style>
 @endpush
 
@@ -298,4 +308,6 @@
     });
 });
 </script>
+
+<livewire:modals.delete-modal />
 @endpush

@@ -19,11 +19,11 @@ class TenantValueComponent extends Component
     public $settingId;
     public $value;
     public $useDefault = false;
-    public $tempFile;
     public $previewing = false;
     public $previewUrl = null;
     public $datePickerFormat;
     public $timePickerFormat = 'h:i A';
+    public $temporaryImages = [];
     
     // Ayar türüne özgü alanlar
     public $colorValue = '#ffffff';
@@ -73,28 +73,32 @@ class TenantValueComponent extends Component
         }
     }
 
-    public function updatedTempFile()
+    public function updatedTemporaryImages($value, $key)
     {
-        if ($this->tempFile) {
-            $this->validate([
-                'tempFile' => 'file|max:2048|mimes:jpg,jpeg,png,gif,pdf,doc,docx,xls,xlsx,zip',
-            ]);
-            
-            // Eski dosyayı sil (varsa)
+        $this->validateOnly("temporaryImages.{$key}", [
+            "temporaryImages.{$key}" => $key === 'image' 
+                ? ['image', 'mimes:jpg,jpeg,png,webp,gif', 'max:2048']
+                : ['file', 'max:2048'],
+        ]);
+
+        if ($this->temporaryImages[$key]) {
+            // Eski dosyayı sil
             $setting = Setting::find($this->settingId);
-            $oldValue = SettingValue::where('setting_id', $this->settingId)->first();
+            $settingValue = SettingValue::where('setting_id', $this->settingId)->first();
             
-            if ($oldValue && !empty($oldValue->value) && Storage::disk('public')->exists($oldValue->value)) {
-                Storage::disk('public')->delete($oldValue->value);
+            $oldValue = $settingValue ? $settingValue->value : null;
+            
+            if ($oldValue && Storage::disk('public')->exists($oldValue)) {
+                Storage::disk('public')->delete($oldValue);
             }
             
-            // Yeni dosyayı kaydet
-            $filename = time() . '_' . $this->tempFile->getClientOriginalName();
-            $path = $this->tempFile->storeAs('settings', $filename, 'public');
-            
-            $this->value = $path;
-            $this->previewing = true;
-            $this->previewUrl = Storage::url($path);
+            // Yeni dosya için geçici URL ve ad hazırla
+            if ($key === 'image') {
+                $this->previewing = true;
+                $this->previewUrl = $this->temporaryImages[$key]->temporaryUrl();
+            } else {
+                $this->previewing = true;
+            }
         }
     }
     
@@ -162,6 +166,12 @@ class TenantValueComponent extends Component
         $this->previewing = false;
         $this->previewUrl = null;
         
+        // Tenant veritabanında dosya değerini güncelle
+        SettingValue::updateOrCreate(
+            ['setting_id' => $this->settingId],
+            ['value' => null]
+        );
+        
         $this->dispatch('toast', [
             'title' => 'Başarılı!',
             'message' => 'Dosya silindi.',
@@ -189,9 +199,15 @@ class TenantValueComponent extends Component
             
             if ($setting->type === 'checkbox') {
                 $valueToSave = $this->checkboxValue ? '1' : '0';
-            } elseif ($setting->type === 'image' && $this->tempImage) {
-                $path = $this->uploadImage($this->settingId);
-                if ($path) {
+            } elseif (($setting->type === 'image' || $setting->type === 'file') && !empty($this->temporaryImages)) {
+                // Dosya yüklemesi var, işle
+                $type = $setting->type;
+                $key = $type === 'image' ? 'image' : 'file';
+                
+                if (isset($this->temporaryImages[$key])) {
+                    $fileName = time() . '_' . Str::slug($setting->key) . '.' . $this->temporaryImages[$key]->getClientOriginalExtension();
+                    $folder = $type === 'image' ? 'images' : 'files';
+                    $path = $this->temporaryImages[$key]->storeAs("settings/{$folder}", $fileName, 'public');
                     $valueToSave = $path;
                 }
             }
@@ -205,7 +221,7 @@ class TenantValueComponent extends Component
             log_activity(
                 $setting,
                 'değeri güncellendi',
-                ['old' => $setting->value, 'new' => $valueToSave]
+                ['old' => $setting->default_value, 'new' => $valueToSave]
             );
             
             $message = 'Ayar değeri güncellendi.';

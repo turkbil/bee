@@ -5,20 +5,23 @@ namespace Modules\SettingManagement\App\Http\Livewire;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Livewire\WithPagination;
+use Livewire\WithFileUploads;
 use Modules\SettingManagement\App\Models\Setting;
 use Modules\SettingManagement\App\Models\SettingValue;
 use Modules\SettingManagement\App\Models\SettingGroup;
+use Illuminate\Support\Str;
 
 #[Layout('admin.layout')]
 class ValuesComponent extends Component
 {
-    use WithPagination;
+    use WithPagination, WithFileUploads;
     
     public $groupId;
     public $values = [];
     public $originalValues = [];
     public $changes = [];
     public $group;
+    public $temporaryImages = [];
 
     public function mount($group)
     {
@@ -47,11 +50,26 @@ class ValuesComponent extends Component
         $this->checkChanges();
     }
 
+    public function updatedTemporaryImages($value, $key)
+    {
+        $parts = explode('.', $key);
+        $settingId = $parts[0] ?? null;
+        
+        if ($settingId && isset($this->temporaryImages[$settingId])) {
+            $setting = Setting::find($settingId);
+            
+            if ($setting) {
+                $this->values[$settingId] = 'temp'; // Geçici değer, dosya yüklendiğinde gerçek path ile değiştirilecek
+                $this->checkChanges();
+            }
+        }
+    }
+
     public function checkChanges()
     {
         $this->changes = [];
         foreach ($this->values as $id => $value) {
-            if ($value != $this->originalValues[$id]) {
+            if ($value == 'temp' || $value != $this->originalValues[$id]) {
                 $this->changes[$id] = $value;
             }
         }
@@ -62,6 +80,31 @@ class ValuesComponent extends Component
         foreach ($this->values as $settingId => $value) {
             $setting = Setting::find($settingId);
             $oldValue = $this->originalValues[$settingId];
+            
+            // MediaLibrary ile dosya/resim yüklemelerini işle
+            if (isset($this->temporaryImages[$settingId])) {
+                $file = $this->temporaryImages[$settingId];
+                $type = $setting->type;
+                $collectionName = $type === 'image' ? 'images' : 'files';
+                
+                // Önceki medyayı temizle
+                $setting->clearMediaCollection($collectionName);
+                
+                // Yeni medyayı ekle
+                $fileName = Str::slug($setting->key) . '-' . Str::random(6) . '.' . $file->getClientOriginalExtension();
+                $media = $setting->addMedia($file->getRealPath())
+                    ->usingFileName($fileName)
+                    ->withCustomProperties([
+                        'setting_id' => $settingId,
+                        'type' => $type
+                    ])
+                    ->toMediaCollection($collectionName);
+                
+                // MediaLibrary'den alınan URL'yi value olarak kaydet
+                $mediaUrl = $media->getUrl();
+                $value = $mediaUrl;
+                $this->values[$settingId] = $mediaUrl;
+            }
             
             if ($value === $setting->default_value) {
                 SettingValue::where('setting_id', $settingId)->delete();
@@ -90,6 +133,7 @@ class ValuesComponent extends Component
     
         $this->originalValues = $this->values;
         $this->changes = [];
+        $this->temporaryImages = [];
     
         if ($redirect) {
             return redirect()->route('admin.settingmanagement.tenant.settings');
@@ -100,6 +144,33 @@ class ValuesComponent extends Component
             'message' => 'Değişiklikler kaydedildi.',
             'type' => 'success'
         ]);
+    }
+    
+    public function deleteMedia($settingId)
+    {
+        $setting = Setting::find($settingId);
+        
+        if ($setting) {
+            $type = $setting->type;
+            $collectionName = $type === 'image' ? 'images' : 'files';
+            
+            $setting->clearMediaCollection($collectionName);
+            
+            // SettingValue'da medya URL'sini temizle
+            SettingValue::updateOrCreate(
+                ['setting_id' => $settingId],
+                ['value' => null]
+            );
+            
+            $this->values[$settingId] = null;
+            $this->checkChanges();
+            
+            $this->dispatch('toast', [
+                'title' => 'Başarılı!',
+                'message' => 'Dosya silindi.',
+                'type' => 'success'
+            ]);
+        }
     }
     
     public function render()

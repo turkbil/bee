@@ -10,70 +10,70 @@ trait WithImageUpload
 {
     use WithFileUploads;
 
-    public $tempImage = null;
-    public $imagePreview = null;
+    public $temporaryImages = [];
 
-    public function updatedTempImage()
+    public function updatedTemporaryImages($value, $key)
     {
-        $this->validateOnly('tempImage', [
-            'tempImage' => ['image', 'mimes:jpg,jpeg,png,webp,gif', 'max:2048'],
+        $this->validateOnly("temporaryImages.{$key}", [
+            "temporaryImages.{$key}" => ['image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ]);
 
-        if ($this->tempImage) {
-            $this->imagePreview = $this->tempImage->temporaryUrl();
+        if ($this->temporaryImages[$key]) {
+            $this->uploadImage($key);
         }
     }
 
-    public function uploadImage($settingId = null)
+    private function uploadImage($imageKey, $model = null)
     {
-        if (!$this->tempImage) {
-            return null;
+        if (!$model && isset($this->settingId)) {
+            $model = Setting::find($this->settingId);
         }
+    
+        if ($model && isset($this->temporaryImages[$imageKey])) {
+            $fileName = Str::slug($model->key) . '-' . Str::random(6) . '.' . $this->temporaryImages[$imageKey]->getClientOriginalExtension();
+    
+            $path = $this->temporaryImages[$imageKey]->storeAs('settings/images', $fileName, 'public');
+            
+            if ($model->type === 'image' || $model->type === 'file') {
+                // Eğer daha önce dosya varsa sil
+                if ($model->default_value && Storage::disk('public')->exists($model->default_value)) {
+                    Storage::disk('public')->delete($model->default_value);
+                }
+                
+                $model->default_value = $path;
+                $model->save();
+                
+                log_activity(
+                    $model,
+                    'dosya yüklendi',
+                    ['path' => $path]
+                );
+            }
+            
+            return $path;
+        }
+        
+        return null;
+    }
 
-        $this->validate([
-            'tempImage' => ['image', 'mimes:jpg,jpeg,png,webp,gif', 'max:2048'],
-        ]);
-
-        // Eski resmi sil (eğer varsa)
-        if ($settingId) {
-            $setting = Setting::find($settingId);
-            if ($setting && !empty($setting->default_value) && Storage::disk('public')->exists($setting->default_value)) {
-                Storage::disk('public')->delete($setting->default_value);
+    public function removeImage($imageKey)
+    {
+        if (isset($this->settingId)) {
+            $model = Setting::find($this->settingId);
+            
+            if ($model && $model->default_value && Storage::disk('public')->exists($model->default_value)) {
+                Storage::disk('public')->delete($model->default_value);
+                
+                $model->default_value = null;
+                $model->save();
+                
+                log_activity(
+                    $model,
+                    'dosya silindi'
+                );
             }
         }
-
-        // Yeni resmi kaydet
-        $fileName = time() . '_' . $this->tempImage->getClientOriginalName();
-        $path = $this->tempImage->storeAs('settings/images', $fileName, 'public');
         
-        // Resim yolunu döndür
-        return $path;
-    }
-
-    public function deleteImage($imagePath)
-    {
-        if (empty($imagePath)) {
-            return;
-        }
-
-        if (Storage::disk('public')->exists($imagePath)) {
-            Storage::disk('public')->delete($imagePath);
-            return true;
-        }
-
-        return false;
-    }
-
-    public function imagePreviewUrl($imagePath)
-    {
-        if (empty($imagePath)) {
-            return null;
-        }
-
-        if (Storage::disk('public')->exists($imagePath)) {
-            return Storage::url($imagePath);
-        }
-
-        return null;
+        unset($this->temporaryImages[$imageKey]);
     }
 }

@@ -42,6 +42,16 @@ class TenantValueComponent extends Component
         }
     }
 
+    public function toggleDefault()
+    {
+        $this->useDefault = !$this->useDefault;
+        
+        if ($this->useDefault) {
+            $setting = Setting::find($this->settingId);
+            $this->value = $setting->default_value;
+        }
+    }
+
     public function save($redirect = false)
     {
         $setting = Setting::find($this->settingId);
@@ -81,15 +91,6 @@ class TenantValueComponent extends Component
             'message' => $message,
             'type' => 'success',
         ]);
-    }
-    
-    public function toggleDefault()
-    {
-        $this->useDefault = !$this->useDefault;
-        if ($this->useDefault) {
-            $setting = Setting::find($this->settingId);
-            $this->value = $setting->default_value;
-        }
     }
 
     public function render()

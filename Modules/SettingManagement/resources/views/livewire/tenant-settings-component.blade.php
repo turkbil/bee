@@ -88,7 +88,7 @@
                                         </a>
                                     </div>
                                 @elseif($setting->type === 'checkbox')
-                                    {{ $setting->current_value ? 'Evet' : 'Hayır' }}
+                                    {{ $setting->current_value == '1' ? 'Evet' : 'Hayır' }}
                                 @elseif($setting->type === 'textarea' || $setting->type === 'html')
                                     <span class="text-muted">{{ Str::limit(strip_tags($setting->current_value), 50) ?: '-' }}</span>
                                 @else

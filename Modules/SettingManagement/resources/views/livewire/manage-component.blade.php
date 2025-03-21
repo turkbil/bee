@@ -416,9 +416,12 @@ Diğer"></textarea>
                                             <input type="url" class="form-control" value="{{ $inputs['default_value'] }}" readonly placeholder="URL">
                                             @break
                                         @case('color')
-                                            <div class="d-flex gap-2 align-items-center">
-                                                <input type="color" class="form-control form-control-color" value="{{ $inputs['default_value'] ?? '#ffffff' }}" readonly>
-                                                <span>{{ $inputs['default_value'] ?? '#ffffff' }}</span>
+                                            <div class="mb-3">
+                                                <label class="form-label">Renk seçimi</label>
+                                                <input type="color" class="form-control form-control-color" 
+                                                       value="{{ $inputs['default_value'] }}" 
+                                                       wire:model="inputs.default_value"
+                                                       title="Renk seçin">
                                             </div>
                                             @break
                                         @case('date')

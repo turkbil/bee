@@ -163,7 +163,10 @@ class TenantComponent extends Component
                 }
             } else {
                 // Yeni tenant oluştur
-                $dbName = 'tenant_' . strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $this->name));
+                // Benzersiz veritabanı adı oluştur (rastgele suffix ekleyerek)
+                $baseDbName = 'tenant_' . strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $this->name));
+                $randomSuffix = '_' . substr(md5(mt_rand()), 0, 6);
+                $dbName = $baseDbName . $randomSuffix;
                 
                 // Veri hazırla
                 $data = [];
@@ -177,18 +180,13 @@ class TenantComponent extends Component
                 $data['created_at'] = now()->toDateTimeString();
                 $data['updated_at'] = now()->toDateTimeString();
                 
-                // DB insertion
-                $tenantId = DB::table('tenants')->insertGetId([
+                // Tenant oluştur
+                $tenant = Tenant::create([
                     'title' => $this->name,
                     'tenancy_db_name' => $dbName,
-                    'data' => empty($data) ? null : json_encode($data),
                     'is_active' => $this->is_active ? 1 : 0,
-                    'created_at' => now(),
-                    'updated_at' => now()
+                    'data' => empty($data) ? null : $data,
                 ]);
-                
-                // Güncel tenant'ı yükle
-                $tenant = Tenant::find($tenantId);
                 
                 // Log işlemi
                 activity()
@@ -201,15 +199,15 @@ class TenantComponent extends Component
                 
                 $wasRecentlyCreated = true;
             }
-
+    
             $this->resetForm();
-
+    
             $this->dispatch('toast', [
                 'title' => 'Başarılı!',
                 'message' => $wasRecentlyCreated ? 'Tenant başarıyla oluşturuldu.' : 'Tenant başarıyla güncellendi.',
                 'type' => 'success'
             ]);
-
+    
             // Modali kapat
             $this->dispatch('hideModal', ['id' => 'modal-tenant-edit']);
             $this->dispatch('hideModal', ['id' => 'modal-tenant-add']);

@@ -205,9 +205,12 @@ class TenantValueComponent extends Component
                 $key = $type === 'image' ? 'image' : 'file';
                 
                 if (isset($this->temporaryImages[$key])) {
+                    // Tenant ID'ye göre prefix oluştur
+                    $tenantPrefix = is_tenant() ? 'tenant' . tenant_id() : '';
+                    
                     $fileName = time() . '_' . Str::slug($setting->key) . '.' . $this->temporaryImages[$key]->getClientOriginalExtension();
                     $folder = $type === 'image' ? 'images' : 'files';
-                    $path = $this->temporaryImages[$key]->storeAs("settings/{$folder}", $fileName, 'public');
+                    $path = $this->temporaryImages[$key]->storeAs("{$tenantPrefix}/settings/{$folder}", $fileName, 'public');
                     $valueToSave = $path;
                 }
             }

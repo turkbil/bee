@@ -17,8 +17,8 @@ class SettingManagementSeeder extends Seeder
     {
         Model::unguard();
         
-        // Tenant context'te çalışırken hiçbir şey yapma
-        if (DB::connection()->getName() !== 'central') {
+        // Tenant veritabanında çalışırken hiçbir şey yapma
+        if (app()->bound('tenancy.tenant')) {
             return;
         }
         

@@ -6,11 +6,9 @@ use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
-use Stancl\Tenancy\Database\Models\Domain;
 use Illuminate\Support\Facades\File;
-use Stancl\Tenancy\Jobs\CreateDatabase;
-use Illuminate\Support\Facades\Event;
+use Stancl\Tenancy\Database\Models\Domain;
+use Faker\Factory as Faker;
 use Illuminate\Support\Facades\Artisan;
 
 class TenantSeeder extends Seeder
@@ -31,68 +29,18 @@ class TenantSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         Domain::query()->delete();
         Tenant::query()->delete();
+        User::query()->delete(); // Central tenant'ta mevcut kullanıcıları temizle
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        
+        // Ana sistemde Nurullah kullanıcısı oluştur
+        $nurullahUser = User::create([
+            'name' => 'Nurullah Okatan',
+            'email' => 'nurullah@nurullah.net',
+            'password' => Hash::make('nurullah'),
+            'email_verified_at' => now(),
+        ]);
 
-        // Önce normal tenant'ları oluştur (central olmayan)
-        $normalTenants = [
-            [
-                'title' => 'Kırmızı',
-                'domain' => 'a.test',
-                'email' => 'a@test',
-                'db_name' => 'tenant_a',
-            ],
-            [
-                'title' => 'Sarı',
-                'domain' => 'b.test',
-                'email' => 'b@test',
-                'db_name' => 'tenant_b',
-            ],
-            [
-                'title' => 'Mavi',
-                'domain' => 'c.test',
-                'email' => 'c@test',
-                'db_name' => 'tenant_c',
-            ]
-        ];
-
-        // Normal tenant'ları oluştur
-        foreach ($normalTenants as $config) {
-            // Tenant oluştur
-            $tenant = Tenant::create([
-                'title' => $config['title'],
-                'tenancy_db_name' => $config['db_name'],
-                'is_active' => true,
-                'central' => false,
-                'data' => [],
-            ]);
-
-            // Domain bağla
-            $tenant->domains()->create(['domain' => $config['domain']]);
-
-            // Tenant dizinlerini hazırla
-            $this->prepareTenantDirectories($tenant->id);
-            
-            // Tenant'a geç ve kullanıcı oluştur
-            $tenant->run(function () use ($config) {
-                // Admin kullanıcısı
-                User::create([
-                    'name' => $config['title'] . ' Yönetici',
-                    'email' => $config['email'],
-                    'password' => Hash::make('test'),
-                    'email_verified_at' => now(),
-                ]);
-                
-                // Nurullah kullanıcısı
-                User::create([
-                    'name' => 'Nurullah Okatan',
-                    'email' => 'nurullah@nurullah.net',
-                    'password' => Hash::make('nurullah'),
-                    'email_verified_at' => now(),
-                ]);
-            });
-        }
-
-        // SADECE tablo kaydı olarak Central tenant'ı ekle - daha sonra veritabanı oluşturma olmayacak
+        // 1. Önce Central tenant'ı ekle
         // DOĞRUDAN SQL komutu ile ekle, model olaylarını tetiklemeden
         DB::table('tenants')->insert([
             'title' => 'Laravel',
@@ -115,6 +63,92 @@ class TenantSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
+        // Central tenant için dizin yapısını oluştur
+        $this->prepareTenantDirectories($centralTenantId);
+
+        // Central tenant için Admin kullanıcısı oluştur (Nurullah kullanıcısı zaten var)
+        User::create([
+            'name' => 'Laravel Admin',
+            'email' => 'admin@laravel.test',
+            'password' => Hash::make('password'),
+            'email_verified_at' => now(),
+        ]);
+
+        // 2. Normal tenant'ları oluştur (central olmayan)
+        $normalTenants = [
+            [
+                'title' => 'Kırmızı',
+                'domain' => 'a.test',
+                'email' => 'a@test',
+                'db_name' => 'tenant_a',
+            ],
+            [
+                'title' => 'Sarı',
+                'domain' => 'b.test',
+                'email' => 'b@test',
+                'db_name' => 'tenant_b',
+            ],
+            [
+                'title' => 'Mavi',
+                'domain' => 'c.test',
+                'email' => 'c@test',
+                'db_name' => 'tenant_c',
+            ]
+        ];
+
+        // Faker için
+        $faker = Faker::create('tr_TR');
+
+        // Normal tenant'ları oluştur
+        foreach ($normalTenants as $config) {
+            // Tenant oluştur
+            $tenant = Tenant::create([
+                'title' => $config['title'],
+                'tenancy_db_name' => $config['db_name'],
+                'is_active' => true,
+                'central' => false,
+                'data' => [],
+            ]);
+
+            // Domain bağla
+            $tenant->domains()->create(['domain' => $config['domain']]);
+
+            // Tenant dizinlerini hazırla
+            $this->prepareTenantDirectories($tenant->id);
+            
+            // Tenant'a geç ve kullanıcı oluştur
+            $tenant->run(function () use ($config, $faker) {
+                // Admin kullanıcısı
+                User::create([
+                    'name' => $config['title'] . ' Yönetici',
+                    'email' => $config['email'],
+                    'password' => Hash::make('test'),
+                    'email_verified_at' => now(),
+                ]);
+                
+                // Nurullah kullanıcısı
+                User::create([
+                    'name' => 'Nurullah Okatan',
+                    'email' => 'nurullah@nurullah.net',
+                    'password' => Hash::make('nurullah'),
+                    'email_verified_at' => now(),
+                ]);
+
+                // 10 rastgele kullanıcı ekle
+                foreach(range(1, 10) as $index) {
+                    $firstName = $faker->firstName;
+                    $lastName = $faker->lastName;
+                    
+                    User::create([
+                        'name' => $firstName . ' ' . $lastName,
+                        'email' => strtolower($faker->unique()->userName) . '@' . $faker->freeEmailDomain,
+                        'password' => Hash::make('password'),
+                        'email_verified_at' => now(),
+                    ]);
+                }
+            });
+        }
+
         // Tenant dizinlerini temizle (sadece güvence için)
         try {
             Artisan::call('tenants:clean');
@@ -134,9 +168,24 @@ class TenantSeeder extends Seeder
 
         foreach ($tenantDirectories as $directory) {
             try {
+                // Alt dizinleri önce temizle (framework, app, logs, sessions)
+                $subDirs = [
+                    $directory . '/framework',
+                    $directory . '/app',
+                    $directory . '/logs',
+                    $directory . '/sessions',
+                ];
+                
+                foreach ($subDirs as $subDir) {
+                    if (File::isDirectory($subDir)) {
+                        File::deleteDirectory($subDir);
+                    }
+                }
+                
+                // Ana dizini temizle
                 File::deleteDirectory($directory);
             } catch (\Exception $e) {
-                \Log::warning("Tenant dizini silinemedi: " . $directory);
+                \Log::warning("Tenant dizini silinemedi: " . $directory . " - " . $e->getMessage());
             }
         }
 
@@ -148,7 +197,7 @@ class TenantSeeder extends Seeder
             try {
                 File::deleteDirectory($directory);
             } catch (\Exception $e) {
-                \Log::warning("Public tenant dizini silinemedi: " . $directory);
+                \Log::warning("Public tenant dizini silinemedi: " . $directory . " - " . $e->getMessage());
             }
         }
     }
@@ -160,13 +209,29 @@ class TenantSeeder extends Seeder
      */
     protected function prepareTenantDirectories($tenantId)
     {
+        // Önce tenant dizini varsa temizle
+        $tenantPath = storage_path("tenant{$tenantId}");
+        if (File::isDirectory($tenantPath)) {
+            File::deleteDirectory($tenantPath);
+        }
+        
         // Framework cache dizini
         $frameworkCachePath = storage_path("tenant{$tenantId}/framework/cache");
         File::ensureDirectoryExists($frameworkCachePath, 0775, true);
+        
+        // Framework diğer alt dizinleri
+        $frameworkPaths = [
+            storage_path("tenant{$tenantId}/framework/sessions"),
+            storage_path("tenant{$tenantId}/framework/views"),
+            storage_path("tenant{$tenantId}/framework/testing"),
+        ];
+        
+        foreach ($frameworkPaths as $path) {
+            File::ensureDirectoryExists($path, 0775, true);
+        }
 
         // Diğer gerekli dizinler
         $paths = [
-            storage_path("tenant{$tenantId}/framework"),
             storage_path("tenant{$tenantId}/app"),
             storage_path("tenant{$tenantId}/logs"),
             storage_path("tenant{$tenantId}/sessions"),
@@ -178,6 +243,9 @@ class TenantSeeder extends Seeder
 
         // Public storage dizini
         $publicStoragePath = public_path("storage/tenant{$tenantId}");
+        if (File::isDirectory($publicStoragePath)) {
+            File::deleteDirectory($publicStoragePath);
+        }
         File::ensureDirectoryExists($publicStoragePath, 0775, true);
     }
 }

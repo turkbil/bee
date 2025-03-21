@@ -188,6 +188,9 @@ class TenantComponent extends Component
                     'data' => empty($data) ? null : $data,
                 ]);
                 
+                // Tenant dizinlerini hazırla
+                $this->prepareTenantDirectories($tenant->id);
+                
                 // Log işlemi
                 activity()
                     ->performedOn($tenant)
@@ -226,6 +229,10 @@ class TenantComponent extends Component
             $tenant = Tenant::find($id);
 
             if ($tenant) {
+                // Tenant dizinlerini temizle
+                $this->cleanTenantDirectories($tenant->id);
+                
+                // Log işlemi
                 activity()
                     ->performedOn($tenant)
                     ->withProperties([
@@ -429,6 +436,74 @@ class TenantComponent extends Component
         $this->phone = '';
         $this->is_active = true;
         $this->editingTenant = null;
+    }
+
+    /**
+     * Tenant için gerekli dizinleri hazırla
+     * 
+     * @param int $tenantId
+     */
+    protected function prepareTenantDirectories($tenantId)
+    {
+        // Önce tenant dizini varsa temizle
+        $tenantPath = storage_path("tenant{$tenantId}");
+        if (\Illuminate\Support\Facades\File::isDirectory($tenantPath)) {
+            \Illuminate\Support\Facades\File::deleteDirectory($tenantPath);
+        }
+        
+        // Framework cache dizini
+        $frameworkCachePath = storage_path("tenant{$tenantId}/framework/cache");
+        \Illuminate\Support\Facades\File::ensureDirectoryExists($frameworkCachePath, 0775, true);
+
+        // Framework diğer alt dizinleri
+        $frameworkPaths = [
+            storage_path("tenant{$tenantId}/framework/sessions"),
+            storage_path("tenant{$tenantId}/framework/views"),
+            storage_path("tenant{$tenantId}/framework/testing"),
+        ];
+        
+        foreach ($frameworkPaths as $path) {
+            \Illuminate\Support\Facades\File::ensureDirectoryExists($path, 0775, true);
+        }
+
+        // Diğer gerekli dizinler
+        $paths = [
+            storage_path("tenant{$tenantId}/app"),
+            storage_path("tenant{$tenantId}/app/public"),
+            storage_path("tenant{$tenantId}/logs"),
+            storage_path("tenant{$tenantId}/sessions"),
+        ];
+
+        foreach ($paths as $path) {
+            \Illuminate\Support\Facades\File::ensureDirectoryExists($path, 0775, true);
+        }
+
+        // Public storage dizini
+        $publicStoragePath = public_path("storage/tenant{$tenantId}");
+        if (\Illuminate\Support\Facades\File::isDirectory($publicStoragePath)) {
+            \Illuminate\Support\Facades\File::deleteDirectory($publicStoragePath);
+        }
+        \Illuminate\Support\Facades\File::ensureDirectoryExists($publicStoragePath, 0775, true);
+    }
+    
+    /**
+     * Tenant dizinlerini temizle
+     * 
+     * @param int $tenantId
+     */
+    protected function cleanTenantDirectories($tenantId)
+    {
+        // Tenant dizini varsa temizle
+        $tenantPath = storage_path("tenant{$tenantId}");
+        if (\Illuminate\Support\Facades\File::isDirectory($tenantPath)) {
+            \Illuminate\Support\Facades\File::deleteDirectory($tenantPath);
+        }
+        
+        // Public storage dizini varsa temizle
+        $publicStoragePath = public_path("storage/tenant{$tenantId}");
+        if (\Illuminate\Support\Facades\File::isDirectory($publicStoragePath)) {
+            \Illuminate\Support\Facades\File::deleteDirectory($publicStoragePath);
+        }
     }
 
     public function render()

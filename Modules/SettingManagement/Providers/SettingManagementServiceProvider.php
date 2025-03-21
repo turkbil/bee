@@ -35,15 +35,17 @@ class SettingManagementServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         
-        // Central migrations
-        $this->loadMigrationsFrom([
-            module_path($this->name, 'database/migrations')
-        ]);
-        
-        // Tenant migrations - SADECE tenant_values tablosu
-        if (app()->has('tenancy.migrator')) {
-            app('tenancy.migrator')
-                ->path(module_path($this->name, 'database/migrations/tenant'));
+        // Central veritabanında çalışıyorsak tüm migration'ları yükle
+        if (!app()->bound('tenancy.tenant')) {
+            // Central migrations - settings_groups ve settings tabloları için
+            $this->loadMigrationsFrom([
+                module_path($this->name, 'database/migrations')
+            ]);
+        } else {
+            // Tenant veritabanında SADECE tenant_values tablosunu yükle
+            $this->loadMigrationsFrom([
+                module_path($this->name, 'database/migrations/tenant')
+            ]);
         }
 
         $this->loadRoutesFrom(module_path($this->name, 'routes/web.php'));

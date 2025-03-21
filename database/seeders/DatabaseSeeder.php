@@ -12,9 +12,6 @@ class DatabaseSeeder extends Seeder
         // Önce tenant'ları oluştur
         $this->call(TenantSeeder::class);
 
-        // Sonra tenant'lara kullanıcıları ekle
-        $this->call(TenantUserSeeder::class);
-
         // Rol ve izinleri oluştur
         $this->call(RolePermissionSeeder::class);
         

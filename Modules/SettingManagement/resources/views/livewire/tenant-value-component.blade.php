@@ -2,7 +2,10 @@
 
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">{{ $setting->label }}</h3>
+        <h3 class="card-title">
+            <i class="fas fa-edit me-2"></i>
+            {{ $setting->label }} Değerini Düzenle
+        </h3>
     </div>
     <div class="card-body">
         <div class="row">
@@ -14,49 +17,305 @@
                     </div>
                     <div class="card-body">
                         <div class="mb-3">
-                            @if($setting->type === 'textarea')
-                            <textarea wire:model="value" class="form-control" rows="4" {{ $useDefault ? 'disabled' : '' }}></textarea>
+                            @switch($setting->type)
+                                @case('textarea')
+                                    <div class="mb-3">
+                                        <textarea wire:model="value" class="form-control" rows="5" 
+                                            {{ $useDefault ? 'disabled' : '' }}
+                                            placeholder="Değeri buraya giriniz..."></textarea>
+                                    </div>
+                                    @break
+                                
+                                @case('select')
+                                    @if(is_array($setting->options))
+                                        <div class="mb-3">
+                                            <select wire:model="value" class="form-select" {{ $useDefault ? 'disabled' : '' }}>
+                                                <option value="">Seçiniz</option>
+                                                @foreach($setting->options as $key => $label)
+                                                    <option value="{{ $key }}">{{ $label }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    @endif
+                                    @break
+                                
+                                @case('file')
+                                    <div class="row g-3 mb-3">
+                                        <div class="col-md-8">
+                                            @if($useDefault)
+                                                <div class="alert alert-info">
+                                                    <i class="fas fa-info-circle me-2"></i>
+                                                    Varsayılan değer kullanılıyor.
+                                                </div>
+                                            @else
+                                                <div class="form-control position-relative mb-3" 
+                                                    @if(!$useDefault) onclick="document.getElementById('file-upload').click()" @endif
+                                                    style="height: auto; min-height: 100px; cursor: {{ $useDefault ? 'not-allowed' : 'pointer' }}; border: 2px dashed #ccc;">
+                                                    <input type="file" id="file-upload" wire:model="tempFile" class="d-none" {{ $useDefault ? 'disabled' : '' }}>
+                                                    <div class="text-center py-3">
+                                                        <i class="fas fa-cloud-upload-alt fa-3x {{ $useDefault ? 'text-muted' : 'text-primary' }} mb-2"></i>
+                                                        <p class="mb-0">{{ $useDefault ? 'Varsayılan değer kullanılıyor' : 'Dosyayı sürükleyin veya seçmek için tıklayın' }}</p>
+                                                        @if(!$useDefault)
+                                                            <p class="text-muted small mb-0">Maksimum boyut: 2MB</p>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                                <div wire:loading wire:target="tempFile">
+                                                    <div class="progress progress-sm mt-2">
+                                                        <div class="progress-bar progress-bar-indeterminate bg-primary"></div>
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="card">
+                                                <div class="card-header py-2">
+                                                    <h3 class="card-title">Önizleme</h3>
+                                                </div>
+                                                <div class="card-body p-2 text-center">
+                                                    @if($previewing && $previewUrl)
+                                                        @if(Str::of($value)->lower()->endsWith(['jpg', 'jpeg', 'png', 'gif', 'webp']))
+                                                            <a href="{{ $previewUrl }}" target="_blank" class="d-block mb-2">
+                                                                <img src="{{ $previewUrl }}" alt="Dosya önizleme" 
+                                                                    class="img-fluid rounded" style="max-height: 120px">
+                                                            </a>
+                                                            <div class="text-muted small">{{ basename($value) }}</div>
+                                                            
+                                                            @if(!$useDefault)
+                                                                <div class="mt-2">
+                                                                    <button type="button" class="btn btn-sm btn-danger" 
+                                                                        wire:click="deleteFile" 
+                                                                        wire:loading.attr="disabled"
+                                                                        wire:target="deleteFile">
+                                                                        <i class="fas fa-trash me-1"></i> Sil
+                                                                    </button>
+                                                                </div>
+                                                            @endif
+                                                        @else
+                                                            <div class="d-flex flex-column align-items-center">
+                                                                <i class="fas fa-file fa-3x text-primary mb-2"></i>
+                                                                <a href="{{ $previewUrl }}" target="_blank" class="text-break small">
+                                                                    {{ basename($value) }}
+                                                                </a>
+                                                                
+                                                                @if(!$useDefault)
+                                                                    <div class="mt-2">
+                                                                        <button type="button" class="btn btn-sm btn-danger" 
+                                                                            wire:click="deleteFile"
+                                                                            wire:loading.attr="disabled"
+                                                                            wire:target="deleteFile">
+                                                                            <i class="fas fa-trash me-1"></i> Sil
+                                                                        </button>
+                                                                    </div>
+                                                                @endif
+                                                            </div>
+                                                        @endif
+                                                    @else
+                                                        <div class="d-flex flex-column align-items-center justify-content-center" style="height: 100px">
+                                                            <i class="far fa-file text-muted"></i>
+                                                            <span class="mt-2 small text-muted">Dosya yok</span>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @break
+
+                                @case('image')
+                                    <div class="row g-3 mb-3">
+                                        <div class="col-md-8">
+                                            @if($useDefault)
+                                                <div class="alert alert-info">
+                                                    <i class="fas fa-info-circle me-2"></i>
+                                                    Varsayılan değer kullanılıyor.
+                                                </div>
+                                            @else
+                                                <div class="form-control position-relative mb-3" 
+                                                    @if(!$useDefault) onclick="document.getElementById('image-upload').click()" @endif
+                                                    style="height: auto; min-height: 120px; cursor: {{ $useDefault ? 'not-allowed' : 'pointer' }}; border: 2px dashed #ccc;">
+                                                    <input type="file" id="image-upload" wire:model="tempImage" class="d-none" {{ $useDefault ? 'disabled' : '' }} accept="image/*">
+                                                    <div class="text-center py-3">
+                                                        <i class="fas fa-image fa-3x {{ $useDefault ? 'text-muted' : 'text-primary' }} mb-2"></i>
+                                                        <p class="mb-0">{{ $useDefault ? 'Varsayılan değer kullanılıyor' : 'Resmi sürükleyin veya seçmek için tıklayın' }}</p>
+                                                        @if(!$useDefault)
+                                                            <p class="text-muted small mb-0">Desteklenen formatlar: JPG, JPEG, PNG, WEBP, GIF (Maksimum boyut: 2MB)</p>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                                <div wire:loading wire:target="tempImage">
+                                                    <div class="progress progress-sm mt-2">
+                                                        <div class="progress-bar progress-bar-indeterminate bg-primary"></div>
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="card">
+                                                <div class="card-header py-2">
+                                                    <h3 class="card-title">Önizleme</h3>
+                                                </div>
+                                                <div class="card-body p-2 text-center">
+                                                    @if(($imagePreview || $previewing) && $previewUrl)
+                                                        <a href="{{ $previewUrl }}" target="_blank" class="d-block mb-2">
+                                                            <img src="{{ $imagePreview ?? $previewUrl }}" alt="Resim önizleme" 
+                                                                class="img-fluid rounded" style="max-height: 120px">
+                                                        </a>
+                                                        
+                                                        @if(!$useDefault)
+                                                            <div class="mt-2">
+                                                                <button type="button" class="btn btn-sm btn-danger" 
+                                                                    wire:click="deleteFile" 
+                                                                    wire:loading.attr="disabled"
+                                                                    wire:target="deleteFile">
+                                                                    <i class="fas fa-trash me-1"></i> Sil
+                                                                </button>
+                                                            </div>
+                                                        @endif
+                                                    @else
+                                                        <div class="d-flex flex-column align-items-center justify-content-center" style="height: 100px">
+                                                            <i class="far fa-image text-muted"></i>
+                                                            <span class="mt-2 small text-muted">Resim yok</span>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @break
+
+                                @case('checkbox')
+                                    <div class="form-check form-switch">
+                                        <input type="checkbox" id="value-check" class="form-check-input" 
+                                            wire:model="checkboxValue" 
+                                            {{ $useDefault ? 'disabled' : '' }}>
+                                        <label class="form-check-label" for="value-check">
+                                            {{ $checkboxValue ? 'Evet' : 'Hayır' }}
+                                        </label>
+                                    </div>
+                                    @break
+                                
+                                @case('color')
+                                    <div class="row g-3 align-items-center">
+                                        <div class="col-auto">
+                                            <input type="color" id="value-color" class="form-control form-control-color" 
+                                                wire:model="colorValue" 
+                                                {{ $useDefault ? 'disabled' : '' }}>
+                                        </div>
+                                        <div class="col-auto">
+                                            <span class="form-colorinput" style="--tblr-badge-color: {{ $colorValue }}">
+                                                <span class="form-colorinput-color" style="background-color: {{ $colorValue }}"></span>
+                                            </span>
+                                        </div>
+                                        <div class="col">
+                                            <code>{{ $colorValue }}</code>
+                                        </div>
+                                    </div>
+                                    @break
+                                
+                                @case('date')
+                                    <div class="input-icon">
+                                        <span class="input-icon-addon">
+                                            <i class="fas fa-calendar"></i>
+                                        </span>
+                                        <input type="date" class="form-control" 
+                                            wire:model="dateValue" 
+                                            {{ $useDefault ? 'disabled' : '' }}>
+                                    </div>
+                                    @break
+                                
+                                @case('time')
+                                    <div class="input-icon">
+                                        <span class="input-icon-addon">
+                                            <i class="fas fa-clock"></i>
+                                        </span>
+                                        <input type="time" class="form-control" 
+                                            wire:model="timeValue" 
+                                            {{ $useDefault ? 'disabled' : '' }}>
+                                    </div>
+                                    @break
+                                
+                                @case('number')
+                                    <div class="input-icon">
+                                        <span class="input-icon-addon">
+                                            <i class="fas fa-hashtag"></i>
+                                        </span>
+                                        <input type="number" class="form-control" 
+                                            wire:model="value" 
+                                            {{ $useDefault ? 'disabled' : '' }}>
+                                    </div>
+                                    @break
+                                
+                                @case('email')
+                                    <div class="input-icon">
+                                        <span class="input-icon-addon">
+                                            <i class="fas fa-envelope"></i>
+                                        </span>
+                                        <input type="email" class="form-control" 
+                                            wire:model="value" 
+                                            {{ $useDefault ? 'disabled' : '' }}>
+                                    </div>
+                                    @break
+                                
+                                @case('password')
+                                    <div class="input-icon">
+                                        <span class="input-icon-addon">
+                                            <i class="fas fa-key"></i>
+                                        </span>
+                                        <input type="password" class="form-control" 
+                                            wire:model="value" 
+                                            {{ $useDefault ? 'disabled' : '' }}>
+                                    </div>
+                                    @break
+                                
+                                @case('tel')
+                                    <div class="input-icon">
+                                        <span class="input-icon-addon">
+                                            <i class="fas fa-phone"></i>
+                                        </span>
+                                        <input type="tel" class="form-control" 
+                                            wire:model="value" 
+                                            {{ $useDefault ? 'disabled' : '' }}>
+                                    </div>
+                                    @break
+                                
+                                @case('url')
+                                    <div class="input-icon">
+                                        <span class="input-icon-addon">
+                                            <i class="fas fa-globe"></i>
+                                        </span>
+                                        <input type="url" class="form-control" 
+                                            wire:model="value" 
+                                            {{ $useDefault ? 'disabled' : '' }}>
+                                    </div>
+                                    @break
+                                
+                                @default
+                                    <div class="input-icon">
+                                        <span class="input-icon-addon">
+                                            <i class="fas fa-font"></i>
+                                        </span>
+                                        <input type="{{ $setting->type }}" class="form-control" 
+                                            wire:model="value" 
+                                            {{ $useDefault ? 'disabled' : '' }}>
+                                    </div>
+                            @endswitch
                             
-                            @elseif($setting->type === 'select' && is_array($setting->options))
-                            <select wire:model="value" class="form-select" {{ $useDefault ? 'disabled' : '' }}>
-                                @foreach($setting->options as $key => $label)
-                                <option value="{{ $key }}">{{ $label }}</option>
-                                @endforeach
-                            </select>
-                            
-                            @elseif($setting->type === 'file')
-                            @if($value && !$useDefault)
-                            <div class="mb-3">
-                                @if(Str::endsWith(strtolower($value), ['.jpg', '.jpeg', '.png', '.gif']))
-                                <div class="mb-2">
-                                    <img src="{{ Storage::url($value) }}" alt="Dosya önizleme" class="img-fluid border rounded mb-2" style="max-height: 150px">
-                                    <div class="text-muted small">{{ basename($value) }}</div>
+                            @if($useDefault)
+                                <div class="alert alert-info mt-3">
+                                    <div class="d-flex">
+                                        <div>
+                                            <i class="fas fa-info-circle me-2"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="alert-title">Varsayılan değer kullanılıyor</h4>
+                                            <div class="text-muted">
+                                                Özel bir değer tanımlamak için sağdaki "Varsayılan Değer Kullan" 
+                                                düğmesini kapatın.
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                @else
-                                <div class="border rounded p-2 mb-2">
-                                    <i class="fas fa-file me-2"></i> {{ basename($value) }}
-                                </div>
-                                @endif
-                            </div>
-                            @endif
-                            <input type="file" wire:model="tempFile" class="form-control" {{ $useDefault ? 'disabled' : '' }}>
-                            
-                            @elseif($setting->type === 'checkbox')
-                            <label class="form-check form-switch">
-                                <input type="checkbox" wire:model="value" class="form-check-input" {{ $useDefault ? 'disabled' : '' }}>
-                                <span class="form-check-label">{{ $value ? 'Evet' : 'Hayır' }}</span>
-                            </label>
-                            
-                            @elseif($setting->type === 'color')
-                            <div class="row g-2 align-items-center">
-                                <div class="col-auto">
-                                    <input type="color" wire:model="value" class="form-control form-control-color" {{ $useDefault ? 'disabled' : '' }}>
-                                </div>
-                                <div class="col-auto">{{ $value }}</div>
-                            </div>
-                            
-                            @else
-                            <input type="{{ $setting->type }}" wire:model="value" class="form-control" {{ $useDefault ? 'disabled' : '' }}>
                             @endif
                         </div>
                     </div>
@@ -76,40 +335,116 @@
                             </div>
                             <div class="datagrid-item">
                                 <div class="datagrid-title">Tip</div>
-                                <div class="datagrid-content"><span class="badge bg-blue-lt">{{ $setting->type }}</span></div>
+                                <div class="datagrid-content">
+                                    <span class="badge bg-blue-lt">
+                                        @switch($setting->type)
+                                            @case('text')
+                                                <i class="fas fa-font me-1"></i> Metin
+                                                @break
+                                            @case('textarea')
+                                                <i class="fas fa-align-left me-1"></i> Uzun Metin
+                                                @break
+                                            @case('number')
+                                                <i class="fas fa-hashtag me-1"></i> Sayı
+                                                @break
+                                            @case('select')
+                                                <i class="fas fa-list me-1"></i> Liste
+                                                @break
+                                            @case('checkbox')
+                                                <i class="fas fa-check-square me-1"></i> Onay Kutusu
+                                                @break
+                                            @case('file')
+                                                <i class="fas fa-file me-1"></i> Dosya
+                                                @break
+                                            @case('image')
+                                                <i class="fas fa-image me-1"></i> Resim
+                                                @break
+                                            @case('color')
+                                                <i class="fas fa-palette me-1"></i> Renk
+                                                @break
+                                            @case('date')
+                                                <i class="fas fa-calendar me-1"></i> Tarih
+                                                @break
+                                            @case('email')
+                                                <i class="fas fa-envelope me-1"></i> E-posta
+                                                @break
+                                            @case('password')
+                                                <i class="fas fa-key me-1"></i> Şifre
+                                                @break
+                                            @case('tel')
+                                                <i class="fas fa-phone me-1"></i> Telefon
+                                                @break
+                                            @case('url')
+                                                <i class="fas fa-globe me-1"></i> URL
+                                                @break
+                                            @case('time')
+                                                <i class="fas fa-clock me-1"></i> Saat
+                                                @break
+                                            @default
+                                                <i class="fas fa-font me-1"></i> {{ $setting->type }}
+                                        @endswitch
+                                    </span>
+                                </div>
                             </div>
                             <div class="datagrid-item">
                                 <div class="datagrid-title">Grup</div>
-                                <div class="datagrid-content">{{ $setting->group->name }}</div>
+                                <div class="datagrid-content">
+                                    <span class="badge bg-primary-lt">
+                                        {{ $setting->group->name }}
+                                    </span>
+                                </div>
                             </div>
                             <div class="datagrid-item">
                                 <div class="datagrid-title">Durum</div>
                                 <div class="datagrid-content">
                                     @if($setting->is_active)
-                                    <span class="status status-green">Aktif</span>
+                                    <span class="status status-green">
+                                        <span class="status-dot status-dot-animated"></span>
+                                        Aktif
+                                    </span>
                                     @else
-                                    <span class="status status-red">Pasif</span>
+                                    <span class="status status-red">
+                                        <span class="status-dot"></span>
+                                        Pasif
+                                    </span>
                                     @endif
                                 </div>
                             </div>
                             <div class="datagrid-item">
                                 <div class="datagrid-title">Varsayılan Değer</div>
-                                <div class="datagrid-content d-flex align-items-center">
-                                    <span class="text-truncate me-2" style="max-width: 120px;" title="{{ $setting->default_value }}">
-                                        @if(empty($setting->default_value))
-                                            <span class="text-muted">Boş</span>
-                                        @elseif($setting->type === 'file')
-                                            <i class="fas fa-file me-1"></i> Dosya
-                                        @elseif($setting->type === 'checkbox')
-                                            {{ $setting->default_value ? 'Evet' : 'Hayır' }}
-                                        @else
-                                            {{ $setting->default_value }}
-                                        @endif
-                                    </span>
-                                    <button type="button" class="btn btn-sm {{ $useDefault ? 'btn-success' : 'btn-outline-secondary' }}" wire:click="toggleDefault">
-                                        <i class="fas {{ $useDefault ? 'fa-check' : 'fa-undo' }}"></i>
-                                    </button>
+                                <div class="datagrid-content">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div class="text-truncate" style="max-width: 150px;" title="{{ is_string($setting->default_value) ? $setting->default_value : '' }}">
+                                            @if(empty($setting->default_value))
+                                                <span class="text-muted fst-italic">Boş</span>
+                                            @elseif($setting->type === 'file')
+                                                <i class="fas fa-file me-1"></i> Dosya
+                                            @elseif($setting->type === 'checkbox')
+                                                {{ $setting->default_value ? 'Evet' : 'Hayır' }}
+                                            @elseif($setting->type === 'color')
+                                                <div class="d-flex align-items-center">
+                                                    <span class="avatar avatar-xs me-2" style="background-color: {{ $setting->default_value }}"></span>
+                                                    {{ $setting->default_value }}
+                                                </div>
+                                            @elseif($setting->type === 'password')
+                                                <span class="text-muted">••••••••</span>
+                                            @else
+                                                {{ $setting->default_value }}
+                                            @endif
+                                        </div>
+                                    </div>
                                 </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <div class="form-label">Varsayılan Değer Kullan</div>
+                            <label class="form-check form-switch">
+                                <input type="checkbox" class="form-check-input" wire:model.live="useDefault">
+                                <span class="form-check-label">{{ $useDefault ? 'Evet' : 'Hayır' }}</span>
+                            </label>
+                            <div class="text-muted small">
+                                Varsayılan değeri kullanmak için aktif edin.
                             </div>
                         </div>
                     </div>
@@ -122,8 +457,8 @@
             <i class="fas fa-arrow-left me-2"></i> Geri
         </a>
         <div>
-            @if($setting->type === 'file' && $value && !$useDefault)
-            <a href="{{ Storage::url($value) }}" target="_blank" class="btn btn-outline-primary me-2">
+            @if($setting->type === 'file' && $value && !$useDefault && $previewUrl)
+            <a href="{{ $previewUrl }}" target="_blank" class="btn btn-outline-primary me-2">
                 <i class="fas fa-eye me-2"></i> Görüntüle
             </a>
             @endif
@@ -138,3 +473,73 @@
         </div>
     </div>
 </div>
+
+@push('styles')
+<style>
+    .file-drop-area {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        border: 2px dashed #ccc;
+        border-radius: 6px;
+        background-color: #f8f9fa;
+        transition: 0.2s;
+    }
+    
+    .file-drop-area:hover,
+    .file-drop-area.is-active {
+        background-color: #eef2f7;
+        border-color: #adb5bd;
+    }
+</style>
+@endpush
+
+@push('scripts')
+<script>
+    document.addEventListener('livewire:initialized', function() {
+        // Dosya sürükle-bırak işlemleri
+        const fileDropArea = document.querySelector('.file-drop-area');
+        if (fileDropArea) {
+            const fileInput = document.getElementById('file-upload');
+            
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                fileDropArea.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                fileDropArea.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                fileDropArea.addEventListener(eventName, unhighlight, false);
+            });
+            
+            function highlight() {
+                fileDropArea.classList.add('is-active');
+            }
+            
+            function unhighlight() {
+                fileDropArea.classList.remove('is-active');
+            }
+            
+            fileDropArea.addEventListener('drop', handleDrop, false);
+            
+            function handleDrop(e) {
+                if (e.dataTransfer.files.length) {
+                    fileInput.files = e.dataTransfer.files;
+                    const event = new Event('change', { bubbles: true });
+                    fileInput.dispatchEvent(event);
+                }
+            }
+        }
+    });
+</script>
+@endpush

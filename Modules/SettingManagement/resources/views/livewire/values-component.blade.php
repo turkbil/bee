@@ -7,56 +7,256 @@
                 <i class="fas fa-cogs me-2"></i>
                 {{ $group->name }} - Ayar Değerleri
             </h3>
+            <div>
+                <a href="{{ route('admin.settingmanagement.items', $groupId) }}" class="btn btn-outline-primary">
+                    <i class="fas fa-list me-2"></i> Ayarları Yönet
+                </a>
+            </div>
         </div>
     </div>
     <div class="card-body">
+        <div class="alert alert-info">
+            <div class="d-flex">
+                <div>
+                    <i class="fas fa-info-circle me-2" style="margin-top: 3px"></i>
+                </div>
+                <div>
+                    <h4 class="alert-title">Ayarları Toplu Düzenleme</h4>
+                    <div class="text-muted">
+                        Bu sayfa, <strong>{{ $group->name }}</strong> grubu için tüm ayarları tek bir sayfa üzerinden 
+                        değiştirmenizi sağlar. Değer değişikliklerini kaydetmek için sayfanın altındaki 
+                        "Kaydet" düğmesini kullanın.
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <div class="row g-3">
-            @foreach ($settings->chunk(2) as $chunk)
-            @foreach ($chunk as $setting)
+            @foreach($settings as $setting)
             <div class="col-md-6" wire:key="setting-{{ $setting->id }}">
                 <div class="card mb-3">
                     <div class="card-header">
-                        <h3 class="card-title d-flex align-items-center">
-                            {{ $setting->label }}
-                        </h3>
-                        <div class="card-actions">
-                            <button type="button" class="btn btn-sm" 
-                                wire:click="resetToDefault({{ $setting->id }})" 
-                                title="Varsayılan değere döndür">
-                                <i class="fas fa-undo"></i>
-                            </button>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h3 class="card-title d-flex align-items-center">
+                                @switch($setting->type)
+                                    @case('text')
+                                        <i class="fas fa-font me-2 text-primary"></i>
+                                        @break
+                                    @case('textarea')
+                                        <i class="fas fa-align-left me-2 text-primary"></i>
+                                        @break
+                                    @case('number')
+                                        <i class="fas fa-hashtag me-2 text-primary"></i>
+                                        @break
+                                    @case('select')
+                                        <i class="fas fa-list me-2 text-primary"></i>
+                                        @break
+                                    @case('checkbox')
+                                        <i class="fas fa-check-square me-2 text-primary"></i>
+                                        @break
+                                    @case('file')
+                                        <i class="fas fa-file me-2 text-primary"></i>
+                                        @break
+                                    @case('color')
+                                        <i class="fas fa-palette me-2 text-primary"></i>
+                                        @break
+                                    @case('date')
+                                        <i class="fas fa-calendar me-2 text-primary"></i>
+                                        @break
+                                    @case('email')
+                                        <i class="fas fa-envelope me-2 text-primary"></i>
+                                        @break
+                                    @case('password')
+                                        <i class="fas fa-key me-2 text-primary"></i>
+                                        @break
+                                    @case('tel')
+                                        <i class="fas fa-phone me-2 text-primary"></i>
+                                        @break
+                                    @case('url')
+                                        <i class="fas fa-globe me-2 text-primary"></i>
+                                        @break
+                                    @case('time')
+                                        <i class="fas fa-clock me-2 text-primary"></i>
+                                        @break
+                                    @default
+                                        <i class="fas fa-cog me-2 text-primary"></i>
+                                @endswitch
+                                {{ $setting->label }}
+                            </h3>
+                            <div>
+                                <span class="badge bg-blue-lt">{{ $setting->type }}</span>
+                            </div>
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="form-group mb-0">
-                            @if($setting->type === 'textarea')
-                            <textarea wire:model="values.{{ $setting->id }}" class="form-control" rows="3"></textarea>
-                            @elseif($setting->type === 'select' && is_array($setting->options))
-                            <select wire:model="values.{{ $setting->id }}" class="form-select">
-                                @foreach($setting->options as $key => $label)
-                                <option value="{{ $key }}">{{ $label }}</option>
-                                @endforeach
-                            </select>
-                            @elseif($setting->type === 'checkbox')
-                            <div class="pretty p-default p-curve p-toggle p-smooth">
-                                <input type="checkbox" class="form-check-input" wire:model="values.{{ $setting->id }}">
-                                <div class="state p-success p-on">
-                                    <label>Evet</label>
+                        <div class="mb-2">
+                            <code>{{ $setting->key }}</code>
+                        </div>
+                        
+                        <div class="form-group">
+                            @switch($setting->type)
+                                @case('textarea')
+                                    <textarea wire:model="values.{{ $setting->id }}" class="form-control" rows="3" 
+                                        placeholder="Değeri buraya giriniz..."></textarea>
+                                    @break
+                                
+                                @case('select')
+                                    @if(is_array($setting->options))
+                                        <select wire:model="values.{{ $setting->id }}" class="form-select">
+                                            <option value="">Seçiniz</option>
+                                            @foreach($setting->options as $key => $label)
+                                                <option value="{{ $key }}">{{ $label }}</option>
+                                            @endforeach
+                                        </select>
+                                    @endif
+                                    @break
+                                
+                                @case('checkbox')
+                                    <div class="form-check form-switch">
+                                        <input type="checkbox" id="value-{{ $setting->id }}" class="form-check-input" 
+                                            wire:model="values.{{ $setting->id }}">
+                                        <label class="form-check-label" for="value-{{ $setting->id }}">
+                                            {{ isset($values[$setting->id]) && $values[$setting->id] ? 'Evet' : 'Hayır' }}
+                                        </label>
+                                    </div>
+                                    @break
+                                
+                                @case('color')
+                                    <div class="row g-2 align-items-center">
+                                        <div class="col-auto">
+                                            <input type="color" wire:model="values.{{ $setting->id }}" 
+                                                class="form-control form-control-color" title="Renk seçin">
+                                        </div>
+                                        <div class="col-auto">
+                                            <span class="form-colorinput" style="--tblr-badge-color: {{ $values[$setting->id] ?? '#ffffff' }}">
+                                                <span class="form-colorinput-color" style="background-color: {{ $values[$setting->id] ?? '#ffffff' }}"></span>
+                                            </span>
+                                        </div>
+                                        <div class="col">
+                                            <code>{{ $values[$setting->id] ?? '#ffffff' }}</code>
+                                        </div>
+                                    </div>
+                                    @break
+                                
+                                @case('date')
+                                    <div class="input-icon">
+                                        <span class="input-icon-addon">
+                                            <i class="fas fa-calendar"></i>
+                                        </span>
+                                        <input type="date" wire:model="values.{{ $setting->id }}" class="form-control">
+                                    </div>
+                                    @break
+                                
+                                @case('time')
+                                    <div class="input-icon">
+                                        <span class="input-icon-addon">
+                                            <i class="fas fa-clock"></i>
+                                        </span>
+                                        <input type="time" wire:model="values.{{ $setting->id }}" class="form-control">
+                                    </div>
+                                    @break
+                                
+                                @case('number')
+                                    <div class="input-icon">
+                                        <span class="input-icon-addon">
+                                            <i class="fas fa-hashtag"></i>
+                                        </span>
+                                        <input type="number" wire:model="values.{{ $setting->id }}" class="form-control">
+                                    </div>
+                                    @break
+                                
+                                @case('email')
+                                    <div class="input-icon">
+                                        <span class="input-icon-addon">
+                                            <i class="fas fa-envelope"></i>
+                                        </span>
+                                        <input type="email" wire:model="values.{{ $setting->id }}" class="form-control">
+                                    </div>
+                                    @break
+                                
+                                @case('password')
+                                    <div class="input-icon">
+                                        <span class="input-icon-addon">
+                                            <i class="fas fa-key"></i>
+                                        </span>
+                                        <input type="password" wire:model="values.{{ $setting->id }}" class="form-control">
+                                    </div>
+                                    @break
+                                
+                                @case('tel')
+                                    <div class="input-icon">
+                                        <span class="input-icon-addon">
+                                            <i class="fas fa-phone"></i>
+                                        </span>
+                                        <input type="tel" wire:model="values.{{ $setting->id }}" class="form-control">
+                                    </div>
+                                    @break
+                                
+                                @case('url')
+                                    <div class="input-icon">
+                                        <span class="input-icon-addon">
+                                            <i class="fas fa-globe"></i>
+                                        </span>
+                                        <input type="url" wire:model="values.{{ $setting->id }}" class="form-control">
+                                    </div>
+                                    @break
+                                
+                                @case('file')
+                                    <div class="alert alert-warning">
+                                        <div class="d-flex">
+                                            <div>
+                                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                            </div>
+                                            <div>
+                                                <h4 class="alert-title">Dosya ayarını doğrudan düzenleyemezsiniz.</h4>
+                                                <div class="text-muted">
+                                                    Dosya tipindeki ayarları düzenlemek için lütfen <a href="{{ route('admin.settingmanagement.value', $setting->id) }}" class="alert-link">buraya tıklayın</a>.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @break
+                                
+                                @default
+                                    <div class="input-icon">
+                                        <span class="input-icon-addon">
+                                            <i class="fas fa-font"></i>
+                                        </span>
+                                        <input type="text" wire:model="values.{{ $setting->id }}" class="form-control">
+                                    </div>
+                            @endswitch
+                            
+                            @if($originalValues[$setting->id] != $values[$setting->id])
+                                <div class="mt-2 text-end">
+                                    <span class="badge bg-yellow cursor-pointer" wire:click="resetToDefault({{ $setting->id }})">
+                                        <i class="fas fa-undo me-1"></i> Varsayılana Döndür
+                                    </span>
                                 </div>
-                                <div class="state p-danger p-off">
-                                    <label>Hayır</label>
-                                </div>
-                            </div>
-                            @else
-                            <input type="{{ $setting->type }}" wire:model="values.{{ $setting->id }}" class="form-control">
                             @endif
                         </div>
                     </div>
                 </div>
             </div>
             @endforeach
-            @endforeach
         </div>
+        
+        @if(count($changes) > 0)
+            <div class="alert alert-success">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <i class="fas fa-info-circle me-2"></i>
+                        {{ count($changes) }} adet değişiklik yapıldı. Lütfen değişiklikleri kaydedin.
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-success" wire:click="save(false)">
+                            <i class="fas fa-save me-2"></i> 
+                            <span wire:loading.remove wire:target="save">Değişiklikleri Kaydet</span>
+                            <span wire:loading wire:target="save">Kaydediliyor...</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        @endif
     </div>
     <div class="card-footer d-flex justify-content-between align-items-center">
         <a href="{{ route('admin.settingmanagement.items', $groupId) }}" class="btn btn-link text-decoration-none">
@@ -91,3 +291,11 @@
         </div>
     </div>
 </div>
+
+@push('styles')
+<style>
+    .cursor-pointer {
+        cursor: pointer;
+    }
+</style>
+@endpush

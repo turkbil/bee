@@ -5,14 +5,16 @@ namespace Modules\SettingManagement\App\Http\Livewire;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Livewire\WithFileUploads;
+use Modules\SettingManagement\App\Http\Livewire\Traits\WithImageUpload;
 use Modules\SettingManagement\App\Models\Setting;
 use Modules\SettingManagement\App\Models\SettingGroup;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 #[Layout('admin.layout')]
 class ManageComponent extends Component
 {
-    use WithFileUploads;
+    use WithFileUploads, WithImageUpload;
 
     public $settingId;
     public $tempFile;
@@ -25,7 +27,26 @@ class ManageComponent extends Component
         'options' => null,
         'default_value' => null,
         'sort_order' => 0,
-        'is_active' => true
+        'is_active' => true,
+        'options_array' => [],
+    ];
+
+    // Kullanılabilir ayar tipleri
+    public $availableTypes = [
+        'text' => 'Metin',
+        'textarea' => 'Uzun Metin',
+        'number' => 'Sayı',
+        'select' => 'Seçim Kutusu',
+        'checkbox' => 'Onay Kutusu',
+        'file' => 'Dosya',
+        'image' => 'Resim',
+        'color' => 'Renk',
+        'date' => 'Tarih',
+        'email' => 'E-posta',
+        'password' => 'Şifre',
+        'tel' => 'Telefon',
+        'url' => 'URL',
+        'time' => 'Saat',
     ];
 
     protected function rules()
@@ -34,12 +55,23 @@ class ManageComponent extends Component
             'inputs.group_id' => 'required|exists:settings_groups,id',
             'inputs.label' => 'required|min:3|max:255',
             'inputs.key' => 'required|regex:/^[a-zA-Z0-9_]+$/|max:255|unique:settings,key,' . $this->settingId,
-            'inputs.type' => 'required|in:text,textarea,number,select,checkbox,file,color,date,email,password,tel,url,time',
+            'inputs.type' => 'required|in:' . implode(',', array_keys($this->availableTypes)),
             'inputs.options' => 'nullable|required_if:inputs.type,select',
             'inputs.default_value' => 'nullable',
             'inputs.is_active' => 'boolean',
+            'tempFile' => 'nullable|file|max:2048',
         ];
     }
+
+    protected $messages = [
+        'inputs.group_id.required' => 'Grup seçimi zorunludur',
+        'inputs.label.required' => 'Başlık alanı zorunludur',
+        'inputs.key.required' => 'Anahtar alanı zorunludur',
+        'inputs.key.regex' => 'Anahtar sadece harf, rakam ve alt çizgi içerebilir',
+        'inputs.type.required' => 'Tip seçimi zorunludur',
+        'inputs.options.required_if' => 'Seçim kutusu için seçenekler belirtmelisiniz',
+        'tempFile.max' => 'Dosya boyutu en fazla 2MB olabilir',
+    ];
 
     public function mount($id = null)
     {
@@ -51,6 +83,11 @@ class ManageComponent extends Component
                 'group_id', 'label', 'key', 'type', 'options', 
                 'default_value', 'sort_order', 'is_active'
             ]);
+            
+            // Options alanını options_array'e dönüştür
+            if (!empty($this->inputs['options']) && is_array($this->inputs['options'])) {
+                $this->inputs['options_array'] = $this->inputs['options'];
+            }
         } else {
             // Yeni kayıt için sort_order değerini en sona al
             $this->inputs['sort_order'] = Setting::max('sort_order') + 1;
@@ -62,6 +99,7 @@ class ManageComponent extends Component
         }
     }
 
+    // İnput değişimi izleme
     public function updatedInputsLabel()
     {
         if (empty($this->inputs['key']) && !empty($this->inputs['label'])) {
@@ -90,11 +128,34 @@ class ManageComponent extends Component
             }
         }
     }
+    
+    // Select için option ekle
+    public function addSelectOption()
+    {
+        if (!isset($this->inputs['options_array'])) {
+            $this->inputs['options_array'] = [];
+        }
+        
+        $this->inputs['options_array'][Str::random(6)] = '';
+    }
+    
+    // Select option'ı sil
+    public function removeSelectOption($key)
+    {
+        if (isset($this->inputs['options_array'][$key])) {
+            unset($this->inputs['options_array'][$key]);
+        }
+    }
 
     public function updatedTempFile()
     {
         if ($this->tempFile) {
-            $this->inputs['default_value'] = $this->tempFile->store('settings', 'public');
+            // Dosyayı settings klasörüne kaydet
+            $filename = time() . '_' . $this->tempFile->getClientOriginalName();
+            $path = $this->tempFile->storeAs('settings', $filename, 'public');
+            
+            // Dosya yolunu default_value olarak ayarla
+            $this->inputs['default_value'] = $path;
         }
     }
 
@@ -102,8 +163,18 @@ class ManageComponent extends Component
     {
         $this->validate();
         
-        // Eğer select tipiyse, options string olarak geldiyse parse edelim
-        if ($this->inputs['type'] === 'select' && is_string($this->inputs['options'])) {
+        // Eğer select tipiyse, options_array'i options'a dönüştür
+        if ($this->inputs['type'] === 'select' && !empty($this->inputs['options_array'])) {
+            $options = [];
+            foreach ($this->inputs['options_array'] as $key => $value) {
+                if (!empty($value)) {
+                    $options[$key] = $value;
+                }
+            }
+            $this->inputs['options'] = $options;
+        } 
+        // Eğer hala string olarak geldiyse parse edelim
+        elseif ($this->inputs['type'] === 'select' && is_string($this->inputs['options'])) {
             $options = [];
             $lines = explode("\n", $this->inputs['options']);
             foreach ($lines as $line) {
@@ -118,6 +189,18 @@ class ManageComponent extends Component
                 }
             }
             $this->inputs['options'] = $options;
+        }
+        
+        // Resim türü için tempImage varsa ve validate edilmişse
+        if ($this->inputs['type'] === 'image' && $this->tempImage) {
+            $path = $this->uploadImage($this->settingId);
+            if ($path) {
+                $this->inputs['default_value'] = $path;
+            }
+        }
+        // Dosya türü için tempFile varsa ve validate edilmişse
+        elseif ($this->inputs['type'] === 'file' && $this->tempFile) {
+            // Zaten updatedTempFile'da işledik
         }
     
         if ($this->settingId) {
@@ -154,16 +237,21 @@ class ManageComponent extends Component
         ]);
         
         if ($resetForm && !$this->settingId) {
-            $this->reset();
+            $this->reset('inputs', 'tempFile', 'tempImage');
+            $this->inputs['sort_order'] = Setting::max('sort_order') + 1;
+            $this->inputs['is_active'] = true;
         }
     }
 
     public function render()
     {
+        // Grupları hiyerarşik şekilde getir
         $groups = SettingGroup::all();
+        $parentGroups = $groups->where('parent_id', null);
         
         return view('settingmanagement::livewire.manage-component', [
             'groups' => $groups,
+            'parentGroups' => $parentGroups,
             'model' => $this->settingId ? Setting::find($this->settingId) : null
         ]);
     }

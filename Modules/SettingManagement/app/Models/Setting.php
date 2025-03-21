@@ -5,13 +5,11 @@ namespace Modules\SettingManagement\App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
 use Stancl\Tenancy\Database\Concerns\CentralConnection;
 
-class Setting extends Model implements HasMedia
+class Setting extends Model
 {
-    use CentralConnection, InteractsWithMedia;
+    use CentralConnection;
     
     protected $table = 'settings';
 
@@ -46,16 +44,5 @@ class Setting extends Model implements HasMedia
         $settingValue = $this->values()->first();
         
         return $settingValue ? $settingValue->value : $this->default_value;
-    }
-    
-    public function registerMediaCollections(): void
-    {
-        $this->addMediaCollection('images')
-             ->singleFile()
-             ->useDisk('public');
-             
-        $this->addMediaCollection('files')
-             ->singleFile()
-             ->useDisk('public');
     }
 }

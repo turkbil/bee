@@ -1,14 +1,12 @@
-<?php
+<?php 
 namespace Modules\SettingManagement\App\Http\Livewire\Traits;
 
 use Livewire\WithFileUploads;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Modules\SettingManagement\App\Models\Setting;
-use Stancl\Tenancy\Database\Concerns\CentralConnection;
 
-trait WithImageUpload
-{
+trait WithImageUpload {
     use WithFileUploads;
 
     public $temporaryImages = [];
@@ -31,153 +29,106 @@ trait WithImageUpload
         }
     
         if ($model && isset($this->temporaryImages[$imageKey])) {
-            $fileName = Str::slug($model->key) . '-' . Str::random(6) . '.' . $this->temporaryImages[$imageKey]->getClientOriginalExtension();
-    
-            $collectionName = $this->getCollectionName($imageKey);
-            
-            // Eğer tenant ortamındaysa dosyayı tenant diskine yükleyelim
-            if (is_tenant()) {
-                // Tenant veritabanına kayıt yapacak şekilde direkt dosya yükleme işlemi
-                $tenantPath = 'tenant' . tenant_id() . '/settings/' . $collectionName;
-                $path = $this->temporaryImages[$imageKey]->storeAs($tenantPath, $fileName, 'public');
+            try {
+                // Tenant folder belirleme
+                $tenantPrefix = is_tenant() ? tenant_id() : 'central'; 
                 
-                // Media kaydı tenant medya tablosuna eklenecek
-                $this->handleTenantMediaRecord($model, $imageKey, $path, $fileName, $collectionName);
-                return;
-            }
-    
-            // Central ortamı için normal işlem
-            $model->clearMediaCollection($collectionName);
-            $media = $model
-                ->addMedia($this->temporaryImages[$imageKey]->getRealPath())
-                ->preservingOriginal()
-                ->usingFileName($fileName)
-                ->withCustomProperties([
-                    'uploaded_by' => auth()->id(),
-                    'image_type' => $imageKey,
-                ])
-                ->toMediaCollection($collectionName, 'public');
-    
-            if ($media) {
-                log_activity(
-                    $model,
-                    'resim yüklendi',
-                    ['collection' => $collectionName, 'filename' => $fileName]
+                // Benzersiz bir dosya adı oluştur
+                $fileName = Str::slug($model->key) . '-' . Str::random(6) . '.' . $this->temporaryImages[$imageKey]->getClientOriginalExtension();
+                
+                // Koleksiyon adını belirle (klasör)
+                $folder = $this->getCollectionName($imageKey);
+                
+                // Tam dosya yolu - tenant id sadece bir kez geçecek
+                $path = "settings/{$tenantPrefix}/{$folder}/{$fileName}";
+                
+                // Eski dosyayı sil (eğer varsa)
+                if ($model->value && Storage::disk('public')->exists($model->value)) {
+                    Storage::disk('public')->delete($model->value);
+                }
+                
+                // Yeni dosyayı yükle
+                $filePath = Storage::disk('public')->putFileAs(
+                    dirname($path),
+                    $this->temporaryImages[$imageKey],
+                    basename($path)
                 );
+                
+                // Modeli güncelle
+                if ($filePath) {
+                    $relativePath = $path;
+                    
+                    // Eğer bu bir TenantValueComponent veya ValuesComponent ise değeri güncelle
+                    if (isset($this->value)) {
+                        $this->value = $relativePath;
+                    }
+                    
+                    log_activity(
+                        $model,
+                        'resim yüklendi',
+                        ['path' => $relativePath, 'filename' => $fileName]
+                    );
+                    
+                    return $relativePath;
+                }
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('Resim yükleme hatası: ' . $e->getMessage(), [
+                    'model_id' => $model->id,
+                    'tenant' => is_tenant() ? tenant_id() : 'central'
+                ]);
             }
         }
-    }
-    
-    // Tenant veritabanına medya kaydı ekleme
-    private function handleTenantMediaRecord($model, $imageKey, $path, $fileName, $collectionName)
-    {
-        // Tenant medya tablosuna kayıt ekleme işlemi
-        $mediaClass = config('media-library.media_model');
-        $media = new $mediaClass();
-        $media->model_type = get_class($model);
-        $media->model_id = $model->id;
-        $media->uuid = (string) Str::uuid();
-        $media->collection_name = $collectionName;
-        $media->name = pathinfo($fileName, PATHINFO_FILENAME);
-        $media->file_name = $fileName;
-        $media->mime_type = $this->temporaryImages[$imageKey]->getMimeType();
-        $media->disk = 'public';
-        $media->conversions_disk = 'public';
-        $media->size = $this->temporaryImages[$imageKey]->getSize();
-        $media->manipulations = json_encode([]);
-        $media->custom_properties = json_encode([
-            'uploaded_by' => auth()->id(),
-            'image_type' => $imageKey,
-        ]);
-        $media->generated_conversions = json_encode([]);
-        $media->responsive_images = json_encode([]);
-        $media->save();
         
-        log_activity(
-            $model,
-            'tenant resim yüklendi',
-            ['collection' => $collectionName, 'filename' => $fileName, 'path' => $path]
-        );
+        return null;
     }
 
     public function removeImage($imageKey)
     {
         if (isset($this->settingId)) {
             $model = Setting::find($this->settingId);
-            $collectionName = $this->getCollectionName($imageKey);
             
-            if ($model) {
-                if (is_tenant()) {
-                    // Tenant için medya silme işlemi
-                    $this->removeTenantMedia($model, $collectionName);
-                } else {
-                    // Central için medya silme işlemi
-                    if ($model->getFirstMedia($collectionName)) {
-                        $media = $model->getFirstMedia($collectionName);
-                        $fileName = $media->file_name;
-                        
-                        $model->clearMediaCollection($collectionName);
-                        
-                        log_activity(
-                            $model,
-                            'resim silindi',
-                            ['collection' => $collectionName, 'filename' => $fileName]
-                        );
-                    }
-                }
+            if ($model && isset($this->value) && Storage::disk('public')->exists($this->value)) {
+                Storage::disk('public')->delete($this->value);
+                
+                log_activity(
+                    $model,
+                    'resim silindi',
+                    ['path' => $this->value]
+                );
+                
+                $this->value = null;
             }
         }
+        
         unset($this->temporaryImages[$imageKey]);
-    }
-    
-    private function removeTenantMedia($model, $collectionName)
-    {
-        // Tenant medya kaydını bul ve sil
-        $mediaClass = config('media-library.media_model');
-        $media = $mediaClass::where('model_type', get_class($model))
-            ->where('model_id', $model->id)
-            ->where('collection_name', $collectionName)
-            ->first();
-            
-        if ($media) {
-            $fileName = $media->file_name;
-            $path = 'tenant' . tenant_id() . '/settings/' . $collectionName . '/' . $fileName;
-            
-            // Dosyayı diskten sil
-            if (Storage::disk('public')->exists($path)) {
-                Storage::disk('public')->delete($path);
-            }
-            
-            // Medya kaydını sil
-            $media->delete();
-            
-            log_activity(
-                $model,
-                'tenant resim silindi',
-                ['collection' => $collectionName, 'filename' => $fileName]
-            );
-        }
     }
 
     private function getCollectionName($imageKey)
     {
-        // Eğer imageKey boşsa veya "image" ise direkt "image" döndür
+        // Eğer imageKey boşsa veya "image" ise direkt "images" klasörünü kullan
         if (empty($imageKey) || $imageKey === 'image') {
-            return 'image';
+            return 'images';
         }
         
-        // Diğer keyler için "image_" öneki ekle
-        return 'image_' . $imageKey;
+        // Diğer keyler için kendi adını kullan
+        return $imageKey;
     }
     
     public function handleImageUpload($model)
     {
+        $paths = [];
+        
         if (!empty($this->temporaryImages)) {
             foreach ($this->temporaryImages as $imageKey => $image) {
                 if ($image) {
-                    $this->uploadImage($imageKey, $model);
+                    $path = $this->uploadImage($imageKey, $model);
+                    if ($path) {
+                        $paths[$imageKey] = $path;
+                    }
                 }
             }
         }
+        
+        return $paths;
     }
 }

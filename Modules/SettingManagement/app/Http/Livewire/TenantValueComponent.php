@@ -7,14 +7,14 @@ use Livewire\Attributes\Layout;
 use Livewire\WithFileUploads;
 use Modules\SettingManagement\App\Models\Setting;
 use Modules\SettingManagement\App\Models\SettingValue;
-use Modules\SettingManagement\App\Http\Livewire\Traits\WithImageUpload;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 #[Layout('admin.layout')]
 class TenantValueComponent extends Component
 {
-    use WithFileUploads, WithImageUpload;
+    use WithFileUploads;
 
     public $settingId;
     public $value;
@@ -67,11 +67,13 @@ class TenantValueComponent extends Component
         }
         
         // Dosya türünde ve geçerli bir dosya varsa, önizleme URL'sini hazırla
+        // Burada MediaLibrary değil, doğrudan settings_values tablosundaki değeri kullanıyoruz
         if (($setting->type === 'file' || $setting->type === 'image') && $this->value && Storage::disk('public')->exists($this->value)) {
             $this->previewing = true;
             $this->previewUrl = Storage::url($this->value);
         }
     }
+    
 
     public function updatedTemporaryImages($value, $key)
     {
@@ -102,25 +104,21 @@ class TenantValueComponent extends Component
         }
     }
     
-    // Renk değeri değiştiğinde ana değeri güncelle
     public function updatedColorValue()
     {
         $this->value = $this->colorValue;
     }
     
-    // Tarih değeri değiştiğinde ana değeri güncelle
     public function updatedDateValue()
     {
         $this->value = $this->dateValue;
     }
     
-    // Saat değeri değiştiğinde ana değeri güncelle
     public function updatedTimeValue()
     {
         $this->value = $this->timeValue;
     }
     
-    // Checkbox değeri değiştiğinde ana değeri güncelle
     public function updatedCheckboxValue()
     {
         $this->value = $this->checkboxValue ? '1' : '0';
@@ -134,7 +132,6 @@ class TenantValueComponent extends Component
             $setting = Setting::find($this->settingId);
             $this->value = $setting->default_value;
             
-            // Ayar türüne göre özel değişkenleri güncelle
             switch ($setting->type) {
                 case 'color':
                     $this->colorValue = $this->value ?: '#ffffff';
@@ -155,7 +152,6 @@ class TenantValueComponent extends Component
         }
     }
     
-    // Dosya silme fonksiyonu
     public function deleteFile()
     {
         if ($this->value && Storage::disk('public')->exists($this->value)) {
@@ -166,7 +162,6 @@ class TenantValueComponent extends Component
         $this->previewing = false;
         $this->previewUrl = null;
         
-        // Tenant veritabanında dosya değerini güncelle
         SettingValue::updateOrCreate(
             ['setting_id' => $this->settingId],
             ['value' => null]
@@ -178,6 +173,7 @@ class TenantValueComponent extends Component
             'type' => 'success',
         ]);
     }
+
 
     public function save($redirect = false)
     {
@@ -210,7 +206,24 @@ class TenantValueComponent extends Component
                     
                     $fileName = time() . '_' . Str::slug($setting->key) . '.' . $this->temporaryImages[$key]->getClientOriginalExtension();
                     $folder = $type === 'image' ? 'images' : 'files';
-                    $path = $this->temporaryImages[$key]->storeAs("{$tenantPrefix}/settings/{$folder}", $fileName, 'public');
+                    
+                    // Yeni dosyayı kaydet - hem spatie'ye hem de doğrudan diske
+                    $path = "{$tenantPrefix}/settings/{$folder}/{$fileName}";
+                    
+                    // Spatie MediaLibrary ile dosyayı ekle
+                    $setting->clearMediaCollection($type === 'image' ? 'images' : 'files');
+                    $media = $setting->addMedia($this->temporaryImages[$key]->getRealPath())
+                        ->usingFileName($fileName)
+                        ->withCustomProperties([
+                            'setting_id' => $this->settingId,
+                            'tenant_id' => is_tenant() ? tenant_id() : 'central'
+                        ])
+                        ->toMediaCollection($type === 'image' ? 'images' : 'files', 'public');
+                    
+                    // Aynı zamanda doğrudan Storage üzerinden dosyayı kaydet
+                    Storage::disk('public')->putFileAs("{$tenantPrefix}/settings/{$folder}", $this->temporaryImages[$key], $fileName);
+                    
+                    // Dosya yolunu sakla - bunu setting_values tablosuna kaydedeceğiz
                     $valueToSave = $path;
                 }
             }
@@ -238,6 +251,36 @@ class TenantValueComponent extends Component
             'title' => 'Başarılı!',
             'message' => $message,
             'type' => 'success',
+        ]);
+    }
+    
+    
+    
+    
+    // Tenant veritabanına doğrudan medya ekleyen fonksiyon
+    private function addMediaToTenantDB($setting, $fileName, $path, $type)
+    {
+        // Central connection'dan tenant connection'a geçiş yap
+        $mediaModel = config('media-library.media_model');
+        
+        // Tenant DB'sine manuel media kaydı ekle
+        DB::table('media')->insert([
+            'model_type' => get_class($setting),
+            'model_id' => $setting->id,
+            'uuid' => (string) Str::uuid(),
+            'collection_name' => $type === 'image' ? 'images' : 'files',
+            'name' => pathinfo($fileName, PATHINFO_FILENAME),
+            'file_name' => $fileName,
+            'mime_type' => $this->temporaryImages[$type === 'image' ? 'image' : 'file']->getMimeType(),
+            'disk' => 'public',
+            'conversions_disk' => 'public',
+            'size' => $this->temporaryImages[$type === 'image' ? 'image' : 'file']->getSize(),
+            'manipulations' => '[]',
+            'custom_properties' => '{"setting_id":"' . $setting->id . '"}',
+            'generated_conversions' => '[]',
+            'responsive_images' => '[]',
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
     }
 

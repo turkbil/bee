@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StorageController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\InitializeTenancy;
 
@@ -22,7 +23,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/storage/tenant{id}/{mediaId}/{filename}', [\App\Http\Controllers\StorageController::class, 'tenantMedia'])
+// Medya dosyalarına erişim için route tanımı
+Route::get('/storage/tenant{id}/{mediaId}/{filename}', [StorageController::class, 'tenantMedia'])
     ->where('id', '[0-9]+')
     ->where('mediaId', '[0-9]+')
     ->where('filename', '.*');

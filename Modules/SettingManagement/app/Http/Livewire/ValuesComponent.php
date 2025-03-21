@@ -10,6 +10,7 @@ use Modules\SettingManagement\App\Models\Setting;
 use Modules\SettingManagement\App\Models\SettingValue;
 use Modules\SettingManagement\App\Models\SettingGroup;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 #[Layout('admin.layout')]
 class ValuesComponent extends Component
@@ -75,6 +76,8 @@ class ValuesComponent extends Component
         }
     }
 
+
+
     public function save($redirect = false)
     {
         foreach ($this->values as $settingId => $value) {
@@ -85,25 +88,35 @@ class ValuesComponent extends Component
             if (isset($this->temporaryImages[$settingId])) {
                 $file = $this->temporaryImages[$settingId];
                 $type = $setting->type;
-                $collectionName = $type === 'image' ? 'images' : 'files';
                 
-                // Önceki medyayı temizle
+                // Tenant ortamı kontrolü
+                $tenantPrefix = is_tenant() ? 'tenant' . tenant_id() : '';
+                
+                // Dosya adını oluştur
+                $fileName = Str::slug($setting->key) . '-' . Str::random(6) . '.' . $file->getClientOriginalExtension();
+                $folder = $type === 'image' ? 'images' : 'files';
+                
+                // Dosya yolu
+                $path = "{$tenantPrefix}/settings/{$folder}/{$fileName}";
+                
+                // Spatie MediaLibrary ile dosyayı ekle
+                $collectionName = $type === 'image' ? 'images' : 'files';
                 $setting->clearMediaCollection($collectionName);
                 
-                // Yeni medyayı ekle
-                $fileName = Str::slug($setting->key) . '-' . Str::random(6) . '.' . $file->getClientOriginalExtension();
                 $media = $setting->addMedia($file->getRealPath())
                     ->usingFileName($fileName)
                     ->withCustomProperties([
                         'setting_id' => $settingId,
-                        'type' => $type
+                        'tenant_id' => is_tenant() ? tenant_id() : 'central'
                     ])
-                    ->toMediaCollection($collectionName);
+                    ->toMediaCollection($collectionName, 'public');
                 
-                // MediaLibrary'den alınan URL'yi value olarak kaydet
-                $mediaUrl = $media->getUrl();
-                $value = $mediaUrl;
-                $this->values[$settingId] = $mediaUrl;
+                // Aynı zamanda doğrudan Storage üzerinden dosyayı kaydet
+                Storage::disk('public')->putFileAs("{$tenantPrefix}/settings/{$folder}", $file, $fileName);
+                
+                // Yolu değer olarak ata
+                $value = $path;
+                $this->values[$settingId] = $path;
             }
             
             if ($value === $setting->default_value) {
@@ -138,13 +151,14 @@ class ValuesComponent extends Component
         if ($redirect) {
             return redirect()->route('admin.settingmanagement.tenant.settings');
         }
-
+    
         $this->dispatch('toast', [
             'title' => 'Başarılı!',
             'message' => 'Değişiklikler kaydedildi.',
             'type' => 'success'
         ]);
     }
+    
     
     public function deleteMedia($settingId)
     {
@@ -154,7 +168,21 @@ class ValuesComponent extends Component
             $type = $setting->type;
             $collectionName = $type === 'image' ? 'images' : 'files';
             
-            $setting->clearMediaCollection($collectionName);
+            // Tenant ortamında
+            if (is_tenant()) {
+                // Önceki değeri bul
+                $settingValue = SettingValue::where('setting_id', $settingId)->first();
+                if ($settingValue && $settingValue->value) {
+                    // Dosyayı diskten sil
+                    if (Storage::disk('public')->exists($settingValue->value)) {
+                        Storage::disk('public')->delete($settingValue->value);
+                    }
+                }
+            } 
+            // Central ortamında
+            else {
+                $setting->clearMediaCollection($collectionName);
+            }
             
             // SettingValue'da medya URL'sini temizle
             SettingValue::updateOrCreate(

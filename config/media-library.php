@@ -6,7 +6,7 @@ return [
      * The disk on which to store added files and derived images by default. Choose
      * one or more of the disks you've configured in config/filesystems.php.
      */
-    'disk_name' => env('MEDIA_DISK', 'tenant'),
+    'disk_name' => env('MEDIA_DISK', 'public'),
 
     /*
      * The maximum file size of an item in bytes.
@@ -101,7 +101,6 @@ return [
      * When urls to files get generated, this class will be called. Use the default
      * if your files are stored locally above the site root or on s3.
      */
-     //'url_generator' => Spatie\MediaLibrary\Support\UrlGenerator\DefaultUrlGenerator::class,
     'url_generator' => App\Services\TenantUrlGenerator::class,
 
     /*
@@ -177,7 +176,7 @@ return [
      * The path where to store temporary files while performing image conversions.
      * If set to null, storage_path('media-library/temp') will be used.
      */
-    'temporary_directory_path' => storage_path('app/public/' . (tenant('id') ? 'tenant' . tenant('id') : 'default') . '/temp'),
+    'temporary_directory_path' => null,
 
     /*
      * The engine that should perform the image conversions.
@@ -276,7 +275,7 @@ return [
      * You can specify a prefix for that is used for storing all media.
      * If you set this to `/my-subdir`, all your media will be stored in a `/my-subdir` directory.
      */
-    'prefix' => env('MEDIA_PREFIX', tenant('id') ? 'tenant' . tenant('id') : ''), 
+    'prefix' => '', // Prefix'i boşaltıyoruz, çünkü StorageController dosya yollarını kendisi yönetecek
 
 
     /*

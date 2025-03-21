@@ -73,16 +73,26 @@
                                 @if($setting->type === 'file' && $setting->current_value)
                                     <div class="d-flex align-items-center">
                                         <i class="fas fa-file text-primary me-2"></i>
-                                        <a href="{{ Storage::url($setting->current_value) }}" target="_blank" class="text-truncate">
-                                            {{ basename($setting->current_value) }}
-                                        </a>
+                                        @if(Storage::disk('public')->exists($setting->current_value))
+                                            <a href="{{ Storage::url($setting->current_value) }}" target="_blank" class="text-truncate">
+                                                {{ basename($setting->current_value) }}
+                                            </a>
+                                        @else
+                                            <span class="text-truncate text-muted">{{ basename($setting->current_value) }}</span>
+                                        @endif
                                         <a href="{{ route('admin.settingmanagement.value', $setting->id) }}" class="btn btn-sm btn-link ms-2">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                     </div>
                                 @elseif($setting->type === 'image' && $setting->current_value)
                                     <div class="d-flex align-items-center">
-                                        <img src="{{ Storage::url($setting->current_value) }}" class="img-thumbnail me-2" style="max-width: 40px; max-height: 40px;">
+                                        @if(Storage::disk('public')->exists($setting->current_value))
+                                            <img src="{{ Storage::url($setting->current_value) }}" class="img-thumbnail me-2" style="max-width: 40px; max-height: 40px;">
+                                        @else
+                                            <div class="bg-light me-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                <i class="fas fa-image text-muted"></i>
+                                            </div>
+                                        @endif
                                         <a href="{{ route('admin.settingmanagement.value', $setting->id) }}" class="btn btn-sm btn-link">
                                             <i class="fas fa-edit"></i>
                                         </a>

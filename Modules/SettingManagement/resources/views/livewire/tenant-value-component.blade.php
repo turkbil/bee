@@ -39,32 +39,39 @@
                                         @endif
                                         @break
                                     
-                                        @case('file')
-                                        <div class="border rounded p-3 text-center">
-                                            @if($values[$setting->id])
-                                                <div class="d-flex align-items-center justify-content-center">
-                                                    <i class="fas fa-file me-2"></i>
-                                                    <a href="{{ Storage::url($values[$setting->id]) }}" target="_blank">
-                                                        {{ basename($values[$setting->id]) }}
-                                                    </a>
+                                    @case('file')
+                                        <div class="form-group mb-3">
+                                            @if($useDefault)
+                                                <div class="alert alert-info">
+                                                    <i class="fas fa-info-circle me-2"></i>
+                                                    Varsayılan değer kullanılıyor.
                                                 </div>
                                             @else
-                                                <i class="fas fa-upload fa-2x text-muted"></i>
-                                                <div class="mt-2 text-muted">Dosya Seçilmedi</div>
+                                                @include('settingmanagement::livewire.partials.file-upload', [
+                                                    'fileKey' => 'file',
+                                                    'label' => 'Dosyayı sürükleyip bırakın veya tıklayın',
+                                                    'setting' => $setting
+                                                ])
                                             @endif
                                         </div>
                                         @break
-                                    
+
                                     @case('image')
-                                        <div class="border rounded p-3 text-center">
-                                            @if($values[$setting->id])
-                                                <img src="{{ Storage::url($values[$setting->id]) }}" class="img-fluid rounded" style="max-height: 100px">
-                                            @else
-                                                <i class="fas fa-image fa-2x text-muted"></i>
-                                                <div class="mt-2 text-muted">Resim Seçilmedi</div>
-                                            @endif
-                                        </div>
-                                        @break
+                                    <div class="form-group mb-3">
+                                        @if($useDefault)
+                                            <div class="alert alert-info">
+                                                <i class="fas fa-info-circle me-2"></i>
+                                                Varsayılan değer kullanılıyor.
+                                            </div>
+                                        @else
+                                            @include('settingmanagement::livewire.partials.image-upload', [
+                                                'imageKey' => 'image',
+                                                'label' => 'Görseli sürükleyip bırakın veya tıklayın',
+                                                'setting' => $setting
+                                            ])
+                                        @endif
+                                    </div>
+                                    @break
 
                                 @case('checkbox')
                                     <div class="form-check form-switch">

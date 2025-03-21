@@ -59,5 +59,4 @@ class TenantSettingsComponent extends Component
             'groups' => $tenantGroups
         ]);
     }
-    
 }

@@ -71,7 +71,22 @@
                             <td>
                                 <div class="text-truncate" style="max-width: 250px;" title="{{ $setting->current_value }}">
                                 @if($setting->type === 'file' && $setting->current_value)
-                                    <span class="text-muted"><i class="fas fa-file me-1"></i> Dosya</span>
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-file text-primary me-2"></i>
+                                        <a href="{{ Storage::url($setting->current_value) }}" target="_blank" class="text-truncate">
+                                            {{ basename($setting->current_value) }}
+                                        </a>
+                                        <a href="{{ route('admin.settingmanagement.value', $setting->id) }}" class="btn btn-sm btn-link ms-2">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </div>
+                                @elseif($setting->type === 'image' && $setting->current_value)
+                                    <div class="d-flex align-items-center">
+                                        <img src="{{ Storage::url($setting->current_value) }}" class="img-thumbnail me-2" style="max-width: 40px; max-height: 40px;">
+                                        <a href="{{ route('admin.settingmanagement.value', $setting->id) }}" class="btn btn-sm btn-link">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </div>
                                 @elseif($setting->type === 'checkbox')
                                     {{ $setting->current_value ? 'Evet' : 'Hayır' }}
                                 @elseif($setting->type === 'textarea' || $setting->type === 'html')

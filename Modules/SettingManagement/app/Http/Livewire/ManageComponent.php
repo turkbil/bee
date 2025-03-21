@@ -17,8 +17,8 @@ class ManageComponent extends Component
     use WithFileUploads, WithImageUpload;
 
     public $settingId;
-    public $tempFile;
     public $redirect = false;
+    public $temporaryImages = [];
     public $inputs = [
         'group_id' => '',
         'label' => '',
@@ -59,7 +59,7 @@ class ManageComponent extends Component
             'inputs.options' => 'nullable|required_if:inputs.type,select',
             'inputs.default_value' => 'nullable',
             'inputs.is_active' => 'boolean',
-            'tempFile' => 'nullable|file|max:2048',
+            'temporaryImages.*' => 'nullable|file|max:2048',
         ];
     }
 
@@ -70,7 +70,7 @@ class ManageComponent extends Component
         'inputs.key.regex' => 'Anahtar sadece harf, rakam ve alt çizgi içerebilir',
         'inputs.type.required' => 'Tip seçimi zorunludur',
         'inputs.options.required_if' => 'Seçim kutusu için seçenekler belirtmelisiniz',
-        'tempFile.max' => 'Dosya boyutu en fazla 2MB olabilir',
+        'temporaryImages.*.max' => 'Dosya boyutu en fazla 2MB olabilir',
     ];
 
     public function mount($id = null)
@@ -147,18 +147,6 @@ class ManageComponent extends Component
         }
     }
 
-    public function updatedTempFile()
-    {
-        if ($this->tempFile) {
-            // Dosyayı settings klasörüne kaydet
-            $filename = time() . '_' . $this->tempFile->getClientOriginalName();
-            $path = $this->tempFile->storeAs('settings', $filename, 'public');
-            
-            // Dosya yolunu default_value olarak ayarla
-            $this->inputs['default_value'] = $path;
-        }
-    }
-
     public function save($redirect = false, $resetForm = false)
     {
         $this->validate();
@@ -190,23 +178,20 @@ class ManageComponent extends Component
             }
             $this->inputs['options'] = $options;
         }
-        
-        // Resim türü için tempImage varsa ve validate edilmişse
-        if ($this->inputs['type'] === 'image' && $this->tempImage) {
-            $path = $this->uploadImage($this->settingId);
-            if ($path) {
-                $this->inputs['default_value'] = $path;
-            }
-        }
-        // Dosya türü için tempFile varsa ve validate edilmişse
-        elseif ($this->inputs['type'] === 'file' && $this->tempFile) {
-            // Zaten updatedTempFile'da işledik
-        }
     
         if ($this->settingId) {
             $setting = Setting::findOrFail($this->settingId);
             $oldData = $setting->toArray();
             $setting->update($this->inputs);
+            
+            // Dosya/resim yüklemesi varsa
+            if (!empty($this->temporaryImages)) {
+                foreach ($this->temporaryImages as $key => $image) {
+                    if ($image) {
+                        $this->uploadImage($key, $setting);
+                    }
+                }
+            }
             
             log_activity(
                 $setting,
@@ -217,6 +202,15 @@ class ManageComponent extends Component
             $message = 'Ayar güncellendi';
         } else {
             $setting = Setting::create($this->inputs);
+            
+            // Dosya/resim yüklemesi varsa
+            if (!empty($this->temporaryImages)) {
+                foreach ($this->temporaryImages as $key => $image) {
+                    if ($image) {
+                        $this->uploadImage($key, $setting);
+                    }
+                }
+            }
             
             log_activity(
                 $setting,
@@ -237,7 +231,7 @@ class ManageComponent extends Component
         ]);
         
         if ($resetForm && !$this->settingId) {
-            $this->reset('inputs', 'tempFile', 'tempImage');
+            $this->reset('inputs', 'temporaryImages');
             $this->inputs['sort_order'] = Setting::max('sort_order') + 1;
             $this->inputs['is_active'] = true;
         }

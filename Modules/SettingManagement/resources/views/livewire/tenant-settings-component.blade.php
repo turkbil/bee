@@ -2,126 +2,132 @@
 
 <div class="card">
     <div class="card-header">
-        <div class="d-flex justify-content-between align-items-center">
-            <h3 class="card-title">
-                <i class="fas fa-cogs me-2"></i>
-                Tenant Ayarları
-            </h3>
-        </div>
+        <h3 class="card-title">
+            <i class="fas fa-cogs me-2"></i>
+            Tenant Ayarları
+        </h3>
     </div>
     <div class="card-body">
-        <!-- Header Bölümü -->
-        <div class="row mb-3">
-            <!-- Sol Taraf (Arama ve Filtreleme) -->
-            <div class="col-md-8">
-                <div class="row g-2">
-                    <div class="col-md-4">
-                        <div class="input-icon">
-                            <span class="input-icon-addon">
-                                <i class="fas fa-search"></i>
-                            </span>
-                            <input type="text" wire:model.live.debounce.300ms="search" class="form-control"
-                                placeholder="Aramak için yazmaya başlayın...">
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <select wire:model.live="selectedGroup" class="form-select">
-                            <option value="">Tüm Gruplar</option>
-                            @foreach($groups as $group)
-                            <option value="{{ $group->id }}">{{ $group->name }}</option>
-                            @endforeach
-                        </select>
+        <!-- Filtreleme Araçları -->
+        <div class="mb-3">
+            <div class="row g-2">
+                <div class="col-md-3">
+                    <div class="input-icon">
+                        <span class="input-icon-addon">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input type="text" wire:model.live.debounce.300ms="search" class="form-control"
+                            placeholder="Aramak için yazın...">
                     </div>
                 </div>
-            </div>
-
-            <!-- Ortadaki Loading -->
-            <div class="col-md-1 position-relative">
-                <div wire:loading
-                    wire:target="render, search, selectedGroup"
-                    class="position-absolute top-50 start-50 translate-middle text-center">
-                    <div class="progress" style="height: 2px;">
-                        <div class="progress-bar progress-bar-indeterminate"></div>
-                    </div>
+                <div class="col-md-3">
+                    <select wire:model.live="selectedGroup" class="form-select">
+                        <option value="">Tüm Gruplar</option>
+                        @foreach($groups as $group)
+                        <option value="{{ $group->id }}">{{ $group->name }}</option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
         </div>
 
         <!-- Ayarlar Listesi -->
-        <div class="row row-cards">
-            @forelse($settings->groupBy('group_id') as $groupId => $groupSettings)
-            @php $group = $groups->firstWhere('id', $groupId); @endphp
-            <div class="col-12 mb-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">{{ $group->name }}</h3>
-                        <div class="card-actions">
-                            <a href="{{ route('admin.settingmanagement.values', $groupId) }}" class="btn btn-primary btn-sm">
-                                <i class="fas fa-pencil-alt me-1"></i> Toplu Düzenle
-                            </a>
-                        </div>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table table-vcenter card-table">
-                            <thead>
-                                <tr>
-                                    <th>Başlık</th>
-                                    <th>Değer</th>
-                                    <th>Kullanım</th>
-                                    <th class="w-1"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($groupSettings as $setting)
-                                <tr>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <span class="text-truncate" style="max-width: 200px;">{{ $setting->label }}</span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="text-muted text-truncate" style="max-width: 200px;">
-                                            @if($setting->type === 'file' && $setting->current_value)
-                                                <i class="fas fa-file me-1"></i> Dosya
-                                            @elseif($setting->type === 'checkbox')
-                                                {{ $setting->current_value ? 'Evet' : 'Hayır' }}
-                                            @else
-                                                {{ $setting->current_value ?: '-' }}
-                                            @endif
-                                        </div>
-                                    </td>
-                                    <td>
-                                        @if($setting->is_custom)
-                                        <span class="badge bg-green">Özel</span>
-                                        @else
-                                        <span class="badge bg-muted">Varsayılan</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        <a href="{{ route('admin.settingmanagement.value', $setting->id) }}" class="btn btn-icon btn-sm">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
+        @forelse($settings->groupBy('group_id') as $groupId => $groupSettings)
+        @php $group = $groups->firstWhere('id', $groupId); @endphp
+        <div class="card mb-3">
+            <div class="card-header d-flex">
+                <div class="flex-grow-1">
+                    <h3 class="card-title">{{ $group->name }}</h3>
+                </div>
+                <div>
+                    <a href="{{ route('admin.settingmanagement.values', $groupId) }}" class="btn btn-sm btn-ghost-secondary">
+                        Toplu Düzenle 
+                    </a>
                 </div>
             </div>
-            @empty
-            <div class="col-12">
-                <div class="empty" style="min-height: 200px; display: flex; flex-direction: column; justify-content: center;">
-                    <div class="empty-icon">
-                        <i class="fas fa-cogs fa-3x text-muted"></i>
-                    </div>
-                    <p class="empty-title">Ayar bulunamadı</p>
-                    <p class="empty-subtitle text-muted">
-                        Arama kriterlerinize uygun ayar bulunmamaktadır.
-                    </p>
-                </div>
+            <div class="table-responsive">
+                <table class="table card-table table-vcenter">
+                    <thead>
+                        <tr>
+                            <th style="width: 25%">BAŞLIK</th>
+                            <th style="width: 5%">ÖZEL</th>
+                            <th style="width: 35%">DEĞER</th>
+                            <th style="width: 20%">ANAHTAR</th>
+                            <th style="width: 10%">TİP</th>
+                            <th style="width: 5%"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($groupSettings as $setting)
+                        <tr>
+                            <td>{{ $setting->label }}</td>
+                            <td>
+                                @if($setting->is_custom)
+                                <span class="badge bg-azure-lt">
+                                    <i class="fas fa-check text-azure"></i>
+                                </span>
+                                @endif
+                            </td>
+                            <td>
+                                <div class="text-truncate" style="max-width: 250px;" title="{{ $setting->current_value }}">
+                                @if($setting->type === 'file' && $setting->current_value)
+                                    <span class="text-muted"><i class="fas fa-file me-1"></i> Dosya</span>
+                                @elseif($setting->type === 'checkbox')
+                                    {{ $setting->current_value ? 'Evet' : 'Hayır' }}
+                                @elseif($setting->type === 'textarea' || $setting->type === 'html')
+                                    <span class="text-muted">{{ Str::limit(strip_tags($setting->current_value), 50) ?: '-' }}</span>
+                                @else
+                                    {{ $setting->current_value ?: '-' }}
+                                @endif
+                                </div>
+                            </td>
+                            <td><code>{{ $setting->key }}</code></td>
+                            <td>
+                                <span class="badge bg-blue-lt">{{ $setting->type }}</span>
+                            </td>
+                            <td>
+                                <a href="{{ route('admin.settingmanagement.value', $setting->id) }}" class="btn btn-icon btn-sm">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
-            @endforelse
         </div>
+        @empty
+        <div class="empty">
+            <div class="empty-icon">
+                <i class="fas fa-cogs"></i>
+            </div>
+            <p class="empty-title">Ayar bulunamadı</p>
+            <p class="empty-subtitle text-muted">
+                Arama kriterlerinize uygun ayar bulunmamaktadır.
+            </p>
+        </div>
+        @endforelse
     </div>
 </div>
+
+@push('styles')
+<style>
+    .table th {
+        text-transform: uppercase;
+        color: #6c7a91;
+        font-size: 0.625rem;
+        letter-spacing: 0.04em;
+        font-weight: 600;
+    }
+    
+    .card-header.d-flex {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .flex-grow-1 {
+        flex-grow: 1;
+    }
+</style>
+@endpush

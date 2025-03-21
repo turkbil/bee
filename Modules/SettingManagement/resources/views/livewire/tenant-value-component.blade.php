@@ -2,76 +2,115 @@
 
 <div class="card">
     <div class="card-header">
-        <div class="d-flex justify-content-between align-items-center">
-            <div>
-                <h3 class="card-title">{{ $setting->label }}</h3>
-                <p class="text-muted mb-0">
-                    <code>{{ $setting->key }}</code>
-                </p>
-            </div>
-            <div class="pretty p-switch p-fill">
-                <input type="checkbox" wire:model.live="useDefault" wire:change="toggleDefault" />
-                <div class="state p-success">
-                    <label>Varsayılan Değeri Kullan</label>
-                </div>
-            </div>
-        </div>
+        <h3 class="card-title">{{ $setting->label }}</h3>
     </div>
     <div class="card-body">
-        <div class="mb-3">
-            @if($setting->type === 'textarea')
-            <textarea wire:model="value" class="form-control" rows="4" {{ $useDefault ? 'disabled' : '' }}></textarea>
-            @elseif($setting->type === 'select' && is_array($setting->options))
-            <select wire:model="value" class="form-select" {{ $useDefault ? 'disabled' : '' }}>
-                @foreach($setting->options as $key => $label)
-                <option value="{{ $key }}">{{ $label }}</option>
-                @endforeach
-            </select>
-            @elseif($setting->type === 'file')
-            <div class="row align-items-end">
-                <div class="col">
-                    @if($value)
-                    <div class="mb-2">
-                        @if(Str::startsWith($value, ['jpg', 'jpeg', 'png', 'gif']))
-                        <img src="{{ Storage::url($value) }}" alt="Current file" class="img-fluid"
-                            style="max-height: 200px">
-                        @else
-                        <div class="d-flex align-items-center">
-                            <i class="fas fa-file me-2"></i>
-                            <span>{{ basename($value) }}</span>
-                        </div>
-                        @endif
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Değer Düzenleme -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Değer</h3>
                     </div>
-                    @endif
-                    <input type="file" wire:model="tempFile" class="form-control" {{ $useDefault ? 'disabled' : '' }}>
-                </div>
-            </div>
-            @elseif($setting->type === 'checkbox')
-            <div class="pretty p-default p-curve p-toggle p-smooth">
-                <input type="checkbox" class="form-check-input" wire:model="value" {{ $useDefault ? 'disabled' : '' }}>
-                <div class="state p-success p-on">
-                    <label>Evet</label>
-                </div>
-                <div class="state p-danger p-off">
-                    <label>Hayır</label>
-                </div>
-            </div>
-            @else
-            <input type="{{ $setting->type }}" wire:model="value" class="form-control" {{ $useDefault ? 'disabled' : '' }}>
-            @endif
-        </div>
-
-        <div class="row align-items-center mt-4">
-            <div class="col">
-                <div class="datagrid">
-                    <div class="datagrid-item">
-                        <div class="datagrid-title">Durum</div>
-                        <div class="datagrid-content">
-                            @if($setting->is_active)
-                            <span class="status status-green">Aktif</span>
-                            @else
-                            <span class="status status-red">Pasif</span>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            @if($setting->type === 'textarea')
+                            <textarea wire:model="value" class="form-control" rows="4" {{ $useDefault ? 'disabled' : '' }}></textarea>
+                            
+                            @elseif($setting->type === 'select' && is_array($setting->options))
+                            <select wire:model="value" class="form-select" {{ $useDefault ? 'disabled' : '' }}>
+                                @foreach($setting->options as $key => $label)
+                                <option value="{{ $key }}">{{ $label }}</option>
+                                @endforeach
+                            </select>
+                            
+                            @elseif($setting->type === 'file')
+                            @if($value && !$useDefault)
+                            <div class="mb-3">
+                                @if(Str::endsWith(strtolower($value), ['.jpg', '.jpeg', '.png', '.gif']))
+                                <div class="mb-2">
+                                    <img src="{{ Storage::url($value) }}" alt="Dosya önizleme" class="img-fluid border rounded mb-2" style="max-height: 150px">
+                                    <div class="text-muted small">{{ basename($value) }}</div>
+                                </div>
+                                @else
+                                <div class="border rounded p-2 mb-2">
+                                    <i class="fas fa-file me-2"></i> {{ basename($value) }}
+                                </div>
+                                @endif
+                            </div>
                             @endif
+                            <input type="file" wire:model="tempFile" class="form-control" {{ $useDefault ? 'disabled' : '' }}>
+                            
+                            @elseif($setting->type === 'checkbox')
+                            <label class="form-check form-switch">
+                                <input type="checkbox" wire:model="value" class="form-check-input" {{ $useDefault ? 'disabled' : '' }}>
+                                <span class="form-check-label">{{ $value ? 'Evet' : 'Hayır' }}</span>
+                            </label>
+                            
+                            @elseif($setting->type === 'color')
+                            <div class="row g-2 align-items-center">
+                                <div class="col-auto">
+                                    <input type="color" wire:model="value" class="form-control form-control-color" {{ $useDefault ? 'disabled' : '' }}>
+                                </div>
+                                <div class="col-auto">{{ $value }}</div>
+                            </div>
+                            
+                            @else
+                            <input type="{{ $setting->type }}" wire:model="value" class="form-control" {{ $useDefault ? 'disabled' : '' }}>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <!-- Ayar Detayları -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Ayar Bilgileri</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="datagrid">
+                            <div class="datagrid-item">
+                                <div class="datagrid-title">Anahtar</div>
+                                <div class="datagrid-content"><code>{{ $setting->key }}</code></div>
+                            </div>
+                            <div class="datagrid-item">
+                                <div class="datagrid-title">Tip</div>
+                                <div class="datagrid-content"><span class="badge bg-blue-lt">{{ $setting->type }}</span></div>
+                            </div>
+                            <div class="datagrid-item">
+                                <div class="datagrid-title">Grup</div>
+                                <div class="datagrid-content">{{ $setting->group->name }}</div>
+                            </div>
+                            <div class="datagrid-item">
+                                <div class="datagrid-title">Durum</div>
+                                <div class="datagrid-content">
+                                    @if($setting->is_active)
+                                    <span class="status status-green">Aktif</span>
+                                    @else
+                                    <span class="status status-red">Pasif</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="datagrid-item">
+                                <div class="datagrid-title">Varsayılan Değer</div>
+                                <div class="datagrid-content d-flex align-items-center">
+                                    <span class="text-truncate me-2" style="max-width: 120px;" title="{{ $setting->default_value }}">
+                                        @if(empty($setting->default_value))
+                                            <span class="text-muted">Boş</span>
+                                        @elseif($setting->type === 'file')
+                                            <i class="fas fa-file me-1"></i> Dosya
+                                        @elseif($setting->type === 'checkbox')
+                                            {{ $setting->default_value ? 'Evet' : 'Hayır' }}
+                                        @else
+                                            {{ $setting->default_value }}
+                                        @endif
+                                    </span>
+                                    <button type="button" class="btn btn-sm {{ $useDefault ? 'btn-success' : 'btn-outline-secondary' }}" wire:click="toggleDefault">
+                                        <i class="fas {{ $useDefault ? 'fa-check' : 'fa-undo' }}"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -79,25 +118,21 @@
         </div>
     </div>
     <div class="card-footer d-flex justify-content-between align-items-center">
-        <a href="{{ url()->previous() }}" class="btn btn-link text-decoration-none">
-            <i class="fas fa-arrow-left me-2"></i>
-            Geri Dön
+        <a href="{{ route('admin.settingmanagement.tenant.settings') }}" class="btn">
+            <i class="fas fa-arrow-left me-2"></i> Geri
         </a>
-        <div class="btn-list">
-            @if($setting->type === 'file' && $value)
-            <a href="{{ Storage::url($value) }}" target="_blank" class="btn btn-secondary">
-                <i class="fas fa-eye me-2"></i>
-                Dosyayı Görüntüle
+        <div>
+            @if($setting->type === 'file' && $value && !$useDefault)
+            <a href="{{ Storage::url($value) }}" target="_blank" class="btn btn-outline-primary me-2">
+                <i class="fas fa-eye me-2"></i> Görüntüle
             </a>
             @endif
             <button type="button" class="btn btn-primary" wire:click="save">
-                <span class="d-flex align-items-center">
-                    <span wire:loading.remove wire:target="save">
-                        <i class="fas fa-save me-2"></i> Kaydet
-                    </span>
-                    <span wire:loading wire:target="save">
-                        <i class="fas fa-spinner fa-spin me-2"></i> Kaydediliyor...
-                    </span>
+                <span wire:loading.remove wire:target="save">
+                    <i class="fas fa-save me-2"></i> Kaydet
+                </span>
+                <span wire:loading wire:target="save">
+                    <i class="fas fa-spinner fa-spin me-2"></i> Kaydediliyor...
                 </span>
             </button>
         </div>

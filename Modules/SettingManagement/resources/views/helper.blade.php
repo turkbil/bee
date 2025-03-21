@@ -25,16 +25,19 @@ Ayar Yönetimi
                         Grup Listesi
                     </a>
                     <a class="dropdown-item" href="{{ route('admin.settingmanagement.group.manage') }}">
-                        Yeni Ayar Grubu
-                    </a>
-                    <a class="dropdown-item" href="{{ route('admin.settingmanagement.tenant.settings') }}">
-                        Tenant Ayarları
+                        Yeni Grup Ekle
                     </a>
                     <h6 class="dropdown-menu-header card-header-light">
                         <span class="dropdown-header">Ayar İşlemleri</span>
                     </h6>
                     <a class="dropdown-item" href="{{ route('admin.settingmanagement.manage') }}">
                         Yeni Ayar Ekle
+                    </a>
+                    <h6 class="dropdown-menu-header card-header-light">
+                        <span class="dropdown-header">Tenant İşlemleri</span>
+                    </h6>
+                    <a class="dropdown-item" href="{{ route('admin.settingmanagement.tenant.settings') }}">
+                        Tenant Ayarları
                     </a>
                 </div>
             </div>

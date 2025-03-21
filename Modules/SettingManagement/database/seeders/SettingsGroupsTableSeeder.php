@@ -34,6 +34,9 @@ class SettingsGroupsTableSeeder extends Seeder
            // Kullanıcı altında
            ['id' => 12, 'name' => 'Yönetici Ayarları', 'parent_id' => 5],
            ['id' => 13, 'name' => 'Kullanıcı Ayarları', 'parent_id' => 5],
+           
+           // Yeni Eklenen Örnekler Grubu
+           ['id' => 14, 'name' => 'Örnekler', 'parent_id' => 1, 'icon' => 'fas fa-flask'],
        ];
 
        foreach ($groups as $group) {
@@ -42,6 +45,7 @@ class SettingsGroupsTableSeeder extends Seeder
                'name' => $group['name'],
                'slug' => Str::slug($group['name']),
                'parent_id' => $group['parent_id'],
+               'icon' => $group['icon'] ?? null,
                'is_active' => true,
                'created_at' => now(),
                'updated_at' => now(),

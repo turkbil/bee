@@ -300,6 +300,97 @@ class SettingsTableSeeder extends Seeder
                 'default_value' => null,
                 'sort_order' => 13,
             ],
+            
+            // Resim (Image) Örnekleri
+            [
+                'group_id' => 14,
+                'label' => 'Profil Resmi',
+                'key' => 'image_profile',
+                'type' => 'image',
+                'default_value' => null,
+                'options' => json_encode([
+                    'max_size' => 2048, // KB cinsinden maksimum boyut
+                    'allowed_types' => ['jpg', 'jpeg', 'png', 'gif'],
+                    'width' => 300,
+                    'height' => 300,
+                    'resize' => true
+                ]),
+                'sort_order' => 1,
+            ],
+            [
+                'group_id' => 14,
+                'label' => 'Ana Sayfa Slider Resmi',
+                'key' => 'image_slider',
+                'type' => 'image',
+                'default_value' => null,
+                'options' => json_encode([
+                    'max_size' => 5120, // 5MB
+                    'allowed_types' => ['jpg', 'jpeg', 'png'],
+                    'width' => 1920,
+                    'height' => 800,
+                    'resize' => true,
+                    'watermark' => true,
+                    'watermark_text' => 'My Site'
+                ]),
+                'sort_order' => 2,
+            ],
+            [
+                'group_id' => 14,
+                'label' => 'Ürün Galerisi',
+                'key' => 'image_product_gallery',
+                'type' => 'image_multiple',
+                'default_value' => null,
+                'options' => json_encode([
+                    'max_size' => 3072, // 3MB
+                    'allowed_types' => ['jpg', 'jpeg', 'png'],
+                    'max_files' => 10,
+                    'thumbnail' => [
+                        'width' => 150,
+                        'height' => 150
+                    ],
+                    'medium' => [
+                        'width' => 600,
+                        'height' => 600
+                    ],
+                    'large' => [
+                        'width' => 1200,
+                        'height' => 1200
+                    ]
+                ]),
+                'sort_order' => 3,
+            ],
+            [
+                'group_id' => 14,
+                'label' => 'Arkaplan Resmi',
+                'key' => 'image_background',
+                'type' => 'image',
+                'default_value' => null,
+                'options' => json_encode([
+                    'max_size' => 4096, // 4MB
+                    'allowed_types' => ['jpg', 'jpeg', 'png'],
+                    'width' => 1920,
+                    'height' => 1080,
+                    'position' => 'center',
+                    'repeat' => 'no-repeat',
+                    'size' => 'cover'
+                ]),
+                'sort_order' => 4,
+            ],
+            [
+                'group_id' => 14,
+                'label' => 'Mobil Logo',
+                'key' => 'image_mobile_logo',
+                'type' => 'image',
+                'default_value' => null,
+                'options' => json_encode([
+                    'max_size' => 1024, // 1MB
+                    'allowed_types' => ['png', 'svg'],
+                    'width' => 120,
+                    'height' => 60,
+                    'quality' => 90
+                ]),
+                'sort_order' => 5,
+            ]
         ];
 
         foreach ($settings as $setting) {

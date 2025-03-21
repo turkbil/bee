@@ -288,11 +288,12 @@
                                     </div>
                                     @break
                                 
-                                @case('image')
+                                    @case('image')
                                     <div class="form-group mb-3">
-                                        @include('portfolio::livewire.partials.image-upload', [
-                                        'imageKey' => $setting->id,
-                                        'label' => 'Görseli sürükleyip bırakın veya tıklayın'
+                                        @include('settingmanagement::livewire.partials.image-upload', [
+                                            'imageKey' => $setting->id,
+                                            'label' => 'Görseli sürükleyip bırakın veya tıklayın',
+                                            'setting' => $setting
                                         ])
                                     </div>
                                     @break

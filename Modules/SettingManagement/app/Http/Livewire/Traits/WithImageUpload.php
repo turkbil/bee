@@ -15,7 +15,7 @@ trait WithImageUpload
     public function updatedTemporaryImages($value, $key)
     {
         $this->validateOnly("temporaryImages.{$key}", [
-            "temporaryImages.{$key}" => ['image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            "temporaryImages.{$key}" => ['image', 'mimes:jpg,jpeg,png,webp,ico', 'max:2048'],
         ]);
 
         if ($this->temporaryImages[$key]) {
@@ -32,48 +32,70 @@ trait WithImageUpload
         if ($model && isset($this->temporaryImages[$imageKey])) {
             $fileName = Str::slug($model->key) . '-' . Str::random(6) . '.' . $this->temporaryImages[$imageKey]->getClientOriginalExtension();
     
-            $path = $this->temporaryImages[$imageKey]->storeAs('settings/images', $fileName, 'public');
-            
-            if ($model->type === 'image' || $model->type === 'file') {
-                // Eğer daha önce dosya varsa sil
-                if ($model->default_value && Storage::disk('public')->exists($model->default_value)) {
-                    Storage::disk('public')->delete($model->default_value);
-                }
-                
-                $model->default_value = $path;
-                $model->save();
-                
+            $collectionName = $this->getCollectionName($imageKey);
+    
+            $model->clearMediaCollection($collectionName);
+            $media = $model
+                ->addMedia($this->temporaryImages[$imageKey]->getRealPath())
+                ->preservingOriginal()
+                ->usingFileName($fileName)
+                ->withCustomProperties([
+                    'uploaded_by' => auth()->id(),
+                    'image_type' => $imageKey,
+                ])
+                ->toMediaCollection($collectionName, 'public');
+    
+            if ($media) {
                 log_activity(
                     $model,
-                    'dosya yüklendi',
-                    ['path' => $path]
+                    'resim yüklendi',
+                    ['collection' => $collectionName, 'filename' => $fileName]
                 );
             }
-            
-            return $path;
         }
-        
-        return null;
     }
 
     public function removeImage($imageKey)
     {
         if (isset($this->settingId)) {
             $model = Setting::find($this->settingId);
+            $collectionName = $this->getCollectionName($imageKey);
             
-            if ($model && $model->default_value && Storage::disk('public')->exists($model->default_value)) {
-                Storage::disk('public')->delete($model->default_value);
+            if ($model && $model->getFirstMedia($collectionName)) {
+                $media = $model->getFirstMedia($collectionName);
+                $fileName = $media->file_name;
                 
-                $model->default_value = null;
-                $model->save();
+                $model->clearMediaCollection($collectionName);
                 
                 log_activity(
                     $model,
-                    'dosya silindi'
+                    'resim silindi',
+                    ['collection' => $collectionName, 'filename' => $fileName]
                 );
             }
         }
-        
         unset($this->temporaryImages[$imageKey]);
+    }
+
+    private function getCollectionName($imageKey)
+    {
+        // Eğer imageKey boşsa veya "image" ise direkt "image" döndür
+        if (empty($imageKey) || $imageKey === 'image') {
+            return 'image';
+        }
+        
+        // Diğer keyler için "image_" öneki ekle
+        return 'image_' . $imageKey;
+    }
+    
+    public function handleImageUpload($model)
+    {
+        if (!empty($this->temporaryImages)) {
+            foreach ($this->temporaryImages as $imageKey => $image) {
+                if ($image) {
+                    $this->uploadImage($imageKey, $model);
+                }
+            }
+        }
     }
 }

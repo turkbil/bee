@@ -22,6 +22,18 @@ class ClearAll extends Command
         Artisan::call('event:clear');
         Artisan::call('optimize:clear');
         
+        // bootstrap/cache içeriğini temizle
+        $this->info('bootstrap/cache içeriği temizleniyor...');
+        $bootstrapCache = base_path('bootstrap/cache');
+        if (File::exists($bootstrapCache)) {
+            $files = File::allFiles($bootstrapCache);
+            foreach ($files as $file) {
+                if (!str_contains($file->getFilename(), '.gitignore')) {
+                    File::delete($file->getPathname());
+                }
+            }
+        }
+        
         // Ana storage içindeki klasörleri temizle
         $this->cleanStorageDirectories([
             'app',
@@ -33,11 +45,30 @@ class ClearAll extends Command
             'logs'
         ]);
         
+        // Detaylı log temizliği
+        $logsPath = storage_path('logs');
+        if (File::exists($logsPath)) {
+            $this->info('Log dosyaları temizleniyor...');
+            $logFiles = File::allFiles($logsPath);
+            foreach ($logFiles as $file) {
+                if (!str_contains($file->getFilename(), '.gitignore')) {
+                    if (str_contains($file->getFilename(), '.log')) {
+                        // Log dosyalarını boşalt ama silme
+                        File::put($file->getPathname(), '');
+                    } else {
+                        // Diğer dosyaları sil
+                        File::delete($file->getPathname());
+                    }
+                }
+            }
+        }
+        
         // Tenant klasörlerini temizle
         $tenantDirs = ['tenant1', 'tenant2', 'tenant3', 'tenant4'];
         foreach ($tenantDirs as $tenantDir) {
             $this->cleanStorageDirectories([
                 $tenantDir . '/app',
+                $tenantDir . '/debugbar',
                 $tenantDir . '/framework/cache',
                 $tenantDir . '/framework/sessions',
                 $tenantDir . '/framework/testing',
@@ -45,6 +76,24 @@ class ClearAll extends Command
                 $tenantDir . '/logs',
                 $tenantDir . '/sessions'
             ]);
+            
+            // Tenant log dosyalarını temizle
+            $tenantLogsPath = storage_path($tenantDir . '/logs');
+            if (File::exists($tenantLogsPath)) {
+                $this->info("Tenant $tenantDir log dosyaları temizleniyor...");
+                $logFiles = File::allFiles($tenantLogsPath);
+                foreach ($logFiles as $file) {
+                    if (!str_contains($file->getFilename(), '.gitignore')) {
+                        if (str_contains($file->getFilename(), '.log')) {
+                            // Log dosyalarını boşalt ama silme
+                            File::put($file->getPathname(), '');
+                        } else {
+                            // Diğer dosyaları sil
+                            File::delete($file->getPathname());
+                        }
+                    }
+                }
+            }
         }
         
         // Public storage içeriklerini temizle
@@ -66,6 +115,17 @@ class ClearAll extends Command
                 }
             }
         }
+        
+        // Sonradan eklenen diğer storage klasörlerini temizle
+        $extraStorageDirs = [
+            'app/public',
+            'app/livewire-tmp',
+            'framework/cache/data',
+            'framework/cache/laravel-excel',
+            'framework/testing/disks'
+        ];
+        
+        $this->cleanStorageDirectories($extraStorageDirs);
         
         $this->info('Tüm önbellekler, fotoğraflar ve yüklenen dosyalar başarıyla temizlendi!');
         

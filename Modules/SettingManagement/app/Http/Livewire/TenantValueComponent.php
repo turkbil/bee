@@ -152,15 +152,21 @@ class TenantValueComponent extends Component
                 ? ['image', 'mimes:jpg,jpeg,png,webp,gif', 'max:2048']
                 : ['file', 'max:2048'],
         ]);
-
+    
         if ($this->temporaryImages[$key]) {
             // Tenant id belirleme - Central ise tenant1, değilse gerçek tenant ID
             $tenantId = is_tenant() ? tenant_id() : 1;
             
             // Eski dosyayı kontrol et ve sil
             if ($this->value) {
+                // Eğer eski değer storage/ ile başlıyorsa, yolu düzelt
+                $oldPath = $this->value;
+                if (Str::startsWith($oldPath, 'storage/')) {
+                    $oldPath = substr($oldPath, 8); // "storage/" kısmını çıkar
+                }
+                
                 // Dosya yolundan local path'i çıkart
-                $localPath = $this->extractLocalPath($this->value);
+                $localPath = $this->extractLocalPath($oldPath);
                 
                 if (Storage::disk('public')->exists($localPath)) {
                     Storage::disk('public')->delete($localPath);
@@ -179,14 +185,24 @@ class TenantValueComponent extends Component
             $this->useDefault = false;
         }
     }
-    
+
     // URL'den yerel depolama yolunu çıkarır
     private function extractLocalPath($path)
     {
+        if (empty($path)) {
+            return '';
+        }
+        
+        // storage/ ile başlıyorsa çıkar
+        if (Str::startsWith($path, 'storage/')) {
+            $path = substr($path, 8); // "storage/" kısmını çıkar
+        }
+        
         // tenant{id}/ ifadesini ara ve kaldır
         if (preg_match('/^tenant\d+\/(.*)$/', $path, $matches)) {
             return $matches[1];
         }
+        
         return $path;
     }
     
@@ -257,6 +273,11 @@ class TenantValueComponent extends Component
         if ($this->useDefault) {
             // Tenant veritabanında SettingValue kaydı varsa sil
             SettingValue::where('setting_id', $this->settingId)->delete();
+            
+            // Eğer dosya varsa sil
+            if ($this->value && ($setting->type === 'file' || $setting->type === 'image')) {
+                \Modules\SettingManagement\App\Helpers\TenantStorageHelper::deleteFile($this->value);
+            }
                 
             log_activity(
                 $setting,
@@ -282,54 +303,45 @@ class TenantValueComponent extends Component
                         // Tenant id belirleme - Central ise tenant1, değilse gerçek tenant ID
                         $tenantId = is_tenant() ? tenant_id() : 1;
                         
+                        // Debug için mevcut durumu kaydet
+                        \Modules\SettingManagement\App\Helpers\DebugHelper::logFileUpload('TenantValueComponent - Dosya yükleme başladı', [
+                            'tenant_id' => $tenantId,
+                            'setting_id' => $setting->id,
+                            'type' => $type, 
+                            'key' => $key,
+                            'is_tenant' => is_tenant() ? 'true' : 'false'
+                        ]);
+                        
                         // Dosya adı oluşturma
                         $fileName = time() . '_' . Str::slug($setting->key) . '.' . $this->temporaryImages[$key]->getClientOriginalExtension();
                         
-                        // Tenant için dosya yolu
-                        $tenantPath = "tenant{$tenantId}/settings/{$folder}/{$fileName}";
-                        
-                        // Normal dosya yolu - veritabanı tenant ID'si içermez
-                        $path = "settings/{$folder}/{$fileName}";
-                        
                         // Eski dosyayı sil (eğer varsa)
                         if ($this->value) {
-                            // Dosya yolundan local path'i çıkart
-                            $localPath = $this->extractLocalPath($this->value);
-                            
-                            if (Storage::disk('public')->exists($localPath)) {
-                                Storage::disk('public')->delete($localPath);
-                            }
+                            \Modules\SettingManagement\App\Helpers\TenantStorageHelper::deleteFile($this->value);
                         }
                         
-                        // Dosyayı doğru klasöre kaydet
-                        if ($tenantId == 1) {
-                            // Central için normal public disk kullan
-                            Storage::disk('public')->putFileAs(
-                                dirname($path),
-                                $this->temporaryImages[$key],
-                                basename($path)
-                            );
-                        } else {
-                            // Tenant için tenant{id} klasörünü kullan
-                            $tenantStorage = storage_path("tenant{$tenantId}/app/public/" . dirname($path));
-                            if (!file_exists($tenantStorage)) {
-                                mkdir($tenantStorage, 0755, true);
-                            }
-                            
-                            // Tenant klasörüne yükle
-                            $this->temporaryImages[$key]->storeAs(
-                                dirname($path),
-                                basename($path),
-                                ['disk' => 'tenant']
-                            );
-                        }
+                        // YENİ: TenantStorageHelper ile doğru şekilde dosyayı yükle
+                        $valueToSave = \Modules\SettingManagement\App\Helpers\TenantStorageHelper::storeTenantFile(
+                            $this->temporaryImages[$key],
+                            "settings/{$folder}",
+                            $fileName,
+                            $tenantId
+                        );
                         
-                        // Dosya yolunu sakla - tenant ID'li formatı kullan
-                        $valueToSave = $tenantPath;
                         $this->previewing = true;
-                        $this->previewUrl = cdn($tenantPath);
+                        $this->previewUrl = cdn($valueToSave);
+                        
+                        \Modules\SettingManagement\App\Helpers\DebugHelper::logFileUpload('Veritabanına kaydedilecek bilgi', [
+                            'value_to_save' => $valueToSave,
+                            'preview_url' => $this->previewUrl
+                        ]);
                     }
                 } catch (\Exception $e) {
+                    \Modules\SettingManagement\App\Helpers\DebugHelper::logFileUpload('Dosya yükleme hatası', [
+                        'error' => $e->getMessage(),
+                        'trace' => $e->getTraceAsString()
+                    ]);
+                    
                     $this->dispatch('toast', [
                         'title' => 'Hata!',
                         'message' => 'Dosya yüklenirken bir hata oluştu: ' . $e->getMessage(),
@@ -344,6 +356,12 @@ class TenantValueComponent extends Component
                 ['setting_id' => $this->settingId],
                 ['value' => $valueToSave]
             );
+            
+            \Modules\SettingManagement\App\Helpers\DebugHelper::logFileUpload('Veritabanı kaydı oluşturuldu', [
+                'setting_id' => $this->settingId,
+                'value' => $valueToSave,
+                'setting_value_id' => $settingValue->id
+            ]);
             
             log_activity(
                 $setting,

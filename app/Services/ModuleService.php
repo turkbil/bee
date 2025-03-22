@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
-use App\Helpers\TenantConnection;
+use App\Helpers\TenantHelpers;
 use Illuminate\Support\Facades\Cache;
 
 class ModuleService {
@@ -25,8 +25,8 @@ class ModuleService {
             }
             
             // Bu işlem her zaman central veritabanında yapılmalı
-            // TenantConnection::central() metodunu kullanarak central veritabanına bağlan
-            return TenantConnection::central(function() use ($tenantId, $cacheKey) {
+            // TenantHelpers::central() metodunu kullanarak central veritabanına bağlan
+            return TenantHelpers::central(function() use ($tenantId, $cacheKey) {
                 // Açıkça central veritabanındaki modules tablosunu belirt
                 $modulesTable = 'modules';
                 $moduleTenantsTable = 'module_tenants';

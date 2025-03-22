@@ -88,15 +88,12 @@ class ValuesComponent extends Component
                 $type = $setting->type;
                 
                 try {
-                    // Tenant ID belirleme
-                    $tenantId = is_tenant() ? tenant_id() : 'central';
-                    
                     // Dosya adını oluştur
                     $fileName = Str::slug($setting->key) . '-' . Str::random(6) . '.' . $file->getClientOriginalExtension();
                     $folder = $type === 'image' ? 'images' : 'files';
                     
-                    // Dosya yolu - tenant id sadece bir kez geçecek
-                    $path = "settings/{$tenantId}/{$folder}/{$fileName}";
+                    // Dosya yolu - dizin yapısını düzelt
+                    $path = "settings/{$folder}/{$fileName}";
                     
                     // Eski dosyayı sil (eğer varsa)
                     if ($oldValue && Storage::disk('public')->exists($oldValue)) {

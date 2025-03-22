@@ -125,6 +125,26 @@
                                     </div>
                                     @break
                                 
+                                @case('file')
+                                    <div class="form-group mb-3">
+                                        @include('settingmanagement::livewire.partials.file-upload', [
+                                            'fileKey' => $setting->id,
+                                            'label' => 'Dosyayı sürükleyip bırakın veya tıklayın',
+                                            'values' => $values
+                                        ])
+                                    </div>
+                                    @break
+                                
+                                @case('image')
+                                    <div class="form-group mb-3">
+                                        @include('settingmanagement::livewire.partials.image-upload', [
+                                            'imageKey' => $setting->id,
+                                            'label' => 'Görseli sürükleyip bırakın veya tıklayın',
+                                            'values' => $values
+                                        ])
+                                    </div>
+                                    @break
+
                                 @case('color')
                                     <div class="mb-3">
                                         <label class="form-label">Renk seçimi</label>
@@ -198,26 +218,6 @@
                                     </div>
                                     @break
                                 
-                                    @case('file')
-                                    <div class="form-group mb-3">
-                                        @include('settingmanagement::livewire.partials.file-upload', [
-                                            'fileKey' => $setting->id,
-                                            'label' => 'Dosyayı sürükleyip bırakın veya tıklayın',
-                                            'setting' => $setting
-                                        ])
-                                    </div>
-                                    @break
-                                
-                                    @case('image')
-                                    <div class="form-group mb-3">
-                                        @include('settingmanagement::livewire.partials.image-upload', [
-                                            'imageKey' => $setting->id,
-                                            'label' => 'Görseli sürükleyip bırakın veya tıklayın',
-                                            'setting' => $setting
-                                        ])
-                                    </div>
-                                    @break
-
                                 @default
                                     <div class="input-icon">
                                         <span class="input-icon-addon">

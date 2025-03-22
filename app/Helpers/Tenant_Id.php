@@ -1,4 +1,20 @@
 <?php
+if (!function_exists('cdn')) {
+    /**
+     * Central domain üzerinden asset URL'i oluşturur
+     * 
+     * @param string $path
+     * @return string
+     */
+    function cdn($path)
+    {
+        // URL'in başındaki ve sonundaki slash'leri düzelt
+        $path = ltrim($path, '/');
+        
+        // APP_URL'i kullanarak central domain üzerinden URL oluştur
+        return rtrim(env('APP_URL'), '/') . '/' . $path;
+    }
+}
 
 if (!function_exists('tenant_id')) {
     /**

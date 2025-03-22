@@ -30,8 +30,8 @@ trait WithImageUpload {
     
         if ($model && isset($this->temporaryImages[$imageKey])) {
             try {
-                // Tenant folder belirleme
-                $tenantPrefix = is_tenant() ? tenant_id() : 'central'; 
+                // Tenant id belirleme
+                $tenantId = is_tenant() ? tenant_id() : 'central';
                 
                 // Benzersiz bir dosya adı oluştur
                 $fileName = Str::slug($model->key) . '-' . Str::random(6) . '.' . $this->temporaryImages[$imageKey]->getClientOriginalExtension();
@@ -39,8 +39,8 @@ trait WithImageUpload {
                 // Koleksiyon adını belirle (klasör)
                 $folder = $this->getCollectionName($imageKey);
                 
-                // Tam dosya yolu - tenant id sadece bir kez geçecek
-                $path = "settings/{$tenantPrefix}/{$folder}/{$fileName}";
+                // Dosya yolu - dizin yapısını düzelt
+                $path = "settings/{$folder}/{$fileName}";
                 
                 // Eski dosyayı sil (eğer varsa)
                 if ($model->value && Storage::disk('public')->exists($model->value)) {

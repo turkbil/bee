@@ -51,8 +51,7 @@
             "Modules\\TenantManagement\\App\\": "Modules/TenantManagement/app/"
         },
         "files": [
-            "app/Helpers/TenantConnection.php",
-            "app/Helpers/Tenant_Id.php",
+            "app/Helpers/TenantHelpers.php",
             "app/Helpers/LogHelper.php"
         ]
     },

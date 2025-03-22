@@ -181,7 +181,7 @@ Diğer"></textarea>
                                                 <div class="card-body p-2 text-center">
                                                 @if($inputs['default_value'])
                                                     @if(Str::of($inputs['default_value'])->lower()->endsWith(['jpg', 'jpeg', 'png', 'gif']))
-                                                        <img src="{{ Storage::url($inputs['default_value']) }}" alt="Current file"
+                                                        <img src="{{ cdn($inputs['default_value']) }}" alt="Current file"
                                                             class="img-fluid rounded" style="max-height: 80px">
                                                         <div class="mt-2 text-muted small">{{ basename($inputs['default_value']) }}</div>
                                                     @else
@@ -230,7 +230,7 @@ Diğer"></textarea>
                                                         class="img-fluid rounded" style="max-height: 100px">
                                                     <div class="mt-2 text-muted small">Yeni Resim</div>
                                                 @elseif($inputs['default_value'])
-                                                    <img src="{{ Storage::url($inputs['default_value']) }}" alt="Mevcut resim"
+                                                    <img src="{{ cdn($inputs['default_value']) }}" alt="Mevcut resim"
                                                         class="img-fluid rounded" style="max-height: 100px">
                                                     <div class="mt-2 text-muted small">Mevcut Resim</div>
                                                 @else
@@ -460,7 +460,7 @@ Diğer"></textarea>
                                             <div class="border rounded p-3 text-center">
                                                 @if($inputs['default_value'])
                                                     @if(Str::of($inputs['default_value'])->lower()->endsWith(['jpg', 'jpeg', 'png', 'gif']))
-                                                        <img src="{{ Storage::url($inputs['default_value']) }}" class="img-fluid" style="max-height: 100px">
+                                                        <img src="{{ cdn($inputs['default_value']) }}" class="img-fluid" style="max-height: 100px">
                                                     @else
                                                         <div class="d-flex align-items-center">
                                                             <i class="fas fa-file me-2"></i>
@@ -478,7 +478,7 @@ Diğer"></textarea>
                                                 @if($imagePreview)
                                                     <img src="{{ $imagePreview }}" class="img-fluid rounded" style="max-height: 100px">
                                                 @elseif($inputs['default_value'])
-                                                    <img src="{{ Storage::url($inputs['default_value']) }}" class="img-fluid rounded" style="max-height: 100px">
+                                                    <img src="{{ cdn($inputs['default_value']) }}" class="img-fluid rounded" style="max-height: 100px">
                                                 @else
                                                     <i class="fas fa-image fa-2x text-muted"></i>
                                                     <div class="mt-2 text-muted">Resim Seçilmedi</div>

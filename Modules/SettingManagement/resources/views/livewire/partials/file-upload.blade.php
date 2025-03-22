@@ -70,7 +70,7 @@ x-on:drop="handleDrop($event)">
                         <div class="text-center">
                             <i class="fa-solid fa-file fa-3x text-muted"></i>
                             <p class="mb-0 mt-2">{{ basename($values[$fileKey]) }}</p>
-                            <a href="{{ url('/storage/' . $values[$fileKey]) }}" target="_blank" class="btn btn-sm btn-outline-primary mt-2">
+                            <a href="{{ cdn($values[$fileKey]) }}" target="_blank" class="btn btn-sm btn-outline-primary mt-2">
                                 <i class="fas fa-eye me-1"></i> Görüntüle
                             </a>
                         </div>

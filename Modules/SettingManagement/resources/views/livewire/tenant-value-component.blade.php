@@ -289,9 +289,8 @@
                                                             // Eğer tenant ile başlamıyorsa tenant1 ekle
                                                             $defaultValue = 'tenant1/' . $defaultValue;
                                                         }
-                                                        $imageUrl = url('/storage/' . $defaultValue);
                                                     @endphp
-                                                    <img src="{{ $imageUrl }}" alt="Varsayılan" style="max-height: 30px; max-width: 100px;" class="img-thumbnail">
+                                                    <img src="{{ cdn($defaultValue) }}" alt="Varsayılan" style="max-height: 30px; max-width: 100px;" class="img-thumbnail">
                                                 @elseif($setting->type === 'checkbox')
                                                     {{ $setting->default_value ? 'Evet' : 'Hayır' }}
                                                 @elseif($setting->type === 'color')
@@ -336,11 +335,7 @@
             </a>
             <div>
                 @if(($setting->type === 'file' || $setting->type === 'image') && $value && !$useDefault)
-                @php
-                    $filePath = $value;
-                    $fileUrl = url('/storage/' . $filePath);
-                @endphp
-                <a href="{{ $fileUrl }}" target="_blank" class="btn btn-outline-primary me-2">
+                <a href="{{ cdn($value) }}" target="_blank" class="btn btn-outline-primary me-2">
                     <i class="fas fa-eye me-2"></i> Görüntüle
                 </a>
                 @endif

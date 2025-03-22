@@ -47,9 +47,14 @@
                             </button>
                         </div>
 
-                        <a href="{{ route('admin.settingmanagement.manage', ['group_id' => $groupId]) }}" class="btn btn-primary">
-                            <i class="fas fa-plus me-2"></i>Yeni Ekle
-                        </a>
+                        <div class="btn-group">
+                            <a href="{{ route('admin.settingmanagement.manage', ['group_id' => $groupId]) }}" class="btn btn-outline-primary me-2">
+                                <i class="fas fa-plus me-2"></i>Yeni Ekle
+                            </a>
+                            <a href="{{ route('admin.settingmanagement.values', $groupId) }}" class="btn btn-primary">
+                                <i class="fas fa-edit me-2"></i>Site Ayarlarını Özelleştir
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>

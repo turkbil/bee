@@ -51,8 +51,8 @@
             "Modules\\TenantManagement\\App\\": "Modules/TenantManagement/app/"
         },
         "files": [
-            "app/Helpers/TenantHelpers.php",
-            "app/Helpers/LogHelper.php"
+            "app/Helpers/LogHelper.php",
+            "app/Helpers/TenantHelpers.php"
         ]
     },
     "autoload-dev": {

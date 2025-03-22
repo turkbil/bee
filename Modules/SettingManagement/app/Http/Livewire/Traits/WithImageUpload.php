@@ -30,8 +30,8 @@ trait WithImageUpload {
     
         if ($model && isset($this->temporaryImages[$imageKey])) {
             try {
-                // Tenant id belirleme
-                $tenantId = is_tenant() ? tenant_id() : 'central';
+                // Tenant id belirleme - Central ise tenant1, değilse gerçek tenant ID
+                $tenantId = is_tenant() ? tenant_id() : 1;
                 
                 // Benzersiz bir dosya adı oluştur
                 $fileName = Str::slug($model->key) . '-' . Str::random(6) . '.' . $this->temporaryImages[$imageKey]->getClientOriginalExtension();
@@ -42,39 +42,59 @@ trait WithImageUpload {
                 // Dosya yolu - dizin yapısını düzelt
                 $path = "settings/{$folder}/{$fileName}";
                 
-                // Eski dosyayı sil (eğer varsa)
-                if ($model->value && Storage::disk('public')->exists($model->value)) {
-                    Storage::disk('public')->delete($model->value);
+                // Gerçek tenant id ve url path'i belirle
+                $tenantPath = "tenant{$tenantId}/settings/{$folder}/{$fileName}";
+                
+                // Eski dosyayı kontrol et ve sil
+                $oldValue = $model->value;
+                if ($oldValue && Storage::disk('public')->exists($this->extractLocalPath($oldValue))) {
+                    Storage::disk('public')->delete($this->extractLocalPath($oldValue));
                 }
                 
-                // Yeni dosyayı yükle
-                $filePath = Storage::disk('public')->putFileAs(
-                    dirname($path),
-                    $this->temporaryImages[$imageKey],
-                    basename($path)
-                );
-                
-                // Modeli güncelle
-                if ($filePath) {
-                    $relativePath = $path;
-                    
-                    // Eğer bu bir TenantValueComponent veya ValuesComponent ise değeri güncelle
-                    if (isset($this->value)) {
-                        $this->value = $relativePath;
+                // Yeni dosyayı yükle - doğru fiziksel klasöre
+                if ($tenantId == 1) {
+                    // Central için normal storage/app/public/ altına kaydet
+                    $filePath = Storage::disk('public')->putFileAs(
+                        dirname($path),
+                        $this->temporaryImages[$imageKey],
+                        basename($path)
+                    );
+                } else {
+                    // Tenant için storage/tenant{id}/app/public/ altına kaydet
+                    // Tenant klasörü yoksa oluştur
+                    $tenantStorage = storage_path("tenant{$tenantId}/app/public/" . dirname($path));
+                    if (!file_exists($tenantStorage)) {
+                        mkdir($tenantStorage, 0755, true);
                     }
                     
-                    log_activity(
-                        $model,
-                        'resim yüklendi',
-                        ['path' => $relativePath, 'filename' => $fileName]
+                    // Tenant klasörüne yükle
+                    $this->temporaryImages[$imageKey]->storeAs(
+                        dirname($path),
+                        basename($path),
+                        ['disk' => 'tenant']
                     );
-                    
-                    return $relativePath;
                 }
+                
+                // URL path'i - tenant ID ile başlayan formatı kullan
+                $relativePath = $tenantPath;
+                
+                // Eğer bu bir TenantValueComponent veya ValuesComponent ise değeri güncelle
+                if (isset($this->value)) {
+                    $this->value = $relativePath;
+                }
+                
+                log_activity(
+                    $model,
+                    'resim yüklendi',
+                    ['path' => $relativePath, 'filename' => $fileName]
+                );
+                
+                return $relativePath;
             } catch (\Exception $e) {
                 \Illuminate\Support\Facades\Log::error('Resim yükleme hatası: ' . $e->getMessage(), [
                     'model_id' => $model->id,
-                    'tenant' => is_tenant() ? tenant_id() : 'central'
+                    'tenant' => is_tenant() ? tenant_id() : 'central',
+                    'exception' => $e
                 ]);
             }
         }
@@ -82,21 +102,36 @@ trait WithImageUpload {
         return null;
     }
 
+    // URL'den yerel depolama yolunu çıkarır
+    private function extractLocalPath($path)
+    {
+        // tenant{id}/ ifadesini ara ve kaldır
+        if (preg_match('/^tenant\d+\/(.*)$/', $path, $matches)) {
+            return $matches[1];
+        }
+        return $path;
+    }
+
     public function removeImage($imageKey)
     {
         if (isset($this->settingId)) {
             $model = Setting::find($this->settingId);
             
-            if ($model && isset($this->value) && Storage::disk('public')->exists($this->value)) {
-                Storage::disk('public')->delete($this->value);
+            if ($model && isset($this->value)) {
+                // Dosya yolundan local path'i çıkart
+                $localPath = $this->extractLocalPath($this->value);
                 
-                log_activity(
-                    $model,
-                    'resim silindi',
-                    ['path' => $this->value]
-                );
-                
-                $this->value = null;
+                if (Storage::disk('public')->exists($localPath)) {
+                    Storage::disk('public')->delete($localPath);
+                    
+                    log_activity(
+                        $model,
+                        'resim silindi',
+                        ['path' => $this->value]
+                    );
+                    
+                    $this->value = null;
+                }
             }
         }
         

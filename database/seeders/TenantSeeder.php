@@ -63,9 +63,6 @@ class TenantSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
-        // Central tenant için dizin yapısını oluştur
-        $this->prepareTenantDirectories($centralTenantId);
-
         // Central tenant için Admin kullanıcısı oluştur (Nurullah kullanıcısı zaten var)
         User::create([
             'name' => 'Laravel Admin',
@@ -209,6 +206,11 @@ class TenantSeeder extends Seeder
      */
     protected function prepareTenantDirectories($tenantId)
     {
+        // Central tenant için klasör oluşturma
+        if ($tenantId == DB::table('tenants')->where('central', true)->value('id')) {
+            return;
+        }
+        
         // Önce tenant dizini varsa temizle
         $tenantPath = storage_path("tenant{$tenantId}");
         if (File::isDirectory($tenantPath)) {

@@ -46,6 +46,15 @@ return [
             'throw' => false,
             'report' => false,
         ],
+        
+        'tenant' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public'), // Dinamik olarak değiştirilecek
+            'url' => env('APP_URL').'/storage', // Dinamik olarak değiştirilecek
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
 
         's3' => [
             'driver' => 's3',

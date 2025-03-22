@@ -6,7 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\File;
 use Stancl\Tenancy\Facades\Tenancy;
 use App\Models\Tenant;
-use App\Helpers\TenantConnection;
+use App\Helpers\TenantHelpers;
 
 class ModuleSeeder extends Seeder
 {
@@ -24,7 +24,7 @@ class ModuleSeeder extends Seeder
         $modules = File::directories($modulesPath);
         
         // Central veritabanında çalıştırılacak seeder'lar
-        if (TenantConnection::isCentral()) {
+        if (TenantHelpers::isCentral()) {
             $this->command->info("Running CENTRAL database seeders");
             $this->runCentralSeeders($modules);
         }

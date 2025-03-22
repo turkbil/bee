@@ -464,13 +464,42 @@ Diğer"></textarea>
                             <!-- Aktiflik Durumu -->
                             <div class="mb-3">
                                 <div class="form-label">Durum</div>
-                                <div class="form-check form-switch">
-                                    <input type="checkbox" id="is_active" class="form-check-input" 
-                                        wire:model="inputs.is_active" value="1">
-                                    <label class="form-check-label" for="is_active">
-                                        {{ $inputs['is_active'] ? 'Aktif' : 'Pasif' }}
-                                    </label>
+                                <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
+                                    <input type="checkbox" id="is_active" name="is_active" wire:model="inputs.is_active" value="1" {{ $inputs['is_active'] ? 'checked' : '' }}>
+                                    <div class="state p-success p-on ms-2">
+                                        <label>Aktif</label>
+                                    </div>
+                                    <div class="state p-danger p-off ms-2">
+                                        <label>Aktif Değil</label>
+                                    </div>
                                 </div>
+                            </div>
+                            
+                            <!-- Sistem Ayarı mı? -->
+                            <div class="mb-3">
+                                <div class="form-label">Sistem Ayarı</div>
+                                <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
+                                    <input type="checkbox" id="is_system" name="is_system" wire:model="inputs.is_system" value="1" {{ $inputs['is_system'] ? 'checked' : '' }}
+                                        @if($settingId && $model && $model->is_system) disabled @endif>
+                                    <div class="state p-primary p-on ms-2">
+                                        <label>Evet</label>
+                                    </div>
+                                    <div class="state p-secondary p-off ms-2">
+                                        <label>Hayır</label>
+                                    </div>
+                                </div>
+                                @if($settingId && $model && $model->is_system)
+                                <div class="text-warning small mt-2">
+                                    <i class="fas fa-exclamation-triangle me-1"></i>
+                                    Sistem ayarları sonradan düzenlenemez veya silinemez.
+                                </div>
+                                @else
+                                <div class="text-muted small mt-2">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Sistem ayarları sadece veritabanından silinebilir, <br />
+                                    kullanıcı arayüzünden silinemez ya da değiştirilemez.
+                                </div>
+                                @endif
                             </div>
                             
                             <div class="mb-3">

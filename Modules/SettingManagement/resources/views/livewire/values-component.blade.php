@@ -59,6 +59,9 @@
                                     @case('image')
                                         <i class="fas fa-image me-2 text-primary"></i>
                                         @break
+                                    @case('image_multiple')
+                                        <i class="fas fa-images me-2 text-primary"></i>
+                                        @break
                                     @case('color')
                                         <i class="fas fa-palette me-2 text-primary"></i>
                                         @break
@@ -134,6 +137,36 @@
                                             'label' => 'Görseli sürükleyip bırakın veya tıklayın',
                                             'values' => $values
                                         ])
+                                    </div>
+                                    @break
+                                    
+                                @case('image_multiple')
+                                    <div class="form-group mb-3">
+                                        <!-- Mevcut Çoklu Resimler -->
+                                        @php
+                                            $currentImages = isset($multipleImagesArrays[$setting->id]) ? $multipleImagesArrays[$setting->id] : [];
+                                        @endphp
+                                        
+                                        @include('settingmanagement::livewire.partials.existing-multiple-images', [
+                                            'settingId' => $setting->id,
+                                            'images' => $currentImages
+                                        ])
+                                        
+                                        <div class="mb-3">
+                                            <button type="button" class="btn btn-outline-primary" wire:click="addMultipleImageField({{ $setting->id }})">
+                                                <i class="fas fa-plus me-2"></i> Resim Ekle
+                                            </button>
+                                        </div>
+                                        
+                                        @if(isset($temporaryMultipleImages[$setting->id]))
+                                            @foreach($temporaryMultipleImages[$setting->id] as $index => $image)
+                                                @include('settingmanagement::livewire.partials.multiple-image-upload', [
+                                                    'settingId' => $setting->id,
+                                                    'index' => $index,
+                                                    'label' => 'Görseli sürükleyip bırakın veya tıklayın'
+                                                ])
+                                            @endforeach
+                                        @endif
                                     </div>
                                     @break
 

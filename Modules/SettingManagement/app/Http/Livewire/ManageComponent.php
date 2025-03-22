@@ -19,6 +19,7 @@ class ManageComponent extends Component
     public $settingId;
     public $redirect = false;
     public $temporaryImages = [];
+    public $temporaryMultipleImages = [];
     public $inputs = [
         'group_id' => '',
         'label' => '',
@@ -40,6 +41,7 @@ class ManageComponent extends Component
         'checkbox' => 'Onay Kutusu',
         'file' => 'Dosya',
         'image' => 'Resim',
+        'image_multiple' => 'Çoklu Resim',
         'color' => 'Renk',
         'date' => 'Tarih',
         'email' => 'E-posta',
@@ -60,6 +62,7 @@ class ManageComponent extends Component
             'inputs.default_value' => 'nullable',
             'inputs.is_active' => 'boolean',
             'temporaryImages.*' => 'nullable|file|max:2048',
+            'temporaryMultipleImages.*' => 'nullable|image|max:2048',
         ];
     }
 
@@ -71,6 +74,7 @@ class ManageComponent extends Component
         'inputs.type.required' => 'Tip seçimi zorunludur',
         'inputs.options.required_if' => 'Seçim kutusu için seçenekler belirtmelisiniz',
         'temporaryImages.*.max' => 'Dosya boyutu en fazla 2MB olabilir',
+        'temporaryMultipleImages.*.max' => 'Resim boyutu en fazla 2MB olabilir',
     ];
 
     public function mount($id = null)
@@ -147,6 +151,26 @@ class ManageComponent extends Component
         }
     }
 
+    // Çoklu resim ekle
+    public function addMultipleImageField()
+    {
+        if (!isset($this->temporaryMultipleImages)) {
+            $this->temporaryMultipleImages = [];
+        }
+        
+        $this->temporaryMultipleImages[] = null;
+    }
+    
+    // Çoklu resim sil
+    public function removeMultipleImageField($index)
+    {
+        if (isset($this->temporaryMultipleImages[$index])) {
+            unset($this->temporaryMultipleImages[$index]);
+            // Boşlukları temizle
+            $this->temporaryMultipleImages = array_values($this->temporaryMultipleImages);
+        }
+    }
+
     public function save($redirect = false, $resetForm = false)
     {
         $this->validate();
@@ -177,6 +201,34 @@ class ManageComponent extends Component
                 }
             }
             $this->inputs['options'] = $options;
+        }
+        
+        // Çoklu resim için işleme
+        if ($this->inputs['type'] === 'image_multiple' && !empty($this->temporaryMultipleImages)) {
+            // Eğer default_value varsa, JSON formatına çevir
+            $multipleImagePaths = [];
+            
+            foreach ($this->temporaryMultipleImages as $index => $image) {
+                if ($image) {
+                    $tenantId = is_tenant() ? tenant_id() : 1;
+                    $fileName = time() . '_' . Str::slug($this->inputs['key']) . '_' . $index . '.' . $image->getClientOriginalExtension();
+                    $folder = 'images';
+                    
+                    // YENİ: TenantStorageHelper ile doğru şekilde dosyayı yükle
+                    $imagePath = \Modules\SettingManagement\App\Helpers\TenantStorageHelper::storeTenantFile(
+                        $image,
+                        "settings/{$folder}",
+                        $fileName,
+                        $tenantId
+                    );
+                    
+                    $multipleImagePaths[] = $imagePath;
+                }
+            }
+            
+            if (!empty($multipleImagePaths)) {
+                $this->inputs['default_value'] = json_encode($multipleImagePaths);
+            }
         }
     
         if ($this->settingId) {
@@ -231,7 +283,7 @@ class ManageComponent extends Component
         ]);
         
         if ($resetForm && !$this->settingId) {
-            $this->reset('inputs', 'temporaryImages');
+            $this->reset('inputs', 'temporaryImages', 'temporaryMultipleImages');
             $this->inputs['sort_order'] = Setting::max('sort_order') + 1;
             $this->inputs['is_active'] = true;
         }

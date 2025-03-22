@@ -5,7 +5,6 @@ use Livewire\WithFileUploads;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Modules\SettingManagement\App\Models\Setting;
-use Modules\SettingManagement\App\Helpers\DebugHelper;
 use Modules\SettingManagement\App\Helpers\TenantStorageHelper;
 
 trait WithImageUpload {
@@ -34,15 +33,6 @@ trait WithImageUpload {
             try {
                 // Tenant id belirleme - Central ise tenant1, değilse gerçek tenant ID
                 $tenantId = is_tenant() ? tenant_id() : 1;
-                
-                // Debug için mevcut durumu kaydet
-                DebugHelper::logFileUpload('Dosya yükleme başladı', [
-                    'tenant_id' => $tenantId,
-                    'model_id' => $model->id,
-                    'image_key' => $imageKey,
-                    'is_tenant' => is_tenant() ? 'true' : 'false',
-                    'tenant_function_result' => is_tenant() ? tenant_id() : 'NULL'
-                ]);
                 
                 // Benzersiz bir dosya adı oluştur
                 $fileName = Str::slug($model->key) . '-' . Str::random(6) . '.' . $this->temporaryImages[$imageKey]->getClientOriginalExtension();
@@ -77,11 +67,6 @@ trait WithImageUpload {
                 
                 return $urlPath;
             } catch (\Exception $e) {
-                DebugHelper::logFileUpload('Hata oluştu', [
-                    'error_message' => $e->getMessage(),
-                    'error_trace' => $e->getTraceAsString()
-                ]);
-                
                 \Illuminate\Support\Facades\Log::error('Resim yükleme hatası: ' . $e->getMessage(), [
                     'model_id' => $model->id,
                     'tenant' => is_tenant() ? tenant_id() : 'central',

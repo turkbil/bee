@@ -2,18 +2,17 @@
 
 <div class="card">
     <div class="card-header">
-        <div class="d-flex justify-content-between align-items-center">
-            <h3 class="card-title">
+        <div class="d-flex w-100 align-items-center justify-content-between">
+            <h3 class="card-title m-0">
                 <i class="fas fa-cogs me-2"></i>
                 {{ $group->name }} - Ayar Değerleri
             </h3>
-            <div>
-                <a href="{{ route('admin.settingmanagement.items', $groupId) }}" class="btn btn-outline-primary">
-                    <i class="fas fa-list me-2"></i> Ayarları Yönet
-                </a>
-            </div>
+            <a href="{{ route('admin.settingmanagement.items', $groupId) }}" class="btn btn-outline-primary">
+                <i class="fas fa-list me-2"></i> Ayarları Yönet
+            </a>
         </div>
     </div>
+    
     <div class="card-body">
         <div class="alert alert-info">
             <div class="d-flex">
@@ -86,16 +85,9 @@
                                 @endswitch
                                 {{ $setting->label }}
                             </h3>
-                            <div>
-                                <span class="badge bg-blue-lt">{{ $setting->type }}</span>
-                            </div>
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="mb-2">
-                            <code>{{ $setting->key }}</code>
-                        </div>
-                        
                         <div class="form-group">
                             @switch($setting->type)
                                 @case('textarea')

@@ -111,14 +111,6 @@ class ValuesComponent extends Component
                     // Tenant id belirleme - Central ise tenant1, değilse gerçek tenant ID
                     $tenantId = is_tenant() ? tenant_id() : 1;
                     
-                    // Debug için mevcut durumu kaydet
-                    \Modules\SettingManagement\App\Helpers\DebugHelper::logFileUpload('ValuesComponent - Dosya yükleme başladı', [
-                        'tenant_id' => $tenantId,
-                        'setting_id' => $settingId,
-                        'type' => $type,
-                        'is_tenant' => is_tenant() ? 'true' : 'false'
-                    ]);
-                    
                     // Dosya adını oluştur
                     $fileName = Str::slug($setting->key) . '-' . Str::random(6) . '.' . $file->getClientOriginalExtension();
                     $folder = $type === 'image' ? 'images' : 'files';
@@ -137,16 +129,7 @@ class ValuesComponent extends Component
                     );
                     
                     $this->values[$settingId] = $value;
-                    
-                    \Modules\SettingManagement\App\Helpers\DebugHelper::logFileUpload('Veritabanına kaydedilecek bilgi', [
-                        'value_to_save' => $value
-                    ]);
                 } catch (\Exception $e) {
-                    \Modules\SettingManagement\App\Helpers\DebugHelper::logFileUpload('Dosya yükleme hatası', [
-                        'error' => $e->getMessage(),
-                        'trace' => $e->getTraceAsString()
-                    ]);
-                    
                     $this->dispatch('toast', [
                         'title' => 'Hata!',
                         'message' => 'Dosya yüklenirken bir hata oluştu: ' . $e->getMessage(),
@@ -177,12 +160,6 @@ class ValuesComponent extends Component
                     ['setting_id' => $settingId],
                     ['value' => $value]
                 );
-                
-                \Modules\SettingManagement\App\Helpers\DebugHelper::logFileUpload('Veritabanı kaydı oluşturuldu/güncellendi', [
-                    'setting_id' => $settingId,
-                    'value' => $value,
-                    'setting_value_id' => $settingValue->id ?? 'Oluşturulmadı'
-                ]);
                 
                 log_activity(
                     $setting,

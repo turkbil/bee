@@ -303,15 +303,6 @@ class TenantValueComponent extends Component
                         // Tenant id belirleme - Central ise tenant1, değilse gerçek tenant ID
                         $tenantId = is_tenant() ? tenant_id() : 1;
                         
-                        // Debug için mevcut durumu kaydet
-                        \Modules\SettingManagement\App\Helpers\DebugHelper::logFileUpload('TenantValueComponent - Dosya yükleme başladı', [
-                            'tenant_id' => $tenantId,
-                            'setting_id' => $setting->id,
-                            'type' => $type, 
-                            'key' => $key,
-                            'is_tenant' => is_tenant() ? 'true' : 'false'
-                        ]);
-                        
                         // Dosya adı oluşturma
                         $fileName = time() . '_' . Str::slug($setting->key) . '.' . $this->temporaryImages[$key]->getClientOriginalExtension();
                         
@@ -330,18 +321,8 @@ class TenantValueComponent extends Component
                         
                         $this->previewing = true;
                         $this->previewUrl = cdn($valueToSave);
-                        
-                        \Modules\SettingManagement\App\Helpers\DebugHelper::logFileUpload('Veritabanına kaydedilecek bilgi', [
-                            'value_to_save' => $valueToSave,
-                            'preview_url' => $this->previewUrl
-                        ]);
                     }
                 } catch (\Exception $e) {
-                    \Modules\SettingManagement\App\Helpers\DebugHelper::logFileUpload('Dosya yükleme hatası', [
-                        'error' => $e->getMessage(),
-                        'trace' => $e->getTraceAsString()
-                    ]);
-                    
                     $this->dispatch('toast', [
                         'title' => 'Hata!',
                         'message' => 'Dosya yüklenirken bir hata oluştu: ' . $e->getMessage(),
@@ -356,12 +337,6 @@ class TenantValueComponent extends Component
                 ['setting_id' => $this->settingId],
                 ['value' => $valueToSave]
             );
-            
-            \Modules\SettingManagement\App\Helpers\DebugHelper::logFileUpload('Veritabanı kaydı oluşturuldu', [
-                'setting_id' => $this->settingId,
-                'value' => $valueToSave,
-                'setting_value_id' => $settingValue->id
-            ]);
             
             log_activity(
                 $setting,

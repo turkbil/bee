@@ -2,6 +2,7 @@
 namespace Modules\SettingManagement\App\Helpers;
 
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class TenantStorageHelper 
 {
@@ -60,21 +61,29 @@ class TenantStorageHelper
                 throw $e;
             }
         } else {
-            // TENANT - tenant{id}/app/public/ altına yükle
+            // TENANT - direkt app/public/ altına yükle
+            // Base path'i alırken storage_path() önce tenant bilgisini ekliyor, bu yüzden tekrar tenant bilgisi eklenmemeli
             
-            // DOĞRU TENANT KLASÖRÜ - hatayı düzeltmek için
-            $correctDir = storage_path("tenant{$tenantId}/app/public/{$relativePath}");
+            // Şu anki çalışma dizini hakkında bilgi alıp yol analizini yapalım
+            $rootPath = base_path(); // laravel root dizini
+            $storagePath = storage_path();
+            $appPublicPath = storage_path('app/public');
+            
+            DebugHelper::logFileUpload('Yol analizi', [
+                'root_path' => $rootPath,
+                'storage_path' => $storagePath,
+                'app_public_path' => $appPublicPath,
+                'tenant_id' => $tenantId
+            ]);
+            
+            // Tenant'a göre paths.php yapılandırması yapılmış ise storage_path() fonksiyonu zaten tenant bilgisini ekliyor olabilir
+            // O nedenle direkt app/public/ altına hedefliyoruz
+            $correctDir = storage_path('app/public/' . $relativePath);
             $correctFile = $correctDir . '/' . $fileName;
             
-            // HATALI KLASÖR (Debug için)
-            $wrongDir = storage_path("tenant{$tenantId}/tenant{$tenantId}/app/public/{$relativePath}");
-            $wrongFile = $wrongDir . '/' . $fileName;
-            
-            DebugHelper::logFileUpload('Tenant dosya yolları', [
+            DebugHelper::logFileUpload('Tenant dosya yolları (Düzeltilmiş)', [
                 'correct_dir' => $correctDir,
                 'correct_file' => $correctFile,
-                'wrong_dir' => $wrongDir,
-                'wrong_file' => $wrongFile,
                 'tenant_id' => $tenantId
             ]);
             
@@ -82,12 +91,12 @@ class TenantStorageHelper
                 // Doğru klasörü oluştur
                 if (!file_exists($correctDir)) {
                     mkdir($correctDir, 0755, true);
-                    DebugHelper::logFileUpload('Tenant için doğru klasör oluşturuldu', [
+                    DebugHelper::logFileUpload('Tenant için klasör oluşturuldu', [
                         'dir' => $correctDir
                     ]);
                 }
                 
-                // Dosyayı DOĞRUDAN kopyala
+                // Dosyayı kopyala
                 if (is_uploaded_file($file->getPathname())) {
                     $result = move_uploaded_file($file->getPathname(), $correctFile);
                     $method = 'move_uploaded_file';
@@ -106,21 +115,6 @@ class TenantStorageHelper
                     'exists' => file_exists($correctFile) ? 'true' : 'false',
                     'file_size' => file_exists($correctFile) ? filesize($correctFile) : 'not found'
                 ]);
-                
-                // Yanlış klasörde olup olmadığını kontrol et
-                if (file_exists($wrongDir)) {
-                    DebugHelper::logFileUpload('DİKKAT: Hatalı tenant klasörü mevcut', [
-                        'wrong_dir' => $wrongDir
-                    ]);
-                    
-                    // Hatalı klasöre dosyanın kopyasını yükleme
-                    // Eski koddan gelen hatalı durum olabileceği için kontrol
-                    if (file_exists($wrongFile)) {
-                        DebugHelper::logFileUpload('DİKKAT: Hatalı konumda da dosya var!', [
-                            'wrong_file' => $wrongFile
-                        ]);
-                    }
-                }
                 
                 return "storage/tenant{$tenantId}/{$relativePath}/{$fileName}";
             } catch (\Exception $e) {
@@ -170,12 +164,12 @@ class TenantStorageHelper
                 
                 return $result;
             } else {
-                // Tenant dosyası - DOĞRU yol
-                $correctPath = storage_path("tenant{$tenantId}/app/public/{$relativePath}");
+                // Tenant dosyası - direkt app/public altında olmalı
+                $correctPath = storage_path('app/public/' . $relativePath);
                 $result = file_exists($correctPath) && unlink($correctPath);
                 
                 // YANLIŞ yol - iç içe tenant klasöründeki dosyayı da sil
-                $wrongPath = storage_path("tenant{$tenantId}/tenant{$tenantId}/app/public/{$relativePath}");
+                $wrongPath = storage_path('tenant' . $tenantId . '/app/public/' . $relativePath);
                 $wrongResult = file_exists($wrongPath) && unlink($wrongPath);
                 
                 DebugHelper::logFileUpload('Tenant dosya silme sonuçları', [
@@ -207,12 +201,12 @@ class TenantStorageHelper
                 
                 return $result;
             } else {
-                // Tenant dosyası - hem doğru hem yanlış yol
-                $correctPath = storage_path("tenant{$tenantId}/app/public/{$relativePath}");
+                // Tenant dosyası - direkt app/public altında olmalı
+                $correctPath = storage_path('app/public/' . $relativePath);
                 $result = file_exists($correctPath) && unlink($correctPath);
                 
                 // Yanlış yol
-                $wrongPath = storage_path("tenant{$tenantId}/tenant{$tenantId}/app/public/{$relativePath}");
+                $wrongPath = storage_path('tenant' . $tenantId . '/app/public/' . $relativePath);
                 $wrongResult = file_exists($wrongPath) && unlink($wrongPath);
                 
                 DebugHelper::logFileUpload('Tenant dosya silme (eski format)', [

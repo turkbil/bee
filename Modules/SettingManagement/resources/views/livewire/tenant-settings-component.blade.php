@@ -73,12 +73,8 @@
                                 @if($setting->type === 'file' && $setting->current_value)
                                     <div class="d-flex align-items-center">
                                         <i class="fas fa-file text-primary me-2"></i>
-                                        @php
-                                            $filePath = $setting->current_value;
-                                            $storageUrl = url('/storage/' . $filePath);
-                                        @endphp
-                                        <a href="{{ $storageUrl }}" target="_blank" class="text-truncate">
-                                            {{ basename($filePath) }}
+                                        <a href="{{ cdn($setting->current_value) }}" target="_blank" class="text-truncate">
+                                            {{ basename($setting->current_value) }}
                                         </a>
                                         <a href="{{ route('admin.settingmanagement.value', $setting->id) }}" class="btn btn-sm btn-link ms-2">
                                             <i class="fas fa-edit"></i>
@@ -86,11 +82,7 @@
                                     </div>
                                 @elseif($setting->type === 'image' && $setting->current_value)
                                     <div class="d-flex align-items-center">
-                                        @php
-                                            $imagePath = $setting->current_value;
-                                            $imageUrl = url('/storage/' . $imagePath);
-                                        @endphp
-                                        <img src="{{ $imageUrl }}" class="img-thumbnail me-2" style="max-width: 40px; max-height: 40px;">
+                                        <img src="{{ cdn($setting->current_value) }}" class="img-thumbnail me-2" style="max-width: 40px; max-height: 40px;">
                                         <a href="{{ route('admin.settingmanagement.value', $setting->id) }}" class="btn btn-sm btn-link">
                                             <i class="fas fa-edit"></i>
                                         </a>

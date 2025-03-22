@@ -62,7 +62,7 @@ x-on:drop="handleDrop($event)">
                         wire:click="deleteMedia({{ $imageKey }})" wire:loading.attr="disabled">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
-                    <img src="{{ url('/storage/' . $values[$imageKey]) }}"
+                    <img src="{{ cdn($values[$imageKey]) }}"
                         class="img-fluid rounded h-100 w-100 object-fit-cover" alt="Mevcut Fotoğraf">
                 </div>
                 @else

@@ -217,6 +217,31 @@
                                 </div>
                             </div>
                             @break
+                            @case('file')
+                            <div class="border rounded p-3 text-center">
+                                @if($setting->getValue())
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        <i class="fas fa-file me-2 text-primary"></i>
+                                        <a href="{{ cdn($setting->getValue()) }}" target="_blank" class="text-truncate">
+                                            {{ basename($setting->getValue()) }}
+                                        </a>
+                                    </div>
+                                @else
+                                    <i class="fas fa-upload fa-2x text-muted"></i>
+                                    <div class="mt-2 text-muted">Dosya Seçilmedi</div>
+                                @endif
+                            </div>
+                            @break
+                            @case('image')
+                            <div class="border rounded p-3 text-center">
+                                @if($setting->getValue())
+                                    <img src="{{ cdn($setting->getValue()) }}" class="img-fluid rounded" style="max-height: 100px">
+                                @else
+                                    <i class="fas fa-image fa-2x text-muted"></i>
+                                    <div class="mt-2 text-muted">Resim Seçilmedi</div>
+                                @endif
+                            </div>
+                            @break
                             @default
                             <input type="text" class="form-control" value="{{ $setting->getValue() }}" readonly>
                             @endswitch

@@ -74,7 +74,7 @@ class TenantValueComponent extends Component
         // Dosya türünde ve geçerli bir dosya varsa, önizleme URL'sini hazırla
         if (($setting->type === 'file' || $setting->type === 'image') && $this->value) {
             $this->previewing = true;
-            $this->previewUrl = url('/storage/' . $this->value);
+            $this->previewUrl = cdn($this->value);
         }
     }
     
@@ -327,7 +327,7 @@ class TenantValueComponent extends Component
                         // Dosya yolunu sakla - tenant ID'li formatı kullan
                         $valueToSave = $tenantPath;
                         $this->previewing = true;
-                        $this->previewUrl = url('/storage/' . $tenantPath);
+                        $this->previewUrl = cdn($tenantPath);
                     }
                 } catch (\Exception $e) {
                     $this->dispatch('toast', [

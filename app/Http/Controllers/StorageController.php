@@ -12,25 +12,24 @@ class StorageController extends Controller
      * Tenant medya dosyalarını sunmak için kullanılır
      * 
      * @param int $tenantId Tenant ID
-     * @param int $mediaId Media ID
-     * @param string $filename Dosya adı
+     * @param string $path Dosya yolu
      * @return BinaryFileResponse
      */
-    public function tenantMedia($tenantId, $mediaId, $filename)
+    public function tenantMedia($tenantId, $path = null)
     {
         // Tenant klasörü yolu
-        $tenantPath = storage_path("tenant{$tenantId}/app/public/{$mediaId}/{$filename}");
+        $tenantPath = storage_path("tenant{$tenantId}/app/public/{$path}");
         
         // Central klasörü yolu (tenant olmayan durum için)
-        $centralPath = storage_path("app/public/{$mediaId}/{$filename}");
+        $centralPath = storage_path("app/public/{$path}");
         
         // Önce tenant yolunu kontrol et
         if (File::exists($tenantPath)) {
-            $path = $tenantPath;
+            $filePath = $tenantPath;
         } 
         // Tenant yolunda yoksa, central yolunu kontrol et
         elseif (File::exists($centralPath)) {
-            $path = $centralPath;
+            $filePath = $centralPath;
         }
         // Dosya bulunamadıysa 404 hatası döndür
         else {
@@ -38,8 +37,8 @@ class StorageController extends Controller
         }
         
         // Dosya yanıtını oluştur
-        $response = new BinaryFileResponse($path);
-        $response->headers->set('Content-Type', File::mimeType($path));
+        $response = new BinaryFileResponse($filePath);
+        $response->headers->set('Content-Type', File::mimeType($filePath));
         $response->setCache([
             'public' => true,
             'max_age' => 86400,
@@ -47,5 +46,23 @@ class StorageController extends Controller
         ]);
         
         return $response;
+    }
+    
+    /**
+     * Normal storage dosyalarına erişmek için (storage:link ile oluşturulan)
+     * 
+     * @param string $path
+     * @return \Illuminate\Http\Response
+     */
+    public function publicStorage($path)
+    {
+        // Normal storage/app/public içindeki dosyalara erişim
+        $storagePath = storage_path('app/public/' . $path);
+        
+        if (File::exists($storagePath)) {
+            return response()->file($storagePath);
+        }
+        
+        abort(404, 'Dosya bulunamadı');
     }
 }

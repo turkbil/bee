@@ -17,35 +17,31 @@ class StorageController extends Controller
      */
     public function tenantMedia($tenantId, $path = null)
     {
-        // Tenant klasörü yolu
-        $tenantPath = storage_path("tenant{$tenantId}/app/public/{$path}");
-        
-        // Central klasörü yolu (tenant olmayan durum için)
-        $centralPath = storage_path("app/public/{$path}");
-        
-        // Önce tenant yolunu kontrol et
-        if (File::exists($tenantPath)) {
-            $filePath = $tenantPath;
-        } 
-        // Tenant yolunda yoksa, central yolunu kontrol et
-        elseif (File::exists($centralPath)) {
-            $filePath = $centralPath;
+        // Central domain için (tenant1)
+        if ($tenantId == 1) {
+            // Central domain için public içindeki dosyalara bak
+            $filePath = storage_path("app/public/{$path}");
+        } else {
+            // Gerçek tenant'lar için tenant{id} klasörüne bak
+            $filePath = storage_path("tenant{$tenantId}/app/public/{$path}");
         }
+        
+        // Dosya var mı kontrol et
+        if (File::exists($filePath)) {
+            // Dosya yanıtını oluştur
+            $response = new BinaryFileResponse($filePath);
+            $response->headers->set('Content-Type', File::mimeType($filePath));
+            $response->setCache([
+                'public' => true,
+                'max_age' => 86400,
+                'must_revalidate' => false,
+            ]);
+            
+            return $response;
+        }
+        
         // Dosya bulunamadıysa 404 hatası döndür
-        else {
-            abort(404, 'Medya dosyası bulunamadı');
-        }
-        
-        // Dosya yanıtını oluştur
-        $response = new BinaryFileResponse($filePath);
-        $response->headers->set('Content-Type', File::mimeType($filePath));
-        $response->setCache([
-            'public' => true,
-            'max_age' => 86400,
-            'must_revalidate' => false,
-        ]);
-        
-        return $response;
+        abort(404, 'Medya dosyası bulunamadı');
     }
     
     /**

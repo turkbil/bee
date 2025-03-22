@@ -76,6 +76,16 @@ class ValuesComponent extends Component
         }
     }
 
+    // URL'den yerel depolama yolunu çıkarır
+    private function extractLocalPath($path)
+    {
+        // tenant{id}/ ifadesini ara ve kaldır
+        if (preg_match('/^tenant\d+\/(.*)$/', $path, $matches)) {
+            return $matches[1];
+        }
+        return $path;
+    }
+
     public function save($redirect = false)
     {
         foreach ($this->values as $settingId => $value) {
@@ -88,28 +98,56 @@ class ValuesComponent extends Component
                 $type = $setting->type;
                 
                 try {
+                    // Tenant id belirleme - Central ise tenant1, değilse gerçek tenant ID
+                    $tenancy = app(\Stancl\Tenancy\Tenancy::class);
+                    $tenantId = $tenancy->initialized ? $tenancy->tenant->id : 1;
+                    
                     // Dosya adını oluştur
                     $fileName = Str::slug($setting->key) . '-' . Str::random(6) . '.' . $file->getClientOriginalExtension();
                     $folder = $type === 'image' ? 'images' : 'files';
                     
-                    // Dosya yolu - dizin yapısını düzelt
+                    // Dosya yolu
                     $path = "settings/{$folder}/{$fileName}";
                     
+                    // Tenant için dosya yolu
+                    $tenantPath = "tenant{$tenantId}/settings/{$folder}/{$fileName}";
+                    
                     // Eski dosyayı sil (eğer varsa)
-                    if ($oldValue && Storage::disk('public')->exists($oldValue)) {
-                        Storage::disk('public')->delete($oldValue);
+                    if ($oldValue) {
+                        // Dosya yolundan local path'i çıkart
+                        $localPath = $this->extractLocalPath($oldValue);
+                        
+                        if (Storage::disk('public')->exists($localPath)) {
+                            Storage::disk('public')->delete($localPath);
+                        }
                     }
                     
-                    // Dosyayı storage/app/public/ altına kaydet
-                    Storage::disk('public')->putFileAs(
-                        dirname($path),
-                        $file,
-                        basename($path)
-                    );
+                    // Dosyayı doğru klasöre kaydet
+                    if ($tenantId == 1) {
+                        // Central için normal storage/app/public/ altına kaydet
+                        Storage::disk('public')->putFileAs(
+                            dirname($path),
+                            $file,
+                            basename($path)
+                        );
+                    } else {
+                        // Tenant için storage/tenant{id}/app/public/ altına kaydet
+                        $tenantStorage = storage_path("tenant{$tenantId}/app/public/" . dirname($path));
+                        if (!file_exists($tenantStorage)) {
+                            mkdir($tenantStorage, 0755, true);
+                        }
+                        
+                        // Tenant klasörüne yükle
+                        $file->storeAs(
+                            dirname($path),
+                            basename($path),
+                            ['disk' => 'tenant']
+                        );
+                    }
                     
-                    // Dosya yolunu değer olarak ata
-                    $value = $path;
-                    $this->values[$settingId] = $path;
+                    // Dosya yolunu değer olarak ata - tenant ID'li formatı kullan
+                    $value = $tenantPath;
+                    $this->values[$settingId] = $tenantPath;
                 } catch (\Exception $e) {
                     $this->dispatch('toast', [
                         'title' => 'Hata!',
@@ -165,17 +203,22 @@ class ValuesComponent extends Component
         $setting = Setting::find($settingId);
         $value = $this->values[$settingId] ?? null;
         
-        if ($setting && $value && Storage::disk('public')->exists($value)) {
-            Storage::disk('public')->delete($value);
+        if ($setting && $value) {
+            // Dosya yolundan local path'i çıkart
+            $localPath = $this->extractLocalPath($value);
             
-            $this->values[$settingId] = null;
-            $this->checkChanges();
-            
-            $this->dispatch('toast', [
-                'title' => 'Başarılı!',
-                'message' => 'Dosya silindi.',
-                'type' => 'success'
-            ]);
+            if (Storage::disk('public')->exists($localPath)) {
+                Storage::disk('public')->delete($localPath);
+                
+                $this->values[$settingId] = null;
+                $this->checkChanges();
+                
+                $this->dispatch('toast', [
+                    'title' => 'Başarılı!',
+                    'message' => 'Dosya silindi.',
+                    'type' => 'success'
+                ]);
+            }
         }
     }
     

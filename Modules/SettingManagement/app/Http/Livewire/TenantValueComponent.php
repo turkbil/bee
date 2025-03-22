@@ -72,9 +72,9 @@ class TenantValueComponent extends Component
         }
         
         // Dosya türünde ve geçerli bir dosya varsa, önizleme URL'sini hazırla
-        if (($setting->type === 'file' || $setting->type === 'image') && $this->value && Storage::disk('public')->exists($this->value)) {
+        if (($setting->type === 'file' || $setting->type === 'image') && $this->value) {
             $this->previewing = true;
-            $this->previewUrl = Storage::url($this->value);
+            $this->previewUrl = url('/storage/' . $this->value);
         }
     }
     
@@ -154,9 +154,17 @@ class TenantValueComponent extends Component
         ]);
 
         if ($this->temporaryImages[$key]) {
-            // Eski dosyayı sil
-            if ($this->value && Storage::disk('public')->exists($this->value)) {
-                Storage::disk('public')->delete($this->value);
+            // Tenant id belirleme - Central ise tenant1, değilse gerçek tenant ID
+            $tenantId = is_tenant() ? tenant_id() : 1;
+            
+            // Eski dosyayı kontrol et ve sil
+            if ($this->value) {
+                // Dosya yolundan local path'i çıkart
+                $localPath = $this->extractLocalPath($this->value);
+                
+                if (Storage::disk('public')->exists($localPath)) {
+                    Storage::disk('public')->delete($localPath);
+                }
             }
             
             // Yeni dosya için geçici URL hazırla
@@ -170,6 +178,16 @@ class TenantValueComponent extends Component
             // Dosya değiştiğinde varsayılan değere eşit olamaz
             $this->useDefault = false;
         }
+    }
+    
+    // URL'den yerel depolama yolunu çıkarır
+    private function extractLocalPath($path)
+    {
+        // tenant{id}/ ifadesini ara ve kaldır
+        if (preg_match('/^tenant\d+\/(.*)$/', $path, $matches)) {
+            return $matches[1];
+        }
+        return $path;
     }
     
     // Varsayılan değere dön butonu için 
@@ -206,8 +224,13 @@ class TenantValueComponent extends Component
     
     public function deleteFile()
     {
-        if ($this->value && Storage::disk('public')->exists($this->value)) {
-            Storage::disk('public')->delete($this->value);
+        if ($this->value) {
+            // Dosya yolundan local path'i çıkart
+            $localPath = $this->extractLocalPath($this->value);
+            
+            if (Storage::disk('public')->exists($localPath)) {
+                Storage::disk('public')->delete($localPath);
+            }
         }
         
         $this->value = null;
@@ -256,28 +279,55 @@ class TenantValueComponent extends Component
                     if (isset($this->temporaryImages[$key])) {
                         $folder = $type === 'image' ? 'images' : 'files';
                         
+                        // Tenant id belirleme - Central ise tenant1, değilse gerçek tenant ID
+                        $tenantId = is_tenant() ? tenant_id() : 1;
+                        
                         // Dosya adı oluşturma
                         $fileName = time() . '_' . Str::slug($setting->key) . '.' . $this->temporaryImages[$key]->getClientOriginalExtension();
                         
-                        // Dosya yolu - dizin yapısını düzelt
+                        // Tenant için dosya yolu
+                        $tenantPath = "tenant{$tenantId}/settings/{$folder}/{$fileName}";
+                        
+                        // Normal dosya yolu - veritabanı tenant ID'si içermez
                         $path = "settings/{$folder}/{$fileName}";
                         
                         // Eski dosyayı sil (eğer varsa)
-                        if ($this->value && Storage::disk('public')->exists($this->value)) {
-                            Storage::disk('public')->delete($this->value);
+                        if ($this->value) {
+                            // Dosya yolundan local path'i çıkart
+                            $localPath = $this->extractLocalPath($this->value);
+                            
+                            if (Storage::disk('public')->exists($localPath)) {
+                                Storage::disk('public')->delete($localPath);
+                            }
                         }
                         
-                        // Dosyayı storage/app/public/ altına kaydet
-                        Storage::disk('public')->putFileAs(
-                            dirname($path),
-                            $this->temporaryImages[$key],
-                            basename($path)
-                        );
+                        // Dosyayı doğru klasöre kaydet
+                        if ($tenantId == 1) {
+                            // Central için normal public disk kullan
+                            Storage::disk('public')->putFileAs(
+                                dirname($path),
+                                $this->temporaryImages[$key],
+                                basename($path)
+                            );
+                        } else {
+                            // Tenant için tenant{id} klasörünü kullan
+                            $tenantStorage = storage_path("tenant{$tenantId}/app/public/" . dirname($path));
+                            if (!file_exists($tenantStorage)) {
+                                mkdir($tenantStorage, 0755, true);
+                            }
+                            
+                            // Tenant klasörüne yükle
+                            $this->temporaryImages[$key]->storeAs(
+                                dirname($path),
+                                basename($path),
+                                ['disk' => 'tenant']
+                            );
+                        }
                         
-                        // Dosya yolunu sakla
-                        $valueToSave = $path;
+                        // Dosya yolunu sakla - tenant ID'li formatı kullan
+                        $valueToSave = $tenantPath;
                         $this->previewing = true;
-                        $this->previewUrl = Storage::url($path);
+                        $this->previewUrl = url('/storage/' . $tenantPath);
                     }
                 } catch (\Exception $e) {
                     $this->dispatch('toast', [

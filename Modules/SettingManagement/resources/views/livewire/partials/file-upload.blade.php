@@ -60,7 +60,7 @@ x-on:drop="handleDrop($event)">
                         </div>
                     </div>
                 </div>
-                @elseif (!empty($values[$fileKey]) && Storage::disk('public')->exists($values[$fileKey]))
+                @elseif (!empty($values[$fileKey]))
                 <div class="position-relative" style="height: 100px;">
                     <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2"
                         wire:click="deleteMedia({{ $fileKey }})" wire:loading.attr="disabled">
@@ -70,7 +70,7 @@ x-on:drop="handleDrop($event)">
                         <div class="text-center">
                             <i class="fa-solid fa-file fa-3x text-muted"></i>
                             <p class="mb-0 mt-2">{{ basename($values[$fileKey]) }}</p>
-                            <a href="/storage/{{ $values[$fileKey] }}" target="_blank" class="btn btn-sm btn-outline-primary mt-2">
+                            <a href="{{ url('/storage/' . $values[$fileKey]) }}" target="_blank" class="btn btn-sm btn-outline-primary mt-2">
                                 <i class="fas fa-eye me-1"></i> Görüntüle
                             </a>
                         </div>

@@ -35,6 +35,15 @@ class SettingManagementServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         
+        // Helpers klasörü varsa otomatik yükle
+        $helpersPath = module_path($this->name, 'App/Helpers');
+        if (is_dir($helpersPath)) {
+            $files = glob($helpersPath . '/*.php');
+            foreach ($files as $file) {
+                require_once $file;
+            }
+        }
+        
         // Central veritabanında çalışıyorsak tüm migration'ları yükle
         if (!app()->bound('tenancy.tenant')) {
             // Central migrations - settings_groups ve settings tabloları için

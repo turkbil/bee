@@ -65,7 +65,7 @@ class ValuesComponent extends Component
             }
         }
     }
-
+    
     public function checkChanges()
     {
         $this->changes = [];
@@ -79,12 +79,22 @@ class ValuesComponent extends Component
     // URL'den yerel depolama yolunu çıkarır
     private function extractLocalPath($path)
     {
+        if (empty($path)) {
+            return '';
+        }
+        
+        // storage/ ile başlıyorsa çıkar
+        if (Str::startsWith($path, 'storage/')) {
+            $path = substr($path, 8); // "storage/" kısmını çıkar
+        }
+        
         // tenant{id}/ ifadesini ara ve kaldır
         if (preg_match('/^tenant\d+\/(.*)$/', $path, $matches)) {
             return $matches[1];
         }
+        
         return $path;
-    }
+    }    
 
     public function save($redirect = false)
     {
@@ -99,56 +109,44 @@ class ValuesComponent extends Component
                 
                 try {
                     // Tenant id belirleme - Central ise tenant1, değilse gerçek tenant ID
-                    $tenancy = app(\Stancl\Tenancy\Tenancy::class);
-                    $tenantId = $tenancy->initialized ? $tenancy->tenant->id : 1;
+                    $tenantId = is_tenant() ? tenant_id() : 1;
+                    
+                    // Debug için mevcut durumu kaydet
+                    \Modules\SettingManagement\App\Helpers\DebugHelper::logFileUpload('ValuesComponent - Dosya yükleme başladı', [
+                        'tenant_id' => $tenantId,
+                        'setting_id' => $settingId,
+                        'type' => $type,
+                        'is_tenant' => is_tenant() ? 'true' : 'false'
+                    ]);
                     
                     // Dosya adını oluştur
                     $fileName = Str::slug($setting->key) . '-' . Str::random(6) . '.' . $file->getClientOriginalExtension();
                     $folder = $type === 'image' ? 'images' : 'files';
                     
-                    // Dosya yolu
-                    $path = "settings/{$folder}/{$fileName}";
-                    
-                    // Tenant için dosya yolu
-                    $tenantPath = "tenant{$tenantId}/settings/{$folder}/{$fileName}";
-                    
                     // Eski dosyayı sil (eğer varsa)
                     if ($oldValue) {
-                        // Dosya yolundan local path'i çıkart
-                        $localPath = $this->extractLocalPath($oldValue);
-                        
-                        if (Storage::disk('public')->exists($localPath)) {
-                            Storage::disk('public')->delete($localPath);
-                        }
+                        \Modules\SettingManagement\App\Helpers\TenantStorageHelper::deleteFile($oldValue);
                     }
                     
-                    // Dosyayı doğru klasöre kaydet
-                    if ($tenantId == 1) {
-                        // Central için normal storage/app/public/ altına kaydet
-                        Storage::disk('public')->putFileAs(
-                            dirname($path),
-                            $file,
-                            basename($path)
-                        );
-                    } else {
-                        // Tenant için storage/tenant{id}/app/public/ altına kaydet
-                        $tenantStorage = storage_path("tenant{$tenantId}/app/public/" . dirname($path));
-                        if (!file_exists($tenantStorage)) {
-                            mkdir($tenantStorage, 0755, true);
-                        }
-                        
-                        // Tenant klasörüne yükle
-                        $file->storeAs(
-                            dirname($path),
-                            basename($path),
-                            ['disk' => 'tenant']
-                        );
-                    }
+                    // YENİ: TenantStorageHelper ile doğru şekilde dosyayı yükle
+                    $value = \Modules\SettingManagement\App\Helpers\TenantStorageHelper::storeTenantFile(
+                        $file,
+                        "settings/{$folder}",
+                        $fileName,
+                        $tenantId
+                    );
                     
-                    // Dosya yolunu değer olarak ata - tenant ID'li formatı kullan
-                    $value = $tenantPath;
-                    $this->values[$settingId] = $tenantPath;
+                    $this->values[$settingId] = $value;
+                    
+                    \Modules\SettingManagement\App\Helpers\DebugHelper::logFileUpload('Veritabanına kaydedilecek bilgi', [
+                        'value_to_save' => $value
+                    ]);
                 } catch (\Exception $e) {
+                    \Modules\SettingManagement\App\Helpers\DebugHelper::logFileUpload('Dosya yükleme hatası', [
+                        'error' => $e->getMessage(),
+                        'trace' => $e->getTraceAsString()
+                    ]);
+                    
                     $this->dispatch('toast', [
                         'title' => 'Hata!',
                         'message' => 'Dosya yüklenirken bir hata oluştu: ' . $e->getMessage(),
@@ -159,6 +157,11 @@ class ValuesComponent extends Component
             }
             
             if ($value === $setting->default_value) {
+                // Eğer dosya varsa sil
+                if ($oldValue && ($setting->type === 'file' || $setting->type === 'image')) {
+                    \Modules\SettingManagement\App\Helpers\TenantStorageHelper::deleteFile($oldValue);
+                }
+                
                 SettingValue::where('setting_id', $settingId)->delete();
                 
                 if ($oldValue !== $value) {
@@ -170,10 +173,16 @@ class ValuesComponent extends Component
                 }
             } 
             else if ($oldValue !== $value) {
-                SettingValue::updateOrCreate(
+                $settingValue = SettingValue::updateOrCreate(
                     ['setting_id' => $settingId],
                     ['value' => $value]
                 );
+                
+                \Modules\SettingManagement\App\Helpers\DebugHelper::logFileUpload('Veritabanı kaydı oluşturuldu/güncellendi', [
+                    'setting_id' => $settingId,
+                    'value' => $value,
+                    'setting_value_id' => $settingValue->id ?? 'Oluşturulmadı'
+                ]);
                 
                 log_activity(
                     $setting,

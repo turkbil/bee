@@ -13,11 +13,21 @@ if (!function_exists('cdn')) {
      */
     function cdn($path)
     {
+        if (empty($path)) {
+            return '';
+        }
+        
         // URL'in başındaki slash'leri temizle
         $path = ltrim($path, '/');
         
+        // Eğer path storage/ ile başlıyorsa, onu kaldırma
+        // storage/ öneki ile kullanacağız
+        
         // APP_URL'i kullanarak central domain üzerinden URL oluştur
-        return rtrim(env('APP_URL', 'http://laravel.test'), '/') . '/' . $path;
+        $base = rtrim(env('APP_URL'), '/');
+        
+        // Direk path'i ekle (storage/ öneki ile)
+        return $base . '/' . $path;
     }
 }
 

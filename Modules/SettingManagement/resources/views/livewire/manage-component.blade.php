@@ -244,6 +244,99 @@ Diğer"></textarea>
                                         </div>
                                     </div>
                                 </div>
+                                
+                                @elseif($inputs['type'] === 'image_multiple')
+                                <div class="mb-3">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title">Çoklu Resim Yükleme</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            @if(!empty($inputs['default_value']))
+                                                <div class="mb-3">
+                                                    <h5>Mevcut Resimler</h5>
+                                                    <div class="row">
+                                                        @php
+                                                            $currentImages = is_string($inputs['default_value']) ? json_decode($inputs['default_value'], true) : [];
+                                                            if (!is_array($currentImages)) $currentImages = [];
+                                                        @endphp
+                                                        
+                                                        @foreach($currentImages as $index => $imagePath)
+                                                            <div class="col-md-3 mb-3">
+                                                                <div class="card">
+                                                                    <img src="{{ cdn($imagePath) }}" class="card-img-top" alt="Resim {{ $index + 1 }}">
+                                                                    <div class="card-body p-2 text-center">
+                                                                        <small class="text-muted">Resim {{ $index + 1 }}</small>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+                                                </div>
+                                            @endif
+                                            
+                                            <div class="mb-3">
+                                                <button type="button" class="btn btn-outline-primary" wire:click="addMultipleImageField">
+                                                    <i class="fas fa-plus me-2"></i> Resim Ekle
+                                                </button>
+                                            </div>
+                                            
+                                            @if(isset($temporaryMultipleImages) && is_array($temporaryMultipleImages))
+                                                @foreach($temporaryMultipleImages as $index => $image)
+                                                    <div class="row mb-3">
+                                                        <div class="col-md-8">
+                                                            <div class="form-control position-relative" 
+                                                                onclick="document.getElementById('multiple-image-upload-{{ $index }}').click()"
+                                                                style="height: auto; min-height: 120px; cursor: pointer; border: 2px dashed #ccc;">
+                                                                <input type="file" id="multiple-image-upload-{{ $index }}" 
+                                                                    wire:model="temporaryMultipleImages.{{ $index }}" 
+                                                                    class="d-none" accept="image/*">
+                                                                <div class="text-center py-3">
+                                                                    <i class="fas fa-image fa-3x text-primary mb-2"></i>
+                                                                    <p class="mb-0">Resmi sürükleyin veya seçmek için tıklayın</p>
+                                                                    <p class="text-muted small mb-0">Desteklenen formatlar: JPG, JPEG, PNG, WEBP, GIF (Maksimum boyut: 2MB)</p>
+                                                                </div>
+                                                            </div>
+                                                            <div wire:loading wire:target="temporaryMultipleImages.{{ $index }}">
+                                                                <div class="progress progress-sm mt-2">
+                                                                    <div class="progress-bar progress-bar-indeterminate bg-primary"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="card">
+                                                                <div class="card-body p-2 text-center d-flex flex-column justify-content-between">
+                                                                    @if($temporaryMultipleImages[$index])
+                                                                        <img src="{{ $temporaryMultipleImages[$index]->temporaryUrl() }}" alt="Önizleme"
+                                                                            class="img-fluid rounded" style="max-height: 100px">
+                                                                        <div class="mt-2">
+                                                                            <button type="button" class="btn btn-sm btn-danger" 
+                                                                                wire:click="removeMultipleImageField({{ $index }})">
+                                                                                <i class="fas fa-trash me-1"></i> Kaldır
+                                                                            </button>
+                                                                        </div>
+                                                                    @else
+                                                                        <div class="d-flex flex-column align-items-center justify-content-center" style="height: 100px">
+                                                                            <i class="far fa-image text-muted"></i>
+                                                                            <span class="mt-2 small text-muted">Resim seçilmedi</span>
+                                                                        </div>
+                                                                        <div class="mt-2">
+                                                                            <button type="button" class="btn btn-sm btn-outline-danger" 
+                                                                                wire:click="removeMultipleImageField({{ $index }})">
+                                                                                <i class="fas fa-times me-1"></i> İptal
+                                                                            </button>
+                                                                        </div>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+
 
                                 @elseif($inputs['type'] === 'checkbox')
                                 <div class="form-check form-switch ps-0">
@@ -485,7 +578,38 @@ Diğer"></textarea>
                                                 @endif
                                             </div>
                                             @break
-                                        @default
+                                        @case('image_multiple')
+                                            <div class="border rounded p-3 text-center">
+                                                @php
+                                                    $multipleImgs = [];
+                                                    if (!empty($inputs['default_value'])) {
+                                                        if (is_string($inputs['default_value'])) {
+                                                            $multipleImgs = json_decode($inputs['default_value'], true);
+                                                        } elseif (is_array($inputs['default_value'])) {
+                                                            $multipleImgs = $inputs['default_value'];
+                                                        }
+                                                    }
+                                                @endphp
+                                                
+                                                @if(!empty($multipleImgs))
+                                                    <div class="d-flex flex-wrap justify-content-center gap-2">
+                                                        @foreach(array_slice($multipleImgs, 0, 3) as $img)
+                                                            <img src="{{ cdn($img) }}" class="img-fluid rounded" style="max-height: 50px; max-width: 50px; object-fit: cover;">
+                                                        @endforeach
+                                                        
+                                                        @if(count($multipleImgs) > 3)
+                                                            <div class="d-flex align-items-center justify-content-center bg-light rounded" style="height: 50px; width: 50px">
+                                                                <span class="text-muted">+{{ count($multipleImgs) - 3 }}</span>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                @else
+                                                    <i class="fas fa-images fa-2x text-muted"></i>
+                                                    <div class="mt-2 text-muted">Resimler Seçilmedi</div>
+                                                @endif
+                                            </div>
+                                            @break
+                                            @default
                                             <input type="text" class="form-control" value="{{ $inputs['default_value'] }}" readonly>
                                     @endswitch
                                     </div>
@@ -545,7 +669,6 @@ Diğer"></textarea>
         </form>
     </div>
 </div>
-
 @push('styles')
 <style>
     .form-label.required:after {

@@ -23,6 +23,8 @@ class ValuesComponent extends Component
     public $changes = [];
     public $group;
     public $temporaryImages = [];
+    public $temporaryMultipleImages = [];
+    public $multipleImagesArrays = [];
 
     public function mount($group)
     {
@@ -33,9 +35,23 @@ class ValuesComponent extends Component
         
         foreach ($settings as $setting) {
             $value = SettingValue::where('setting_id', $setting->id)->first();
-                
+            
+            // Normal değerler için
             $this->values[$setting->id] = $value ? $value->value : $setting->default_value;
             $this->originalValues[$setting->id] = $this->values[$setting->id];
+            
+            // Çoklu resim için JSON'ı diziye çevir
+            if ($setting->type === 'image_multiple') {
+                try {
+                    if (isset($this->values[$setting->id]) && !empty($this->values[$setting->id])) {
+                        $this->multipleImagesArrays[$setting->id] = json_decode($this->values[$setting->id], true) ?: [];
+                    } else {
+                        $this->multipleImagesArrays[$setting->id] = [];
+                    }
+                } catch (\Exception $e) {
+                    $this->multipleImagesArrays[$setting->id] = [];
+                }
+            }
         }
     }
 
@@ -43,6 +59,20 @@ class ValuesComponent extends Component
     {
         $setting = Setting::find($settingId);
         $this->values[$settingId] = $setting->default_value;
+        
+        // Eğer ayar türü çoklu resim ise
+        if ($setting->type === 'image_multiple') {
+            try {
+                if (!empty($setting->default_value)) {
+                    $this->multipleImagesArrays[$settingId] = json_decode($setting->default_value, true) ?: [];
+                } else {
+                    $this->multipleImagesArrays[$settingId] = [];
+                }
+            } catch (\Exception $e) {
+                $this->multipleImagesArrays[$settingId] = [];
+            }
+        }
+        
         $this->checkChanges();
     }
 
@@ -66,12 +96,84 @@ class ValuesComponent extends Component
         }
     }
     
+    // Çoklu resim için güncelleme
+    public function updatedTemporaryMultipleImages($value, $key)
+    {
+        list($settingId, $index) = explode('.', $key);
+        
+        if ($settingId && isset($this->temporaryMultipleImages[$settingId][$index])) {
+            $setting = Setting::find($settingId);
+            
+            if ($setting) {
+                // Değişiklik var işareti koy
+                if (!isset($this->changes[$settingId])) {
+                    $this->changes[$settingId] = true;
+                }
+            }
+        }
+    }
+    
+    // Çoklu resim ekle
+    public function addMultipleImageField($settingId)
+    {
+        if (!isset($this->temporaryMultipleImages[$settingId])) {
+            $this->temporaryMultipleImages[$settingId] = [];
+        }
+        
+        $this->temporaryMultipleImages[$settingId][] = null;
+        $this->checkChanges();
+    }
+    
+    // Çoklu resim sil (yeni eklenenler için)
+    public function removeMultipleImageField($settingId, $index)
+    {
+        if (isset($this->temporaryMultipleImages[$settingId][$index])) {
+            unset($this->temporaryMultipleImages[$settingId][$index]);
+            // Boşlukları temizle
+            $this->temporaryMultipleImages[$settingId] = array_values($this->temporaryMultipleImages[$settingId]);
+        }
+        $this->checkChanges();
+    }
+    
+    // Çoklu resim sil (mevcut resimler için)
+    public function removeMultipleImage($settingId, $index)
+    {
+        if (isset($this->multipleImagesArrays[$settingId][$index])) {
+            // Dosyayı sil
+            $imagePath = $this->multipleImagesArrays[$settingId][$index];
+            \Modules\SettingManagement\App\Helpers\TenantStorageHelper::deleteFile($imagePath);
+            
+            // Diziden çıkar
+            unset($this->multipleImagesArrays[$settingId][$index]);
+            // Diziye yeniden sırala
+            $this->multipleImagesArrays[$settingId] = array_values($this->multipleImagesArrays[$settingId]);
+            
+            // Eğer dizide hiç eleman kalmazsa varsayılan değer kullan
+            if (empty($this->multipleImagesArrays[$settingId])) {
+                $this->values[$settingId] = null;
+            } else {
+                // JSON'a çevir
+                $this->values[$settingId] = json_encode($this->multipleImagesArrays[$settingId]);
+            }
+            
+            // Değişikliği kaydet
+            $this->checkChanges();
+        }
+    }
+    
     public function checkChanges()
     {
         $this->changes = [];
         foreach ($this->values as $id => $value) {
             if ($value == 'temp' || $value != $this->originalValues[$id]) {
                 $this->changes[$id] = $value;
+            }
+        }
+        
+        // Çoklu resim için de kontrol et
+        foreach ($this->temporaryMultipleImages as $settingId => $images) {
+            if (!empty($images)) {
+                $this->changes[$settingId] = true;
             }
         }
     }
@@ -139,6 +241,58 @@ class ValuesComponent extends Component
                 }
             }
             
+            // Çoklu resim işleme
+            if ($setting->type === 'image_multiple' && isset($this->temporaryMultipleImages[$settingId])) {
+                try {
+                    $newImages = [];
+                    
+                    // Önce mevcut resimleri ekle
+                    if (isset($this->multipleImagesArrays[$settingId]) && !empty($this->multipleImagesArrays[$settingId])) {
+                        $newImages = $this->multipleImagesArrays[$settingId];
+                    }
+                    
+                    // Yeni resimleri ekle
+                    foreach ($this->temporaryMultipleImages[$settingId] as $index => $image) {
+                        if ($image) {
+                            // Tenant id belirleme - Central ise tenant1, değilse gerçek tenant ID
+                            $tenantId = is_tenant() ? tenant_id() : 1;
+                            
+                            // Dosya adını oluştur
+                            $fileName = time() . '_' . Str::slug($setting->key) . '_' . Str::random(6) . '.' . $image->getClientOriginalExtension();
+                            
+                            // Yeni dosyayı yükle
+                            $imagePath = \Modules\SettingManagement\App\Helpers\TenantStorageHelper::storeTenantFile(
+                                $image,
+                                "settings/images",
+                                $fileName,
+                                $tenantId
+                            );
+                            
+                            $newImages[] = $imagePath;
+                        }
+                    }
+                    
+                    // Yeni değeri JSON olarak ata
+                    if (!empty($newImages)) {
+                        $value = json_encode($newImages);
+                        $this->values[$settingId] = $value;
+                        $this->multipleImagesArrays[$settingId] = $newImages;
+                    } else {
+                        // Tüm resimler silindi
+                        $value = null;
+                        $this->values[$settingId] = null;
+                        $this->multipleImagesArrays[$settingId] = [];
+                    }
+                } catch (\Exception $e) {
+                    $this->dispatch('toast', [
+                        'title' => 'Hata!',
+                        'message' => 'Çoklu resim yüklenirken bir hata oluştu: ' . $e->getMessage(),
+                        'type' => 'error',
+                    ]);
+                    continue;
+                }
+            }
+            
             if ($value === $setting->default_value) {
                 // Eğer dosya varsa sil
                 if ($oldValue && ($setting->type === 'file' || $setting->type === 'image')) {
@@ -172,6 +326,7 @@ class ValuesComponent extends Component
         $this->originalValues = $this->values;
         $this->changes = [];
         $this->temporaryImages = [];
+        $this->temporaryMultipleImages = [];
     
         if ($redirect) {
             return redirect()->route('admin.settingmanagement.tenant.settings');

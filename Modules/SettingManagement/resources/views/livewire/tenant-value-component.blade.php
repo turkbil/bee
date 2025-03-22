@@ -72,6 +72,37 @@
                                             ])
                                         </div>
                                         @break
+                                        
+                                    @case('image_multiple')
+                                        <div class="form-group mb-3">
+                                            @if($useDefault)
+                                                <div class="alert alert-info">
+                                                    <i class="fas fa-info-circle me-2"></i>
+                                                    Varsayılan değer kullanılıyor.
+                                                </div>
+                                            @endif
+                                            
+                                            <!-- Mevcut Resimler -->
+                                            @include('settingmanagement::livewire.partials.existing-multiple-images', [
+                                                'settingId' => $setting->id,
+                                                'images' => $multipleImagesArray
+                                            ])
+                                            
+                                            <div class="mb-3">
+                                                <button type="button" class="btn btn-outline-primary" wire:click="addMultipleImageField">
+                                                    <i class="fas fa-plus me-2"></i> Resim Ekle
+                                                </button>
+                                            </div>
+                                            
+                                            @foreach($temporaryMultipleImages as $index => $image)
+                                                @include('settingmanagement::livewire.partials.multiple-image-upload', [
+                                                    'settingId' => $setting->id,
+                                                    'index' => $index,
+                                                    'label' => 'Görseli sürükleyip bırakın veya tıklayın'
+                                                ])
+                                            @endforeach
+                                        </div>
+                                        @break
 
                                     @case('checkbox')
                                         <div class="form-check form-switch">
@@ -222,6 +253,9 @@
                                                 @case('image')
                                                     <i class="fas fa-image me-1"></i> Resim
                                                     @break
+                                                @case('image_multiple')
+                                                    <i class="fas fa-images me-1"></i> Çoklu Resim
+                                                    @break
                                                 @case('color')
                                                     <i class="fas fa-palette me-1"></i> Renk
                                                     @break
@@ -291,6 +325,22 @@
                                                         }
                                                     @endphp
                                                     <img src="{{ cdn($defaultValue) }}" alt="Varsayılan" style="max-height: 30px; max-width: 100px;" class="img-thumbnail">
+                                                @elseif($setting->type === 'image_multiple' && $setting->default_value)
+                                                    @php
+                                                        $defaultImages = json_decode($setting->default_value, true);
+                                                        $firstImage = $defaultImages[0] ?? null;
+                                                        if ($firstImage && strpos($firstImage, 'tenant') !== 0) {
+                                                            $firstImage = 'tenant1/' . $firstImage;
+                                                        }
+                                                    @endphp
+                                                    @if($firstImage)
+                                                        <div class="d-flex align-items-center">
+                                                            <img src="{{ cdn($firstImage) }}" alt="Varsayılan" style="max-height: 30px; max-width: 30px;" class="img-thumbnail me-1">
+                                                            <span class="text-muted"> +{{ count($defaultImages) - 1 }} resim</span>
+                                                        </div>
+                                                    @else
+                                                        <span class="text-muted fst-italic">Resim yok</span>
+                                                    @endif
                                                 @elseif($setting->type === 'checkbox')
                                                     {{ $setting->default_value ? 'Evet' : 'Hayır' }}
                                                 @elseif($setting->type === 'color')

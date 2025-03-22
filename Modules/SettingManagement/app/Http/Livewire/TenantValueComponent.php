@@ -25,6 +25,8 @@ class TenantValueComponent extends Component
     public $datePickerFormat;
     public $timePickerFormat = 'h:i A';
     public $temporaryImages = [];
+    public $temporaryMultipleImages = [];
+    public $multipleImagesArray = [];
     
     // Ayar türüne özgü alanlar
     public $colorValue = '#ffffff';
@@ -68,6 +70,20 @@ class TenantValueComponent extends Component
                 
             case 'checkbox':
                 $this->checkboxValue = (bool) $this->value;
+                break;
+                
+            case 'image_multiple':
+                try {
+                    if (is_string($this->value) && !empty($this->value)) {
+                        $this->multipleImagesArray = json_decode($this->value, true) ?: [];
+                    } elseif (is_array($this->value)) {
+                        $this->multipleImagesArray = $this->value;
+                    } else {
+                        $this->multipleImagesArray = [];
+                    }
+                } catch (\Exception $e) {
+                    $this->multipleImagesArray = [];
+                }
                 break;
         }
         
@@ -131,6 +147,18 @@ class TenantValueComponent extends Component
                 case 'checkbox':
                     $this->checkboxValue = (bool) $this->value;
                     break;
+                    
+                case 'image_multiple':
+                    try {
+                        if (is_string($this->value) && !empty($this->value)) {
+                            $this->multipleImagesArray = json_decode($this->value, true) ?: [];
+                        } else {
+                            $this->multipleImagesArray = [];
+                        }
+                    } catch (\Exception $e) {
+                        $this->multipleImagesArray = [];
+                    }
+                    break;
             }
         }
     }
@@ -185,6 +213,59 @@ class TenantValueComponent extends Component
             $this->useDefault = false;
         }
     }
+    
+    // Çoklu resim için işleme
+    public function updatedTemporaryMultipleImages($value, $index)
+    {
+        $this->validateOnly("temporaryMultipleImages.{$index}", [
+            "temporaryMultipleImages.{$index}" => ['image', 'mimes:jpg,jpeg,png,webp,gif', 'max:2048'],
+        ]);
+        
+        // Değişen resim sıralanacak
+        $this->useDefault = false;
+    }
+    
+    // Çoklu resim ekle
+    public function addMultipleImageField()
+    {
+        if (!isset($this->temporaryMultipleImages)) {
+            $this->temporaryMultipleImages = [];
+        }
+        
+        $this->temporaryMultipleImages[] = null;
+    }
+    
+    // Çoklu resim sil
+    public function removeMultipleImageField($index)
+    {
+        if (isset($this->temporaryMultipleImages[$index])) {
+            unset($this->temporaryMultipleImages[$index]);
+            // Boşlukları temizle
+            $this->temporaryMultipleImages = array_values($this->temporaryMultipleImages);
+        }
+    }
+    
+    // Mevcut çoklu resim sil
+    public function removeMultipleImage($index)
+    {
+        if (isset($this->multipleImagesArray[$index])) {
+            // Dosya yolunu al
+            $imagePath = $this->multipleImagesArray[$index];
+            
+            // Dosyayı sil
+            \Modules\SettingManagement\App\Helpers\TenantStorageHelper::deleteFile($imagePath);
+            
+            // Diziden kaldır
+            unset($this->multipleImagesArray[$index]);
+            
+            // Diziye yeniden sırala ve değeri güncelle
+            $this->multipleImagesArray = array_values($this->multipleImagesArray);
+            $this->value = !empty($this->multipleImagesArray) ? json_encode($this->multipleImagesArray) : null;
+            
+            // Değer değişti
+            $this->useDefault = false;
+        }
+    }
 
     // URL'den yerel depolama yolunu çıkarır
     private function extractLocalPath($path)
@@ -228,6 +309,18 @@ class TenantValueComponent extends Component
                 
             case 'checkbox':
                 $this->checkboxValue = (bool) $this->value;
+                break;
+                
+            case 'image_multiple':
+                try {
+                    if (is_string($this->value) && !empty($this->value)) {
+                        $this->multipleImagesArray = json_decode($this->value, true) ?: [];
+                    } else {
+                        $this->multipleImagesArray = [];
+                    }
+                } catch (\Exception $e) {
+                    $this->multipleImagesArray = [];
+                }
                 break;
         }
         
@@ -278,6 +371,15 @@ class TenantValueComponent extends Component
             if ($this->value && ($setting->type === 'file' || $setting->type === 'image')) {
                 \Modules\SettingManagement\App\Helpers\TenantStorageHelper::deleteFile($this->value);
             }
+            
+            // Eğer çoklu resim varsa hepsini sil
+            if ($setting->type === 'image_multiple' && !empty($this->multipleImagesArray)) {
+                foreach ($this->multipleImagesArray as $imagePath) {
+                    if (!empty($imagePath)) {
+                        \Modules\SettingManagement\App\Helpers\TenantStorageHelper::deleteFile($imagePath);
+                    }
+                }
+            }
                 
             log_activity(
                 $setting,
@@ -291,7 +393,65 @@ class TenantValueComponent extends Component
             
             if ($setting->type === 'checkbox') {
                 $valueToSave = $this->checkboxValue ? '1' : '0';
-            } elseif (($setting->type === 'image' || $setting->type === 'file') && !empty($this->temporaryImages)) {
+            } 
+            elseif ($setting->type === 'image_multiple') {
+                // Çoklu resim işleme
+                try {
+                    if (!empty($this->temporaryMultipleImages)) {
+                        $newImages = [];
+                        
+                        // Eğer zaten bir dizi varsa, mevcut resimleri koru
+                        if (!empty($this->multipleImagesArray)) {
+                            $newImages = $this->multipleImagesArray;
+                        }
+                        
+                        // Yeni yüklenen resimleri ekle
+                        foreach ($this->temporaryMultipleImages as $index => $image) {
+                            if ($image) {
+                                // Tenant id belirleme - Central ise tenant1, değilse gerçek tenant ID
+                                $tenantId = is_tenant() ? tenant_id() : 1;
+                                
+                                // Dosya adı oluşturma
+                                $fileName = time() . '_' . Str::slug($setting->key) . '_' . $index . '.' . $image->getClientOriginalExtension();
+                                
+                                // YENİ: TenantStorageHelper ile doğru şekilde dosyayı yükle
+                                $imagePath = \Modules\SettingManagement\App\Helpers\TenantStorageHelper::storeTenantFile(
+                                    $image,
+                                    "settings/images",
+                                    $fileName,
+                                    $tenantId
+                                );
+                                
+                                $newImages[] = $imagePath;
+                            }
+                        }
+                        
+                        // Dizi varsa JSON'a çevir
+                        if (!empty($newImages)) {
+                            $valueToSave = json_encode($newImages);
+                            $this->multipleImagesArray = $newImages;
+                        } else {
+                            $valueToSave = null;
+                        }
+                    } 
+                    else {
+                        // Eğer yeni resim yoksa mevcut dizinin JSON formatını kullan
+                        if (!empty($this->multipleImagesArray)) {
+                            $valueToSave = json_encode($this->multipleImagesArray);
+                        } else {
+                            $valueToSave = null;
+                        }
+                    }
+                } catch (\Exception $e) {
+                    $this->dispatch('toast', [
+                        'title' => 'Hata!',
+                        'message' => 'Çoklu resim yüklenirken bir hata oluştu: ' . $e->getMessage(),
+                        'type' => 'error',
+                    ]);
+                    return;
+                }
+            }
+            elseif (($setting->type === 'image' || $setting->type === 'file') && !empty($this->temporaryImages)) {
                 try {
                     // Dosya yüklemesi var, işle
                     $type = $setting->type;

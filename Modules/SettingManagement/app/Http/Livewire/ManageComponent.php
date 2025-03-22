@@ -29,8 +29,10 @@ class ManageComponent extends Component
         'default_value' => null,
         'sort_order' => 0,
         'is_active' => true,
+        'is_system' => false,
         'options_array' => [],
     ];
+    
 
     // Kullanılabilir ayar tipleri
     public $availableTypes = [
@@ -85,7 +87,7 @@ class ManageComponent extends Component
             $setting = Setting::findOrFail($id);
             $this->inputs = $setting->only([
                 'group_id', 'label', 'key', 'type', 'options', 
-                'default_value', 'sort_order', 'is_active'
+                'default_value', 'sort_order', 'is_active', 'is_system'
             ]);
             
             // Options alanını options_array'e dönüştür
@@ -95,6 +97,7 @@ class ManageComponent extends Component
         } else {
             // Yeni kayıt için sort_order değerini en sona al
             $this->inputs['sort_order'] = Setting::max('sort_order') + 1;
+            $this->inputs['is_system'] = false; // Varsayılan olarak sistem ayarı değil
             
             // URL'den group_id parametresi varsa inputs'a ekle
             if (request()->has('group_id')) {
@@ -174,6 +177,23 @@ class ManageComponent extends Component
     public function save($redirect = false, $resetForm = false)
     {
         $this->validate();
+        
+        // Eğer mevcut bir ayarı düzenliyorsak ve sistem ayarı ise bazı alanları değiştirmeye izin verme
+        if ($this->settingId) {
+            $existingSetting = Setting::find($this->settingId);
+            if ($existingSetting && $existingSetting->is_system) {
+                // Sistem ayarlarının değiştirilmemesi gereken özellikleri
+                $this->inputs['key'] = $existingSetting->key;
+                $this->inputs['type'] = $existingSetting->type;
+                $this->inputs['is_system'] = true; // Sistem ayarı özelliğini koruyalım
+                
+                // Eğer select tipiyse options değerlerini değiştirmeyelim
+                if ($existingSetting->type === 'select') {
+                    $this->inputs['options'] = $existingSetting->options;
+                    $this->inputs['options_array'] = $existingSetting->options;
+                }
+            }
+        }
         
         // Eğer select tipiyse, options_array'i options'a dönüştür
         if ($this->inputs['type'] === 'select' && !empty($this->inputs['options_array'])) {

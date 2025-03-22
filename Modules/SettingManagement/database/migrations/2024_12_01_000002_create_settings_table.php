@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('default_value')->nullable();
             $table->integer('sort_order')->default(0);
             $table->boolean('is_active')->default(true);
+            $table->boolean('is_system')->default(false); // Yeni eklenen alan
             $table->timestamps();
 
             $table->foreign('group_id')->references('id')->on('settings_groups')->onDelete('cascade');

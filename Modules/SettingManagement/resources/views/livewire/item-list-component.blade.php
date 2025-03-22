@@ -80,13 +80,14 @@
                             </th>
                             <th style="width: 100px">Tip</th>
                             <th class="text-center" style="width: 80px">Durum</th>
+                            <th class="text-center" style="width: 80px">Sistem</th>
                             <th class="text-center" style="width: 120px">İşlemler</th>
                         </tr>
                     </thead>
                     <tbody id="sortable-list" style="min-height: 100px;">
                         @forelse($settings as $setting)
                         <tr wire:key="setting-{{ $setting->id }}" id="item-{{ $setting->id }}" data-id="{{ $setting->id }}"
-                            class="hover-trigger">
+                            class="hover-trigger {{ $setting->is_system ? 'bg-yellow-lt' : '' }}">
                             <td class="sort-handle cursor-move">
                                 <div class="d-flex align-items-center">
                                     <span class="me-2">
@@ -112,6 +113,13 @@
                                     </div>
                                 </button>
                             </td>
+                            <td class="text-center">
+                                @if($setting->is_system)
+                                <span class="badge bg-yellow">
+                                    <i class="fas fa-lock"></i>
+                                </span>
+                                @endif
+                            </td>
                             <td class="text-center align-middle">
                                 <div class="container">
                                     <div class="row">
@@ -132,6 +140,7 @@
                                                         class="dropdown-item">
                                                         <i class="fas fa-edit me-2"></i> Değer Düzenle
                                                     </a>
+                                                    @if(!$setting->is_system)
                                                     <a href="javascript:void(0);"
                                                         wire:click="$dispatch('showDeleteModal', {
                                                             module: 'settingmanagement',
@@ -140,6 +149,11 @@
                                                         })" class="dropdown-item link-danger">
                                                         <i class="fas fa-trash me-2"></i> Sil
                                                     </a>
+                                                    @else
+                                                    <span class="dropdown-item text-muted" title="Sistem ayarları silinemez">
+                                                        <i class="fas fa-lock me-2"></i> Silinemez (Sistem Ayarı)
+                                                    </span>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>
@@ -149,7 +163,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="6">
+                            <td colspan="7">
                                 <div class="empty" style="min-height: 200px; display: flex; flex-direction: column; justify-content: center;">
                                     <p class="empty-title">Kayıt bulunamadı</p>
                                     <p class="empty-subtitle text-muted">
@@ -174,11 +188,16 @@
                 @php $activeSettings = $settings->where('is_active', true); @endphp
                 @forelse($activeSettings as $setting)
                 <div class="col-md-6">
-                    <div class="card mb-3">
+                    <div class="card mb-3 {{ $setting->is_system ? 'border-warning' : '' }}">
                         <div class="card-header">
                             <h3 class="card-title d-flex align-items-center">
                                 {{ $setting->label }}
                                 <span class="ms-2 badge bg-blue-lt">{{ $setting->type }}</span>
+                                @if($setting->is_system)
+                                <span class="ms-2 badge bg-yellow">
+                                    <i class="fas fa-lock me-1"></i> Sistem
+                                </span>
+                                @endif
                             </h3>
                             <div class="card-actions">
                                 <a href="{{ route('admin.settingmanagement.value', $setting->id) }}" class="btn btn-sm">

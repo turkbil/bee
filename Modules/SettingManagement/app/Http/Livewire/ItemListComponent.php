@@ -127,6 +127,16 @@ class ItemListComponent extends Component
         $setting = Setting::find($id);
         
         if ($setting) {
+            // Sistem ayarı ise silmeye izin verme
+            if ($setting->is_system) {
+                $this->dispatch('toast', [
+                    'title' => 'Hata!',
+                    'message' => 'Sistem ayarları silinemez. Bu ayarı kaldırmak için veritabanı yönetimi gereklidir.',
+                    'type' => 'error',
+                ]);
+                return;
+            }
+            
             $this->itemToDelete = [
                 'id' => $setting->id,
                 'title' => $setting->label
@@ -141,6 +151,16 @@ class ItemListComponent extends Component
         $setting = Setting::find($id);
     
         if ($setting) {
+            // Ek kontrol - sistem ayarlarının silinmesini önle
+            if ($setting->is_system) {
+                $this->dispatch('toast', [
+                    'title' => 'Hata!',
+                    'message' => 'Sistem ayarları silinemez.',
+                    'type' => 'error',
+                ]);
+                return;
+            }
+            
             $deletedSetting = clone $setting;
             $setting->delete();
     
@@ -158,7 +178,7 @@ class ItemListComponent extends Component
             $this->itemToDelete = null;
         }
     }
-    
+
     public function toggleViewMode()
     {
         $this->viewMode = $this->viewMode === 'table' ? 'preview' : 'table';

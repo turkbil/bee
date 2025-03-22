@@ -22,13 +22,15 @@ class Setting extends Model
         'default_value',
         'sort_order',
         'is_active',
+        'is_system',
     ];
-
+    
     protected $casts = [
         'options' => 'array',
         'is_active' => 'boolean',
+        'is_system' => 'boolean',
     ];
-
+    
     public function group(): BelongsTo
     {
         return $this->belongsTo(SettingGroup::class, 'group_id');

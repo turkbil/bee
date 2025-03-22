@@ -107,6 +107,12 @@
                                                         <i class="fas fa-ellipsis-v"></i>
                                                     </a>
                                                     <div class="dropdown-menu dropdown-menu-end">
+
+
+                                                        <a href="{{ route('admin.settingmanagement.values', $child->id) }}"
+                                                            class="dropdown-item">
+                                                            <i class="fas fa-edit me-2"></i> Site Ayarlarını Özelleştir
+                                                        </a>
                                                         <a href="{{ route('admin.settingmanagement.group.manage', $child->id) }}"
                                                             class="dropdown-item">
                                                             <i class="fas fa-edit me-2"></i> Düzenle

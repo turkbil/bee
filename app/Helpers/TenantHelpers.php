@@ -182,11 +182,11 @@ if (!function_exists('cdn')) {
      */
     function cdn($path)
     {
-        // URL'in başındaki ve sonundaki slash'leri düzelt
+        // URL'in başındaki slash'leri temizle
         $path = ltrim($path, '/');
         
         // APP_URL'i kullanarak central domain üzerinden URL oluştur
-        return rtrim(env('APP_URL'), '/') . '/' . $path;
+        return rtrim(env('APP_URL', 'http://laravel.test'), '/') . '/' . $path;
     }
 }
 

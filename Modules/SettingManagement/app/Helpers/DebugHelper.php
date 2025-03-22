@@ -12,17 +12,6 @@ class DebugHelper
      */
     public static function logFileUpload($message, $data = [])
     {
-        // Düzenli log formatı
-        $formattedData = json_encode($data, JSON_PRETTY_PRINT);
-        
-        // Log dosyasına yaz
-        Log::channel('daily')->info("SETTING_DEBUG: " . $message, $data);
-        
-        // Ayrıca özel dosyaya da yaz
-        $logPath = storage_path('logs/setting_debug.log');
-        $date = now()->format('Y-m-d H:i:s');
-        $logEntry = "[{$date}] {$message}\n{$formattedData}\n\n";
-        
-        File::append($logPath, $logEntry);
+        // Debug kaldırıldı
     }
 }

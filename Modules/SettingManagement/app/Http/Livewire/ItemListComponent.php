@@ -4,6 +4,7 @@ namespace Modules\SettingManagement\App\Http\Livewire;
 
 use Livewire\Attributes\Url;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Modules\SettingManagement\App\Models\Setting;
@@ -40,18 +41,26 @@ class ItemListComponent extends Component
     #[On('updateOrder')]
     public function updateOrder($list)
     {
+        if (!is_array($list)) {
+            return;
+        }
+        
         $oldOrders = Setting::where('group_id', $this->groupId)
             ->whereIn('id', collect($list)->pluck('value'))
             ->pluck('sort_order', 'id')
             ->toArray();
     
         foreach ($list as $item) {
+            if (!isset($item['value'], $item['order'])) {
+                continue;
+            }
+
             $setting = Setting::where('id', $item['value'])
                 ->where('group_id', $this->groupId)
                 ->first();
                 
             if ($setting) {
-                $oldOrder = $oldOrders[$setting->id];
+                $oldOrder = $oldOrders[$setting->id] ?? 0;
                 $setting->sort_order = $item['order'];
                 $setting->save();
     
@@ -64,6 +73,12 @@ class ItemListComponent extends Component
                 }
             }
         }
+        
+        $this->dispatch('toast', [
+            'title' => 'Başarılı!',
+            'message' => 'Sıralama güncellendi.',
+            'type' => 'success',
+        ]);
     }
 
     public function mount($group)

@@ -23,10 +23,14 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Medya dosyalarına erişim için route tanımı
-Route::get('/storage/tenant{id}/{mediaId}/{filename}', [StorageController::class, 'tenantMedia'])
+// Tenant medya dosyalarına erişim
+Route::get('/storage/tenant{id}/{path}', [StorageController::class, 'tenantMedia'])
     ->where('id', '[0-9]+')
-    ->where('mediaId', '[0-9]+')
-    ->where('filename', '.*');
+    ->where('path', '.*');
+
+// Normal storage dosyalarına erişim
+Route::get('/storage/{path}', [StorageController::class, 'publicStorage'])
+    ->where('path', '(?!tenant)[/\w\.-]+')
+    ->name('storage.public');
 
 require __DIR__.'/auth.php';

@@ -33,8 +33,4 @@ Route::get('/storage/{path}', [StorageController::class, 'publicStorage'])
     ->where('path', '(?!tenant)[/\w\.-]+')
     ->name('storage.public');
 
-Route::get('/test', function () {
-    return view('test');
-});
-    
 require __DIR__.'/auth.php';

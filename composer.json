@@ -51,6 +51,7 @@
             "Modules\\TenantManagement\\App\\": "Modules/TenantManagement/app/"
         },
         "files": [
+            "app/Helpers/Functions.php",
             "app/Helpers/TenantHelpers.php",
             "app/Helpers/LogHelper.php"
         ]

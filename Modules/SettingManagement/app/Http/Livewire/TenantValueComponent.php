@@ -17,6 +17,8 @@ class TenantValueComponent extends Component
 
     public $settingId;
     public $value;
+    public $originalValue;
+    public $defaultValue;
     public $useDefault = false;
     public $previewing = false;
     public $previewUrl = null;
@@ -35,15 +37,19 @@ class TenantValueComponent extends Component
         $this->settingId = $id;
         
         $setting = Setting::find($id);
+        $this->defaultValue = $setting->default_value;
+        
         $settingValue = SettingValue::where('setting_id', $id)->first();
         
         // Şu anki değeri al veya varsayılan değeri kullan
         if ($settingValue) {
             $this->value = $settingValue->value;
+            $this->originalValue = $this->value;
             $this->useDefault = false;
         } else {
             $this->useDefault = true;
             $this->value = $setting->default_value;
+            $this->originalValue = null;
         }
         
         // Ayar türüne göre özel değişkenleri ayarla
@@ -72,55 +78,39 @@ class TenantValueComponent extends Component
         }
     }
     
-
-    public function updatedTemporaryImages($value, $key)
+    // Değer değiştiğinde otomatik olarak varsayılan değer ile karşılaştır
+    public function updatedValue()
     {
-        $this->validateOnly("temporaryImages.{$key}", [
-            "temporaryImages.{$key}" => $key === 'image' 
-                ? ['image', 'mimes:jpg,jpeg,png,webp,gif', 'max:2048']
-                : ['file', 'max:2048'],
-        ]);
-
-        if ($this->temporaryImages[$key]) {
-            // Eski dosyayı sil
-            if ($this->value && Storage::disk('public')->exists($this->value)) {
-                Storage::disk('public')->delete($this->value);
-            }
-            
-            // Yeni dosya için geçici URL hazırla
-            if ($key === 'image') {
-                $this->previewing = true;
-                $this->previewUrl = $this->temporaryImages[$key]->temporaryUrl();
-            } else {
-                $this->previewing = true;
-            }
-        }
+        $this->checkValueStatus();
     }
     
     public function updatedColorValue()
     {
         $this->value = $this->colorValue;
+        $this->checkValueStatus();
     }
     
     public function updatedDateValue()
     {
         $this->value = $this->dateValue;
+        $this->checkValueStatus();
     }
     
     public function updatedTimeValue()
     {
         $this->value = $this->timeValue;
+        $this->checkValueStatus();
     }
     
     public function updatedCheckboxValue()
     {
         $this->value = $this->checkboxValue ? '1' : '0';
+        $this->checkValueStatus();
     }
 
-    public function toggleDefault()
+    // Varsayılan değer kullan değiştiğinde
+    public function updatedUseDefault()
     {
-        $this->useDefault = !$this->useDefault;
-        
         if ($this->useDefault) {
             $setting = Setting::find($this->settingId);
             $this->value = $setting->default_value;
@@ -145,6 +135,75 @@ class TenantValueComponent extends Component
         }
     }
     
+    // Değeri varsayılan değer ile karşılaştır ve useDefault'u otomatik güncelle
+    private function checkValueStatus()
+    {
+        $setting = Setting::find($this->settingId);
+        // Değer varsayılan değerden farklıysa useDefault false olmalı
+        if ($this->value != $setting->default_value) {
+            $this->useDefault = false;
+        }
+    }
+
+    public function updatedTemporaryImages($value, $key)
+    {
+        $this->validateOnly("temporaryImages.{$key}", [
+            "temporaryImages.{$key}" => $key === 'image' 
+                ? ['image', 'mimes:jpg,jpeg,png,webp,gif', 'max:2048']
+                : ['file', 'max:2048'],
+        ]);
+
+        if ($this->temporaryImages[$key]) {
+            // Eski dosyayı sil
+            if ($this->value && Storage::disk('public')->exists($this->value)) {
+                Storage::disk('public')->delete($this->value);
+            }
+            
+            // Yeni dosya için geçici URL hazırla
+            if ($key === 'image') {
+                $this->previewing = true;
+                $this->previewUrl = $this->temporaryImages[$key]->temporaryUrl();
+            } else {
+                $this->previewing = true;
+            }
+            
+            // Dosya değiştiğinde varsayılan değere eşit olamaz
+            $this->useDefault = false;
+        }
+    }
+    
+    // Varsayılan değere dön butonu için 
+    public function resetToDefault()
+    {
+        $setting = Setting::find($this->settingId);
+        $this->value = $setting->default_value;
+        $this->useDefault = true;
+        
+        switch ($setting->type) {
+            case 'color':
+                $this->colorValue = $this->value ?: '#ffffff';
+                break;
+                
+            case 'date':
+                $this->dateValue = $this->value ?: date('Y-m-d');
+                break;
+                
+            case 'time':
+                $this->timeValue = $this->value ?: date('H:i');
+                break;
+                
+            case 'checkbox':
+                $this->checkboxValue = (bool) $this->value;
+                break;
+        }
+        
+        $this->dispatch('toast', [
+            'title' => 'Bilgi',
+            'message' => 'Varsayılan değere dönüldü.',
+            'type' => 'info',
+        ]);
+    }
+    
     public function deleteFile()
     {
         if ($this->value && Storage::disk('public')->exists($this->value)) {
@@ -154,6 +213,7 @@ class TenantValueComponent extends Component
         $this->value = null;
         $this->previewing = false;
         $this->previewUrl = null;
+        $this->useDefault = true;
         
         SettingValue::updateOrCreate(
             ['setting_id' => $this->settingId],
@@ -194,14 +254,13 @@ class TenantValueComponent extends Component
                     $key = $type === 'image' ? 'image' : 'file';
                     
                     if (isset($this->temporaryImages[$key])) {
-                        // Tenant ID belirleme
-                        $tenantId = is_tenant() ? tenant_id() : 'central';
-                        
-                        $fileName = time() . '_' . Str::slug($setting->key) . '.' . $this->temporaryImages[$key]->getClientOriginalExtension();
                         $folder = $type === 'image' ? 'images' : 'files';
                         
-                        // Dosya yolu - tenant id sadece bir kez geçecek
-                        $path = "settings/{$tenantId}/{$folder}/{$fileName}";
+                        // Dosya adı oluşturma
+                        $fileName = time() . '_' . Str::slug($setting->key) . '.' . $this->temporaryImages[$key]->getClientOriginalExtension();
+                        
+                        // Dosya yolu - dizin yapısını düzelt
+                        $path = "settings/{$folder}/{$fileName}";
                         
                         // Eski dosyayı sil (eğer varsa)
                         if ($this->value && Storage::disk('public')->exists($this->value)) {
@@ -217,6 +276,8 @@ class TenantValueComponent extends Component
                         
                         // Dosya yolunu sakla
                         $valueToSave = $path;
+                        $this->previewing = true;
+                        $this->previewUrl = Storage::url($path);
                     }
                 } catch (\Exception $e) {
                     $this->dispatch('toast', [
@@ -237,7 +298,7 @@ class TenantValueComponent extends Component
             log_activity(
                 $setting,
                 'değeri güncellendi',
-                ['old' => $setting->default_value, 'new' => $valueToSave]
+                ['old' => $this->originalValue, 'new' => $valueToSave]
             );
             
             $message = 'Ayar değeri güncellendi.';

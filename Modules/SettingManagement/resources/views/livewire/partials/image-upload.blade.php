@@ -56,13 +56,13 @@ x-on:drop="handleDrop($event)">
                     <img src="{{ $temporaryImages[$imageKey]->temporaryUrl() }}"
                         class="img-fluid rounded h-100 w-100 object-fit-cover" alt="Yüklenen Fotoğraf">
                 </div>
-                @elseif (isset($setting) && method_exists($setting, 'getFirstMedia') && $setting->getFirstMedia('images'))
+                @elseif (!empty($values[$imageKey]) && Storage::disk('public')->exists($values[$imageKey]))
                 <div class="position-relative" style="height: 156px;">
                     <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2"
-                        wire:click="removeImage('{{ $imageKey }}')" wire:loading.attr="disabled">
+                        wire:click="deleteMedia({{ $imageKey }})" wire:loading.attr="disabled">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
-                    <img src="{{ $setting->getFirstMedia('images')->getUrl() }}"
+                    <img src="/storage/{{ $values[$imageKey] }}"
                         class="img-fluid rounded h-100 w-100 object-fit-cover" alt="Mevcut Fotoğraf">
                 </div>
                 @else

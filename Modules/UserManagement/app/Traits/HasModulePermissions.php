@@ -11,13 +11,13 @@ trait HasModulePermissions
      * Kullanıcının belirli bir modül ve izin tipine erişimi olup olmadığını kontrol eder
      *
      * @param string $moduleName Modül adı
-     * @param string $permissionType İzin tipi (view, create, update, delete, vb.)
+     * @param string $permissionType İzin tipi (view, create, update, delete)
      * @return bool Erişim izni varsa true, yoksa false
      */
     public function hasModulePermission(string $moduleName, string $permissionType): bool
     {
         // Süper admin kontrolü
-        if ($this->hasRole('super-admin') || $this->hasRole('tenant-admin')) {
+        if ($this->hasRole('root') || $this->hasRole('admin')) {
             return true;
         }
 
@@ -63,7 +63,7 @@ trait HasModulePermissions
     public function hasModulePermissions(string $moduleName, array $permissionTypes): bool
     {
         // Süper admin kontrolü
-        if ($this->hasRole('super-admin') || $this->hasRole('tenant-admin')) {
+        if ($this->hasRole('root') || $this->hasRole('admin')) {
             return true;
         }
         
@@ -152,5 +152,29 @@ trait HasModulePermissions
         }
         
         Cache::forget("user_{$this->id}_module_{$moduleName}_permissions");
+    }
+    
+    /**
+     * Kullanıcının root (tam yetkili) rolü olup olmadığını kontrol eder
+     */
+    public function isRoot(): bool
+    {
+        return $this->hasRole('root');
+    }
+    
+    /**
+     * Kullanıcının admin rolü olup olmadığını kontrol eder
+     */
+    public function isAdmin(): bool
+    {
+        return $this->hasRole('admin');
+    }
+    
+    /**
+     * Kullanıcının editor rolü olup olmadığını kontrol eder
+     */
+    public function isEditor(): bool
+    {
+        return $this->hasRole('editor');
     }
 }

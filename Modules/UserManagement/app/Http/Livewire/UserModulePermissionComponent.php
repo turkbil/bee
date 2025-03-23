@@ -21,7 +21,6 @@ class UserModulePermissionComponent extends Component
     public $search = '';
     public $selectedModule = null;
     public $userPermissions = [];
-    public $isEditing = false;
     
     public function mount($id)
     {
@@ -48,13 +47,11 @@ class UserModulePermissionComponent extends Component
     {
         $this->selectedModule = $moduleName;
         $this->loadUserPermissions();
-        $this->isEditing = false;
     }
     
     public function loadUserPermissions()
     {
         $permissionTypes = ModulePermission::getPermissionTypes();
-        $user = User::find($this->userId);
         
         // Seçilen modüle ait kullanıcı izinlerini yükle
         $existingPermissions = UserModulePermission::where('user_id', $this->userId)
@@ -62,19 +59,22 @@ class UserModulePermissionComponent extends Component
             ->pluck('is_active', 'permission_type')
             ->toArray();
         
-        // Sadece bu modül için etkin olan izin tiplerini al
-        $activeModulePermissions = ModulePermission::whereHas('module', function ($query) {
-                $query->where('name', $this->selectedModule);
-            })
-            ->where('is_active', true)
-            ->pluck('permission_type')
-            ->toArray();
+        // Modül izinlerini kontrol et
+        $activeModulePermissions = [];
+        
+        $module = Module::where('name', $this->selectedModule)->first();
+        if ($module) {
+            $activeModulePermissions = ModulePermission::where('module_id', $module->module_id)
+                ->where('is_active', true)
+                ->pluck('permission_type')
+                ->toArray();
+        }
         
         // İzin tiplerini düzenle
         $this->userPermissions = [];
         foreach ($permissionTypes as $type => $label) {
-            // Sadece modülde etkin olan izin tiplerini göster
-            if (in_array($type, $activeModulePermissions)) {
+            // Sadece modülde etkin olan izin tiplerini göster ya da modül yoksa tüm izin tiplerini göster
+            if (empty($activeModulePermissions) || in_array($type, $activeModulePermissions)) {
                 $this->userPermissions[$type] = array_key_exists($type, $existingPermissions) 
                     ? $existingPermissions[$type] 
                     : false;
@@ -82,54 +82,65 @@ class UserModulePermissionComponent extends Component
         }
     }
     
-    public function toggleEdit()
+    /**
+     * İzin türüne göre ikon döndürür
+     */
+    public function getPermissionIcon($type)
     {
-        $this->isEditing = !$this->isEditing;
+        $icons = [
+            'view' => 'eye',
+            'create' => 'plus',
+            'update' => 'edit',
+            'delete' => 'trash'
+        ];
+        
+        return $icons[$type] ?? 'key';
     }
     
-    public function save()
+    /**
+     * İzin durumunu değiştir
+     */
+    public function togglePermission($type)
     {
+        // Mevcut durumu tersine çevir
+        $this->userPermissions[$type] = !$this->userPermissions[$type];
+        
+        // Değişikliği veritabanına kaydet
         DB::beginTransaction();
         
         try {
-            $user = User::findOrFail($this->userId);
-            
-            foreach ($this->userPermissions as $type => $isActive) {
-                UserModulePermission::updateOrCreate(
-                    [
-                        'user_id' => $this->userId,
-                        'module_name' => $this->selectedModule,
-                        'permission_type' => $type,
-                    ],
-                    [
-                        'is_active' => $isActive,
-                    ]
-                );
-            }
+            UserModulePermission::updateOrCreate(
+                [
+                    'user_id' => $this->userId,
+                    'module_name' => $this->selectedModule,
+                    'permission_type' => $type,
+                ],
+                [
+                    'is_active' => $this->userPermissions[$type],
+                ]
+            );
             
             DB::commit();
             
             // Cache temizle
-            $permissionTypes = array_keys(ModulePermission::getPermissionTypes());
-            foreach ($permissionTypes as $type) {
-                Cache::forget("user_{$this->userId}_module_{$this->selectedModule}_permission_{$type}");
-            }
+            Cache::forget("user_{$this->userId}_module_{$this->selectedModule}_permission_{$type}");
             Cache::forget("user_{$this->userId}_module_{$this->selectedModule}_permissions");
-            
-            $this->isEditing = false;
             
             $this->dispatch('toast', [
                 'title' => 'Başarılı!',
-                'message' => 'Kullanıcı modül izinleri başarıyla kaydedildi.',
+                'message' => ($this->userPermissions[$type] ? 'Etkinleştirildi' : 'Devre dışı bırakıldı') . ': ' . ModulePermission::getPermissionTypes()[$type],
                 'type' => 'success',
             ]);
             
         } catch (\Exception $e) {
             DB::rollback();
             
+            // Hata durumunda izin durumunu eski haline getir
+            $this->userPermissions[$type] = !$this->userPermissions[$type];
+            
             $this->dispatch('toast', [
                 'title' => 'Hata!',
-                'message' => 'İzinler kaydedilirken bir hata oluştu: ' . $e->getMessage(),
+                'message' => 'İzin durumu değiştirilirken bir hata oluştu: ' . $e->getMessage(),
                 'type' => 'error',
             ]);
         }

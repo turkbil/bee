@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -28,6 +29,7 @@ return new class extends Migration
             // $table->engine('InnoDB');
             $table->bigIncrements('id'); // permission id
             $table->string('name')->index();
+            $table->string('description')->nullable(); // Eklendi - description
             $table->string('guard_name')->index();
             $table->timestamps();
 
@@ -46,7 +48,10 @@ return new class extends Migration
                 $table->index($columnNames['team_foreign_key'], 'roles_team_foreign_key_index');
             }
             $table->string('name')->index();
+            $table->string('role_type')->nullable()->index(); // Eklendi - role_type
+            $table->string('description')->nullable(); // Eklendi - description
             $table->string('guard_name')->index();
+            $table->boolean('is_protected')->default(false)->index(); // Eklendi - is_protected
             $table->timestamps();
             if ($teams || config('permission.testing')) {
                 $table->unique([$columnNames['team_foreign_key'], 'name', 'guard_name']);
@@ -126,6 +131,44 @@ return new class extends Migration
         app('cache')
             ->store(config('permission.cache.store') != 'default' ? config('permission.cache.store') : null)
             ->forget(config('permission.cache.key'));
+            
+        // Root, Admin ve Editor rollerini oluştur (tenant sürümleri)
+        $roles = [
+            ['name' => 'root', 'role_type' => 'root', 'guard_name' => 'web', 'is_protected' => true, 'description' => 'Tam yetkili tenant yöneticisi'],
+            ['name' => 'admin', 'role_type' => 'admin', 'guard_name' => 'web', 'is_protected' => true, 'description' => 'Tenant yöneticisi'],
+            ['name' => 'editor', 'role_type' => 'editor', 'guard_name' => 'web', 'is_protected' => true, 'description' => 'İçerik editörü']
+        ];
+        
+        foreach ($roles as $role) {
+            // Önce sütunun var olup olmadığını kontrol etmek gerekli
+            $exists = DB::table('roles')
+                ->where('name', $role['name'])
+                ->where('guard_name', $role['guard_name'])
+                ->exists();
+                
+            if ($exists) {
+                // Mevcut rolü güncelle
+                DB::table('roles')
+                    ->where('name', $role['name'])
+                    ->where('guard_name', $role['guard_name'])
+                    ->update([
+                        'role_type' => $role['role_type'],
+                        'is_protected' => $role['is_protected'],
+                        'description' => $role['description']
+                    ]);
+            } else {
+                // Yeni rol oluştur
+                DB::table('roles')->insert([
+                    'name' => $role['name'],
+                    'guard_name' => $role['guard_name'],
+                    'role_type' => $role['role_type'],
+                    'is_protected' => $role['is_protected'],
+                    'description' => $role['description'],
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+            }
+        }
     }
 
     /**

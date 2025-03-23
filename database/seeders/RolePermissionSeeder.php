@@ -62,69 +62,69 @@ class RolePermissionSeeder extends Seeder
             ];
             
             foreach ($permissions as $permission) {
-                Permission::create(['name' => $permission, 'guard_name' => 'web']);
+                Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
             }
             
-            // Rolleri oluştur
+            // YENİ: Role yapısı - Root, Admin, Editor
             $roles = [
-                'super-admin' => 'Tüm yetkilere sahip süper yönetici',
-                'admin' => 'Sistem yöneticisi',
-                'tenant-manager' => 'Tenant yöneticisi',
-                'user-manager' => 'Kullanıcı yöneticisi',
-                'viewer' => 'Salt görüntüleme yetkisi olan kullanıcı'
+                [
+                    'name' => 'root',
+                    'role_type' => 'root',
+                    'guard_name' => 'web',
+                    'is_protected' => true,
+                    'description' => 'Tam yetkili sistem yöneticisi'
+                ],
+                [
+                    'name' => 'admin',
+                    'role_type' => 'admin',
+                    'guard_name' => 'web',
+                    'is_protected' => true,
+                    'description' => 'Tenant yöneticisi'
+                ],
+                [
+                    'name' => 'editor',
+                    'role_type' => 'editor',
+                    'guard_name' => 'web',
+                    'is_protected' => true,
+                    'description' => 'Modül bazlı yetkilendirilebilir editör'
+                ]
             ];
             
-            foreach ($roles as $roleName => $description) {
-                $role = Role::create([
-                    'name' => $roleName,
-                    'guard_name' => 'web'
+            foreach ($roles as $roleData) {
+                $role = Role::firstOrCreate([
+                    'name' => $roleData['name'],
+                    'guard_name' => $roleData['guard_name']
                 ]);
+                
+                // Diğer alanları güncelle
+                $role->role_type = $roleData['role_type'];
+                $role->is_protected = $roleData['is_protected'];
                 
                 // Description sütunu varsa güncelle
                 if (Schema::hasColumn('roles', 'description')) {
-                    $role->description = $description;
-                    $role->save();
+                    $role->description = $roleData['description'];
                 }
                 
-                // Super-admin tüm izinlere sahip olsun
-                if ($roleName === 'super-admin') {
-                    $role->givePermissionTo(Permission::all());
+                $role->save();
+                
+                // Root tüm izinlere sahip olsun
+                if ($roleData['role_type'] === 'root') {
+                    $role->syncPermissions(Permission::all());
                 }
                 
-                // Admin rolü tenant.delete hariç tüm izinlere sahip olsun
-                if ($roleName === 'admin') {
-                    $role->givePermissionTo(Permission::whereNotIn('name', ['tenant.delete'])->get());
+                // Admin tenant.delete hariç tüm izinlere sahip olsun
+                if ($roleData['role_type'] === 'admin') {
+                    $role->syncPermissions(Permission::whereNotIn('name', ['tenant.delete'])->get());
                 }
                 
-                // Tenant-manager tenant ve kullanıcı yönetimi yapabilsin
-                if ($roleName === 'tenant-manager') {
-                    $role->givePermissionTo([
-                        'tenant.view', 'tenant.create', 'tenant.edit',
-                        'user.view', 'user.create', 'user.edit',
-                        'log.view'
-                    ]);
-                }
-                
-                // User-manager sadece kullanıcı yönetimi yapabilsin
-                if ($roleName === 'user-manager') {
-                    $role->givePermissionTo([
-                        'user.view', 'user.create', 'user.edit', 'user.delete'
-                    ]);
-                }
-                
-                // Viewer sadece görüntüleme yetkilerine sahip olsun
-                if ($roleName === 'viewer') {
-                    $role->givePermissionTo([
-                        'tenant.view', 'user.view', 'role.view', 'permission.view', 
-                        'module.view', 'log.view', 'settings.view'
-                    ]);
-                }
+                // Editor için şu aşamada özel izin ataması yapmıyoruz
+                // Bu modül bazlı olarak yapılacak
             }
             
             // Mevcut kullanıcılara roller ata
             $nurullah = User::where('email', 'nurullah@nurullah.net')->first();
             if ($nurullah) {
-                $nurullah->assignRole('super-admin');
+                $nurullah->syncRoles(['root']);
             }
         });
     }
@@ -163,81 +163,79 @@ class RolePermissionSeeder extends Seeder
                 ];
                 
                 foreach ($permissions as $permission) {
-                    Permission::create(['name' => $permission, 'guard_name' => 'web']);
+                    Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
                 }
                 
-                // Rolleri oluştur
+                // YENİ: Role yapısı - Root, Admin, Editor (tenant seviyesinde)
                 $roles = [
-                    'tenant-admin' => 'Tenant yöneticisi',
-                    'manager' => 'Bölüm yöneticisi',
-                    'editor' => 'İçerik editörü',
-                    'user' => 'Normal kullanıcı',
-                    'guest' => 'Misafir kullanıcı'
+                    [
+                        'name' => 'root',
+                        'role_type' => 'root',
+                        'guard_name' => 'web',
+                        'is_protected' => true,
+                        'description' => 'Tam yetkili tenant yöneticisi'
+                    ],
+                    [
+                        'name' => 'admin',
+                        'role_type' => 'admin',
+                        'guard_name' => 'web',
+                        'is_protected' => true,
+                        'description' => 'Tenant yöneticisi'
+                    ],
+                    [
+                        'name' => 'editor',
+                        'role_type' => 'editor',
+                        'guard_name' => 'web',
+                        'is_protected' => true,
+                        'description' => 'Modül bazlı yetkilendirilebilir editör'
+                    ]
                 ];
                 
-                foreach ($roles as $roleName => $description) {
-                    $role = Role::create([
-                        'name' => $roleName,
-                        'guard_name' => 'web',
-                        'description' => $description
+                foreach ($roles as $roleData) {
+                    $role = Role::firstOrCreate([
+                        'name' => $roleData['name'],
+                        'guard_name' => $roleData['guard_name']
                     ]);
                     
-                    // Tenant-admin rolü tüm izinlere sahip olsun
-                    if ($roleName === 'tenant-admin') {
-                        $role->givePermissionTo(Permission::all());
+                    // Diğer alanları güncelle
+                    $role->role_type = $roleData['role_type'];
+                    $role->is_protected = $roleData['is_protected'];
+                    
+                    // Description sütunu varsa güncelle
+                    if (Schema::hasColumn('roles', 'description')) {
+                        $role->description = $roleData['description'];
                     }
                     
-                    // Manager rolü kullanıcı ve içerik yönetimi yapabilsin
-                    if ($roleName === 'manager') {
-                        $role->givePermissionTo([
-                            'user.view', 'user.create', 'user.edit',
-                            'content.view', 'content.create', 'content.edit', 'content.delete',
-                            'media.view', 'media.upload', 'media.edit', 'media.delete',
-                            'log.view'
-                        ]);
+                    $role->save();
+                    
+                    // Root tüm izinlere sahip olsun
+                    if ($roleData['role_type'] === 'root') {
+                        $role->syncPermissions(Permission::all());
                     }
                     
-                    // Editor rolü sadece içerik düzenleyebilsin
-                    if ($roleName === 'editor') {
-                        $role->givePermissionTo([
-                            'content.view', 'content.create', 'content.edit',
-                            'media.view', 'media.upload', 'media.edit'
-                        ]);
-                    }
-                    
-                    // User rolü sadece görüntüleme yetkilerine sahip olsun
-                    if ($roleName === 'user') {
-                        $role->givePermissionTo([
-                            'content.view',
-                            'media.view'
-                        ]);
-                    }
-                    
-                    // Guest rolü minimum izinlere sahip olsun
-                    if ($roleName === 'guest') {
-                        $role->givePermissionTo([
-                            'content.view'
-                        ]);
+                    // Admin içerik.delete hariç tüm izinlere sahip olsun
+                    if ($roleData['role_type'] === 'admin') {
+                        $role->syncPermissions(Permission::all());
                     }
                 }
                 
                 // Mevcut kullanıcılara roller ata
                 $tenantAdmin = User::where('email', $tenant->id . '@test')->first();
                 if ($tenantAdmin) {
-                    $tenantAdmin->assignRole('tenant-admin');
+                    $tenantAdmin->syncRoles(['root']);
                 }
                 
                 $nurullah = User::where('email', 'nurullah@nurullah.net')->first();
                 if ($nurullah) {
-                    $nurullah->assignRole('tenant-admin');
+                    $nurullah->syncRoles(['root']);
                 }
                 
-                // Diğer kullanıcılara rastgele roller ata
+                // Diğer kullanıcılara rastgele editor veya admin atayalım
                 User::whereNotIn('email', [$tenant->id . '@test', 'nurullah@nurullah.net'])
                     ->get()
                     ->each(function ($user) {
-                        $roles = ['manager', 'editor', 'user', 'guest'];
-                        $user->assignRole($roles[array_rand($roles)]);
+                        $roles = ['admin', 'editor'];
+                        $user->syncRoles([$roles[array_rand($roles)]]);
                     });
             });
         }

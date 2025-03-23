@@ -9,10 +9,13 @@ use Modules\UserManagement\App\Http\Livewire\RoleComponent;
 use Modules\UserManagement\App\Http\Livewire\RoleManageComponent;
 use Modules\UserManagement\App\Http\Livewire\PermissionComponent;
 use Modules\UserManagement\App\Http\Livewire\PermissionManageComponent;
+use Modules\UserManagement\App\Http\Livewire\ModulePermissionComponent;
+use Modules\UserManagement\App\Http\Livewire\UserModulePermissionComponent;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Modules\UserManagement\App\Console\Commands\ProtectBaseRoles;
+use Modules\UserManagement\App\Http\Middleware\ModulePermissionMiddleware;
 
 class UserManagementServiceProvider extends ServiceProvider
 {
@@ -38,13 +41,20 @@ class UserManagementServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(module_path('UserManagement', 'routes/web.php'));
         $this->loadViewsFrom(module_path('UserManagement', 'resources/views'), 'usermanagement');
     
-        // Livewire component'lerini kaydet (düzeltilmiş isimler)
+        // Livewire component'lerini kaydet
         Livewire::component('usermanagement.user-component', UserComponent::class);
         Livewire::component('usermanagement.user-manage-component', UserManageComponent::class);
         Livewire::component('usermanagement.role-component', RoleComponent::class);
         Livewire::component('usermanagement.role-manage-component', RoleManageComponent::class);
         Livewire::component('usermanagement.permission-component', PermissionComponent::class);
         Livewire::component('usermanagement.permission-manage-component', PermissionManageComponent::class);
+        
+        // Yeni eklenen bileşenler
+        Livewire::component('usermanagement.module-permission-component', ModulePermissionComponent::class);
+        Livewire::component('usermanagement.user-module-permission-component', UserModulePermissionComponent::class);
+        
+        // Middleware'i kaydet
+        $this->app['router']->aliasMiddleware('module.permission', ModulePermissionMiddleware::class);
     }
     
     /**

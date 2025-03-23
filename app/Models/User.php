@@ -7,10 +7,11 @@ use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Modules\UserManagement\App\Traits\HasModulePermissions;
 
 class User extends Authenticatable implements HasMedia
 {
-    use HasFactory, Notifiable, HasRoles, InteractsWithMedia;
+    use HasFactory, Notifiable, HasRoles, InteractsWithMedia, HasModulePermissions;
 
     /**
      * The attributes that are mass assignable.

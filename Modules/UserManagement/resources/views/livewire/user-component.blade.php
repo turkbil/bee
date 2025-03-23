@@ -245,6 +245,9 @@
                                                 <i class="fa-solid fa-bars-sort fa-flip-horizontal fa-lg"></i>
                                             </a>
                                             <div class="dropdown-menu dropdown-menu-end">
+                                                <a href="{{ route('admin.usermanagement.user.module.permissions', $user->id) }}" class="dropdown-item">
+                                                    <i class="fas fa-key me-2"></i>Modül İzinleri
+                                                </a>
                                                 <a href="javascript:void(0);"
                                                     wire:click="$dispatch('showDeleteModal', { userId: {{ $user->id }}, userName: '{{ $user->name }}' })"
                                                     class="dropdown-item link-danger">

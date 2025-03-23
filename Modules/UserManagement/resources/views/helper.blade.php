@@ -9,6 +9,7 @@ Kullanıcı Listesi
 @endpush
 
 {{-- Modül Menüsü --}}
+{{-- Prensip olarak buradaki menüye yeni seçenekler ekleyeceğiz --}}
 @push('module-menu')
 <div class="dropdown d-grid d-md-flex module-menu">
     <a href="#" class="btn dropdown-toggle d-inline-block d-lg-none" data-bs-toggle="dropdown">Menü</a>
@@ -43,6 +44,12 @@ Kullanıcı Listesi
                     </a>
                     <a class="dropdown-item" href="{{ route('admin.usermanagement.permission.manage') }}">
                         Yetki Ekle
+                    </a>
+                    <h6 class="dropdown-menu-header card-header-light">
+                        <span class="dropdown-header">Modül Yetkileri</span>
+                    </h6>
+                    <a class="dropdown-item" href="{{ route('admin.usermanagement.module.permissions') }}">
+                        Modül İzinleri
                     </a>
                 </div>
             </div>

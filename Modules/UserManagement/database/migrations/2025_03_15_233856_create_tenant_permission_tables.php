@@ -132,10 +132,10 @@ return new class extends Migration
             ->store(config('permission.cache.store') != 'default' ? config('permission.cache.store') : null)
             ->forget(config('permission.cache.key'));
             
-        // Root, Admin ve Editor rollerini oluştur
+        // Root, Admin ve Editor rollerini oluştur (tenant sürümleri)
         $roles = [
-            ['name' => 'root', 'role_type' => 'root', 'guard_name' => 'web', 'is_protected' => true, 'description' => 'Tam yetkili yönetici'],
-            ['name' => 'admin', 'role_type' => 'admin', 'guard_name' => 'web', 'is_protected' => true, 'description' => 'Yönetici'],
+            ['name' => 'root', 'role_type' => 'root', 'guard_name' => 'web', 'is_protected' => true, 'description' => 'Tam yetkili tenant yöneticisi'],
+            ['name' => 'admin', 'role_type' => 'admin', 'guard_name' => 'web', 'is_protected' => true, 'description' => 'Tenant yöneticisi'],
             ['name' => 'editor', 'role_type' => 'editor', 'guard_name' => 'web', 'is_protected' => true, 'description' => 'İçerik editörü']
         ];
         

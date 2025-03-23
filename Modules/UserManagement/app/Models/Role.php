@@ -13,7 +13,9 @@ class Role extends SpatieRole
     protected $fillable = [
         'name',
         'guard_name',
-        'is_protected'
+        'is_protected',
+        'role_type',
+        'description'
     ];
 
     /**
@@ -24,12 +26,21 @@ class Role extends SpatieRole
     ];
 
     /**
+     * Rol tipleri
+     */
+    public const ROLE_TYPES = [
+        'root' => 'Tam Yetkili Yönetici',
+        'admin' => 'Yönetici',
+        'editor' => 'Editör'
+    ];
+
+    /**
      * Temel rollerin listesi
      */
     public const BASE_ROLES = [
-        'super-admin',
+        'root',
         'admin',
-        'user'
+        'editor'
     ];
 
     /**
@@ -74,6 +85,30 @@ class Role extends SpatieRole
     }
 
     /**
+     * Rolün tam yetkili yönetici (root) olup olmadığını kontrol eder
+     */
+    public function isRoot(): bool
+    {
+        return $this->role_type === 'root' || $this->name === 'root';
+    }
+
+    /**
+     * Rolün yönetici (admin) olup olmadığını kontrol eder
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role_type === 'admin' || $this->name === 'admin';
+    }
+
+    /**
+     * Rolün editör olup olmadığını kontrol eder
+     */
+    public function isEditor(): bool
+    {
+        return $this->role_type === 'editor' || $this->name === 'editor';
+    }
+
+    /**
      * Temel rolleri oluşturmak için kullanılan helper metod
      */
     public static function createBaseRoles(): void
@@ -82,7 +117,8 @@ class Role extends SpatieRole
             self::firstOrCreate([
                 'name' => $roleName,
                 'guard_name' => 'web',
-                'is_protected' => true
+                'is_protected' => true,
+                'role_type' => $roleName
             ]);
         }
     }

@@ -22,7 +22,7 @@ return new class extends Migration
         Schema::create('module_tenants', function (Blueprint $table) {
             $table->unsignedBigInteger('tenant_id');
             $table->unsignedBigInteger('module_id');
-            $table->boolean('is_active')->default(true);
+            $table->boolean('is_active')->default(true)->index();
             $table->timestamps();
 
             $table->primary(['tenant_id', 'module_id']);
@@ -36,6 +36,10 @@ return new class extends Migration
                 ->references('module_id')
                 ->on('modules')
                 ->onDelete('cascade');
+                
+            // İlave indeksler
+            $table->index('created_at');
+            $table->index('updated_at');
         });
     }
 

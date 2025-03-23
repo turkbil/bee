@@ -33,8 +33,13 @@ class TenancyProvider extends ServiceProvider
 
         // Yeni tenant oluşturulduğunda çalışacak event
         Event::listen(TenantCreated::class, function ($event) {
-            // Yeni tenant için gerekli yapılandırmalar
-            Cache::tags(['tenant_' . $event->tenant->id])->flush();
+            // Domain önbelleğini temizle
+            foreach ($event->tenant->domains as $domain) {
+                Cache::forget('domain_tenant_' . $domain->domain);
+            }
+            
+            // ModuleService önbelleğini temizle
+            Cache::forget('modules_tenant_' . $event->tenant->id);
         });
     }
 }

@@ -9,15 +9,15 @@ return new class extends Migration {
     {
         Schema::create('media', function (Blueprint $table) {
             $table->id();
-            $table->uuid('uuid')->nullable();
+            $table->uuid('uuid')->nullable()->unique();
             $table->string('model_type');
             $table->unsignedBigInteger('model_id');
             $table->index(['model_type', 'model_id']);
-            $table->string('collection_name');
+            $table->string('collection_name')->index();
             $table->string('name');
             $table->string('file_name');
-            $table->string('mime_type')->nullable();
-            $table->string('disk');
+            $table->string('mime_type')->nullable()->index();
+            $table->string('disk')->index();
             $table->string('conversions_disk')->nullable();
             $table->unsignedBigInteger('size');
             $table->json('manipulations');
@@ -26,6 +26,10 @@ return new class extends Migration {
             $table->json('responsive_images');
             $table->unsignedInteger('order_column')->nullable();
             $table->nullableTimestamps();
+            
+            // İlave performans indeksleri
+            $table->index(['disk', 'collection_name']);
+            $table->index('created_at');
         });
     }
 

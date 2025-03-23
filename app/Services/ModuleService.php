@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\Cache;
 
 class ModuleService {
     /**
+     * Önbellek süresini tanımla (7 gün)
+     */
+    protected const CACHE_DURATION = 10080; // dakika cinsinden (7 gün)
+    
+    /**
      * Tüm modülleri getirir, central veya tenant origin bilgisi ekler
      *
      * @param int|null $tenantId
@@ -19,101 +24,83 @@ class ModuleService {
             // Cache anahtarı oluştur
             $cacheKey = "modules_tenant_" . ($tenantId ?? 'central');
             
-            // Cache'den sonuçları kontrol et - önbellek kullanımı
-            if (Cache::has($cacheKey)) {
-                return Cache::get($cacheKey);
-            }
-            
-            // Bu işlem her zaman central veritabanında yapılmalı
-            // TenantHelpers::central() metodunu kullanarak central veritabanına bağlan
-            return TenantHelpers::central(function() use ($tenantId, $cacheKey) {
-                // Açıkça central veritabanındaki modules tablosunu belirt
-                $modulesTable = 'modules';
-                $moduleTenantsTable = 'module_tenants';
-                
-                // Tüm aktif modülleri al
-                $modules = DB::table($modulesTable)
-                    ->where('is_active', 1)
-                    ->orderBy('display_name')
-                    ->get();
-                
-                // Eğer modül yoksa boş bir koleksiyon döndür
-                if ($modules->isEmpty()) {
-                    $emptyResult = collect();
-                    Cache::put($cacheKey, $emptyResult, now()->addMinutes(60));
-                    return $emptyResult;
-                }
-                
-                // Tenant ID varsa, module_tenants tablosundaki ilişkileri kontrol et
-                if ($tenantId) {
-                    // Tenant'a ait central değerini kontrol et
-                    $tenantCentral = DB::table('tenants')
-                        ->where('id', $tenantId)
-                        ->value('central');
+            // Cache'den sonuçları kontrol et
+            return Cache::remember($cacheKey, now()->addMinutes(self::CACHE_DURATION), function() use ($tenantId) {
+                // Bu işlem her zaman central veritabanında yapılmalı
+                return TenantHelpers::central(function() use ($tenantId) {
+                    // Açıkça central veritabanındaki modules tablosunu belirt
+                    $modulesTable = 'modules';
+                    $moduleTenantsTable = 'module_tenants';
                     
-                    // Eğer tenant central=1 (true) ise tüm modülleri göster
-                    if ($tenantCentral) {
-                        $result = $modules->map(function($module) {
-                            $module->origin = 'central';
-                            $module->is_tenant_enabled = true;
-                            return $module;
-                        });
-                        
-                        // Sonuçları önbelleğe al
-                        Cache::put($cacheKey, $result, now()->addMinutes(60));
-                        return $result;
-                    }
-                    
-                    // Central değilse, tenant için tanımlı modüllere bak
-                    $tenantModuleIds = DB::table($moduleTenantsTable)
-                        ->where('tenant_id', $tenantId)
+                    // Tüm aktif modülleri al
+                    $modules = DB::table($modulesTable)
                         ->where('is_active', 1)
-                        ->pluck('module_id')
-                        ->toArray();
+                        ->orderBy('display_name')
+                        ->get();
                     
-                    // Eğer tenant için modül ilişkisi yoksa, tüm modülleri kullanılabilir yap
-                    // Bu, tenant için henüz özel ayar yapılmadığını gösterir
-                    if (empty($tenantModuleIds)) {
-                        // Tüm modülleri tenant için etkinleştir
-                        $result = $modules->map(function($module) {
+                    // Eğer modül yoksa boş bir koleksiyon döndür
+                    if ($modules->isEmpty()) {
+                        return collect();
+                    }
+                    
+                    // Tenant ID varsa, module_tenants tablosundaki ilişkileri kontrol et
+                    if ($tenantId) {
+                        // Tenant'a ait modül ve central değerini tek sorguda al
+                        $tenantData = DB::table('tenants')
+                            ->where('id', $tenantId)
+                            ->select('central')
+                            ->first();
+                        
+                        // Eğer tenant bulunamazsa boş koleksiyon döndür
+                        if (!$tenantData) {
+                            return collect();
+                        }
+                        
+                        // Eğer tenant central=1 (true) ise tüm modülleri göster
+                        if ($tenantData->central) {
+                            return $modules->map(function($module) {
+                                $module->origin = 'central';
+                                $module->is_tenant_enabled = true;
+                                return $module;
+                            });
+                        }
+                        
+                        // Aktif modülleri tek sorguda al
+                        $tenantModules = DB::table($moduleTenantsTable)
+                            ->where('tenant_id', $tenantId)
+                            ->where('is_active', 1)
+                            ->pluck('module_id')
+                            ->toArray();
+                        
+                        // Eğer tenant için modül ilişkisi yoksa, tüm modülleri kullanılabilir yap
+                        if (empty($tenantModules)) {
+                            return $modules->map(function($module) {
+                                $module->origin = 'central';
+                                $module->is_tenant_enabled = true;
+                                return $module;
+                            });
+                        }
+                        
+                        // Her bir modüle tenant bilgisi ekle
+                        $result = $modules->map(function($module) use ($tenantModules) {
                             $module->origin = 'central';
-                            $module->is_tenant_enabled = true; // Varsayılan olarak etkin
+                            $module->is_tenant_enabled = in_array($module->module_id, $tenantModules);
                             return $module;
                         });
                         
-                        // Sonuçları önbelleğe al
-                        Cache::put($cacheKey, $result, now()->addMinutes(60));
-                        return $result;
+                        // Sadece tenant için aktif olan modülleri filtrele
+                        return $result->filter(function($module) {
+                            return $module->is_tenant_enabled === true;
+                        });
                     }
                     
-                    // Her bir modüle tenant bilgisi ekle
-                    $result = $modules->map(function($module) use ($tenantModuleIds) {
+                    // Central için tüm modülleri göster
+                    return $modules->map(function($module) {
                         $module->origin = 'central';
-                        // module_id kullan, id değil
-                        $module->is_tenant_enabled = in_array($module->module_id, $tenantModuleIds);
+                        $module->is_tenant_enabled = true;
                         return $module;
                     });
-                    
-                    // Sadece tenant için aktif olan modülleri filtrele
-                    $filteredResult = $result->filter(function($module) {
-                        return $module->is_tenant_enabled === true;
-                    });
-                    
-                    // Sonuçları önbelleğe al
-                    Cache::put($cacheKey, $filteredResult, now()->addMinutes(60));
-                    return $filteredResult;
-                }
-                
-                // Central için tüm modülleri göster
-                $result = $modules->map(function($module) {
-                    $module->origin = 'central';
-                    $module->is_tenant_enabled = true;
-                    return $module;
                 });
-                
-                // Sonuçları önbelleğe al
-                Cache::put($cacheKey, $result, now()->addMinutes(60));
-                return $result;
             });
         } catch (\Exception $e) {
             Log::error('Module sorgusu hatası', [

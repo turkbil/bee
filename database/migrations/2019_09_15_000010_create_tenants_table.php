@@ -18,11 +18,14 @@ class CreateTenantsTable extends Migration
         Schema::create('tenants', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('tenancy_db_name');
-            $table->boolean('is_active')->default(true);
+            $table->string('tenancy_db_name')->unique();
+            $table->boolean('is_active')->default(true)->index();
             $table->boolean('central')->default(false);
             $table->json('data')->nullable();
             $table->timestamps();
+            
+            // İlave indeksler eklendi
+            $table->index('title');
         });
     }
 

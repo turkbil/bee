@@ -4,6 +4,7 @@ namespace App\Helpers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
 use Stancl\Tenancy\Tenancy;
+use Illuminate\Support\Facades\Cache;
 
 class TenantHelpers
 {
@@ -64,7 +65,12 @@ class TenantHelpers
         try {
             // Belirli bir tenant ID belirtilmişse, o tenant'a geçiş yap
             if ($tenantId !== null && (!$previousTenant || $previousTenant->id != $tenantId)) {
-                $tenant = \App\Models\Tenant::find($tenantId);
+                // Tenant bilgisini önbellekten kontrol et
+                $tenantCacheKey = 'tenant_' . $tenantId;
+                $tenant = Cache::remember($tenantCacheKey, now()->addDays(7), function () use ($tenantId) {
+                    return \App\Models\Tenant::find($tenantId);
+                });
+                
                 if (!$tenant) {
                     throw new \Exception("Tenant bulunamadı: {$tenantId}");
                 }
@@ -154,19 +160,24 @@ class TenantHelpers
             return 'public';
         }
         
-        // Özel tenant disk yapılandırması
-        $tenantDisk = 'tenant';
+        // Disk yapılandırmasını önbellekte kontrol et
+        $diskCacheKey = 'tenant_disk_' . $tenantId;
+        $diskConfig = Cache::remember($diskCacheKey, now()->addDays(7), function () use ($tenantId) {
+            // Özel tenant disk yapılandırması
+            $tenantDisk = 'tenant';
+            
+            // Disk yapılandırmasını ayarla
+            Config::set('filesystems.disks.tenant', [
+                'driver' => 'local',
+                'root' => storage_path("tenant{$tenantId}/app/public"),
+                'url' => env('APP_URL').'/storage/tenant'.$tenantId,
+                'visibility' => 'public',
+                'throw' => false,
+            ]);
+            
+            return $tenantDisk;
+        });
         
-        // Disk yapılandırmasını ayarla
-        Config::set('filesystems.disks.tenant', [
-            'driver' => 'local',
-            'root' => storage_path("tenant{$tenantId}/app/public"),
-            'url' => env('APP_URL').'/storage/tenant'.$tenantId,
-            'visibility' => 'public',
-            'throw' => false,
-        ]);
-        
-        // Tenant disk'ini döndür
-        return $tenantDisk;
+        return $diskConfig;
     }
 }

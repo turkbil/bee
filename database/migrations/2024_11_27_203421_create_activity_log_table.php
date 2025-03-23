@@ -10,21 +10,26 @@ class CreateActivityLogTable extends Migration
     {
         // Create the activity_log table
         Schema::create('activity_log', function (Blueprint $table) {
-            $table->bigIncrements('id');                         // Birincil anahtar
-            $table->string('log_name')->nullable();              // Log adı
-            $table->text('description');                         // Açıklama
-            $table->nullableMorphs('subject');                   // İşlem yapılan nesne
-            $table->nullableMorphs('causer');                    // İşlemi yapan kişi
-            $table->string('event')->nullable();                 // Olay türü
-            $table->json('properties')->nullable();              // Ek özellikler
-            $table->timestamps();                                // created_at ve updated_at
-            $table->softDeletes();                               // Silinmiş kayıtlar için deleted_at
-            $table->index('log_name');                           // Log adı için indeks
+            $table->bigIncrements('id');
+            $table->string('log_name')->nullable();
+            $table->text('description');
+            $table->nullableMorphs('subject');
+            $table->nullableMorphs('causer');
+            $table->string('event')->nullable()->index();
+            $table->json('properties')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+            $table->index('log_name');
+            
+            // Performans için ilave indeksler
+            $table->index(['causer_type', 'causer_id', 'created_at']);
+            $table->index(['subject_type', 'subject_id', 'created_at']);
+            $table->index('created_at');
         });
 
         // Add batch_uuid column after properties
         Schema::table('activity_log', function (Blueprint $table) {
-            $table->uuid('batch_uuid')->nullable()->after('properties');
+            $table->uuid('batch_uuid')->nullable()->after('properties')->index();
         });
     }
 

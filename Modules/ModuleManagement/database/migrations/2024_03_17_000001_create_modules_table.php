@@ -22,14 +22,18 @@ return new class extends Migration
     {
         Schema::create('modules', function (Blueprint $table) {
             $table->id('module_id');
-            $table->string('name');
-            $table->string('display_name');
+            $table->string('name')->index();
+            $table->string('display_name')->index();
             $table->string('version')->nullable();
             $table->text('description')->nullable();
             $table->unsignedBigInteger('settings')->nullable();
-            $table->enum('type', ['content', 'management', 'system'])->default('content');
-            $table->boolean('is_active')->default(true);
+            $table->enum('type', ['content', 'management', 'system'])->default('content')->index();
+            $table->boolean('is_active')->default(true)->index();
             $table->timestamps();
+            
+            // İlave indeksler
+            $table->index('created_at');
+            $table->index('updated_at');
         });
     }
 

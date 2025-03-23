@@ -42,6 +42,16 @@ return [
             'driver' => 'redis',
             'connection' => 'cache',
             'lock_connection' => 'default',
+            // Varsayılan TTL - 24 saat
+            'ttl' => 60 * 60 * 24,
+        ],
+
+        'tenant' => [
+            'driver' => 'redis',
+            'connection' => 'cache',
+            'lock_connection' => 'default',
+            // Tenant için varsayılan TTL - 24 saat
+            'ttl' => 60 * 60 * 24,
         ],
 
         'database' => [

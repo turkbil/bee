@@ -10,12 +10,12 @@ return new class extends Migration
     {
         Schema::create('settings_groups', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('parent_id')->nullable();
-            $table->string('name');
+            $table->unsignedBigInteger('parent_id')->nullable()->index();
+            $table->string('name')->index();
             $table->string('slug');
             $table->text('description')->nullable();
             $table->string('icon')->nullable();
-            $table->boolean('is_active')->default(true);
+            $table->boolean('is_active')->default(true)->index();
             $table->timestamps();
             $table->softDeletes();
 
@@ -23,6 +23,11 @@ return new class extends Migration
 
             // Slug sadece unique olmalı
             $table->unique(['slug']);
+            
+            // İlave indeksler
+            $table->index('created_at');
+            $table->index('updated_at');
+            $table->index('deleted_at');
         });
     }
 

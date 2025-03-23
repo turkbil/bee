@@ -9,18 +9,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('portfolios', function (Blueprint $table) {
-            $table->id('portfolio_id');                       // Özel primary key
-            $table->unsignedBigInteger('portfolio_category_id'); // Kategori ID
-            $table->string('title', 255);                     // Sayfa başlığı (255 karakter)
-            $table->string('slug')->unique();                 // URL slug
-            $table->text('body')->nullable();                 // Sayfa içeriği
-            $table->text('css')->nullable();                  // CSS alanı (text olarak)
-            $table->text('js')->nullable();                   // JS alanı (text olarak)
-            $table->string('metakey', 255)->nullable();       // Meta anahtar kelimeler (255 karakter)
-            $table->string('metadesc', 255)->nullable();      // Meta açıklama (255 karakter)
-            $table->boolean('is_active')->default(true);      // Aktiflik durumu
-            $table->timestamps();                             // created_at ve updated_at
-            $table->softDeletes();                            // deleted_at
+            $table->id('portfolio_id');
+            $table->unsignedBigInteger('portfolio_category_id')->index();
+            $table->string('title', 255)->index();
+            $table->string('slug')->unique();
+            $table->text('body')->nullable();
+            $table->text('css')->nullable();
+            $table->text('js')->nullable();
+            $table->string('metakey', 255)->nullable();
+            $table->string('metadesc', 255)->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->timestamps();
+            $table->softDeletes();
 
             // Yabancı anahtarlar
             $table->foreign('portfolio_category_id')->references('portfolio_category_id')->on('portfolio_categories')->onDelete('cascade');
@@ -28,6 +28,9 @@ return new class extends Migration
             // Indexler
             $table->index('slug');
             $table->index('is_active');
+            $table->index('created_at');
+            $table->index('updated_at');
+            $table->index('deleted_at');
         });
     }
 

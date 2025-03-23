@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('settings_values', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('setting_id');
+            $table->unsignedBigInteger('setting_id')->index();
             $table->text('value')->nullable();
             $table->timestamps();
             
@@ -19,6 +19,10 @@ return new class extends Migration
             
             // Aynı ayarın tekrar edilmemesi için unique index
             $table->unique(['setting_id']);
+            
+            // İlave indeksler
+            $table->index('created_at');
+            $table->index('updated_at');
         });
     }
 

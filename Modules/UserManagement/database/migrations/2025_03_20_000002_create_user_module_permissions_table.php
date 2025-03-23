@@ -19,19 +19,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('module_permissions', function (Blueprint $table) {
+        Schema::create('user_module_permissions', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('module_id');
-            $table->string('permission_type')->index(); // view, create, update, delete
+            $table->unsignedBigInteger('user_id');
+            $table->string('module_name', 50)->index();
+            $table->string('permission_type', 20)->index();
             $table->boolean('is_active')->default(true)->index();
             $table->timestamps();
             
-            $table->foreign('module_id')
-                ->references('module_id')
-                ->on('modules')
-                ->onDelete('cascade');
-                
-            $table->unique(['module_id', 'permission_type']);
+            // Daha kısa bir indeks adı belirterek
+            $table->unique(['user_id', 'module_name', 'permission_type'], 'ump_user_module_permission_unique');
+            
+            // İlave indeksler
+            $table->index('created_at');
+            $table->index('updated_at');
         });
     }
 
@@ -40,6 +41,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('module_permissions');
+        Schema::dropIfExists('user_module_permissions');
     }
 };

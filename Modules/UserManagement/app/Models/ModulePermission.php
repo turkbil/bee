@@ -39,11 +39,7 @@ class ModulePermission extends Model
             'view' => 'Görüntüleme',
             'create' => 'Oluşturma',
             'update' => 'Güncelleme',
-            'delete' => 'Silme',
-            'publish' => 'Yayınlama',
-            'settings' => 'Ayarlar',
-            'export' => 'Dışa Aktarma',
-            'import' => 'İçe Aktarma'
+            'delete' => 'Silme'
         ];
     }
     

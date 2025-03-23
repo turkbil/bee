@@ -7,6 +7,7 @@ use Livewire\WithPagination;
 use Modules\ModuleManagement\App\Models\Module;
 use Modules\UserManagement\App\Models\ModulePermission;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Layout;
 
 #[Layout('admin.layout')]
@@ -70,11 +71,7 @@ class ModulePermissionComponent extends Component
             'view' => 'eye',
             'create' => 'plus',
             'update' => 'edit',
-            'delete' => 'trash',
-            'publish' => 'check-circle',
-            'settings' => 'cog',
-            'export' => 'file-export',
-            'import' => 'file-import'
+            'delete' => 'trash'
         ];
         
         return $icons[$type] ?? 'key';
@@ -98,6 +95,9 @@ class ModulePermissionComponent extends Component
             }
             
             DB::commit();
+            
+            // Cache temizle
+            Cache::forget("module_{$this->selectedModule}_permissions");
             
             $this->isEditing = false;
             

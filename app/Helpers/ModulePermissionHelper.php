@@ -10,7 +10,7 @@ if (!function_exists('can_module')) {
      * Kullanıcının belirli bir modül izni olup olmadığını kontrol eder
      *
      * @param string $moduleName Modül adı
-     * @param string $permissionType İzin tipi (view, create, update, delete, vb.)
+     * @param string $permissionType İzin tipi (view, create, update, delete)
      * @return bool Erişim izni varsa true, yoksa false
      */
     function can_module(string $moduleName, string $permissionType = 'view'): bool
@@ -22,7 +22,7 @@ if (!function_exists('can_module')) {
         }
         
         // Süper admin veya tenant admin ise her zaman erişim izni ver
-        if ($user->hasRole('super-admin') || $user->hasRole('tenant-admin')) {
+        if ($user->hasRole('root') || $user->hasRole('admin')) {
             return true;
         }
         

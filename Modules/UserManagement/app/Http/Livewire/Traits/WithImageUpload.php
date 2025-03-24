@@ -24,14 +24,15 @@ trait WithImageUpload
 
     private function uploadImage($imageKey, $model = null)
     {
-        if (!$model && $this->userId) {
+        if (!$model && isset($this->userId)) {
             $model = User::find($this->userId);
         }
-
-        if ($model) {
-            $fileName = ($model->name ?? 'image') . '-' . Str::random(6) . '.' . $this->temporaryImages[$imageKey]->getClientOriginalExtension();
+    
+        if ($model && isset($this->temporaryImages[$imageKey])) {
+            $fileName = Str::slug($this->inputs['name'] ?? 'profile') . '-' . Str::random(6) . '.' . $this->temporaryImages[$imageKey]->getClientOriginalExtension();
+    
             $collectionName = $this->getCollectionName($imageKey);
-
+    
             $model->clearMediaCollection($collectionName);
             $media = $model
                 ->addMedia($this->temporaryImages[$imageKey]->getRealPath())
@@ -42,30 +43,34 @@ trait WithImageUpload
                     'image_type' => $imageKey,
                 ])
                 ->toMediaCollection($collectionName, 'public');
-
+    
             if ($media) {
-                log_activity($model, 'resim yüklendi', [
-                    'collection' => $collectionName,
-                    'filename' => $fileName
-                ]);
+                log_activity(
+                    $model,
+                    'resim yüklendi',
+                    ['collection' => $collectionName, 'filename' => $fileName]
+                );
             }
         }
     }
 
     public function removeImage($imageKey)
     {
-        if ($this->userId) {
+        if (isset($this->userId)) {
             $model = User::find($this->userId);
             $collectionName = $this->getCollectionName($imageKey);
             
             if ($model && $model->getFirstMedia($collectionName)) {
-                $fileName = $model->getFirstMedia($collectionName)->file_name;
+                $media = $model->getFirstMedia($collectionName);
+                $fileName = $media->file_name;
+                
                 $model->clearMediaCollection($collectionName);
                 
-                log_activity($model, 'resim silindi', [
-                    'collection' => $collectionName,
-                    'filename' => $fileName
-                ]);
+                log_activity(
+                    $model,
+                    'resim silindi',
+                    ['collection' => $collectionName, 'filename' => $fileName]
+                );
             }
         }
         unset($this->temporaryImages[$imageKey]);
@@ -73,12 +78,11 @@ trait WithImageUpload
 
     private function getCollectionName($imageKey)
     {
-        // Eğer imageKey boşsa veya "image" ise direkt "image" döndür
-        if (empty($imageKey) || $imageKey === 'image') {
-            return 'image';
+        // Avatar için özel koleksiyon adı
+        if (empty($imageKey) || $imageKey === 'avatar') {
+            return 'avatar';
         }
         
-        // Diğer keyler için "image_" öneki ekle
         return 'image_' . $imageKey;
     }
     

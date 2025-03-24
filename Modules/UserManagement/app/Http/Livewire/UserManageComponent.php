@@ -18,20 +18,18 @@ use Illuminate\Support\Facades\Cache;
 #[Layout('admin.layout')]
 class UserManageComponent extends Component
 {
-    use WithFileUploads;
+    use WithFileUploads, WithImageUpload;
 
     public $userId;
     public $inputs = [];
     public $allRoles;
     public $allPermissions;
-    public $avatar;
-    public $avatarUrl;
+    public $temporaryImages = [];
     
-    // Modül bazlı izinler için
+    // Modül izinleri için
     public $modulePermissions = [];
-    public $moduleDetails = [];
     public $availableModules = [];
-    public $showModulePermissions = false;
+    public $activeTab = 'profile';
 
     protected $rules = [
         'inputs.name' => 'required|min:3',
@@ -57,6 +55,13 @@ class UserManageComponent extends Component
        ];
     
        $this->allRoles = Role::all();
+       // Root olmayan kullanıcılara root rolünü gösterme
+       if (!auth()->user()->hasRole('root')) {
+           $this->allRoles = $this->allRoles->filter(function($role) {
+               return $role->name !== 'root';
+           });
+       }
+       
        $this->allPermissions = Permission::all();
        
        // Kullanılabilir modülleri yükle
@@ -71,11 +76,6 @@ class UserManageComponent extends Component
            $this->inputs['is_active'] = $user->is_active;
            $this->inputs['role_id'] = $user->roles->first() ? $user->roles->first()->name : null;
            
-           // Editör rolü seçiliyse modül izinlerini göster
-           if ($this->inputs['role_id'] === 'editor') {
-               $this->showModulePermissions = true;
-           }
-           
            $permissions = DB::table('model_has_permissions')
                ->where('model_id', $id)
                ->where('model_type', User::class)
@@ -88,11 +88,6 @@ class UserManageComponent extends Component
            $this->inputs['permissions'] = $permissions;
            $this->inputs['password'] = '';
     
-           if ($user->getFirstMedia('avatar')) {
-               $this->avatar = null;
-               $this->avatarUrl = $user->getFirstMediaUrl('avatar');
-           }
-           
            // Kullanıcının modül bazlı izinlerini yükle (eğer editor rolü varsa)
            if ($user->roles->first() && $user->roles->first()->name === 'editor') {
                $this->loadUserModulePermissions($user);
@@ -117,11 +112,6 @@ class UserManageComponent extends Component
                     'update' => false,
                     'delete' => false
                 ];
-            }
-            
-            // Modül detaylarını başlangıçta kapalı hazırla
-            if (!isset($this->moduleDetails[$module->name])) {
-                $this->moduleDetails[$module->name] = false;
             }
         }
     }
@@ -166,68 +156,51 @@ class UserManageComponent extends Component
         }
     }
 
-    public function toggleModuleDetails($moduleName)
+    public function setActiveTab($tab)
     {
-        if (!isset($this->moduleDetails[$moduleName])) {
-            $this->moduleDetails[$moduleName] = true;
-        } else {
-            $this->moduleDetails[$moduleName] = !$this->moduleDetails[$moduleName];
-        }
+        $this->activeTab = $tab;
+    }
+
+    public function toggleModuleAll($moduleName)
+    {
+        // Modülün mevcut durumunu kontrol et
+        $currentState = $this->modulePermissions[$moduleName]['enabled'];
+        
+        // Modülü ve tüm izinlerini değiştir
+        $this->modulePermissions[$moduleName]['enabled'] = !$currentState;
+        $this->modulePermissions[$moduleName]['view'] = !$currentState;
+        $this->modulePermissions[$moduleName]['create'] = !$currentState;
+        $this->modulePermissions[$moduleName]['update'] = !$currentState;
+        $this->modulePermissions[$moduleName]['delete'] = !$currentState;
     }
     
-    public function toggleModulePermission($moduleName, $type = null)
+    public function togglePermission($moduleName, $type)
     {
-        // Modülün etkinlik durumunu değiştir
-        if ($type === null) {
-            $this->modulePermissions[$moduleName]['enabled'] = !$this->modulePermissions[$moduleName]['enabled'];
-            
-            // Eğer modül devre dışı bırakıldıysa tüm alt izinleri kapat
-            if (!$this->modulePermissions[$moduleName]['enabled']) {
-                $this->modulePermissions[$moduleName]['view'] = false;
-                $this->modulePermissions[$moduleName]['create'] = false;
-                $this->modulePermissions[$moduleName]['update'] = false;
-                $this->modulePermissions[$moduleName]['delete'] = false;
-            } else {
-                // Modül etkinleştirildiğinde en azından görüntüleme iznini aç
-                $this->modulePermissions[$moduleName]['view'] = true;
-            }
+        $this->modulePermissions[$moduleName][$type] = !$this->modulePermissions[$moduleName][$type];
+        
+        // Herhangi bir izin aktifse, modülü de aktif et
+        if ($this->modulePermissions[$moduleName][$type]) {
+            $this->modulePermissions[$moduleName]['enabled'] = true;
         } else {
-            // Belirli bir iznin durumunu değiştir
-            $this->modulePermissions[$moduleName][$type] = !$this->modulePermissions[$moduleName][$type];
-            
-            // Eğer herhangi bir izin aktifse, modülü etkinleştir
-            if ($this->modulePermissions[$moduleName][$type]) {
-                $this->modulePermissions[$moduleName]['enabled'] = true;
-            } else {
-                // Hiçbir izin kalmadıysa modülü devre dışı bırak
-                $activePermissions = array_filter($this->modulePermissions[$moduleName], function($value, $key) {
-                    return $key !== 'enabled' && $value === true;
-                }, ARRAY_FILTER_USE_BOTH);
-                
-                if (empty($activePermissions)) {
-                    $this->modulePermissions[$moduleName]['enabled'] = false;
+            // Aktif izin kaldı mı kontrol et
+            $hasActivePermission = false;
+            foreach (['view', 'create', 'update', 'delete'] as $permType) {
+                if ($this->modulePermissions[$moduleName][$permType]) {
+                    $hasActivePermission = true;
+                    break;
                 }
+            }
+            
+            // Hiç aktif izin kalmadıysa modülü devre dışı bırak
+            if (!$hasActivePermission) {
+                $this->modulePermissions[$moduleName]['enabled'] = false;
             }
         }
     }
 
-    public function removeAvatar()
+    public function toggleActiveStatus()
     {
-        if ($this->avatar) {
-            $this->avatar = null;
-        } elseif ($this->userId) {
-            $user = User::find($this->userId);
-            if ($user && $user->getFirstMedia('avatar')) {
-                $user->clearMediaCollection('avatar');
-                $this->avatarUrl = null;
-                
-                $this->dispatch('toast', [
-                    'title' => 'Başarılı!',
-                    'message' => 'Profil fotoğrafı kaldırıldı.',
-                    'type' => 'success',
-                ]);
-            }
-        }
+        $this->inputs['is_active'] = !$this->inputs['is_active']; 
     }
 
     public function save($redirect = false, $resetForm = false)
@@ -252,12 +225,8 @@ class UserManageComponent extends Component
                 $user = User::create($data);
             }
 
-            // Avatar işlemi
-            if ($this->avatar) {
-                $user->clearMediaCollection('avatar');
-                $user->addMedia($this->avatar->getRealPath())
-                    ->toMediaCollection('avatar');
-            }
+            // Avatar yükleme işlemi
+            $this->handleImageUpload($user);
 
             // Rol atama
             if (!empty($this->inputs['role_id'])) {
@@ -309,7 +278,7 @@ class UserManageComponent extends Component
             ]);
 
             if ($resetForm && !$this->userId) {
-                $this->reset(['inputs', 'avatar', 'avatarUrl', 'modulePermissions']);
+                $this->reset(['inputs', 'temporaryImages', 'modulePermissions']);
                 $this->inputs = [
                     'name' => '',
                     'email' => '',
@@ -318,6 +287,7 @@ class UserManageComponent extends Component
                     'role_id' => null,
                     'permissions' => []
                 ];
+                $this->loadAvailableModules();
             }
 
         } catch (\Exception $e) {
@@ -369,7 +339,7 @@ class UserManageComponent extends Component
         }
     }
 
-    public function toggleModulePermissions($module)
+    public function toggleAllModulePermissions($module)
     {
         $modulePermissions = $this->allPermissions
             ->filter(function($permission) use ($module) {
@@ -379,7 +349,7 @@ class UserManageComponent extends Component
             ->toArray();
 
         // Eğer tüm izinler seçili ise, hepsini kaldır
-        if (empty(array_diff($modulePermissions, $this->inputs['permissions']))) {
+        if (count(array_intersect($modulePermissions, $this->inputs['permissions'])) === count($modulePermissions)) {
             $this->inputs['permissions'] = array_values(array_diff($this->inputs['permissions'], $modulePermissions));
         }
         // Değilse, eksik olanları ekle
@@ -390,35 +360,11 @@ class UserManageComponent extends Component
 
     public function updatedInputsRoleId($value)
     {
-        // Rol değiştiğinde, eğer editor rolü seçildiyse modül izinlerini göster
+        // Rol değiştiğinde, admin/editor seçildiyse uygun sekmeye geç
         if ($value === 'editor') {
-            $this->showModulePermissions = true;
-        } else {
-            $this->showModulePermissions = false;
-        }
-        
-        // Editör rolü için modül izinlerini hazırla
-        if ($value === 'editor') {
-            $this->prepareModulePermissions();
-        }
-    }
-    
-    protected function prepareModulePermissions()
-    {
-        // Tüm modüller için boş izin şablonu oluştur (eğer yoksa)
-        foreach ($this->availableModules as $module) {
-            if (!isset($this->modulePermissions[$module->name])) {
-                $this->modulePermissions[$module->name] = [
-                    'enabled' => false,
-                    'view' => false,
-                    'create' => false,
-                    'update' => false,
-                    'delete' => false
-                ];
-            }
-            
-            // Modül detaylarını başlangıçta aç
-            $this->moduleDetails[$module->name] = true;
+            $this->activeTab = 'modules';
+        } elseif ($value === 'admin') {
+            $this->activeTab = 'permissions';
         }
     }
 
@@ -429,10 +375,10 @@ class UserManageComponent extends Component
         });
 
         $permissionLabels = [
-            'view' => 'Görüntüle',
-            'create' => 'Oluştur',
-            'update' => 'Düzenle',
-            'delete' => 'Sil',
+            'view' => 'Görüntüleme',
+            'create' => 'Oluşturma',
+            'update' => 'Düzenleme',
+            'delete' => 'Silme',
         ];
 
         // Modül etiketlerini dinamik olarak oluştur

@@ -1,3 +1,4 @@
+{{-- Modules/UserManagement/resources/views/livewire/partials/image-upload.blade.php --}}
 <div class="form-group mb-3">
     <div x-data="{ 
             isDropping: false,
@@ -11,7 +12,7 @@
         }" x-on:dragover.prevent="isDropping = true" x-on:dragleave.prevent="isDropping = false"
         x-on:drop="handleDrop($event)">
         <div class="row align-items-center g-3">
-            <div class="col-12 col-md-7">
+            <div class="col-12 col-md-9">
                 <div class="card" :class="{ 'border-primary': isDropping }">
                     <div class="card-body">
                         <div class="dropzone" onclick="document.getElementById('fileInput_{{ $imageKey }}').click()">
@@ -44,7 +45,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-5">
+            <div class="col-12 col-md-3">
                 <div class="card">
                     <div class="card-body p-3">
                         @if (isset($temporaryImages[$imageKey]))
@@ -54,38 +55,25 @@
                                 <i class="fa-solid fa-xmark"></i>
                             </button>
                             <img src="{{ $temporaryImages[$imageKey]->temporaryUrl() }}"
-                               class="img-fluid rounded h-100 w-100 object-fit-cover" alt="Yüklenen Fotoğraf">
-                       </div>
-                       @elseif ($model && $model->getFirstMedia(empty($imageKey) || $imageKey === 'image' ? 'image' :
-                       'image_' . $imageKey))
-                       <div class="position-relative" style="height: 156px;">
-                           <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2"
-                               wire:click="removeImage('{{ $imageKey }}')" wire:loading.attr="disabled">
-                               <i class="fa-solid fa-xmark"></i>
-                           </button>
-                           <img src="{{ $model->getFirstMedia(empty($imageKey) || $imageKey === 'image' ? 'image' : 'image_' . $imageKey)->getUrl() }}"
-                               class="img-fluid rounded h-100 w-100 object-fit-cover" alt="Mevcut Fotoğraf">
-                       </div>
-                       @else
-                       <div class="d-flex align-items-center justify-content-center text-muted" style="height: 156px;">
-                           <i class="fa-solid fa-image-slash fa-2x"></i>
-                       </div>
-                       @endif
-                   </div>
-               </div>
-           </div>
-       </div>
-   </div>
-
-   <script>
-       document.addEventListener('livewire:load', function () {
-           Livewire.on('fileUploaded', function () {
-               document.getElementById('saveButton').disabled = false;
-           });
-   
-           Livewire.on('fileUploading', function () {
-               document.getElementById('saveButton').disabled = true;
-           });
-       });
-   </script>
+                                class="img-fluid rounded h-100 w-100 object-fit-cover" alt="Yüklenen Fotoğraf">
+                        </div>
+                        @elseif ($model && $model->getFirstMedia('avatar'))
+                        <div class="position-relative" style="height: 156px;">
+                            <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2"
+                                wire:click="removeImage('avatar')" wire:loading.attr="disabled">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                            <img src="{{ $model->getFirstMedia('avatar')->getUrl() }}"
+                                class="img-fluid rounded h-100 w-100 object-fit-cover" alt="Mevcut Fotoğraf">
+                        </div>
+                        @else
+                        <div class="d-flex align-items-center justify-content-center text-muted" style="height: 156px;">
+                            <i class="fa-solid fa-image-slash fa-2x"></i>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

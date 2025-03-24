@@ -2,294 +2,260 @@
 <div>
     @include('admin.partials.error_message')
     <form wire:submit.prevent="save">
-        <div class="row">
-            <!-- Sol Kolon: Kullanıcı Bilgileri -->
-            <div class="col-lg-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">
-                            <i class="fas fa-user me-2 text-primary"></i>
-                            Kullanıcı Bilgileri
-                        </h3>
-                    </div>
+        <div class="row g-3">
+            <!-- Sol Kolon - Kişisel Bilgiler -->
+            <div class="col-md-4">
+                <div class="card card-stacked">
                     <div class="card-body">
-                        <!-- Avatar Yükleme -->
+                        <h3 class="card-title">
+                            <i class="fas fa-user-circle text-primary me-2"></i>Kullanıcı Bilgileri
+                        </h3>
                         <div class="text-center mb-4">
-                            <div class="mb-3 position-relative d-inline-block">
-                                @if($avatar || ($model && $model->getFirstMedia('avatar')))
-                                    <span class="avatar avatar-xl rounded-circle bg-primary-lt d-flex align-items-center justify-content-center" style="width: 120px; height: 120px; border: 2px solid #3498db;">
-                                        @if($avatar)
-                                            <img src="{{ $avatar->temporaryUrl() }}" alt="Profil Resmi" class="w-100 h-100 object-fit-cover rounded-circle">
-                                        @elseif($model && $model->getFirstMedia('avatar'))
-                                            <img src="{{ $model->getFirstMediaUrl('avatar') }}" alt="Profil Resmi" class="w-100 h-100 object-fit-cover rounded-circle">
-                                        @endif
-                                    </span>
-                                    <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 rounded-circle" 
-                                        wire:click="removeAvatar" title="Fotoğrafı Kaldır">
+                            @if(isset($temporaryImages['avatar']))
+                                <div class="position-relative d-inline-block mb-3">
+                                    <img src="{{ $temporaryImages['avatar']->temporaryUrl() }}" class="avatar avatar-xl rounded-circle" alt="Kullanıcı Avatarı">
+                                    <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 rounded-circle p-1" 
+                                            wire:click="removeImage('avatar')" title="Fotoğrafı Kaldır">
                                         <i class="fas fa-times"></i>
                                     </button>
-                                @else
-                                    <span class="avatar avatar-xl rounded-circle bg-primary-lt d-flex align-items-center justify-content-center" style="width: 120px; height: 120px; font-size: 40px; border: 2px dashed #3498db;">
-                                        <i class="fas fa-user"></i>
-                                    </span>
-                                @endif
-                                
-                                <label for="avatar-upload" class="btn btn-sm btn-primary position-absolute bottom-0 end-0 rounded-circle">
-                                    <i class="fas fa-camera"></i>
+                                </div>
+                            @elseif($model && $model->getFirstMedia('avatar'))
+                                <div class="position-relative d-inline-block mb-3">
+                                    <img src="{{ $model->getFirstMediaUrl('avatar') }}" class="avatar avatar-xl rounded-circle" alt="Kullanıcı Avatarı">
+                                    <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 rounded-circle p-1" 
+                                            wire:click="removeImage('avatar')" title="Fotoğrafı Kaldır">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            @else
+                                <div class="avatar avatar-xl rounded-circle bg-blue-lt mb-3">
+                                    {{ strtoupper(substr($inputs['name'] ?? 'U', 0, 2)) }}
+                                </div>
+                            @endif
+                            
+                            <div class="mb-3">
+                                <label class="btn btn-outline-primary btn-sm" for="avatar-upload">
+                                    <i class="fas fa-camera me-1"></i> Profil Fotoğrafı Yükle
                                 </label>
-                                <input id="avatar-upload" type="file" wire:model="avatar" class="d-none" accept="image/jpeg,image/png,image/webp">
-                            </div>
-                            
-                            @error('avatar')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
-                            
-                            <div wire:loading wire:target="avatar" class="text-center mt-2">
-                                <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
-                                <span class="ms-2 text-muted">Yükleniyor...</span>
+                                <input id="avatar-upload" type="file" wire:model="temporaryImages.avatar" class="d-none" accept="image/jpeg,image/png,image/webp">
+                                
+                                @error('temporaryImages.avatar')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
+                                
+                                <div wire:loading wire:target="temporaryImages.avatar">
+                                    <div class="progress progress-sm mt-1">
+                                        <div class="progress-bar progress-bar-indeterminate bg-primary"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-
-                        <!-- Temel Bilgiler -->
+                        
                         <div class="mb-3">
-                            <label class="form-label">İsim Soyisim</label>
-                            <div class="input-group">
-                                <span class="input-group-text">
-                                    <i class="fas fa-user text-primary"></i>
+                            <label class="form-label required">Kullanıcı Adı</label>
+                            <div class="input-icon">
+                                <span class="input-icon-addon">
+                                    <i class="fas fa-user"></i>
                                 </span>
-                                <input type="text" wire:model.defer="inputs.name"
-                                    class="form-control @error('inputs.name') is-invalid @enderror"
-                                    placeholder="İsim Soyisim">
+                                <input type="text" wire:model.defer="inputs.name" class="form-control @error('inputs.name') is-invalid @enderror" placeholder="İsim Soyisim">
                             </div>
                             @error('inputs.name')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror
                         </div>
-
+                        
                         <div class="mb-3">
-                            <label class="form-label">E-posta Adresi</label>
-                            <div class="input-group">
-                                <span class="input-group-text">
-                                    <i class="fas fa-envelope text-primary"></i>
+                            <label class="form-label required">E-posta Adresi</label>
+                            <div class="input-icon">
+                                <span class="input-icon-addon">
+                                    <i class="fas fa-envelope"></i>
                                 </span>
-                                <input type="email" wire:model.defer="inputs.email"
-                                    class="form-control @error('inputs.email') is-invalid @enderror"
-                                    placeholder="ornek@email.com">
+                                <input type="email" wire:model.defer="inputs.email" class="form-control @error('inputs.email') is-invalid @enderror" placeholder="ornek@mail.com">
                             </div>
                             @error('inputs.email')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror
                         </div>
-
+                        
                         <div class="mb-3">
-                            <label class="form-label">Şifre {{ $userId ? '(Değiştirmek için doldurun)' : '' }}</label>
-                            <div class="input-group">
-                                <span class="input-group-text">
-                                    <i class="fas fa-lock text-primary"></i>
+                            <label class="form-label {{ !$userId ? 'required' : '' }}">Şifre {{ $userId ? '(Değiştirmek için doldurun)' : '' }}</label>
+                            <div class="input-icon">
+                                <span class="input-icon-addon">
+                                    <i class="fas fa-lock"></i>
                                 </span>
-                                <input type="password" wire:model.defer="inputs.password"
-                                    class="form-control @error('inputs.password') is-invalid @enderror" 
-                                    placeholder="{{ $userId ? 'Şifreyi değiştir' : 'Şifre belirle' }}">
+                                <input type="password" wire:model.defer="inputs.password" class="form-control @error('inputs.password') is-invalid @enderror" placeholder="********">
                             </div>
                             @error('inputs.password')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror
                         </div>
-
-                        <div class="form-check form-switch mt-4">
-                            <input class="form-check-input" type="checkbox" wire:model.defer="inputs.is_active" id="activeSwitch">
-                            <label class="form-check-label" for="activeSwitch">
-                                <i class="fas fa-toggle-on me-1 {{ $inputs['is_active'] ? 'text-success' : 'text-muted' }}"></i>
-                                Kullanıcı Aktif
-                            </label>
+                        
+                        <div class="mt-4 mb-3">
+                            <div class="mb-2">Kullanıcı Durumu</div>
+                            <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
+                                <input type="checkbox" id="is_active" name="is_active" wire:model="inputs.is_active"
+                                    value="1" {{ $inputs['is_active'] ? 'checked' : '' }} />
+                                <div class="state p-success p-on ms-2">
+                                    <label>Aktif</label>
+                                </div>
+                                <div class="state p-danger p-off ms-2">
+                                    <label>Aktif Değil</label>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <!-- Sağ Kolon: Roller ve İzinler -->
-            <div class="col-lg-8">
+            <!-- Sağ Kolon - Rol ve İzinler -->
+            <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h3 class="card-title">
-                            <i class="fas fa-user-shield me-2 text-primary"></i>
-                            Roller ve İzinler
-                        </h3>
-                        <div class="card-actions">
-                            <div class="btn-list">
-                                <a href="{{ route('admin.usermanagement.index') }}" class="btn btn-outline-secondary">
-                                    <i class="fas fa-arrow-left me-1"></i> Geri Dön
-                                </a>
-                                <button type="submit" class="btn btn-primary" wire:loading.attr="disabled">
-                                    <span wire:loading.remove wire:target="save">
-                                        <i class="fas fa-save me-1"></i> Kaydet
-                                    </span>
-                                    <span wire:loading wire:target="save">
-                                        <span class="spinner-border spinner-border-sm me-1" role="status"></span>
-                                        Kaydediliyor...
-                                    </span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
                     <div class="card-body">
-                        <!-- Rol Seçimi -->
-                        <div class="mb-4">
-                            <label class="form-label">
-                                <i class="fas fa-user-tag me-1 text-primary"></i>
-                                Kullanıcı Rolü
-                            </label>
-                            <div class="d-flex flex-wrap gap-2">
-                                @foreach($allRoles as $role)
-                                <label class="form-selectgroup-item">
-                                    <input type="radio" name="role" value="{{ $role->name }}"
-                                        class="form-selectgroup-input" wire:model="inputs.role_id">
-                                    <span class="form-selectgroup-label d-flex align-items-center p-3">
-                                        <span class="me-3 bg-{{ $role->name == 'root' ? 'danger' : ($role->name == 'admin' ? 'primary' : 'info') }} text-white avatar">
+                        <h3 class="card-title mb-4">
+                            <i class="fas fa-user-shield text-primary me-2"></i>Kullanıcı Rolleri
+                        </h3>
+                        
+                        <div class="row row-cards">
+                            @foreach($allRoles as $role)
+                            <div class="col-md-4">
+                                <label class="form-selectgroup-item" wire:key="role-{{ $role->id }}">
+                                    <input type="radio" name="role" wire:model="inputs.role_id" 
+                                           value="{{ $role->name }}" class="form-selectgroup-input">
+                                    <span class="form-selectgroup-label d-flex p-3 {{ $inputs['role_id'] === $role->name ? 'bg-primary-subtle border-primary' : '' }}">
+                                        <span class="avatar me-3 {{ $inputs['role_id'] === $role->name ? 'bg-primary text-white' : 'bg-muted' }}">
                                             <i class="fas fa-{{ $role->name == 'root' ? 'crown' : ($role->name == 'admin' ? 'user-cog' : 'user-edit') }}"></i>
                                         </span>
-                                        <div>
-                                            <strong>{{ $role->name }}</strong>
-                                            <div class="text-muted mt-1">{{ $role->description ?? 'Kullanıcı rolü' }}</div>
-                                        </div>
+                                        <span class="form-selectgroup-label-content">
+                                            <span class="form-selectgroup-label-title">{{ ucfirst($role->name) }}</span>
+                                            <span class="d-block form-selectgroup-label-subtitle text-muted">
+                                                {{ $role->name == 'root' ? 'Tam Yetkili Yönetici' : ($role->name == 'admin' ? 'Site Yöneticisi' : 'İçerik Editörü') }}
+                                            </span>
+                                        </span>
                                     </span>
                                 </label>
-                                @endforeach
                             </div>
+                            @endforeach
                         </div>
-
-                        <!-- Editör rolü seçildiyse - Modül İzinleri -->
-                        @if($showModulePermissions)
-                        <div
-                            x-data 
-                            x-transition:enter="transition ease-out duration-300"
-                            x-transition:enter-start="opacity-0 transform scale-95"
-                            x-transition:enter-end="opacity-100 transform scale-100"
-                            x-transition:leave="transition ease-in duration-200"
-                            x-transition:leave-start="opacity-100 transform scale-100"
-                            x-transition:leave-end="opacity-0 transform scale-95">
+                        
+                        <!-- Editör Modül İzinleri -->
+                        @if($inputs['role_id'] === 'editor')
+                        <div class="mt-4" wire:key="editor-permissions">
+                            <h3 class="card-title mb-3">
+                                <i class="fas fa-puzzle-piece text-success me-2"></i>Site Modülleri
+                                <span class="badge bg-success-lt ms-2">Editör İzinleri</span>
+                            </h3>
                             
-                            <div class="hr-text hr-text-left mb-4">
-                                <span class="bg-primary text-white px-2 py-1 rounded">
-                                    <i class="fas fa-puzzle-piece me-1"></i>
-                                    Modül İzinleri
-                                </span>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <div class="alert alert-info d-flex">
+                            <div class="alert alert-info mb-3">
+                                <div class="d-flex">
+                                    <div><i class="fas fa-info-circle fa-lg me-2"></i></div>
                                     <div>
-                                        <i class="fas fa-info-circle fa-lg me-2"></i>
-                                    </div>
-                                    <div>
-                                        <strong>Modül İzinleri Hakkında</strong>
-                                        <p class="mb-0">Kullanıcının erişebileceği modülleri ve bu modüllerdeki yetkilerini belirleyin. Her modül için ayrı ayrı CRUD (Görüntüleme, Oluşturma, Düzenleme, Silme) izinleri atayabilirsiniz.</p>
+                                        <strong>Site Modülleri Hakkında</strong>
+                                        <p class="mb-0">Editör kullanıcısının erişebileceği modülleri ve izinleri aşağıdan belirleyebilirsiniz. Aktif olan modüller kullanıcının panelde göreceği menüleri belirler.</p>
                                     </div>
                                 </div>
                             </div>
                             
                             <div class="row g-3">
                                 @foreach($availableModules as $module)
-                                <div class="col-lg-4 col-md-6">
-                                    <div class="card">
-                                        <div class="card-status-top bg-primary"></div>
-                                        <div class="card-body">
-                                            <div class="d-flex align-items-center mb-3">
-                                                <span class="avatar avatar-sm bg-primary-lt me-2">
+                                <div class="col-md-6" wire:key="module-{{ $module->module_id }}">
+                                    <div class="card {{ $modulePermissions[$module->name]['enabled'] ? 'border-success shadow' : 'shadow-sm' }}">
+                                        <div class="card-header">
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar {{ $modulePermissions[$module->name]['enabled'] ? 'bg-success text-white' : 'bg-muted' }} me-3">
                                                     <i class="fas fa-puzzle-piece"></i>
-                                                </span>
-                                                <div class="me-auto">
-                                                    <h4 class="card-title m-0">{{ $module->display_name }}</h4>
+                                                </div>
+                                                <div>
+                                                    <h4 class="m-0">{{ $module->display_name }}</h4>
                                                     <div class="text-muted small">{{ $module->name }}</div>
                                                 </div>
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input" type="checkbox"
-                                                        wire:model="modulePermissions.{{ $module->name }}.enabled"
-                                                        wire:click="toggleModulePermission('{{ $module->name }}')">
+                                                <div class="ms-auto">
+                                                    <label class="form-check form-switch d-inline-block m-0">
+                                                        <input class="form-check-input" type="checkbox"
+                                                            wire:model="modulePermissions.{{ $module->name }}.enabled"
+                                                            wire:click="toggleModuleAll('{{ $module->name }}')">
+                                                    </label>
                                                 </div>
                                             </div>
-                                            
-                                            <div x-data="{ expanded: {{ isset($moduleDetails[$module->name]) && $moduleDetails[$module->name] ? 'true' : 'false' }} }">
-                                                <!-- İzin detayları butonu -->
-                                                <button type="button" @click="expanded = !expanded" 
-                                                    class="btn btn-sm w-100 {{ isset($modulePermissions[$module->name]['enabled']) && $modulePermissions[$module->name]['enabled'] ? 'btn-outline-primary' : 'btn-outline-secondary' }}">
-                                                    <i class="fas fa-cog me-1" :class="{ 'fa-spin': expanded }"></i>
-                                                    <span x-text="expanded ? 'Detayları Gizle' : 'CRUD İzinleri'"></span>
-                                                    <i class="fas fa-chevron-down ms-1" :class="{'fa-chevron-up': expanded}"></i>
-                                                </button>
-
-                                                <!-- CRUD İzinleri -->
-                                                <div x-show="expanded" x-collapse class="mt-3">
-                                                    <div class="list-group list-group-flush">
-                                                        <!-- Görüntüleme İzni -->
-                                                        <div class="list-group-item px-0 py-2 d-flex align-items-center">
-                                                            <div class="flex-grow-1">
+                                        </div>
+                                        
+                                        <div class="card-body p-0">
+                                            <div class="table-responsive">
+                                                <table class="table table-vcenter card-table">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>
                                                                 <div class="d-flex align-items-center">
-                                                                    <span class="avatar avatar-xs bg-info-lt me-2">
+                                                                    <span class="avatar avatar-xs bg-blue-lt me-2">
                                                                         <i class="fas fa-eye"></i>
                                                                     </span>
-                                                                    <div>Görüntüleme</div>
+                                                                    <span>Görüntüleme</span>
                                                                 </div>
-                                                            </div>
-                                                            <div class="form-check form-switch">
-                                                                <input class="form-check-input" type="checkbox"
-                                                                    wire:model="modulePermissions.{{ $module->name }}.view"
-                                                                    wire:click="toggleModulePermission('{{ $module->name }}', 'view')">
-                                                            </div>
-                                                        </div>
-                                                        
-                                                        <!-- Oluşturma İzni -->
-                                                        <div class="list-group-item px-0 py-2 d-flex align-items-center">
-                                                            <div class="flex-grow-1">
+                                                            </td>
+                                                            <td class="text-end">
+                                                                <label class="form-check form-switch d-inline-block m-0">
+                                                                    <input class="form-check-input" type="checkbox"
+                                                                        wire:model="modulePermissions.{{ $module->name }}.view"
+                                                                        wire:click="togglePermission('{{ $module->name }}', 'view')"
+                                                                        {{ !$modulePermissions[$module->name]['enabled'] ? 'disabled' : '' }}>
+                                                                </label>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
                                                                 <div class="d-flex align-items-center">
-                                                                    <span class="avatar avatar-xs bg-success-lt me-2">
+                                                                    <span class="avatar avatar-xs bg-green-lt me-2">
                                                                         <i class="fas fa-plus"></i>
                                                                     </span>
-                                                                    <div>Oluşturma</div>
+                                                                    <span>Oluşturma</span>
                                                                 </div>
-                                                            </div>
-                                                            <div class="form-check form-switch">
-                                                                <input class="form-check-input" type="checkbox"
-                                                                    wire:model="modulePermissions.{{ $module->name }}.create"
-                                                                    wire:click="toggleModulePermission('{{ $module->name }}', 'create')">
-                                                            </div>
-                                                        </div>
-                                                        
-                                                        <!-- Düzenleme İzni -->
-                                                        <div class="list-group-item px-0 py-2 d-flex align-items-center">
-                                                            <div class="flex-grow-1">
+                                                            </td>
+                                                            <td class="text-end">
+                                                                <label class="form-check form-switch d-inline-block m-0">
+                                                                    <input class="form-check-input" type="checkbox"
+                                                                        wire:model="modulePermissions.{{ $module->name }}.create"
+                                                                        wire:click="togglePermission('{{ $module->name }}', 'create')"
+                                                                        {{ !$modulePermissions[$module->name]['enabled'] ? 'disabled' : '' }}>
+                                                                </label>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
                                                                 <div class="d-flex align-items-center">
-                                                                    <span class="avatar avatar-xs bg-warning-lt me-2">
+                                                                    <span class="avatar avatar-xs bg-yellow-lt me-2">
                                                                         <i class="fas fa-edit"></i>
                                                                     </span>
-                                                                    <div>Düzenleme</div>
+                                                                    <span>Düzenleme</span>
                                                                 </div>
-                                                            </div>
-                                                            <div class="form-check form-switch">
-                                                                <input class="form-check-input" type="checkbox"
-                                                                    wire:model="modulePermissions.{{ $module->name }}.update"
-                                                                    wire:click="toggleModulePermission('{{ $module->name }}', 'update')">
-                                                            </div>
-                                                        </div>
-                                                        
-                                                        <!-- Silme İzni -->
-                                                        <div class="list-group-item px-0 py-2 d-flex align-items-center">
-                                                            <div class="flex-grow-1">
+                                                            </td>
+                                                            <td class="text-end">
+                                                                <label class="form-check form-switch d-inline-block m-0">
+                                                                    <input class="form-check-input" type="checkbox"
+                                                                        wire:model="modulePermissions.{{ $module->name }}.update"
+                                                                        wire:click="togglePermission('{{ $module->name }}', 'update')"
+                                                                        {{ !$modulePermissions[$module->name]['enabled'] ? 'disabled' : '' }}>
+                                                                </label>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
                                                                 <div class="d-flex align-items-center">
-                                                                    <span class="avatar avatar-xs bg-danger-lt me-2">
+                                                                    <span class="avatar avatar-xs bg-red-lt me-2">
                                                                         <i class="fas fa-trash"></i>
                                                                     </span>
-                                                                    <div>Silme</div>
+                                                                    <span>Silme</span>
                                                                 </div>
-                                                            </div>
-                                                            <div class="form-check form-switch">
-                                                                <input class="form-check-input" type="checkbox"
-                                                                    wire:model="modulePermissions.{{ $module->name }}.delete"
-                                                                    wire:click="toggleModulePermission('{{ $module->name }}', 'delete')">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                            </td>
+                                                            <td class="text-end">
+                                                                <label class="form-check form-switch d-inline-block m-0">
+                                                                    <input class="form-check-input" type="checkbox"
+                                                                        wire:model="modulePermissions.{{ $module->name }}.delete"
+                                                                        wire:click="togglePermission('{{ $module->name }}', 'delete')"
+                                                                        {{ !$modulePermissions[$module->name]['enabled'] ? 'disabled' : '' }}>
+                                                                </label>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
                                             </div>
                                         </div>
                                     </div>
@@ -297,114 +263,109 @@
                                 @endforeach
                             </div>
                         </div>
-                        @else
-                        <!-- Root ve Admin rolleri için özel izinler -->
-                        @if(isset($inputs['role_id']) && $inputs['role_id'] === 'root')
-                            <div class="alert alert-info d-flex">
-                                <div>
-                                    <i class="fas fa-info-circle fa-lg me-2"></i>
-                                </div>
-                                <div>
-                                    <strong>Root Rolü Tam Yetkili</strong>
-                                    <p class="mb-0">Root rolüne sahip kullanıcılar sistemdeki tüm modüllere ve fonksiyonlara otomatik olarak tam erişime sahiptir. Bu rol için manuel yetki ataması yapılmasına gerek yoktur.</p>
-                                </div>
-                            </div>
-                        @elseif(isset($inputs['role_id']) && $inputs['role_id'] === 'admin')
-                            <div class="alert alert-primary d-flex">
-                                <div>
-                                    <i class="fas fa-shield-alt fa-lg me-2"></i>
-                                </div>
-                                <div>
-                                    <strong>Admin Rolü Yetkisi</strong>
-                                    <p class="mb-0">Admin rolüne sahip kullanıcılar sistemi yönetmek için gerekli tüm temel izinlere sahiptir. Özel izin atamalarıyla yetkileri sınırlandırabilirsiniz.</p>
+                        @endif
+                        
+                        <!-- Admin Yetkiler -->
+                        @if($inputs['role_id'] === 'admin')
+                        <div class="mt-4" wire:key="admin-permissions">
+                            <h3 class="card-title mb-3">
+                                <i class="fas fa-shield-alt text-primary me-2"></i>Özel İzinler
+                                <span class="badge bg-primary-lt ms-2">Admin İzinleri</span>
+                            </h3>
+                            
+                            <div class="alert alert-primary mb-3">
+                                <div class="d-flex">
+                                    <div><i class="fas fa-info-circle fa-lg me-2"></i></div>
+                                    <div>
+                                        <strong>Admin İzinleri Hakkında</strong>
+                                        <p class="mb-0">Admin kullanıcısı varsayılan olarak tüm izinlere sahiptir. Ancak belirli izinleri kısıtlamak isterseniz aşağıdan düzenleyebilirsiniz.</p>
+                                    </div>
                                 </div>
                             </div>
                             
-                            <!-- Admin için İzinler -->
-                            <div class="row g-3">
+                            <div class="accordion" id="permissionAccordion">
                                 @foreach($groupedPermissions as $module => $permissions)
-                                    <div class="col-lg-4 col-md-6">
-                                        <div class="card">
-                                            <div class="card-status-top bg-primary"></div>
-                                            <div class="card-body">
-                                                <div class="d-flex align-items-center mb-3">
-                                                    <span class="avatar avatar-sm bg-primary-lt me-2">
-                                                        <i class="fas fa-folder"></i>
-                                                    </span>
-                                                    <div class="me-auto">
-                                                        <h4 class="card-title text-capitalize m-0">{{ $moduleLabels[$module] ?? ucfirst($module) }}</h4>
+                                <div class="accordion-item" wire:key="perm-group-{{ $module }}">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                                data-bs-target="#collapse-{{ $module }}" aria-expanded="false">
+                                            <div class="d-flex align-items-center w-100">
+                                                <span class="avatar bg-primary-lt me-2">
+                                                    <i class="fas fa-folder"></i>
+                                                </span>
+                                                <span class="me-auto">{{ ucfirst($module) }}</span>
+                                                <span class="badge {{ count(array_intersect($permissions->pluck('id')->toArray(), $inputs['permissions'])) === $permissions->count() ? 'bg-success' : 'bg-muted' }} me-2">
+                                                    {{ count(array_intersect($permissions->pluck('id')->toArray(), $inputs['permissions'])) }}/{{ count($permissions) }}
+                                                </span>
+                                                <label class="form-check form-switch m-0 pe-2">
+                                                    <input class="form-check-input" type="checkbox"
+                                                        {{ count(array_intersect($permissions->pluck('id')->toArray(), $inputs['permissions'])) === $permissions->count() ? 'checked' : '' }}
+                                                        wire:click="toggleAllModulePermissions('{{ $module }}')">
+                                                </label>
+                                            </div>
+                                        </button>
+                                    </h2>
+                                    <div id="collapse-{{ $module }}" class="accordion-collapse collapse" data-bs-parent="#permissionAccordion">
+                                        <div class="accordion-body pt-0">
+                                            <div class="list-group list-group-flush">
+                                                @foreach($permissions as $permission)
+                                                <div class="list-group-item d-flex align-items-center py-2 px-0" wire:key="perm-{{ $permission->id }}">
+                                                    <div class="d-flex align-items-center flex-grow-1">
+                                                        <span class="avatar avatar-xs bg-blue-lt me-2">
+                                                            <i class="fas fa-key"></i>
+                                                        </span>
+                                                        <span>{{ ucfirst(str_replace(["{$module}.", '_'], ['', ' '], $permission->name)) }}</span>
                                                     </div>
-                                                    <div class="form-check form-switch">
-                                                        <input class="form-check-input" type="checkbox"
-                                                            wire:click="toggleModulePermissions('{{ $module }}')"
-                                                            @if(isset($inputs['permissions']) && count(array_intersect($permissions->pluck('id')->toArray(), $inputs['permissions'])) === $permissions->count()) checked @endif>
-                                                    </div>
-                                                </div>
-                                                
-                                                <div x-data="{ expanded: false }">
-                                                    <!-- İzin detayları butonu -->
-                                                    <button type="button" @click="expanded = !expanded" 
-                                                        class="btn btn-sm w-100 btn-outline-primary">
-                                                        <i class="fas fa-list-check me-1"></i>
-                                                        <span x-text="expanded ? 'İzinleri Gizle' : 'İzinleri Göster'"></span>
-                                                        <i class="fas fa-chevron-down ms-1" :class="{'fa-chevron-up': expanded}"></i>
-                                                    </button>
-                                                    
-                                                    <!-- İzin listesi -->
-                                                    <div x-show="expanded" x-collapse class="mt-3">
-                                                        <div class="list-group list-group-flush">
-                                                            @foreach($permissions as $permission)
-                                                                <label class="list-group-item px-0 py-2 d-flex align-items-center">
-                                                                    <div class="flex-grow-1">
-                                                                        <div class="d-flex align-items-center">
-                                                                            <span class="avatar avatar-xs bg-info-lt me-2">
-                                                                                <i class="fas fa-key"></i>
-                                                                            </span>
-                                                                            <div>{{ $permissionLabels[explode('.', $permission->name)[1]] ?? ucfirst(explode('.', $permission->name)[1] ?? $permission->name) }}</div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="form-check">
-                                                                        <input type="checkbox" class="form-check-input"
-                                                                            value="{{ $permission->id }}"
-                                                                            wire:model="inputs.permissions">
-                                                                    </div>
-                                                                </label>
-                                                            @endforeach
-                                                        </div>
+                                                    <div>
+                                                        <label class="form-check form-switch m-0">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                wire:model="inputs.permissions" value="{{ $permission->id }}">
+                                                        </label>
                                                     </div>
                                                 </div>
+                                                @endforeach
                                             </div>
                                         </div>
                                     </div>
+                                </div>
                                 @endforeach
                             </div>
-                        @else
-                            <!-- Rol seçilmemişse veya diğer roller için bilgi mesajı -->
-                            <div class="alert alert-warning d-flex">
-                                <div>
-                                    <i class="fas fa-exclamation-triangle fa-lg me-2"></i>
-                                </div>
-                                <div>
-                                    <strong>Rol Seçilmedi</strong>
-                                    <p class="mb-0">Lütfen kullanıcıya atamak istediğiniz rolü seçin. Rol seçimine göre kullanıcının izinleri otomatik olarak ayarlanacaktır.</p>
+                        </div>
+                        @endif
+                        
+                        <!-- Root Uyarısı -->
+                        @if($inputs['role_id'] === 'root')
+                        <div class="mt-4" wire:key="root-info">
+                            <div class="alert alert-danger">
+                                <div class="d-flex">
+                                    <div><i class="fas fa-exclamation-triangle fa-lg me-2"></i></div>
+                                    <div>
+                                        <h4 class="alert-title">Root Kullanıcı Yetkisi</h4>
+                                        <p class="mb-0">Root kullanıcısı sistem üzerindeki <strong>tüm özelliklere erişim</strong> hakkına sahiptir. Bu rol sadece tam yetkili sistem yöneticilerine verilmelidir.</p>
+                                    </div>
                                 </div>
                             </div>
+                        </div>
                         @endif
-                        @endif
+                    </div>
+                    
+                    <div class="card-footer text-end">
+                        <div class="d-flex">
+                            <a href="{{ route('admin.usermanagement.index') }}" class="btn">
+                                <i class="fas fa-times me-1"></i>İptal
+                            </a>
+                            <button type="submit" class="btn btn-primary ms-auto">
+                                <i class="fas fa-save me-1"></i>
+                                <span wire:loading.remove wire:target="save">{{ $userId ? 'Güncelle' : 'Kaydet' }}</span>
+                                <span wire:loading wire:target="save">
+                                    <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+                                    Kaydediliyor...
+                                </span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </form>
 </div>
-
-@push('scripts')
-<script>
-    document.addEventListener('livewire:initialized', () => {
-        // Alpine.js'in düzgün çalışması için yeniden başlatma
-        Livewire.hook('element.updated', () => {
-            Alpine.initTree(document.body);
-        });
-    });
-</script>
-@endpush

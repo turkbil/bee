@@ -35,7 +35,7 @@ class RoleManageComponent extends Component
                     'message' => 'Bu rol düzenlenemez.',
                     'type' => 'error',
                 ]);
-                return redirect()->route('admin.role.index');
+                return redirect()->route('admin.usermanagement.role.index');
             }
             
             $this->inputs = $this->role->only(['name', 'guard_name', 'is_protected']);

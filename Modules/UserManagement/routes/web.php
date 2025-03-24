@@ -8,7 +8,7 @@ use Modules\UserManagement\App\Http\Livewire\RoleManageComponent;
 use Modules\UserManagement\App\Http\Livewire\PermissionComponent;
 use Modules\UserManagement\App\Http\Livewire\PermissionManageComponent;
 use Modules\UserManagement\App\Http\Livewire\ModulePermissionComponent;
-use Modules\UserManagement\App\Http\Livewire\UserModulePermissionComponent;
+// use Modules\UserManagement\App\Http\Livewire\UserModulePermissionComponent; // Gerek kalmadı
 
 Route::middleware(['web', 'auth'])
     ->prefix('admin')
@@ -21,9 +21,9 @@ Route::middleware(['web', 'auth'])
                 Route::get('/', UserComponent::class)->name('index');
                 Route::get('/manage/{id?}', UserManageComponent::class)->name('manage');
                 
-                // Yeni eklenen rotalar
+                // Modül bazlı izinler UserManageComponent içine taşındı
                 Route::get('/module-permissions', ModulePermissionComponent::class)->name('module.permissions');
-                Route::get('/user/{id}/module-permissions', UserModulePermissionComponent::class)->name('user.module.permissions');
+                // Route::get('/user/{id}/module-permissions', UserModulePermissionComponent::class)->name('user.module.permissions'); // Artık gerekli değil
             });
 
         // Role Routes    

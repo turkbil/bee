@@ -8,199 +8,139 @@ use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\File;
 use App\Models\Tenant;
+use Modules\ModuleManagement\App\Models\Module;
+use Modules\UserManagement\App\Models\ModulePermission;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ModulePermissionSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Modül izinlerini oluştur
      */
     public function run(): void
     {
+        // Önce ilişkili tabloları temizleyelim
+        $this->cleanPermissionTables();
+        
+        // Temel izin tipleri
+        $permissionTypes = [
+            'view' => 'Görüntüleme',
+            'create' => 'Oluşturma',
+            'update' => 'Güncelleme',
+            'delete' => 'Silme',
+        ];
+        
         // Mevcut modülleri bul
         $modulesPath = base_path('Modules');
         
         if (!File::exists($modulesPath)) {
+            $this->command->warn('Modules dizini bulunamadı!');
             return;
         }
 
-        $modules = File::directories($modulesPath);
-        $moduleNames = array_map('basename', $modules);
+        $moduleDirectories = File::directories($modulesPath);
+        $moduleNames = array_map('basename', $moduleDirectories);
         
-        // Tüm tenant'lar için modül izinlerini oluştur
-        $tenants = Tenant::all();
+        // Root ve Admin rolleri
+        $rootRole = Role::where('name', 'root')->first();
+        $adminRole = Role::where('name', 'admin')->first();
+        $editorRole = Role::where('name', 'editor')->first();
         
-        foreach ($tenants as $tenant) {
-            $tenant->run(function () use ($moduleNames, $tenant) {
-                foreach ($moduleNames as $moduleName) {
-                    $this->createModulePermissions($moduleName, $tenant->central);
+        if (!$rootRole || !$adminRole) {
+            $this->command->warn('Root ve Admin rolleri oluşturulmamış!');
+        }
+        
+        // Her modül için izinleri oluştur
+        foreach ($moduleNames as $moduleName) {
+            // Modül adı ve slug'ını hazırla
+            $moduleSlug = Str::slug(Str::snake($moduleName));
+            $displayName = Str::title(Str::snake($moduleName, ' '));
+            
+            $this->command->info("Modül izinleri oluşturuluyor: {$displayName}");
+            
+            // Her izin tipi için oluştur
+            foreach ($permissionTypes as $type => $label) {
+                $permissionName = "{$moduleSlug}.{$type}";
+                $description = "{$displayName} - {$label}";
+                
+                // İzni oluştur
+                $permission = Permission::create([
+                    'name' => $permissionName,
+                    'guard_name' => 'web',
+                    'description' => $description
+                ]);
+                
+                // Root rolüne tüm izinleri ver
+                if ($rootRole) {
+                    $rootRole->givePermissionTo($permission);
                 }
                 
-                // Süper admin rolüne tüm izinleri ver
-                $this->assignPermissionsToSuperAdmin($tenant->central);
-            });
-        }
-    }
-    
-    /**
-     * Bir modül için gerekli izinleri oluşturur
-     */
-    private function createModulePermissions(string $moduleName, bool $isCentral): void
-    {
-        // Modül adını küçük harflerle ve slug formatında tutalım
-        $moduleSlug = strtolower($moduleName);
-        
-        // Temel izinleri oluştur
-        $permissions = [
-            // Görüntüleme izni
-            "{$moduleSlug}.view" => "{$moduleName} modülünü görüntüleme",
-            
-            // Ekleme izni
-            "{$moduleSlug}.create" => "{$moduleName} modülüne yeni kayıt ekleme",
-            
-            // Düzenleme izni
-            "{$moduleSlug}.edit" => "{$moduleName} modülündeki kayıtları düzenleme",
-            
-            // Silme izni
-            "{$moduleSlug}.delete" => "{$moduleName} modülündeki kayıtları silme",
-            
-            // Ayarlar izni
-            "{$moduleSlug}.settings" => "{$moduleName} modülü ayarlarını düzenleme",
-        ];
-        
-        // Central tenant için ek izinler
-        if ($isCentral) {
-            $permissions["{$moduleSlug}.install"] = "{$moduleName} modülünü kurma/kaldırma";
-            $permissions["{$moduleSlug}.export"] = "{$moduleName} modülü verilerini dışa aktarma";
-            $permissions["{$moduleSlug}.import"] = "{$moduleName} modülü verilerini içe aktarma";
-        }
-        
-        // İzinleri veritabanına kaydet
-        foreach ($permissions as $name => $description) {
-            $permission = Permission::firstOrCreate(
-                ['name' => $name, 'guard_name' => 'web']
-            );
-            
-            // Description sütunu varsa güncelle
-            if (Schema::hasColumn('permissions', 'description')) {
-                $permission->description = $description;
-                $permission->save();
+                // Admin rolüne tüm izinleri ver (istenen şekilde)
+                if ($adminRole) {
+                    $adminRole->givePermissionTo($permission);
+                }
             }
         }
         
-        // Rollere modül izinlerini ata
-        $this->assignModulePermissionsToRoles($moduleSlug, $isCentral);
-    }
-    
-    /**
-     * Bir modül için oluşturulan izinleri ilgili rollere atar
-     */
-    private function assignModulePermissionsToRoles(string $moduleSlug, bool $isCentral): void
-    {
-        if ($isCentral) {
-            // Central için roller
-            $this->assignCentralModulePermissions($moduleSlug);
-        } else {
-            // Tenant için roller
-            $this->assignTenantModulePermissions($moduleSlug);
-        }
-    }
-    
-    /**
-     * Central domain için modül izinlerini rollere atar
-     */
-    private function assignCentralModulePermissions(string $moduleSlug): void
-    {
-        // Admin rolü
-        $adminRole = Role::where('name', 'admin')->first();
-        if ($adminRole) {
-            $adminRole->givePermissionTo([
-                "{$moduleSlug}.view",
-                "{$moduleSlug}.create",
-                "{$moduleSlug}.edit",
-                "{$moduleSlug}.delete",
-                "{$moduleSlug}.settings",
-                "{$moduleSlug}.export",
-                "{$moduleSlug}.import"
-            ]);
-        }
-        
-        // Tenant-manager rolü
-        $tenantManagerRole = Role::where('name', 'tenant-manager')->first();
-        if ($tenantManagerRole) {
-            $tenantManagerRole->givePermissionTo([
-                "{$moduleSlug}.view"
-            ]);
-        }
-        
-        // Viewer rolü
-        $viewerRole = Role::where('name', 'viewer')->first();
-        if ($viewerRole) {
-            $viewerRole->givePermissionTo([
-                "{$moduleSlug}.view"
-            ]);
-        }
-    }
-    
-    /**
-     * Tenant domain için modül izinlerini rollere atar
-     */
-    private function assignTenantModulePermissions(string $moduleSlug): void
-    {
-        // Tenant-admin rolü
-        $tenantAdminRole = Role::where('name', 'tenant-admin')->first();
-        if ($tenantAdminRole) {
-            $tenantAdminRole->givePermissionTo([
-                "{$moduleSlug}.view",
-                "{$moduleSlug}.create",
-                "{$moduleSlug}.edit",
-                "{$moduleSlug}.delete",
-                "{$moduleSlug}.settings"
-            ]);
-        }
-        
-        // Manager rolü
-        $managerRole = Role::where('name', 'manager')->first();
-        if ($managerRole) {
-            $managerRole->givePermissionTo([
-                "{$moduleSlug}.view",
-                "{$moduleSlug}.create",
-                "{$moduleSlug}.edit",
-                "{$moduleSlug}.delete"
-            ]);
-        }
-        
-        // Editor rolü
-        $editorRole = Role::where('name', 'editor')->first();
+        // Editör rolüne de belirli izinleri ver
         if ($editorRole) {
-            $editorRole->givePermissionTo([
-                "{$moduleSlug}.view",
-                "{$moduleSlug}.create",
-                "{$moduleSlug}.edit"
-            ]);
+            $contentModules = [
+                'page', 
+                'portfolio', 
+                'blog', 
+                'media',
+                'gallery',
+                'slider',
+                'content',
+                'document'
+            ];
+            
+            foreach ($contentModules as $module) {
+                // İçerik modülleri için view, create ve update izinleri ver
+                $contentPermissions = Permission::where(function($query) use ($module) {
+                    $query->where('name', 'like', $module.'.%');
+                })->where(function($query) {
+                    $query->where('name', 'like', '%.view')
+                          ->orWhere('name', 'like', '%.create')
+                          ->orWhere('name', 'like', '%.update');
+                })->get();
+                
+                if ($contentPermissions->count() > 0) {
+                    $editorRole->givePermissionTo($contentPermissions);
+                }
+            }
         }
         
-        // User rolü
-        $userRole = Role::where('name', 'user')->first();
-        if ($userRole) {
-            $userRole->givePermissionTo([
-                "{$moduleSlug}.view"
-            ]);
-        }
+        $this->command->info('Modül izinleri başarıyla oluşturuldu!');
     }
     
     /**
-     * Süper admin rolüne tüm izinleri atar
+     * İzin tablolarını temizle (ilişkili tablolar önce temizlenmeli)
      */
-    private function assignPermissionsToSuperAdmin(bool $isCentral): void
+    private function cleanPermissionTables(): void
     {
-        if ($isCentral) {
-            $superAdminRole = Role::where('name', 'super-admin')->first();
-        } else {
-            $superAdminRole = Role::where('name', 'tenant-admin')->first();
+        $this->command->info('İzin tabloları temizleniyor...');
+        
+        // İlişkili tabloları önce temizle
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        
+        if (Schema::hasTable('model_has_permissions')) {
+            DB::table('model_has_permissions')->truncate();
         }
         
-        if ($superAdminRole) {
-            $superAdminRole->givePermissionTo(Permission::all());
+        if (Schema::hasTable('model_has_roles')) {
+            DB::table('model_has_roles')->truncate();
         }
+        
+        if (Schema::hasTable('role_has_permissions')) {
+            DB::table('role_has_permissions')->truncate();
+        }
+        
+        if (Schema::hasTable('permissions')) {
+            DB::table('permissions')->truncate();
+        }
+        
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }

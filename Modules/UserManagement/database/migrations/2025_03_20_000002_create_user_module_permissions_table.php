@@ -23,7 +23,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->string('module_name', 50)->index();
-            $table->string('permission_type', 20)->index();
+            $table->string('permission_type', 20)->index(); // view, create, update, delete
             $table->boolean('is_active')->default(true)->index();
             $table->timestamps();
             

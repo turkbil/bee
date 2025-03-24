@@ -525,4 +525,4 @@ class UserManageComponent extends Component
             'model' => $this->userId ? User::find($this->userId) : null,
         ]);
     }
-}
+}   

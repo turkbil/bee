@@ -25,6 +25,13 @@ class ModulePermissionMiddleware
             return redirect()->route('login');
         }
         
+        // Kullanıcı aktif değilse erişime izin verme
+        if (!$user->is_active) {
+            Auth::logout();
+            return redirect()->route('login')
+                ->with('error', 'Hesabınız pasif durumda. Lütfen yönetici ile iletişime geçin.');
+        }
+        
         // Root yetkisine sahip kullanıcı için hiçbir kısıtlama yok
         if ($user->isRoot()) {
             return $next($request);

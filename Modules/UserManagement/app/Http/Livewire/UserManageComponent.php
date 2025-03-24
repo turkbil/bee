@@ -31,6 +31,10 @@ class UserManageComponent extends Component
     public $modulePermissions = [];
     public $availableModules = [];
     public $activeTab = 'profile';
+    
+    // Yetkiler için yeni değişkenler
+    public $moduleName; // Modül toggle için
+    public $modulePermType; // İzin tipi toggle için
 
     protected $rules = [
         'inputs.name' => 'required|min:3',
@@ -42,12 +46,8 @@ class UserManageComponent extends Component
         'inputs.permissions.*' => 'exists:permissions,id',
     ];
 
-    protected $listeners = [
-        'refreshModulePermissions' => 'loadAvailableModules',
-        'clearModulePermissions' => 'clearAllModulePermissions',
-        'toggleModuleAll',
-        'togglePermission' => 'toggleSinglePermission'
-    ];
+    // Yeni protected $listeners dizisi
+    protected $listeners = ['refreshModules', 'clearAllModules', 'updateModules'];
 
     public function mount($id = null)
     {
@@ -169,6 +169,9 @@ class UserManageComponent extends Component
 
     public function updatedInputsRoleId($value)
     {
+        // Log role change
+        Log::debug('Role changed to: ' . $value);
+        
         // Eğer rol editör değilse, izinleri sıfırla
         if ($value !== 'editor') {
             $this->clearAllModulePermissions();
@@ -179,6 +182,8 @@ class UserManageComponent extends Component
 
     public function clearAllModulePermissions()
     {
+        Log::debug('Clearing all module permissions');
+        
         foreach ($this->modulePermissions as $moduleName => $permissions) {
             $this->modulePermissions[$moduleName] = [
                 'enabled' => false,
@@ -193,38 +198,34 @@ class UserManageComponent extends Component
     }
 
     /**
-     * Modül izinlerinin tümünü aç/kapat
+     * Bilgileri kaydet ve gerekirse modül ismini kullan
      */
-    public function toggleModuleAll($params)
+    public function setModuleName($name)
     {
-        Log::debug('toggleModuleAll çağrıldı', [
-            'params' => $params,
-            'type' => gettype($params)
-        ]);
+        $this->moduleName = $name;
+        Log::debug('Module name set to: ' . $name);
+        $this->toggleModuleEnabled($name);
+    }
+    
+    /**
+     * İzin tipini ayarla ve gerekirse kullan
+     */
+    public function setModulePermType($module, $type)
+    {
+        $this->moduleName = $module;
+        $this->modulePermType = $type;
+        Log::debug('Module permission set', ['module' => $module, 'type' => $type]);
+        $this->toggleModulePermission($module, $type);
+    }
+
+    /**
+     * Modül etkinleştirme/devre dışı bırakma
+     */
+    public function toggleModuleEnabled($moduleName)
+    {
+        Log::debug('toggleModuleEnabled for: ' . $moduleName);
         
         try {
-            // Gelen parametre string ise (sadece modül adı)
-            if (is_string($params)) {
-                $moduleName = $params;
-            }
-            // Gelen parametre array ise (Livewire olayı)
-            elseif (is_array($params) && isset($params['module'])) {
-                $moduleName = $params['module'];
-            } 
-            // Farklı bir format gelirse 
-            else {
-                Log::error('toggleModuleAll için geçersiz parametre formatı', [
-                    'params' => $params,
-                    'type' => gettype($params)
-                ]);
-                return;
-            }
-            
-            Log::debug('toggleModuleAll için modül adı', [
-                'moduleName' => $moduleName
-            ]);
-            
-            // ModulePermissions dizisinde bu modül tanımlı mı kontrol et
             if (!isset($this->modulePermissions[$moduleName])) {
                 Log::error('modulePermissions dizisinde tanımlı olmayan modül', [
                     'moduleName' => $moduleName,
@@ -233,52 +234,41 @@ class UserManageComponent extends Component
                 return;
             }
             
-            // Mevcut durumun tersini al
-            $isEnabled = !$this->modulePermissions[$moduleName]['enabled'];
+            // Mevcut durumu tersine çevirme yerine, doğrudan aktif hale getir
+            $this->modulePermissions[$moduleName]['enabled'] = true;
+            $this->modulePermissions[$moduleName]['view'] = true;
+            $this->modulePermissions[$moduleName]['create'] = true;
+            $this->modulePermissions[$moduleName]['update'] = true;
+            $this->modulePermissions[$moduleName]['delete'] = true;
             
-            // Modül izinlerini güncelle
-            $this->modulePermissions[$moduleName]['enabled'] = $isEnabled;
-            $this->modulePermissions[$moduleName]['view'] = $isEnabled;
-            $this->modulePermissions[$moduleName]['create'] = $isEnabled;
-            $this->modulePermissions[$moduleName]['update'] = $isEnabled;
-            $this->modulePermissions[$moduleName]['delete'] = $isEnabled;
-            
-            Log::debug('Modül izinleri güncellendi', [
+            Log::debug('Module aktivasyonu', [
                 'moduleName' => $moduleName,
-                'isEnabled' => $isEnabled
+                'permissions' => $this->modulePermissions[$moduleName]
             ]);
             
-            // Frontend'e bildir
-            $this->dispatch('modulePermissionsUpdated');
-            
         } catch (\Exception $e) {
-            Log::error('toggleModuleAll hata', [
+            Log::error('toggleModuleEnabled error', [
                 'message' => $e->getMessage(),
                 'file' => $e->getFile(),
-                'line' => $e->getLine()
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
             ]);
         }
     }
 
-    // Frontend'den gelen tekil izin toggle olaylarını yakala
-    public function toggleSinglePermission($params)
+    /**
+     * Tek izin tipini aç/kapat
+     */
+    public function toggleModulePermission($moduleName, $permType)
     {
         try {
-            if (is_string($params)) {
-                Log::error('toggleSinglePermission string param', ['params' => $params]);
-                return;
-            }
-            
-            if (!isset($params['module']) || !isset($params['type'])) {
-                Log::error('toggleSinglePermission eksik param', ['params' => $params]);
-                return;
-            }
-            
-            $moduleName = $params['module'];
-            $permType = $params['type'];
+            Log::debug('toggleModulePermission called', [
+                'module' => $moduleName,
+                'type' => $permType
+            ]);
             
             if (!isset($this->modulePermissions[$moduleName])) {
-                Log::error('toggleSinglePermission modül bulunamadı', [
+                Log::error('toggleModulePermission module not found', [
                     'moduleName' => $moduleName,
                     'availableModules' => array_keys($this->modulePermissions)
                 ]);
@@ -307,10 +297,11 @@ class UserManageComponent extends Component
             
             $this->dispatch('modulePermissionsUpdated');
         } catch (\Exception $e) {
-            Log::error('toggleSinglePermission hata', [
+            Log::error('toggleModulePermission error', [
                 'message' => $e->getMessage(),
                 'file' => $e->getFile(),
-                'line' => $e->getLine()
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
             ]);
         }
     }
@@ -351,18 +342,25 @@ class UserManageComponent extends Component
                 if ($role) {
                     $user->syncRoles([$role->name]);
                     
+                    Log::debug('Syncing roles for user', [
+                        'user_id' => $user->id,
+                        'role' => $role->name
+                    ]);
+                    
                     // Eğer rol editor ise, modül bazlı izinleri işle
                     if ($role->name === 'editor') {
                         $this->saveModulePermissions($user);
                     } else {
                         // Editor rolü değilse, modül izinlerini temizle
                         UserModulePermission::where('user_id', $user->id)->delete();
+                        Log::debug('Deleted module permissions for non-editor user', ['user_id' => $user->id]);
                     }
                 }
             } else {
                 $user->syncRoles([]);
                 // Rol yoksa, modül izinlerini de temizle
                 UserModulePermission::where('user_id', $user->id)->delete();
+                Log::debug('Deleted module permissions for user with no role', ['user_id' => $user->id]);
             }
 
             // İzin atama (sadece editor rolü değilse)
@@ -370,8 +368,13 @@ class UserManageComponent extends Component
                 if (!empty($this->inputs['permissions'])) {
                     $permissions = Permission::whereIn('id', $this->inputs['permissions'])->get();
                     $user->syncPermissions($permissions);
+                    Log::debug('Synced permissions for non-editor user', [
+                        'user_id' => $user->id, 
+                        'permission_count' => count($this->inputs['permissions'])
+                    ]);
                 } else {
                     $user->syncPermissions([]);
+                    Log::debug('Cleared permissions for user', ['user_id' => $user->id]);
                 }
             }
 
@@ -410,6 +413,13 @@ class UserManageComponent extends Component
         } catch (\Exception $e) {
             DB::rollBack();
             
+            Log::error('Error saving user', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
             $this->dispatch('toast', [
                 'title' => 'Hata!',
                 'message' => 'İşlem sırasında bir hata oluştu: ' . $e->getMessage(),
@@ -420,29 +430,46 @@ class UserManageComponent extends Component
     
     protected function saveModulePermissions($user)
     {
-        // Önce kullanıcının tüm modül izinlerini temizle
-        UserModulePermission::where('user_id', $user->id)->delete();
-        
-        // Her modül için izinleri kontrol et ve kaydet
-        foreach ($this->modulePermissions as $moduleName => $permissions) {
-            // Modül etkinleştirilmişse
-            if (isset($permissions['enabled']) && $permissions['enabled']) {
-                // CRUD izinleri
-                foreach (['view', 'create', 'update', 'delete'] as $permissionType) {
-                    if (isset($permissions[$permissionType]) && $permissions[$permissionType]) {
-                        UserModulePermission::create([
-                            'user_id' => $user->id,
-                            'module_name' => $moduleName,
-                            'permission_type' => $permissionType,
-                            'is_active' => true
-                        ]);
+        try {
+            Log::debug('Saving module permissions for user', [
+                'user_id' => $user->id,
+                'permissions' => $this->modulePermissions
+            ]);
+            
+            // Önce kullanıcının tüm modül izinlerini temizle
+            UserModulePermission::where('user_id', $user->id)->delete();
+            
+            // Her modül için izinleri kontrol et ve kaydet
+            foreach ($this->modulePermissions as $moduleName => $permissions) {
+                // Modül etkinleştirilmişse
+                if (isset($permissions['enabled']) && $permissions['enabled']) {
+                    // CRUD izinleri
+                    foreach (['view', 'create', 'update', 'delete'] as $permissionType) {
+                        if (isset($permissions[$permissionType]) && $permissions[$permissionType]) {
+                            Log::debug("Creating permission for module: $moduleName, type: $permissionType");
+                            
+                            UserModulePermission::create([
+                                'user_id' => $user->id,
+                                'module_name' => $moduleName,
+                                'permission_type' => $permissionType,
+                                'is_active' => true
+                            ]);
+                        }
                     }
                 }
             }
+            
+            // Kullanıcı modül izinleri önbelleğini temizle
+            $this->clearUserModulePermissionCache($user);
+            
+        } catch (\Exception $e) {
+            Log::error('Error saving module permissions', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+            throw $e;
         }
-        
-        // Kullanıcı modül izinleri önbelleğini temizle
-        $this->clearUserModulePermissionCache($user);
     }
     
     protected function clearUserModulePermissionCache($user)

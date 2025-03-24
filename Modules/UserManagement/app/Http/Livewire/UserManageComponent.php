@@ -41,7 +41,12 @@ class UserManageComponent extends Component
         'inputs.permissions.*' => 'exists:permissions,id',
     ];
 
-    protected $listeners = ['refreshModulePermissions' => 'loadAvailableModules'];
+    protected $listeners = [
+        'refreshModulePermissions' => 'loadAvailableModules',
+        'clearModulePermissions' => 'clearAllModulePermissions',
+        'toggleModuleAll' => 'toggleModulePermissions',
+        'togglePermission' => 'toggleSinglePermission'
+    ];
 
     public function mount($id = null)
     {
@@ -161,41 +166,73 @@ class UserManageComponent extends Component
         $this->activeTab = $tab;
     }
 
-    public function toggleModuleAll($moduleName)
+    public function updatedInputsRoleId($value)
     {
-        // Modülün mevcut durumunu kontrol et
-        $currentState = $this->modulePermissions[$moduleName]['enabled'];
+        // Eğer rol editör değilse, izinleri sıfırla
+        if ($value !== 'editor') {
+            $this->clearAllModulePermissions();
+        }
         
-        // Modülü ve tüm izinlerini değiştir
-        $this->modulePermissions[$moduleName]['enabled'] = !$currentState;
-        $this->modulePermissions[$moduleName]['view'] = !$currentState;
-        $this->modulePermissions[$moduleName]['create'] = !$currentState;
-        $this->modulePermissions[$moduleName]['update'] = !$currentState;
-        $this->modulePermissions[$moduleName]['delete'] = !$currentState;
+        $this->dispatch('roleChanged', $value);
     }
-    
-    public function togglePermission($moduleName, $type)
+
+    public function clearAllModulePermissions()
     {
-        $this->modulePermissions[$moduleName][$type] = !$this->modulePermissions[$moduleName][$type];
+        foreach ($this->modulePermissions as $moduleName => $permissions) {
+            $this->modulePermissions[$moduleName] = [
+                'enabled' => false,
+                'view' => false,
+                'create' => false,
+                'update' => false,
+                'delete' => false
+            ];
+        }
         
-        // Herhangi bir izin aktifse, modülü de aktif et
-        if ($this->modulePermissions[$moduleName][$type]) {
+        $this->dispatch('modulePermissionsUpdated');
+    }
+
+    // Frontend'den gelen toggle olaylarını yakala
+    public function toggleModulePermissions($params)
+    {
+        $moduleName = $params['module'];
+        $isEnabled = !$this->modulePermissions[$moduleName]['enabled'];
+        
+        $this->modulePermissions[$moduleName]['enabled'] = $isEnabled;
+        $this->modulePermissions[$moduleName]['view'] = $isEnabled;
+        $this->modulePermissions[$moduleName]['create'] = $isEnabled;
+        $this->modulePermissions[$moduleName]['update'] = $isEnabled;
+        $this->modulePermissions[$moduleName]['delete'] = $isEnabled;
+        
+        $this->dispatch('modulePermissionsUpdated');
+    }
+
+    // Frontend'den gelen tekil izin toggle olaylarını yakala
+    public function toggleSinglePermission($params)
+    {
+        $moduleName = $params['module'];
+        $permType = $params['type'];
+        
+        $this->modulePermissions[$moduleName][$permType] = !$this->modulePermissions[$moduleName][$permType];
+        
+        // Eğer herhangi bir izin aktifse, modülü de aktif yap
+        if ($this->modulePermissions[$moduleName][$permType]) {
             $this->modulePermissions[$moduleName]['enabled'] = true;
         } else {
-            // Aktif izin kaldı mı kontrol et
-            $hasActivePermission = false;
-            foreach (['view', 'create', 'update', 'delete'] as $permType) {
-                if ($this->modulePermissions[$moduleName][$permType]) {
-                    $hasActivePermission = true;
+            // Hiçbir izin kalmadıysa modülü pasif yap
+            $hasAnyPermission = false;
+            foreach (['view', 'create', 'update', 'delete'] as $type) {
+                if ($this->modulePermissions[$moduleName][$type]) {
+                    $hasAnyPermission = true;
                     break;
                 }
             }
             
-            // Hiç aktif izin kalmadıysa modülü devre dışı bırak
-            if (!$hasActivePermission) {
+            if (!$hasAnyPermission) {
                 $this->modulePermissions[$moduleName]['enabled'] = false;
             }
         }
+        
+        $this->dispatch('modulePermissionsUpdated');
     }
 
     public function toggleActiveStatus()
@@ -355,16 +392,6 @@ class UserManageComponent extends Component
         // Değilse, eksik olanları ekle
         else {
             $this->inputs['permissions'] = array_values(array_unique(array_merge($this->inputs['permissions'], $modulePermissions)));
-        }
-    }
-
-    public function updatedInputsRoleId($value)
-    {
-        // Rol değiştiğinde, admin/editor seçildiyse uygun sekmeye geç
-        if ($value === 'editor') {
-            $this->activeTab = 'modules';
-        } elseif ($value === 'admin') {
-            $this->activeTab = 'permissions';
         }
     }
 

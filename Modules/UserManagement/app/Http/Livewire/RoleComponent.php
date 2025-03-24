@@ -102,9 +102,13 @@ class RoleComponent extends Component
             ->when($this->search, function ($query) {
                 $query->where('name', 'like', '%' . $this->search . '%');
             })
+            ->when(!auth()->user()->hasRole('root'), function($query) {
+                // Root olmayan kullanıcılar root rolünü göremesin
+                $query->where('name', '!=', 'root');
+            })
             ->orderBy('created_at', 'desc')
             ->paginate(10);
- 
+     
         return view('usermanagement::livewire.role-component', [
             'roles' => $roles
         ]);

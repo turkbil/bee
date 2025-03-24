@@ -145,57 +145,71 @@
                        </div>
                    </div>
                    <div class="card-body">
-                       <div class="row g-3">
-                           @forelse($groupedPermissions as $group => $items)
-                           <div class="col-md-6">
-                               <div class="card">
-                                   <div class="card-header">
-                                       <h4 class="card-title mb-0">
-                                           <div class="d-flex align-items-center">
-                                               <i class="fas fa-folder me-2 text-blue"></i>
-                                               {{ Str::title($group) }}
-                                               <span class="badge bg-blue ms-2">{{ count($items) }}</span>
+                        @if($roleId && $role && $role->isRoot())
+                            <div class="alert alert-info">
+                                <div class="d-flex">
+                                    <div>
+                                        <i class="fas fa-info-circle fa-2x me-3 text-info"></i>
+                                    </div>
+                                    <div>
+                                        <h4>Root Rolü Tam Yetkili</h4>
+                                        <p>Root rolü sistemdeki tüm modüllere ve fonksiyonlara otomatik olarak tam erişime sahiptir. Bu rol için manuel yetki ataması yapılmasına gerek yoktur.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        @else
+                           <div class="row g-3">
+                               @forelse($groupedPermissions as $group => $items)
+                               <div class="col-md-6">
+                                   <div class="card">
+                                       <div class="card-header">
+                                           <h4 class="card-title mb-0">
+                                               <div class="d-flex align-items-center">
+                                                   <i class="fas fa-folder me-2 text-blue"></i>
+                                                   {{ Str::title($group) }}
+                                                   <span class="badge bg-blue ms-2">{{ count($items) }}</span>
+                                               </div>
+                                           </h4>
+                                           <div class="card-actions">
+                                               <label class="form-check form-switch">
+                                                   <input type="checkbox" class="form-check-input"
+                                                       wire:click="toggleGroupPermissions('{{ $group }}')"
+                                                       {{ $this->isGroupSelected($group) ? 'checked' : '' }}
+                                                       {{ $roleId && $role->isBaseRole() ? 'disabled' : '' }}>
+                                                   <span class="form-check-label">Tümü</span>
+                                               </label>
                                            </div>
-                                       </h4>
-                                       <div class="card-actions">
-                                           <label class="form-check form-switch">
+                                       </div>
+                                       <div class="card-body">
+                                           @foreach($items as $permission)
+                                           <label class="form-check mb-2">
                                                <input type="checkbox" class="form-check-input"
-                                                   wire:click="toggleGroupPermissions('{{ $group }}')"
-                                                   {{ $this->isGroupSelected($group) ? 'checked' : '' }}
+                                                   wire:model.defer="inputs.permissions"
+                                                   value="{{ $permission->name }}"
                                                    {{ $roleId && $role->isBaseRole() ? 'disabled' : '' }}>
-                                               <span class="form-check-label">Tümü</span>
+                                               <span class="form-check-label">
+                                                   {{ Str::title(Str::after($permission->name, '.')) }}
+                                               </span>
                                            </label>
+                                           @endforeach
                                        </div>
                                    </div>
-                                   <div class="card-body">
-                                       @foreach($items as $permission)
-                                       <label class="form-check mb-2">
-                                           <input type="checkbox" class="form-check-input"
-                                               wire:model.defer="inputs.permissions"
-                                               value="{{ $permission->name }}"
-                                               {{ $roleId && $role->isBaseRole() ? 'disabled' : '' }}>
-                                           <span class="form-check-label">
-                                               {{ Str::title(Str::after($permission->name, '.')) }}
-                                           </span>
-                                       </label>
-                                       @endforeach
+                               </div>
+                               @empty
+                               <div class="col-12">
+                                   <div class="empty">
+                                       <div class="empty-icon">
+                                           <i class="fas fa-search"></i>
+                                       </div>
+                                       <p class="empty-title">Yetki bulunamadı</p>
+                                       <p class="empty-subtitle text-muted">
+                                           Arama kriterine uygun yetki bulunamadı.
+                                       </p>
                                    </div>
                                </div>
+                               @endforelse
                            </div>
-                           @empty
-                           <div class="col-12">
-                               <div class="empty">
-                                   <div class="empty-icon">
-                                       <i class="fas fa-search"></i>
-                                   </div>
-                                   <p class="empty-title">Yetki bulunamadı</p>
-                                   <p class="empty-subtitle text-muted">
-                                       Arama kriterine uygun yetki bulunamadı.
-                                   </p>
-                               </div>
-                           </div>
-                           @endforelse
-                       </div>
+                       @endif
                    </div>
                </div>
            </div>

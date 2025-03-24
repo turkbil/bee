@@ -170,17 +170,25 @@ class RoleManageComponent extends Component
 
     public function render()
     {
-        $groupedPermissions = Permission::where('guard_name', 'admin') 
-            ->when($this->permissionSearch, function ($query) {
-                $query->where('name', 'like', '%' . $this->permissionSearch . '%');
-            })
-            ->get()
-            ->groupBy(function($permission) {
-                return Str::before($permission->name, '.');
-            });
-
+        // Root rolünü gizlemek için izinleri sadece root olmayan roller için göster
+        $shouldShowPermissions = !($this->roleId && $this->role && $this->role->isRoot());
+        
+        $groupedPermissions = [];
+        
+        if ($shouldShowPermissions) {
+            $groupedPermissions = Permission::where('guard_name', 'admin') 
+                ->when($this->permissionSearch, function ($query) {
+                    $query->where('name', 'like', '%' . $this->permissionSearch . '%');
+                })
+                ->get()
+                ->groupBy(function($permission) {
+                    return Str::before($permission->name, '.');
+                });
+        }
+    
         return view('usermanagement::livewire.role-manage-component', [
-            'groupedPermissions' => $groupedPermissions
+            'groupedPermissions' => $groupedPermissions,
+            'shouldShowPermissions' => $shouldShowPermissions
         ]);
     }
 }

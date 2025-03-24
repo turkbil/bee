@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Carbon\Carbon;
+use App\Models\User;
 
 class LoginRequest extends FormRequest
 {
@@ -46,6 +48,25 @@ class LoginRequest extends FormRequest
 
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
+            ]);
+        }
+
+        // Kullanıcı pasif ise giriş yapmasına izin verme
+        $user = User::where('email', $this->email)->first();
+        if ($user && !$user->is_active) {
+            Auth::logout();
+            
+            RateLimiter::hit($this->throttleKey());
+            
+            throw ValidationException::withMessages([
+                'email' => 'Bu hesap pasif durumda. Lütfen yönetici ile iletişime geçin.',
+            ]);
+        }
+
+        // Son giriş zamanını güncelle
+        if ($user) {
+            $user->update([
+                'last_login_at' => Carbon::now()
             ]);
         }
 

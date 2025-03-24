@@ -3,7 +3,7 @@
     <form wire:submit.prevent="save">
         <div class="row">
             <!-- Sol Kolon - Temel Ayarlar -->
-            <div class="col-md-5">
+            <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">
@@ -49,30 +49,34 @@
                         <div class="mb-4">
                             <label class="form-label d-block">
                                 <i class="fas fa-tasks me-1 text-blue"></i>
-                                Yetki İşlemleri
+                                CRUD İşlemleri
                             </label>
                             <div class="row g-2">
                                 @foreach([
                                 'view' => ['icon' => 'eye', 'color' => 'info', 'text' => 'Görüntüleme'],
                                 'create' => ['icon' => 'plus', 'color' => 'success', 'text' => 'Oluşturma'],
                                 'update' => ['icon' => 'edit', 'color' => 'warning', 'text' => 'Güncelleme'],
-                                'delete' => ['icon' => 'trash', 'color' => 'danger', 'text' => 'Silme'],
-                                'publish' => ['icon' => 'check-circle', 'color' => 'success', 'text' => 'Yayınlama']
+                                'delete' => ['icon' => 'trash', 'color' => 'danger', 'text' => 'Silme']
                                 ] as $type => $attrs)
-                                <div class="col-6">
-                                    <label class="form-check form-check-inline w-100">
-                                        <input type="checkbox" class="form-check-input"
-                                            wire:model.defer="inputs.permission_types" value="{{ $type }}"
+                                <div class="col-6 mb-2">
+                                    <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
+                                        <input type="checkbox" 
+                                            wire:model.defer="inputs.permission_types" 
+                                            value="{{ $type }}"
                                             @if(in_array($type, $inputs['permission_types'])) checked @endif>
-                                        <span class="form-check-label w-100">
-                                            <div class="d-flex align-items-center">
-                                                <span class="avatar avatar-xs bg-{{ $attrs['color'] }}-lt me-2">
-                                                    <i class="fas fa-{{ $attrs['icon'] }}"></i>
-                                                </span>
+                                        <div class="state p-success p-on ms-2">
+                                            <label>
+                                                <i class="fas fa-{{ $attrs['icon'] }} me-2"></i>
                                                 {{ $attrs['text'] }}
-                                            </div>
-                                        </span>
-                                    </label>
+                                            </label>
+                                        </div>
+                                        <div class="state p-danger p-off ms-2">
+                                            <label>
+                                                <i class="fas fa-{{ $attrs['icon'] }} me-2"></i>
+                                                {{ $attrs['text'] }}
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
                                 @endforeach
                             </div>
@@ -94,7 +98,7 @@
             </div>
 
             <!-- Sağ Kolon - Oluşturulan Yetkiler -->
-            <div class="col-md-7">
+            <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">

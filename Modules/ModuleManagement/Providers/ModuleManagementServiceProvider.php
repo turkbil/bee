@@ -10,6 +10,8 @@ use Modules\ModuleManagement\App\Http\Livewire\Modals\DeleteModal;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class ModuleManagementServiceProvider extends ServiceProvider
 {
@@ -39,6 +41,15 @@ class ModuleManagementServiceProvider extends ServiceProvider
         Livewire::component('module-component', ModuleComponent::class);
         Livewire::component('module-manage-component', ModuleManageComponent::class);
         Livewire::component('modals.delete-modal', DeleteModal::class);
+        
+        // Yeni modül eklendiğinde ve güncellendiğinde izinlerini otomatik oluştur ve admin'e ata
+        \Modules\ModuleManagement\App\Models\Module::created(function($module) {
+            $this->createModulePermissions($module);
+        });
+        
+        \Modules\ModuleManagement\App\Models\Module::updated(function($module) {
+            $this->updateModulePermissions($module);
+        });
     }
 
     /**
@@ -49,6 +60,81 @@ class ModuleManagementServiceProvider extends ServiceProvider
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
     }
+
+    /**
+     * Yeni modül için izinleri otomatik oluşturur ve admin rolüne ekler
+     */
+    protected function createModulePermissions($module): void
+    {
+        $permissionTypes = ['view', 'create', 'update', 'delete'];
+        $createdPermissions = [];
+        
+        foreach ($permissionTypes as $type) {
+            $permissionName = "{$module->name}.{$type}";
+            
+            // İzin yoksa oluştur
+            $permission = Permission::firstOrCreate(
+                [
+                    'name' => $permissionName,
+                    'guard_name' => 'web',
+                ],
+                [
+                    'description' => "{$module->display_name} - " . ucfirst($type)
+                ]
+            );
+            
+            $createdPermissions[] = $permission;
+        }
+        
+        // Root ve Admin rollerine izinleri ata
+        $this->assignPermissionsToRoles($createdPermissions);
+    }
+
+    /**
+     * Modül güncellendiğinde izinleri günceller
+     */
+    protected function updateModulePermissions($module): void
+    {
+        // Modül aktif değilse işlem yapma
+        if (!$module->is_active) {
+            return;
+        }
+        
+        $this->createModulePermissions($module);
+    }
+    
+    /**
+     * Root ve Admin rollerine izinleri atar
+     */
+    protected function assignPermissionsToRoles($permissions): void
+    {
+        try {
+            // Root rolü her zaman tüm izinlere sahip olur
+            $rootRole = Role::where('name', 'root')->first();
+            if ($rootRole) {
+                $rootRole->givePermissionTo($permissions);
+            }
+            
+            // Admin rolüne izinleri ata (TenantManagement hariç)
+            $adminRole = Role::where('name', 'admin')->first();
+            if ($adminRole) {
+                foreach ($permissions as $permission) {
+                    // TenantManagement modülüne izin verme
+                    if (strpos($permission->name, 'tenantmanagement.') !== 0) {
+                        // SettingManagement için create ve delete hariç
+                        if (strpos($permission->name, 'settingmanagement.create') !== 0 && 
+                            strpos($permission->name, 'settingmanagement.delete') !== 0) {
+                            $adminRole->givePermissionTo($permission);
+                        }
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            // Hata durumunda logla
+            \Illuminate\Support\Facades\Log::error('Rol izin atama hatası: ' . $e->getMessage());
+        }
+    }
+
 
     /**
      * Register commands in the format of Command::class

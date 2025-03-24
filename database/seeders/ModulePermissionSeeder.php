@@ -54,7 +54,7 @@ class ModulePermissionSeeder extends Seeder
         // Her modül için izinleri oluştur
         foreach ($moduleNames as $moduleName) {
             // Modül adı ve slug'ını hazırla
-            $moduleSlug = Str::slug(Str::snake($moduleName));
+            $moduleSlug = Str::slug(Str::snake($moduleName), '');
             $displayName = Str::title(Str::snake($moduleName, ' '));
             
             $this->command->info("Modül izinleri oluşturuluyor: {$displayName}");
@@ -88,12 +88,6 @@ class ModulePermissionSeeder extends Seeder
             $contentModules = [
                 'page', 
                 'portfolio', 
-                'blog', 
-                'media',
-                'gallery',
-                'slider',
-                'content',
-                'document'
             ];
             
             foreach ($contentModules as $module) {

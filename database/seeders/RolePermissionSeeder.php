@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Schema;
 use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
 use App\Models\Tenant;
 use App\Models\User;
 
@@ -17,16 +16,16 @@ class RolePermissionSeeder extends Seeder
     public function run(): void
     {
         // Central domain için yetkilendirmeler
-        $this->seedCentralPermissions();
+        $this->seedCentralRoles();
         
         // Tenant'lar için yetkilendirmeler
-        $this->seedTenantPermissions();
+        $this->seedTenantRoles();
     }
     
     /**
-     * Central domain için temel yetkilendirmeleri oluştur
+     * Central domain için rolleri oluştur
      */
-    private function seedCentralPermissions(): void
+    private function seedCentralRoles(): void
     {
         // Central domaininde çalıştır
         $centralTenant = Tenant::where('central', true)->first();
@@ -37,34 +36,6 @@ class RolePermissionSeeder extends Seeder
         }
         
         $centralTenant->run(function () {
-            // Temel izinleri oluştur
-            $permissions = [
-                // Tenant yönetimi
-                'tenant.view', 'tenant.create', 'tenant.edit', 'tenant.delete',
-                
-                // Kullanıcı yönetimi
-                'user.view', 'user.create', 'user.edit', 'user.delete',
-                
-                // Rol yönetimi
-                'role.view', 'role.create', 'role.edit', 'role.delete',
-                
-                // İzin yönetimi
-                'permission.view', 'permission.create', 'permission.edit', 'permission.delete',
-                
-                // Modül yönetimi
-                'module.view', 'module.create', 'module.edit', 'module.delete', 'module.install',
-                
-                // Log görüntüleme
-                'log.view',
-                
-                // Sistem ayarları
-                'settings.view', 'settings.edit'
-            ];
-            
-            foreach ($permissions as $permission) {
-                Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
-            }
-            
             // YENİ: Role yapısı - Root, Admin, Editor
             $roles = [
                 [
@@ -106,19 +77,6 @@ class RolePermissionSeeder extends Seeder
                 }
                 
                 $role->save();
-                
-                // Root tüm izinlere sahip olsun
-                if ($roleData['role_type'] === 'root') {
-                    $role->syncPermissions(Permission::all());
-                }
-                
-                // Admin tenant.delete hariç tüm izinlere sahip olsun
-                if ($roleData['role_type'] === 'admin') {
-                    $role->syncPermissions(Permission::whereNotIn('name', ['tenant.delete'])->get());
-                }
-                
-                // Editor için şu aşamada özel izin ataması yapmıyoruz
-                // Bu modül bazlı olarak yapılacak
             }
             
             // Mevcut kullanıcılara roller ata
@@ -130,42 +88,14 @@ class RolePermissionSeeder extends Seeder
     }
     
     /**
-     * Tenant'lar için temel yetkilendirmeleri oluştur
+     * Tenant'lar için rolleri oluştur
      */
-    private function seedTenantPermissions(): void
+    private function seedTenantRoles(): void
     {
         $tenants = Tenant::where('central', false)->get();
         
         foreach ($tenants as $tenant) {
             $tenant->run(function () use ($tenant) {
-                // Temel izinleri oluştur
-                $permissions = [
-                    // Kullanıcı yönetimi
-                    'user.view', 'user.create', 'user.edit', 'user.delete',
-                    
-                    // Rol yönetimi
-                    'role.view', 'role.create', 'role.edit', 'role.delete',
-                    
-                    // İzin yönetimi
-                    'permission.view', 'permission.create', 'permission.edit', 'permission.delete',
-                    
-                    // İçerik yönetimi
-                    'content.view', 'content.create', 'content.edit', 'content.delete',
-                    
-                    // Dosya yönetimi
-                    'media.view', 'media.upload', 'media.edit', 'media.delete',
-                    
-                    // Log görüntüleme
-                    'log.view',
-                    
-                    // Tenant ayarları
-                    'settings.view', 'settings.edit'
-                ];
-                
-                foreach ($permissions as $permission) {
-                    Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
-                }
-                
                 // YENİ: Role yapısı - Root, Admin, Editor (tenant seviyesinde)
                 $roles = [
                     [
@@ -207,16 +137,6 @@ class RolePermissionSeeder extends Seeder
                     }
                     
                     $role->save();
-                    
-                    // Root tüm izinlere sahip olsun
-                    if ($roleData['role_type'] === 'root') {
-                        $role->syncPermissions(Permission::all());
-                    }
-                    
-                    // Admin içerik.delete hariç tüm izinlere sahip olsun
-                    if ($roleData['role_type'] === 'admin') {
-                        $role->syncPermissions(Permission::all());
-                    }
                 }
                 
                 // Mevcut kullanıcılara roller ata

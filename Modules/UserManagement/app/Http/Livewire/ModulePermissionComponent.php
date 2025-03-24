@@ -62,9 +62,6 @@ class ModulePermissionComponent extends Component
         $this->isEditing = !$this->isEditing;
     }
     
-    /**
-     * İzin türüne göre ikon döndürür
-     */
     public function getPermissionIcon($type)
     {
         $icons = [

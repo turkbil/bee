@@ -82,9 +82,6 @@ class UserModulePermissionComponent extends Component
         }
     }
     
-    /**
-     * İzin türüne göre ikon döndürür
-     */
     public function getPermissionIcon($type)
     {
         $icons = [
@@ -97,9 +94,6 @@ class UserModulePermissionComponent extends Component
         return $icons[$type] ?? 'key';
     }
     
-    /**
-     * İzin durumunu değiştir
-     */
     public function togglePermission($type)
     {
         // Mevcut durumu tersine çevir

@@ -39,19 +39,7 @@ class ModulePermissionMiddleware
         
         // Admin ise ve gereken yetki var mı kontrol et
         if ($user->isAdmin()) {
-            // Admin için özel kısıtlamalar
-            
-            // TenantManagement için izin verme
-            if ($moduleName === 'tenantmanagement') {
-                abort(403, 'Bu modüle erişim izniniz yok');
-            }
-            
-            // SettingManagement için düzenleme kısıtlamaları
-            if ($moduleName === 'settingmanagement' && in_array($permissionType, ['create', 'delete'])) {
-                abort(403, 'Bu işlem için yetkiniz bulunmamaktadır');
-            }
-            
-            // Diğer tüm modüller için tam izin
+            // Admin için belirli kısıtlamalar varsa buraya eklenebilir
             return $next($request);
         }
         

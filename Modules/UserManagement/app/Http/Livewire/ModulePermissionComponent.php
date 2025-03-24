@@ -129,6 +129,13 @@ class ModulePermissionComponent extends Component
     
     protected function clearModulePermissionCache($moduleName)
     {
+        // Helper fonksiyonu kullan (eğer yüklenmiş ise)
+        if (function_exists('clear_module_permission_cache')) {
+            clear_module_permission_cache($moduleName);
+            return;
+        }
+        
+        // Değilse manuel olarak temizle
         foreach (ModulePermission::getPermissionTypes() as $type => $label) {
             Cache::forget("module_{$moduleName}_permission_{$type}_active");
         }

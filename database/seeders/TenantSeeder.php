@@ -32,14 +32,9 @@ class TenantSeeder extends Seeder
         User::query()->delete(); // Central tenant'ta mevcut kullanıcıları temizle
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         
-        // Ana sistemde Nurullah kullanıcısı oluştur
-        $nurullahUser = User::create([
-            'name' => 'Nurullah Okatan',
-            'email' => 'nurullah@nurullah.net',
-            'password' => Hash::make('nurullah'),
-            'email_verified_at' => now(),
-        ]);
-
+        // Faker için
+        $faker = Faker::create('tr_TR');
+        
         // 1. Önce Central tenant'ı ekle
         // DOĞRUDAN SQL komutu ile ekle, model olaylarını tetiklemeden
         DB::table('tenants')->insert([
@@ -63,13 +58,43 @@ class TenantSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
-        // Central tenant için Admin kullanıcısı oluştur (Nurullah kullanıcısı zaten var)
+        // Central tenant için standart kullanıcılar oluştur
+        // Nurullah kullanıcısı
         User::create([
-            'name' => 'Laravel Admin',
-            'email' => 'admin@laravel.test',
-            'password' => Hash::make('password'),
+            'name' => 'Nurullah Okatan',
+            'email' => 'nurullah@nurullah.net',
+            'password' => Hash::make('g0nu!ceLeN'),
             'email_verified_at' => now(),
         ]);
+        
+        // Türk Bilişim kullanıcısı
+        User::create([
+            'name' => 'Türk Bilişim',
+            'email' => 'info@turkbilisim.com.tr',
+            'password' => Hash::make('gonu1celen'),
+            'email_verified_at' => now(),
+        ]);
+        
+        // Laravel Admin kullanıcısı
+        User::create([
+            'name' => 'Laravel Admin',
+            'email' => 'laravel@test',
+            'password' => Hash::make('test'),
+            'email_verified_at' => now(),
+        ]);
+        
+        // Central için 10 rastgele kullanıcı ekle
+        foreach(range(1, 10) as $index) {
+            $firstName = $faker->firstName;
+            $lastName = $faker->lastName;
+            
+            User::create([
+                'name' => $firstName . ' ' . $lastName,
+                'email' => strtolower($faker->unique()->userName) . '@' . $faker->freeEmailDomain,
+                'password' => Hash::make('password'),
+                'email_verified_at' => now(),
+            ]);
+        }
 
         // 2. Normal tenant'ları oluştur (central olmayan)
         $normalTenants = [
@@ -92,9 +117,6 @@ class TenantSeeder extends Seeder
                 'db_name' => 'tenant_c',
             ]
         ];
-
-        // Faker için
-        $faker = Faker::create('tr_TR');
 
         // Normal tenant'ları oluştur
         foreach ($normalTenants as $config) {
@@ -127,7 +149,15 @@ class TenantSeeder extends Seeder
                 User::create([
                     'name' => 'Nurullah Okatan',
                     'email' => 'nurullah@nurullah.net',
-                    'password' => Hash::make('nurullah'),
+                    'password' => Hash::make('g0nu!ceLeN'),
+                    'email_verified_at' => now(),
+                ]);
+                
+                // Türk Bilişim kullanıcısı
+                User::create([
+                    'name' => 'Türk Bilişim',
+                    'email' => 'info@turkbilisim.com.tr',
+                    'password' => Hash::make('gonu1celen'),
                     'email_verified_at' => now(),
                 ]);
 

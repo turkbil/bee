@@ -79,11 +79,29 @@ class RolePermissionSeeder extends Seeder
                 $role->save();
             }
             
-            // Mevcut kullanıcılara roller ata
+            // Kullanıcılara roller ata
             $nurullah = User::where('email', 'nurullah@nurullah.net')->first();
             if ($nurullah) {
                 $nurullah->syncRoles(['root']);
             }
+            
+            $turkbilisim = User::where('email', 'info@turkbilisim.com.tr')->first();
+            if ($turkbilisim) {
+                $turkbilisim->syncRoles(['root']);
+            }
+            
+            $admin = User::where('email', 'laravel@test')->first();
+            if ($admin) {
+                $admin->syncRoles(['admin']);
+            }
+            
+            // Diğer kullanıcılara rastgele editor veya admin atayalım
+            User::whereNotIn('email', ['nurullah@nurullah.net', 'info@turkbilisim.com.tr', 'laravel@test'])
+                ->get()
+                ->each(function ($user) {
+                    $roles = ['admin', 'editor'];
+                    $user->syncRoles([$roles[array_rand($roles)]]);
+                });
         });
     }
     
@@ -103,14 +121,14 @@ class RolePermissionSeeder extends Seeder
                         'role_type' => 'root',
                         'guard_name' => 'web',
                         'is_protected' => true,
-                        'description' => 'Tam yetkili tenant yöneticisi'
+                        'description' => 'Tam yetkili sistem yöneticisi'
                     ],
                     [
                         'name' => 'admin',
                         'role_type' => 'admin',
                         'guard_name' => 'web',
                         'is_protected' => true,
-                        'description' => 'Tenant yöneticisi'
+                        'description' => 'Site sorumlusu ve yöneticisi'
                     ],
                     [
                         'name' => 'editor',
@@ -140,18 +158,33 @@ class RolePermissionSeeder extends Seeder
                 }
                 
                 // Mevcut kullanıcılara roller ata
-                $tenantAdmin = User::where('email', $tenant->id . '@test')->first();
-                if ($tenantAdmin) {
-                    $tenantAdmin->syncRoles(['root']);
+                // Tenant email'lerini değiştir (@test formatını kullan)
+                $tenantAdmin = null;
+                if ($tenant->id == 'a') {
+                    $tenantAdmin = User::where('email', 'a@test')->first();
+                } else if ($tenant->id == 'b') {
+                    $tenantAdmin = User::where('email', 'b@test')->first();
+                } else if ($tenant->id == 'c') {
+                    $tenantAdmin = User::where('email', 'c@test')->first();
                 }
                 
+                if ($tenantAdmin) {
+                    $tenantAdmin->syncRoles(['admin']);
+                }
+                
+                // Ana kullanıcılara root rolü ata
                 $nurullah = User::where('email', 'nurullah@nurullah.net')->first();
                 if ($nurullah) {
                     $nurullah->syncRoles(['root']);
                 }
                 
+                $turkbilisim = User::where('email', 'info@turkbilisim.com.tr')->first();
+                if ($turkbilisim) {
+                    $turkbilisim->syncRoles(['root']);
+                }
+                
                 // Diğer kullanıcılara rastgele editor veya admin atayalım
-                User::whereNotIn('email', [$tenant->id . '@test', 'nurullah@nurullah.net'])
+                User::whereNotIn('email', ['a@test', 'b@test', 'c@test', 'nurullah@nurullah.net', 'info@turkbilisim.com.tr'])
                     ->get()
                     ->each(function ($user) {
                         $roles = ['admin', 'editor'];

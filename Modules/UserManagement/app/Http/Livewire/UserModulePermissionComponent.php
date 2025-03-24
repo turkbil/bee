@@ -11,6 +11,7 @@ use Modules\UserManagement\App\Models\UserModulePermission;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Layout;
+use Spatie\Permission\Models\Permission;
 
 #[Layout('admin.layout')]
 class UserModulePermissionComponent extends Component
@@ -53,31 +54,50 @@ class UserModulePermissionComponent extends Component
     {
         $permissionTypes = ModulePermission::getPermissionTypes();
         
+        // Spatie'den bu modül için mevcut izinleri kontrol et
+        $availablePermissions = Permission::where('name', 'like', $this->selectedModule . '.%')
+            ->pluck('name')
+            ->map(function($name) {
+                $parts = explode('.', $name);
+                return $parts[1] ?? null;
+            })
+            ->filter()
+            ->unique()
+            ->toArray();
+        
         // Seçilen modüle ait kullanıcı izinlerini yükle
         $existingPermissions = UserModulePermission::where('user_id', $this->userId)
             ->where('module_name', $this->selectedModule)
             ->pluck('is_active', 'permission_type')
             ->toArray();
         
-        // Modül izinlerini kontrol et
-        $activeModulePermissions = [];
+        // Kullanıcının doğrudan Spatie izinlerini de kontrol et
+        $user = User::find($this->userId);
+        $userPermissions = [];
         
-        $module = Module::where('name', $this->selectedModule)->first();
-        if ($module) {
-            $activeModulePermissions = ModulePermission::where('module_id', $module->module_id)
-                ->where('is_active', true)
-                ->pluck('permission_type')
-                ->toArray();
+        if ($user) {
+            foreach ($permissionTypes as $type => $label) {
+                $permissionName = "{$this->selectedModule}.{$type}";
+                try {
+                    if ($user->hasPermissionTo($permissionName)) {
+                        $userPermissions[$type] = true;
+                    }
+                } catch (\Exception $e) {
+                    // İzin bulunamadı
+                }
+            }
         }
         
         // İzin tiplerini düzenle
         $this->userPermissions = [];
         foreach ($permissionTypes as $type => $label) {
-            // Sadece modülde etkin olan izin tiplerini göster ya da modül yoksa tüm izin tiplerini göster
-            if (empty($activeModulePermissions) || in_array($type, $activeModulePermissions)) {
-                $this->userPermissions[$type] = array_key_exists($type, $existingPermissions) 
-                    ? $existingPermissions[$type] 
-                    : false;
+            // Kullanıcının doğrudan izni varsa veya özel modül izni varsa
+            $hasDirectPermission = $userPermissions[$type] ?? false;
+            $hasModulePermission = array_key_exists($type, $existingPermissions) ? $existingPermissions[$type] : false;
+            
+            // Sistemde bu izin tanımlı mı veya kullanıcı doğrudan bu izne sahip mi?
+            if (in_array($type, $availablePermissions) || $hasDirectPermission) {
+                $this->userPermissions[$type] = $hasDirectPermission || $hasModulePermission;
             }
         }
     }

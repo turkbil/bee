@@ -9,6 +9,7 @@ use Modules\UserManagement\App\Models\ModulePermission;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Layout;
+use Spatie\Permission\Models\Permission;
 
 #[Layout('admin.layout')]
 class ModulePermissionComponent extends Component
@@ -40,20 +41,19 @@ class ModulePermissionComponent extends Component
     
     public function loadModulePermissions()
     {
-        $permissionTypes = ModulePermission::getPermissionTypes();
         $module = Module::findOrFail($this->selectedModule);
+        $permissionTypes = ModulePermission::getPermissionTypes();
         
-        // Mevcut izinleri yükle
-        $existingPermissions = ModulePermission::where('module_id', $this->selectedModule)
-            ->pluck('is_active', 'permission_type')
-            ->toArray();
-        
-        // İzin tiplerini düzenle
+        // Mevcut izinleri Spatie'den yükle
         $this->modulePermissions = [];
+        
         foreach ($permissionTypes as $type => $label) {
-            $this->modulePermissions[$type] = array_key_exists($type, $existingPermissions) 
-                ? $existingPermissions[$type] 
-                : false;
+            $permissionName = "{$module->name}.{$type}";
+            $permission = Permission::where('name', $permissionName)
+                ->where('guard_name', 'web')
+                ->first();
+            
+            $this->modulePermissions[$type] = $permission ? true : false;
         }
     }
     
@@ -79,22 +79,34 @@ class ModulePermissionComponent extends Component
         DB::beginTransaction();
         
         try {
+            $module = Module::findOrFail($this->selectedModule);
+            
             foreach ($this->modulePermissions as $type => $isActive) {
-                ModulePermission::updateOrCreate(
-                    [
-                        'module_id' => $this->selectedModule,
-                        'permission_type' => $type,
-                    ],
-                    [
-                        'is_active' => $isActive,
-                    ]
-                );
+                $permissionName = "{$module->name}.{$type}";
+                
+                if ($isActive) {
+                    // İzin yoksa oluştur
+                    Permission::firstOrCreate(
+                        [
+                            'name' => $permissionName,
+                            'guard_name' => 'web',
+                        ],
+                        [
+                            'description' => "{$module->display_name} - " . ModulePermission::getPermissionTypes()[$type]
+                        ]
+                    );
+                } else {
+                    // İzin varsa ve devre dışı yapılmışsa, sil
+                    Permission::where('name', $permissionName)
+                        ->where('guard_name', 'web')
+                        ->delete();
+                }
             }
             
             DB::commit();
             
-            // Cache temizle
-            Cache::forget("module_{$this->selectedModule}_permissions");
+            // Cache'i temizle
+            $this->clearModulePermissionCache($module->name);
             
             $this->isEditing = false;
             
@@ -113,6 +125,22 @@ class ModulePermissionComponent extends Component
                 'type' => 'error',
             ]);
         }
+    }
+    
+    protected function clearModulePermissionCache($moduleName)
+    {
+        // Helper fonksiyonu kullan (eğer yüklenmiş ise)
+        if (function_exists('clear_module_permission_cache')) {
+            clear_module_permission_cache($moduleName);
+            return;
+        }
+        
+        // Değilse manuel olarak temizle
+        foreach (ModulePermission::getPermissionTypes() as $type => $label) {
+            Cache::forget("module_{$moduleName}_permission_{$type}_active");
+        }
+        
+        Cache::forget("module_{$moduleName}_permissions");
     }
     
     public function render()

@@ -3,20 +3,15 @@
 namespace Modules\UserManagement\App\Traits;
 
 use Illuminate\Support\Facades\Cache;
-use Modules\UserManagement\App\Models\UserModulePermission;
 
 trait HasModulePermissions
 {
     /**
      * Kullanıcının belirli bir modül ve izin tipine erişimi olup olmadığını kontrol eder
-     *
-     * @param string $moduleName Modül adı
-     * @param string $permissionType İzin tipi (view, create, update, delete)
-     * @return bool Erişim izni varsa true, yoksa false
      */
     public function hasModulePermission(string $moduleName, string $permissionType): bool
     {
-        // Süper admin kontrolü
+        // Root veya Admin kontrolü
         if ($this->hasRole('root') || $this->hasRole('admin')) {
             return true;
         }
@@ -25,6 +20,13 @@ trait HasModulePermissions
         $cacheKey = "user_{$this->id}_module_{$moduleName}_permission_{$permissionType}";
         
         return Cache::remember($cacheKey, now()->addMinutes(60), function () use ($moduleName, $permissionType) {
+            // 1. Spatie permission kontrolü
+            $permissionName = "{$moduleName}.{$permissionType}";
+            if ($this->hasPermissionTo($permissionName)) {
+                return true;
+            }
+            
+            // 2. Özel modül bazlı izin kontrolü
             return $this->userModulePermissions()
                 ->where('module_name', $moduleName)
                 ->where('permission_type', $permissionType)

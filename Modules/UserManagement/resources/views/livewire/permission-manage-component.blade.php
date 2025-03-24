@@ -58,26 +58,26 @@
                                 'update' => ['icon' => 'edit', 'color' => 'warning', 'text' => 'Güncelleme'],
                                 'delete' => ['icon' => 'trash', 'color' => 'danger', 'text' => 'Silme']
                                 ] as $type => $attrs)
-                                <div class="col-6 mb-2">
-                                    <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
-                                        <input type="checkbox" 
-                                            wire:model.defer="inputs.permission_types" 
-                                            value="{{ $type }}"
-                                            @if(in_array($type, $inputs['permission_types'])) checked @endif>
-                                        <div class="state p-success p-on ms-2">
-                                            <label>
-                                                <i class="fas fa-{{ $attrs['icon'] }} me-2"></i>
-                                                {{ $attrs['text'] }}
-                                            </label>
-                                        </div>
-                                        <div class="state p-danger p-off ms-2">
-                                            <label>
-                                                <i class="fas fa-{{ $attrs['icon'] }} me-2"></i>
-                                                {{ $attrs['text'] }}
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
+<div class="col-6 mb-2">
+    <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
+        <input type="checkbox"
+               wire:model.defer="inputs.permission_types"
+               value="{{ $type }}"
+               @if(empty($inputs['permission_types']) || !in_array($type, $inputs['permission_types'])) checked @endif>
+        <div class="state p-success p-on ms-2">
+            <label>
+                <i class="fas fa-{{ $attrs['icon'] }} me-2"></i>
+                {{ $attrs['text'] }}
+            </label>
+        </div>
+        <div class="state p-danger p-off ms-2">
+            <label>
+                <i class="fas fa-{{ $attrs['icon'] }} me-2"></i>
+                {{ $attrs['text'] }}
+            </label>
+        </div>
+    </div>
+</div>
                                 @endforeach
                             </div>
                         </div>

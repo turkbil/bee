@@ -14,6 +14,7 @@ use Livewire\Attributes\Layout;
 use Modules\ModuleManagement\App\Models\Module;
 use Modules\UserManagement\App\Models\UserModulePermission;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 #[Layout('admin.layout')]
 class UserManageComponent extends Component
@@ -44,7 +45,7 @@ class UserManageComponent extends Component
     protected $listeners = [
         'refreshModulePermissions' => 'loadAvailableModules',
         'clearModulePermissions' => 'clearAllModulePermissions',
-        'toggleModuleAll' => 'toggleModulePermissions',
+        'toggleModuleAll',
         'togglePermission' => 'toggleSinglePermission'
     ];
 
@@ -191,48 +192,127 @@ class UserManageComponent extends Component
         $this->dispatch('modulePermissionsUpdated');
     }
 
-    // Frontend'den gelen toggle olaylarını yakala
-    public function toggleModulePermissions($params)
+    /**
+     * Modül izinlerinin tümünü aç/kapat
+     */
+    public function toggleModuleAll($params)
     {
-        $moduleName = $params['module'];
-        $isEnabled = !$this->modulePermissions[$moduleName]['enabled'];
+        Log::debug('toggleModuleAll çağrıldı', [
+            'params' => $params,
+            'type' => gettype($params)
+        ]);
         
-        $this->modulePermissions[$moduleName]['enabled'] = $isEnabled;
-        $this->modulePermissions[$moduleName]['view'] = $isEnabled;
-        $this->modulePermissions[$moduleName]['create'] = $isEnabled;
-        $this->modulePermissions[$moduleName]['update'] = $isEnabled;
-        $this->modulePermissions[$moduleName]['delete'] = $isEnabled;
-        
-        $this->dispatch('modulePermissionsUpdated');
+        try {
+            // Gelen parametre string ise (sadece modül adı)
+            if (is_string($params)) {
+                $moduleName = $params;
+            }
+            // Gelen parametre array ise (Livewire olayı)
+            elseif (is_array($params) && isset($params['module'])) {
+                $moduleName = $params['module'];
+            } 
+            // Farklı bir format gelirse 
+            else {
+                Log::error('toggleModuleAll için geçersiz parametre formatı', [
+                    'params' => $params,
+                    'type' => gettype($params)
+                ]);
+                return;
+            }
+            
+            Log::debug('toggleModuleAll için modül adı', [
+                'moduleName' => $moduleName
+            ]);
+            
+            // ModulePermissions dizisinde bu modül tanımlı mı kontrol et
+            if (!isset($this->modulePermissions[$moduleName])) {
+                Log::error('modulePermissions dizisinde tanımlı olmayan modül', [
+                    'moduleName' => $moduleName,
+                    'availableModules' => array_keys($this->modulePermissions)
+                ]);
+                return;
+            }
+            
+            // Mevcut durumun tersini al
+            $isEnabled = !$this->modulePermissions[$moduleName]['enabled'];
+            
+            // Modül izinlerini güncelle
+            $this->modulePermissions[$moduleName]['enabled'] = $isEnabled;
+            $this->modulePermissions[$moduleName]['view'] = $isEnabled;
+            $this->modulePermissions[$moduleName]['create'] = $isEnabled;
+            $this->modulePermissions[$moduleName]['update'] = $isEnabled;
+            $this->modulePermissions[$moduleName]['delete'] = $isEnabled;
+            
+            Log::debug('Modül izinleri güncellendi', [
+                'moduleName' => $moduleName,
+                'isEnabled' => $isEnabled
+            ]);
+            
+            // Frontend'e bildir
+            $this->dispatch('modulePermissionsUpdated');
+            
+        } catch (\Exception $e) {
+            Log::error('toggleModuleAll hata', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+        }
     }
 
     // Frontend'den gelen tekil izin toggle olaylarını yakala
     public function toggleSinglePermission($params)
     {
-        $moduleName = $params['module'];
-        $permType = $params['type'];
-        
-        $this->modulePermissions[$moduleName][$permType] = !$this->modulePermissions[$moduleName][$permType];
-        
-        // Eğer herhangi bir izin aktifse, modülü de aktif yap
-        if ($this->modulePermissions[$moduleName][$permType]) {
-            $this->modulePermissions[$moduleName]['enabled'] = true;
-        } else {
-            // Hiçbir izin kalmadıysa modülü pasif yap
-            $hasAnyPermission = false;
-            foreach (['view', 'create', 'update', 'delete'] as $type) {
-                if ($this->modulePermissions[$moduleName][$type]) {
-                    $hasAnyPermission = true;
-                    break;
+        try {
+            if (is_string($params)) {
+                Log::error('toggleSinglePermission string param', ['params' => $params]);
+                return;
+            }
+            
+            if (!isset($params['module']) || !isset($params['type'])) {
+                Log::error('toggleSinglePermission eksik param', ['params' => $params]);
+                return;
+            }
+            
+            $moduleName = $params['module'];
+            $permType = $params['type'];
+            
+            if (!isset($this->modulePermissions[$moduleName])) {
+                Log::error('toggleSinglePermission modül bulunamadı', [
+                    'moduleName' => $moduleName,
+                    'availableModules' => array_keys($this->modulePermissions)
+                ]);
+                return;
+            }
+            
+            $this->modulePermissions[$moduleName][$permType] = !$this->modulePermissions[$moduleName][$permType];
+            
+            // Eğer herhangi bir izin aktifse, modülü de aktif yap
+            if ($this->modulePermissions[$moduleName][$permType]) {
+                $this->modulePermissions[$moduleName]['enabled'] = true;
+            } else {
+                // Hiçbir izin kalmadıysa modülü pasif yap
+                $hasAnyPermission = false;
+                foreach (['view', 'create', 'update', 'delete'] as $type) {
+                    if ($this->modulePermissions[$moduleName][$type]) {
+                        $hasAnyPermission = true;
+                        break;
+                    }
+                }
+                
+                if (!$hasAnyPermission) {
+                    $this->modulePermissions[$moduleName]['enabled'] = false;
                 }
             }
             
-            if (!$hasAnyPermission) {
-                $this->modulePermissions[$moduleName]['enabled'] = false;
-            }
+            $this->dispatch('modulePermissionsUpdated');
+        } catch (\Exception $e) {
+            Log::error('toggleSinglePermission hata', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
         }
-        
-        $this->dispatch('modulePermissionsUpdated');
     }
 
     public function toggleActiveStatus()

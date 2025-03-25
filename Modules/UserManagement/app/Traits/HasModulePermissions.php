@@ -12,12 +12,35 @@ trait HasModulePermissions
      */
     public function hasModulePermission(string $moduleName, string $permissionType): bool
     {
-        // Root veya Admin kontrolü
-        if ($this->hasRole('root') || $this->hasRole('admin')) {
+        // Root kontrolü
+        if ($this->hasRole('root')) {
             return true;
         }
 
-        // Önbellekten kontrol et
+        // Admin kontrolü
+        if ($this->hasRole('admin')) {
+            // Tenant kontrolü
+            if (app(\Stancl\Tenancy\Tenancy::class)->initialized) {
+                // Tenant'ta ise, modülün tenant'a atanmış olup olmadığını kontrol et
+                $moduleService = app(\App\Services\ModuleAccessService::class);
+                $module = $moduleService->getModuleByName($moduleName);
+                
+                if (!$module) {
+                    return false;
+                }
+                
+                return $moduleService->isModuleAssignedToTenant($module->module_id, tenant()->id);
+            }
+            
+            // Central'da ise kısıtlı modülleri kontrol et
+            if (in_array($moduleName, config('module-permissions.admin_restricted_modules', []))) {
+                return false;
+            }
+            
+            return true;
+        }
+
+        // Editor ve diğer roller için modül bazlı izin kontrolü
         $cacheKey = "user_{$this->id}_module_{$moduleName}_permission_{$permissionType}";
         
         return Cache::remember($cacheKey, now()->addMinutes(60), function () use ($moduleName, $permissionType) {

@@ -42,18 +42,9 @@ class ModulePermissionSeeder extends Seeder
         $moduleDirectories = File::directories($modulesPath);
         $moduleNames = array_map('basename', $moduleDirectories);
         
-        // Root ve Admin rolleri
-        $rootRole = Role::where('name', 'root')->first();
-        $adminRole = Role::where('name', 'admin')->first();
-        $editorRole = Role::where('name', 'editor')->first();
-        
-        if (!$rootRole || !$adminRole) {
-            $this->command->warn('Root ve Admin rolleri oluşturulmamış!');
-        }
-        
         // Her modül için izinleri oluştur
         foreach ($moduleNames as $moduleName) {
-            // Modül adı ve slug'ını hazırla
+            // Modül adı ve slug'ını hazırla - Tireleri kaldırıyoruz
             $moduleSlug = Str::slug(Str::snake($moduleName), '');
             $displayName = Str::title(Str::snake($moduleName, ' '));
             
@@ -65,44 +56,11 @@ class ModulePermissionSeeder extends Seeder
                 $description = "{$displayName} - {$label}";
                 
                 // İzni oluştur
-                $permission = Permission::create([
+                Permission::create([
                     'name' => $permissionName,
                     'guard_name' => 'web',
                     'description' => $description
                 ]);
-                
-                // Root rolüne tüm izinleri ver
-                if ($rootRole) {
-                    $rootRole->givePermissionTo($permission);
-                }
-                
-                // Admin rolüne tüm izinleri ver (istenen şekilde)
-                if ($adminRole) {
-                    $adminRole->givePermissionTo($permission);
-                }
-            }
-        }
-        
-        // Editör rolüne de belirli izinleri ver
-        if ($editorRole) {
-            $contentModules = [
-                'page', 
-                'portfolio', 
-            ];
-            
-            foreach ($contentModules as $module) {
-                // İçerik modülleri için view, create ve update izinleri ver
-                $contentPermissions = Permission::where(function($query) use ($module) {
-                    $query->where('name', 'like', $module.'.%');
-                })->where(function($query) {
-                    $query->where('name', 'like', '%.view')
-                          ->orWhere('name', 'like', '%.create')
-                          ->orWhere('name', 'like', '%.update');
-                })->get();
-                
-                if ($contentPermissions->count() > 0) {
-                    $editorRole->givePermissionTo($contentPermissions);
-                }
             }
         }
         

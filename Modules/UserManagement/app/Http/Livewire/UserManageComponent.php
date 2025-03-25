@@ -178,8 +178,12 @@ class UserManageComponent extends Component
         $this->clearAllModulePermissions();
         $this->inputs['permissions'] = [];
         
-        // Eğer rol editör ise ve önceki rol editör değilse, modül izinleri bölümünü göster
-        if ($value === 'editor') {
+        // Normal kullanıcı (Üye) rolü seçildiğinde role_id'yi null olarak ayarla
+        if ($value === 'user') {
+            $this->inputs['role_id'] = null;
+        }
+        // Eğer rol editör ise modül izinleri bölümünü göster ve izinleri hazırla
+        else if ($value === 'editor') {
             // Editör rolü seçildiğinde ilgili izinleri hazırla
             $this->prepareEditorPermissions();
         }
@@ -361,6 +365,10 @@ class UserManageComponent extends Component
             // Avatar yükleme işlemi
             $this->handleImageUpload($user);
     
+            if (isset($this->inputs['role_id']) && $this->inputs['role_id'] === 'user') {
+                $this->inputs['role_id'] = null;
+            }
+            
             // Rol ve izin işlemleri
             $this->handleRoleAndPermissions($user);
     

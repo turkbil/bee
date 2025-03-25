@@ -4,60 +4,77 @@ namespace Modules\UserManagement\App\Traits;
 
 use Illuminate\Support\Facades\Cache;
 use Modules\UserManagement\App\Models\UserModulePermission;
+use Illuminate\Support\Facades\Log;
 
 trait HasModulePermissions
 {
-    /**
-     * Kullanıcının belirli bir modül ve izin tipine erişimi olup olmadığını kontrol eder
-     */
-    public function hasModulePermission(string $moduleName, string $permissionType): bool
-    {
-        // Root kontrolü
-        if ($this->hasRole('root')) {
-            return true;
-        }
+/**
+ * Kullanıcının belirli bir modül ve izin tipine erişimi olup olmadığını kontrol eder
+ */
+public function hasModulePermission(string $moduleName, string $permissionType): bool
+{
+    // Root kontrolü
+    if ($this->hasRole('root')) {
+        return true;
+    }
 
-        // Admin kontrolü
-        if ($this->hasRole('admin')) {
-            // Tenant kontrolü
-            if (app(\Stancl\Tenancy\Tenancy::class)->initialized) {
-                // Tenant'ta ise, modülün tenant'a atanmış olup olmadığını kontrol et
-                $moduleService = app(\App\Services\ModuleAccessService::class);
-                $module = $moduleService->getModuleByName($moduleName);
-                
-                if (!$module) {
-                    return false;
-                }
-                
-                return $moduleService->isModuleAssignedToTenant($module->module_id, tenant()->id);
-            }
+    // Admin kontrolü
+    if ($this->hasRole('admin')) {
+        // Tenant kontrolü
+        if (app(\Stancl\Tenancy\Tenancy::class)->initialized) {
+            // Tenant'ta ise, modülün tenant'a atanmış olup olmadığını kontrol et
+            $moduleService = app(\App\Services\ModuleAccessService::class);
+            $module = $moduleService->getModuleByName($moduleName);
             
-            // Central'da ise kısıtlı modülleri kontrol et
-            if (in_array($moduleName, config('module-permissions.admin_restricted_modules', []))) {
+            if (!$module) {
+                \Log::warning("Module not found: {$moduleName}");
                 return false;
             }
             
+            return $moduleService->isModuleAssignedToTenant($module->module_id, tenant()->id);
+        }
+        
+        // Central'da ise kısıtlı modülleri kontrol et
+        if (in_array($moduleName, config('module-permissions.admin_restricted_modules', []))) {
+            \Log::warning("Admin tried to access restricted module: {$moduleName}");
+            return false;
+        }
+        
+        return true;
+    }
+
+    // Editor ve diğer roller için modül bazlı izin kontrolü
+    $cacheKey = "user_{$this->id}_module_{$moduleName}_permission_{$permissionType}";
+    
+    return Cache::remember($cacheKey, now()->addMinutes(5), function () use ($moduleName, $permissionType) {
+        // Kullanıcın direkt olarak moduleName.permissionType izni var mı kontrol et
+        $permissionName = "{$moduleName}.{$permissionType}";
+        if ($this->hasPermissionTo($permissionName)) {
             return true;
         }
-
-        // Editor ve diğer roller için modül bazlı izin kontrolü
-        $cacheKey = "user_{$this->id}_module_{$moduleName}_permission_{$permissionType}";
         
-        return Cache::remember($cacheKey, now()->addMinutes(60), function () use ($moduleName, $permissionType) {
-            // 1. Spatie permission kontrolü
-            $permissionName = "{$moduleName}.{$permissionType}";
-            if ($this->hasPermissionTo($permissionName)) {
-                return true;
-            }
+        // Model has permissions tablosundan kontrol et
+        $hasPermissionInDB = \DB::table('model_has_permissions')
+            ->join('permissions', 'model_has_permissions.permission_id', '=', 'permissions.id')
+            ->where('model_id', $this->id)
+            ->where('model_type', get_class($this))
+            ->where('permissions.name', $permissionName)
+            ->exists();
             
-            // 2. Özel modül bazlı izin kontrolü
-            return $this->userModulePermissions()
-                ->where('module_name', $moduleName)
-                ->where('permission_type', $permissionType)
-                ->where('is_active', true)
-                ->exists();
-        });
-    }
+        if ($hasPermissionInDB) {
+            return true;
+        }
+        
+        // UserModulePermission tablosu üzerinden kontrol
+        $hasDirectModulePermission = $this->userModulePermissions()
+            ->where('module_name', $moduleName)
+            ->where('permission_type', $permissionType)
+            ->where('is_active', true)
+            ->exists();
+            
+        return $hasDirectModulePermission;
+    });
+}
 
     /**
      * Kullanıcının bir modüle ait tüm izinlerini getirir
@@ -71,6 +88,33 @@ trait HasModulePermissions
         $cacheKey = "user_{$this->id}_module_{$moduleName}_permissions";
         
         return Cache::remember($cacheKey, now()->addMinutes(60), function () use ($moduleName) {
+            // Root her izne sahiptir
+            if ($this->hasRole('root')) {
+                return array_keys(UserModulePermission::getPermissionTypes());
+            }
+            
+            // Admin tenant'a atanmış modüllerin tüm izinlerine sahiptir
+            if ($this->hasRole('admin')) {
+                // Tenant'ta ise modülün atanmış olması gerekir
+                if (app(\Stancl\Tenancy\Tenancy::class)->initialized) {
+                    $moduleService = app(\App\Services\ModuleAccessService::class);
+                    $module = $moduleService->getModuleByName($moduleName);
+                    
+                    if (!$module || !$moduleService->isModuleAssignedToTenant($module->module_id, tenant()->id)) {
+                        return [];
+                    }
+                }
+                
+                // Central'da admin kısıtlı modüllere erişemez
+                if (!app(\Stancl\Tenancy\Tenancy::class)->initialized && 
+                    in_array($moduleName, config('module-permissions.admin_restricted_modules', []))) {
+                    return [];
+                }
+                
+                return array_keys(UserModulePermission::getPermissionTypes());
+            }
+            
+            // Editor ve diğer roller için özel izinleri getir
             return $this->userModulePermissions()
                 ->where('module_name', $moduleName)
                 ->where('is_active', true)
@@ -89,7 +133,28 @@ trait HasModulePermissions
     public function hasModulePermissions(string $moduleName, array $permissionTypes): bool
     {
         // Süper admin kontrolü
-        if ($this->hasRole('root') || $this->hasRole('admin')) {
+        if ($this->hasRole('root')) {
+            return true;
+        }
+        
+        // Admin kontrolü - tenant'ta atanmış modüller için tüm izinlere sahip
+        if ($this->hasRole('admin')) {
+            // Tenant'ta ise modülün atanmış olması gerekir
+            if (app(\Stancl\Tenancy\Tenancy::class)->initialized) {
+                $moduleService = app(\App\Services\ModuleAccessService::class);
+                $module = $moduleService->getModuleByName($moduleName);
+                
+                if (!$module || !$moduleService->isModuleAssignedToTenant($module->module_id, tenant()->id)) {
+                    return false;
+                }
+            }
+            
+            // Central'da admin kısıtlı modüllere erişemez
+            if (!app(\Stancl\Tenancy\Tenancy::class)->initialized && 
+                in_array($moduleName, config('module-permissions.admin_restricted_modules', []))) {
+                return false;
+            }
+            
             return true;
         }
         

@@ -9,7 +9,7 @@ use Modules\UserManagement\App\Http\Livewire\PermissionComponent;
 use Modules\UserManagement\App\Http\Livewire\PermissionManageComponent;
 use Modules\UserManagement\App\Http\Livewire\ModulePermissionComponent;
 
-Route::middleware(['web', 'auth'])
+Route::middleware(['web', 'auth', 'tenant', 'module.permission:usermanagement,view'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
@@ -18,15 +18,20 @@ Route::middleware(['web', 'auth'])
             ->name('usermanagement.')
             ->group(function () {
                 Route::get('/', UserComponent::class)->name('index');
-                Route::get('/manage/{id?}', UserManageComponent::class)->name('manage');
+                Route::get('/manage/{id?}', UserManageComponent::class)
+                    ->middleware('module.permission:usermanagement,update')
+                    ->name('manage');
                 
                 // Modül bazlı izinler
-                Route::get('/module-permissions', ModulePermissionComponent::class)->name('module.permissions');
+                Route::get('/module-permissions', ModulePermissionComponent::class)
+                    ->middleware('module.permission:usermanagement,update')
+                    ->name('module.permissions');
             });
 
         // Role Routes    
         Route::prefix('usermanagement/role')
             ->name('usermanagement.role.')
+            ->middleware('module.permission:usermanagement,update')
             ->group(function () {
                 Route::get('/', RoleComponent::class)->name('index');
                 Route::get('/manage/{id?}', RoleManageComponent::class)->name('manage');
@@ -35,6 +40,7 @@ Route::middleware(['web', 'auth'])
         // Permission Routes    
         Route::prefix('usermanagement/permission')
             ->name('usermanagement.permission.')
+            ->middleware('module.permission:usermanagement,update')
             ->group(function () {
                 Route::get('/', PermissionComponent::class)->name('index');
                 Route::get('/manage/{id?}', PermissionManageComponent::class)->name('manage');

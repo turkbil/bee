@@ -4,14 +4,18 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Middleware\InitializeTenancy;
 
-Route::middleware(['web', 'auth', 'admin.access', 'tenant'])->prefix('admin')->name('admin.')->group(function () {
+// Admin rotaları için yetki kontrolü
+// Sadece admin, editor ve root roller ve özel oluşturulan roller erişebilir
+Route::middleware(['web', 'auth', 'tenant', 'role:admin|editor|root'])->prefix('admin')->name('admin.')->group(function () {
+    
+    // Admin dashboard rotası - yetkilendirilmiş kullanıcılar için
     Route::get('/dashboard', function () {
         $currentTenant = tenancy()->tenant;
         
         if (!$currentTenant) {
             return view('admin.index');
         }
-
+        
         // Redis'te tenant bazlı önbellekleme
         $redisKey = "tenant:{$currentTenant->id}:stats";
         $tenantStats = Cache::store('redis')->remember($redisKey, 3600, function () use ($currentTenant) {
@@ -22,7 +26,10 @@ Route::middleware(['web', 'auth', 'admin.access', 'tenant'])->prefix('admin')->n
                 'created_at' => $currentTenant->created_at?->format('d.m.Y H:i:s') ?? 'Belirtilmemiş'
             ];
         });
-
+        
         return view('admin.index', compact('tenantStats'));
     })->name('dashboard');
+    
+    // Diğer admin rotaları buraya eklenebilir
+    // Tüm rotalar zaten 'role:admin|editor|root' middleware'i ile korunuyor
 });

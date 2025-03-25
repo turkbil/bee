@@ -21,6 +21,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    
+    // Test erişim rotası
+    Route::get('/admin/test-access', [\App\Http\Controllers\TestAccessController::class, 'testAccess'])->name('test.access');
 });
 
 // Tenant medya dosyalarına erişim

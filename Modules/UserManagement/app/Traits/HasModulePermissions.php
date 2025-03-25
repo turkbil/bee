@@ -3,6 +3,7 @@
 namespace Modules\UserManagement\App\Traits;
 
 use Illuminate\Support\Facades\Cache;
+use Modules\UserManagement\App\Models\UserModulePermission;
 
 trait HasModulePermissions
 {

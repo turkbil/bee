@@ -2,9 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Cache;
-use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
+use App\Http\Middleware\InitializeTenancy;
 
-Route::middleware(['web', 'auth', InitializeTenancyByDomain::class])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['web', 'auth', 'admin.access', 'tenant'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', function () {
         $currentTenant = tenancy()->tenant;
         

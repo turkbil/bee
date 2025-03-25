@@ -21,6 +21,15 @@ return Application::configure(basePath: dirname(__DIR__))
         // Alias tanımlamaları
         $middleware->alias([
             'tenant' => \App\Http\Middleware\InitializeTenancy::class,
+            'tenant.module' => \App\Http\Middleware\TenantModuleMiddleware::class,
+            'admin.access' => \App\Http\Middleware\AdminAccessMiddleware::class,
+        ]);
+        
+        // Admin middleware grubu
+        $middleware->group('admin', [
+            'web',
+            'auth',
+            'tenant',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

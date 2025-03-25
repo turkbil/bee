@@ -24,6 +24,7 @@ class ModuleAccessService
         $user = Auth::user();
         
         if (!$user || !$user->is_active) {
+            Log::warning("Kullanıcı yok veya aktif değil, modül erişimi reddedildi: {$moduleName}.{$permissionType}");
             return false;
         }
         
@@ -32,26 +33,33 @@ class ModuleAccessService
             return true;
         }
         
-        // Tenant kontrolü
-        $isTenant = TenantHelpers::isTenant();
-        
         // Modül aktif mi?
         $module = $this->getModuleByName($moduleName);
         if (!$module || !$module->is_active) {
+            Log::warning("Modül bulunamadı veya aktif değil: {$moduleName}");
             return false;
         }
         
-        // 1. ADMIN rolü kontrolü
+        // Tenant kontrolü
+        $isTenant = TenantHelpers::isTenant();
+        
+        // ADMIN rolü kontrolü
         if ($user->isAdmin()) {
             // Tenant'ta ise modülün tenant'a atanmış olması gerekir
             if ($isTenant) {
-                return $this->isModuleAssignedToTenant($module->module_id, tenant()->id);
+                $isAssigned = $this->isModuleAssignedToTenant($module->module_id, tenant()->id);
+                if (!$isAssigned) {
+                    Log::info("Admin, tenant'a atanmamış modüle erişmeye çalışıyor: {$moduleName}");
+                    return false;
+                }
+                return true;
             }
             
             // Central'da ise:
             
-            // 1. Tenantmanagement özel bir durum - sadece root erişebilir
+            // 1. Kısıtlı modüller (örn: tenantmanagement) sadece root erişebilir
             if (in_array($moduleName, config('module-permissions.admin_restricted_modules', []))) {
+                Log::info("Admin, kısıtlı modüle erişmeye çalışıyor: {$moduleName}");
                 return false;
             }
             
@@ -59,12 +67,12 @@ class ModuleAccessService
             return true;
         }
         
-        // 2. EDITOR için:
+        // EDITOR için:
         if ($user->isEditor()) {
-            // ÖNEMLİ: Önce rolleri kontrol et - kullanıcı admin veya root da olabilir
+            // Rol çakışması kontrolü (güvenlik için)
             if ($user->hasRole('admin') || $user->hasRole('root')) {
                 Log::warning("Kullanıcı {$user->id} hem Editor hem de admin/root rollerine sahip! Bu durum kontrol edilmeli.");
-                return false; // Güvenlik için hatayı log et ve erişimi engelle
+                return false;
             }
             
             // Tenant'ta ise önce modül atanmış mı kontrol et
@@ -73,13 +81,20 @@ class ModuleAccessService
                 return false;
             }
             
-            // Kullanıcının modül bazlı iznini kontrol et - HAYATİ KONTROL BURADA
-            if (!$user->hasModulePermission($moduleName, $permissionType)) {
+            // Kullanıcının modül bazlı iznini kontrol et - HAYATİ KONTROL
+            $hasPermission = $user->hasModulePermission($moduleName, $permissionType);
+            if (!$hasPermission) {
                 Log::info("Kullanıcı {$user->id} için {$moduleName}.{$permissionType} izni yok.");
                 return false;
             }
             
             return true;
+        }
+        
+        // Özel rol kontrolü
+        if ($user->hasAnyRole()) {
+            $permissionName = "{$moduleName}.{$permissionType}";
+            return $user->hasPermissionTo($permissionName);
         }
         
         Log::info("Kullanıcı {$user->id} için rol kontrollerinden geçemedi. Roller: " . implode(', ', $user->getRoleNames()->toArray()));
@@ -97,12 +112,16 @@ class ModuleAccessService
     {
         $cacheKey = "module_{$moduleId}_tenant_{$tenantId}";
         
-        return Cache::remember($cacheKey, now()->addDays(1), function () use ($moduleId, $tenantId) {
-            return DB::table('module_tenants')
+        return Cache::remember($cacheKey, now()->addMinutes(60), function () use ($moduleId, $tenantId) {
+            // Önce module_tenants tablosunu kontrol et
+            $assigned = DB::table('module_tenants')
                 ->where('module_id', $moduleId)
                 ->where('tenant_id', $tenantId)
                 ->where('is_active', true)
                 ->exists();
+            
+            // İlişki yoksa false döndür
+            return $assigned;
         });
     }
     

@@ -28,6 +28,8 @@ return [
     // Central'da admin tarafından görüntülenemeyen modüller (sadece root erişebilir)
     'admin_restricted_modules' => [
         'tenantmanagement', // Tenant yönetimi sadece root'a açık
+        'modulemanagement', // Modül yönetimi sadece root'a açık
+        'settingmanagement', // Ayarlar yönetimi sadece root'a açık
     ],
     
     // Önbellek süreleri (dakika cinsinden)

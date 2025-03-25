@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\InitializeTenancy;
+use App\Services\ModuleAccessService;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -54,7 +55,7 @@ class RouteServiceProvider extends ServiceProvider
                                 return $next($request);
                             }, 'tenant'])->group($webRoute);
                         } else {
-                            // Diğer modüller için tenant.module middleware'ini ekle
+                            // Diğer modüller için izin kontrolü yap
                             Route::middleware(['web', 'auth', 'tenant', function ($request, $next) use ($moduleName) {
                                 // URL'i kontrol et
                                 $uri = $request->path();
@@ -69,12 +70,28 @@ class RouteServiceProvider extends ServiceProvider
                                     }
                                     
                                     // Admin her modüle erişebilir (tenantmanagement hariç)
-                                    if ($user && $user->isAdmin() && $moduleName !== 'tenantmanagement') {
+                                    if ($user && $user->isAdmin()) {
+                                        // Central'da kısıtlı modüller varsa kontrol et
+                                        if (\App\Helpers\TenantHelpers::isCentral() && 
+                                            in_array($moduleName, config('module-permissions.admin_restricted_modules', []))) {
+                                            abort(403, 'Bu işlem için yetkiniz bulunmamaktadır.');
+                                        }
+                                        
+                                        // Tenant'ta modül atanmış mı kontrol et
+                                        if (\App\Helpers\TenantHelpers::isTenant()) {
+                                            $moduleService = app(\App\Services\ModuleAccessService::class);
+                                            $module = $moduleService->getModuleByName($moduleName);
+                                            
+                                            if (!$module || !$moduleService->isModuleAssignedToTenant($module->module_id, tenant()->id)) {
+                                                abort(403, 'Bu modül bu tenant\'a atanmamış.');
+                                            }
+                                        }
+                                        
                                         return $next($request);
                                     }
                                     
                                     // Editor sadece yetkisi olan modüllere erişebilir
-                                    if ($user && $user->isEditor() && app(\App\Services\ModuleAccessService::class)->canAccess($moduleName, 'view')) {
+                                    if ($user && app(\App\Services\ModuleAccessService::class)->canAccess($moduleName, 'view')) {
                                         return $next($request);
                                     }
                                     

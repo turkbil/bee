@@ -37,14 +37,53 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         $this->routes(function () {
-            // Modül route'larını yükle
+            // Modül route'larını yükle ve otomatik middleware ekle
             if (is_dir(base_path('Modules'))) {
                 $modules = array_diff(scandir(base_path('Modules')), ['.', '..']);
                 foreach ($modules as $module) {
+                    $moduleName = strtolower($module);
                     $webRoute = base_path("Modules/{$module}/routes/web.php");
+                    
                     if (file_exists($webRoute)) {
-                        Route::middleware('web')
-                            ->group($webRoute);
+                        // TenantManagement modülü sadece root için
+                        if ($moduleName === 'tenantmanagement') {
+                            Route::middleware(['web', 'auth', function ($request, $next) {
+                                if (!auth()->user() || !auth()->user()->isRoot()) {
+                                    abort(403, 'Bu alana sadece Root kullanıcılar erişebilir.');
+                                }
+                                return $next($request);
+                            }, 'tenant'])->group($webRoute);
+                        } else {
+                            // Diğer modüller için tenant.module middleware'ini ekle
+                            Route::middleware(['web', 'auth', 'tenant', function ($request, $next) use ($moduleName) {
+                                // URL'i kontrol et
+                                $uri = $request->path();
+                                
+                                // Eğer admin/modül ile başlıyorsa izin kontrolü yap
+                                if (strpos($uri, "admin/{$moduleName}") === 0) {
+                                    $user = auth()->user();
+                                    
+                                    // Root her şeye erişebilir
+                                    if ($user && $user->isRoot()) {
+                                        return $next($request);
+                                    }
+                                    
+                                    // Admin her modüle erişebilir (tenantmanagement hariç)
+                                    if ($user && $user->isAdmin() && $moduleName !== 'tenantmanagement') {
+                                        return $next($request);
+                                    }
+                                    
+                                    // Editor sadece yetkisi olan modüllere erişebilir
+                                    if ($user && $user->isEditor() && app(\App\Services\ModuleAccessService::class)->canAccess($moduleName, 'view')) {
+                                        return $next($request);
+                                    }
+                                    
+                                    abort(403, 'Bu işlem için yetkiniz bulunmamaktadır.');
+                                }
+                                
+                                return $next($request);
+                            }])->group($webRoute);
+                        }
                     }
                 }
             }

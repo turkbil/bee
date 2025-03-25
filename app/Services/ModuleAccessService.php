@@ -61,15 +61,28 @@ class ModuleAccessService
         
         // 2. EDITOR için:
         if ($user->isEditor()) {
+            // ÖNEMLİ: Önce rolleri kontrol et - kullanıcı admin veya root da olabilir
+            if ($user->hasRole('admin') || $user->hasRole('root')) {
+                Log::warning("Kullanıcı {$user->id} hem Editor hem de admin/root rollerine sahip! Bu durum kontrol edilmeli.");
+                return false; // Güvenlik için hatayı log et ve erişimi engelle
+            }
+            
             // Tenant'ta ise önce modül atanmış mı kontrol et
             if ($isTenant && !$this->isModuleAssignedToTenant($module->module_id, tenant()->id)) {
+                Log::info("Modül {$moduleName} tenant'a atanmamış. ID: " . tenant()->id);
                 return false;
             }
             
-            // Sonra kullanıcının modül bazlı iznini kontrol et
-            return $user->hasModulePermission($moduleName, $permissionType);
+            // Kullanıcının modül bazlı iznini kontrol et - HAYATİ KONTROL BURADA
+            if (!$user->hasModulePermission($moduleName, $permissionType)) {
+                Log::info("Kullanıcı {$user->id} için {$moduleName}.{$permissionType} izni yok.");
+                return false;
+            }
+            
+            return true;
         }
         
+        Log::info("Kullanıcı {$user->id} için rol kontrollerinden geçemedi. Roller: " . implode(', ', $user->getRoleNames()->toArray()));
         return false;
     }
     

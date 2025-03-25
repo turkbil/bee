@@ -24,6 +24,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'tenant' => \App\Http\Middleware\InitializeTenancy::class,
             'tenant.module' => \App\Http\Middleware\TenantModuleMiddleware::class,
             'admin.access' => \App\Http\Middleware\AdminAccessMiddleware::class,
+            'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
+            'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
+            'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,
         ]);
         
         // Admin middleware grubu

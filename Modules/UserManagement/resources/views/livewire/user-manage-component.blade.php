@@ -517,11 +517,6 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             $('#userInfoSection').show();
         }
-        
-        // Eğer rol editör değilse tüm modül izinlerini sıfırla
-        if (selectedRole !== 'editor') {
-            window.Livewire.find(document.querySelector('[wire\\:id]').getAttribute('wire:id')).clearAllModulePermissions();
-        }
     });
     
     // Modül toggle değişikliği - doğrudan PHP metodu çağırma ve UI güncelleme
@@ -599,6 +594,22 @@ document.addEventListener('DOMContentLoaded', function() {
     Livewire.on('roleChanged', function(role) {
         console.log('roleChanged event received:', role);
         $(`#role-${role}`).prop('checked', true).trigger('change');
+    });
+    
+    // Modül izinleri güncellendiğinde
+    Livewire.on('modulePermissionsUpdated', function() {
+        console.log('Module permissions updated event received');
+        // UI'ı güncelle (bu özellikle rolü değiştirdikten sonra gerçekleşir)
+        const component = window.Livewire.find(document.querySelector('[wire\\:id]').getAttribute('wire:id'));
+        
+        // Tüm modülleri güncelle
+        if (component && component.availableModules) {
+            component.availableModules.forEach(module => {
+                if (module && module.name) {
+                    updateModuleUI(component, module.name);
+                }
+            });
+        }
     });
 });
 </script>

@@ -35,6 +35,7 @@ class UserManageComponent extends Component
     // Yetkiler için yeni değişkenler
     public $moduleName; // Modül toggle için
     public $modulePermType; // İzin tipi toggle için
+    public $previousRole = null; // Önceki rol için değişken
 
     protected $rules = [
         'inputs.name' => 'required|min:3',
@@ -46,7 +47,7 @@ class UserManageComponent extends Component
         'inputs.permissions.*' => 'exists:permissions,id',
     ];
 
-    // Yeni protected $listeners dizisi
+    // Listeners dizisi
     protected $listeners = ['refreshModules', 'clearAllModules', 'updateModules'];
 
     public function mount($id = null)
@@ -81,6 +82,7 @@ class UserManageComponent extends Component
            $this->inputs['email'] = $user->email;
            $this->inputs['is_active'] = $user->is_active;
            $this->inputs['role_id'] = $user->roles->first() ? $user->roles->first()->name : null;
+           $this->previousRole = $this->inputs['role_id']; // Önceki rolü sakla
            
            $permissions = DB::table('model_has_permissions')
                ->where('model_id', $id)
@@ -170,14 +172,37 @@ class UserManageComponent extends Component
     public function updatedInputsRoleId($value)
     {
         // Log role change
-        Log::debug('Role changed to: ' . $value);
+        Log::debug('Role changed from: ' . $this->previousRole . ' to: ' . $value);
         
-        // Eğer rol editör değilse, izinleri sıfırla
-        if ($value !== 'editor') {
-            $this->clearAllModulePermissions();
+        // Rol değişikliği yapıldığında tüm yetkileri sıfırla
+        $this->clearAllModulePermissions();
+        $this->inputs['permissions'] = [];
+        
+        // Eğer rol editör ise ve önceki rol editör değilse, modül izinleri bölümünü göster
+        if ($value === 'editor') {
+            // Editör rolü seçildiğinde ilgili izinleri hazırla
+            $this->prepareEditorPermissions();
         }
         
+        $this->previousRole = $value; // Yeni rolü sakla
         $this->dispatch('roleChanged', $value);
+    }
+
+    /**
+     * Editör rolü için gerekli izinleri hazırla
+     */
+    protected function prepareEditorPermissions()
+    {
+        // Editör rolü seçildiğinde varsayılan olarak tüm izinler kapalı olmalı
+        foreach ($this->modulePermissions as $moduleName => $permissions) {
+            $this->modulePermissions[$moduleName] = [
+                'enabled' => false,
+                'view' => false,
+                'create' => false,
+                'update' => false,
+                'delete' => false
+            ];
+        }
     }
 
     public function clearAllModulePermissions()
@@ -314,74 +339,38 @@ class UserManageComponent extends Component
     public function save($redirect = false, $resetForm = false)
     {
         $this->validate();
-
+    
         try {
             DB::beginTransaction();
-
+    
             $data = collect($this->inputs)->except(['role_id', 'permissions'])->toArray();
-
+    
             if (!empty($this->inputs['password'])) {
                 $data['password'] = Hash::make($this->inputs['password']);
             } else {
                 unset($data['password']);
             }
-
+    
             if ($this->userId) {
                 $user = User::findOrFail($this->userId);
                 $user->update($data);
             } else {
                 $user = User::create($data);
             }
-
+    
             // Avatar yükleme işlemi
             $this->handleImageUpload($user);
-
-            // Rol atama
-            if (!empty($this->inputs['role_id'])) {
-                $role = Role::where('name', $this->inputs['role_id'])->first();
-                if ($role) {
-                    $user->syncRoles([$role->name]);
-                    
-                    Log::debug('Syncing roles for user', [
-                        'user_id' => $user->id,
-                        'role' => $role->name
-                    ]);
-                    
-                    // Eğer rol editor ise, modül bazlı izinleri işle
-                    if ($role->name === 'editor') {
-                        $this->saveModulePermissions($user);
-                    } else {
-                        // Editor rolü değilse, modül izinlerini temizle
-                        UserModulePermission::where('user_id', $user->id)->delete();
-                        Log::debug('Deleted module permissions for non-editor user', ['user_id' => $user->id]);
-                    }
-                }
-            } else {
-                $user->syncRoles([]);
-                // Rol yoksa, modül izinlerini de temizle
-                UserModulePermission::where('user_id', $user->id)->delete();
-                Log::debug('Deleted module permissions for user with no role', ['user_id' => $user->id]);
-            }
-
-            // İzin atama (sadece editor rolü değilse)
-            if (empty($this->inputs['role_id']) || $this->inputs['role_id'] !== 'editor') {
-                if (!empty($this->inputs['permissions'])) {
-                    $permissions = Permission::whereIn('id', $this->inputs['permissions'])->get();
-                    $user->syncPermissions($permissions);
-                    Log::debug('Synced permissions for non-editor user', [
-                        'user_id' => $user->id, 
-                        'permission_count' => count($this->inputs['permissions'])
-                    ]);
-                } else {
-                    $user->syncPermissions([]);
-                    Log::debug('Cleared permissions for user', ['user_id' => $user->id]);
-                }
-            }
-
+    
+            // Rol ve izin işlemleri
+            $this->handleRoleAndPermissions($user);
+    
+            // Önbellekleri temizle
+            Cache::forget("user_{$user->id}_accessible_modules");
+            
             DB::commit();
-
+    
             $message = $this->userId ? 'Kullanıcı başarıyla güncellendi.' : 'Kullanıcı başarıyla oluşturuldu.';
-
+    
             if ($redirect) {
                 session()->flash('toast', [
                     'title' => 'Başarılı!',
@@ -390,13 +379,13 @@ class UserManageComponent extends Component
                 ]);
                 return redirect()->route('admin.usermanagement.index');
             }
-
+    
             $this->dispatch('toast', [
                 'title' => 'Başarılı!',
                 'message' => $message,
                 'type' => 'success',
             ]);
-
+    
             if ($resetForm && !$this->userId) {
                 $this->reset(['inputs', 'temporaryImages', 'modulePermissions']);
                 $this->inputs = [
@@ -409,7 +398,7 @@ class UserManageComponent extends Component
                 ];
                 $this->loadAvailableModules();
             }
-
+    
         } catch (\Exception $e) {
             DB::rollBack();
             
@@ -425,6 +414,126 @@ class UserManageComponent extends Component
                 'message' => 'İşlem sırasında bir hata oluştu: ' . $e->getMessage(),
                 'type' => 'error',
             ]);
+        }
+    }
+    
+    protected function handleRoleAndPermissions($user)
+    {
+        try {
+            Log::debug('Handling user roles and permissions', [
+                'user_id' => $user->id,
+                'selected_role' => $this->inputs['role_id'],
+                'previous_role' => $this->previousRole
+            ]);
+            
+            // Kullanıcının mevcut rollerini kontrol et
+            $currentRoles = DB::table('model_has_roles')
+                ->where('model_id', $user->id)
+                ->where('model_type', User::class)
+                ->get();
+                
+            Log::debug('Current roles before deletion', [
+                'user_id' => $user->id,
+                'roles' => $currentRoles->toArray()
+            ]);
+            
+            // 1. Önce tüm rolleri temizle 
+            DB::table('model_has_roles')
+                ->where('model_id', $user->id)
+                ->where('model_type', User::class)
+                ->delete();
+                
+            Log::debug('Deleted all roles for user', [
+                'user_id' => $user->id
+            ]);
+            
+            // 2. Tüm direkt izinleri de temizle
+            DB::table('model_has_permissions')
+                ->where('model_id', $user->id)
+                ->where('model_type', User::class)
+                ->delete();
+                
+            Log::debug('Deleted all direct permissions for user', [
+                'user_id' => $user->id
+            ]);
+            
+            // 3. Modül bazlı izinleri temizle
+            $modulePermsDeleted = UserModulePermission::where('user_id', $user->id)->delete();
+            
+            Log::debug('Deleted module permissions for user', [
+                'user_id' => $user->id,
+                'count' => $modulePermsDeleted
+            ]);
+            
+            // 4. Seçilen role göre işlem yap - 'user' rolü için hiçbir rol atanmamalı
+            if (!empty($this->inputs['role_id']) && $this->inputs['role_id'] !== 'user') {
+                $role = Role::where('name', $this->inputs['role_id'])->first();
+                
+                if ($role) {
+                    // 4.1. Yeni rolü ekle (direkt DB query ile)
+                    DB::table('model_has_roles')->insert([
+                        'role_id' => $role->id,
+                        'model_type' => User::class,
+                        'model_id' => $user->id
+                    ]);
+                    
+                    Log::debug('New role attached for user', [
+                        'user_id' => $user->id,
+                        'role' => $role->name,
+                        'role_id' => $role->id
+                    ]);
+                    
+                    // 4.2. Rol tipine göre izinleri ayarla
+                    if ($role->name === 'editor') {
+                        $this->saveModulePermissions($user);
+                    } else {
+                        Log::debug('Admin/Root role assigned, no additional permissions needed', [
+                            'user_id' => $user->id
+                        ]);
+                    }
+                }
+            } else {
+                // 'user' rolü veya rol seçilmediğinde hiçbir rol atanmaz
+                Log::debug('User role or no role selected, no roles or permissions assigned', [
+                    'user_id' => $user->id,
+                    'role_id' => $this->inputs['role_id'] ?? 'null'
+                ]);
+            }
+            
+            // 5. Silme sonrası kontrol et
+            $remainingRoles = DB::table('model_has_roles')
+                ->where('model_id', $user->id)
+                ->where('model_type', User::class)
+                ->get();
+                
+            Log::debug('Roles after operation', [
+                'user_id' => $user->id,
+                'roles_count' => $remainingRoles->count(),
+                'roles' => $remainingRoles->toArray()
+            ]);
+            
+            // 6. Önbellekleri temizle
+            app()->make(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
+            
+            foreach ($this->availableModules as $module) {
+                foreach (['view', 'create', 'update', 'delete'] as $permissionType) {
+                    Cache::forget("user_{$user->id}_module_{$module->name}_permission_{$permissionType}");
+                }
+                Cache::forget("user_{$user->id}_module_{$module->name}_permissions");
+            }
+            
+            Cache::forget("user_{$user->id}_roles");
+            Cache::forget("user_{$user->id}_permissions");
+            
+        } catch (\Exception $e) {
+            Log::error('Error in handleRoleAndPermissions', [
+                'user_id' => $user->id,
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw $e;
         }
     }
     
@@ -481,6 +590,11 @@ class UserManageComponent extends Component
             }
             Cache::forget("user_{$user->id}_module_{$module->name}_permissions");
         }
+        
+        // Genel önbellekler
+        Cache::forget("user_{$user->id}_roles");
+        Cache::forget("user_{$user->id}_permissions");
+        Cache::forget("user_{$user->id}_accessible_modules");
     }
 
     public function toggleAllModulePermissions($module)
@@ -525,4 +639,4 @@ class UserManageComponent extends Component
             'model' => $this->userId ? User::find($this->userId) : null,
         ]);
     }
-}   
+}

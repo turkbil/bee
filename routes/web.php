@@ -11,8 +11,9 @@ require __DIR__.'/admin/web.php';
 // Ana web routes - hem central hem tenant için çalışacak
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('home');
 
+// Normal üyelerin dashboard'a erişimi
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');

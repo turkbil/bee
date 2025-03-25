@@ -5,6 +5,7 @@ namespace Modules\UserManagement\App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ModulePermissionMiddleware
 {
@@ -32,23 +33,49 @@ class ModulePermissionMiddleware
                 ->with('error', 'Hesabınız pasif durumda. Lütfen yönetici ile iletişime geçin.');
         }
         
+        // Log - hangi kullanıcı, hangi modül, hangi izin tipi
+        Log::info("ModulePermissionMiddleware: User ID: {$user->id}, Email: {$user->email}, Module: {$moduleName}, Permission: {$permissionType}, Roles: " . implode(',', $user->getRoleNames()->toArray()));
+        
         // Root yetkisine sahip kullanıcı için hiçbir kısıtlama yok
-        if ($user->isRoot()) {
+        if ($user->hasRole('root')) {
             return $next($request);
         }
         
-        // Admin ise ve gereken yetki var mı kontrol et
-        if ($user->isAdmin()) {
-            // Admin için belirli kısıtlamalar varsa buraya eklenebilir
+        // Admin ise belirli kısıtlamalar uygula
+        if ($user->hasRole('admin')) {
+            // Admin için ilave kısıtlama - tenant'ta modülün atanmış olması gerekir
+            if (app(\Stancl\Tenancy\Tenancy::class)->initialized) {
+                $moduleService = app(\App\Services\ModuleAccessService::class);
+                $module = $moduleService->getModuleByName($moduleName);
+                
+                if (!$module) {
+                    Log::error("ModulePermissionMiddleware: Module not found: {$moduleName}");
+                    abort(403, 'Modül bulunamadı.');
+                }
+                
+                $isModuleAssigned = $moduleService->isModuleAssignedToTenant($module->module_id, tenant()->id);
+                if (!$isModuleAssigned) {
+                    Log::warning("Admin {$user->id} ({$user->email}) tenant'a atanmamış modüle erişmeye çalışıyor: {$moduleName}");
+                    abort(403, 'Bu modül bu tenant\'a atanmamış.');
+                }
+            } else {
+                // Central'da ise, admin'in erişemeyeceği modülleri kontrol et
+                if (in_array($moduleName, config('module-permissions.admin_restricted_modules', []))) {
+                    Log::warning("Admin {$user->id} ({$user->email}) kısıtlı modüle erişmeye çalışıyor: {$moduleName}");
+                    abort(403, 'Bu işlem için yetkiniz bulunmamaktadır.');
+                }
+            }
+            
             return $next($request);
         }
         
-        // Editör ise modül bazlı yetki kontrolü yap
-        if ($user->isEditor() && $user->hasModulePermission($moduleName, $permissionType)) {
-            return $next($request);
+        // Editor veya diğer roller için, önce kullanıcının modül bazlı izni var mı kontrol et
+        if (!$user->hasModulePermission($moduleName, $permissionType)) {
+            Log::warning("User {$user->id} ({$user->email}) doesn't have permission {$permissionType} for module {$moduleName}");
+            abort(403, 'Bu işlem için yetkiniz bulunmamaktadır.');
         }
         
-        // Hiçbir koşul sağlanmadıysa erişimi reddet
-        abort(403, 'Bu işlem için yetkiniz bulunmamaktadır.');
+        // Tüm kontroller geçildi, erişime izin ver
+        return $next($request);
     }
 }

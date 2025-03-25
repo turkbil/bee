@@ -12,8 +12,6 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        // Global middleware'lerde InitializeTenancy'yi KALDIR
-        
         // Web middleware grubuna InitializeTenancy ekle
         $middleware->web(append: [
             \App\Http\Middleware\InitializeTenancy::class,
@@ -27,6 +25,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
             'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
             'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,
+            'module.permission' => \Modules\UserManagement\App\Http\Middleware\ModulePermissionMiddleware::class,
         ]);
         
         // Admin middleware grubu
@@ -34,10 +33,28 @@ return Application::configure(basePath: dirname(__DIR__))
             'web',
             'auth',
             'tenant',
+            'admin.access', // Admin erişim kontrolü için
         ]);
+                
+        // Module middleware grupları - her modül için yetki kontrolü
+        $modules = [];
+        if (is_dir(base_path('Modules'))) {
+            $modules = array_diff(scandir(base_path('Modules')), ['.', '..']);
+        }
+
+        foreach ($modules as $module) {
+            $moduleName = strtolower($module);
+            $middleware->group('module.' . $moduleName, [
+                'web',
+                'auth',
+                'tenant',
+                'module.permission:' . $moduleName . ',view'
+            ]);
+        }
+
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->renderable(function (TokenMismatchException $e, $request) {
-            return Redirect::to('/');
+            return redirect()->route('login');
         });
     })->create();

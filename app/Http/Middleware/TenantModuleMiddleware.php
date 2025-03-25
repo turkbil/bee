@@ -42,7 +42,33 @@ class TenantModuleMiddleware
                 ->with('error', 'Hesabınız pasif durumda. Lütfen yönetici ile iletişime geçin.');
         }
         
-        // ModuleAccessService ile erişim kontrolü yap
+        // Root her zaman erişebilir
+        if ($user->isRoot()) {
+            return $next($request);
+        }
+        
+        // Admin yetki kontrolü
+        if ($user->isAdmin()) {
+            // Central'da ise ve kısıtlı modüller listesinde mi kontrol et
+            if (TenantHelpers::isCentral() && 
+                in_array($moduleName, config('module-permissions.admin_restricted_modules', []))) {
+                Log::warning("Admin kullanıcısı {$user->id} kısıtlı modüle erişmeye çalışıyor: {$moduleName}");
+                abort(403, 'Bu modüle erişim yetkiniz bulunmamaktadır.');
+            }
+            
+            // Tenant'ta ise modül tenant'a atanmış mı kontrol et
+            if (TenantHelpers::isTenant()) {
+                $module = $this->moduleAccessService->getModuleByName($moduleName);
+                if (!$module || !$this->moduleAccessService->isModuleAssignedToTenant($module->module_id, tenant()->id)) {
+                    Log::warning("Admin kullanıcısı {$user->id} tenant'a atanmamış modüle erişmeye çalışıyor: {$moduleName}");
+                    abort(403, 'Bu modül bu tenant\'a atanmamış.');
+                }
+            }
+            
+            return $next($request);
+        }
+        
+        // Editor ve diğer roller için izin kontrolü
         if ($this->moduleAccessService->canAccess($moduleName, $permissionType)) {
             return $next($request);
         }

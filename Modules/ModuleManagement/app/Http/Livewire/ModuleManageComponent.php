@@ -6,7 +6,6 @@ use Livewire\Attributes\Layout;
 use Illuminate\Validation\Rule;
 use Modules\ModuleManagement\App\Models\Module;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Cache;
 
 #[Layout('admin.layout')]
 class ModuleManageComponent extends Component
@@ -167,11 +166,6 @@ class ModuleManageComponent extends Component
                 'güncellendi',
                 array_diff_assoc($module->toArray(), $oldData)
             );
-            
-            // Cache temizleme - aktif durumu değişirse tüm cache temizlenir
-            if ($oldData['is_active'] != $moduleData['is_active']) {
-                Cache::forget("modules_tenant_central");
-            }
         } else {
             if (empty($this->inputs['name'])) {
                 $this->dispatch('toast', [
@@ -188,9 +182,6 @@ class ModuleManageComponent extends Component
                 $module,
                 'oluşturuldu'
             );
-            
-            // Yeni modül eklendiyse central cache'i temizle
-            Cache::forget("modules_tenant_central");
         }
         
         // Tenant relationships güncelleme ve izin işlemleri
@@ -234,13 +225,6 @@ class ModuleManageComponent extends Component
         // Silinen tenant'lar için izinleri ve kullanıcı modül izinlerini kaldır
         foreach ($removedTenants as $tenantId) {
             $permissionService->handleModuleRemovedFromTenant($module->module_id, $tenantId);
-        }
-        
-        // Güncellenen veya eklenen tenant ID'leri için cache temizle
-        $updatedTenantIds = array_unique(array_merge($addedTenants, $removedTenants));
-        
-        foreach ($updatedTenantIds as $tenantId) {
-            Cache::forget("modules_tenant_" . $tenantId);
         }
     
         if ($redirect) {

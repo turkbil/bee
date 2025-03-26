@@ -7,7 +7,6 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Modules\ModuleManagement\App\Models\Module;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Cache;
 use App\Services\ModuleAccessService;
 
 #[Layout('admin.layout')]
@@ -77,17 +76,6 @@ class ModuleComponent extends Component
                 $module,
                 $module->is_active ? 'aktif edildi' : 'pasif edildi'
             );
-            
-            // Cache'i temizle
-            Cache::forget("modules_tenant_central");
-            
-            // İlişkili tenantların cache'ini temizle
-            $tenantIds = $module->tenants()->pluck('tenant_id')->toArray();
-            foreach ($tenantIds as $tenantId) {
-                Cache::forget("modules_tenant_" . $tenantId);
-                // Modül erişim kontrolü için kullanılan cache anahtarlarını da temizle
-                Cache::forget("module_{$id}_tenant_{$tenantId}");
-            }
 
             $this->dispatch('toast', [
                 'title' => 'Başarılı!',
@@ -127,14 +115,7 @@ class ModuleComponent extends Component
                 ]
             );
             
-            // Domain için önbellekleri temizle
-            Cache::forget("modules_tenant_" . $domain);
-            Cache::forget("module_{$moduleId}_tenant_{$domain}");
-            
-            // Tüm kullanıcı erişim önbelleklerini temizle (tüm domain için)
-            app(ModuleAccessService::class)->clearAccessCache(null, $domain, null, null);
-            
-            // Doğru namespace ile servis sınıfını çağır
+            // İzin işlemleri için servis
             $permissionService = app(\App\Services\ModuleTenantPermissionService::class);
             
             if ($isActive) {

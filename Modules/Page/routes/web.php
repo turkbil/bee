@@ -10,11 +10,20 @@ Route::middleware(['web', 'auth', 'tenant'])
     ->group(function () {
         Route::prefix('page')
             ->name('page.')
-            ->middleware('module.permission:page,view')
             ->group(function () {
-                Route::get('/', PageComponent::class)->name('index');
-                Route::get('/manage/{id?}', PageManageComponent::class)
+                Route::get('/', PageComponent::class)
+                    ->middleware('module.permission:page,view')
+                    ->name('index');
+                    
+                // Yeni sayfa oluşturma - create izni kontrolü
+                Route::get('/manage', PageManageComponent::class)
+                    ->middleware('module.permission:page,create')
+                    ->name('create');
+                    
+                // Mevcut sayfayı düzenleme - update izni kontrolü 
+                Route::get('/manage/{id}', PageManageComponent::class)
                     ->middleware('module.permission:page,update')
-                    ->name('manage');
+                    ->where('id', '[0-9]+')
+                    ->name('edit');
             });
     });

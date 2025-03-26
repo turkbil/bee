@@ -410,10 +410,11 @@ class UserManageComponent extends Component
             
             // İlgili izni tersine çevir
             $currentValue = $this->modulePermissions[$moduleName][$permType];
-            $this->modulePermissions[$moduleName][$permType] = !$currentValue;
+            $newValue = !$currentValue;
+            $this->modulePermissions[$moduleName][$permType] = $newValue;
             
             // Özel durum: Görüntüleme izni olmadan diğer izinler verilemez
-            if ($permType === 'view' && !$this->modulePermissions[$moduleName]['view']) {
+            if ($permType === 'view' && !$newValue) {
                 // Görüntüleme izni kaldırıldığında, diğer tüm izinleri de kaldır
                 foreach ($this->permissionTypes as $type) {
                     if ($type !== 'view') {
@@ -422,8 +423,8 @@ class UserManageComponent extends Component
                 }
             }
             
-            // Diğer izinler etkinleştirildiğinde görüntüleme izni de otomatik verilir
-            if ($permType !== 'view' && $this->modulePermissions[$moduleName][$permType]) {
+            // Özel durum: Diğer izinler etkinleştirildiğinde görüntüleme izni de otomatik verilir
+            if ($permType !== 'view' && $newValue) {
                 $this->modulePermissions[$moduleName]['view'] = true;
             }
             
@@ -435,8 +436,15 @@ class UserManageComponent extends Component
                 }
             }
             
-            // Modülün aktif/pasif durumunu güncelle - en az bir izin seçiliyse aktif kalsın
-            $this->modulePermissions[$moduleName]['enabled'] = $selectedPermissionsCount > 0;
+            // ÖNEMLİ DÜZELTME: İzin aktif hale geldiğinde modülü de aktif yap
+            if ($newValue) {
+                $this->modulePermissions[$moduleName]['enabled'] = true;
+            }
+            // Eğer hiçbir izin aktif değilse modülü pasif yap
+            elseif ($selectedPermissionsCount === 0) {
+                $this->modulePermissions[$moduleName]['enabled'] = false;
+            }
+            // Diğer durumlarda modülün durumunu değiştirme
             
             // İzin sayılarını güncelle
             $this->calculateModulePermissionCounts();
@@ -447,6 +455,7 @@ class UserManageComponent extends Component
             Log::debug('Module permission toggled', [
                 'module' => $moduleName,
                 'permType' => $permType,
+                'newValue' => $newValue,
                 'selectedPermissionsCount' => $selectedPermissionsCount,
                 'moduleEnabled' => $this->modulePermissions[$moduleName]['enabled']
             ]);
@@ -460,7 +469,7 @@ class UserManageComponent extends Component
             ]);
         }
     }
-    
+
     public function toggleActiveStatus()
     {
         $this->inputs['is_active'] = !$this->inputs['is_active']; 

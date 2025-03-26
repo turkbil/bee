@@ -17,21 +17,14 @@ Route::middleware(['web', 'auth', 'tenant'])
             ->middleware('module.permission:settingmanagement,view')
             ->name('index');
             
-        // Grup yönetimi
-        Route::get('/group/manage', GroupManageComponent::class)
-            ->middleware('module.permission:settingmanagement,create')
-            ->name('group.create');
-            
-        Route::get('/group/manage/{id}', GroupManageComponent::class)
+        Route::get('/group/manage/{id?}', GroupManageComponent::class)
             ->middleware('module.permission:settingmanagement,update')
-            ->where('id', '[0-9]+')
-            ->name('group.edit');
+            ->name('group.manage');
             
         Route::get('/group/list', GroupListComponent::class)
             ->middleware('module.permission:settingmanagement,view')
             ->name('group.list');
             
-        // Öğe yönetimi
         Route::get('/items/{group}', ItemListComponent::class)
             ->middleware('module.permission:settingmanagement,view')
             ->name('items');
@@ -42,10 +35,8 @@ Route::middleware(['web', 'auth', 'tenant'])
             
         Route::get('/item/manage/{id}', ManageComponent::class)
             ->middleware('module.permission:settingmanagement,update')
-            ->where('id', '[0-9]+')
             ->name('manage.edit');
             
-        // Değer yönetimi
         Route::get('/value/{id}', TenantValueComponent::class)
             ->middleware('module.permission:settingmanagement,update')
             ->name('value');

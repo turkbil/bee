@@ -121,7 +121,7 @@ class ModuleAccessService
         $cacheKey = "module_{$moduleId}_tenant_{$tenantId}";
         
         return Cache::remember($cacheKey, now()->addMinutes(60), function () use ($moduleId, $tenantId) {
-            // ÖNEMLİ: module_tenants tablosu central veritabanında olduğu için TenantHelpers::central içinde sorgu yapılmalı
+            // module_tenants tablosu CENTRAL veritabanında olduğu için TenantHelpers::central içinde sorgu yapılmalı
             return \App\Helpers\TenantHelpers::central(function () use ($moduleId, $tenantId) {
                 // Önce module_tenants tablosunu kontrol et
                 $assigned = DB::table('module_tenants')

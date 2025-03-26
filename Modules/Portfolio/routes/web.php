@@ -16,32 +16,16 @@ Route::middleware(['web', 'auth', 'tenant'])
                 Route::get('/', PortfolioComponent::class)
                     ->middleware('module.permission:portfolio,view')
                     ->name('index');
-                    
-                // Yeni portfolio oluşturma
-                Route::get('/manage', PortfolioManageComponent::class)
-                    ->middleware('module.permission:portfolio,create')
-                    ->name('create');
-                    
-                // Mevcut portfolio düzenleme
-                Route::get('/manage/{id}', PortfolioManageComponent::class)
+                Route::get('/manage/{id?}', PortfolioManageComponent::class)
                     ->middleware('module.permission:portfolio,update')
-                    ->where('id', '[0-9]+')
-                    ->name('edit');
+                    ->name('manage');
                 
                 // Kategori Rotaları
                 Route::get('/category', PortfolioCategoryComponent::class)
                     ->middleware('module.permission:portfolio,view')
                     ->name('category.index');
-                    
-                // Yeni kategori oluşturma
-                Route::get('/category/manage', PortfolioCategoryManageComponent::class)
-                    ->middleware('module.permission:portfolio,create')
-                    ->name('category.create');
-                    
-                // Mevcut kategori düzenleme
-                Route::get('/category/manage/{id}', PortfolioCategoryManageComponent::class)
+                Route::get('/category/manage/{id?}', PortfolioCategoryManageComponent::class)
                     ->middleware('module.permission:portfolio,update')
-                    ->where('id', '[0-9]+')
-                    ->name('category.edit');
+                    ->name('category.manage');
             });
     });

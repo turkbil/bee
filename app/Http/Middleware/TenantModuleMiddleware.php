@@ -1,23 +1,15 @@
 <?php
 
-namespace App\Http\Middleware;
+namespace Modules\UserManagement\App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use App\Services\ModuleAccessService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use App\Helpers\TenantHelpers;
+use Spatie\Permission\Models\Permission;
 
-class TenantModuleMiddleware
+class ModulePermissionMiddleware
 {
-    protected $moduleAccessService;
-    
-    public function __construct(ModuleAccessService $moduleAccessService)
-    {
-        $this->moduleAccessService = $moduleAccessService;
-    }
-    
     /**
      * Handle an incoming request.
      *
@@ -42,59 +34,63 @@ class TenantModuleMiddleware
                 ->with('error', 'Hesabınız pasif durumda. Lütfen yönetici ile iletişime geçin.');
         }
         
-        Log::info("TenantModuleMiddleware: User: {$user->email}, Role: " . implode(',', $user->getRoleNames()->toArray()) . ", Module: {$moduleName}, Permission: {$permissionType}");
+        // Modül tenant için aktif mi kontrol et
+        if (app(\Stancl\Tenancy\Tenancy::class)->initialized) {
+            $moduleService = app(\App\Services\ModuleAccessService::class);
+            $module = $moduleService->getModuleByName($moduleName);
+            
+            if (!$module) {
+                Log::error("ModulePermissionMiddleware: Module not found: {$moduleName}");
+                abort(403, 'Erişim reddedildi.');
+            }
+            
+            $isModuleAssigned = $moduleService->isModuleAssignedToTenant($module->module_id, tenant()->id);
+            if (!$isModuleAssigned) {
+                Log::warning("Kullanıcı {$user->id} ({$user->email}) tenant'a atanmamış modüle erişmeye çalışıyor: {$moduleName}");
+                abort(403, 'Erişim reddedildi.');
+            }
+        }
         
-        // Root her zaman erişebilir
-        if ($user->isRoot()) {
+        // İzin var mı kontrol et
+        $permissionName = "{$moduleName}.{$permissionType}";
+        $permissionExists = Permission::where('name', $permissionName)->where('guard_name', 'web')->exists();
+        
+        if (!$permissionExists) {
+            Log::error("Permission not found: {$permissionName}");
+            abort(403, 'Erişim reddedildi.');
+        }
+        
+        // Log - hangi kullanıcı, hangi modül, hangi izin tipi
+        Log::info("ModulePermissionMiddleware: User ID: {$user->id}, Email: {$user->email}, Module: {$moduleName}, Permission: {$permissionType}, Roles: " . implode(',', $user->getRoleNames()->toArray()));
+        
+        // Root yetkisine sahip kullanıcı için hiçbir kısıtlama yok - AMA TENANT'A ATANMAMIŞ MODÜL KONTROLÜ VAR
+        if ($user->hasRole('root')) {
             return $next($request);
         }
         
-        // Admin yetki kontrolü
-        if ($user->isAdmin()) {
-            // Central'da ise ve kısıtlı modüller listesinde mi kontrol et
-            if (TenantHelpers::isCentral() && 
-                in_array($moduleName, config('module-permissions.admin_restricted_modules', []))) {
-                Log::warning("Admin kullanıcısı {$user->id} kısıtlı modüle erişmeye çalışıyor: {$moduleName}");
-                abort(403, 'Bu modüle erişim yetkiniz bulunmamaktadır.');
-            }
-            
-            // Tenant'ta ise modül tenant'a atanmış mı kontrol et
-            if (TenantHelpers::isTenant()) {
-                $module = $this->moduleAccessService->getModuleByName($moduleName);
-                if (!$module) {
-                    Log::error("Modül bulunamadı: {$moduleName}");
-                    abort(403, 'Modül bulunamadı.');
-                }
-                
-                $isModuleAssigned = $this->moduleAccessService->isModuleAssignedToTenant($module->module_id, tenant()->id);
-                if (!$isModuleAssigned) {
-                    Log::warning("Admin kullanıcısı {$user->id} tenant'a atanmamış modüle erişmeye çalışıyor: {$moduleName}");
-                    abort(403, 'Bu modül bu tenant\'a atanmamış.');
+        // Admin ise belirli kısıtlamalar uygula
+        if ($user->hasRole('admin')) {
+            // Admin için ilave kısıtlama - tenant'ta modülün atanmış olması gerekir
+            if (app(\Stancl\Tenancy\Tenancy::class)->initialized) {
+                // Zaten yukarıda kontrol edildi
+            } else {
+                // Central'da ise, admin'in erişemeyeceği modülleri kontrol et
+                if (in_array($moduleName, config('module-permissions.admin_restricted_modules', []))) {
+                    Log::warning("Admin {$user->id} ({$user->email}) kısıtlı modüle erişmeye çalışıyor: {$moduleName}");
+                    abort(403, 'Erişim reddedildi.');
                 }
             }
             
             return $next($request);
         }
         
-        // Editor ve diğer roller için izin kontrolü
-        $canAccess = $this->moduleAccessService->canAccess($moduleName, $permissionType);
-        
-        if (!$canAccess) {
-            Log::warning("Kullanıcı {$user->id} ({$user->email}) yetkisiz erişim denemesi: {$moduleName}.{$permissionType}");
-            
-            // API isteği ise JSON döndür
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'message' => 'Bu işlem için yetkiniz bulunmamaktadır.',
-                    'module' => $moduleName,
-                    'permission' => $permissionType
-                ], 403);
-            }
-            
-            // Normal istek ise 403 sayfası göster
-            abort(403, 'Bu işlem için yetkiniz bulunmamaktadır.');
+        // Editor veya diğer roller için, önce kullanıcının modül bazlı izni var mı kontrol et
+        if (!$user->hasModulePermission($moduleName, $permissionType)) {
+            Log::warning("User {$user->id} ({$user->email}) doesn't have permission {$permissionType} for module {$moduleName}");
+            abort(403, 'Erişim reddedildi.');
         }
         
+        // Tüm kontroller geçildi, erişime izin ver
         return $next($request);
     }
 }

@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Spatie\Permission\Models\Permission;
 
 class ModulePermissionMiddleware
 {
@@ -33,10 +34,36 @@ class ModulePermissionMiddleware
                 ->with('error', 'Hesabınız pasif durumda. Lütfen yönetici ile iletişime geçin.');
         }
         
+        // Modül tenant için aktif mi kontrol et
+        if (app(\Stancl\Tenancy\Tenancy::class)->initialized) {
+            $moduleService = app(\App\Services\ModuleAccessService::class);
+            $module = $moduleService->getModuleByName($moduleName);
+            
+            if (!$module) {
+                Log::error("ModulePermissionMiddleware: Module not found: {$moduleName}");
+                abort(403, 'Modül bulunamadı.');
+            }
+            
+            $isModuleAssigned = $moduleService->isModuleAssignedToTenant($module->module_id, tenant()->id);
+            if (!$isModuleAssigned) {
+                Log::warning("Kullanıcı {$user->id} ({$user->email}) tenant'a atanmamış modüle erişmeye çalışıyor: {$moduleName}");
+                abort(403, 'Bu modül bu tenant\'a atanmamış.');
+            }
+        }
+        
+        // İzin var mı kontrol et
+        $permissionName = "{$moduleName}.{$permissionType}";
+        $permissionExists = Permission::where('name', $permissionName)->where('guard_name', 'web')->exists();
+        
+        if (!$permissionExists) {
+            Log::error("Permission not found: {$permissionName}");
+            abort(403, "Bu işlem için izin bulunamadı: {$permissionName}");
+        }
+        
         // Log - hangi kullanıcı, hangi modül, hangi izin tipi
         Log::info("ModulePermissionMiddleware: User ID: {$user->id}, Email: {$user->email}, Module: {$moduleName}, Permission: {$permissionType}, Roles: " . implode(',', $user->getRoleNames()->toArray()));
         
-        // Root yetkisine sahip kullanıcı için hiçbir kısıtlama yok
+        // Root yetkisine sahip kullanıcı için hiçbir kısıtlama yok - AMA TENANT'A ATANMAMIŞ MODÜL KONTROLÜ VAR
         if ($user->hasRole('root')) {
             return $next($request);
         }
@@ -45,19 +72,7 @@ class ModulePermissionMiddleware
         if ($user->hasRole('admin')) {
             // Admin için ilave kısıtlama - tenant'ta modülün atanmış olması gerekir
             if (app(\Stancl\Tenancy\Tenancy::class)->initialized) {
-                $moduleService = app(\App\Services\ModuleAccessService::class);
-                $module = $moduleService->getModuleByName($moduleName);
-                
-                if (!$module) {
-                    Log::error("ModulePermissionMiddleware: Module not found: {$moduleName}");
-                    abort(403, 'Modül bulunamadı.');
-                }
-                
-                $isModuleAssigned = $moduleService->isModuleAssignedToTenant($module->module_id, tenant()->id);
-                if (!$isModuleAssigned) {
-                    Log::warning("Admin {$user->id} ({$user->email}) tenant'a atanmamış modüle erişmeye çalışıyor: {$moduleName}");
-                    abort(403, 'Bu modül bu tenant\'a atanmamış.');
-                }
+                // Zaten yukarıda kontrol edildi
             } else {
                 // Central'da ise, admin'in erişemeyeceği modülleri kontrol et
                 if (in_array($moduleName, config('module-permissions.admin_restricted_modules', []))) {

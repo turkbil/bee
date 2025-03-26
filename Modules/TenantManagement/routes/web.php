@@ -1,4 +1,5 @@
 <?php
+// Modules/TenantManagement/routes/web.php
 use Illuminate\Support\Facades\Route;
 use Modules\TenantManagement\App\Http\Livewire\TenantComponent;
 

@@ -4,11 +4,16 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Middleware\InitializeTenancy;
 
-// Genel admin rotaları - sadece auth ve tenant kontrolü ile
+// Genel admin rotaları - sadece roller tablosunda kaydı olan kullanıcılar için
 Route::middleware(['web', 'auth', 'tenant'])->prefix('admin')->name('admin.')->group(function () {
     
     // Admin dashboard rotası - TÜM yetkilendirilmiş kullanıcılar için (editor, admin, root)
     Route::get('/dashboard', function () {
+        // Rol kontrolü
+        if (!auth()->user()->hasAnyRole(['admin', 'root', 'editor'])) {
+            abort(403, 'Bu alana erişim yetkiniz bulunmamaktadır.');
+        }
+        
         $currentTenant = null;
         
         if (app(\Stancl\Tenancy\Tenancy::class)->initialized) {
@@ -35,6 +40,11 @@ Route::middleware(['web', 'auth', 'tenant'])->prefix('admin')->name('admin.')->g
     
     // Profil düzenleme sayfası - tüm yetkilendirilmiş kullanıcılar için
     Route::get('/profile', function () {
+        // Rol kontrolü
+        if (!auth()->user()->hasAnyRole(['admin', 'root', 'editor'])) {
+            abort(403, 'Bu alana erişim yetkiniz bulunmamaktadır.');
+        }
+        
         return view('admin.profile');
     })->name('profile');
     

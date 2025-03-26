@@ -182,7 +182,7 @@
                                 if ($user->hasRole('root')) {
                                     $roleName = 'Root';
                                 } elseif ($user->hasRole('admin')) {
-                                    $roleName = 'Yönetici';
+                                    $roleName = 'Admin';
                                 } elseif ($user->hasRole('editor')) {
                                     $roleName = 'Editör';
                                 }

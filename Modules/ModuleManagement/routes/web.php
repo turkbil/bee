@@ -14,16 +14,8 @@ Route::middleware(['web', 'auth', 'tenant'])
                 Route::get('/', ModuleComponent::class)
                     ->middleware('module.permission:modulemanagement,view')
                     ->name('index');
-                    
-                // Yeni modül oluşturma
-                Route::get('/manage', ModuleManageComponent::class)
-                    ->middleware('module.permission:modulemanagement,create')
-                    ->name('create');
-                    
-                // Mevcut modül düzenleme
-                Route::get('/manage/{id}', ModuleManageComponent::class)
+                Route::get('/manage/{id?}', ModuleManageComponent::class)
                     ->middleware('module.permission:modulemanagement,update')
-                    ->where('id', '[0-9]+')
-                    ->name('edit');
+                    ->name('manage');
             });
     });

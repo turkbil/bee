@@ -5,6 +5,7 @@ namespace Modules\UserManagement\App\Traits;
 use Illuminate\Support\Facades\Cache;
 use Modules\UserManagement\App\Models\UserModulePermission;
 use Illuminate\Support\Facades\Log;
+use Spatie\Permission\Models\Permission;
 
 trait HasModulePermissions
 {
@@ -55,6 +56,14 @@ trait HasModulePermissions
         return Cache::remember($cacheKey, now()->addMinutes(5), function () use ($moduleName, $permissionType) {
             // Kullanıcın direkt olarak moduleName.permissionType izni var mı kontrol et
             $permissionName = "{$moduleName}.{$permissionType}";
+            
+            // İzin tanımlı mı kontrol et
+            if (!Permission::where('name', $permissionName)->exists()) {
+                \Log::error("Permission does not exist: {$permissionName}");
+                return false;
+            }
+            
+            // Kullanıcının doğrudan izni var mı
             if ($this->hasPermissionTo($permissionName)) {
                 return true;
             }

@@ -113,21 +113,43 @@ class ModuleAccessService
      */
     public function isModuleAssignedToTenant(int $moduleId, int $tenantId): bool
     {
+        // Tenant ID 1 ise (central tenant) tüm modüllere erişim ver
+        if ($tenantId === 1) {
+            return true;
+        }
+        
         $cacheKey = "module_{$moduleId}_tenant_{$tenantId}";
         
         return Cache::remember($cacheKey, now()->addMinutes(60), function () use ($moduleId, $tenantId) {
-            // Önce module_tenants tablosunu kontrol et
-            $assigned = DB::table('module_tenants')
-                ->where('module_id', $moduleId)
-                ->where('tenant_id', $tenantId)
-                ->where('is_active', true)
-                ->exists();
-            
-            // İlişki yoksa false döndür
-            return $assigned;
+            // ÖNEMLİ: module_tenants tablosu central veritabanında olduğu için TenantHelpers::central içinde sorgu yapılmalı
+            return \App\Helpers\TenantHelpers::central(function () use ($moduleId, $tenantId) {
+                // Önce module_tenants tablosunu kontrol et
+                $assigned = DB::table('module_tenants')
+                    ->where('module_id', $moduleId)
+                    ->where('tenant_id', $tenantId)
+                    ->where('is_active', true)
+                    ->exists();
+                
+                if ($assigned) {
+                    return true;
+                }
+                
+                // Ayrıca tenant verisini kontrol et - central=true ise tüm modüllere erişim ver
+                $tenant = DB::table('tenants')
+                    ->where('id', $tenantId)
+                    ->select('central')
+                    ->first();
+                    
+                if ($tenant && $tenant->central) {
+                    return true;
+                }
+                
+                // İlişki yoksa false döndür
+                return false;
+            });
         });
     }
-    
+
     /**
      * Tenant'a atanan tüm modülleri getirir
      *

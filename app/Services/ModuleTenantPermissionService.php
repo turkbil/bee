@@ -5,6 +5,7 @@ namespace App\Services;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Str;
@@ -27,6 +28,13 @@ class ModuleTenantPermissionService
                 return;
             }
 
+            // Cache temizliği
+            Cache::forget("module_{$moduleId}_tenant_{$tenantId}");
+            Cache::forget("modules_tenant_{$tenantId}");
+            
+            // ModuleAccessService cache temizliği
+            app(ModuleAccessService::class)->clearAccessCache(null, $tenantId, $module->name, null);
+
             $this->createTenantModulePermissions($module, $tenantId);
         } catch (\Exception $e) {
             Log::error("Error creating tenant module permissions: " . $e->getMessage());
@@ -48,6 +56,13 @@ class ModuleTenantPermissionService
                 Log::error("Module not found: {$moduleId}");
                 return;
             }
+
+            // Cache temizliği
+            Cache::forget("module_{$moduleId}_tenant_{$tenantId}");
+            Cache::forget("modules_tenant_{$tenantId}");
+            
+            // ModuleAccessService cache temizliği
+            app(ModuleAccessService::class)->clearAccessCache(null, $tenantId, $module->name, null);
 
             $this->removeTenantModulePermissions($module, $tenantId);
         } catch (\Exception $e) {

@@ -55,70 +55,29 @@ class RouteServiceProvider extends ServiceProvider
                                 return $next($request);
                             }, 'tenant'])->group($webRoute);
                         } else {
-                            // Diğer modüller için izin kontrolü yap
-                            Route::middleware(['web', 'auth', 'tenant', function ($request, $next) use ($moduleName) {
-                                // URL'i kontrol et
-                                $uri = $request->path();
-                                
-                                // Eğer admin/modül ile başlıyorsa izin kontrolü yap
-                                if (strpos($uri, "admin/{$moduleName}") === 0) {
-                                    $user = auth()->user();
-                                    
-                                    // Root her şeye erişebilir
-                                    if ($user && $user->isRoot()) {
-                                        return $next($request);
-                                    }
-                                    
-                                    // Admin her modüle erişebilir (tenantmanagement hariç)
-                                    if ($user && $user->isAdmin()) {
-                                        // Central'da kısıtlı modüller varsa kontrol et
-                                        if (\App\Helpers\TenantHelpers::isCentral() && 
-                                            in_array($moduleName, config('module-permissions.admin_restricted_modules', []))) {
-                                            abort(403, 'Bu işlem için yetkiniz bulunmamaktadır.');
-                                        }
-                                        
-                                        // Tenant'ta modül atanmış mı kontrol et
-                                        if (\App\Helpers\TenantHelpers::isTenant()) {
-                                            $moduleService = app(\App\Services\ModuleAccessService::class);
-                                            $module = $moduleService->getModuleByName($moduleName);
-                                            
-                                            if (!$module || !$moduleService->isModuleAssignedToTenant($module->module_id, tenant()->id)) {
-                                                abort(403, 'Bu modül bu tenant\'a atanmamış.');
-                                            }
-                                        }
-                                        
-                                        return $next($request);
-                                    }
-                                    
-                                    // Editor sadece yetkisi olan modüllere erişebilir
-                                    if ($user && app(\App\Services\ModuleAccessService::class)->canAccess($moduleName, 'view')) {
-                                        return $next($request);
-                                    }
-                                    
-                                    abort(403, 'Bu işlem için yetkiniz bulunmamaktadır.');
-                                }
-                                
-                                return $next($request);
-                            }])->group($webRoute);
+                            // Diğer modüller için izin kontrolü yap - ÖNEMLİ: module.permission middleware'ini ekledik
+                            Route::middleware(['web', 'auth', 'tenant', "module.permission:{$moduleName},view"])
+                                ->group($webRoute);
                         }
                     }
                 }
             }
-
+        
             // Admin route'larını yükle
             if (file_exists(base_path('routes/admin/web.php'))) {
                 Route::middleware('web')
                     ->group(base_path('routes/admin/web.php'));
             }
-
+        
             // Web route'larını yükle
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
-
+        
             // API route'larını yükle
             Route::prefix('api')
-                ->middleware(['api', InitializeTenancy::class])
+                ->middleware(['api', 'tenant'])
                 ->group(base_path('routes/api.php'));
         });
+        
     }
 }

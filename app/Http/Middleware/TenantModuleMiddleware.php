@@ -42,6 +42,8 @@ class TenantModuleMiddleware
                 ->with('error', 'Hesabınız pasif durumda. Lütfen yönetici ile iletişime geçin.');
         }
         
+        Log::info("TenantModuleMiddleware: User: {$user->email}, Role: " . implode(',', $user->getRoleNames()->toArray()) . ", Module: {$moduleName}, Permission: {$permissionType}");
+        
         // Root her zaman erişebilir
         if ($user->isRoot()) {
             return $next($request);
@@ -59,7 +61,13 @@ class TenantModuleMiddleware
             // Tenant'ta ise modül tenant'a atanmış mı kontrol et
             if (TenantHelpers::isTenant()) {
                 $module = $this->moduleAccessService->getModuleByName($moduleName);
-                if (!$module || !$this->moduleAccessService->isModuleAssignedToTenant($module->module_id, tenant()->id)) {
+                if (!$module) {
+                    Log::error("Modül bulunamadı: {$moduleName}");
+                    abort(403, 'Modül bulunamadı.');
+                }
+                
+                $isModuleAssigned = $this->moduleAccessService->isModuleAssignedToTenant($module->module_id, tenant()->id);
+                if (!$isModuleAssigned) {
                     Log::warning("Admin kullanıcısı {$user->id} tenant'a atanmamış modüle erişmeye çalışıyor: {$moduleName}");
                     abort(403, 'Bu modül bu tenant\'a atanmamış.');
                 }
@@ -69,23 +77,24 @@ class TenantModuleMiddleware
         }
         
         // Editor ve diğer roller için izin kontrolü
-        if ($this->moduleAccessService->canAccess($moduleName, $permissionType)) {
-            return $next($request);
+        $canAccess = $this->moduleAccessService->canAccess($moduleName, $permissionType);
+        
+        if (!$canAccess) {
+            Log::warning("Kullanıcı {$user->id} ({$user->email}) yetkisiz erişim denemesi: {$moduleName}.{$permissionType}");
+            
+            // API isteği ise JSON döndür
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => 'Bu işlem için yetkiniz bulunmamaktadır.',
+                    'module' => $moduleName,
+                    'permission' => $permissionType
+                ], 403);
+            }
+            
+            // Normal istek ise 403 sayfası göster
+            abort(403, 'Bu işlem için yetkiniz bulunmamaktadır.');
         }
         
-        // Yetkisiz erişim
-        Log::warning("Kullanıcı {$user->id} ({$user->email}) yetkisiz erişim denemesi: {$moduleName}.{$permissionType}");
-        
-        // API isteği ise JSON döndür
-        if ($request->expectsJson()) {
-            return response()->json([
-                'message' => 'Bu işlem için yetkiniz bulunmamaktadır.',
-                'module' => $moduleName,
-                'permission' => $permissionType
-            ], 403);
-        }
-        
-        // Normal istek ise 403 sayfası göster
-        abort(403, 'Bu işlem için yetkiniz bulunmamaktadır.');
+        return $next($request);
     }
 }

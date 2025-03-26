@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Support\Facades\Route;
 use Modules\UserManagement\App\Http\Livewire\UserComponent;
 use Modules\UserManagement\App\Http\Livewire\UserManageComponent;
@@ -9,13 +8,14 @@ use Modules\UserManagement\App\Http\Livewire\PermissionComponent;
 use Modules\UserManagement\App\Http\Livewire\PermissionManageComponent;
 use Modules\UserManagement\App\Http\Livewire\ModulePermissionComponent;
 
-Route::middleware(['web', 'auth', 'tenant', 'module.permission:usermanagement,view'])
+Route::middleware(['web', 'auth', 'tenant'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
         // User Routes
         Route::prefix('usermanagement')
             ->name('usermanagement.')
+            ->middleware('module.permission:usermanagement,view')
             ->group(function () {
                 Route::get('/', UserComponent::class)->name('index');
                 Route::get('/manage/{id?}', UserManageComponent::class)

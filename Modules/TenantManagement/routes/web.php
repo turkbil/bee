@@ -2,7 +2,7 @@
 use Illuminate\Support\Facades\Route;
 use Modules\TenantManagement\App\Http\Livewire\TenantComponent;
 
-Route::middleware(['web', 'auth'])
+Route::middleware(['web', 'auth', 'tenant', 'root.access'])
     ->prefix('admin/tenantmanagement')
     ->name('admin.tenantmanagement.')
     ->group(function () {

@@ -6,6 +6,7 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Session\TokenMismatchException;
 use Illuminate\Support\Facades\Redirect;
 use Throwable;
+use App\Exceptions\TenantOfflineException;
 
 class Handler extends ExceptionHandler
 {
@@ -31,6 +32,16 @@ class Handler extends ExceptionHandler
 
         $this->renderable(function (TokenMismatchException $e, $request) {
             return Redirect::to('/');
+        });
+        
+        // Tenant offline durumu için özel istisna işleyici
+        $this->renderable(function (TenantOfflineException $e, $request) {
+            return response()->view('errors.offline', [], 503);
+        });
+        
+        // Genel HTTP 503 hataları için offline sayfasını göster
+        $this->renderable(function (\Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException $e, $request) {
+            return response()->view('errors.offline', [], 503);
         });
     }
 }

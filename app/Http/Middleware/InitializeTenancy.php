@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Log;
 
 class InitializeTenancy extends BaseMiddleware
 {
@@ -36,18 +37,27 @@ class InitializeTenancy extends BaseMiddleware
         // Tenant domain'se tenant'ı başlat
         try {
             if (!$this->tenancy->initialized) {
-                // Domain için tenant bilgisini önbellekten oku - 1 hafta sakla
+                // Domain için tenant bilgisini önbellekten oku (önce önbelleği kontrol et)
                 $cacheKey = 'domain_tenant_' . $host;
-                $tenant = Cache::remember($cacheKey, now()->addDays(7), function () use ($host) {
-                    return $this->resolver->resolve($host);
-                });
+                
+                // Önce veritabanında doğrudan sorgu yap (aktiflik durumu için güvenilir kontrol)
+                $tenant = $this->resolver->resolve($host);
                 
                 if ($tenant) {
+                    // Tenant aktif değilse direkt veritabanından kontrol et (önbelleği atlayarak)
+                    $isActive = DB::table('tenants')
+                        ->where('id', $tenant->id)
+                        ->value('is_active');
+                    
                     // Tenant aktif değilse özel hata sayfasını göster
-                    if (!$tenant->is_active) {
+                    if (!$isActive) {
+                        Log::info("Tenant {$tenant->id} pasif durumda. Offline sayfası gösteriliyor.");
+                        // Önbelleği temizle, böylece yeni isteklerde tekrar kontrol edilir
+                        Cache::forget($cacheKey);
                         return response()->view('errors.offline', [], 503);
                     }
                     
+                    // Tenant'ı başlat
                     $this->tenancy->initialize($tenant);
                     
                     // Tenant başlatıldıktan sonra bağlantı ayarını mysql olarak düzelt
@@ -58,7 +68,7 @@ class InitializeTenancy extends BaseMiddleware
                     $redisPrefix = 'tenant_' . $tenant->id . ':';
                     Config::set('database.redis.options.prefix', $redisPrefix);
                     
-                    // Session'a tenant bilgisi kaydet - Tek sorguda domain bilgisini de getir
+                    // Session'a tenant bilgisi kaydet
                     if (!isset($tenant->domains)) {
                         // Domain bilgisi cache'de sakla - 7 gün
                         $domainCacheKey = 'tenant_domains_' . $tenant->id;

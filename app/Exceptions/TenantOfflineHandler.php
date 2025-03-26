@@ -2,19 +2,22 @@
 
 namespace App\Exceptions;
 
-use Illuminate\Http\Request;
-use Throwable;
+use Exception;
 
-class TenantOfflineHandler
+class TenantOfflineException extends Exception
 {
     /**
-     * Tenant'ın aktif olmadığı durumları işler
-     *
-     * @param Request $request
-     * @param Throwable $e
-     * @return \Illuminate\Http\Response
+     * Tenant'ın offline olduğu durumlarda fırlatılacak özel istisna
      */
-    public function render($request, Throwable $e)
+    public function __construct($message = "Bu tenant şu anda erişime kapalıdır.", $code = 503, Exception $previous = null)
+    {
+        parent::__construct($message, $code, $previous);
+    }
+    
+    /**
+     * Raporlama için bir render metodu
+     */
+    public function render($request)
     {
         return response()->view('errors.offline', [], 503);
     }

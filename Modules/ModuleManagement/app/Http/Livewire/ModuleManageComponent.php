@@ -132,7 +132,7 @@ class ModuleManageComponent extends Component
     {
         $this->isSaving = true;
         $this->validate();
-
+    
         $moduleData = [
             'name' => $this->inputs['name'],
             'display_name' => $this->inputs['display_name'],
@@ -153,7 +153,7 @@ class ModuleManageComponent extends Component
             $this->isSaving = false;
             return;
         }
-
+    
         if ($this->moduleId) {
             // Güncellemeden önce tenant ID'leri al
             $module = Module::findOrFail($this->moduleId);
@@ -193,28 +193,56 @@ class ModuleManageComponent extends Component
             Cache::forget("modules_tenant_central");
         }
         
-        // Update the tenant relationships
+        // Tenant relationships güncelleme ve izin işlemleri
         $syncData = [];
+        $addedTenants = [];
+        $removedTenants = [];
+        
+        // Önceki tenant listesini al
+        $previousTenants = isset($oldTenantIds) ? $oldTenantIds : [];
+        
+        // Hangi tenant'ların eklendiğini ve hangilerinin kaldırıldığını belirle
         foreach ($this->selectedDomains as $tenantId => $isActive) {
             if ($isActive) {
                 $syncData[$tenantId] = ['is_active' => true];
+                
+                // Eğer önceden yoksa, eklenen olarak işaretle
+                if (!in_array($tenantId, $previousTenants)) {
+                    $addedTenants[] = $tenantId;
+                }
             }
         }
         
+        // Kaldırılan tenant'ları belirle (önceden var olan ama şimdi seçili olmayan)
+        foreach ($previousTenants as $tenantId) {
+            if (!isset($this->selectedDomains[$tenantId]) || !$this->selectedDomains[$tenantId]) {
+                $removedTenants[] = $tenantId;
+            }
+        }
+        
+        // Modül-tenant ilişkilerini güncelle
         $module->tenants()->sync($syncData);
         
-        // Güncellenen veya eklenen tenant ID'leri için cache temizle
-        $updatedTenantIds = array_keys(array_filter($this->selectedDomains));
+        // İzin işlemleri için servis
+        $permissionService = app(\App\Services\ModuleTenantPermissionService::class);
         
-        // Eski tenant ID'leri varsa, onların cache'ini de temizle
-        if (isset($oldTenantIds)) {
-            $updatedTenantIds = array_unique(array_merge($updatedTenantIds, $oldTenantIds));
+        // Eklenen tenant'lar için izinleri oluştur
+        foreach ($addedTenants as $tenantId) {
+            $permissionService->handleModuleAddedToTenant($module->module_id, $tenantId);
         }
+        
+        // Silinen tenant'lar için izinleri ve kullanıcı modül izinlerini kaldır
+        foreach ($removedTenants as $tenantId) {
+            $permissionService->handleModuleRemovedFromTenant($module->module_id, $tenantId);
+        }
+        
+        // Güncellenen veya eklenen tenant ID'leri için cache temizle
+        $updatedTenantIds = array_unique(array_merge($addedTenants, $removedTenants));
         
         foreach ($updatedTenantIds as $tenantId) {
             Cache::forget("modules_tenant_" . $tenantId);
         }
-
+    
         if ($redirect) {
             session()->flash('toast', [
                 'title' => 'Başarılı!',
@@ -223,13 +251,13 @@ class ModuleManageComponent extends Component
             ]);
             return redirect()->route('admin.modulemanagement.index');
         }
-
+    
         $this->dispatch('toast', [
             'title' => 'Başarılı!',
             'message' => 'Modül başarıyla kaydedildi.',
             'type' => 'success',
         ]);
-
+    
         // Değişiklikleri orijinal değerler olarak güncelle
         $this->oldInputs = $this->inputs;
         

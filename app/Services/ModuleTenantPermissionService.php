@@ -27,14 +27,17 @@ class ModuleTenantPermissionService
                 Log::error("Module not found: {$moduleId}");
                 return;
             }
-
+    
             // Cache temizliği
             Cache::forget("module_{$moduleId}_tenant_{$tenantId}");
             Cache::forget("modules_tenant_{$tenantId}");
             
             // ModuleAccessService cache temizliği
             app(ModuleAccessService::class)->clearAccessCache(null, $tenantId, $module->name, null);
-
+            
+            // Modül değişiklik bayrağını set et
+            session(['modules_changed' => true]);
+    
             $this->createTenantModulePermissions($module, $tenantId);
         } catch (\Exception $e) {
             Log::error("Error creating tenant module permissions: " . $e->getMessage());
@@ -56,14 +59,17 @@ class ModuleTenantPermissionService
                 Log::error("Module not found: {$moduleId}");
                 return;
             }
-
+    
             // Cache temizliği
             Cache::forget("module_{$moduleId}_tenant_{$tenantId}");
             Cache::forget("modules_tenant_{$tenantId}");
             
             // ModuleAccessService cache temizliği
             app(ModuleAccessService::class)->clearAccessCache(null, $tenantId, $module->name, null);
-
+            
+            // Modül değişiklik bayrağını set et
+            session(['modules_changed' => true]);
+    
             $this->removeTenantModulePermissions($module, $tenantId);
         } catch (\Exception $e) {
             Log::error("Error removing tenant module permissions: " . $e->getMessage());

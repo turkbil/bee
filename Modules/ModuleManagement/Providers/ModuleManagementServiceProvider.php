@@ -88,6 +88,10 @@ class ModuleManagementServiceProvider extends ServiceProvider
         
         // Root ve Admin rollerine izinleri ata
         $this->assignPermissionsToRoles($createdPermissions);
+
+        // Modül cache temizleme
+        \Illuminate\Support\Facades\Cache::forget("modules_tenant_central");
+        app(\App\Services\ModuleAccessService::class)->refreshModuleCache();
     }
 
     /**
@@ -101,6 +105,10 @@ class ModuleManagementServiceProvider extends ServiceProvider
         }
         
         $this->createModulePermissions($module);
+
+        // Modül cache temizleme
+        \Illuminate\Support\Facades\Cache::forget("modules_tenant_" . $module->tenant_id);
+        app(\App\Services\ModuleAccessService::class)->refreshModuleCache();
     }
     
     /**

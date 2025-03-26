@@ -292,33 +292,47 @@
                                 <h4>
                                     <i class="fas fa-puzzle-piece text-primary me-2"></i>Modül Yetkilendirme
                                 </h4>
-                                <a href="#" id="show-detailed-permissions" class="btn btn-outline-primary btn-sm">
-                                    <i class="fas fa-cogs me-1"></i> Detaylı Yetkilendirme
-                                </a>
+                                <button type="button" wire:click="toggleDetailedPermissions" id="toggleDetailedPermissions" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas {{ $showDetailedPermissions ? 'fa-compress-alt' : 'fa-cogs' }} me-1"></i> 
+                                    {{ $showDetailedPermissions ? 'Basit Görünüm' : 'Detaylı Yetkilendirme' }}
+                                </button>
                             </div>
                             
-                            <div class="form-selectgroup form-selectgroup-boxes d-flex flex-column mb-3">
+                            <!-- Standart Görünüm (Başlangıçta Göster) -->
+                            <div id="standardPermissionsView" style="display: {{ $showDetailedPermissions ? 'none' : 'block' }}">
                                 <div class="row">
                                     @foreach($availableModules as $module)
                                     <div class="col-md-6 mb-3" wire:key="module-{{ $module->module_id }}">
                                         <label class="form-selectgroup-item flex-fill">
-                                            <input 
-                                                type="checkbox" 
-                                                class="form-selectgroup-input module-toggle"
+                                            <input type="checkbox" 
+                                                class="form-selectgroup-input"
                                                 data-module="{{ $module->name }}"
-                                                wire:model.defer="modulePermissions.{{ $module->name }}.enabled">
+                                                wire:click="toggleModuleEnabled('{{ $module->name }}')"
+                                                {{ isset($modulePermissions[$module->name]) && $modulePermissions[$module->name]['enabled'] ? 'checked' : '' }}>
                                             <div class="form-selectgroup-label d-flex align-items-center p-3">
-                                                <div class="me-3">
-                                                    <span class="form-selectgroup-check"></span>
-                                                </div>
-                                                <div class="form-selectgroup-label-content d-flex align-items-center">
-                                                    <span class="avatar avatar-sm me-3 bg-{{ isset($modulePermissions[$module->name]) && $modulePermissions[$module->name]['enabled'] ? 'primary' : 'secondary-lt' }}"
-                                                        data-module="{{ $module->name }}">
+                                                <div class="form-selectgroup-label-content d-flex align-items-center flex-grow-1">
+                                                    <span class="avatar avatar-sm me-3 bg-{{ isset($modulePermissions[$module->name]) && $modulePermissions[$module->name]['enabled'] ? 'primary' : 'secondary-lt' }}">
                                                         <i class="fas fa-puzzle-piece"></i>
                                                     </span>
                                                     <div>
-                                                        <div class="font-weight-medium">{{ $module->display_name }}</div>
-                                                        <div class="text-secondary">{{ $module->name }}</div>
+                                                        <div class="font-weight-medium fs-5">{{ $module->display_name }}</div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="d-flex align-items-center">
+                                                    @if(isset($modulePermissionCounts[$module->name]) && $modulePermissionCounts[$module->name]['selected'] > 0 && $modulePermissionCounts[$module->name]['selected'] < $modulePermissionCounts[$module->name]['total'])
+                                                    <span class="badge bg-default text-default-fg me-3">
+                                                        {{ $modulePermissionCounts[$module->name]['selected'] }}/{{ $modulePermissionCounts[$module->name]['total'] }}
+                                                    </span>
+                                                    @endif
+                                                    
+                                                    <div class="pretty p-default p-smooth p-bigger">
+                                                        <input type="checkbox" 
+                                                            wire:click="toggleModuleEnabled('{{ $module->name }}')"
+                                                            {{ isset($modulePermissions[$module->name]) && $modulePermissions[$module->name]['enabled'] ? 'checked' : '' }}>
+                                                        <div class="state p-primary">
+                                                            <label></label>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -328,71 +342,63 @@
                                 </div>
                             </div>
                             
-                            <!-- Detaylı CRUD İzinleri (Başlangıçta Gizli) -->
-                            <div id="detailed-permissions-panel" class="card mt-3" style="display: none;">
-                                <div class="card-header">
-                                    <h4 class="card-title">
-                                        <i class="fas fa-key text-primary me-2"></i>Detaylı Modül İzinleri
-                                    </h4>
-                                </div>
-                                <div class="card-body">
+                            <!-- Detaylı CRUD İzinleri Görünümü -->
+                            <div id="detailed-permissions-panel" style="display: {{ $showDetailedPermissions ? 'block' : 'none' }}">
+                                <div class="row">
                                     @foreach($availableModules as $module)
-                                    <div class="mb-4 module-detail-item" id="detail-{{ $module->module_id }}" 
-                                         wire:key="detail-{{ $module->module_id }}"
-                                         data-enabled="{{ isset($modulePermissions[$module->name]) && $modulePermissions[$module->name]['enabled'] ? 'true' : 'false' }}">
-                                        <div class="d-flex align-items-center mb-2">
-                                            <span class="avatar avatar-sm me-2 bg-{{ isset($modulePermissions[$module->name]) && $modulePermissions[$module->name]['enabled'] ? 'primary' : 'secondary-lt' }}">
-                                                <i class="fas fa-puzzle-piece"></i>
-                                            </span>
-                                            <h5 class="mb-0">{{ $module->display_name }}</h5>
-                                        </div>
-                                        <div class="row text-center">
-                                            <div class="col-3">
-                                                <div class="mb-2">Görüntüle</div>
-                                                <label class="form-check form-check-single form-switch mb-0">
-                                                    <input class="form-check-input module-crud"
-                                                        data-module="{{ $module->name }}"
-                                                        data-type="view"
-                                                        wire:model.defer="modulePermissions.{{ $module->name }}.view"
-                                                        type="checkbox"
-                                                        {{ !isset($modulePermissions[$module->name]) || !$modulePermissions[$module->name]['enabled'] ? 'disabled' : '' }}>
-                                                </label>
+                                    <div class="col-md-6 mb-4" wire:key="detail-{{ $module->module_id }}">
+                                        <div class="card">
+                                            <div class="card-header d-flex align-items-center">
+                                                <div class="form-selectgroup-label-content d-flex align-items-center flex-grow-1">
+                                                    <span class="avatar avatar-sm me-3 bg-{{ isset($modulePermissions[$module->name]) && $modulePermissions[$module->name]['enabled'] ? 'primary' : 'secondary-lt' }}">
+                                                        <i class="fas fa-puzzle-piece"></i>
+                                                    </span>
+                                                    <div>
+                                                        <div class="font-weight-medium fs-5">{{ $module->display_name }}</div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="d-flex align-items-center">
+                                                    @if(isset($modulePermissionCounts[$module->name]) && $modulePermissionCounts[$module->name]['selected'] > 0 && $modulePermissionCounts[$module->name]['selected'] < $modulePermissionCounts[$module->name]['total'])
+                                                    <span class="badge bg-default text-default-fg me-3">
+                                                        {{ $modulePermissionCounts[$module->name]['selected'] }}/{{ $modulePermissionCounts[$module->name]['total'] }}
+                                                    </span>
+                                                    @endif
+                                                    
+                                                    <div class="pretty p-default p-smooth p-bigger">
+                                                        <input type="checkbox" 
+                                                            wire:click="toggleModuleEnabled('{{ $module->name }}')"
+                                                            {{ isset($modulePermissions[$module->name]) && $modulePermissions[$module->name]['enabled'] ? 'checked' : '' }}>
+                                                        <div class="state p-primary">
+                                                            <label></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="col-3">
-                                                <div class="mb-2">Oluştur</div>
-                                                <label class="form-check form-check-single form-switch mb-0">
-                                                    <input class="form-check-input module-crud"
-                                                        data-module="{{ $module->name }}"
-                                                        data-type="create"
-                                                        wire:model.defer="modulePermissions.{{ $module->name }}.create"
-                                                        type="checkbox"
-                                                        {{ !isset($modulePermissions[$module->name]) || !$modulePermissions[$module->name]['enabled'] ? 'disabled' : '' }}>
-                                                </label>
-                                            </div>
-                                            <div class="col-3">
-                                                <div class="mb-2">Düzenle</div>
-                                                <label class="form-check form-check-single form-switch mb-0">
-                                                    <input class="form-check-input module-crud"
-                                                        data-module="{{ $module->name }}"
-                                                        data-type="update"
-                                                        wire:model.defer="modulePermissions.{{ $module->name }}.update"
-                                                        type="checkbox"
-                                                        {{ !isset($modulePermissions[$module->name]) || !$modulePermissions[$module->name]['enabled'] ? 'disabled' : '' }}>
-                                                </label>
-                                            </div>
-                                            <div class="col-3">
-                                                <div class="mb-2">Sil</div>
-                                                <label class="form-check form-check-single form-switch mb-0">
-                                                    <input class="form-check-input module-crud"
-                                                        data-module="{{ $module->name }}"
-                                                        data-type="delete"
-                                                        wire:model.defer="modulePermissions.{{ $module->name }}.delete"
-                                                        type="checkbox"
-                                                        {{ !isset($modulePermissions[$module->name]) || !$modulePermissions[$module->name]['enabled'] ? 'disabled' : '' }}>
-                                                </label>
+                                                                                        
+                                            <!-- İzin Listesi -->
+                                            <div class="list-group list-group-flush">
+                                                <!-- Her bir izin tipi için satır -->
+                                                @foreach($permissionTypes as $permType)
+                                                <div class="list-group-item py-2 list-group-item-action">
+                                                    <div class="d-flex align-items-center">
+                                                        <span class="avatar avatar-xs me-2 bg-{{ isset($modulePermissions[$module->name]) && $modulePermissions[$module->name][$permType] ? 'blue' : 'secondary' }}-lt">
+                                                            <i class="fas fa-{{ $permType == 'view' ? 'eye' : ($permType == 'create' ? 'plus' : ($permType == 'update' ? 'edit' : 'trash')) }} fa-sm"></i>
+                                                        </span>
+                                                        <div class="flex-fill">{{ $permissionLabels[$permType] }}</div>
+                                                        <div class="pretty p-switch p-slim">
+                                                            <input type="checkbox" 
+                                                                wire:click="toggleModulePermission('{{ $module->name }}', '{{ $permType }}')"
+                                                                {{ isset($modulePermissions[$module->name]) && $modulePermissions[$module->name][$permType] ? 'checked' : '' }}>
+                                                            <div class="state p-primary">
+                                                                <label></label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                @endforeach
                                             </div>
                                         </div>
-                                        <hr class="mt-3">
                                     </div>
                                     @endforeach
                                 </div>
@@ -419,197 +425,52 @@
     </form>
 </div>
 
-@push('styles')
-<style>
-    /* Rol Butonları Stillemesi */
-    .user-role-card {
-        transition: all 0.3s ease;
-        cursor: pointer;
-        border: 2px solid transparent;
-    }
-    
-    .user-role-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
-    }
-    
-    .user-role-card.active {
-        border-color: #3498db;
-        background-color: rgba(52, 152, 219, 0.1);
-    }
-    
-    /* Form Switch Büyük Boyut */
-    .form-check-single .form-check-input {
-        width: 2.5em;
-        height: 1.25em;
-    }
-    
-    /* Form Selectgroup */
-    .form-selectgroup-input:checked + .form-selectgroup-label {
-        color: #206bc4;
-        background: rgba(32, 107, 196, 0.1);
-        border-color: #206bc4;
-    }
-    
-    .form-selectgroup-label-content {
-        flex-grow: 1;
-    }
-    
-    .form-selectgroup-check {
-        width: 1.25rem;
-        height: 1.25rem;
-        border: 1px solid rgba(32, 107, 196, 0.2);
-        border-radius: 4px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    .form-selectgroup-input:checked + .form-selectgroup-label .form-selectgroup-check:before {
-        content: '\f00c';
-        font-family: 'Font Awesome 5 Free';
-        font-weight: 900;
-        font-size: 0.75rem;
-        color: #206bc4;
-    }
-</style>
-@endpush
-
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Detaylı izinler panelini aç/kapat
-    $(document).on('click', '#show-detailed-permissions', function(e) {
-        e.preventDefault();
-        $('#detailed-permissions-panel').slideToggle(300);
-        
-        // Buton metnini değiştir
-        if ($(this).find('i').hasClass('fa-cogs')) {
-            $(this).html('<i class="fas fa-times me-1"></i> Detayları Gizle');
-        } else {
-            $(this).html('<i class="fas fa-cogs me-1"></i> Detaylı Yetkilendirme');
-        }
-    });
-    
-    // Rol seçimi
-    $(document).on('change', '.role-radio', function() {
-        const selectedRole = $(this).val();
-        
-        // Tüm rol kartlarının active sınıfını kaldır
-        $('.user-role-card').removeClass('active');
-        
-        // Seçilen rol kartına active sınıfı ekle
-        $(this).closest('.user-role-card').addClass('active');
-        
-        // Tüm rol info bölümlerini gizle
-        $('.role-info').hide();
+    // İlgili alanları göster/gizle işlevselliği
+    function updateVisibility(roleId) {
+        // Tüm rol bilgilerini gizle
+        document.querySelectorAll('.role-info').forEach(el => el.style.display = 'none');
         
         // Modül izinleri bölümünü göster/gizle
-        $('#editorPermissionsSection').toggle(selectedRole === 'editor');
+        const permissionsSection = document.getElementById('editorPermissionsSection');
         
-        // Seçilen rol için info bölümünü göster
-        if (selectedRole === 'root') {
-            $('#rootInfoSection').show();
-        } else if (selectedRole === 'admin') {
-            $('#adminInfoSection').show();
-        } else if (selectedRole === 'editor') {
-            $('#editorInfoSection').show();
+        if (roleId === 'editor') {
+            // Editor seçiliyse
+            if (permissionsSection) permissionsSection.style.display = 'block';
+            document.getElementById('editorInfoSection').style.display = 'block';
+        } else if (roleId === 'admin') {
+            // Admin seçiliyse
+            if (permissionsSection) permissionsSection.style.display = 'none';
+            document.getElementById('adminInfoSection').style.display = 'block';
+        } else if (roleId === 'root') {
+            // Root seçiliyse
+            if (permissionsSection) permissionsSection.style.display = 'none';
+            document.getElementById('rootInfoSection').style.display = 'block';
         } else {
-            $('#userInfoSection').show();
+            // Normal kullanıcı seçiliyse
+            if (permissionsSection) permissionsSection.style.display = 'none';
+            document.getElementById('userInfoSection').style.display = 'block';
         }
-    });
-    
-    // Modül toggle değişikliği - doğrudan PHP metodu çağırma ve UI güncelleme
-    $(document).on('change', '.module-toggle', function() {
-        const moduleName = $(this).data('module');
-        const isChecked = $(this).prop('checked');
-        
-        console.log('Module toggle changed:', moduleName, isChecked);
-        
-        // Direkt olarak bileşendeki metodu çağır
-        const component = window.Livewire.find(document.querySelector('[wire\\:id]').getAttribute('wire:id'));
-        component.setModuleName(moduleName);
-        
-        // Manuel UI güncelleme (toggle durumunu korumak için)
-        setTimeout(function() {
-            updateModuleUI(component, moduleName);
-        }, 100);
-    });
-    
-    // CRUD izinleri değişikliği - doğrudan PHP metodu çağırma ve UI güncelleme
-    $(document).on('change', '.module-crud', function() {
-        const moduleName = $(this).data('module');
-        const permType = $(this).data('type');
-        const isChecked = $(this).prop('checked');
-        
-        console.log('CRUD permission changed:', moduleName, permType, isChecked);
-        
-        // Direkt olarak bileşendeki metodu çağır
-        const component = window.Livewire.find(document.querySelector('[wire\\:id]').getAttribute('wire:id'));
-        component.setModulePermType(moduleName, permType);
-        
-        // Manuel UI güncelleme
-        setTimeout(function() {
-            updateModuleUI(component, moduleName);
-        }, 100);
-    });
-    
-    // UI Güncelleme Fonksiyonu
-    function updateModuleUI(component, moduleName) {
-        if (!component || !component.modulePermissions || !component.modulePermissions[moduleName]) {
-            console.log('No module data found for:', moduleName);
-            return;
-        }
-        
-        const moduleData = component.modulePermissions[moduleName];
-        console.log('Updating UI for module:', moduleName, moduleData);
-        
-        // Toggle checkbox'ı güncelle
-        $(`.module-toggle[data-module="${moduleName}"]`).prop('checked', moduleData.enabled);
-        
-        // Avatar rengini güncelle
-        $(`.avatar[data-module="${moduleName}"]`)
-            .toggleClass('bg-primary', moduleData.enabled)
-            .toggleClass('bg-secondary-lt', !moduleData.enabled);
-        
-        // CRUD checkbox'ları güncelle
-        $(`.module-crud[data-module="${moduleName}"][data-type="view"]`)
-            .prop('checked', moduleData.view)
-            .prop('disabled', !moduleData.enabled);
-            
-        $(`.module-crud[data-module="${moduleName}"][data-type="create"]`)
-            .prop('checked', moduleData.create)
-            .prop('disabled', !moduleData.enabled);
-            
-        $(`.module-crud[data-module="${moduleName}"][data-type="update"]`)
-            .prop('checked', moduleData.update)
-            .prop('disabled', !moduleData.enabled);
-            
-        $(`.module-crud[data-module="${moduleName}"][data-type="delete"]`)
-            .prop('checked', moduleData.delete)
-            .prop('disabled', !moduleData.enabled);
     }
     
-    // Livewire'dan gelen olayları dinle
-    Livewire.on('roleChanged', function(role) {
-        console.log('roleChanged event received:', role);
-        $(`#role-${role}`).prop('checked', true).trigger('change');
+    // Rol değişikliği dinleyicileri
+    document.querySelectorAll('.role-radio').forEach(radio => {
+        radio.addEventListener('change', function() {
+            updateVisibility(this.value);
+        });
     });
     
+    // Livewire'dan gelen rolChanged olayını dinle
+    Livewire.on('roleChanged', function(role) {
+        console.log('roleChanged event received:', role);
+        updateVisibility(role);
+    });
+
     // Modül izinleri güncellendiğinde
     Livewire.on('modulePermissionsUpdated', function() {
         console.log('Module permissions updated event received');
-        // UI'ı güncelle (bu özellikle rolü değiştirdikten sonra gerçekleşir)
-        const component = window.Livewire.find(document.querySelector('[wire\\:id]').getAttribute('wire:id'));
-        
-        // Tüm modülleri güncelle
-        if (component && component.availableModules) {
-            component.availableModules.forEach(module => {
-                if (module && module.name) {
-                    updateModuleUI(component, module.name);
-                }
-            });
-        }
     });
 });
 </script>

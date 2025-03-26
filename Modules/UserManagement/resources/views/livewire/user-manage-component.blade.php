@@ -126,7 +126,7 @@
                         <div class="row mb-4">
                             <!-- Normal Üye -->
                             <div class="col-md-6 mb-3">
-                                <label class="card shadow-sm user-role-card form-selectgroup-item h-100 {{ !in_array($inputs['role_id'], ['editor', 'admin', 'root']) ? 'active' : '' }}">
+                                <label class="card shadow-sm user-role-card form-selectgroup-item h-100 {{ !in_array($inputs['role_id'], ['editor', 'admin', 'root']) ? 'active border border-3 border-primary' : '' }}">
                                     <input type="radio" 
                                         name="role" 
                                         value="user" 
@@ -150,7 +150,7 @@
                             
                             <!-- Editör -->
                             <div class="col-md-6 mb-3">
-                                <label class="card shadow-sm user-role-card form-selectgroup-item h-100 {{ $inputs['role_id'] === 'editor' ? 'active' : '' }}">
+                                <label class="card shadow-sm user-role-card form-selectgroup-item h-100 {{ $inputs['role_id'] === 'editor' ? 'active border border-3 border-primary' : '' }}">
                                     <input type="radio" 
                                         name="role" 
                                         value="editor" 
@@ -174,7 +174,7 @@
                             
                             <!-- Admin -->
                             <div class="col-md-6 mb-3">
-                                <label class="card shadow-sm user-role-card form-selectgroup-item h-100 {{ $inputs['role_id'] === 'admin' ? 'active' : '' }}">
+                                <label class="card shadow-sm user-role-card form-selectgroup-item h-100 {{ $inputs['role_id'] === 'admin' ? 'active border border-3 border-primary' : '' }}">
                                     <input type="radio" 
                                         name="role" 
                                         value="admin" 
@@ -199,7 +199,7 @@
                             <!-- Root (Sadece root kullanıcısına göster) -->
                             @if(auth()->user()->hasRole('root'))
                             <div class="col-md-6 mb-3">
-                                <label class="card shadow-sm user-role-card form-selectgroup-item h-100 {{ $inputs['role_id'] === 'root' ? 'active' : '' }}">
+                                <label class="card shadow-sm user-role-card form-selectgroup-item h-100 {{ $inputs['role_id'] === 'root' ? 'active border border-3 border-primary' : '' }}">
                                     <input type="radio" 
                                         name="role" 
                                         value="root" 

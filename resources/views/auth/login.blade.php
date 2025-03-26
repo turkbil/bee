@@ -154,17 +154,17 @@
                     let password = '';
                     
                     switch(userType) {
-                        case 'laravel':
-                            email = 'laravel@test';
-                            password = 'test';
-                            break;
                         case 'nurullah':
                             email = 'nurullah@nurullah.net';
-                            password = 'nurullah';
+                            password = 'g0nu!ceLeN';
                             break;
                         case 'turkbilisim':
                             email = 'info@turkbilisim.com.tr';
-                            password = 'turkbilisim';
+                            password = 'gonu1celen';
+                            break;
+                        case 'laravel':
+                            email = 'laravel@test';
+                            password = 'test';
                             break;
                         case 'a':
                             email = 'a@test';

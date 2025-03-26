@@ -22,16 +22,10 @@ Route::middleware(['web', 'auth', 'tenant'])
                     ->middleware('module.permission:usermanagement,view')
                     ->name('index');
                     
-                // Yeni kullanıcı oluşturma
-                Route::get('/manage', UserManageComponent::class)
-                    ->middleware('module.permission:usermanagement,create')
-                    ->name('create');
-                    
-                // Mevcut kullanıcı düzenleme
-                Route::get('/manage/{id}', UserManageComponent::class)
+                // Kullanıcı yönetimi - id parametresi opsiyonel
+                Route::get('/manage/{id?}', UserManageComponent::class)
                     ->middleware('module.permission:usermanagement,update')
-                    ->where('id', '[0-9]+')
-                    ->name('edit');
+                    ->name('manage');
                 
                 // Modül bazlı izinler
                 Route::get('/module-permissions', ModulePermissionComponent::class)
@@ -53,16 +47,10 @@ Route::middleware(['web', 'auth', 'tenant'])
                     ->middleware('module.permission:usermanagement,view')
                     ->name('index');
                     
-                // Yeni rol oluşturma
-                Route::get('/manage', RoleManageComponent::class)
-                    ->middleware('module.permission:usermanagement,create')
-                    ->name('create');
-                    
-                // Mevcut rol düzenleme
-                Route::get('/manage/{id}', RoleManageComponent::class)
+                // Rol yönetimi - id parametresi opsiyonel
+                Route::get('/manage/{id?}', RoleManageComponent::class)
                     ->middleware('module.permission:usermanagement,update')
-                    ->where('id', '[0-9]+')
-                    ->name('edit');
+                    ->name('manage');
             });
 
         // Permission Routes    
@@ -73,15 +61,9 @@ Route::middleware(['web', 'auth', 'tenant'])
                     ->middleware('module.permission:usermanagement,view')
                     ->name('index');
                     
-                // Yeni izin oluşturma
-                Route::get('/manage', PermissionManageComponent::class)
-                    ->middleware('module.permission:usermanagement,create')
-                    ->name('create');
-                    
-                // Mevcut izin düzenleme
-                Route::get('/manage/{id}', PermissionManageComponent::class)
+                // İzin yönetimi - id parametresi opsiyonel
+                Route::get('/manage/{id?}', PermissionManageComponent::class)
                     ->middleware('module.permission:usermanagement,update')
-                    ->where('id', '[0-9]+')
-                    ->name('edit');
+                    ->name('manage');
             });
     });

@@ -174,7 +174,21 @@
                 <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown">
                     <div class="d-none d-xl-block ps-2">
                         <div>{{ Auth::user()->name }}</div>
-                        <div class="mt-1 small text-secondary">Yönetici</div>
+                        <div class="mt-1 small text-secondary">
+                            @php
+                                $user = Auth::user();
+                                $roleName = 'Kullanıcı';
+                                
+                                if ($user->hasRole('root')) {
+                                    $roleName = 'Root';
+                                } elseif ($user->hasRole('admin')) {
+                                    $roleName = 'Yönetici';
+                                } elseif ($user->hasRole('editor')) {
+                                    $roleName = 'Editör';
+                                }
+                            @endphp
+                            {{ $roleName }}
+                        </div>
                     </div>
                 </a>
                 <div class="dropdown-menu dropdown-menu-end">

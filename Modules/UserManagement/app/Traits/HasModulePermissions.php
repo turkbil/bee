@@ -8,73 +8,81 @@ use Illuminate\Support\Facades\Log;
 
 trait HasModulePermissions
 {
-/**
- * Kullanıcının belirli bir modül ve izin tipine erişimi olup olmadığını kontrol eder
- */
-public function hasModulePermission(string $moduleName, string $permissionType): bool
-{
-    // Root kontrolü
-    if ($this->hasRole('root')) {
-        return true;
-    }
+    /**
+     * Kullanıcının belirli bir modül ve izin tipine erişimi olup olmadığını kontrol eder
+     */
+    public function hasModulePermission(string $moduleName, string $permissionType): bool
+    {
+        // Root kontrolü
+        if ($this->hasRole('root')) {
+            return true;
+        }
 
-    // Admin kontrolü
-    if ($this->hasRole('admin')) {
-        // Tenant kontrolü
-        if (app(\Stancl\Tenancy\Tenancy::class)->initialized) {
-            // Tenant'ta ise, modülün tenant'a atanmış olup olmadığını kontrol et
-            $moduleService = app(\App\Services\ModuleAccessService::class);
-            $module = $moduleService->getModuleByName($moduleName);
+        // Admin kontrolü
+        if ($this->hasRole('admin')) {
+            // Tenant kontrolü
+            if (app(\Stancl\Tenancy\Tenancy::class)->initialized) {
+                // Tenant'ta ise, modülün tenant'a atanmış olup olmadığını kontrol et
+                $moduleService = app(\App\Services\ModuleAccessService::class);
+                $module = $moduleService->getModuleByName($moduleName);
+                
+                if (!$module) {
+                    \Log::warning("Module not found: {$moduleName}");
+                    return false;
+                }
+                
+                return $moduleService->isModuleAssignedToTenant($module->module_id, tenant()->id);
+            }
             
-            if (!$module) {
-                \Log::warning("Module not found: {$moduleName}");
+            // Central'da ise kısıtlı modülleri kontrol et
+            if (in_array($moduleName, config('module-permissions.admin_restricted_modules', []))) {
+                \Log::warning("Admin tried to access restricted module: {$moduleName}");
                 return false;
             }
             
-            return $moduleService->isModuleAssignedToTenant($module->module_id, tenant()->id);
+            return true;
         }
-        
-        // Central'da ise kısıtlı modülleri kontrol et
-        if (in_array($moduleName, config('module-permissions.admin_restricted_modules', []))) {
-            \Log::warning("Admin tried to access restricted module: {$moduleName}");
+
+        // Rol çakışması kontrolü (güvenlik için)
+        if ($this->isEditor() && ($this->hasRole('admin') || $this->hasRole('root'))) {
+            \Log::warning("Kullanıcı {$this->id} hem Editor hem de admin/root rollerine sahip! Bu durum kontrol edilmeli.");
             return false;
         }
-        
-        return true;
-    }
 
-    // Editor ve diğer roller için modül bazlı izin kontrolü
-    $cacheKey = "user_{$this->id}_module_{$moduleName}_permission_{$permissionType}";
-    
-    return Cache::remember($cacheKey, now()->addMinutes(5), function () use ($moduleName, $permissionType) {
-        // Kullanıcın direkt olarak moduleName.permissionType izni var mı kontrol et
-        $permissionName = "{$moduleName}.{$permissionType}";
-        if ($this->hasPermissionTo($permissionName)) {
-            return true;
-        }
+        // Editor ve diğer roller için modül bazlı izin kontrolü
+        $cacheKey = "user_{$this->id}_module_{$moduleName}_permission_{$permissionType}";
         
-        // Model has permissions tablosundan kontrol et
-        $hasPermissionInDB = \DB::table('model_has_permissions')
-            ->join('permissions', 'model_has_permissions.permission_id', '=', 'permissions.id')
-            ->where('model_id', $this->id)
-            ->where('model_type', get_class($this))
-            ->where('permissions.name', $permissionName)
-            ->exists();
+        return Cache::remember($cacheKey, now()->addMinutes(5), function () use ($moduleName, $permissionType) {
+            // Kullanıcın direkt olarak moduleName.permissionType izni var mı kontrol et
+            $permissionName = "{$moduleName}.{$permissionType}";
+            if ($this->hasPermissionTo($permissionName)) {
+                return true;
+            }
             
-        if ($hasPermissionInDB) {
-            return true;
-        }
-        
-        // UserModulePermission tablosu üzerinden kontrol
-        $hasDirectModulePermission = $this->userModulePermissions()
-            ->where('module_name', $moduleName)
-            ->where('permission_type', $permissionType)
-            ->where('is_active', true)
-            ->exists();
+            // Model has permissions tablosundan kontrol et
+            $hasPermissionInDB = \DB::table('model_has_permissions')
+                ->join('permissions', 'model_has_permissions.permission_id', '=', 'permissions.id')
+                ->where('model_id', $this->id)
+                ->where('model_type', get_class($this))
+                ->where('permissions.name', $permissionName)
+                ->exists();
+                
+            if ($hasPermissionInDB) {
+                return true;
+            }
             
-        return $hasDirectModulePermission;
-    });
-}
+            // UserModulePermission tablosu üzerinden kontrol
+            $hasDirectModulePermission = $this->userModulePermissions()
+                ->where('module_name', $moduleName)
+                ->where('permission_type', $permissionType)
+                ->where('is_active', true)
+                ->exists();
+                
+            \Log::debug("UserModulePermission check - User: {$this->id}, Module: {$moduleName}, Permission: {$permissionType}, Result: " . ($hasDirectModulePermission ? 'true' : 'false'));
+                
+            return $hasDirectModulePermission;
+        });
+    }
 
     /**
      * Kullanıcının bir modüle ait tüm izinlerini getirir

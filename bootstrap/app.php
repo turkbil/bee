@@ -16,18 +16,18 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             \App\Http\Middleware\InitializeTenancy::class,
         ]);
-        
-        // Alias tanımlamaları
+                
         $middleware->alias([
             'tenant' => \App\Http\Middleware\InitializeTenancy::class,
             'tenant.module' => \App\Http\Middleware\TenantModuleMiddleware::class,
+            'root.access' => \App\Http\Middleware\RootAccessMiddleware::class,
             'admin.access' => \App\Http\Middleware\AdminAccessMiddleware::class,
-            'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
-            'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
-            'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,
+            'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
+            'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+            'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
             'module.permission' => \Modules\UserManagement\App\Http\Middleware\ModulePermissionMiddleware::class,
         ]);
-        
+                
         // Admin middleware grubu
         $middleware->group('admin', [
             'web',

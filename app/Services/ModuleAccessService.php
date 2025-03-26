@@ -83,8 +83,11 @@ class ModuleAccessService
             
             // Kullanıcının modül bazlı iznini kontrol et - HAYATİ KONTROL
             $hasPermission = $user->hasModulePermission($moduleName, $permissionType);
+            
+            // Sonucu log'la
+            Log::info("Editor {$user->id} ({$user->email}) - Modül: {$moduleName}, İzin: {$permissionType}, Sonuç: " . ($hasPermission ? 'Erişim var' : 'Erişim yok'));
+            
             if (!$hasPermission) {
-                Log::info("Kullanıcı {$user->id} için {$moduleName}.{$permissionType} izni yok.");
                 return false;
             }
             

@@ -25,7 +25,7 @@
     // Modül servisini çağır
     $moduleService = app(App\Services\ModuleService::class);
     
-    // Servis üzerinden modülleri al
+    // Modülleri her zaman taze şekilde al (önbellek yok)
     $modules = $moduleService->getModulesByTenant($tenantId);
     
     // Modülleri tipine göre grupla

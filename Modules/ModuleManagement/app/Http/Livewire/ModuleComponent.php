@@ -99,14 +99,17 @@ class ModuleComponent extends Component
         $module = Module::find($moduleId);
         if ($module) {
             $tenant = $module->tenants()->where('id', $domain)->first();
+            $isActive = false;
             
             if ($tenant) {
                 // Toggle the status in the pivot table
+                $isActive = !$tenant->pivot->is_active;
                 $module->tenants()->updateExistingPivot($domain, [
-                    'is_active' => !$tenant->pivot->is_active
+                    'is_active' => $isActive
                 ]);
             } else {
                 // Create a new relationship if it doesn't exist
+                $isActive = true;
                 $module->tenants()->attach($domain, [
                     'is_active' => true
                 ]);
@@ -117,12 +120,21 @@ class ModuleComponent extends Component
                 'domain durumu güncellendi',
                 [
                     'domain' => $domain,
-                    'status' => !($tenant?->pivot->is_active ?? false)
+                    'status' => $isActive
                 ]
             );
             
             // Domain için önbelleği temizle
             Cache::forget("modules_tenant_" . $domain);
+            
+            // Doğru namespace ile servis sınıfını çağır
+            $permissionService = app(\App\Services\ModuleTenantPermissionService::class);
+            
+            if ($isActive) {
+                $permissionService->handleModuleAddedToTenant($moduleId, $domain);
+            } else {
+                $permissionService->handleModuleRemovedFromTenant($moduleId, $domain);
+            }
             
             $this->dispatch('toast', [
                 'title' => 'Başarılı!',

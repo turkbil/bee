@@ -56,10 +56,13 @@ class TenantModuleComponent extends Component
    public function save()
    {
        if (!$this->tenantId) return;
-
+   
        try {
            $tenant = Tenant::find($this->tenantId);
            if ($tenant) {
+               // Önceki modülleri kaydet
+               $previousModules = $tenant->modules()->pluck('module_id')->toArray();
+               
                // Seçilen modülleri hazırla
                $syncData = collect($this->selectedModules)
                    ->mapWithKeys(fn($id) => [$id => ['is_active' => true]])
@@ -75,13 +78,30 @@ class TenantModuleComponent extends Component
                        'modules' => $this->selectedModules
                    ])
                    ->log('tenant modülleri güncellendi');
-
+                   
+               // Tenant izinlerini oluştur/kaldır
+               $permissionService = app(\App\Services\ModuleTenantPermissionService::class);
+               
+               // Eklenen modüller için izinleri oluştur
+               foreach ($this->selectedModules as $moduleId) {
+                   if (!in_array($moduleId, $previousModules)) {
+                       $permissionService->handleModuleAddedToTenant($moduleId, $this->tenantId);
+                   }
+               }
+               
+               // Silinen modüller için izinleri kaldır
+               foreach ($previousModules as $moduleId) {
+                   if (!in_array($moduleId, $this->selectedModules)) {
+                       $permissionService->handleModuleRemovedFromTenant($moduleId, $this->tenantId);
+                   }
+               }
+   
                $this->dispatch('toast', [
                    'title' => 'Başarılı!',
                    'message' => 'Modül atamaları güncellendi.',
                    'type' => 'success'
                ]);
-
+   
                // Modalı kapat
                $this->dispatch('hideModal', ['id' => 'modal-module-management']);
                $this->dispatch('modulesSaved');

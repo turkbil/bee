@@ -1,16 +1,18 @@
-<?php
-
-namespace App\Providers;
+<?php  
+namespace App\Providers;  
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Cache;
 use App\Helpers\TenantHelpers;
+use App\Services\ModuleTenantPermissionService; // Eksik olan import
 
 class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        //
+        $this->app->singleton(ModuleTenantPermissionService::class, function ($app) {
+            return new ModuleTenantPermissionService();
+        });
     }
 
     public function boot(): void

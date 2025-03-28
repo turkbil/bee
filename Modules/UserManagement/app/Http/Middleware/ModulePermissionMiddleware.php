@@ -34,6 +34,17 @@ class ModulePermissionMiddleware
                 ->with('error', 'Hesabınız pasif durumda. Lütfen yönetici ile iletişime geçin.');
         }
         
+        // Eğer 'manage' rotası ve update izni isteniyorsa, ID parametresine göre gerçek izin tipini belirle
+        if (strpos($request->path(), 'manage') !== false && $permissionType === 'update') {
+            $id = $request->route('id');
+            
+            // ID yoksa, bu bir create işlemidir
+            if ($id === null || $id === '') {
+                $permissionType = 'create';
+                Log::info("Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.");
+            }
+        }
+        
         // Modül tenant için aktif mi kontrol et
         if (app(\Stancl\Tenancy\Tenancy::class)->initialized) {
             $moduleService = app(\App\Services\ModuleAccessService::class);
@@ -60,7 +71,6 @@ class ModulePermissionMiddleware
             abort(403, 'Erişim reddedildi.');
         }
         
-        // Log - hangi kullanıcı, hangi modül, hangi izin tipi
         Log::info("ModulePermissionMiddleware: User ID: {$user->id}, Email: {$user->email}, Module: {$moduleName}, Permission: {$permissionType}, Roles: " . implode(',', $user->getRoleNames()->toArray()));
         
         // Root yetkisine sahip kullanıcı için hiçbir kısıtlama yok - AMA TENANT'A ATANMAMIŞ MODÜL KONTROLÜ VAR

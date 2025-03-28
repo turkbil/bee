@@ -21,26 +21,42 @@ Portfolyo Yönetimi
                     Portfolyo İşlemleri
                 </button>
                 <div class="dropdown-menu">
+                    @hasmoduleaccess('portfolio', 'view')
                     <a class="dropdown-item" href="{{ route('admin.portfolio.index') }}">
                         Portfolyolar
                     </a>
+                    @endhasmoduleaccess
+                    
+                    @hasmoduleaccess('portfolio', 'create')
                     <a class="dropdown-item" href="{{ route('admin.portfolio.manage') }}">
                         Yeni Portfolyo Ekle
                     </a>
+                    @endhasmoduleaccess
+                    
+                    @if(auth()->user()->hasModulePermission('portfolio', 'view'))
                     <h6 class="dropdown-menu-header card-header-light">
                         <span class="dropdown-header">Kategori İşlemleri</span>
                     </h6>
+                    
+                    @hasmoduleaccess('portfolio', 'view')
                     <a class="dropdown-item" href="{{ route('admin.portfolio.category.index') }}">
                         Kategoriler
                     </a>
+                    @endhasmoduleaccess
+                    
+                    @hasmoduleaccess('portfolio', 'create')
                     <a class="dropdown-item" href="{{ route('admin.portfolio.category.manage') }}">
                         Kategori Ekle
                     </a>
+                    @endhasmoduleaccess
+                    @endif
                 </div>
             </div>
+            @hasmoduleaccess('portfolio', 'create')
             <a href="{{ route('admin.portfolio.manage') }}" class="btn btn-primary">
                 Yeni Portfolyo
             </a>
+            @endhasmoduleaccess
         </div>
     </div>
 </div>

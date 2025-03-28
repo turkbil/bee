@@ -171,6 +171,7 @@
                                         </a>
                                     </div>
                                     <div class="col lh-1">
+                                        @hasmoduleaccess('page', 'delete')
                                         <div class="dropdown mt-1">
                                             <a class="dropdown-toggle text-secondary" href="#" data-bs-toggle="dropdown"
                                                 aria-haspopup="true" aria-expanded="false">
@@ -186,6 +187,7 @@
                                                 </a>
                                             </div>
                                         </div>
+                                        @endhasmoduleaccess
                                     </div>
                                 </div>
                             </div>
@@ -210,7 +212,7 @@
     <!-- Pagination -->
     {{ $pages->links() }}
     <!-- Bulk Actions -->
-    @include('page::livewire.partials.bulk-actions')
+    @include('page::livewire.partials.bulk-actions', ['moduleType' => 'page'])
 
     <livewire:modals.bulk-delete-modal />
     <livewire:modals.delete-modal />

@@ -20,7 +20,18 @@
                         <p class="text-muted">"{{ $title }}" isimli kategoriyi silmek üzeresiniz.</p>
                     </div>
 
-                    @if($contentCount > 0)
+                    @if(!auth()->user()->hasModulePermission($module, 'delete'))
+                    <div class="alert alert-danger">
+                        <div class="d-flex">
+                            <div>
+                                <i class="fas fa-exclamation-circle me-2"></i>
+                            </div>
+                            <div>
+                                Bu işlem için yetkiniz bulunmamaktadır.
+                            </div>
+                        </div>
+                    </div>
+                    @elseif($contentCount > 0)
                     <div class="mb-4">
                         <p class="text-muted mb-3 text-center">Bu kategoride <strong>{{ $contentCount }}</strong> içerik
                             bulunuyor. İçeriklere ne yapılacağını seçmelisiniz.</p>
@@ -63,7 +74,7 @@
                                         </div>
                                         <div class="mt-auto">
                                             <button class="btn btn-outline-info w-100" wire:click="move"
-                                                wire:loading.attr="disabled">
+                                                wire:loading.attr="disabled" @if(!$selectedCategory) disabled @endif>
                                                 <span wire:loading.remove>
                                                     <i class="fas fa-share me-2"></i> Taşı ve Sil
                                                 </span>
@@ -79,6 +90,11 @@
                     </div>
                     @else
                     <p class="text-muted text-center">Bu kategoride herhangi bir içerik bulunmuyor.</p>
+                    <div class="text-center mt-4">
+                        <button class="btn btn-danger" wire:click="delete">
+                            <i class="fas fa-trash-alt me-2"></i> Kategoriyi Sil
+                        </button>
+                    </div>
                     @endif
                 </div>
 

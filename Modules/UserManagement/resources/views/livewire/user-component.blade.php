@@ -137,6 +137,13 @@
                             Düzenle
                         </a>
 
+                        @if(auth()->user()->isRoot() || !$user->isRoot())
+                        <a href="{{ route('admin.usermanagement.user.activity.logs', $user->id) }}" class="card-btn">
+                            <i class="fas fa-history me-2"></i>
+                            Kayıtlar
+                        </a>
+                        @endif
+
                         <a href="javascript:void(0);"
                             wire:click="$dispatch('showDeleteModal', { userId: {{ $user->id }}, userName: '{{ $user->name }}' })"
                             class="card-btn text-danger">
@@ -198,7 +205,7 @@
                                 Durum
                             </button>
                         </th>
-                        <th class="text-center" style="width: 120px">İşlemler</th>
+                        <th class="text-center" style="width: 160px">İşlemler</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -237,6 +244,14 @@
                                             data-bs-placement="top" title="Düzenle">
                                             <i class="fa-solid fa-pen-to-square link-secondary fa-lg"></i>
                                         </a>
+                                    </div>
+                                    <div class="col">
+                                        @if(auth()->user()->isRoot() || !$user->isRoot())
+                                        <a href="{{ route('admin.usermanagement.user.activity.logs', $user->id) }}" data-bs-toggle="tooltip"
+                                            data-bs-placement="top" title="İşlem Kayıtları">
+                                            <i class="fa-solid fa-history link-secondary fa-lg"></i>
+                                        </a>
+                                        @endif
                                     </div>
                                     <div class="col lh-1">
                                         <div class="dropdown mt-1">

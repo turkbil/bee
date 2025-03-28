@@ -9,6 +9,8 @@ use Modules\UserManagement\App\Http\Livewire\PermissionComponent;
 use Modules\UserManagement\App\Http\Livewire\PermissionManageComponent;
 use Modules\UserManagement\App\Http\Livewire\ModulePermissionComponent;
 use Modules\UserManagement\App\Http\Livewire\UserModulePermissionComponent;
+use Modules\UserManagement\App\Http\Livewire\ActivityLogComponent;
+use Modules\UserManagement\App\Http\Livewire\UserActivityLogComponent;
 
 Route::middleware(['web', 'auth', 'tenant'])
     ->prefix('admin')
@@ -37,6 +39,17 @@ Route::middleware(['web', 'auth', 'tenant'])
                     ->middleware('module.permission:usermanagement,update')
                     ->where('id', '[0-9]+')
                     ->name('user.module.permissions');
+                    
+                // Aktivite log kayıtları
+                Route::get('/activity-logs', ActivityLogComponent::class)
+                    ->middleware('module.permission:usermanagement,view')
+                    ->name('activity.logs');
+                    
+                // Kullanıcı aktivite log kayıtları
+                Route::get('/user-activity-logs/{id}', UserActivityLogComponent::class)
+                    ->middleware('module.permission:usermanagement,view')
+                    ->where('id', '[0-9]+')
+                    ->name('user.activity.logs');
             });
 
         // Role Routes    

@@ -13,7 +13,7 @@ use Modules\UserManagement\App\Http\Livewire\ModulePermissionComponent;
 use Modules\UserManagement\App\Http\Livewire\UserModulePermissionComponent;
 use Modules\UserManagement\App\Http\Livewire\ActivityLogComponent;
 use Modules\UserManagement\App\Http\Livewire\UserActivityLogComponent;
-use Modules\UserManagement\App\Livewire\Modals\ConfirmActionModal;
+use Modules\UserManagement\App\Http\Livewire\Modals\ConfirmActionModal;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -60,8 +60,7 @@ class UserManagementServiceProvider extends ServiceProvider
         Livewire::component('usermanagement.activity-log-component', ActivityLogComponent::class);
         Livewire::component('usermanagement.user-activity-log-component', UserActivityLogComponent::class);
         
-        Livewire::component('usermanagement.confirm-action-modal', 
-        \Modules\UserManagement\App\Http\Livewire\Modals\ConfirmActionModal::class);
+        Livewire::component('usermanagement.confirm-action-modal', ConfirmActionModal::class);
 
         // Middleware'i kaydet
         $this->app['router']->aliasMiddleware('module.permission', ModulePermissionMiddleware::class);
@@ -74,6 +73,7 @@ class UserManagementServiceProvider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
+        $this->app->register(ModulePermissionHelperServiceProvider::class);
     }
 
     /**

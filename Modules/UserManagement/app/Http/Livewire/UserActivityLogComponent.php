@@ -44,17 +44,6 @@ class UserActivityLogComponent extends Component
     #[Url]
     public $eventFilter = '';
 
-    protected $queryString = [
-        'sortField' => ['except' => 'created_at'],
-        'sortDirection' => ['except' => 'desc'],
-        'search' => ['except' => ''],
-        'perPage' => ['except' => 25],
-        'moduleFilter' => ['except' => ''],
-        'dateFrom' => ['except' => ''],
-        'dateTo' => ['except' => ''],
-        'eventFilter' => ['except' => ''],
-    ];
-
     protected function getModelClass()
     {
         return Activity::class;
@@ -63,6 +52,27 @@ class UserActivityLogComponent extends Component
     protected function getPrimaryKeyName() 
     {
         return 'id';
+    }
+    
+    protected function applySearchFilters($query)
+    {
+        return $query->where(function ($q) {
+            $q->where('description', 'like', '%' . $this->search . '%')
+                ->orWhereJsonContains('properties->baslik', $this->search)
+                ->orWhereJsonContains('properties->modul', $this->search);
+        })
+        ->when($this->moduleFilter, function ($query) {
+            $query->whereJsonContains('properties->modul', $this->moduleFilter);
+        })
+        ->when($this->eventFilter, function ($query) {
+            $query->where('event', $this->eventFilter);
+        })
+        ->when($this->dateFrom, function ($query) {
+            $query->whereDate('created_at', '>=', $this->dateFrom);
+        })
+        ->when($this->dateTo, function ($query) {
+            $query->whereDate('created_at', '<=', $this->dateTo);
+        });
     }
     
     public function mount($id)
@@ -177,31 +187,73 @@ class UserActivityLogComponent extends Component
         }
     }
 
+    public function confirmDelete($id)
+    {
+        if (!Auth::user()->isRoot()) {
+            $this->dispatch('toast', [
+                'title' => 'Yetkisiz İşlem!',
+                'message' => 'Bu işlem için yetkiniz bulunmuyor.',
+                'type' => 'error',
+            ]);
+            return;
+        }
+
+        $this->dispatch('showConfirmModal', [
+            'title' => 'Kaydı Sil',
+            'message' => 'Bu aktivite kaydını silmek istediğinize emin misiniz? Bu işlem geri alınamaz!',
+            'method' => 'deleteRecord',
+            'params' => ['id' => $id]
+        ]);
+    }
+
+    public function deleteRecord($params)
+    {
+        try {
+            $id = $params['id'];
+            
+            DB::beginTransaction();
+            
+            $activity = Activity::find($id);
+            
+            if (!$activity) {
+                $this->dispatch('toast', [
+                    'title' => 'Hata!',
+                    'message' => 'Kayıt bulunamadı.',
+                    'type' => 'error',
+                ]);
+                return;
+            }
+            
+            $activity->delete();
+            
+            DB::commit();
+            
+            $this->dispatch('toast', [
+                'title' => 'Başarılı!',
+                'message' => 'Aktivite kaydı başarıyla silindi.',
+                'type' => 'success',
+            ]);
+            
+            $this->resetPage();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            
+            $this->dispatch('toast', [
+                'title' => 'Hata!',
+                'message' => 'İşlem sırasında bir hata oluştu: ' . $e->getMessage(),
+                'type' => 'error',
+            ]);
+        }
+    }
+
     public function render()
     {
         $query = Activity::query()
             ->with(['causer', 'subject'])
             ->where('causer_type', User::class)
-            ->where('causer_id', $this->userId)
-            ->when($this->search, function ($query) {
-                $query->where(function ($q) {
-                    $q->where('description', 'like', '%' . $this->search . '%')
-                        ->orWhereJsonContains('properties->baslik', $this->search)
-                        ->orWhereJsonContains('properties->modul', $this->search);
-                });
-            })
-            ->when($this->moduleFilter, function ($query) {
-                $query->whereJsonContains('properties->modul', $this->moduleFilter);
-            })
-            ->when($this->eventFilter, function ($query) {
-                $query->where('event', $this->eventFilter);
-            })
-            ->when($this->dateFrom, function ($query) {
-                $query->whereDate('created_at', '>=', $this->dateFrom);
-            })
-            ->when($this->dateTo, function ($query) {
-                $query->whereDate('created_at', '<=', $this->dateTo);
-            });
+            ->where('causer_id', $this->userId);
+
+        $query = $this->applySearchFilters($query);
 
         $logs = $query->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);

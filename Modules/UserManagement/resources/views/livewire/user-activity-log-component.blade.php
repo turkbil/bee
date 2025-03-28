@@ -370,5 +370,4 @@
     </div>
     
     <livewire:modals.delete-modal />
-    <livewire:usermanagement.confirm-action-modal />
 </div>

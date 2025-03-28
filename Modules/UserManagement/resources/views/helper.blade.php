@@ -33,6 +33,16 @@ Kullanıcı Listesi
                     </a>
                     @endhasmoduleaccess
                     
+                    <h6 class="dropdown-menu-header card-header-light">
+                        <span class="dropdown-header">Aktivite Kayıtları</span>
+                    </h6>
+                    
+                    @hasmoduleaccess('usermanagement', 'view')
+                    <a class="dropdown-item" href="{{ route('admin.usermanagement.activity.logs') }}">
+                        İşlem Kayıtları
+                    </a>
+                    @endhasmoduleaccess
+                    
                     @if(auth()->user()->hasRole('root') || auth()->user()->hasRole('admin'))
                     <h6 class="dropdown-menu-header card-header-light">
                         <span class="dropdown-header">Rol Listesi</span>

@@ -18,9 +18,15 @@
                                 </button>
                             </div>
                             <div class="col">
+                                @if(auth()->user()->hasModulePermission($module, 'delete'))
                                 <button class="btn btn-danger w-100" wire:click="bulkDelete" wire:loading.attr="disabled">
                                     Sil
                                 </button>
+                                @else
+                                <button class="btn btn-secondary w-100" disabled>
+                                    Yetkisiz İşlem
+                                </button>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -34,7 +40,9 @@
     <script>
         document.addEventListener('livewire:initialized', () => {
             $(document).on('keydown', function(e) {
-                if (e.keyCode === 32 && $('#bulk-delete-modal').is(':visible')) {
+                if (e.keyCode === 32 && $('#bulk-delete-modal').is(':visible') && 
+                    document.querySelector('#bulk-delete-modal .btn-danger') && 
+                    !document.querySelector('#bulk-delete-modal .btn-danger').disabled) {
                     e.preventDefault();
                     $('#bulk-delete-modal .btn-danger').click();
                 }

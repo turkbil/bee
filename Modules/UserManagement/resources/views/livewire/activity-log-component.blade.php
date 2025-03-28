@@ -1,259 +1,300 @@
 @include('usermanagement::helper')
-<div>
-    <div class="card">
-        <div class="card-header">
-            <div class="d-flex justify-content-between align-items-center">
-                <div class="d-flex align-items-center">
-                    <i class="fas fa-history text-azure me-2"></i>
-                    <h3 class="card-title m-0">İşlem Kayıtları</h3>
-                </div>
-                
-                @if($isRoot)
-                <a href="javascript:void(0);" wire:click="clearLogs" class="btn btn-outline-danger">
-                    <i class="fas fa-trash-alt me-2"></i>Tüm Kayıtları Temizle
-                </a>
-                @endif
-            </div>
-        </div>
-        
-        <div class="card-body border-bottom pb-3">
-            <!-- Filtreleme Araçları -->
-            <div class="row mb-3">
-                <!-- Arama -->
-                <div class="col-md-3">
-                    <div class="input-icon">
-                        <span class="input-icon-addon">
-                            <i class="fas fa-search"></i>
-                        </span>
-                        <input type="text" wire:model.live.debounce.300ms="search" class="form-control"
-                            placeholder="Aramak için yazmaya başlayın...">
-                    </div>
-                </div>
-                
-                <!-- Kullanıcı Filtresi -->
-                <div class="col-md-2">
-                    <select wire:model.live="userFilter" class="form-select">
-                        <option value="">Tüm Kullanıcılar</option>
-                        @foreach($users as $user)
-                            <option value="{{ $user->id }}">{{ $user->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                
-                <!-- Modül Filtresi -->
-                <div class="col-md-2">
-                    <select wire:model.live="moduleFilter" class="form-select">
-                        <option value="">Tüm Modüller</option>
-                        @foreach($modules as $module)
-                            <option value="{{ $module }}">{{ $module }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                
-                <!-- Eylem Filtresi -->
-                <div class="col-md-2">
-                    <select wire:model.live="eventFilter" class="form-select">
-                        <option value="">Tüm Eylemler</option>
-                        @foreach($events as $event)
-                            <option value="{{ $event }}">{{ $event }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                
-                <!-- Sayfa Başına Kayıt -->
-                <div class="col-md-1">
-                    <select wire:model.live="perPage" class="form-select">
-                        <option value="10">10</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                    </select>
-                </div>
-                
-                <!-- Temizle Butonu -->
-                <div class="col-md-2 d-flex justify-content-end">
-                    @if($search || $userFilter || $moduleFilter || $eventFilter || $dateFrom || $dateTo)
-                    <button type="button" class="btn btn-outline-secondary" wire:click="clearFilters">
-                        <i class="fas fa-times me-1"></i>Filtreleri Temizle
-                    </button>
-                    @endif
+<div class="card">
+    <div class="card-body">
+        <!-- Header Bölümü -->
+        <div class="row mb-3">
+            <!-- Arama Kutusu -->
+            <div class="col">
+                <div class="input-icon">
+                    <span class="input-icon-addon">
+                        <i class="fas fa-search"></i>
+                    </span>
+                    <input type="text" wire:model.live.debounce.300ms="search" class="form-control"
+                        placeholder="Aramak için yazmaya başlayın...">
                 </div>
             </div>
             
-            <!-- Tarih Aralığı -->
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="d-flex align-items-center gap-2">
-                        <div class="input-icon flex-grow-1">
+            <!-- Ortadaki Loading -->
+            <div class="col position-relative">
+                <div wire:loading
+                    wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, confirmDelete, userFilter, moduleFilter, eventFilter, dateFrom, dateTo, clearFilters, clearLogs, clearUserLogs"
+                    class="position-absolute top-50 start-50 translate-middle text-center"
+                    style="width: 100%; max-width: 250px;">
+                    <div class="small text-muted mb-2">Güncelleniyor...</div>
+                    <div class="progress mb-1">
+                        <div class="progress-bar progress-bar-indeterminate"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sağ Taraf (Filtre ve Sayfa Seçimi) -->
+            <div class="col">
+                <div class="d-flex align-items-center justify-content-end gap-3">
+                    <!-- Filtre Butonu -->
+                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" 
+                        data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
+                        <i class="fas fa-filter me-1"></i>
+                        Filtreler
+                        @if($search || $userFilter || $moduleFilter || $eventFilter || $dateFrom || $dateTo)
+                        <span class="badge bg-primary ms-1">Aktif</span>
+                        @endif
+                    </button>
+                    
+                    <!-- Table Switch -->
+                    <div class="table-mode">
+                        <input type="checkbox" id="table-switch" class="table-switch" <?php echo
+                            (!isset($_COOKIE['tableCompact']) || $_COOKIE['tableCompact']=='1' ) ? 'checked' : '' ; ?>
+                        onchange="toggleTableMode(this.checked)">
+                        <div class="app">
+                            <div class="switch-content">
+                                <div class="switch-label"></div>
+                                <label for="table-switch">
+                                    <div class="toggle"></div>
+                                    <div class="names">
+                                        <p class="large" data-bs-toggle="tooltip" data-bs-placement="left"
+                                            title="Satırları daralt">
+                                            <i class="fa-thin fa-table-cells fa-lg fa-fade"
+                                                style="--fa-animation-duration: 2s;"></i>
+                                        </p>
+                                        <p class="small" data-bs-toggle="tooltip" data-bs-placement="left"
+                                            title="Satırları genişlet">
+                                            <i class="fa-thin fa-table-cells-large fa-lg fa-fade"
+                                                style="--fa-animation-duration: 2s;"></i>
+                                        </p>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Sayfa Adeti Seçimi -->
+                    <div style="min-width: 70px">
+                        <select wire:model.live="perPage" class="form-select">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Filtre Bölümü - Açılır Kapanır -->
+        <div class="collapse mb-3" id="filterCollapse">
+            <div class="card card-body">
+                <div class="row g-3">
+                    <!-- Kullanıcı Filtresi -->
+                    <div class="col-md-4">
+                        <label class="form-label">Kullanıcı</label>
+                        <select wire:model.live="userFilter" class="form-select">
+                            <option value="">Tüm Kullanıcılar</option>
+                            @foreach($users as $user)
+                                <option value="{{ $user->id }}">{{ $user->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    
+                    <!-- Modül Filtresi -->
+                    <div class="col-md-4">
+                        <label class="form-label">Modül</label>
+                        <select wire:model.live="moduleFilter" class="form-select">
+                            <option value="">Tüm Modüller</option>
+                            @foreach($modules as $module)
+                                <option value="{{ $module }}">{{ $module }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    
+                    <!-- Eylem Filtresi -->
+                    <div class="col-md-4">
+                        <label class="form-label">Eylem</label>
+                        <select wire:model.live="eventFilter" class="form-select">
+                            <option value="">Tüm Eylemler</option>
+                            @foreach($events as $event)
+                                <option value="{{ $event }}">{{ $event }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    
+                    <!-- Tarih Aralığı -->
+                    <div class="col-md-4">
+                        <label class="form-label">Başlangıç Tarihi</label>
+                        <div class="input-icon">
                             <span class="input-icon-addon">
                                 <i class="fas fa-calendar-alt"></i>
                             </span>
-                            <input type="date" wire:model.live="dateFrom" class="form-control" placeholder="Başlangıç">
+                            <input type="date" wire:model.live="dateFrom" class="form-control">
                         </div>
-                        <div class="input-icon flex-grow-1">
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <label class="form-label">Bitiş Tarihi</label>
+                        <div class="input-icon">
                             <span class="input-icon-addon">
                                 <i class="fas fa-calendar-alt"></i>
                             </span>
-                            <input type="date" wire:model.live="dateTo" class="form-control" placeholder="Bitiş">
+                            <input type="date" wire:model.live="dateTo" class="form-control">
                         </div>
+                    </div>
+                    
+                    <!-- Filtreleri Temizle -->
+                    <div class="col-md-4 d-flex align-items-end">
+                        @if($search || $userFilter || $moduleFilter || $eventFilter || $dateFrom || $dateTo)
+                        <button type="button" class="btn btn-outline-secondary" wire:click="clearFilters">
+                            <i class="fas fa-times me-1"></i>Filtreleri Temizle
+                        </button>
+                        @endif
                     </div>
                 </div>
                 
                 <!-- Aktif Filtreler -->
-                <div class="col-md-6">
-                    @if($search || $userFilter || $moduleFilter || $eventFilter || $dateFrom || $dateTo)
-                    <div class="d-flex flex-wrap gap-2 justify-content-end">
-                        @if($search)
-                            <span class="badge bg-azure-lt">{{ $search }}</span>
-                        @endif
-                        @if($userFilter)
-                            <span class="badge bg-blue-lt">{{ $users->firstWhere('id', $userFilter)->name ?? 'Kullanıcı' }}</span>
-                        @endif
-                        @if($moduleFilter)
-                            <span class="badge bg-indigo-lt">{{ $moduleFilter }}</span>
-                        @endif
-                        @if($eventFilter)
-                            <span class="badge bg-purple-lt">{{ $eventFilter }}</span>
-                        @endif
-                        @if($dateFrom)
-                            <span class="badge bg-teal-lt">{{ $dateFrom }}</span>
-                        @endif
-                        @if($dateTo)
-                            <span class="badge bg-cyan-lt">{{ $dateTo }}</span>
-                        @endif
-                    </div>
+                @if($search || $userFilter || $moduleFilter || $eventFilter || $dateFrom || $dateTo)
+                <div class="d-flex flex-wrap gap-2 mt-3">
+                    @if($search)
+                        <span class="badge bg-azure-lt">Arama: {{ $search }}</span>
+                    @endif
+                    @if($userFilter)
+                        <span class="badge bg-blue-lt">Kullanıcı: {{ $users->firstWhere('id', $userFilter)->name ?? 'Kullanıcı' }}</span>
+                    @endif
+                    @if($moduleFilter)
+                        <span class="badge bg-indigo-lt">Modül: {{ $moduleFilter }}</span>
+                    @endif
+                    @if($eventFilter)
+                        <span class="badge bg-purple-lt">Eylem: {{ $eventFilter }}</span>
+                    @endif
+                    @if($dateFrom)
+                        <span class="badge bg-teal-lt">Başlangıç: {{ $dateFrom }}</span>
+                    @endif
+                    @if($dateTo)
+                        <span class="badge bg-cyan-lt">Bitiş: {{ $dateTo }}</span>
                     @endif
                 </div>
+                @endif
             </div>
         </div>
         
-        <!-- Yükleniyor İndikatörü -->
-        <div wire:loading wire:target="search, userFilter, moduleFilter, eventFilter, dateFrom, dateTo, perPage, sortBy, gotoPage, previousPage, nextPage, confirmDelete, confirmBulkDelete, clearLogs, clearUserLogs">
-            <div class="progress progress-sm">
-                <div class="progress-bar progress-bar-indeterminate"></div>
-            </div>
-        </div>
-        
-        <!-- Tablo -->
-        <div class="table-responsive">
-            <table class="table card-table table-vcenter">
+        <!-- Tablo Bölümü -->
+        <div id="table-default" class="table-responsive">
+            <table class="table table-vcenter card-table table-hover text-nowrap datatable">
                 <thead>
-                    <tr class="text-nowrap">
-                        <th style="width: 3rem">
+                    <tr>
+                        <th style="width: 50px">
                             <div class="d-flex align-items-center gap-2">
                                 <input type="checkbox" wire:model.live="selectAll" class="form-check-input">
-                                <button class="table-sort {{ $sortField === 'id' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}" 
-                                    wire:click="sortBy('id')">ID</button>
+                                <button
+                                    class="table-sort {{ $sortField === 'id' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
+                                    wire:click="sortBy('id')">
+                                </button>
                             </div>
                         </th>
                         <th>
-                            <button class="table-sort {{ $sortField === 'log_name' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}" 
-                                wire:click="sortBy('log_name')">MODÜL</button>
+                            <button
+                                class="table-sort {{ $sortField === 'log_name' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
+                                wire:click="sortBy('log_name')">
+                                Modül
+                            </button>
                         </th>
                         <th>
-                            <button class="table-sort {{ $sortField === 'description' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}" 
-                                wire:click="sortBy('description')">AÇIKLAMA</button>
+                            <button
+                                class="table-sort {{ $sortField === 'description' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
+                                wire:click="sortBy('description')">
+                                Açıklama
+                            </button>
                         </th>
                         <th>
-                            <button class="table-sort {{ $sortField === 'subject_type' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}" 
-                                wire:click="sortBy('subject_type')">NESNE</button>
+                            <button
+                                class="table-sort {{ $sortField === 'event' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
+                                wire:click="sortBy('event')">
+                                Eylem
+                            </button>
                         </th>
                         <th>
-                            <button class="table-sort {{ $sortField === 'event' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}" 
-                                wire:click="sortBy('event')">EYLEM</button>
+                            <button
+                                class="table-sort {{ $sortField === 'causer_id' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
+                                wire:click="sortBy('causer_id')">
+                                Kullanıcı
+                            </button>
                         </th>
                         <th>
-                            <button class="table-sort {{ $sortField === 'causer_id' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}" 
-                                wire:click="sortBy('causer_id')">KULLANICI</button>
+                            <button
+                                class="table-sort {{ $sortField === 'created_at' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
+                                wire:click="sortBy('created_at')">
+                                Tarih
+                            </button>
                         </th>
-                        <th>
-                            <button class="table-sort {{ $sortField === 'created_at' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}" 
-                                wire:click="sortBy('created_at')">TARİH</button>
-                        </th>
-                        <th style="width: 5rem">İŞLEMLER</th>
+                        <th class="text-center" style="width: 120px">İşlemler</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="table-tbody">
                     @forelse($logs as $log)
-                    <tr wire:key="log-{{ $log->id }}">
-                        <td>
-                            <div class="d-flex align-items-center gap-2">
+                    <tr class="hover-trigger" wire:key="row-{{ $log->id }}">
+                        <td class="sort-id small">
+                            <div class="hover-toggle">
+                                <span class="hover-hide">{{ $log->id }}</span>
                                 <input type="checkbox" wire:model.live="selectedItems" value="{{ $log->id }}" 
-                                    class="form-check-input" @if(in_array($log->id, $selectedItems)) checked @endif>
-                                <span class="text-muted">{{ $log->id }}</span>
+                                    class="form-check-input hover-show" @if(in_array($log->id, $selectedItems)) checked @endif>
                             </div>
                         </td>
                         <td>
-                            <span class="badge bg-azure-lt">{{ $log->log_name }}</span>
+                            <span class="badge bg-blue-lt">{{ $log->log_name }}</span>
                         </td>
                         <td class="text-wrap">
                             <div>{{ $log->description }}</div>
-                            @if(isset($log->properties['baslik']) && $log->properties['baslik'])
-                                <div class="text-muted small">{{ $log->properties['baslik'] }}</div>
+                            @if(isset($log->properties['baslik']) && $log->properties['baslik'] && $log->properties['baslik'] != $log->description)
                             @endif
                         </td>
-                        <td>
-                            @if($log->subject_type)
-                                <div>{{ class_basename($log->subject_type) }}</div>
-                                @if($log->subject_id)
-                                    <div class="text-muted small">ID: {{ $log->subject_id }}</div>
-                                @endif
-                            @else
-                                <span class="text-muted">-</span>
-                            @endif
-                        </td>
-                        <td>
-                            @if($log->event == 'created')
-                                <span class="badge bg-green">{{ $log->event }}</span>
-                            @elseif($log->event == 'updated')
-                                <span class="badge bg-blue">{{ $log->event }}</span>
-                            @elseif($log->event == 'deleted')
-                                <span class="badge bg-pink">{{ $log->event }}</span>
-                            @else
-                                <span class="badge bg-purple">{{ $log->event }}</span>
-                            @endif
-                        </td>
+                        <td><span class="badge bg-blue-lt text-muted small">{{ $log->event }}</span></td>
                         <td>
                             @if($log->causer)
                                 @if($isRoot || !$log->causer->isRoot())
                                     <a href="{{ route('admin.usermanagement.user.activity.logs', $log->causer->id) }}" class="text-reset">
                                         {{ $log->causer->name }}
                                     </a>
+                                    @if($log->causer->email)
+                                        <div class="text-muted small">{{ $log->causer->email }}</div>
+                                    @endif
                                 @else
-                                    <span>{{ $log->causer->name }}</span>
+                                    <div>{{ $log->causer->name }}</div>
+                                    @if($log->causer->email)
+                                        <div class="text-muted small">{{ $log->causer->email }}</div>
+                                    @endif
                                 @endif
-                                <div class="text-muted small">ID: {{ $log->causer->id }}</div>
                             @else
                                 <span class="text-secondary">Sistem</span>
                             @endif
                         </td>
                         <td>
-                            {{ $log->created_at->format('d.m.Y') }}
+                            <div>{{ $log->created_at->format('d.m.Y') }}</div>
                             <div class="text-muted small">{{ $log->created_at->format('H:i:s') }}</div>
                         </td>
-                        <td>
-                            <div class="d-flex gap-1">
-                                <a href="#" data-bs-toggle="modal" data-bs-target="#details-modal-{{ $log->id }}" class="btn btn-icon btn-sm" title="Detayları Görüntüle">
-                                    <i class="fas fa-eye text-muted"></i>
-                                </a>
-                                
-                                @if($isRoot)
-                                <div class="dropdown">
-                                    <a href="#" class="btn btn-icon btn-sm" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="fas fa-ellipsis-v text-muted"></i>
-                                    </a>
-                                    <div class="dropdown-menu dropdown-menu-end">
-                                        <a href="javascript:void(0);" wire:click="confirmDelete({{ $log->id }})" class="dropdown-item text-danger">
-                                            <i class="fas fa-trash me-1"></i> Sil
+                        <td class="text-center align-middle">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col">
+                                        <a href="#" data-bs-toggle="modal" data-bs-target="#details-modal-{{ $log->id }}"
+                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Detayları Görüntüle">
+                                            <i class="fa-solid fa-eye link-secondary fa-lg"></i>
                                         </a>
-                                        @if($log->causer)
-                                        <a href="javascript:void(0);" wire:click="clearUserLogs({{ $log->causer->id }})" class="dropdown-item text-danger">
-                                            <i class="fas fa-user-times me-1"></i> Kullanıcı Kayıtlarını Sil
-                                        </a>
-                                        @endif
                                     </div>
+                                    
+                                    @if($isRoot)
+                                    <div class="col lh-1">
+                                        <div class="dropdown mt-1">
+                                            <a class="dropdown-toggle text-secondary" href="#" data-bs-toggle="dropdown"
+                                                aria-haspopup="true" aria-expanded="false">
+                                                <i class="fa-solid fa-bars-sort fa-flip-horizontal fa-lg"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-end">
+                                                <a href="javascript:void(0);" wire:click="confirmDelete({{ $log->id }})" 
+                                                    class="dropdown-item link-danger">
+                                                    Sil
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endif
                                 </div>
-                                @endif
                             </div>
                             
                             <!-- Detay Modal -->
@@ -292,17 +333,7 @@
                                                             <div class="list-group-item">
                                                                 <div class="row">
                                                                     <div class="col-4">Eylem</div>
-                                                                    <div class="col-8">
-                                                                        @if($log->event == 'created')
-                                                                            <span class="badge bg-green">{{ $log->event }}</span>
-                                                                        @elseif($log->event == 'updated')
-                                                                            <span class="badge bg-blue">{{ $log->event }}</span>
-                                                                        @elseif($log->event == 'deleted')
-                                                                            <span class="badge bg-pink">{{ $log->event }}</span>
-                                                                        @else
-                                                                            <span class="badge bg-purple">{{ $log->event }}</span>
-                                                                        @endif
-                                                                    </div>
+                                                                    <div class="col-8 text-muted">{{ $log->event }}</div>
                                                                 </div>
                                                             </div>
                                                             <div class="list-group-item">
@@ -345,7 +376,7 @@
                                                                 <div class="row">
                                                                     <div class="col-4">Tür</div>
                                                                     <div class="col-8 text-muted">
-                                                                        {{ $log->subject_type ? class_basename($log->subject_type) : 'Belirtilmemiş' }}
+                                                                        {{ $log->subject_type ? class_basename($log->subject_type) : '-' }}
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -353,7 +384,7 @@
                                                                 <div class="row">
                                                                     <div class="col-4">ID</div>
                                                                     <div class="col-8 text-muted">
-                                                                        {{ $log->subject_id ?? 'Belirtilmemiş' }}
+                                                                        {{ $log->subject_id ?? '-' }}
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -361,7 +392,7 @@
                                                                 <div class="row">
                                                                     <div class="col-4">Başlık</div>
                                                                     <div class="col-8 text-muted">
-                                                                        {{ $log->properties['baslik'] ?? 'Belirtilmemiş' }}
+                                                                        {{ $log->properties['baslik'] ?? '-' }}
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -386,6 +417,16 @@
                                                             <h3 class="card-title">Değişen Alanlar</h3>
                                                         </div>
                                                         <div class="table-responsive">
+                                                            @if(!is_array($log->properties['degisenler']))
+                                                            <table class="table card-table table-vcenter">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td class="fw-medium">Değişiklik</td>
+                                                                        <td>{{ $log->properties['degisenler'] }}</td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                            @else
                                                             <table class="table card-table table-vcenter">
                                                                 <thead>
                                                                     <tr>
@@ -397,11 +438,13 @@
                                                                 <tbody>
                                                                     @foreach($log->properties['degisenler'] as $key => $value)
                                                                     <tr>
-                                                                        <td class="fw-medium">{{ $key }}</td>
+                                                                        <td class="fw-medium">{{ ucfirst($key) }}</td>
                                                                         <td>
                                                                             @if(is_array($value) && isset($value['old']))
                                                                                 @if(is_array($value['old']))
-                                                                                    <pre class="p-2 bg-dark text-white rounded">{{ json_encode($value['old'], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
+                                                                                    @foreach($value['old'] as $oldKey => $oldValue)
+                                                                                        <div>{{ ucfirst($oldKey) }}: {{ is_array($oldValue) ? json_encode($oldValue) : $oldValue }}</div>
+                                                                                    @endforeach
                                                                                 @else
                                                                                     {{ $value['old'] }}
                                                                                 @endif
@@ -412,7 +455,9 @@
                                                                         <td>
                                                                             @if(is_array($value) && isset($value['new']))
                                                                                 @if(is_array($value['new']))
-                                                                                    <pre class="p-2 bg-dark text-white rounded">{{ json_encode($value['new'], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
+                                                                                    @foreach($value['new'] as $newKey => $newValue)
+                                                                                        <div>{{ ucfirst($newKey) }}: {{ is_array($newValue) ? json_encode($newValue) : $newValue }}</div>
+                                                                                    @endforeach
                                                                                 @else
                                                                                     {{ $value['new'] }}
                                                                                 @endif
@@ -426,23 +471,44 @@
                                                                     @endforeach
                                                                 </tbody>
                                                             </table>
+                                                            @endif
                                                         </div>
                                                     </div>
                                                 </div>
                                                 @endif
                                                 
-                                                <!-- JSON Verisi (Gelişmiş) -->
+                                                <!-- JSON Verisi Özet -->
                                                 <div class="col-12">
                                                     <div class="card">
                                                         <div class="card-status-top bg-yellow"></div>
-                                                        <div class="card-header d-flex justify-content-between align-items-center">
-                                                            <h3 class="card-title">Detaylı JSON Verisi</h3>
-                                                            <button class="btn btn-sm btn-outline-primary" onclick="copyToClipboard('log-json-{{ $log->id }}')">
-                                                                <i class="fas fa-copy me-1"></i> Kopyala
-                                                            </button>
+                                                        <div class="card-header">
+                                                            <h3 class="card-title">JSON Verisi Özet</h3>
                                                         </div>
-                                                        <div class="card-body">
-                                                            <pre id="log-json-{{ $log->id }}" class="p-3 bg-dark text-white rounded-3 overflow-auto" style="max-height: 300px;">{{ json_encode($log->properties, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
+                                                        <div class="table-responsive">
+                                                            <table class="table card-table table-vcenter">
+                                                                <tbody>
+                                                                    @foreach($log->properties as $key => $value)
+                                                                        @if($key != 'degisenler')
+                                                                        <tr>
+                                                                            <td class="fw-medium" style="width:150px">{{ ucfirst($key) }}</td>
+                                                                            <td>
+                                                                                @if(is_array($value))
+                                                                                    @if(count($value) == 0)
+                                                                                        <span class="text-muted">-</span>
+                                                                                    @else
+                                                                                        @foreach($value as $subKey => $subValue)
+                                                                                            <div>{{ ucfirst($subKey) }}: {{ is_array($subValue) ? json_encode($subValue) : $subValue }}</div>
+                                                                                        @endforeach
+                                                                                    @endif
+                                                                                @else
+                                                                                    {{ $value }}
+                                                                                @endif
+                                                                            </td>
+                                                                        </tr>
+                                                                        @endif
+                                                                    @endforeach
+                                                                </tbody>
+                                                            </table>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -450,11 +516,6 @@
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn" data-bs-dismiss="modal">Kapat</button>
-                                            @if($isRoot)
-                                            <button type="button" class="btn btn-danger ms-auto" wire:click="confirmDelete({{ $log->id }})" data-bs-dismiss="modal">
-                                                <i class="fas fa-trash me-1"></i> Bu Kaydı Sil
-                                            </button>
-                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -463,26 +524,12 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="8" class="text-center py-5">
+                        <td colspan="7" class="text-center py-4">
                             <div class="empty">
-                                <div class="empty-img">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-database-off" width="40" height="40" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                        <path d="M12.983 8.978c3.955 -.182 7.017 -1.446 7.017 -2.978c0 -1.657 -3.582 -3 -8 -3c-1.661 0 -3.204 .19 -4.483 .515m-3.139 1.126c-.238 .418 -.378 .871 -.378 1.359c0 1.657 3.582 3 8 3c.986 0 1.93 -.067 2.802 -.19"></path>
-                                        <path d="M4 6v6c0 1.657 3.582 3 8 3c3.217 0 5.991 -.712 7.261 -1.74m.739 -3.26v-4"></path>
-                                        <path d="M4 12v6c0 1.657 3.582 3 8 3c4.418 0 8 -1.343 8 -3v-2"></path>
-                                        <path d="M3 3l18 18"></path>
-                                    </svg>
-                                </div>
                                 <p class="empty-title">Kayıt bulunamadı</p>
-                                <p class="empty-subtitle text-secondary">Arama kriterlerinize uygun kayıt bulunmamaktadır.</p>
-                                @if($search || $userFilter || $moduleFilter || $eventFilter || $dateFrom || $dateTo)
-                                <div class="empty-action">
-                                    <button class="btn btn-primary" wire:click="clearFilters">
-                                        <i class="fas fa-filter me-1"></i> Filtreleri Temizle
-                                    </button>
-                                </div>
-                                @endif
+                                <p class="empty-subtitle text-muted">
+                                    Arama kriterlerinize uygun kayıt bulunmamaktadır.
+                                </p>
                             </div>
                         </td>
                     </tr>
@@ -490,30 +537,27 @@
                 </tbody>
             </table>
         </div>
-        
-        <!-- Pagination -->
-        <div class="card-footer d-flex align-items-center">
-            <p class="m-0 text-secondary">Toplam <span class="fw-medium">{{ $logs->total() }}</span> kayıt</p>
-            <div class="ms-auto">
-                {{ $logs->links() }}
-            </div>
-        </div>
     </div>
+    
+    <!-- Pagination -->
+    {{ $logs->links() }}
     
     <!-- Bulk Actions -->
     @if($bulkActionsEnabled)
-    <div class="position-fixed bottom-0 start-50 translate-middle-x mb-3" style="z-index: 1000;">
-        <div class="card shadow-lg border-0 rounded">
+    <div class="position-fixed bottom-0 start-50 translate-middle-x mb-4" style="z-index: 1000;">
+        <div class="card shadow-lg border-0 rounded-lg " style="backdrop-filter: blur(12px); background: var(--tblr-bg-surface);"><span class="badge bg-red badge-notification badge-blink"></span>
             <div class="card-body p-3">
-                <div class="d-flex align-items-center gap-3">
-                    <span class="badge bg-primary">{{ count($selectedItems) }} öğe seçildi</span>
+                <div class="d-flex flex-wrap gap-3 align-items-center justify-content-center">
+                    <span class="text-muted small">{{ count($selectedItems) }} öğe seçildi</span>
                     @if($isRoot)
-                    <button type="button" class="btn btn-danger btn-sm" wire:click="confirmBulkDelete">
-                        <i class="fas fa-trash me-1"></i>Seçilenleri Sil
+                    <button type="button" class="btn btn-sm btn-outline-danger px-3 py-1 hover-btn" wire:click="confirmBulkDelete">
+                        <i class="fas fa-trash me-2"></i>
+                        <span>Sil</span>
                     </button>
                     @endif
-                    <button type="button" class="btn btn-outline-secondary btn-sm" wire:click="refreshSelectedItems">
-                        <i class="fas fa-times me-1"></i>Seçimi İptal Et
+                    <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1 hover-btn" wire:click="refreshSelectedItems">
+                        <i class="fas fa-times me-2"></i>
+                        <span>Seçimi İptal Et</span>
                     </button>
                 </div>
             </div>
@@ -521,46 +565,7 @@
     </div>
     @endif
 
-    
     <livewire:modals.bulk-delete-modal />
     <livewire:modals.delete-modal />
     <livewire:usermanagement.confirm-action-modal />
 </div>
-
-@push('scripts')
-    <script>
-        function copyToClipboard(elementId) {
-            const element = document.getElementById(elementId);
-            const textToCopy = element.textContent;
-            
-            navigator.clipboard.writeText(textToCopy)
-                .then(() => {
-                    // Kopyalama başarılı olduğunda bildirim göster
-                    const notification = document.createElement('div');
-                    notification.className = 'position-fixed top-0 end-0 p-3';
-                    notification.style.zIndex = '1080';
-                    notification.innerHTML = `
-                        <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
-                            <div class="toast-header bg-success text-white">
-                                <i class="fas fa-check-circle me-2"></i>
-                                <strong class="me-auto">Başarılı</strong>
-                                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                            </div>
-                            <div class="toast-body">
-                                JSON verisi panoya kopyalandı.
-                            </div>
-                        </div>
-                    `;
-                    document.body.appendChild(notification);
-                    
-                    // 3 saniye sonra bildirimi kaldır
-                    setTimeout(() => {
-                        notification.remove();
-                    }, 3000);
-                })
-                .catch(err => {
-                    console.error('Kopyalama başarısız:', err);
-                });
-        }
-    </script>
-@endpush

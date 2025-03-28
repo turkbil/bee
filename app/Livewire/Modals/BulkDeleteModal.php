@@ -27,6 +27,17 @@ class BulkDeleteModal extends Component
 
    public function bulkDelete()
    {
+       // Silme yetkisi kontrolü
+       if (!auth()->user()->hasModulePermission($this->module, 'delete')) {
+           $this->dispatch('toast', [
+               'title' => 'Yetkisiz İşlem!',
+               'message' => 'Bu işlem için gerekli yetkiniz bulunmamaktadır.',
+               'type' => 'error',
+           ]);
+           $this->showModal = false;
+           return;
+       }
+       
        try {
            DB::beginTransaction();
 

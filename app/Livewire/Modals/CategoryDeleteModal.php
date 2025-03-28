@@ -44,6 +44,17 @@ class CategoryDeleteModal extends Component
 
     public function delete()
     {
+        // Silme yetkisi kontrolü
+        if (!auth()->user()->hasModulePermission($this->module, 'delete')) {
+            $this->dispatch('toast', [
+                'title' => 'Yetkisiz İşlem!',
+                'message' => 'Bu işlem için gerekli yetkiniz bulunmamaktadır.',
+                'type' => 'error',
+            ]);
+            $this->showModal = false;
+            return;
+        }
+        
         try {
             DB::beginTransaction();
 
@@ -132,6 +143,18 @@ class CategoryDeleteModal extends Component
 
     public function move()
     {
+        // Silme ve taşıma yetkisi kontrolü
+        if (!auth()->user()->hasModulePermission($this->module, 'delete') || 
+            !auth()->user()->hasModulePermission($this->module, 'update')) {
+            $this->dispatch('toast', [
+                'title' => 'Yetkisiz İşlem!',
+                'message' => 'Bu işlem için gerekli yetkiniz bulunmamaktadır.',
+                'type' => 'error',
+            ]);
+            $this->showModal = false;
+            return;
+        }
+        
         try {
             DB::beginTransaction();
 

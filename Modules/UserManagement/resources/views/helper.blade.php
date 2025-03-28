@@ -21,41 +21,68 @@ Kullanıcı Listesi
                     Kullanıcı Menüsü
                 </button>
                 <div class="dropdown-menu">
+                    @hasmoduleaccess('usermanagement', 'view')
                     <a class="dropdown-item" href="{{ route('admin.usermanagement.index') }}">
                         Kullanıcılar
                     </a>
+                    @endhasmoduleaccess
+                    
+                    @hasmoduleaccess('usermanagement', 'create')
                     <a class="dropdown-item" href="{{ route('admin.usermanagement.manage') }}">
                         Kullanıcı Ekle
                     </a>
+                    @endhasmoduleaccess
+                    
+                    @if(auth()->user()->hasRole('root') || auth()->user()->hasRole('admin'))
                     <h6 class="dropdown-menu-header card-header-light">
                         <span class="dropdown-header">Rol Listesi</span>
                     </h6>
+                    
+                    @hasmoduleaccess('usermanagement', 'view')
                     <a class="dropdown-item" href="{{ route('admin.usermanagement.role.index') }}">
                         Roller
                     </a>
+                    @endhasmoduleaccess
+                    
+                    @hasmoduleaccess('usermanagement', 'create')
                     <a class="dropdown-item" href="{{ route('admin.usermanagement.role.manage') }}">
                         Rol Ekle
                     </a>
+                    @endhasmoduleaccess
+                    
                     <h6 class="dropdown-menu-header card-header-light">
                         <span class="dropdown-header">Yetki Listesi</span>
                     </h6>
+                    
+                    @hasmoduleaccess('usermanagement', 'view')
                     <a class="dropdown-item" href="{{ route('admin.usermanagement.permission.index') }}">
                         Yetkiler
                     </a>
+                    @endhasmoduleaccess
+                    
+                    @hasmoduleaccess('usermanagement', 'create')
                     <a class="dropdown-item" href="{{ route('admin.usermanagement.permission.manage') }}">
                         Yetki Ekle
                     </a>
+                    @endhasmoduleaccess
+                    
                     <h6 class="dropdown-menu-header card-header-light">
                         <span class="dropdown-header">Modül Yetkileri</span>
                     </h6>
+                    
+                    @hasmoduleaccess('usermanagement', 'update')
                     <a class="dropdown-item" href="{{ route('admin.usermanagement.module.permissions') }}">
                         Modül İzinleri
                     </a>
+                    @endhasmoduleaccess
+                    @endif
                 </div>
             </div>
+            @hasmoduleaccess('usermanagement', 'create')
             <a href="{{ route('admin.usermanagement.manage') }}" class="dropdown-module-item btn btn-primary">
                 Yeni Kullanıcı
             </a>
+            @endhasmoduleaccess
         </div>
     </div>
 </div>

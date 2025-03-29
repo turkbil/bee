@@ -37,23 +37,26 @@ class InitializeTenancy extends BaseMiddleware
         // Tenant domain'se tenant'ı başlat
         try {
             if (!$this->tenancy->initialized) {
-                // Domain için tenant bilgisini önbellekten oku (önce önbelleği kontrol et)
+                // Domain için tenant bilgisini önbellekten oku (daha uzun süre sakla)
                 $cacheKey = 'domain_tenant_' . $host;
                 
-                // Önce veritabanında doğrudan sorgu yap (aktiflik durumu için güvenilir kontrol)
-                $tenant = $this->resolver->resolve($host);
+                // Önbellekten domain-tenant ilişkisini kontrol et (ama aktiflik durumunu ayrı oku)
+                $tenant = Cache::remember($cacheKey, now()->addDays(1), function() use ($host) {
+                    return $this->resolver->resolve($host);
+                });
                 
                 if ($tenant) {
-                    // Tenant aktif değilse direkt veritabanından kontrol et (önbelleği atlayarak)
-                    $isActive = DB::table('tenants')
-                        ->where('id', $tenant->id)
-                        ->value('is_active');
+                    // Tenant aktiflik kontrolünü ayrı bir cache key ile yap (daha kısa süre)
+                    $activeKey = 'tenant_active_' . $tenant->id;
+                    $isActive = Cache::remember($activeKey, now()->addMinutes(30), function() use ($tenant) {
+                        return DB::table('tenants')
+                            ->where('id', $tenant->id)
+                            ->value('is_active');
+                    });
                     
                     // Tenant aktif değilse özel hata sayfasını göster
                     if (!$isActive) {
                         Log::info("Tenant {$tenant->id} pasif durumda. Offline sayfası gösteriliyor.");
-                        // Önbelleği temizle, böylece yeni isteklerde tekrar kontrol edilir
-                        Cache::forget($cacheKey);
                         return response()->view('errors.offline', [], 503);
                     }
                     
@@ -68,19 +71,18 @@ class InitializeTenancy extends BaseMiddleware
                     $redisPrefix = 'tenant_' . $tenant->id . ':';
                     Config::set('database.redis.options.prefix', $redisPrefix);
                     
-                    // Session'a tenant bilgisi kaydet
+                    // Domain bilgisi cache'de sakla - daha uzun süre sakla
+                    $domainCacheKey = 'tenant_domains_' . $tenant->id;
                     if (!isset($tenant->domains)) {
-                        // Domain bilgisi cache'de sakla - 7 gün
-                        $domainCacheKey = 'tenant_domains_' . $tenant->id;
                         $domains = Cache::remember($domainCacheKey, now()->addDays(7), function () use ($tenant) {
                             return $tenant->domains()->get();
                         });
                         $tenant->setRelation('domains', $domains);
                     }
                     
-                    // Tenant şemasını kontrolü optimize etmek için önbelleğe alalım
+                    // Tenant şemasını kontrolü optimize etmek için önbelleğe alalım - daha uzun süre
                     $schemaCheckKey = 'tenant_schema_' . $tenant->id . '_exists';
-                    $schemaExists = Cache::remember($schemaCheckKey, now()->addDays(7), function () use ($tenant) {
+                    $schemaExists = Cache::remember($schemaCheckKey, now()->addDays(30), function () use ($tenant) {
                         return Schema::hasTable('migrations');
                     });
                     

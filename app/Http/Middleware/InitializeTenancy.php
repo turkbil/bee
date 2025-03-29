@@ -26,73 +26,95 @@ class InitializeTenancy extends BaseMiddleware
     
     public function handle($request, Closure $next)
     {
-        $host = $request->getHost();
-        $centralDomains = config('tenancy.central_domains');
-        
-        // Eğer merkezi domain ise, herhangi bir tenant başlatma
-        if (in_array($host, $centralDomains)) {
+        // Eğer tenancy zaten başlatılmışsa tekrar başlatmayı engelle
+        if ($this->tenancy->initialized) {
             return $next($request);
         }
         
-        // Tenant domain'se tenant'ı başlat
-        try {
-            if (!$this->tenancy->initialized) {
-                // Domain için tenant bilgisini önbellekten oku (önce önbelleği kontrol et)
-                $cacheKey = 'domain_tenant_' . $host;
-                
-                // Önce veritabanında doğrudan sorgu yap (aktiflik durumu için güvenilir kontrol)
-                $tenant = $this->resolver->resolve($host);
-                
-                if ($tenant) {
-                    // Tenant aktif değilse direkt veritabanından kontrol et (önbelleği atlayarak)
-                    $isActive = DB::table('tenants')
-                        ->where('id', $tenant->id)
-                        ->value('is_active');
+        $host = $request->getHost();
+        
+        // Domain tipini önbellekten kontrol et (central mi tenant mi?)
+        $domainTypeKey = 'domain_type_' . $host;
+        $domainType = Cache::remember($domainTypeKey, now()->addHours(24), function() use ($host) {
+            // Önce config dosyasından kontrol et
+            $centralDomains = config('tenancy.central_domains', []);
+            if (in_array($host, $centralDomains)) {
+                return 'central';
+            }
+            
+            // Eğer configde yoksa veritabanında kontrol et
+            $domain = DB::table('domains')->where('domain', $host)->first(['tenant_id']);
+            if ($domain) {
+                // Tenant'ın central olup olmadığını kontrol et
+                $isCentral = DB::table('tenants')
+                    ->where('id', $domain->tenant_id)
+                    ->value('central') ?? false;
                     
-                    // Tenant aktif değilse özel hata sayfasını göster
-                    if (!$isActive) {
-                        Log::info("Tenant {$tenant->id} pasif durumda. Offline sayfası gösteriliyor.");
-                        // Önbelleği temizle, böylece yeni isteklerde tekrar kontrol edilir
-                        Cache::forget($cacheKey);
-                        return response()->view('errors.offline', [], 503);
-                    }
-                    
-                    // Tenant'ı başlat
-                    $this->tenancy->initialize($tenant);
-                    
-                    // Tenant başlatıldıktan sonra bağlantı ayarını mysql olarak düzelt
-                    Config::set('database.connections.tenant.driver', 'mysql');
-                    DB::purge('tenant');
-                    
-                    // Redis önbellek için tenant prefix'i ayarla
-                    $redisPrefix = 'tenant_' . $tenant->id . ':';
-                    Config::set('database.redis.options.prefix', $redisPrefix);
-                    
-                    // Session'a tenant bilgisi kaydet
-                    if (!isset($tenant->domains)) {
-                        // Domain bilgisi cache'de sakla - 7 gün
-                        $domainCacheKey = 'tenant_domains_' . $tenant->id;
-                        $domains = Cache::remember($domainCacheKey, now()->addDays(7), function () use ($tenant) {
-                            return $tenant->domains()->get();
-                        });
-                        $tenant->setRelation('domains', $domains);
-                    }
-                    
-                    // Tenant şemasını kontrolü optimize etmek için önbelleğe alalım
-                    $schemaCheckKey = 'tenant_schema_' . $tenant->id . '_exists';
-                    $schemaExists = Cache::remember($schemaCheckKey, now()->addDays(7), function () use ($tenant) {
-                        return Schema::hasTable('migrations');
-                    });
-                    
-                    session(['current_tenant' => $tenant]);
-                } else {
-                    abort(404, 'Tenant bulunamadı');
+                if ($isCentral) {
+                    return 'central';
                 }
             }
             
+            return 'tenant';
+        });
+        
+        // Central domain ise tenant başlatma
+        if ($domainType === 'central') {
+            return $next($request);
+        }
+        
+        // Tenant domain için işlemler
+        try {
+            // Domain için tenant ID'sini önbellekten al (daha uzun süre sakla)
+            $tenantIdKey = 'domain_tenant_id_' . $host;
+            $tenantId = Cache::remember($tenantIdKey, now()->addDay(), function() use ($host) {
+                $domain = DB::table('domains')->where('domain', $host)->first(['tenant_id']);
+                return $domain ? $domain->tenant_id : null;
+            });
+            
+            if (!$tenantId) {
+                Log::error("Tenant bulunamadı: {$host}");
+                abort(404, 'Tenant bulunamadı');
+            }
+            
+            // Tenant aktiflik kontrolünü önbellekten kontrol et
+            $activeKey = 'tenant_active_' . $tenantId;
+            $isActive = Cache::remember($activeKey, now()->addMinutes(15), function() use ($tenantId) {
+                return DB::table('tenants')->where('id', $tenantId)->value('is_active') ?? false;
+            });
+            
+            if (!$isActive) {
+                Log::info("Tenant {$tenantId} pasif durumda. Offline sayfası gösteriliyor.");
+                return response()->view('errors.offline', [], 503);
+            }
+            
+            // Tenant modelini önbellekten getir
+            $tenantKey = 'tenant_' . $tenantId;
+            $tenant = Cache::remember($tenantKey, now()->addMinutes(30), function() use ($tenantId) {
+                return $this->resolver->resolve($tenantId);
+            });
+            
+            if (!$tenant) {
+                Log::error("Tenant model bulunamadı: {$tenantId}");
+                abort(404, 'Tenant model bulunamadı');
+            }
+            
+            // Tenant'ı başlat
+            $this->tenancy->initialize($tenant);
+            
+            // Redis önbellek prefix'i tenant bazlı olarak ayarla
+            $redisPrefix = 'tenant_' . $tenant->id . ':';
+            Config::set('database.redis.options.prefix', $redisPrefix);
+            
+            // Tenant'ı oturuma kaydet
+            session(['current_tenant' => $tenant]);
+            
             return $next($request);
         } catch (\Exception $e) {
-            logger()->error('Tenant başlatma hatası: ' . $e->getMessage());
+            Log::error('Tenant başlatma hatası: ' . $e->getMessage(), [
+                'exception' => $e,
+                'host' => $host
+            ]);
             abort(500, 'Tenant başlatılamadı');
         }
     }

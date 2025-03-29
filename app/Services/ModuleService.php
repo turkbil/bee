@@ -19,6 +19,7 @@ class ModuleService {
             // Cache key oluştur
             $cacheKey = "modules_tenant_" . ($tenantId ?? 'central');
             
+<<<<<<< HEAD
             // 6 saat boyunca cache'te tut (süreyi artırdık)
             return Cache::remember($cacheKey, now()->addHours(6), function() use ($tenantId) {
                 // Bu işlem her zaman central veritabanında yapılmalı
@@ -39,10 +40,37 @@ class ModuleService {
                     if ($tenantId) {
                         // Önce tenant centralse kontrol et
                         $tenant = DB::table('tenants')
+=======
+            // 30 dakika boyunca cache'te tut
+            return Cache::remember($cacheKey, now()->addMinutes(30), function() use ($tenantId) {
+                // Bu işlem her zaman central veritabanında yapılmalı
+                return TenantHelpers::central(function() use ($tenantId) {
+                    // Açıkça central veritabanındaki modules tablosunu belirt
+                    $modulesTable = 'modules';
+                    $moduleTenantsTable = 'module_tenants';
+                    
+                    // Tüm aktif modülleri al - sadece gerekli sütunları seç
+                    $modules = DB::table($modulesTable)
+                        ->where('is_active', 1)
+                        ->select('module_id', 'name', 'display_name', 'type', 'is_active')
+                        ->orderBy('display_name')
+                        ->get();
+                    
+                    // Eğer modül yoksa boş bir koleksiyon döndür
+                    if ($modules->isEmpty()) {
+                        return collect();
+                    }
+                    
+                    // Tenant ID varsa, module_tenants tablosundaki ilişkileri kontrol et
+                    if ($tenantId) {
+                        // Tenant'a ait modül ve central değerini tek sorguda al
+                        $tenantData = DB::table('tenants')
+>>>>>>> 3a36f960d3cf4bc9e128a5027bf7de6fa612a1cd
                             ->where('id', $tenantId)
                             ->select('central')
                             ->first();
                         
+<<<<<<< HEAD
                         if (!$tenant) {
                             return collect();
                         }
@@ -50,6 +78,15 @@ class ModuleService {
                         // Central tenant ise tüm modülleri döndür
                         if ($tenant->central) {
                             $modules = $query->get();
+=======
+                        // Eğer tenant bulunamazsa boş koleksiyon döndür
+                        if (!$tenantData) {
+                            return collect();
+                        }
+                        
+                        // Eğer tenant central=1 (true) ise tüm modülleri göster
+                        if ($tenantData->central) {
+>>>>>>> 3a36f960d3cf4bc9e128a5027bf7de6fa612a1cd
                             return $modules->map(function($module) {
                                 $module->origin = 'central';
                                 $module->is_tenant_enabled = true;
@@ -57,6 +94,7 @@ class ModuleService {
                             });
                         }
                         
+<<<<<<< HEAD
                         // Normal tenant ise JOIN ile ilişkili modülleri tek sorguda getir
                         $modules = $query
                             ->leftJoin('module_tenants', function($join) use ($tenantId) {
@@ -83,13 +121,43 @@ class ModuleService {
                         });
                         
                         // Sadece tenant için aktif modülleri filtrele
+=======
+                        // Tenant modüllerini tek sorguda al
+                        $tenantModuleIds = DB::table($moduleTenantsTable)
+                            ->where('tenant_id', $tenantId)
+                            ->where('is_active', 1)
+                            ->select('module_id')
+                            ->pluck('module_id')
+                            ->toArray();
+                        
+                        // Eğer tenant için modül ilişkisi yoksa, tüm modülleri kullanılabilir yap
+                        if (empty($tenantModuleIds)) {
+                            return $modules->map(function($module) {
+                                $module->origin = 'central';
+                                $module->is_tenant_enabled = true;
+                                return $module;
+                            });
+                        }
+                        
+                        // Her bir modüle tenant bilgisi ekle
+                        $result = $modules->map(function($module) use ($tenantModuleIds) {
+                            $module->origin = 'central';
+                            $module->is_tenant_enabled = in_array($module->module_id, $tenantModuleIds);
+                            return $module;
+                        });
+                        
+                        // Sadece tenant için aktif olan modülleri filtrele
+>>>>>>> 3a36f960d3cf4bc9e128a5027bf7de6fa612a1cd
                         return $result->filter(function($module) {
                             return $module->is_tenant_enabled === true;
                         });
                     }
                     
                     // Central için tüm modülleri göster
+<<<<<<< HEAD
                     $modules = $query->get();
+=======
+>>>>>>> 3a36f960d3cf4bc9e128a5027bf7de6fa612a1cd
                     return $modules->map(function($module) {
                         $module->origin = 'central';
                         $module->is_tenant_enabled = true;

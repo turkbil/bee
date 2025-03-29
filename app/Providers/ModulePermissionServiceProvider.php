@@ -6,7 +6,6 @@ use Illuminate\Support\ServiceProvider;
 use App\Services\ModuleAccessService;
 use App\Http\Middleware\TenantModuleMiddleware;
 use Modules\ModuleManagement\App\Models\Module;
-use Illuminate\Support\Facades\Cache;
 
 class ModulePermissionServiceProvider extends ServiceProvider
 {
@@ -46,17 +45,10 @@ class ModulePermissionServiceProvider extends ServiceProvider
             'tenant',
         ]);
         
-        // Dinamik olarak modül middleware gruplarını oluştur - Cache ile optimize edildi
+        // Dinamik olarak modül middleware gruplarını oluştur
         try {
-            // Aktif modülleri tek seferde getir ve 24 saat boyunca önbellekte tut
-            $cacheKey = 'active_modules_middleware';
-            $modules = Cache::remember($cacheKey, now()->addHours(24), function () {
-                return Module::where('is_active', true)
-                    ->select('name')
-                    ->get();
-            });
+            $modules = Module::where('is_active', true)->get();
             
-            // Middleware gruplarını oluştur
             foreach ($modules as $module) {
                 $this->app['router']->middlewareGroup("module.{$module->name}", [
                     'web', 
@@ -66,7 +58,8 @@ class ModulePermissionServiceProvider extends ServiceProvider
                 ]);
             }
         } catch (\Exception $e) {
-            // Veritabanı henüz hazır değilse sessizce devam et
+            // Veritabanı henüz hazır değilse hata oluşabilir (migration sırasında vb.)
+            // Bu durumda sessizce devam et
             \Illuminate\Support\Facades\Log::warning("Modül middleware grupları oluşturulurken hata: " . $e->getMessage());
         }
         

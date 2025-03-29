@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-"""
-Git Upload Script
-
-Bu betik yerel dosyaları GitHub'a yükler.
-Kullanım: python git_upload.py
-"""
-
 import os
 import subprocess
 import sys
@@ -43,7 +35,7 @@ def run_command(command):
 
 def git_upload():
     """
-    Tüm değişiklikleri GitHub'a yükler
+    Tüm değişiklikleri GitHub'a yükler ve çakışma durumunda yerel değişiklikleri tercih eder
     """
     # Proje dizini (geçerli dizin)
     project_dir = os.getcwd()
@@ -96,31 +88,11 @@ def git_upload():
                 print("Uzak repo URL'si girilmedi. Push işlemi yapılamayacak.")
                 return False
         
-        print("\n--- UZAK DEĞİŞİKLİKLERİ ÇEK (PULL) ---")
-        print("Bu adım, uzak repo ve yerel repo arasındaki farklılıkları çözer...")
-        pull_code, pull_stdout, pull_stderr = run_command(f"git pull origin {branch_name}")
+        # Force push işlemi - pull yapmadan doğrudan gönder
+        print(f"\n--- GITHUB'A ZORLA GÖNDER ({branch_name}) ---")
+        print("Yerel değişiklikler uzak depodaki değişiklikleri ezecek...")
+        push_code, push_stdout, push_stderr = run_command(f"git push -f origin {branch_name}")
         
-        # Merge conflict kontrolü
-        if "CONFLICT" in pull_stderr or "Automatic merge failed" in pull_stderr:
-            print("\nHATA: Çakışma (merge conflict) tespit edildi. Lütfen çakışmaları manuel olarak çözün.")
-            print("İşlem otomatik olarak devam edemez.")
-            return False
-        
-        # Push işlemi
-        print(f"\n--- GITHUB'A GÖNDER ({branch_name}) ---")
-        push_code, push_stdout, push_stderr = run_command(f"git push origin {branch_name}")
-        
-        # Upstream hatası kontrolü
-        if push_code != 0 and "fatal: The current branch" in push_stderr and "has no upstream branch" in push_stderr:
-            print(f"\n--- UPSTREAM BRANCH AYARLANIYOR: {branch_name} ---")
-            up_code, up_stdout, up_stderr = run_command(f"git push --set-upstream origin {branch_name}")
-            if up_code == 0:
-                print("\nUpstream branch başarıyla ayarlandı.")
-                return True
-            else:
-                print("\nHATA: Upstream branch ayarlanamadı.")
-                return False
-                
         # Push sonucu kontrol
         if push_code == 0:
             print("\nGitHub'a yükleme başarıyla tamamlandı!")
@@ -134,8 +106,9 @@ def git_upload():
         return False
 
 if __name__ == "__main__":
-    print("=== GIT UPLOAD ARACI ===")
-    print("Bu araç yerel dosyaları GitHub'a yükler.")
+    print("=== GIT UPLOAD ARACI (ZORLA GÖNDERME MOD) ===")
+    print("Bu araç yerel dosyaları GitHub'a yükler ve çakışmaları yerel değişiklikler lehine çözer.")
+    print("Dikkat: Uzak depodaki değişiklikler kaybedilecektir!")
     print("İşlem başlatılıyor...")
     
     success = git_upload()

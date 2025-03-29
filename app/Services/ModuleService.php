@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\TenantHelpers;
+use Illuminate\Support\Facades\Cache;
 
 class ModuleService {
     /**
@@ -15,79 +16,85 @@ class ModuleService {
     public function getModulesByTenant(?int $tenantId = null): Collection
     {
         try {
-            // Bu işlem her zaman central veritabanında yapılmalı
-            return TenantHelpers::central(function() use ($tenantId) {
-                // Açıkça central veritabanındaki modules tablosunu belirt
-                $modulesTable = 'modules';
-                $moduleTenantsTable = 'module_tenants';
-                
-                // Tüm aktif modülleri al
-                $modules = DB::table($modulesTable)
-                    ->where('is_active', 1)
-                    ->orderBy('display_name')
-                    ->get();
-                
-                // Eğer modül yoksa boş bir koleksiyon döndür
-                if ($modules->isEmpty()) {
-                    return collect();
-                }
-                
-                // Tenant ID varsa, module_tenants tablosundaki ilişkileri kontrol et
-                if ($tenantId) {
-                    // Tenant'a ait modül ve central değerini tek sorguda al
-                    $tenantData = DB::table('tenants')
-                        ->where('id', $tenantId)
-                        ->select('central')
-                        ->first();
+            // Cache key oluştur
+            $cacheKey = "modules_tenant_" . ($tenantId ?? 'central');
+            
+            // 6 saat boyunca cache'te tut (süreyi artırdık)
+            return Cache::remember($cacheKey, now()->addHours(6), function() use ($tenantId) {
+                // Bu işlem her zaman central veritabanında yapılmalı
+                return TenantHelpers::central(function() use ($tenantId) {
+                    // SQL sorgusunu optimize et - JOIN kullanarak tek seferde veri çek
+                    $query = DB::table('modules')
+                        ->where('modules.is_active', 1)
+                        ->select(
+                            'modules.module_id', 
+                            'modules.name', 
+                            'modules.display_name', 
+                            'modules.type', 
+                            'modules.is_active'
+                        )
+                        ->orderBy('modules.display_name');
                     
-                    // Eğer tenant bulunamazsa boş koleksiyon döndür
-                    if (!$tenantData) {
-                        return collect();
-                    }
-                    
-                    // Eğer tenant central=1 (true) ise tüm modülleri göster
-                    if ($tenantData->central) {
-                        return $modules->map(function($module) {
+                    // Tenant ID varsa JOIN ile tenant ilişkisini kontrol et
+                    if ($tenantId) {
+                        // Önce tenant centralse kontrol et
+                        $tenant = DB::table('tenants')
+                            ->where('id', $tenantId)
+                            ->select('central')
+                            ->first();
+                        
+                        if (!$tenant) {
+                            return collect();
+                        }
+                        
+                        // Central tenant ise tüm modülleri döndür
+                        if ($tenant->central) {
+                            $modules = $query->get();
+                            return $modules->map(function($module) {
+                                $module->origin = 'central';
+                                $module->is_tenant_enabled = true;
+                                return $module;
+                            });
+                        }
+                        
+                        // Normal tenant ise JOIN ile ilişkili modülleri tek sorguda getir
+                        $modules = $query
+                            ->leftJoin('module_tenants', function($join) use ($tenantId) {
+                                $join->on('modules.module_id', '=', 'module_tenants.module_id')
+                                    ->where('module_tenants.tenant_id', '=', $tenantId)
+                                    ->where('module_tenants.is_active', '=', 1);
+                            })
+                            ->select(
+                                'modules.module_id', 
+                                'modules.name', 
+                                'modules.display_name', 
+                                'modules.type', 
+                                'modules.is_active',
+                                'module_tenants.is_active as tenant_module_active'
+                            )
+                            ->get();
+                        
+                        // Modülleri işle
+                        $result = $modules->map(function($module) {
                             $module->origin = 'central';
-                            $module->is_tenant_enabled = true;
+                            $module->is_tenant_enabled = !is_null($module->tenant_module_active);
+                            unset($module->tenant_module_active); // Geçici alanı kaldır
                             return $module;
+                        });
+                        
+                        // Sadece tenant için aktif modülleri filtrele
+                        return $result->filter(function($module) {
+                            return $module->is_tenant_enabled === true;
                         });
                     }
                     
-                    // Aktif modülleri tek sorguda al
-                    $tenantModules = DB::table($moduleTenantsTable)
-                        ->where('tenant_id', $tenantId)
-                        ->where('is_active', 1)
-                        ->pluck('module_id')
-                        ->toArray();
-                    
-                    // Eğer tenant için modül ilişkisi yoksa, tüm modülleri kullanılabilir yap
-                    if (empty($tenantModules)) {
-                        return $modules->map(function($module) {
-                            $module->origin = 'central';
-                            $module->is_tenant_enabled = true;
-                            return $module;
-                        });
-                    }
-                    
-                    // Her bir modüle tenant bilgisi ekle
-                    $result = $modules->map(function($module) use ($tenantModules) {
+                    // Central için tüm modülleri göster
+                    $modules = $query->get();
+                    return $modules->map(function($module) {
                         $module->origin = 'central';
-                        $module->is_tenant_enabled = in_array($module->module_id, $tenantModules);
+                        $module->is_tenant_enabled = true;
                         return $module;
                     });
-                    
-                    // Sadece tenant için aktif olan modülleri filtrele
-                    return $result->filter(function($module) {
-                        return $module->is_tenant_enabled === true;
-                    });
-                }
-                
-                // Central için tüm modülleri göster
-                return $modules->map(function($module) {
-                    $module->origin = 'central';
-                    $module->is_tenant_enabled = true;
-                    return $module;
                 });
             });
         } catch (\Exception $e) {

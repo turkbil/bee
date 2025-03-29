@@ -12,14 +12,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        // Web middleware grubuna InitializeTenancy ekle
-        $middleware->web(append: [
-            \App\Http\Middleware\InitializeTenancy::class,
-        ]);
-                
+        // InitializeTenancy'yi web middleware grubuna eklemiyoruz
+        // Bunun yerine sadece alias olarak tanımlıyoruz
+        
         $middleware->alias([
             'tenant' => \App\Http\Middleware\InitializeTenancy::class,
-            'tenant.module' => \App\Http\Middleware\TenantModuleMiddleware::class,
             'root.access' => \App\Http\Middleware\RootAccessMiddleware::class,
             'admin.access' => \App\Http\Middleware\AdminAccessMiddleware::class,
             'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
@@ -33,7 +30,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'web',
             'auth',
             'tenant',
-            'admin.access', // Admin erişim kontrolü için
+            'admin.access',
         ]);
                 
         // Module middleware grupları - her modül için yetki kontrolü
@@ -47,7 +44,7 @@ return Application::configure(basePath: dirname(__DIR__))
             $middleware->group('module.' . $moduleName, [
                 'web',
                 'auth',
-                'tenant',
+                'tenant', // Sadece modül gruplarında tenant middleware'ini kullanıyoruz
                 'module.permission:' . $moduleName . ',view'
             ]);
         }

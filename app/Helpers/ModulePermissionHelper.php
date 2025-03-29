@@ -4,6 +4,7 @@ use Modules\UserManagement\App\Models\ModulePermission;
 use Modules\UserManagement\App\Models\UserModulePermission;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Modules\ModuleManagement\App\Models\Module;
 
 if (!function_exists('can_module')) {
     /**
@@ -26,7 +27,11 @@ if (!function_exists('can_module')) {
             return true;
         }
         
-        return $user->hasModulePermission($moduleName, $permissionType);
+        // Kullanıcı izinleri kontrol eder
+        $cacheKey = "user_{$user->id}_module_{$moduleName}_permission_{$permissionType}";
+        return Cache::remember($cacheKey, now()->addHours(24), function() use ($user, $moduleName, $permissionType) {
+            return $user->hasModulePermission($moduleName, $permissionType);
+        });
     }
 }
 
@@ -45,7 +50,10 @@ if (!function_exists('get_module_permissions')) {
             return [];
         }
         
-        return $user->getModulePermissions($moduleName);
+        $cacheKey = "user_{$user->id}_module_{$moduleName}_permissions";
+        return Cache::remember($cacheKey, now()->addHours(24), function() use ($user, $moduleName) {
+            return $user->getModulePermissions($moduleName);
+        });
     }
 }
 
@@ -57,7 +65,10 @@ if (!function_exists('get_module_permission_types')) {
      */
     function get_module_permission_types(): array
     {
-        return ModulePermission::getPermissionTypes();
+        $cacheKey = "module_permission_types";
+        return Cache::remember($cacheKey, now()->addWeek(), function() {
+            return ModulePermission::getPermissionTypes();
+        });
     }
 }
 
@@ -71,21 +82,17 @@ if (!function_exists('is_module_active')) {
      */
     function is_module_active(string $moduleName, string $permissionType = 'view'): bool
     {
-        // Önbellekten kontrol et
+        // Önbellekten kontrol et - süreyi artırdık
         $cacheKey = "module_{$moduleName}_permission_{$permissionType}_active";
         
-        return Cache::remember($cacheKey, now()->addMinutes(60), function () use ($moduleName, $permissionType) {
-            $module = \Modules\ModuleManagement\App\Models\Module::where('name', $moduleName)
+        return Cache::remember($cacheKey, now()->addHours(24), function () use ($moduleName, $permissionType) {
+            // Tek bir sorgu ile kontrol et
+            return Module::where('name', $moduleName)
                 ->where('is_active', true)
-                ->first();
-                
-            if (!$module) {
-                return false;
-            }
-            
-            return ModulePermission::where('module_id', $module->module_id)
-                ->where('permission_type', $permissionType)
-                ->where('is_active', true)
+                ->whereHas('permissions', function($query) use ($permissionType) {
+                    $query->where('permission_type', $permissionType)
+                          ->where('is_active', true);
+                })
                 ->exists();
         });
     }

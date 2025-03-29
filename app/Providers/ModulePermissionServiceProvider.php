@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use App\Services\ModuleAccessService;
 use App\Http\Middleware\TenantModuleMiddleware;
 use Modules\ModuleManagement\App\Models\Module;
+use Illuminate\Support\Facades\Cache;
 
 class ModulePermissionServiceProvider extends ServiceProvider
 {
@@ -45,9 +46,15 @@ class ModulePermissionServiceProvider extends ServiceProvider
             'tenant',
         ]);
         
-        // Dinamik olarak modül middleware gruplarını oluştur
+        // Dinamik olarak modül middleware gruplarını oluştur - Cache ile optimize edildi
         try {
-            $modules = Module::where('is_active', true)->get();
+            // Aktif modülleri cache ile getir - 60 dakika cache
+            $cacheKey = 'active_modules_middleware';
+            $modules = Cache::remember($cacheKey, now()->addMinutes(60), function () {
+                return Module::where('is_active', true)
+                    ->select('name') // Sadece name sütununu getir
+                    ->get();
+            });
             
             foreach ($modules as $module) {
                 $this->app['router']->middlewareGroup("module.{$module->name}", [

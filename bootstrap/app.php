@@ -12,14 +12,16 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        // Web middleware grubuna InitializeTenancy ekle
+        // Web middleware grubuna InitializeTenancy ve TenantCacheMiddleware ekle
         $middleware->web(append: [
             \App\Http\Middleware\InitializeTenancy::class,
+            \App\Http\Middleware\TenantCacheMiddleware::class,
         ]);
                 
         $middleware->alias([
             'tenant' => \App\Http\Middleware\InitializeTenancy::class,
             'tenant.module' => \App\Http\Middleware\TenantModuleMiddleware::class,
+            'tenant.cache' => \App\Http\Middleware\TenantCacheMiddleware::class, // Alias ekle
             'root.access' => \App\Http\Middleware\RootAccessMiddleware::class,
             'admin.access' => \App\Http\Middleware\AdminAccessMiddleware::class,
             'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
@@ -33,6 +35,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'web',
             'auth',
             'tenant',
+            'tenant.cache', // Tenant önbellekleme middleware'ini ekle
             'admin.access', // Admin erişim kontrolü için
         ]);
                 
@@ -48,6 +51,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 'web',
                 'auth',
                 'tenant',
+                'tenant.cache', // Tenant önbellekleme middleware'ini ekle
                 'module.permission:' . $moduleName . ',view'
             ]);
         }

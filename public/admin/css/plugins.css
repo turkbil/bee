@@ -1,7 +1,8 @@
 @import url("../libs/pretty-checkbox/pretty-checkbox.min.css");
 
 * {
-    scrollbar-color: rgba(var(--tblr-scrollbar-color, rgb(24, 36, 51)), .16) transparent
+    scrollbar-color: rgba(var(--tblr-scrollbar-color, rgb(24, 36, 51)), 0.16)
+        transparent;
 }
 
 .switch-content {
@@ -27,16 +28,16 @@
     display: none;
 }
 
-.dark-switch:checked+.app .toggle {
+.dark-switch:checked + .app .toggle {
     transform: translateX(100%);
     background-color: #34323d;
 }
 
-.dark-switch:checked+.app .light i {
+.dark-switch:checked + .app .light i {
     opacity: 0;
 }
 
-.dark-switch:checked+.app .dark i {
+.dark-switch:checked + .app .dark i {
     opacity: 1;
 }
 
@@ -66,19 +67,19 @@
     cursor: pointer !important;
 }
 
-.theme-mode .dark-switch:checked+.app .names p.dark {
+.theme-mode .dark-switch:checked + .app .names p.dark {
     display: block;
 }
 
-.theme-mode .dark-switch:checked+.app .names p.light {
+.theme-mode .dark-switch:checked + .app .names p.light {
     display: none;
 }
 
-.theme-mode .dark-switch+.app .names p.light {
+.theme-mode .dark-switch + .app .names p.light {
     display: block;
 }
 
-.theme-mode .dark-switch+.app .names p.dark {
+.theme-mode .dark-switch + .app .names p.dark {
     display: none;
 }
 
@@ -111,19 +112,19 @@
     cursor: pointer !important;
 }
 
-.table-mode .table-switch:checked+.app .names p.small {
+.table-mode .table-switch:checked + .app .names p.small {
     display: block;
 }
 
-.table-mode .table-switch:checked+.app .names p.large {
+.table-mode .table-switch:checked + .app .names p.large {
     display: none;
 }
 
-.table-mode .table-switch+.app .names p.large {
+.table-mode .table-switch + .app .names p.large {
     display: block;
 }
 
-.table-mode .table-switch+.app .names p.small {
+.table-mode .table-switch + .app .names p.small {
     display: none;
 }
 
@@ -144,7 +145,7 @@
     display: none;
 }
 
-.table-switch:checked+.app .toggle {
+.table-switch:checked + .app .toggle {
     transform: translateX(100%);
     background-color: #34323d;
 }
@@ -250,7 +251,7 @@
     flex: auto;
 }
 
-.table-sm> :not(caption)>*>* {
+.table-sm > :not(caption) > * > * {
     padding: 0.25rem 0.75rem;
 }
 
@@ -288,7 +289,7 @@
     align-items: center;
 }
 
-body.table-compact .table> :not(caption)>*>* {
+body.table-compact .table > :not(caption) > * > * {
     padding: 0.25rem 0.25rem;
 }
 
@@ -446,7 +447,6 @@ body.table-compact .table> :not(caption)>*>* {
 }
 
 @keyframes progress-bar-animate {
-
     0% {
         transform: translateX(-100%);
     }
@@ -455,8 +455,6 @@ body.table-compact .table> :not(caption)>*>* {
         transform: translateX(100%);
     }
 }
-
-
 
 .category-wrapper {
     cursor: move;
@@ -499,4 +497,10 @@ body.table-compact .table> :not(caption)>*>* {
         transform: translateY(0) scale(1);
         opacity: 1;
     }
+}
+
+.tox .tox-menubar + .tox-toolbar,
+.tox .tox-menubar + .tox-toolbar-overlord {
+    padding-bottom: 5px !important;
+    padding-top: 5px !important;
 }

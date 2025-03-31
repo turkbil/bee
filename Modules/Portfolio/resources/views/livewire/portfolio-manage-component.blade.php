@@ -49,12 +49,10 @@
                         'label' => 'Görseli sürükleyip bırakın veya tıklayın'
                         ])
 
-                        <div class="form-floating mb-3">
-                            <textarea wire:model="inputs.body" class="form-control" placeholder="Portfolyo içeriği"
-                                style="height: 300px; min-height: 300px; resize: vertical;">
-                            </textarea>
-                            <label>İçerik</label>
-                        </div>
+<div class="mb-3" wire:ignore>
+    <textarea id="editor" wire:model.defer="inputs.body">{{ $inputs['body'] }}</textarea>
+</div>
+
                         <div class="mb-3">
                             <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
                                 <input type="checkbox" id="is_active" name="is_active" wire:model="inputs.is_active"

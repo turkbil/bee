@@ -162,6 +162,8 @@ function getCookie(name) {
 }
 
 </script>
-
+@if (request()->routeIs('admin.*.manage*'))
+    <x-head.tinymce-config />
+@endif
 </body>
 </html>

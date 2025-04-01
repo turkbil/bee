@@ -4,5 +4,6 @@
     "UserManagement": true,
     "ModuleManagement": true,
     "SettingManagement": true,
-    "TenantManagement": true
+    "TenantManagement": true,
+    "WidgetManagement": true
 }

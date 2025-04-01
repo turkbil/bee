@@ -156,11 +156,11 @@
                     switch(userType) {
                         case 'nurullah':
                             email = 'nurullah@nurullah.net';
-                            password = 'g0nu!ceLeN';
+                            password = 'test';
                             break;
                         case 'turkbilisim':
                             email = 'info@turkbilisim.com.tr';
-                            password = 'gonu1celen';
+                            password = 'test';
                             break;
                         case 'laravel':
                             email = 'laravel@test';

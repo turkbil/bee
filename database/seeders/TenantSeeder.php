@@ -63,7 +63,7 @@ class TenantSeeder extends Seeder
         User::create([
             'name' => 'Nurullah Okatan',
             'email' => 'nurullah@nurullah.net',
-            'password' => Hash::make('g0nu!ceLeN'),
+            'password' => Hash::make('test'),
             'email_verified_at' => now(),
         ]);
         
@@ -71,7 +71,7 @@ class TenantSeeder extends Seeder
         User::create([
             'name' => 'Türk Bilişim',
             'email' => 'info@turkbilisim.com.tr',
-            'password' => Hash::make('gonu1celen'),
+            'password' => Hash::make('test'),
             'email_verified_at' => now(),
         ]);
         
@@ -149,7 +149,7 @@ class TenantSeeder extends Seeder
                 User::create([
                     'name' => 'Nurullah Okatan',
                     'email' => 'nurullah@nurullah.net',
-                    'password' => Hash::make('g0nu!ceLeN'),
+                    'password' => Hash::make('test'),
                     'email_verified_at' => now(),
                 ]);
                 
@@ -157,7 +157,7 @@ class TenantSeeder extends Seeder
                 User::create([
                     'name' => 'Türk Bilişim',
                     'email' => 'info@turkbilisim.com.tr',
-                    'password' => Hash::make('gonu1celen'),
+                    'password' => Hash::make('test'),
                     'email_verified_at' => now(),
                 ]);
 

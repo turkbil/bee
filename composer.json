@@ -48,7 +48,8 @@
             "Modules\\Portfolio\\App\\": "Modules/Portfolio/app/",
             "Modules\\ModuleManagement\\App\\": "Modules/ModuleManagement/app/",
             "Modules\\SettingManagement\\App\\": "Modules/SettingManagement/app/",
-            "Modules\\TenantManagement\\App\\": "Modules/TenantManagement/app/"
+            "Modules\\TenantManagement\\App\\": "Modules/TenantManagement/app/",
+            "Modules\\WidgetManagement\\App\\": "Modules/WidgetManagement/app/"
         },
         "files": [
             "app/Helpers/Functions.php",

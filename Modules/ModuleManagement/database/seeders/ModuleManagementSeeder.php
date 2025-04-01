@@ -74,6 +74,15 @@ class ModuleManagementSeeder extends Seeder
                     'settings' => null,
                     'type' => 'system',
                     'is_active' => true
+                ],
+                [
+                    'name' => 'widgetmanagement',
+                    'display_name' => 'Bileşenler',
+                    'description' => 'Widget bileşenlerinin yönetimi',
+                    'version' => '1.0.0',
+                    'settings' => null,
+                    'type' => 'content',
+                    'is_active' => true
                 ]
             ];
 

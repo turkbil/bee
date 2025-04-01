@@ -156,3 +156,19 @@ if (!function_exists('tenant_storage_url')) {
         return url('/storage/tenant' . $tenantId . '/' . ltrim($path, '/'));
     }
 }
+
+if (!function_exists('widget')) {
+    /**
+     * Widget render helper
+     * 
+     * @param string $position Widget pozisyonu
+     * @param int|null $pageId Sayfa ID
+     * @param string|null $module Modül adı
+     * @return string
+     */
+    function widget($position, $pageId = null, $module = null)
+    {
+        $service = app('widget.service');
+        return $service->renderWidgetsInPosition($position, $pageId, $module);
+    }
+}

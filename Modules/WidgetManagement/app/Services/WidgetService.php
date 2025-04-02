@@ -137,6 +137,8 @@ class WidgetService
                 $html = $tenantWidget->custom_html;
                 $css = $tenantWidget->custom_css;
                 $js = $tenantWidget->custom_js;
+                $cssFiles = [];
+                $jsFiles = [];
                 
                 // Değişkenleri değiştir
                 $html = $this->processVariables($html, $tenantWidget->settings ?? []);
@@ -151,6 +153,8 @@ class WidgetService
                 $html = $widget->content_html;
                 $css = $widget->content_css;
                 $js = $widget->content_js;
+                $cssFiles = $widget->css_files ?? [];
+                $jsFiles = $widget->js_files ?? [];
                 
                 // Widget'ın ayarlarını al
                 $settings = $tenantWidget->settings ?? [];
@@ -176,17 +180,35 @@ class WidgetService
             // Sonuç HTML
             $result = '';
             
+            // CSS dosya bağlantıları
+            if (!empty($cssFiles)) {
+                foreach ($cssFiles as $cssFile) {
+                    if (!empty($cssFile)) {
+                        $result .= "<link rel=\"stylesheet\" href=\"{$cssFile}\">\n";
+                    }
+                }
+            }
+            
             // CSS varsa ekle
             if (!empty($css)) {
-                $result .= "<style>{$css}</style>";
+                $result .= "<style>{$css}</style>\n";
             }
             
             // HTML içerik
             $result .= $html;
             
+            // JS dosya bağlantıları
+            if (!empty($jsFiles)) {
+                foreach ($jsFiles as $jsFile) {
+                    if (!empty($jsFile)) {
+                        $result .= "<script src=\"{$jsFile}\"></script>\n";
+                    }
+                }
+            }
+            
             // JS varsa ekle
             if (!empty($js)) {
-                $result .= "<script>{$js}</script>";
+                $result .= "<script>{$js}</script>\n";
             }
             
             return $result;

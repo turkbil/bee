@@ -22,7 +22,8 @@ class WidgetSectionComponent extends Component
     protected $listeners = [
         'addWidget' => 'addWidget',
         'widgetOrderUpdated' => 'updateWidgetOrder',
-        'widgetSettingsUpdated' => 'refreshWidgets'
+        'widgetSettingsUpdated' => 'refreshWidgets',
+        'openWidgetSettings' => 'redirectToWidgetSettings'
     ];
     
     public function boot(WidgetService $widgetService)
@@ -50,6 +51,7 @@ class WidgetSectionComponent extends Component
             ->when($this->position, function ($query) {
                 $query->where('position', $this->position);
             })
+            ->with('widget')
             ->orderBy('order')
             ->get();
     }
@@ -90,6 +92,9 @@ class WidgetSectionComponent extends Component
         $tenantWidget = TenantWidget::findOrFail($tenantWidgetId);
         $tenantWidget->delete();
         
+        // Widget önbelleğini temizle
+        $this->widgetService->clearWidgetCache();
+        
         // Widgetları yeniden yükle
         $this->loadWidgets();
         
@@ -117,9 +122,9 @@ class WidgetSectionComponent extends Component
         ]);
     }
     
-    public function openWidgetSettings($tenantWidgetId)
+    public function redirectToWidgetSettings($tenantWidgetId)
     {
-        $this->dispatch('openWidgetSettings', $tenantWidgetId);
+        return redirect()->route('admin.widgetmanagement.settings', $tenantWidgetId);
     }
     
     public function refreshWidgets()

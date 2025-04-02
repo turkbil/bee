@@ -1,3 +1,4 @@
+@include('widgetmanagement::helper')
 <div>
     <div class="card">
         <div class="card-header">

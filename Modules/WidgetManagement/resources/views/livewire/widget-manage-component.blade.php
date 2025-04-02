@@ -1,3 +1,4 @@
+@include('widgetmanagement::helper')
 <div>
     <div class="card">
         <div class="card-header">
@@ -146,11 +147,11 @@
                         <label class="form-label">HTML İçeriği</label>
                         <textarea wire:model="widget.content_html" class="form-control" rows="15" style="font-family: monospace;">{{ $widget['content_html'] }}</textarea>
                         <div class="form-hint">
-                            Widget HTML şablonu. Değişkenler için {{değişken_adı}} biçimini kullanın.
+                            Widget HTML şablonu. Değişkenler için @{{ değişken_adı }} biçimini kullanın.
                             <br>
-                            Dinamik öğeler için: {{#each items}}...{{/each}} blokları kullanın.
+                            Dinamik öğeler için: @{{ #each items }}...@{{ /each }} blokları kullanın.
                             <br>
-                            Koşullu içerik için: {{#if değişken}}...{{else}}...{{/if}} blokları kullanın.
+                            Koşullu içerik için: @{{ #if değişken }}...@{{ else }}...@{{ /if }} blokları kullanın.
                         </div>
                     </div>
                     
@@ -513,7 +514,7 @@
                 <div class="col-md-12">
                     <div class="alert alert-info">
                         <i class="fas fa-info-circle me-2"></i>
-                        Bu bölümde widget'ın nasıl görüneceğini önizleyebilirsiniz. Değişikliklerinizi görmek için önce kaydetmeniz gerekiyor.
+                        Bu bölümde widgetın nasıl görüneceğini önizleyebilirsiniz. Değişikliklerinizi görmek için önce kaydetmeniz gerekiyor.
                     </div>
                     
                     <div class="mb-3">
@@ -531,8 +532,13 @@
                         </div>
                         <div class="card-body">
                             <div class="widget-preview-frame border p-3">
-                                <!-- Widget preview content will be loaded here dynamically -->
-                                <iframe id="widget-preview-frame" src="{{ route('admin.widgetmanagement.preview', $widgetId) }}" style="width: 100%; min-height: 400px; border: none;"></iframe>
+                                <!-- HTML Önizleme -->
+                                <div class="p-3 border rounded bg-light mb-3">
+                                    <h4 class="text-muted mb-3">Widget İçeriği</h4>
+                                    <div class="widget-content-preview">
+                                        {!! $widget['content_html'] !!}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

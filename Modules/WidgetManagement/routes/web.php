@@ -6,6 +6,7 @@ use Modules\WidgetManagement\app\Http\Livewire\WidgetManageComponent;
 use Modules\WidgetManagement\app\Http\Livewire\WidgetSectionComponent;
 use Modules\WidgetManagement\app\Http\Livewire\WidgetItemComponent;
 use Modules\WidgetManagement\app\Http\Livewire\WidgetSettingsComponent;
+use Modules\WidgetManagement\app\Http\Controllers\WidgetPreviewController;
 
 Route::middleware(['web', 'auth', 'tenant'])
     ->prefix('admin/widgetmanagement')
@@ -35,4 +36,9 @@ Route::middleware(['web', 'auth', 'tenant'])
         Route::get('/settings/{tenantWidgetId}', WidgetSettingsComponent::class)
             ->middleware('module.permission:widgetmanagement,update')
             ->name('settings');
+            
+        // Widget Önizleme
+        Route::get('/preview/{id}', [WidgetPreviewController::class, 'show'])
+            ->middleware('module.permission:widgetmanagement,view')
+            ->name('preview');
     });

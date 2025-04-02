@@ -4,10 +4,13 @@ namespace Modules\WidgetManagement\app\Http\Livewire;
 
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Livewire\Attributes\Layout;
 use Modules\WidgetManagement\app\Models\Widget;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Collection;
 
+#[Layout('admin.layout')]
 class WidgetManageComponent extends Component
 {
     use WithFileUploads;
@@ -263,7 +266,16 @@ class WidgetManageComponent extends Component
     
     public function render()
     {
-        $modules = app('module.manager')->all();
+        try {
+            // Module.manager servisini güvenli bir şekilde almaya çalış
+            $modules = collect();
+            if (app()->bound('module.manager')) {
+                $modules = app('module.manager')->all();
+            }
+        } catch (\Exception $e) {
+            // Hata oluşursa boş bir koleksiyon kullan
+            $modules = collect();
+        }
         
         return view('widgetmanagement::livewire.widget-manage-component', [
             'modules' => $modules

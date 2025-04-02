@@ -29,6 +29,8 @@ class WidgetManageComponent extends Component
         'content_html' => '',
         'content_css' => '',
         'content_js' => '',
+        'css_files' => [],
+        'js_files' => [],
         'has_items' => false,
         'item_schema' => [],
         'settings_schema' => [],
@@ -83,6 +85,8 @@ class WidgetManageComponent extends Component
                 'content_html' => $widget->content_html,
                 'content_css' => $widget->content_css,
                 'content_js' => $widget->content_js,
+                'css_files' => $widget->css_files ?? [],
+                'js_files' => $widget->js_files ?? [],
                 'has_items' => $widget->has_items,
                 'item_schema' => $widget->item_schema ?? [],
                 'settings_schema' => $widget->settings_schema ?? [],
@@ -91,7 +95,49 @@ class WidgetManageComponent extends Component
             ];
         }
     }
-    
+
+    public function addCssFile()
+    {
+        $cssFiles = $this->widget['css_files'] ?? [];
+        $cssFiles[] = '';
+        $this->widget['css_files'] = $cssFiles;
+    }
+
+    public function updateCssFile($index, $value)
+    {
+        $cssFiles = $this->widget['css_files'];
+        $cssFiles[$index] = $value;
+        $this->widget['css_files'] = $cssFiles;
+    }
+
+    public function removeCssFile($index)
+    {
+        $cssFiles = $this->widget['css_files'];
+        unset($cssFiles[$index]);
+        $this->widget['css_files'] = array_values($cssFiles);
+    }
+
+    public function addJsFile()
+    {
+        $jsFiles = $this->widget['js_files'] ?? [];
+        $jsFiles[] = '';
+        $this->widget['js_files'] = $jsFiles;
+    }
+
+    public function updateJsFile($index, $value)
+    {
+        $jsFiles = $this->widget['js_files'];
+        $jsFiles[$index] = $value;
+        $this->widget['js_files'] = $jsFiles;
+    }
+
+    public function removeJsFile($index)
+    {
+        $jsFiles = $this->widget['js_files'];
+        unset($jsFiles[$index]);
+        $this->widget['js_files'] = array_values($jsFiles);
+    }
+  
     public function updatedWidgetName()
     {
         if (empty($this->widget['slug'])) {

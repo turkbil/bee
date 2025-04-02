@@ -28,7 +28,9 @@ return new class extends Migration
             $table->json('module_ids')->nullable();
             $table->longText('content_html')->nullable();
             $table->longText('content_css')->nullable();
+            $table->json('css_files')->nullable();
             $table->longText('content_js')->nullable();
+            $table->json('js_files')->nullable();
             $table->string('thumbnail')->nullable();
             $table->boolean('has_items')->default(false)->index();
             $table->json('item_schema')->nullable();

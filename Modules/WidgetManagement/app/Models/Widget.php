@@ -14,6 +14,7 @@ class Widget extends Model
     protected $fillable = [
         'name', 'slug', 'description', 'type',
         'module_ids', 'content_html', 'content_css', 'content_js',
+        'css_files', 'js_files',
         'thumbnail', 'has_items', 'item_schema', 'settings_schema',
         'is_active', 'is_core'
     ];
@@ -22,6 +23,8 @@ class Widget extends Model
         'module_ids' => 'json',
         'item_schema' => 'json',
         'settings_schema' => 'json',
+        'css_files' => 'json',
+        'js_files' => 'json',
         'has_items' => 'boolean',
         'is_active' => 'boolean',
         'is_core' => 'boolean',

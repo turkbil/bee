@@ -4,6 +4,7 @@ namespace Modules\WidgetManagement\database\seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\WidgetManagement\app\Models\Widget;
+use Modules\WidgetManagement\app\Models\TenantWidget;
 
 class HeroBannerWidgetSeeder extends Seeder
 {
@@ -12,7 +13,7 @@ class HeroBannerWidgetSeeder extends Seeder
         // Önce kontrol et, eğer bu slug ile widget varsa oluşturma
         if (!Widget::where('slug', 'hero-banner')->exists()) {
             // Hero Banner Widget
-            Widget::create([
+            $widget = Widget::create([
                 'name' => 'Hero Banner',
                 'slug' => 'hero-banner',
                 'description' => 'Ana sayfa hero bölümü için büyük banner ve metin alanı',
@@ -92,6 +93,23 @@ class HeroBannerWidgetSeeder extends Seeder
                 ],
                 'is_active' => true,
                 'is_core' => true
+            ]);
+
+            // Örnek TenantWidget ve ayarları
+            $tenantWidget = TenantWidget::create([
+                'widget_id' => $widget->id,
+                'settings' => [
+                    'title' => 'Dijital Dönüşümün Anahtarı Burada',
+                    'subtitle' => 'Teknoloji ve inovasyonla geleceğe hazırlanın',
+                    'button_text' => 'Hemen Keşfedin',
+                    'button_url' => '/hakkimizda',
+                    'image_url' => asset('storage/images/hero-banner-sample.jpg'),
+                    'background_color' => '#f0f4ff',
+                    'text_color' => '#333333'
+                ],
+                'position' => 'top',
+                'page_id' => null,
+                'module' => null
             ]);
         }
     }

@@ -185,9 +185,9 @@
                 </div>
                 
                 <div class="widget-items-list" id="widget-items-container">
-                    <div class="row row-cards" data-sortable-id="items-container">
+                    <div class="row row-cards" id="sortable-list" data-sortable-id="items-container">
                         @foreach($items as $item)
-                        <div class="col-md-6 col-xl-4 widget-item-row" data-id="{{ $item->id }}">
+                        <div class="col-md-6 col-xl-4 widget-item-row" data-id="{{ $item->id }}" id="item-{{ $item->id }}">
                             <div class="card">
                                 <div class="card-status-top bg-primary"></div>
                                 <div class="widget-item-drag-handle card-header cursor-move">
@@ -264,39 +264,55 @@
         </div>
     </div>
     
-    <!-- İçerik Sıralama JS -->
     @push('scripts')
+    <script src="{{ asset('admin/libs/sortable/sortable.min.js') }}"></script>
     <script>
         document.addEventListener('livewire:init', function() {
             let itemsSortable;
             
             function initItemsSortable() {
-                const container = document.querySelector('[data-sortable-id="items-container"]');
+                const container = document.getElementById('sortable-list');
                 
                 if (container) {
+                    // Mevcut sıralayıcıyı temizle (eğer varsa)
+                    if (itemsSortable) {
+                        itemsSortable.destroy();
+                        itemsSortable = null;
+                    }
+                    
                     itemsSortable = new Sortable(container, {
                         handle: '.widget-item-drag-handle',
                         animation: 150,
                         ghostClass: 'sortable-ghost',
-                        onEnd: function() {
-                            // Sıralamayı güncelle
-                            const items = Array.from(container.querySelectorAll('.widget-item-row')).map(item => item.dataset.id);
-                            Livewire.dispatch('itemOrderUpdated', items);
+                        onEnd: function(evt) {
+                            // Değişim olup olmadığını kontrol et
+                            if (evt.oldIndex === evt.newIndex) {
+                                return;
+                            }
+                            
+                            // TÜM öğeleri al, sadece taşınanı değil
+                            const allItems = Array.from(container.querySelectorAll('.widget-item-row'))
+                                .map(item => item.getAttribute('data-id'));
+                            
+                            if (allItems.length > 0) {
+                                // Komple diziyi doğrudan Livewire component metoduna gönder
+                                @this.updateItemOrder(allItems);
+                            }
                         }
                     });
                 }
             }
             
             // İlk yükleme
-            if (document.querySelector('[data-sortable-id="items-container"]')) {
-                initItemsSortable();
-            }
+            initItemsSortable();
             
             // Sayfa güncellendiğinde yeniden başlat
+            document.addEventListener('livewire:initialized', function() {
+                initItemsSortable();
+            });
+            
             Livewire.hook('element.updated', () => {
-                if (document.querySelector('[data-sortable-id="items-container"]')) {
-                    initItemsSortable();
-                }
+                setTimeout(initItemsSortable, 100);
             });
         });
     </script>

@@ -4,6 +4,8 @@ namespace Modules\WidgetManagement\database\seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\WidgetManagement\app\Models\Widget;
+use Modules\WidgetManagement\app\Models\TenantWidget;
+use Modules\WidgetManagement\app\Models\WidgetItem;
 
 class FaqWidgetSeeder extends Seeder
 {
@@ -12,7 +14,7 @@ class FaqWidgetSeeder extends Seeder
         // Önce kontrol et, eğer bu slug ile widget varsa oluşturma
         if (!Widget::where('slug', 'faq')->exists()) {
             // FAQ Widget
-            Widget::create([
+            $widget = Widget::create([
                 'name' => 'SSS (FAQ)',
                 'slug' => 'faq',
                 'description' => 'Sıkça Sorulan Sorular bölümü',
@@ -162,6 +164,60 @@ class FaqWidgetSeeder extends Seeder
                 'is_active' => true,
                 'is_core' => true
             ]);
+
+            // Örnek veriler için TenantWidget oluştur
+            $tenantWidget = TenantWidget::create([
+                'widget_id' => $widget->id,
+                'settings' => [
+                    'id' => 'genel-sss',
+                    'title' => 'Sıkça Sorulan Sorular',
+                    'subtitle' => 'Size yardımcı olabilecek bilgileri derledik',
+                    'show_title' => true,
+                    'background_color' => '#f8f9fa',
+                    'title_color' => '#212529',
+                    'subtitle_color' => '#6c757d',
+                    'button_bg' => '#007bff',
+                    'button_color' => '#ffffff',
+                    'button_active_bg' => '#0056b3',
+                    'button_active_color' => '#ffffff'
+                ],
+                'position' => 'bottom',
+                'page_id' => null,
+                'module' => null
+            ]);
+
+            // Örnek FAQ item'ları
+            $items = [
+                [
+                    'question' => 'Hizmetleriniz hangi illerde sunulmaktadır?',
+                    'answer' => 'Şu anda İstanbul, Ankara, İzmir ve Bursa olmak üzere 4 büyük ilimizde hizmet vermekteyiz. Yakın zamanda diğer illere de yayılmayı planlıyoruz.'
+                ],
+                [
+                    'question' => 'Fiyatlandırma nasıl yapılmaktadır?',
+                    'answer' => 'Fiyatlandırmamız proje büyüklüğüne, kullanım alanına ve müşteri ihtiyaçlarına göre değişkenlik göstermektedir. Detaylı bilgi için müşteri temsilcilerimizle iletişime geçebilirsiniz.'
+                ],
+                [
+                    'question' => 'Teslimat süreciniz ne kadar sürüyor?',
+                    'answer' => 'Standart teslimat süresi 5-7 iş günüdür. Özel projeler ve büyük ölçekli siparişlerde bu süre biraz daha uzayabilir. Acil durumlarda hızlandırılmış teslimat seçeneğimiz de mevcuttur.'
+                ],
+                [
+                    'question' => 'Ürünlerinize garanti veriyor musunuz?',
+                    'answer' => 'Evet, tüm ürünlerimiz 2 yıl üretici garantisi kapsamındadır. Herhangi bir üründe garanti kapsamında arıza olması durumunda ücretsiz olarak değişim veya tamir yapılmaktadır.'
+                ],
+                [
+                    'question' => 'Müşteri desteği nasıl sağlanmaktadır?',
+                    'answer' => 'Müşteri destek hattımız hafta içi 09:00-18:00 saatleri arasında hizmet vermektedir. Ayrıca web sitemiz üzerinden 7/24 destek talebi oluşturabilir, e-posta yoluyla da iletişime geçebilirsiniz.'
+                ]
+            ];
+
+            // Item'ları oluştur
+            foreach ($items as $index => $item) {
+                WidgetItem::create([
+                    'tenant_widget_id' => $tenantWidget->id,
+                    'content' => $item,
+                    'order' => $index + 1
+                ]);
+            }
         }
     }
 }

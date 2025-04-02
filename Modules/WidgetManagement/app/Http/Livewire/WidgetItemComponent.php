@@ -24,6 +24,7 @@ class WidgetItemComponent extends Component
     protected $itemService;
     
     protected $listeners = [
+        'updateItemOrder',
         'itemOrderUpdated' => 'updateItemOrder',
         'addWidgetItem' => 'addItem',
         'editWidgetItem' => 'editItem',
@@ -185,6 +186,10 @@ class WidgetItemComponent extends Component
     public function updateItemOrder($orderedIds)
     {
         try {
+            if (!is_array($orderedIds)) {
+                $orderedIds = (array)$orderedIds;
+            }
+            
             $this->itemService->reorderItems($this->tenantWidgetId, $orderedIds);
             $this->loadItems();
             

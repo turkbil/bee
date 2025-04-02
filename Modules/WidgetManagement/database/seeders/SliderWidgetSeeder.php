@@ -4,6 +4,8 @@ namespace Modules\WidgetManagement\database\seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\WidgetManagement\app\Models\Widget;
+use Modules\WidgetManagement\app\Models\TenantWidget;
+use Modules\WidgetManagement\app\Models\WidgetItem;
 
 class SliderWidgetSeeder extends Seeder
 {
@@ -12,7 +14,7 @@ class SliderWidgetSeeder extends Seeder
         // Önce kontrol et, eğer bu slug ile widget varsa oluşturma
         if (!Widget::where('slug', 'slider')->exists()) {
             // Slider Widget
-            Widget::create([
+            $widget = Widget::create([
                 'name' => 'Slider',
                 'slug' => 'slider',
                 'description' => 'Dinamik slaytlar ekleyebileceğiniz carousel slider',
@@ -139,6 +141,55 @@ class SliderWidgetSeeder extends Seeder
                 'is_active' => true,
                 'is_core' => true
             ]);
+
+            // Örnek TenantWidget ve ayarları
+            $tenantWidget = TenantWidget::create([
+                'widget_id' => $widget->id,
+                'settings' => [
+                    'id' => 'ana-slider',
+                    'height' => 500,
+                    'interval' => 5000,
+                    'show_indicators' => true,
+                    'show_controls' => true
+                ],
+                'position' => 'top',
+                'page_id' => null,
+                'module' => null
+            ]);
+
+            // Slider item'ları
+            $items = [
+                [
+                    'title' => 'Dijital Dönüşüm Çözümleri',
+                    'description' => 'Kurumsal dijital altyapınızı güçlendirin',
+                    'image' => asset('storage/images/slider-1.jpg'),
+                    'button_text' => 'Detayları İncele',
+                    'button_url' => '/dijital-donusum'
+                ],
+                [
+                    'title' => 'Yapay Zeka Danışmanlığı',
+                    'description' => 'Yapay zeka teknolojileriyle iş süreçlerinizi optimize edin',
+                    'image' => asset('storage/images/slider-2.jpg'),
+                    'button_text' => 'Çözümleri Keşfet',
+                    'button_url' => '/yapay-zeka'
+                ],
+                [
+                    'title' => 'Bulut Bilişim Hizmetleri',
+                    'description' => 'Esnek ve güvenli bulut çözümleri',
+                    'image' => asset('storage/images/slider-3.jpg'),
+                    'button_text' => 'Hemen Başlayın',
+                    'button_url' => '/bulut-hizmetler'
+                ]
+            ];
+
+            // Item'ları oluştur
+            foreach ($items as $index => $item) {
+                WidgetItem::create([
+                    'tenant_widget_id' => $tenantWidget->id,
+                    'content' => $item,
+                    'order' => $index + 1
+                ]);
+            }
         }
     }
 }

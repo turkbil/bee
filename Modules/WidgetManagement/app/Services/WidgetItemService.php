@@ -47,7 +47,6 @@ class WidgetItemService
         ]);
         
         // Widget önbelleğini temizle
-        // tenant() kontrolü ekle, tenant() null olabilir
         if (function_exists('tenant') && tenant()) {
             $this->widgetService->clearWidgetCache(tenant()->id, $tenantWidgetId);
         } else {
@@ -66,7 +65,6 @@ class WidgetItemService
         $item->update(['content' => $content]);
         
         // Widget önbelleğini temizle
-        // tenant() kontrolü ekle, tenant() null olabilir
         if (function_exists('tenant') && tenant()) {
             $this->widgetService->clearWidgetCache(tenant()->id, $item->tenant_widget_id);
         } else {
@@ -87,7 +85,6 @@ class WidgetItemService
         $result = $item->delete();
         
         // Widget önbelleğini temizle
-        // tenant() kontrolü ekle, tenant() null olabilir
         if (function_exists('tenant') && tenant()) {
             $this->widgetService->clearWidgetCache(tenant()->id, $tenantWidgetId);
         } else {
@@ -102,14 +99,23 @@ class WidgetItemService
      */
     public function reorderItems($tenantWidgetId, $itemIds)
     {
+        // İtemId'lerin array olduğundan emin olalım
+        if (!is_array($itemIds)) {
+            $itemIds = (array)$itemIds;
+        }
+        
         foreach ($itemIds as $index => $itemId) {
+            // Cast to integer
+            $itemId = (int)$itemId;
+            $order = $index + 1;
+            
+            // Öğe sırasını güncelle
             WidgetItem::where('id', $itemId)
                 ->where('tenant_widget_id', $tenantWidgetId)
-                ->update(['order' => $index + 1]);
+                ->update(['order' => $order]);
         }
         
         // Widget önbelleğini temizle
-        // tenant() kontrolü ekle, tenant() null olabilir
         if (function_exists('tenant') && tenant()) {
             $this->widgetService->clearWidgetCache(tenant()->id, $tenantWidgetId);
         } else {

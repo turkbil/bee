@@ -8,6 +8,7 @@ use Modules\WidgetManagement\app\Models\Widget;
 use Modules\WidgetManagement\app\Models\TenantWidget;
 use Modules\WidgetManagement\app\Services\WidgetService;
 use Modules\Page\app\Models\Page;
+use Livewire\Attributes\On;
 
 #[Layout('admin.layout')]
 class WidgetSectionComponent extends Component
@@ -21,8 +22,7 @@ class WidgetSectionComponent extends Component
     
     protected $listeners = [
         'addWidget' => 'addWidget',
-        'widgetOrderUpdated' => 'updateWidgetOrder',
-        'widgetSettingsUpdated' => 'refreshWidgets',
+        'refreshWidgets' => 'refreshWidgets',
         'openWidgetSettings' => 'redirectToWidgetSettings'
     ];
     
@@ -105,15 +105,27 @@ class WidgetSectionComponent extends Component
         ]);
     }
     
-    public function updateWidgetOrder($orderedIds)
+    #[On('updateOrder')]
+    public function updateOrder($list)
     {
-        foreach ($orderedIds as $index => $id) {
-            TenantWidget::where('id', $id)
-                ->update(['order' => $index + 1]);
+        if (!is_array($list)) {
+            return;
+        }
+
+        foreach ($list as $item) {
+            if (!isset($item['value'], $item['order'])) {
+                continue;
+            }
+
+            TenantWidget::where('id', $item['value'])
+                ->update(['order' => $item['order']]);
         }
         
         // Widget önbelleğini temizle
         $this->widgetService->clearWidgetCache();
+        
+        // Widgetları yeniden yükle
+        $this->loadWidgets();
         
         $this->dispatch('toast', [
             'title' => 'Başarılı!',

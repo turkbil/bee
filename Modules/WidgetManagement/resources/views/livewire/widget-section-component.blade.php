@@ -37,7 +37,7 @@
             </div>
             
             <!-- Alert Bölümü -->
-            <div class="alert alert-info bg-light-subtle border-light mb-3">
+            <div class="alert ">
                 <i class="fas fa-info-circle me-2"></i>
                 Widgetları sürükleyip bırakarak sıralayabilirsiniz. Sıralama otomatik olarak kaydedilecektir.
             </div>
@@ -59,33 +59,11 @@
                                     @endif
                                 </div>
                                 <div class="col">
-                                    <h3 class="card-title mb-1">
+                                    <h3 class="card-title mb-1 fs-2">
                                         <a href="{{ route('admin.widgetmanagement.items', $widget->id) }}" class="text-reset">
                                             {{ optional($widget->widget)->name ?? 'Özel Widget' }}
                                         </a>
                                     </h3>
-                                    <div class="text-secondary">{{ Str::limit(optional($widget->widget)->description, 60) }}</div>
-                                    <div class="mt-3 badges">
-                                        <span class="badge badge-outline text-secondary fw-normal badge-pill">{{ optional($widget->widget)->type }}</span>
-                                        
-                                        @if(optional($widget->widget)->is_core)
-                                        <span class="badge badge-outline text-secondary fw-normal badge-pill">
-                                            <i class="fas fa-shield-alt me-1"></i> Sistem
-                                        </span>
-                                        @endif
-                                        
-                                        @if(optional($widget->widget)->has_items)
-                                        <span class="badge badge-outline text-secondary fw-normal badge-pill">
-                                            <i class="fas fa-layer-group me-1"></i> Dinamik
-                                        </span>
-                                        @endif
-                                        
-                                        @if($widget->settings)
-                                        <span class="badge badge-outline text-secondary fw-normal badge-pill">
-                                            <i class="fas fa-cog me-1"></i> Özelleştirilmiş
-                                        </span>
-                                        @endif
-                                    </div>
                                 </div>
                                 <div class="col-auto">
                                     <div class="dropdown">

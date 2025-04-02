@@ -3,11 +3,13 @@
 namespace Modules\WidgetManagement\app\Http\Livewire;
 
 use Livewire\Component;
+use Livewire\Attributes\Layout;
 use Modules\WidgetManagement\app\Models\Widget;
 use Modules\WidgetManagement\app\Models\TenantWidget;
 use Modules\WidgetManagement\app\Services\WidgetService;
 use Modules\Page\app\Models\Page;
 
+#[Layout('admin.layout')]
 class WidgetSectionComponent extends Component
 {
     public $pageId;
@@ -131,9 +133,22 @@ class WidgetSectionComponent extends Component
         $availableWidgets = [];
         
         if ($this->module) {
-            // Modül için uygun widget'lar
-            $moduleId = app('module.service')->getModuleIdByName($this->module);
-            $availableWidgets = $this->widgetService->getWidgetsForModule($moduleId);
+            try {
+                // Modül için uygun widget'lar
+                $moduleId = null;
+                if (app()->bound('module.service')) {
+                    $moduleId = app('module.service')->getModuleIdByName($this->module);
+                }
+                
+                if ($moduleId) {
+                    $availableWidgets = $this->widgetService->getWidgetsForModule($moduleId);
+                } else {
+                    $availableWidgets = $this->widgetService->getActiveWidgets();
+                }
+            } catch (\Exception $e) {
+                // Hata durumunda aktif tüm widget'ları getir
+                $availableWidgets = $this->widgetService->getActiveWidgets();
+            }
         } else {
             // Sayfa için tüm aktif widget'lar
             $availableWidgets = $this->widgetService->getActiveWidgets();

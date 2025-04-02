@@ -67,6 +67,11 @@ class WidgetService
      */
     public function getWidgetsForModule($moduleId): Collection
     {
+        // moduleId null ise tüm widget'ları döndür
+        if ($moduleId === null) {
+            return $this->getActiveWidgets();
+        }
+        
         return Widget::where('is_active', true)
             ->where(function ($query) use ($moduleId) {
                 $query->whereNull('module_ids')

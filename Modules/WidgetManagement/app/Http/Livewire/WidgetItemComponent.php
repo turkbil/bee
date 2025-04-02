@@ -4,10 +4,12 @@ namespace Modules\WidgetManagement\app\Http\Livewire;
 
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Livewire\Attributes\Layout;
 use Modules\WidgetManagement\app\Models\TenantWidget;
 use Modules\WidgetManagement\app\Models\WidgetItem;
 use Modules\WidgetManagement\app\Services\WidgetItemService;
 
+#[Layout('admin.layout')]
 class WidgetItemComponent extends Component
 {
     use WithFileUploads;

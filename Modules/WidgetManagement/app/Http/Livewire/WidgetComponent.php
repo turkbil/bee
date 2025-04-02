@@ -4,9 +4,11 @@ namespace Modules\WidgetManagement\app\Http\Livewire;
 
 use Livewire\Component;
 use Livewire\WithPagination;
+use Livewire\Attributes\Layout;
 use Modules\WidgetManagement\app\Models\Widget;
 use Modules\WidgetManagement\app\Services\WidgetService;
 
+#[Layout('admin.layout')]
 class WidgetComponent extends Component
 {
     use WithPagination;

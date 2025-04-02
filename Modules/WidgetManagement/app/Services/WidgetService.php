@@ -289,22 +289,34 @@ class WidgetService
      */
     public function clearWidgetCache($tenantId = null, $widgetId = null): void
     {
-        if (!$tenantId && tenant()) {
-            $tenantId = tenant()->id;
-        }
-        
         if ($widgetId) {
             // Belirli bir widget için önbelleği temizle
-            Cache::forget($this->cachePrefix . $tenantId . "_widget_{$widgetId}");
+            if ($tenantId) {
+                Cache::forget($this->cachePrefix . $tenantId . "_widget_{$widgetId}");
+            } else {
+                // tenantId null ise, merkezi widget önbelleğini temizle
+                Cache::forget($this->cachePrefix . "central_widget_{$widgetId}");
+            }
         } else {
             // Tüm widget önbelleklerini temizle
-            $keys = Cache::get($this->cachePrefix . "keys_{$tenantId}", []);
-            
-            foreach ($keys as $key) {
-                Cache::forget($key);
+            if ($tenantId) {
+                $keys = Cache::get($this->cachePrefix . "keys_{$tenantId}", []);
+                
+                foreach ($keys as $key) {
+                    Cache::forget($key);
+                }
+                
+                Cache::forget($this->cachePrefix . "keys_{$tenantId}");
+            } else {
+                // Tüm tenant'lar için temizlik (bu işlem daha dikkatli yapılmalı)
+                $globalKeys = Cache::get($this->cachePrefix . "global_keys", []);
+                
+                foreach ($globalKeys as $key) {
+                    Cache::forget($key);
+                }
+                
+                Cache::forget($this->cachePrefix . "global_keys");
             }
-            
-            Cache::forget($this->cachePrefix . "keys_{$tenantId}");
         }
     }
 }

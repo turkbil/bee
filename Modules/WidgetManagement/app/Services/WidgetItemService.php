@@ -47,7 +47,12 @@ class WidgetItemService
         ]);
         
         // Widget önbelleğini temizle
-        $this->widgetService->clearWidgetCache(tenant()->id, $tenantWidgetId);
+        // tenant() kontrolü ekle, tenant() null olabilir
+        if (function_exists('tenant') && tenant()) {
+            $this->widgetService->clearWidgetCache(tenant()->id, $tenantWidgetId);
+        } else {
+            $this->widgetService->clearWidgetCache(null, $tenantWidgetId);
+        }
         
         return $item;
     }
@@ -61,7 +66,12 @@ class WidgetItemService
         $item->update(['content' => $content]);
         
         // Widget önbelleğini temizle
-        $this->widgetService->clearWidgetCache(tenant()->id, $item->tenant_widget_id);
+        // tenant() kontrolü ekle, tenant() null olabilir
+        if (function_exists('tenant') && tenant()) {
+            $this->widgetService->clearWidgetCache(tenant()->id, $item->tenant_widget_id);
+        } else {
+            $this->widgetService->clearWidgetCache(null, $item->tenant_widget_id);
+        }
         
         return $item;
     }
@@ -77,7 +87,12 @@ class WidgetItemService
         $result = $item->delete();
         
         // Widget önbelleğini temizle
-        $this->widgetService->clearWidgetCache(tenant()->id, $tenantWidgetId);
+        // tenant() kontrolü ekle, tenant() null olabilir
+        if (function_exists('tenant') && tenant()) {
+            $this->widgetService->clearWidgetCache(tenant()->id, $tenantWidgetId);
+        } else {
+            $this->widgetService->clearWidgetCache(null, $tenantWidgetId);
+        }
         
         return $result;
     }
@@ -94,7 +109,12 @@ class WidgetItemService
         }
         
         // Widget önbelleğini temizle
-        $this->widgetService->clearWidgetCache(tenant()->id, $tenantWidgetId);
+        // tenant() kontrolü ekle, tenant() null olabilir
+        if (function_exists('tenant') && tenant()) {
+            $this->widgetService->clearWidgetCache(tenant()->id, $tenantWidgetId);
+        } else {
+            $this->widgetService->clearWidgetCache(null, $tenantWidgetId);
+        }
         
         return true;
     }

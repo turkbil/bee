@@ -13,49 +13,85 @@
             <div class="widget-container" id="widget-container-{{ $position }}">
                 @if($widgets->isEmpty())
                     <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
                         Bu alanda henüz widget bulunmuyor. 'Widget Ekle' butonunu kullanarak widget ekleyebilirsiniz.
                     </div>
                 @else
                     <div class="widget-list" data-position="{{ $position }}">
-                        @foreach($widgets as $widget)
-                            <div class="widget-item" data-id="{{ $widget->id }}">
-                                <div class="widget-item-inner">
-                                    <div class="widget-item-header">
-                                        <div class="widget-drag-handle">
-                                            <i class="fas fa-grip-vertical"></i>
-                                        </div>
-                                        <div class="widget-title">
-                                            {{ optional($widget->widget)->name ?? 'Özel Widget' }}
-                                        </div>
-                                        <div class="widget-actions">
-                                            <button class="btn btn-sm btn-icon" wire:click="openWidgetSettings({{ $widget->id }})">
-                                                <i class="fas fa-cog"></i>
-                                            </button>
-                                            @if(optional($widget->widget)->has_items)
-                                                <button class="btn btn-sm btn-icon" data-bs-toggle="modal" data-bs-target="#widgetItemsModal" 
-                                                    onclick="Livewire.dispatch('openWidgetItems', {{ $widget->id }})">
-                                                    <i class="fas fa-list"></i>
-                                                </button>
-                                            @endif
-                                            <button class="btn btn-sm btn-icon btn-danger" wire:click="removeWidget({{ $widget->id }})">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="widget-item-preview">
-                                        <div class="widget-preview-frame">
-                                            @if(optional($widget->widget)->thumbnail)
-                                                <img src="{{ optional($widget->widget)->getThumbnailUrl() }}" alt="{{ optional($widget->widget)->name }}">
-                                            @else
-                                                <div class="no-preview">
-                                                    <i class="fas fa-puzzle-piece"></i>
+                        <div class="table-responsive">
+                            <table class="table table-vcenter card-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 40px"></th>
+                                        <th>Widget</th>
+                                        <th>Önizleme</th>
+                                        <th style="width: 200px">İşlemler</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($widgets as $widget)
+                                        <tr class="widget-item" data-id="{{ $widget->id }}">
+                                            <td class="widget-drag-handle text-center">
+                                                <i class="fas fa-grip-vertical"></i>
+                                            </td>
+                                            <td>
+                                                <div class="widget-title fw-bold">
+                                                    {{ optional($widget->widget)->name ?? 'Özel Widget' }}
                                                 </div>
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
+                                                <div class="text-muted small">
+                                                    {{ optional($widget->widget)->description ?? 'Özel widget açıklaması' }}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="widget-preview-frame">
+                                                    @if(optional($widget->widget)->thumbnail)
+                                                        <img src="{{ optional($widget->widget)->getThumbnailUrl() }}" 
+                                                             alt="{{ optional($widget->widget)->name }}"
+                                                             style="max-height: 60px;"
+                                                             class="img-thumbnail">
+                                                    @else
+                                                        <div class="no-preview text-center">
+                                                            <i class="fas fa-puzzle-piece text-muted"></i>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="btn-list">
+                                                    <button class="btn btn-sm btn-icon btn-primary" 
+                                                            wire:click="openWidgetSettings({{ $widget->id }})"
+                                                            title="Ayarlar">
+                                                        <i class="fas fa-cog"></i>
+                                                    </button>
+                                                    
+                                                    @if(optional($widget->widget)->has_items)
+                                                        <a href="{{ route('admin.widgetmanagement.items', $widget->id) }}"
+                                                           class="btn btn-sm btn-icon btn-success"
+                                                           title="Öğeler">
+                                                            <i class="fas fa-list"></i>
+                                                        </a>
+                                                    @endif
+                                                    
+                                                    <a href="{{ route('admin.widgetmanagement.preview', $widget->widget_id) }}" 
+                                                       class="btn btn-sm btn-icon btn-info"
+                                                       target="_blank"
+                                                       title="Önizleme">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    
+                                                    <button class="btn btn-sm btn-icon btn-danger" 
+                                                            wire:click="removeWidget({{ $widget->id }})"
+                                                            onclick="return confirm('Bu widget\'ı kaldırmak istediğinize emin misiniz?');"
+                                                            title="Kaldır">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 @endif
             </div>
@@ -109,19 +145,22 @@
                 // Widget listelerinde sürükle-bırak
                 document.querySelectorAll('.widget-list').forEach(el => {
                     const position = el.dataset.position;
+                    const tbody = el.querySelector('tbody');
                     
-                    const sortable = new Sortable(el, {
-                        handle: '.widget-drag-handle',
-                        animation: 150,
-                        ghostClass: 'widget-ghost',
-                        onEnd: function() {
-                            // Sıralamayı güncelle
-                            const items = Array.from(el.querySelectorAll('.widget-item')).map(item => item.dataset.id);
-                            Livewire.dispatch('widgetOrderUpdated', items);
-                        }
-                    });
-                    
-                    sortables.push(sortable);
+                    if (tbody) {
+                        const sortable = new Sortable(tbody, {
+                            handle: '.widget-drag-handle',
+                            animation: 150,
+                            ghostClass: 'widget-ghost',
+                            onEnd: function() {
+                                // Sıralamayı güncelle
+                                const items = Array.from(tbody.querySelectorAll('.widget-item')).map(item => item.dataset.id);
+                                Livewire.dispatch('widgetOrderUpdated', items);
+                            }
+                        });
+                        
+                        sortables.push(sortable);
+                    }
                 });
             }
             

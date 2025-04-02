@@ -75,6 +75,14 @@
                                         title="{{ $widget->is_active ? 'Pasif Yap' : 'Aktif Yap' }}">
                                     <i class="fas fa-{{ $widget->is_active ? 'ban' : 'check' }}"></i>
                                 </button>
+                                @if($widget->has_items)
+                                <a href="{{ route('admin.widgetmanagement.preview', $widget->id) }}" 
+                                    class="btn btn-sm btn-outline-info" 
+                                    target="_blank" 
+                                    title="Önizleme">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                @endif
                             </div>
                         </div>
                     </div>

@@ -55,12 +55,26 @@ class WidgetSettingsComponent extends Component
         }
         
         $this->validate($rules);
+
+        // Tenant ID'yi erken al
+        $tenantId = tenant()->id; 
+        if (!$tenantId) {
+            // Eğer tenant ID hala null ise hata ver veya logla
+             activity()->log('Tenant ID could not be determined in WidgetSettingsComponent save method.');
+             $this->dispatch('toast', [
+                 'title' => 'Hata!',
+                 'message' => 'Kiracı bilgisi alınamadı. Lütfen tekrar deneyin.',
+                 'type' => 'error'
+             ]);
+             return;
+        }
         
         // Dosya yüklemeleri
         foreach ($this->temporaryUpload as $fieldName => $upload) {
             if ($upload) {
+                // Dosya yüklerken de $tenantId değişkenini kullanalım
                 $filename = time() . '_' . Str::slug($fieldName) . '.' . $upload->getClientOriginalExtension();
-                $path = $upload->storeAs('widgets/' . tenant()->id . "/settings", $filename, 'public');
+                $path = $upload->storeAs('widgets/' . $tenantId . "/settings", $filename, 'public');
                 $this->settings[$fieldName] = asset('storage/' . $path);
             }
         }
@@ -69,8 +83,8 @@ class WidgetSettingsComponent extends Component
             'settings' => $this->settings
         ]);
         
-        // Widget önbelleğini temizle
-        $this->widgetService->clearWidgetCache(tenant()->id, $this->tenantWidgetId);
+        // Widget önbelleğini temizle - Kaydedilen tenantId'yi kullan
+        $this->widgetService->clearWidgetCache($tenantId, $this->tenantWidgetId);
         
         $this->dispatch('toast', [
             'title' => 'Başarılı!',

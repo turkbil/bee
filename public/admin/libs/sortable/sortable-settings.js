@@ -43,3 +43,30 @@ document.addEventListener("livewire:initialized", () => {
         });
     }
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    const sortableList = document.getElementById("sortable-list");
+
+    if (sortableList) {
+        const sortable = new Sortable(sortableList, {
+            animation: 150,
+            handle: ".widget-drag-handle",
+            ghostClass: "sortable-ghost",
+            onEnd: function () {
+                const items = [];
+                const nodes = sortableList.querySelectorAll(".widget-item");
+
+                nodes.forEach((node, index) => {
+                    items.push({
+                        value: node.getAttribute("data-id"),
+                        order: index + 1,
+                    });
+                });
+
+                if (window.Livewire) {
+                    window.Livewire.dispatch("updateOrder", items);
+                }
+            },
+        });
+    }
+});

@@ -43,6 +43,14 @@ class WidgetSettingsComponent extends Component
         ]);
     }
     
+    /**
+     * Benzersiz ID üretir
+     */
+    private function generateUniqueId(): string
+    {
+        return (string) Str::uuid();
+    }
+
     public function save()
     {
         // Form alanlarını doğrula
@@ -77,6 +85,11 @@ class WidgetSettingsComponent extends Component
                 $path = $upload->storeAs('widgets/' . $tenantId . "/settings", $filename, 'public');
                 $this->settings[$fieldName] = asset('storage/' . $path);
             }
+        }
+
+        // Eğer benzersiz ID yoksa, yeni bir tane oluştur
+        if (!isset($this->settings['unique_id'])) {
+            $this->settings['unique_id'] = $this->generateUniqueId();
         }
         
         $this->tenantWidget->update([

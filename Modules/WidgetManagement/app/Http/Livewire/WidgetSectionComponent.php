@@ -9,6 +9,8 @@ use Modules\WidgetManagement\app\Models\TenantWidget;
 use Modules\WidgetManagement\app\Services\WidgetService;
 use Modules\Page\app\Models\Page;
 use Livewire\Attributes\On;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 #[Layout('admin.layout')]
 class WidgetSectionComponent extends Component
@@ -106,32 +108,74 @@ class WidgetSectionComponent extends Component
     }
     
     #[On('updateOrder')]
-    public function updateOrder($list)
+    public function updateOrder(array $list)
     {
-        if (!is_array($list)) {
+        $updatedItems = [];
+        $errors = [];
+
+        if (empty($list)) {
+            Log::warning('Boş veya geçersiz liste alındı.', [
+                'user_id' => Auth::id(),
+                'page_id' => $this->pageId,
+                'module' => $this->module,
+                'position' => $this->position,
+            ]);
+            // Hata mesajı gösterme veya başka bir işlem yapılabilir.
             return;
         }
 
-        foreach ($list as $item) {
-            if (!isset($item['value'], $item['order'])) {
-                continue;
+        try {
+            foreach ($list as $item) {
+                if (!isset($item['value']) || !isset($item['order'])) {
+                    Log::warning('Widget ID veya sıra bilgisi eksik', [
+                        'item' => $item,
+                        'user_id' => Auth::id(),
+                    ]);
+                    $errors[] = ['item' => $item, 'message' => 'Eksik bilgi: ID veya sıra.'];
+                    continue; // Bu öğeyi atla ve devam et
+                }
+
+                $widgetId = $item['value'];
+                $newOrder = $item['order'];
+
+                $widget = TenantWidget::find($widgetId);
+
+                if ($widget) {
+                    $oldOrder = $widget->order;
+                    $widget->order = $newOrder;
+                    $widget->save();
+                    $updatedItems[] = ['id' => $widget->id, 'old_order' => $oldOrder, 'new_order' => $newOrder];
+                } else {
+                    Log::warning('Widget bulunamadı', ['widget_id' => $widgetId, 'user_id' => Auth::id()]);
+                    $errors[] = ['id' => $widgetId, 'message' => 'Widget bulunamadı.'];
+                }
             }
 
-            TenantWidget::where('id', $item['value'])
-                ->update(['order' => $item['order']]);
+            // Widget önbelleğini temizle
+            $this->widgetService->clearWidgetCache();
+            
+            // Widgetları yeniden yükle
+            $this->loadWidgets();
+
+        } catch (\Exception $e) {
+            Log::error('Widget güncellenirken hata oluştu', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(), // Daha detaylı hata takibi için
+                'user_id' => Auth::id(),
+                'list' => $list
+            ]);
+            // Kullanıcıya hata mesajı göstermek için bir event dispatch edilebilir
+            $this->dispatch('show-error', 'Widget sıralaması güncellenirken bir hata oluştu.');
+            $errors[] = ['general' => 'Veritabanı hatası oluştu.'];
         }
-        
-        // Widget önbelleğini temizle
-        $this->widgetService->clearWidgetCache();
-        
-        // Widgetları yeniden yükle
-        $this->loadWidgets();
-        
-        $this->dispatch('toast', [
-            'title' => 'Başarılı!',
-            'message' => 'Widget sıralaması güncellendi.',
-            'type' => 'success'
-        ]);
+
+        // İsteğe bağlı: Başarılı güncelleme mesajı
+        if (empty($errors)) {
+            $this->dispatch('show-success', 'Widget sıralaması başarıyla güncellendi.');
+        } else {
+            // Hatalar varsa, belki sadece hatalı olanlar için bir mesaj gösterilir
+            $this->dispatch('show-warning', 'Bazı widgetlar güncellenirken sorun oluştu.');
+        }
     }
     
     public function redirectToWidgetSettings($tenantWidgetId)

@@ -52,9 +52,9 @@
                         </div>
                     </div>
                     
-                    <div class="row row-cards" data-position="{{ $position }}" id="widget-sortable-container">
+                    <div class="row row-cards" id="sortable-list">
                         @foreach($widgets as $widget)
-                        <div class="col-md-6 widget-item" data-id="{{ $widget->id }}">
+                        <div class="col-md-6 widget-item" id="item-{{ $widget->id }}" data-id="{{ $widget->id }}">
                             <div class="card mb-3">
                                 <div class="card-status-start bg-primary"></div>
                                 <div class="widget-drag-handle card-header cursor-move">
@@ -208,42 +208,9 @@
             </div>
         </div>
     </div>
-    
-    <!-- Widget Sıralama JS -->
-    @push('scripts')
-    <script>
-        document.addEventListener('livewire:init', function() {
-            let sortable;
-            
-            function initSortable() {
-                const container = document.getElementById('widget-sortable-container');
-                
-                if (container) {
-                    sortable = new Sortable(container, {
-                        handle: '.widget-drag-handle',
-                        animation: 150,
-                        ghostClass: 'sortable-ghost',
-                        onEnd: function() {
-                            // Sıralamayı güncelle
-                            const items = Array.from(container.querySelectorAll('.widget-item')).map(item => item.dataset.id);
-                            Livewire.dispatch('widgetOrderUpdated', items);
-                        }
-                    });
-                }
-            }
-            
-            // İlk yükleme
-            if (document.getElementById('widget-sortable-container')) {
-                initSortable();
-            }
-            
-            // Sayfa güncellendiğinde yeniden başlat
-            Livewire.hook('element.updated', () => {
-                if (document.getElementById('widget-sortable-container')) {
-                    initSortable();
-                }
-            });
-        });
-    </script>
-    @endpush
 </div>
+
+@push('scripts')
+<script src="{{ asset('admin/libs/sortable/sortable.min.js') }}?v={{ filemtime(public_path('admin/libs/sortable/sortable.min.js')) }}"></script>
+<script src="{{ asset('admin/libs/sortable/sortable-settings.js') }}?v={{ filemtime(public_path('admin/libs/sortable/sortable-settings.js')) }}"></script>
+@endpush

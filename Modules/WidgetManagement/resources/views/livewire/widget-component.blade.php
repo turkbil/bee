@@ -16,7 +16,7 @@
         <div class="card-body">
             <div class="row mb-3">
                 <div class="col-md-4">
-                    <div class="input-icon">
+                    <div class="input-icon mb-3">
                         <span class="input-icon-addon">
                             <i class="fas fa-search"></i>
                         </span>
@@ -24,28 +24,33 @@
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <select wire:model.live="typeFilter" class="form-select">
-                        <option value="">Tüm Tipler</option>
+                    <select wire:model.live="typeFilter" class="form-select mb-3">
+                        <option value="">Tüm Widget Tipleri</option>
                         @foreach($types as $key => $label)
                         <option value="{{ $key }}">{{ $label }}</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="col-md-2">
-                    <div class="form-check form-switch">
-                        <input type="checkbox" id="activeOnly" class="form-check-input" wire:model.live="activeOnly">
-                        <label class="form-check-label" for="activeOnly">Sadece Aktif</label>
-                    </div>
+                    <label class="form-check form-switch">
+                        <input type="checkbox" wire:model.live="activeOnly" class="form-check-input">
+                        <span class="form-check-label">Sadece Aktif Widgetlar</span>
+                    </label>
                 </div>
             </div>
             
-            <div class="row">
+            <div class="row row-cards">
                 @forelse($widgets as $widget)
                 <div class="col-md-4 col-lg-3 mb-4">
                     <div class="card h-100">
-                        <div class="card-img-top img-responsive img-responsive-16x9" style="background-image: url('{{ $widget->getThumbnailUrl() }}')"></div>
+                        <div class="card-status-top {{ $widget->is_active ? 'bg-green' : 'bg-red' }}"></div>
+                        
+                        <div class="card-img-top img-responsive img-responsive-16x9 overflow-hidden" style="max-height: 160px;">
+                            <img src="{{ $widget->getThumbnailUrl() }}" class="w-100 h-100 object-cover" alt="{{ $widget->name }}">
+                        </div>
+                        
                         <div class="card-body">
-                            <div class="d-flex align-items-center">
+                            <div class="d-flex align-items-center mb-2">
                                 <h3 class="card-title mb-0">{{ $widget->name }}</h3>
                                 <div class="ms-auto">
                                     <span class="badge {{ $widget->is_active ? 'bg-green' : 'bg-red' }}">
@@ -53,36 +58,50 @@
                                     </span>
                                 </div>
                             </div>
-                            <div class="text-muted mt-2 small">{{ Str::limit($widget->description, 100) }}</div>
-                            <div class="mt-2">
-                                <span class="badge bg-blue-lt">{{ $types[$widget->type] ?? $widget->type }}</span>
+                            
+                            <div class="text-muted small mb-3" style="min-height: 40px;">
+                                {{ Str::limit($widget->description, 100) ?: 'Widget açıklaması bulunmuyor.' }}
+                            </div>
+                            
+                            <div class="d-flex flex-wrap gap-1 mb-3">
+                                <span class="badge bg-blue">{{ $types[$widget->type] ?? $widget->type }}</span>
                                 @if($widget->is_core)
-                                <span class="badge bg-purple-lt">Sistem</span>
+                                <span class="badge bg-purple">Sistem</span>
                                 @endif
                                 @if($widget->has_items)
-                                <span class="badge bg-orange-lt">Dinamik Öğeler</span>
+                                <span class="badge bg-orange">Dinamik İçerik</span>
                                 @endif
                             </div>
                         </div>
+                        
                         <div class="card-footer d-flex justify-content-between align-items-center">
                             <div class="btn-list">
-                                <a href="{{ route('admin.widgetmanagement.manage', $widget->id) }}" class="btn btn-sm btn-outline-primary">
-                                    <i class="fas fa-edit"></i>
+                                <a href="{{ route('admin.widgetmanagement.manage', $widget->id) }}" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-edit me-1"></i> Düzenle
                                 </a>
-                                <button class="btn btn-sm {{ $widget->is_active ? 'btn-outline-danger' : 'btn-outline-success' }}" 
-                                        wire:click="toggleActive({{ $widget->id }})" 
-                                        wire:loading.attr="disabled" 
-                                        title="{{ $widget->is_active ? 'Pasif Yap' : 'Aktif Yap' }}">
-                                    <i class="fas fa-{{ $widget->is_active ? 'ban' : 'check' }}"></i>
-                                </button>
-                                @if($widget->has_items)
-                                <a href="{{ route('admin.widgetmanagement.preview', $widget->id) }}" 
-                                    class="btn btn-sm btn-outline-info" 
-                                    target="_blank" 
-                                    title="Önizleme">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                @endif
+                                
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-end">
+                                        <a href="{{ route('admin.widgetmanagement.preview', $widget->id) }}" 
+                                            class="dropdown-item" 
+                                            target="_blank">
+                                            <i class="fas fa-eye me-2 text-info"></i> Önizleme
+                                        </a>
+                                        
+                                        <button class="dropdown-item" 
+                                                wire:click="toggleActive({{ $widget->id }})" 
+                                                wire:loading.attr="disabled">
+                                            @if($widget->is_active)
+                                            <i class="fas fa-ban me-2 text-danger"></i> Pasif Yap
+                                            @else
+                                            <i class="fas fa-check me-2 text-success"></i> Aktif Yap
+                                            @endif
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -108,7 +127,7 @@
                 @endforelse
             </div>
             
-            <div class="mt-4">
+            <div class="mt-4 d-flex justify-content-center">
                 {{ $widgets->links() }}
             </div>
         </div>

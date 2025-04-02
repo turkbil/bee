@@ -2,96 +2,149 @@
 <div>
     <div class="card mb-4">
         <div class="card-header">
-            <h3 class="card-title">{{ $positionLabels[$position] ?? 'Widget Alanı' }}</h3>
-            <div class="card-actions">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h3 class="card-title">
+                        <i class="fas fa-columns me-2"></i>
+                        {{ $positionLabels[$position] ?? 'Widget Alanı' }}
+                    </h3>
+                    @if($page)
+                    <div class="text-muted">
+                        Sayfa: {{ $page->title }}
+                    </div>
+                    @elseif($module)
+                    <div class="text-muted">
+                        Modül: {{ $module }}
+                    </div>
+                    @endif
+                </div>
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addWidgetModal">
-                    <i class="fas fa-plus me-1"></i> Widget Ekle
+                    <i class="fas fa-plus me-2"></i> Widget Ekle
                 </button>
             </div>
         </div>
         <div class="card-body">
             <div class="widget-container" id="widget-container-{{ $position }}">
                 @if($widgets->isEmpty())
-                    <div class="alert alert-info">
-                        <i class="fas fa-info-circle me-2"></i>
-                        Bu alanda henüz widget bulunmuyor. 'Widget Ekle' butonunu kullanarak widget ekleyebilirsiniz.
+                    <div class="empty">
+                        <div class="empty-img">
+                            <i class="fas fa-puzzle-piece fa-4x text-muted"></i>
+                        </div>
+                        <p class="empty-title">Bu alanda henüz widget bulunmuyor</p>
+                        <p class="empty-subtitle text-muted">
+                            "Widget Ekle" butonunu kullanarak bu alana widget ekleyebilirsiniz.
+                        </p>
+                        <div class="empty-action">
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addWidgetModal">
+                                <i class="fas fa-plus me-2"></i> Widget Ekle
+                            </button>
+                        </div>
                     </div>
                 @else
-                    <div class="widget-list" data-position="{{ $position }}">
-                        <div class="table-responsive">
-                            <table class="table table-vcenter card-table">
-                                <thead>
-                                    <tr>
-                                        <th style="width: 40px"></th>
-                                        <th>Widget</th>
-                                        <th>Önizleme</th>
-                                        <th style="width: 200px">İşlemler</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($widgets as $widget)
-                                        <tr class="widget-item" data-id="{{ $widget->id }}">
-                                            <td class="widget-drag-handle text-center">
-                                                <i class="fas fa-grip-vertical"></i>
-                                            </td>
-                                            <td>
-                                                <div class="widget-title fw-bold">
-                                                    {{ optional($widget->widget)->name ?? 'Özel Widget' }}
-                                                </div>
-                                                <div class="text-muted small">
-                                                    {{ optional($widget->widget)->description ?? 'Özel widget açıklaması' }}
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="widget-preview-frame">
-                                                    @if(optional($widget->widget)->thumbnail)
-                                                        <img src="{{ optional($widget->widget)->getThumbnailUrl() }}" 
-                                                             alt="{{ optional($widget->widget)->name }}"
-                                                             style="max-height: 60px;"
-                                                             class="img-thumbnail">
-                                                    @else
-                                                        <div class="no-preview text-center">
-                                                            <i class="fas fa-puzzle-piece text-muted"></i>
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="btn-list">
-                                                    <button class="btn btn-sm btn-icon btn-primary" 
-                                                            wire:click="openWidgetSettings({{ $widget->id }})"
-                                                            title="Ayarlar">
-                                                        <i class="fas fa-cog"></i>
-                                                    </button>
-                                                    
-                                                    @if(optional($widget->widget)->has_items)
-                                                        <a href="{{ route('admin.widgetmanagement.items', $widget->id) }}"
-                                                           class="btn btn-sm btn-icon btn-success"
-                                                           title="Öğeler">
-                                                            <i class="fas fa-list"></i>
-                                                        </a>
-                                                    @endif
-                                                    
-                                                    <a href="{{ route('admin.widgetmanagement.preview', $widget->widget_id) }}" 
-                                                       class="btn btn-sm btn-icon btn-info"
-                                                       target="_blank"
-                                                       title="Önizleme">
-                                                        <i class="fas fa-eye"></i>
-                                                    </a>
-                                                    
-                                                    <button class="btn btn-sm btn-icon btn-danger" 
-                                                            wire:click="removeWidget({{ $widget->id }})"
-                                                            onclick="return confirm('Bu widget\'ı kaldırmak istediğinize emin misiniz?');"
-                                                            title="Kaldır">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                    <div class="alert alert-info mb-3">
+                        <div class="d-flex">
+                            <div>
+                                <i class="fas fa-info-circle me-2" style="margin-top: 3px"></i>
+                            </div>
+                            <div>
+                                Widgetları sürükleyip bırakarak sıralayabilirsiniz. Sıralama otomatik olarak kaydedilecektir.
+                            </div>
                         </div>
+                    </div>
+                    
+                    <div class="row row-cards" data-position="{{ $position }}" id="widget-sortable-container">
+                        @foreach($widgets as $widget)
+                        <div class="col-md-6 widget-item" data-id="{{ $widget->id }}">
+                            <div class="card mb-3">
+                                <div class="card-status-start bg-primary"></div>
+                                <div class="widget-drag-handle card-header cursor-move">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-grip-vertical text-muted me-2"></i>
+                                            <span class="fw-bold">{{ optional($widget->widget)->name ?? 'Özel Widget' }}</span>
+                                        </div>
+                                        <div class="widget-actions">
+                                            <div class="btn-list">
+                                                <button class="btn btn-sm btn-primary" 
+                                                        wire:click="$dispatch('openWidgetSettings', {{ $widget->id }})"
+                                                        title="Ayarlar">
+                                                    <i class="fas fa-cog"></i>
+                                                </button>
+                                                
+                                                @if(optional($widget->widget)->has_items)
+                                                <a href="{{ route('admin.widgetmanagement.items', $widget->id) }}"
+                                                    class="btn btn-sm btn-success"
+                                                    title="İçerik Yönetimi">
+                                                    <i class="fas fa-list"></i>
+                                                </a>
+                                                @endif
+                                                
+                                                <a href="{{ route('admin.widgetmanagement.preview', $widget->widget_id) }}" 
+                                                    class="btn btn-sm btn-info"
+                                                    target="_blank"
+                                                    title="Önizleme">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                
+                                                <button class="btn btn-sm btn-danger" 
+                                                        wire:click="removeWidget({{ $widget->id }})"
+                                                        onclick="return confirm('Bu widget\'ı kaldırmak istediğinize emin misiniz?');"
+                                                        title="Kaldır">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col-auto">
+                                            @if(optional($widget->widget)->thumbnail)
+                                                <img src="{{ optional($widget->widget)->getThumbnailUrl() }}" 
+                                                    alt="{{ optional($widget->widget)->name }}"
+                                                    class="avatar avatar-lg"
+                                                    style="object-fit: cover;">
+                                            @else
+                                                <span class="avatar avatar-lg bg-blue-lt">
+                                                    <i class="fas fa-puzzle-piece"></i>
+                                                </span>
+                                            @endif
+                                        </div>
+                                        <div class="col">
+                                            <div class="text-muted small">
+                                                {{ optional($widget->widget)->description ?? 'Özel widget açıklaması' }}
+                                            </div>
+                                            
+                                            <div class="mt-2">
+                                                <span class="badge bg-blue">{{ optional($widget->widget)->type }}</span>
+                                                @if(optional($widget->widget)->is_core)
+                                                <span class="badge bg-purple">Sistem</span>
+                                                @endif
+                                                @if(optional($widget->widget)->has_items)
+                                                <span class="badge bg-orange">Dinamik İçerik</span>
+                                                @endif
+                                                
+                                                @if($widget->settings)
+                                                <span class="badge bg-green">Özelleştirilmiş</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer d-flex justify-content-between align-items-center">
+                                    <a href="{{ route('admin.widgetmanagement.settings', $widget->id) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-cog me-1"></i> Özellikleri Düzenle
+                                    </a>
+                                    
+                                    @if(optional($widget->widget)->has_items)
+                                    <a href="{{ route('admin.widgetmanagement.items', $widget->id) }}" class="btn btn-sm btn-outline-success">
+                                        <i class="fas fa-layer-group me-1"></i> İçerik Yönet
+                                    </a>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach
                     </div>
                 @endif
             </div>
@@ -99,26 +152,52 @@
     </div>
     
     <!-- Widget Ekleme Modal -->
-    <div class="modal fade" id="addWidgetModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
+    <div class="modal modal-blur fade" id="addWidgetModal" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Widget Ekle</h5>
+                    <h5 class="modal-title">Widget Seçin</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
                 </div>
                 <div class="modal-body">
+                    <!-- Arama Filtresi -->
+                    <div class="mb-3">
+                        <div class="input-icon">
+                            <span class="input-icon-addon">
+                                <i class="fas fa-search"></i>
+                            </span>
+                            <input type="text" class="form-control" placeholder="Widget ara...">
+                        </div>
+                    </div>
+                    
                     <div class="row row-cards">
                         @foreach($availableWidgets as $widget)
-                            <div class="col-md-4 col-sm-6">
-                                <div class="card widget-card">
+                            <div class="col-sm-6 col-lg-4 mb-3">
+                                <div class="card card-sm widget-select-card h-100">
                                     <div class="card-body">
-                                        <h5 class="card-title">{{ $widget->name }}</h5>
-                                        <p class="card-text small">{{ $widget->description }}</p>
-                                        <div class="widget-preview mb-3">
-                                            <img src="{{ $widget->getThumbnailUrl() }}" alt="{{ $widget->name }}" class="img-fluid">
+                                        <div class="row">
+                                            <div class="col-auto">
+                                                <img src="{{ $widget->getThumbnailUrl() }}" 
+                                                    alt="{{ $widget->name }}" 
+                                                    class="rounded avatar avatar-md"
+                                                    style="object-fit: cover;">
+                                            </div>
+                                            <div class="col">
+                                                <h4 class="card-title mb-1">{{ $widget->name }}</h4>
+                                                <div class="text-muted small">{{ Str::limit($widget->description, 80) }}</div>
+                                                
+                                                <div class="mt-2 d-flex gap-1">
+                                                    <span class="badge bg-blue">{{ $types[$widget->type] ?? $widget->type }}</span>
+                                                    @if($widget->is_core)
+                                                    <span class="badge bg-purple">Sistem</span>
+                                                    @endif
+                                                </div>
+                                            </div>
                                         </div>
+                                    </div>
+                                    <div class="card-footer">
                                         <button class="btn btn-primary w-100" wire:click="addWidget({{ $widget->id }})" data-bs-dismiss="modal">
-                                            Ekle
+                                            <i class="fas fa-plus me-1"></i> Bu Widget'ı Ekle
                                         </button>
                                     </div>
                                 </div>
@@ -130,46 +209,37 @@
         </div>
     </div>
     
-    <!-- Widget JS -->
+    <!-- Widget Sıralama JS -->
     @push('scripts')
     <script>
         document.addEventListener('livewire:init', function() {
-            // Sortable.js kütüphanesi
-            let sortables = [];
+            let sortable;
             
             function initSortable() {
-                // Önceki sortable'ları temizle
-                sortables.forEach(sortable => sortable.destroy());
-                sortables = [];
+                const container = document.getElementById('widget-sortable-container');
                 
-                // Widget listelerinde sürükle-bırak
-                document.querySelectorAll('.widget-list').forEach(el => {
-                    const position = el.dataset.position;
-                    const tbody = el.querySelector('tbody');
-                    
-                    if (tbody) {
-                        const sortable = new Sortable(tbody, {
-                            handle: '.widget-drag-handle',
-                            animation: 150,
-                            ghostClass: 'widget-ghost',
-                            onEnd: function() {
-                                // Sıralamayı güncelle
-                                const items = Array.from(tbody.querySelectorAll('.widget-item')).map(item => item.dataset.id);
-                                Livewire.dispatch('widgetOrderUpdated', items);
-                            }
-                        });
-                        
-                        sortables.push(sortable);
-                    }
-                });
+                if (container) {
+                    sortable = new Sortable(container, {
+                        handle: '.widget-drag-handle',
+                        animation: 150,
+                        ghostClass: 'sortable-ghost',
+                        onEnd: function() {
+                            // Sıralamayı güncelle
+                            const items = Array.from(container.querySelectorAll('.widget-item')).map(item => item.dataset.id);
+                            Livewire.dispatch('widgetOrderUpdated', items);
+                        }
+                    });
+                }
             }
             
             // İlk yükleme
-            initSortable();
+            if (document.getElementById('widget-sortable-container')) {
+                initSortable();
+            }
             
             // Sayfa güncellendiğinde yeniden başlat
-            Livewire.hook('element.updated', (el, component) => {
-                if (el.id === 'widget-container-{{ $position }}') {
+            Livewire.hook('element.updated', () => {
+                if (document.getElementById('widget-sortable-container')) {
                     initSortable();
                 }
             });

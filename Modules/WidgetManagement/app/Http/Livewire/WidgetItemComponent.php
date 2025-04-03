@@ -46,6 +46,19 @@ class WidgetItemComponent extends Component
         $this->tenantWidget = TenantWidget::with('widget')->findOrFail($tenantWidgetId);
         $this->schema = $this->tenantWidget->widget->getItemSchema();
         
+        // Statik bileşen kontrolü
+        if ($this->tenantWidget->widget->type === 'static' && $this->items->isEmpty()) {
+            // Statik bileşen için otomatik bir içerik öğesi oluştur
+            $content = [
+                'title' => $this->tenantWidget->settings['title'] ?? $this->tenantWidget->widget->name,
+                'is_active' => true,
+                'unique_id' => (string) Str::uuid()
+            ];
+            
+            $this->itemService->addItem($this->tenantWidgetId, $content);
+            $this->loadItems();
+        }
+        
         // Her zaman title ve is_active alanları olmalı - bunlar değiştirilemez
         $hasTitle = false;
         $hasActive = false;
@@ -143,6 +156,16 @@ class WidgetItemComponent extends Component
     public function deleteItem($itemId)
     {
         try {
+            // Statik bileşen kontrolü - tek öğe varsa silinemez
+            if ($this->tenantWidget->widget->type === 'static' && $this->items->count() <= 1) {
+                $this->dispatch('toast', [
+                    'title' => 'Hata!',
+                    'message' => 'Statik bileşenin tek içerik öğesi silinemez.',
+                    'type' => 'error'
+                ]);
+                return;
+            }
+            
             $this->itemService->deleteItem($itemId);
             
             $this->loadItems();
@@ -267,7 +290,6 @@ class WidgetItemComponent extends Component
     
     public function render()
     {
-        // Görünüm yolu düzeltildi
         return view('widgetmanagement::livewire.widget-item-component');
     }
 }

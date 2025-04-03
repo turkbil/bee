@@ -1,12 +1,12 @@
 {{-- Modules/WidgetManagement/resources/views/helper.blade.php --}}
 {{-- PreTitle --}}
 @push('pretitle')
-Widget Yönetimi
+Bileşen Yönetimi
 @endpush
 
 {{-- Başlık --}}
 @push('title')
-Widget Yönetimi
+Bileşen Yönetimi
 @endpush
 
 {{-- Modül Menüsü --}}
@@ -18,13 +18,13 @@ Widget Yönetimi
             <div class="dropdown">
                 <button type="button" class="dropdown-module-item dropdown-toggle btn btn-ghost-secondary"
                     data-bs-toggle="dropdown">
-                    Widget Menüsü
+                    Bileşen Menüsü
                 </button>
                 <div class="dropdown-menu">
                     @hasmoduleaccess('widgetmanagement', 'view')
                     <a class="dropdown-item {{ request()->routeIs('admin.widgetmanagement.index') ? 'active' : '' }}" 
                        href="{{ route('admin.widgetmanagement.index') }}">
-                        <i class="fas fa-puzzle-piece me-2"></i> Widgetlar
+                        <i class="fas fa-puzzle-piece me-2"></i> Bileşenler
                     </a>
                     @endhasmoduleaccess
                     
@@ -39,7 +39,7 @@ Widget Yönetimi
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item {{ request()->routeIs('admin.widgetmanagement.manage*') ? 'active' : '' }}" 
                        href="{{ route('admin.widgetmanagement.manage') }}">
-                        <i class="fas fa-tools me-2"></i> Widget Yapılandır
+                        <i class="fas fa-tools me-2"></i> Bileşen Şablonları
                     </a>
                     @endif
                     
@@ -53,27 +53,27 @@ Widget Yönetimi
                     @if(request()->routeIs('admin.widgetmanagement.settings*'))
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item active" href="{{ url()->current() }}">
-                        <i class="fas fa-sliders-h me-2"></i> Widget Ayarları
+                        <i class="fas fa-sliders-h me-2"></i> Bileşen Ayarları
                     </a>
                     @endif
                 </div>
             </div>
             
-            @if(request()->routeIs('admin.widgetmanagement.index') || request()->routeIs('admin.widgetmanagement.section*'))
-            <a href="{{ route('admin.widgetmanagement.section') }}" class="btn btn-primary">
-                <i class="fas fa-plus me-2"></i> Widget Ekle
+            @if(request()->routeIs('admin.widgetmanagement.index'))
+            <a href="#" class="btn btn-primary" onclick="window.location.href='{{ route('admin.widgetmanagement.index') }}'; Livewire.dispatch('changeViewMode', { mode: 'gallery' })">
+                <i class="fas fa-plus me-2"></i> Yeni Bileşen Oluştur
             </a>
             @endif
             
-            @if(request()->routeIs('admin.widgetmanagement.items*'))
-            <a href="{{ route('admin.widgetmanagement.section') }}" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left me-2"></i> Bölümlere Dön
+            @if(request()->routeIs('admin.widgetmanagement.section*'))
+            <a href="{{ route('admin.widgetmanagement.index') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i> Bileşenlere Dön
             </a>
             @endif
             
-            @if(request()->routeIs('admin.widgetmanagement.settings*'))
-            <a href="{{ route('admin.widgetmanagement.section') }}" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left me-2"></i> Bölümlere Dön
+            @if(request()->routeIs('admin.widgetmanagement.items*') || request()->routeIs('admin.widgetmanagement.settings*'))
+            <a href="{{ route('admin.widgetmanagement.index') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i> Bileşenlere Dön
             </a>
             @endif
         </div>

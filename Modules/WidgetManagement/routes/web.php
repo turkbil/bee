@@ -17,22 +17,22 @@ Route::middleware(['web', 'auth', 'tenant'])
         Route::prefix('widgetmanagement')
             ->name('widgetmanagement.')
             ->group(function () {
-                // Widget listesi
+                // Bileşen Yönetimi Ana Sayfa (Aktif Bileşenler ve Galeri)
                 Route::get('/', WidgetComponent::class)
                     ->middleware('module.permission:widgetmanagement,view')
                     ->name('index');
-                
-                // Widget yönetimi - id parametresi opsiyonel - SADECE ROOT
+                    
+                // Widget Şablonu Yönetimi - SADECE ROOT
                 Route::get('/manage/{id?}', WidgetManageComponent::class)
                     ->middleware(['module.permission:widgetmanagement,update', 'role:root'])
                     ->name('manage');
                 
-                // Widget Bölüm Yönetimi - isimli parametreler ile
+                // Bölüm Yönetimi
                 Route::get('/section', WidgetSectionComponent::class)
                     ->middleware('module.permission:widgetmanagement,view')
                     ->name('section');
                 
-                // Konum parametreli route ekleyelim (daha net URL için)
+                // Konum parametreli route
                 Route::get('/section/position/{position}', WidgetSectionComponent::class)
                     ->middleware('module.permission:widgetmanagement,view')
                     ->name('section.position');
@@ -55,7 +55,7 @@ Route::middleware(['web', 'auth', 'tenant'])
                     ->where('tenantWidgetId', '[0-9]+')
                     ->name('settings');
                 
-                // Widget Önizleme
+                // Widget Önizleme - önceki dosyada vardı, muhafaza edelim
                 Route::get('/preview/{id}', [WidgetPreviewController::class, 'show'])
                     ->middleware('module.permission:widgetmanagement,view')
                     ->where('id', '[0-9]+')

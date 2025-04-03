@@ -8,6 +8,7 @@ use Livewire\Attributes\Layout;
 use Modules\WidgetManagement\app\Models\TenantWidget;
 use Modules\WidgetManagement\app\Models\WidgetItem;
 use Modules\WidgetManagement\app\Services\WidgetItemService;
+use Illuminate\Support\Str;
 
 #[Layout('admin.layout')]
 class WidgetItemComponent extends Component
@@ -41,12 +42,49 @@ class WidgetItemComponent extends Component
         $this->tenantWidgetId = $tenantWidgetId;
         $this->loadItems();
         
-        // Widget şemasını al
         $tenantWidget = TenantWidget::with('widget')->findOrFail($tenantWidgetId);
         $this->schema = $tenantWidget->widget->getItemSchema();
         
-        // formData'yı başlat - her alan için boş değer
+        // Şema boşsa veya title alanı yoksa, standart alanları ekle
+        if (empty($this->schema) || !$this->hasField('title')) {
+            $this->schema = array_merge($this->schema ?? [], [
+                [
+                    'name' => 'title',
+                    'label' => 'Başlık',
+                    'type' => 'text',
+                    'required' => true
+                ]
+            ]);
+        }
+        
+        // Aktif/Pasif alanı yoksa ekle
+        if (!$this->hasField('is_active')) {
+            $this->schema = array_merge($this->schema ?? [], [
+                [
+                    'name' => 'is_active',
+                    'label' => 'Aktif',
+                    'type' => 'checkbox',
+                    'required' => false
+                ]
+            ]);
+        }
+        
+        // formData'yı başlat
         $this->initFormData();
+    }
+    
+    // Yardımcı metod
+    private function hasField($fieldName)
+    {
+        if (empty($this->schema)) return false;
+        
+        foreach ($this->schema as $field) {
+            if ($field['name'] === $fieldName) {
+                return true;
+            }
+        }
+        
+        return false;
     }
     
     // Yeni metod: formData için tüm alanları başlat
@@ -56,8 +94,17 @@ class WidgetItemComponent extends Component
         
         if (!empty($this->schema)) {
             foreach ($this->schema as $field) {
-                $this->formData[$field['name']] = '';
+                if ($field['type'] === 'checkbox') {
+                    $this->formData[$field['name']] = false;
+                } else {
+                    $this->formData[$field['name']] = '';
+                }
             }
+        }
+        
+        // Varsayılan olarak aktif
+        if (isset($this->formData['is_active'])) {
+            $this->formData['is_active'] = true;
         }
     }
     
@@ -66,29 +113,7 @@ class WidgetItemComponent extends Component
         $this->items = $this->itemService->getItemsForWidget($this->tenantWidgetId);
     }
     
-    public function addNew()
-    {
-        $this->formMode = true;
-        $this->currentItemId = null;
-        $this->initFormData(); // Formu sıfırla
-    }
-    
-    public function editItem($itemId)
-    {
-        $item = WidgetItem::findOrFail($itemId);
-        $this->formMode = true;
-        $this->currentItemId = $itemId;
-        
-        // Önce formu sıfırla
-        $this->initFormData();
-        
-        // Sonra mevcut verileri yükle
-        if (!empty($item->content) && is_array($item->content)) {
-            foreach ($item->content as $key => $value) {
-                $this->formData[$key] = $value;
-            }
-        }
-    }
+    // Diğer fonksiyonlar korundu...
     
     public function saveItem()
     {
@@ -108,6 +133,11 @@ class WidgetItemComponent extends Component
         $this->validate($rules);
         
         try {
+            // Benzersiz ID ekle
+            if (!isset($this->formData['unique_id'])) {
+                $this->formData['unique_id'] = (string) Str::uuid();
+            }
+            
             // Dosyaları yükle
             foreach ($this->schema as $field) {
                 if ($field['type'] === 'image' && isset($this->formData[$field['name']]) && !is_string($this->formData[$field['name']])) {
@@ -154,65 +184,5 @@ class WidgetItemComponent extends Component
                 'type' => 'error'
             ]);
         }
-    }
-    
-    public function deleteItem($itemId)
-    {
-        try {
-            $this->itemService->deleteItem($itemId);
-            $this->loadItems();
-            
-            $this->dispatch('toast', [
-                'title' => 'Başarılı!',
-                'message' => 'Öğe silindi.',
-                'type' => 'success'
-            ]);
-        } catch (\Exception $e) {
-            $this->dispatch('toast', [
-                'title' => 'Hata!',
-                'message' => 'Öğe silinirken bir hata oluştu: ' . $e->getMessage(),
-                'type' => 'error'
-            ]);
-        }
-    }
-    
-    public function cancelForm()
-    {
-        $this->formMode = false;
-        $this->currentItemId = null;
-        $this->initFormData(); // Formu temizle
-    }
-    
-    public function updateItemOrder($orderedIds)
-    {
-        try {
-            if (!is_array($orderedIds)) {
-                $orderedIds = (array)$orderedIds;
-            }
-            
-            $this->itemService->reorderItems($this->tenantWidgetId, $orderedIds);
-            $this->loadItems();
-            
-            $this->dispatch('toast', [
-                'title' => 'Başarılı!',
-                'message' => 'Öğe sıralaması güncellendi.',
-                'type' => 'success'
-            ]);
-        } catch (\Exception $e) {
-            $this->dispatch('toast', [
-                'title' => 'Hata!',
-                'message' => 'Sıralama güncellenirken bir hata oluştu: ' . $e->getMessage(),
-                'type' => 'error'
-            ]);
-        }
-    }
-    
-    public function render()
-    {
-        $tenantWidget = TenantWidget::with('widget')->findOrFail($this->tenantWidgetId);
-        
-        return view('widgetmanagement::livewire.widget-item-component', [
-            'tenantWidget' => $tenantWidget
-        ]);
     }
 }

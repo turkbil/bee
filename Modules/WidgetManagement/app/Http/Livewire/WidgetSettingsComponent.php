@@ -34,23 +34,13 @@ class WidgetSettingsComponent extends Component
         
         $this->schema = $this->tenantWidget->widget->getSettingsSchema();
         $this->settings = $this->tenantWidget->settings ?? [];
+        
+        // Benzersiz ID 
+        if (!isset($this->settings['title'])) {
+            $this->settings['title'] = $this->tenantWidget->widget->name;
+        }
     }
     
-    public function updatedTemporaryUpload()
-    {
-        $this->validate([
-            'temporaryUpload.*' => 'image|max:1024',
-        ]);
-    }
-    
-    /**
-     * Benzersiz ID üretir
-     */
-    private function generateUniqueId(): string
-    {
-        return (string) Str::uuid();
-    }
-
     public function save()
     {
         // Form alanlarını doğrula
@@ -64,40 +54,27 @@ class WidgetSettingsComponent extends Component
         
         $this->validate($rules);
 
-        // Tenant ID'yi erken al
-        $tenantId = tenant()->id; 
-        if (!$tenantId) {
-            // Eğer tenant ID hala null ise hata ver veya logla
-             activity()->log('Tenant ID could not be determined in WidgetSettingsComponent save method.');
-             $this->dispatch('toast', [
-                 'title' => 'Hata!',
-                 'message' => 'Kiracı bilgisi alınamadı. Lütfen tekrar deneyin.',
-                 'type' => 'error'
-             ]);
-             return;
-        }
-        
         // Dosya yüklemeleri
         foreach ($this->temporaryUpload as $fieldName => $upload) {
             if ($upload) {
-                // Dosya yüklerken de $tenantId değişkenini kullanalım
+                $tenantId = tenant()->id ?? 'central';
                 $filename = time() . '_' . Str::slug($fieldName) . '.' . $upload->getClientOriginalExtension();
-                $path = $upload->storeAs('widgets/' . $tenantId . "/settings", $filename, 'public');
+                $path = $upload->storeAs("widgets/{$tenantId}/settings", $filename, 'public');
                 $this->settings[$fieldName] = asset('storage/' . $path);
             }
         }
 
         // Eğer benzersiz ID yoksa, yeni bir tane oluştur
         if (!isset($this->settings['unique_id'])) {
-            $this->settings['unique_id'] = $this->generateUniqueId();
+            $this->settings['unique_id'] = (string) Str::uuid();
         }
         
         $this->tenantWidget->update([
             'settings' => $this->settings
         ]);
         
-        // Widget önbelleğini temizle - Kaydedilen tenantId'yi kullan
-        $this->widgetService->clearWidgetCache($tenantId, $this->tenantWidgetId);
+        // Widget önbelleğini temizle
+        $this->widgetService->clearWidgetCache(tenant()->id ?? null, $this->tenantWidgetId);
         
         $this->dispatch('toast', [
             'title' => 'Başarılı!',
@@ -106,7 +83,6 @@ class WidgetSettingsComponent extends Component
         ]);
         
         $this->dispatch('widgetSettingsUpdated');
-        $this->dispatch('closeModal');
     }
     
     public function render()

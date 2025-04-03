@@ -3,100 +3,145 @@
     <div class="card">
         <div class="card-body">
             <!-- Header Bölümü -->
-            <div class="row mb-3">
-                <!-- Arama Kutusu -->
-                <div class="col">
-                    <div class="input-icon">
-                        <span class="input-icon-addon">
-                            <i class="fas fa-search"></i>
-                        </span>
-                        <input type="text" wire:model.live="search" class="form-control" 
-                            placeholder="Widget ara...">
-                    </div>
+            <div class="row mb-3 align-items-center">
+                <!-- Sayfa/Modül/Konum Bilgisi -->
+                <div class="col-md-5">
+                    <h3 class="card-title mb-0">
+                        @if($page)
+                            <i class="fas fa-file-alt me-2"></i> Sayfa: {{ $page->title }}
+                        @elseif($module)
+                            <i class="fas fa-puzzle-piece me-2"></i> Modül: {{ $module }}
+                        @endif
+                        <span class="badge bg-blue ms-2">{{ $positionLabels[$position] ?? $position }}</span>
+                    </h3>
                 </div>
+                
                 <!-- Ortadaki Loading -->
-                <div class="col position-relative">
+                <div class="col-md-2 position-relative">
                     <div wire:loading
                         wire:target="addWidget, removeWidget, refreshWidgets, updateOrder" 
                         class="position-absolute top-50 start-50 translate-middle text-center"
                         style="width: 100%; max-width: 250px;">
-                        <div class="small text-muted mb-2">Güncelleniyor...</div>
-                        <div class="progress mb-1">
+                        <div class="progress">
                             <div class="progress-bar progress-bar-indeterminate"></div>
                         </div>
                     </div>
                 </div>
-                <!-- Sağ Taraf -->
-                <div class="col">
-                    <div class="d-flex align-items-center justify-content-end gap-3">
-                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addWidgetModal">
-                            <i class="fas fa-plus me-2"></i> Widget Ekle
-                        </button>
-                    </div>
+                
+                <!-- Sağ Taraf Button -->
+                <div class="col-md-5 text-md-end">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addWidgetModal">
+                        <i class="fas fa-plus me-2"></i> Widget Ekle
+                    </button>
+                    
+                    @if($page)
+                    <a href="{{ route('admin.page.edit', $page->id) }}" class="btn btn-outline-secondary ms-2">
+                        <i class="fas fa-arrow-left me-2"></i> Sayfaya Dön
+                    </a>
+                    @endif
                 </div>
             </div>
             
             <!-- Alert Bölümü -->
-            <div class="alert ">
-                <i class="fas fa-info-circle me-2"></i>
-                Widgetları sürükleyip bırakarak sıralayabilirsiniz. Sıralama otomatik olarak kaydedilecektir.
+            <div class="alert alert-info mb-4">
+                <div class="d-flex">
+                    <div>
+                        <i class="fas fa-info-circle me-2" style="margin-top: 3px"></i>
+                    </div>
+                    <div>
+                        <h4 class="alert-title">Bölüm Düzenleme</h4>
+                        <p class="mb-0">Widgetları sürükleyip bırakarak sıralayabilirsiniz. Sıralama otomatik olarak kaydedilecektir.</p>
+                    </div>
+                </div>
             </div>
             
             <!-- Widgetlar -->
-            <div class="row row-cards" id="sortable-list">
+            <div class="row" id="sortable-list">
                 @forelse($widgets as $widget)
-                <div class="col-lg-6 widget-item" id="item-{{ $widget->id }}" data-id="{{ $widget->id }}">
-                    <div class="card mb-3">
+                <div class="col-md-6 mb-3 widget-item" id="item-{{ $widget->id }}" data-id="{{ $widget->id }}">
+                    <div class="card">
+                        <div class="card-status-top {{ $widget->widget && $widget->widget->is_active ? 'bg-green' : 'bg-red' }}"></div>
+                        <div class="card-header widget-drag-handle cursor-move pb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-grip-vertical text-muted me-2"></i>
+                                    <h3 class="card-title mb-0">{{ optional($widget->widget)->name ?? 'Özel Widget' }}</h3>
+                                </div>
+                                <div class="dropdown">
+                                    <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-end">
+                                        <a href="{{ route('admin.widgetmanagement.settings', $widget->id) }}" class="dropdown-item">
+                                            <i class="fas fa-cog me-2"></i> Ayarları Düzenle
+                                        </a>
+                                        
+                                        @if(optional($widget->widget)->has_items)
+                                        <a href="{{ route('admin.widgetmanagement.items', $widget->id) }}" class="dropdown-item">
+                                            <i class="fas fa-layer-group me-2"></i> İçerik Yönet
+                                        </a>
+                                        @endif
+
+<!-- Yapılandırma kısmı - sadece root erişebilir -->
+                                        @if(auth()->user()->hasRole('root'))
+                                        <a href="{{ route('admin.widgetmanagement.manage', optional($widget->widget)->id) }}" 
+                                           class="dropdown-item" target="_blank">
+                                            <i class="fas fa-cog me-2"></i> Yapılandır
+                                        </a>
+                                        @endif
+                                                                                
+                                        <div class="dropdown-divider"></div>
+                                        
+                                        <a href="#" class="dropdown-item text-danger" 
+                                                wire:click.prevent="removeWidget({{ $widget->id }})"
+                                                onclick="return confirm('Bu widget\'ı kaldırmak istediğinize emin misiniz?');">
+                                            <i class="fas fa-trash me-2"></i> Kaldır
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="card-body">
                             <div class="row align-items-center">
-                                <div class="col-3 widget-drag-handle cursor-move">
+                                <div class="col-auto">
                                     @if(optional($widget->widget)->thumbnail)
-                                        <img src="{{ optional($widget->widget)->getThumbnailUrl() }}" alt="{{ optional($widget->widget)->name }}" class="rounded img-fluid">
+                                        <img src="{{ optional($widget->widget)->getThumbnailUrl() }}" 
+                                             alt="{{ optional($widget->widget)->name }}" 
+                                             class="rounded" 
+                                             style="width: 64px; height: 64px; object-fit: cover;">
                                     @else
-                                        <div class="d-flex align-items-center justify-content-center bg-secondary-subtle text-secondary rounded" style="width: 100%; height: 80px;">
+                                        <div class="d-flex align-items-center justify-content-center bg-secondary-subtle text-secondary rounded" 
+                                             style="width: 64px; height: 64px;">
                                             <i class="fas fa-cube fa-2x"></i>
                                         </div>
                                     @endif
                                 </div>
                                 <div class="col">
-                                    <h3 class="card-title mb-1 fs-2">
-                                        <a href="{{ route('admin.widgetmanagement.items', $widget->id) }}" class="text-reset">
-                                            {{ optional($widget->widget)->name ?? 'Özel Widget' }}
-                                        </a>
-                                    </h3>
-                                </div>
-                                <div class="col-auto">
-                                    <div class="dropdown">
-                                        <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-v"></i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-end">
-                                            <a href="{{ route('admin.widgetmanagement.settings', $widget->id) }}" class="dropdown-item">
-                                                <i class="fas fa-cog me-2"></i> Yapıyı Düzenle
-                                            </a>
-                                            
-                                            @if(optional($widget->widget)->has_items)
-                                            <a href="{{ route('admin.widgetmanagement.items', $widget->id) }}" class="dropdown-item">
-                                                <i class="fas fa-layer-group me-2"></i> İçerik Yönet
-                                            </a>
-                                            @endif
-                                            
-                                            <a href="{{ route('admin.widgetmanagement.preview', $widget->widget_id) }}" 
-                                                class="dropdown-item"
-                                                target="_blank">
-                                                <i class="fas fa-eye me-2"></i> Önizle
-                                            </a>
-                                            
-                                            <div class="dropdown-divider"></div>
-                                            
-                                            <a href="#" class="dropdown-item text-danger"
-                                                    wire:click.prevent="removeWidget({{ $widget->id }})"
-                                                    onclick="return confirm('Bu widget\'ı kaldırmak istediğinize emin misiniz?');">
-                                                <i class="fas fa-trash me-2"></i> Kaldır
-                                            </a>
-                                        </div>
+                                    <div class="text-muted">{{ Str::limit(optional($widget->widget)->description, 100) }}</div>
+                                    
+                                    <div class="mt-2">
+                                        @if(!empty($widget->settings['title']))
+                                        <div><strong>Başlık:</strong> {{ $widget->settings['title'] }}</div>
+                                        @endif
+                                        
+                                        @if(!empty($widget->items) && $widget->items->count() > 0)
+                                        <div><strong>İçerik Sayısı:</strong> {{ $widget->items->count() }}</div>
+                                        @endif
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="btn-list">
+                                <a href="{{ route('admin.widgetmanagement.settings', $widget->id) }}" class="btn btn-outline-primary">
+                                    <i class="fas fa-cog me-1"></i> Ayarlar
+                                </a>
+                                
+                                @if(optional($widget->widget)->has_items)
+                                <a href="{{ route('admin.widgetmanagement.items', $widget->id) }}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-layer-group me-1"></i> İçerik
+                                </a>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -138,21 +183,23 @@
                             <span class="input-icon-addon">
                                 <i class="fas fa-search"></i>
                             </span>
-                            <input type="text" class="form-control" placeholder="Widget ara...">
+                            <input type="text" class="form-control" placeholder="Widget ara..." id="widget-search">
                         </div>
                     </div>
                     
-                    <div class="row row-cards">
+                    <div class="row row-cards" id="widget-list">
                         @foreach($availableWidgets as $widget)
-                        <div class="col-lg-6 mb-3">
-                            <div class="card card-sm h-100">
+                        <div class="col-lg-6 mb-3 widget-list-item" data-name="{{ strtolower($widget->name) }}">
+                            <div class="card h-100 widget-select-card">
                                 <div class="card-body">
                                     <div class="row align-items-center">
                                         <div class="col-auto">
                                             @if($widget->thumbnail)
-                                                <img src="{{ $widget->getThumbnailUrl() }}" alt="{{ $widget->name }}" class="rounded" style="width: 48px; height: 48px; object-fit: cover;">
+                                                <img src="{{ $widget->getThumbnailUrl() }}" alt="{{ $widget->name }}" 
+                                                     class="rounded" style="width: 48px; height: 48px; object-fit: cover;">
                                             @else
-                                                <div class="d-flex align-items-center justify-content-center bg-secondary-subtle text-secondary rounded" style="width: 48px; height: 48px;">
+                                                <div class="d-flex align-items-center justify-content-center bg-secondary-subtle text-secondary rounded" 
+                                                     style="width: 48px; height: 48px;">
                                                     <i class="fas fa-cube"></i>
                                                 </div>
                                             @endif
@@ -161,17 +208,23 @@
                                             <h4 class="card-title mb-1">{{ $widget->name }}</h4>
                                             <div class="text-muted small">{{ Str::limit($widget->description, 60) }}</div>
                                             <div class="mt-2">
-                                                <span class="badge badge-outline text-secondary fw-normal badge-pill">{{ $widget->type }}</span>
+                                                <span class="badge bg-blue-lt">{{ $types[$widget->type] ?? $widget->type }}</span>
+                                                @if($widget->has_items)
+                                                <span class="badge bg-orange-lt">Dinamik İçerik</span>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="card-footer">
                                     <div class="d-flex justify-content-between">
-                                        <a href="{{ route('admin.widgetmanagement.preview', $widget->id) }}" target="_blank" class="btn btn-outline-secondary btn-sm">
+                                        <a href="{{ route('admin.widgetmanagement.preview', $widget->id) }}" 
+                                           target="_blank" class="btn btn-outline-secondary btn-sm">
                                             <i class="fas fa-eye"></i>
                                         </a>
-                                        <button type="button" class="btn btn-primary btn-sm" wire:click="addWidget({{ $widget->id }})" data-bs-dismiss="modal">
+                                        <button type="button" class="btn btn-primary btn-sm" 
+                                                wire:click="addWidget({{ $widget->id }})" 
+                                                data-bs-dismiss="modal">
                                             <i class="fas fa-plus me-1"></i> Ekle
                                         </button>
                                     </div>
@@ -189,124 +242,51 @@
 @push('scripts')
 <script src="{{ asset('admin/libs/sortable/sortable.min.js') }}"></script>
 <script>
-// Debug yardımcı fonksiyonları
-function debugLog(message, data = null) {
-    const style = 'background: #0366d6; color: white; padding: 2px 5px; border-radius: 3px;';
-    if (data) {
-        console.log('%c[Widget Debug]', style, message, data);
-    } else {
-        console.log('%c[Widget Debug]', style, message);
-    }
-}
-
-function debugError(message, error = null) {
-    const style = 'background: #d73a49; color: white; padding: 2px 5px; border-radius: 3px;';
-    if (error) {
-        console.error('%c[Widget Error]', style, message, error);
-    } else {
-        console.error('%c[Widget Error]', style, message);
-    }
-}
-
 document.addEventListener('livewire:initialized', function() {
-    try {
-        debugLog('Livewire initialized, setting up sortable...');
-        initSortable();
-        
-        Livewire.on('refreshWidgets', () => {
-            debugLog('Refreshing widgets...');
-            setTimeout(() => {
-                initSortable();
-            }, 300);
-        });
-    } catch (error) {
-        debugError('Error in initialization:', error);
-    }
-});
-
-function initSortable() {
-    try {
-        const sortableList = document.getElementById('sortable-list');
-        debugLog('Found sortable-list element:', sortableList);
-        
-        if (sortableList) {
-            // Eğer zaten Sortable eklenmişse önce onu temizleyelim
-            if (sortableList.sortable) {
-                debugLog('Destroying existing sortable instance');
-                sortableList.sortable.destroy();
-            }
+    // Widget Arama Filtrelemesi
+    const searchInput = document.getElementById('widget-search');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const widgetItems = document.querySelectorAll('.widget-list-item');
             
-            const sortable = new Sortable(sortableList, {
-                handle: '.widget-drag-handle',
-                animation: 150,
-                ghostClass: 'sortable-ghost',
-                onStart: function(evt) {
-                    try {
-                        const item = evt.item;
-                        const id = item.getAttribute('data-id');
-                        debugLog('Drag started', { id, oldIndex: evt.oldIndex });
-                    } catch (error) {
-                        debugError('Error in onStart:', error);
-                    }
-                },
-                onEnd: function(evt) {
-                    try {
-                        debugLog('Drag ended', { 
-                            oldIndex: evt.oldIndex,
-                            newIndex: evt.newIndex,
-                            item: evt.item
-                        });
-                        
-                        // Değişim olup olmadığını kontrol et
-                        if (evt.oldIndex === evt.newIndex) {
-                            debugLog('No change in order, skipping update');
-                            return;
-                        }
-                        
-                        // Tüm öğelerin sırasını al
-                        const items = Array.from(sortableList.querySelectorAll('.widget-item')).map((item, index) => {
-                            const id = item.getAttribute('data-id');
-                            debugLog(`Processing item ${index + 1}`, { id, element: item });
-                            
-                            if (!id) {
-                                debugError(`Missing data-id attribute for item at index ${index}`, item);
-                            }
-                            
-                            return {
-                                value: id,
-                                order: index + 1
-                            };
-                        });
-                        
-                        debugLog('Final items array:', items);
-                        
-                        // Gönderilen yapıyı doğrulamak için log ekle
-                        console.log('--- Sending to Livewire ---');
-                        console.log(JSON.stringify(items, null, 2));
-                        console.log('---------------------------');
-
-                        if (items.length > 0) {
-                            debugLog('Dispatching updateOrder event with items:', items);
-                            // items dizisini 'list' anahtarıyla gönder
-                            Livewire.dispatch('updateOrder', { list: items });
-                        } else {
-                            debugError('No items found to update order');
-                        }
-                    } catch (error) {
-                        debugError('Error in onEnd:', error);
-                    }
+            widgetItems.forEach(item => {
+                const widgetName = item.dataset.name;
+                if (widgetName.includes(searchTerm)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
                 }
             });
-            
-            // Referansı sakla
-            sortableList.sortable = sortable;
-            debugLog('Sortable initialized successfully');
-        } else {
-            debugError('Could not find sortable-list element');
-        }
-    } catch (error) {
-        debugError('Error in initSortable:', error);
+        });
     }
-}
+    
+    // Sürükle-Bırak Sıralama
+    const sortableList = document.getElementById('sortable-list');
+    if (sortableList) {
+        new Sortable(sortableList, {
+            handle: '.widget-drag-handle',
+            animation: 150,
+            ghostClass: 'sortable-ghost',
+            onEnd: function(evt) {
+                // Değişim olup olmadığını kontrol et
+                if (evt.oldIndex === evt.newIndex) {
+                    return;
+                }
+                
+                // Tüm öğelerin sırasını al
+                const items = Array.from(sortableList.querySelectorAll('.widget-item')).map((item, index) => {
+                    return {
+                        value: item.getAttribute('data-id'),
+                        order: index + 1
+                    };
+                });
+                
+                // Livewire'a gönder
+                @this.updateOrder(items);
+            }
+        });
+    }
+});
 </script>
 @endpush

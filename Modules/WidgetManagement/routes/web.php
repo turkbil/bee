@@ -22,9 +22,9 @@ Route::middleware(['web', 'auth', 'tenant'])
                     ->middleware('module.permission:widgetmanagement,view')
                     ->name('index');
                 
-                // Widget yönetimi - id parametresi opsiyonel
+                // Widget yönetimi - id parametresi opsiyonel - SADECE ROOT
                 Route::get('/manage/{id?}', WidgetManageComponent::class)
-                    ->middleware('module.permission:widgetmanagement,update')
+                    ->middleware(['module.permission:widgetmanagement,update', 'root.access'])
                     ->name('manage');
                 
                 // Widget Bölüm Yönetimi - tüm parametreler opsiyonel
@@ -49,10 +49,5 @@ Route::middleware(['web', 'auth', 'tenant'])
                     ->middleware('module.permission:widgetmanagement,view')
                     ->where('id', '[0-9]+')
                     ->name('preview');
-                
-                // Widget tipine göre listeleme
-                Route::get('/types/{type}', WidgetComponent::class)
-                    ->middleware('module.permission:widgetmanagement,view')
-                    ->name('types');
             });
     });

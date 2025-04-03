@@ -8,7 +8,7 @@
                     {{ $tenantWidget->widget->name }} - Özelleştirme
                 </h3>
                 <a href="{{ route('admin.widgetmanagement.section') }}" class="btn btn-outline-secondary">
-                    <i class="fas fa-arrow-left me-2"></i> Bölüm Listesine Dön
+                    <i class="fas fa-arrow-left me-2"></i> Bölümlere Dön
                 </a>
             </div>
         </div>
@@ -70,53 +70,29 @@
                                                 placeholder="{{ $field['label'] }}"></textarea>
                                         
                                         @elseif($field['type'] === 'image')
-                                            <div x-data="{ isUploading: false, progress: 0 }" 
-                                                x-on:livewire-upload-start="isUploading = true"
-                                                x-on:livewire-upload-finish="isUploading = false"
-                                                x-on:livewire-upload-error="isUploading = false"
-                                                x-on:livewire-upload-progress="progress = $event.detail.progress">
-                                                
-                                                <div class="form-control position-relative" 
-                                                    onclick="document.getElementById('field-{{ $field['name'] }}').click()"
-                                                    style="height: auto; min-height: 120px; cursor: pointer; border: 2px dashed #ccc;">
-                                                    
-                                                    <input type="file" 
-                                                        wire:model="temporaryUpload.{{ $field['name'] }}" 
-                                                        id="field-{{ $field['name'] }}" 
-                                                        class="d-none"
-                                                        accept="image/*">
-                                                    
-                                                    @if(isset($settings[$field['name']]) && is_string($settings[$field['name']]))
-                                                        <img src="{{ $settings[$field['name']] }}" 
-                                                            class="img-fluid rounded mx-auto d-block" 
-                                                            style="max-height: 150px;">
-                                                    @else
-                                                        <div class="text-center py-4">
-                                                            <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-2"></i>
-                                                            <p class="mb-0">Görseli sürükleyin veya seçmek için tıklayın</p>
-                                                            <p class="text-muted small mb-0">PNG, JPG, WEBP, GIF - Maks 1MB</p>
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                                
-                                                <!-- Yükleme İlerleme Çubuğu -->
-                                                <div x-show="isUploading" class="mt-2">
-                                                    <div class="progress">
-                                                        <div class="progress-bar progress-bar-indeterminate bg-green"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        
-                                        @elseif($field['type'] === 'url')
-                                            <div class="input-icon">
-                                                <span class="input-icon-addon">
-                                                    <i class="fas fa-link"></i>
-                                                </span>
-                                                <input type="url" 
-                                                    wire:model="settings.{{ $field['name'] }}" 
+                                            <div class="form-control p-3" style="height: auto;"
+                                                onclick="document.getElementById('field-{{ $field['name'] }}').click()">
+                                                <input type="file" 
+                                                    wire:model="temporaryUpload.{{ $field['name'] }}" 
                                                     id="field-{{ $field['name'] }}" 
-                                                    class="form-control @error('settings.' . $field['name']) is-invalid @enderror"
-                                                    placeholder="https://...">
+                                                    class="d-none"
+                                                    accept="image/*">
+                                                
+                                                @if(isset($settings[$field['name']]) && is_string($settings[$field['name']]))
+                                                    <img src="{{ $settings[$field['name']] }}" 
+                                                        class="img-fluid rounded mx-auto d-block mb-2" 
+                                                        style="max-height: 120px;">
+                                                @elseif(isset($temporaryUpload[$field['name']]))
+                                                    <img src="{{ $temporaryUpload[$field['name']]->temporaryUrl() }}" 
+                                                        class="img-fluid rounded mx-auto d-block mb-2" 
+                                                        style="max-height: 120px;">
+                                                @endif
+                                                
+                                                <div class="text-center">
+                                                    <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-2"></i>
+                                                    <p class="mb-0">Görseli sürükleyip bırakın veya seçmek için tıklayın</p>
+                                                    <p class="text-muted small">PNG, JPG, WEBP, GIF - Maks 1MB</p>
+                                                </div>
                                             </div>
                                         
                                         @elseif($field['type'] === 'checkbox')

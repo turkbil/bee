@@ -68,6 +68,26 @@
             color: #626976;
         }
         
+        .device-switcher {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .preview-frame {
+            transition: width 0.3s ease;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .preview-frame.mobile {
+            max-width: 375px;
+        }
+        
+        .preview-frame.tablet {
+            max-width: 768px;
+        }
+        
         /* Widget CSS */
         {!! $widget->content_css !!}
     </style>
@@ -107,15 +127,31 @@
             </div>
         </div>
         
-        <div class="preview-content">
-            <!-- Widget HTML -->
-            {!! $widget->content_html !!}
+        <div class="device-switcher">
+            <button class="btn btn-outline-primary active" onclick="setPreviewSize('desktop')">
+                <i class="fas fa-desktop me-1"></i> Masaüstü
+            </button>
+            <button class="btn btn-outline-primary" onclick="setPreviewSize('tablet')">
+                <i class="fas fa-tablet-alt me-1"></i> Tablet
+            </button>
+            <button class="btn btn-outline-primary" onclick="setPreviewSize('mobile')">
+                <i class="fas fa-mobile-alt me-1"></i> Mobil
+            </button>
+        </div>
+        
+        <div class="preview-frame" id="preview-frame">
+            <div class="preview-content">
+                <!-- Widget HTML -->
+                {!! $widget->content_html !!}
+            </div>
         </div>
         
         <div class="preview-footer text-end">
+            @if(auth()->user()->isRoot() || auth()->user()->hasRole('root'))
             <a href="{{ route('admin.widgetmanagement.manage', $widget->id) }}" class="btn btn-primary">
                 <i class="fas fa-edit me-1"></i> Widget'ı Düzenle
             </a>
+            @endif
         </div>
     </div>
 
@@ -130,6 +166,26 @@
             @endif
         @endforeach
     @endif
+    
+    <!-- Önizleme Frame Boyutlandırma -->
+    <script>
+        function setPreviewSize(device) {
+            const frame = document.getElementById('preview-frame');
+            const buttons = document.querySelectorAll('.device-switcher button');
+            
+            // Aktif butonları temizle
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            // Aktif butonu işaretle
+            event.target.closest('button').classList.add('active');
+            
+            // Frame boyutunu ayarla
+            frame.className = 'preview-frame';
+            if (device !== 'desktop') {
+                frame.classList.add(device);
+            }
+        }
+    </script>
     
     <!-- Widget JavaScript -->
     <script>

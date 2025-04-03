@@ -19,6 +19,8 @@ class WidgetSectionComponent extends Component
     public $module;
     public $position;
     public $widgets = [];
+    public $allPositionsWidgets = [];
+    public $showAllPositions = false;
     
     protected $widgetService;
     
@@ -32,13 +34,24 @@ class WidgetSectionComponent extends Component
         $this->widgetService = $widgetService;
     }
     
-    public function mount($pageId = null, $module = null, $position = 'top')
+    public function mount($pageId = null, $module = null, $position = 'top', $widgetId = null, $overview = false)
     {
         $this->pageId = $pageId;
         $this->module = $module;
         $this->position = $position;
+        $this->showAllPositions = $overview;
         
-        $this->loadWidgets();
+        if ($this->showAllPositions) {
+            $this->loadAllPositionsWidgets();
+        } else {
+            $this->loadWidgets();
+        }
+        
+        // Eğer widgetId parametresi geldiyse, widget ekleme modalını otomatik aç
+        if ($widgetId) {
+            // Gelen widget ID'ye göre işlem yap
+            $this->dispatch('openAddWidgetModal', ['preSelectedWidgetId' => $widgetId]);
+        }
     }
     
     public function loadWidgets()
@@ -57,8 +70,49 @@ class WidgetSectionComponent extends Component
             ->get();
     }
     
-    public function addWidget($widgetId)
+    public function loadAllPositionsWidgets()
     {
+        // Tüm konumlar için widget'ları yükle
+        $positions = ['top', 'center-top', 'left', 'center', 'right', 'center-bottom', 'bottom'];
+        
+        foreach ($positions as $pos) {
+            $this->allPositionsWidgets[$pos] = TenantWidget::when($this->pageId, function ($query) {
+                    $query->where('page_id', $this->pageId);
+                })
+                ->when($this->module, function ($query) {
+                    $query->where('module', $this->module);
+                })
+                ->where('position', $pos)
+                ->with('widget')
+                ->orderBy('order')
+                ->get();
+        }
+        
+        // Geçerli konum için normal widgets'ı da yükle
+        $this->loadWidgets();
+    }
+    
+    public function addWidget($widgetId, $targetPosition = null)
+    {
+        // Widget için kullanılacak position değerini belirle
+        $position = $targetPosition ?? $this->position;
+        
+        // Genel bakış sayfasında pozisyon null olabilir, client tarafından gelen değeri kullan
+        if ($this->showAllPositions && !$position) {
+            // JS tarafından gönderilen position değerini kullanmalıyız
+            return $this->addScriptToGetPosition($widgetId);
+        }
+        
+        // Position null kontrolü
+        if (!$position) {
+            $this->dispatch('toast', [
+                'title' => 'Hata!',
+                'message' => 'Widget eklemek için geçerli bir konum gereklidir.',
+                'type' => 'error'
+            ]);
+            return;
+        }
+        
         // Widget maksimum sıra numarasını al
         $maxOrder = TenantWidget::when($this->pageId, function ($query) {
                 $query->where('page_id', $this->pageId);
@@ -66,7 +120,7 @@ class WidgetSectionComponent extends Component
             ->when($this->module, function ($query) {
                 $query->where('module', $this->module);
             })
-            ->where('position', $this->position)
+            ->where('position', $position)
             ->max('order') ?? 0;
         
         // Yeni widget ekle
@@ -74,7 +128,7 @@ class WidgetSectionComponent extends Component
             'widget_id' => $widgetId,
             'page_id' => $this->pageId,
             'module' => $this->module,
-            'position' => $this->position,
+            'position' => $position,
             'order' => $maxOrder + 1,
             'settings' => [
                 'unique_id' => (string) \Illuminate\Support\Str::uuid(),
@@ -83,7 +137,11 @@ class WidgetSectionComponent extends Component
         ]);
         
         // Widgetları yeniden yükle
-        $this->loadWidgets();
+        if ($this->showAllPositions) {
+            $this->loadAllPositionsWidgets();
+        } else {
+            $this->loadWidgets();
+        }
         
         $this->dispatch('toast', [
             'title' => 'Başarılı!',
@@ -185,7 +243,111 @@ class WidgetSectionComponent extends Component
     
     public function refreshWidgets()
     {
-        $this->loadWidgets();
+        if ($this->showAllPositions) {
+            $this->loadAllPositionsWidgets();
+        } else {
+            $this->loadWidgets();
+        }
+    }
+    
+    /**
+     * JavaScript'ten pozisyon bilgisini almak için script ekler ve çalıştırır
+     */
+    private function addScriptToGetPosition($widgetId)
+    {
+        // Client tarafında position değerini al ve sunucuya gönder
+        $script = "if (window.widgetPositionToAdd) {\n";
+        $script .= "    $this->dispatchSelf('addWidgetWithPosition', {widgetId: $widgetId, position: window.widgetPositionToAdd});\n";
+        $script .= "} else {\n";
+        $script .= "    alert('Lütfen önce bir widget konumu seçin!');\n";
+        $script .= "}";
+        
+        $this->dispatch('eval', ['js' => $script]);
+    }
+    
+    /**
+     * JavaScript'ten gelen position bilgisiyle widget ekler
+     */
+    public function addWidgetWithPosition($data)
+    {
+        $this->addWidget($data['widgetId'], $data['position']);
+    }
+    
+    /**
+     * Widget'i başka bir pozisyona taşır (sürükle-bırak için)
+     */
+    /**
+     * Widget'i sil
+     */
+    public function deleteWidget($widgetId)
+    {
+        $widget = TenantWidget::find($widgetId);
+        if ($widget) {
+            $widgetName = $widget->settings['title'] ?? 'Widget';
+            $widget->delete();
+            
+            // Tüm widgetları yeniden yükle
+            if ($this->showAllPositions) {
+                $this->loadAllPositionsWidgets();
+            } else {
+                $this->loadWidgets();
+            }
+            
+            // Başarı mesajı göster
+            $this->dispatch('toast', [
+                'title' => 'Başarılı!',
+                'message' => "\"$widgetName\" widget'ı silindi.",
+                'type' => 'success'
+            ]);
+            
+            return true;
+        }
+        
+        // Hata mesajı göster
+        $this->dispatch('toast', [
+            'title' => 'Hata!',
+            'message' => 'Widget bulunamadı.',
+            'type' => 'error'
+        ]);
+        
+        return false;
+    }
+
+    public function moveWidgetToPosition($widgetId, $newPosition)
+    {
+        // Null position kontrolü
+        if (empty($newPosition)) {
+            $this->dispatch('toast', [
+                'title' => 'Hata!',
+                'message' => 'Taşımak için geçerli bir hedef konum gereklidir.',
+                'type' => 'error'
+            ]);
+            return;
+        }
+        
+        $widget = TenantWidget::find($widgetId);
+        if ($widget) {
+            $oldPosition = $widget->position;
+            
+            // Yeni pozisyondaki maksimum sıra numarası
+            $maxOrder = TenantWidget::where('position', $newPosition)->max('order') ?? 0;
+            
+            // Widget'ı güncelle
+            $widget->update([
+                'position' => $newPosition,
+                'order' => $maxOrder + 1
+            ]);
+            
+            // Toast mesajı göster
+            $this->dispatch('toast', [
+                'title' => 'Başarılı!',
+                'message' => 'Widget başarıyla taşındı.',
+                'type' => 'success'
+            ]);
+            
+            // Tüm pozisyonların widget'larını yeniden yükle
+            $this->loadAllPositionsWidgets();
+        }
     }
     
     public function render()
@@ -225,10 +387,12 @@ class WidgetSectionComponent extends Component
             'page' => $page,
             'positionLabels' => [
                 'top' => 'Üst Alan',
+                'center-top' => 'Merkez-Üst', 
                 'left' => 'Sol Kenar',
+                'center' => 'Merkez',
                 'right' => 'Sağ Kenar',
-                'bottom' => 'Alt Alan',
-                'center' => 'Merkez'
+                'center-bottom' => 'Merkez-Alt',
+                'bottom' => 'Alt Alan'
             ]
         ]);
     }

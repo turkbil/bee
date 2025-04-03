@@ -27,10 +27,21 @@ Route::middleware(['web', 'auth', 'tenant'])
                     ->middleware(['module.permission:widgetmanagement,update', 'role:root'])
                     ->name('manage');
                 
-                // Widget Bölüm Yönetimi - tüm parametreler opsiyonel
-                Route::get('/section/{pageId?}/{module?}/{position?}', WidgetSectionComponent::class)
+                // Widget Bölüm Yönetimi - isimli parametreler ile
+                Route::get('/section', WidgetSectionComponent::class)
                     ->middleware('module.permission:widgetmanagement,view')
                     ->name('section');
+                
+                // Konum parametreli route ekleyelim (daha net URL için)
+                Route::get('/section/position/{position}', WidgetSectionComponent::class)
+                    ->middleware('module.permission:widgetmanagement,view')
+                    ->name('section.position');
+                    
+                // Genel bakış görünümü için route
+                Route::get('/section/overview', WidgetSectionComponent::class)
+                    ->defaults('overview', true)
+                    ->middleware('module.permission:widgetmanagement,view')
+                    ->name('section.overview');
                 
                 // Widget İçerik Yönetimi
                 Route::get('/items/{tenantWidgetId}', WidgetItemComponent::class)

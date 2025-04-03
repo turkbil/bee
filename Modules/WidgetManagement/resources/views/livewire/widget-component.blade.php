@@ -85,7 +85,7 @@
                             
                             <div class="mt-auto">
                                 <div class="btn-list">
-                                    <a href="{{ route('admin.widgetmanagement.section') }}" class="btn btn-outline-primary w-100">
+                                    <a href="{{ route('admin.widgetmanagement.section', ['widgetId' => $widget->id]) }}" class="btn btn-outline-primary w-100">
                                         <i class="fas fa-puzzle-piece me-1"></i> Bölümlerde Kullan
                                     </a>
                                     

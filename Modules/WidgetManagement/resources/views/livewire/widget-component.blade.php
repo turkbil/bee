@@ -60,7 +60,7 @@
                         <div class="card-status-top {{ $widget->is_active ? 'bg-green' : 'bg-red' }}"></div>
                         
                         <div class="card-img-top img-responsive img-responsive-16x9 overflow-hidden" style="height: 160px;">
-                            <img src="{{ $widget->getThumbnailUrl() }}" class="w-100 h-100 object-cover" alt="{{ $widget->name }}">
+                            <img src="{{ $widget->getThumbnailUrl() }}" class="w-100 h-100 object-fit-cover" alt="{{ $widget->name }}">
                             
                             @if(in_array($widget->id, $usedWidgetIds))
                             <div class="ribbon bg-primary">
@@ -85,17 +85,9 @@
                             
                             <div class="mt-auto">
                                 <div class="btn-list">
-                                    @if(auth()->user()->isRoot() || auth()->user()->hasRole('root'))
-                                    <a href="{{ route('admin.widgetmanagement.manage', $widget->id) }}" class="btn btn-outline-primary w-100">
-                                        <i class="fas fa-cog me-1"></i> Yapılandır
+                                    <a href="{{ route('admin.widgetmanagement.section') }}" class="btn btn-outline-primary w-100">
+                                        <i class="fas fa-puzzle-piece me-1"></i> Bölümlerde Kullan
                                     </a>
-                                    @endif
-                                    
-                                    @if($widget->has_items)
-                                    <a href="{{ route('admin.widgetmanagement.section') }}" class="btn btn-outline-secondary w-100">
-                                        <i class="fas fa-edit me-1"></i> İçerik Yönet
-                                    </a>
-                                    @endif
                                     
                                     @if(auth()->user()->isRoot() || auth()->user()->hasRole('root'))
                                     <button class="btn btn-outline-{{ $widget->is_active ? 'danger' : 'success' }} w-100" 
@@ -104,6 +96,10 @@
                                         <i class="fas fa-{{ $widget->is_active ? 'ban' : 'check' }} me-1"></i>
                                         {{ $widget->is_active ? 'Pasif Yap' : 'Aktif Yap' }}
                                     </button>
+                                    
+                                    <a href="{{ route('admin.widgetmanagement.manage', $widget->id) }}" class="btn btn-outline-secondary w-100">
+                                        <i class="fas fa-tools me-1"></i> Yapılandır
+                                    </a>
                                     @endif
                                 </div>
                             </div>

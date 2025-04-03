@@ -25,7 +25,6 @@ class WidgetSectionComponent extends Component
     protected $listeners = [
         'addWidget' => 'addWidget',
         'refreshWidgets' => 'refreshWidgets',
-        'openWidgetSettings' => 'redirectToWidgetSettings'
     ];
     
     public function boot(WidgetService $widgetService)
@@ -76,7 +75,11 @@ class WidgetSectionComponent extends Component
             'page_id' => $this->pageId,
             'module' => $this->module,
             'position' => $this->position,
-            'order' => $maxOrder + 1
+            'order' => $maxOrder + 1,
+            'settings' => [
+                'unique_id' => (string) \Illuminate\Support\Str::uuid(),
+                'title' => Widget::find($widgetId)->name ?? 'Yeni Widget'
+            ]
         ]);
         
         // Widgetları yeniden yükle
@@ -120,7 +123,6 @@ class WidgetSectionComponent extends Component
                 'module' => $this->module,
                 'position' => $this->position,
             ]);
-            // Hata mesajı gösterme veya başka bir işlem yapılabilir.
             return;
         }
 
@@ -160,27 +162,25 @@ class WidgetSectionComponent extends Component
         } catch (\Exception $e) {
             Log::error('Widget güncellenirken hata oluştu', [
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(), // Daha detaylı hata takibi için
+                'trace' => $e->getTraceAsString(),
                 'user_id' => Auth::id(),
                 'list' => $list
             ]);
-            // Kullanıcıya hata mesajı göstermek için bir event dispatch edilebilir
-            $this->dispatch('show-error', 'Widget sıralaması güncellenirken bir hata oluştu.');
-            $errors[] = ['general' => 'Veritabanı hatası oluştu.'];
+            
+            $this->dispatch('toast', [
+                'title' => 'Hata!',
+                'message' => 'Widget sıralaması güncellenirken bir hata oluştu.',
+                'type' => 'error'
+            ]);
+            
+            return;
         }
 
-        // İsteğe bağlı: Başarılı güncelleme mesajı
-        if (empty($errors)) {
-            $this->dispatch('show-success', 'Widget sıralaması başarıyla güncellendi.');
-        } else {
-            // Hatalar varsa, belki sadece hatalı olanlar için bir mesaj gösterilir
-            $this->dispatch('show-warning', 'Bazı widgetlar güncellenirken sorun oluştu.');
-        }
-    }
-    
-    public function redirectToWidgetSettings($tenantWidgetId)
-    {
-        return redirect()->route('admin.widgetmanagement.settings', $tenantWidgetId);
+        $this->dispatch('toast', [
+            'title' => 'Başarılı!',
+            'message' => 'Widget sıralaması güncellendi.',
+            'type' => 'success'
+        ]);
     }
     
     public function refreshWidgets()

@@ -68,7 +68,10 @@ class Widget extends Model
      */
     public function getSettingsSchema(): array
     {
-        return $this->settings_schema ?? [];
+        // Dönen verileri filtrele - unique_id sistemde otomatik tanımlanır, kullanıcıya gösterilmez
+        return array_filter($this->settings_schema ?? [], function($field) {
+            return $field['name'] !== 'unique_id';
+        });
     }
     
     /**
@@ -77,5 +80,28 @@ class Widget extends Model
     public function getItemSchema(): array
     {
         return $this->item_schema ?? [];
+    }
+    
+    /**
+     * Widget tipinin ekranda görünecek adı
+     */
+    public function getTypeNameAttribute(): string
+    {
+        $types = [
+            'static' => 'Statik',
+            'dynamic' => 'Dinamik',
+            'module' => 'Modül',
+            'content' => 'İçerik'
+        ];
+        
+        return $types[$this->type] ?? $this->type;
+    }
+    
+    /**
+     * Widget kullanılıyor mu?
+     */
+    public function isInUse(): bool
+    {
+        return $this->tenantWidgets()->count() > 0;
     }
 }

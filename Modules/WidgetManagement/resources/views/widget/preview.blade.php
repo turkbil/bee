@@ -31,7 +31,7 @@
         .preview-header {
             background-color: #206bc4;
             color: white;
-            padding: 1rem;
+            padding: 0.75rem;
             position: sticky;
             top: 0;
             z-index: 100;
@@ -40,32 +40,18 @@
         
         .preview-container {
             max-width: 1200px;
-            margin: 2rem auto;
-            padding: 1.5rem;
+            margin: 1.5rem auto;
+            padding: 1rem;
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         
-        .preview-metadata {
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid #e6e7e9;
-        }
-        
         .preview-content {
-            padding: 1.5rem;
             border: 1px solid #e6e7e9;
             border-radius: 4px;
-            min-height: 300px;
-        }
-        
-        .preview-footer {
-            margin-top: 2rem;
-            padding-top: 1rem;
-            border-top: 1px solid #e6e7e9;
-            font-size: 0.875rem;
-            color: #626976;
+            min-height: 200px;
+            margin: 1rem 0;
         }
         
         .device-switcher {
@@ -95,9 +81,9 @@
 <body>
     <div class="preview-header">
         <div class="container-fluid d-flex justify-content-between align-items-center">
-            <h1 class="h3 m-0">Widget Önizleme</h1>
+            <h1 class="h4 m-0">{{ $widget->name }} Önizleme</h1>
             <div>
-                <button class="btn btn-outline-light btn-sm" onclick="window.close()">
+                <button class="btn btn-sm btn-outline-light" onclick="window.close()">
                     <i class="fas fa-times me-1"></i> Kapat
                 </button>
             </div>
@@ -105,28 +91,6 @@
     </div>
     
     <div class="preview-container">
-        <div class="preview-metadata">
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <div class="mb-2">
-                        <strong>Widget Adı:</strong> {{ $widget->name }}
-                    </div>
-                    <div class="mb-2">
-                        <strong>Tip:</strong> {{ $widget->type }}
-                    </div>
-                    <div>
-                        <strong>Açıklama:</strong> {{ $widget->description ?: 'Açıklama bulunmuyor' }}
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="alert alert-warning">
-                        <i class="fas fa-info-circle me-2"></i>
-                        Bu bir önizlemedir. Widgetın gerçek ortamdaki görünümünden farklılık gösterebilir. Dinamik içerikler ve tenant özel ayarları bu önizlemede görünmeyebilir.
-                    </div>
-                </div>
-            </div>
-        </div>
-        
         <div class="device-switcher">
             <button class="btn btn-outline-primary active" onclick="setPreviewSize('desktop')">
                 <i class="fas fa-desktop me-1"></i> Masaüstü
@@ -139,6 +103,18 @@
             </button>
         </div>
         
+        <div class="alert alert-info">
+            <div class="d-flex">
+                <div>
+                    <i class="fas fa-info-circle me-2"></i>
+                </div>
+                <div>
+                    <strong>Önizleme Notu:</strong> Bu basit bir önizlemedir. Gerçek widget içeriğinden farklı görünebilir.
+                    Dinamik içerikler ve özel ayarlar bu önizlemede görünmeyebilir.
+                </div>
+            </div>
+        </div>
+        
         <div class="preview-frame" id="preview-frame">
             <div class="preview-content">
                 <!-- Widget HTML -->
@@ -146,8 +122,14 @@
             </div>
         </div>
         
-        <div class="preview-footer text-end">
-            @if(auth()->user()->isRoot() || auth()->user()->hasRole('root'))
+        <div class="mt-4 d-flex justify-content-between align-items-center">
+            <div>
+                <span class="badge bg-blue me-2">{{ $widget->type }}</span>
+                @if($widget->has_items)
+                <span class="badge bg-orange">Dinamik İçerik</span>
+                @endif
+            </div>
+            @if(auth()->user()->hasRole('root'))
             <a href="{{ route('admin.widgetmanagement.manage', $widget->id) }}" class="btn btn-primary">
                 <i class="fas fa-edit me-1"></i> Widget'ı Düzenle
             </a>

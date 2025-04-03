@@ -6,7 +6,7 @@ Widget Yönetimi
 
 {{-- Başlık --}}
 @push('title')
-Widget Listesi
+Widget Yönetimi
 @endpush
 
 {{-- Modül Menüsü --}}
@@ -22,57 +22,58 @@ Widget Listesi
                 </button>
                 <div class="dropdown-menu">
                     @hasmoduleaccess('widgetmanagement', 'view')
-                    <a class="dropdown-item" href="{{ route('admin.widgetmanagement.index') }}">
-                        Widget Listesi
+                    <a class="dropdown-item {{ request()->routeIs('admin.widgetmanagement.index') ? 'active' : '' }}" 
+                       href="{{ route('admin.widgetmanagement.index') }}">
+                        <i class="fas fa-puzzle-piece me-2"></i> Widgetlar
+                    </a>
+                    @endhasmoduleaccess
+                    
+                    @hasmoduleaccess('widgetmanagement', 'view')
+                    <a class="dropdown-item {{ request()->routeIs('admin.widgetmanagement.section*') ? 'active' : '' }}" 
+                       href="{{ route('admin.widgetmanagement.section') }}">
+                        <i class="fas fa-th-large me-2"></i> Bölüm Yönetimi
                     </a>
                     @endhasmoduleaccess
                     
                     @if(auth()->user()->hasRole('root'))
-                    <a class="dropdown-item" href="{{ route('admin.widgetmanagement.manage') }}">
-                        Widget Ekle
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item {{ request()->routeIs('admin.widgetmanagement.manage*') ? 'active' : '' }}" 
+                       href="{{ route('admin.widgetmanagement.manage') }}">
+                        <i class="fas fa-tools me-2"></i> Widget Yapılandır
                     </a>
                     @endif
                     
-                    <h6 class="dropdown-menu-header card-header-light">
-                        <span class="dropdown-header">Bölüm Yönetimi</span>
-                    </h6>
-                    
-                    @hasmoduleaccess('widgetmanagement', 'view')
-                    <a class="dropdown-item" href="{{ route('admin.widgetmanagement.section') }}">
-                        Sayfa Bölümleri
-                    </a>
-                    @endhasmoduleaccess
-                    
-                    @hasmoduleaccess('widgetmanagement', 'view')
-                    <a class="dropdown-item" href="{{ route('admin.widgetmanagement.section', ['module' => 'page']) }}">
-                        Modül Bölümleri
-                    </a>
-                    @endhasmoduleaccess
-                    
-                    <h6 class="dropdown-menu-header card-header-light">
-                        <span class="dropdown-header">İçerik Yönetimi</span>
-                    </h6>
-                    
                     @if(request()->routeIs('admin.widgetmanagement.items*'))
-                    @hasmoduleaccess('widgetmanagement', 'update')
+                    <div class="dropdown-divider"></div>
                     <a class="dropdown-item active" href="{{ url()->current() }}">
-                        İçerik Düzenle
+                        <i class="fas fa-layer-group me-2"></i> İçerik Düzenle
                     </a>
-                    @endhasmoduleaccess
                     @endif
                     
                     @if(request()->routeIs('admin.widgetmanagement.settings*'))
-                    @hasmoduleaccess('widgetmanagement', 'update')
+                    <div class="dropdown-divider"></div>
                     <a class="dropdown-item active" href="{{ url()->current() }}">
-                        Özelleştirme Ayarları
+                        <i class="fas fa-sliders-h me-2"></i> Widget Ayarları
                     </a>
-                    @endhasmoduleaccess
                     @endif
                 </div>
             </div>
-            @if(auth()->user()->hasRole('root'))
-            <a href="{{ route('admin.widgetmanagement.manage') }}" class="dropdown-module-item btn btn-primary">
-                Yeni Widget
+            
+            @if(request()->routeIs('admin.widgetmanagement.index') || request()->routeIs('admin.widgetmanagement.section*'))
+            <a href="{{ route('admin.widgetmanagement.section') }}" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i> Widget Ekle
+            </a>
+            @endif
+            
+            @if(request()->routeIs('admin.widgetmanagement.items*'))
+            <a href="{{ route('admin.widgetmanagement.section') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i> Bölümlere Dön
+            </a>
+            @endif
+            
+            @if(request()->routeIs('admin.widgetmanagement.settings*'))
+            <a href="{{ route('admin.widgetmanagement.section') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i> Bölümlere Dön
             </a>
             @endif
         </div>

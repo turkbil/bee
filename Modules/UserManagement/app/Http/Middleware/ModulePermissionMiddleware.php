@@ -27,6 +27,15 @@ class ModulePermissionMiddleware
             return redirect()->route('login');
         }
         
+        // Özel durum: widgetmanagement için, manage route'u sadece root tarafından erişilebilir
+        if ($moduleName === 'widgetmanagement' && $request->routeIs('admin.widgetmanagement.manage')) {
+            if (!$user->hasRole('root')) {
+                abort(403, 'Bu sayfaya erişim yetkiniz bulunmamaktadır');
+            }
+            // Root kullanıcısı ise, diğer izin kontrollerini atla ve devam et
+             return $next($request);
+        }
+
         // Kullanıcı aktif değilse erişime izin verme
         if (!$user->is_active) {
             Auth::logout();
@@ -62,7 +71,7 @@ class ModulePermissionMiddleware
             }
         }
         
-        // İzin var mı kontrol et
+        // İzin adını oluştur (örn. view user-management)
         $permissionName = "{$moduleName}.{$permissionType}";
         $permissionExists = Permission::where('name', $permissionName)->where('guard_name', 'web')->exists();
         

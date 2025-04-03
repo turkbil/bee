@@ -35,7 +35,17 @@ class WidgetSettingsComponent extends Component
         $this->schema = $this->tenantWidget->widget->getSettingsSchema();
         $this->settings = $this->tenantWidget->settings ?? [];
         
-        // Benzersiz ID 
+        // Unique ID'yi gizle - otomatik olarak oluşturulacak, kullanıcının görüp düzenlemesine gerek yok
+        $this->schema = array_filter($this->schema ?? [], function($field) {
+            return $field['name'] !== 'unique_id' && $field['name'] !== 'id';
+        });
+        
+        // Benzersiz ID yoksa otomatik ekle
+        if (!isset($this->settings['unique_id'])) {
+            $this->settings['unique_id'] = (string) Str::uuid();
+        }
+        
+        // Title yoksa, widget adını kullan
         if (!isset($this->settings['title'])) {
             $this->settings['title'] = $this->tenantWidget->widget->name;
         }
@@ -47,7 +57,7 @@ class WidgetSettingsComponent extends Component
         $rules = [];
         
         foreach ($this->schema as $field) {
-            if (isset($field['required']) && $field['required']) {
+            if (isset($field['required']) && $field['required'] && $field['name'] !== 'unique_id' && $field['name'] !== 'id') {
                 $rules['settings.' . $field['name']] = 'required';
             }
         }

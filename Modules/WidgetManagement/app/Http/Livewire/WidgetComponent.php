@@ -88,9 +88,12 @@ class WidgetComponent extends Component
     
     public function render()
     {
+        // Root yetkisine sahip olup olmadığını kontrol et
+        $hasRootPermission = auth()->user()->hasRole('root');
+        
         if ($this->viewMode == 'active') {
             // Aktif kullanılan tüm tenant widget'ları getir
-            $query = TenantWidget::with('widget')
+            $query = TenantWidget::with(['widget', 'items'])
                 ->when($this->search, function ($q) {
                     $q->where('settings->title', 'like', "%{$this->search}%")
                       ->orWhereHas('widget', function($wq) {
@@ -131,7 +134,8 @@ class WidgetComponent extends Component
                 'dynamic' => 'Dinamik',
                 'module' => 'Modül',
                 'content' => 'İçerik'
-            ]
+            ],
+            'hasRootPermission' => $hasRootPermission
         ]);
     }
 }

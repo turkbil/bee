@@ -346,26 +346,6 @@
             @if($formMode === 'items')
             <div class="row">
                 <div class="col-md-12">
-                    @if(!$widget['has_items'])
-                    <div class="alert alert-warning">
-                        <div class="d-flex">
-                            <div>
-                                <i class="fas fa-exclamation-triangle text-warning me-2" style="margin-top: 3px"></i>
-                            </div>
-                            <div>
-                                <h4 class="alert-title">İçerik Yapısı Tanımlanamıyor</h4>
-                                <div class="text-muted">
-                                    İçerik yapısı tanımlamak için önce "Temel Bilgiler" sekmesinden "İçerik Ekleme Özelliği" seçeneğini etkinleştirmelisiniz.
-                                </div>
-                                <div class="mt-2">
-                                    <button type="button" class="btn btn-warning" wire:click="$set('widget.has_items', true); setFormMode('base')">
-                                        <i class="fas fa-check me-1"></i> İçerik Ekleme Özelliğini Etkinleştir
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    @else
                     <div class="alert alert-info mb-4">
                         <div class="d-flex">
                             <div>
@@ -546,7 +526,6 @@
                             </div>
                         </div>
                     </div>
-                    @endif
                 </div>
             </div>
             @endif

@@ -48,13 +48,14 @@ class HeroBannerWidgetSeeder extends Seeder
                     position: relative;
                 }
                 ',
-                'has_items' => false, // Statik olduğu için false
-                'settings_schema' => [
+                'has_items' => true, // Statik olsa bile içerik yönetimi için true yapıyoruz
+                'item_schema' => [
                     [
                         'name' => 'title',
                         'label' => 'Başlık',
                         'type' => 'text',
-                        'required' => true
+                        'required' => true,
+                        'system' => true
                     ],
                     [
                         'name' => 'subtitle',
@@ -76,9 +77,24 @@ class HeroBannerWidgetSeeder extends Seeder
                     ],
                     [
                         'name' => 'image_url',
-                        'label' => 'Görsel URL',
+                        'label' => 'Görsel',
                         'type' => 'image',
                         'required' => false
+                    ],
+                    [
+                        'name' => 'is_active',
+                        'label' => 'Aktif',
+                        'type' => 'checkbox',
+                        'required' => false,
+                        'system' => true
+                    ]
+                ],
+                'settings_schema' => [
+                    [
+                        'name' => 'title',
+                        'label' => 'Widget Başlığı',
+                        'type' => 'text',
+                        'required' => true
                     ],
                     [
                         'name' => 'background_color',
@@ -91,6 +107,13 @@ class HeroBannerWidgetSeeder extends Seeder
                         'label' => 'Metin Rengi',
                         'type' => 'color',
                         'required' => false
+                    ],
+                    [
+                        'name' => 'unique_id',
+                        'label' => 'Benzersiz ID',
+                        'type' => 'text',
+                        'required' => false,
+                        'system' => true
                     ]
                 ],
                 'is_active' => true,
@@ -102,11 +125,7 @@ class HeroBannerWidgetSeeder extends Seeder
                 'widget_id' => $widget->id,
                 'settings' => [
                     'unique_id' => (string) Str::uuid(),
-                    'title' => 'Dijital Dönüşümün Anahtarı Burada',
-                    'subtitle' => 'Teknoloji ve inovasyonla geleceğe hazırlanın',
-                    'button_text' => 'Hemen Keşfedin',
-                    'button_url' => '/hakkimizda',
-                    'image_url' => asset('storage/images/hero-banner-sample.jpg'),
+                    'title' => 'Ana Sayfa Hero Banner',
                     'background_color' => '#f0f4ff',
                     'text_color' => '#333333'
                 ],
@@ -119,10 +138,13 @@ class HeroBannerWidgetSeeder extends Seeder
             WidgetItem::create([
                 'tenant_widget_id' => $tenantWidget->id,
                 'content' => [
-                    'title' => $tenantWidget->settings['title'],
+                    'title' => 'Dijital Dönüşümün Anahtarı Burada',
+                    'subtitle' => 'Teknoloji ve inovasyonla geleceğe hazırlanın',
+                    'button_text' => 'Hemen Keşfedin',
+                    'button_url' => '/hakkimizda',
+                    'image_url' => asset('storage/images/hero-banner-sample.jpg'),
                     'is_active' => true,
-                    'unique_id' => (string) Str::uuid(),
-                    'content_html' => $widget->content_html
+                    'unique_id' => (string) Str::uuid()
                 ],
                 'order' => 1
             ]);

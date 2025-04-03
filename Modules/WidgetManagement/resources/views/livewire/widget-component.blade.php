@@ -16,7 +16,7 @@
                 </div>
                 
                 <div>
-                    @if(auth()->user()->hasRole('root') && $viewMode == 'gallery')
+                    @if($hasRootPermission && $viewMode == 'gallery')
                     <a href="{{ route('admin.widgetmanagement.manage') }}" class="btn btn-primary">
                         <i class="fas fa-plus me-2"></i> Yeni Bileşen Ekle
                     </a>
@@ -83,43 +83,49 @@
                                 @endif
                                 <div>
                                     <h3 class="card-title mb-0">{{ $instance->settings['title'] ?? $instance->widget->name }}</h3>
-                                    <span class="badge bg-blue-lt">{{ $types[$instance->widget->type] ?? $instance->widget->type }}</span>
-                                    <span class="badge bg-green-lt">ID: {{ $instance->id }}</span>
+                                    
+                                    <!-- Widget tipi ve aktiflik durumu badgeleri -->
+                                    <div class="mt-1">
+                                        <span class="badge bg-blue-lt">{{ $types[$instance->widget->type] ?? $instance->widget->type }}</span>
+                                        
+                                        @if($instance->items->isNotEmpty() && isset($instance->items->first()->content['is_active']))
+                                            <span class="badge {{ $instance->items->first()->content['is_active'] ? 'bg-green' : 'bg-red' }}">
+                                                {{ $instance->items->first()->content['is_active'] ? 'Aktif' : 'Pasif' }}
+                                            </span>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                             
                             <p class="text-muted small mb-3 flex-grow-1">{{ Str::limit($instance->widget->description, 80) }}</p>
                             
                             <div class="row mt-auto">
-                                <div class="col">
-                                    <div class="dropdown">
-                                        <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown">
-                                            <i class="fas fa-cog me-1"></i> İşlemler
-                                        </button>
-                                        <div class="dropdown-menu">
-                                            <a href="{{ route('admin.widgetmanagement.settings', $instance->id) }}" class="dropdown-item">
-                                                <i class="fas fa-sliders-h me-1"></i> Ayarlar
-                                            </a>
-                                            
-                                            @if(auth()->user()->hasRole('root'))
-                                            <a href="{{ route('admin.widgetmanagement.manage', $instance->widget->id) }}" class="dropdown-item">
-                                                <i class="fas fa-tools me-1"></i> Şablonu Yapılandır
-                                            </a>
-                                            @endif
-                                            
-                                            <div class="dropdown-divider"></div>
-                                            
-                                            <a href="#" class="dropdown-item text-danger" wire:click.prevent="deleteInstance({{ $instance->id }})"
-                                               onclick="return confirm('Bu bileşeni silmek istediğinize emin misiniz?')">
-                                                <i class="fas fa-trash me-1"></i> Sil
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <a href="{{ route('admin.widgetmanagement.items', $instance->id) }}" class="btn btn-primary w-100">
-                                        <i class="fas fa-layer-group me-1"></i> İçeriği Yönet
+                                <div class="col-6">
+                                    <a href="{{ route('admin.widgetmanagement.settings', $instance->id) }}" class="btn btn-outline-secondary w-100">
+                                        <i class="fas fa-sliders-h me-1"></i> Ayarlar
                                     </a>
+                                </div>
+                                <div class="col-6">
+                                    <a href="{{ route('admin.widgetmanagement.items', $instance->id) }}" class="btn btn-primary w-100">
+                                        <i class="fas fa-layer-group me-1"></i> İçerik
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-2">
+                                <div class="col-6">
+                                    @if($hasRootPermission)
+                                    <a href="{{ route('admin.widgetmanagement.manage', $instance->widget->id) }}" class="btn btn-outline-secondary w-100">
+                                        <i class="fas fa-tools me-1"></i> Yapılandır
+                                    </a>
+                                    @endif
+                                </div>
+                                <div class="col-6">
+                                    <button class="btn btn-outline-danger w-100" 
+                                        wire:click="deleteInstance({{ $instance->id }})"
+                                        onclick="return confirm('Bu bileşeni silmek istediğinize emin misiniz?')">
+                                        <i class="fas fa-trash me-1"></i> Sil
+                                    </button>
                                 </div>
                             </div>
                         </div>

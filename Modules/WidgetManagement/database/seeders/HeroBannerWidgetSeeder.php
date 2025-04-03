@@ -5,6 +5,7 @@ namespace Modules\WidgetManagement\database\seeders;
 use Illuminate\Database\Seeder;
 use Modules\WidgetManagement\app\Models\Widget;
 use Modules\WidgetManagement\app\Models\TenantWidget;
+use Illuminate\Support\Str;
 
 class HeroBannerWidgetSeeder extends Seeder
 {
@@ -99,6 +100,7 @@ class HeroBannerWidgetSeeder extends Seeder
             $tenantWidget = TenantWidget::create([
                 'widget_id' => $widget->id,
                 'settings' => [
+                    'unique_id' => (string) Str::uuid(),
                     'title' => 'Dijital Dönüşümün Anahtarı Burada',
                     'subtitle' => 'Teknoloji ve inovasyonla geleceğe hazırlanın',
                     'button_text' => 'Hemen Keşfedin',

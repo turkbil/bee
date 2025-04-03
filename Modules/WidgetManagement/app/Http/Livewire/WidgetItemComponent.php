@@ -16,6 +16,7 @@ class WidgetItemComponent extends Component
     use WithFileUploads;
     
     public $tenantWidgetId;
+    public $tenantWidget = null;
     public $items = [];
     public $formMode = false;
     public $formData = [];
@@ -42,35 +43,51 @@ class WidgetItemComponent extends Component
         $this->tenantWidgetId = $tenantWidgetId;
         $this->loadItems();
         
-        $tenantWidget = TenantWidget::with('widget')->findOrFail($tenantWidgetId);
-        $this->schema = $tenantWidget->widget->getItemSchema();
+        $this->tenantWidget = TenantWidget::with('widget')->findOrFail($tenantWidgetId);
+        $this->schema = $this->tenantWidget->widget->getItemSchema();
         
-        // Şema boşsa veya title alanı yoksa, standart alanları ekle
-        if (empty($this->schema) || !$this->hasField('title')) {
-            $this->schema = array_merge($this->schema ?? [], [
-                [
-                    'name' => 'title',
-                    'label' => 'Başlık',
-                    'type' => 'text',
-                    'required' => true
-                ]
-            ]);
+        // Her zaman title ve is_active alanları olmalı - bunlar değiştirilemez
+        $hasTitle = false;
+        $hasActive = false;
+
+        if (is_array($this->schema)) {
+            foreach ($this->schema as $field) {
+                if ($field['name'] === 'title') $hasTitle = true;
+                if ($field['name'] === 'is_active') $hasActive = true;
+            }
+        } else {
+            $this->schema = [];
+        }
+        
+        // Title alanı yoksa ekle
+        if (!$hasTitle) {
+            $this->schema = array_merge([[
+                'name' => 'title',
+                'label' => 'Başlık',
+                'type' => 'text',
+                'required' => true,
+                'system' => true // Sistem alanı olduğunu belirt
+            ]], $this->schema ?? []);
         }
         
         // Aktif/Pasif alanı yoksa ekle
-        if (!$this->hasField('is_active')) {
-            $this->schema = array_merge($this->schema ?? [], [
-                [
-                    'name' => 'is_active',
-                    'label' => 'Aktif',
-                    'type' => 'checkbox',
-                    'required' => false
-                ]
-            ]);
+        if (!$hasActive) {
+            $this->schema[] = [
+                'name' => 'is_active',
+                'label' => 'Aktif',
+                'type' => 'checkbox',
+                'required' => false,
+                'system' => true // Sistem alanı olduğunu belirt
+            ];
         }
         
         // formData'yı başlat
         $this->initFormData();
+    }
+    
+    public function loadItems()
+    {
+        $this->items = $this->itemService->getItemsForWidget($this->tenantWidgetId);
     }
     
     // Yardımcı metod
@@ -108,12 +125,74 @@ class WidgetItemComponent extends Component
         }
     }
     
-    public function loadItems()
+    public function addItem()
     {
-        $this->items = $this->itemService->getItemsForWidget($this->tenantWidgetId);
+        $this->formMode = true;
+        $this->currentItemId = null;
+        $this->initFormData();
     }
     
-    // Diğer fonksiyonlar korundu...
+    public function editItem($itemId)
+    {
+        $item = WidgetItem::findOrFail($itemId);
+        $this->currentItemId = $item->id;
+        $this->formData = $item->content;
+        $this->formMode = true;
+    }
+    
+    public function deleteItem($itemId)
+    {
+        try {
+            $this->itemService->deleteItem($itemId);
+            
+            $this->loadItems();
+            
+            $this->dispatch('toast', [
+                'title' => 'Başarılı!',
+                'message' => 'Öğe başarıyla silindi.',
+                'type' => 'success'
+            ]);
+        } catch (\Exception $e) {
+            $this->dispatch('toast', [
+                'title' => 'Hata!',
+                'message' => 'Öğe silinirken bir hata oluştu: ' . $e->getMessage(),
+                'type' => 'error'
+            ]);
+        }
+    }
+    
+    public function cancelForm()
+    {
+        $this->formMode = false;
+        $this->currentItemId = null;
+        $this->initFormData();
+    }
+    
+    public function updateItemOrder($items)
+    {
+        // Sadece geçerli bir item dizisi ise devam et
+        if (!is_array($items) || empty($items)) {
+            return;
+        }
+        
+        try {
+            $this->itemService->reorderItems($this->tenantWidgetId, $items);
+            
+            $this->loadItems();
+            
+            $this->dispatch('toast', [
+                'title' => 'Başarılı!',
+                'message' => 'Öğeler başarıyla sıralandı.',
+                'type' => 'success'
+            ]);
+        } catch (\Exception $e) {
+            $this->dispatch('toast', [
+                'title' => 'Hata!',
+                'message' => 'Öğeler sıralanırken bir hata oluştu: ' . $e->getMessage(),
+                'type' => 'error'
+            ]);
+        }
+    }
     
     public function saveItem()
     {
@@ -133,7 +212,7 @@ class WidgetItemComponent extends Component
         $this->validate($rules);
         
         try {
-            // Benzersiz ID ekle
+            // Benzersiz ID otomatik ekle - kullanıcı görmesin
             if (!isset($this->formData['unique_id'])) {
                 $this->formData['unique_id'] = (string) Str::uuid();
             }
@@ -184,5 +263,11 @@ class WidgetItemComponent extends Component
                 'type' => 'error'
             ]);
         }
+    }
+    
+    public function render()
+    {
+        // Görünüm yolu düzeltildi
+        return view('widgetmanagement::livewire.widget-item-component');
     }
 }

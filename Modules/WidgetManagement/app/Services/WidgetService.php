@@ -33,7 +33,9 @@ class WidgetService
      */
     public function getActiveWidgets(): Collection
     {
-        return Widget::where('is_active', true)->get();
+        return Widget::where('is_active', true)
+            ->orderBy('name')
+            ->get();
     }
     
     /**
@@ -78,6 +80,7 @@ class WidgetService
                       ->orWhereJsonContains('module_ids', $moduleId)
                       ->orWhere('module_ids', '[]');
             })
+            ->orderBy('name')
             ->get();
     }
     
@@ -162,9 +165,11 @@ class WidgetService
                 // Dinamik widget'lar için öğeleri al
                 $items = [];
                 if ($widget->has_items) {
-                    $items = $tenantWidget->items->map(function ($item) {
-                        return $item->content;
-                    })->toArray();
+                    $items = $tenantWidget->items
+                        ->where('content.is_active', true) // Sadece aktif öğeleri getir
+                        ->map(function ($item) {
+                            return $item->content;
+                        })->toArray();
                     
                     // Öğeleri şablona yerleştir
                     $html = $this->processItems($html, $items);

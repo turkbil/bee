@@ -5,11 +5,11 @@
             <div class="d-flex justify-content-between align-items-center">
                 <h3 class="card-title d-flex align-items-center">
                     <i class="fas fa-layer-group me-2"></i>
-                    {{ $tenantWidget->widget->name }} - İçerik Yönetimi
+                    {{ $tenantWidget->settings['title'] ?? $tenantWidget->widget->name }} - İçerik Yönetimi
                 </h3>
                 <div>
-                    <a href="{{ route('admin.widgetmanagement.section') }}" class="btn btn-outline-secondary me-2">
-                        <i class="fas fa-arrow-left me-2"></i> Bölümlere Dön
+                    <a href="{{ route('admin.widgetmanagement.index') }}" class="btn btn-outline-secondary me-2">
+                        <i class="fas fa-arrow-left me-2"></i> Bileşenlere Dön
                     </a>
                     <button class="btn btn-primary" wire:click="addItem">
                         <i class="fas fa-plus me-2"></i> Yeni İçerik Ekle
@@ -151,7 +151,7 @@
                     </div>
                     <p class="empty-title">Henüz içerik bulunmuyor</p>
                     <p class="empty-subtitle text-muted">
-                        "Yeni İçerik Ekle" butonunu kullanarak widget içeriklerinizi oluşturun.
+                        "Yeni İçerik Ekle" butonunu kullanarak bileşen içeriklerinizi oluşturun.
                     </p>
                     <div class="empty-action">
                         <button class="btn btn-primary" wire:click="addItem">

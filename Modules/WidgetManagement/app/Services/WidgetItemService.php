@@ -4,6 +4,7 @@ namespace Modules\WidgetManagement\app\Services;
 
 use Modules\WidgetManagement\app\Models\TenantWidget;
 use Modules\WidgetManagement\app\Models\WidgetItem;
+use Illuminate\Support\Str;
 
 class WidgetItemService
 {
@@ -37,6 +38,21 @@ class WidgetItemService
     {
         $tenantWidget = TenantWidget::findOrFail($tenantWidgetId);
         
+        // Otomatik unique_id ekle
+        if (!isset($content['unique_id'])) {
+            $content['unique_id'] = (string) Str::uuid();
+        }
+        
+        // Title yok ise ekle
+        if (!isset($content['title'])) {
+            $content['title'] = 'Yeni İçerik ' . date('Y-m-d H:i:s');
+        }
+        
+        // is_active yok ise ekle ve varsayılan aktif
+        if (!isset($content['is_active'])) {
+            $content['is_active'] = true;
+        }
+        
         $maxOrder = WidgetItem::where('tenant_widget_id', $tenantWidgetId)
             ->max('order') ?? 0;
             
@@ -62,6 +78,22 @@ class WidgetItemService
     public function updateItem($itemId, $content)
     {
         $item = WidgetItem::findOrFail($itemId);
+        
+        // Otomatik unique_id ekle
+        if (!isset($content['unique_id'])) {
+            $content['unique_id'] = (string) Str::uuid();
+        }
+        
+        // Title yok ise mevcut title'ı devam ettir
+        if (!isset($content['title']) && isset($item->content['title'])) {
+            $content['title'] = $item->content['title'];
+        }
+        
+        // is_active yok ise mevcut aktiflik durumunu devam ettir
+        if (!isset($content['is_active']) && isset($item->content['is_active'])) {
+            $content['is_active'] = $item->content['is_active'];
+        }
+        
         $item->update(['content' => $content]);
         
         // Widget önbelleğini temizle

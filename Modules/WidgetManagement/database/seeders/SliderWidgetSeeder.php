@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use Modules\WidgetManagement\app\Models\Widget;
 use Modules\WidgetManagement\app\Models\TenantWidget;
 use Modules\WidgetManagement\app\Models\WidgetItem;
+use Illuminate\Support\Str;
 
 class SliderWidgetSeeder extends Seeder
 {
@@ -20,10 +21,10 @@ class SliderWidgetSeeder extends Seeder
                 'description' => 'Dinamik slaytlar ekleyebileceğiniz carousel slider',
                 'type' => 'dynamic',
                 'content_html' => '
-                <div id="slider-{{id}}" class="carousel slide" data-bs-ride="carousel">
+                <div id="slider-{{unique_id}}" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-indicators">
                         {{#each items}}
-                        <button type="button" data-bs-target="#slider-{{id}}" data-bs-slide-to="{{@index}}" {{#if @first}}class="active"{{/if}}></button>
+                        <button type="button" data-bs-target="#slider-{{unique_id}}" data-bs-slide-to="{{@index}}" {{#if @first}}class="active"{{/if}}></button>
                         {{/each}}
                     </div>
                     <div class="carousel-inner">
@@ -40,11 +41,11 @@ class SliderWidgetSeeder extends Seeder
                         </div>
                         {{/each}}
                     </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#slider-{{id}}" data-bs-slide="prev">
+                    <button class="carousel-control-prev" type="button" data-bs-target="#slider-{{unique_id}}" data-bs-slide="prev">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                         <span class="visually-hidden">Önceki</span>
                     </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#slider-{{id}}" data-bs-slide="next">
+                    <button class="carousel-control-next" type="button" data-bs-target="#slider-{{unique_id}}" data-bs-slide="next">
                         <span class="carousel-control-next-icon" aria-hidden="true"></span>
                         <span class="visually-hidden">Sonraki</span>
                     </button>
@@ -67,7 +68,7 @@ class SliderWidgetSeeder extends Seeder
                 ',
                 'content_js' => '
                 document.addEventListener("DOMContentLoaded", function() {
-                    new bootstrap.Carousel(document.getElementById("slider-{{id}}"), {
+                    new bootstrap.Carousel(document.getElementById("slider-{{unique_id}}"), {
                         interval: {{interval}},
                         wrap: true
                     });
@@ -79,7 +80,8 @@ class SliderWidgetSeeder extends Seeder
                         'name' => 'title',
                         'label' => 'Başlık',
                         'type' => 'text',
-                        'required' => true
+                        'required' => true,
+                        'system' => true
                     ],
                     [
                         'name' => 'description',
@@ -104,14 +106,28 @@ class SliderWidgetSeeder extends Seeder
                         'label' => 'Buton URL',
                         'type' => 'url',
                         'required' => false
+                    ],
+                    [
+                        'name' => 'is_active',
+                        'label' => 'Aktif',
+                        'type' => 'checkbox',
+                        'required' => false,
+                        'system' => true
                     ]
                 ],
                 'settings_schema' => [
                     [
-                        'name' => 'id',
-                        'label' => 'Slider ID',
+                        'name' => 'title',
+                        'label' => 'Başlık',
                         'type' => 'text',
                         'required' => true
+                    ],
+                    [
+                        'name' => 'unique_id',
+                        'label' => 'Benzersiz ID',
+                        'type' => 'text',
+                        'required' => false,
+                        'system' => true
                     ],
                     [
                         'name' => 'height',
@@ -146,7 +162,8 @@ class SliderWidgetSeeder extends Seeder
             $tenantWidget = TenantWidget::create([
                 'widget_id' => $widget->id,
                 'settings' => [
-                    'id' => 'ana-slider',
+                    'unique_id' => (string) Str::uuid(),
+                    'title' => 'Ana Sayfa Slider',
                     'height' => 500,
                     'interval' => 5000,
                     'show_indicators' => true,
@@ -164,21 +181,27 @@ class SliderWidgetSeeder extends Seeder
                     'description' => 'Kurumsal dijital altyapınızı güçlendirin',
                     'image' => asset('storage/images/slider-1.jpg'),
                     'button_text' => 'Detayları İncele',
-                    'button_url' => '/dijital-donusum'
+                    'button_url' => '/dijital-donusum',
+                    'is_active' => true,
+                    'unique_id' => (string) Str::uuid()
                 ],
                 [
                     'title' => 'Yapay Zeka Danışmanlığı',
                     'description' => 'Yapay zeka teknolojileriyle iş süreçlerinizi optimize edin',
                     'image' => asset('storage/images/slider-2.jpg'),
                     'button_text' => 'Çözümleri Keşfet',
-                    'button_url' => '/yapay-zeka'
+                    'button_url' => '/yapay-zeka',
+                    'is_active' => true,
+                    'unique_id' => (string) Str::uuid()
                 ],
                 [
                     'title' => 'Bulut Bilişim Hizmetleri',
                     'description' => 'Esnek ve güvenli bulut çözümleri',
                     'image' => asset('storage/images/slider-3.jpg'),
                     'button_text' => 'Hemen Başlayın',
-                    'button_url' => '/bulut-hizmetler'
+                    'button_url' => '/bulut-hizmetler',
+                    'is_active' => true,
+                    'unique_id' => (string) Str::uuid()
                 ]
             ];
 

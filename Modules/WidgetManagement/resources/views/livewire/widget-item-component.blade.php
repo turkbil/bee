@@ -11,7 +11,7 @@
                     <a href="{{ route('admin.widgetmanagement.section') }}" class="btn btn-outline-secondary me-2">
                         <i class="fas fa-arrow-left me-2"></i> Bölümlere Dön
                     </a>
-                    <button class="btn btn-primary" wire:click="addNew">
+                    <button class="btn btn-primary" wire:click="addItem">
                         <i class="fas fa-plus me-2"></i> Yeni İçerik Ekle
                     </button>
                 </div>
@@ -34,6 +34,9 @@
                                 <div class="form-group">
                                     <label for="field-{{ $field['name'] }}" class="form-label{{ isset($field['required']) && $field['required'] ? ' required' : '' }}">
                                         {{ $field['label'] }}
+                                        @if(isset($field['system']) && $field['system'])
+                                        <span class="badge bg-primary ms-1">Sistem</span>
+                                        @endif
                                     </label>
                                     
                                     @if($field['type'] === 'text')
@@ -151,7 +154,7 @@
                         "Yeni İçerik Ekle" butonunu kullanarak widget içeriklerinizi oluşturun.
                     </p>
                     <div class="empty-action">
-                        <button class="btn btn-primary" wire:click="addNew">
+                        <button class="btn btn-primary" wire:click="addItem">
                             <i class="fas fa-plus me-2"></i> Yeni İçerik Ekle
                         </button>
                     </div>

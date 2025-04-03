@@ -65,7 +65,7 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="d-flex align-items-center">
                                     <i class="fas fa-grip-vertical text-muted me-2"></i>
-                                    <h3 class="card-title mb-0">{{ optional($widget->widget)->name ?? 'Özel Widget' }}</h3>
+                                    <h3 class="card-title mb-0">{{ $widget->settings['title'] ?? (optional($widget->widget)->name ?? 'Widget') }}</h3>
                                 </div>
                                 <div class="dropdown">
                                     <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
@@ -82,11 +82,11 @@
                                         </a>
                                         @endif
 
-<!-- Yapılandırma kısmı - sadece root erişebilir -->
+                                        <!-- Yapılandırma kısmı - sadece root erişebilir -->
                                         @if(auth()->user()->hasRole('root'))
                                         <a href="{{ route('admin.widgetmanagement.manage', optional($widget->widget)->id) }}" 
-                                           class="dropdown-item" target="_blank">
-                                            <i class="fas fa-cog me-2"></i> Yapılandır
+                                           class="dropdown-item">
+                                            <i class="fas fa-tools me-2"></i> Yapılandır
                                         </a>
                                         @endif
                                                                                 
@@ -120,26 +120,43 @@
                                     <div class="text-muted">{{ Str::limit(optional($widget->widget)->description, 100) }}</div>
                                     
                                     <div class="mt-2">
-                                        @if(!empty($widget->settings['title']))
-                                        <div><strong>Başlık:</strong> {{ $widget->settings['title'] }}</div>
+                                        @if(optional($widget->widget)->type)
+                                        <span class="badge bg-blue">
+                                            @switch(optional($widget->widget)->type)
+                                                @case('static')
+                                                    Statik
+                                                    @break
+                                                @case('dynamic')
+                                                    Dinamik
+                                                    @break
+                                                @case('module')
+                                                    Modül
+                                                    @break
+                                                @case('content')
+                                                    İçerik
+                                                    @break
+                                                @default
+                                                    {{ optional($widget->widget)->type }}
+                                            @endswitch
+                                        </span>
                                         @endif
                                         
                                         @if(!empty($widget->items) && $widget->items->count() > 0)
-                                        <div><strong>İçerik Sayısı:</strong> {{ $widget->items->count() }}</div>
+                                        <span class="badge bg-orange ms-1">{{ $widget->items->count() }} içerik</span>
                                         @endif
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="card-footer">
-                            <div class="btn-list">
-                                <a href="{{ route('admin.widgetmanagement.settings', $widget->id) }}" class="btn btn-outline-primary">
+                            <div class="d-flex justify-content-between">
+                                <a href="{{ route('admin.widgetmanagement.settings', $widget->id) }}" class="btn btn-outline-primary btn-sm">
                                     <i class="fas fa-cog me-1"></i> Ayarlar
                                 </a>
                                 
                                 @if(optional($widget->widget)->has_items)
-                                <a href="{{ route('admin.widgetmanagement.items', $widget->id) }}" class="btn btn-outline-secondary">
-                                    <i class="fas fa-layer-group me-1"></i> İçerik
+                                <a href="{{ route('admin.widgetmanagement.items', $widget->id) }}" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-layer-group me-1"></i> İçerik Yönet
                                 </a>
                                 @endif
                             </div>
@@ -208,7 +225,24 @@
                                             <h4 class="card-title mb-1">{{ $widget->name }}</h4>
                                             <div class="text-muted small">{{ Str::limit($widget->description, 60) }}</div>
                                             <div class="mt-2">
-                                                <span class="badge bg-blue-lt">{{ $types[$widget->type] ?? $widget->type }}</span>
+                                                <span class="badge bg-blue-lt">
+                                                    @switch($widget->type)
+                                                        @case('static')
+                                                            Statik
+                                                            @break
+                                                        @case('dynamic')
+                                                            Dinamik
+                                                            @break
+                                                        @case('module')
+                                                            Modül
+                                                            @break
+                                                        @case('content')
+                                                            İçerik
+                                                            @break
+                                                        @default
+                                                            {{ $widget->type }}
+                                                    @endswitch
+                                                </span>
                                                 @if($widget->has_items)
                                                 <span class="badge bg-orange-lt">Dinamik İçerik</span>
                                                 @endif
@@ -217,17 +251,11 @@
                                     </div>
                                 </div>
                                 <div class="card-footer">
-                                    <div class="d-flex justify-content-between">
-                                        <a href="{{ route('admin.widgetmanagement.preview', $widget->id) }}" 
-                                           target="_blank" class="btn btn-outline-secondary btn-sm">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        <button type="button" class="btn btn-primary btn-sm" 
-                                                wire:click="addWidget({{ $widget->id }})" 
-                                                data-bs-dismiss="modal">
-                                            <i class="fas fa-plus me-1"></i> Ekle
-                                        </button>
-                                    </div>
+                                    <button type="button" class="btn btn-primary btn-sm w-100" 
+                                            wire:click="addWidget({{ $widget->id }})" 
+                                            data-bs-dismiss="modal">
+                                        <i class="fas fa-plus me-1"></i> Ekle
+                                    </button>
                                 </div>
                             </div>
                         </div>

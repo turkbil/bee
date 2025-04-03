@@ -8,7 +8,6 @@ use Livewire\Attributes\Layout;
 use Modules\WidgetManagement\app\Models\Widget;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Collection;
 
 #[Layout('admin.layout')]
 class WidgetManageComponent extends Component
@@ -38,7 +37,7 @@ class WidgetManageComponent extends Component
         'is_core' => false
     ];
     
-    // Yeni şema alanı için geçici formlar
+    // Yeni şema alanı için form
     public $newField = [
         'name' => '',
         'label' => '',
@@ -93,6 +92,39 @@ class WidgetManageComponent extends Component
                 'is_active' => $widget->is_active,
                 'is_core' => $widget->is_core
             ];
+            
+            // 'title' ve 'is_active' her zaman item_schema'da olmalı
+            if ($widget->has_items) {
+                $hasTitle = false;
+                $hasActive = false;
+                
+                if (is_array($this->widget['item_schema'])) {
+                    foreach ($this->widget['item_schema'] as $field) {
+                        if ($field['name'] === 'title') $hasTitle = true;
+                        if ($field['name'] === 'is_active') $hasActive = true;
+                    }
+                }
+                
+                if (!$hasTitle) {
+                    $this->widget['item_schema'] = array_merge([[
+                        'name' => 'title',
+                        'label' => 'Başlık',
+                        'type' => 'text',
+                        'required' => true,
+                        'system' => true
+                    ]], $this->widget['item_schema'] ?? []);
+                }
+                
+                if (!$hasActive) {
+                    $this->widget['item_schema'][] = [
+                        'name' => 'is_active',
+                        'label' => 'Aktif',
+                        'type' => 'checkbox',
+                        'required' => false,
+                        'system' => true
+                    ];
+                }
+            }
         }
     }
 
@@ -158,6 +190,17 @@ class WidgetManageComponent extends Component
             'newField.type' => 'required|in:text,textarea,number,select,checkbox,image,url'
         ]);
         
+        // Sistem alanı ise düzenlenemez
+        $systemSpecialFields = ['title', 'is_active', 'unique_id'];
+        if (in_array($this->newField['name'], $systemSpecialFields)) {
+            $this->dispatch('toast', [
+                'title' => 'Hata!',
+                'message' => 'Bu alan ismi sistem tarafından ayrılmıştır ve kullanılamaz.',
+                'type' => 'error'
+            ]);
+            return;
+        }
+        
         $field = [
             'name' => $this->newField['name'],
             'label' => $this->newField['label'],
@@ -188,6 +231,16 @@ class WidgetManageComponent extends Component
     {
         $itemSchema = $this->widget['item_schema'] ?? [];
         
+        // Sistem alanları silinemez
+        if (isset($itemSchema[$index]) && isset($itemSchema[$index]['system']) && $itemSchema[$index]['system']) {
+            $this->dispatch('toast', [
+                'title' => 'Hata!',
+                'message' => 'Sistem alanları silinemez.',
+                'type' => 'error'
+            ]);
+            return;
+        }
+        
         if (isset($itemSchema[$index])) {
             unset($itemSchema[$index]);
             $this->widget['item_schema'] = array_values($itemSchema);
@@ -201,6 +254,17 @@ class WidgetManageComponent extends Component
             'newField.label' => 'required',
             'newField.type' => 'required|in:text,textarea,number,select,checkbox,image,url,color'
         ]);
+        
+        // Sistem alanı ise düzenlenemez
+        $systemSpecialFields = ['title', 'unique_id'];
+        if (in_array($this->newField['name'], $systemSpecialFields)) {
+            $this->dispatch('toast', [
+                'title' => 'Hata!',
+                'message' => 'Bu alan ismi sistem tarafından ayrılmıştır ve kullanılamaz.',
+                'type' => 'error'
+            ]);
+            return;
+        }
         
         $field = [
             'name' => $this->newField['name'],
@@ -231,6 +295,16 @@ class WidgetManageComponent extends Component
     public function removeSettingsSchemaField($index)
     {
         $settingsSchema = $this->widget['settings_schema'] ?? [];
+        
+        // Sistem alanları silinemez
+        if (isset($settingsSchema[$index]) && isset($settingsSchema[$index]['system']) && $settingsSchema[$index]['system']) {
+            $this->dispatch('toast', [
+                'title' => 'Hata!',
+                'message' => 'Sistem alanları silinemez.',
+                'type' => 'error'
+            ]);
+            return;
+        }
         
         if (isset($settingsSchema[$index])) {
             unset($settingsSchema[$index]);
@@ -274,6 +348,73 @@ class WidgetManageComponent extends Component
         $this->validate();
         
         try {
+            // Her zaman title ve is_active alanlarını ekleyin (itemSchema için)
+            if ($this->widget['has_items']) {
+                $hasTitle = false;
+                $hasActive = false;
+                
+                if (is_array($this->widget['item_schema'])) {
+                    foreach ($this->widget['item_schema'] as $field) {
+                        if ($field['name'] === 'title') $hasTitle = true;
+                        if ($field['name'] === 'is_active') $hasActive = true;
+                    }
+                } else {
+                    $this->widget['item_schema'] = [];
+                }
+                
+                if (!$hasTitle) {
+                    $this->widget['item_schema'] = array_merge([[
+                        'name' => 'title',
+                        'label' => 'Başlık',
+                        'type' => 'text',
+                        'required' => true,
+                        'system' => true
+                    ]], $this->widget['item_schema']);
+                }
+                
+                if (!$hasActive) {
+                    $this->widget['item_schema'][] = [
+                        'name' => 'is_active',
+                        'label' => 'Aktif',
+                        'type' => 'checkbox',
+                        'required' => false,
+                        'system' => true
+                    ];
+                }
+            }
+            
+            // Settings Schema'ya title ekle
+            $hasTitle = false;
+            $hasUniqueId = false;
+            
+            if (is_array($this->widget['settings_schema'])) {
+                foreach ($this->widget['settings_schema'] as $field) {
+                    if ($field['name'] === 'title') $hasTitle = true;
+                    if ($field['name'] === 'unique_id') $hasUniqueId = true;
+                }
+            } else {
+                $this->widget['settings_schema'] = [];
+            }
+            
+            if (!$hasTitle) {
+                $this->widget['settings_schema'] = array_merge([[
+                    'name' => 'title',
+                    'label' => 'Başlık',
+                    'type' => 'text',
+                    'required' => true
+                ]], $this->widget['settings_schema']);
+            }
+            
+            if (!$hasUniqueId) {
+                $this->widget['settings_schema'][] = [
+                    'name' => 'unique_id',
+                    'label' => 'Benzersiz ID',
+                    'type' => 'text',
+                    'required' => false,
+                    'system' => true
+                ];
+            }
+            
             if ($this->widgetId) {
                 $widget = Widget::findOrFail($this->widgetId);
                 $widget->update($this->widget);

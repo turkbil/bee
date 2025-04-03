@@ -21,16 +21,9 @@ class WidgetComponent extends Component
     public $typeFilter = '';
     
     #[Url]
-    public $sortField = 'name';
-    
-    #[Url]
-    public $sortDirection = 'asc';
-    
-    #[Url]
     public $perPage = 12;
     
-    #[Url]
-    public $activeOnly = true;
+    public $viewMode = 'active'; // active veya gallery
     
     public function updatedSearch()
     {
@@ -42,57 +35,97 @@ class WidgetComponent extends Component
         $this->resetPage();
     }
     
-    public function updatedActiveOnly()
+    public function changeViewMode($mode)
     {
+        $this->viewMode = $mode;
         $this->resetPage();
     }
     
-    public function toggleActive($id)
+    public function createInstance($widgetId)
     {
-        $widget = Widget::findOrFail($id);
-        $widget->is_active = !$widget->is_active;
-        $widget->save();
+        // Widget şablonundan yeni bir TenantWidget oluştur
+        $widget = Widget::findOrFail($widgetId);
         
-        log_activity(
-            $widget,
-            $widget->is_active ? 'aktif edildi' : 'pasif edildi'
-        );
+        // Mevcut sıra numarasını bul
+        $maxOrder = TenantWidget::max('order') ?? 0;
         
-        $this->dispatch('toast', [
-            'title' => 'Başarılı!',
-            'message' => $widget->is_active ? 'Widget aktif edildi.' : 'Widget pasif edildi.',
-            'type' => 'success'
+        // Yeni widget oluştur
+        $tenantWidget = TenantWidget::create([
+            'widget_id' => $widgetId,
+            'position' => 'content',
+            'order' => $maxOrder + 1,
+            'settings' => [
+                'unique_id' => (string) \Illuminate\Support\Str::uuid(),
+                'title' => $widget->name
+            ]
         ]);
+        
+        if ($tenantWidget) {
+            $this->dispatch('toast', [
+                'title' => 'Başarılı!',
+                'message' => 'Yeni bileşen oluşturuldu.',
+                'type' => 'success'
+            ]);
+            
+            // Aktif bileşenler görünümüne geç
+            $this->viewMode = 'active';
+        }
+    }
+    
+    public function deleteInstance($tenantWidgetId)
+    {
+        $tenantWidget = TenantWidget::findOrFail($tenantWidgetId);
+        $name = $tenantWidget->settings['title'] ?? 'Bileşen';
+        
+        if ($tenantWidget->delete()) {
+            $this->dispatch('toast', [
+                'title' => 'Başarılı!',
+                'message' => "$name silindi.",
+                'type' => 'success'
+            ]);
+        }
     }
     
     public function render()
     {
-        // Önce tenant'ta kullanılan widget'ları bul
-        $usedWidgetIds = TenantWidget::pluck('widget_id')->unique()->toArray();
-        
-        $query = Widget::query()
-            ->when($this->search, function ($q) {
-                $q->where('name', 'like', "%{$this->search}%")
-                  ->orWhere('description', 'like', "%{$this->search}%");
-            })
-            ->when($this->typeFilter, function ($q) {
-                $q->where('type', $this->typeFilter);
-            })
-            ->when($this->activeOnly, function ($q) {
-                $q->where('is_active', true);
-            });
-            
-        // Sıralama: Önce kullanılanlar, sonra alfabetik
-        if (!empty($usedWidgetIds)) {
-            $query->orderByRaw("CASE WHEN id IN (" . implode(',', $usedWidgetIds) . ") THEN 0 ELSE 1 END");
+        if ($this->viewMode == 'active') {
+            // Aktif kullanılan tüm tenant widget'ları getir
+            $query = TenantWidget::with('widget')
+                ->when($this->search, function ($q) {
+                    $q->where('settings->title', 'like', "%{$this->search}%")
+                      ->orWhereHas('widget', function($wq) {
+                          $wq->where('name', 'like', "%{$this->search}%");
+                      });
+                })
+                ->when($this->typeFilter, function ($q) {
+                    $q->whereHas('widget', function($wq) {
+                        $wq->where('type', $this->typeFilter);
+                    });
+                });
+                
+            $instances = $query->orderBy('updated_at', 'desc')
+                ->paginate($this->perPage);
+                
+            $entities = $instances;
+        } else {
+            // Kullanılabilir şablonları getir
+            $query = Widget::where('is_active', true)
+                ->when($this->search, function ($q) {
+                    $q->where('name', 'like', "%{$this->search}%")
+                      ->orWhere('description', 'like', "%{$this->search}%");
+                })
+                ->when($this->typeFilter, function ($q) {
+                    $q->where('type', $this->typeFilter);
+                });
+                
+            $templates = $query->orderBy('name')
+                ->paginate($this->perPage);
+                
+            $entities = $templates;
         }
-        
-        $widgets = $query->orderBy($this->sortField, $this->sortDirection)
-            ->paginate($this->perPage);
             
         return view('widgetmanagement::livewire.widget-component', [
-            'widgets' => $widgets,
-            'usedWidgetIds' => $usedWidgetIds,
+            'entities' => $entities,
             'types' => [
                 'static' => 'Statik',
                 'dynamic' => 'Dinamik',

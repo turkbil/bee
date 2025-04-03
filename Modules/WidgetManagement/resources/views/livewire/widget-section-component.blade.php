@@ -94,128 +94,92 @@
             
             <!-- Widgetlar -->
             @if(!$showAllPositions)
-            <!-- Tek Konum Görünümü -->
-            <div class="row" id="sortable-list-{{ $position }}" data-position="{{ $position }}">
-                @forelse($widgets as $widget)
-                <div class="col-md-6 mb-3 widget-item" id="item-{{ $widget->id }}" data-id="{{ $widget->id }}" wire:key="widget-{{ $widget->id }}">
-                    <div class="card">
-                        <div class="card-status-top {{ $widget->widget && $widget->widget->is_active ? 'bg-green' : 'bg-red' }}"></div>
-                        <div class="card-header widget-drag-handle cursor-move pb-3">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center">
-                                    <i class="fas fa-grip-vertical text-muted me-2"></i>
-                                    <h3 class="card-title mb-0">{{ $widget->settings['title'] ?? (optional($widget->widget)->name ?? 'Widget') }}</h3>
-                                </div>
-                                <div class="dropdown">
-                                    <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="fas fa-ellipsis-v"></i>
-                                    </a>
-                                    <div class="dropdown-menu dropdown-menu-end">
-                                        <a href="{{ route('admin.widgetmanagement.settings', $widget->id) }}" class="dropdown-item">
-                                            <i class="fas fa-cog me-2"></i> Ayarları Düzenle
+                <!-- Tek Konum Görünümü -->
+                <div class="row" id="sortable-list-{{ $position }}" data-position="{{ $position }}">
+                    @forelse($widgets as $widget)
+                    <div class="col-md-6 mb-3 widget-item" id="item-{{ $widget->id }}" data-id="{{ $widget->id }}" wire:key="widget-{{ $widget->id }}">
+                        <div class="card">
+                            <div class="card-status-top {{ $widget->widget && $widget->widget->is_active ? 'bg-green' : 'bg-red' }}"></div>
+                            <div class="card-header widget-drag-handle cursor-move pb-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-grip-vertical text-muted me-2"></i>
+                                        <h3 class="card-title mb-0">{{ $widget->settings['title'] ?? (optional($widget->widget)->name ?? 'Bileşen') }}</h3>
+                                    </div>
+                                    <div class="dropdown">
+                                        <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v"></i>
                                         </a>
-                                        
-                                        @if(optional($widget->widget)->has_items)
-                                        <a href="{{ route('admin.widgetmanagement.items', $widget->id) }}" class="dropdown-item">
-                                            <i class="fas fa-layer-group me-2"></i> İçerik Yönet
-                                        </a>
-                                        @endif
+                                        <div class="dropdown-menu dropdown-menu-end">
+                                            <a href="{{ route('admin.widgetmanagement.settings', $widget->id) }}" class="dropdown-item">
+                                                <i class="fas fa-cog me-2"></i> Ayarları Düzenle
+                                            </a>
+                                            
+                                            <a href="{{ route('admin.widgetmanagement.items', $widget->id) }}" class="dropdown-item">
+                                                <i class="fas fa-layer-group me-2"></i> İçerik Yönet
+                                            </a>
 
-                                        <!-- Yapılandırma kısmı - sadece root erişebilir -->
-                                        @if(auth()->user()->hasRole('root'))
-                                        <a href="{{ route('admin.widgetmanagement.manage', optional($widget->widget)->id) }}" 
-                                           class="dropdown-item">
-                                            <i class="fas fa-tools me-2"></i> Yapılandır
-                                        </a>
-                                        @endif
-                                                                                
-                                        <div class="dropdown-divider"></div>
-                                        
-                                        <a href="#" class="dropdown-item text-danger" 
-                                                wire:click.prevent="removeWidget({{ $widget->id }})"
-                                                onclick="return confirm('Bu widget\'ı kaldırmak istediğinize emin misiniz?');">
-                                            <i class="fas fa-trash me-2"></i> Kaldır
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="row align-items-center">
-                                <div class="col-auto">
-                                    @if(optional($widget->widget)->thumbnail)
-                                        <img src="{{ optional($widget->widget)->getThumbnailUrl() }}" 
-                                             alt="{{ optional($widget->widget)->name }}" 
-                                             class="rounded" 
-                                             style="width: 64px; height: 64px; object-fit: cover;">
-                                    @else
-                                        <div class="d-flex align-items-center justify-content-center bg-secondary-subtle text-secondary rounded" 
-                                             style="width: 64px; height: 64px;">
-                                            <i class="fas fa-cube"></i>
+                                            @if(auth()->user()->hasRole('root'))
+                                            <a href="{{ route('admin.widgetmanagement.manage', optional($widget->widget)->id) }}" 
+                                            class="dropdown-item">
+                                                <i class="fas fa-tools me-2"></i> Yapılandır
+                                            </a>
+                                            @endif
+                                                                        
+                                            <div class="dropdown-divider"></div>
+                                            
+                                            <a href="#" class="dropdown-item text-danger" 
+                                                    wire:click.prevent="removeWidget({{ $widget->id }})"
+                                                    onclick="return confirm('Bu bileşeni kaldırmak istediğinize emin misiniz?');">
+                                                <i class="fas fa-trash me-2"></i> Kaldır
+                                            </a>
                                         </div>
-                                    @endif
-                                </div>
-                                <div class="col">
-                                    <div class="text-muted">{{ Str::limit(optional($widget->widget)->description, 100) }}</div>
-                                    
-                                    <div class="mt-2">
-                                        @if(optional($widget->widget)->type)
-                                        <span class="badge bg-blue">
-                                            @switch(optional($widget->widget)->type)
-                                                @case('static')
-                                                    Statik
-                                                    @break
-                                                @case('dynamic')
-                                                    Dinamik
-                                                    @break
-                                                @case('module')
-                                                    Modül
-                                                    @break
-                                                @case('content')
-                                                    İçerik
-                                                    @break
-                                                @default
-                                                    {{ optional($widget->widget)->type }}
-                                            @endswitch
-                                        </span>
-                                        @endif
-                                        
-                                        @if(!empty($widget->items) && $widget->items->count() > 0)
-                                        <span class="badge bg-orange ms-1">{{ $widget->items->count() }} içerik</span>
-                                        @endif
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="card-footer">
-                            <div class="d-flex justify-content-between">
-                                <a href="{{ route('admin.widgetmanagement.settings', $widget->id) }}" class="btn btn-outline-primary btn-sm">
-                                    <i class="fas fa-cog me-1"></i> Ayarlar
-                                </a>
-                                
-                                @if(optional($widget->widget)->has_items)
-                                <a href="{{ route('admin.widgetmanagement.items', $widget->id) }}" class="btn btn-primary btn-sm">
-                                    <i class="fas fa-layer-group me-1"></i> İçerik Yönet
-                                </a>
-                                @endif
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-auto">
+                                        @if(optional($widget->widget)->thumbnail)
+                                            <img src="{{ optional($widget->widget)->getThumbnailUrl() }}" 
+                                                alt="{{ optional($widget->widget)->name }}" 
+                                                class="rounded" 
+                                                style="width: 48px; height: 48px; object-fit: cover;">
+                                        @else
+                                            <div class="avatar bg-secondary-subtle text-secondary">
+                                                <i class="fas fa-cube"></i>
+                                            </div>
+                                        @endif
+                                    </div>
+                                    <div class="col">
+                                        <div class="text-muted">{{ Str::limit(optional($widget->widget)->description, 60) }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <div class="d-flex justify-content-between">
+                                    <a href="{{ route('admin.widgetmanagement.settings', $widget->id) }}" class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-cog me-1"></i> Ayarlar
+                                    </a>
+                                    
+                                    <a href="{{ route('admin.widgetmanagement.items', $widget->id) }}" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-layer-group me-1"></i> İçerik Yönet
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                @empty
-                <div class="col-12">
-                    <div class="empty">
-                        <div class="empty-img">
-                            <i class="fas fa-cube fa-3x text-muted mb-3"></i>
+                    @empty
+                    <div class="col-12">
+                        <div class="empty">
+                            <p class="empty-title">Bu bölümde bileşen bulunmuyor</p>
+                            <p class="empty-subtitle text-muted">
+                                Bu bölüme henüz bileşen eklenmemiş. Bileşen eklemek için yukarıdaki "Bileşen Ekle" butonunu kullanabilirsiniz.
+                            </p>
                         </div>
-                        <p class="empty-title">Bu bölümde widget bulunmuyor</p>
-                        <p class="empty-subtitle text-muted">
-                            Bu bölüme henüz widget eklenmemiş. Widget eklemek için yukarıdaki "Widget Ekle" butonunu kullanabilirsiniz.
-                        </p>
                     </div>
+                    @endforelse
                 </div>
-                @endforelse
-            </div>
             @else
             <!-- Genel Bakış Görünümü -->
             <div class="container-fluid px-0 my-4">

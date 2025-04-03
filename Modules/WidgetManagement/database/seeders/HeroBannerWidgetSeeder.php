@@ -5,6 +5,7 @@ namespace Modules\WidgetManagement\database\seeders;
 use Illuminate\Database\Seeder;
 use Modules\WidgetManagement\app\Models\Widget;
 use Modules\WidgetManagement\app\Models\TenantWidget;
+use Modules\WidgetManagement\app\Models\WidgetItem;
 use Illuminate\Support\Str;
 
 class HeroBannerWidgetSeeder extends Seeder
@@ -47,7 +48,7 @@ class HeroBannerWidgetSeeder extends Seeder
                     position: relative;
                 }
                 ',
-                'has_items' => false,
+                'has_items' => false, // Statik olduğu için false
                 'settings_schema' => [
                     [
                         'name' => 'title',
@@ -112,6 +113,18 @@ class HeroBannerWidgetSeeder extends Seeder
                 'position' => 'top',
                 'page_id' => null,
                 'module' => null
+            ]);
+            
+            // Statik bileşen için içerik öğesi oluştur
+            WidgetItem::create([
+                'tenant_widget_id' => $tenantWidget->id,
+                'content' => [
+                    'title' => $tenantWidget->settings['title'],
+                    'is_active' => true,
+                    'unique_id' => (string) Str::uuid(),
+                    'content_html' => $widget->content_html
+                ],
+                'order' => 1
             ]);
         }
     }

@@ -118,7 +118,7 @@
                                             <a href="{{ route('admin.widgetmanagement.items', $widget->id) }}" class="dropdown-item">
                                                 <i class="fas fa-layer-group me-2"></i> İçerik Yönet
                                             </a>
-
+                                        
                                             @if(auth()->user()->hasRole('root'))
                                             <a href="{{ route('admin.widgetmanagement.manage', optional($widget->widget)->id) }}" 
                                             class="dropdown-item">
@@ -134,6 +134,7 @@
                                                 <i class="fas fa-trash me-2"></i> Kaldır
                                             </a>
                                         </div>
+                                        
                                     </div>
                                 </div>
                             </div>

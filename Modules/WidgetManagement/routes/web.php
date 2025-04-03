@@ -24,7 +24,7 @@ Route::middleware(['web', 'auth', 'tenant'])
                     
                 // Widget Şablonu Yönetimi - SADECE ROOT
                 Route::get('/manage/{id?}', WidgetManageComponent::class)
-                    ->middleware(['module.permission:widgetmanagement,update', 'role:root'])
+                    ->middleware(['role:root'])
                     ->name('manage');
                 
                 // Bölüm Yönetimi

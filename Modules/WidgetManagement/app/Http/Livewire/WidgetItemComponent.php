@@ -47,16 +47,25 @@ class WidgetItemComponent extends Component
         $this->schema = $this->tenantWidget->widget->getItemSchema();
         
         // Statik bileşen kontrolü
-        if ($this->tenantWidget->widget->type === 'static' && $this->items->isEmpty()) {
-            // Statik bileşen için otomatik bir içerik öğesi oluştur
-            $content = [
-                'title' => $this->tenantWidget->settings['title'] ?? $this->tenantWidget->widget->name,
-                'is_active' => true,
-                'unique_id' => (string) Str::uuid()
-            ];
+        if ($this->tenantWidget->widget->type === 'static') {
+            // Öğe yoksa otomatik bir içerik öğesi oluştur
+            if ($this->items->isEmpty()) {
+                $content = [
+                    'title' => $this->tenantWidget->settings['title'] ?? $this->tenantWidget->widget->name,
+                    'is_active' => true,
+                    'unique_id' => (string) Str::uuid()
+                ];
+                
+                $this->itemService->addItem($this->tenantWidgetId, $content);
+                $this->loadItems();
+            }
             
-            $this->itemService->addItem($this->tenantWidgetId, $content);
-            $this->loadItems();
+            // Statik widget için doğrudan düzenleme moduna geç
+            if ($this->items->isNotEmpty()) {
+                $this->currentItemId = $this->items->first()->id;
+                $this->formData = $this->items->first()->content;
+                $this->formMode = true;
+            }
         }
         
         // Her zaman title ve is_active alanları olmalı - bunlar değiştirilemez
@@ -140,6 +149,22 @@ class WidgetItemComponent extends Component
     
     public function addItem()
     {
+        // Statik widget kontrolü - zaten bir öğe varsa eklemeye izin verme
+        if ($this->tenantWidget->widget->type === 'static' && $this->items->isNotEmpty()) {
+            $this->dispatch('toast', [
+                'title' => 'Uyarı!',
+                'message' => 'Statik bileşenler sadece bir içerik öğesine sahip olabilir.',
+                'type' => 'warning'
+            ]);
+            
+            // Var olan tek öğeyi düzenle
+            $existingItem = $this->items->first();
+            $this->currentItemId = $existingItem->id;
+            $this->formData = $existingItem->content;
+            $this->formMode = true;
+            return;
+        }
+        
         $this->formMode = true;
         $this->currentItemId = null;
         $this->initFormData();
@@ -186,6 +211,16 @@ class WidgetItemComponent extends Component
     
     public function cancelForm()
     {
+        // Statik widget'lar için formdan çıkmaya izin verme, her zaman düzenleme modunda kal
+        if ($this->tenantWidget->widget->type === 'static') {
+            $this->dispatch('toast', [
+                'title' => 'Bilgi',
+                'message' => 'Statik bileşenlerde içerik düzenleme modundan çıkılamaz.',
+                'type' => 'info'
+            ]);
+            return;
+        }
+        
         $this->formMode = false;
         $this->currentItemId = null;
         $this->initFormData();
@@ -261,18 +296,28 @@ class WidgetItemComponent extends Component
             if ($this->currentItemId) {
                 // Mevcut öğeyi güncelle
                 $this->itemService->updateItem($this->currentItemId, $this->formData);
-                $successMessage = 'Öğe güncellendi.';
+                $successMessage = 'İçerik güncellendi.';
             } else {
                 // Yeni öğe ekle
                 $this->itemService->addItem($this->tenantWidgetId, $this->formData);
-                $successMessage = 'Yeni öğe eklendi.';
+                $successMessage = 'Yeni içerik eklendi.';
             }
             
-            $this->formMode = false;
-            $this->currentItemId = null;
-            $this->initFormData(); // Formu temizle
-            
             $this->loadItems();
+            
+            // Statik widget ise içerik düzenleme modunda kal
+            if ($this->tenantWidget->widget->type === 'static') {
+                if ($this->items->isNotEmpty()) {
+                    $this->currentItemId = $this->items->first()->id;
+                    $this->formData = $this->items->first()->content;
+                    $this->formMode = true;
+                }
+            } else {
+                // Dinamik widget ise form modundan çık
+                $this->formMode = false;
+                $this->currentItemId = null;
+                $this->initFormData(); // Formu temizle
+            }
             
             $this->dispatch('toast', [
                 'title' => 'Başarılı!',
@@ -282,7 +327,7 @@ class WidgetItemComponent extends Component
         } catch (\Exception $e) {
             $this->dispatch('toast', [
                 'title' => 'Hata!',
-                'message' => 'Öğe kaydedilirken bir hata oluştu: ' . $e->getMessage(),
+                'message' => 'İçerik kaydedilirken bir hata oluştu: ' . $e->getMessage(),
                 'type' => 'error'
             ]);
         }
@@ -290,6 +335,8 @@ class WidgetItemComponent extends Component
     
     public function render()
     {
-        return view('widgetmanagement::livewire.widget-item-component');
+        return view('widgetmanagement::livewire.widget-item-component', [
+            'isStaticWidget' => $this->tenantWidget->widget->type === 'static'
+        ]);
     }
 }

@@ -8,24 +8,21 @@
                     {{ $tenantWidget->settings['title'] ?? $tenantWidget->widget->name }} - İçerik Yönetimi
                 </h3>
                 <div>
-                    <a href="{{ route('admin.widgetmanagement.index') }}" class="btn btn-outline-secondary me-2">
+                    <a href="{{ route('admin.widgetmanagement.index') }}" class="btn btn-outline-secondary">
                         <i class="fas fa-arrow-left me-2"></i> Bileşenlere Dön
                     </a>
-                    <button class="btn btn-primary" wire:click="addItem">
-                        <i class="fas fa-plus me-2"></i> Yeni İçerik Ekle
-                    </button>
                 </div>
             </div>
         </div>
         
         <div class="card-body">
-            <!-- İçerik Ekleme Formu -->
+            <!-- İçerik Ekleme/Düzenleme Formu -->
             @if($formMode)
             <div class="widget-item-form">
                 <div class="card">
                     <div class="card-status-start bg-primary"></div>
                     <div class="card-header">
-                        <h3 class="card-title">{{ $currentItemId ? 'İçerik Düzenle' : 'Yeni İçerik Ekle' }}</h3>
+                        <h3 class="card-title">{{ $isStaticWidget ? 'İçerik Düzenle' : ($currentItemId ? 'İçerik Düzenle' : 'Yeni İçerik Ekle') }}</h3>
                     </div>
                     <div class="card-body">
                         <div class="row g-3">
@@ -81,13 +78,16 @@
                                     </div>
                                     
                                     @elseif($field['type'] === 'checkbox')
-                                    <label class="form-check form-switch">
+                                    <div class="form-check form-switch d-flex align-items-center mt-2">
                                         <input type="checkbox" 
-                                            wire:model="formData.{{ $field['name'] }}" 
+                                            wire:model.live="formData.{{ $field['name'] }}" 
                                             id="field-{{ $field['name'] }}" 
-                                            class="form-check-input @error('formData.' . $field['name']) is-invalid @enderror">
-                                        <span class="form-check-label">{{ isset($formData[$field['name']]) && $formData[$field['name']] ? 'Evet' : 'Hayır' }}</span>
-                                    </label>
+                                            class="form-check-input me-2 @error('formData.' . $field['name']) is-invalid @enderror"
+                                            style="width: 40px; height: 20px;">
+                                        <span class="badge {{ $formData[$field['name']] ?? false ? 'bg-success' : 'bg-danger' }}">
+                                            {{ $formData[$field['name']] ?? false ? 'Aktif' : 'Pasif' }}
+                                        </span>
+                                    </div>
                                     
                                     @elseif($field['type'] === 'select')
                                     <select 
@@ -128,9 +128,13 @@
                         </div>
                     </div>
                     <div class="card-footer d-flex justify-content-between">
+                        @if(!$isStaticWidget)
                         <button type="button" class="btn btn-outline-secondary" wire:click="cancelForm">
                             <i class="fas fa-times me-1"></i> İptal
                         </button>
+                        @else
+                        <div></div> <!-- Statik widget için boş div, solda buton olmasın -->
+                        @endif
                         <button type="button" class="btn btn-primary" wire:click="saveItem">
                             <div wire:loading.remove wire:target="saveItem">
                                 <i class="fas fa-save me-1"></i> Kaydet
@@ -143,7 +147,7 @@
                 </div>
             </div>
             @else
-            <!-- İçerik Listesi -->
+            <!-- İçerik Listesi (Sadece dinamik widget'lar için) -->
             @if($items->isEmpty())
                 <div class="empty">
                     <div class="empty-img">
@@ -160,6 +164,7 @@
                     </div>
                 </div>
             @else
+                @if(!$isStaticWidget)
                 <div class="alert alert-info mb-3">
                     <div class="d-flex">
                         <div>
@@ -171,16 +176,28 @@
                     </div>
                 </div>
                 
+                <div class="mb-3">
+                    <button class="btn btn-primary" wire:click="addItem">
+                        <i class="fas fa-plus me-2"></i> Yeni İçerik Ekle
+                    </button>
+                </div>
+                @endif
+                
                 <div class="row row-cards" id="sortable-list" data-sortable-id="items-container">
                     @foreach($items as $item)
-                    <div class="col-md-6 col-xl-4 widget-item-row" data-id="{{ $item->id }}" id="item-{{ $item->id }}">
+                    <div class="col-md-6 {{ $isStaticWidget ? 'col-xl-12' : 'col-xl-4' }} widget-item-row" data-id="{{ $item->id }}" id="item-{{ $item->id }}">
                         <div class="card">
                             <div class="card-status-top {{ isset($item->content['is_active']) && $item->content['is_active'] ? 'bg-green' : 'bg-red' }}"></div>
-                            <div class="widget-item-drag-handle card-header cursor-move">
+                            <div class="widget-item-drag-handle card-header cursor-move pb-3">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="d-flex align-items-center">
+                                        @if(!$isStaticWidget)
                                         <i class="fas fa-grip-vertical text-muted me-2"></i>
+                                        @endif
                                         <span class="fw-bold">{{ $item->content['title'] ?? 'İçerik #' . $loop->iteration }}</span>
+                                        <span class="badge {{ isset($item->content['is_active']) && $item->content['is_active'] ? 'bg-success' : 'bg-danger' }} ms-2">
+                                            {{ isset($item->content['is_active']) && $item->content['is_active'] ? 'Aktif' : 'Pasif' }}
+                                        </span>
                                     </div>
                                     <div class="dropdown">
                                         <button class="btn btn-sm btn-ghost-secondary dropdown-toggle" data-bs-toggle="dropdown">
@@ -190,51 +207,62 @@
                                             <button class="dropdown-item" wire:click="editItem({{ $item->id }})">
                                                 <i class="fas fa-edit me-2 text-primary"></i> Düzenle
                                             </button>
+                                            @if(!$isStaticWidget)
                                             <button class="dropdown-item text-danger" 
                                                 wire:click="deleteItem({{ $item->id }})"
                                                 onclick="return confirm('Bu içeriği silmek istediğinize emin misiniz?');">
                                                 <i class="fas fa-trash me-2"></i> Sil
                                             </button>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="card-body p-3">
                                 <div class="widget-item-details">
-                                    @if(isset($item->content['image']) && $item->content['image'])
-                                    <div class="widget-item-preview text-center mb-3">
-                                        <img src="{{ $item->content['image'] }}" 
-                                            alt="Önizleme" 
-                                            class="img-fluid rounded"
-                                            style="max-height: 120px;">
-                                    </div>
-                                    @endif
-                                    
-                                    @if(isset($item->content['description']) && $item->content['description'])
-                                    <p class="text-muted small">{{ Str::limit($item->content['description'], 100) }}</p>
-                                    @endif
-                                    
-                                    <!-- Diğer alanlar -->
-                                    <div class="widget-item-fields mt-2">
-                                        @foreach($item->content as $key => $value)
-                                            @if(!in_array($key, ['title', 'description', 'image', 'is_active', 'unique_id']) && $value)
-                                                <div class="badge bg-blue-lt me-1 mb-1">
-                                                    {{ $key }}: {{ is_string($value) ? Str::limit($value, 20) : ($value ? 'Evet' : 'Hayır') }}
-                                                </div>
+                                    <div class="row">
+                                        @if(isset($item->content['image_url']) && $item->content['image_url'])
+                                        <div class="col-md-4">
+                                            <div class="widget-item-preview text-center mb-3">
+                                                <img src="{{ $item->content['image_url'] }}" 
+                                                    alt="Önizleme" 
+                                                    class="img-fluid rounded"
+                                                    style="max-height: 120px;">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                        @else
+                                        <div class="col-12">
+                                        @endif
+                                            @if(isset($item->content['subtitle']) && $item->content['subtitle'])
+                                            <p class="text-muted mb-3">{{ Str::limit($item->content['subtitle'], 200) }}</p>
                                             @endif
-                                        @endforeach
+                                            
+                                            <!-- Diğer alanlar -->
+                                            <div class="widget-item-fields mt-2">
+                                                @foreach($item->content as $key => $value)
+                                                    @if(!in_array($key, ['title', 'subtitle', 'image_url', 'is_active', 'unique_id']) && $value)
+                                                        <div class="badge bg-blue-lt me-1 mb-1">
+                                                            {{ $key }}: {{ is_string($value) ? Str::limit($value, 20) : ($value ? 'Evet' : 'Hayır') }}
+                                                        </div>
+                                                    @endif
+                                                @endforeach
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="card-footer d-flex justify-content-between">
-                                <button class="btn btn-sm btn-primary" wire:click="editItem({{ $item->id }})">
+                                <button class="btn btn-primary" wire:click="editItem({{ $item->id }})">
                                     <i class="fas fa-edit me-1"></i> Düzenle
                                 </button>
-                                <button class="btn btn-sm btn-outline-danger" 
+                                @if(!$isStaticWidget)
+                                <button class="btn btn-outline-danger" 
                                     wire:click="deleteItem({{ $item->id }})"
                                     onclick="return confirm('Bu içeriği silmek istediğinize emin misiniz?');">
                                     <i class="fas fa-trash me-1"></i> Sil
                                 </button>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -253,35 +281,35 @@
             
             function initItemsSortable() {
                 const container = document.getElementById('sortable-list');
+                const isStaticWidget = {{ $isStaticWidget ? 'true' : 'false' }};
                 
-                if (container) {
+                if (container && !isStaticWidget) { // Statik widget ise sıralama özelliğini devre dışı bırak
                     // Mevcut sıralayıcıyı temizle (eğer varsa)
                     if (itemsSortable) {
-                        itemsSortable.destroy();
-                        itemsSortable = null;
-                    }
-                    
-                    itemsSortable = new Sortable(container, {
-                        handle: '.widget-item-drag-handle',
-                        animation: 150,
-                        ghostClass: 'sortable-ghost',
-                        onEnd: function(evt) {
-                            // Değişim olup olmadığını kontrol et
-                            if (evt.oldIndex === evt.newIndex) {
-                                return;
-                            }
-                            
-                            // TÜM öğeleri al, sadece taşınanı değil
-                            const allItems = Array.from(container.querySelectorAll('.widget-item-row'))
-                                .map(item => item.getAttribute('data-id'));
-                            
-                            if (allItems.length > 0) {
-                                // Komple diziyi doğrudan Livewire component metoduna gönder
-                                @this.updateItemOrder(allItems);
-                            }
-                        }
-                    });
+                    itemsSortable.destroy();
+                    itemsSortable = null;
                 }
+                
+                itemsSortable = new Sortable(container, {
+                    handle: '.widget-item-drag-handle',
+                    animation: 150,
+                    ghostClass: 'sortable-ghost',
+                    onEnd: function(evt) {
+                        // Değişim olup olmadığını kontrol et
+                        if (evt.oldIndex === evt.newIndex) {
+                            return;
+                        }
+                        
+                        // TÜM öğeleri al, sadece taşınanı değil
+                        const allItems = Array.from(container.querySelectorAll('.widget-item-row'))
+                            .map(item => item.getAttribute('data-id'));
+                        
+                        if (allItems.length > 0) {
+                            // Komple diziyi doğrudan Livewire component metoduna gönder
+                            @this.updateItemOrder(allItems);
+                        }
+                    }
+                });
             }
             
             // İlk yükleme

@@ -1,3 +1,4 @@
+{{-- Modules/WidgetManagement/resources/views/helper.blade.php --}}
 {{-- PreTitle --}}
 @push('pretitle')
 Widget Yönetimi
@@ -26,11 +27,11 @@ Widget Listesi
                     </a>
                     @endhasmoduleaccess
                     
-                    @hasmoduleaccess('widgetmanagement', 'create')
+                    @if(auth()->user()->hasRole('root'))
                     <a class="dropdown-item" href="{{ route('admin.widgetmanagement.manage') }}">
                         Widget Ekle
                     </a>
-                    @endhasmoduleaccess
+                    @endif
                     
                     <h6 class="dropdown-menu-header card-header-light">
                         <span class="dropdown-header">Bölüm Yönetimi</span>
@@ -69,56 +70,12 @@ Widget Listesi
                     @endif
                 </div>
             </div>
-            @hasmoduleaccess('widgetmanagement', 'create')
+            @if(auth()->user()->hasRole('root'))
             <a href="{{ route('admin.widgetmanagement.manage') }}" class="dropdown-module-item btn btn-primary">
                 Yeni Widget
             </a>
-            @endhasmoduleaccess
+            @endif
         </div>
     </div>
 </div>
-@endpush
-
-@push('styles')
-<style>
-    .sortable-ghost {
-        opacity: 0.5;
-        background: #c8e6c9;
-    }
-    
-    .cursor-move {
-        cursor: move;
-    }
-    
-    .widget-select-card:hover {
-        border-color: #206bc4;
-        box-shadow: 0 0 0 3px rgba(32, 107, 196, 0.2);
-        cursor: pointer;
-    }
-    
-    .form-label.required:after {
-        content: " *";
-        color: red;
-    }
-    
-    /* Sürükle-bırak dosya alanı stillemesi */
-    .file-drop-area {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 2rem;
-        border: 2px dashed #ccc;
-        border-radius: 6px;
-        background-color: #f8f9fa;
-        transition: 0.2s;
-    }
-    
-    .file-drop-area:hover,
-    .file-drop-area.is-active {
-        background-color: #eef2f7;
-        border-color: #adb5bd;
-    }
-</style>
 @endpush

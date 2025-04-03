@@ -249,7 +249,7 @@
                         class="form-control font-monospace" 
                         rows="8"
                         style="font-size: 14px;"
-                        placeholder=".my-widget { padding: 20px; background-color: {{background_color}}; }">{{ $widget['content_css'] }}</textarea>
+                        placeholder=".my-widget { padding: 20px; background-color: @{{background_color}}; }">{{ $widget['content_css'] }}</textarea>
                     </div>
                     
                     <div class="mb-3">

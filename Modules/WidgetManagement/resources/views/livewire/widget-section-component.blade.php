@@ -106,54 +106,43 @@
                                         <i class="fas fa-grip-vertical text-muted me-2"></i>
                                         <h3 class="card-title mb-0">{{ $widget->settings['title'] ?? (optional($widget->widget)->name ?? 'Bileşen') }}</h3>
                                     </div>
-                                    <div class="dropdown">
-                                        <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-v"></i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-end">
-                                            <a href="{{ route('admin.widgetmanagement.settings', $widget->id) }}" class="dropdown-item">
-                                                <i class="fas fa-cog me-2"></i> Ayarları Düzenle
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-circle {{ optional($widget->widget)->is_active ? 'text-success' : 'text-danger' }} me-2" style="font-size: 10px;"></i>
+                                        <div class="dropdown">
+                                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="fas fa-ellipsis-v"></i>
                                             </a>
+                                            <div class="dropdown-menu dropdown-menu-end">
+                                                <a href="{{ route('admin.widgetmanagement.settings', $widget->id) }}" class="dropdown-item">
+                                                    <i class="fas fa-cog me-2"></i> Ayarları Düzenle
+                                                </a>
+                                                
+                                                <a href="{{ route('admin.widgetmanagement.items', $widget->id) }}" class="dropdown-item">
+                                                    <i class="fas fa-layer-group me-2"></i> İçerik Yönet
+                                                </a>
                                             
-                                            <a href="{{ route('admin.widgetmanagement.items', $widget->id) }}" class="dropdown-item">
-                                                <i class="fas fa-layer-group me-2"></i> İçerik Yönet
-                                            </a>
-                                        
-                                            @if(auth()->user()->hasRole('root'))
-                                            <a href="{{ route('admin.widgetmanagement.manage', optional($widget->widget)->id) }}" 
-                                            class="dropdown-item">
-                                                <i class="fas fa-tools me-2"></i> Yapılandır
-                                            </a>
-                                            @endif
+                                                @if(auth()->user()->hasRole('root'))
+                                                <a href="{{ route('admin.widgetmanagement.manage', optional($widget->widget)->id) }}" 
+                                                class="dropdown-item">
+                                                    <i class="fas fa-tools me-2"></i> Yapılandır
+                                                </a>
+                                                @endif
+                                                
+                                                <!-- Aktif/Pasif yapma butonu -->
+                                                <button class="dropdown-item {{ optional($widget->widget)->is_active ? 'text-danger' : 'text-success' }}">
+                                                    <i class="fas {{ optional($widget->widget)->is_active ? 'fa-toggle-off' : 'fa-toggle-on' }} me-2"></i> 
+                                                    {{ optional($widget->widget)->is_active ? 'Pasif Yap' : 'Aktif Yap' }}
+                                                </button>
                                                                         
-                                            <div class="dropdown-divider"></div>
-                                            
-                                            <a href="#" class="dropdown-item text-danger" 
-                                                    wire:click.prevent="removeWidget({{ $widget->id }})"
-                                                    onclick="return confirm('Bu bileşeni kaldırmak istediğinize emin misiniz?');">
-                                                <i class="fas fa-trash me-2"></i> Kaldır
-                                            </a>
-                                        </div>
-                                        
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="row align-items-center">
-                                    <div class="col-auto">
-                                        @if(optional($widget->widget)->thumbnail)
-                                            <img src="{{ optional($widget->widget)->getThumbnailUrl() }}" 
-                                                alt="{{ optional($widget->widget)->name }}" 
-                                                class="rounded" 
-                                                style="width: 48px; height: 48px; object-fit: cover;">
-                                        @else
-                                            <div class="avatar bg-secondary-subtle text-secondary">
-                                                <i class="fas fa-cube"></i>
+                                                <div class="dropdown-divider"></div>
+                                                
+                                                <a href="#" class="dropdown-item text-danger" 
+                                                        wire:click.prevent="removeWidget({{ $widget->id }})"
+                                                        onclick="return confirm('Bu bileşeni kaldırmak istediğinize emin misiniz?');">
+                                                    <i class="fas fa-trash me-2"></i> Kaldır
+                                                </a>
                                             </div>
-                                        @endif
-                                    </div>
-                                    <div class="col">
-                                        <div class="text-muted">{{ Str::limit(optional($widget->widget)->description, 60) }}</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

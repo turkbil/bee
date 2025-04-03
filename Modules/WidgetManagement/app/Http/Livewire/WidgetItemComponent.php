@@ -1,4 +1,5 @@
 <?php
+// Modules/WidgetManagement/app/Http/Livewire/WidgetItemComponent.php
 
 namespace Modules\WidgetManagement\app\Http\Livewire;
 
@@ -22,6 +23,7 @@ class WidgetItemComponent extends Component
     public $formData = [];
     public $currentItemId = null;
     public $schema = [];
+    public $isStaticWidget = false;
     
     protected $itemService;
     
@@ -46,27 +48,8 @@ class WidgetItemComponent extends Component
         $this->tenantWidget = TenantWidget::with('widget')->findOrFail($tenantWidgetId);
         $this->schema = $this->tenantWidget->widget->getItemSchema();
         
-        // Statik bileşen kontrolü
-        if ($this->tenantWidget->widget->type === 'static') {
-            // Öğe yoksa otomatik bir içerik öğesi oluştur
-            if ($this->items->isEmpty()) {
-                $content = [
-                    'title' => $this->tenantWidget->settings['title'] ?? $this->tenantWidget->widget->name,
-                    'is_active' => true,
-                    'unique_id' => (string) Str::uuid()
-                ];
-                
-                $this->itemService->addItem($this->tenantWidgetId, $content);
-                $this->loadItems();
-            }
-            
-            // Statik widget için doğrudan düzenleme moduna geç
-            if ($this->items->isNotEmpty()) {
-                $this->currentItemId = $this->items->first()->id;
-                $this->formData = $this->items->first()->content;
-                $this->formMode = true;
-            }
-        }
+        // Widget tipini belirle - önemli değişken
+        $this->isStaticWidget = $this->tenantWidget->widget->type === 'static';
         
         // Her zaman title ve is_active alanları olmalı - bunlar değiştirilemez
         $hasTitle = false;
@@ -105,6 +88,28 @@ class WidgetItemComponent extends Component
         
         // formData'yı başlat
         $this->initFormData();
+        
+        // Statik bileşen kontrolü
+        if ($this->isStaticWidget) {
+            // Öğe yoksa otomatik bir içerik öğesi oluştur
+            if ($this->items->isEmpty()) {
+                $content = [
+                    'title' => $this->tenantWidget->settings['title'] ?? $this->tenantWidget->widget->name,
+                    'is_active' => true,
+                    'unique_id' => (string) Str::uuid()
+                ];
+                
+                $this->itemService->addItem($this->tenantWidgetId, $content);
+                $this->loadItems();
+            }
+            
+            // Statik widget için doğrudan düzenleme moduna geç
+            if ($this->items->isNotEmpty()) {
+                $this->currentItemId = $this->items->first()->id;
+                $this->formData = $this->items->first()->content;
+                $this->formMode = true;
+            }
+        }
     }
     
     public function loadItems()
@@ -125,8 +130,28 @@ class WidgetItemComponent extends Component
         
         return false;
     }
-    
-    // Yeni metod: formData için tüm alanları başlat
+
+    public function toggleItemActive($itemId)
+    {
+        $item = WidgetItem::findOrFail($itemId);
+        $content = $item->content;
+        
+        // Aktif/pasif durumunu tersine çevirme
+        $content['is_active'] = !($content['is_active'] ?? false);
+        
+        // İçerik güncelleme
+        $this->itemService->updateItem($itemId, $content);
+        
+        // Öğeleri yeniden yükle
+        $this->loadItems();
+        
+        $this->dispatch('toast', [
+            'title' => 'Başarılı!',
+            'message' => 'İçerik durumu ' . ($content['is_active'] ? 'aktif' : 'pasif') . ' olarak güncellendi.',
+            'type' => 'success'
+        ]);
+    }
+
     protected function initFormData()
     {
         $this->formData = [];
@@ -150,7 +175,7 @@ class WidgetItemComponent extends Component
     public function addItem()
     {
         // Statik widget kontrolü - zaten bir öğe varsa eklemeye izin verme
-        if ($this->tenantWidget->widget->type === 'static' && $this->items->isNotEmpty()) {
+        if ($this->isStaticWidget && $this->items->isNotEmpty()) {
             $this->dispatch('toast', [
                 'title' => 'Uyarı!',
                 'message' => 'Statik bileşenler sadece bir içerik öğesine sahip olabilir.',
@@ -182,7 +207,7 @@ class WidgetItemComponent extends Component
     {
         try {
             // Statik bileşen kontrolü - tek öğe varsa silinemez
-            if ($this->tenantWidget->widget->type === 'static' && $this->items->count() <= 1) {
+            if ($this->isStaticWidget && $this->items->count() <= 1) {
                 $this->dispatch('toast', [
                     'title' => 'Hata!',
                     'message' => 'Statik bileşenin tek içerik öğesi silinemez.',
@@ -212,7 +237,7 @@ class WidgetItemComponent extends Component
     public function cancelForm()
     {
         // Statik widget'lar için formdan çıkmaya izin verme, her zaman düzenleme modunda kal
-        if ($this->tenantWidget->widget->type === 'static') {
+        if ($this->isStaticWidget) {
             $this->dispatch('toast', [
                 'title' => 'Bilgi',
                 'message' => 'Statik bileşenlerde içerik düzenleme modundan çıkılamaz.',
@@ -306,7 +331,7 @@ class WidgetItemComponent extends Component
             $this->loadItems();
             
             // Statik widget ise içerik düzenleme modunda kal
-            if ($this->tenantWidget->widget->type === 'static') {
+            if ($this->isStaticWidget) {
                 if ($this->items->isNotEmpty()) {
                     $this->currentItemId = $this->items->first()->id;
                     $this->formData = $this->items->first()->content;
@@ -335,8 +360,6 @@ class WidgetItemComponent extends Component
     
     public function render()
     {
-        return view('widgetmanagement::livewire.widget-item-component', [
-            'isStaticWidget' => $this->tenantWidget->widget->type === 'static'
-        ]);
+        return view('widgetmanagement::livewire.widget-item-component');
     }
 }

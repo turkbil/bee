@@ -9,6 +9,7 @@ export default defineConfig({
         outDir: '../../public/build-page',
         emptyOutDir: true,
         manifest: true,
+        sourcemap: false,
     },
     plugins: [
         laravel({

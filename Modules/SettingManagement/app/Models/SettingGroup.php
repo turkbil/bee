@@ -8,12 +8,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Support\Str;
 use Stancl\Tenancy\Database\Concerns\CentralConnection;
 
 class SettingGroup extends Model
 {
-    use SoftDeletes, LogsActivity, CentralConnection;
+    use SoftDeletes, LogsActivity, CentralConnection, Sluggable;
 
     protected $table = 'settings_groups';
     
@@ -30,6 +31,21 @@ class SettingGroup extends Model
         'is_active' => 'boolean',
     ];
 
+    /**
+     * Return the sluggable configuration array for this model.
+     *
+     * @return array
+     */
+    public function sluggable(): array
+    {
+        return [
+            'slug' => [
+                'source' => 'name',
+                'onUpdate' => true
+            ]
+        ];
+    }
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
@@ -38,15 +54,10 @@ class SettingGroup extends Model
             ->dontSubmitEmptyLogs();
     }
 
+    // Artık burada slug manuel oluşturma yok, Sluggable trait bu işi yapıyor
     protected static function boot()
     {
         parent::boot();
-        
-        static::creating(function ($model) {
-            if (empty($model->slug)) {
-                $model->slug = Str::slug($model->name);
-            }
-        });
     }
 
     public function parent(): BelongsTo

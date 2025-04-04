@@ -38,6 +38,11 @@ class GroupManageComponent extends Component
     {
         $this->groupId = $id;
         $this->parentGroups = SettingGroup::whereNull('parent_id')->get();
+        
+        // Varsayılan icon ayarla
+        if (empty($this->inputs['icon'])) {
+            $this->inputs['icon'] = 'fas fa-folder';
+        }
             
         if ($id) {
             $group = SettingGroup::findOrFail($id);
@@ -54,6 +59,11 @@ class GroupManageComponent extends Component
     {
         $this->redirect = $redirect;
         $this->validate();
+        
+        // Eğer icon boş bırakıldıysa varsayılan icon ata
+        if (empty($this->inputs['icon'])) {
+            $this->inputs['icon'] = 'fas fa-folder';
+        }
     
         if ($this->groupId) {
             $group = SettingGroup::findOrFail($this->groupId);
@@ -68,8 +78,8 @@ class GroupManageComponent extends Component
             
             $message = 'Grup güncellendi';
         } else {
-            $inputs = array_merge($this->inputs, ['slug' => Str::slug($this->inputs['name'])]);
-            $group = SettingGroup::create($inputs);
+            // Slug oluşturma işlemi artık Sluggable trait tarafından otomatik yapılıyor
+            $group = SettingGroup::create($this->inputs);
             
             log_activity(
                 $group,

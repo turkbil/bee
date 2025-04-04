@@ -100,6 +100,13 @@ class FaqWidgetSeeder extends Seeder
                         'type' => 'checkbox',
                         'required' => false,
                         'system' => true
+                    ],
+                    [
+                        'name' => 'unique_id',
+                        'label' => 'Benzersiz ID',
+                        'type' => 'text',
+                        'required' => false,
+                        'system' => true
                     ]
                 ],
                 'settings_schema' => [
@@ -107,7 +114,8 @@ class FaqWidgetSeeder extends Seeder
                         'name' => 'title',
                         'label' => 'Başlık',
                         'type' => 'text',
-                        'required' => true
+                        'required' => true,
+                        'system' => true
                     ],
                     [
                         'name' => 'subtitle',
@@ -162,6 +170,13 @@ class FaqWidgetSeeder extends Seeder
                         'label' => 'Aktif Buton Metin Rengi',
                         'type' => 'color',
                         'required' => false
+                    ],
+                    [
+                        'name' => 'unique_id',
+                        'label' => 'Benzersiz ID',
+                        'type' => 'text',
+                        'required' => false,
+                        'system' => true
                     ]
                 ],
                 'is_active' => true,

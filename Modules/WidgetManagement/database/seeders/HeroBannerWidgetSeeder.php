@@ -87,6 +87,13 @@ class HeroBannerWidgetSeeder extends Seeder
                         'type' => 'checkbox',
                         'required' => false,
                         'system' => true
+                    ],
+                    [
+                        'name' => 'unique_id',
+                        'label' => 'Benzersiz ID',
+                        'type' => 'text',
+                        'required' => false,
+                        'system' => true
                     ]
                 ],
                 'settings_schema' => [
@@ -94,7 +101,8 @@ class HeroBannerWidgetSeeder extends Seeder
                         'name' => 'title',
                         'label' => 'Widget Başlığı',
                         'type' => 'text',
-                        'required' => true
+                        'required' => true,
+                        'system' => true
                     ],
                     [
                         'name' => 'background_color',

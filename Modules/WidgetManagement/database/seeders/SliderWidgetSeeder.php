@@ -113,6 +113,13 @@ class SliderWidgetSeeder extends Seeder
                         'type' => 'checkbox',
                         'required' => false,
                         'system' => true
+                    ],
+                    [
+                        'name' => 'unique_id',
+                        'label' => 'Benzersiz ID',
+                        'type' => 'text',
+                        'required' => false,
+                        'system' => true
                     ]
                 ],
                 'settings_schema' => [
@@ -120,7 +127,8 @@ class SliderWidgetSeeder extends Seeder
                         'name' => 'title',
                         'label' => 'Başlık',
                         'type' => 'text',
-                        'required' => true
+                        'required' => true,
+                        'system' => true
                     ],
                     [
                         'name' => 'unique_id',
@@ -152,6 +160,18 @@ class SliderWidgetSeeder extends Seeder
                         'label' => 'Kontrolleri Göster',
                         'type' => 'checkbox',
                         'required' => false
+                    ],
+                    [
+                        'name' => 'caption_bg_color',
+                        'label' => 'Başlık Arkaplan Rengi',
+                        'type' => 'color',
+                        'required' => false
+                    ],
+                    [
+                        'name' => 'caption_text_color',
+                        'label' => 'Başlık Metin Rengi',
+                        'type' => 'color',
+                        'required' => false
                     ]
                 ],
                 'is_active' => true,
@@ -167,7 +187,9 @@ class SliderWidgetSeeder extends Seeder
                     'height' => 500,
                     'interval' => 5000,
                     'show_indicators' => true,
-                    'show_controls' => true
+                    'show_controls' => true,
+                    'caption_bg_color' => 'rgba(0,0,0,0.5)',
+                    'caption_text_color' => '#ffffff'
                 ],
                 'position' => 'top',
                 'page_id' => null,

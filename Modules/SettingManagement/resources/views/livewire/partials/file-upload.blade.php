@@ -50,7 +50,7 @@ x-on:drop="handleDrop($event)">
                 @if (isset($temporaryImages[$fileKey]))
                 <div class="position-relative" style="height: 100px;">
                     <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2"
-                        wire:click="deleteMedia({{ $fileKey }})" wire:loading.attr="disabled">
+                        wire:click="removeImage('{{ $fileKey }}')" wire:loading.attr="disabled">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
                     <div class="d-flex align-items-center justify-content-center h-100">

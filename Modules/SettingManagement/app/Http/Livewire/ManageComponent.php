@@ -10,6 +10,7 @@ use Modules\SettingManagement\App\Models\Setting;
 use Modules\SettingManagement\App\Models\SettingGroup;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 #[Layout('admin.layout')]
 class ManageComponent extends Component
@@ -20,10 +21,15 @@ class ManageComponent extends Component
     public $redirect = false;
     public $temporaryImages = [];
     public $temporaryMultipleImages = [];
+    public $imagePreview = null;
+    public $optionFormat = 'key-value'; // 'key-value' veya 'text'
+    
+    // Varsayılan değer için izleme
+    public $selectedDefaultValue = null;
     public $inputs = [
         'group_id' => '',
         'label' => '',
-        'key' => '',
+        'key' => '',  // Arayüzden kaldırıldı, arka planda otomatik oluşturulacak
         'type' => 'text',
         'options' => null,
         'default_value' => null,
@@ -47,7 +53,6 @@ class ManageComponent extends Component
         'color' => 'Renk',
         'date' => 'Tarih',
         'email' => 'E-posta',
-        'password' => 'Şifre',
         'tel' => 'Telefon',
         'url' => 'URL',
         'time' => 'Saat',
@@ -58,7 +63,7 @@ class ManageComponent extends Component
         return [
             'inputs.group_id' => 'required|exists:settings_groups,id',
             'inputs.label' => 'required|min:3|max:255',
-            'inputs.key' => 'required|regex:/^[a-zA-Z0-9_]+$/|max:255|unique:settings,key,' . $this->settingId,
+            // inputs.key alanı UI'dan kaldırıldı, arka planda otomatik oluşturulacak
             'inputs.type' => 'required|in:' . implode(',', array_keys($this->availableTypes)),
             'inputs.options' => 'nullable|required_if:inputs.type,select',
             'inputs.default_value' => 'nullable',
@@ -71,8 +76,6 @@ class ManageComponent extends Component
     protected $messages = [
         'inputs.group_id.required' => 'Grup seçimi zorunludur',
         'inputs.label.required' => 'Başlık alanı zorunludur',
-        'inputs.key.required' => 'Anahtar alanı zorunludur',
-        'inputs.key.regex' => 'Anahtar sadece harf, rakam ve alt çizgi içerebilir',
         'inputs.type.required' => 'Tip seçimi zorunludur',
         'inputs.options.required_if' => 'Seçim kutusu için seçenekler belirtmelisiniz',
         'temporaryImages.*.max' => 'Dosya boyutu en fazla 2MB olabilir',
@@ -92,7 +95,25 @@ class ManageComponent extends Component
             
             // Options alanını options_array'e dönüştür
             if (!empty($this->inputs['options']) && is_array($this->inputs['options'])) {
-                $this->inputs['options_array'] = $this->inputs['options'];
+                $this->inputs['options_array'] = [];
+                foreach ($this->inputs['options'] as $key => $value) {
+                    $this->inputs['options_array'][Str::random(6)] = [
+                        'key' => $key,
+                        'value' => $value
+                    ];
+                }
+                
+                // Metin formatı için kullanılacak string formatında options
+                $optionsText = [];
+                foreach ($this->inputs['options'] as $key => $value) {
+                    $optionsText[] = $key . '=' . $value;
+                }
+                $this->inputs['options'] = implode("\n", $optionsText);
+            }
+
+            // Mevcut resim için önizleme ayarla
+            if ($this->inputs['type'] === 'image' && !empty($this->inputs['default_value'])) {
+                $this->imagePreview = cdn($this->inputs['default_value']);
             }
         } else {
             // Yeni kayıt için sort_order değerini en sona al
@@ -106,21 +127,69 @@ class ManageComponent extends Component
         }
     }
 
-    // İnput değişimi izleme
+    // İnput değişimi izleme - Başlık değiştiğinde otomatik olarak anahtar (slug) oluşturma
     public function updatedInputsLabel()
     {
-        if (empty($this->inputs['key']) && !empty($this->inputs['label'])) {
-            $selectedGroup = null;
-            if (!empty($this->inputs['group_id'])) {
-                $selectedGroup = SettingGroup::find($this->inputs['group_id']);
+        // Bu metod artık anahtar oluşturmayacak. Anahtar save() içinde oluşturulacak.
+        // İsteğe bağlı olarak loglama bırakılabilir.
+        Log::info('updatedInputsLabel triggered (Key generation moved to save method).');
+    }
+    
+    // Format değişikliğinde verilerin sağlıklı aktarımı
+    public function updatedOptionFormat($value)
+    {
+        if ($value === 'text') {
+            // options_array'den options'a dönüştür - string olarak ayarla
+            if (empty($this->inputs['options_array'])) {
+                $this->inputs['options'] = '';
+                return;
             }
             
-            $prefix = '';
-            if ($selectedGroup) {
-                $prefix = Str::slug($selectedGroup->name, '_');
+            $options = [];
+            foreach ($this->inputs['options_array'] as $option) {
+                if (isset($option['key']) && isset($option['value'])) {
+                    $options[] = $option['key'] . '=' . $option['value'];
+                }
             }
             
-            $this->inputs['key'] = $prefix . '_' . Str::slug($this->inputs['label'], '_');
+            // String formatında ayarla
+            $this->inputs['options'] = implode("\n", $options);
+        } 
+        elseif ($value === 'key-value') {        
+            // Eğer options bir string değilse veya boşsa, boş bir string olarak ayarla
+            if (empty($this->inputs['options']) || !is_string($this->inputs['options'])) {
+                $this->inputs['options'] = '';
+                $this->inputs['options_array'] = []; // options boşsa, array'i de temizle
+                return; 
+            }
+            
+            // options'dan options_array'e dönüştür
+            $parsedOptionsArray = []; // Geçici dizi
+            $lines = explode("\n", $this->inputs['options']);
+            foreach ($lines as $line) {
+                $line = trim($line);
+                if (!empty($line)) {
+                    $id = Str::random(6); // Yeni ID oluştur
+                    
+                    // Anahtar=Değer formatında mı kontrol et
+                    if (strpos($line, '=') !== false) {
+                        list($key, $value) = explode('=', $line, 2);
+                        $parsedOptionsArray[$id] = [
+                            'key' => trim($key),
+                            'value' => trim($value)
+                        ];
+                    } else {
+                        // Sadece değer varsa, anahtar olarak slugını al
+                        $parsedOptionsArray[$id] = [
+                            'key' => Str::slug($line, '_'),
+                            'value' => $line
+                        ];
+                    }
+                }
+            }
+            
+            // Parse edilen array ile güncelle
+            $this->inputs['options_array'] = $parsedOptionsArray;
         }
     }
 
@@ -139,11 +208,11 @@ class ManageComponent extends Component
     // Select için option ekle
     public function addSelectOption()
     {
-        if (!isset($this->inputs['options_array'])) {
-            $this->inputs['options_array'] = [];
-        }
-        
-        $this->inputs['options_array'][Str::random(6)] = '';
+        $id = Str::random(6);
+        $this->inputs['options_array'][$id] = [
+            'key' => '',
+            'value' => ''
+        ];
     }
     
     // Select option'ı sil
@@ -151,6 +220,29 @@ class ManageComponent extends Component
     {
         if (isset($this->inputs['options_array'][$key])) {
             unset($this->inputs['options_array'][$key]);
+        }
+    }
+    
+    // Seçenek değerini otomatik slug yapma
+    public function slugifyOptionKey($id, $value)
+    {
+        if (isset($this->inputs['options_array'][$id])) {
+            $this->inputs['options_array'][$id]['key'] = Str::slug($value, '_');
+        }
+    }
+    
+    // Varsayılan değer seçimini güncelle
+    public function updateDefaultValue($value)
+    {
+        $this->inputs['default_value'] = $value;
+        $this->selectedDefaultValue = $value;
+    }
+
+    // Geçici resim yüklendiğinde önizleme oluştur
+    public function updatedTemporaryImages($value, $key)
+    {
+        if ($key === 'image' && $this->temporaryImages[$key]) {
+            $this->imagePreview = $this->temporaryImages[$key]->temporaryUrl();
         }
     }
 
@@ -176,6 +268,71 @@ class ManageComponent extends Component
 
     public function save($redirect = false, $resetForm = false)
     {
+        // --- Anahtar (key) Oluşturma --- START ---
+        // save() içinde, validate() öncesinde anahtarı oluşturmak daha güvenilir.
+        $labelSlug = Str::slug($this->inputs['label'] ?? '', '_');
+        $groupSlug = '';
+        if (!empty($this->inputs['group_id'])) {
+            $group = SettingGroup::find($this->inputs['group_id']);
+            if ($group && !empty($group->slug)) {
+                $groupSlug = $group->slug;
+            } elseif ($group && !empty($group->name)) {
+                $groupSlug = Str::slug($group->name, '_');
+            }
+        }
+        $finalKey = $labelSlug;
+        if (!empty($groupSlug)) {
+            $finalKey = $groupSlug . '_' . $labelSlug;
+        }
+        // inputs.key alanını güncelle
+        $this->inputs['key'] = $finalKey;
+        Log::info('[Save Method] Generated Key: ' . $finalKey . ' for Label: ' . ($this->inputs['label'] ?? '') . ' and Group ID: ' . ($this->inputs['group_id'] ?? 'null'));
+        // --- Anahtar (key) Oluşturma --- END ---
+        
+        // Eğer select tipiyse, options_array'i options'a dönüştür
+        if ($this->inputs['type'] === 'select') {
+            $options = [];
+            
+            if (!empty($this->inputs['options_array']) && is_array($this->inputs['options_array'])) {
+                foreach ($this->inputs['options_array'] as $id => $option) {
+                    // Yeni format (key-value nesnesi)
+                    if (isset($option['key']) && !empty($option['key']) && isset($option['value'])) {
+                        $options[$option['key']] = $option['value'];
+                    } 
+                    // Eski format (string değer)
+                    else if (!is_array($option) && !empty($option)) {
+                        $options[Str::slug($option)] = $option;
+                    }
+                }
+                
+                $this->inputs['options'] = $options;
+            }
+            // Eğer string olarak geldiyse parse edelim
+            else if (is_string($this->inputs['options'])) {
+                $options = [];
+                $lines = explode("\n", $this->inputs['options']);
+                
+                foreach ($lines as $line) {
+                    $line = trim($line);
+                    if (empty($line)) continue;
+                    
+                    if (strpos($line, '=') !== false) {
+                        list($key, $value) = explode('=', $line, 2);
+                        $options[trim($key)] = trim($value);
+                    } else {
+                        $options[Str::slug($line)] = $line;
+                    }
+                }
+                
+                $this->inputs['options'] = $options;
+            }
+            
+            // Eğer options hala boşsa, hatanın önüne geçmek için boş array koyalım
+            if (empty($this->inputs['options'])) {
+                $this->inputs['options'] = [];
+            }
+        }
+
         $this->validate();
         
         // Eğer mevcut bir ayarı düzenliyorsak ve sistem ayarı ise bazı alanları değiştirmeye izin verme
@@ -187,40 +344,14 @@ class ManageComponent extends Component
                 $this->inputs['type'] = $existingSetting->type;
                 $this->inputs['is_system'] = true; // Sistem ayarı özelliğini koruyalım
                 
-                // Eğer select tipiyse options değerlerini değiştirmeyelim
-                if ($existingSetting->type === 'select') {
-                    $this->inputs['options'] = $existingSetting->options;
-                    $this->inputs['options_array'] = $existingSetting->options;
-                }
+                // !!! Sistem ayarının select options'larının değiştirilmesini ENGELLEMEK doğru olmayabilir. 
+                // !!! Kullanıcı belki sadece varsayılan değeri değiştirmek istiyordur.
+                // !!! Şimdilik bu kısmı yorum satırı yapıyorum, gerekirse tekrar aktif edilebilir.
+                // if ($existingSetting->type === 'select') {
+                //     $this->inputs['options'] = $existingSetting->options;
+                //     $this->inputs['options_array'] = $existingSetting->options;
+                // }
             }
-        }
-        
-        // Eğer select tipiyse, options_array'i options'a dönüştür
-        if ($this->inputs['type'] === 'select' && !empty($this->inputs['options_array'])) {
-            $options = [];
-            foreach ($this->inputs['options_array'] as $key => $value) {
-                if (!empty($value)) {
-                    $options[$key] = $value;
-                }
-            }
-            $this->inputs['options'] = $options;
-        } 
-        // Eğer hala string olarak geldiyse parse edelim
-        elseif ($this->inputs['type'] === 'select' && is_string($this->inputs['options'])) {
-            $options = [];
-            $lines = explode("\n", $this->inputs['options']);
-            foreach ($lines as $line) {
-                $line = trim($line);
-                if (empty($line)) continue;
-                
-                if (strpos($line, '=') !== false) {
-                    list($key, $value) = explode('=', $line, 2);
-                    $options[trim($key)] = trim($value);
-                } else {
-                    $options[Str::slug($line)] = $line;
-                }
-            }
-            $this->inputs['options'] = $options;
         }
         
         // Çoklu resim için işleme
@@ -265,10 +396,37 @@ class ManageComponent extends Component
                 }
             }
             
+            // Güvenli bir şekilde değişiklikleri bul
+            $changes = [];
+            $newData = $setting->toArray();
+            
+            // Her iki dizide de bulunan anahtarları karşılaştır ve değişenleri belirle
+            foreach ($newData as $key => $newValue) {
+                // Sadece eski veri ile karşılaştırılabilecek anahtarları işle
+                if (isset($oldData[$key])) {
+                    $oldValue = $oldData[$key];
+                    
+                    // Değişiklik olup olmadığını kontrol et
+                    // Karmaşık yapılar (array veya object) için json_encode karşılaştırması yap
+                    if (is_array($newValue) || is_object($newValue) || is_array($oldValue) || is_object($oldValue)) {
+                        $newValueJson = json_encode($newValue, JSON_UNESCAPED_UNICODE);
+                        $oldValueJson = json_encode($oldValue, JSON_UNESCAPED_UNICODE);
+                        
+                        if ($newValueJson !== $oldValueJson) {
+                            // Değişiklik var, insan okunabilir formatta kaydet
+                            $changes[$key] = "Önceki: ".$oldValueJson." => Yeni: ".$newValueJson;
+                        }
+                    } elseif ($newValue !== $oldValue) {
+                        // Basit değerler için direkt karşılaştırma
+                        $changes[$key] = $newValue;
+                    }
+                }
+            }
+            
             log_activity(
                 $setting,
                 'güncellendi',
-                array_diff_assoc($setting->toArray(), $oldData)
+                $changes
             );
             
             $message = 'Ayar güncellendi';
@@ -303,7 +461,7 @@ class ManageComponent extends Component
         ]);
         
         if ($resetForm && !$this->settingId) {
-            $this->reset('inputs', 'temporaryImages', 'temporaryMultipleImages');
+            $this->reset('inputs', 'temporaryImages', 'temporaryMultipleImages', 'imagePreview');
             $this->inputs['sort_order'] = Setting::max('sort_order') + 1;
             $this->inputs['is_active'] = true;
         }

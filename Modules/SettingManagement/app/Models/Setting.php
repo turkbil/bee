@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Stancl\Tenancy\Database\Concerns\CentralConnection;
+use Cviebrock\EloquentSluggable\Sluggable;
 
 class Setting extends Model
 {
-    use CentralConnection;
+    use CentralConnection, Sluggable;
     
     protected $table = 'settings';
 
@@ -30,6 +31,18 @@ class Setting extends Model
         'is_active' => 'boolean',
         'is_system' => 'boolean',
     ];
+    
+    /**
+     * Return the sluggable configuration array for this model.
+     *
+     * @return array
+     */
+    public function sluggable(): array
+    {
+        // Anahtar (key) alanı artık ManageComponent içinde manuel olarak oluşturulduğu için
+        // Sluggable paketinin bu alanı otomatik yönetmesini istemiyoruz.
+        return [];
+    }
     
     public function group(): BelongsTo
     {

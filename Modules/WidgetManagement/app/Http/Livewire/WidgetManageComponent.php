@@ -1,22 +1,25 @@
 <?php
-
 namespace Modules\WidgetManagement\app\Http\Livewire;
 
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\Attributes\Layout;
 use Modules\WidgetManagement\app\Models\Widget;
+use Modules\WidgetManagement\app\Http\Livewire\Traits\WithImageUpload;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 #[Layout('admin.layout')]
 class WidgetManageComponent extends Component
 {
-    use WithFileUploads;
+    use WithFileUploads, WithImageUpload;
     
     public $widgetId;
     public $formMode = 'base'; // base, items, settings, design, preview
     public $thumbnail;
+    public $temporaryImages = [];
+    public $temporaryMultipleImages = [];
+    public $imagePreview = null;
     public $isSubmitting = false;
     
     public $widget = [
@@ -43,12 +46,33 @@ class WidgetManageComponent extends Component
         'label' => '',
         'type' => 'text',
         'required' => false,
-        'options' => []
+        'options' => [],
+        'options_array' => []
     ];
     
     public $newOption = [
         'key' => '',
         'value' => ''
+    ];
+    
+    public $optionFormat = 'key-value'; // 'key-value' veya 'text'
+    
+    // Kullanılabilir alan tipleri
+    public $availableTypes = [
+        'text' => 'Metin',
+        'textarea' => 'Uzun Metin',
+        'number' => 'Sayı',
+        'select' => 'Seçim Kutusu',
+        'checkbox' => 'Onay Kutusu',
+        'file' => 'Dosya',
+        'image' => 'Resim',
+        'image_multiple' => 'Çoklu Resim',
+        'color' => 'Renk',
+        'date' => 'Tarih',
+        'email' => 'E-posta',
+        'tel' => 'Telefon',
+        'url' => 'URL',
+        'time' => 'Saat',
     ];
     
     protected $rules = [
@@ -65,7 +89,15 @@ class WidgetManageComponent extends Component
         'widget.settings_schema' => 'nullable|array',
         'widget.is_active' => 'boolean',
         'widget.is_core' => 'boolean',
-        'thumbnail' => 'nullable|image|max:1024'
+        'thumbnail' => 'nullable|image|max:1024',
+        'temporaryImages.*' => 'nullable|image|max:2048',
+        'temporaryMultipleImages.*' => 'nullable|image|max:2048',
+    ];
+    
+    // Lint hatalarını düzeltmek için özel değişkenler
+    protected $casts = [
+        'widget.item_schema' => 'array',
+        'widget.settings_schema' => 'array',
     ];
     
     public function mount($id = null)
@@ -125,6 +157,11 @@ class WidgetManageComponent extends Component
                     ];
                 }
             }
+            
+            // Mevcut resim için önizleme ayarla
+            if ($widget->thumbnail) {
+                $this->imagePreview = $widget->getThumbnailUrl();
+            }
         }
     }
 
@@ -182,12 +219,70 @@ class WidgetManageComponent extends Component
         $this->formMode = $mode;
     }
     
+    // Format değişikliğinde verilerin sağlıklı aktarımı
+    public function updatedOptionFormat($value)
+    {
+        if ($value === 'text') {
+            // options_array'den options'a dönüştür - string olarak ayarla
+            if (empty($this->newField['options_array'])) {
+                $this->newField['options'] = '';
+                return;
+            }
+            
+            $options = [];
+            foreach ($this->newField['options_array'] as $option) {
+                if (isset($option['key']) && isset($option['value'])) {
+                    $options[] = $option['key'] . '=' . $option['value'];
+                }
+            }
+            
+            // String formatında ayarla
+            $this->newField['options'] = implode("\n", $options);
+        } 
+        elseif ($value === 'key-value') {        
+            // Eğer options bir string değilse veya boşsa, boş bir string olarak ayarla
+            if (empty($this->newField['options']) || !is_string($this->newField['options'])) {
+                $this->newField['options'] = '';
+                $this->newField['options_array'] = []; // options boşsa, array'i de temizle
+                return; 
+            }
+            
+            // options'dan options_array'e dönüştür
+            $parsedOptionsArray = []; // Geçici dizi
+            $lines = explode("\n", $this->newField['options']);
+            foreach ($lines as $line) {
+                $line = trim($line);
+                if (!empty($line)) {
+                    $id = Str::random(6); // Yeni ID oluştur
+                    
+                    // Anahtar=Değer formatında mı kontrol et
+                    if (strpos($line, '=') !== false) {
+                        list($key, $value) = explode('=', $line, 2);
+                        $parsedOptionsArray[$id] = [
+                            'key' => trim($key),
+                            'value' => trim($value)
+                        ];
+                    } else {
+                        // Sadece değer varsa, anahtar olarak slugını al
+                        $parsedOptionsArray[$id] = [
+                            'key' => Str::slug($line, '_'),
+                            'value' => $line
+                        ];
+                    }
+                }
+            }
+            
+            // Parse edilen array ile güncelle
+            $this->newField['options_array'] = $parsedOptionsArray;
+        }
+    }
+    
     public function addItemSchemaField()
     {
         $this->validate([
             'newField.name' => 'required|regex:/^[a-zA-Z0-9_]+$/i',
             'newField.label' => 'required',
-            'newField.type' => 'required|in:text,textarea,number,select,checkbox,image,url'
+            'newField.type' => 'required'
         ]);
         
         // Sistem alanı ise düzenlenemez
@@ -208,8 +303,37 @@ class WidgetManageComponent extends Component
             'required' => $this->newField['required'] ?? false
         ];
         
-        if ($this->newField['type'] === 'select' && !empty($this->newField['options'])) {
-            $field['options'] = $this->newField['options'];
+        if ($this->newField['type'] === 'select') {
+            // Seçim kutusu için options
+            if ($this->optionFormat === 'key-value') {
+                $options = [];
+                if (!empty($this->newField['options_array'])) {
+                    foreach ($this->newField['options_array'] as $option) {
+                        if (isset($option['key']) && !empty($option['key']) && isset($option['value'])) {
+                            $options[$option['key']] = $option['value'];
+                        }
+                    }
+                }
+                $field['options'] = $options;
+            } else {
+                // Text formatından dönüştür
+                $options = [];
+                $lines = explode("\n", $this->newField['options']);
+                
+                foreach ($lines as $line) {
+                    $line = trim($line);
+                    if (empty($line)) continue;
+                    
+                    if (strpos($line, '=') !== false) {
+                        list($key, $value) = explode('=', $line, 2);
+                        $options[trim($key)] = trim($value);
+                    } else {
+                        $options[Str::slug($line)] = $line;
+                    }
+                }
+                
+                $field['options'] = $options;
+            }
         }
         
         $itemSchema = $this->widget['item_schema'] ?? [];
@@ -223,7 +347,8 @@ class WidgetManageComponent extends Component
             'label' => '',
             'type' => 'text',
             'required' => false,
-            'options' => []
+            'options' => '',
+            'options_array' => []
         ];
     }
     
@@ -252,7 +377,7 @@ class WidgetManageComponent extends Component
         $this->validate([
             'newField.name' => 'required|regex:/^[a-zA-Z0-9_]+$/i',
             'newField.label' => 'required',
-            'newField.type' => 'required|in:text,textarea,number,select,checkbox,image,url,color'
+            'newField.type' => 'required'
         ]);
         
         // Sistem alanı ise düzenlenemez
@@ -273,8 +398,37 @@ class WidgetManageComponent extends Component
             'required' => $this->newField['required'] ?? false
         ];
         
-        if ($this->newField['type'] === 'select' && !empty($this->newField['options'])) {
-            $field['options'] = $this->newField['options'];
+        if ($this->newField['type'] === 'select') {
+            // Seçim kutusu için options
+            if ($this->optionFormat === 'key-value') {
+                $options = [];
+                if (!empty($this->newField['options_array'])) {
+                    foreach ($this->newField['options_array'] as $option) {
+                        if (isset($option['key']) && !empty($option['key']) && isset($option['value'])) {
+                            $options[$option['key']] = $option['value'];
+                        }
+                    }
+                }
+                $field['options'] = $options;
+            } else {
+                // Text formatından dönüştür
+                $options = [];
+                $lines = explode("\n", $this->newField['options']);
+                
+                foreach ($lines as $line) {
+                    $line = trim($line);
+                    if (empty($line)) continue;
+                    
+                    if (strpos($line, '=') !== false) {
+                        list($key, $value) = explode('=', $line, 2);
+                        $options[trim($key)] = trim($value);
+                    } else {
+                        $options[Str::slug($line)] = $line;
+                    }
+                }
+                
+                $field['options'] = $options;
+            }
         }
         
         $settingsSchema = $this->widget['settings_schema'] ?? [];
@@ -288,7 +442,8 @@ class WidgetManageComponent extends Component
             'label' => '',
             'type' => 'text',
             'required' => false,
-            'options' => []
+            'options' => '',
+            'options_array' => []
         ];
     }
     
@@ -312,32 +467,73 @@ class WidgetManageComponent extends Component
         }
     }
     
+    // Select için option ekle
     public function addFieldOption()
     {
-        $this->validate([
-            'newOption.key' => 'required',
-            'newOption.value' => 'required'
-        ]);
-        
-        $options = $this->newField['options'] ?? [];
-        $options[$this->newOption['key']] = $this->newOption['value'];
-        
-        $this->newField['options'] = $options;
-        
-        // Temizle
-        $this->newOption = [
+        $id = Str::random(6);
+        $this->newField['options_array'][$id] = [
             'key' => '',
             'value' => ''
         ];
     }
     
+    // Select option'ı sil
     public function removeFieldOption($key)
     {
-        $options = $this->newField['options'] ?? [];
+        if (isset($this->newField['options_array'][$key])) {
+            unset($this->newField['options_array'][$key]);
+        }
+    }
+    
+    // Seçenek değerini otomatik slug yapma
+    public function slugifyOptionKey($id, $value)
+    {
+        if (isset($this->newField['options_array'][$id])) {
+            $this->newField['options_array'][$id]['key'] = Str::slug($value, '_');
+        }
+    }
+    
+    // Geçici resim yüklendiğinde önizleme oluştur
+    public function updatedThumbnail()
+    {
+        $this->validateOnly('thumbnail', [
+            'thumbnail' => 'image|max:1024'
+        ]);
         
-        if (isset($options[$key])) {
-            unset($options[$key]);
-            $this->newField['options'] = $options;
+        if ($this->thumbnail) {
+            $this->imagePreview = $this->thumbnail->temporaryUrl();
+        }
+    }
+    
+    // Çoklu resim ekle
+    public function addMultipleImageField()
+    {
+        if (!isset($this->temporaryMultipleImages)) {
+            $this->temporaryMultipleImages = [];
+        }
+        
+        $this->temporaryMultipleImages[] = null;
+    }
+    
+    // Çoklu resim için güncelleme metodu
+    public function updatedTemporaryMultipleImages($value, $key)
+    {
+        // Doğrulama yap
+        $this->validateOnly("temporaryMultipleImages.{$key}", [
+            "temporaryMultipleImages.{$key}" => ['image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+        ]);
+        
+        // Değişiklik olduğunu işaretle
+        $this->isSubmitting = false;
+    }
+    
+    // Çoklu resim sil
+    public function removeMultipleImageField($index)
+    {
+        if (isset($this->temporaryMultipleImages[$index])) {
+            unset($this->temporaryMultipleImages[$index]);
+            // Boşlukları temizle
+            $this->temporaryMultipleImages = array_values($this->temporaryMultipleImages);
         }
     }
     
@@ -352,11 +548,13 @@ class WidgetManageComponent extends Component
             if ($this->widget['has_items']) {
                 $hasTitle = false;
                 $hasActive = false;
+                $hasUniqueId = false;
                 
                 if (is_array($this->widget['item_schema'])) {
                     foreach ($this->widget['item_schema'] as $field) {
                         if ($field['name'] === 'title') $hasTitle = true;
                         if ($field['name'] === 'is_active') $hasActive = true;
+                        if ($field['name'] === 'unique_id') $hasUniqueId = true;
                     }
                 } else {
                     $this->widget['item_schema'] = [];
@@ -381,6 +579,16 @@ class WidgetManageComponent extends Component
                         'system' => true
                     ];
                 }
+                
+                if (!$hasUniqueId) {
+                    $this->widget['item_schema'][] = [
+                        'name' => 'unique_id',
+                        'label' => 'Benzersiz ID',
+                        'type' => 'text',
+                        'required' => false,
+                        'system' => true
+                    ];
+                }
             }
             
             // Settings Schema'ya title ekle
@@ -401,7 +609,8 @@ class WidgetManageComponent extends Component
                     'name' => 'title',
                     'label' => 'Başlık',
                     'type' => 'text',
-                    'required' => true
+                    'required' => true,
+                    'system' => true
                 ]], $this->widget['settings_schema']);
             }
             
@@ -423,14 +632,54 @@ class WidgetManageComponent extends Component
                 $this->widgetId = $widget->id;
             }
             
-            // Thumbnail yükleme
+            // Thumbnail yükleme - SettingManagement ile uyumlu şekilde
             if ($this->thumbnail) {
-                $filename = $widget->slug . '.' . $this->thumbnail->extension();
-                $path = $this->thumbnail->storeAs("widgets/{$widget->slug}", $filename, 'public');
+                $tenantId = is_tenant() ? tenant_id() : 1;
+                $filename = 'image-' . $widget->slug . '-' . Str::random(6) . '.' . $this->thumbnail->extension();
                 
-                $widget->update([
-                    'thumbnail' => $filename
-                ]);
+                // SettingManagement'taki TenantStorageHelper ile yükleme yap
+                try {
+                    $path = \Modules\SettingManagement\App\Helpers\TenantStorageHelper::storeTenantFile(
+                        $this->thumbnail,
+                        "widgets/images",
+                        $filename,
+                        $tenantId
+                    );
+                    
+                    $widget->update([
+                        'thumbnail' => $path
+                    ]);
+                } catch (\Exception $e) {
+                    Log::error('Thumbnail yükleme hatası: ' . $e->getMessage());
+                }
+            }
+            
+            // Çoklu resim yükleme işlemi - SettingManagement ile uyumlu şekilde
+            if (!empty($this->temporaryMultipleImages)) {
+                try {
+                    foreach ($this->temporaryMultipleImages as $index => $image) {
+                        if ($image) {
+                            // Tenant id belirleme
+                            $tenantId = is_tenant() ? tenant_id() : 1;
+                            
+                            // Dosya adını oluştur
+                            $fileName = 'image-' . $widget->slug . '-' . time() . '-' . Str::random(6) . '.' . $image->getClientOriginalExtension();
+                            
+                            // SettingManagement'taki TenantStorageHelper ile yükleme yap
+                            $imagePath = \Modules\SettingManagement\App\Helpers\TenantStorageHelper::storeTenantFile(
+                                $image,
+                                "widgets/images",
+                                $fileName,
+                                $tenantId
+                            );
+                            
+                            // Burada çoklu resim bilgilerini widget'a ekleyebilirsiniz
+                            // Örneğin: $widget->images[] = $imagePath;
+                        }
+                    }
+                } catch (\Exception $e) {
+                    Log::error('Çoklu resim yükleme hatası: ' . $e->getMessage());
+                }
             }
             
             $this->dispatch('toast', [

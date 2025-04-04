@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 
 export default defineConfig({
     build: {
+        sourcemap: false,
         outDir: '../../public/build-tenantmanagement',
         emptyOutDir: true,
         manifest: true,

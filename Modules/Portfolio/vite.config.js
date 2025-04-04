@@ -6,6 +6,7 @@ import { fileURLToPath } from "url";
 
 export default defineConfig({
     build: {
+        sourcemap: false,
         outDir: "../../public/build-portfolio",
         emptyOutDir: true,
         manifest: true,

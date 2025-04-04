@@ -339,6 +339,20 @@ class ValuesComponent extends Component
         ]);
     }
     
+    public function removeImage($settingId)
+    {
+        if (isset($this->temporaryImages[$settingId])) {
+            unset($this->temporaryImages[$settingId]);
+            $this->checkChanges();
+            
+            $this->dispatch('toast', [
+                'title' => 'Başarılı!',
+                'message' => 'Dosya kaldırıldı.',
+                'type' => 'success'
+            ]);
+        }
+    }
+    
     public function deleteMedia($settingId)
     {
         $setting = Setting::find($settingId);

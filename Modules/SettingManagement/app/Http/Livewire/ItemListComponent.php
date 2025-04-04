@@ -33,7 +33,8 @@ class ItemListComponent extends Component
     ];
     
     protected $listeners = [
-        'deleteConfirmed' => 'performDelete'
+        'deleteConfirmed' => 'performDelete',
+        'itemDeleted' => 'handleItemDeleted'
     ];
 
     public $itemToDelete = null;
@@ -182,6 +183,16 @@ class ItemListComponent extends Component
     public function toggleViewMode()
     {
         $this->viewMode = $this->viewMode === 'table' ? 'preview' : 'table';
+    }
+    
+    /**
+     * DeleteModal bileşeninden gelen silme olayını dinle ve listeyi yenile
+     */
+    #[On('itemDeleted')]
+    public function handleItemDeleted()
+    {
+        // Yeniden verileri yüklemek için render() metodunu tetikle
+        $this->dispatch('$refresh');
     }
 
     public function render()

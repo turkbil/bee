@@ -29,11 +29,32 @@ class DeleteModal extends Component
         try {
             DB::beginTransaction();
 
+            // Özel durumlarda model isimlerini düzelt
+            $modelMapping = [
+                'settingmanagement' => 'Setting',
+                'modulemanagement' => 'Module',
+                // Diğer modüller için gerekirse buraya ekle
+            ];
+            
+            $modelName = isset($modelMapping[$this->module]) 
+                ? $modelMapping[$this->module] 
+                : ucfirst($this->module);
+            
             $modelClass = $this->module === 'module' 
                 ? "Modules\\ModuleManagement\\App\\Models\\Module"
-                : "Modules\\" . ucfirst($this->module) . "\\App\\Models\\" . ucfirst($this->module);
+                : "Modules\\" . ucfirst($this->module) . "\\App\\Models\\" . $modelName;
 
-            $primaryKey = $this->module === 'module' ? 'module_id' : $this->module . '_id';
+            // Özel durumlarda model birincil anahtar sütun isimlerini düzelt
+            $primaryKeyMapping = [
+                'settingmanagement' => 'id',
+                // Diğer modüller için gerekirse buraya ekle
+            ];
+            
+            $primaryKey = $this->module === 'module' 
+                ? 'module_id' 
+                : (isset($primaryKeyMapping[$this->module]) 
+                    ? $primaryKeyMapping[$this->module] 
+                    : $this->module . '_id');
 
             $item = $modelClass::where($primaryKey, $this->itemId)->first();
 

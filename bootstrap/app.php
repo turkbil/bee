@@ -12,9 +12,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        // InitializeTenancy'yi web middleware grubuna eklemiyoruz
-        // Bunun yerine sadece alias olarak tanımlıyoruz
+        // Web middleware grubuna InitializeTenancy'yi doğrudan ekleyelim
+        $middleware->prependToGroup('web', \App\Http\Middleware\InitializeTenancy::class);
         
+        // Middleware alias tanımları
         $middleware->alias([
             'tenant' => \App\Http\Middleware\InitializeTenancy::class,
             'root.access' => \App\Http\Middleware\RootAccessMiddleware::class,
@@ -29,7 +30,6 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->group('admin', [
             'web',
             'auth',
-            'tenant',
             'admin.access',
         ]);
                 
@@ -44,14 +44,15 @@ return Application::configure(basePath: dirname(__DIR__))
             $middleware->group('module.' . $moduleName, [
                 'web',
                 'auth',
-                'tenant', // Sadece modül gruplarında tenant middleware'ini kullanıyoruz
                 'module.permission:' . $moduleName . ',view'
             ]);
         }
 
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        $exceptions->renderable(function (TokenMismatchException $e, $request) {
-            return redirect()->route('login');
+        $exceptions->renderable(function (\Symfony\Component\HttpKernel\Exception\HttpException $e, $request) {
+            if ($e->getStatusCode() == 503) {
+                return response()->view('errors.offline', ['domain' => $request->getHost()], 503);
+            }
         });
     })->create();

@@ -35,7 +35,7 @@ trait WithImageUpload {
                 $tenantId = is_tenant() ? tenant_id() : 1;
                 
                 // Benzersiz bir dosya adı oluştur
-                $fileName = 'image-' . Str::slug($model->slug) . '-' . Str::random(6) . '.' . $this->temporaryImages[$imageKey]->getClientOriginalExtension();
+                $fileName = time() . '_' . Str::slug($model->slug) . '_' . $this->temporaryImages[$imageKey]->getClientOriginalName();
                 
                 // Koleksiyon adını belirle (klasör)
                 $folder = $this->getCollectionName($imageKey);

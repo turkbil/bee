@@ -12,8 +12,6 @@ return [
     'domain_model' => Domain::class,
     
     'central_domains' => [
-        '127.0.0.1',
-        'localhost',
         'laravel.test',
     ],
     

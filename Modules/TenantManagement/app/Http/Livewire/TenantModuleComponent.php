@@ -27,7 +27,10 @@ class TenantModuleComponent extends Component
            if ($this->tenantId) {
                $tenant = Tenant::find($this->tenantId);
                if ($tenant) {
-                   $tenantModules = $tenant->modules()->get();
+                   // Belirli bir tablodan module_id'yi seçerek belirsizliği gideriyoruz
+                   $tenantModules = $tenant->modules()
+                       ->select('modules.*')
+                       ->get();
                    $this->selectedModules = $tenantModules->pluck('module_id')
                        ->map(fn($id) => (string) $id)
                        ->toArray();
@@ -60,8 +63,11 @@ class TenantModuleComponent extends Component
        try {
            $tenant = Tenant::find($this->tenantId);
            if ($tenant) {
-               // Önceki modülleri kaydet
-               $previousModules = $tenant->modules()->pluck('module_id')->toArray();
+               // Önceki modülleri kaydet - Belirli bir tablodan module_id'yi seçerek belirsizliği gideriyoruz
+               $previousModules = $tenant->modules()
+                   ->select('modules.module_id')
+                   ->pluck('modules.module_id')
+                   ->toArray();
                
                // Seçilen modülleri hazırla
                $syncData = collect($this->selectedModules)

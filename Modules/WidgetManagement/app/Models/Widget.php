@@ -57,7 +57,14 @@ class Widget extends Model
     public function getThumbnailUrl(): string
     {
         if ($this->thumbnail) {
-            return asset("storage/widgets/{$this->slug}/{$this->thumbnail}");
+            // Veritabanında kaydedilen URL'yi doğrudan kullan
+            // Eğer URL zaten storage/ ile başlıyorsa, doğrudan kullan
+            if (strpos($this->thumbnail, 'storage/') === 0) {
+                return url($this->thumbnail);
+            }
+            
+            // Eski format için geriye dönük uyumluluk
+            return url("storage/widgets/{$this->slug}/{$this->thumbnail}");
         }
         
         return asset('images/default-widget-thumbnail.jpg');

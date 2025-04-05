@@ -60,7 +60,7 @@ Bileşen Yönetimi
             </div>
             
             @if(request()->routeIs('admin.widgetmanagement.index'))
-            <a href="#" class="btn btn-primary" onclick="window.location.href='{{ route('admin.widgetmanagement.index') }}'; Livewire.dispatch('changeViewMode', { mode: 'gallery' })">
+            <a href="#" class="btn btn-primary" onclick="window.location.href='{{ route('admin.widgetmanagement.manage') }}'; Livewire.dispatch('changeViewMode', { mode: 'gallery' })">
                 <i class="fas fa-plus me-2"></i> Yeni Bileşen Oluştur
             </a>
             @endif

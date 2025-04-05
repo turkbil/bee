@@ -71,17 +71,21 @@
         <div class="row row-cards">
             @if($viewMode == 'active')
                 @forelse($entities as $instance)
-                <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <div class="col-12 col-sm-6 col-lg-4 col-xl-4">
                     <div class="card">
                         <div class="card-status-top {{ $instance->widget->is_active ? 'bg-primary' : 'bg-danger' }}"></div>
                         
                         <!-- Kart Header -->
                         <div class="card-header d-flex align-items-center">
                             <div class="me-auto">
-                                <h3 class="card-title mb-0">{{ $instance->settings['title'] ?? $instance->widget->name }}</h3>
+                                <h3 class="card-title mb-0">
+                                    <a href="{{ route('admin.widgetmanagement.items', $instance->id) }}">
+                                        {{ $instance->settings['title'] ?? $instance->widget->name }}
+                                    </a>
+                                </h3>
                             </div>
                             <div class="dropdown">
-                                <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
+                                <a href="#" class="btn btn-icon" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fas fa-ellipsis-v"></i>
                                 </a>
                                 
@@ -110,8 +114,9 @@
                         <div class="card-footer">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div class="d-flex gap-2">
-                                    <a href="{{ route('admin.widgetmanagement.items', $instance->id) }}" class="btn btn-outline">
-                                        <i class="fas fa-layer-group me-1"></i> İçerikler
+                                    <a href="{{ route('admin.widgetmanagement.items', $instance->id) }}" class="text-body">
+                                        <i class="fas fa-layer-group me-1"></i>
+                                        İçerikler
                                     </a>
                                 </div>
                                 <div class="d-flex align-items-center">
@@ -152,7 +157,7 @@
             @else
                 <!-- GALERİ GÖRÜNÜMÜ - AYNI KART YAPISIYLA -->
                 @forelse($entities as $template)
-                <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <div class="col-12 col-sm-6 col-lg-4 col-xl-4">
                     <div class="card">
                         <div class="card-status-top {{ $template->is_active ? 'bg-primary' : 'bg-danger' }}"></div>
                         
@@ -194,7 +199,7 @@
                             <div class="d-flex align-items-center justify-content-between">
                                 <div class="d-flex gap-2">
                                     <button wire:click="createInstance({{ $template->id }})" class="btn btn-outline">
-                                        <i class="fas fa-plus me-1"></i> Oluştur
+                                        <i class="fas fa-plus me-1"></i> Kullanmaya Başla
                                     </button>
                                 </div>
                                 <div class="d-flex gap-2">

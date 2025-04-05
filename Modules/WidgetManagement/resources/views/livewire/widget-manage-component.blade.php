@@ -156,9 +156,47 @@
                         <input type="file" id="thumbnail-upload" wire:model="thumbnail" class="d-none" accept="image/*">
                         
                         @if($imagePreview)
-                            <img src="{{ $imagePreview }}" class="img-fluid rounded" alt="Önizleme">
+                            <img src="{{ url($imagePreview) }}" class="img-fluid rounded" alt="Önizleme">
                         @elseif($widgetId && isset($widget['thumbnail']))
-                            <img src="{{ asset('storage/widgets/' . $widget['slug'] . '/' . $widget['thumbnail']) }}" class="img-fluid rounded" alt="Mevcut görsel">
+                            @php
+                                // URL'yi düzeltmek için daha kapsamlı bir yöntem
+                                $thumbnailUrl = $widget['thumbnail'];
+                                
+                                // Önce URL'nin başındaki http:// veya https:// kısmını temizleyelim
+                                $thumbnailUrl = preg_replace('#^https?://[^/]+/#', '', $thumbnailUrl);
+                                
+                                // Tekrar eden storage/widgets/ kısımlarını temizleyelim
+                                if (preg_match('#storage/widgets/[^/]+/storage/#', $thumbnailUrl)) {
+                                    // Tenant bilgisini içeren kısmı bulalım
+                                    if (preg_match('#(storage/tenant\d+/[^/]+/[^/]+/.+)$#', $thumbnailUrl, $matches)) {
+                                        $thumbnailUrl = $matches[1];
+                                    }
+                                }
+                                
+                                // Eğer URL'de domain varsa, sadece storage/ kısmını alalım
+                                // Central domain listesini kontrol edelim
+                                $centralDomains = config('tenancy.central_domains', []);
+                                foreach ($centralDomains as $domain) {
+                                    if (strpos($thumbnailUrl, $domain . '/') !== false) {
+                                        $parts = explode($domain . '/', $thumbnailUrl);
+                                        $thumbnailUrl = end($parts);
+                                        break;
+                                    }
+                                }
+                                
+                                // Tenant domainlerini de kontrol edelim (*.test/ gibi)
+                                if (preg_match('#https?://([^/]+)/#', $thumbnailUrl, $matches)) {
+                                    $parts = explode($matches[0], $thumbnailUrl);
+                                    $thumbnailUrl = end($parts);
+                                }
+                                
+                                // Central domain'i al
+                                $centralDomain = config('tenancy.central_domains')[0] ?? 'laravel.test';
+                                
+                                // Tam URL oluştur - her zaman central domain üzerinden
+                                $fullImageUrl = 'http://' . $centralDomain . '/' . $thumbnailUrl;
+                            @endphp
+                            <img src="{{ $fullImageUrl }}" class="img-fluid rounded" alt="Mevcut görsel">
                         @else
                             <div class="text-center py-4">
                                 <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-2"></i>

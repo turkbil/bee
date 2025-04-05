@@ -25,10 +25,11 @@
             
             <!-- Sağ Taraf (Geri Dön) -->
             <div class="col-md-2 text-md-end">
-                <a href="{{ route('admin.widgetmanagement.index') }}" class="btn btn-outline-secondary">
-                    <i class="fas fa-arrow-left me-2"></i> Bileşenlere Dön
-                </a>
+                <button class="btn btn-primary" wire:click="addItem">
+                    <i class="fas fa-plus me-2"></i> Yeni İçerik Ekle
+                </button>
             </div>
+            
         </div>
         
         @if($formMode)
@@ -80,7 +81,45 @@
                                     accept="image/*">
                                 
                                 @if(isset($formData[$field['name']]) && is_string($formData[$field['name']]))
-                                    <img src="{{ $formData[$field['name']] }}" 
+                                    @php
+                                        // URL'yi düzeltmek için daha kapsamlı bir yöntem
+                                        $imageUrl = $formData[$field['name']];
+                                        
+                                        // Önce URL'nin başındaki http:// veya https:// kısmını temizleyelim
+                                        $imageUrl = preg_replace('#^https?://[^/]+/#', '', $imageUrl);
+                                        
+                                        // Tekrar eden storage/ kısımlarını temizleyelim
+                                        if (preg_match('#storage/widgets/[^/]+/storage/#', $imageUrl)) {
+                                            // Tenant bilgisini içeren kısmı bulalım
+                                            if (preg_match('#(storage/tenant\d+/[^/]+/[^/]+/.+)$#', $imageUrl, $matches)) {
+                                                $imageUrl = $matches[1];
+                                            }
+                                        }
+                                        
+                                        // Eğer URL'de domain varsa, sadece storage/ kısmını alalım
+                                        // Central domain listesini kontrol edelim
+                                        $centralDomains = config('tenancy.central_domains', []);
+                                        foreach ($centralDomains as $domain) {
+                                            if (strpos($imageUrl, $domain . '/') !== false) {
+                                                $parts = explode($domain . '/', $imageUrl);
+                                                $imageUrl = end($parts);
+                                                break;
+                                            }
+                                        }
+                                        
+                                        // Tenant domainlerini de kontrol edelim (*.test/ gibi)
+                                        if (preg_match('#https?://([^/]+)/#', $imageUrl, $matches)) {
+                                            $parts = explode($matches[0], $imageUrl);
+                                            $imageUrl = end($parts);
+                                        }
+                                        
+                                        // Central domain'i al
+                                        $centralDomain = config('tenancy.central_domains')[0] ?? 'laravel.test';
+                                        
+                                        // Tam URL oluştur - her zaman central domain üzerinden
+                                        $fullImageUrl = 'http://' . $centralDomain . '/' . $imageUrl;
+                                    @endphp
+                                    <img src="{{ $fullImageUrl }}" 
                                         class="img-fluid rounded mx-auto d-block mb-2" 
                                         style="max-height: 120px;">
                                 @elseif(isset($formData[$field['name']]) && !is_string($formData[$field['name']]))
@@ -172,24 +211,6 @@
             </div>
         </div>
         @else
-        <!-- İçerik Listesi (Dinamik widget'lar için) -->
-        <div class="alert alert-info mb-4">
-            <div class="d-flex">
-                <div>
-                    <i class="fas fa-info-circle me-2" style="margin-top: 3px"></i>
-                </div>
-                <div>
-                    İçerikleri sürükleyip bırakarak sıralayabilirsiniz. Sıralama otomatik olarak kaydedilecektir.
-                </div>
-            </div>
-        </div>
-
-        <!-- Yeni İçerik Ekleme Butonu -->
-        <div class="mb-4">
-            <button class="btn btn-primary" wire:click="addItem">
-                <i class="fas fa-plus me-2"></i> Yeni İçerik Ekle
-            </button>
-        </div>
 
         <!-- İçerik Listesi -->
         <div class="row row-cards" id="sortable-list" data-sortable-id="items-container">
@@ -197,22 +218,22 @@
             <div class="col-12 col-sm-6 col-lg-4 widget-item-row" data-id="{{ $item->id }}" id="item-{{ $item->id }}">
                 <div class="card mb-3">
                     <div class="card-status-top {{ isset($item->content['is_active']) && $item->content['is_active'] ? 'bg-primary' : 'bg-danger' }}"></div>
-                    <div class="card-header widget-item-drag-handle cursor-move">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="d-flex align-items-center">
+                    <div class="card-header widget-item-drag-handle cursor-move" wire:sortable.item="{{ $item->id }}">
+                        <div class="d-flex align-items-center">
+                            <div class="me-auto d-flex align-items-center">
                                 <i class="fas fa-grip-vertical text-muted me-2"></i>
                                 <h3 class="card-title mb-0">{{ $item->content['title'] ?? 'İçerik #' . $loop->iteration }}</h3>
                             </div>
-                            <div class="dropdown">
-                                <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="dropdown position-absolute end-0 me-3">
+                                <a href="#" class="btn btn-icon" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fas fa-ellipsis-v"></i>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end">
                                     <button class="dropdown-item" wire:click="editItem({{ $item->id }})">
                                         <i class="fas fa-edit me-2"></i> Düzenle
                                     </button>
-                                    <button class="dropdown-item text-danger" 
-                                        wire:click="deleteItem({{ $item->id }})"
+                                    <button class="dropdown-item text-danger"
+                                         wire:click="deleteItem({{ $item->id }})"
                                         onclick="return confirm('Bu içeriği silmek istediğinize emin misiniz?');">
                                         <i class="fas fa-trash me-2"></i> Sil
                                     </button>
@@ -224,14 +245,14 @@
                     <div class="list-group list-group-flush">
                         @if(isset($item->content['image']) && $item->content['image'])
                         <div class="list-group-item p-0">
-                            <img src="{{ $item->content['image'] }}" 
+                            <img src="{{ cdn($item->content['image']) }}" 
                                 alt="{{ $item->content['title'] ?? 'İçerik görseli' }}" 
                                 class="w-100 img-fluid"
                                 style="max-height: 150px; object-fit: cover;">
                         </div>
                         @elseif(isset($item->content['image_url']) && $item->content['image_url'])
                         <div class="list-group-item p-0">
-                            <img src="{{ $item->content['image_url'] }}" 
+                            <img src="{{ cdn($item->content['image_url']) }}" 
                                 alt="{{ $item->content['title'] ?? 'İçerik görseli' }}" 
                                 class="w-100 img-fluid"
                                 style="max-height: 150px; object-fit: cover;">
@@ -249,21 +270,27 @@
                         @endif
                     </div>
                     
+
+                    <!-- Kart Footer -->
                     <div class="card-footer">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="pretty p-default p-curve p-toggle p-smooth">
-                                <input type="checkbox" wire:click="toggleItemActive({{ $item->id }})"
-                                    {{ isset($item->content['is_active']) && $item->content['is_active'] ? 'checked' : '' }} value="1" />
-                                <div class="state p-success p-on ms-2">
-                                    <label>Aktif</label>
-                                </div>
-                                <div class="state p-danger p-off ms-2">
-                                    <label>Aktif Değil</label>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-link text-body p-0" wire:click="editItem({{ $item->id }})">
+                                    <i class="fas fa-edit me-1"></i> Düzenle
+                                </button>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="pretty p-default p-curve p-toggle p-smooth">
+                                    <input type="checkbox" wire:click="toggleItemActive({{ $item->id }})"
+                                        {{ isset($item->content['is_active']) && $item->content['is_active'] ? 'checked' : '' }} value="1" />
+                                    <div class="state p-success p-on ms-2">
+                                        <label>Aktif</label>
+                                    </div>
+                                    <div class="state p-danger p-off ms-2">
+                                        <label>Aktif Değil</label>
+                                    </div>
                                 </div>
                             </div>
-                            <button class="btn btn-primary btn-sm" wire:click="editItem({{ $item->id }})">
-                                <i class="fas fa-edit me-1"></i> Düzenle
-                            </button>
                         </div>
                     </div>
                 </div>

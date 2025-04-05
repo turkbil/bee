@@ -82,25 +82,76 @@
                                                 </div>
                                             @endif
                                             
-                                            <!-- Mevcut Resimler -->
-                                            @include('settingmanagement::livewire.partials.existing-multiple-images', [
-                                                'settingId' => $setting->id,
-                                                'images' => $multipleImagesArray
-                                            ])
-                                            
+                                            <!-- Mevcut Çoklu Resimler -->
+                                            @if (!empty($multipleImagesArray))
                                             <div class="mb-3">
-                                                <button type="button" class="btn btn-outline-primary" wire:click="addMultipleImageField">
-                                                    <i class="fas fa-plus me-2"></i> Resim Ekle
-                                                </button>
+                                                <label class="form-label">{{ $setting->label }} - Yüklenen Görseller</label>
+                                                <div class="row g-2">
+                                                    @foreach($multipleImagesArray as $imageIndex => $imagePath)
+                                                        <div class="col-6 col-sm-4 col-md-3 col-xl-2">
+                                                            <div class="position-relative">
+                                                                <div class="position-absolute top-0 end-0 p-1">
+                                                                    <button type="button" class="btn btn-danger btn-icon btn-sm"
+                                                                            wire:click="removeMultipleImage({{ $imageIndex }})"
+                                                                            wire:confirm="Bu görseli silmek istediğinize emin misiniz?">
+                                                                        <i class="fas fa-times"></i>
+                                                                    </button>
+                                                                </div>
+                                                                
+                                                                <a data-fslightbox="gallery-{{ $setting->id }}" href="{{ cdn($imagePath) }}">
+                                                                    <div class="img-responsive img-responsive-1x1 rounded border" 
+                                                                         style="background-image: url({{ cdn($imagePath) }})">
+                                                                    </div>
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
                                             </div>
-                                            
-                                            @foreach($temporaryMultipleImages as $index => $image)
-                                                @include('settingmanagement::livewire.partials.multiple-image-upload', [
-                                                    'settingId' => $setting->id,
-                                                    'index' => $index,
-                                                    'label' => 'Görseli sürükleyip bırakın veya tıklayın'
-                                                ])
-                                            @endforeach
+                                            @endif
+
+                                            <!-- Yükleme Alanı -->
+                                            <div class="card mt-3">
+                                                <div class="card-body p-3">
+                                                    <form wire:submit="updatedTempPhoto">
+                                                        <div class="dropzone p-4" onclick="document.getElementById('file-upload-{{ $setting->id }}').click()">
+                                                            <input type="file" id="file-upload-{{ $setting->id }}" class="d-none" 
+                                                                wire:model="tempPhoto" accept="image/*" multiple
+                                                                wire:click="setPhotoField('{{ $setting->id }}')">
+                                                                
+                                                            <div class="text-center">
+                                                                <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                                                                <h4 class="text-muted">Görselleri sürükleyip bırakın veya tıklayın</h4>
+                                                                <p class="text-muted small">PNG, JPG, WEBP, GIF - Maks 2MB - <strong>Toplu seçim yapabilirsiniz</strong></p>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+
+                                            <!-- Geçici yüklenen görseller -->
+                                            @if(isset($temporaryMultipleImages) && count($temporaryMultipleImages) > 0)
+                                                <div class="mt-3">
+                                                    <label class="form-label">Yeni Yüklenen Görseller</label>
+                                                    <div class="row g-2">
+                                                        @foreach($temporaryMultipleImages as $index => $photo)
+                                                            <div class="col-6 col-sm-4 col-md-3 col-xl-2">
+                                                                <div class="position-relative">
+                                                                    <div class="position-absolute top-0 end-0 p-1">
+                                                                        <button type="button" class="btn btn-danger btn-icon btn-sm"
+                                                                                wire:click="removeMultipleImageField({{ $index }})">
+                                                                            <i class="fas fa-times"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="img-responsive img-responsive-1x1 rounded border" 
+                                                                         style="background-image: url({{ $photo->temporaryUrl() }})">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+                                                </div>
+                                            @endif
                                         </div>
                                         @break
 

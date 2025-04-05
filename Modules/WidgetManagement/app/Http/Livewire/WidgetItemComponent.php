@@ -1,5 +1,4 @@
 <?php
-// Modules/WidgetManagement/app/Http/Livewire/WidgetItemComponent.php
 
 namespace Modules\WidgetManagement\app\Http\Livewire;
 
@@ -24,6 +23,14 @@ class WidgetItemComponent extends Component
     public $currentItemId = null;
     public $schema = [];
     public $isStaticWidget = false;
+    
+    // Tek dosya resim yüklemeleri için
+    public $temporaryImages = [];
+    
+    // Çoklu dosya yüklemeleri
+    public $tempPhoto;
+    public $photoField; // Hangi alan için yüklüyoruz
+    public $photos = [];
     
     protected $itemService;
     
@@ -117,6 +124,55 @@ class WidgetItemComponent extends Component
         $this->items = $this->itemService->getItemsForWidget($this->tenantWidgetId);
     }
     
+    public function updatedTempPhoto()
+    {
+        if ($this->tempPhoto && $this->photoField) {
+            // Çoklu fotoğraf yükleme için dizi kontrolü
+            $photosToProcess = is_array($this->tempPhoto) ? $this->tempPhoto : [$this->tempPhoto];
+            
+            foreach ($photosToProcess as $photo) {
+                $this->validate([
+                    'tempPhoto.*' => 'image|max:2048', // 2MB Max
+                ]);
+                
+                if (!isset($this->photos[$this->photoField])) {
+                    $this->photos[$this->photoField] = [];
+                }
+                
+                $this->photos[$this->photoField][] = $photo;
+            }
+            
+            $this->tempPhoto = null;
+        }
+    }
+    
+    public function setPhotoField($fieldName)
+    {
+        $this->photoField = $fieldName;
+    }
+    
+    public function removePhoto($fieldName, $index)
+    {
+        if (isset($this->photos[$fieldName]) && isset($this->photos[$fieldName][$index])) {
+            unset($this->photos[$fieldName][$index]);
+            $this->photos[$fieldName] = array_values($this->photos[$fieldName]);
+        }
+    }
+    
+    public function removeExistingMultipleImage($fieldName, $index)
+    {
+        if (isset($this->formData[$fieldName]) && is_array($this->formData[$fieldName]) && isset($this->formData[$fieldName][$index])) {
+            // Dosya silme işlemi
+            if (function_exists('is_tenant') && is_tenant()) {
+                \Modules\SettingManagement\App\Helpers\TenantStorageHelper::deleteFile($this->formData[$fieldName][$index]);
+            }
+            
+            // Diziden kaldır
+            unset($this->formData[$fieldName][$index]);
+            $this->formData[$fieldName] = array_values($this->formData[$fieldName]);
+        }
+    }
+    
     // Yardımcı metod
     private function hasField($fieldName)
     {
@@ -155,11 +211,17 @@ class WidgetItemComponent extends Component
     protected function initFormData()
     {
         $this->formData = [];
+        $this->temporaryImages = [];
+        $this->photos = [];
+        $this->tempPhoto = null;
+        $this->photoField = null;
         
         if (!empty($this->schema)) {
             foreach ($this->schema as $field) {
                 if ($field['type'] === 'checkbox') {
                     $this->formData[$field['name']] = false;
+                } elseif ($field['type'] === 'image_multiple') {
+                    $this->formData[$field['name']] = [];
                 } else {
                     $this->formData[$field['name']] = '';
                 }
@@ -277,6 +339,25 @@ class WidgetItemComponent extends Component
         }
     }
     
+    // Medya silme işlemi
+    public function deleteMedia($fieldName)
+    {
+        if (isset($this->formData[$fieldName]) && !empty($this->formData[$fieldName])) {
+            // Dosya silme işlemi
+            if (function_exists('is_tenant') && is_tenant()) {
+                \Modules\SettingManagement\App\Helpers\TenantStorageHelper::deleteFile($this->formData[$fieldName]);
+            }
+            
+            $this->formData[$fieldName] = null;
+        }
+    }
+    
+    // Resim kaldırma işlemi
+    public function removeImage($imageKey)
+    {
+        unset($this->temporaryImages[$imageKey]);
+    }
+    
     public function saveItem()
     {
         // Form verilerini doğrula
@@ -287,8 +368,8 @@ class WidgetItemComponent extends Component
                 $rules['formData.' . $field['name']] = 'required';
             }
             
-            if ($field['type'] === 'image' && isset($this->formData[$field['name']]) && !is_string($this->formData[$field['name']])) {
-                $rules['formData.' . $field['name']] = 'image|max:1024';
+            if ($field['type'] === 'image' && isset($this->temporaryImages[$field['name']])) {
+                $rules['temporaryImages.' . $field['name']] = 'image|max:2048';
             }
         }
         
@@ -300,12 +381,15 @@ class WidgetItemComponent extends Component
                 $this->formData['unique_id'] = (string) Str::uuid();
             }
             
-            // Dosyaları yükle
+            // Dosyaları ve görselleri yükle
             foreach ($this->schema as $field) {
-                // Resim veya dosya tipi için aynı işlemi uygula
-                if (($field['type'] === 'image' || $field['type'] === 'file') && isset($this->formData[$field['name']]) && !is_string($this->formData[$field['name']])) {
-                    $file = $this->formData[$field['name']];
-                    $filename = time() . '_' . $file->getClientOriginalName();
+                // Resim veya dosya tipi için
+                if (($field['type'] === 'image' || $field['type'] === 'file') && 
+                    isset($this->temporaryImages[$field['name']]) && 
+                    $this->temporaryImages[$field['name']]) {
+                    
+                    $file = $this->temporaryImages[$field['name']];
+                    $filename = time() . '_' . Str::slug($field['name']) . '_' . $file->getClientOriginalName();
                     
                     // Tenant ID belirleme
                     $tenantId = is_tenant() ? tenant_id() : 1;
@@ -334,39 +418,39 @@ class WidgetItemComponent extends Component
                 }
                 
                 // Çoklu resim tipi için işlem
-                if ($field['type'] === 'image_multiple' && isset($this->formData[$field['name']]) && is_array($this->formData[$field['name']])) {
-                    $multipleImages = [];
+                if ($field['type'] === 'image_multiple' && isset($this->photos[$field['name']]) && count($this->photos[$field['name']]) > 0) {
+                    $fieldName = $field['name'];
                     
-                    foreach ($this->formData[$field['name']] as $index => $image) {
-                        if (!is_string($image)) {
-                            // Tenant ID belirleme
-                            $tenantId = is_tenant() ? tenant_id() : 1;
-                            $filename = time() . '_' . $index . '_' . $image->getClientOriginalName();
-                            
-                            try {
-                                $urlPath = \Modules\SettingManagement\App\Helpers\TenantStorageHelper::storeTenantFile(
-                                    $image,
-                                    "widgets/images",
-                                    $filename,
-                                    $tenantId
-                                );
-                                
-                                $multipleImages[] = $urlPath;
-                            } catch (\Exception $e) {
-                                \Illuminate\Support\Facades\Log::error('Çoklu resim yükleme hatası: ' . $e->getMessage(), [
-                                    'field' => $field['name'],
-                                    'index' => $index,
-                                    'tenant' => $tenantId,
-                                    'exception' => $e
-                                ]);
-                            }
-                        } else {
-                            // Zaten yüklenmiş resim
-                            $multipleImages[] = $image;
-                        }
+                    // Eğer mevcut fotoğraflar yoksa, boş array oluştur
+                    if (!isset($this->formData[$fieldName]) || !is_array($this->formData[$fieldName])) {
+                        $this->formData[$fieldName] = [];
                     }
                     
-                    $this->formData[$field['name']] = $multipleImages;
+                    // Yeni fotoğrafları ekle
+                    foreach ($this->photos[$fieldName] as $index => $photo) {
+                        // Tenant ID belirleme
+                        $tenantId = is_tenant() ? tenant_id() : 1;
+                        $filename = time() . '_' . Str::slug($fieldName) . '_' . $index . '_' . $photo->getClientOriginalName();
+                        
+                        // Dosyayı yükle
+                        try {
+                            $urlPath = \Modules\SettingManagement\App\Helpers\TenantStorageHelper::storeTenantFile(
+                                $photo,
+                                "widgets/images",
+                                $filename,
+                                $tenantId
+                            );
+                            
+                            $this->formData[$fieldName][] = $urlPath;
+                        } catch (\Exception $e) {
+                            \Illuminate\Support\Facades\Log::error('Çoklu resim yükleme hatası: ' . $e->getMessage(), [
+                                'field' => $fieldName,
+                                'index' => $index,
+                                'tenant' => $tenantId,
+                                'exception' => $e
+                            ]);
+                        }
+                    }
                 }
             }
             
@@ -381,6 +465,10 @@ class WidgetItemComponent extends Component
             }
             
             $this->loadItems();
+            
+            // Geçici yükleme dizilerini temizle
+            $this->photos = [];
+            $this->temporaryImages = [];
             
             // Statik widget ise içerik düzenleme modunda kal
             if ($this->isStaticWidget) {

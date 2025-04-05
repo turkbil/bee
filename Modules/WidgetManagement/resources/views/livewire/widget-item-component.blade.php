@@ -51,138 +51,210 @@
                                 @endif
                             </label>
                             
-                            @if($field['type'] === 'text')
-                            <div class="input-icon">
-                                <span class="input-icon-addon">
-                                    <i class="fas fa-font"></i>
-                                </span>
-                                <input type="text" 
-                                    wire:model="formData.{{ $field['name'] }}" 
-                                    id="field-{{ $field['name'] }}" 
-                                    class="form-control @error('formData.' . $field['name']) is-invalid @enderror"
-                                    placeholder="{{ $field['label'] }}">
-                            </div>
-                            
-                            @elseif($field['type'] === 'textarea')
-                            <textarea 
-                                wire:model="formData.{{ $field['name'] }}" 
-                                id="field-{{ $field['name'] }}" 
-                                class="form-control @error('formData.' . $field['name']) is-invalid @enderror"
-                                rows="4"
-                                placeholder="{{ $field['label'] }}"></textarea>
-                            
-                            @elseif($field['type'] === 'image')
-                            <div class="form-control p-3" style="height: auto;"
-                                onclick="document.getElementById('field-{{ $field['name'] }}').click()">
-                                <input type="file" 
-                                    wire:model="formData.{{ $field['name'] }}" 
-                                    id="field-{{ $field['name'] }}" 
-                                    class="d-none"
-                                    accept="image/*">
+                            @switch($field['type'])
+                                @case('textarea')
+                                    <div class="mb-3">
+                                        <textarea wire:model="formData.{{ $field['name'] }}" class="form-control" rows="5" placeholder="Değeri buraya giriniz..."></textarea>
+                                    </div>
+                                    @break
                                 
-                                @if(isset($formData[$field['name']]) && is_string($formData[$field['name']]))
-                                    @php
-                                        // URL'yi düzeltmek için daha kapsamlı bir yöntem
-                                        $imageUrl = $formData[$field['name']];
-                                        
-                                        // Önce URL'nin başındaki http:// veya https:// kısmını temizleyelim
-                                        $imageUrl = preg_replace('#^https?://[^/]+/#', '', $imageUrl);
-                                        
-                                        // Tekrar eden storage/ kısımlarını temizleyelim
-                                        if (preg_match('#storage/widgets/[^/]+/storage/#', $imageUrl)) {
-                                            // Tenant bilgisini içeren kısmı bulalım
-                                            if (preg_match('#(storage/tenant\d+/[^/]+/[^/]+/.+)$#', $imageUrl, $matches)) {
-                                                $imageUrl = $matches[1];
-                                            }
-                                        }
-                                        
-                                        // Eğer URL'de domain varsa, sadece storage/ kısmını alalım
-                                        // Central domain listesini kontrol edelim
-                                        $centralDomains = config('tenancy.central_domains', []);
-                                        foreach ($centralDomains as $domain) {
-                                            if (strpos($imageUrl, $domain . '/') !== false) {
-                                                $parts = explode($domain . '/', $imageUrl);
-                                                $imageUrl = end($parts);
-                                                break;
-                                            }
-                                        }
-                                        
-                                        // Tenant domainlerini de kontrol edelim (*.test/ gibi)
-                                        if (preg_match('#https?://([^/]+)/#', $imageUrl, $matches)) {
-                                            $parts = explode($matches[0], $imageUrl);
-                                            $imageUrl = end($parts);
-                                        }
-                                        
-                                        // Central domain'i al
-                                        $centralDomain = config('tenancy.central_domains')[0] ?? 'laravel.test';
-                                        
-                                        // Tam URL oluştur - her zaman central domain üzerinden
-                                        $fullImageUrl = 'http://' . $centralDomain . '/' . $imageUrl;
-                                    @endphp
-                                    <img src="{{ $fullImageUrl }}" 
-                                        class="img-fluid rounded mx-auto d-block mb-2" 
-                                        style="max-height: 120px;">
-                                @elseif(isset($formData[$field['name']]) && !is_string($formData[$field['name']]))
-                                    <img src="{{ $formData[$field['name']]->temporaryUrl() }}" 
-                                        class="img-fluid rounded mx-auto d-block mb-2" 
-                                        style="max-height: 120px;">
-                                @endif
+                                @case('select')
+                                    @if(is_array($field['options']))
+                                        <div class="mb-3">
+                                            <select wire:model="formData.{{ $field['name'] }}" class="form-select">
+                                                <option value="">Seçiniz</option>
+                                                @foreach($field['options'] as $key => $label)
+                                                    <option value="{{ $key }}">{{ $label }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    @endif
+                                    @break
                                 
-                                <div class="text-center">
-                                    <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-2"></i>
-                                    <p class="mb-0">Görseli sürükleyip bırakın veya seçmek için tıklayın</p>
-                                    <p class="text-muted small">PNG, JPG, WEBP, GIF - Maks 1MB</p>
-                                </div>
-                            </div>
-                            
-                            @elseif($field['type'] === 'checkbox')
-                            <div class="pretty p-default p-curve p-toggle p-smooth">
-                                <input type="checkbox" 
-                                    wire:model.live="formData.{{ $field['name'] }}" 
-                                    id="field-{{ $field['name'] }}" 
-                                    value="1">
-                                <div class="state p-success p-on ms-2">
-                                    <label>Aktif</label>
-                                </div>
-                                <div class="state p-danger p-off ms-2">
-                                    <label>Aktif Değil</label>
-                                </div>
-                            </div>
-                            
-                            @elseif($field['type'] === 'select')
-                            <select 
-                                wire:model="formData.{{ $field['name'] }}" 
-                                id="field-{{ $field['name'] }}" 
-                                class="form-select @error('formData.' . $field['name']) is-invalid @enderror">
-                                <option value="">Seçiniz</option>
-                                @foreach($field['options'] ?? [] as $key => $value)
-                                    <option value="{{ $key }}">{{ $value }}</option>
-                                @endforeach
-                            </select>
-                            
-                            @elseif($field['type'] === 'url')
-                            <div class="input-icon">
-                                <span class="input-icon-addon">
-                                    <i class="fas fa-link"></i>
-                                </span>
-                                <input type="url" 
-                                    wire:model="formData.{{ $field['name'] }}" 
-                                    id="field-{{ $field['name'] }}" 
-                                    class="form-control @error('formData.' . $field['name']) is-invalid @enderror"
-                                    placeholder="https://...">
-                            </div>
-                            
-                            @elseif($field['type'] === 'number')
-                            <div class="input-icon">
-                                <span class="input-icon-addon">
-                                    <i class="fas fa-hashtag"></i>
-                                </span>
-                                <input type="number" 
-                                    wire:model="formData.{{ $field['name'] }}" 
-                                    id="field-{{ $field['name'] }}" 
-                                    class="form-control @error('formData.' . $field['name']) is-invalid @enderror">
-                            </div>
-                            @endif
+                                @case('file')
+                                    <div class="form-group mb-3">
+                                        @include('settingmanagement::livewire.partials.file-upload', [
+                                            'fileKey' => $field['name'],
+                                            'label' => 'Dosyayı sürükleyip bırakın veya tıklayın',
+                                            'values' => $formData
+                                        ])
+                                    </div>
+                                    @break
+
+                                @case('image')
+                                    <div class="form-group mb-3">
+                                        @include('settingmanagement::livewire.partials.image-upload', [
+                                            'imageKey' => $field['name'],
+                                            'label' => 'Görseli sürükleyip bırakın veya tıklayın',
+                                            'values' => $formData
+                                        ])
+                                    </div>
+                                    @break
+                                    
+                                    @case('image_multiple')
+                                    <div class="form-group mb-3">
+                                        <!-- Mevcut Çoklu Resimler -->
+                                        @php
+                                            $fieldName = $field['name'];
+                                            $currentImages = isset($formData[$fieldName]) && is_array($formData[$fieldName]) ? $formData[$fieldName] : [];
+                                        @endphp
+                                        
+                                        <div class="mb-3">
+                                            <label class="form-label">{{ $field['label'] }} - Yüklenen Görseller</label>
+                                            <div class="row g-2">
+                                                @foreach($currentImages as $imageIndex => $imagePath)
+                                                    <div class="col-6 col-sm-4 col-md-3 col-xl-2">
+                                                        <div class="position-relative">
+                                                            <div class="position-absolute top-0 end-0 p-1">
+                                                                <button type="button" class="btn btn-danger btn-icon btn-sm"
+                                                                        wire:click="removeExistingMultipleImage('{{ $fieldName }}', {{ $imageIndex }})"
+                                                                        wire:confirm="Bu görseli silmek istediğinize emin misiniz?">
+                                                                    <i class="fas fa-times"></i>
+                                                                </button>
+                                                            </div>
+                                                            
+                                                            <a data-fslightbox="gallery-{{ $field['name'] }}" href="{{ cdn($imagePath) }}">
+                                                                <div class="img-responsive img-responsive-1x1 rounded border" 
+                                                                     style="background-image: url({{ cdn($imagePath) }})">
+                                                                </div>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                                
+                                                <!-- Geçici yüklenen görseller -->
+                                                @if(isset($photos[$fieldName]) && count($photos[$fieldName]) > 0)
+                                                    @foreach($photos[$fieldName] as $index => $photo)
+                                                        <div class="col-6 col-sm-4 col-md-3 col-xl-2">
+                                                            <div class="position-relative">
+                                                                <div class="position-absolute top-0 end-0 p-1">
+                                                                    <button type="button" class="btn btn-danger btn-icon btn-sm"
+                                                                            wire:click="removePhoto('{{ $fieldName }}', {{ $index }})">
+                                                                        <i class="fas fa-times"></i>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="img-responsive img-responsive-1x1 rounded border" 
+                                                                     style="background-image: url({{ $photo->temporaryUrl() }})">
+                                                                </div>
+                                                                <!-- Progress bar'ı kaldırdık -->
+                                                            </div>
+                                                        </div>
+                                                    @endforeach
+                                                @endif
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Yükleme Alanı -->
+                                        <div class="card mt-3">
+                                            <div class="card-body p-3">
+                                                <form wire:submit="updatedTempPhoto">
+                                                    <div class="dropzone p-4" onclick="document.getElementById('file-upload-{{ $fieldName }}').click()">
+                                                        <input type="file" id="file-upload-{{ $fieldName }}" class="d-none" 
+                                                            wire:model="tempPhoto" accept="image/*" multiple
+                                                            wire:click="setPhotoField('{{ $fieldName }}')">
+                                                            
+                                                        <div class="text-center">
+                                                            <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                                                            <h4 class="text-muted">Görselleri sürükleyip bırakın veya tıklayın</h4>
+                                                            <p class="text-muted small">PNG, JPG, WEBP, GIF - Maks 2MB - <strong>Toplu seçim yapabilirsiniz</strong></p>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @break
+
+                                @case('checkbox')
+                                    <div class="form-check form-switch">
+                                        <input type="checkbox" id="field-{{ $field['name'] }}" class="form-check-input" wire:model.live="formData.{{ $field['name'] }}">
+                                        <label class="form-check-label" for="field-{{ $field['name'] }}">
+                                            {{ isset($formData[$field['name']]) && $formData[$field['name']] ? 'Evet' : 'Hayır' }}
+                                        </label>
+                                    </div>
+                                    @break
+                                
+                                @case('color')
+                                    <div class="mb-3">
+                                        <label class="form-label">Renk seçimi</label>
+                                        <input type="color" class="form-control form-control-color" 
+                                            value="{{ $formData[$field['name']] ?? '#ffffff' }}" 
+                                            wire:model.live="formData.{{ $field['name'] }}"
+                                            title="Renk seçin">
+                                    </div>
+                                    @break
+                                
+                                @case('date')
+                                    <div class="input-icon">
+                                        <span class="input-icon-addon">
+                                            <i class="fas fa-calendar"></i>
+                                        </span>
+                                        <input type="date" class="form-control" wire:model.live="formData.{{ $field['name'] }}">
+                                    </div>
+                                    @break
+                                
+                                @case('time')
+                                    <div class="input-icon">
+                                        <span class="input-icon-addon">
+                                            <i class="fas fa-clock"></i>
+                                        </span>
+                                        <input type="time" class="form-control" wire:model.live="formData.{{ $field['name'] }}">
+                                    </div>
+                                    @break
+                                
+                                @case('number')
+                                    <div class="input-icon">
+                                        <span class="input-icon-addon">
+                                            <i class="fas fa-hashtag"></i>
+                                        </span>
+                                        <input type="number" class="form-control" wire:model.live="formData.{{ $field['name'] }}">
+                                    </div>
+                                    @break
+                                
+                                @case('email')
+                                    <div class="input-icon">
+                                        <span class="input-icon-addon">
+                                            <i class="fas fa-envelope"></i>
+                                        </span>
+                                        <input type="email" class="form-control" wire:model.live="formData.{{ $field['name'] }}">
+                                    </div>
+                                    @break
+                                
+                                @case('password')
+                                    <div class="input-icon">
+                                        <span class="input-icon-addon">
+                                            <i class="fas fa-key"></i>
+                                        </span>
+                                        <input type="password" class="form-control" wire:model.live="formData.{{ $field['name'] }}">
+                                    </div>
+                                    @break
+                                
+                                @case('tel')
+                                    <div class="input-icon">
+                                        <span class="input-icon-addon">
+                                            <i class="fas fa-phone"></i>
+                                        </span>
+                                        <input type="tel" class="form-control" wire:model.live="formData.{{ $field['name'] }}">
+                                    </div>
+                                    @break
+                                
+                                @case('url')
+                                    <div class="input-icon">
+                                        <span class="input-icon-addon">
+                                            <i class="fas fa-globe"></i>
+                                        </span>
+                                        <input type="url" class="form-control" wire:model.live="formData.{{ $field['name'] }}">
+                                    </div>
+                                    @break
+                                
+                                @default
+                                    <div class="input-icon">
+                                        <span class="input-icon-addon">
+                                            <i class="fas fa-font"></i>
+                                        </span>
+                                        <input type="{{ $field['type'] }}" class="form-control" wire:model.live="formData.{{ $field['name'] }}">
+                                    </div>
+                            @endswitch
                             
                             @error('formData.' . $field['name'])
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -233,8 +305,8 @@
                                         <i class="fas fa-edit me-2"></i> Düzenle
                                     </button>
                                     <button class="dropdown-item text-danger"
-                                         wire:click="deleteItem({{ $item->id }})"
-                                        onclick="return confirm('Bu içeriği silmek istediğinize emin misiniz?');">
+                                            wire:click="deleteItem({{ $item->id }})"
+                                            onclick="return confirm('Bu içeriği silmek istediğinize emin misiniz?');">
                                         <i class="fas fa-trash me-2"></i> Sil
                                     </button>
                                 </div>
@@ -245,17 +317,34 @@
                     <div class="list-group list-group-flush">
                         @if(isset($item->content['image']) && $item->content['image'])
                         <div class="list-group-item p-0">
-                            <img src="{{ cdn($item->content['image']) }}" 
+                            <img src="{{ $item->content['image'] }}" 
                                 alt="{{ $item->content['title'] ?? 'İçerik görseli' }}" 
                                 class="w-100 img-fluid"
                                 style="max-height: 150px; object-fit: cover;">
                         </div>
                         @elseif(isset($item->content['image_url']) && $item->content['image_url'])
                         <div class="list-group-item p-0">
-                            <img src="{{ cdn($item->content['image_url']) }}" 
+                            <img src="{{ $item->content['image_url'] }}" 
                                 alt="{{ $item->content['title'] ?? 'İçerik görseli' }}" 
                                 class="w-100 img-fluid"
                                 style="max-height: 150px; object-fit: cover;">
+                        </div>
+                        @elseif(isset($item->content['coklu']) && is_array($item->content['coklu']) && !empty($item->content['coklu']))
+                        <div class="list-group-item p-0">
+                            <div class="d-flex overflow-auto">
+                                @foreach($item->content['coklu'] as $multipleImage)
+                                    <img src="{{ $multipleImage }}" 
+                                        alt="{{ $item->content['title'] ?? 'Çoklu görsel' }}" 
+                                        class="img-fluid me-1"
+                                        style="max-height: 150px; max-width: 150px; object-fit: cover;">
+                                    @if($loop->iteration >= 3)
+                                        <div class="d-flex align-items-center justify-content-center px-3">
+                                            <span class="badge bg-blue">+{{ count($item->content['coklu']) - 3 }} resim</span>
+                                        </div>
+                                        @break
+                                    @endif
+                                @endforeach
+                            </div>
                         </div>
                         @endif
                         
@@ -267,9 +356,12 @@
                         <div class="list-group-item">
                             <div class="text-muted small">{{ Str::limit($item->content['description'], 100) }}</div>
                         </div>
+                        @elseif(isset($item->content['uzun_metin']) && $item->content['uzun_metin'])
+                        <div class="list-group-item">
+                            <div class="text-muted small">{{ Str::limit($item->content['uzun_metin'], 100) }}</div>
+                        </div>
                         @endif
                     </div>
-                    
 
                     <!-- Kart Footer -->
                     <div class="card-footer">

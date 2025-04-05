@@ -6,8 +6,10 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\Url;
 use Livewire\Attributes\Layout;
+use Illuminate\Support\Facades\Auth;
 use Modules\WidgetManagement\app\Models\Widget;
 use Modules\WidgetManagement\app\Models\TenantWidget;
+use Spatie\Permission\Models\Role;
 
 #[Layout('admin.layout')]
 class WidgetComponent extends Component
@@ -86,10 +88,41 @@ class WidgetComponent extends Component
         }
     }
     
+    public function toggleActive($id)
+    {
+        $tenantWidget = TenantWidget::findOrFail($id);
+        $widget = $tenantWidget->widget;
+        
+        // Widget'ın aktif durumunu değiştir
+        $widget->is_active = !$widget->is_active;
+        $widget->save();
+        
+        $status = $widget->is_active ? 'aktifleştirildi' : 'devre dışı bırakıldı';
+        $type = $widget->is_active ? 'success' : 'warning';
+        
+        $this->dispatch('toast', [
+            'title' => 'Başarılı!',
+            'message' => "Bileşen $status.",
+            'type' => $type
+        ]);
+    }
+    
     public function render()
     {
         // Root yetkisine sahip olup olmadığını kontrol et
-        $hasRootPermission = auth()->user()->hasRole('root');
+        $user = Auth::user();
+        $hasRootPermission = false;
+        
+        // Kullanıcı oturum açmışsa ve hasRole metodu tanımlıysa kontrol et
+        if ($user) {
+            if (method_exists($user, 'hasRole')) {
+                $hasRootPermission = $user->hasRole('root');
+            } else {
+                // Spatie Permission paketi kullanılmıyorsa, alternatif bir yöntem kullanabilirsiniz
+                // Örneğin: $hasRootPermission = $user->is_admin || $user->admin_level === 'root';
+                $hasRootPermission = false;
+            }
+        }
         
         if ($this->viewMode == 'active') {
             // Aktif kullanılan tüm tenant widget'ları getir

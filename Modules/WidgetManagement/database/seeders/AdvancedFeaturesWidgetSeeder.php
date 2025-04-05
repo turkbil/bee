@@ -191,28 +191,7 @@ class AdvancedFeaturesWidgetSeeder extends Seeder
             ]
         );
 
-        // Bir örnek tenant widget oluştur veya güncelle
-        $tenantWidget = TenantWidget::updateOrCreate(
-            [
-                'widget_id' => $widget->id,
-                'position' => 'center'
-            ],
-            [
-            'widget_id' => $widget->id,
-            'position' => 'center',
-            'order' => 1,
-            'settings' => [
-                'unique_id' => (string) Str::uuid(),
-                'title' => 'Gelişmiş Özellikler Demosu',
-                'subtitle' => 'Tüm yeni alan tiplerini gösteren interaktif bir örnek',
-                'background_color' => '#f8f9fa',
-                'text_color' => '#343a40',
-                'show_border' => true,
-                'item_count' => 6
-            ]
-        ]);
-
-        // Örnek içerik öğeleri oluştur
+        // Örnek içerik öğeleri tanımla
         $items = [
             [
                 'title' => 'Renk Seçimi Örneği',
@@ -289,13 +268,37 @@ class AdvancedFeaturesWidgetSeeder extends Seeder
             ]
         ];
 
-        // Öğeleri veritabanına ekle
-        foreach ($items as $index => $item) {
-            WidgetItem::create([
-                'tenant_widget_id' => $tenantWidget->id,
-                'content' => $item,
-                'order' => $index + 1
+        // Merkezi veritabanında çalışıyorsa öğeleri ekle
+        if (config('tenancy.central_domains', []) && in_array(request()->getHost(), config('tenancy.central_domains', []))) {
+            // Bir örnek tenant widget oluştur veya güncelle
+            $tenantWidget = TenantWidget::updateOrCreate(
+                [
+                    'widget_id' => $widget->id,
+                    'position' => 'center'
+                ],
+                [
+                'widget_id' => $widget->id,
+                'position' => 'center',
+                'order' => 1,
+                'settings' => [
+                    'unique_id' => (string) Str::uuid(),
+                    'title' => 'Gelişmiş Özellikler Demosu',
+                    'subtitle' => 'Tüm yeni alan tiplerini gösteren interaktif bir örnek',
+                    'background_color' => '#f8f9fa',
+                    'text_color' => '#343a40',
+                    'show_border' => true,
+                    'item_count' => 6
+                ]
             ]);
+            
+            // Öğeleri veritabanına ekle
+            foreach ($items as $index => $item) {
+                WidgetItem::create([
+                    'tenant_widget_id' => $tenantWidget->id,
+                    'content' => $item,
+                    'order' => $index + 1
+                ]);
+            }
         }
 
         // Çoklu resim desteği için başka bir widget şablonu oluştur veya güncelle
@@ -401,32 +404,39 @@ class AdvancedFeaturesWidgetSeeder extends Seeder
             ]
         );
 
-        // Galeri için örnek tenant widget oluştur veya güncelle
-        $galleryTenantWidget = TenantWidget::updateOrCreate(
-            [
+        // Merkezi veritabanında çalışıyorsa galeri için örnek tenant widget oluştur veya güncelle
+        $galleryTenantWidget = null;
+        if (config('tenancy.central_domains', []) && in_array(request()->getHost(), config('tenancy.central_domains', []))) {
+            $galleryTenantWidget = TenantWidget::updateOrCreate(
+                [
+                    'widget_id' => $multipleImagesWidget->id,
+                    'position' => 'center'
+                ],
+                [
                 'widget_id' => $multipleImagesWidget->id,
-                'position' => 'center'
-            ],
-            [
-            'widget_id' => $multipleImagesWidget->id,
-            'position' => 'center',
-            'order' => 2,
-            'settings' => [
-                'unique_id' => (string) Str::uuid(),
-                'title' => 'Çoklu Resim Galerisi Örneği',
-                'layout_type' => 'grid',
-                'columns' => 3
-            ]
-        ]);
+                'position' => 'center',
+                'order' => 2,
+                'settings' => [
+                    'unique_id' => (string) Str::uuid(),
+                    'title' => 'Çoklu Resim Galerisi Örneği',
+                    'layout_type' => 'grid',
+                    'columns' => 3
+                ]
+            ]);
+        }
 
         // Bu seeder tamamlandığında bir bilgilendirme göster
         $this->command->info('AdvancedFeaturesWidgetSeeder başarıyla tamamlandı!');
         $this->command->info('Oluşturulan demo widget\'lar:');
         $this->command->info('1. Gelişmiş Özellikler Demo (ID: ' . $widget->id . ')');
         $this->command->info('2. Çoklu Resim Galerisi (ID: ' . $multipleImagesWidget->id . ')');
-        $this->command->info('-----');
-        $this->command->info('Test etmek için tenant widget\'lar:');
-        $this->command->info('1. Gelişmiş Özellikler Demo (ID: ' . $tenantWidget->id . ')');
-        $this->command->info('2. Çoklu Resim Galerisi (ID: ' . $galleryTenantWidget->id . ')');
+        
+        // Merkezi veritabanında çalışıyorsa tenant widget bilgilerini göster
+        if (config('tenancy.central_domains', []) && in_array(request()->getHost(), config('tenancy.central_domains', []))) {
+            $this->command->info('-----');
+            $this->command->info('Test etmek için tenant widget\'lar:');
+            $this->command->info('1. Gelişmiş Özellikler Demo (ID: ' . ($tenantWidget ?? 'Oluşturulmadı') . ')');
+            $this->command->info('2. Çoklu Resim Galerisi (ID: ' . ($galleryTenantWidget ? $galleryTenantWidget->id : 'Oluşturulmadı') . ')');
+        }
     }
 }

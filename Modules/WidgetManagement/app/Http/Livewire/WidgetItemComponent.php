@@ -302,19 +302,71 @@ class WidgetItemComponent extends Component
             
             // Dosyaları yükle
             foreach ($this->schema as $field) {
-                if ($field['type'] === 'image' && isset($this->formData[$field['name']]) && !is_string($this->formData[$field['name']])) {
+                // Resim veya dosya tipi için aynı işlemi uygula
+                if (($field['type'] === 'image' || $field['type'] === 'file') && isset($this->formData[$field['name']]) && !is_string($this->formData[$field['name']])) {
                     $file = $this->formData[$field['name']];
                     $filename = time() . '_' . $file->getClientOriginalName();
                     
-                    // Tenant kontrolü
-                    $path = '';
-                    if (function_exists('tenant') && tenant()) {
-                        $path = $file->storeAs('widgets/' . tenant()->id, $filename, 'public');
-                    } else {
-                        $path = $file->storeAs('widgets/central', $filename, 'public');
+                    // Tenant ID belirleme
+                    $tenantId = is_tenant() ? tenant_id() : 1;
+                    
+                    // Klasör belirleme - resim veya dosya tipine göre
+                    $folder = $field['type'] === 'image' ? 'images' : 'files';
+                    
+                    // SettingManagement'taki TenantStorageHelper ile doğru şekilde dosyayı yükle
+                    try {
+                        $urlPath = \Modules\SettingManagement\App\Helpers\TenantStorageHelper::storeTenantFile(
+                            $file,
+                            "widgets/{$folder}",
+                            $filename,
+                            $tenantId
+                        );
+                        
+                        $this->formData[$field['name']] = $urlPath;
+                    } catch (\Exception $e) {
+                        \Illuminate\Support\Facades\Log::error('Dosya yükleme hatası: ' . $e->getMessage(), [
+                            'field' => $field['name'],
+                            'type' => $field['type'],
+                            'tenant' => $tenantId,
+                            'exception' => $e
+                        ]);
+                    }
+                }
+                
+                // Çoklu resim tipi için işlem
+                if ($field['type'] === 'image_multiple' && isset($this->formData[$field['name']]) && is_array($this->formData[$field['name']])) {
+                    $multipleImages = [];
+                    
+                    foreach ($this->formData[$field['name']] as $index => $image) {
+                        if (!is_string($image)) {
+                            // Tenant ID belirleme
+                            $tenantId = is_tenant() ? tenant_id() : 1;
+                            $filename = time() . '_' . $index . '_' . $image->getClientOriginalName();
+                            
+                            try {
+                                $urlPath = \Modules\SettingManagement\App\Helpers\TenantStorageHelper::storeTenantFile(
+                                    $image,
+                                    "widgets/images",
+                                    $filename,
+                                    $tenantId
+                                );
+                                
+                                $multipleImages[] = $urlPath;
+                            } catch (\Exception $e) {
+                                \Illuminate\Support\Facades\Log::error('Çoklu resim yükleme hatası: ' . $e->getMessage(), [
+                                    'field' => $field['name'],
+                                    'index' => $index,
+                                    'tenant' => $tenantId,
+                                    'exception' => $e
+                                ]);
+                            }
+                        } else {
+                            // Zaten yüklenmiş resim
+                            $multipleImages[] = $image;
+                        }
                     }
                     
-                    $this->formData[$field['name']] = asset('storage/' . $path);
+                    $this->formData[$field['name']] = $multipleImages;
                 }
             }
             

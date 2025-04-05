@@ -18,6 +18,26 @@ Bu proje, Laravel 11 kullanılarak geliştirilmiş, modüler ve çok kiracılı 
 
 ## Versiyon Geçmişi
 
+*   **v0.4.0 (2025-04-05):**
+    *   SettingManagement modülünde dosya yükleme bileşeni (file-upload) sorunu çözüldü.
+    *   ValuesComponent sınıfına removeImage metodu eklenerek geçici dosyaların silinmesi sağlandı.
+    *   Dosya yükleme ve görüntü yükleme bileşenleri arasında tutarlılık sağlandı.
+    *   Geçici dosyalar ve kaydedilmiş dosyalar için doğru silme metodları uygulandı.
+
+*   **v0.3.0 (2025-04-05):**
+    *   WidgetManagement ve SettingManagement modüllerinde dosya yükleme işlemleri standartlaştırıldı.
+    *   Tüm resim ve dosya yüklemeleri için merkezi TenantStorageHelper sınıfı kullanıldı.
+    *   Dosya adı formatları ve klasör yapısı standartlaştırıldı.
+    *   Çoklu resim yükleme işlemleri iyileştirildi.
+    *   Tenant bazlı dosya yükleme ve görüntüleme sorunları çözüldü.
+
+*   **v0.2.0 (2025-04-05):**
+    *   WidgetManagement modülünde resim yükleme ve görüntüleme sorunları çözüldü.
+    *   Dosya yükleme işlemleri TenantStorageHelper kullanacak şekilde düzenlendi.
+    *   Tenant bazlı resim URL'leri için doğru görüntüleme desteği eklendi.
+    *   Çoklu resim yükleme desteği iyileştirildi.
+    *   Farklı tenant'lar için doğru dosya yolları ve URL'ler sağlandı.
+
 *   **v0.1.0 (2024-07-27):** 
     *   Widget Yönetimi Modülü: Widget sıralama işlevselliği düzeltildi.
     *   Livewire bileşeni (`WidgetSectionComponent`) ve Blade görünümü (`widget-section-component.blade.php`) güncellenerek sürükle-bırak ile widget sıralamasının doğru şekilde kaydedilmesi sağlandı.

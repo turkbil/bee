@@ -121,6 +121,7 @@
 <script src="{{ asset('admin/js/plugins.js') }}?v={{ filemtime(public_path('admin/js/plugins.js')) }}"></script>
 <script src="{{ asset('admin/js/tabler.min.js') }}" defer></script>
 <script src="{{ asset('admin/libs/litepicker/dist/litepicker.js') }}" defer></script>
+<script src="{{ asset('admin/libs/fslightbox/index.js') }}" defer></script>
 <script src="{{ asset('admin/libs/tom-select/dist/js/tom-select.complete.min.js') }}" defer></script>
 <script src="{{ asset('admin/libs/tom-select/dist/js/plugins/restore_on_backspace.js') }}"></script>
 <script src="{{ asset('admin/js/main.js') }}?v={{ filemtime(public_path('admin/js/main.js')) }}"></script>

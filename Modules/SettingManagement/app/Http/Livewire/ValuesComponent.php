@@ -1,4 +1,5 @@
 <?php
+// Modules/SettingManagement/app/Http/Livewire/ValuesComponent.php
 
 namespace Modules\SettingManagement\App\Http\Livewire;
 
@@ -25,6 +26,10 @@ class ValuesComponent extends Component
     public $temporaryImages = [];
     public $temporaryMultipleImages = [];
     public $multipleImagesArrays = [];
+    
+    // Çoklu resim seçimi için yeni değişkenler
+    public $tempPhoto;
+    public $photoField; // Hangi alan için yüklüyoruz
 
     public function mount($group)
     {
@@ -96,21 +101,37 @@ class ValuesComponent extends Component
         }
     }
     
-    // Çoklu resim için güncelleme
-    public function updatedTemporaryMultipleImages($value, $key)
+    // Çoklu resim için güncelleme - toplu seçim yapmayı destekler
+    public function updatedTempPhoto()
     {
-        list($settingId, $index) = explode('.', $key);
-        
-        if ($settingId && isset($this->temporaryMultipleImages[$settingId][$index])) {
-            $setting = Setting::find($settingId);
+        if ($this->tempPhoto && $this->photoField) {
+            // Çoklu fotoğraf yükleme için dizi kontrolü
+            $photosToProcess = is_array($this->tempPhoto) ? $this->tempPhoto : [$this->tempPhoto];
             
-            if ($setting) {
-                // Değişiklik var işareti koy
-                if (!isset($this->changes[$settingId])) {
-                    $this->changes[$settingId] = true;
+            foreach ($photosToProcess as $photo) {
+                $this->validate([
+                    'tempPhoto.*' => 'image|max:2048', // 2MB Max
+                ]);
+                
+                if (!isset($this->temporaryMultipleImages[$this->photoField])) {
+                    $this->temporaryMultipleImages[$this->photoField] = [];
                 }
+                
+                $this->temporaryMultipleImages[$this->photoField][] = $photo;
+            }
+            
+            $this->tempPhoto = null;
+            
+            // Değişiklik var olarak işaretle
+            if (!isset($this->changes[$this->photoField])) {
+                $this->changes[$this->photoField] = true;
             }
         }
+    }
+    
+    public function setPhotoField($fieldName)
+    {
+        $this->photoField = $fieldName;
     }
     
     // Çoklu resim ekle
@@ -120,7 +141,11 @@ class ValuesComponent extends Component
             $this->temporaryMultipleImages[$settingId] = [];
         }
         
-        $this->temporaryMultipleImages[$settingId][] = null;
+        // Değişiklik olarak kaydet
+        if (!isset($this->changes[$settingId])) {
+            $this->changes[$settingId] = true;
+        }
+        
         $this->checkChanges();
     }
     
@@ -222,7 +247,7 @@ class ValuesComponent extends Component
                         \Modules\SettingManagement\App\Helpers\TenantStorageHelper::deleteFile($oldValue);
                     }
                     
-                    // YENİ: TenantStorageHelper ile doğru şekilde dosyayı yükle
+                    // TenantStorageHelper ile doğru şekilde dosyayı yükle
                     $value = \Modules\SettingManagement\App\Helpers\TenantStorageHelper::storeTenantFile(
                         $file,
                         "settings/{$folder}",
@@ -241,28 +266,28 @@ class ValuesComponent extends Component
                 }
             }
             
-            // Çoklu resim işleme
-            if ($setting->type === 'image_multiple' && isset($this->temporaryMultipleImages[$settingId])) {
+            // Çoklu resim tipi için işlem
+            if ($setting->type === 'image_multiple' && isset($this->temporaryMultipleImages[$settingId]) && count($this->temporaryMultipleImages[$settingId]) > 0) {
                 try {
                     $newImages = [];
                     
-                    // Önce mevcut resimleri ekle
+                    // Eğer mevcut resimler varsa, onları koru
                     if (isset($this->multipleImagesArrays[$settingId]) && !empty($this->multipleImagesArrays[$settingId])) {
                         $newImages = $this->multipleImagesArrays[$settingId];
                     }
                     
                     // Yeni resimleri ekle
-                    foreach ($this->temporaryMultipleImages[$settingId] as $index => $image) {
-                        if ($image) {
+                    foreach ($this->temporaryMultipleImages[$settingId] as $index => $photo) {
+                        if ($photo) {
                             // Tenant id belirleme - Central ise tenant1, değilse gerçek tenant ID
                             $tenantId = is_tenant() ? tenant_id() : 1;
                             
                             // Dosya adını oluştur
-                            $fileName = time() . '_' . Str::slug($setting->key) . '_' . Str::random(6) . '.' . $image->getClientOriginalExtension();
+                            $fileName = time() . '_' . Str::slug($setting->key) . '_' . Str::random(6) . '.' . $photo->getClientOriginalExtension();
                             
-                            // Yeni dosyayı yükle
+                            // TenantStorageHelper ile doğru şekilde dosyayı yükle
                             $imagePath = \Modules\SettingManagement\App\Helpers\TenantStorageHelper::storeTenantFile(
-                                $image,
+                                $photo,
                                 "settings/images",
                                 $fileName,
                                 $tenantId

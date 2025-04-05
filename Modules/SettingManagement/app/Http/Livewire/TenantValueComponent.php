@@ -33,6 +33,7 @@ class TenantValueComponent extends Component
     public $dateValue = null;
     public $timeValue = null;
     public $checkboxValue = false;
+    public $photoField; // Hangi alan için yüklüyoruz - çoklu resim için
 
     public function mount($id)
     {
@@ -214,15 +215,33 @@ class TenantValueComponent extends Component
         }
     }
     
-    // Çoklu resim için işleme
-    public function updatedTemporaryMultipleImages($value, $index)
+    // Çoklu resim için işleme - WidgetManagement ile uyumlu hale getirildi
+    public function updatedTempPhoto()
     {
-        $this->validateOnly("temporaryMultipleImages.{$index}", [
-            "temporaryMultipleImages.{$index}" => ['image', 'mimes:jpg,jpeg,png,webp,gif', 'max:2048'],
-        ]);
-        
-        // Değişen resim sıralanacak
-        $this->useDefault = false;
+        if ($this->tempPhoto && $this->photoField) {
+            // Çoklu fotoğraf yükleme için dizi kontrolü
+            $photosToProcess = is_array($this->tempPhoto) ? $this->tempPhoto : [$this->tempPhoto];
+            
+            foreach ($photosToProcess as $photo) {
+                $this->validate([
+                    'tempPhoto.*' => 'image|max:2048', // 2MB Max
+                ]);
+                
+                if (!isset($this->temporaryMultipleImages[$this->photoField])) {
+                    $this->temporaryMultipleImages[$this->photoField] = [];
+                }
+                
+                $this->temporaryMultipleImages[$this->photoField][] = $photo;
+            }
+            
+            $this->tempPhoto = null;
+            $this->useDefault = false; // Yeni resim eklediğimizde varsayılan değer kullanımını kapat
+        }
+    }
+    
+    public function setPhotoField($fieldName)
+    {
+        $this->photoField = $fieldName;
     }
     
     // Çoklu resim ekle
@@ -327,7 +346,7 @@ class TenantValueComponent extends Component
         $this->dispatch('toast', [
             'title' => 'Bilgi',
             'message' => 'Varsayılan değere dönüldü.',
-            'type' => 'info',
+            'type' => 'info'
         ]);
     }
     
@@ -414,7 +433,7 @@ class TenantValueComponent extends Component
                                 // Dosya adı oluşturma
                                 $fileName = time() . '_' . Str::slug($setting->key) . '_' . $index . '.' . $image->getClientOriginalExtension();
                                 
-                                // YENİ: TenantStorageHelper ile doğru şekilde dosyayı yükle
+                                // TenantStorageHelper ile doğru şekilde dosyayı yükle
                                 $imagePath = \Modules\SettingManagement\App\Helpers\TenantStorageHelper::storeTenantFile(
                                     $image,
                                     "settings/images",
@@ -471,7 +490,7 @@ class TenantValueComponent extends Component
                             \Modules\SettingManagement\App\Helpers\TenantStorageHelper::deleteFile($this->value);
                         }
                         
-                        // YENİ: TenantStorageHelper ile doğru şekilde dosyayı yükle
+                        // TenantStorageHelper ile doğru şekilde dosyayı yükle
                         $valueToSave = \Modules\SettingManagement\App\Helpers\TenantStorageHelper::storeTenantFile(
                             $this->temporaryImages[$key],
                             "settings/{$folder}",

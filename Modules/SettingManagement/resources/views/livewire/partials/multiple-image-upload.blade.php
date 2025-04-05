@@ -24,21 +24,14 @@ class="mb-3">
                             <span x-show="!isDropping">{{ $label ?? 'Görseli sürükleyip bırakın veya tıklayın' }}</span>
                             <span x-show="isDropping" class="text-primary">Bırakın!</span>
                         </div>
+                        <p class="text-muted small">PNG, JPG, WEBP, GIF - Maks 2MB - <strong>Toplu seçim yapabilirsiniz</strong></p>
                     </div>
                     <input type="file" id="fileInput_multiple_{{ $settingId }}_{{ $index }}"
                         wire:model="temporaryMultipleImages.{{ $settingId }}.{{ $index }}" class="d-none"
-                        accept="image/jpeg,image/png,image/webp,image/gif" />
+                        accept="image/*" multiple />
                 </div>
 
-                <!-- Progress Bar Alanı -->
-                <div class="progress-container" style="height: 10px;">
-                    <div class="progress progress-sm mt-2" wire:loading
-                        wire:target="temporaryMultipleImages.{{ $settingId }}.{{ $index }}">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary"
-                            style="width: 100%"></div>
-                    </div>
-                </div>
-
+                <!-- Progress bar kaldırıldı -->
                 @error('temporaryMultipleImages.' . $settingId . '.' . $index)
                 <div class="text-danger small mt-2">{{ $message }}</div>
                 @enderror

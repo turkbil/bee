@@ -48,7 +48,7 @@ class ThemeService
         }
         
         // Temadaki genel görünüm
-        $themePath = "themes/{$themeName}/{$view}";
+        $themePath = "resources.themes.{$themeName}.{$view}";
         if (View::exists($themePath)) {
             return $themePath;
         }

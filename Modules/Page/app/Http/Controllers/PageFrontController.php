@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Page\Http\Controllers;
+namespace Modules\Page\App\Http\Controllers;
 
 use Illuminate\Routing\Controller;
 use Modules\Page\App\Models\Page;

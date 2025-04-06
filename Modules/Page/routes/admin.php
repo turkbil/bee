@@ -1,8 +1,8 @@
 <?php
 // Modules/Page/routes/admin.php
 use Illuminate\Support\Facades\Route;
-use Modules\Page\App\Http\Livewire\PageComponent;
-use Modules\Page\App\Http\Livewire\PageManageComponent;
+use Modules\Page\App\Http\Livewire\Admin\PageComponent;
+use Modules\Page\App\Http\Livewire\Admin\PageManageComponent;
 
 // Admin rotaları
 Route::middleware(['web', 'auth', 'tenant'])

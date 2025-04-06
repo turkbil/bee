@@ -40,20 +40,26 @@ class ThemeService
         
         // Modül için özel tema görünümü
         if ($module) {
-            $modulePath = "modules/{$module}/resources/themes/{$themeName}/{$view}";
+            // Önce modül içindeki tema klasörünü kontrol et
+            $moduleThemePath = "{$module}::themes.{$themeName}.{$view}";
             
-            if (View::exists($modulePath)) {
-                return $modulePath;
+            if (View::exists($moduleThemePath)) {
+                return $moduleThemePath;
             }
         }
         
         // Temadaki genel görünüm
-        $themePath = "resources.themes.{$themeName}.{$view}";
+        $themePath = "themes.{$themeName}.{$view}";
         if (View::exists($themePath)) {
             return $themePath;
         }
         
         // Modül varsayılan görünümü
-        return $module ? "{$module}::$view" : $view;
+        if ($module) {
+            return "{$module}::{$view}";
+        }
+        
+        // Son çare olarak doğrudan view'i döndür
+        return $view;
     }
 }

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Modules\ModuleManagement\App\Models\Module;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 use Stancl\Tenancy\Tenancy;
 
 class ModuleManagementSeeder extends Seeder
@@ -16,7 +17,16 @@ class ModuleManagementSeeder extends Seeder
 
         // Eğer tenant kontekstinde çalışıyorsa, seederi çalıştırma
         if (app()->has('tenancy') && app(Tenancy::class)->initialized) {
-            return;
+            try {
+                // Tenant veritabanında modules tablosu var mı kontrol et
+                if (!Schema::hasTable('modules')) {
+                    $this->command->info('Tenant veritabanında modules tablosu bulunamadı. Bu normal bir durumdur, modüller merkezi veritabanında yönetilir.');
+                    return;
+                }
+            } catch (\Exception $e) {
+                $this->command->info('Tenant veritabanı kontrol hatası: ' . $e->getMessage());
+                return;
+            }
         }
 
         try {
@@ -86,14 +96,20 @@ class ModuleManagementSeeder extends Seeder
                 ]
             ];
 
-            // Foreign key constraint hatası için DISABLE FOREIGN_KEY_CHECKS
-            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-            
-            // Temizlik yapalım önce
-            DB::table('modules')->truncate();
-            
-            // Foreign key constraint'leri tekrar aktif et
-            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+            // Tablo var mı kontrol et
+            if (Schema::hasTable('modules')) {
+                // Foreign key constraint hatası için DISABLE FOREIGN_KEY_CHECKS
+                DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+                
+                // Temizlik yapalım önce
+                DB::table('modules')->truncate();
+                
+                // Foreign key constraint'leri tekrar aktif et
+                DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+            } else {
+                $this->command->info('modules tablosu bulunamadı, oluşturuluyor...');
+                return;
+            }
 
             // manuel olarak ekleyelim
             foreach ($modules as $moduleData) {

@@ -101,6 +101,11 @@ class ModuleSeeder extends Seeder
         }
         
         foreach ($tenants as $tenant) {
+            // Tenant 1 (central) için seeder'ı çalıştırma, çünkü central olarak zaten çalıştırıldı
+            if ($tenant->id == 1) {
+                $this->command->info("Skipping tenant {$tenant->id} seeders as it's the central database");
+                continue;
+            }
             $this->command->info("Initializing tenant: {$tenant->id}");
             
             // Tenant bağlamını başlat

@@ -1,14 +1,18 @@
-@extends('themes.blank.layouts.default')
+@extends('page-themes.blank.layouts.default')
 
 @section('content')
     <div>
-        <h2>{{ $page->title }} (Modül View)</h2>
+        <h2>{{ $page->title }} (Modül Tema)</h2>
+        
+        <div class="meta">
+            <span>Oluşturma: {{ $page->created_at->format('d.m.Y') }}</span>
+        </div>
         
         <div class="page-content">
             {!! $page->body !!}
         </div>
         
-        <div>
+        <div class="page-actions">
             <a href="{{ route('pages.index') }}">← Tüm Sayfalar</a>
         </div>
     </div>

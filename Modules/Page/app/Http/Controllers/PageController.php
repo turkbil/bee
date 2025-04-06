@@ -7,7 +7,7 @@ use Modules\Page\App\Models\Page;
 use App\Services\ThemeService;
 use Illuminate\Support\Facades\View;
 
-class PageFrontController extends Controller
+class PageController extends Controller
 {
     protected $themeService;
 
@@ -22,12 +22,21 @@ class PageFrontController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
+        // Debug için
+        \Log::info("Loading pages index view");
+        
         $viewPath = $this->themeService->getThemeViewPath('index', 'page');
         
-        // Hata ayıklama
+        // Özel durumları kontrol et
         if (!View::exists($viewPath)) {
-            \Log::warning("View bulunamadı: {$viewPath}. Varsayılan olarak themes.blank.index kullanılıyor.");
+            \Log::warning("View not found: {$viewPath}, falling back to themes.blank.index");
             $viewPath = 'themes.blank.index';
+            
+            // Fallback da yoksa
+            if (!View::exists($viewPath)) {
+                \Log::error("Fallback view not found: {$viewPath}");
+                abort(500, "Template not found");
+            }
         }
         
         return view($viewPath, compact('pages'));
@@ -39,12 +48,21 @@ class PageFrontController extends Controller
             ->where('is_active', true)
             ->firstOrFail();
 
+        // Debug için
+        \Log::info("Loading page show view for: {$slug}");
+        
         $viewPath = $this->themeService->getThemeViewPath('show', 'page');
         
-        // Hata ayıklama
+        // Özel durumları kontrol et
         if (!View::exists($viewPath)) {
-            \Log::warning("View bulunamadı: {$viewPath}. Varsayılan olarak themes.blank.show kullanılıyor.");
+            \Log::warning("View not found: {$viewPath}, falling back to themes.blank.show");
             $viewPath = 'themes.blank.show';
+            
+            // Fallback da yoksa
+            if (!View::exists($viewPath)) {
+                \Log::error("Fallback view not found: {$viewPath}");
+                abort(500, "Template not found");
+            }
         }
         
         return view($viewPath, compact('page'));

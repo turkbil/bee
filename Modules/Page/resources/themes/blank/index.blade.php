@@ -1,14 +1,17 @@
-@extends('themes.blank.layouts.default')
+@extends('page-themes.blank.layouts.default')
 
 @section('content')
     <div>
-        <h2>Sayfalar (Modül View)</h2>
+        <h2>Sayfalar (Modül Tema)</h2>
         
         @if($pages->count() > 0)
             <div class="page-list">
                 @foreach($pages as $page)
                     <div class="page-item">
                         <h3><a href="{{ route('pages.show', $page->slug) }}">{{ $page->title }}</a></h3>
+                        <div class="meta">
+                            <span>Oluşturma: {{ $page->created_at->format('d.m.Y') }}</span>
+                        </div>
                     </div>
                 @endforeach
             </div>

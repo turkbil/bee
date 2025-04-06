@@ -28,11 +28,15 @@ class PageServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
-
+    
         $this->loadRoutesFrom(module_path('Page', 'routes/web.php'));
+        
+        // Tema klasörünü de yükleyin
+        $this->loadViewsFrom(module_path('Page', 'resources/themes'), 'page-themes');
         $this->loadViewsFrom(module_path('Page', 'resources/views'), 'page');
+        
         $this->loadMigrationsFrom(module_path('Page', 'database/migrations'));
-
+    
         Livewire::component('page-component', PageComponent::class);
         Livewire::component('page-manage-component', PageManageComponent::class);
     }
@@ -107,16 +111,24 @@ class PageServiceProvider extends ServiceProvider
 
     public function registerViews(): void
     {
-        $viewPath   = resource_path('views/modules/page');
+        $viewPath = resource_path('views/modules/page');
         $sourcePath = module_path('Page', 'resources/views');
-
+    
         $this->publishes([
             $sourcePath => $viewPath,
         ], ['views', 'page-module-views']);
-
+        
+        // Tema klasörlerini de yayınlayın
+        $themeSourcePath = module_path('Page', 'resources/themes');
+        $themeViewPath = resource_path('views/themes/modules/page');
+        
+        $this->publishes([
+            $themeSourcePath => $themeViewPath,
+        ], ['views', 'page-module-theme-views']);
+    
         $this->loadViewsFrom(array_merge($this->getPublishableViewPaths(), [$sourcePath]), 'page');
     }
-
+    
     /**
      * Get the services provided by the provider.
      */

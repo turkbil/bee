@@ -1,20 +1,17 @@
 @extends('themes.blank.layouts.default')
 
 @section('content')
-    <div class="page-container">
+    <div>
         <h2>Sayfalar</h2>
         
         @if($pages->count() > 0)
-            <ul class="page-list">
+            <div class="page-list">
                 @foreach($pages as $page)
-                    <li class="page-item">
+                    <div class="page-item">
                         <h3><a href="{{ route('pages.show', $page->slug) }}">{{ $page->title }}</a></h3>
-                        <div class="page-meta">
-                            <span>Oluşturulma: {{ $page->created_at->format('d.m.Y') }}</span>
-                        </div>
-                    </li>
+                    </div>
                 @endforeach
-            </ul>
+            </div>
             
             {{ $pages->links() }}
         @else

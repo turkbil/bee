@@ -5,6 +5,7 @@ namespace Modules\Page\App\Http\Controllers;
 use Illuminate\Routing\Controller;
 use Modules\Page\App\Models\Page;
 use App\Services\ThemeService;
+use Illuminate\Support\Facades\View;
 
 class PageFrontController extends Controller
 {
@@ -22,6 +23,13 @@ class PageFrontController extends Controller
             ->paginate(10);
 
         $viewPath = $this->themeService->getThemeViewPath('index', 'page');
+        
+        // Hata ayıklama
+        if (!View::exists($viewPath)) {
+            \Log::warning("View bulunamadı: {$viewPath}. Varsayılan olarak themes.blank.index kullanılıyor.");
+            $viewPath = 'themes.blank.index';
+        }
+        
         return view($viewPath, compact('pages'));
     }
 
@@ -32,6 +40,13 @@ class PageFrontController extends Controller
             ->firstOrFail();
 
         $viewPath = $this->themeService->getThemeViewPath('show', 'page');
+        
+        // Hata ayıklama
+        if (!View::exists($viewPath)) {
+            \Log::warning("View bulunamadı: {$viewPath}. Varsayılan olarak themes.blank.show kullanılıyor.");
+            $viewPath = 'themes.blank.show';
+        }
+        
         return view($viewPath, compact('page'));
     }
 }

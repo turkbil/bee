@@ -12,6 +12,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Tenant bağlamında çalışıyorsa, migration'ı çalıştırma
+        if (config('database.default') !== config('tenancy.database.central_connection')) {
+            return;
+        }
         $teams = config('permission.teams');
         $tableNames = config('permission.table_names');
         $columnNames = config('permission.column_names');

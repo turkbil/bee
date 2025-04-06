@@ -93,6 +93,15 @@ class ModuleManagementSeeder extends Seeder
                     'settings' => null,
                     'type' => 'content',
                     'is_active' => true
+                ],
+                [
+                    'name' => 'thememanagement',
+                    'display_name' => 'Tema Yönetimi',
+                    'description' => 'Tema yönetimi',
+                    'version' => '1.0.0',
+                    'settings' => null,
+                    'type' => 'system',
+                    'is_active' => true
                 ]
             ];
 

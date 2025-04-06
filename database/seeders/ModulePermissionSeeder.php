@@ -20,6 +20,15 @@ class ModulePermissionSeeder extends Seeder
      */
     public function run(): void
     {
+        // Tenant bağlamında çalışıyorsa, seeder'ı çalıştırma
+        if (config('database.default') !== config('tenancy.database.central_connection')) {
+            return;
+        }
+        
+        // Eğer permissions tablosu yoksa, seeder'ı çalıştırma
+        if (!Schema::hasTable('permissions')) {
+            return;
+        }
         // Önce ilişkili tabloları temizleyelim
         $this->cleanPermissionTables();
         

@@ -1,4 +1,5 @@
 <?php
+// app/Services/ThemeService.php
 
 namespace App\Services;
 
@@ -38,32 +39,33 @@ class ThemeService
     {
         $themeName = $this->activeTheme->folder_name;
         
-        // Modül içerisindeki tema view'ı
+        // 1. Modül içerisindeki tema view'ı
         if ($module) {
-            $moduleView = "{$module}-themes.{$themeName}.{$view}";
-            if (View::exists($moduleView)) {
-                return $moduleView;
+            $moduleThemeView = "{$module}-themes.{$themeName}.{$view}";
+            if (View::exists($moduleThemeView)) {
+                \Log::debug("Using module theme view: {$moduleThemeView}");
+                return $moduleThemeView;
             }
         }
         
-        // Genel tema view'ı
-        $themeView = "themes.{$themeName}.{$view}";
-        if (View::exists($themeView)) {
-            return $themeView;
+        // 2. Ana tema içerisindeki view (resources/themes)
+        $mainThemeView = "themes.{$themeName}.{$view}";
+        if (View::exists($mainThemeView)) {
+            \Log::debug("Using main theme view: {$mainThemeView}");
+            return $mainThemeView;
         }
         
-        // Modül içerisindeki varsayılan view
+        // 3. Modül içindeki varsayılan view
         if ($module) {
             $defaultModuleView = "{$module}::{$view}";
             if (View::exists($defaultModuleView)) {
+                \Log::debug("Using default module view: {$defaultModuleView}");
                 return $defaultModuleView;
             }
         }
         
-        // Debug için
-        \Log::warning("View not found: module={$module}, view={$view}, theme={$themeName}");
-        
-        // Fallback olarak tema içindeki view'e döneriz
-        return $themeView;
+        // Tüm alternatifleri kontrol et ve logla
+        \Log::error("View not found for any path. Module: {$module}, View: {$view}, Theme: {$themeName}");
+        throw new \Exception("View [{$view}] not found in any location.");
     }
 }

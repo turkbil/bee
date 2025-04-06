@@ -1,5 +1,4 @@
 <?php
-
 namespace Modules\Page\App\Http\Controllers;
 
 use Illuminate\Routing\Controller;
@@ -22,24 +21,17 @@ class PageController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        // Debug için
-        \Log::info("Loading pages index view");
-        
-        $viewPath = $this->themeService->getThemeViewPath('index', 'page');
-        
-        // Özel durumları kontrol et
-        if (!View::exists($viewPath)) {
-            \Log::warning("View not found: {$viewPath}, falling back to themes.blank.index");
-            $viewPath = 'themes.blank.index';
+        try {
+            // Modül adıyla tema yolunu al
+            $viewPath = $this->themeService->getThemeViewPath('index', 'page');
+            return view($viewPath, compact('pages'));
+        } catch (\Exception $e) {
+            // Hatayı logla
+            \Log::error("Theme Error: " . $e->getMessage());
             
-            // Fallback da yoksa
-            if (!View::exists($viewPath)) {
-                \Log::error("Fallback view not found: {$viewPath}");
-                abort(500, "Template not found");
-            }
+            // Fallback view'a yönlendir (modül içindeki doğrudan view)
+            return view('page::index', compact('pages'));
         }
-        
-        return view($viewPath, compact('pages'));
     }
 
     public function show($slug)
@@ -48,23 +40,16 @@ class PageController extends Controller
             ->where('is_active', true)
             ->firstOrFail();
 
-        // Debug için
-        \Log::info("Loading page show view for: {$slug}");
-        
-        $viewPath = $this->themeService->getThemeViewPath('show', 'page');
-        
-        // Özel durumları kontrol et
-        if (!View::exists($viewPath)) {
-            \Log::warning("View not found: {$viewPath}, falling back to themes.blank.show");
-            $viewPath = 'themes.blank.show';
+        try {
+            // Modül adıyla tema yolunu al
+            $viewPath = $this->themeService->getThemeViewPath('show', 'page');
+            return view($viewPath, compact('page'));
+        } catch (\Exception $e) {
+            // Hatayı logla
+            \Log::error("Theme Error: " . $e->getMessage());
             
-            // Fallback da yoksa
-            if (!View::exists($viewPath)) {
-                \Log::error("Fallback view not found: {$viewPath}");
-                abort(500, "Template not found");
-            }
+            // Fallback view'a yönlendir (modül içindeki doğrudan view)
+            return view('page::show', compact('page'));
         }
-        
-        return view($viewPath, compact('page'));
     }
 }

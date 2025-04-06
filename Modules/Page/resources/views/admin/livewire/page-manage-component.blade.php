@@ -1,4 +1,4 @@
-@include('page::helper')
+@include('page::admin.helper')
 <div>
     @include('admin.partials.error_message')
     <form wire:submit.prevent="save">

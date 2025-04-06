@@ -39,7 +39,7 @@ class ThemeService
     {
         $themeName = $this->activeTheme->folder_name;
         
-        // 1. Modül içerisindeki tema view'ı
+        // 1. Modül içerisindeki tema view'ı - YENİ YAPI
         if ($module) {
             $moduleThemeView = "{$module}-themes.{$themeName}.{$view}";
             if (View::exists($moduleThemeView)) {
@@ -48,16 +48,16 @@ class ThemeService
             }
         }
         
-        // 2. Ana tema içerisindeki view (resources/themes)
+        // 2. Ana tema içerisindeki view - YENİ YAPI
         $mainThemeView = "themes.{$themeName}.{$view}";
         if (View::exists($mainThemeView)) {
             \Log::debug("Using main theme view: {$mainThemeView}");
             return $mainThemeView;
         }
         
-        // 3. Modül içindeki varsayılan view
+        // 3. Modül içindeki fallback view - YENİ YAPI
         if ($module) {
-            $defaultModuleView = "{$module}::{$view}";
+            $defaultModuleView = "{$module}::front.{$view}";
             if (View::exists($defaultModuleView)) {
                 \Log::debug("Using default module view: {$defaultModuleView}");
                 return $defaultModuleView;

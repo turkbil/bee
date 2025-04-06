@@ -1,5 +1,5 @@
 <?php
-namespace Modules\Page\App\Http\Controllers;
+namespace Modules\Page\App\Http\Controllers\Front;
 
 use Illuminate\Routing\Controller;
 use Modules\Page\App\Models\Page;
@@ -29,8 +29,8 @@ class PageController extends Controller
             // Hatayı logla
             \Log::error("Theme Error: " . $e->getMessage());
             
-            // Fallback view'a yönlendir (modül içindeki doğrudan view)
-            return view('page::index', compact('pages'));
+            // Fallback view'a yönlendir
+            return view('page::front.index', compact('pages'));
         }
     }
 
@@ -48,8 +48,8 @@ class PageController extends Controller
             // Hatayı logla
             \Log::error("Theme Error: " . $e->getMessage());
             
-            // Fallback view'a yönlendir (modül içindeki doğrudan view)
-            return view('page::show', compact('page'));
+            // Fallback view'a yönlendir
+            return view('page::front.show', compact('page'));
         }
     }
 }

@@ -1,7 +1,7 @@
 <?php
 // Modules/Page/routes/web.php
 use Illuminate\Support\Facades\Route;
-use Modules\Page\App\Http\Controllers\PageController;
+use Modules\Page\App\Http\Controllers\Front\PageController;
 
 // Ön yüz rotaları
 Route::middleware(['web'])

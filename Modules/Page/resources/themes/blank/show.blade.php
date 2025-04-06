@@ -1,8 +1,8 @@
 @extends('page-themes.blank.layouts.default')
 
-@section('content')
+@section('page_content')
     <div>
-        <h2>{{ $page->title }} (Modül Tema)</h2>
+        <h2>{{ $page->title }}</h2>
         
         <div class="meta">
             <span>Oluşturma: {{ $page->created_at->format('d.m.Y') }}</span>

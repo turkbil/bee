@@ -1,8 +1,8 @@
 @extends('page-themes.blank.layouts.default')
 
-@section('content')
+@section('page_content')
     <div>
-        <h2>Sayfalar (Modül Tema)</h2>
+        <h2>Sayfalar</h2>
         
         @if($pages->count() > 0)
             <div class="page-list">
@@ -12,6 +12,11 @@
                         <div class="meta">
                             <span>Oluşturma: {{ $page->created_at->format('d.m.Y') }}</span>
                         </div>
+                        @if($page->metadesc)
+                            <div class="summary">
+                                <p>{{ Str::limit($page->metadesc, 150) }}</p>
+                            </div>
+                        @endif
                     </div>
                 @endforeach
             </div>

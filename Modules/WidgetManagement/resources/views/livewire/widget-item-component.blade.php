@@ -317,35 +317,56 @@
                     <div class="list-group list-group-flush">
                         @if(isset($item->content['image']) && $item->content['image'])
                         <div class="list-group-item p-0">
-                            <img src="{{ $item->content['image'] }}" 
+                            <img src="{{ cdn($item->content['image']) }}" 
                                 alt="{{ $item->content['title'] ?? 'İçerik görseli' }}" 
                                 class="w-100 img-fluid"
                                 style="max-height: 150px; object-fit: cover;">
                         </div>
                         @elseif(isset($item->content['image_url']) && $item->content['image_url'])
                         <div class="list-group-item p-0">
-                            <img src="{{ $item->content['image_url'] }}" 
+                            <img src="{{ cdn($item->content['image_url']) }}" 
                                 alt="{{ $item->content['title'] ?? 'İçerik görseli' }}" 
                                 class="w-100 img-fluid"
                                 style="max-height: 150px; object-fit: cover;">
                         </div>
-                        @elseif(isset($item->content['coklu']) && is_array($item->content['coklu']) && !empty($item->content['coklu']))
-                        <div class="list-group-item p-0">
-                            <div class="d-flex overflow-auto">
-                                @foreach($item->content['coklu'] as $multipleImage)
-                                    <img src="{{ $multipleImage }}" 
-                                        alt="{{ $item->content['title'] ?? 'Çoklu görsel' }}" 
-                                        class="img-fluid me-1"
-                                        style="max-height: 150px; max-width: 150px; object-fit: cover;">
-                                    @if($loop->iteration >= 3)
-                                        <div class="d-flex align-items-center justify-content-center px-3">
-                                            <span class="badge bg-blue">+{{ count($item->content['coklu']) - 3 }} resim</span>
-                                        </div>
-                                        @break
-                                    @endif
-                                @endforeach
+                        @else
+                            @php
+                                $multipleImageField = null;
+                                $multipleImages = [];
+                                
+                                // İçeriğin tüm alanlarını kontrol et
+                                foreach ($item->content as $fieldName => $fieldValue) {
+                                    // Dizi olan ve boş olmayan alanları bul
+                                    if (is_array($fieldValue) && !empty($fieldValue)) {
+                                        // İlk elemanın string olup olmadığını kontrol et (görsel URL'si olmalı)
+                                        $firstItem = reset($fieldValue);
+                                        if (is_string($firstItem)) {
+                                            $multipleImageField = $fieldName;
+                                            $multipleImages = $fieldValue;
+                                            break;
+                                        }
+                                    }
+                                }
+                            @endphp
+                            
+                            @if($multipleImageField && !empty($multipleImages))
+                            <div class="list-group-item p-0">
+                                <div class="d-flex overflow-auto">
+                                    @foreach($multipleImages as $multipleImage)
+                                        <img src="{{ cdn($multipleImage) }}" 
+                                            alt="{{ $item->content['title'] ?? 'Çoklu görsel' }}" 
+                                            class="img-fluid me-1"
+                                            style="max-height: 150px; max-width: 150px; object-fit: cover;">
+                                        @if($loop->iteration >= 3)
+                                            <div class="d-flex align-items-center justify-content-center px-3">
+                                                <span class="badge bg-blue">+{{ count($multipleImages) - 3 }} resim</span>
+                                            </div>
+                                            @break
+                                        @endif
+                                    @endforeach
+                                </div>
                             </div>
-                        </div>
+                            @endif
                         @endif
                         
                         @if(isset($item->content['subtitle']) && $item->content['subtitle'])

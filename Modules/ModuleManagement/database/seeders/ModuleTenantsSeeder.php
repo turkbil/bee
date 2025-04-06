@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 use Modules\ModuleManagement\App\Models\Module;
 use Spatie\Permission\Models\Permission;
 use Stancl\Tenancy\Tenancy;
@@ -19,7 +20,16 @@ class ModuleTenantsSeeder extends Seeder
 
         // Eğer tenant kontekstinde çalışıyorsa, seederi çalıştırma
         if (app()->has('tenancy') && app(Tenancy::class)->initialized) {
-            return;
+            try {
+                // Tenant veritabanında module_tenants tablosu var mı kontrol et
+                if (!Schema::hasTable('module_tenants')) {
+                    $this->command->info('Tenant veritabanında module_tenants tablosu bulunamadı. Bu normal bir durumdur, modül-tenant ilişkileri merkezi veritabanında yönetilir.');
+                    return;
+                }
+            } catch (\Exception $e) {
+                $this->command->info('Tenant veritabanı kontrol hatası: ' . $e->getMessage());
+                return;
+            }
         }
 
         try {
@@ -27,14 +37,20 @@ class ModuleTenantsSeeder extends Seeder
             $tenants = DB::table('tenants')->pluck('id')->toArray();
             $modules = Module::all();
 
-            // Foreign key constraint hatası için DISABLE FOREIGN_KEY_CHECKS
-            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-            
-            // Temizlik yapalım önce
-            DB::table('module_tenants')->truncate();
-            
-            // Foreign key constraint'leri tekrar aktif et
-            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+            // Tablo var mı kontrol et
+            if (Schema::hasTable('module_tenants')) {
+                // Foreign key constraint hatası için DISABLE FOREIGN_KEY_CHECKS
+                DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+                
+                // Temizlik yapalım önce
+                DB::table('module_tenants')->truncate();
+                
+                // Foreign key constraint'leri tekrar aktif et
+                DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+            } else {
+                $this->command->info('module_tenants tablosu bulunamadı, işlem atlanıyor...');
+                return;
+            }
 
             // Her tenant ve modül kombinasyonu için rastgele atamalar yapalım
             // Ama bazı tenant'larda bazı modüller eksik olacak şekilde

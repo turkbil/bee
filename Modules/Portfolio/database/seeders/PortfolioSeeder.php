@@ -5,17 +5,33 @@ use Illuminate\Database\Seeder;
 use Modules\Portfolio\App\Models\Portfolio;
 use Modules\Portfolio\App\Models\PortfolioCategory;
 use Faker\Factory as Faker;
+use Illuminate\Support\Facades\Schema;
 
 class PortfolioSeeder extends Seeder
 {
     public function run(): void
     {
+        // Tablo var mı kontrol et
+        if (!Schema::hasTable('portfolio_categories') || !Schema::hasTable('portfolios')) {
+            $this->command->info('Portfolio tabloları bulunamadı, işlem atlanıyor...');
+            return;
+        }
+
         $faker = Faker::create('tr_TR');
         $categories = PortfolioCategory::pluck('portfolio_category_id')->toArray();
 
         if (empty($categories)) {
-            $this->command->error('Önce kategorileri oluşturmanız gerekiyor.');
-            return;
+            // Kategori yoksa, PortfolioCategorySeeder'ı çalıştır
+            $this->command->info('Kategoriler bulunamadı, PortfolioCategorySeeder çalıştırılıyor...');
+            $this->call('Modules\\Portfolio\\database\\seeders\\PortfolioCategorySeeder');
+            
+            // Kategorileri tekrar al
+            $categories = PortfolioCategory::pluck('portfolio_category_id')->toArray();
+            
+            if (empty($categories)) {
+                $this->command->error('Kategoriler oluşturulamadı, işlem durduruluyor.');
+                return;
+            }
         }
 
         foreach ($categories as $categoryId) {

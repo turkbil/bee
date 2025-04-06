@@ -54,7 +54,7 @@
                                 wire:click="removeImage('{{ $imageKey }}')" wire:loading.attr="disabled">
                                 <i class="fa-solid fa-xmark"></i>
                             </button>
-                            <img src="{{ $temporaryImages[$imageKey]->temporaryUrl() }}"
+                            <img src="{{ cdn($temporaryImages[$imageKey]->temporaryUrl()) }}"
                                 class="img-fluid rounded h-100 w-100 object-fit-cover" alt="Yüklenen Fotoğraf">
                         </div>
                         @elseif ($model && $model->getFirstMedia('image'))
@@ -63,7 +63,7 @@
                                 wire:click="removeImage()" wire:loading.attr="disabled">
                                 <i class="fa-solid fa-xmark"></i>
                             </button>
-                            <img src="{{ $model->getFirstMedia('image')->getUrl() }}"
+                            <img src="{{ cdn($model->getFirstMedia('image')->getUrl()) }}"
                                 class="img-fluid rounded h-100 w-100 object-fit-cover" alt="Mevcut Fotoğraf">
                         </div>
                         @else

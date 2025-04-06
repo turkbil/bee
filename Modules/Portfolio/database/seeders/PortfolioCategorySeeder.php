@@ -4,11 +4,18 @@ namespace Modules\Portfolio\database\seeders;
 use Illuminate\Database\Seeder;
 use Modules\Portfolio\App\Models\PortfolioCategory;
 use Faker\Factory as Faker;
+use Illuminate\Support\Facades\Schema;
 
 class PortfolioCategorySeeder extends Seeder
 {
     public function run(): void
     {
+        // Tablo var mı kontrol et
+        if (!Schema::hasTable('portfolio_categories')) {
+            $this->command->info('portfolio_categories tablosu bulunamadı, işlem atlanıyor...');
+            return;
+        }
+        
         $faker = Faker::create('tr_TR');
 
         $categories = [

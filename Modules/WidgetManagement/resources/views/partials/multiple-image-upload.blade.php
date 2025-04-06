@@ -54,7 +54,7 @@ class="mb-3">
                         wire:click="removeMultipleImageField({{ $index }})" wire:loading.attr="disabled">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
-                    <img src="{{ $temporaryMultipleImages[$index]->temporaryUrl() }}"
+                    <img src="{{ cdn($temporaryMultipleImages[$index]->temporaryUrl()) }}"
                         class="img-fluid rounded h-100 w-100 object-fit-cover" alt="Yüklenen Fotoğraf">
                 </div>
                 @else

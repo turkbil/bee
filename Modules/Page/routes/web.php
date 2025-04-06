@@ -1,12 +1,11 @@
 <?php
 // Modules/Page/routes/web.php
 use Illuminate\Support\Facades\Route;
-use Modules\Page\App\Http\Controllers\PageFrontController;
+use Modules\Page\App\Http\Controllers\PageController;
 
 // Ön yüz rotaları
 Route::middleware(['web'])
-    ->name('pages.')
     ->group(function () {
-        Route::get('/pages', [PageFrontController::class, 'index'])->name('index');
-        Route::get('/pages/{slug}', [PageFrontController::class, 'show'])->name('show');
+        Route::get('/pages', [PageController::class, 'index'])->name('pages.index');
+        Route::get('/pages/{slug}', [PageController::class, 'show'])->name('pages.show');
     });

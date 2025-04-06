@@ -38,28 +38,32 @@ class ThemeService
     {
         $themeName = $this->activeTheme->folder_name;
         
-        // Modül için özel tema görünümü
+        // Modül içerisindeki tema view'ı
         if ($module) {
-            // Önce modül içindeki tema klasörünü kontrol et
-            $moduleThemePath = "{$module}::themes.{$themeName}.{$view}";
-            
-            if (View::exists($moduleThemePath)) {
-                return $moduleThemePath;
+            $moduleView = "{$module}-themes.{$themeName}.{$view}";
+            if (View::exists($moduleView)) {
+                return $moduleView;
             }
         }
         
-        // Temadaki genel görünüm
-        $themePath = "themes.{$themeName}.{$view}";
-        if (View::exists($themePath)) {
-            return $themePath;
+        // Genel tema view'ı
+        $themeView = "themes.{$themeName}.{$view}";
+        if (View::exists($themeView)) {
+            return $themeView;
         }
         
-        // Modül varsayılan görünümü
+        // Modül içerisindeki varsayılan view
         if ($module) {
-            return "{$module}::{$view}";
+            $defaultModuleView = "{$module}::{$view}";
+            if (View::exists($defaultModuleView)) {
+                return $defaultModuleView;
+            }
         }
         
-        // Son çare olarak doğrudan view'i döndür
-        return $view;
+        // Debug için
+        \Log::warning("View not found: module={$module}, view={$view}, theme={$themeName}");
+        
+        // Fallback olarak tema içindeki view'e döneriz
+        return $themeView;
     }
 }

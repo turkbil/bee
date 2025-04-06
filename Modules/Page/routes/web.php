@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Modules\Page\App\Http\Livewire\PageComponent;
 use Modules\Page\App\Http\Livewire\PageManageComponent;
-use Modules\Page\Http\Controllers\PageFrontController;
+use Modules\Page\App\Http\Controllers\PageFrontController;
 
 Route::middleware(['web', 'auth', 'tenant'])
     ->prefix('admin')

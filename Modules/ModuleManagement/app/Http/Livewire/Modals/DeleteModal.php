@@ -33,8 +33,12 @@ class DeleteModal extends Component
             $modelMapping = [
                 'settingmanagement' => 'Setting',
                 'modulemanagement' => 'Module',
+                'thememanagement' => 'Theme',
                 // Diğer modüller için gerekirse buraya ekle
             ];
+            
+            // Modül adını düzgün formatta al (ilk harf büyük, diğerleri küçük)
+            $moduleName = ucfirst(strtolower($this->module));
             
             $modelName = isset($modelMapping[$this->module]) 
                 ? $modelMapping[$this->module] 
@@ -42,11 +46,12 @@ class DeleteModal extends Component
             
             $modelClass = $this->module === 'module' 
                 ? "Modules\\ModuleManagement\\App\\Models\\Module"
-                : "Modules\\" . ucfirst($this->module) . "\\App\\Models\\" . $modelName;
+                : "Modules\\" . $moduleName . "\\App\\Models\\" . $modelName;
 
             // Özel durumlarda model birincil anahtar sütun isimlerini düzelt
             $primaryKeyMapping = [
                 'settingmanagement' => 'id',
+                'thememanagement' => 'theme_id',
                 // Diğer modüller için gerekirse buraya ekle
             ];
             
@@ -54,7 +59,7 @@ class DeleteModal extends Component
                 ? 'module_id' 
                 : (isset($primaryKeyMapping[$this->module]) 
                     ? $primaryKeyMapping[$this->module] 
-                    : $this->module . '_id');
+                    : $modelName . '_id');
 
             $item = $modelClass::where($primaryKey, $this->itemId)->first();
 

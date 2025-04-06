@@ -1,0 +1,11 @@
+{
+    "name": "ThemeManagement",
+    "alias": "thememanagement",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\ThemeManagement\\Providers\\ThemeManagementServiceProvider"
+    ],
+    "files": []
+}

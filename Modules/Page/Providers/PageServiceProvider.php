@@ -29,10 +29,11 @@ class PageServiceProvider extends ServiceProvider
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
 
+        // Önce rotalar yüklenir
         $this->loadRoutesFrom(module_path('Page', 'routes/web.php'));
         $this->loadRoutesFrom(module_path('Page', 'routes/admin.php'));
         
-        // Tema klasörlerini yükle (Bu önemli!)
+        // Tema Klasörleri
         $this->loadViewsFrom(resource_path('themes'), 'themes');
         $this->loadViewsFrom(module_path('Page', 'resources/themes'), 'page-themes');
         $this->loadViewsFrom(module_path('Page', 'resources/views'), 'page');

@@ -1,4 +1,4 @@
-@include('page::helper')
+@include('page::admin.helper')
 <div class="card">
     <div class="card-body">
         <!-- Header Bölümü -->
@@ -212,7 +212,7 @@
     <!-- Pagination -->
     {{ $pages->links() }}
     <!-- Bulk Actions -->
-    @include('page::livewire.partials.bulk-actions', ['moduleType' => 'page'])
+    @include('page::admin.partials.bulk-actions', ['moduleType' => 'page'])
 
     <livewire:modals.bulk-delete-modal />
     <livewire:modals.delete-modal />

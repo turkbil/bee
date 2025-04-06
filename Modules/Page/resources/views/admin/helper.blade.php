@@ -1,4 +1,4 @@
-{{-- Modules/Page/resources/views/helper.blade.php --}}
+{{-- Modules/Page/resources/views/admin/helper.blade.php --}}
 {{-- PreTitle --}}
 @push('pretitle')
 Sayfalar

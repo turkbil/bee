@@ -1,6 +1,5 @@
 <?php
-
-namespace Modules\Page\App\Http\Livewire;
+namespace Modules\Page\App\Http\Livewire\Admin;
 
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -109,6 +108,6 @@ class PageManageComponent extends Component
 
    public function render()
    {
-       return view('page::livewire.page-manage-component');
+       return view('page::admin.livewire.page-manage-component');
    }
 }

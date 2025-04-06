@@ -3,8 +3,8 @@ namespace Modules\Page\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
-use Modules\Page\App\Http\Livewire\PageComponent;
-use Modules\Page\App\Http\Livewire\PageManageComponent;
+use Modules\Page\App\Http\Livewire\Admin\PageComponent;
+use Modules\Page\App\Http\Livewire\Admin\PageManageComponent;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -33,9 +33,9 @@ class PageServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(module_path('Page', 'routes/web.php'));
         $this->loadRoutesFrom(module_path('Page', 'routes/admin.php'));
         
-        // Tema Klasörleri
-        $this->loadViewsFrom(resource_path('themes'), 'themes');
-        $this->loadViewsFrom(module_path('Page', 'resources/themes'), 'page-themes');
+        // Tema Klasörleri - YENİ YAPI
+        $this->loadViewsFrom(resource_path('views/themes'), 'themes');
+        $this->loadViewsFrom(module_path('Page', 'resources/views/front/themes'), 'page-themes');
         $this->loadViewsFrom(module_path('Page', 'resources/views'), 'page');
 
         Livewire::component('page-component', PageComponent::class);
@@ -119,9 +119,9 @@ class PageServiceProvider extends ServiceProvider
             $sourcePath => $viewPath,
         ], ['views', 'page-module-views']);
         
-        // Tema klasörlerinin yapılandırması
-        $themeSourcePath = module_path('Page', 'resources/themes');
-        $themeViewPath = resource_path('themes/modules/page');
+        // Tema klasörlerinin yapılandırması - YENİ YAPI
+        $themeSourcePath = module_path('Page', 'resources/views/front/themes');
+        $themeViewPath = resource_path('views/themes/modules/page');
         
         $this->publishes([
             $themeSourcePath => $themeViewPath,

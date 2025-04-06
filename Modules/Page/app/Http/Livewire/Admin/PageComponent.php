@@ -1,5 +1,5 @@
 <?php
-namespace Modules\Page\App\Http\Livewire;
+namespace Modules\Page\App\Http\Livewire\Admin;
 
 use Livewire\Attributes\Url;
 use Livewire\Attributes\Layout;
@@ -81,7 +81,7 @@ class PageComponent extends Component
         $pages = $query->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
     
-        return view('page::livewire.page-component', [
+        return view('page::admin.livewire.page-component', [
             'pages' => $pages,
         ]);
     }

@@ -1,4 +1,4 @@
-{{-- Modules/Portfolio/resources/views/helper.blade.php --}}
+{{-- Modules/Portfolio/resources/views/admin/helper.blade.php --}}
 {{-- PreTitle --}}
 @push('pretitle')
 Portfolyolar

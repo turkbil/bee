@@ -1,6 +1,5 @@
 <?php
-// Modules/Portfolio/App/Http/Livewire/PortfolioCategoryManageComponent.php
-namespace Modules\Portfolio\App\Http\Livewire;
+namespace Modules\Portfolio\App\Http\Livewire\Admin;
 
 use Livewire\Component;
 use Livewire\Attributes\Layout;
@@ -109,6 +108,6 @@ class PortfolioCategoryManageComponent extends Component
 
    public function render()
    {
-       return view('portfolio::livewire.portfolio-category-manage-component');
+       return view('portfolio::admin.livewire.portfolio-category-manage-component');
    }
 }

@@ -3,10 +3,10 @@ namespace Modules\Portfolio\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
-use Modules\Portfolio\App\Http\Livewire\PortfolioComponent;
-use Modules\Portfolio\App\Http\Livewire\PortfolioManageComponent;
-use Modules\Portfolio\App\Http\Livewire\PortfolioCategoryComponent;
-use Modules\Portfolio\App\Http\Livewire\PortfolioCategoryManageComponent;
+use Modules\Portfolio\App\Http\Livewire\Admin\PortfolioComponent;
+use Modules\Portfolio\App\Http\Livewire\Admin\PortfolioManageComponent;
+use Modules\Portfolio\App\Http\Livewire\Admin\PortfolioCategoryComponent;
+use Modules\Portfolio\App\Http\Livewire\Admin\PortfolioCategoryManageComponent;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -31,9 +31,14 @@ class PortfolioServiceProvider extends ServiceProvider
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
 
+        // Önce rotalar yüklenir
         $this->loadRoutesFrom(module_path('Portfolio', 'routes/web.php'));
+        $this->loadRoutesFrom(module_path('Portfolio', 'routes/admin.php'));
+        
+        // Tema Klasörleri - YENİ YAPI
+        $this->loadViewsFrom(resource_path('views/themes'), 'themes');
+        $this->loadViewsFrom(module_path('Portfolio', 'resources/views/front/themes'), 'portfolio-themes');
         $this->loadViewsFrom(module_path('Portfolio', 'resources/views'), 'portfolio');
-        $this->loadMigrationsFrom(module_path('Portfolio', 'database/migrations'));
 
         Livewire::component('portfolio-component', PortfolioComponent::class);
         Livewire::component('portfolio-manage-component', PortfolioManageComponent::class);
@@ -111,13 +116,21 @@ class PortfolioServiceProvider extends ServiceProvider
 
     public function registerViews(): void
     {
-        $viewPath   = resource_path('views/modules/portfolio');
+        $viewPath = resource_path('views/modules/portfolio');
         $sourcePath = module_path('Portfolio', 'resources/views');
-
+    
         $this->publishes([
             $sourcePath => $viewPath,
         ], ['views', 'portfolio-module-views']);
-
+        
+        // Tema klasörlerinin yapılandırması - YENİ YAPI
+        $themeSourcePath = module_path('Portfolio', 'resources/views/front/themes');
+        $themeViewPath = resource_path('views/themes/modules/portfolio');
+        
+        $this->publishes([
+            $themeSourcePath => $themeViewPath,
+        ], ['views', 'portfolio-module-theme-views']);
+    
         $this->loadViewsFrom(array_merge($this->getPublishableViewPaths(), [$sourcePath]), 'portfolio');
     }
 

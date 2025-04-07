@@ -1,6 +1,5 @@
 <?php
-// Modules/Portfolio/App/Http/Livewire/PortfolioComponent.php
-namespace Modules\Portfolio\App\Http\Livewire;
+namespace Modules\Portfolio\App\Http\Livewire\Admin;
 
 use Livewire\Attributes\Url;
 use Livewire\Attributes\Layout;
@@ -119,7 +118,7 @@ class PortfolioComponent extends Component
             ->orderBy('title')
             ->get();
     
-        return view('portfolio::livewire.portfolio-component', [
+        return view('portfolio::admin.livewire.portfolio-component', [
             'portfolios' => $portfolios,
             'categories' => $categories,
         ]);

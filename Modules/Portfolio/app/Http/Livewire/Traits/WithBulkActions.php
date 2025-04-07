@@ -1,5 +1,4 @@
 <?php
-// Modules/Portfolio/App/Http/Livewire/Traits/WithBulkActions.php
 namespace Modules\Portfolio\App\Http\Livewire\Traits;
 
 trait WithBulkActions

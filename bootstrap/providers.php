@@ -6,4 +6,5 @@ return [
     App\Providers\ModulePermissionServiceProvider::class, 
     App\Providers\TelescopeServiceProvider::class,
     App\Providers\TenancyServiceProvider::class,
+    App\Providers\ViewableServiceProvider::class,
 ];

@@ -11,6 +11,7 @@
     "require": {
         "php": "^8.2",
         "cviebrock/eloquent-sluggable": "^11.0",
+        "cyrildewit/eloquent-viewable": "^7.0",
         "intervention/image": "^3.11",
         "laravel/breeze": "^2.3",
         "laravel/framework": "^11.31",

@@ -1,4 +1,4 @@
-{{-- Modules/Portfolio/resources/views/livewire/partials/image-upload.blade.php --}}
+{{-- Modules/Portfolio/resources/views/admin/partials/image-upload.blade.php --}}
 <div class="form-group mb-3">
     <div x-data="{ 
             isDropping: false,

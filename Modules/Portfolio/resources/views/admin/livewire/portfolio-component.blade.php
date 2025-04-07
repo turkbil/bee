@@ -1,4 +1,4 @@
-@include('portfolio::helper')
+@include('portfolio::admin.helper')
 <div class="card">
     <div class="card-body">
         <!-- Header Bölümü -->
@@ -233,7 +233,7 @@
 
     {{ $portfolios->links() }}
 
-    @include('portfolio::livewire.partials.bulk-actions')
+    @include('portfolio::admin.partials.bulk-actions')
 
     <livewire:modals.bulk-delete-modal />
     <livewire:modals.delete-modal />

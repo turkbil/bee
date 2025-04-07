@@ -88,11 +88,18 @@
                                 Başlık
                             </button>
                         </th>
-                        <th class="text-center" style="width: 80px">
+                        <th class="text-center" style="width: 80px" data-bs-toggle="tooltip" data-bs-placement="top" title="Aktiflik Durumu">
                             <button
                                 class="table-sort {{ $sortField === 'is_active' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
                                 wire:click="sortBy('is_active')">
                                 Durum
+                            </button>
+                        </th>
+                        <th class="text-center" style="width: 50px" data-bs-toggle="tooltip" data-bs-placement="top" title="Görüntülenme Sayısı">
+                            <button
+                                class="table-sort {{ $sortField === 'views_count' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
+                                wire:click="sortBy('views_count')">
+                                Hit
                             </button>
                         </th>
                         <th class="text-center" style="width: 120px">İşlemler</th>
@@ -160,6 +167,11 @@
                                     @endif
                                 </div>
                             </button>
+                        </td>
+                        <td class="text-center align-middle">
+                            <span class="badge text-center align-middle">
+                                {{ $page->views_count ?? 0 }} 
+                            </span>
                         </td>
                         <td class="text-center align-middle">
                             <div class="container">

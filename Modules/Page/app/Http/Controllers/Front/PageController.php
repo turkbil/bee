@@ -40,6 +40,9 @@ class PageController extends Controller
             ->where('is_active', true)
             ->firstOrFail();
 
+        // Sayfa görüntüleme sayısını arttır
+        views($page)->record();
+
         try {
             // Modül adıyla tema yolunu al
             $viewPath = $this->themeService->getThemeViewPath('show', 'page');

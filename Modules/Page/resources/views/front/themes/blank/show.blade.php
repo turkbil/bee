@@ -1,4 +1,4 @@
-@extends('page::front.themes.blank.layouts.default')
+@extends('page-themes.blank.layouts.default')
 
 @section('page_content')
     <div>
@@ -6,6 +6,7 @@
         
         <div class="meta">
             <span>Oluşturma: {{ $page->created_at->format('d.m.Y') }}</span>
+            <span>Görüntülenme: {{ views($page)->count() }}</span>
         </div>
         
         <div class="page-content">

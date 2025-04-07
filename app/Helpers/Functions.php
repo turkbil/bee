@@ -17,11 +17,22 @@ if (!function_exists('cdn')) {
             return '';
         }
         
+        // URL'de http:// veya https:// varsa, bunları temizle
+        $path = preg_replace('#^https?://[^/]+/#', '', $path);
+        
         // URL'in başındaki slash'leri temizle
         $path = ltrim($path, '/');
         
-        // Eğer path storage/ ile başlıyorsa, onu kaldırma
-        // storage/ öneki ile kullanacağız
+        // Tekrar eden domain kontrolü
+        $centralDomains = config('tenancy.central_domains', []);
+        foreach ($centralDomains as $domain) {
+            // Domain adı path içinde varsa temizle
+            if (strpos($path, $domain . '/') !== false) {
+                $parts = explode($domain . '/', $path);
+                $path = end($parts);
+                break;
+            }
+        }
         
         // APP_URL'i kullanarak central domain üzerinden URL oluştur
         $base = rtrim(env('APP_URL'), '/');

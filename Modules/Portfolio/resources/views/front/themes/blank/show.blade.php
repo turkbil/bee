@@ -6,6 +6,7 @@
         
         <div class="meta">
             <span>Oluşturma: {{ $portfolio->created_at->format('d.m.Y') }}</span>
+            <span>Görüntülenme: {{ views($portfolio)->count() }}</span>
             @if($portfolio->category)
                 <span class="category">
                     | Kategori: <a href="{{ route('portfolios.category', $portfolio->category->slug) }}">

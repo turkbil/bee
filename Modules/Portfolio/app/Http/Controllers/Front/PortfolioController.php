@@ -41,6 +41,9 @@ class PortfolioController extends Controller
             ->where('is_active', true)
             ->firstOrFail();
 
+        // Portfolyo görüntüleme sayısını arttır
+        views($portfolio)->record();
+
         try {
             // Modül adıyla tema yolunu al
             $viewPath = $this->themeService->getThemeViewPath('show', 'portfolio');

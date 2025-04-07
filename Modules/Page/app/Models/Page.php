@@ -3,12 +3,16 @@ namespace Modules\Page\App\Models;
 
 use App\Models\BaseModel;
 use Cviebrock\EloquentSluggable\Sluggable;
+use App\Traits\HasPageViews;
+use CyrildeWit\EloquentViewable\Contracts\Viewable;
 
-class Page extends BaseModel
+class Page extends BaseModel implements Viewable
 {
-    use Sluggable;
+    use Sluggable, HasPageViews;
 
     protected $primaryKey = 'page_id';
+    
+    protected $appends = ['views_count'];
 
     protected $fillable = [
         'title',
@@ -33,5 +37,15 @@ class Page extends BaseModel
                 'onUpdate' => false, // Güncellemede slug değiştirilmez
             ],
         ];
+    }
+    
+    /**
+     * Görüntülenme sayısını döndürür
+     *
+     * @return int
+     */
+    public function getViewsCountAttribute(): int
+    {
+        return $this->views()->count();
     }
 }

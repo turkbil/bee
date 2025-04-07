@@ -1,6 +1,5 @@
 <?php
-// Modules/Portfolio/App/Http/Livewire/PortfolioManageComponent.php
-namespace Modules\Portfolio\App\Http\Livewire;
+namespace Modules\Portfolio\App\Http\Livewire\Admin;
 
 use Livewire\Component;
 use Livewire\Attributes\Layout;
@@ -127,7 +126,7 @@ class PortfolioManageComponent extends Component
 
    public function render()
    {
-       return view('portfolio::livewire.portfolio-manage-component', [
+       return view('portfolio::admin.livewire.portfolio-manage-component', [
            'model' => $this->portfolioId ? Portfolio::find($this->portfolioId) : null
        ]);
    }

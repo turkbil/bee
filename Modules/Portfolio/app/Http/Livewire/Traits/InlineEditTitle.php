@@ -1,5 +1,4 @@
 <?php
-// Modules/Portfolio/App/Http/Livewire/Traits/InlineEditTitle.php
 namespace Modules\Portfolio\App\Http\Livewire\Traits;
 
 use Illuminate\Support\Str;

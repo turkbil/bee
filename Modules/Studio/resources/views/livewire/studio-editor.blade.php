@@ -71,11 +71,11 @@
                     },
                     canvas: {
                         styles: [
-                            '{{ asset('assets/css/tabler.min.css') }}',
-                            '{{ asset('assets/css/tabler-vendors.min.css') }}'
+                            '{{ asset('admin/css/tabler.min.css') }}',
+                            '{{ asset('admin/css/tabler-vendors.min.css') }}'
                         ],
                         scripts: [
-                            '{{ asset('assets/js/tabler.min.js') }}'
+                            '{{ asset('admin/js/tabler.min.js') }}'
                         ],
                     },
                     deviceManager: {

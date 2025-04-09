@@ -35,11 +35,16 @@ class StudioEditor extends Component
     protected function loadContent()
     {
         if ($this->module === 'page') {
-            $page = Page::findOrFail($this->moduleId);
-            $this->content = $page->body;
-            $this->css = $page->css;
-            $this->js = $page->js;
-            $this->pageTitle = $page->title;
+            try {
+                $page = Page::findOrFail($this->moduleId);
+                $this->content = $page->body ?? '';
+                $this->css = $page->css ?? '';
+                $this->js = $page->js ?? '';
+                $this->pageTitle = $page->title ?? 'Sayfa Düzenleyici';
+            } catch (\Exception $e) {
+                session()->flash('error', 'Sayfa bulunamadı: ' . $e->getMessage());
+                abort(404, 'Sayfa bulunamadı: ' . $e->getMessage());
+            }
         } else {
             abort(404, 'Desteklenmeyen modül: ' . $this->module);
         }

@@ -7,15 +7,15 @@
     <title>{{ isset($pageTitle) ? $pageTitle . ' - ' : '' }}Studio Editor</title>
     
     <!-- Tabler CSS -->
-    <link rel="stylesheet" href="{{ asset('assets/css/tabler.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/tabler-vendors.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin/css/tabler.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin/css/tabler-vendors.min.css') }}">
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- GrapesJS CSS -->
     <link rel="stylesheet" href="https://unpkg.com/grapesjs@0.21.8/dist/css/grapes.min.css">
-    <link rel="stylesheet" href="{{ asset('modules/studio/css/studio-editor.css') }}">
+    <link rel="stylesheet" href="{{ Module::asset('studio:css/studio-editor.css') }}">
     
     @livewireStyles
     
@@ -139,7 +139,7 @@
     </div>
     
     <!-- Tabler JS -->
-    <script src="{{ asset('assets/js/tabler.min.js') }}"></script>
+    <script src="{{ asset('admin/js/tabler.min.js') }}"></script>
     
     <!-- GrapesJS JS -->
     <script src="https://unpkg.com/grapesjs@0.21.8/dist/grapes.min.js"></script>
@@ -153,7 +153,7 @@
     <script src="https://unpkg.com/grapesjs-component-countdown@1.0.1/dist/grapesjs-component-countdown.min.js"></script>
     <script src="https://unpkg.com/grapesjs-tabs@1.0.6/dist/grapesjs-tabs.min.js"></script>
     <script src="https://unpkg.com/grapesjs-typed@1.0.5/dist/grapesjs-typed.min.js"></script>
-    <script src="{{ asset('modules/studio/js/studio.js') }}"></script>
+    <script src="{{ Module::asset('studio:js/studio.js') }}"></script>
     
     @livewireScripts
 </body>

@@ -2,16 +2,35 @@
 
 #gjs {
     border: none;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
     position: relative !important;
     z-index: 0 !important;
     overflow: visible !important;
+    flex: 1;
 }
 
-/* GrapesJS panelleri */
-.gjs-pn-panel {
-    padding: 0;
-    border-radius: 3px;
+/* Panel düzeni */
+.gjs-wrapper {
+    display: flex;
+    height: calc(100vh - 50px);
+    overflow: hidden;
+}
+
+#blocks-panel,
+#layer-panel {
+    width: 300px;
+    background-color: #333;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+#blocks-panel {
+    border-right: 1px solid #444;
+}
+
+#layer-panel {
+    border-left: 1px solid #444;
 }
 
 /* İçerik görünürlüğü için kritik stiller */
@@ -42,160 +61,188 @@
     overflow: visible !important;
 }
 
+/* Panel tab sistemi */
+.panel-tabs {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.panel-tabs-header {
+    display: flex;
+    background: #f5f5f5;
+    border-bottom: 1px solid #ddd;
+}
+
+.panel-tab-btn {
+    flex: 1;
+    padding: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+    border-bottom: 2px solid transparent;
+}
+
+.panel-tab-btn.active {
+    background: #444;
+    border-bottom: 2px solid #3b97e3;
+    color: #eee;
+}
+
+.panel-tab-content {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+.tab-panel {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    background: #333;
+    padding: 0;
+}
+
+.tab-panel.active {
+    display: block;
+}
+
+/* Blok stilleri */
 .gjs-block {
     width: auto;
     height: auto;
     min-height: auto;
-}
-
-.gjs-block-category {
-    background-color: #f8f9fa;
-}
-
-.gjs-block-label {
-    font-size: 0.8rem;
-}
-
-/* Widget bileşenleri */
-.widget-placeholder {
-    padding: 10px;
-    background-color: #f3f4f6;
-    border: 1px dashed #ccc;
-    text-align: center;
-    font-size: 14px;
-    color: #666;
-    border-radius: 4px;
-}
-
-/* Blok yöneticisi kategorileri */
-.gjs-block-category {
-    border-bottom: 1px solid #e9e9e9;
-}
-
-.gjs-block-category.gjs-open {
-    border-bottom: 1px solid #e9e9e9;
-}
-
-.gjs-block {
-    border: 1px solid #ddd;
-    transition: all 0.2s ease;
-    margin: 5px 3px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    padding: 8px;
+    margin: 8px;
+    background-color: #444;
+    border: 1px solid #555 !important;
+    color: #eee;
+    border-radius: 3px;
 }
 
 .gjs-block:hover {
-    box-shadow: 0 3px 4px rgba(0, 0, 0, 0.1);
-    border-color: #3b97e3;
+    box-shadow: 0 0 0 2px #3b97e3 !important;
+}
+
+.gjs-block-category {
+    background-color: #333;
+    padding: 10px 5px;
+    margin-bottom: 5px;
+    border-bottom: 1px solid #444;
+}
+
+.gjs-block-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #eee;
+}
+
+.blocks-container {
+    padding: 10px 0;
+    background-color: #333;
+    overflow-y: auto;
+    height: 100%;
 }
 
 /* Stil yöneticisi */
 .gjs-sm-sector {
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #444;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    background-color: #333;
 }
 
-.gjs-sm-sector.gjs-sm-open {
-    border-bottom: 1px solid #eee;
+.gjs-sm-title {
+    color: #eee;
+    font-weight: 500;
+    padding: 8px;
 }
 
 .gjs-sm-property {
-    padding: 5px;
+    padding: 6px 5px;
+    background-color: #333;
+    border-bottom: 1px solid #444;
+}
+
+.gjs-sm-label {
+    color: #ddd;
+    font-weight: normal;
 }
 
 .gjs-field {
+    background-color: #444;
+    border: 1px solid #555;
+    color: #eee;
     box-shadow: none;
 }
 
+.gjs-field input,
+.gjs-field select,
+.gjs-field textarea {
+    color: #eee;
+    background-color: #444;
+}
+
 /* Responsive düzenleme araçları */
-.editor-device-buttons {
+.panel__devices {
     display: flex;
-    align-items: center;
-    margin-right: 15px;
+    justify-content: flex-end;
+    padding: 10px;
+    background-color: #333;
+    border-bottom: 1px solid #444;
 }
 
 .editor-device-button {
     padding: 5px 10px;
     margin: 0 3px;
-    border: none;
     background: transparent;
-    color: #fff;
-    cursor: pointer;
+    color: #ddd;
+    border: 1px solid #555;
     border-radius: 3px;
+    cursor: pointer;
 }
 
 .editor-device-button.active {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-/* Custom CSS ve JS editörleri */
-.gjs-css-editor,
-.gjs-js-editor {
-    max-width: 800px;
-}
-
-#css-editor,
-#js-editor {
-    width: 100%;
-    min-height: 300px;
-    font-family: monospace;
-    font-size: 14px;
-    line-height: 1.5;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    background: #444;
+    color: #fff;
+    border-color: #777;
 }
 
 /* Katmanlar paneli */
 .gjs-layer {
-    padding: 5px;
+    padding: 8px 5px;
     font-size: 0.9rem;
+    background-color: #333;
+    border-bottom: 1px solid #444;
+    color: #eee;
 }
 
 .gjs-layer.gjs-selected {
-    background-color: #f0f4f9;
+    background-color: #444;
 }
 
 .gjs-layer-title {
     font-size: 0.9rem;
+    color: #eee;
 }
 
-/* Widget Stilleri */
-.widget-block {
-    position: relative;
-    padding: 10px;
-    background: #f8f9fa;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    margin-bottom: 10px;
+/* Genel düzeltmeler */
+.gjs-one-bg {
+    background-color: #333 !important;
 }
-
-.widget-block-title {
-    font-weight: bold;
-    margin-bottom: 5px;
+.gjs-two-color {
+    color: #eee !important;
 }
-
-.widget-block-content {
-    min-height: 30px;
+.gjs-three-bg {
+    background-color: #3b97e3 !important;
 }
-
-.widget-block:hover {
-    outline: 2px solid #3b97e3;
-}
-
-/* Canvasın içinde kaybolma sorununu önle */
-.gjs-editor {
-    height: 100% !important;
-    overflow: visible !important;
-}
-
-.gjs-cv-canvas {
-    height: calc(100vh - 150px) !important;
-}
-
-#gjs-cv {
-    min-height: 400px !important;
-    overflow: visible !important;
-}
-
-.gjs-pn-views-container {
-    height: 100% !important;
+.gjs-four-color {
+    color: #3b97e3 !important;
 }

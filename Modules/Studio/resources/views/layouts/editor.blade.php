@@ -59,6 +59,35 @@
         #gjs {
             flex: 1;
             height: calc(100vh - 50px);
+            overflow: visible !important;
+            position: relative !important;
+            z-index: 1 !important;
+        }
+        
+        /* Editor içerik alanı için kritik stiller */
+        .gjs-cv-canvas {
+            position: relative !important;
+            width: 100% !important;
+            height: 100% !important;
+            top: 0 !important;
+            left: 0 !important;
+            z-index: 10 !important;
+            visibility: visible !important;
+            display: block !important;
+            overflow: visible !important;
+        }
+        
+        .gjs-frame-wrapper {
+            min-height: 400px !important;
+        }
+        
+        .gjs-frame {
+            z-index: 1 !important;
+            position: relative !important;
+            height: 100% !important;
+            visibility: visible !important;
+            display: block !important;
+            min-height: 400px !important;
         }
         
         #blocks-panel {
@@ -67,6 +96,7 @@
             height: calc(100vh - 50px);
             overflow-y: auto;
             border-right: 1px solid #ddd;
+            z-index: 100;
         }
         
         #layer-panel {
@@ -75,6 +105,7 @@
             height: calc(100vh - 50px);
             overflow-y: auto;
             border-left: 1px solid #ddd;
+            z-index: 100;
         }
         
         .gjs-block {
@@ -113,6 +144,12 @@
             font-size: 14px;
             color: #666;
             border-radius: 4px;
+        }
+        
+        /* Fix iframe visibility issues */
+        iframe {
+            display: block !important;
+            visibility: visible !important;
         }
     </style>
 </head>

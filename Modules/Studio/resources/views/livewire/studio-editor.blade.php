@@ -9,7 +9,6 @@
             
             <div id="layer-panel">
                 <div class="panel__top">
-                    <div class="panel__switcher"></div>
                     <div class="panel__devices">
                         <button id="studio-device-desktop" class="editor-device-button active">
                             <i class="fas fa-desktop"></i>
@@ -22,10 +21,18 @@
                         </button>
                     </div>
                 </div>
-                <div class="panel__right">
-                    <div class="layers-container"></div>
-                    <div class="styles-container"></div>
-                    <div class="trait-container"></div>
+                
+                <div class="panel-tabs">
+                    <div class="panel-tabs-header">
+                        <button class="panel-tab-btn active" data-tab="layers">Katmanlar</button>
+                        <button class="panel-tab-btn" data-tab="styles">Stiller</button>
+                        <button class="panel-tab-btn" data-tab="traits">Özellikler</button>
+                    </div>
+                    <div class="panel-tab-content">
+                        <div id="layers-container" class="tab-panel active"></div>
+                        <div id="styles-container" class="tab-panel"></div>
+                        <div id="traits-container" class="tab-panel"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -37,12 +44,13 @@
         
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                // CSS stilleri oluştur
+                // CSS stilleri ekle
                 const inlineCss = `
+                    /* Temel Stiller */
                     .gjs-frame {
-                        position: relative !important;
                         display: block !important;
                         visibility: visible !important;
+                        position: relative !important;
                     }
                     .gjs-cv-canvas {
                         position: relative !important;
@@ -53,12 +61,133 @@
                         display: block !important;
                         overflow: visible !important;
                     }
-                    .gjs-dashed .gjs-container {
-                        min-height: 50px !important;
+                    
+                    /* Panel Tab Sistemi */
+                    .panel-tabs {
+                        display: flex;
+                        flex-direction: column;
+                        height: calc(100vh - 90px);
+                        overflow: hidden;
                     }
-                    iframe {
-                        display: block !important;
-                        visibility: visible !important;
+                    .panel-tabs-header {
+                        display: flex;
+                        background: #f5f5f5;
+                        border-bottom: 1px solid #ddd;
+                    }
+                    .panel-tab-btn {
+                        flex: 1;
+                        padding: 10px;
+                        background: none;
+                        border: none;
+                        cursor: pointer;
+                        font-size: 14px;
+                        color: #333;
+                        border-bottom: 2px solid transparent;
+                    }
+                    .panel-tab-btn.active {
+                        background: #fff;
+                        border-bottom: 2px solid #3b97e3;
+                        font-weight: 500;
+                    }
+                    .panel-tab-content {
+                        flex: 1;
+                        overflow: hidden;
+                        position: relative;
+                    }
+                    .tab-panel {
+                        display: none;
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        overflow-y: auto;
+                        background: #333;
+                        padding: 0;
+                    }
+                    .tab-panel.active {
+                        display: block;
+                    }
+                    
+                    /* Blok paneli düzenlemesi */
+                    #blocks-panel {
+                        width: 250px;
+                        background: #f8f9fa;
+                        height: calc(100vh - 50px);
+                        overflow-y: auto;
+                        border-right: 1px solid #ddd;
+                    }
+                    
+                    /* Sağ panel düzenlemesi */
+                    #layer-panel {
+                        width: 300px;
+                        background: #f8f9fa;
+                        height: calc(100vh - 50px);
+                        overflow: hidden;
+                        border-left: 1px solid #ddd;
+                        display: flex;
+                        flex-direction: column;
+                    }
+                    
+                    /* Panel içi stiller */
+                    .gjs-sm-sector {
+                        margin-bottom: 10px;
+                        background-color: #333;
+                        border-bottom: 1px solid #444;
+                    }
+                    .gjs-sm-sector-title {
+                        font-weight: 500;
+                        color: #eee;
+                    }
+                    .gjs-sm-property {
+                        padding: 8px 5px;
+                        background-color: #333;
+                    }
+                    .gjs-field {
+                        background-color: #444;
+                        border-radius: 3px;
+                        margin-top: 5px;
+                    }
+                    .gjs-field input, .gjs-field select, .gjs-field textarea {
+                        color: #eee;
+                    }
+                    .gjs-sm-label {
+                        color: #ddd;
+                    }
+                    
+                    /* Katmanlar paneli stilleri */
+                    .gjs-layer {
+                        background-color: #333;
+                        border-bottom: 1px solid #444;
+                        color: #eee;
+                    }
+                    .gjs-layer-title {
+                        color: #eee;
+                    }
+                    .gjs-layer.gjs-selected {
+                        background-color: #444;
+                    }
+                    
+                    /* Cihaz butonu stilleri */
+                    .panel__devices {
+                        padding: 10px;
+                        display: flex;
+                        justify-content: flex-end;
+                        background-color: #333;
+                    }
+                    .editor-device-button {
+                        padding: 5px 10px;
+                        margin: 0 3px;
+                        background: transparent;
+                        color: #ddd;
+                        border: 1px solid #555;
+                        border-radius: 3px;
+                        cursor: pointer;
+                    }
+                    .editor-device-button.active {
+                        background: #444;
+                        color: #fff;
+                        border-color: #777;
                     }
                 `;
                 
@@ -67,13 +196,30 @@
                 styleEl.textContent = inlineCss;
                 document.head.appendChild(styleEl);
                 
-                // CSS ve JS içeriğini DOM'a programatik olarak ekliyoruz
+                // CSS ve JS içeriğini DOM'a ekle
                 const cssElement = document.createElement('style');
                 cssElement.id = 'gjs-custom-css';
                 cssElement.textContent = document.getElementById('css-content').textContent;
                 document.head.appendChild(cssElement);
                 
-                // GrapesJS editorünü başlat
+                // Panel sekme geçişleri için işlev
+                function setupTabs() {
+                    const tabButtons = document.querySelectorAll('.panel-tab-btn');
+                    tabButtons.forEach(button => {
+                        button.addEventListener('click', function() {
+                            // Tüm sekmeleri deaktif et
+                            document.querySelectorAll('.panel-tab-btn').forEach(btn => btn.classList.remove('active'));
+                            document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+                            
+                            // Tıklanan sekmeyi aktif et
+                            this.classList.add('active');
+                            const tabName = this.getAttribute('data-tab');
+                            document.getElementById(tabName + '-container').classList.add('active');
+                        });
+                    });
+                }
+                
+                // GrapesJS editörünü başlat
                 const editor = grapesjs.init({
                     container: '#gjs',
                     fromElement: true,
@@ -81,6 +227,9 @@
                     width: 'auto',
                     storageManager: false,
                     allowScripts: 1,
+                    panels: {
+                        defaults: []
+                    },
                     canvas: {
                         styles: [
                             '{{ asset('admin/css/tabler.min.css') }}',
@@ -124,31 +273,85 @@
                         }
                     },
                     styleManager: {
+                        appendTo: '#styles-container',
                         sectors: [{
                             name: 'Genel',
-                            open: false,
-                            properties: ['display', 'flex-direction', 'flex-wrap', 'justify-content', 'align-items', 'align-content', 'order', 'flex-basis', 'flex-grow', 'flex-shrink', 'align-self']
+                            open: true,
+                            properties: [
+                                'display', 
+                                'flex-direction', 
+                                'flex-wrap', 
+                                'justify-content', 
+                                'align-items', 
+                                'align-content', 
+                                'order', 
+                                'flex-basis', 
+                                'flex-grow', 
+                                'flex-shrink', 
+                                'align-self'
+                            ]
                         }, {
                             name: 'Boyut',
                             open: false,
-                            properties: ['width', 'height', 'max-width', 'min-height', 'margin', 'padding']
+                            properties: [
+                                'width', 
+                                'height', 
+                                'max-width', 
+                                'min-height', 
+                                'margin', 
+                                'padding'
+                            ]
                         }, {
                             name: 'Yazı',
                             open: false,
-                            properties: ['font-family', 'font-size', 'font-weight', 'letter-spacing', 'color', 'line-height', 'text-align', 'text-decoration', 'text-shadow']
+                            properties: [
+                                'font-family', 
+                                'font-size', 
+                                'font-weight', 
+                                'letter-spacing', 
+                                'color', 
+                                'line-height', 
+                                'text-align', 
+                                'text-decoration', 
+                                'text-shadow'
+                            ]
                         }, {
                             name: 'Arkaplan',
                             open: false,
-                            properties: ['background-color', 'background-image', 'background-repeat', 'background-position', 'background-attachment', 'background-size']
+                            properties: [
+                                'background-color', 
+                                'background-image', 
+                                'background-repeat', 
+                                'background-position', 
+                                'background-attachment', 
+                                'background-size'
+                            ]
                         }, {
                             name: 'Kenarlık',
                             open: false,
-                            properties: ['border-radius', 'border', 'border-width', 'border-style', 'border-color']
+                            properties: [
+                                'border-radius', 
+                                'border', 
+                                'border-width', 
+                                'border-style', 
+                                'border-color'
+                            ]
                         }, {
                             name: 'Ekstra',
                             open: false,
-                            properties: ['opacity', 'box-shadow', 'transition', 'transform']
+                            properties: [
+                                'opacity', 
+                                'box-shadow', 
+                                'transition', 
+                                'transform'
+                            ]
                         }]
+                    },
+                    layerManager: {
+                        appendTo: '#layers-container'
+                    },
+                    traitManager: {
+                        appendTo: '#traits-container'
                     },
                     blockManager: {
                         appendTo: '#blocks',
@@ -210,106 +413,58 @@
                                 attributes: { class: 'fa fa-columns' }
                             }
                         ]
-                    },
-                    selectorManager: {
-                        componentFirst: true
-                    },
-                    traitManager: {
-                        appendTo: '.trait-container'
                     }
                 });
                 
-                // Görünürlük için gerekli ayarlar
+                // Tab sistemini aktifleştir
+                setupTabs();
+                
+                // Görünürlük düzeltmeleri
                 editor.on('load', () => {
-                    console.log('Canvas yüklendi, içerik gösteriliyor');
+                    console.log('Editor yüklendi');
                     
-                    // Düzeltme için manuel müdahaleler
+                    // İframe stil düzeltmeleri
                     setTimeout(() => {
-                        try {
-                            // iframe CSS stillerini doğrudan değiştir
-                            const iframe = document.querySelector('.gjs-frame');
-                            if (iframe) {
-                                // iframe görünürlüğünü kesinlikle zorla
-                                iframe.style.height = 'calc(100vh - 150px)';
-                                iframe.style.minHeight = '500px';
-                                iframe.style.display = 'block';
-                                iframe.style.visibility = 'visible';
-                                iframe.style.opacity = '1';
-                                iframe.style.position = 'relative';
-                                
-                                // iframe'in içindeki body elementine ulaşmayı dene
-                                try {
-                                    if (iframe.contentDocument && iframe.contentDocument.body) {
-                                        iframe.contentDocument.body.style.display = 'block';
-                                        iframe.contentDocument.body.style.visibility = 'visible';
-                                        iframe.contentDocument.body.style.opacity = '1';
-                                    }
-                                } catch (e) {
-                                    console.log('iframe içeriğine erişilemedi:', e);
-                                }
-                            }
-                            
-                            // Canvas container ve diğer GrapesJS elementleri
-                            const canvasEl = document.querySelector('.gjs-cv-canvas');
-                            if (canvasEl) {
-                                canvasEl.style.position = 'relative';
-                                canvasEl.style.top = '0';
-                                canvasEl.style.left = '0';
-                                canvasEl.style.width = '100%';
-                                canvasEl.style.height = 'calc(100vh - 150px)';
-                                canvasEl.style.minHeight = '500px';
-                                canvasEl.style.visibility = 'visible';
-                                canvasEl.style.display = 'block';
-                                canvasEl.style.zIndex = '10';
-                            }
-                            
-                            // Yeni CSS kurallarını enjekte et
-                            const forceStyle = document.createElement('style');
-                            forceStyle.innerHTML = `
-                                .gjs-frame {
-                                    display: block !important;
-                                    visibility: visible !important;
-                                    height: calc(100vh - 150px) !important;
-                                    min-height: 500px !important;
-                                    opacity: 1 !important;
-                                    position: relative !important;
-                                }
-                                .gjs-cv-canvas {
-                                    position: relative !important;
-                                    top: 0 !important;
-                                    left: 0 !important;
-                                    width: 100% !important;
-                                    height: calc(100vh - 150px) !important;
-                                    min-height: 500px !important;
-                                    visibility: visible !important;
-                                    display: block !important;
-                                    overflow: visible !important;
-                                }
-                                .gjs-editor, .gjs-editor-cont {
-                                    min-height: 500px !important;
-                                }
-                                iframe {
-                                    display: block !important;
-                                    visibility: visible !important;
-                                }
-                            `;
-                            document.head.appendChild(forceStyle);
-                            
-                            // Editörü yeniden yükle
-                            editor.refresh();
-                        } catch (error) {
-                            console.error('Canvas stil ayarları uygulanırken hata oluştu:', error);
+                        // İframe görünürlük düzeltmesi
+                        const iframe = document.querySelector('.gjs-frame');
+                        if (iframe) {
+                            iframe.style.height = 'calc(100vh - 150px)';
+                            iframe.style.minHeight = '500px';
+                            iframe.style.display = 'block';
+                            iframe.style.visibility = 'visible';
+                            iframe.style.position = 'relative';
+                            iframe.style.zIndex = '2';
                         }
-                    }, 300);
-                });
-                
-                // İçeriği yükledikten hemen sonra ekstra bir kontrol
-                editor.on('component:selected', () => {
-                    const iframe = document.querySelector('.gjs-frame');
-                    if (iframe && iframe.style.display !== 'block') {
-                        iframe.style.display = 'block';
-                        iframe.style.visibility = 'visible';
-                    }
+                        
+                        // Canvas düzeltmeleri
+                        const canvasEl = document.querySelector('.gjs-cv-canvas');
+                        if (canvasEl) {
+                            canvasEl.style.height = 'calc(100vh - 150px)';
+                            canvasEl.style.visibility = 'visible';
+                            canvasEl.style.display = 'block';
+                            canvasEl.style.zIndex = '1';
+                        }
+                        
+                        // Editör refresh
+                        editor.refresh();
+                    }, 500);
+                    
+                    // Ek stil düzeltmeleri
+                    const forceStyle = document.createElement('style');
+                    forceStyle.innerHTML = `
+                        .gjs-one-bg { background-color: #333 !important; }
+                        .gjs-two-color { color: #eee !important; }
+                        .gjs-field { background-color: #444 !important; }
+                        .gjs-field input, .gjs-field select { color: #eee !important; }
+                        .gjs-sm-sector { background-color: #333 !important; border: none !important; }
+                        .gjs-sm-property { background-color: #333 !important; }
+                        .gjs-sm-sector-title { color: #eee !important; }
+                        .gjs-sm-label { color: #ddd !important; }
+                        .gjs-mdl-dialog { background-color: #333 !important; color: #eee !important; }
+                        .gjs-block { border: 1px solid #555 !important; }
+                        .gjs-block:hover { box-shadow: 0 0 0 2px #3b97e3 !important; }
+                    `;
+                    document.head.appendChild(forceStyle);
                 });
                 
                 // Widget kategorileri ekle
@@ -327,7 +482,7 @@
                         
                         const modal = editor.Modal.open({
                             title: 'CSS Düzenle',
-                            content: `<textarea id="css-editor" style="width: 100%; height: 400px; font-family: monospace;">${cssContent}</textarea>
+                            content: `<textarea id="css-editor" style="width: 100%; height: 400px; font-family: monospace; background: #333; color: #eee; border: 1px solid #555;">${cssContent}</textarea>
                                     <div class="modal-footer mt-3">
                                         <button id="css-save" class="btn btn-primary">Kaydet</button>
                                         <button id="css-cancel" class="btn btn-secondary">İptal</button>
@@ -350,7 +505,7 @@
                     }
                 });
                 
-                // Cihaz düğmeleri için komutlar
+                // Cihaz düğmeleri
                 document.getElementById('studio-device-desktop').addEventListener('click', function() {
                     editor.setDevice('desktop');
                     this.classList.add('active');
@@ -372,7 +527,7 @@
                     document.getElementById('studio-device-tablet').classList.remove('active');
                 });
                 
-                // Kaydet düğmesi işlevi
+                // Kaydet düğmesi
                 document.getElementById('studio-save').addEventListener('click', function() {
                     // Kaydediliyor bildirimi göster
                     const saveBtn = this;
@@ -409,7 +564,7 @@
                         saveBtn.disabled = false;
                         
                         if (data.success) {
-                            // Tabler bildirim göster
+                            // Başarı bildirimi
                             const notification = document.createElement('div');
                             notification.className = 'toast show';
                             notification.setAttribute('role', 'alert');
@@ -436,14 +591,14 @@
                             
                             document.body.appendChild(notification);
                             
-                            // 3 saniye sonra sayfaya yönlendir
+                            // 2 saniye sonra yönlendir
                             setTimeout(() => {
                                 if ('{{ $moduleType }}' === 'page') {
                                     window.location.href = '{{ route('admin.page.index') }}';
                                 }
                             }, 2000);
                         } else {
-                            // Hata bildirimi göster
+                            // Hata bildirimi
                             const notification = document.createElement('div');
                             notification.className = 'toast show';
                             notification.setAttribute('role', 'alert');
@@ -472,7 +627,7 @@
                     .catch(error => {
                         console.error('Kaydetme hatası:', error);
                         
-                        // Butonu normal durumuna getir
+                        // Butonu normale döndür
                         saveBtn.innerHTML = originalText;
                         saveBtn.disabled = false;
                         
@@ -513,30 +668,6 @@
                         window.location.href = '{{ route('admin.page.index') }}';
                     }
                 });
-                
-                // 1 saniye sonra bir kez daha görünürlük kontrolü yap
-                setTimeout(() => {
-                    const iframe = document.querySelector('.gjs-frame');
-                    if (iframe) {
-                        iframe.style.display = 'block';
-                        iframe.style.visibility = 'visible';
-                        iframe.style.opacity = '1';
-                        iframe.style.height = 'calc(100vh - 150px)';
-                        iframe.style.minHeight = '500px';
-                    }
-                    
-                    // Editörü yenile
-                    editor.refresh();
-                    
-                    // İçerik görünmüyorsa sayfayı yenile
-                    setTimeout(() => {
-                        const visibleContent = document.querySelector('.gjs-frame:not([style*="display: none"])');
-                        if (!visibleContent) {
-                            console.log('İçerik hala görünmüyor, sayfayı yeniliyorum...');
-                            window.location.reload();
-                        }
-                    }, 500);
-                }, 1000);
             });
         </script>
     </div>

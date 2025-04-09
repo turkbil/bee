@@ -14,7 +14,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- GrapesJS CSS -->
-    @studiocss
+    <link rel="stylesheet" href="https://unpkg.com/grapesjs@0.21.8/dist/css/grapes.min.css">
+    <link rel="stylesheet" href="{{ asset('modules/studio/css/studio-editor.css') }}">
     
     @livewireStyles
     
@@ -82,6 +83,37 @@
             min-height: auto;
             padding: 5px;
         }
+        
+        .panel__right {
+            overflow-y: auto;
+            height: calc(100vh - 100px);
+        }
+        
+        .panel__top {
+            padding: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .blocks-container {
+            padding: 10px 5px;
+        }
+        
+        .trait-container, .styles-container, .layers-container {
+            height: 100%;
+            overflow-y: auto;
+        }
+        
+        .widget-placeholder {
+            padding: 10px;
+            background-color: #f3f4f6;
+            border: 1px dashed #ccc;
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
@@ -110,7 +142,18 @@
     <script src="{{ asset('assets/js/tabler.min.js') }}"></script>
     
     <!-- GrapesJS JS -->
-    @studiojs
+    <script src="https://unpkg.com/grapesjs@0.21.8/dist/grapes.min.js"></script>
+    <script src="https://unpkg.com/grapesjs-blocks-basic@1.0.1/dist/grapesjs-blocks-basic.min.js"></script>
+    <script src="https://unpkg.com/grapesjs-preset-webpage@1.0.2/dist/grapesjs-preset-webpage.min.js"></script>
+    <script src="https://unpkg.com/grapesjs-style-bg@1.0.5/dist/grapesjs-style-bg.min.js"></script>
+    <script src="https://unpkg.com/grapesjs-plugin-export@1.0.11/dist/grapesjs-plugin-export.min.js"></script>
+    <script src="https://unpkg.com/grapesjs-plugin-forms@2.0.5/dist/grapesjs-plugin-forms.min.js"></script>
+    <script src="https://unpkg.com/grapesjs-custom-code@1.0.1/dist/grapesjs-custom-code.min.js"></script>
+    <script src="https://unpkg.com/grapesjs-touch@0.1.1/dist/grapesjs-touch.min.js"></script>
+    <script src="https://unpkg.com/grapesjs-component-countdown@1.0.1/dist/grapesjs-component-countdown.min.js"></script>
+    <script src="https://unpkg.com/grapesjs-tabs@1.0.6/dist/grapesjs-tabs.min.js"></script>
+    <script src="https://unpkg.com/grapesjs-typed@1.0.5/dist/grapesjs-typed.min.js"></script>
+    <script src="{{ asset('modules/studio/js/studio.js') }}"></script>
     
     @livewireScripts
 </body>

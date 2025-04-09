@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- GrapesJS CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/grapesjs@0.21.8/dist/css/grapes.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/grapesjs@0.21.8/dist/css/grapes.min.css">
     <link rel="stylesheet" href="{{ Module::asset('studio:css/studio-editor.css') }}">
     
     @livewireStyles
@@ -141,18 +141,10 @@
     <!-- Tabler JS -->
     <script src="{{ asset('admin/js/tabler.min.js') }}"></script>
     
-    <!-- GrapesJS JS -->
-    <script src="https://unpkg.com/grapesjs@0.21.8/dist/grapes.min.js"></script>
-    <script src="https://unpkg.com/grapesjs-blocks-basic@1.0.1/dist/grapesjs-blocks-basic.min.js"></script>
-    <script src="https://unpkg.com/grapesjs-preset-webpage@1.0.2/dist/grapesjs-preset-webpage.min.js"></script>
-    <script src="https://unpkg.com/grapesjs-style-bg@1.0.5/dist/grapesjs-style-bg.min.js"></script>
-    <script src="https://unpkg.com/grapesjs-plugin-export@1.0.11/dist/grapesjs-plugin-export.min.js"></script>
-    <script src="https://unpkg.com/grapesjs-plugin-forms@2.0.5/dist/grapesjs-plugin-forms.min.js"></script>
-    <script src="https://unpkg.com/grapesjs-custom-code@1.0.1/dist/grapesjs-custom-code.min.js"></script>
-    <script src="https://unpkg.com/grapesjs-touch@0.1.1/dist/grapesjs-touch.min.js"></script>
-    <script src="https://unpkg.com/grapesjs-component-countdown@1.0.1/dist/grapesjs-component-countdown.min.js"></script>
-    <script src="https://unpkg.com/grapesjs-tabs@1.0.6/dist/grapesjs-tabs.min.js"></script>
-    <script src="https://unpkg.com/grapesjs-typed@1.0.5/dist/grapesjs-typed.min.js"></script>
+    <!-- GrapesJS sadece ana kütüphane -->
+    <script src="https://cdn.jsdelivr.net/npm/grapesjs@0.21.8/dist/grapes.min.js"></script>
+    
+    <!-- Diğer JS dosyaları çıkarıldı -->
     <script src="{{ Module::asset('studio:js/studio.js') }}"></script>
     
     @livewireScripts

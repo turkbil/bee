@@ -43,32 +43,15 @@
                 cssElement.textContent = document.getElementById('css-content').textContent;
                 document.head.appendChild(cssElement);
                 
-                // GrapesJS editorünü başlat
+                // GrapesJS editorünü başlat - eklentileri kaldırdık
                 const editor = grapesjs.init({
                     container: '#gjs',
                     fromElement: true,
                     height: '100%',
                     width: 'auto',
                     storageManager: false,
-                    plugins: [
-                        'grapesjs-blocks-basic',
-                        'grapesjs-preset-webpage',
-                        'grapesjs-style-bg',
-                        'grapesjs-plugin-export',
-                        'grapesjs-plugin-forms',
-                        'grapesjs-custom-code',
-                        'grapesjs-touch',
-                        'grapesjs-component-countdown',
-                        'grapesjs-tabs',
-                        'grapesjs-typed',
-                        'grapesjs-lang-tr',
-                        'grapesjs-widget-component'
-                    ],
-                    pluginsOpts: {
-                        'grapesjs-preset-webpage': {
-                            textCleanCanvas: 'Bu sayfayı temizlemek istediğinize emin misiniz?'
-                        }
-                    },
+                    // Eklentileri kaldırdık
+                    plugins: [],
                     canvas: {
                         styles: [
                             '{{ asset('admin/css/tabler.min.css') }}',
@@ -138,64 +121,6 @@
                             properties: ['opacity', 'box-shadow', 'transition', 'transform']
                         }]
                     },
-                    panels: {
-                        defaults: [{
-                            id: 'layers',
-                            el: '.panel__right',
-                            resizable: {
-                                maxDim: 350,
-                                minDim: 250,
-                                tc: 0,
-                                cl: 1,
-                                cr: 0,
-                                bc: 0,
-                                keyHeight: 'height',
-                                keyWidth: 'width',
-                            },
-                        }, {
-                            id: 'panel-switcher',
-                            el: '.panel__switcher',
-                            buttons: [{
-                                id: 'show-layers',
-                                active: true,
-                                label: 'Katmanlar',
-                                command: 'show-layers',
-                                togglable: false,
-                            }, {
-                                id: 'show-style',
-                                active: true,
-                                label: 'Stiller',
-                                command: 'show-styles',
-                                togglable: false,
-                            }, {
-                                id: 'show-traits',
-                                active: true,
-                                label: 'Özellikler',
-                                command: 'show-traits',
-                                togglable: false,
-                            }],
-                        }, {
-                            id: 'panel-devices',
-                            el: '.panel__devices',
-                            buttons: [{
-                                id: 'device-desktop',
-                                label: 'Masaüstü',
-                                command: 'set-device-desktop',
-                                active: true,
-                                togglable: false,
-                            }, {
-                                id: 'device-tablet',
-                                label: 'Tablet',
-                                command: 'set-device-tablet',
-                                togglable: false,
-                            }, {
-                                id: 'device-mobile',
-                                label: 'Mobil',
-                                command: 'set-device-mobile',
-                                togglable: false,
-                            }],
-                        }]
-                    },
                     blockManager: {
                         appendTo: '#blocks',
                         blocks: [
@@ -203,50 +128,29 @@
                                 id: 'section',
                                 label: 'Bölüm',
                                 category: 'basic',
-                                content: '<section class="py-5"><div class="container"><h2>Bölüm Başlığı</h2></div></section>',
+                                content: '<section class="py-5"><div class="container"><h2>Bölüm Başlığı</h2><p>Buraya içeriğinizi ekleyin</p></div></section>',
                                 attributes: { class: 'fa fa-square-full' }
                             },
                             {
                                 id: 'container',
                                 label: 'Konteyner',
                                 category: 'basic',
-                                content: '<div class="container"></div>',
+                                content: '<div class="container"><p>Konteyner içeriği</p></div>',
                                 attributes: { class: 'fa fa-square' }
                             },
                             {
                                 id: 'text',
                                 label: 'Metin',
                                 category: 'basic',
-                                content: '<div data-gjs-type="text">Buraya metin girin</div>',
+                                content: '<div>Buraya metin girin</div>',
                                 attributes: { class: 'fa fa-font' }
                             },
                             {
                                 id: 'image',
                                 label: 'Resim',
                                 category: 'basic',
-                                content: { type: 'image' },
+                                content: '<img src="https://via.placeholder.com/350x150" alt="Resim" class="img-fluid">',
                                 attributes: { class: 'fa fa-image' }
-                            },
-                            {
-                                id: 'video',
-                                label: 'Video',
-                                category: 'basic',
-                                content: {
-                                    type: 'video',
-                                    src: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-                                    style: {
-                                        width: '100%',
-                                        height: '300px'
-                                    }
-                                },
-                                attributes: { class: 'fa fa-video' }
-                            },
-                            {
-                                id: 'link',
-                                label: 'Bağlantı',
-                                category: 'basic',
-                                content: '<a href="#">Bağlantı</a>',
-                                attributes: { class: 'fa fa-link' }
                             },
                             {
                                 id: 'heading',
@@ -263,20 +167,6 @@
                                 attributes: { class: 'fa fa-paragraph' }
                             },
                             {
-                                id: 'list',
-                                label: 'Liste',
-                                category: 'typography',
-                                content: '<ul><li>Liste öğesi 1</li><li>Liste öğesi 2</li><li>Liste öğesi 3</li></ul>',
-                                attributes: { class: 'fa fa-list-ul' }
-                            },
-                            {
-                                id: 'card',
-                                label: 'Kart',
-                                category: 'components',
-                                content: '<div class="card"><div class="card-body"><h5 class="card-title">Kart Başlığı</h5><p class="card-text">Kart içeriği buraya gelir.</p><a href="#" class="btn btn-primary">Düğme</a></div></div>',
-                                attributes: { class: 'fa fa-credit-card' }
-                            },
-                            {
                                 id: 'button',
                                 label: 'Düğme',
                                 category: 'components',
@@ -284,78 +174,11 @@
                                 attributes: { class: 'fa fa-square' }
                             },
                             {
-                                id: 'row',
-                                label: 'Satır',
-                                category: 'layout',
-                                content: '<div class="row"></div>',
-                                attributes: { class: 'fa fa-columns' }
-                            },
-                            {
-                                id: 'column',
-                                label: 'Sütun',
-                                category: 'layout',
-                                content: '<div class="col"></div>',
-                                attributes: { class: 'fa fa-column' }
-                            },
-                            {
                                 id: 'row-2-col',
                                 label: '2 Sütun',
                                 category: 'layout',
-                                content: '<div class="row"><div class="col-md-6"></div><div class="col-md-6"></div></div>',
+                                content: '<div class="row"><div class="col-md-6"><p>Birinci sütun</p></div><div class="col-md-6"><p>İkinci sütun</p></div></div>',
                                 attributes: { class: 'fa fa-columns' }
-                            },
-                            {
-                                id: 'row-3-col',
-                                label: '3 Sütun',
-                                category: 'layout',
-                                content: '<div class="row"><div class="col-md-4"></div><div class="col-md-4"></div><div class="col-md-4"></div></div>',
-                                attributes: { class: 'fa fa-columns' }
-                            },
-                            {
-                                id: 'row-4-col',
-                                label: '4 Sütun',
-                                category: 'layout',
-                                content: '<div class="row"><div class="col-md-3"></div><div class="col-md-3"></div><div class="col-md-3"></div><div class="col-md-3"></div></div>',
-                                attributes: { class: 'fa fa-columns' }
-                            },
-                            {
-                                id: 'accordion',
-                                label: 'Akordeon',
-                                category: 'components',
-                                content: `<div class="accordion" id="accordionExample">
-                                            <div class="accordion-item">
-                                                <h2 class="accordion-header" id="headingOne">
-                                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                                        Akordeon Öğesi #1
-                                                    </button>
-                                                </h2>
-                                                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                                                    <div class="accordion-body">
-                                                        <strong>Bu ilk akordeon öğesinin içeriği.</strong> İçeriği buraya ekleyin.
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="accordion-item">
-                                                <h2 class="accordion-header" id="headingTwo">
-                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                                        Akordeon Öğesi #2
-                                                    </button>
-                                                </h2>
-                                                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
-                                                    <div class="accordion-body">
-                                                        <strong>Bu ikinci akordeon öğesinin içeriği.</strong> İçeriği buraya ekleyin.
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>`,
-                                attributes: { class: 'fa fa-bars' }
-                            },
-                            {
-                                id: 'alert',
-                                label: 'Uyarı',
-                                category: 'components',
-                                content: '<div class="alert alert-primary" role="alert">Bu bir uyarı mesajıdır!</div>',
-                                attributes: { class: 'fa fa-exclamation-circle' }
                             }
                         ]
                     },
@@ -372,43 +195,8 @@
                     { id: 'basic', label: 'Temel' },
                     { id: 'typography', label: 'Tipografi' },
                     { id: 'layout', label: 'Düzen' },
-                    { id: 'components', label: 'Bileşenler' },
-                    { id: 'widget', label: 'Widgetlar' }
+                    { id: 'components', label: 'Bileşenler' }
                 ]);
-                
-                // Widgetları blok olarak ekle
-                @foreach($widgets as $widget)
-                    editor.BlockManager.add('widget-{{ $widget['id'] }}', {
-                        label: '{{ $widget['name'] }}',
-                        category: '{{ $widget['category'] ?? 'widget' }}',
-                        content: {
-                            type: 'widget',
-                            widget_id: {{ $widget['id'] }},
-                            content: {!! json_encode($widget['content_html'] ?? '<div class="widget-placeholder">Widget: ' . $widget['name'] . '</div>') !!}
-                        },
-                        attributes: { class: 'fa fa-puzzle-piece' }
-                    });
-                @endforeach
-                
-                // Custom CSS ve JS düzenleyicileri
-                editor.Panels.addPanel({
-                    id: 'panel-css-js',
-                    visible: true,
-                    buttons: [
-                        {
-                            id: 'open-css',
-                            className: 'fa fa-css3',
-                            command: 'open-css',
-                            attributes: { title: 'CSS Düzenle' }
-                        },
-                        {
-                            id: 'open-js',
-                            className: 'fa fa-js',
-                            command: 'open-js',
-                            attributes: { title: 'JavaScript Düzenle' }
-                        }
-                    ]
-                });
                 
                 // CSS Editör Modalı
                 editor.Commands.add('open-css', {
@@ -422,7 +210,6 @@
                                         <button id="css-save" class="btn btn-primary">Kaydet</button>
                                         <button id="css-cancel" class="btn btn-secondary">İptal</button>
                                     </div>`,
-                            attributes: { class: 'gjs-css-editor' }
                         });
                         
                         document.getElementById('css-save').addEventListener('click', function() {
@@ -436,33 +223,6 @@
                         });
                         
                         document.getElementById('css-cancel').addEventListener('click', function() {
-                            editor.Modal.close();
-                        });
-                    }
-                });
-                
-                // JavaScript Editör Modalı
-                editor.Commands.add('open-js', {
-                    run: function(editor, sender) {
-                        const jsContent = document.getElementById('js-content').textContent;
-                        
-                        const modal = editor.Modal.open({
-                            title: 'JavaScript Düzenle',
-                            content: `<textarea id="js-editor" style="width: 100%; height: 400px; font-family: monospace;">${jsContent}</textarea>
-                                    <div class="modal-footer mt-3">
-                                        <button id="js-save" class="btn btn-primary">Kaydet</button>
-                                        <button id="js-cancel" class="btn btn-secondary">İptal</button>
-                                    </div>`,
-                            attributes: { class: 'gjs-js-editor' }
-                        });
-                        
-                        document.getElementById('js-save').addEventListener('click', function() {
-                            const jsEditor = document.getElementById('js-editor');
-                            document.getElementById('js-content').textContent = jsEditor.value;
-                            editor.Modal.close();
-                        });
-                        
-                        document.getElementById('js-cancel').addEventListener('click', function() {
                             editor.Modal.close();
                         });
                     }

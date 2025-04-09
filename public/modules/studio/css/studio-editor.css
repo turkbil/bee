@@ -1,248 +1,215 @@
-/* Studio Editor Özel Stilleri */
+/* Studio Editor Ana Stiller */
+.studio-editor-container {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 115px);
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+}
 
-#gjs {
+/* Toolbar Stili */
+.editor-toolbar {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    background-color: #fff;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.toolbar-group {
+    display: flex;
+    margin-right: 8px;
+}
+
+.toolbar-divider {
+    width: 1px;
+    height: 24px;
+    background-color: #dee2e6;
+    margin: 0 8px;
+}
+
+.toolbar-btn {
+    width: 32px;
+    height: 32px;
     border: none;
-    position: relative !important;
-    z-index: 0 !important;
-    overflow: visible !important;
-    flex: 1;
-}
-
-/* Panel düzeni */
-.gjs-wrapper {
-    display: flex;
-    height: calc(100vh - 50px);
-    overflow: hidden;
-}
-
-#blocks-panel,
-#layer-panel {
-    width: 300px;
-    background-color: #333;
-    height: 100%;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-}
-
-#blocks-panel {
-    border-right: 1px solid #444;
-}
-
-#layer-panel {
-    border-left: 1px solid #444;
-}
-
-/* İçerik görünürlüğü için kritik stiller */
-.gjs-cv-canvas {
-    width: 100% !important;
-    height: 100% !important;
-    top: 0 !important;
-    left: 0 !important;
-    position: relative !important;
-    z-index: 10 !important;
-    visibility: visible !important;
-    display: block !important;
-    overflow: visible !important;
-}
-
-.gjs-frame {
-    z-index: 1 !important;
-    position: relative !important;
-    height: 100% !important;
-    visibility: visible !important;
-    display: block !important;
-    min-height: 400px !important;
-}
-
-.gjs-frame-wrapper {
-    min-height: 400px !important;
-    max-height: calc(100vh - 150px) !important;
-    overflow: visible !important;
-}
-
-/* Panel tab sistemi */
-.panel-tabs {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    overflow: hidden;
-}
-
-.panel-tabs-header {
-    display: flex;
-    background: #f5f5f5;
-    border-bottom: 1px solid #ddd;
-}
-
-.panel-tab-btn {
-    flex: 1;
-    padding: 10px;
     background: none;
-    border: none;
+    border-radius: 4px;
     cursor: pointer;
-    font-size: 14px;
-    color: #333;
-    border-bottom: 2px solid transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #495057;
+    margin-right: 4px;
 }
 
-.panel-tab-btn.active {
-    background: #444;
-    border-bottom: 2px solid #3b97e3;
-    color: #eee;
+.toolbar-btn:hover {
+    background-color: #f1f3f5;
 }
 
-.panel-tab-content {
+.toolbar-btn.active {
+    background-color: #e9ecef;
+    color: #206bc4;
+}
+
+.device-btns {
+    margin-left: auto;
+}
+
+/* Editor İçerik */
+.editor-content {
+    display: flex;
     flex: 1;
     overflow: hidden;
-    position: relative;
 }
 
-.tab-panel {
-    display: none;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    overflow-y: auto;
-    background: #333;
-    padding: 0;
+/* Bloklar Paneli */
+.blocks-panel {
+    width: 260px;
+    border-right: 1px solid #dee2e6;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
-.tab-panel.active {
-    display: block;
-}
-
-/* Blok stilleri */
-.gjs-block {
-    width: auto;
-    height: auto;
-    min-height: auto;
-    padding: 8px;
-    margin: 8px;
-    background-color: #444;
-    border: 1px solid #555 !important;
-    color: #eee;
-    border-radius: 3px;
-}
-
-.gjs-block:hover {
-    box-shadow: 0 0 0 2px #3b97e3 !important;
-}
-
-.gjs-block-category {
-    background-color: #333;
-    padding: 10px 5px;
-    margin-bottom: 5px;
-    border-bottom: 1px solid #444;
-}
-
-.gjs-block-label {
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: #eee;
+.blocks-search {
+    padding: 10px;
+    border-bottom: 1px solid #dee2e6;
 }
 
 .blocks-container {
-    padding: 10px 0;
-    background-color: #333;
+    flex: 1;
     overflow-y: auto;
-    height: 100%;
+    padding: 10px;
 }
 
-/* Stil yöneticisi */
+/* Canvas */
+.editor-canvas {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+#gjs {
+    height: 100%;
+    width: 100%;
+}
+
+/* Stil Paneli */
+.styles-panel {
+    width: 260px;
+    border-left: 1px solid #dee2e6;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+}
+
+.panel-tabs {
+    display: flex;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.panel-tab {
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #495057;
+    border-bottom: 2px solid transparent;
+}
+
+.panel-tab.active {
+    color: #206bc4;
+    border-bottom-color: #206bc4;
+}
+
+.panel-tab-content {
+    display: none;
+    flex: 1;
+    overflow-y: auto;
+    height: calc(100% - 43px);
+}
+
+.panel-tab-content.active {
+    display: block;
+}
+
+.styles-container,
+.traits-container,
+.layers-container {
+    height: 100%;
+    overflow-y: auto;
+}
+
+/* GrapesJS Stil Geçersiz Kılmaları */
+.gjs-block {
+    border: 1px solid #dee2e6 !important;
+    background-color: #fff !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+    margin-bottom: 10px !important;
+}
+
+.gjs-block:hover {
+    border-color: #adb5bd !important;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1) !important;
+}
+
+.gjs-block-category {
+    padding: 8px 0 !important;
+}
+
+.gjs-category-title {
+    font-weight: 600 !important;
+    color: #495057 !important;
+}
+
+.gjs-layer {
+    padding: 6px !important;
+}
+
 .gjs-sm-sector {
-    border-bottom: 1px solid #444;
-    margin-bottom: 10px;
-    padding-bottom: 5px;
-    background-color: #333;
+    padding: 5px !important;
 }
 
 .gjs-sm-title {
-    color: #eee;
-    font-weight: 500;
-    padding: 8px;
+    font-weight: 600 !important;
+    color: #495057 !important;
 }
 
-.gjs-sm-property {
-    padding: 6px 5px;
-    background-color: #333;
-    border-bottom: 1px solid #444;
+.gjs-frame-wrapper {
+    padding: 10px !important;
 }
 
-.gjs-sm-label {
-    color: #ddd;
-    font-weight: normal;
+.gjs-cv-canvas {
+    background-color: #f8f9fa !important;
 }
 
-.gjs-field {
-    background-color: #444;
-    border: 1px solid #555;
-    color: #eee;
-    box-shadow: none;
+/* Responsive */
+@media (max-width: 992px) {
+    .blocks-panel,
+    .styles-panel {
+        width: 220px;
+    }
 }
 
-.gjs-field input,
-.gjs-field select,
-.gjs-field textarea {
-    color: #eee;
-    background-color: #444;
-}
+@media (max-width: 768px) {
+    .editor-content {
+        flex-direction: column;
+    }
 
-/* Responsive düzenleme araçları */
-.panel__devices {
-    display: flex;
-    justify-content: flex-end;
-    padding: 10px;
-    background-color: #333;
-    border-bottom: 1px solid #444;
-}
+    .blocks-panel,
+    .styles-panel {
+        width: 100%;
+        height: 200px;
+    }
 
-.editor-device-button {
-    padding: 5px 10px;
-    margin: 0 3px;
-    background: transparent;
-    color: #ddd;
-    border: 1px solid #555;
-    border-radius: 3px;
-    cursor: pointer;
-}
+    .blocks-panel {
+        border-right: none;
+        border-bottom: 1px solid #dee2e6;
+    }
 
-.editor-device-button.active {
-    background: #444;
-    color: #fff;
-    border-color: #777;
-}
-
-/* Katmanlar paneli */
-.gjs-layer {
-    padding: 8px 5px;
-    font-size: 0.9rem;
-    background-color: #333;
-    border-bottom: 1px solid #444;
-    color: #eee;
-}
-
-.gjs-layer.gjs-selected {
-    background-color: #444;
-}
-
-.gjs-layer-title {
-    font-size: 0.9rem;
-    color: #eee;
-}
-
-/* Genel düzeltmeler */
-.gjs-one-bg {
-    background-color: #333 !important;
-}
-.gjs-two-color {
-    color: #eee !important;
-}
-.gjs-three-bg {
-    background-color: #3b97e3 !important;
-}
-.gjs-four-color {
-    color: #3b97e3 !important;
+    .styles-panel {
+        border-left: none;
+        border-top: 1px solid #dee2e6;
+    }
 }

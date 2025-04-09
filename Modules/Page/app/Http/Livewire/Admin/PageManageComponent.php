@@ -23,6 +23,8 @@ class PageManageComponent extends Component
        'js' => '',
        'is_active' => true,
    ];
+   
+   public $studioEnabled = false;
 
    public function mount($id = null)
    {
@@ -31,6 +33,9 @@ class PageManageComponent extends Component
            $page = Page::findOrFail($id);
            $this->inputs = $page->only(array_keys($this->inputs));
        }
+       
+       // Studio modülü aktif mi kontrol et
+       $this->studioEnabled = class_exists('Modules\Studio\App\Http\Livewire\StudioEditor');
    }
 
    protected function rules()
@@ -104,6 +109,20 @@ class PageManageComponent extends Component
       if ($resetForm && !$this->pageId) {
           $this->reset();
       }
+   }
+   
+   public function openStudioEditor()
+   {
+       if (!$this->pageId) {
+           // Önce sayfayı kaydet
+           $this->save();
+           
+           if ($this->pageId) {
+               return redirect()->route('admin.studio.editor', ['module' => 'page', 'id' => $this->pageId]);
+           }
+       } else {
+           return redirect()->route('admin.studio.editor', ['module' => 'page', 'id' => $this->pageId]);
+       }
    }
 
    public function render()

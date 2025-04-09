@@ -6,5 +6,6 @@
     "SettingManagement": true,
     "TenantManagement": true,
     "WidgetManagement": true,
-    "ThemeManagement": true
+    "ThemeManagement": true,
+    "Studio": true
 }

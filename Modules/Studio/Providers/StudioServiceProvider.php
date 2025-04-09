@@ -31,6 +31,7 @@ class StudioServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
+        $this->publishAssets();
 
         // Önce rotalar yüklenir
         $this->loadRoutesFrom(module_path('Studio', 'routes/web.php'));
@@ -57,6 +58,54 @@ class StudioServiceProvider extends ServiceProvider
                     $view->with('studioEnabled', true);
                 });
             });
+        }
+    }
+
+    /**
+     * Varlıkları yayınla
+     */
+    protected function publishAssets(): void
+    {
+        $sourcePath = module_path('Studio', 'resources/assets');
+        $destinationPath = public_path('modules/studio');
+
+        $this->publishes([
+            $sourcePath . '/css' => $destinationPath . '/css',
+            $sourcePath . '/js' => $destinationPath . '/js',
+        ], 'studio-assets');
+
+        // Uygulamanın üretim ortamında olup olmadığını kontrol et
+        if (!$this->app->isProduction()) {
+            // Varlıkları otomatik olarak yayınla
+            $this->publishResourcesForDevMode($sourcePath, $destinationPath);
+        }
+    }
+
+    /**
+     * Geliştirme modunda varlıkları otomatik yayınla
+     */
+    private function publishResourcesForDevMode($sourcePath, $destinationPath): void
+    {
+        if (!is_dir($destinationPath)) {
+            mkdir($destinationPath, 0755, true);
+        }
+
+        if (is_dir($sourcePath . '/css')) {
+            if (!is_dir($destinationPath . '/css')) {
+                mkdir($destinationPath . '/css', 0755, true);
+            }
+            foreach (glob($sourcePath . '/css/*.css') as $file) {
+                copy($file, $destinationPath . '/css/' . basename($file));
+            }
+        }
+
+        if (is_dir($sourcePath . '/js')) {
+            if (!is_dir($destinationPath . '/js')) {
+                mkdir($destinationPath . '/js', 0755, true);
+            }
+            foreach (glob($sourcePath . '/js/*.js') as $file) {
+                copy($file, $destinationPath . '/js/' . basename($file));
+            }
         }
     }
 

@@ -35,6 +35,9 @@ class StudioController extends Controller
             $css = $request->get('css');
             $js = $request->get('js');
             
+            // ID'yi integer'a çevir
+            $id = (int)$id;
+            
             if ($module === 'page') {
                 $page = Page::findOrFail($id);
                 $page->body = $content;

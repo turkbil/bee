@@ -25,7 +25,7 @@ class StudioEditor extends Component
     public function mount($module, $id)
     {
         $this->module = $module;
-        $this->moduleId = $id;
+        $this->moduleId = (int)$id; // ID'yi integer olarak zorla
         
         $this->loadContent();
         $this->loadWidgets();
@@ -42,6 +42,7 @@ class StudioEditor extends Component
                 $this->js = $page->js ?? '';
                 $this->pageTitle = $page->title ?? 'Sayfa Düzenleyici';
             } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('Sayfa yüklenirken hata: ' . $e->getMessage());
                 session()->flash('error', 'Sayfa bulunamadı: ' . $e->getMessage());
                 return redirect()->route('admin.page.index')->with('error', 'Sayfa bulunamadı.');
             }
@@ -87,6 +88,7 @@ class StudioEditor extends Component
                 session()->flash('message', 'Sayfa başarıyla kaydedildi.');
                 return redirect()->route('admin.page.index');
             } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('Sayfa kaydedilirken hata: ' . $e->getMessage());
                 session()->flash('error', 'Sayfa kaydedilirken hata: ' . $e->getMessage());
                 return redirect()->route('admin.page.index')->with('error', 'Sayfa kaydedilirken hata oluştu.');
             }

@@ -15,7 +15,6 @@ window.initStudioEditor = function (config) {
         },
         styleManager: {
             appendTo: "#styles-container",
-            // Stil seçenekleri buraya gelecek
         },
         layerManager: {
             appendTo: "#layers-container",
@@ -50,11 +49,15 @@ window.initStudioEditor = function (config) {
                 "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
             ],
         },
-        // Plugin isimlerini düzelttik
-        plugins: ["blocks-basic", "blocks-flexbox", "preset-webpage"],
+        // Sadece 3 temel plugin'i kullanıyoruz - tam dosya adları kullanılmalı
+        plugins: [
+            "blocks-basic-master",
+            "blocks-flexbox-master",
+            "preset-webpage-master",
+        ],
         // Plugin seçenekleri
         pluginsOpts: {
-            "blocks-basic": {
+            "blocks-basic-master": {
                 blocks: [
                     "column1",
                     "column2",
@@ -66,7 +69,10 @@ window.initStudioEditor = function (config) {
                 ],
                 flexGrid: true,
             },
-            "preset-webpage": {
+            "blocks-flexbox-master": {
+                // Flexbox blokları için seçenekler
+            },
+            "preset-webpage-master": {
                 modalImportTitle: "Kod İçe Aktar",
                 modalImportLabel: "HTML veya CSS kodunu yapıştırın",
                 modalImportContent: "",

@@ -11,6 +11,7 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\File;
 
 class StudioServiceProvider extends ServiceProvider
 {
@@ -86,26 +87,64 @@ class StudioServiceProvider extends ServiceProvider
      */
     private function publishResourcesForDevMode($sourcePath, $destinationPath): void
     {
-        if (!is_dir($destinationPath)) {
-            mkdir($destinationPath, 0755, true);
-        }
+        try {
+            if (!is_dir($destinationPath)) {
+                mkdir($destinationPath, 0755, true);
+            }
 
-        if (is_dir($sourcePath . '/css')) {
-            if (!is_dir($destinationPath . '/css')) {
-                mkdir($destinationPath . '/css', 0755, true);
+            if (is_dir($sourcePath . '/css')) {
+                if (!is_dir($destinationPath . '/css')) {
+                    mkdir($destinationPath . '/css', 0755, true);
+                }
+                foreach (glob($sourcePath . '/css/*.css') as $file) {
+                    copy($file, $destinationPath . '/css/' . basename($file));
+                }
             }
-            foreach (glob($sourcePath . '/css/*.css') as $file) {
-                copy($file, $destinationPath . '/css/' . basename($file));
-            }
-        }
 
-        if (is_dir($sourcePath . '/js')) {
-            if (!is_dir($destinationPath . '/js')) {
-                mkdir($destinationPath . '/js', 0755, true);
+            if (is_dir($sourcePath . '/js')) {
+                if (!is_dir($destinationPath . '/js')) {
+                    mkdir($destinationPath . '/js', 0755, true);
+                }
+                foreach (glob($sourcePath . '/js/*.js') as $file) {
+                    copy($file, $destinationPath . '/js/' . basename($file));
+                }
             }
-            foreach (glob($sourcePath . '/js/*.js') as $file) {
-                copy($file, $destinationPath . '/js/' . basename($file));
+            
+            // Ayrıca admin/libs/studio klasörüne de kopyala
+            $destAdminPath = public_path('admin/libs/studio');
+            
+            if (!is_dir($destAdminPath)) {
+                mkdir($destAdminPath, 0755, true);
             }
+            
+            if (is_dir($sourcePath . '/css')) {
+                if (!is_dir($destAdminPath . '/css')) {
+                    mkdir($destAdminPath . '/css', 0755, true);
+                }
+                foreach (glob($sourcePath . '/css/*.css') as $file) {
+                    copy($file, $destAdminPath . '/css/' . basename($file));
+                }
+            }
+            
+            if (is_dir($sourcePath . '/js')) {
+                // Ana js dosyaları
+                foreach (glob($sourcePath . '/js/*.js') as $file) {
+                    copy($file, $destAdminPath . '/' . basename($file));
+                }
+                
+                // Plugin dosyaları
+                if (is_dir($sourcePath . '/js/plugins')) {
+                    if (!is_dir($destAdminPath . '/plugins')) {
+                        mkdir($destAdminPath . '/plugins', 0755, true);
+                    }
+                    foreach (glob($sourcePath . '/js/plugins/*.js') as $file) {
+                        copy($file, $destAdminPath . '/plugins/' . basename($file));
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            // Hata durumunda loglama yap
+            \Illuminate\Support\Facades\Log::error('Studio Modülü: Varlıkları yayınlarken hata: ' . $e->getMessage());
         }
     }
 

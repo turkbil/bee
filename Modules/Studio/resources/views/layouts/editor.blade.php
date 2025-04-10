@@ -343,6 +343,9 @@
     <!-- GrapesJS ve Eklentileri -->
     <script src="{{ asset('admin/libs/studio/grapes.min.js') }}?v={{ filemtime(public_path('admin/libs/studio/grapes.min.js')) }}"></script>
 
+    <!-- Studio Düzeltme Modülü - ÖNCE YÜKLENMELİ -->
+    <script src="{{ asset('admin/libs/studio/partials/studio-fix.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-fix.js')) }}"></script>
+
     <!-- Studio Modüler JS Dosyaları -->
     <script src="{{ asset('admin/libs/studio/partials/studio-utils.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-utils.js')) }}"></script>
     <script src="{{ asset('admin/libs/studio/partials/studio-plugins.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-plugins.js')) }}"></script>

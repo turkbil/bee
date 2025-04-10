@@ -2,8 +2,8 @@ Seçilen dizin: C:/laragon/www/laravel/public/admin/libs/studio
 C:/laragon/www/laravel/public/admin/libs/studio/
     grapes.min.js
     studio.js
+    STUDIO-ICINDEKI-DIGER-DOSYALAR.txt (YANİ BU DOSYA)
 C:/laragon/www/laravel/public/admin/libs/studio\css/
-    grapes.min.css
     studio-editor.css
 C:/laragon/www/laravel/public/admin/libs/studio\plugins/
     acorn.min.js

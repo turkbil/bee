@@ -43,10 +43,11 @@ class StudioEditor extends Component
                 $this->pageTitle = $page->title ?? 'Sayfa Düzenleyici';
             } catch (\Exception $e) {
                 session()->flash('error', 'Sayfa bulunamadı: ' . $e->getMessage());
-                abort(404, 'Sayfa bulunamadı: ' . $e->getMessage());
+                return redirect()->route('admin.page.index')->with('error', 'Sayfa bulunamadı.');
             }
         } else {
-            abort(404, 'Desteklenmeyen modül: ' . $this->module);
+            session()->flash('error', 'Desteklenmeyen modül: ' . $this->module);
+            return redirect()->route('admin.dashboard')->with('error', 'Desteklenmeyen modül: ' . $this->module);
         }
     }
     
@@ -72,20 +73,27 @@ class StudioEditor extends Component
     public function save()
     {
         if ($this->module === 'page') {
-            $page = Page::findOrFail($this->moduleId);
-            $page->body = $this->content;
-            $page->css = $this->css;
-            $page->js = $this->js;
-            $page->save();
-            
-            log_activity($page, 'studio ile düzenlendi');
-            
-            session()->flash('message', 'Sayfa başarıyla kaydedildi.');
-            
-            return redirect()->route('admin.page.index');
+            try {
+                $page = Page::findOrFail($this->moduleId);
+                $page->body = $this->content;
+                $page->css = $this->css;
+                $page->js = $this->js;
+                $page->save();
+                
+                if (function_exists('log_activity')) {
+                    log_activity($page, 'studio ile düzenlendi');
+                }
+                
+                session()->flash('message', 'Sayfa başarıyla kaydedildi.');
+                return redirect()->route('admin.page.index');
+            } catch (\Exception $e) {
+                session()->flash('error', 'Sayfa kaydedilirken hata: ' . $e->getMessage());
+                return redirect()->route('admin.page.index')->with('error', 'Sayfa kaydedilirken hata oluştu.');
+            }
         }
         
-        abort(404, 'Desteklenmeyen modül: ' . $this->module);
+        session()->flash('error', 'Desteklenmeyen modül: ' . $this->module);
+        return redirect()->route('admin.dashboard')->with('error', 'Desteklenmeyen modül: ' . $this->module);
     }
     
     public function render()

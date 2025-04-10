@@ -133,6 +133,25 @@ class StudioController extends Controller
     }
 
     /**
+     * Statik kaynakları kopyala
+     */
+    public function publishResources()
+    {
+        // grapes.js ve diğer dosyaları public klasörüne kopyala
+        $sourcePath = module_path('Studio', 'resources/assets/js');
+        $destinationPath = public_path('admin/libs/studio');
+        
+        if (!file_exists($destinationPath)) {
+            mkdir($destinationPath, 0755, true);
+        }
+        
+        // studio.js dosyasını kopyala
+        copy($sourcePath . '/studio.js', $destinationPath . '/studio.js');
+        
+        return redirect()->back()->with('success', 'Kaynaklar başarıyla kopyalandı');
+    }
+
+    /**
      * Widget sayfası
      *
      * @return \Illuminate\View\View

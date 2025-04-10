@@ -65,6 +65,188 @@
             width: 100%;
             position: relative;
         }
+        
+        .editor-toolbar {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            background-color: #fff;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .toolbar-group {
+            display: flex;
+            margin-right: 8px;
+        }
+        
+        .toolbar-divider {
+            width: 1px;
+            height: 24px;
+            background-color: #dee2e6;
+            margin: 0 8px;
+        }
+        
+        .toolbar-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #495057;
+            margin-right: 4px;
+        }
+        
+        .toolbar-btn:hover {
+            background-color: #f1f3f5;
+        }
+        
+        .toolbar-btn.active {
+            background-color: #e9ecef;
+            color: #206bc4;
+        }
+        
+        .device-btns {
+            margin-left: auto;
+        }
+        
+        /* Editor Ana Stilleri */
+        .editor-main {
+            display: flex;
+            height: calc(100vh - 136px); /* Navbar + toolbar + debug bar yüksekliği */
+            overflow: hidden;
+        }
+        
+        /* Sol Panel */
+        .panel__left {
+            width: 260px;
+            background-color: #fff;
+            border-right: 1px solid #dee2e6;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+        
+        .blocks-search {
+            padding: 10px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .blocks-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        
+        /* Orta Panel (Canvas) */
+        .editor-canvas {
+            flex: 1;
+            position: relative;
+            background-color: #f5f5f5;
+            overflow: hidden;
+        }
+        
+        #gjs {
+            height: 100%;
+            width: 100%;
+        }
+        
+        /* Sağ Panel */
+        .panel__right {
+            width: 260px;
+            background-color: #fff;
+            border-left: 1px solid #dee2e6;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+        
+        .panel-tabs {
+            display: flex;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .panel-tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #495057;
+            border-bottom: 2px solid transparent;
+        }
+        
+        .panel-tab.active {
+            color: #206bc4;
+            border-bottom-color: #206bc4;
+        }
+        
+        .panel-tab-content {
+            display: none;
+            flex: 1;
+            overflow-y: auto;
+            height: calc(100% - 42px);
+        }
+        
+        .panel-tab-content.active {
+            display: block;
+        }
+        
+        .debug-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background-color: #2c3e50;
+            color: white;
+            z-index: 1000;
+        }
+        
+        /* GrapesJS stil geçersiz kılmaları */
+        .gjs-cv-canvas {
+            width: 100% !important;
+            height: 100% !important;
+            top: 0 !important;
+            left: 0 !important;
+        }
+        
+        .gjs-block {
+            width: auto !important;
+            height: auto !important;
+            min-height: 40px !important;
+            padding: 10px !important;
+            text-align: center !important;
+            font-size: 12px !important;
+            border: 1px solid #ddd !important;
+            border-radius: 5px !important;
+            margin: 10px 5px !important;
+            background-color: #fff !important;
+            transition: all 0.2s ease !important;
+        }
+        
+        .gjs-block:hover {
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1) !important;
+            transform: translateY(-2px) !important;
+            border-color: #0d6efd !important;
+        }
+        
+        .gjs-block-category {
+            padding: 10px 5px !important;
+        }
+        
+        .gjs-one-bg {
+            background-color: #ffffff !important;
+        }
+        
+        .gjs-two-color {
+            color: #383838 !important;
+        }
+        
+        .gjs-four-color {
+            color: #0d6efd !important;
+        }
     </style>
     
     @livewireStyles
@@ -91,6 +273,62 @@
     </div>
     
     <div class="page-wrapper">
+        <div class="editor-toolbar">
+            <div class="toolbar-group">
+                <button class="toolbar-btn" id="sw-visibility" title="Bileşen sınırlarını göster/gizle">
+                    <i class="fas fa-eye"></i>
+                </button>
+                <button class="toolbar-btn" id="cmd-clear" title="İçeriği temizle">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </div>
+            
+            <div class="toolbar-divider"></div>
+            
+            <div class="toolbar-group">
+                <button class="toolbar-btn" id="cmd-undo" title="Geri al">
+                    <i class="fas fa-undo"></i>
+                </button>
+                <button class="toolbar-btn" id="cmd-redo" title="Yinele">
+                    <i class="fas fa-redo"></i>
+                </button>
+            </div>
+            
+            <div class="toolbar-divider"></div>
+            
+            <div class="toolbar-group">
+                <button class="toolbar-btn" id="cmd-code-edit" title="HTML Düzenle">
+                    <i class="fas fa-code"></i>
+                </button>
+                <button class="toolbar-btn" id="cmd-css-edit" title="CSS Düzenle">
+                    <i class="fas fa-paint-brush"></i>
+                </button>
+                <button class="toolbar-btn" id="cmd-js-edit" title="JS Düzenle">
+                    <i class="fas fa-file-code"></i>
+                </button>
+            </div>
+            
+            <div class="toolbar-divider"></div>
+            
+            <div class="toolbar-group">
+                <button class="toolbar-btn" id="export-btn" title="Dışa Aktar">
+                    <i class="fas fa-download"></i>
+                </button>
+            </div>
+            
+            <div class="toolbar-group device-btns">
+                <button class="toolbar-btn active" id="device-desktop" title="Masaüstü">
+                    <i class="fas fa-desktop"></i>
+                </button>
+                <button class="toolbar-btn" id="device-tablet" title="Tablet">
+                    <i class="fas fa-tablet-alt"></i>
+                </button>
+                <button class="toolbar-btn" id="device-mobile" title="Mobil">
+                    <i class="fas fa-mobile-alt"></i>
+                </button>
+            </div>
+        </div>
+        
         {{ $slot }}
     </div>
     
@@ -101,15 +339,38 @@
     <script src="{{ asset('admin/js/tabler.min.js') }}"></script>
     
     <!-- GrapesJS ve Eklentileri -->
-    <script src="{{ asset('admin/libs/studio/js/grapesjs.min.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/js/grapesjs-blocks-basic.min.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/js/grapesjs-preset-webpage.min.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/js/grapesjs-style-bg.min.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/js/grapesjs-plugin-export.min.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/js/grapesjs-plugin-forms.min.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/js/grapesjs-custom-code.min.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/js/grapesjs-touch.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/grapes.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/plugins/acorn.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/plugins/blocks-basic-master.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/plugins/blocks-flexbox-master.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/plugins/ckeditor-master.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/plugins/components-countdown-master.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/plugins/components-custom-code-master.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/plugins/components-forms-master.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/plugins/components-lory-master.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/plugins/components-navbar-master.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/plugins/components-tabs-master.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/plugins/components-tooltip-master.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/plugins/components-typed-master.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/plugins/export-master.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/plugins/filestack-master.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/plugins/grapesjs-click-main.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/plugins/grapesjs-float-main.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/plugins/grapesjs-fonts-main.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/plugins/grapesjs-plugin-forms.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/plugins/parser-postcss-master.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/plugins/preset-newsletter-master.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/plugins/preset-webpage-master.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/plugins/react-main.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/plugins/style-bg-master.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/plugins/style-filter-master.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/plugins/style-gradient-master.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/plugins/touch-master.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/plugins/tui-image-editor-master.min.js') }}"></script>
+    
+    <!-- Özel Studio JS -->
+    <script src="{{ asset('admin/libs/studio/studio.js') }}"></script>
     
     @livewireScripts
 </body>
-</html> 
+</html>

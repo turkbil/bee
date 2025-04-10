@@ -11,7 +11,139 @@
             <div class="blocks-search">
                 <input type="text" id="blocks-search" class="form-control form-control-sm" placeholder="Bileşen ara...">
             </div>
-            <div id="blocks-container" class="blocks-container"></div>
+            
+            <!-- Manuel olarak kategoriler tanımlanıyor -->
+            <div class="blocks-container">
+                <div class="block-category">
+                    <div class="block-category-header">
+                        <i class="fa fa-columns"></i>
+                        <span>Düzen Bileşenleri</span>
+                        <i class="fa fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="block-items">
+                        <div class="block-item" draggable="true" data-block-id="section-1col">
+                            <div class="block-item-icon">
+                                <i class="fa fa-square"></i>
+                            </div>
+                            <div class="block-item-label">1 Sütun</div>
+                        </div>
+                        <div class="block-item" draggable="true" data-block-id="section-2col">
+                            <div class="block-item-icon">
+                                <i class="fa fa-columns"></i>
+                            </div>
+                            <div class="block-item-label">2 Sütun</div>
+                        </div>
+                        <div class="block-item" draggable="true" data-block-id="section-3col">
+                            <div class="block-item-icon">
+                                <i class="fa fa-th-large"></i>
+                            </div>
+                            <div class="block-item-label">3 Sütun</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="block-category">
+                    <div class="block-category-header">
+                        <i class="fa fa-paragraph"></i>
+                        <span>Temel Bileşenler</span>
+                        <i class="fa fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="block-items">
+                        <div class="block-item" draggable="true" data-block-id="header">
+                            <div class="block-item-icon">
+                                <i class="fa fa-heading"></i>
+                            </div>
+                            <div class="block-item-label">Header</div>
+                        </div>
+                        <div class="block-item" draggable="true" data-block-id="footer">
+                            <div class="block-item-icon">
+                                <i class="fa fa-window-minimize"></i>
+                            </div>
+                            <div class="block-item-label">Footer</div>
+                        </div>
+                        <div class="block-item" draggable="true" data-block-id="text">
+                            <div class="block-item-icon">
+                                <i class="fa fa-font"></i>
+                            </div>
+                            <div class="block-item-label">Metin</div>
+                        </div>
+                        <div class="block-item" draggable="true" data-block-id="link">
+                            <div class="block-item-icon">
+                                <i class="fa fa-link"></i>
+                            </div>
+                            <div class="block-item-label">Link</div>
+                        </div>
+                        <div class="block-item" draggable="true" data-block-id="button">
+                            <div class="block-item-icon">
+                                <i class="fa fa-square"></i>
+                            </div>
+                            <div class="block-item-label">Buton</div>
+                        </div>
+                        <div class="block-item" draggable="true" data-block-id="html">
+                            <div class="block-item-icon">
+                                <i class="fa fa-code"></i>
+                            </div>
+                            <div class="block-item-label">HTML Kodu</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="block-category">
+                    <div class="block-category-header">
+                        <i class="fa fa-image"></i>
+                        <span>Medya Bileşenleri</span>
+                        <i class="fa fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="block-items">
+                        <div class="block-item" draggable="true" data-block-id="image">
+                            <div class="block-item-icon">
+                                <i class="fa fa-image"></i>
+                            </div>
+                            <div class="block-item-label">Görsel</div>
+                        </div>
+                        <div class="block-item" draggable="true" data-block-id="video">
+                            <div class="block-item-icon">
+                                <i class="fa fa-film"></i>
+                            </div>
+                            <div class="block-item-label">Video</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="block-category">
+                    <div class="block-category-header">
+                        <i class="fa fa-bootstrap"></i>
+                        <span>Bootstrap Bileşenleri</span>
+                        <i class="fa fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="block-items">
+                        <div class="block-item" draggable="true" data-block-id="card">
+                            <div class="block-item-icon">
+                                <i class="fa fa-credit-card"></i>
+                            </div>
+                            <div class="block-item-label">Kart</div>
+                        </div>
+                        <div class="block-item" draggable="true" data-block-id="jumbotron">
+                            <div class="block-item-icon">
+                                <i class="fa fa-bullhorn"></i>
+                            </div>
+                            <div class="block-item-label">Jumbotron</div>
+                        </div>
+                        <div class="block-item" draggable="true" data-block-id="navbar">
+                            <div class="block-item-icon">
+                                <i class="fa fa-bars"></i>
+                            </div>
+                            <div class="block-item-label">Navbar</div>
+                        </div>
+                        <div class="block-item" draggable="true" data-block-id="contact-form">
+                            <div class="block-item-icon">
+                                <i class="fa fa-envelope"></i>
+                            </div>
+                            <div class="block-item-label">İletişim Formu</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         
         <!-- Orta Panel: Canvas -->
@@ -38,82 +170,4 @@
             </div>
         </div>
     </div>
-    
-    <script id="editor-config" type="application/json">
-    {
-        "elementId": "gjs",
-        "moduleType": "{{ $moduleType }}",
-        "moduleId": {{ $moduleId }},
-        "content": {{ json_encode($content) }},
-        "css": {{ json_encode($css) }},
-        "csrfToken": "{{ csrf_token() }}"
-    }
-    </script>
-    
-    <style>
-        /* Editor Ana Stiller */
-        .editor-main {
-            display: flex;
-            height: calc(100vh - 96px); /* Header + Toolbar yüksekliği */
-            overflow: hidden;
-        }
-        
-        /* GrapeJS düzeltmeleri */
-        .panel__left {
-            width: 260px !important; 
-            position: relative !important;
-            overflow: hidden !important;
-        }
-        
-        .blocks-container {
-            padding: 10px !important;
-            overflow-y: auto !important;
-            height: calc(100% - 52px) !important;
-        }
-        
-        .panel__right {
-            width: 260px !important;
-            position: relative !important;
-        }
-        
-        .styles-container,
-        .traits-container,
-        .layers-container {
-            height: 100% !important;
-            padding: 10px !important;
-            overflow-y: auto !important;
-        }
-        
-        .editor-canvas {
-            flex: 1 !important;
-            position: relative !important;
-        }
-        
-        #gjs {
-            height: 100% !important;
-            width: 100% !important;
-            overflow: hidden !important;
-        }
-        
-        /* GrapeJS canvas düzeltmesi */
-        .gjs-cv-canvas {
-            top: 0 !important;
-            width: 100% !important;
-            height: 100% !important;
-        }
-        
-        /* Block elementleri */
-        .gjs-block {
-            width: 45% !important;
-            padding: 1em !important;
-            margin: 5px !important;
-            font-size: 12px !important;
-        }
-        
-        /* Panel yüksekliği düzeltmesi */
-        .gjs-pn-panel {
-            position: relative !important;
-            height: 100% !important;
-        }
-    </style>
 </div></div>

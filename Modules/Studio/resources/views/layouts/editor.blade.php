@@ -1,3 +1,4 @@
+<!-- Modules/Studio/resources/views/layouts/editor.blade.php -->
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -341,37 +342,42 @@
     
     <!-- GrapesJS ve Eklentileri -->
     <script src="{{ asset('admin/libs/studio/grapes.min.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/plugins/acorn.min.js') }}"></script>
+        
+    <!-- Temel Plugin'ler -->
     <script src="{{ asset('admin/libs/studio/plugins/blocks-basic-master.min.js') }}"></script>
     <script src="{{ asset('admin/libs/studio/plugins/blocks-flexbox-master.min.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/plugins/ckeditor-master.min.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/plugins/components-countdown-master.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/plugins/preset-webpage-master.min.js') }}"></script>
+
+    <!-- Bileşen Plugin'leri -->
     <script src="{{ asset('admin/libs/studio/plugins/components-custom-code-master.min.js') }}"></script>
     <script src="{{ asset('admin/libs/studio/plugins/components-forms-master.min.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/plugins/components-lory-master.min.js') }}"></script>
     <script src="{{ asset('admin/libs/studio/plugins/components-navbar-master.min.js') }}"></script>
     <script src="{{ asset('admin/libs/studio/plugins/components-tabs-master.min.js') }}"></script>
     <script src="{{ asset('admin/libs/studio/plugins/components-tooltip-master.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/plugins/components-countdown-master.min.js') }}"></script>
     <script src="{{ asset('admin/libs/studio/plugins/components-typed-master.min.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/plugins/export-master.min.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/plugins/filestack-master.min.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/plugins/grapesjs-click-main.min.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/plugins/grapesjs-float-main.min.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/plugins/grapesjs-fonts-main.min.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/plugins/grapesjs-plugin-forms.min.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/plugins/parser-postcss-master.min.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/plugins/preset-newsletter-master.min.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/plugins/preset-webpage-master.min.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/plugins/react-main.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/plugins/components-lory-master.min.js') }}"></script>
+
+    <!-- Gelişmiş Edit Plugin'leri -->
+    <script src="{{ asset('admin/libs/studio/plugins/ckeditor-master.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/plugins/tui-image-editor-master.min.js') }}"></script>
+
+    <!-- Stil Plugin'leri -->
     <script src="{{ asset('admin/libs/studio/plugins/style-bg-master.min.js') }}"></script>
     <script src="{{ asset('admin/libs/studio/plugins/style-filter-master.min.js') }}"></script>
     <script src="{{ asset('admin/libs/studio/plugins/style-gradient-master.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/plugins/grapesjs-fonts-main.min.js') }}"></script>
+
+    <!-- Utility Plugin'leri -->
+    <script src="{{ asset('admin/libs/studio/plugins/export-master.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/plugins/filestack-master.min.js') }}"></script>
     <script src="{{ asset('admin/libs/studio/plugins/touch-master.min.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/plugins/tui-image-editor-master.min.js') }}"></script>
-    
+    <script src="{{ asset('admin/libs/studio/plugins/parser-postcss-master.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/plugins/grapesjs-plugin-forms.min.js') }}"></script>
+
     <!-- Özel Studio JS -->
     <script src="{{ asset('admin/libs/studio/studio.js') }}"></script>
-    
+        
     @livewireScripts
 </body>
 </html>

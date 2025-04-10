@@ -82,9 +82,6 @@ class StudioServiceProvider extends ServiceProvider
         }
     }
 
-    /**
-     * Geliştirme modunda varlıkları otomatik yayınla
-     */
     private function publishResourcesForDevMode($sourcePath, $destinationPath): void
     {
         try {
@@ -92,6 +89,7 @@ class StudioServiceProvider extends ServiceProvider
                 mkdir($destinationPath, 0755, true);
             }
 
+            // CSS dosyalarını kopyala
             if (is_dir($sourcePath . '/css')) {
                 if (!is_dir($destinationPath . '/css')) {
                     mkdir($destinationPath . '/css', 0755, true);
@@ -101,47 +99,47 @@ class StudioServiceProvider extends ServiceProvider
                 }
             }
 
-            if (is_dir($sourcePath . '/js')) {
-                if (!is_dir($destinationPath . '/js')) {
-                    mkdir($destinationPath . '/js', 0755, true);
-                }
-                foreach (glob($sourcePath . '/js/*.js') as $file) {
-                    copy($file, $destinationPath . '/js/' . basename($file));
-                }
-            }
-            
-            // Ayrıca admin/libs/studio klasörüne de kopyala
-            $destAdminPath = public_path('admin/libs/studio');
-            
-            if (!is_dir($destAdminPath)) {
-                mkdir($destAdminPath, 0755, true);
-            }
-            
-            if (is_dir($sourcePath . '/css')) {
-                if (!is_dir($destAdminPath . '/css')) {
-                    mkdir($destAdminPath . '/css', 0755, true);
-                }
-                foreach (glob($sourcePath . '/css/*.css') as $file) {
-                    copy($file, $destAdminPath . '/css/' . basename($file));
-                }
-            }
-            
+            // JS dosyalarını kopyala
             if (is_dir($sourcePath . '/js')) {
                 // Ana js dosyaları
                 foreach (glob($sourcePath . '/js/*.js') as $file) {
-                    copy($file, $destAdminPath . '/' . basename($file));
+                    copy($file, $destinationPath . '/' . basename($file));
                 }
                 
-                // Plugin dosyaları
+                // Sadece temel GrapesJS dosyasını kopyala (grapes.min.js)
+                $grapesJsPath = $sourcePath . '/js/grapes.min.js';
+                if (file_exists($grapesJsPath)) {
+                    copy($grapesJsPath, $destinationPath . '/grapes.min.js');
+                }
+                
+                // Özel studio.js dosyasını kopyala
+                $studioJsPath = $sourcePath . '/js/studio.js';
+                if (file_exists($studioJsPath)) {
+                    copy($studioJsPath, $destinationPath . '/studio.js');
+                }
+                
+                // Plugin klasörünü oluştur ama sadece belirli plugin'leri kopyala
+                if (!is_dir($destinationPath . '/plugins')) {
+                    mkdir($destinationPath . '/plugins', 0755, true);
+                }
+                
+                // Sadece gerekli plugin'leri kopyala (ihtiyaç duyarsanız)
+                $safePlugins = [
+                    // 'gjs-blocks-basic.min.js' 
+                    // Şimdilik plugin'leri devre dışı bırakalım
+                ];
+                
                 if (is_dir($sourcePath . '/js/plugins')) {
-                    if (!is_dir($destAdminPath . '/plugins')) {
-                        mkdir($destAdminPath . '/plugins', 0755, true);
-                    }
-                    foreach (glob($sourcePath . '/js/plugins/*.js') as $file) {
-                        copy($file, $destAdminPath . '/plugins/' . basename($file));
+                    foreach ($safePlugins as $plugin) {
+                        $pluginPath = $sourcePath . '/js/plugins/' . $plugin;
+                        if (file_exists($pluginPath)) {
+                            copy($pluginPath, $destinationPath . '/plugins/' . $plugin);
+                        }
                     }
                 }
             }
+            
+            \Illuminate\Support\Facades\Log::info('Studio Modülü: Varlıklar başarıyla yayınlandı.');
         } catch (\Exception $e) {
             // Hata durumunda loglama yap
             \Illuminate\Support\Facades\Log::error('Studio Modülü: Varlıkları yayınlarken hata: ' . $e->getMessage());

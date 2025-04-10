@@ -1,9 +1,6 @@
 /**
  * Studio Editor için GrapesJS yapılandırması
  */
-/**
- * Studio Editor için GrapesJS yapılandırması
- */
 window.initStudioEditor = function (config) {
     // GrapesJS Editor yapılandırması
     const editor = grapesjs.init({
@@ -18,9 +15,7 @@ window.initStudioEditor = function (config) {
         },
         styleManager: {
             appendTo: "#styles-container",
-            sectors: [
-                // ... mevcut stil sektörleri ...
-            ],
+            // Stil seçenekleri buraya gelecek
         },
         layerManager: {
             appendTo: "#layers-container",
@@ -55,48 +50,23 @@ window.initStudioEditor = function (config) {
                 "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
             ],
         },
-        // Eklentileri etkinleştirin
-        plugins: [
-            "gjs-blocks-basic",
-            "gjs-blocks-flexbox",
-            "gjs-preset-webpage",
-            "gjs-component-custom-code",
-            "gjs-component-forms",
-            "gjs-component-navbar",
-            "gjs-component-tabs",
-            "gjs-component-tooltip",
-            "gjs-component-countdown",
-            "gjs-component-typed",
-            "gjs-component-lory",
-            "gjs-ckeditor",
-            "gjs-tui-image-editor",
-            "gjs-style-bg",
-            "gjs-style-filter",
-            "gjs-style-gradient",
-            "gjs-fonts",
-            "gjs-plugin-export",
-            "gjs-filestack",
-            "grapesjs-touch",
-            "gjs-parser-postcss",
-            "grapesjs-plugin-forms",
-        ],
+        // Plugin isimlerini düzelttik
+        plugins: ["blocks-basic", "blocks-flexbox", "preset-webpage"],
         // Plugin seçenekleri
         pluginsOpts: {
-            "gjs-blocks-basic": {
+            "blocks-basic": {
                 blocks: [
                     "column1",
                     "column2",
                     "column3",
-                    "column3-7",
                     "text",
                     "link",
                     "image",
                     "video",
-                    "map",
                 ],
                 flexGrid: true,
             },
-            "gjs-preset-webpage": {
+            "preset-webpage": {
                 modalImportTitle: "Kod İçe Aktar",
                 modalImportLabel: "HTML veya CSS kodunu yapıştırın",
                 modalImportContent: "",
@@ -104,42 +74,40 @@ window.initStudioEditor = function (config) {
                     "İçeriği temizlemek istediğinize emin misiniz?",
                 showStylesOnChange: true,
             },
-            "gjs-component-custom-code": {
-                blockCustomCode: {
-                    label: "Özel Kod",
-                    category: "Bileşenler",
-                },
-            },
-            "gjs-component-forms": {
-                blocks: [
-                    "form",
-                    "input",
-                    "textarea",
-                    "select",
-                    "button",
-                    "label",
-                    "checkbox",
-                    "radio",
-                ],
-                labelTraitMethod: "Yöntem",
-                labelTraitAction: "Eylem",
-                labelTraitState: "Durum",
-                labelTraitId: "ID",
-                labelTraitTitle: "Başlık",
-            },
-            "gjs-tui-image-editor": {
-                config: {
-                    includeUI: {
-                        initMenu: "filter",
-                    },
-                },
-                icons: {
-                    "menu.normalIcon.path": "../icons/icon-d.svg",
-                    "menu.activeIcon.path": "../icons/icon-b.svg",
-                    "menu.disabledIcon.path": "../icons/icon-a.svg",
-                    "menu.hoverIcon.path": "../icons/icon-c.svg",
-                },
-            },
+        },
+    });
+
+    // Blok kategorileri tanımla
+    editor.BlockManager.getCategories().reset();
+    editor.BlockManager.getCategories().add([
+        { id: "Temel", label: "Temel Bileşenler" },
+        { id: "Bileşenler", label: "Bootstrap Bileşenleri" },
+    ]);
+
+    // Manuel olarak bazı bloklar ekleyelim (plugin'ler çalışmazsa)
+    editor.BlockManager.add("section", {
+        label: "Bölüm",
+        category: "Temel",
+        content: `<section class="py-5">
+          <div class="container">
+            <h2>Bölüm Başlığı</h2>
+            <p>Bu bir bölüm içeriğidir.</p>
+          </div>
+        </section>`,
+    });
+
+    editor.BlockManager.add("text", {
+        label: "Metin",
+        category: "Temel",
+        content: '<div data-gjs-type="text">Metin içeriği buraya gelecek</div>',
+    });
+
+    editor.BlockManager.add("image", {
+        label: "Görsel",
+        category: "Temel",
+        content: {
+            type: "image",
+            style: { color: "black" },
         },
     });
 

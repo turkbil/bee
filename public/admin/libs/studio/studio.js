@@ -11,16 +11,24 @@ window.initStudioEditor = function (config) {
     const editor = window.StudioCore.initEditor(config);
     
     // Plugin'leri yükle
-    window.StudioPluginsLoader.loadPlugins(editor);
+    if (window.StudioPlugins && typeof window.StudioPlugins.loadPlugins === 'function') {
+        window.StudioPlugins.loadPlugins(editor);
+    }
     
     // Blokları kaydet
-    window.StudioBlocks.registerBlocks(editor);
+    if (window.StudioBlocks && typeof window.StudioBlocks.registerBlocks === 'function') {
+        window.StudioBlocks.registerBlocks(editor);
+    }
     
     // Arayüz etkileşimlerini ayarla
-    window.StudioUI.setupUI(editor);
+    if (window.StudioUI && typeof window.StudioUI.setupUI === 'function') {
+        window.StudioUI.setupUI(editor);
+    }
     
     // Eylem butonlarını ayarla
-    window.StudioActions.setupActions(editor, config);
+    if (window.StudioActions && typeof window.StudioActions.setupActions === 'function') {
+        window.StudioActions.setupActions(editor, config);
+    }
     
     console.log("Studio Editor başarıyla yüklendi!");
     

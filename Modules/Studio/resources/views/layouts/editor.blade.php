@@ -343,11 +343,6 @@
     <!-- GrapesJS ve Eklentileri -->
     <script src="{{ asset('admin/libs/studio/grapes.min.js') }}"></script>
 
-    <!-- Temel Plugin'ler -->
-    <script src="{{ asset('admin/libs/studio/plugins/blocks-basic-master.min.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/plugins/blocks-flexbox-master.min.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/plugins/preset-webpage-master.min.js') }}"></script>
-
     <!-- Özel Studio JS -->
     <script src="{{ asset('admin/libs/studio/studio.js') }}"></script>
         

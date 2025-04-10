@@ -8,129 +8,140 @@
  */
 window.initStudioEditor = function (config) {
     console.log('Studio Editor başlatılıyor:', config);
+    console.log('arg1:', arguments[0]);
     
-    if (!config || !config.moduleId || config.moduleId <= 0) {
-        console.error('Geçersiz konfigürasyon veya modül ID:', config);
-        return null;
-    }
-    
-    // Mevcut yükleme göstergesini temizle
-    const existingLoader = document.querySelector('.studio-loader');
-    if (existingLoader) {
-        existingLoader.remove();
-    }
-    
-    // Yükleme göstergesi ekle
-    const loaderElement = document.createElement('div');
-    loaderElement.className = 'studio-loader';
-    loaderElement.style.position = 'fixed';
-    loaderElement.style.top = '0';
-    loaderElement.style.left = '0';
-    loaderElement.style.width = '100%';
-    loaderElement.style.height = '100%';
-    loaderElement.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
-    loaderElement.style.display = 'flex';
-    loaderElement.style.alignItems = 'center';
-    loaderElement.style.justifyContent = 'center';
-    loaderElement.style.zIndex = '10000';
-    loaderElement.style.transition = 'opacity 0.3s ease';
-    
-    loaderElement.innerHTML = `
-        <div class="studio-loader-content" style="text-align: center; background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
-            <div style="margin-bottom: 15px;">
-                <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
-                    <span class="visually-hidden">Yükleniyor...</span>
-                </div>
-            </div>
-            <h3 style="margin-bottom: 10px;">Studio Editor Yükleniyor</h3>
-            <p style="color: #6c757d;">Lütfen bekleyin...</p>
-        </div>
-    `;
-    
-    document.body.appendChild(loaderElement);
-    
-    // GrapesJS Editor yapılandırması - blok yöneticisi için düzgün seçici kullan
-    // blocks-container ID'si yerine geçerli bir seçici kullanarak sorunu çöz
-    setTimeout(() => {
-        // Blok konteynerini sorgula
-        const blocksContainer = document.querySelector('.blocks-container');
-        
-        // Yapılandırmayı güncelle
-        if (blocksContainer) {
-            config.blocksContainer = blocksContainer;
-        }
-        
-        // GrapesJS Editor yapılandırması
-        const editor = window.StudioCore.initEditor(config);
-        
-        if (!editor) {
-            console.error('GrapesJS Editor başlatılamadı!');
-            // Yükleme ekranını kaldır
-            if (loaderElement && loaderElement.parentNode) {
-                loaderElement.style.opacity = '0';
-                setTimeout(() => {
-                    loaderElement.parentNode.removeChild(loaderElement);
-                }, 300);
-            }
+    try {
+        if (!config || !config.moduleId || config.moduleId <= 0) {
+            console.error('Geçersiz konfigürasyon veya modül ID:', config);
             return null;
         }
         
-        // Plugin'leri yükle - StudioPluginLoader varsa ve loadPlugins fonksiyonu tanımlıysa
-        if (window.StudioPluginLoader && typeof window.StudioPluginLoader.loadPlugins === 'function') {
-            window.StudioPluginLoader.loadPlugins(editor);
+        // Mevcut yükleme göstergesini temizle
+        const existingLoader = document.querySelector('.studio-loader');
+        if (existingLoader) {
+            existingLoader.remove();
         }
         
-        // Blokları kaydet
-        if (window.StudioBlocks && typeof window.StudioBlocks.registerBlocks === 'function') {
-            window.StudioBlocks.registerBlocks(editor);
-        }
+        // Yükleme göstergesi ekle
+        const loaderElement = document.createElement('div');
+        loaderElement.className = 'studio-loader';
+        loaderElement.style.position = 'fixed';
+        loaderElement.style.top = '0';
+        loaderElement.style.left = '0';
+        loaderElement.style.width = '100%';
+        loaderElement.style.height = '100%';
+        loaderElement.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+        loaderElement.style.display = 'flex';
+        loaderElement.style.alignItems = 'center';
+        loaderElement.style.justifyContent = 'center';
+        loaderElement.style.zIndex = '10000';
+        loaderElement.style.transition = 'opacity 0.3s ease';
         
-        // Arayüz etkileşimlerini ayarla
-        if (window.StudioUI && typeof window.StudioUI.setupUI === 'function') {
-            window.StudioUI.setupUI(editor);
-        }
+        loaderElement.innerHTML = `
+            <div class="studio-loader-content" style="text-align: center; background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                <div style="margin-bottom: 15px;">
+                    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                        <span class="visually-hidden">Yükleniyor...</span>
+                    </div>
+                </div>
+                <h3 style="margin-bottom: 10px;">Studio Editor Yükleniyor</h3>
+                <p style="color: #6c757d;">Lütfen bekleyin...</p>
+            </div>
+        `;
         
-        // Eylem butonlarını ayarla
-        if (window.StudioActions && typeof window.StudioActions.setupActions === 'function') {
-            window.StudioActions.setupActions(editor, config);
-        }
+        document.body.appendChild(loaderElement);
         
-        // Editor özel komutlarını ayarla
-        setupCustomCommands(editor);
+        // Dummy editor objesi oluştur (asenkron yükleme öncesi)
+        const dummyEditor = {
+            on: function(eventName, callback) {
+                // Event'leri kaydet
+                if (!window.studioEditorEvents) {
+                    window.studioEditorEvents = {};
+                }
+                if (!window.studioEditorEvents[eventName]) {
+                    window.studioEditorEvents[eventName] = [];
+                }
+                window.studioEditorEvents[eventName].push(callback);
+                console.log(`Event dinleyicisi eklendi: ${eventName}`);
+            },
+            getComponents: function() { return []; },
+            getStyle: function() { return {}; }
+        };
         
-        // Drag & Drop olaylarını iyileştir
-        enhanceDragDrop(editor);
-        
-        // Editor yükleme olayını dinle
-        editor.on('load', function() {
-            console.log('GrapesJS Editor yüklendi, bileşenler hazırlanıyor...');
-            
-            // Yükleme ekranını kaldır
-            if (loaderElement && loaderElement.parentNode) {
-                loaderElement.style.opacity = '0';
-                setTimeout(() => {
-                    if (loaderElement.parentNode) {
-                        loaderElement.parentNode.removeChild(loaderElement);
+        // Asenkron yükleme işlemi
+        setTimeout(() => {
+            try {
+                // Blok konteynerini sorgula
+                const blocksContainer = document.querySelector('.blocks-container');
+                
+                // Yapılandırmayı güncelle
+                if (blocksContainer) {
+                    config.blocksContainer = blocksContainer;
+                }
+                
+                let realEditor = null;
+                
+                // GrapesJS Editor yapılandırması
+                if (window.StudioCore && typeof window.StudioCore.initEditor === 'function') {
+                    realEditor = window.StudioCore.initEditor(config);
+                } else {
+                    console.error('StudioCore.initEditor bulunamadı!');
+                    return null;
+                }
+                
+                if (!realEditor) {
+                    console.error('Editor başlatılamadı!');
+                    return null;
+                }
+                
+                // Dummy üzerine kayıtlı event'leri gerçek editöre geçir
+                if (window.studioEditorEvents) {
+                    Object.keys(window.studioEditorEvents).forEach(eventName => {
+                        window.studioEditorEvents[eventName].forEach(callback => {
+                            realEditor.on(eventName, callback);
+                        });
+                    });
+                }
+                
+                // Global erişim için editörü güncelle
+                window.studioEditor = realEditor;
+                
+                // Eklentileri yükle
+                if (window.StudioPluginLoader && typeof window.StudioPluginLoader.loadPlugins === 'function') {
+                    try {
+                        window.StudioPluginLoader.loadPlugins(realEditor);
+                    } catch (error) {
+                        console.error('Eklentiler yüklenirken hata:', error);
                     }
-                }, 300);
+                }
+                
+                // Komutları ve diğer işlemleri ekle
+                try {
+                    if (window.StudioBlocks) window.StudioBlocks.registerBlocks(realEditor);
+                    if (window.StudioUI) window.StudioUI.setupUI(realEditor);
+                    if (window.StudioActions) window.StudioActions.setupActions(realEditor, config);
+                    setupCustomCommands(realEditor);
+                    enhanceDragDrop(realEditor);
+                } catch (error) {
+                    console.error('Editör modülleri yüklenirken hata:', error);
+                }
+                
+                // Yükleme işlemi tamamlandı
+                console.log("Studio Editor başarıyla yüklendi!");
+                
+            } catch (error) {
+                console.error('Studio Editor başlatılırken beklenmeyen hata:', error);
             }
-            
-            // Sol panel görünürlüğü
-            const leftPanel = document.querySelector('.panel__left');
-            if (leftPanel) {
-                leftPanel.style.display = 'flex';
-            }
-            
-            // Sayfa yapısında DOMContentLoaded olayı gerçekleşmiş olabilir
-            // Bu nedenle manuel bir tetikleme yapalım
-            const event = new Event('editor:loaded');
-            document.dispatchEvent(event);
-        });
+        }, 500);
         
-        console.log("Studio Editor başarıyla yüklendi!");
+        return dummyEditor;
         
-        return editor;
-    }, 100);
+    } catch (error) {
+        console.error('Studio Editor başlatılırken kritik hata:', error);
+        return {
+            on: function() {} // Boş fonksiyon
+        };
+    }
 };
 
 // Özel komutları ayarla

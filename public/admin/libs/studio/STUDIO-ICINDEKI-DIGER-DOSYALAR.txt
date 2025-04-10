@@ -1,12 +1,13 @@
 Seçilen dizin: C:/laragon/www/laravel/public/admin/libs/studio
 C:/laragon/www/laravel/public/admin/libs/studio/
+    app.js
     grapes.min.js
+    STUDIO-ICINDEKI-DIGER-DOSYALAR.txt
     studio.js
-    STUDIO-ICINDEKI-DIGER-DOSYALAR.txt (YANİ BU DOSYA)
 C:/laragon/www/laravel/public/admin/libs/studio\css/
+    grapes.min.css
     studio-editor.css
 C:/laragon/www/laravel/public/admin/libs/studio\plugins/
-    acorn.min.js
     blocks-basic-master.min.js
     blocks-flexbox-master.min.js
     ckeditor-master.min.js
@@ -20,14 +21,10 @@ C:/laragon/www/laravel/public/admin/libs/studio\plugins/
     components-typed-master.min.js
     export-master.min.js
     filestack-master.min.js
-    grapesjs-click-main.min.js
-    grapesjs-float-main.min.js
     grapesjs-fonts-main.min.js
     grapesjs-plugin-forms.min.js
     parser-postcss-master.min.js
-    preset-newsletter-master.min.js
     preset-webpage-master.min.js
-    react-main.min.js
     style-bg-master.min.js
     style-filter-master.min.js
     style-gradient-master.min.js

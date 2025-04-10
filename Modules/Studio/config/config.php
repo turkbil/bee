@@ -11,17 +11,7 @@ return [
             'custom' => true,  // Özel panelleri kullan
         ],
         'plugins' => [
-            'blocks-basic' => true,
-            'preset-webpage' => true,
-            'style-bg' => true,
-            'plugin-export' => true,
-            'plugin-forms' => true,
-            'custom-code' => true,
-            'touch' => true,
-            'component-countdown' => true,
-            'tabs' => true,
-            'typed' => true,
-            'tui-image-editor' => true
+            // Tüm eklentiler devre dışı bırakıldı
         ],
     ],
     'widget' => [

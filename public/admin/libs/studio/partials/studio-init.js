@@ -5,22 +5,9 @@
 (function() {
     // DOM yüklendiğinde çalışacak kod
     document.addEventListener('DOMContentLoaded', function() {
-        // Editor konfigürasyonu kontrol et
-        const editorConfigScript = document.getElementById('editor-config');
-        let config = null;
-        
-        if (editorConfigScript) {
-            try {
-                config = JSON.parse(editorConfigScript.textContent);
-                console.log('Editor konfigürasyonu yüklendi:', config);
-                initializeEditor(config);
-            } catch (e) {
-                console.error('Editor konfigürasyonu ayrıştırılamadı:', e);
-                tryAlternativeConfig();
-            }
-        } else {
-            tryAlternativeConfig();
-        }
+        // Direkt olarak alternatif konfigürasyonu kullanmayı tercih ediyoruz
+        // çünkü JSON ayrıştırmasında sorunlar yaşanıyor
+        tryAlternativeConfig();
     });
     
     /**
@@ -38,6 +25,7 @@
                 return;
             }
             
+            // Content ve CSS içeriklerini hidden input'lardan al
             const config = {
                 elementId: 'gjs',
                 moduleType: moduleType,

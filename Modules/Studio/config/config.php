@@ -11,7 +11,11 @@ return [
             'custom' => true,  // Özel panelleri kullan
         ],
         'plugins' => [
-            // Tüm eklentiler devre dışı bırakıldı
+            'blocks-basic' => true,
+            'preset-webpage' => true,
+            'forms' => true,
+            'custom-code' => true,
+            'touch' => true,
         ],
     ],
     'widget' => [

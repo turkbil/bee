@@ -1,12 +1,13 @@
-/* Studio Editor CSS */
+/* Studio Editor CSS - Modern Wix/Canvas Builder Style */
 
-html,
-body {
+/* Temel Layout */
+html, body {
     margin: 0;
     padding: 0;
     height: 100%;
     width: 100%;
     overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
 body {
@@ -14,123 +15,135 @@ body {
     flex-direction: column;
 }
 
-.navbar {
-    height: 50px;
-    flex-shrink: 0;
-    background-color: #206bc4;
-    padding: 0 15px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    color: white;
-}
-
-.navbar-left {
-    display: flex;
-    align-items: center;
-}
-
-.navbar-brand {
-    font-size: 18px;
-    font-weight: bold;
-    margin-right: 15px;
-    color: white;
-}
-
-.navbar-right {
-    display: flex;
-    align-items: center;
-}
-
-.page-wrapper {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    position: relative;
-}
-
-.editor-toolbar {
-    display: flex;
-    align-items: center;
-    padding: 8px 12px;
-    background-color: #fff;
-    border-bottom: 1px solid #dee2e6;
-}
-
-.toolbar-group {
-    display: flex;
-    margin-right: 8px;
-}
-
-.toolbar-divider {
-    width: 1px;
-    height: 24px;
-    background-color: #dee2e6;
-    margin: 0 8px;
-}
-
-.toolbar-btn {
-    width: 32px;
-    height: 32px;
-    border: none;
-    background: none;
-    border-radius: 4px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #495057;
-    margin-right: 4px;
-}
-
-.toolbar-btn:hover {
-    background-color: #f1f3f5;
-}
-
-.toolbar-btn.active {
-    background-color: #e9ecef;
-    color: #206bc4;
-}
-
-.device-btns {
-    margin-left: auto;
-}
-
-/* Editor Ana Stilleri */
+/* Editor Main Container */
 .editor-main {
     display: flex;
     height: calc(100vh - 96px); /* Header + Toolbar yüksekliği */
     overflow: hidden;
+    background-color: #f8f9fa;
 }
 
 /* Sol Panel */
 .panel__left {
-    width: 260px;
+    width: 280px;
     background-color: #fff;
-    border-right: 1px solid #dee2e6;
+    border-right: 1px solid #e5e5e5;
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    z-index: 10;
 }
 
+/* Arama Kutusu */
 .blocks-search {
-    padding: 10px;
-    border-bottom: 1px solid #dee2e6;
+    padding: 15px;
+    border-bottom: 1px solid #e5e5e5;
 }
 
+.blocks-search input {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 4px;
+    border: 1px solid #d1d5db;
+    background-color: #f9fafb;
+    font-size: 14px;
+}
+
+.blocks-search input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+    border-color: #3b82f6;
+}
+
+/* Blok Container */
 .blocks-container {
     flex: 1;
     overflow-y: auto;
     padding: 10px;
 }
 
-/* Orta Panel (Canvas) */
+/* Kategori Stili */
+.block-category {
+    margin-bottom: 15px;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.block-category-header {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    background-color: #f1f5f9;
+    cursor: pointer;
+    border-bottom: 1px solid #e5e5e5;
+    color: #1e293b;
+    font-weight: 600;
+}
+
+.block-category-header i {
+    margin-right: 10px;
+    color: #3b82f6;
+}
+
+.block-category-header .toggle-icon {
+    margin-left: auto;
+    transition: transform 0.2s;
+}
+
+.block-category.collapsed .toggle-icon {
+    transform: rotate(-90deg);
+}
+
+/* Blok Öğeleri */
+.block-items {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 15px;
+}
+
+.block-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 10px;
+    border-radius: 6px;
+    background-color: #f8fafc;
+    border: 1px solid #e5e9f0;
+    cursor: move;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.block-item:hover {
+    background-color: #eff6ff;
+    border-color: #93c5fd;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+}
+
+.block-item-icon {
+    font-size: 24px;
+    color: #3b82f6;
+    margin-bottom: 8px;
+}
+
+.block-item-label {
+    font-size: 12px;
+    color: #4b5563;
+    font-weight: 500;
+}
+
+/* Orta Panel */
 .editor-canvas {
     flex: 1;
     position: relative;
-    background-color: #f5f5f5;
     overflow: hidden;
+    background-color: #f1f5f9;
 }
 
 #gjs {
@@ -140,30 +153,38 @@ body {
 
 /* Sağ Panel */
 .panel__right {
-    width: 260px;
+    width: 280px;
     background-color: #fff;
-    border-left: 1px solid #dee2e6;
+    border-left: 1px solid #e5e5e5;
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    z-index: 10;
 }
 
+/* Tab Paneli */
 .panel-tabs {
     display: flex;
-    border-bottom: 1px solid #dee2e6;
+    border-bottom: 1px solid #e5e5e5;
+    background-color: #f8fafc;
 }
 
 .panel-tab {
-    padding: 10px 15px;
-    cursor: pointer;
+    padding: 12px 15px;
     font-size: 14px;
-    color: #495057;
+    color: #64748b;
+    cursor: pointer;
     border-bottom: 2px solid transparent;
+    font-weight: 500;
+    text-align: center;
+    flex: 1;
 }
 
 .panel-tab.active {
-    color: #206bc4;
-    border-bottom-color: #206bc4;
+    color: #3b82f6;
+    border-bottom-color: #3b82f6;
+    background-color: #fff;
 }
 
 .panel-tab-content {
@@ -177,18 +198,7 @@ body {
     display: block;
 }
 
-.debug-bar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 30px;
-    background-color: #2c3e50;
-    color: white;
-    z-index: 1000;
-}
-
-/* GrapesJS stil geçersiz kılmaları */
+/* GrapesJS Canvas Override */
 .gjs-cv-canvas {
     width: 100% !important;
     height: 100% !important;
@@ -196,157 +206,145 @@ body {
     left: 0 !important;
 }
 
-.gjs-block {
-    width: auto !important;
-    height: auto !important;
-    min-height: 40px !important;
-    padding: 10px !important;
-    text-align: center !important;
-    font-size: 12px !important;
-    border: 1px solid #ddd !important;
-    border-radius: 5px !important;
-    margin: 10px 5px !important;
+/* GrapesJS Style Manager Override */
+.gjs-sm-sector {
+    margin-bottom: 15px !important;
     background-color: #fff !important;
-    transition: all 0.2s ease !important;
+    border-radius: 6px !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+    overflow: hidden !important;
 }
 
-.gjs-block:hover {
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1) !important;
-    transform: translateY(-2px) !important;
-    border-color: #0d6efd !important;
-}
-
-.gjs-block-category {
-    padding: 10px 5px !important;
-}
-
-.gjs-one-bg {
-    background-color: #ffffff !important;
-}
-
-.gjs-two-color {
-    color: #383838 !important;
-}
-
-.gjs-four-color {
-    color: #0d6efd !important;
-}
-
-/* Panel stillerini geçersiz kıl */
-.gjs-pn-panel {
-    position: relative !important;
-    height: 100% !important;
-}
-
-.gjs-pn-views {
-    height: 100% !important;
-    padding: 0 !important;
-    border: none !important;
-    overflow: visible !important;
-}
-
-.gjs-pn-views-container {
-    height: 100% !important;
-    overflow: auto !important;
+.gjs-sm-sector-title {
+    background-color: #f1f5f9 !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    color: #1e293b !important;
+    padding: 12px 15px !important;
+    border-bottom: 1px solid #e5e5e5 !important;
 }
 
 .gjs-field {
-    background-color: #f7f9fc !important;
+    background-color: #f8fafc !important;
     border-radius: 4px !important;
-    border: 1px solid #dee2e6 !important;
+    border: 1px solid #d1d5db !important;
     box-shadow: none !important;
 }
 
 .gjs-field:focus-within {
-    border-color: #0d6efd !important;
-}
-
-.gjs-field input,
-.gjs-field select,
-.gjs-field textarea {
-    background-color: transparent !important;
-    color: #495057 !important;
-}
-
-.gjs-sm-sector-title {
-    font-weight: 600 !important;
-    font-size: 14px !important;
-    padding: 10px !important;
-    background-color: #f8f9fa !important;
-    border-bottom: 1px solid #dee2e6 !important;
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3) !important;
 }
 
 .gjs-sm-properties {
-    padding: 10px !important;
+    padding: 15px !important;
 }
 
 .gjs-sm-label {
     font-size: 12px !important;
-    color: #6c757d !important;
+    font-weight: 500 !important;
+    color: #64748b !important;
+    margin-bottom: 5px !important;
 }
 
 .gjs-sm-property {
-    margin-bottom: 8px !important;
+    margin-bottom: 10px !important;
 }
 
-/* Katman paneli stillerini geçersiz kıl */
+/* Toolbar */
+.editor-toolbar {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: #fff;
+    border-bottom: 1px solid #e5e5e5;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.toolbar-group {
+    display: flex;
+    margin-right: 15px;
+}
+
+.toolbar-divider {
+    width: 1px;
+    height: 24px;
+    background-color: #e5e5e5;
+    margin: 0 15px;
+}
+
+.toolbar-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: #f8fafc;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    margin-right: 5px;
+    border: 1px solid #e5e5e5;
+    transition: all 0.2s;
+}
+
+.toolbar-btn:hover {
+    background-color: #eff6ff;
+    color: #3b82f6;
+    border-color: #93c5fd;
+}
+
+.toolbar-btn.active {
+    background-color: #eff6ff;
+    color: #3b82f6;
+    border-color: #93c5fd;
+}
+
+.device-btns {
+    margin-left: auto;
+}
+
+/* GrapesJS Layer Manager Override */
 .gjs-layer {
-    padding: 8px !important;
+    padding: 10px !important;
     font-size: 13px !important;
-    border-bottom: 1px solid #f0f2f5 !important;
+    border-bottom: 1px solid #e5e5e5 !important;
+    background-color: #fff !important;
 }
 
 .gjs-layer.gjs-selected {
-    background-color: #e6f2ff !important;
+    background-color: #eff6ff !important;
 }
 
 .gjs-layer-title {
     font-weight: 500 !important;
+    color: #4b5563 !important;
 }
 
 .gjs-layer-count {
+    background-color: #e5e7eb !important;
+    color: #4b5563 !important;
     font-size: 11px !important;
-    background-color: #e9ecef !important;
-    color: #495057 !important;
+    padding: 2px 6px !important;
+    border-radius: 10px !important;
 }
 
-/* Özellik paneli stillerini geçersiz kıl */
+/* GrapesJS Trait Manager Override */
 .gjs-trt-trait {
-    padding: 8px !important;
-    margin-bottom: 5px !important;
-    border-bottom: 1px solid #f0f2f5 !important;
+    padding: 10px !important;
+    margin-bottom: 8px !important;
+    border-bottom: 1px solid #e5e5e5 !important;
 }
 
 .gjs-label-wrp {
     font-size: 12px !important;
-    color: #6c757d !important;
+    font-weight: 500 !important;
+    color: #64748b !important;
     margin-bottom: 5px !important;
 }
 
-/* Blok yöneticisi stillerini geçersiz kıl */
-.gjs-blocks-c {
-    padding: 10px !important;
-    overflow-y: auto !important;
-}
-
-.gjs-block-category {
-    margin-bottom: 15px !important;
-}
-
-.gjs-block-category.gjs-open {
-    border-bottom: 1px solid #f0f2f5 !important;
-}
-
-.gjs-block-category-title {
-    font-weight: 600 !important;
-    font-size: 14px !important;
-    padding: 10px !important;
-    background-color: #f8f9fa !important;
-    border-radius: 4px !important;
-    cursor: pointer !important;
-}
-
-/* Modal stillerini geçersiz kıl */
+/* Modal Override */
 .gjs-mdl-container {
     background-color: rgba(0, 0, 0, 0.5) !important;
 }
@@ -354,65 +352,46 @@ body {
 .gjs-mdl-dialog {
     border-radius: 8px !important;
     border: none !important;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15) !important;
+    overflow: hidden !important;
 }
 
 .gjs-mdl-header {
     padding: 15px !important;
-    background-color: #f8f9fa !important;
-    border-bottom: 1px solid #dee2e6 !important;
+    background-color: #f8fafc !important;
+    border-bottom: 1px solid #e5e5e5 !important;
 }
 
 .gjs-mdl-title {
     font-weight: 600 !important;
     font-size: 16px !important;
+    color: #1e293b !important;
 }
 
 .gjs-mdl-content {
-    padding: 15px !important;
+    padding: 20px !important;
+}
+
+.gjs-mdl-btn-close {
+    background-color: transparent !important;
 }
 
 .gjs-btn-prim {
-    background-color: #0d6efd !important;
+    background-color: #3b82f6 !important;
     color: white !important;
     border: none !important;
-    border-radius: 4px !important;
-    padding: 8px 15px !important;
+    border-radius: 6px !important;
+    padding: 8px 16px !important;
     font-size: 14px !important;
+    font-weight: 500 !important;
+    transition: background-color 0.2s !important;
 }
 
 .gjs-btn-prim:hover {
-    background-color: #0b5ed7 !important;
+    background-color: #2563eb !important;
 }
 
-/* RTE (Zengin Metin Düzenleyici) stillerini geçersiz kıl */
-.gjs-rte-toolbar {
-    background-color: #f8f9fa !important;
-    border: 1px solid #dee2e6 !important;
-    border-radius: 4px !important;
-}
-
-.gjs-rte-actionbar {
-    padding: 5px !important;
-}
-
-.gjs-rte-action {
-    padding: 5px !important;
-    margin: 0 2px !important;
-    border-radius: 4px !important;
-    color: #495057 !important;
-}
-
-.gjs-rte-action:hover {
-    background-color: #e9ecef !important;
-}
-
-.gjs-rte-action.gjs-rte-active {
-    background-color: #0d6efd !important;
-    color: white !important;
-}
-
-/* Özel stiller */
+/* Notifications */
 .toast-container {
     z-index: 9999;
 }

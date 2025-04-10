@@ -1,6 +1,6 @@
 /**
  * Studio Editor - UI Modülü
- * Editor arayüzü ve kullanıcı etkileşimi işlemleri
+ * Wix/Canvas Builder benzeri modern arayüz
  */
 window.StudioUI = (function() {
     /**
@@ -8,10 +8,36 @@ window.StudioUI = (function() {
      * @param {Object} editor - GrapesJS editor örneği
      */
     function setupUI(editor) {
+        initializeBlockCategories();
         setupSearch();
         setupTabs();
         setupToolbar(editor);
         setupDeviceToggle(editor);
+        setupDragAndDrop(editor);
+        fixDuplicateStyles();
+    }
+    
+    /**
+     * Blok kategorilerini başlat
+     */
+    function initializeBlockCategories() {
+        const categories = document.querySelectorAll('.block-category-header');
+        
+        categories.forEach(category => {
+            // Tıklama olayını ekle
+            category.addEventListener('click', function() {
+                const parent = this.closest('.block-category');
+                parent.classList.toggle('collapsed');
+                
+                // İçeriği göster/gizle
+                const content = parent.querySelector('.block-items');
+                if (parent.classList.contains('collapsed')) {
+                    content.style.display = 'none';
+                } else {
+                    content.style.display = 'grid';
+                }
+            });
+        });
     }
     
     /**
@@ -22,19 +48,46 @@ window.StudioUI = (function() {
         if (searchInput) {
             searchInput.addEventListener("input", function () {
                 const query = this.value.toLowerCase();
-                const blocks = document.querySelectorAll(".gjs-block");
+                const blocks = document.querySelectorAll(".block-item");
 
                 blocks.forEach((block) => {
-                    const label = block.querySelector(".gjs-block-label");
+                    const label = block.querySelector(".block-item-label");
                     if (label) {
                         const text = label.textContent.toLowerCase();
                         if (text.includes(query)) {
                             block.style.display = "";
+                            
+                            // Ebeveyn kategoriyi göster
+                            const category = block.closest('.block-category');
+                            if (category) {
+                                category.style.display = '';
+                                category.classList.remove('collapsed');
+                                category.querySelector('.block-items').style.display = 'grid';
+                            }
                         } else {
                             block.style.display = "none";
                         }
                     }
                 });
+                
+                // Boş kategorileri gizle
+                const categories = document.querySelectorAll('.block-category');
+                categories.forEach(category => {
+                    const visibleBlocks = category.querySelectorAll('.block-item[style*="display: none"]').length;
+                    const totalBlocks = category.querySelectorAll('.block-item').length;
+                    
+                    if (visibleBlocks === totalBlocks) {
+                        category.style.display = 'none';
+                    }
+                });
+                
+                // Arama kutusu boşsa tüm kategorileri göster
+                if (query === '') {
+                    const categories = document.querySelectorAll('.block-category');
+                    categories.forEach(category => {
+                        category.style.display = '';
+                    });
+                }
             });
         }
     }
@@ -206,6 +259,75 @@ window.StudioUI = (function() {
                 toggleDeviceButtons(this);
             });
         }
+    }
+    
+    /**
+     * Sürükle ve bırak işlevselliğini yapılandırır
+     * @param {Object} editor - GrapesJS editor örneği
+     */
+    function setupDragAndDrop(editor) {
+        const blockItems = document.querySelectorAll('.block-item');
+        
+        blockItems.forEach(item => {
+            item.addEventListener('dragstart', function(e) {
+                // Blok ID'sini sakla
+                const blockId = this.getAttribute('data-block-id');
+                e.dataTransfer.setData('blockId', blockId);
+                
+                // Sürükleme efekti
+                this.classList.add('dragging');
+            });
+            
+            item.addEventListener('dragend', function() {
+                this.classList.remove('dragging');
+            });
+            
+            // Tıklama ile de blokları ekleyebilme
+            item.addEventListener('click', function() {
+                const blockId = this.getAttribute('data-block-id');
+                const block = editor.BlockManager.get(blockId);
+                
+                if (block) {
+                    editor.addComponents(block.get('content'));
+                    // Bildirim göster
+                    StudioUtils.showNotification(
+                        "Başarılı", 
+                        "Bileşen eklendi.", 
+                        "success"
+                    );
+                }
+            });
+        });
+    }
+    
+    /**
+     * Duplike stil kategorilerini düzeltir
+     */
+    function fixDuplicateStyles() {
+        // Editor yüklendikten sonra çalıştır
+        setTimeout(() => {
+            // Sağ paneldeki duplike kategorileri temizle
+            const styleContainer = document.getElementById('styles-container');
+            if (styleContainer) {
+                // Tüm kategorileri al
+                const categories = styleContainer.querySelectorAll('.gjs-sm-sector');
+                const processedTitles = new Set();
+                
+                categories.forEach(category => {
+                    const titleEl = category.querySelector('.gjs-sm-sector-title');
+                    if (titleEl) {
+                        const title = titleEl.textContent.trim();
+                        
+                        // Eğer bu başlık daha önce işlendiyse, kategoriyi gizle
+                        if (processedTitles.has(title)) {
+                            category.style.display = 'none';
+                        } else {
+                            processedTitles.add(title);
+                        }
+                    }
+                });
+            }
+        }, 1000);
     }
     
     return {

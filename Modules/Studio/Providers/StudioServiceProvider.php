@@ -85,6 +85,35 @@ class StudioServiceProvider extends ServiceProvider
         $this->publishModularJsFiles();
     }
 
+    /**
+     * Modüler JS dosyalarını yayınla
+     */
+    private function publishModularJsFiles(): void
+    {
+        try {
+            $sourcePath = module_path('Studio', 'resources/assets/js/partials');
+            $destinationPath = public_path('admin/libs/studio/partials');
+
+            if (!is_dir($sourcePath)) {
+                return;
+            }
+
+            if (!is_dir($destinationPath)) {
+                mkdir($destinationPath, 0755, true);
+            }
+
+            // JS parçacık dosyalarını kopyala
+            foreach (glob($sourcePath . '/*.js') as $file) {
+                copy($file, $destinationPath . '/' . basename($file));
+            }
+            
+            \Illuminate\Support\Facades\Log::info('Studio Modülü: Modüler JS dosyaları başarıyla yayınlandı.');
+        } catch (\Exception $e) {
+            // Hata durumunda loglama yap
+            \Illuminate\Support\Facades\Log::error('Studio Modülü: Modüler JS dosyaları yayınlanırken hata: ' . $e->getMessage());
+        }
+    }
+
     private function publishResourcesForDevMode($sourcePath, $destinationPath): void
     {
         try {

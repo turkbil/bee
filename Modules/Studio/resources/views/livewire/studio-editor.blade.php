@@ -38,20 +38,15 @@
         </div>
     </div>
     
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const editorConfig = {
-                elementId: 'gjs',
-                moduleType: '{{ $moduleType }}',
-                moduleId: {{ $moduleId }},
-                content: `{!! str_replace(['\\', '`'], ['\\\\', '\\`'], $content) !!}`,
-                css: `{!! str_replace(['\\', '`'], ['\\\\', '\\`'], $css) !!}`,
-                csrfToken: '{{ csrf_token() }}'
-            };
-            
-            // Studio.js içindeki initStudioEditor fonksiyonunu çağır
-            window.initStudioEditor(editorConfig);
-        });
+    <script id="editor-config" type="application/json">
+    {
+        "elementId": "gjs",
+        "moduleType": "{{ $moduleType }}",
+        "moduleId": {{ $moduleId }},
+        "content": {{ json_encode($content) }},
+        "css": {{ json_encode($css) }},
+        "csrfToken": "{{ csrf_token() }}"
+    }
     </script>
     
     <style>

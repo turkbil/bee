@@ -226,18 +226,18 @@ class StudioController extends Controller
                 }
             }
             
-            // Plugins klasörü
-            $sourcePluginsPath = $sourcePath . '/js/plugins';
-            $destPluginsPath = $destinationPath . '/plugins';
-            
-            if (!file_exists($destPluginsPath)) {
-                mkdir($destPluginsPath, 0755, true);
+            // Partials klasörü oluştur
+            $destPartialsPath = $destinationPath . '/partials';
+            if (!file_exists($destPartialsPath)) {
+                mkdir($destPartialsPath, 0755, true);
             }
             
-            // Plugin dosyalarını kopyala
-            if (is_dir($sourcePluginsPath)) {
-                foreach (glob($sourcePluginsPath . '/*.js') as $file) {
-                    copy($file, $destPluginsPath . '/' . basename($file));
+            // Public içerisindeki partials dosyalarını da kopyala
+            $publicPartialsPath = public_path('admin/libs/studio/partials');
+            if (is_dir($publicPartialsPath)) {
+                // Partials dosyalarını kopyala
+                foreach (glob($publicPartialsPath . '/*.js') as $file) {
+                    copy($file, $destPartialsPath . '/' . basename($file));
                 }
             }
             

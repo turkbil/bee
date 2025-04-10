@@ -48,8 +48,16 @@
      * @param {Object} config - Editor konfigürasyonu
      */
     function initializeEditor(config) {
+        // Sadece bir kez başlatıldığından emin ol
+        if (window._studioEditorInitialized) {
+            console.warn('Studio Editor zaten başlatılmış, tekrar başlatma işlemi atlanıyor.');
+            return;
+        }
+        window._studioEditorInitialized = true;
+
         if (!config || !config.moduleId || config.moduleId <= 0) {
             console.error('Geçersiz konfigürasyon veya modül ID:', config);
+            window._studioEditorInitialized = false; // Hata durumunda bayrağı geri al
             return;
         }
         

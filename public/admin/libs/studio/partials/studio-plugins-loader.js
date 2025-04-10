@@ -34,16 +34,22 @@ window.StudioPluginLoader = (function() {
      * Eklentileri güvenli bir şekilde yükle
      * @param {Object} editor - GrapesJS editor örneği
      */
+    // Eklentilerin yüklenip yüklenmediğini kontrol etmek için bayrak
+    let pluginsLoaded = false;
+
     function loadPlugins(editor) {
         if (!editor) {
             console.error('GrapesJS editor örneği bulunamadı!');
             return;
         }
+
+        // Eğer eklentiler zaten yüklendiyse, tekrar yükleme
+        if (pluginsLoaded) {
+            console.log('Eklentiler zaten yüklenmiş.');
+            return;
+        }
         
         console.log('GrapesJS eklentileri yükleniyor...');
-        
-        // Eklenti yükleme kodları burada olacak - şimdilik simüle ediyoruz
-        // Gerçekte bu eklentiler script etiketleriyle yükleniyor
         console.log('Aktif eklentiler:', enabledPlugins);
         
         // Temel bloklar ve bileşenler eklentisi aktif
@@ -60,6 +66,9 @@ window.StudioPluginLoader = (function() {
         if (window.StudioPlugins && typeof window.StudioPlugins.addCustomCommands === 'function') {
             window.StudioPlugins.addCustomCommands(editor);
         }
+
+        // Eklentilerin yüklendiğini işaretle
+        pluginsLoaded = true;
     }
     
     return {

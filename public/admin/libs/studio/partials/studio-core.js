@@ -11,22 +11,10 @@ window.StudioCore = (function() {
      * @returns {Object} - GrapesJS editor örneği
      */
     function initEditor(config) {
-        // BlockManager seçicisini doğru şekilde ayarla
-        let blockManagerConfig = {};
-        
-        // Blok konteynerini kontrol et ve yapılandır
-        if (config.blocksContainer) {
-            blockManagerConfig.appendTo = config.blocksContainer;
-        } else {
-            // İlk başta özel alanı kontrol et
-            const blocksContainer = document.querySelector('.blocks-container');
-            if (blocksContainer) {
-                blockManagerConfig.appendTo = blocksContainer;
-            } else {
-                // Varsayılan olarak body'ye ekle
-                blockManagerConfig.appendTo = 'body';
-            }
-        }
+        // BlockManager yapılandırması
+        const blockManagerConfig = {
+            appendTo: config.blocksContainer || '.blocks-container'
+        };
         
         try {
             // GrapesJS Editor yapılandırması
@@ -37,7 +25,7 @@ window.StudioCore = (function() {
                 width: "100%",
                 storageManager: false,
                 panels: { defaults: [] },
-                blockManager: blockManagerConfig,
+                blockManager: { appendTo: '' }, // Default UI render'ı engelle
                 styleManager: {
                     appendTo: "#styles-container",
                     sectors: [
@@ -149,6 +137,8 @@ window.StudioCore = (function() {
 
         // Editor'ü yükleme olayını dinle
         editor.on('load', function() {
+            console.log('Editor loaded. Setting up iframe listeners.'); // Log eklendi
+
             // Editor yüklendi, animasyonu gizle
             const loaderElement = document.querySelector('.studio-loader');
             if (loaderElement) {
@@ -160,15 +150,35 @@ window.StudioCore = (function() {
                 }, 300);
             }
             
-            // DOM'un hazır olmasından sonra blokları ve panelleri tekrar ayarla
-            setTimeout(() => {
-                // BlockManager seçicisini tekrar ayarla
-                const blocksContainer = document.querySelector('.blocks-container');
-                if (blocksContainer && editor.BlockManager) {
-                    editor.BlockManager.render(blocksContainer);
+            // Canvas iframe'ini bul ve olay dinleyicilerini ekle
+            try {
+                const canvasDoc = editor.Canvas.getDocument(); // iframe'in document nesnesi
+                if (canvasDoc && canvasDoc.body) {
+                    const canvasBody = canvasDoc.body;
+                    console.log('Found canvas iframe body. Attaching drop listeners.');
+
+                    // Önceki listener'ları temizle (ihtiyaç olmayabilir ama garanti olsun)
+                    canvasBody.removeEventListener('dragover', StudioUI.handleDragOver);
+                    canvasBody.removeEventListener('dragenter', StudioUI.handleDragEnter);
+                    canvasBody.removeEventListener('dragleave', StudioUI.handleDragLeave);
+                    canvasBody.removeEventListener('drop', StudioUI.handleCanvasDrop);
+
+                    // Yeni listener'ları ekle
+                    canvasBody.addEventListener('dragover', StudioUI.handleDragOver);
+                    canvasBody.addEventListener('dragenter', StudioUI.handleDragEnter);
+                    canvasBody.addEventListener('dragleave', StudioUI.handleDragLeave);
+                    canvasBody.addEventListener('drop', StudioUI.handleCanvasDrop);
+
+                    console.log('Drop listeners attached to iframe body.');
+                } else {
+                     console.error('Could not find canvas iframe body.');
                 }
-                
-                // Stil yöneticisi öğelerini yeniden düzenle
+            } catch (error) {
+                console.error('Error attaching listeners to canvas iframe:', error);
+            }
+
+            // DOM'un hazır olmasından sonra stil yöneticisini düzenle
+            setTimeout(() => {
                 fixStyleManagerIssues();
             }, 500);
         });

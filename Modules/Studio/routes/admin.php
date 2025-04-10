@@ -37,5 +37,9 @@ Route::middleware(['web', 'auth', 'tenant'])
                 Route::post('/api/assets/upload', [StudioController::class, 'uploadAssets'])
                     ->middleware('module.permission:studio,view')
                     ->name('api.assets.upload');
+
+                Route::get('/publish-resources', [StudioController::class, 'publishResources'])
+                    ->middleware('module.permission:studio,update')
+                    ->name('publish-resources');
             });
     });

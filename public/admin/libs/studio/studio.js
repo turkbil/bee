@@ -7,122 +7,321 @@ window.initStudioEditor = function (config) {
         container: "#" + config.elementId,
         fromElement: false,
         height: "100%",
-        width: "auto",
+        width: "100%",
         storageManager: false,
-        panels: { defaults: [] },
+        panels: { defaults: [] }, // Varsayılan panelleri temizle
         blockManager: {
             appendTo: "#blocks-container",
             blocks: [
-                {
-                    id: "section",
-                    label: "Bölüm",
-                    category: "Temel",
-                    content:
-                        '<section class="section"><div class="container"><h2>Bölüm Başlığı</h2><p>İçeriğiniz burada yer alacak.</p></div></section>',
-                    attributes: { class: "fa fa-puzzle-piece" },
-                },
-                {
-                    id: "text",
-                    label: "Metin",
-                    category: "Temel",
-                    content:
-                        '<div data-gjs-type="text">Metin içeriği buraya gelecek.</div>',
-                    attributes: { class: "fa fa-text-width" },
-                },
-                {
-                    id: "heading",
-                    label: "Başlık",
-                    category: "Temel",
-                    content: "<h2>Başlık</h2>",
-                    attributes: { class: "fa fa-heading" },
-                },
-                {
-                    id: "image",
-                    label: "Görsel",
-                    category: "Temel",
-                    select: true,
-                    content: { type: "image" },
-                    attributes: { class: "fa fa-image" },
-                },
-                {
-                    id: "video",
-                    label: "Video",
-                    category: "Temel",
-                    select: true,
-                    content: { type: "video" },
-                    attributes: { class: "fa fa-film" },
-                },
-                {
-                    id: "link",
-                    label: "Bağlantı",
-                    category: "Temel",
-                    content: { type: "link", content: "Bağlantı" },
-                    attributes: { class: "fa fa-link" },
-                },
-                {
-                    id: "button",
-                    label: "Düğme",
-                    category: "Temel",
-                    content: '<button class="btn btn-primary">Tıkla</button>',
-                    attributes: { class: "fa fa-square" },
-                },
-                {
-                    id: "container",
-                    label: "Konteyner",
-                    category: "Düzen",
-                    content: '<div class="container"></div>',
-                    attributes: { class: "fa fa-square-o" },
-                },
-                {
-                    id: "row",
-                    label: "Satır",
-                    category: "Düzen",
-                    content: '<div class="row"></div>',
-                    attributes: { class: "fa fa-ellipsis-h" },
-                },
-                {
-                    id: "column",
-                    label: "Sütun",
-                    category: "Düzen",
-                    content: '<div class="col"></div>',
-                    attributes: { class: "fa fa-ellipsis-v" },
-                },
-                {
-                    id: "column-3",
-                    label: "3 Sütun",
-                    category: "Düzen",
-                    content: `<div class="row">
-                                <div class="col-md-4">Sütun 1</div>
-                                <div class="col-md-4">Sütun 2</div>
-                                <div class="col-md-4">Sütun 3</div>
-                              </div>`,
-                    attributes: { class: "fa fa-columns" },
-                },
-                {
-                    id: "form",
-                    label: "Form",
-                    category: "Form",
-                    content: `<form>
-                                <div class="mb-3">
-                                  <label class="form-label">Ad Soyad</label>
-                                  <input type="text" class="form-control" placeholder="Adınız Soyadınız">
-                                </div>
-                                <div class="mb-3">
-                                  <label class="form-label">E-posta</label>
-                                  <input type="email" class="form-control" placeholder="E-posta adresiniz">
-                                </div>
-                                <div class="mb-3">
-                                  <label class="form-label">Mesaj</label>
-                                  <textarea class="form-control" rows="3"></textarea>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Gönder</button>
-                              </form>`,
-                    attributes: { class: "fa fa-wpforms" },
-                },
+                // ... bloklar
             ],
         },
         styleManager: {
             appendTo: "#styles-container",
+            sectors: [
+                {
+                    name: "Dimension",
+                    open: false,
+                    buildProps: [
+                        "width",
+                        "height",
+                        "max-width",
+                        "min-height",
+                        "margin",
+                        "padding",
+                    ],
+                    properties: [
+                        {
+                            id: "flex-width",
+                            type: "integer",
+                            name: "Width",
+                            units: ["px", "%", "vw"],
+                            property: "width",
+                            toRequire: 1,
+                        },
+                        {
+                            property: "margin",
+                            properties: [
+                                { name: "Top", property: "margin-top" },
+                                { name: "Right", property: "margin-right" },
+                                { name: "Bottom", property: "margin-bottom" },
+                                { name: "Left", property: "margin-left" },
+                            ],
+                        },
+                        {
+                            property: "padding",
+                            properties: [
+                                { name: "Top", property: "padding-top" },
+                                { name: "Right", property: "padding-right" },
+                                { name: "Bottom", property: "padding-bottom" },
+                                { name: "Left", property: "padding-left" },
+                            ],
+                        },
+                    ],
+                },
+                {
+                    name: "Typography",
+                    open: false,
+                    buildProps: [
+                        "font-family",
+                        "font-size",
+                        "font-weight",
+                        "letter-spacing",
+                        "color",
+                        "line-height",
+                        "text-align",
+                        "text-decoration",
+                        "text-shadow",
+                    ],
+                    properties: [
+                        { name: "Font", property: "font-family" },
+                        { name: "Weight", property: "font-weight" },
+                        { name: "Font color", property: "color" },
+                    ],
+                },
+                {
+                    name: "Decorations",
+                    open: false,
+                    buildProps: [
+                        "border-radius-c",
+                        "background-color",
+                        "border-radius",
+                        "border",
+                        "box-shadow",
+                        "background",
+                    ],
+                },
+                {
+                    name: "Extra",
+                    open: false,
+                    buildProps: [
+                        "opacity",
+                        "transition",
+                        "perspective",
+                        "transform",
+                    ],
+                    properties: [
+                        {
+                            type: "slider",
+                            property: "opacity",
+                            defaults: 1,
+                            step: 0.01,
+                            max: 1,
+                            min: 0,
+                        },
+                    ],
+                },
+                {
+                    name: "Flex",
+                    open: false,
+                    properties: [
+                        {
+                            name: "Flex Container",
+                            property: "display",
+                            type: "select",
+                            defaults: "block",
+                            list: [
+                                { value: "block", name: "Disable" },
+                                { value: "flex", name: "Enable" },
+                            ],
+                        },
+                        {
+                            name: "Flex Parent",
+                            property: "label-parent-flex",
+                            type: "integer",
+                        },
+                        {
+                            name: "Direction",
+                            property: "flex-direction",
+                            type: "select",
+                            defaults: "row",
+                            list: [
+                                {
+                                    value: "row",
+                                    name: "Row",
+                                    className: "icons-flex icon-dir-row",
+                                },
+                                {
+                                    value: "row-reverse",
+                                    name: "Row reverse",
+                                    className: "icons-flex icon-dir-row-rev",
+                                },
+                                {
+                                    value: "column",
+                                    name: "Column",
+                                    className: "icons-flex icon-dir-col",
+                                },
+                                {
+                                    value: "column-reverse",
+                                    name: "Column reverse",
+                                    className: "icons-flex icon-dir-col-rev",
+                                },
+                            ],
+                        },
+                        {
+                            name: "Wrap",
+                            property: "flex-wrap",
+                            type: "select",
+                            defaults: "nowrap",
+                            list: [
+                                {
+                                    value: "nowrap",
+                                    name: "No wrap",
+                                },
+                                {
+                                    value: "wrap",
+                                    name: "Wrap",
+                                },
+                                {
+                                    value: "wrap-reverse",
+                                    name: "Wrap reverse",
+                                },
+                            ],
+                        },
+                        {
+                            name: "Justify",
+                            property: "justify-content",
+                            type: "select",
+                            defaults: "flex-start",
+                            list: [
+                                {
+                                    value: "flex-start",
+                                    name: "Start",
+                                },
+                                {
+                                    value: "flex-end",
+                                    name: "End",
+                                },
+                                {
+                                    value: "center",
+                                    name: "Center",
+                                },
+                                {
+                                    value: "space-between",
+                                    name: "Space between",
+                                },
+                                {
+                                    value: "space-around",
+                                    name: "Space around",
+                                },
+                                {
+                                    value: "space-evenly",
+                                    name: "Space evenly",
+                                },
+                            ],
+                        },
+                        {
+                            name: "Align",
+                            property: "align-items",
+                            type: "select",
+                            defaults: "center",
+                            list: [
+                                {
+                                    value: "flex-start",
+                                    name: "Start",
+                                },
+                                {
+                                    value: "flex-end",
+                                    name: "End",
+                                },
+                                {
+                                    value: "center",
+                                    name: "Center",
+                                },
+                                {
+                                    value: "stretch",
+                                    name: "Stretch",
+                                },
+                            ],
+                        },
+                        {
+                            name: "Align",
+                            property: "align-content",
+                            type: "select",
+                            defaults: "center",
+                            list: [
+                                {
+                                    value: "flex-start",
+                                    name: "Start",
+                                },
+                                {
+                                    value: "flex-end",
+                                    name: "End",
+                                },
+                                {
+                                    value: "center",
+                                    name: "Center",
+                                },
+                                {
+                                    value: "space-between",
+                                    name: "Space between",
+                                },
+                                {
+                                    value: "space-around",
+                                    name: "Space around",
+                                },
+                                {
+                                    value: "space-evenly",
+                                    name: "Space evenly",
+                                },
+                                {
+                                    value: "stretch",
+                                    name: "Stretch",
+                                },
+                            ],
+                        },
+                        {
+                            name: "Align-self",
+                            property: "align-self",
+                            type: "select",
+                            defaults: "auto",
+                            list: [
+                                {
+                                    value: "auto",
+                                    name: "Auto",
+                                },
+                                {
+                                    value: "flex-start",
+                                    name: "Start",
+                                },
+                                {
+                                    value: "flex-end",
+                                    name: "End",
+                                },
+                                {
+                                    value: "center",
+                                    name: "Center",
+                                },
+                                {
+                                    value: "stretch",
+                                    name: "Stretch",
+                                },
+                            ],
+                        },
+                        {
+                            name: "Flex-grow",
+                            property: "flex-grow",
+                            type: "integer",
+                            defaults: 0,
+                            min: 0,
+                        },
+                        {
+                            name: "Flex-shrink",
+                            property: "flex-shrink",
+                            type: "integer",
+                            defaults: 0,
+                            min: 0,
+                        },
+                        {
+                            name: "Flex-basis",
+                            property: "flex-basis",
+                            type: "integer",
+                            units: ["px", "%", ""],
+                            defaults: "auto",
+                        },
+                    ],
+                },
+            ],
         },
         layerManager: {
             appendTo: "#layers-container",
@@ -157,15 +356,26 @@ window.initStudioEditor = function (config) {
                 "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
             ],
         },
-        // Eklentileri doğrudan global değişkenler olarak tanımlıyoruz
+        // Tüm eklentileri ekle
         plugins: [
-            window["gjs-blocks-basic"], // grapesjs-blocks-basic kendini bu isimle kaydediyor
+            "grapesjs-blocks-basic",
             "grapesjs-preset-webpage",
             "grapesjs-style-bg",
             "grapesjs-plugin-export",
             "grapesjs-plugin-forms",
             "grapesjs-custom-code",
-            "grapesjs-touch"
+            "grapesjs-touch",
+            "grapesjs-component-countdown",
+            "grapesjs-tabs",
+            "grapesjs-typed",
+            "grapesjs-tui-image-editor",
+            "grapesjs-blocks-flexbox",
+            "grapesjs-lory-slider",
+            "grapesjs-navbar",
+            "grapesjs-tooltip",
+            "grapesjs-style-filter",
+            "grapesjs-style-gradient",
+            "grapesjs-preset-newsletter",
         ],
         pluginsOpts: {
             "grapesjs-preset-webpage": {
@@ -536,13 +746,6 @@ ${html}
             modal.addEventListener("hidden.bs.modal", function () {
                 modal.remove();
             });
-        });
-
-    // Nav bar'daki sw-visibility butonu için olay dinleyici
-    document
-        .getElementById("sw-visibility")
-        .addEventListener("click", function () {
-            editor.runCommand("sw-visibility");
         });
 
     console.log("Studio Editor başarıyla yüklendi!");

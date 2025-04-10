@@ -80,6 +80,9 @@ class StudioServiceProvider extends ServiceProvider
             // Varlıkları otomatik olarak yayınla
             $this->publishResourcesForDevMode($sourcePath, $destinationPath);
         }
+        
+        // Modüler JS dosyalarını yayınla
+        $this->publishModularJsFiles();
     }
 
     private function publishResourcesForDevMode($sourcePath, $destinationPath): void

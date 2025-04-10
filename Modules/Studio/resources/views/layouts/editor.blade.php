@@ -15,6 +15,7 @@
     
     <!-- GrapesJS CSS -->
     <link rel="stylesheet" href="{{ asset('admin/libs/studio/css/grapes.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin/libs/studio/css/studio-editor.css') }}">
     
     <style>
         html, body {

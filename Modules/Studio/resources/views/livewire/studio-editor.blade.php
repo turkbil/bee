@@ -44,8 +44,8 @@
                 elementId: 'gjs',
                 moduleType: '{{ $moduleType }}',
                 moduleId: {{ $moduleId }},
-                content: `{!! str_replace(['\\', '`', '"'], ['\\\\', '\\`', '\\"'], $content) !!}`,
-                css: `{!! str_replace(['\\', '`', '"'], ['\\\\', '\\`', '\\"'], $css) !!}`,
+                content: `{!! str_replace(['\\', '`'], ['\\\\', '\\`'], $content) !!}`,
+                css: `{!! str_replace(['\\', '`'], ['\\\\', '\\`'], $css) !!}`,
                 csrfToken: '{{ csrf_token() }}'
             };
             

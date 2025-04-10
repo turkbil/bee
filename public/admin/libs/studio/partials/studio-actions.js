@@ -21,74 +21,62 @@ window.StudioActions = (function() {
      */
     function setupSaveButton(editor, config) {
         const saveBtn = document.getElementById("save-btn");
-        if (saveBtn) {
-            saveBtn.addEventListener("click", function () {
-                const htmlContent = editor.getHtml();
-                const cssContent = editor.getCss();
-                const jsContentEl = document.getElementById("js-content");
-                const jsContent = jsContentEl ? jsContentEl.value : "";
-
-                // moduleId'nin sayı olduğundan emin ol
-                const moduleId = parseInt(config.moduleId);
-                
-                // Kaydetme URL'si
-                const saveUrl = `/admin/studio/save/${config.moduleType}/${moduleId}`;
-
-                // Debug için konsola yazdır
-                console.log("Kaydediliyor:", {
-                    url: saveUrl,
-                    moduleType: config.moduleType,
-                    moduleId: moduleId,
-                    contentLength: htmlContent ? htmlContent.length : 0,
-                    cssLength: cssContent ? cssContent.length : 0
-                });
-
-                // Kaydederken butonu devre dışı bırak
-                saveBtn.disabled = true;
-                saveBtn.innerHTML = '<i class="fa fa-spinner fa-spin me-1"></i> Kaydediliyor...';
-
-                fetch(saveUrl, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRF-TOKEN": config.csrfToken,
-                    },
-                    body: JSON.stringify({
-                        content: htmlContent,
-                        css: cssContent,
-                        js: jsContent,
-                    }),
-                })
-                .then((response) => response.json())
-                .then((data) => {
-                    // Butonu aktifleştir
-                    saveBtn.disabled = false;
-                    saveBtn.innerHTML = '<i class="fa-solid fa-save me-1"></i> Kaydet';
-                    
-                    if (data.success) {
-                        StudioUtils.showNotification(
-                            "Başarılı",
-                            "İçerik başarıyla kaydedildi.",
-                            "success"
-                        );
-                    } else {
-                        StudioUtils.showNotification("Hata", data.message, "error");
-                    }
-                })
-                .catch((error) => {
-                    // Butonu aktifleştir
-                    saveBtn.disabled = false;
-                    saveBtn.innerHTML = '<i class="fa-solid fa-save me-1"></i> Kaydet';
-                    
-                    console.error("Kaydetme hatası:", error);
-                    StudioUtils.showNotification(
-                        "Hata",
-                        "İçerik kaydedilirken bir hata oluştu.",
-                        "error"
-                    );
-                });
-            });
+        if (!saveBtn) {
+            console.error("Save button (#save-btn) not found.");
+            return;
         }
+
+        // Kaydetme işlemini yapacak fonksiyon
+        const handleSaveClick = function () {
+            console.log("Save button clicked."); // Tıklama logu eklendi
+            const htmlContent = editor.getHtml();
+            const cssContent = editor.getCss();
+            const jsContentEl = document.getElementById("js-content");
+            const jsContent = jsContentEl ? jsContentEl.value : "";
+
+            // moduleId'nin sayı olduğundan emin ol
+            const moduleId = parseInt(config.moduleId);
+            
+            // Kaydetme URL'si
+            const saveUrl = `/admin/studio/save/${config.moduleType}/${moduleId}`;
+
+            // Debug için konsola yazdır
+            console.log("Kaydediliyor:", {
+                url: saveUrl,
+                moduleType: config.moduleType,
+                moduleId: moduleId,
+                contentLength: htmlContent.length,
+                cssLength: cssContent.length,
+                // jsLength: jsContent.length // Eğer JS kaydediyorsanız
+            });
+
+            // AJAX isteği
+            StudioUtils.sendRequest(
+                saveUrl,
+                {
+                    html_content: htmlContent,
+                    css_content: cssContent,
+                    js_content: jsContent
+                },
+                function(data) {
+                    StudioUtils.showNotification('Başarılı', data.message || 'İçerik başarıyla kaydedildi!');
+                },
+                function(error) {
+                    console.error('Kaydetme hatası:', error);
+                    StudioUtils.showNotification('Hata', error.message || 'Sunucuya bağlanırken bir hata oluştu.', 'error');
+                }
+            );
+        };
+        
+        // Önce mevcut listener'ı kaldır (varsa)
+        // Not: Eğer handleSaveClick fonksiyonu her çağrıda yeniden tanımlanıyorsa,
+        // bu removeEventListener işe yaramaz. Fonksiyon referansının aynı olması gerekir.
+        // Ancak bu yapı genellikle iş görür.
+        saveBtn.removeEventListener("click", handleSaveClick); 
+        // Sonra yeni listener'ı ekle
+        saveBtn.addEventListener("click", handleSaveClick);
+
+        console.log("Save button listener setup/reset."); // Kurulum logu
     }
     
     /**

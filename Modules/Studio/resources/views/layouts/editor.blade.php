@@ -335,47 +335,34 @@
     </div>
     
     <!-- jQuery -->
-    <script src="{{ asset('admin/libs/jquery@3.7.1/jquery.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/jquery@3.7.1/jquery.min.js') }}?v={{ filemtime(public_path('admin/libs/jquery@3.7.1/jquery.min.js')) }}"></script>
         
     <!-- Tabler JS -->
-    <script src="{{ asset('admin/js/tabler.min.js') }}"></script>
+    <script src="{{ asset('admin/js/tabler.min.js') }}?v={{ filemtime(public_path('admin/js/tabler.min.js')) }}"></script>
 
     <!-- GrapesJS ve Eklentileri -->
-    <script src="{{ asset('admin/libs/studio/grapes.min.js') }}"></script>
-
-    <!-- GrapesJS Plugin'leri -->
-    <script src="{{ asset('admin/libs/studio/plugins/blocks-basic-master.min.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/plugins/preset-webpage-master.min.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/plugins/style-bg-master.min.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/plugins/components-forms-master.min.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/plugins/components-custom-code-master.min.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/plugins/touch-master.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/grapes.min.js') }}?v={{ filemtime(public_path('admin/libs/studio/grapes.min.js')) }}"></script>
 
     <!-- Studio Modüler JS Dosyaları -->
-    <script src="{{ asset('admin/libs/studio/partials/studio-utils.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/partials/studio-plugins.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/partials/studio-plugins-loader.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/partials/studio-core.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/partials/studio-blocks.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/partials/studio-ui.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/partials/studio-actions.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/partials/studio-init.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/partials/studio-utils.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-utils.js')) }}"></script>
+    <script src="{{ asset('admin/libs/studio/partials/studio-plugins.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-plugins.js')) }}"></script>
+    <script src="{{ asset('admin/libs/studio/partials/studio-plugins-loader.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-plugins-loader.js')) }}"></script>
+    <script src="{{ asset('admin/libs/studio/partials/studio-core.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-core.js')) }}"></script>
+    <script src="{{ asset('admin/libs/studio/partials/studio-blocks.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-blocks.js')) }}"></script>
+    <script src="{{ asset('admin/libs/studio/partials/studio-ui.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-ui.js')) }}"></script>
+    <script src="{{ asset('admin/libs/studio/partials/studio-actions.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-actions.js')) }}"></script>
+    <script src="{{ asset('admin/libs/studio/partials/studio-init.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-init.js')) }}"></script>
 
     <!-- Özel Studio JS -->
-    <script src="{{ asset('admin/libs/studio/studio.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/app.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/studio.js') }}?v={{ filemtime(public_path('admin/libs/studio/studio.js')) }}"></script>
+    <script src="{{ asset('admin/libs/studio/app.js') }}?v={{ filemtime(public_path('admin/libs/studio/app.js')) }}"></script>
 
-    <!-- Editor Yapılandırması -->
-    <script id="editor-config" type="application/json">
-    {
-        "elementId": "gjs",
-        "moduleType": "{{ $moduleType ?? 'page' }}",
-        "moduleId": {{ $moduleId ?? 0 }},
-        "content": {!! json_encode($content ?? '') !!},
-        "css": {!! json_encode($css ?? '') !!},
-        "csrfToken": "{{ csrf_token() }}"
-    }
-    </script>
+    <!-- Editor Yapılandırması - Doğrudan hidden input kullanıyoruz JSON ayrıştırma sorunları nedeniyle -->
+    <div style="display:none;">
+        <textarea id="html-content">{{ $content ?? '' }}</textarea>
+        <textarea id="css-content">{{ $css ?? '' }}</textarea>
+        <textarea id="js-content">{{ $js ?? '' }}</textarea>
+    </div>
         
     @livewireScripts
 </body>

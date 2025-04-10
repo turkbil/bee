@@ -157,10 +157,15 @@ window.initStudioEditor = function (config) {
                 "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
             ],
         },
+        // Eklentileri doğrudan global değişkenler olarak tanımlıyoruz
         plugins: [
-            "grapesjs-blocks-basic",
+            window["gjs-blocks-basic"], // grapesjs-blocks-basic kendini bu isimle kaydediyor
             "grapesjs-preset-webpage",
             "grapesjs-style-bg",
+            "grapesjs-plugin-export",
+            "grapesjs-plugin-forms",
+            "grapesjs-custom-code",
+            "grapesjs-touch"
         ],
         pluginsOpts: {
             "grapesjs-preset-webpage": {

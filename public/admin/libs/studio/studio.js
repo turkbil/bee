@@ -22,14 +22,14 @@ window.initStudioEditor = function (config) {
         return null;
     }
     
-    // Blokları kaydet
-    if (window.StudioBlocks && typeof window.StudioBlocks.registerBlocks === 'function') {
-        window.StudioBlocks.registerBlocks(editor);
-    }
-    
     // Plugin'leri yükle - StudioPluginLoader varsa ve loadPlugins fonksiyonu tanımlıysa
     if (window.StudioPluginLoader && typeof window.StudioPluginLoader.loadPlugins === 'function') {
         window.StudioPluginLoader.loadPlugins(editor);
+    }
+    
+    // Blokları kaydet
+    if (window.StudioBlocks && typeof window.StudioBlocks.registerBlocks === 'function') {
+        window.StudioBlocks.registerBlocks(editor);
     }
     
     // Arayüz etkileşimlerini ayarla
@@ -42,7 +42,36 @@ window.initStudioEditor = function (config) {
         window.StudioActions.setupActions(editor, config);
     }
     
+    // Drag & Drop
+    editor.on('load', function() {
+        console.log('GrapesJS Editor yüklendi, bileşenler hazırlanıyor...');
+        
+        // Sol panel görünürlüğü
+        const leftPanel = document.querySelector('.panel__left');
+        if (leftPanel) {
+            leftPanel.style.display = 'flex';
+        }
+        
+        // Sayfa yapısında DOMContentLoaded olayı gerçekleşmiş olabilir
+        // Bu nedenle manuel bir tetikleme yapalım
+        const event = new Event('editor:loaded');
+        document.dispatchEvent(event);
+    });
+    
     console.log("Studio Editor başarıyla yüklendi!");
     
     return editor;
 };
+
+// Editor yükleme olayını dinle
+document.addEventListener('editor:loaded', function() {
+    console.log('Editor yüklendi olayı algılandı');
+    
+    // Akordeonları ve blokları yeniden başlat
+    if (window.StudioUI && typeof window.StudioUI.setupUI === 'function') {
+        const editor = window.StudioCore.getEditor();
+        if (editor) {
+            window.StudioUI.setupUI(editor);
+        }
+    }
+});

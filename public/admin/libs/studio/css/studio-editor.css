@@ -63,7 +63,7 @@ body {
     padding: 10px;
 }
 
-/* Kategori Stili */
+/* Kategori Stili - Sol Panel */
 .block-category {
     margin-bottom: 15px;
     border-radius: 8px;
@@ -91,10 +91,15 @@ body {
 .block-category-header .toggle-icon {
     margin-left: auto;
     transition: transform 0.2s;
+    font-size: 14px;
 }
 
 .block-category.collapsed .toggle-icon {
     transform: rotate(-90deg);
+}
+
+.block-category.collapsed .block-items {
+    display: none !important;
 }
 
 /* Blok Öğeleri */
@@ -114,7 +119,7 @@ body {
     border-radius: 6px;
     background-color: #f8fafc;
     border: 1px solid #e5e9f0;
-    cursor: move;
+    cursor: grab;
     transition: all 0.2s;
     text-align: center;
 }
@@ -124,6 +129,11 @@ body {
     border-color: #93c5fd;
     transform: translateY(-2px);
     box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+}
+
+.block-item.dragging {
+    opacity: 0.6;
+    cursor: grabbing;
 }
 
 .block-item-icon {
@@ -149,6 +159,12 @@ body {
 #gjs {
     height: 100%;
     width: 100%;
+}
+
+.editor-canvas.drop-target {
+    outline: 2px dashed #3b82f6;
+    outline-offset: -10px;
+    background-color: rgba(59, 130, 246, 0.05);
 }
 
 /* Sağ Panel */
@@ -192,6 +208,7 @@ body {
     flex: 1;
     overflow-y: auto;
     height: calc(100% - 42px);
+    padding: 15px;
 }
 
 .panel-tab-content.active {
@@ -210,18 +227,36 @@ body {
 .gjs-sm-sector {
     margin-bottom: 15px !important;
     background-color: #fff !important;
-    border-radius: 6px !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
     overflow: hidden !important;
 }
 
 .gjs-sm-sector-title {
+    display: flex !important;
+    align-items: center !important;
+    padding: 12px 15px !important;
     background-color: #f1f5f9 !important;
+    cursor: pointer !important;
+    border-bottom: 1px solid #e5e5e5 !important;
+    color: #1e293b !important;
     font-weight: 600 !important;
     font-size: 14px !important;
-    color: #1e293b !important;
-    padding: 12px 15px !important;
-    border-bottom: 1px solid #e5e5e5 !important;
+}
+
+.gjs-sm-sector-title::after {
+    content: "\f107" !important;
+    font-family: "Font Awesome 6 Pro", FontAwesome !important;
+    margin-left: auto !important;
+    transition: transform 0.2s !important;
+}
+
+.gjs-sm-sector.gjs-collapsed .gjs-sm-sector-title::after {
+    transform: rotate(-90deg) !important;
+}
+
+.gjs-sm-sector.gjs-collapsed .gjs-sm-properties {
+    display: none !important;
 }
 
 .gjs-field {
@@ -389,6 +424,72 @@ body {
 
 .gjs-btn-prim:hover {
     background-color: #2563eb !important;
+}
+
+/* Daha iyi sürükleme işlevi için */
+.gjs-block {
+    cursor: grab !important;
+    background-color: #f8fafc !important;
+    border: 1px solid #e5e9f0 !important;
+    border-radius: 6px !important;
+    transition: all 0.2s !important;
+    margin: 5px !important;
+    padding: 10px !important;
+}
+
+.gjs-block:hover {
+    background-color: #eff6ff !important;
+    border-color: #93c5fd !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.08) !important;
+}
+
+.gjs-block:active {
+    cursor: grabbing !important;
+}
+
+/* Sol panel ile sağ panel eşleşmesi */
+.gjs-block-category {
+    margin-bottom: 15px !important;
+    border-radius: 8px !important;
+    background-color: #fff !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
+    overflow: hidden !important;
+}
+
+.gjs-block-category .gjs-title {
+    display: flex !important;
+    align-items: center !important;
+    padding: 12px 15px !important;
+    background-color: #f1f5f9 !important;
+    cursor: pointer !important;
+    border-bottom: 1px solid #e5e5e5 !important;
+    color: #1e293b !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+}
+
+.gjs-block-category .gjs-title::after {
+    content: "\f107" !important;
+    font-family: "Font Awesome 6 Pro", FontAwesome !important;
+    margin-left: auto !important;
+    transition: transform 0.2s !important;
+}
+
+.gjs-block-category.gjs-open .gjs-title::after {
+    transform: rotate(180deg) !important;
+}
+
+.gjs-blocks-c {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+    padding: 15px !important;
+}
+
+.gjs-block-category.gjs-collapsed .gjs-blocks-c,
+.gjs-block-category:not(.gjs-open) .gjs-blocks-c {
+    display: none !important;
 }
 
 /* Notifications */

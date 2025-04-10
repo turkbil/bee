@@ -1,5 +1,6 @@
 <div><div>
     <div style="display:none">
+        <textarea id="html-content">{!! $content !!}</textarea>
         <textarea id="css-content">{!! $css !!}</textarea>
         <textarea id="js-content">{!! $js !!}</textarea>
     </div>
@@ -15,7 +16,7 @@
         
         <!-- Orta Panel: Canvas -->
         <div class="editor-canvas">
-            <div id="gjs"></div>
+            <div id="gjs" data-module-type="{{ $moduleType }}" data-module-id="{{ $moduleId }}"></div>
         </div>
         
         <!-- Sağ Panel: Özellikler -->

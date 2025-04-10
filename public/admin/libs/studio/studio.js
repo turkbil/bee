@@ -7,17 +7,29 @@
  * Studio Editor için GrapesJS yapılandırması
  */
 window.initStudioEditor = function (config) {
+    console.log('Studio Editor başlatılıyor:', config);
+    
+    if (!config || !config.moduleId || config.moduleId <= 0) {
+        console.error('Geçersiz konfigürasyon veya modül ID:', config);
+        return null;
+    }
+    
     // GrapesJS Editor yapılandırması
     const editor = window.StudioCore.initEditor(config);
     
-    // Plugin'leri yükle
-    if (window.StudioPlugins && typeof window.StudioPlugins.loadPlugins === 'function') {
-        window.StudioPlugins.loadPlugins(editor);
+    if (!editor) {
+        console.error('GrapesJS Editor başlatılamadı!');
+        return null;
     }
     
     // Blokları kaydet
     if (window.StudioBlocks && typeof window.StudioBlocks.registerBlocks === 'function') {
         window.StudioBlocks.registerBlocks(editor);
+    }
+    
+    // Plugin'leri yükle - StudioPluginLoader varsa ve loadPlugins fonksiyonu tanımlıysa
+    if (window.StudioPluginLoader && typeof window.StudioPluginLoader.loadPlugins === 'function') {
+        window.StudioPluginLoader.loadPlugins(editor);
     }
     
     // Arayüz etkileşimlerini ayarla

@@ -57,7 +57,7 @@ class StudioApiController extends Controller
     public function saveContent(Request $request)
     {
         $module = $request->input('module');
-        $id = $request->input('id');
+        $id = (int)$request->input('id'); // ID'yi integer'a çevir
         $content = $request->input('content');
         $css = $request->input('css');
         $js = $request->input('js');

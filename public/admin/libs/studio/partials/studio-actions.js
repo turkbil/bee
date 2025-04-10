@@ -28,8 +28,20 @@ window.StudioActions = (function() {
                 const jsContentEl = document.getElementById("js-content");
                 const jsContent = jsContentEl ? jsContentEl.value : "";
 
+                // moduleId'nin sayı olduğundan emin ol
+                const moduleId = parseInt(config.moduleId);
+                
                 // Kaydetme URL'si
-                const saveUrl = `/admin/studio/save/${config.moduleType}/${config.moduleId}`;
+                const saveUrl = `/admin/studio/save/${config.moduleType}/${moduleId}`;
+
+                // Debug için konsola yazdır
+                console.log("Kaydediliyor:", {
+                    url: saveUrl,
+                    moduleType: config.moduleType,
+                    moduleId: moduleId,
+                    contentLength: htmlContent ? htmlContent.length : 0,
+                    cssLength: cssContent ? cssContent.length : 0
+                });
 
                 // Kaydederken butonu devre dışı bırak
                 saveBtn.disabled = true;

@@ -291,10 +291,11 @@ window.StudioUI = (function() {
      * @param {Object} editor - GrapesJS editor örneği
      */
     function setupGrapesJSCustomizations(editor) {
-        // Stil yöneticisi akordiyon davranışı
+        // Stil yöneticisi entegrasyonu ve açılır-kapanır menüler
         editor.on('load', () => {
-            // Sector başlıklarına tıklama olay dinleyicileri ekleme
+            // Stil yöneticisi için özel işleyiş
             setTimeout(() => {
+                // Sector başlıklarına tıklama olay dinleyicileri ekleme
                 const sectorTitles = document.querySelectorAll('.gjs-sm-sector-title');
                 sectorTitles.forEach(title => {
                     // Event listener zaten eklenmemişse ekle
@@ -311,6 +312,20 @@ window.StudioUI = (function() {
                             }
                         });
                     }
+                });
+                
+                // Stil panelini özelleştir
+                document.querySelectorAll('.gjs-sm-sector').forEach(sector => {
+                    sector.classList.add('custom-style-sector');
+                    const title = sector.querySelector('.gjs-sm-sector-title');
+                    if (title) {
+                        title.classList.add('custom-sector-title');
+                    }
+                });
+                
+                // Katmanlar panelini özelleştir
+                document.querySelectorAll('.gjs-layer').forEach(layer => {
+                    layer.classList.add('custom-layer');
                 });
                 
                 // BlockManager akordiyon davranışını düzenleme
@@ -341,8 +356,39 @@ window.StudioUI = (function() {
                         }
                     }
                 });
+                
+                // Sağ panel görünümünü iyileştir
+                const rightPanel = document.querySelector('.panel__right');
+                if (rightPanel) {
+                    rightPanel.classList.add('custom-right-panel');
+                }
+                
+                // Özellik panelini güçlendir
+                enhancePropertyFields();
             }, 500);
         });
+        
+        // Stil özelliklerini geliştir
+        function enhancePropertyFields() {
+            // Renk seçicileri için iyileştirmeler
+            document.querySelectorAll('.gjs-field-color').forEach(colorField => {
+                colorField.classList.add('custom-color-field');
+                // Renk seçiciye tıklandığında özel bir sınıf ekle
+                colorField.addEventListener('click', function() {
+                    this.classList.add('active-color-picker');
+                });
+            });
+            
+            // Select elemanlarını güçlendir
+            document.querySelectorAll('.gjs-field-select').forEach(selectField => {
+                selectField.classList.add('custom-select-field');
+            });
+            
+            // Giriş alanlarını güçlendir
+            document.querySelectorAll('.gjs-field-integer, .gjs-field-number').forEach(inputField => {
+                inputField.classList.add('custom-input-field');
+            });
+        }
     }
     
     /**
@@ -380,154 +426,245 @@ window.StudioUI = (function() {
      * @param {Object} editor - GrapesJS editor örneği
      */
     function setupDragAndDrop(editor) {
-        // GrapesJS'in kendi sürükle-bırak mekanizmasını geliştir
-        editor.on('block:drag:start', function(blockModel) {
-            // Sürükleme başladığında yapılacak işlemler
-            console.log('Blok sürükleniyor:', blockModel.get('label'));
-        });
-
-        // Özel blok öğeleri için sürükle-bırak davranışını iyileştir
-        const blockItems = document.querySelectorAll('.block-item');
-        blockItems.forEach(item => {
-            item.addEventListener('click', function() {
-                const blockId = this.getAttribute('data-block-id');
-                console.log('Blok tıklandı:', blockId);
-                
-                // GrapesJS bloğunu bul
-                const block = editor.BlockManager.get(blockId);
-                if (block) {
-                    // Bloğu ekle
-                    editor.addComponents(block.get('content'));
-                    
-                    // Bildirim göster
-                    StudioUtils.showNotification(
-                        "Başarılı", 
-                        "Bileşen eklendi", 
-                        "success"
-                    );
-                } else {
-                    console.warn('Blok bulunamadı:', blockId);
-                }
-            });
+        // Özel blok öğeleri için gelişmiş sürükle-bırak işlevi
+        setupCustomDragDrop(editor);
+        
+        // Block Manager için özelleştirmeler
+        setupBlockManagerDragDrop(editor);
+        
+        // Canvas içi sürükle bırak olaylarını iyileştir
+        enhanceCanvasDragDrop(editor);
+    }
+    
+    /**
+     * Özel blok öğeleri için gelişmiş sürükle-bırak
+     * @param {Object} editor - GrapesJS editor örneği
+     */
+    function setupCustomDragDrop(editor) {
+        // Tüm özel blok öğelerine event listener ekle
+        document.querySelectorAll('.block-item').forEach(blockItem => {
+            // Her öğeye benzersiz bir ID ekle
+            const uniqueId = 'block-' + Math.random().toString(36).substr(2, 9);
+            blockItem.id = uniqueId;
             
-            // Sürükleme event handler'ını sil ve yeniden tanımla
-            item.removeEventListener('dragstart', item._dragStartHandler);
+            // Drag başlatma olayını kaldır ve tekrar ekle (önceki kaldırılmış olabilir)
+            blockItem.removeEventListener('dragstart', handleDragStart);
+            blockItem.addEventListener('dragstart', handleDragStart);
             
-            // Yeni dragstart handler
-            item._dragStartHandler = function(e) {
-                const blockId = this.getAttribute('data-block-id');
-                
-                // Drag sırasında taşınacak veriyi ayarla
-                e.dataTransfer.setData('text/plain', blockId);
-                e.dataTransfer.effectAllowed = 'copy';
-                
-                // Sürükleme görseli için boş bir element oluştur
-                const ghost = document.createElement('div');
-                ghost.style.position = 'absolute';
-                ghost.style.top = '-1000px';
-                ghost.style.opacity = '0';
-                ghost.innerHTML = this.innerHTML;
-                document.body.appendChild(ghost);
-                
-                try {
-                    e.dataTransfer.setDragImage(ghost, 0, 0);
-                } catch (err) {
-                    console.warn('Drag image ayarlanamadı:', err);
-                }
-                
-                // CSS class ekle
-                this.classList.add('dragging');
-                
-                // Clean up ghost element
-                setTimeout(() => {
-                    document.body.removeChild(ghost);
-                }, 0);
-            };
+            // Drag bitme olayını kaldır ve tekrar ekle
+            blockItem.removeEventListener('dragend', handleDragEnd);
+            blockItem.addEventListener('dragend', handleDragEnd);
             
-            item.addEventListener('dragstart', item._dragStartHandler);
-            
-            // Sürükleme bittiğinde stili geri al
-            item.addEventListener('dragend', function() {
-                this.classList.remove('dragging');
-            });
+            // Tıklama olayını kaldır ve tekrar ekle
+            blockItem.removeEventListener('click', handleBlockClick);
+            blockItem.addEventListener('click', handleBlockClick);
         });
         
-        // Canvas'ı drop target yap
-        const canvas = document.querySelector('#gjs');
+        // Drag başlatma olayı
+        function handleDragStart(e) {
+            // Block ID'sini al
+            const blockId = this.getAttribute('data-block-id');
+            if (!blockId) return;
+            
+            // Data transfer içeriğini ayarla
+            e.dataTransfer.setData('text/plain', blockId);
+            e.dataTransfer.effectAllowed = 'copy';
+            
+            // Drag elementi için bir klon oluştur
+            const clone = this.cloneNode(true);
+            clone.style.position = 'absolute';
+            clone.style.left = '-1000px';
+            clone.style.top = '-1000px';
+            clone.style.opacity = '0.8';
+            clone.style.pointerEvents = 'none';
+            clone.id = 'drag-ghost';
+            document.body.appendChild(clone);
+            
+            try {
+                // Drag resmi olarak klonu ayarla (destekleniyorsa)
+                e.dataTransfer.setDragImage(clone, 20, 20);
+            } catch (err) {
+                console.warn('Drag resmi ayarlanamadı:', err);
+            }
+            
+            // Sürükleme başladığında CSS sınıfı ekle
+            this.classList.add('dragging');
+            
+            // Sürükleme olayını takip et
+            editor.trigger('custom:block:drag:start', blockId);
+        }
+        
+        // Drag bitirme olayı
+        function handleDragEnd(e) {
+            // Sürükleme CSS sınıfını kaldır
+            this.classList.remove('dragging');
+            
+            // Drag ghost'u temizle
+            const dragGhost = document.getElementById('drag-ghost');
+            if (dragGhost) {
+                document.body.removeChild(dragGhost);
+            }
+            
+            // Editor'e olayı bildir
+            editor.trigger('custom:block:drag:end');
+        }
+        
+        // Blok tıklama olayı
+        function handleBlockClick(e) {
+            const blockId = this.getAttribute('data-block-id');
+            if (!blockId) return;
+            
+            // GrapesJS bloğunu bul
+            const block = editor.BlockManager.get(blockId);
+            if (block) {
+                // Bloğu canvas'a ekle
+                editor.addComponents(block.get('content'));
+                
+                // Bildirim göster
+                StudioUtils.showNotification(
+                    "Başarılı", 
+                    "Bileşen eklendi", 
+                    "success"
+                );
+            }
+        }
+        
+        // Canvas'ı drop hedefi olarak yapılandır
+        const canvas = document.querySelector('.editor-canvas');
         if (canvas) {
-            // Eski event listener'ları kaldır
-            canvas.removeEventListener('dragover', canvas._dragOverHandler);
-            canvas.removeEventListener('drop', canvas._dropHandler);
+            // Önceki event listener'ları temizle
+            canvas.removeEventListener('dragover', handleCanvasDragOver);
+            canvas.removeEventListener('dragenter', handleCanvasDragEnter);
+            canvas.removeEventListener('dragleave', handleCanvasDragLeave);
+            canvas.removeEventListener('drop', handleCanvasDrop);
             
-            // Drop bölgesi olarak ayarla
-            canvas._dragOverHandler = function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                e.dataTransfer.dropEffect = 'copy';
-                this.classList.add('drop-target');
-            };
-            
-            canvas._dropHandler = function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                this.classList.remove('drop-target');
-                
-                const blockId = e.dataTransfer.getData('text/plain');
-                console.log('Drop detected with block ID:', blockId);
-                
-                if (blockId) {
-                    // GrapesJS bloğunu bul
-                    const block = editor.BlockManager.get(blockId);
-                    if (block) {
-                        // Bloğu ekle
-                        editor.addComponents(block.get('content'));
-                        
-                        // Bildirim göster
-                        StudioUtils.showNotification(
-                            "Başarılı", 
-                            "Bileşen eklendi", 
-                            "success"
-                        );
-                    } else {
-                        console.warn('Blok bulunamadı:', blockId);
-                    }
-                }
-            };
-            
-            canvas.addEventListener('dragover', canvas._dragOverHandler);
-            canvas.addEventListener('drop', canvas._dropHandler);
+            // Yeni event listener'ları ekle
+            canvas.addEventListener('dragover', handleCanvasDragOver);
+            canvas.addEventListener('dragenter', handleCanvasDragEnter);
+            canvas.addEventListener('dragleave', handleCanvasDragLeave);
+            canvas.addEventListener('drop', handleCanvasDrop);
         }
         
-        // Özel sol panel öğelerini GrapesJS blokları ile eşleştir
-        function syncCustomBlocks() {
-            console.log('Bloklar eşleştiriliyor...');
-            const blockItems = document.querySelectorAll('.block-item');
+        // Canvas dragover olayı
+        function handleCanvasDragOver(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.dataTransfer.dropEffect = 'copy';
+        }
+        
+        // Canvas dragenter olayı
+        function handleCanvasDragEnter(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.classList.add('drop-target');
+        }
+        
+        // Canvas dragleave olayı
+        function handleCanvasDragLeave(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.classList.remove('drop-target');
+        }
+        
+        // Canvas drop olayı
+        function handleCanvasDrop(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.classList.remove('drop-target');
             
-            blockItems.forEach(item => {
-                const blockId = item.getAttribute('data-block-id');
-                const block = editor.BlockManager.get(blockId);
+            const blockId = e.dataTransfer.getData('text/plain');
+            if (!blockId) return;
+            
+            // GrapesJS bloğunu bul
+            const block = editor.BlockManager.get(blockId);
+            if (block) {
+                // Bloğu canvas'a ekle
+                editor.addComponents(block.get('content'));
                 
-                if (block) {
-                    // Bloğun label'ını güncelle
-                    const label = item.querySelector('.block-item-label');
-                    if (label) {
-                        label.textContent = block.get('label');
-                    }
+                // Bildirim göster
+                StudioUtils.showNotification(
+                    "Başarılı", 
+                    "Bileşen eklendi", 
+                    "success"
+                );
+            }
+        }
+    }
+    
+    /**
+     * Block Manager için özelleştirmeler
+     * @param {Object} editor - GrapesJS editor örneği
+     */
+    function setupBlockManagerDragDrop(editor) {
+        // Editor yüklendikten sonra GrapesJS'in kendi bloklarını özelleştir
+        editor.on('load', () => {
+            setTimeout(() => {
+                // GrapesJS blok öğelerini güçlendir
+                document.querySelectorAll('.gjs-block').forEach(block => {
+                    block.classList.add('custom-gjs-block');
                     
-                    // İkon sınıfını güncelle (varsa)
-                    const iconAttributes = block.get('attributes');
-                    if (iconAttributes && iconAttributes.class) {
-                        const icon = item.querySelector('.block-item-icon i');
-                        if (icon) {
-                            icon.className = iconAttributes.class;
-                        }
-                    }
-                }
-            });
-        }
+                    // Hover efektlerini güçlendir
+                    block.addEventListener('mouseenter', function() {
+                        this.classList.add('custom-gjs-block-hover');
+                    });
+                    
+                    block.addEventListener('mouseleave', function() {
+                        this.classList.remove('custom-gjs-block-hover');
+                    });
+                    
+                    // Sürükleme başladığında stili güçlendir
+                    block.addEventListener('dragstart', function() {
+                        this.classList.add('custom-gjs-block-dragging');
+                    });
+                    
+                    block.addEventListener('dragend', function() {
+                        this.classList.remove('custom-gjs-block-dragging');
+                    });
+                });
+                
+                // Blok kategorilerini güçlendir
+                document.querySelectorAll('.gjs-block-category').forEach(category => {
+                    category.classList.add('custom-gjs-category');
+                });
+            }, 800);
+        });
+    }
+    
+    /**
+     * Canvas içi sürükle bırak olaylarını iyileştir
+     * @param {Object} editor - GrapesJS editor örneği
+     */
+    function enhanceCanvasDragDrop(editor) {
+        // Canvas içerisindeki bileşenleri sürükleme olaylarını geliştir
+        editor.on('component:selected', (component) => {
+            const selectedEl = component.getEl();
+            if (selectedEl) {
+                selectedEl.classList.add('custom-selected-component');
+            }
+        });
         
-        // Editor yüklendikten sonra blokları eşleştir
-        editor.on('load', syncCustomBlocks);
+        editor.on('component:deselected', (component) => {
+            const selectedEl = component.getEl();
+            if (selectedEl) {
+                selectedEl.classList.remove('custom-selected-component');
+            }
+        });
+        
+        // Komponentlere hover olayı ekle
+        editor.on('component:mount', (component) => {
+            const el = component.getEl();
+            if (el) {
+                el.addEventListener('mouseenter', function() {
+                    if (!component.get('selected')) {
+                        this.classList.add('custom-component-hover');
+                    }
+                });
+                
+                el.addEventListener('mouseleave', function() {
+                    this.classList.remove('custom-component-hover');
+                });
+            }
+        });
     }
     
     return {

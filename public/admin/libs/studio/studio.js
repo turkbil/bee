@@ -490,6 +490,37 @@ function customizePanels() {
         });
     }
     
+    // Editor'ü başlatır ve gerekli modülleri yükler
+    function initializeEditor(config) {
+        if (!config || !config.moduleId || config.moduleId <= 0) {
+            console.error('Geçersiz konfigürasyon veya modül ID:', config);
+            return;
+        }
+        
+        // Global değişkende sakla
+        window.studioEditorConfig = config;
+        
+        // Editor başlat
+        if (typeof window.initStudioEditor === 'function') {
+            try {
+                const editor = window.initStudioEditor(config);
+                // Global erişim için kaydet
+                window.studioEditor = editor;
+                
+                // Stil yöneticisi sorununu çöz
+                setTimeout(() => {
+                    if (window.StudioCore && typeof window.StudioCore.fixStyleManagerIssues === 'function') {
+                        window.StudioCore.fixStyleManagerIssues();
+                    }
+                }, 1500); // Editor yüklendikten sonra yeterli bekleme
+            } catch (error) {
+                console.error('Studio Editor başlatılırken hata:', error);
+            }
+        } else {
+            console.error('Studio Editor başlatılamıyor: initStudioEditor fonksiyonu bulunamadı!');
+        }
+    }
+
     // Özellikler panelini özelleştir
     const traitsPanel = document.querySelector('#traits-container');
     if (traitsPanel) {

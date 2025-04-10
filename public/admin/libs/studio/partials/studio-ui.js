@@ -295,77 +295,113 @@ window.StudioUI = (function() {
         editor.on('load', () => {
             // Stil yöneticisi için özel işleyiş
             setTimeout(() => {
-                // Sector başlıklarına tıklama olay dinleyicileri ekleme
-                const sectorTitles = document.querySelectorAll('.gjs-sm-sector-title');
-                sectorTitles.forEach(title => {
-                    // Event listener zaten eklenmemişse ekle
-                    if (!title.hasClickListener) {
-                        title.hasClickListener = true;
-                        title.addEventListener('click', function() {
+                try {
+                    // Sector başlıklarına tıklama olay dinleyicileri ekleme
+                    const sectorTitles = document.querySelectorAll('.gjs-sm-sector-title');
+                    sectorTitles.forEach((title, index) => {
+                        // Mevcut olay dinleyicileri kaldır ve yeniden ekle
+                        const newTitle = title.cloneNode(true);
+                        if (title.parentNode) {
+                            title.parentNode.replaceChild(newTitle, title);
+                        }
+                        
+                        // Yeni olay dinleyicisi ekle
+                        newTitle.addEventListener('click', function(e) {
+                            e.preventDefault();
                             const sector = this.closest('.gjs-sm-sector');
-                            sector.classList.toggle('gjs-collapsed');
-                            
-                            // İçeriği göster/gizle
-                            const properties = sector.querySelector('.gjs-sm-properties');
-                            if (properties) {
-                                properties.style.display = sector.classList.contains('gjs-collapsed') ? 'none' : 'block';
+                            if (sector) {
+                                sector.classList.toggle('gjs-collapsed');
+                                
+                                // İçeriği göster/gizle
+                                const properties = sector.querySelector('.gjs-sm-properties');
+                                if (properties) {
+                                    properties.style.display = sector.classList.contains('gjs-collapsed') ? 'none' : 'block';
+                                }
                             }
                         });
-                    }
-                });
-                
-                // Stil panelini özelleştir
-                document.querySelectorAll('.gjs-sm-sector').forEach(sector => {
-                    sector.classList.add('custom-style-sector');
-                    const title = sector.querySelector('.gjs-sm-sector-title');
-                    if (title) {
-                        title.classList.add('custom-sector-title');
-                    }
-                });
-                
-                // Katmanlar panelini özelleştir
-                document.querySelectorAll('.gjs-layer').forEach(layer => {
-                    layer.classList.add('custom-layer');
-                });
-                
-                // BlockManager akordiyon davranışını düzenleme
-                const blockCategoryTitles = document.querySelectorAll('.gjs-block-category .gjs-title');
-                blockCategoryTitles.forEach(title => {
-                    // Event listener zaten eklenmemişse ekle
-                    if (!title.hasClickListener) {
-                        title.hasClickListener = true;
-                        title.addEventListener('click', function() {
-                            const category = this.closest('.gjs-block-category');
-                            category.classList.toggle('gjs-open');
+                        
+                        // İlk sektörü açık, diğerlerini kapalı yap
+                        const sector = newTitle.closest('.gjs-sm-sector');
+                        if (sector) {
+                            if (index === 0) {
+                                sector.classList.remove('gjs-collapsed');
+                                const properties = sector.querySelector('.gjs-sm-properties');
+                                if (properties) {
+                                    properties.style.display = 'block';
+                                }
+                            } else {
+                                sector.classList.add('gjs-collapsed');
+                                const properties = sector.querySelector('.gjs-sm-properties');
+                                if (properties) {
+                                    properties.style.display = 'none';
+                                }
+                            }
+                        }
+                    });
+                    
+                    // Stil panelini özelleştir
+                    document.querySelectorAll('.gjs-sm-sector').forEach(sector => {
+                        sector.classList.add('custom-style-sector');
+                        const title = sector.querySelector('.gjs-sm-sector-title');
+                        if (title) {
+                            title.classList.add('custom-sector-title');
                             
-                            // İçeriği göster/gizle
+                            // Sektör başlığını daha belirgin yap
+                            title.style.cursor = 'pointer';
+                            title.style.userSelect = 'none';
+                        }
+                    });
+                    
+                    // Katmanlar panelini özelleştir
+                    document.querySelectorAll('.gjs-layer').forEach(layer => {
+                        layer.classList.add('custom-layer');
+                    });
+                    
+                    // BlockManager akordiyon davranışını düzenleme
+                    const blockCategoryTitles = document.querySelectorAll('.gjs-block-category .gjs-title');
+                    blockCategoryTitles.forEach(title => {
+                        // Event listener zaten eklenmemişse ekle
+                        const newTitle = title.cloneNode(true);
+                        if (title.parentNode) {
+                            title.parentNode.replaceChild(newTitle, title);
+                        }
+                        
+                        newTitle.addEventListener('click', function() {
+                            const category = this.closest('.gjs-block-category');
+                            if (category) {
+                                category.classList.toggle('gjs-open');
+                                
+                                // İçeriği göster/gizle
+                                const blocks = category.querySelector('.gjs-blocks-c');
+                                if (blocks) {
+                                    blocks.style.display = category.classList.contains('gjs-open') ? 'grid' : 'none';
+                                }
+                            }
+                        });
+                        
+                        // İlk yüklemede açık olarak ayarla
+                        const category = newTitle.closest('.gjs-block-category');
+                        if (category) {
+                            category.classList.add('gjs-open');
                             const blocks = category.querySelector('.gjs-blocks-c');
                             if (blocks) {
-                                blocks.style.display = category.classList.contains('gjs-open') ? 'grid' : 'none';
+                                blocks.style.display = 'grid';
                             }
-                        });
+                        }
+                    });
+                    
+                    // Sağ panel görünümünü iyileştir
+                    const rightPanel = document.querySelector('.panel__right');
+                    if (rightPanel) {
+                        rightPanel.classList.add('custom-right-panel');
                     }
                     
-                    // İlk yüklemede açık olarak ayarla
-                    const category = title.closest('.gjs-block-category');
-                    if (category) {
-                        category.classList.add('gjs-open');
-                        const blocks = category.querySelector('.gjs-blocks-c');
-                        if (blocks) {
-                            blocks.style.display = 'grid';
-                        }
-                    }
-                });
-                
-                // Sağ panel görünümünü iyileştir
-                const rightPanel = document.querySelector('.panel__right');
-                if (rightPanel) {
-                    rightPanel.classList.add('custom-right-panel');
+                    // Özellik panelini güçlendir
+                    enhancePropertyFields();
+                } catch (error) {
+                    console.error('GrapesJS özelleştirmeleri ayarlanırken hata:', error);
                 }
-                
-                // Özellik panelini güçlendir
-                enhancePropertyFields();
-            }, 500);
+            }, 800); // Daha fazla bekleme süresi
         });
         
         // Stil özelliklerini geliştir

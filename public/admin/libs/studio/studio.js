@@ -8,7 +8,6 @@
  */
 window.initStudioEditor = function (config) {
     console.log('Studio Editor başlatılıyor:', config);
-    console.log('arg1:', arguments[0]);
     
     try {
         if (!config || !config.moduleId || config.moduleId <= 0) {
@@ -94,6 +93,16 @@ window.initStudioEditor = function (config) {
                     return null;
                 }
                 
+                // Başlangıçta mevcut blokları logla
+                if (realEditor) {
+                    setTimeout(() => {
+                        console.log('Kayıtlı Bloklar:', 
+                            realEditor.BlockManager ? 
+                            realEditor.BlockManager.getAll().models.map(b => b.id) : 
+                            'BlockManager bulunamadı');
+                    }, 2000);
+                }
+                
                 // Dummy üzerine kayıtlı event'leri gerçek editöre geçir
                 if (window.studioEditorEvents) {
                     Object.keys(window.studioEditorEvents).forEach(eventName => {
@@ -120,6 +129,7 @@ window.initStudioEditor = function (config) {
                     if (window.StudioBlocks) window.StudioBlocks.registerBlocks(realEditor);
                     if (window.StudioUI) window.StudioUI.setupUI(realEditor);
                     if (window.StudioActions) window.StudioActions.setupActions(realEditor, config);
+                    
                     setupCustomCommands(realEditor);
                     enhanceDragDrop(realEditor);
                 } catch (error) {
@@ -212,28 +222,25 @@ function enhanceDragDrop(editor) {
             const blockId = item.getAttribute('data-block-id');
             if (!blockId) return;
             
-            // Event listener'ları temizle
-            ['dragstart', 'dragend', 'click'].forEach(eventName => {
-                const oldListeners = item._eventListeners && item._eventListeners[eventName];
-                if (oldListeners) {
-                    oldListeners.forEach(listener => {
-                        item.removeEventListener(eventName, listener);
-                    });
-                }
-            });
-            
-            // Listener'ları saklamak için nesne
-            if (!item._eventListeners) {
-                item._eventListeners = {};
-            }
-            
             // Drag start
             const dragStartHandler = function(e) {
                 const blockId = this.getAttribute('data-block-id');
                 if (!blockId) return;
                 
+                // Bileşen içeriğini data-content özelliğinden al
+                const blockContent = this.getAttribute('data-content');
+                
+                // Veri transferine hem ID hem de HTML içeriğini ekle
                 e.dataTransfer.setData('application/studio-block', blockId);
                 e.dataTransfer.setData('text/plain', blockId);
+                
+                // Önemli: HTML içeriğini de veri transferine ekle
+                if (blockContent) {
+                    e.dataTransfer.setData('text/html', blockContent);
+                    // Özel bir veri tipi ile bileşen içeriğini sakla
+                    e.dataTransfer.setData('application/studio-content', blockContent);
+                }
+                
                 e.dataTransfer.effectAllowed = 'copy';
                 
                 // Görsel bir drag işaretçisi oluştur
@@ -282,24 +289,11 @@ function enhanceDragDrop(editor) {
             item.addEventListener('dragstart', dragStartHandler);
             item.addEventListener('dragend', dragEndHandler);
             item.addEventListener('click', clickHandler);
-            
-            // Listener'ları kaydet
-            item._eventListeners.dragstart = [dragStartHandler];
-            item._eventListeners.dragend = [dragEndHandler];
-            item._eventListeners.click = [clickHandler];
         });
         
         // Canvas drop hedefini ayarla
         const canvas = document.querySelector('.editor-canvas');
         if (canvas) {
-            // Önceki listener'ları temizle
-            ['dragover', 'dragenter', 'dragleave', 'drop'].forEach(eventName => {
-                const oldListener = canvas[`_${eventName}Handler`];
-                if (oldListener) {
-                    canvas.removeEventListener(eventName, oldListener);
-                }
-            });
-            
             // Dragover handler
             canvas._dragoverHandler = function(e) {
                 e.preventDefault();
@@ -327,13 +321,39 @@ function enhanceDragDrop(editor) {
                 e.stopPropagation();
                 this.classList.remove('drop-target');
                 
+                // Önce HTML içeriğini kontrol et
+                let blockContent = null;
+                
+                // Özel veri tipinden içeriği al
+                if (e.dataTransfer.types.includes('application/studio-content')) {
+                    blockContent = e.dataTransfer.getData('application/studio-content');
+                }
+                // Alternatif olarak text/html'den al
+                else if (e.dataTransfer.types.includes('text/html')) {
+                    blockContent = e.dataTransfer.getData('text/html');
+                }
+                
+                // Blok ID'sini al
                 const blockId = e.dataTransfer.getData('application/studio-block') || 
                                e.dataTransfer.getData('text/plain');
                 
-                if (blockId) {
+                // Önce HTML içeriğini kullan, yoksa blok ID'sini kullan
+                if (blockContent) {
+                    // HTML içeriğini doğrudan ekle
+                    editor.addComponents(blockContent);
+                    console.log('Bileşen HTML içeriği eklendi:', blockContent.substring(0, 50) + '...');
+                    
+                    if (window.StudioUtils && typeof window.StudioUtils.showNotification === 'function') {
+                        window.StudioUtils.showNotification('Başarılı', 'Bileşen eklendi', 'success');
+                    }
+                }
+                // HTML içeriği yoksa, blok ID'sini kullanarak içeriği al
+                else if (blockId) {
                     const block = editor.BlockManager.get(blockId);
                     if (block) {
                         editor.addComponents(block.get('content'));
+                        console.log('Blok içeriği eklendi:', block.get('content').substring(0, 50) + '...');
+                        
                         if (window.StudioUtils && typeof window.StudioUtils.showNotification === 'function') {
                             window.StudioUtils.showNotification('Başarılı', 'Bileşen eklendi', 'success');
                         }
@@ -413,7 +433,7 @@ function addTooltips() {
             tooltip.style.zIndex = '999';
             tooltip.style.pointerEvents = 'none';
             tooltip.style.opacity = '0';
-            tooltip.style.transition = 'opacity 0.3s';
+            tooltip.style.transition = 'opacity 0.3s ease';
             
             // Butonu tooltip için hazırla
             if (btn.style.position !== 'relative') {

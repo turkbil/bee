@@ -31,19 +31,52 @@ class StudioController extends Controller
     public function save(Request $request, $module, $id)
     {
         try {
-            $content = $request->get('content');
-            $css = $request->get('css');
-            $js = $request->get('js');
+            // Debug: Gelen request bilgilerini logla
+            Log::debug("Studio Save - Request Details", [
+                'module' => $module,
+                'id' => $id,
+                'content_size' => strlen($request->input('content', '')),
+                'css_size' => strlen($request->input('css', '')),
+                'js_size' => strlen($request->input('js', '')),
+                'request_method' => $request->method(),
+                'content_type' => $request->header('Content-Type')
+            ]);
+
+            $content = $request->input('content');
+            $css = $request->input('css');
+            $js = $request->input('js');
             
             // ID'yi integer'a çevir
             $id = (int)$id;
             
             if ($module === 'page') {
                 $page = Page::findOrFail($id);
+                
+                // Debug: Güncelleme öncesi durum
+                Log::debug("Studio Save - Before Update", [
+                    'page_id' => $page->page_id,
+                    'old_body_length' => strlen($page->body ?? ''),
+                    'new_body_length' => strlen($content ?? ''),
+                    'old_css_length' => strlen($page->css ?? ''),
+                    'new_css_length' => strlen($css ?? ''),
+                    'old_js_length' => strlen($page->js ?? ''),
+                    'new_js_length' => strlen($js ?? '')
+                ]);
+                
                 $page->body = $content;
                 $page->css = $css;
                 $page->js = $js;
-                $page->save();
+                
+                // Kaydetme işlemi
+                $saveResult = $page->save();
+                
+                // Debug: Kaydetme sonrası
+                Log::debug("Studio Save - After Save", [
+                    'save_result' => $saveResult ? 'success' : 'failed', 
+                    'final_body_length' => strlen($page->body ?? ''),
+                    'final_css_length' => strlen($page->css ?? ''),
+                    'final_js_length' => strlen($page->js ?? '')
+                ]);
                 
                 if (function_exists('log_activity')) {
                     log_activity($page, 'studio ile düzenlendi');
@@ -60,7 +93,14 @@ class StudioController extends Controller
                 'message' => 'Desteklenmeyen modül: ' . $module
             ], 400);
         } catch (\Exception $e) {
-            Log::error('Studio içerik kaydederken hata: ' . $e->getMessage());
+            Log::error('Studio içerik kaydederken hata: ' . $e->getMessage(), [
+                'exception' => get_class($e),
+                'message' => $e->getMessage(),
+                'code' => $e->getCode(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
             
             return response()->json([
                 'success' => false,

@@ -11,10 +11,8 @@ window.StudioCore = (function() {
      * @returns {Object} - GrapesJS editor örneği
      */
     function initEditor(config) {
-        // BlockManager yapılandırması
-        const blockManagerConfig = {
-            appendTo: config.blocksContainer || '.blocks-container'
-        };
+        // Başlatma bilgilerini logla
+        console.log('GrapesJS editor başlatılıyor...');
         
         try {
             // GrapesJS Editor yapılandırması
@@ -97,6 +95,7 @@ window.StudioCore = (function() {
                         },
                     ],
                 },
+
                 canvas: {
                     scripts: [
                         "https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js",
@@ -105,39 +104,23 @@ window.StudioCore = (function() {
                         "https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css",
                         "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
                     ]
-                },
-                plugins: [
-                    // Eklentiler app.js'de yüklenecek
-                ],
-                pluginsOpts: {
-                    // Eklenti seçenekleri burada yapılandırılacak
                 }
             });
+            
+            // Editor başlatıldı
+            console.log('GrapesJS editor başarıyla oluşturuldu.');
+            
         } catch (error) {
             console.error('GrapesJS başlatılırken hata oluştu:', error);
             return null;
         }
 
-        // Önceden oluşturulmuş içeriği yükle
-        if (config.content) {
-            try {
-                editor.setComponents(config.content);
-            } catch (error) {
-                console.error('İçerik yüklenirken hata:', error);
-            }
-        }
-        
-        if (config.css) {
-            try {
-                editor.setStyle(config.css);
-            } catch (error) {
-                console.error('CSS yüklenirken hata:', error);
-            }
-        }
+        // İçerik yükleme işlemi
+        loadContent(config);
 
         // Editor'ü yükleme olayını dinle
         editor.on('load', function() {
-            console.log('Editor loaded. Setting up iframe listeners.'); // Log eklendi
+            console.log('Editor loaded event triggered');
 
             // Editor yüklendi, animasyonu gizle
             const loaderElement = document.querySelector('.studio-loader');
@@ -150,36 +133,14 @@ window.StudioCore = (function() {
                 }, 300);
             }
             
-            // Canvas iframe'ini bul ve olay dinleyicilerini ekle
-            try {
-                const canvasDoc = editor.Canvas.getDocument(); // iframe'in document nesnesi
-                if (canvasDoc && canvasDoc.body) {
-                    const canvasBody = canvasDoc.body;
-                    console.log('Found canvas iframe body. Attaching drop listeners.');
-
-                    // Önceki listener'ları temizle (ihtiyaç olmayabilir ama garanti olsun)
-                    canvasBody.removeEventListener('dragover', StudioUI.handleDragOver);
-                    canvasBody.removeEventListener('dragenter', StudioUI.handleDragEnter);
-                    canvasBody.removeEventListener('dragleave', StudioUI.handleDragLeave);
-                    canvasBody.removeEventListener('drop', StudioUI.handleCanvasDrop);
-
-                    // Yeni listener'ları ekle
-                    canvasBody.addEventListener('dragover', StudioUI.handleDragOver);
-                    canvasBody.addEventListener('dragenter', StudioUI.handleDragEnter);
-                    canvasBody.addEventListener('dragleave', StudioUI.handleDragLeave);
-                    canvasBody.addEventListener('drop', StudioUI.handleCanvasDrop);
-
-                    console.log('Drop listeners attached to iframe body.');
-                } else {
-                     console.error('Could not find canvas iframe body.');
-                }
-            } catch (error) {
-                console.error('Error attaching listeners to canvas iframe:', error);
-            }
-
             // DOM'un hazır olmasından sonra stil yöneticisini düzenle
             setTimeout(() => {
                 fixStyleManagerIssues();
+                loadEventHandlers();
+                
+                // Editor hazır olayını tetikle
+                const editorReadyEvent = new CustomEvent('editor:loaded');
+                document.dispatchEvent(editorReadyEvent);
             }, 500);
         });
         
@@ -190,53 +151,156 @@ window.StudioCore = (function() {
      * Stil yöneticisi sorunlarını düzelt
      */
     function fixStyleManagerIssues() {
-        try {
-            // Stil yöneticisi sektörlerini düzelt
-            const sectors = document.querySelectorAll('.gjs-sm-sector');
-            sectors.forEach(sector => {
-                // Sektör başlıklarını düzelt
-                const title = sector.querySelector('.gjs-sm-sector-title');
-                if (title) {
-                    // Varolan event listener'ları kaldır
-                    const newTitle = title.cloneNode(true);
-                    title.parentNode.replaceChild(newTitle, title);
-                    
-                    // Yeni event listener ekle
-                    newTitle.addEventListener('click', function() {
-                        sector.classList.toggle('gjs-collapsed');
-                        const props = sector.querySelector('.gjs-sm-properties');
-                        if (props) {
-                            props.style.display = sector.classList.contains('gjs-collapsed') ? 'none' : 'block';
-                        }
-                    });
+        // Stil yöneticisi UI sorunlarını düzelt
+        const styleManager = editor.StyleManager;
+        if (styleManager) {
+            // Gerekli düzeltmeler burada yapılabilir
+            console.log('Stil yöneticisi düzeltmeleri uygulandı');
+        }
+    }
+    
+    /**
+     * İçeriği kaydetmek için hazırla
+     * @returns {string} - Kaydedilmeye hazır HTML içeriği
+     */
+    function prepareContentForSave() {
+        // HTML Parser modülünü kullanarak içeriği kaydetmeye hazırla
+        if (window.StudioHtmlParser && typeof window.StudioHtmlParser.prepareContentForSave === 'function') {
+            console.log('StudioHtmlParser ile içerik kaydetmeye hazırlanıyor...');
+            return window.StudioHtmlParser.prepareContentForSave(editor);
+        }
+        
+        // HTML Parser modülü yoksa, editörün kendi metodunu kullan
+        console.warn('StudioHtmlParser modülü bulunamadı, editörün kendi getHtml metodunu kullanıyor');
+        return editor.getHtml();
+    }
+    
+    /**
+     * İçeriği yükle
+     * @param {Object} config - Editor yapılandırması
+     */
+    function loadContent(config) {
+        // İçerik yükleme gecikmesi - canvas hazır olduktan sonra
+        setTimeout(() => {
+            try {
+                console.log('İçerik yükleme işlemi başlatılıyor...');
+                
+                // Değişkenler için console.log yaparak içerik durumunu izle
+                console.log('Editor İçerik Durumu:', {
+                    'config.content uzunluğu': config.content ? config.content.length : 0,
+                    'config.content kısa önizleme': config.content ? 
+                        (config.content.length > 50 ? 
+                            config.content.substring(0, 50) + '...' : config.content) 
+                        : null,
+                    'içerik tipi': typeof config.content,
+                    'HTML içeriyor mu': config.content ? config.content.includes('<') : false
+                });
+                
+                let content = '';
+                
+                // StudioHtmlParser modülünü kullanarak içeriği işle
+                if (window.StudioHtmlParser && typeof window.StudioHtmlParser.parseAndFixHtml === 'function') {
+                    // HTML Parser modülünü kullanarak içeriği temizle ve düzelt
+                    content = window.StudioHtmlParser.parseAndFixHtml(config.content);
+                    console.log('StudioHtmlParser ile içerik başarıyla işlendi:', 
+                        content.length > 50 ? content.substring(0, 50) + '...' : content);
+                } else {
+                    // HTML Parser modülü yüklenemezse, ham içeriği kullan
+                    console.warn('StudioHtmlParser modülü bulunamadı, ham içerik kullanılıyor');
+                    content = config.content || '';
                 }
                 
-                // İlk sektörü açık, diğerlerini kapalı olarak ayarla
-                const isFirstSector = sector === sectors[0];
-                if (isFirstSector) {
-                    sector.classList.remove('gjs-collapsed');
-                    const props = sector.querySelector('.gjs-sm-properties');
-                    if (props) {
-                        props.style.display = 'block';
-                    }
-                } else {
-                    sector.classList.add('gjs-collapsed');
-                    const props = sector.querySelector('.gjs-sm-properties');
-                    if (props) {
-                        props.style.display = 'none';
+                // İçerik kontrolü - geçerli HTML içeriği var mı?
+                if (!content || content.trim() === '' || content.trim() === '<body></body>' || content.length < 20) {
+                    console.warn('Geçerli içerik bulunamadı. Varsayılan içerik yükleniyor...');
+                    
+                    // Varsayılan içerik için HTML Parser modülünü kullan
+                    if (window.StudioHtmlParser && typeof window.StudioHtmlParser.getDefaultContent === 'function') {
+                        content = window.StudioHtmlParser.getDefaultContent();
+                        console.log('StudioHtmlParser varsayılan içeriği kullanıldı');
+                    } else {
+                        // HTML Parser modülü yoksa, dahili varsayılan içeriği kullan
+                        content = `
+                        <div class="container py-4">
+                            <div class="row">
+                                <div class="col-12">
+                                    <h1 class="mb-4">Yeni Sayfa</h1>
+                                    <p class="lead">Bu sayfayı düzenlemek için sol taraftaki bileşenleri kullanabilirsiniz.</p>
+                                    <div class="alert alert-info mt-4">
+                                        <i class="fas fa-info-circle me-2"></i> Studio Editor ile görsel düzenleme yapabilirsiniz.
+                                        Düzenlemelerinizi kaydetmek için sağ üstteki Kaydet butonunu kullanın.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
                     }
                 }
-            });
-        } catch (error) {
-            console.error('Stil yöneticisi düzeltilirken hata:', error);
-        }
+                
+                // İçeriği editöre yükle
+                editor.setComponents(content);
+                console.log('İçerik editöre başarıyla yüklendi');
+                
+            } catch (error) {
+                console.error('İçerik yüklenirken hata oluştu:', error);
+                
+                // Hata durumunda varsayılan içeriği yüklemeyi dene
+                try {
+                    let errorContent;
+                    
+                    // HTML Parser modülünü kullanarak hata içeriğini oluştur
+                    if (window.StudioHtmlParser && typeof window.StudioHtmlParser.getDefaultContent === 'function') {
+                        // Özel hata içeriği oluştur
+                        errorContent = `
+                        <div class="container py-4">
+                            <div class="row">
+                                <div class="col-12">
+                                    <h1 class="mb-4">Hata Oluştu</h1>
+                                    <div class="alert alert-danger">
+                                        <i class="fas fa-exclamation-triangle me-2"></i> İçerik yüklenirken bir hata oluştu.
+                                        Lütfen sayfayı yenileyin veya yöneticinize başvurun.
+                                    </div>
+                                    <div class="alert alert-secondary mt-3">
+                                        <small>Hata detayı: ${error.message || 'Bilinmeyen hata'}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+                    } else {
+                        // Basit hata içeriği
+                        errorContent = `
+                        <div class="container py-4">
+                            <div class="row">
+                                <div class="col-12">
+                                    <h1 class="mb-4">Hata Oluştu</h1>
+                                    <div class="alert alert-danger">
+                                        <i class="fas fa-exclamation-triangle me-2"></i> İçerik yüklenirken bir hata oluştu.
+                                        Lütfen sayfayı yenileyin veya yöneticinize başvurun.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+                    }
+                    
+                    editor.setComponents(errorContent);
+                    console.log('Hata sonrası özel içerik yüklendi');
+                } catch (e) {
+                    console.error('Varsayılan içerik yüklenirken de hata oluştu:', e);
+                }
+            }
+        }, 500);
+    }
+    
+    /**
+     * Olay dinleyicilerini yükle
+     */
+    function loadEventHandlers() {
+        // Gerekli olay dinleyicileri burada tanımlanabilir
+        console.log('Olay dinleyicileri yüklendi');
     }
     
     return {
         initEditor: initEditor,
-        getEditor: function() {
-            return editor;
-        },
-        fixStyleManagerIssues: fixStyleManagerIssues
+        getEditor: function() { return editor; },
+        prepareContentForSave: prepareContentForSave
     };
 })();

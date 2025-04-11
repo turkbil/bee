@@ -197,3 +197,51 @@
   .gjs-four-color, .gjs-four-color-h:hover {
     color: #206bc4 !important;
   }
+
+  /* Katmanlar Paneli Özelleştirmeleri (İlave) */
+.gjs-layer-children {
+    padding-left: 10px !important;
+    margin-left: 10px !important;
+    border-left: 1px dashed #e5e7eb !important;
+  }
+  
+  .gjs-layer-caret {
+    margin-right: 5px !important;
+    cursor: pointer !important;
+    transition: transform 0.2s ease !important;
+    color: #94a3b8 !important;
+    display: inline-block !important;
+    width: 12px !important;
+    text-align: center !important;
+  }
+  
+  .gjs-layer-caret::before {
+    content: "\f0da" !important;
+    font-family: "Font Awesome 6 Pro", FontAwesome !important;
+    font-size: 10px !important;
+  }
+  
+  .gjs-layer.open > .gjs-layer-title-c .gjs-layer-caret::before {
+    content: "\f0d7" !important;
+  }
+  
+  .gjs-layer:not(.open) > .gjs-layer-children {
+    display: none !important;
+  }
+  
+  .gjs-layers {
+    padding: 0 !important;
+  }
+  
+  .gjs-layer-title-c {
+    display: flex !important;
+    align-items: center !important;
+    cursor: pointer !important;
+  }
+  
+  .gjs-layer-name {
+    flex: 1 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }

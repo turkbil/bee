@@ -83,6 +83,14 @@ window.StudioUtils = (function() {
             existingModal.remove();
         }
         
+        // Mevcut backdrop'ları temizle
+        const backdropElements = document.querySelectorAll('.modal-backdrop');
+        backdropElements.forEach(element => {
+            if (element.parentNode) {
+                element.parentNode.removeChild(element);
+            }
+        });
+        
         const modal = document.createElement("div");
         modal.className = "modal fade";
         modal.id = "codeEditModal";
@@ -111,14 +119,6 @@ window.StudioUtils = (function() {
 
         // Bootstrap.Modal nesnesi mevcut mu kontrol et
         if (typeof bootstrap !== "undefined" && bootstrap.Modal) {
-            // Önceki modal instance'ları temizle
-            const oldModals = document.querySelectorAll('.modal-backdrop');
-            oldModals.forEach(oldModal => {
-                if (oldModal.parentNode) {
-                    oldModal.parentNode.removeChild(oldModal);
-                }
-            });
-            
             const modalInstance = new bootstrap.Modal(modal);
             modalInstance.show();
 
@@ -147,7 +147,8 @@ window.StudioUtils = (function() {
             const saveBtn = modal.querySelector("#saveCodeBtn");
             if (saveBtn) {
                 saveBtn.addEventListener("click", function () {
-                    const newCode = document.getElementById("code-editor").value;
+                    const newCode =
+                        document.getElementById("code-editor").value;
                     callback(newCode);
                     document.body.removeChild(modal);
                 });

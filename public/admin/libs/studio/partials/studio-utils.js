@@ -77,10 +77,18 @@ window.StudioUtils = (function() {
      * @param {Function} callback - Değişiklik kaydedildiğinde çağrılacak fonksiyon
      */
     function showEditModal(title, content, callback) {
+        // Mevcut modalı temizle
+        const existingModal = document.getElementById("codeEditModal");
+        if (existingModal) {
+            existingModal.remove();
+        }
+        
         const modal = document.createElement("div");
         modal.className = "modal fade";
         modal.id = "codeEditModal";
         modal.setAttribute("tabindex", "-1");
+        modal.setAttribute("aria-modal", "true");
+        modal.setAttribute("role", "dialog");
         modal.innerHTML = `
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
@@ -103,24 +111,33 @@ window.StudioUtils = (function() {
 
         // Bootstrap.Modal nesnesi mevcut mu kontrol et
         if (typeof bootstrap !== "undefined" && bootstrap.Modal) {
+            // Önceki modal instance'ları temizle
+            const oldModals = document.querySelectorAll('.modal-backdrop');
+            oldModals.forEach(oldModal => {
+                if (oldModal.parentNode) {
+                    oldModal.parentNode.removeChild(oldModal);
+                }
+            });
+            
             const modalInstance = new bootstrap.Modal(modal);
             modalInstance.show();
 
             document
                 .getElementById("saveCodeBtn")
                 .addEventListener("click", function () {
-                    const newCode =
-                        document.getElementById("code-editor").value;
+                    const newCode = document.getElementById("code-editor").value;
                     callback(newCode);
                     modalInstance.hide();
-
-                    modal.addEventListener("hidden.bs.modal", function () {
-                        modal.remove();
-                    });
                 });
 
             modal.addEventListener("hidden.bs.modal", function () {
                 modal.remove();
+                const backdrops = document.querySelectorAll('.modal-backdrop');
+                backdrops.forEach(backdrop => {
+                    if (backdrop.parentNode) {
+                        backdrop.parentNode.removeChild(backdrop);
+                    }
+                });
             });
         } else {
             // Fallback - basit modal gösterimi
@@ -130,8 +147,7 @@ window.StudioUtils = (function() {
             const saveBtn = modal.querySelector("#saveCodeBtn");
             if (saveBtn) {
                 saveBtn.addEventListener("click", function () {
-                    const newCode =
-                        document.getElementById("code-editor").value;
+                    const newCode = document.getElementById("code-editor").value;
                     callback(newCode);
                     document.body.removeChild(modal);
                 });

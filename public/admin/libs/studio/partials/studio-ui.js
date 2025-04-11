@@ -81,7 +81,115 @@ window.StudioUI = (function() {
             }
         });
     }
-    
+  
+    /**
+     * Katmanlar panelini geliştir
+     * @param {Object} editor - GrapesJS editor örneği
+     */
+    function enhanceLayersPanel(editor) {
+        editor.on('load', () => {
+            setTimeout(() => {
+                // Katmanlar panelinde akordiyon davranışı ekle
+                const setupLayerAccordion = function() {
+                    const layers = document.querySelectorAll('.gjs-layer');
+                    
+                    layers.forEach(layer => {
+                        // Katman başlığına tıklama eventi
+                        const titleEl = layer.querySelector('.gjs-layer-title-c');
+                        if (titleEl) {
+                            // Katman içeriğini toggle yapacak işlevi ekle
+                            titleEl.addEventListener('click', function(e) {
+                                // Sadece başlığa tıklandığında işlem yap
+                                if (e.target === this || this.contains(e.target)) {
+                                    // Tıklanan katmanın seçilmesini sağla
+                                    const componentId = layer.getAttribute('data-model-id');
+                                    if (componentId) {
+                                        const model = editor.Components.getById(componentId);
+                                        if (model) {
+                                            editor.select(model);
+                                        }
+                                    }
+                                    
+                                    // Bu katmana scroll et
+                                    layer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                                }
+                            });
+                        }
+                        
+                        // Katman için açma-kapama işlevi ekle
+                        const caret = layer.querySelector('.gjs-layer-caret');
+                        if (caret) {
+                            caret.addEventListener('click', function(e) {
+                                e.stopPropagation(); // Üst katmana tıklama olayını engelle
+                                
+                                // Açılış kapanış simgesi değişimi
+                                this.classList.toggle('gjs-layer-open');
+                                
+                                // Alt katmanları göster/gizle
+                                const childrenEl = layer.querySelector('.gjs-layer-children');
+                                if (childrenEl) {
+                                    childrenEl.style.display = this.classList.contains('gjs-layer-open') ? 'block' : 'none';
+                                }
+                            });
+                            
+                            // Varsayılan olarak katmanları aç (ilk seviye)
+                            if (layer.parentElement && layer.parentElement.classList.contains('gjs-layers')) {
+                                caret.classList.add('gjs-layer-open');
+                                const childrenEl = layer.querySelector('.gjs-layer-children');
+                                if (childrenEl) {
+                                    childrenEl.style.display = 'block';
+                                }
+                            } else {
+                                // Alt katmanları kapat
+                                const childrenEl = layer.querySelector('.gjs-layer-children');
+                                if (childrenEl) {
+                                    childrenEl.style.display = 'none';
+                                }
+                            }
+                        }
+                    });
+                };
+                
+                // İlk kurulum
+                setupLayerAccordion();
+                
+                // Katmanlar değiştiğinde tekrar uygula
+                editor.on('component:add component:remove', () => {
+                    setTimeout(setupLayerAccordion, 100);
+                });
+                
+                // Katman seçildiğinde scroll et
+                editor.on('component:selected', (component) => {
+                    setTimeout(() => {
+                        const componentId = component.getId();
+                        const layerEl = document.querySelector(`.gjs-layer[data-model-id="${componentId}"]`);
+                        
+                        if (layerEl) {
+                            // Alt seviye katmanlar için açılışları kontrol et
+                            let parent = layerEl.parentElement;
+                            while (parent) {
+                                if (parent.classList && parent.classList.contains('gjs-layer-children')) {
+                                    const parentLayer = parent.closest('.gjs-layer');
+                                    if (parentLayer) {
+                                        const caret = parentLayer.querySelector('.gjs-layer-caret');
+                                        if (caret) {
+                                            caret.classList.add('gjs-layer-open');
+                                            parent.style.display = 'block';
+                                        }
+                                    }
+                                }
+                                parent = parent.parentElement;
+                            }
+                            
+                            // Katmana scroll et
+                            layerEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        }
+                    }, 100);
+                });
+            }, 800);
+        });
+    }
+
     /**
      * Arama kutusunu yapılandırır
      */
@@ -384,6 +492,63 @@ window.StudioUI = (function() {
                     // Katmanlar panelini özelleştir
                     document.querySelectorAll('.gjs-layer').forEach(layer => {
                         layer.classList.add('custom-layer');
+                    });
+                    
+                    // Katman akordiyonunu ayarla
+                    const setupLayerAccordion = () => {
+                        const layers = document.querySelectorAll('.gjs-layer');
+                        layers.forEach(layer => {
+                            // Katman başlığı
+                            const titleEl = layer.querySelector('.gjs-layer-title-c');
+                            const caret = layer.querySelector('.gjs-layer-caret');
+                            
+                            if (titleEl && caret) {
+                                // Eski event listener'ları temizle
+                                const newCaret = caret.cloneNode(true);
+                                if (caret.parentNode) {
+                                    caret.parentNode.replaceChild(newCaret, caret);
+                                }
+                                
+                                // Yeni caret'e event listener ekle
+                                newCaret.addEventListener('click', function(e) {
+                                    e.stopPropagation();
+                                    layer.classList.toggle('open');
+                                });
+                                
+                                // İlk seviye katmanları otomatik aç
+                                if (layer.parentElement && layer.parentElement.classList.contains('gjs-layers')) {
+                                    layer.classList.add('open');
+                                }
+                            }
+                            
+                            // Seçilen katmanı otomatik görünüme kaydır
+                            if (layer.classList.contains('gjs-selected')) {
+                                layer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                                
+                                // Üst katmanları aç
+                                let parent = layer.parentElement;
+                                while (parent) {
+                                    const parentLayer = parent.closest('.gjs-layer');
+                                    if (parentLayer) {
+                                        parentLayer.classList.add('open');
+                                    }
+                                    parent = parent.parentElement;
+                                }
+                            }
+                        });
+                    };
+                    
+                    // İlk kurulum
+                    setupLayerAccordion();
+                    
+                    // Katman yapısı değiştiğinde yeniden uygula
+                    editor.on('component:add component:remove component:update:components', () => {
+                        setTimeout(setupLayerAccordion, 300);
+                    });
+                    
+                    // Katman seçildiğinde event
+                    editor.on('component:selected', () => {
+                        setTimeout(setupLayerAccordion, 100);
                     });
                     
                     // BlockManager akordiyon davranışını düzenleme

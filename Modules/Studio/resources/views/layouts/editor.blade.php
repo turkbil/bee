@@ -48,8 +48,8 @@
         
         <div class="header-center">
             <div class="studio-brand">
-                <i class="fa-solid fa-wand-magic-sparkles"></i>
-                Studio Editor
+                Studio <i class="fa-solid fa-wand-magic-sparkles mx-2"></i>
+                Editor
             </div>
         </div>
         

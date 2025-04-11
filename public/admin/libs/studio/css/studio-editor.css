@@ -444,7 +444,6 @@ body {
 
 .gjs-layer.gjs-selected {
     background-color: var(--item-active-bg) !important;
-    border-left: 3px solid var(--primary-color) !important;
 }
 
 .gjs-layer-title {
@@ -739,6 +738,10 @@ body {
 
 .toolbar-btn:hover .studio-tooltip {
     opacity: 1;
+}
+
+.gjs-layer.gjs-selected .gjs-layer-item {
+    background-color: var(--gjs-main-light-color) !important;
 }
 
 /* Responsive Tasarım */

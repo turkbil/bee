@@ -520,8 +520,21 @@ window.StudioUI = (function() {
      * @param {Object} editor - GrapesJS editor örneği
      */
     function setupCodeEditors(editor) {
+        // Tüm butonları temizle ve yeniden oluştur
+        function resetButton(id) {
+            const btn = document.getElementById(id);
+            if (btn) {
+                const newBtn = btn.cloneNode(true);
+                if (btn.parentNode) {
+                    btn.parentNode.replaceChild(newBtn, btn);
+                }
+                return newBtn;
+            }
+            return null;
+        }
+        
         // HTML kodu düzenleme
-        const cmdCodeEdit = document.getElementById("cmd-code-edit");
+        const cmdCodeEdit = resetButton("cmd-code-edit");
         if (cmdCodeEdit) {
             cmdCodeEdit.addEventListener("click", () => {
                 const htmlContent = editor.getHtml();
@@ -532,7 +545,7 @@ window.StudioUI = (function() {
         }
 
         // CSS kodu düzenleme
-        const cmdCssEdit = document.getElementById("cmd-css-edit");
+        const cmdCssEdit = resetButton("cmd-css-edit");
         if (cmdCssEdit) {
             cmdCssEdit.addEventListener("click", () => {
                 const cssContent = editor.getCss();
@@ -550,7 +563,7 @@ window.StudioUI = (function() {
         }
 
         // JS kodu düzenleme
-        const cmdJsEdit = document.getElementById("cmd-js-edit");
+        const cmdJsEdit = resetButton("cmd-js-edit");
         if (cmdJsEdit) {
             cmdJsEdit.addEventListener("click", () => {
                 const jsContentEl = document.getElementById("js-content");
@@ -563,7 +576,7 @@ window.StudioUI = (function() {
             });
         }
     }
-    
+
     /**
      * Cihaz görünümü değiştirme butonlarını yapılandırır
      * @param {Object} editor - GrapesJS editor örneği

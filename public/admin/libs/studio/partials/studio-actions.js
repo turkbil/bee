@@ -14,9 +14,29 @@ window.StudioActions = (function() {
     function setupActions(editor, config) {
         console.log("Setting up actions");
         
+        // Daha önce eklenmiş olay dinleyicilerini temizle
+        cleanup();
+        
         setupSaveButton(editor, config);
         setupPreviewButton(editor);
         setupExportButton(editor);
+    }
+    
+    /**
+     * Önceden eklenmiş olay dinleyicilerini temizler
+     */
+    function cleanup() {
+        const buttons = ['save-btn', 'preview-btn', 'export-btn'];
+        
+        buttons.forEach(buttonId => {
+            const button = document.getElementById(buttonId);
+            if (button) {
+                const newButton = button.cloneNode(true);
+                if (button.parentNode) {
+                    button.parentNode.replaceChild(newButton, button);
+                }
+            }
+        });
     }
     
     /**
@@ -30,15 +50,9 @@ window.StudioActions = (function() {
             console.error("Save button (#save-btn) not found.");
             return;
         }
-
-        // Tüm eski event listener'ları temizle
-        const newSaveBtn = saveBtn.cloneNode(true);
-        if (saveBtn.parentNode) {
-            saveBtn.parentNode.replaceChild(newSaveBtn, saveBtn);
-        }
         
         // Kaydetme işlemini yapacak fonksiyon
-        newSaveBtn.addEventListener("click", function(e) {
+        saveBtn.addEventListener("click", function(e) {
             e.preventDefault();
             
             // Zaten bir istek çalışıyorsa engelle
@@ -84,17 +98,6 @@ window.StudioActions = (function() {
                 
                 // Kaydetme URL'si
                 const saveUrl = `/admin/studio/save/${config.moduleType}/${moduleId}`;
-
-                // Debug için konsola yazdır
-                console.log("Kaydediliyor:", {
-                    url: saveUrl,
-                    moduleType: config.moduleType,
-                    moduleId: moduleId,
-                    contentLength: htmlContent.length,
-                    contentPreview: htmlContent.substring(0, 100) + '...',
-                    cssLength: cssContent.length, 
-                    jsLength: jsContent.length
-                });
 
                 // Doğrudan fetch API ile manuel gönderim
                 const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
@@ -162,13 +165,7 @@ window.StudioActions = (function() {
     function setupPreviewButton(editor) {
         const previewBtn = document.getElementById("preview-btn");
         if (previewBtn) {
-            // Eski listener'ları temizle
-            const newPreviewBtn = previewBtn.cloneNode(true);
-            if (previewBtn.parentNode) {
-                previewBtn.parentNode.replaceChild(newPreviewBtn, previewBtn);
-            }
-            
-            newPreviewBtn.addEventListener("click", function () {
+            previewBtn.addEventListener("click", function () {
                 // Özel önizleme mantığı
                 const html = window.StudioHtmlParser ? 
                     window.StudioHtmlParser.prepareContentForSave(editor) : 
@@ -219,13 +216,13 @@ window.StudioActions = (function() {
     function setupExportButton(editor) {
         const exportBtn = document.getElementById("export-btn");
         if (exportBtn) {
-            // Eski listener'ları temizle
-            const newExportBtn = exportBtn.cloneNode(true);
-            if (exportBtn.parentNode) {
-                exportBtn.parentNode.replaceChild(newExportBtn, exportBtn);
-            }
-            
-            newExportBtn.addEventListener("click", function () {
+            exportBtn.addEventListener("click", function () {
+                // Daha önce oluşturulmuş bir modal varsa kaldır
+                const existingModal = document.getElementById("exportModal");
+                if (existingModal) {
+                    existingModal.remove();
+                }
+                
                 const html = window.StudioHtmlParser ? 
                     window.StudioHtmlParser.prepareContentForSave(editor) : 
                     editor.getHtml();

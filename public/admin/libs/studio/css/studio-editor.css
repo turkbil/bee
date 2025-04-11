@@ -207,6 +207,7 @@ body {
     overflow: hidden;
     background-color: #f1f5f9;
     transition: outline 0.3s ease;
+    padding: 10px;
 }
 
 #gjs {

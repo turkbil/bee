@@ -99,6 +99,17 @@ window.StudioActions = (function() {
                 // Kaydetme URL'si
                 const saveUrl = `/admin/studio/save/${config.moduleType}/${moduleId}`;
 
+                // Debug için konsola yazdır
+                console.log("Kaydediliyor:", {
+                    url: saveUrl,
+                    moduleType: config.moduleType,
+                    moduleId: moduleId,
+                    contentLength: htmlContent.length,
+                    contentPreview: htmlContent.substring(0, 100) + '...',
+                    cssLength: cssContent.length, 
+                    jsLength: jsContent.length
+                });
+
                 // Doğrudan fetch API ile manuel gönderim
                 const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
                 
@@ -165,7 +176,13 @@ window.StudioActions = (function() {
     function setupPreviewButton(editor) {
         const previewBtn = document.getElementById("preview-btn");
         if (previewBtn) {
-            previewBtn.addEventListener("click", function () {
+            // Eski listener'ları temizle
+            const newPreviewBtn = previewBtn.cloneNode(true);
+            if (previewBtn.parentNode) {
+                previewBtn.parentNode.replaceChild(newPreviewBtn, previewBtn);
+            }
+            
+            newPreviewBtn.addEventListener("click", function () {
                 // Özel önizleme mantığı
                 const html = window.StudioHtmlParser ? 
                     window.StudioHtmlParser.prepareContentForSave(editor) : 
@@ -216,7 +233,13 @@ window.StudioActions = (function() {
     function setupExportButton(editor) {
         const exportBtn = document.getElementById("export-btn");
         if (exportBtn) {
-            exportBtn.addEventListener("click", function () {
+            // Eski listener'ları temizle
+            const newExportBtn = exportBtn.cloneNode(true);
+            if (exportBtn.parentNode) {
+                exportBtn.parentNode.replaceChild(newExportBtn, exportBtn);
+            }
+            
+            newExportBtn.addEventListener("click", function () {
                 // Daha önce oluşturulmuş bir modal varsa kaldır
                 const existingModal = document.getElementById("exportModal");
                 if (existingModal) {

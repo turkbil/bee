@@ -193,8 +193,12 @@
 }
 
 .layer-arrow-i {
-  font-size: 10px !important;
-  transition: transform 0.2s ease-in-out !important;
+  font-size: 11px;
+  cursor: pointer;
+  margin-right: 5px;
+  display: inline-block;
+  line-height: 1;
+  vertical-align: middle;
 }
 
 .layer-arrow.closed .layer-arrow-i {

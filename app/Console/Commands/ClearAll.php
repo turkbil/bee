@@ -29,7 +29,11 @@ class ClearAll extends Command
             $files = File::allFiles($bootstrapCache);
             foreach ($files as $file) {
                 if (!str_contains($file->getFilename(), '.gitignore')) {
-                    File::delete($file->getPathname());
+                    try {
+                        File::delete($file->getPathname());
+                    } catch (\Exception $e) {
+                        $this->warn("İzin hatası: {$file->getPathname()} dosyası silinemedi.");
+                    }
                 }
             }
         }
@@ -54,17 +58,64 @@ class ClearAll extends Command
                 if (!str_contains($file->getFilename(), '.gitignore')) {
                     if (str_contains($file->getFilename(), '.log')) {
                         // Log dosyalarını boşalt ama silme
-                        File::put($file->getPathname(), '');
+                        try {
+                            // İlk yöntem: doğrudan yazma
+                            File::put($file->getPathname(), '');
+                        } catch (\Exception $e) {
+                            // İlk yöntem başarısız olursa, ikinci yöntemi dene
+                            try {
+                                // Dosyayı sil ve yeniden oluştur
+                                if (File::exists($file->getPathname())) {
+                                    File::delete($file->getPathname());
+                                }
+                                File::put($file->getPathname(), '');
+                                $this->info("{$file->getPathname()} dosyası silindi ve yeniden oluşturuldu.");
+                            } catch (\Exception $e2) {
+                                // Üçüncü yöntem: fopen ile boşaltmayı dene
+                                try {
+                                    $handle = @fopen($file->getPathname(), 'w');
+                                    if ($handle) {
+                                        ftruncate($handle, 0);
+                                        fclose($handle);
+                                        $this->info("{$file->getPathname()} dosyası fopen ile temizlendi.");
+                                    } else {
+                                        throw new \Exception("Dosya açılamadı");
+                                    }
+                                } catch (\Exception $e3) {
+                                    $this->warn("İzin hatası: {$file->getPathname()} dosyası hiçbir yöntemle temizlenemedi. Lütfen uygulamayı durdurup tekrar deneyin.");
+                                }
+                            }
+                        }
                     } else {
                         // Diğer dosyaları sil
-                        File::delete($file->getPathname());
+                        try {
+                            File::delete($file->getPathname());
+                        } catch (\Exception $e) {
+                            $this->warn("İzin hatası: {$file->getPathname()} dosyası silinemedi.");
+                        }
                     }
                 }
             }
         }
         
-        // Tenant klasörlerini temizle
-        $tenantDirs = ['tenant1', 'tenant2', 'tenant3', 'tenant4'];
+        // Tenant klasörlerini otomatik olarak tespit et ve temizle
+        $tenantDirs = [];
+        $storagePath = storage_path();
+        $allDirs = File::directories($storagePath);
+        
+        // Tenant ile başlayan klasörleri bul
+        foreach ($allDirs as $dir) {
+            $dirName = basename($dir);
+            if (str_starts_with($dirName, 'tenant')) {
+                $tenantDirs[] = $dirName;
+            }
+        }
+        
+        if (empty($tenantDirs)) {
+            $this->info('Tenant klasörü bulunamadı.');
+        } else {
+            $this->info(count($tenantDirs) . ' adet tenant klasörü bulundu: ' . implode(', ', $tenantDirs));
+        }
         foreach ($tenantDirs as $tenantDir) {
             $this->cleanStorageDirectories([
                 $tenantDir . '/app',
@@ -86,10 +137,41 @@ class ClearAll extends Command
                     if (!str_contains($file->getFilename(), '.gitignore')) {
                         if (str_contains($file->getFilename(), '.log')) {
                             // Log dosyalarını boşalt ama silme
-                            File::put($file->getPathname(), '');
+                            try {
+                                // İlk yöntem: doğrudan yazma
+                                File::put($file->getPathname(), '');
+                            } catch (\Exception $e) {
+                                // İlk yöntem başarısız olursa, ikinci yöntemi dene
+                                try {
+                                    // Dosyayı sil ve yeniden oluştur
+                                    if (File::exists($file->getPathname())) {
+                                        File::delete($file->getPathname());
+                                    }
+                                    File::put($file->getPathname(), '');
+                                    $this->info("{$file->getPathname()} dosyası silindi ve yeniden oluşturuldu.");
+                                } catch (\Exception $e2) {
+                                    // Üçüncü yöntem: fopen ile boşaltmayı dene
+                                    try {
+                                        $handle = @fopen($file->getPathname(), 'w');
+                                        if ($handle) {
+                                            ftruncate($handle, 0);
+                                            fclose($handle);
+                                            $this->info("{$file->getPathname()} dosyası fopen ile temizlendi.");
+                                        } else {
+                                            throw new \Exception("Dosya açılamadı");
+                                        }
+                                    } catch (\Exception $e3) {
+                                        $this->warn("İzin hatası: {$file->getPathname()} dosyası hiçbir yöntemle temizlenemedi. Lütfen uygulamayı durdurup tekrar deneyin.");
+                                    }
+                                }
+                            }
                         } else {
                             // Diğer dosyaları sil
-                            File::delete($file->getPathname());
+                            try {
+                                File::delete($file->getPathname());
+                            } catch (\Exception $e) {
+                                $this->warn("İzin hatası: {$file->getPathname()} dosyası silinemedi.");
+                            }
                         }
                     }
                 }
@@ -102,16 +184,24 @@ class ClearAll extends Command
             $directories = File::directories(public_path('storage'));
             
             foreach ($directories as $directory) {
-                File::deleteDirectory($directory);
-                // Klasörü yeniden oluştur
-                File::makeDirectory($directory, 0755, true, true);
+                try {
+                    File::deleteDirectory($directory);
+                    // Klasörü yeniden oluştur
+                    File::makeDirectory($directory, 0755, true, true);
+                } catch (\Exception $e) {
+                    $this->warn("İzin hatası: {$directory} klasörü işlenemedi.");
+                }
             }
             
             // Doğrudan storage altındaki dosyaları temizle (.gitignore hariç)
             $files = File::files(public_path('storage'));
             foreach ($files as $file) {
                 if (!str_contains($file->getFilename(), '.gitignore')) {
-                    File::delete($file->getPathname());
+                    try {
+                        File::delete($file->getPathname());
+                    } catch (\Exception $e) {
+                        $this->warn("İzin hatası: {$file->getPathname()} dosyası silinemedi.");
+                    }
                 }
             }
         }
@@ -150,7 +240,11 @@ class ClearAll extends Command
                 $files = File::allFiles($path);
                 foreach ($files as $file) {
                     if (!str_contains($file->getFilename(), '.gitignore')) {
-                        File::delete($file->getPathname());
+                        try {
+                            File::delete($file->getPathname());
+                        } catch (\Exception $e) {
+                            $this->warn("İzin hatası: {$file->getPathname()} dosyası silinemedi.");
+                        }
                     }
                 }
                 
@@ -158,9 +252,13 @@ class ClearAll extends Command
                 $subDirs = File::directories($path);
                 foreach ($subDirs as $subDir) {
                     // Alt klasörü içindeki her şeyi sil
-                    File::deleteDirectory($subDir);
-                    // Klasörü yeniden oluştur
-                    File::makeDirectory($subDir, 0755, true, true);
+                    try {
+                        File::deleteDirectory($subDir);
+                        // Klasörü yeniden oluştur
+                        File::makeDirectory($subDir, 0755, true, true);
+                    } catch (\Exception $e) {
+                        $this->warn("İzin hatası: {$subDir} klasörü işlenemedi.");
+                    }
                 }
             }
         }

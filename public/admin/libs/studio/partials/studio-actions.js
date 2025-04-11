@@ -3,12 +3,17 @@
  * Kaydetme, dışa aktarma ve önizleme işlemleri
  */
 window.StudioActions = (function() {
+    // İsteğin çalışıp çalışmadığını izleyen bir flag
+    let isSaveInProgress = false;
+    
     /**
      * Tüm eylem butonlarını ayarlar
      * @param {Object} editor - GrapesJS editor örneği
      * @param {Object} config - Yapılandırma parametreleri
      */
     function setupActions(editor, config) {
+        console.log("Setting up actions");
+        
         setupSaveButton(editor, config);
         setupPreviewButton(editor);
         setupExportButton(editor);
@@ -26,57 +31,128 @@ window.StudioActions = (function() {
             return;
         }
 
+        // Tüm eski event listener'ları temizle
+        const newSaveBtn = saveBtn.cloneNode(true);
+        if (saveBtn.parentNode) {
+            saveBtn.parentNode.replaceChild(newSaveBtn, saveBtn);
+        }
+        
         // Kaydetme işlemini yapacak fonksiyon
-        const handleSaveClick = function () {
-            console.log("Save button clicked."); // Tıklama logu eklendi
-            const htmlContent = editor.getHtml();
-            const cssContent = editor.getCss();
-            const jsContentEl = document.getElementById("js-content");
-            const jsContent = jsContentEl ? jsContentEl.value : "";
-
-            // moduleId'nin sayı olduğundan emin ol
-            const moduleId = parseInt(config.moduleId);
+        newSaveBtn.addEventListener("click", function(e) {
+            e.preventDefault();
             
-            // Kaydetme URL'si
-            const saveUrl = `/admin/studio/save/${config.moduleType}/${moduleId}`;
+            // Zaten bir istek çalışıyorsa engelle
+            if (isSaveInProgress) {
+                console.log("Save operation already in progress, ignoring this click");
+                return;
+            }
+            
+            // İşlem başladı flag'ini ayarla
+            isSaveInProgress = true;
+            console.log("Save button clicked");
+            
+            // Butonu geçici olarak devre dışı bırak
+            this.disabled = true;
+            const originalText = this.innerHTML;
+            this.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Kaydediliyor...';
+            
+            try {
+                let htmlContent, cssContent, jsContent;
+                
+                // HTML içeriğini StudioHtmlParser ile hazırla
+                if (window.StudioHtmlParser && typeof window.StudioHtmlParser.prepareContentForSave === 'function') {
+                    htmlContent = window.StudioHtmlParser.prepareContentForSave(editor);
+                } else {
+                    // Fallback: Direkt editor'den al
+                    htmlContent = editor.getHtml();
+                }
+                
+                // CSS içeriğini al
+                try {
+                    cssContent = editor.getCss();
+                } catch (cssError) {
+                    console.error('CSS içeriği alınırken hata:', cssError);
+                    cssContent = '';
+                }
+                
+                // JS içeriğini al
+                const jsContentEl = document.getElementById("js-content");
+                jsContent = jsContentEl ? jsContentEl.value : '';
 
-            // Debug için konsola yazdır
-            console.log("Kaydediliyor:", {
-                url: saveUrl,
-                moduleType: config.moduleType,
-                moduleId: moduleId,
-                contentLength: htmlContent.length,
-                cssLength: cssContent.length,
-                // jsLength: jsContent.length // Eğer JS kaydediyorsanız
-            });
+                // moduleId'nin sayı olduğundan emin ol
+                const moduleId = parseInt(config.moduleId);
+                
+                // Kaydetme URL'si
+                const saveUrl = `/admin/studio/save/${config.moduleType}/${moduleId}`;
 
-            // AJAX isteği
-            StudioUtils.sendRequest(
-                saveUrl,
-                {
-                    html_content: htmlContent,
-                    css_content: cssContent,
-                    js_content: jsContent
-                },
-                function(data) {
-                    StudioUtils.showNotification('Başarılı', data.message || 'İçerik başarıyla kaydedildi!');
-                },
-                function(error) {
+                // Debug için konsola yazdır
+                console.log("Kaydediliyor:", {
+                    url: saveUrl,
+                    moduleType: config.moduleType,
+                    moduleId: moduleId,
+                    contentLength: htmlContent.length,
+                    contentPreview: htmlContent.substring(0, 100) + '...',
+                    cssLength: cssContent.length, 
+                    jsLength: jsContent.length
+                });
+
+                // Doğrudan fetch API ile manuel gönderim
+                const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                
+                // Request body oluştur
+                const params = {
+                    content: htmlContent,
+                    css: cssContent,
+                    js: jsContent
+                };
+                
+                // AJAX isteği
+                fetch(saveUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': token,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(params)
+                })
+                .then(response => {
+                    console.log("Sunucu yanıt durumu:", response.status);
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("Sunucu yanıtı:", data);
+                    if (data.success) {
+                        console.log("Kayıt başarılı:", data.message);
+                        StudioUtils.showNotification('Başarılı', data.message || 'İçerik başarıyla kaydedildi!');
+                    } else {
+                        console.error("Kayıt başarısız:", data.message);
+                        StudioUtils.showNotification('Hata', data.message || 'Kayıt işlemi başarısız.', 'error');
+                    }
+                })
+                .catch(error => {
                     console.error('Kaydetme hatası:', error);
                     StudioUtils.showNotification('Hata', error.message || 'Sunucuya bağlanırken bir hata oluştu.', 'error');
-                }
-            );
-        };
-        
-        // Önce mevcut listener'ı kaldır (varsa)
-        // Not: Eğer handleSaveClick fonksiyonu her çağrıda yeniden tanımlanıyorsa,
-        // bu removeEventListener işe yaramaz. Fonksiyon referansının aynı olması gerekir.
-        // Ancak bu yapı genellikle iş görür.
-        saveBtn.removeEventListener("click", handleSaveClick); 
-        // Sonra yeni listener'ı ekle
-        saveBtn.addEventListener("click", handleSaveClick);
-
-        console.log("Save button listener setup/reset."); // Kurulum logu
+                })
+                .finally(() => {
+                    // Butonu normal haline getir
+                    this.disabled = false;
+                    this.innerHTML = originalText;
+                    
+                    // İşlem bittikten sonra kilidi kaldır
+                    setTimeout(() => {
+                        isSaveInProgress = false;
+                        console.log("Save operation lock released");
+                    }, 1000); // 1 saniye beklet, hızlı çift tıklamaları önlemek için
+                });
+            } catch (error) {
+                console.error("Save operation error:", error);
+                this.disabled = false;
+                this.innerHTML = originalText;
+                isSaveInProgress = false; // Hata durumunda kilidi kaldır
+                StudioUtils.showNotification('Hata', 'İçerik kaydedilirken bir sorun oluştu: ' + error.message, 'error');
+            }
+        });
     }
     
     /**
@@ -86,9 +162,18 @@ window.StudioActions = (function() {
     function setupPreviewButton(editor) {
         const previewBtn = document.getElementById("preview-btn");
         if (previewBtn) {
-            previewBtn.addEventListener("click", function () {
+            // Eski listener'ları temizle
+            const newPreviewBtn = previewBtn.cloneNode(true);
+            if (previewBtn.parentNode) {
+                previewBtn.parentNode.replaceChild(newPreviewBtn, previewBtn);
+            }
+            
+            newPreviewBtn.addEventListener("click", function () {
                 // Özel önizleme mantığı
-                const html = editor.getHtml();
+                const html = window.StudioHtmlParser ? 
+                    window.StudioHtmlParser.prepareContentForSave(editor) : 
+                    editor.getHtml();
+                    
                 const css = editor.getCss();
                 const jsContentEl = document.getElementById("js-content");
                 const js = jsContentEl ? jsContentEl.value : '';
@@ -134,8 +219,17 @@ window.StudioActions = (function() {
     function setupExportButton(editor) {
         const exportBtn = document.getElementById("export-btn");
         if (exportBtn) {
-            exportBtn.addEventListener("click", function () {
-                const html = editor.getHtml();
+            // Eski listener'ları temizle
+            const newExportBtn = exportBtn.cloneNode(true);
+            if (exportBtn.parentNode) {
+                exportBtn.parentNode.replaceChild(newExportBtn, exportBtn);
+            }
+            
+            newExportBtn.addEventListener("click", function () {
+                const html = window.StudioHtmlParser ? 
+                    window.StudioHtmlParser.prepareContentForSave(editor) : 
+                    editor.getHtml();
+                    
                 const css = editor.getCss();
                 const jsContentEl = document.getElementById("js-content");
                 const js = jsContentEl ? jsContentEl.value : '';

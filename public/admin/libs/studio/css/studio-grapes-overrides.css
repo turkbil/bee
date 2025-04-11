@@ -1,0 +1,199 @@
+/* GrapesJS Stil Yöneticisi Özelleştirmeleri */
+.gjs-sm-sector {
+    margin-bottom: 5px !important;
+    background-color: #fff !important;
+    border-bottom: 1px solid #eaedf2 !important;
+  }
+  
+  .gjs-sm-sector-title {
+    display: flex !important;
+    align-items: center !important;
+    padding: 12px 15px !important;
+    background-color: #f8f9fa !important;
+    cursor: pointer !important;
+    font-weight: 500 !important;
+    color: #475569 !important;
+    font-size: 13px !important;
+    border-left: 3px solid transparent !important;
+  }
+  
+  .gjs-sm-sector-title:hover {
+    background-color: #f0f2f8 !important;
+    color: #206bc4 !important;
+  }
+  
+  .gjs-sm-sector-title::after {
+    content: "\f107" !important;
+    font-family: "Font Awesome 6 Pro", FontAwesome !important;
+    margin-left: auto !important;
+    transition: transform 0.3s !important;
+    color: #94a3b8 !important;
+  }
+  
+  .gjs-sm-sector.gjs-collapsed .gjs-sm-sector-title::after {
+    transform: rotate(-90deg) !important;
+  }
+  
+  .gjs-sm-properties {
+    padding: 10px 0 !important;
+    background-color: #fff !important;
+  }
+  
+  .gjs-sm-label {
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    color: #64748b !important;
+    margin-bottom: 5px !important;
+  }
+  
+  .gjs-sm-property {
+    margin-bottom: 12px !important;
+    padding: 0 15px 10px !important;
+    border-bottom: 1px dashed rgba(203, 213, 225, 0.5) !important;
+    background-color: #fff !important;
+  }
+  
+  .gjs-field {
+    background-color: #f8fafc !important;
+    border-radius: 4px !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: none !important;
+    transition: all 0.2s ease !important;
+    color: #333 !important;
+  }
+  
+  .gjs-field input, 
+  .gjs-field select, 
+  .gjs-field textarea {
+    color: #333 !important;
+    background-color: #f8fafc !important;
+  }
+  
+  .gjs-field:focus-within {
+    border-color: #94c0fd !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+  }
+  
+  .gjs-field-arrow-u, 
+  .gjs-field-arrow-d {
+    border-color: #cbd5e1 !important;
+    background-color: #f8fafc !important;
+  }
+  
+  .gjs-field-units {
+    background-color: #f8fafc !important;
+  }
+  
+  .gjs-field-unit {
+    color: #64748b !important;
+    background-color: #e9ecef !important;
+    border-color: #e2e8f0 !important;
+  }
+  
+  /* Margin ve Padding köşe alanları */
+  .gjs-fields {
+    background-color: #f5f7fa !important;
+    border: 1px solid #e2e8f0 !important;
+  }
+  
+  /* Renk seçiciyi düzelt */
+  .gjs-field-colorp {
+    border: 1px solid #e2e8f0 !important;
+  }
+  
+  .gjs-field-color-picker {
+    background-color: #fff !important;
+    border: 1px solid #e2e8f0 !important;
+  }
+  
+  /* Özel Sekmeler Renkleri */
+  .gjs-sm-sector[data-sector-name="Düzen"] {
+    border-left: 3px solid #17a2b8 !important;
+  }
+  
+  .gjs-sm-sector[data-sector-name="Flex"] {
+    border-left: 3px solid #fd7e14 !important;
+  }
+  
+  .gjs-sm-sector[data-sector-name="Tipografi"] {
+    border-left: 3px solid #6f42c1 !important;
+  }
+  
+  .gjs-sm-sector[data-sector-name="Dekorasyon"] {
+    border-left: 3px solid #20c997 !important;
+  }
+  
+  .gjs-sm-sector[data-sector-name="Ekstra"] {
+    border-left: 3px solid #e83e8c !important;
+  }
+  
+  /* Katmanlar Paneli Özelleştirmeleri */
+  .gjs-layer {
+    padding: 10px 12px !important;
+    background-color: #fff !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    font-size: 12px !important;
+    transition: all 0.2s ease !important;
+  }
+  
+  .gjs-layer:hover {
+    background-color: #f8fafc !important;
+  }
+  
+  .gjs-layer.gjs-selected {
+    background-color: #f1f5ff !important;
+    border-left: 3px solid #206bc4 !important;
+  }
+  
+  .gjs-layer-title {
+    font-weight: 500 !important;
+    color: #475569 !important;
+  }
+  
+  .gjs-layer-count {
+    background-color: #f1f5f9 !important;
+    color: #64748b !important;
+    font-size: 10px !important;
+    border-radius: 10px !important;
+    padding: 1px 6px !important;
+  }
+  
+  .gjs-layer-vis {
+    color: #94a3b8 !important;
+  }
+  
+  .gjs-layer-vis:hover {
+    color: #206bc4 !important;
+  }
+  
+  /* Özellikler Paneli */
+  .gjs-trt-trait {
+    padding: 10px 0 !important;
+    margin-bottom: 10px !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    background-color: #fff !important;
+  }
+  
+  .gjs-label-wrp {
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    color: #64748b !important;
+    margin-bottom: 5px !important;
+  }
+  
+  /* Diğer GrapesJS elemanlarda açık tema için gerekli düzeltmeler */
+  .gjs-one-bg {
+    background-color: #fff !important;
+  }
+  
+  .gjs-two-color {
+    color: #475569 !important;
+  }
+  
+  .gjs-three-bg {
+    background-color: #f8fafc !important;
+  }
+  
+  .gjs-four-color, .gjs-four-color-h:hover {
+    color: #206bc4 !important;
+  }

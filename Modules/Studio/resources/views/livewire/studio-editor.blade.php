@@ -16,17 +16,13 @@
                     <i class="fa fa-paint-brush tab-icon"></i>
                     <span class="tab-text">Stiller</span>
                 </div>
-                <div class="panel-tab" data-tab="traits">
-                    <i class="fa fa-sliders-h tab-icon"></i>
-                    <span class="tab-text">Özellikler</span>
-                </div>
                 <div class="panel-tab" data-tab="layers">
                     <i class="fa fa-layer-group tab-icon"></i>
                     <span class="tab-text">Katmanlar</span>
                 </div>
             </div>
             
-            <!-- Bloklar İçeriği -->
+            <!-- Bileşenler İçeriği -->
             <div class="panel-tab-content active" data-tab-content="blocks">
                 <div class="blocks-search">
                     <input type="text" id="blocks-search" class="form-control form-control-sm" placeholder="Bileşen ara...">
@@ -187,12 +183,11 @@
             
             <!-- Stiller İçeriği -->
             <div class="panel-tab-content" data-tab-content="styles">
-                <div id="styles-container" class="styles-container"></div>
-            </div>
-            
-            <!-- Özellikler İçeriği -->
-            <div class="panel-tab-content" data-tab-content="traits">
+                <!-- Özellikler sekmesi içeriği burada -->
                 <div id="traits-container" class="traits-container"></div>
+                
+                <!-- Stil konteynerı burada -->
+                <div id="styles-container" class="styles-container"></div>
             </div>
             
             <!-- Katmanlar İçeriği -->

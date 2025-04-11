@@ -8,6 +8,9 @@ window.StudioUI = (function() {
     
     // Sürüklenen blok ID'sini global olarak sakla
     window._draggedBlockId = null;
+
+    // Drop olayının işlenip işlenmediğini takip etmek için flag
+    let dropProcessed = false;
     
     /**
      * Arayüz olaylarını kaydeder
@@ -716,9 +719,11 @@ window.StudioUI = (function() {
             const uniqueId = 'block-' + Math.random().toString(36).substr(2, 9);
             blockItem.id = uniqueId;
             
-            // Eski event listener'ları temizle (güvenlik önlemi)
+            // Eski event listener'ları temizle
             const newBlockItem = blockItem.cloneNode(true);
-            blockItem.parentNode.replaceChild(newBlockItem, blockItem);
+            if (blockItem.parentNode) {
+                blockItem.parentNode.replaceChild(newBlockItem, blockItem);
+            }
             blockItem = newBlockItem;
     
             // Drag event listener'larını ekle
@@ -742,6 +747,9 @@ window.StudioUI = (function() {
                 
                 e.dataTransfer.effectAllowed = 'copy';
                 
+                // Drop işleme bayrağını sıfırla
+                dropProcessed = false;
+                
                 // Sürükleme başladığında CSS sınıfı ekle
                 this.classList.add('dragging');
             });
@@ -758,40 +766,7 @@ window.StudioUI = (function() {
                 }, 500);
             });
             
-            // Tıklama olayını ekle (bir alternatif olarak)
-            blockItem.addEventListener('click', function() {
-                const blockId = this.getAttribute('data-block-id');
-                if (!blockId) return;
-                
-                // GrapesJS bloğunu bul
-                const block = editor.BlockManager.get(blockId);
-                if (block) {
-                    // Bloğu canvas'a ekle
-                    editor.addComponents(block.get('content'));
-                    
-                    // Başarı bildirimi göster
-                    if (window.StudioUtils && typeof window.StudioUtils.showNotification === 'function') {
-                        window.StudioUtils.showNotification(
-                            "Başarılı", 
-                            `'${block.get('label')}' eklendi`, 
-                            "success"
-                        );
-                    }
-                } else {
-                    // Özel blok içeriğini kontrol et
-                    const blockContent = this.getAttribute('data-content');
-                    if (blockContent) {
-                        editor.addComponents(blockContent);
-                        if (window.StudioUtils && typeof window.StudioUtils.showNotification === 'function') {
-                            window.StudioUtils.showNotification(
-                                "Başarılı", 
-                                "Bileşen eklendi", 
-                                "success"
-                            );
-                        }
-                    }
-                }
-            });
+            // Tıklama olayını kaldırdık - bileşene tıklayınca ekleme yapmıyoruz artık
         });
         
         // Canvas için drop hedefini ayarla
@@ -810,7 +785,7 @@ window.StudioUI = (function() {
             return;
         }
         
-        // Eski dinleyicileri temizle
+        // Eski dinleyicileri tamamen kaldır
         canvas.removeEventListener('dragover', handleDragOver);
         canvas.removeEventListener('dragenter', handleDragEnter);
         canvas.removeEventListener('dragleave', handleDragLeave);
@@ -819,8 +794,8 @@ window.StudioUI = (function() {
         // Yeni dinleyicileri ekle
         canvas.addEventListener('dragover', handleDragOver);
         canvas.addEventListener('dragenter', handleDragEnter);
-        canvas.removeEventListener('dragleave', handleDragLeave);
-        canvas.addEventListener('drop', handleCanvasDrop);
+        canvas.addEventListener('dragleave', handleDragLeave);
+        canvas.addEventListener('drop', handleCanvasDrop, { once: true }); // ÖNEMLİ: once:true parametresi ekledik
         
         console.log('Canvas drop event listener\'ları eklendi', canvas);
     }
@@ -886,23 +861,23 @@ window.StudioUI = (function() {
                         return;
                     }
                     
-                    // Önceki event listener'ları temizle
+                    // Önceki event listener'ları tamamen kaldır
                     canvas.removeEventListener('dragover', handleDragOver);
                     canvas.removeEventListener('dragenter', handleDragEnter);
                     canvas.removeEventListener('dragleave', handleDragLeave);
                     canvas.removeEventListener('drop', handleCanvasDrop);
                     
-                    // Yeni event listener'ları ekle
+                    // Yeni event listener'ları ekle - once:true ile bir kez çalışacak şekilde
                     canvas.addEventListener('dragover', handleDragOver);
                     canvas.addEventListener('dragenter', handleDragEnter);
                     canvas.addEventListener('dragleave', handleDragLeave);
-                    canvas.addEventListener('drop', handleCanvasDrop);
+                    canvas.addEventListener('drop', handleCanvasDrop, { once: true });
                     
                     console.log('Canvas drop event listener\'ları başarıyla eklendi.', canvas);
                 } catch (error) {
                     console.error('Canvas drop listener ayarlanırken hata:', error);
                 }
-            }, 1000); // Daha uzun bir bekleme süresi
+            }, 1000);
         });
     }
 
@@ -934,12 +909,21 @@ window.StudioUI = (function() {
         }
     }
 
-    // Canvas drop olayı
+    // Canvas drop olayı - yeniden düzenlendi
     function handleCanvasDrop(e) {
         e.preventDefault();
         e.stopPropagation();
         
         console.log('Drop olayı tetiklendi!');
+        
+        // Eğer bu drop olayı zaten işlendiyse, çık
+        if (dropProcessed) {
+            console.log('Drop olayı zaten işlenmiş, tekrar işlenmeyecek');
+            return;
+        }
+        
+        // Drop olayının işlendiğini işaretle
+        dropProcessed = true;
         
         // Editor Canvas'ından drop hedefi stilini kaldır
         const editorCanvas = document.querySelector('.editor-canvas');
@@ -958,7 +942,7 @@ window.StudioUI = (function() {
         
         console.log('Sürüklenen Blok ID:', blockId);
         
-        // Çift drop olayını önlemek için ID'yi hemen temizle
+        // ÖNEMLİ: Çift drop olayını önlemek için
         window._draggedBlockId = null;
         
         // Editöre erişim için global değişkeni kullan
@@ -971,15 +955,6 @@ window.StudioUI = (function() {
         // Blok içeriğini ekle
         if (blockId) {
             try {
-                // İlk önce blok zaten eklendi mi kontrol et
-                const timestamp = Date.now();
-                if (window._lastDropTime && (timestamp - window._lastDropTime < 1000)) {
-                    console.log('Drop olayı engellendi (son 1 saniye içinde zaten işlendi)');
-                    return;
-                }
-                
-                window._lastDropTime = timestamp;
-                
                 // BlockManager'dan bloğu al
                 const block = editor.BlockManager.get(blockId);
                 if (block) {
@@ -1016,6 +991,12 @@ window.StudioUI = (function() {
                 }
             } catch (error) {
                 console.error('Bileşen eklenirken hata:', error);
+            } finally {
+                // Drop işlemi bittikten sonra, event listener'ı yeniden ekle
+                setTimeout(() => {
+                    // Reset drop processing flag after a short delay
+                    dropProcessed = false;
+                }, 500);
             }
         }
     }
@@ -1115,4 +1096,4 @@ window.StudioUI = (function() {
         handleCanvasDrop: handleCanvasDrop,
         enhanceCanvasDragDrop: enhanceCanvasDragDrop
     };
-    })();
+})();

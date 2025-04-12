@@ -155,16 +155,87 @@ window.initStudioEditor = function (config) {
 };
 
 function setupCustomCommands(editor) {
-    // Öğeleri görünür/gizli yap
+    // Öğeleri görünür/gizli yap - Noktalı çizgilerle
     editor.Commands.add('sw-visibility', {
+        toggleVisibility: false, // Görünürlük durumunu takip et
+        
         run(editor) {
-            const options = editor.getConfig().canvasConfig;
-            options.customBadgeLabel = '';
-            editor.Canvas.refresh();
-            setTimeout(() => editor.Canvas.refresh(), 0);
-            return options.showOffsets = !options.showOffsets;
+            this.toggleVisibility = !this.toggleVisibility;
+            
+            try {
+                // Canvas iframe'ine eriş
+                const frame = editor.Canvas.getFrames()[0]; 
+                if (!frame) return false;
+                
+                const win = frame.view.getWindow();
+                if (!win) return false;
+                
+                const doc = win.document;
+                if (!doc) return false;
+                
+                // Bileşenlere stil uygulamak için stil sayfası ekle/kaldır
+                let styleEl = doc.getElementById('gjs-component-outline-styles');
+                
+                if (this.toggleVisibility) {
+                    // Stil elementini oluştur
+                    if (!styleEl) {
+                        styleEl = doc.createElement('style');
+                        styleEl.id = 'gjs-component-outline-styles';
+                        doc.head.appendChild(styleEl);
+                    }
+                    
+                    // Stiller - Tüm bileşenler için noktalı çizgi
+                    styleEl.innerHTML = `
+                    /* Tüm bileşenler için noktalı çizgi */
+                    [data-gjs-type] {
+                        outline: 1px dashed rgba(41, 98, 255, 0.7) !important;
+                        outline-offset: 1px !important;
+                        transition: outline 0.2s ease-in-out, outline-offset 0.2s ease-in-out !important;
+                    }
+                    
+                    /* Hover efekti - daha belirgin noktalı */
+                    [data-gjs-type]:hover {
+                        outline: 2px solid rgba(0, 123, 255, 0.9) !important;
+                        outline-offset: 2px !important;
+                        z-index: 1 !important;
+                    }
+                    
+                    /* Seçili bileşenler - solid olsun */
+                    .gjs-selected {
+                        outline: 2px solid rgba(0, 123, 255, 1) !important;
+                        outline-offset: 2px !important;
+                        z-index: 2 !important;
+                    }
+                    `;
+                    
+                    // Göz butonunu aktif duruma getir
+                    const button = document.getElementById('sw-visibility');
+                    if (button) button.classList.add('active');
+                    
+                } else {
+                    // Stil elementini kaldır
+                    if (styleEl) {
+                        styleEl.parentNode.removeChild(styleEl);
+                    }
+                    
+                    // Göz butonunu pasif duruma getir
+                    const button = document.getElementById('sw-visibility');
+                    if (button) button.classList.remove('active');
+                }
+                
+                // Canvas yenileme işlemini doğru yöntemle yap
+                editor.refresh();
+                
+                return this.toggleVisibility;
+            } catch (error) {
+                console.error('Bileşen sınırlarını gösterme/gizleme hatası:', error);
+                return false;
+            }
         },
-        stop() { }
+        
+        stop() {
+            this.toggleVisibility = false;
+        }
     });
 
     // İçeriği temizle
@@ -172,7 +243,6 @@ function setupCustomCommands(editor) {
         run(editor) {
             editor.DomComponents.clear();
             editor.CssComposer.clear();
-            setTimeout(() => editor.runCommand('core:component-outline'), 0);
         }
     });
 
@@ -190,233 +260,234 @@ function setupCustomCommands(editor) {
         }
     });
     
-    // Bileşen sınırlarını göster komutu
+    // Bileşen sınırlarını göster komutu - sw-visibility'i çağırır
     editor.Commands.add('core:component-outline', {
         run(editor) {
-            const options = editor.getConfig().canvasConfig;
-            options.showOffsets = 1;
-            editor.Canvas.refresh();
-            setTimeout(() => editor.Canvas.refresh(), 0);
+            try {
+                // sw-visibility komutunu çalıştır
+                editor.runCommand('sw-visibility');
+            } catch (error) {
+                console.error('Bileşen outline hatası:', error);
+            }
         }
     });
 }
-
 
 function enhanceDragDrop(editor) {
     // GrapesJS bloklarını sürüklemek için ayarlar
     editor.on('block:drag:start', function(model) {
         console.log('Blok sürükleniyor:', model.get('label'));
         document.body.classList.add('dragging-mode');
-    });
-    
-    editor.on('block:drag:stop', function(model) {
-        console.log('Blok sürükleme bitti');
-        document.body.classList.remove('dragging-mode');
-    });
-}
+        });
+        
+        editor.on('block:drag:stop', function(model) {
+            console.log('Blok sürükleme bitti');
+            document.body.classList.remove('dragging-mode');
+        });
+    }
 
-// Butonlara tooltip ekle
-function addTooltips() {
-    const buttons = document.querySelectorAll('.toolbar-btn');
-    buttons.forEach(btn => {
-        const id = btn.id;
-        let tooltipText = '';
-        
-        // Buton türüne göre tooltip metni
-        switch(id) {
-            case 'sw-visibility':
-                tooltipText = 'Bileşen sınırlarını göster/gizle';
-                break;
-            case 'cmd-clear':
-                tooltipText = 'İçeriği temizle';
-                break;
-            case 'cmd-undo':
-                tooltipText = 'Geri al';
-                break;
-            case 'cmd-redo':
-                tooltipText = 'Yinele';
-                break;
-            case 'cmd-code-edit':
-                tooltipText = 'HTML düzenle';
-                break;
-            case 'cmd-css-edit':
-                tooltipText = 'CSS düzenle';
-                break;
-            case 'cmd-js-edit':
-                tooltipText = 'JavaScript düzenle';
-                break;
-            case 'export-btn':
-                tooltipText = 'Dışa aktar';
-                break;
-            case 'device-desktop':
-                tooltipText = 'Masaüstü görünümü';
-                break;
-            case 'device-tablet':
-                tooltipText = 'Tablet görünümü';
-                break;
-            case 'device-mobile':
-                tooltipText = 'Mobil görünümü';
-                break;
-            default:
-                tooltipText = '';
-        }
-        
-        if (tooltipText) {
-            // Tooltip elementi oluştur
-            const tooltip = document.createElement('div');
-            tooltip.className = 'studio-tooltip';
-            tooltip.textContent = tooltipText;
-            tooltip.style.position = 'absolute';
-            tooltip.style.top = '-30px';
-            tooltip.style.left = '50%';
-            tooltip.style.transform = 'translateX(-50%)';
-            tooltip.style.backgroundColor = '#333';
-            tooltip.style.color = 'white';
-            tooltip.style.padding = '5px 10px';
-            tooltip.style.borderRadius = '4px';
-            tooltip.style.fontSize = '12px';
-            tooltip.style.zIndex = '999';
-            tooltip.style.pointerEvents = 'none';
-            tooltip.style.opacity = '0';
-            tooltip.style.transition = 'opacity 0.3s ease';
+    // Butonlara tooltip ekle
+    function addTooltips() {
+        const buttons = document.querySelectorAll('.toolbar-btn');
+        buttons.forEach(btn => {
+            const id = btn.id;
+            let tooltipText = '';
             
-            // Butonu tooltip için hazırla
-            if (btn.style.position !== 'relative') {
-                btn.style.position = 'relative';
+            // Buton türüne göre tooltip metni
+            switch(id) {
+                case 'sw-visibility':
+                    tooltipText = 'Bileşen sınırlarını göster/gizle';
+                    break;
+                case 'cmd-clear':
+                    tooltipText = 'İçeriği temizle';
+                    break;
+                case 'cmd-undo':
+                    tooltipText = 'Geri al';
+                    break;
+                case 'cmd-redo':
+                    tooltipText = 'Yinele';
+                    break;
+                case 'cmd-code-edit':
+                    tooltipText = 'HTML düzenle';
+                    break;
+                case 'cmd-css-edit':
+                    tooltipText = 'CSS düzenle';
+                    break;
+                case 'cmd-js-edit':
+                    tooltipText = 'JavaScript düzenle';
+                    break;
+                case 'export-btn':
+                    tooltipText = 'Dışa aktar';
+                    break;
+                case 'device-desktop':
+                    tooltipText = 'Masaüstü görünümü';
+                    break;
+                case 'device-tablet':
+                    tooltipText = 'Tablet görünümü';
+                    break;
+                case 'device-mobile':
+                    tooltipText = 'Mobil görünümü';
+                    break;
+                default:
+                    tooltipText = '';
             }
             
-            btn.appendChild(tooltip);
-            
-            // Fare olayları
-            btn.addEventListener('mouseenter', () => {
-                tooltip.style.opacity = '1';
-            });
-            
-            btn.addEventListener('mouseleave', () => {
+            if (tooltipText) {
+                // Tooltip elementi oluştur
+                const tooltip = document.createElement('div');
+                tooltip.className = 'studio-tooltip';
+                tooltip.textContent = tooltipText;
+                tooltip.style.position = 'absolute';
+                tooltip.style.top = '-30px';
+                tooltip.style.left = '50%';
+                tooltip.style.transform = 'translateX(-50%)';
+                tooltip.style.backgroundColor = '#333';
+                tooltip.style.color = 'white';
+                tooltip.style.padding = '5px 10px';
+                tooltip.style.borderRadius = '4px';
+                tooltip.style.fontSize = '12px';
+                tooltip.style.zIndex = '999';
+                tooltip.style.pointerEvents = 'none';
                 tooltip.style.opacity = '0';
-            });
-        }
-    });
-}
-
-// Editor yükleme olayını dinle
-document.addEventListener('editor:loaded', function() {
-    console.log('Editor yüklendi olayı algılandı');
-    
-    // Akordeonları ve blokları yeniden başlat
-    if (window.StudioUI && typeof window.StudioUI.setupUI === 'function') {
-        const editor = window.StudioCore.getEditor();
-        if (editor) {
-            window.StudioUI.setupUI(editor);
-        }
-    }
-    
-    // Tooltip ekle
-    setTimeout(addTooltips, 500);
-    
-    // Kategori panel özelleştirmeleri
-    setTimeout(customizePanels, 500);
-});
-
-// Panel özelleştirmeleri
-function customizePanels() {
-    // Katmanlar panelini özelleştir
-    const layersPanel = document.querySelector('#layers-container');
-    if (layersPanel) {
-        layersPanel.classList.add('custom-layers-panel');
-        
-        // Ebeveyn konteyner
-        const parent = layersPanel.parentElement;
-        if (parent && !parent.querySelector('.custom-panel-header')) {
-            // Başlık ekle
-            const layersHeader = document.createElement('div');
-            layersHeader.className = 'custom-panel-header';
-            layersHeader.style.padding = '12px 15px';
-            layersHeader.style.backgroundColor = '#f1f5f9';
-            layersHeader.style.borderBottom = '1px solid #e5e5e5';
-            layersHeader.style.fontWeight = '600';
-            layersHeader.style.color = '#64748b';
-            layersHeader.innerHTML = '<i class="fas fa-layer-group me-2"></i> Katmanlar';
-            
-            // Başlığı panelin önüne ekle
-            parent.insertBefore(layersHeader, layersPanel);
-        }
-    }
-    
-    // Stiller panelini özelleştir
-    const stylesPanel = document.querySelector('#styles-container');
-    if (stylesPanel) {
-        stylesPanel.classList.add('custom-styles-panel');
-        
-        // Stil kategorilerine renk kodu ekle
-        document.querySelectorAll('.gjs-sm-sector').forEach((sector, index) => {
-            const categoryColors = [
-                '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'
-            ];
-            
-            const colorIndex = index % categoryColors.length;
-            const color = categoryColors[colorIndex];
-            
-            // Kategori başlığına renk çubuğu ekle
-            const title = sector.querySelector('.gjs-sm-sector-title');
-            if (title) {
-                title.style.borderLeft = `4px solid ${color}`;
-                title.style.paddingLeft = '12px';
+                tooltip.style.transition = 'opacity 0.3s ease';
+                
+                // Butonu tooltip için hazırla
+                if (btn.style.position !== 'relative') {
+                    btn.style.position = 'relative';
+                }
+                
+                btn.appendChild(tooltip);
+                
+                // Fare olayları
+                btn.addEventListener('mouseenter', () => {
+                    tooltip.style.opacity = '1';
+                });
+                
+                btn.addEventListener('mouseleave', () => {
+                    tooltip.style.opacity = '0';
+                });
             }
         });
     }
-    
-    // Editor'ü başlatır ve gerekli modülleri yükler
-    function initializeEditor(config) {
-        if (!config || !config.moduleId || config.moduleId <= 0) {
-            console.error('Geçersiz konfigürasyon veya modül ID:', config);
-            return;
-        }
-        
-        // Global değişkende sakla
-        window.studioEditorConfig = config;
-        
-        // Editor başlat
-        if (typeof window.initStudioEditor === 'function') {
-            try {
-                const editor = window.initStudioEditor(config);
-                // Global erişim için kaydet
-                window.studioEditor = editor;
-                
-                // Stil yöneticisi sorununu çöz
-                setTimeout(() => {
-                    if (window.StudioCore && typeof window.StudioCore.fixStyleManagerIssues === 'function') {
-                        window.StudioCore.fixStyleManagerIssues();
-                    }
-                }, 1500); // Editor yüklendikten sonra yeterli bekleme
-            } catch (error) {
-                console.error('Studio Editor başlatılırken hata:', error);
-            }
-        } else {
-            console.error('Studio Editor başlatılamıyor: initStudioEditor fonksiyonu bulunamadı!');
-        }
-    }
 
-    // Özellikler panelini özelleştir
-    const traitsPanel = document.querySelector('#traits-container');
-    if (traitsPanel) {
-        traitsPanel.classList.add('custom-traits-panel');
+    // Editor yükleme olayını dinle
+    document.addEventListener('editor:loaded', function() {
+        console.log('Editor yüklendi olayı algılandı');
         
-        // Ebeveyn konteyner
-        const parent = traitsPanel.parentElement;
-        if (parent && !parent.querySelector('.custom-panel-header')) {
-            // Başlık ekle
-            const traitsHeader = document.createElement('div');
-            traitsHeader.className = 'custom-panel-header';
-            traitsHeader.style.padding = '12px 15px';
-            traitsHeader.style.backgroundColor = '#f1f5f9';
-            traitsHeader.style.borderBottom = '1px solid #e5e5e5';
-            traitsHeader.style.fontWeight = '600';
-            traitsHeader.style.color = '#64748b';
-            traitsHeader.innerHTML = '<i class="fas fa-sliders-h me-2"></i> Özellikler';
+        // Akordeonları ve blokları yeniden başlat
+        if (window.StudioUI && typeof window.StudioUI.setupUI === 'function') {
+            const editor = window.StudioCore.getEditor();
+            if (editor) {
+                window.StudioUI.setupUI(editor);
+            }
+        }
+        
+        // Tooltip ekle
+        setTimeout(addTooltips, 500);
+        
+        // Kategori panel özelleştirmeleri
+        setTimeout(customizePanels, 500);
+    });
+
+    // Panel özelleştirmeleri
+    function customizePanels() {
+        // Katmanlar panelini özelleştir
+        const layersPanel = document.querySelector('#layers-container');
+        if (layersPanel) {
+            layersPanel.classList.add('custom-layers-panel');
             
-            // Başlığı panelin önüne ekle
-            parent.insertBefore(traitsHeader, traitsPanel);
+            // Ebeveyn konteyner
+            const parent = layersPanel.parentElement;
+            if (parent && !parent.querySelector('.custom-panel-header')) {
+                // Başlık ekle
+                const layersHeader = document.createElement('div');
+                layersHeader.className = 'custom-panel-header';
+                layersHeader.style.padding = '12px 15px';
+                layersHeader.style.backgroundColor = '#f1f5f9';
+                layersHeader.style.borderBottom = '1px solid #e5e5e5';
+                layersHeader.style.fontWeight = '600';
+                layersHeader.style.color = '#64748b';
+                layersHeader.innerHTML = '<i class="fas fa-layer-group me-2"></i> Katmanlar';
+                
+                // Başlığı panelin önüne ekle
+                parent.insertBefore(layersHeader, layersPanel);
+            }
+        }
+        
+        // Stiller panelini özelleştir
+        const stylesPanel = document.querySelector('#styles-container');
+        if (stylesPanel) {
+            stylesPanel.classList.add('custom-styles-panel');
+            
+            // Stil kategorilerine renk kodu ekle
+            document.querySelectorAll('.gjs-sm-sector').forEach((sector, index) => {
+                const categoryColors = [
+                    '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'
+                ];
+                
+                const colorIndex = index % categoryColors.length;
+                const color = categoryColors[colorIndex];
+                
+                // Kategori başlığına renk çubuğu ekle
+                const title = sector.querySelector('.gjs-sm-sector-title');
+                if (title) {
+                    title.style.borderLeft = `4px solid ${color}`;
+                    title.style.paddingLeft = '12px';
+                }
+            });
+        }
+        
+        // Editor'ü başlatır ve gerekli modülleri yükler
+        function initializeEditor(config) {
+            if (!config || !config.moduleId || config.moduleId <= 0) {
+                console.error('Geçersiz konfigürasyon veya modül ID:', config);
+                return;
+            }
+            
+            // Global değişkende sakla
+            window.studioEditorConfig = config;
+            
+            // Editor başlat
+            if (typeof window.initStudioEditor === 'function') {
+                try {
+                    const editor = window.initStudioEditor(config);
+                    // Global erişim için kaydet
+                    window.studioEditor = editor;
+                    
+                    // Stil yöneticisi sorununu çöz
+                    setTimeout(() => {
+                        if (window.StudioCore && typeof window.StudioCore.fixStyleManagerIssues === 'function') {
+                            window.StudioCore.fixStyleManagerIssues();
+                        }
+                    }, 1500); // Editor yüklendikten sonra yeterli bekleme
+                } catch (error) {
+                    console.error('Studio Editor başlatılırken hata:', error);
+                }
+            } else {
+                console.error('Studio Editor başlatılamıyor: initStudioEditor fonksiyonu bulunamadı!');
+            }
+        }
+
+        // Özellikler panelini özelleştir
+        const traitsPanel = document.querySelector('#traits-container');
+        if (traitsPanel) {
+            traitsPanel.classList.add('custom-traits-panel');
+            
+            // Ebeveyn konteyner
+            const parent = traitsPanel.parentElement;
+            if (parent && !parent.querySelector('.custom-panel-header')) {
+                // Başlık ekle
+                const traitsHeader = document.createElement('div');
+                traitsHeader.className = 'custom-panel-header';
+                traitsHeader.style.padding = '12px 15px';
+                traitsHeader.style.backgroundColor = '#f1f5f9';
+                traitsHeader.style.borderBottom = '1px solid #e5e5e5';
+                traitsHeader.style.fontWeight = '600';
+                traitsHeader.style.color = '#64748b';
+                traitsHeader.innerHTML = '<i class="fas fa-sliders-h me-2"></i> Özellikler';
+                
+                // Başlığı panelin önüne ekle
+                parent.insertBefore(traitsHeader, traitsPanel);
+            }
         }
     }
-}

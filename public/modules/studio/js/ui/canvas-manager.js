@@ -5,6 +5,7 @@
 const StudioCanvasManager = (function() {
     let editor = null;
     let config = {};
+    let isSelecting = false; // Seçim işlemi takibi için bayrak
     
     /**
      * Çalışma alanını yapılandır
@@ -139,34 +140,70 @@ const StudioCanvasManager = (function() {
         e.stopPropagation();
         this.classList.remove('gjs-droppable-active');
         
-        // Blok sürüklenme kontrolü
-        if (e.dataTransfer.getData('blockId')) {
-            const blockId = e.dataTransfer.getData('blockId');
-            const block = editor.BlockManager.get(blockId);
-            
-            if (block) {
-                const content = block.get('content');
-                let component;
+        try {
+            // Blok sürüklenme kontrolü
+            if (e.dataTransfer.getData('blockId')) {
+                const blockId = e.dataTransfer.getData('blockId');
+                const block = editor.BlockManager.get(blockId);
                 
-                if (typeof content === 'string') {
-                    component = editor.addComponents(content)[0];
-                } else if (typeof content === 'object') {
-                    component = editor.addComponents(editor.DomComponents.addComponent(content))[0];
-                }
-                
-                // Bileşeni seç
-                if (component) {
-                    // Seçimi daha sonra yap - seçim sorunlarını önler
-                    setTimeout(() => {
-                        editor.select(component);
-                    }, 100);
+                if (block) {
+                    // Hata yakalama ile güvenli ekleme
+                    safelyAddComponent(block);
                 }
             }
+            // Dosya sürüklenme kontrolü
+            else if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
+                const files = e.dataTransfer.files;
+                handleFilesDrop(files, e);
+            }
+        } catch (error) {
+            console.error('Sürükle-bırak işlemi sırasında hata:', error);
+            showNotification('Bileşen eklenirken bir hata oluştu.', 'error');
         }
-        // Dosya sürüklenme kontrolü
-        else if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
-            const files = e.dataTransfer.files;
-            handleFilesDrop(files, e);
+    }
+    
+    /**
+     * Bileşeni güvenli bir şekilde ekle
+     * @param {Object} block Eklenecek blok
+     */
+    function safelyAddComponent(block) {
+        try {
+            const content = block.get('content');
+            let component = null;
+            
+            // İçerik tipine göre bileşeni ekle
+            if (typeof content === 'string') {
+                // HTML string ise
+                component = editor.addComponents(content);
+                if (Array.isArray(component) && component.length > 0) {
+                    component = component[0];
+                }
+            } else if (typeof content === 'object') {
+                // Nesne tipinde ise
+                component = editor.DomComponents.addComponent(content);
+            }
+            
+            // Bileşen başarıyla eklendiyse ve henüz bir seçim işlemi yoksa
+            if (component && !isSelecting) {
+                // Seçim bayrağını ayarla
+                isSelecting = true;
+                
+                // 300ms gecikme ile seçimi yap (döngüyü kırmak için)
+                setTimeout(() => {
+                    try {
+                        // Seçimi yap
+                        editor.select(component);
+                    } catch (err) {
+                        console.error('Bileşen seçilirken hata:', err);
+                    } finally {
+                        // İşlem tamamlandı, bayrağı sıfırla
+                        isSelecting = false;
+                    }
+                }, 300);
+            }
+        } catch (error) {
+            console.error('Bileşen eklenirken hata:', error);
+            isSelecting = false; // Hata durumunda bayrağı sıfırla
         }
     }
     
@@ -237,21 +274,39 @@ const StudioCanvasManager = (function() {
      * @param {Event} dropEvent Sürükle-bırak olayı
      */
     function addImageComponent(src, dropEvent) {
-        // Görsel bileşeni ekle
-        const imgComponent = {
-            type: 'media-image',
-            attributes: { 
-                class: 'img-fluid', 
-                src: src,
-                alt: 'Yüklenen görsel'
+        try {
+            // Görsel bileşeni ekle
+            const imgComponent = {
+                type: 'media-image',
+                attributes: { 
+                    class: 'img-fluid', 
+                    src: src,
+                    alt: 'Yüklenen görsel'
+                }
+            };
+            
+            // Bileşeni editöre ekle
+            const component = editor.DomComponents.addComponent(imgComponent);
+            
+            // Seçim bayrağını kontrol et
+            if (!isSelecting) {
+                isSelecting = true;
+                
+                // Bileşeni seç (gecikmeli)
+                setTimeout(() => {
+                    try {
+                        editor.select(component);
+                    } catch (err) {
+                        console.error('Görsel bileşeni seçilirken hata:', err);
+                    } finally {
+                        isSelecting = false;
+                    }
+                }, 300);
             }
-        };
-        
-        // Bileşeni editöre ekle
-        const component = editor.DomComponents.addComponent(imgComponent);
-        
-        // Bileşeni seç
-        editor.select(component);
+        } catch (error) {
+            console.error('Görsel bileşeni eklenirken hata:', error);
+            isSelecting = false;
+        }
     }
     
     /**
@@ -260,23 +315,33 @@ const StudioCanvasManager = (function() {
     function setupComponentSelection() {
         // Seçili bileşeni takip et
         editor.on('component:selected', model => {
-            if (!model) return;
+            if (!model || isSelecting) return;
             
-            // Özellikler panelini güncelle
-            updateTraitPanel(model);
-            
-            // Bileşen seçimi olayını tetikle
-            const event = new CustomEvent('studio:component-selected', { 
-                detail: { 
-                    model: model
-                } 
-            });
-            document.dispatchEvent(event);
-            
-            // Özellikler sekmesini otomatik aç
-            const traitsTab = document.querySelector('.panel-tab[data-tab="traits"]');
-            if (traitsTab && !traitsTab.classList.contains('active')) {
-                traitsTab.click();
+            try {
+                // Bayrak ayarla
+                isSelecting = true;
+                
+                // Özellikler panelini güncelle (gecikmeli çalıştır)
+                setTimeout(() => {
+                    try {
+                        // Özellikler panelini güncelle
+                        updateTraitPanel(model);
+                        
+                        // Bileşen seçimi olayını tetikle
+                        const event = new CustomEvent('studio:component-selected', { 
+                            detail: { model: model } 
+                        });
+                        document.dispatchEvent(event);
+                    } catch (err) {
+                        console.error('Özellikler paneli güncellenirken hata:', err);
+                    } finally {
+                        // İşlem tamamlandı, bayrağı sıfırla
+                        isSelecting = false;
+                    }
+                }, 200);
+            } catch (error) {
+                console.error('Bileşen seçimi sırasında hata:', error);
+                isSelecting = false;
             }
         });
         
@@ -287,21 +352,6 @@ const StudioCanvasManager = (function() {
             document.dispatchEvent(event);
         });
         
-        // Bileşen eklendiğinde
-        editor.on('component:add', (model) => {
-            // Bileşen eklendiğinde otomatik seçim yap
-            setTimeout(() => {
-                editor.select(model);
-            }, 100);
-        });
-        
-        // Bileşenler güncellendiğinde traits panelini güncelle
-        editor.on('component:update', (model) => {
-            if (editor.getSelected() === model) {
-                updateTraitPanel(model);
-            }
-        });
-        
         console.log('Bileşen seçimi işlevselliği ayarlandı');
     }
     
@@ -310,12 +360,12 @@ const StudioCanvasManager = (function() {
      * @param {Object} model Seçilen bileşen modeli
      */
     function updateTraitPanel(model) {
-        // Tab'ı otomatik olarak açma (isteğe bağlı)
-        const traitsTab = document.querySelector('.panel-tab[data-tab="traits"]');
-        if (traitsTab && !traitsTab.classList.contains('active')) {
-            // İsteğe bağlı: otomatik tab geçişi
-            // traitsTab.click();
-        }
+        // Özellik paneli mevcut mu kontrol et
+        const traitsContainer = document.getElementById('traits-container');
+        if (!traitsContainer) return;
+        
+        // Paneli güncelle
+        editor.TraitManager.setTarget(model);
     }
     
     /**

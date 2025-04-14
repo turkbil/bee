@@ -165,14 +165,38 @@ const StudioBlocks = (function() {
      */
     function setupBlockInteractions(editorInstance) {
         document.querySelectorAll('.block-item').forEach(item => {
-            // Sürükleme başlaması olayını dinle
+            // Sürükleme için dragstart olayını kullan
             item.addEventListener('dragstart', function(e) {
                 const blockId = this.getAttribute('data-block-id');
                 e.dataTransfer.setData('blockId', blockId);
                 e.dataTransfer.effectAllowed = 'copy';
             });
             
-            // Tıklama olayını kaldırıldı - artık sadece sürükle-bırak çalışacak
+            // Tıklama için (alternatif ekleme yöntemi)
+            item.addEventListener('click', function() {
+                if (window.isBlockAddingInProgress) return;
+                window.isBlockAddingInProgress = true;
+                
+                try {
+                    const blockId = this.getAttribute('data-block-id');
+                    const block = editorInstance.BlockManager.get(blockId);
+                    
+                    if (block) {
+                        const content = block.get('content');
+                        
+                        if (typeof content === 'string') {
+                            editorInstance.addComponents(content);
+                        } else if (typeof content === 'object') {
+                            editorInstance.addComponents(editorInstance.DomComponents.addComponent(content));
+                        }
+                    }
+                } finally {
+                    // Her durumda kilidi serbest bırak
+                    setTimeout(() => {
+                        window.isBlockAddingInProgress = false;
+                    }, 100);
+                }
+            });
         });
     }
     

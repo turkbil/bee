@@ -1,3 +1,5 @@
+// Modules/Studio/resources/assets/js/plugins.js
+
 /**
  * Studio Plugins
  * GrapesJS eklentilerini yöneten modül
@@ -230,7 +232,7 @@ const StudioPlugins = (function() {
                     this.listenTo(this.model, 'change:icon change:icon-color change:box-style', this.updateFeatureBox);
                     this.updateFeatureBox();
                 },
-                function updateFeatureBox() {
+                updateFeatureBox() {
                     try {
                         const model = this.model;
                         const icon = model.get('icon');
@@ -238,7 +240,7 @@ const StudioPlugins = (function() {
                         const boxStyle = model.get('box-style');
                         
                         // Mevcut sınıfları al
-                        const classes = model.getClasses() || [];
+                        const classes = model.getClasses();
                         
                         // Kutu stili sınıflarını kaldır
                         const filteredClasses = classes.filter(cls => 
@@ -249,30 +251,20 @@ const StudioPlugins = (function() {
                             !cls.startsWith('text-')
                         );
                         
-                        // Temel sınıfları ekle
-                        if (!filteredClasses.includes('feature-box')) {
-                            filteredClasses.push('feature-box');
-                        }
-                        if (!filteredClasses.includes('p-4')) {
-                            filteredClasses.push('p-4');
-                        }
-                        if (!filteredClasses.includes('mb-4')) {
-                            filteredClasses.push('mb-4');
-                        }
+                        // Temel sınıflar
+                        filteredClasses.push('feature-box');
+                        filteredClasses.push('p-4');
+                        filteredClasses.push('mb-4');
                         
                         // Kutu stili sınıfları
-                        if (boxStyle) {
-                            boxStyle.split(' ').forEach(cls => {
-                                if (!filteredClasses.includes(cls)) {
-                                    filteredClasses.push(cls);
-                                }
-                            });
-                        }
+                        boxStyle.split(' ').forEach(cls => {
+                            filteredClasses.push(cls);
+                        });
                         
-                        // Sınıfları güncelle - set yerine addClass kullan (sonsuz döngüyü önlemek için)
-                        model.setClass(filteredClasses, { silent: true });
+                        // Sınıfları güncelle
+                        model.setClass(filteredClasses);
                         
-                        // İçeriği tek seferde güncelle
+                        // İçeriği güncelle
                         const iconHtml = `<i class="fas fa-${icon} mb-3" style="font-size: 2rem; color: ${iconColor};"></i>`;
                         const content = `
                             <div class="text-center">
@@ -282,15 +274,11 @@ const StudioPlugins = (function() {
                             </div>
                         `;
                         
-                        // Mevcut içerik kontrolü
-                        if (model.components().length === 0) {
-                            model.components(content, { silent: true });
-                        }
-                    } catch (error) {
-                        console.error('Feature box güncellenirken hata:', error);
+                        model.components(content);
+                    } catch (err) {
+                        console.error('Feature Box güncellenirken hata:', err);
                     }
                 }
-                
             }
         });
         

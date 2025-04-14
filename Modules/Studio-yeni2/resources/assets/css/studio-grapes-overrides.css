@@ -1,0 +1,330 @@
+/* 
+ * Studio Grapes Overrides - GrapesJS Stil Ezmeleri
+ * GrapesJS'in varsayılan stillerini ezmek için kullanılır
+ */
+
+/* Genel GrapesJS Renk Değişkenleri */
+:root {
+    --gjs-color-main: #206bc4;
+    --gjs-color-main-darker: #175195;
+    --gjs-color-secondary: #64748b;
+    --gjs-color-light: #f8fafc;
+    --gjs-color-bg: #ffffff;
+    --gjs-color-border: #e5e7eb;
+}
+
+/* Temel Arka Plan Renkleri */
+.gjs-one-bg {
+    background-color: var(--gjs-color-bg) !important;
+}
+
+.gjs-two-color {
+    color: var(--gjs-color-secondary) !important;
+}
+
+.gjs-three-bg {
+    background-color: var(--gjs-color-light) !important;
+}
+
+.gjs-four-color, 
+.gjs-four-color-h:hover {
+    color: var(--gjs-color-main) !important;
+}
+
+/* Stil Yöneticisi */
+.gjs-sm-sector {
+    margin-bottom: 5px !important;
+    background-color: var(--gjs-color-bg) !important;
+    border-bottom: 1px solid var(--gjs-color-border) !important;
+}
+
+.gjs-sm-sector-title {
+    display: flex !important;
+    align-items: center !important;
+    padding: 12px 15px !important;
+    background-color: var(--gjs-color-light) !important;
+    cursor: pointer !important;
+    font-weight: 500 !important;
+    color: var(--gjs-color-secondary) !important;
+    font-size: 13px !important;
+}
+
+.gjs-sm-sector-title::after {
+    content: "\f107" !important;
+    font-family: "Font Awesome 6 Pro", FontAwesome !important;
+    margin-left: auto !important;
+    transition: transform 0.3s !important;
+    color: #94a3b8 !important;
+}
+
+.gjs-sm-sector.gjs-collapsed .gjs-sm-sector-title::after {
+    transform: rotate(-90deg) !important;
+}
+
+.gjs-sm-sector.gjs-collapsed .gjs-sm-properties {
+    display: none !important;
+}
+
+.gjs-sm-properties {
+    padding: 10px 0 !important;
+}
+
+.gjs-sm-label {
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    color: #64748b !important;
+    margin-bottom: 5px !important;
+}
+
+.gjs-sm-property {
+    margin-bottom: 12px !important;
+    padding: 0 15px 10px !important;
+    border-bottom: 1px dashed rgba(203, 213, 225, 0.5) !important;
+}
+
+/* Form Elemanları */
+.gjs-field {
+    background-color: #f8fafc !important;
+    border-radius: 4px !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: none !important;
+    transition: all 0.2s ease !important;
+    color: #333 !important;
+}
+
+.gjs-field input, 
+.gjs-field select, 
+.gjs-field textarea {
+    color: #333 !important;
+    background-color: #f8fafc !important;
+}
+
+.gjs-field:focus-within {
+    border-color: #94c0fd !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+.gjs-field-arrow-u, 
+.gjs-field-arrow-d {
+    border-color: #cbd5e1 !important;
+    background-color: #f8fafc !important;
+}
+
+.gjs-field-units {
+    background-color: #f8fafc !important;
+}
+
+.gjs-field-unit {
+    color: #64748b !important;
+    background-color: #e9ecef !important;
+    border-color: #e2e8f0 !important;
+}
+
+/* Katmanlar Paneli */
+.gjs-layer {
+    padding: 0 !important;
+    margin: 0 !important;
+    background-color: var(--gjs-color-light) !important;
+    border-bottom: 1px solid var(--gjs-color-border) !important;
+    font-size: 12px !important;
+    position: relative !important;
+    line-height: 1 !important;
+}
+
+.gjs-layer-title-c {
+    padding: 8px 10px !important;
+    display: flex !important;
+    align-items: center !important;
+    cursor: pointer !important;
+    margin: 0 !important;
+    height: 30px !important;
+}
+
+.gjs-layer:hover {
+    background-color: #f1f5f9 !important;
+}
+
+.gjs-layer.gjs-selected {
+    background-color: #e9effd !important;
+}
+
+.gjs-layer-title {
+    padding-left: 5px !important;
+    font-size: 12px !important;
+    color: #333 !important;
+    margin: 0 !important;
+    flex-grow: 1 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+.gjs-layer-vis {
+    color: #6c757d !important;
+    margin-right: 5px !important;
+}
+
+.gjs-layer-count {
+    background-color: #e9effd !important;
+    color: #206bc4 !important;
+    font-size: 10px !important;
+    border-radius: 2px !important;
+    padding: 0px 4px !important;
+    margin-left: 6px !important;
+    min-width: 14px !important;
+    height: 14px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.gjs-layer-children {
+    padding-left: 15px !important;
+    border-left: 1px solid var(--gjs-color-border) !important;
+    margin-left: 8px !important;
+    background-color: var(--gjs-color-bg) !important;
+}
+
+/* Blok Yöneticisi */
+.gjs-block-category {
+    margin-bottom: 12px !important;
+    border-radius: 8px !important;
+    background-color: var(--gjs-color-bg) !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
+    overflow: hidden !important;
+}
+
+.gjs-block-category .gjs-title {
+    display: flex !important;
+    align-items: center !important;
+    padding: 14px 16px !important;
+    background-color: var(--gjs-color-light) !important;
+    cursor: pointer !important;
+    border-bottom: 1px solid var(--gjs-color-border) !important;
+    color: var(--gjs-color-secondary) !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+}
+
+.gjs-block-category .gjs-title::after {
+    content: "\f107" !important;
+    font-family: "Font Awesome 6 Pro", FontAwesome !important;
+    margin-left: auto !important;
+    transition: transform 0.3s !important;
+}
+
+.gjs-block-category.gjs-open .gjs-title::after {
+    transform: rotate(180deg) !important;
+}
+
+.gjs-blocks-c {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+    padding: 16px !important;
+    background-color: var(--gjs-color-bg) !important;
+}
+
+.gjs-block {
+    cursor: grab !important;
+    background-color: var(--gjs-color-light) !important;
+    border: 1px solid var(--gjs-color-border) !important;
+    border-radius: 8px !important;
+    transition: all 0.2s ease !important;
+    margin: 0 !important;
+    padding: 15px !important;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05) !important;
+}
+
+.gjs-block:hover {
+    background-color: #eff6ff !important;
+    border-color: #93c5fd !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+}
+
+.gjs-block:active {
+    cursor: grabbing !important;
+}
+
+/* Trait Yöneticisi */
+.gjs-trt-trait {
+    padding: 10px 0 !important;
+    margin-bottom: 10px !important;
+    border-bottom: 1px solid var(--gjs-color-border) !important;
+}
+
+.gjs-label-wrp {
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    color: #64748b !important;
+    margin-bottom: 5px !important;
+}
+
+/* Modal Override */
+.gjs-mdl-container {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.gjs-mdl-dialog {
+    border-radius: 10px !important;
+    border: none !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+    overflow: hidden !important;
+}
+
+.gjs-mdl-header {
+    padding: 16px !important;
+    background-color: var(--gjs-color-light) !important;
+    border-bottom: 1px solid var(--gjs-color-border) !important;
+}
+
+.gjs-mdl-title {
+    font-weight: 600 !important;
+    font-size: 16px !important;
+    color: var(--gjs-color-secondary) !important;
+}
+
+.gjs-mdl-content {
+    padding: 20px !important;
+    background-color: var(--gjs-color-bg) !important;
+}
+
+.gjs-mdl-btn-close {
+    background-color: transparent !important;
+    color: var(--gjs-color-secondary) !important;
+}
+
+.gjs-btn-prim {
+    background-color: var(--gjs-color-main) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 10px 18px !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    transition: background-color 0.2s !important;
+}
+
+.gjs-btn-prim:hover {
+    background-color: var(--gjs-color-main-darker) !important;
+}
+
+/* Bileşen Sınırlarını Göster/Gizle */
+.canvas-show-nodes [data-gjs-type] {
+    outline: 1px dashed rgba(41, 98, 255, 0.7) !important;
+    outline-offset: 1px !important;
+    transition: outline 0.2s ease-in-out, outline-offset 0.2s ease-in-out !important;
+}
+
+.canvas-show-nodes [data-gjs-type]:hover {
+    outline: 2px solid rgba(0, 123, 255, 0.9) !important;
+    outline-offset: 2px !important;
+    z-index: 1 !important;
+}
+
+.canvas-show-nodes .gjs-selected {
+    outline: 2px solid rgba(0, 123, 255, 1) !important;
+    outline-offset: 2px !important;
+    z-index: 2 !important;
+}

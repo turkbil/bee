@@ -1,0 +1,103 @@
+/* Extra small (xs) cihazlar iÃ§in (portre telefonlar, 576px'den kÃ¼Ã§Ã¼k) */
+/* `xs` iÃ§in media sorgusu yok, Ã§Ã¼nkÃ¼ bu Bootstrap'te varsayÄ±landÄ±r */
+/* YUKARI Small (sm) cihazlar iÃ§in (yatay telefonlar, 576px ve Ã¼zeri) */
+/* 576px ve Ã¼zeri ekran geniÅŸlikleri iÃ§in stil tanÄ±mlamalarÄ± */
+@media (min-width: 576px) {}
+
+/* YUKARI Medium (md) cihazlar iÃ§in (tabletler, 768px ve Ã¼zeri) */
+/* 768px ve Ã¼zeri ekran geniÅŸlikleri iÃ§in stil tanÄ±mlamalarÄ± */
+@media (min-width: 768px) {}
+
+/* YUKARI Large (lg) cihazlar iÃ§in (masaÃ¼stÃ¼ bilgisayarlar, 992px ve Ã¼zeri) */
+/* 992px ve Ã¼zeri ekran geniÅŸlikleri iÃ§in stil tanÄ±mlamalarÄ± */
+@media (min-width: 992px) {
+    .module-menu {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: -4px;
+    }
+
+    .module-menu .btn {
+        height: fit-content;
+    }
+
+    .module-menu .dropdown-module-menu {
+        background: transparent;
+        border: 0;
+        box-shadow: none;
+        display: flex;
+        flex-direction: row;
+        padding-left: 0;
+    }
+
+    .module-menu .dropdown-module-item {
+        display: block;
+        margin-right: 10px;
+        min-width: initial;
+    }
+
+    .module-menu .dropdown-module-item:last-child {
+        margin-right: 0;
+    }
+
+    .module-menu-revert {
+        width: 100%;
+        display: contents;
+    }
+
+    .module-menu .dropdown-menu.show {
+        position: absolute !important;
+        transform: none !important;
+        margin: 0 !important;
+        inset: auto !important;
+    }
+
+}
+
+/* YUKARI Extra large (xl) cihazlar iÃ§in (bÃ¼yÃ¼k masaÃ¼stÃ¼ bilgisayarlar, 1200px ve Ã¼zeri) */
+/* 1200px ve Ã¼zeri ekran geniÅŸlikleri iÃ§in stil tanÄ±mlamalarÄ± */
+@media (min-width: 1200px) {}
+
+/* YUKARI Extra extra large (xxl) cihazlar iÃ§in (daha bÃ¼yÃ¼k masaÃ¼stÃ¼ bilgisayarlar, 1400px ve Ã¼zeri) */
+/* 1400px ve Ã¼zeri ekran geniÅŸlikleri iÃ§in stil tanÄ±mlamalarÄ± */
+@media (min-width: 1400px) {}
+
+/* ASAGI Extra large (xl) cihazlarÄ±n altÄ± iÃ§in */
+/* 1199.98px ve altÄ± ekran geniÅŸlikleri iÃ§in stil tanÄ±mlamalarÄ± */
+@media (max-width: 1199.98px) {}
+
+/* ASAGI Large (lg) cihazlarÄ±n altÄ± iÃ§in */
+/* 991.98px ve altÄ± ekran geniÅŸlikleri iÃ§in stil tanÄ±mlamalarÄ± */
+@media (max-width: 991.98px) {
+    .module-menu {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 2px;
+    }
+
+    .dropdown-module-menu .btn,
+    .dropdown-module-menu button {
+        display: block !important;
+        text-align: left;
+        border-radius: 0;
+        width: 100%;
+    }
+
+    .module-menu-revert {
+        display: flex;
+        flex-direction: column-reverse;
+    }
+
+    .page-title {
+        margin-top: 4px;
+    }
+
+}
+
+/* ASAGI Medium (md) cihazlarÄ±n altÄ± iÃ§in */
+/* 767.98px ve altÄ± ekran geniÅŸlikleri iÃ§in stil tanÄ±mlamalarÄ± */
+@media (max-width: 767.98px) {}
+
+/* ASAGI Small (sm) cihazlarÄ±n altÄ± iÃ§in */
+/* 575.98px ve altÄ± ekran geniÅŸlikleri iÃ§in stil tanÄ±mlamalarÄ± */
+@media (max-width: 575.98px) {}

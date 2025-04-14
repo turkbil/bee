@@ -1,0 +1,46 @@
+<?php
+
+namespace Modules\WidgetManagement\app\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Modules\Page\app\Models\Page;
+
+class TenantWidget extends Model
+{
+    protected $fillable = [
+        'widget_id', 'page_id', 'module', 'position', 'order',
+        'settings', 'is_custom', 'custom_html', 'custom_css', 'custom_js'
+    ];
+    
+    protected $casts = [
+        'settings' => 'json',
+        'is_custom' => 'boolean',
+    ];
+    
+    /**
+     * Merkezi widget
+     */
+    public function widget(): BelongsTo
+    {
+        return $this->belongsTo(Widget::class);
+    }
+    
+    /**
+     * Widget'ın yerleştirildiği sayfa
+     */
+    public function page(): BelongsTo
+    {
+        return $this->belongsTo(Page::class);
+    }
+    
+    /**
+     * Widget öğeleri (dinamik widget'lar için)
+     */
+    public function items(): HasMany
+    {
+        return $this->hasMany(WidgetItem::class, 'tenant_widget_id')
+            ->orderBy('order');
+    }
+}

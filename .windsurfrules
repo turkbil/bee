@@ -1,0 +1,29 @@
+# Laravel 11 Multi-Tenancy Projesi İçin Windsurf Kurallari
+# Bu kurallar sadece bu çalişma alaninda geçerli olacaktir.
+
+Component dosyalarını laravel 11 ve livewire 3.5 a göre ve Page modülünden esinlenerek eksiklerini gider.
+
+Yeni dosya oluşturmadan önce izin al. Çok fazla dosya oluşturman gereken işlemler için planlamanı yap ve yeni oluşturulacak dosyaların listesini bildir. Onay verirsem oluştur.
+
+Ben yaptıkların bittikten sonra "aferin" yazarsam eğer proje başarıyla tamamlanmış demektir. Bunun akabinde yaptıklarını versiyon ekleyerek "README.md" dosyasına kaydet.
+
+## Olmalidir ✅
+1. Yanitlar ve tüm içerikler Türkçe olmalidir.
+2. Sistem Laravel 11 ile çalişmalidir.
+3. Multi-Tenancy aktif olmalidir ve Stancl Tenancy paketi kullanilmalidir.
+4. Tüm modüller Nwidart Laravel Modules yapisini kullanmalidir.
+5. Livewire 3.5 ve Livewire Volt kullanilmalidir.
+6. Admin paneli kullanici arayüzü Tabler.io ile özelleştirilmelidir.
+7. Spatie Laravel Permission ile kullanici yetkilendirmeleri yapilmalidir.
+8. Spatie Laravel Activity Log ile tüm işlemler kaydedilmelidir.
+9. Spatie Laravel Response Cache ile önbellekleme yapilmalidir.
+10. Tenant bazli önbellekleme Redis ile yönetilmelidir.
+11. Laravel Breeze kimlik doğrulama için kullanilabilir.
+12. Spatie Laravel Media Library medya yönetimi için kullanilmalidir.
+13. Cviebrock Eloquent Sluggable kullanilmalidir.
+14. Nesbot Carbon tarih işlemleri için kullanilmalidir.
+15. JSON API yanitlari PSR-4 standartlarina uygun olmalidir.
+
+## Olmamalidir ❌
+1. Laravel Tinker kullanilmamalidir.
+

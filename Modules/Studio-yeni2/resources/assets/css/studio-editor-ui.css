@@ -1,0 +1,409 @@
+/* 
+ * Studio Editor UI - Arayüz Bileşenleri
+ * Butonlar, paneller, formlar ve diğer UI bileşenleri için stil tanımları
+ */
+
+/* Header */
+.studio-header {
+    height: 56px;
+    background-color: #fff;
+    border-bottom: 1px solid #eaedf2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    box-shadow: 0 1px 10px rgba(0, 0, 0, 0.05);
+    z-index: 100;
+}
+
+.header-left, .header-center, .header-right {
+    display: flex;
+    align-items: center;
+}
+
+.header-left {
+    flex: 1;
+}
+
+.header-center {
+    flex: 1;
+    justify-content: center;
+}
+
+.header-right {
+    flex: 1;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.studio-brand {
+    font-size: 18px;
+    font-weight: 600;
+    color: #206bc4;
+    display: flex;
+    align-items: center;
+}
+
+/* Butonlar */
+.btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    height: 36px;
+    padding: 0 12px;
+    border: none;
+    font-size: 14px;
+}
+
+.btn-icon {
+    width: 36px;
+    padding: 0;
+}
+
+.btn i {
+    font-size: 16px;
+}
+
+.btn span {
+    margin-left: 6px;
+}
+
+/* Buton Tipleri */
+.btn-back {
+    background-color: #eef2f7;
+    color: #1f2937;
+}
+
+.btn-back:hover {
+    background-color: #e4e9f1;
+}
+
+.btn-tool {
+    background-color: #f1f3f9;
+    color: #475569;
+}
+
+.btn-tool:hover {
+    background-color: #e6eaf2;
+    color: #206bc4;
+}
+
+.btn-tool.active {
+    background-color: #e6f0ff;
+    color: #206bc4;
+}
+
+.btn-view {
+    background-color: #fff4de;
+    color: #b45309;
+}
+
+.btn-view:hover {
+    background-color: #ffe5bc;
+}
+
+.btn-save {
+    background-color: #dcf5e7;
+    color: #0d9455;
+}
+
+.btn-save:hover {
+    background-color: #c5efd7;
+}
+
+/* Cihaz Görünümü Butonları */
+.device-btns {
+    display: flex;
+    border-radius: 6px;
+    overflow: hidden;
+    background-color: #f1f3f9;
+    margin-right: 10px;
+}
+
+.device-btns button {
+    height: 36px;
+    width: 36px;
+    border: none;
+    background: transparent;
+    color: #475569;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.device-btns button:hover {
+    background-color: #e6eaf2;
+    color: #206bc4;
+}
+
+.device-btns button.active {
+    background-color: #e6f0ff;
+    color: #206bc4;
+}
+
+/* Blok Kategorileri */
+.block-category {
+    margin-bottom: 10px;
+    border-radius: 8px;
+    background-color: #fff;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+}
+
+.block-category-header {
+    padding: 12px 15px;
+    font-weight: 500;
+    color: #475569;
+    background-color: #f8f9fa;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.2s ease;
+}
+
+.block-category-header:hover {
+    background-color: #f0f2f8;
+    color: #206bc4;
+}
+
+.block-category-header i:first-child {
+    margin-right: 8px;
+    color: #206bc4;
+    font-size: 14px;
+}
+
+.toggle-icon {
+    transition: transform 0.2s ease;
+    color: #94a3b8;
+    font-size: 12px;
+}
+
+.block-category.collapsed .toggle-icon {
+    transform: rotate(-90deg);
+}
+
+/* Blok Öğeleri */
+.block-items {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    padding: 12px;
+    background-color: #fff;
+}
+
+.block-category.collapsed .block-items {
+    display: none;
+}
+
+.block-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 8px;
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    cursor: grab;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.block-item:hover {
+    transform: translateY(-2px);
+    border-color: #b8d0f7;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+    background-color: #f1f5ff;
+}
+
+.block-item:active {
+    cursor: grabbing;
+    transform: scale(0.98);
+}
+
+.block-item-icon {
+    width: 36px;
+    height: 36px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e6f0ff;
+    color: #206bc4;
+    font-size: 16px;
+    border-radius: 6px;
+}
+
+.block-item-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #475569;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Tema Kartları */
+.theme-card {
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.theme-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.theme-img {
+    height: 150px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f9fa;
+}
+
+.theme-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    background-color: #f8f9fa;
+}
+
+/* Modaller */
+.studio-modal {
+    z-index: 9999;
+}
+
+.studio-modal-backdrop {
+    z-index: 9998;
+}
+
+.modal-title {
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.modal-footer {
+    padding: 15px 20px;
+    border-top: 1px solid #e5e7eb;
+}
+
+/* Kod Editörü */
+.code-editor {
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    padding: 12px;
+    width: 100%;
+    resize: vertical;
+    min-height: 300px;
+    tab-size: 4;
+}
+
+.code-editor:focus {
+    outline: none;
+    border-color: #94c0fd;
+    box-shadow: 0 0 0 3px rgba(32, 107, 196, 0.12);
+}
+
+/* Tooltips */
+.studio-tooltip {
+    position: absolute;
+    z-index: 9999;
+    background-color: #1e293b;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    pointer-events: none;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.btn:hover .studio-tooltip {
+    opacity: 1;
+}
+
+/* Dosya Yükleme */
+.upload-area {
+    padding: 20px;
+    border: 2px dashed #cbd5e1;
+    border-radius: 8px;
+    text-align: center;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.upload-area:hover {
+    border-color: #94a3b8;
+    background-color: #f8fafc;
+}
+
+.upload-area.active {
+    border-color: #3b82f6;
+    background-color: #eff6ff;
+}
+
+.upload-icon {
+    font-size: 40px;
+    color: #64748b;
+    margin-bottom: 15px;
+}
+
+.upload-text {
+    color: #475569;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.upload-hint {
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .studio-header {
+        padding: 0 15px;
+    }
+    
+    .btn span {
+        display: none;
+    }
+    
+    .btn {
+        padding: 0 10px;
+    }
+}
+
+@media (max-width: 768px) {
+    .studio-header {
+        height: 50px;
+    }
+    
+    .studio-brand {
+        font-size: 16px;
+    }
+    
+    .theme-img {
+        height: 120px;
+    }
+}

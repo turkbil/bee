@@ -12,9 +12,8 @@ const StudioCore = (function() {
      */
     function initEditor(config) {
         console.log('GrapesJS editor başlatılıyor...');
-
+    
         try {
-            // GrapesJS Editor yapılandırması
             editor = grapesjs.init({
                 container: '#' + config.elementId,
                 fromElement: false,
@@ -22,59 +21,36 @@ const StudioCore = (function() {
                 width: '100%',
                 storageManager: false,
                 panels: { defaults: [] },
-                styleManager: {
-                    appendTo: '#styles-container',
-                    sectors: [
-                        {
-                            name: 'Boyut',
-                            open: true,
-                            properties: [
-                                'width', 'height', 'max-width', 'min-height', 'margin', 'padding'
-                            ]
-                        },
-                        {
-                            name: 'Düzen',
-                            open: false,
-                            properties: [
-                                'display', 'position', 'top', 'right', 'bottom', 'left', 'float', 'clear', 'z-index'
-                            ]
-                        },
-                        {
-                            name: 'Flex',
-                            open: false,
-                            properties: [
-                                'flex-direction', 'flex-wrap', 'justify-content', 'align-items', 'align-content', 'order', 'flex-basis', 'flex-grow', 'flex-shrink', 'align-self'
-                            ]
-                        },
-                        {
-                            name: 'Tipografi',
-                            open: false,
-                            properties: [
-                                'font-family', 'font-size', 'font-weight', 'letter-spacing', 'color', 'line-height', 'text-align', 'text-decoration', 'text-shadow'
-                            ]
-                        },
-                        {
-                            name: 'Dekorasyon',
-                            open: false,
-                            properties: [
-                                'background-color', 'border', 'border-radius', 'box-shadow'
-                            ]
-                        },
-                        {
-                            name: 'Ekstra',
-                            open: false,
-                            properties: [
-                                'opacity', 'transition', 'transform', 'perspective', 'transform-style'
-                            ]
-                        }
+                
+                // Bileşen düzenleme ayarları
+                dragMode: 'absolute',
+                selectorManager: { componentFirst: true },
+                
+                // Bileşen davranışları
+                components: {
+                    // Her yeni bileşeni düzenlenebilir yap
+                    defaults: {
+                        editable: true,
+                        draggable: true,
+                        droppable: true,
+                        selectable: true,
+                        hoverable: true,
+                        stylable: true,
+                    }
+                },
+                
+                // Editör davranışları
+                canvas: {
+                    styles: [
+                        'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css',
+                        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
+                    ],
+                    scripts: [
+                        'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js'
                     ]
                 },
-                layerManager: {
-                    appendTo: '#layers-container',
-                },
-                traitManager: {
-                    appendTo: '#traits-container',
-                },
+                
+                // Bileşen ekleme davranışı
                 deviceManager: {
                     devices: [
                         {
@@ -91,29 +67,25 @@ const StudioCore = (function() {
                             width: '320px',
                             widthMedia: '576px',
                         },
-                    ],
-                },
-                canvas: {
-                    scripts: [
-                        'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js',
-                    ],
-                    styles: [
-                        'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css',
-                        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
                     ]
                 }
             });
-
+    
+            // Bileşen ayarlarını global olarak güncelle
+            editor.on('component:selected', (component) => {
+                if (component) {
+                    component.set('editable', true);
+                    component.set('draggable', true);
+                    component.set('droppable', true);
+                    component.set('selectable', true);
+                    component.set('hoverable', true);
+                    component.set('stylable', true);
+                }
+            });
+    
             console.log('GrapesJS editor başarıyla oluşturuldu.');
-
-            // İçerik yükleme
-            loadContent(editor, config);
-
-            // Temel komutları ayarla
-            setupCommands(editor);
-
-            // Editor'ü döndür
             return editor;
+    
         } catch (error) {
             console.error('GrapesJS başlatılırken hata oluştu:', error);
             throw error;

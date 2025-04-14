@@ -165,37 +165,23 @@ const StudioBlocks = (function() {
      */
     function setupBlockInteractions(editorInstance) {
         document.querySelectorAll('.block-item').forEach(item => {
-            // Sürükleme için dragstart olayını kullan
+            // Tıklama olayını tamamen kaldır
+            item.onclick = null;
+            item.style.cursor = 'grab';
+    
+            // Sadece sürükleme olaylarını ekle
+            item.draggable = true;
+            
             item.addEventListener('dragstart', function(e) {
+                e.stopPropagation();
                 const blockId = this.getAttribute('data-block-id');
                 e.dataTransfer.setData('blockId', blockId);
                 e.dataTransfer.effectAllowed = 'copy';
+                this.classList.add('dragging');
             });
-            
-            // Tıklama için (alternatif ekleme yöntemi)
-            item.addEventListener('click', function() {
-                if (window.isBlockAddingInProgress) return;
-                window.isBlockAddingInProgress = true;
-                
-                try {
-                    const blockId = this.getAttribute('data-block-id');
-                    const block = editorInstance.BlockManager.get(blockId);
-                    
-                    if (block) {
-                        const content = block.get('content');
-                        
-                        if (typeof content === 'string') {
-                            editorInstance.addComponents(content);
-                        } else if (typeof content === 'object') {
-                            editorInstance.addComponents(editorInstance.DomComponents.addComponent(content));
-                        }
-                    }
-                } finally {
-                    // Her durumda kilidi serbest bırak
-                    setTimeout(() => {
-                        window.isBlockAddingInProgress = false;
-                    }, 100);
-                }
+    
+            item.addEventListener('dragend', function() {
+                this.classList.remove('dragging');
             });
         });
     }

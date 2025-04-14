@@ -62,6 +62,15 @@
             opacity: 0.5;
             cursor: grabbing;
         }
+        .block-item.dragging {
+            opacity: 0.5;
+            cursor: move;
+        }
+
+        .gjs-droppable-active {
+            outline: 2px dashed #4CAF50;
+            outline-offset: -2px;
+        }
     </style>
     <style>
         /* Acil durum stilleri */

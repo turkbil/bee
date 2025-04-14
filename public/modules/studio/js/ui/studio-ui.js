@@ -98,26 +98,6 @@ const StudioUI = (function() {
                 
                 // HTML'i yükle
                 blockContainer.innerHTML = blocksHtml;
-                
-                // Blok etkileşimlerini ayarla
-                document.querySelectorAll('.block-item').forEach(item => {
-                    item.addEventListener('mousedown', function(e) {
-                        e.preventDefault();
-                        
-                        const blockId = this.getAttribute('data-block-id');
-                        const block = editor.BlockManager.get(blockId);
-                        
-                        if (block) {
-                            const content = block.get('content');
-                            
-                            if (typeof content === 'string') {
-                                editor.addComponents(content);
-                            } else if (typeof content === 'object') {
-                                editor.addComponents(editor.DomComponents.addComponent(content));
-                            }
-                        }
-                    });
-                });
             }
         }, 800);
     }

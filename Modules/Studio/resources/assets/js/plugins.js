@@ -239,7 +239,13 @@ const StudioPlugins = (function() {
                         const iconColor = model.get('icon-color');
                         const boxStyle = model.get('box-style');
                         
-                        // Mevcut sınıfları al
+                        // Şu anki içeriği al ve sakla
+                        let currentContent = null;
+                        try {
+                            currentContent = model.getChildAt(0);
+                        } catch(e) {}
+                        
+                        // Mevcut sınıfları al ve filtrele
                         const classes = model.getClasses();
                         
                         // Kutu stili sınıflarını kaldır
@@ -257,15 +263,24 @@ const StudioPlugins = (function() {
                         filteredClasses.push('mb-4');
                         
                         // Kutu stili sınıfları
-                        boxStyle.split(' ').forEach(cls => {
-                            filteredClasses.push(cls);
-                        });
+                        if (boxStyle) {
+                            boxStyle.split(' ').forEach(cls => {
+                                filteredClasses.push(cls);
+                            });
+                        }
                         
-                        // Sınıfları güncelle
+                        // Sınıfları güncelle (bu sefer bir kerede)
                         model.setClass(filteredClasses);
                         
-                        // İçeriği güncelle
-                        const iconHtml = `<i class="fas fa-${icon} mb-3" style="font-size: 2rem; color: ${iconColor};"></i>`;
+                        // İçeriği hazırla
+                        const iconHtml = `<i class="fas fa-${icon} fa-3x mb-3" style="color: ${iconColor};"></i>`;
+                        
+                        // Eğer mevcut içerik varsa ve aynıysa, güncelleme yapma
+                        if (currentContent && currentContent.get('content') === iconHtml) {
+                            return;
+                        }
+                        
+                        // İçeriği tek seferde ayarla
                         const content = `
                             <div class="text-center">
                                 ${iconHtml}
@@ -274,9 +289,11 @@ const StudioPlugins = (function() {
                             </div>
                         `;
                         
-                        model.components(content);
-                    } catch (err) {
-                        console.error('Feature Box güncellenirken hata:', err);
+                        // İçeriği doğrudan ayarla, components() kullanımını engelleyelim
+                        model.set('content', content, { silent: true });
+                        
+                    } catch (error) {
+                        console.warn('Feature Box güncellenirken hata oluştu:', error);
                     }
                 }
             }

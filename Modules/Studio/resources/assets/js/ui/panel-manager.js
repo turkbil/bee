@@ -128,7 +128,34 @@ const StudioPanelManager = (function() {
         
         console.log('GrapesJS panelleri ayarlandı');
     }
-    
+        
+    function setupBlockInteractions() {
+        // Blok öğelerini seç
+        const blockItems = document.querySelectorAll('.block-item');
+        
+        blockItems.forEach(item => {
+            // Tıklama olayını kaldır - artık sadece sürükle-bırak çalışacak
+            item.draggable = true;
+
+            // Sürükleme başlangıç olayı
+            item.addEventListener('dragstart', function(e) {
+                e.stopPropagation();
+                const blockId = this.getAttribute('data-block-id');
+                e.dataTransfer.setData('text/plain', blockId);
+                e.dataTransfer.effectAllowed = 'copy';
+                
+                // Sürükleme sırasında orijinal öğeyi gizle
+                this.classList.add('dragging');
+            });
+
+            // Sürükleme bitişi olayı
+            item.addEventListener('dragend', function(e) {
+                e.stopPropagation();
+                this.classList.remove('dragging');
+            });
+        });
+    }
+
     /**
      * Blok arama özelliğini ayarla
      */

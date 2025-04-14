@@ -19,26 +19,19 @@ class StudioContentParserService
         }
         
         try {
-            // HTML içeriğini temizle
-            $html = $this->sanitizeHtml($html);
-            
             // Boş içerik kontrolü
             if (empty($html) || $html === '<body></body>' || strlen($html) < 20) {
                 return $this->getDefaultHtml();
             }
             
-            // Body içeriğini al
-            $bodyContent = $this->extractBodyContent($html);
-            
-            // Temizlenmiş içeriği döndür
-            return $bodyContent;
+            // İçeriği doğrudan döndür, temizleme yapmadan
+            return $html;
         } catch (\Exception $e) {
             Log::error('HTML ayrıştırma hatası: ' . $e->getMessage());
             return $this->getDefaultHtml();
         }
     }
     
-
     /**
      * HTML içeriğini kaydetmek için hazırla
      *
@@ -50,7 +43,7 @@ class StudioContentParserService
     public function prepareContentForSave(string $html, ?string $css = null, ?string $js = null): array
     {
         try {
-            // HTML içeriğini temizle ve hazırla
+            // Şablonları geri yükle ancak diğer sanitize işlemlerini atla
             $html = $this->restoreTemplates($html);
             
             // Boş içerik kontrolü
@@ -58,14 +51,10 @@ class StudioContentParserService
                 $html = $this->getDefaultHtml();
             }
             
-            // CSS ve JS içeriklerini temizle
-            $css = $this->sanitizeCss($css);
-            $js = $this->sanitizeJs($js);
-            
             return [
                 'html' => $html,
-                'css' => $css,
-                'js' => $js
+                'css' => $css ?? '',
+                'js' => $js ?? ''
             ];
         } catch (\Throwable $e) {
             Log::error('İçerik kaydetme hatası: ' . $e->getMessage(), [
@@ -162,9 +151,7 @@ class StudioContentParserService
             return '';
         }
         
-        // Tehlikeli içerikleri temizle
-        $html = $this->preprocessHtml($html);
-        
+        // HTML'i doğrudan döndür, temizleme işlemini atla
         return $html;
     }
 
@@ -197,11 +184,7 @@ class StudioContentParserService
             return '';
         }
         
-        // Tehlikeli CSS özelliklerini temizle
-        $css = preg_replace('/expression\s*\(.*?\)/i', '', $css);
-        $css = preg_replace('/behavior\s*:.*?;/i', '', $css);
-        $css = preg_replace('/-moz-binding\s*:.*?;/i', '', $css);
-        
+        // CSS'i doğrudan döndür, temizleme işlemini atla
         return $css;
     }
     
@@ -217,10 +200,7 @@ class StudioContentParserService
             return '';
         }
         
-        // Tehlikeli JS fonksiyonlarını temizle
-        // Not: Bu basit bir temizleme olup, JS'in tam olarak temizlenmesi için daha kapsamlı çözümler gerekir
-        $js = preg_replace('/eval\s*\(.*?\)/i', '', $js);
-        
+        // JS'i doğrudan döndür, temizleme işlemini atla
         return $js;
     }
     

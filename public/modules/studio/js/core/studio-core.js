@@ -179,94 +179,57 @@ const StudioCore = (function() {
      */
     function loadContent(editor, config) {
         try {
-            // Canvas iframe'ini al
-            const frameEl = editor.Canvas.getFrameEl();
-            if (frameEl) {
-                // iframe yüklendiğinde özel CSS ekle
-                frameEl.onload = function() {
-                    try {
-                        const frameDoc = frameEl.contentDocument;
-                        if (frameDoc) {
-                            // İçerik görünürlüğünü sağlamak için özel stiller
-                            const styleEl = frameDoc.createElement('style');
-                            styleEl.innerHTML = `
-                                html, body {
-                                    margin: 0 !important;
-                                    padding: 0 !important;
-                                    min-height: 100vh !important;
-                                    height: auto !important;
-                                    width: 100% !important;
-                                    display: block !important;
-                                    visibility: visible !important;
-                                    opacity: 1 !important;
-                                    overflow: auto !important;
-                                    background-color: #ffffff !important;
-                                }
-                                * { box-sizing: border-box; }
-                            `;
-                            frameDoc.head.appendChild(styleEl);
-                            console.log('Canvas iframe için özel CSS eklendi.');
-                        }
-                    } catch (e) {
-                        console.error('iframe CSS eklenirken hata:', e);
-                    }
-                };
-            }
-            
             // HTML içeriği
-            if (config.content) {
-                editor.setComponents(config.content);
-            }
-            
-            // CSS içeriği
-            if (config.css) {
-                editor.setStyle(config.css);
-            }
-            
-            // JS içeriğini kaydet
-            const jsContentEl = document.getElementById('js-content');
-            if (jsContentEl && config.js) {
-                jsContentEl.value = config.js;
-            }
-            
-            // Canvas'a içerik yüklendikten sonra görünürlüğünü kontrol et
-            setTimeout(() => {
-                const canvas = editor.Canvas;
-                canvas.refresh();
-                console.log('İçerik başarıyla yüklendi ve canvas yenilendi.');
-            }, 500);
-            
-            // Bileşenlerin editable özelliğini etkinleştir
-            const components = editor.DomComponents.getComponents().models;
-            components.forEach(comp => {
-                if (comp.get('type') !== 'text') {
-                    comp.set('editable', true);
-                }
-            });
-            
-            console.log('İçerik başarıyla yüklendi');
-        } catch (error) {
-            console.error('İçerik yüklenirken hata oluştu:', error);
-            
-            // Varsayılan içeriği yüklemeyi dene
-            try {
-                editor.setComponents(`
-                    <div class="container py-4">
-                        <div class="row">
-                            <div class="col-12">
-                                <h1 class="mb-4">Yeni Sayfa</h1>
-                                <p class="lead">Bu sayfayı düzenlemek için sol taraftaki bileşenleri kullanabilirsiniz.</p>
-                                <div class="alert alert-info mt-4">
-                                    <i class="fas fa-info-circle me-2"></i> Studio Editor ile görsel düzenleme yapabilirsiniz.
-                                    Düzenlemelerinizi kaydetmek için sağ üstteki Kaydet butonunu kullanın.
+            const htmlContentEl = document.getElementById('html-content');
+            if (htmlContentEl) {
+                const htmlContent = htmlContentEl.value;
+                
+                console.log('HTML İçeriği Yükleniyor:', {
+                    length: htmlContent.length,
+                    excerpt: htmlContent.substring(0, 100) + '...',
+                    empty: !htmlContent || htmlContent.trim() === '',
+                    element: htmlContentEl
+                });
+                
+                if (htmlContent && htmlContent.trim() !== '') {
+                    // İçeriği doğrudan yükle
+                    editor.setComponents(htmlContent);
+                    console.log('İçerik başarıyla yüklendi');
+                } else {
+                    console.warn('HTML içeriği boş!');
+                    
+                    // Varsayılan içerik oluştur
+                    editor.setComponents(`
+                        <div class="container py-4">
+                            <div class="row">
+                                <div class="col-12">
+                                    <h1 class="mb-4">Yeni Sayfa</h1>
+                                    <p class="lead">Bu sayfayı düzenlemek için sol taraftaki bileşenleri kullanabilirsiniz.</p>
+                                    <div class="alert alert-info mt-4">
+                                        <i class="fas fa-info-circle me-2"></i> Studio Editor ile görsel düzenleme yapabilirsiniz.
+                                        Düzenlemelerinizi kaydetmek için sağ üstteki Kaydet butonunu kullanın.
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                `);
-            } catch (e) {
-                console.error('Varsayılan içerik yüklenirken de hata oluştu:', e);
+                    `);
+                }
+            } else {
+                console.error('HTML içerik alanı (textarea#html-content) bulunamadı!');
             }
+
+            // CSS içeriği
+            const cssContentEl = document.getElementById('css-content');
+            if (cssContentEl && cssContentEl.value && cssContentEl.value.trim() !== '') {
+                editor.setStyle(cssContentEl.value);
+            }
+
+            // JS içeriği
+            const jsContentEl = document.getElementById('js-content');
+            // JS içeriği textarea'da zaten mevcut olmalı
+            
+        } catch (error) {
+            console.error('İçerik yüklenirken hata oluştu:', error);
         }
     }
 

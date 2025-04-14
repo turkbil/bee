@@ -1,8 +1,18 @@
 <div><div>
-    <!-- İçerik editörü alanları (hidden textarea) -->
+    <!-- İçerik editörü alanları (hidden textarea) - DOĞRUDAN KULLANIYOR -->
     <textarea id="html-content" style="display:none;">{!! $content !!}</textarea>
     <textarea id="css-content" style="display:none;">{!! $css !!}</textarea>
     <textarea id="js-content" style="display:none;">{!! $js !!}</textarea>
+    
+    @if($debug)
+    <div class="alert alert-info">
+        <h4>Debug Bilgileri</h4>
+        <p>İçerik Uzunluğu: {{ strlen($content) }}</p>
+        <p>CSS Uzunluğu: {{ strlen($css) }}</p>
+        <p>JS Uzunluğu: {{ strlen($js) }}</p>
+        <p>İçerik Ön İzleme: {{ substr($content, 0, 100) }}...</p>
+    </div>
+    @endif
     
     <div class="editor-main">
         <!-- Sol Panel: Tab'lı Panel -->
@@ -210,7 +220,6 @@
         background-color: #f8f9fa;
     }
     </style>
-    
     @push('scripts')
     <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -235,55 +244,44 @@
                 
                 // Blokları render et
                 StudioBlocks.renderBlocksToDOM(window.studioEditor);
-                
-                // Tıklama olaylarını devre dışı bırak
-                setTimeout(() => {
             } else {
                 console.warn('StudioBlocks veya studioEditor bulunamadı');
             }
         }, 1500);
-    });
-    </script>
-    @endpush
-
-    @push('scripts')
-    <script>
-    // Editör hazır olduğunda manuel olarak drop desteğini etkinleştir
-    document.addEventListener('DOMContentLoaded', function() {
-        setTimeout(function() {
-            if (window.studioEditor) {
-                try {
-                    // Canvas'ın doğru yüklenmesini bekle
-                    const canvas = window.studioEditor.Canvas;
-                    const iframe = canvas.getFrameEl();
+        
+        // Mobil-desktop-tablet butonlarının çalışması için düzeltme
+        const deviceButtons = document.querySelectorAll('.device-btns button');
+        deviceButtons.forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Cihaz butonu tıklandı:', this.id);
+                
+                // Tüm butonlardan active sınıfını kaldır
+                deviceButtons.forEach(function(b) {
+                    b.classList.remove('active');
+                });
+                
+                // Bu butonu active yap
+                this.classList.add('active');
+                
+                // Editor'a frame boyutunu ayarla komutu gönder
+                if (window.studioEditor) {
+                    let width = '100%';
                     
-                    if (!iframe) {
-                        console.warn('Canvas iframe bulunamadı');
-                        return;
+                    if (this.id === 'device-tablet') {
+                        width = '768px';
+                    } else if (this.id === 'device-mobile') {
+                        width = '375px';
                     }
                     
-                    // iframe yüklendikten sonra drop olaylarını ayarla
-                    iframe.onload = function() {
-                        console.log('Canvas iframe yüklendi, drop olayları ayarlanıyor...');
-                        
-                        const canvasDoc = iframe.contentDocument;
-                        const canvasEl = canvasDoc.body;
-                        
-                        if (!canvasEl) {
-                            console.warn('Canvas body bulunamadı');
-                            return;
-                        }
-                    };
-                    
-                    // Eğer iframe zaten yüklendiyse
-                    if (iframe.contentDocument) {
-                        iframe.onload();
+                    // Frame boyutunu değiştir
+                    const frame = window.studioEditor.Canvas.getFrame();
+                    if (frame) {
+                        frame.set('width', width);
                     }
-                } catch (e) {
-                    console.error('Canvas drop olaylarını ayarlarken hata:', e);
                 }
-            }
-        }, 2000);
+            });
+        });
     });
     </script>
     @endpush

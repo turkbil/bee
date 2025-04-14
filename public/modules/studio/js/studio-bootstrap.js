@@ -1,4 +1,4 @@
-// Modules/Studio/resources/assets/js/studio-bootstrap.js
+// Modules/Studio/resources/assets/js/studio-bootstrap.js - düzeltilmiş versiyonu
 
 /**
  * Studio Editor - Bootstrap
@@ -38,26 +38,6 @@ let Studio = (function() {
             content: '',
             css: '',
             js: '',
-            // Editör ayarları
-            editorConfig: {
-                allowScripts: 1,        // Script çalıştırmaya izin ver
-                dragMode: 'absolute',   // Sürükleme modu
-                editOnClick: true,      // Tek tıklamada düzenleme
-                avoidInlineStyle: false, // Satır içi stile izin ver
-                wrappesIsBody: true,    // Body içine sarmalama
-                showOffsets: true,      // Hizalama yardımcılarını göster
-                forceClass: false,      // CSS sınıflarını zorla
-                avoidDefaults: true,    // Varsayılan içerikleri önle
-                multipleSelection: true, // Çoklu seçime izin ver
-                editorMode: 'rich',     // Zengin editör modu
-                showDevices: true,      // Cihaz simülasyonunu göster
-                resizable: true,        // Bileşenleri yeniden boyutlandırmaya izin ver
-                autorender: true,       // Otomatik render
-                domComponents: {
-                    storeUndo: true,    // Geri alma verilerini sakla
-                    trackChanges: true  // Değişiklikleri izle
-                }
-            },
             ...options
         };
 
@@ -111,9 +91,6 @@ let Studio = (function() {
             // Eylem işleyicilerini yükle
             setupEditorActions();
             
-            // Editör bileşen etkileşimlerini yapılandır
-            configureEditorInteractions();
-            
             // Başarıyla başlatıldı
             isInitialized = true;
             console.log('Studio Editor başarıyla yüklendi!');
@@ -128,36 +105,6 @@ let Studio = (function() {
             showError('Editör başlatılırken bir hata oluştu: ' + error.message);
             return null;
         }
-    }
-
-    /**
-     * Editör etkileşimlerini yapılandır
-     */
-    function configureEditorInteractions() {
-        if (!editor) return;
-        
-        // Düzenleme modunu ayarla
-        editor.setDragMode('absolute');
-        
-        // Çift tıklama ile düzenlemeyi etkinleştir
-        editor.on('canvas:dblclick', (evt) => {
-            const selected = editor.getSelected();
-            if (selected) {
-                // İçerik düzenleyicisini aç
-                editor.runCommand('open-rte');
-            }
-        });
-        
-        // Birleşen seçildiğinde özellikleri görüntüle
-        editor.on('component:selected', (model) => {
-            // Özellikler panelini göster
-            const traitsTab = document.querySelector('.panel-tab[data-tab="traits"]');
-            if (traitsTab) {
-                traitsTab.click();
-            }
-        });
-        
-        console.log('Editör etkileşimleri yapılandırıldı');
     }
 
     /**

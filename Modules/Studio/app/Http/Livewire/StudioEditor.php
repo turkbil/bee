@@ -18,13 +18,19 @@ class StudioEditor extends Component
     public $js;
     public $pageTitle;
     public $editorData = [];
+    public $rawHtml;
+    public $debug = false;
     
-    public function mount(string $module, int $id)
+    public function mount(string $module, int $id, bool $debug = false)
     {
         $this->module = $module;
         $this->moduleId = (int)$id;
+        $this->debug = $debug;
         
-        $this->loadContent();
+        // HTML içeriğini doğrudan yükle
+        $this->loadContentRaw();
+        
+        // Editor verilerini yükle
         $this->loadEditorData();
         
         // Studio Editor açılma olayını tetikle
@@ -32,18 +38,60 @@ class StudioEditor extends Component
     }
     
     /**
-     * İçeriği yükle
+     * İçeriği doğrudan yükle
      */
-    protected function loadContent()
+    protected function loadContentRaw()
     {
         // Modül tipine göre içeriği yükle
         switch ($this->module) {
             case 'page':
-                $this->loadPageContent();
+                $this->loadPageContentRaw();
                 break;
             default:
                 session()->flash('error', 'Desteklenmeyen modül: ' . $this->module);
                 return redirect()->route('admin.dashboard')->with('error', 'Desteklenmeyen modül: ' . $this->module);
+        }
+    }
+    
+    /**
+     * Sayfa içeriğini doğrudan yükle
+     */
+    protected function loadPageContentRaw()
+    {
+        try {
+            if (!class_exists('Modules\Page\App\Models\Page')) {
+                throw new \Exception('Page modülü bulunamadı.');
+            }
+            
+            $page = \Modules\Page\App\Models\Page::findOrFail($this->moduleId);
+            
+            // İçeriği doğrudan al, hiçbir işlem yapmadan
+            $this->content = $page->body ?? '';
+            $this->css = $page->css ?? '';
+            $this->js = $page->js ?? '';
+            $this->pageTitle = $page->title ?? 'Sayfa Düzenleyici';
+            $this->rawHtml = $page->body ?? '';
+            
+            // Eğer içerik boşsa varsayılan içerik oluştur
+            if (empty($this->content)) {
+                $this->content = $this->getDefaultHtml();
+                $this->rawHtml = $this->getDefaultHtml();
+            }
+            
+            // Debug için log yaz
+            Log::debug('Studio Editor - Sayfa İçeriği Yüklendi', [
+                'page_id' => $this->moduleId,
+                'title' => $this->pageTitle,
+                'content_length' => strlen($this->content),
+                'css_length' => strlen($this->css),
+                'js_length' => strlen($this->js),
+                'content_excerpt' => substr($this->content, 0, 200),
+            ]);
+            
+        } catch (\Exception $e) {
+            Log::error('Sayfa yüklenirken hata: ' . $e->getMessage());
+            session()->flash('error', 'Sayfa bulunamadı: ' . $e->getMessage());
+            return redirect()->route('admin.page.index')->with('error', 'Sayfa bulunamadı.');
         }
     }
     
@@ -75,44 +123,21 @@ class StudioEditor extends Component
     }
     
     /**
-     * Sayfa içeriğini yükle
+     * Varsayılan HTML içeriği
      */
-    protected function loadPageContent()
+    protected function getDefaultHtml()
     {
-        try {
-            if (!class_exists('Modules\Page\App\Models\Page')) {
-                throw new \Exception('Page modülü bulunamadı.');
-            }
-            
-            $page = \Modules\Page\App\Models\Page::findOrFail($this->moduleId);
-            
-            // İçerik parser servisini kullan
-            $parserService = app('studio.parser');
-            
-            $this->content = $page->body ?? '';
-            $this->css = $page->css ?? '';
-            $this->js = $page->js ?? '';
-            $this->pageTitle = $page->title ?? 'Sayfa Düzenleyici';
-            
-            // Eğer içerik boşsa varsayılan içerik koy
-            if (empty($this->content)) {
-                $this->content = $parserService->getDefaultHtml();
-            }
-            
-            // Debug için log yaz
-            Log::debug('Studio Editor - Sayfa İçeriği Yüklendi', [
-                'page_id' => $this->moduleId,
-                'title' => $this->pageTitle,
-                'content_length' => strlen($this->content),
-                'css_length' => strlen($this->css),
-                'js_length' => strlen($this->js),
-            ]);
-            
-        } catch (\Exception $e) {
-            Log::error('Sayfa yüklenirken hata: ' . $e->getMessage());
-            session()->flash('error', 'Sayfa bulunamadı: ' . $e->getMessage());
-            return redirect()->route('admin.page.index')->with('error', 'Sayfa bulunamadı.');
-        }
+        return '<div class="container py-5">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2>Hoş Geldiniz</h2>
+                    <p>Studio Editör ile sayfanızı düzenlemeye başlayabilirsiniz. Sol taraftaki bileşenleri sürükleyip bırakarak içerik ekleyebilirsiniz.</p>
+                    <div class="alert alert-info mt-4">
+                        <i class="fas fa-info-circle me-2"></i> Düzenlemelerinizi kaydetmek için sağ üstteki <strong>Kaydet</strong> butonunu kullanın.
+                    </div>
+                </div>
+            </div>
+        </div>';
     }
     
     /**
@@ -142,13 +167,10 @@ class StudioEditor extends Component
             
             $page = \Modules\Page\App\Models\Page::findOrFail($this->moduleId);
             
-            // İçerik parser servisi ile içeriği temizle
-            $parserService = app('studio.parser');
-            $preparedContent = $parserService->prepareContentForSave($this->content, $this->css, $this->js);
-            
-            $page->body = $preparedContent['html'];
-            $page->css = $preparedContent['css'];
-            $page->js = $preparedContent['js'];
+            // İçeriği doğrudan kullan
+            $page->body = $this->content;
+            $page->css = $this->css;
+            $page->js = $this->js;
             $page->save();
             
             // Aktivite kaydı
@@ -217,10 +239,6 @@ class StudioEditor extends Component
             ];
         }
         
-        Log::debug('Studio Editor - Render Metodu - JS İçeriği:', ['js_content' => $this->js]);
-        Log::debug('Studio Editor - Render Metodu - HTML İçeriği:', ['html_content' => $this->content]);
-        Log::debug('Studio Editor - Render Metodu - Editor Data:', ['editor_data' => json_encode($this->editorData)]); // JSON olarak loglayalım
-
         return view('studio::livewire.studio-editor', [
             'pageTitle' => $this->pageTitle,
             'moduleType' => $this->module,
@@ -229,6 +247,7 @@ class StudioEditor extends Component
             'css' => $this->css,
             'js' => $this->js,
             'editorData' => $this->editorData,
+            'rawHtml' => $this->rawHtml,
         ]);
     }
 }

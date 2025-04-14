@@ -29,7 +29,7 @@ class StudioController extends Controller
         $this->widgetService = $widgetService;
         $this->themeService = $themeService;
     }
-    
+        
     /**
      * Studio editör sayfasını göster
      *
@@ -64,6 +64,14 @@ class StudioController extends Controller
                             ->route('admin.page.index')
                             ->with('error', 'Düzenlenecek sayfa bulunamadı.');
                     }
+                    
+                    // Debug için içeriği logla
+                    \Log::debug("Page Content Debug", [
+                        'page_id' => $id,
+                        'title' => $page->title,
+                        'body_length' => strlen($page->body ?? ''),
+                        'body_excerpt' => substr($page->body ?? '', 0, 500)
+                    ]);
                     break;
                 
                 default:
@@ -75,9 +83,10 @@ class StudioController extends Controller
             return view('studio::admin.editor', [
                 'module' => $module,
                 'id' => $id,
+                'debug' => true
             ]);
         } catch (\Exception $e) {
-            Log::error('Studio Editor sayfası açılırken hata: ' . $e->getMessage(), [
+            \Log::error('Studio Editor sayfası açılırken hata: ' . $e->getMessage(), [
                 'module' => $module,
                 'id' => $id,
                 'exception' => get_class($e),
@@ -187,22 +196,10 @@ class StudioController extends Controller
             
             $page = \Modules\Page\App\Models\Page::findOrFail($id);
             
-            // HTML içeriğini doğrudan kullan ve temizleme işlemini atla
-            // İçerik parser servisi hata verdiği için basitleştirelim
+            // HTML içeriğini doğrudan kullan
             $page->body = $data['content'] ?? '';
             $page->css = $data['css'] ?? '';
             $page->js = $data['js'] ?? '';
-            
-            // Güncelleme öncesi durumu logla
-            Log::debug("Studio Save - Güncelleme Öncesi", [
-                'page_id' => $page->id,
-                'old_body_length' => strlen($page->getOriginal('body') ?? ''),
-                'new_body_length' => strlen($page->body),
-                'old_css_length' => strlen($page->getOriginal('css') ?? ''),
-                'new_css_length' => strlen($page->css),
-                'old_js_length' => strlen($page->getOriginal('js') ?? ''),
-                'new_js_length' => strlen($page->js)
-            ]);
             
             // Kaydet
             $saveResult = $page->save();
@@ -267,6 +264,7 @@ class StudioController extends Controller
             ], 500);
         }
     }
+
     /**
      * Widgetları getir
      *

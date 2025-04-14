@@ -209,314 +209,89 @@
         width: 100%;
         background-color: #f8f9fa;
     }
-    .block-item {
-    cursor: grab;
-    transition: all 0.2s ease;
-    }
-
-    .block-item:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-
-    .block-item.dragging {
-        opacity: 0.5;
-        cursor: grabbing;
-    }
-
-    /* Akordiyon stilleri */
-    .accordion-item {
-        overflow: hidden;
-        border: 1px solid rgba(0,0,0,.125);
-        border-radius: 0.25rem;
-    }
-
-    .accordion-button {
-        padding: 0.75rem 1rem;
-        font-weight: 500;
-    }
-
-    .accordion-button:not(.collapsed) {
-        background-color: rgba(59, 130, 246, 0.1);
-        color: #3b82f6;
-    }
-
-    .accordion-body {
-        padding: 0.75rem;
-    }
-
-    /* Canvas bölgesini vurgula */
-    .editor-canvas {
-        transition: all 0.25s ease;
-    }
-
-    .editor-canvas.drop-active {
-        background-color: rgba(59, 130, 246, 0.05);
-    }
     </style>
+    
     @push('scripts')
     <script>
-    // Canvas frame yüklendikten sonra çalışacak fonksiyon
-    function checkCanvasFrame() {
-        const gjs = document.getElementById('gjs');
-        if (!gjs) return;
+    document.addEventListener('DOMContentLoaded', function() {
+        // Global bayrak ile tekrarlayan renderleri önle
+        window.blocksRendered = false;
         
-        // Canvas frame'ini kontrol et
-        if (window.studioEditor) {
-            const frame = window.studioEditor.Canvas.getFrame();
-            if (frame) {
-                console.log("Canvas frame bulundu, sürükle-bırak işlemleri etkinleştiriliyor...");
+        // Studio Core yüklendikten sonra blokları doldurmayı dene
+        setTimeout(() => {
+            if (window.StudioBlocks && window.studioEditor && !window.blocksRendered) {
+                console.log('Bloklar manuel olarak doldurma işlemi başlatılıyor...');
                 
-                // Manuel olarak sürükle-bırak olaylarını kur
-                setupCanvasDrop();
-                return;
+                // Kategorileri düzgün göstermek için ekstra kod
+                const categories = {
+                    'temel': 'Temel Bileşenler',
+                    'mizanpaj': 'Mizanpaj Bileşenleri',
+                    'bootstrap': 'Bootstrap Bileşenleri',
+                    'medya': 'Medya Bileşenleri',
+                    'özel': 'Özel Bileşenler',
+                    'widget': 'Widget Bileşenleri',
+                    'diğer': 'Diğer Bileşenler'
+                };
+                
+                // Kategori bilgilerini global olarak kaydet
+                window.studioCategories = categories;
+                
+                // Blokları render et
+                StudioBlocks.renderBlocksToDOM(window.studioEditor);
+                
+                // Canvas olaylarını kontrol et
+                if (window.StudioCanvasManager && typeof window.StudioCanvasManager.handleDropEvents === 'function') {
+                    // Canvas olay dinleyicilerini manuel olarak başlat
+                    console.log('Manuel olarak canvas drop olaylarını başlatma girişimi');
+                    window.StudioCanvasManager.handleDropEvents();
+                }
+                
+                // Render işlemi tamamlandı
+                window.blocksRendered = true;
+            } else {
+                if (window.blocksRendered) {
+                    console.log('Bloklar zaten render edilmiş, tekrar render edilmiyor.');
+                } else {
+                    console.warn('StudioBlocks veya studioEditor bulunamadı');
+                }
             }
-        }
+        }, 2000); // 2 saniye bekle, yeterli süre için
         
-        // Frame bulunamadıysa tekrar dene
-        setTimeout(checkCanvasFrame, 500);
-    }
-
-    // Canvas için sürükle-bırak olaylarını kur
-    function setupCanvasDrop() {
-        try {
-            const frame = window.studioEditor.Canvas.getFrame();
-            if (!frame) return;
-            
-            const canvasDoc = frame.view.el.contentDocument;
-            if (!canvasDoc) return;
-            
-            const canvasBody = canvasDoc.body;
-            if (!canvasBody) return;
-            
-            // Canvas'ta sürükleme olayları
-            canvasBody.addEventListener('dragover', function(e) {
+        // Mobil-desktop-tablet butonlarının çalışması için düzeltme
+        const deviceButtons = document.querySelectorAll('.device-btns button');
+        deviceButtons.forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
                 e.preventDefault();
-                e.stopPropagation();
-                this.style.outline = '2px dashed #3b82f6';
-                this.style.background = 'rgba(59, 130, 246, 0.05)';
-            });
-            
-            canvasBody.addEventListener('dragleave', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                this.style.outline = 'none';
-                this.style.background = '';
-            });
-            
-            canvasBody.addEventListener('drop', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                this.style.outline = 'none';
-                this.style.background = '';
+                console.log('Cihaz butonu tıklandı:', this.id);
                 
-                // Blok sürüklenme kontrolü
-                const blockId = e.dataTransfer.getData('text/plain');
-                if (blockId) {
-                    const block = window.studioEditor.BlockManager.get(blockId);
+                // Tüm butonlardan active sınıfını kaldır
+                deviceButtons.forEach(function(b) {
+                    b.classList.remove('active');
+                });
+                
+                // Bu butonu active yap
+                this.classList.add('active');
+                
+                // Editor'a frame boyutunu ayarla komutu gönder
+                if (window.studioEditor) {
+                    let width = '100%';
                     
-                    if (block) {
-                        // Blok içeriğini al
-                        const content = block.get('content');
-                        
-                        // Eklenecek pozisyonu hesapla (fare konumuna göre)
-                        const coords = {
-                            x: e.clientX, 
-                            y: e.clientY
-                        };
-                        
-                        // İçerik türüne göre editöre ekle
-                        let component;
-                        
-                        if (typeof content === 'string') {
-                            component = window.studioEditor.addComponents(content)[0];
-                        } else if (typeof content === 'object') {
-                            component = window.studioEditor.addComponents(window.studioEditor.DomComponents.addComponent(content))[0];
-                        }
-                        
-                        // Eklenen bileşeni hemen seç (düzenleme için)
-                        if (component) {
-                            window.studioEditor.select(component);
-                            
-                            // Özellikler tab'ını aktifleştir
-                            const traitsTab = document.querySelector('.panel-tab[data-tab="traits"]');
-                            if (traitsTab) {
-                                traitsTab.click();
-                            }
-                        }
+                    if (this.id === 'device-tablet') {
+                        width = '768px';
+                    } else if (this.id === 'device-mobile') {
+                        width = '375px';
+                    }
+                    
+                    // Frame boyutunu değiştir
+                    const frame = window.studioEditor.Canvas.getFrame();
+                    if (frame) {
+                        frame.set('width', width);
                     }
                 }
             });
-            
-            console.log("Canvas sürükle-bırak işlemleri başarıyla etkinleştirildi");
-        } catch (error) {
-            console.error("Canvas sürükle-bırak ayarlarken hata:", error);
-        }
-    }
-
-    // Canvas frame yüklenince işlemleri başlat
-    document.addEventListener('DOMContentLoaded', function() {
-        // Canvas frame yüklendikten sonra sürükle-bırak olaylarını ayarla
-        setTimeout(checkCanvasFrame, 1000);
-        
-        // Blok sürükle-bırak olaylarını ayarla
-        document.addEventListener('studio:editor-ready', function() {
-            // Blok etkileşimlerini ayarla
-            setupBlockDragDrop();
         });
-        
-        // Editor hazır olduğunda tetikle
-        setTimeout(() => {
-            document.dispatchEvent(new CustomEvent('studio:editor-ready'));
-        }, 2000);
     });
-
-    // Blok sürükle-bırak olaylarını ayarla
-    function setupBlockDragDrop() {
-        document.querySelectorAll('.block-item').forEach(item => {
-            // Sürükle başlangıç olayı
-            item.addEventListener('dragstart', function(e) {
-                const blockId = this.getAttribute('data-block-id');
-                e.dataTransfer.setData('text/plain', blockId);
-                e.dataTransfer.effectAllowed = 'copy';
-                this.classList.add('dragging');
-            });
-            
-            // Sürükle bitiş olayı
-            item.addEventListener('dragend', function(e) {
-                this.classList.remove('dragging');
-            });
-        });
-    }
     </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Bootstrap akordiyon için tanımlamaları ekle
-            const blocksContainer = document.getElementById('blocks-container');
-            
-            // Observer oluştur - DOM'a blokların eklendiğini izlemek için
-            const observer = new MutationObserver(function(mutations) {
-                mutations.forEach(function(mutation) {
-                    if (mutation.addedNodes.length) {
-                        // Akordiyon varsa, bootstrap ile ilişkilendir
-                        const accordions = blocksContainer.querySelectorAll('.accordion');
-                        if (accordions.length > 0) {
-                            // Bootstrap ile initialize et
-                            accordions.forEach(accordion => {
-                                // Akordiyon başlıklarını tıklanabilir yap
-                                const headers = accordion.querySelectorAll('.accordion-header button');
-                                headers.forEach(header => {
-                                    header.addEventListener('click', function(e) {
-                                        e.preventDefault();
-                                        const target = this.getAttribute('data-bs-target');
-                                        const collapse = document.querySelector(target);
-                                        
-                                        if (collapse) {
-                                            // Manuel olarak açılıp kapanmayı yönet
-                                            if (collapse.classList.contains('show')) {
-                                                collapse.classList.remove('show');
-                                                this.classList.add('collapsed');
-                                            } else {
-                                                collapse.classList.add('show');
-                                                this.classList.remove('collapsed');
-                                            }
-                                        }
-                                    });
-                                });
-                            });
-                            
-                            // Blok elementlerini sürüklenebilir yap
-                            setupDraggableBlocks();
-                        }
-                    }
-                });
-            });
-            
-            // Observer'ı başlat
-            observer.observe(blocksContainer, { childList: true });
-            
-            // Blok elementlerini sürüklenebilir yap
-            function setupDraggableBlocks() {
-                const blockItems = document.querySelectorAll('.block-item');
-                blockItems.forEach(item => {
-                    item.setAttribute('draggable', 'true');
-                    
-                    // Sürükleme başladığında
-                    item.addEventListener('dragstart', function(e) {
-                        const blockId = this.getAttribute('data-block-id');
-                        e.dataTransfer.setData('text/plain', blockId);
-                        e.dataTransfer.effectAllowed = 'copy';
-                        this.classList.add('dragging');
-                    });
-                    
-                    // Sürükleme bittiğinde
-                    item.addEventListener('dragend', function() {
-                        this.classList.remove('dragging');
-                    });
-                });
-            }
-            
-            // Canvas'a sürükle-bırak davranışı ekle
-            function setupCanvasDrop() {
-                if (!window.studioEditor) return;
-                
-                const frame = window.studioEditor.Canvas.getFrame();
-                if (!frame) return setTimeout(setupCanvasDrop, 500);
-                
-                const canvasDoc = frame.view.el.contentDocument;
-                if (!canvasDoc) return;
-                
-                const canvasBody = canvasDoc.body;
-                
-                // Sürükleme olayları
-                canvasBody.addEventListener('dragover', function(e) {
-                    e.preventDefault();
-                    this.style.outline = '2px dashed #3b82f6';
-                    this.style.background = 'rgba(59, 130, 246, 0.05)';
-                });
-                
-                canvasBody.addEventListener('dragleave', function(e) {
-                    e.preventDefault();
-                    this.style.outline = 'none';
-                    this.style.background = '';
-                });
-                
-                canvasBody.addEventListener('drop', function(e) {
-                    e.preventDefault();
-                    this.style.outline = 'none';
-                    this.style.background = '';
-                    
-                    const blockId = e.dataTransfer.getData('text/plain');
-                    if (blockId && window.studioEditor) {
-                        const block = window.studioEditor.BlockManager.get(blockId);
-                        
-                        if (block) {
-                            const content = block.get('content');
-                            let component;
-                            
-                            if (typeof content === 'string') {
-                                component = window.studioEditor.addComponents(content)[0];
-                            } else if (typeof content === 'object') {
-                                component = window.studioEditor.addComponents(
-                                    window.studioEditor.DomComponents.addComponent(content)
-                                )[0];
-                            }
-                            
-                            // Eklenen bileşeni hemen seç
-                            if (component) {
-                                window.studioEditor.select(component);
-                            }
-                        }
-                    }
-                });
-            }
-            
-            // Editor hazır olduğunda canvas drop işlevini ayarla
-            document.addEventListener('studio:editor-ready', function() {
-                setTimeout(setupCanvasDrop, 500);
-            });
-        });
-        </script>
     @endpush
 
 </div></div>

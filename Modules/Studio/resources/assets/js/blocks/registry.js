@@ -164,26 +164,31 @@ const StudioBlocks = (function() {
      * @param {Object} editorInstance GrapesJS editor örneği
      */
     function setupBlockInteractions(editorInstance) {
+        console.log('Blok etkileşimleri ayarlanıyor...');
+        
+        // Global sürüklenen blok izleme değişkeni oluştur
+        window.lastDraggedBlockId = null;
+        
+        // Daha önce eklenmiş olabilecek olay dinleyicilerini temizle
         document.querySelectorAll('.block-item').forEach(item => {
-            // Tıklama olayını tamamen kaldır
-            item.onclick = null;
-            item.style.cursor = 'grab';
-    
-            // Sadece sürükleme olaylarını ekle
-            item.draggable = true;
+            // Olay dinleyicilerini temizlemek için klonlama
+            const newItem = item.cloneNode(true);
+            item.parentNode.replaceChild(newItem, item);
             
-            item.addEventListener('dragstart', function(e) {
-                e.stopPropagation();
+            // SADECE sürükleme olayı ekle, tıklama olayını kaldır
+            newItem.addEventListener('dragstart', function(e) {
                 const blockId = this.getAttribute('data-block-id');
                 e.dataTransfer.setData('blockId', blockId);
                 e.dataTransfer.effectAllowed = 'copy';
-                this.classList.add('dragging');
-            });
-    
-            item.addEventListener('dragend', function() {
-                this.classList.remove('dragging');
+                
+                // Global değişkene son sürüklenen bloğu kaydet
+                window.lastDraggedBlockId = blockId;
+                
+                console.log('Blok dragstart olayı, blockId:', blockId);
             });
         });
+        
+        console.log('Blok etkileşimleri başarıyla ayarlandı - yalnızca sürükle-bırak aktif');
     }
     
     // Dışa aktarılan fonksiyonlar

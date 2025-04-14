@@ -12,9 +12,11 @@ const StudioCore = (function() {
      */
     function initEditor(config) {
         console.log('GrapesJS editor başlatılıyor...');
-    
+
         try {
-            editor = grapesjs.init({
+            // GrapesJS'in canvas ayarlarını özelleştir
+            const editorConfig = {
+                // Temel ayarlar
                 container: '#' + config.elementId,
                 fromElement: false,
                 height: '100%',
@@ -35,19 +37,34 @@ const StudioCore = (function() {
                         droppable: true,
                         selectable: true,
                         hoverable: true,
-                        stylable: true,
+                        stylable: true
                     }
                 },
                 
-                // Editör davranışları
+                // Canvas (iframe) ayarları
                 canvas: {
-                    styles: [
-                        'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css',
-                        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
-                    ],
-                    scripts: [
-                        'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js'
-                    ]
+                    // Harici stil ve betikleri geçici olarak devre dışı bırak
+                    styles: [],
+                    scripts: [],
+                    
+                    // Canvas içeriğinin görünmesi için ek ayarlar
+                    frameStyle: `
+                        html, body { 
+                            background-color: #fff !important;
+                            margin: 0 !important;
+                            padding: 0 !important;
+                            min-height: 100vh !important;
+                            height: auto !important;
+                            width: 100% !important;
+                            display: block !important;
+                            visibility: visible !important;
+                            opacity: 1 !important;
+                            overflow: auto !important;
+                        }
+                        * { box-sizing: border-box; }
+                    `,
+                    autoscroll: true,
+                    autorender: true
                 },
                 
                 // Bileşen ekleme davranışı
@@ -55,21 +72,48 @@ const StudioCore = (function() {
                     devices: [
                         {
                             name: 'Masaüstü',
-                            width: '',
+                            width: ''
                         },
                         {
                             name: 'Tablet',
                             width: '768px',
-                            widthMedia: '992px',
+                            widthMedia: '992px'
                         },
                         {
                             name: 'Mobil',
                             width: '320px',
-                            widthMedia: '576px',
-                        },
+                            widthMedia: '576px'
+                        }
                     ]
+                },
+                
+                // Önemli: Bileşenlerin düzgün eklenmesi için
+                allowScripts: true,
+                avoidInlineStyle: false,
+                forceClass: false,
+                showOffsets: true,
+                autorender: true,
+                noticeOnUnload: false,
+                
+                // Bileşen yöneticisi ayarları
+                domComponents: {
+                    storeUndo: true,
+                    trackChanges: true,
+                    // Bileşen içeriğini düzgün işlemek için
+                    processor: (obj) => {
+                        return obj;
+                    }
+                },
+                
+                // Blok yöneticisi ayarları
+                blockManager: {
+                    appendTo: '#blocks-container',
+                    blocks: []
                 }
-            });
+            };
+            
+            // GrapesJS editörünü başlat
+            editor = grapesjs.init(editorConfig);
     
             // Bileşen ayarlarını global olarak güncelle
             editor.on('component:selected', (component) => {
@@ -135,22 +179,63 @@ const StudioCore = (function() {
      */
     function loadContent(editor, config) {
         try {
+            // Canvas iframe'ini al
+            const frameEl = editor.Canvas.getFrameEl();
+            if (frameEl) {
+                // iframe yüklendiğinde özel CSS ekle
+                frameEl.onload = function() {
+                    try {
+                        const frameDoc = frameEl.contentDocument;
+                        if (frameDoc) {
+                            // İçerik görünürlüğünü sağlamak için özel stiller
+                            const styleEl = frameDoc.createElement('style');
+                            styleEl.innerHTML = `
+                                html, body {
+                                    margin: 0 !important;
+                                    padding: 0 !important;
+                                    min-height: 100vh !important;
+                                    height: auto !important;
+                                    width: 100% !important;
+                                    display: block !important;
+                                    visibility: visible !important;
+                                    opacity: 1 !important;
+                                    overflow: auto !important;
+                                    background-color: #ffffff !important;
+                                }
+                                * { box-sizing: border-box; }
+                            `;
+                            frameDoc.head.appendChild(styleEl);
+                            console.log('Canvas iframe için özel CSS eklendi.');
+                        }
+                    } catch (e) {
+                        console.error('iframe CSS eklenirken hata:', e);
+                    }
+                };
+            }
+            
             // HTML içeriği
             if (config.content) {
                 editor.setComponents(config.content);
             }
-
+            
             // CSS içeriği
             if (config.css) {
                 editor.setStyle(config.css);
             }
-
+            
             // JS içeriğini kaydet
             const jsContentEl = document.getElementById('js-content');
             if (jsContentEl && config.js) {
                 jsContentEl.value = config.js;
             }
-
+            
+            // Canvas'a içerik yüklendikten sonra görünürlüğünü kontrol et
+            setTimeout(() => {
+                const canvas = editor.Canvas;
+                canvas.refresh();
+                console.log('İçerik başarıyla yüklendi ve canvas yenilendi.');
+            }, 500);
+            
             // Bileşenlerin editable özelliğini etkinleştir
             const components = editor.DomComponents.getComponents().models;
             components.forEach(comp => {
@@ -158,11 +243,11 @@ const StudioCore = (function() {
                     comp.set('editable', true);
                 }
             });
-
+            
             console.log('İçerik başarıyla yüklendi');
         } catch (error) {
             console.error('İçerik yüklenirken hata oluştu:', error);
-
+            
             // Varsayılan içeriği yüklemeyi dene
             try {
                 editor.setComponents(`

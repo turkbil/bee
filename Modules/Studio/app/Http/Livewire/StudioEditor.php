@@ -217,6 +217,10 @@ class StudioEditor extends Component
             ];
         }
         
+        Log::debug('Studio Editor - Render Metodu - JS İçeriği:', ['js_content' => $this->js]);
+        Log::debug('Studio Editor - Render Metodu - HTML İçeriği:', ['html_content' => $this->content]);
+        Log::debug('Studio Editor - Render Metodu - Editor Data:', ['editor_data' => json_encode($this->editorData)]); // JSON olarak loglayalım
+
         return view('studio::livewire.studio-editor', [
             'pageTitle' => $this->pageTitle,
             'moduleType' => $this->module,

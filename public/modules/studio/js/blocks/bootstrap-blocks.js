@@ -319,165 +319,191 @@ const StudioBootstrapBlocks = (function() {
     function registerBootstrapBlocks(editor) {
         // Önce bileşenleri kaydet
         registerBootstrapComponents(editor);
-        
-        // Blok yöneticisini al
         const blockManager = editor.BlockManager;
-        
+
         // Kart bloğu
         blockManager.add('card', {
             label: 'Kart',
             category: 'bootstrap',
             attributes: { class: 'fa fa-credit-card' },
-            content: {
-                type: 'card'
-            }
+            content: `<div class="card">
+                <div class="card-header">Kart Başlığı</div>
+                <div class="card-body">
+                    <h5 class="card-title">Kart başlığı</h5>
+                    <p class="card-text">Kart içeriği buraya gelecek. Kısa bir açıklama metni yazabilirsiniz.</p>
+                    <a href="#" class="btn btn-primary">Detaylar</a>
+                </div>
+            </div>`
         });
-        
+
+        // Hero Section bloğu
+        blockManager.add('hero-section', {
+            label: 'Hero Section',
+            category: 'bootstrap',
+            attributes: { class: 'fa fa-rocket' },
+            content: `<section class="hero-section bg-light py-5">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <h1 class="display-4">Başlık</h1>
+                            <p class="lead">Hero section açıklama metni burada yer alacak.</p>
+                            <a href="#" class="btn btn-primary btn-lg">Harekete Geç!</a>
+                        </div>
+                        <div class="col-md-6 text-center">
+                            <img src="https://placehold.co/500x300" class="img-fluid" alt="Hero Görseli">
+                        </div>
+                    </div>
+                </div>
+            </section>`
+        });
+
+        // Feature Box bloğu
+        blockManager.add('feature-box', {
+            label: 'Feature Box',
+            category: 'bootstrap',
+            attributes: { class: 'fa fa-star' },
+            content: `<div class="feature-box p-4 border rounded text-center">
+                <div class="feature-icon mb-3">
+                    <i class="fa fa-star fa-2x text-primary"></i>
+                </div>
+                <h4 class="feature-title">Özellik Başlığı</h4>
+                <p class="feature-desc">Bu kutu, öne çıkan bir özelliği vurgulamak için kullanılabilir.</p>
+            </div>`
+        });
+
         // Jumbotron bloğu
         blockManager.add('jumbotron', {
             label: 'Jumbotron',
             category: 'bootstrap',
             attributes: { class: 'fa fa-bullhorn' },
-            content: `
-                <div class="p-5 mb-4 bg-light rounded-3">
-                    <div class="container-fluid py-5">
-                        <h1 class="display-5 fw-bold">Özel başlık</h1>
-                        <p class="col-md-8 fs-4">Bu alanda daha büyük içerik veya tanıtım metni ekleyebilirsiniz.</p>
-                        <button class="btn btn-primary btn-lg" type="button">Örnek buton</button>
-                    </div>
+            content: `<div class="p-5 mb-4 bg-light rounded-3">
+                <div class="container-fluid py-5">
+                    <h1 class="display-5 fw-bold">Özel başlık</h1>
+                    <p class="col-md-8 fs-4">Bu alanda daha büyük içerik veya tanıtım metni ekleyebilirsiniz.</p>
+                    <button class="btn btn-primary btn-lg" type="button">Örnek buton</button>
                 </div>
-            `
+            </div>`
         });
-        
+
         // Navbar bloğu
         blockManager.add('navbar', {
             label: 'Navbar',
             category: 'bootstrap',
             attributes: { class: 'fa fa-bars' },
-            content: {
-                type: 'navbar',
-                content: `
-                    <div class="container-fluid">
-                        <a class="navbar-brand" href="#">Navbar</a>
-                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                            <span class="navbar-toggler-icon"></span>
-                        </button>
-                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                                <li class="nav-item">
-                                    <a class="nav-link active" aria-current="page" href="#">Ana Sayfa</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">Hakkımızda</a>
-                                </li>
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Hizmetler
-                                    </a>
-                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                        <li><a class="dropdown-item" href="#">Hizmet 1</a></li>
-                                        <li><a class="dropdown-item" href="#">Hizmet 2</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item" href="#">Diğer Hizmetler</a></li>
-                                    </ul>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">İletişim</a>
-                                </li>
-                            </ul>
-                            <form class="d-flex">
-                                <input class="form-control me-2" type="search" placeholder="Ara" aria-label="Search">
-                                <button class="btn btn-outline-success" type="submit">Ara</button>
-                            </form>
-                        </div>
+            content: `<nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="#">Navbar</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="#">Ana Sayfa</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Hakkımızda</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Hizmetler</a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" href="#">Hizmet 1</a></li>
+                                    <li><a class="dropdown-item" href="#">Hizmet 2</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="#">Diğer Hizmetler</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">İletişim</a>
+                            </li>
+                        </ul>
+                        <form class="d-flex">
+                            <input class="form-control me-2" type="search" placeholder="Ara" aria-label="Search">
+                            <button class="btn btn-outline-success" type="submit">Ara</button>
+                        </form>
                     </div>
-                `
-            }
+                </div>
+            </nav>`
         });
-        
-        // Form bloğu
-        blockManager.add('form', {
-            label: 'Form',
-            category: 'bootstrap',
-            attributes: { class: 'fa fa-wpforms' },
-            content: `
-                <form>
-                    <div class="mb-3">
-                        <label for="exampleInputEmail1" class="form-label">Email adresi</label>
-                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-                        <div id="emailHelp" class="form-text">Email adresinizi asla paylaşmayacağız.</div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="exampleInputPassword1" class="form-label">Şifre</label>
-                        <input type="password" class="form-control" id="exampleInputPassword1">
-                    </div>
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                        <label class="form-check-label" for="exampleCheck1">Beni hatırla</label>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Gönder</button>
-                </form>
-            `
-        });
-        
+
         // Alert bloğu
         blockManager.add('alert', {
             label: 'Alert',
             category: 'bootstrap',
             attributes: { class: 'fa fa-exclamation-triangle' },
-            content: {
-                type: 'alert',
-                content: 'Bu bir bildirim mesajıdır. Önemli bir bilgi içerir.'
-            }
+            content: `<div class="alert alert-primary" role="alert">
+                Bu bir bildirim mesajıdır. Önemli bir bilgi içerir.
+            </div>`
         });
-        
+
         // Accordion bloğu
         blockManager.add('accordion', {
             label: 'Accordion',
             category: 'bootstrap',
             attributes: { class: 'fa fa-bars' },
-            content: `
-                <div class="accordion" id="accordionExample">
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingOne">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                Accordion Öğesi #1
-                            </button>
-                        </h2>
-                        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                            <div class="accordion-body">
-                                <strong>Bu birinci öğenin içeriğidir.</strong> Daha fazla metin buraya eklenebilir. İçeriği istediğiniz gibi düzenleyebilirsiniz.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingTwo">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                Accordion Öğesi #2
-                            </button>
-                        </h2>
-                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
-                            <div class="accordion-body">
-                                <strong>Bu ikinci öğenin içeriğidir.</strong> Daha fazla metin buraya eklenebilir. İçeriği istediğiniz gibi düzenleyebilirsiniz.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingThree">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                Accordion Öğesi #3
-                            </button>
-                        </h2>
-                        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
-                            <div class="accordion-body">
-                                <strong>Bu üçüncü öğenin içeriğidir.</strong> Daha fazla metin buraya eklenebilir. İçeriği istediğiniz gibi düzenleyebilirsiniz.
-                            </div>
+            content: `<div class="accordion" id="accordionExample">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            Accordion Öğesi #1
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            <strong>Bu birinci öğenin içeriğidir.</strong> Daha fazla metin buraya eklenebilir. İçeriği istediğiniz gibi düzenleyebilirsiniz.
                         </div>
                     </div>
                 </div>
-            `
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            Accordion Öğesi #2
+                        </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            <strong>Bu ikinci öğenin içeriğidir.</strong> Daha fazla metin buraya eklenebilir. İçeriği istediğiniz gibi düzenleyebilirsiniz.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingThree">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            Accordion Öğesi #3
+                        </button>
+                    </h2>
+                    <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            <strong>Bu üçüncü öğenin içeriğidir.</strong> Daha fazla metin buraya eklenebilir. İçeriği istediğiniz gibi düzenleyebilirsiniz.
+                        </div>
+                    </div>
+                </div>
+            </div>`
         });
-        
+
+        // Form bloğu
+        blockManager.add('form', {
+            label: 'Form',
+            category: 'bootstrap',
+            attributes: { class: 'fa fa-wpforms' },
+            content: `<form>
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Email adresi</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                    <div id="emailHelp" class="form-text">Email adresinizi asla paylaşmayacağız.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="exampleInputPassword1" class="form-label">Şifre</label>
+                    <input type="password" class="form-control" id="exampleInputPassword1">
+                </div>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                    <label class="form-check-label" for="exampleCheck1">Beni hatırla</label>
+                </div>
+                <button type="submit" class="btn btn-primary">Gönder</button>
+            </form>`
+        });
+
         // Modal bloğu
         blockManager.add('modal', {
             label: 'Modal',
@@ -488,7 +514,6 @@ const StudioBootstrapBlocks = (function() {
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                     Modalı Aç
                 </button>
-                
                 <!-- Modal -->
                 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
@@ -507,43 +532,124 @@ const StudioBootstrapBlocks = (function() {
                         </div>
                     </div>
                 </div>
-            `
-        });
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    Accordion Öğesi #2
+                </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <strong>Bu ikinci öğenin içeriğidir.</strong> Daha fazla metin buraya eklenebilir. İçeriği istediğiniz gibi düzenleyebilirsiniz.
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingThree">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    Accordion Öğesi #3
+                </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <strong>Bu üçüncü öğenin içeriğidir.</strong> Daha fazla metin buraya eklenebilir. İçeriği istediğiniz gibi düzenleyebilirsiniz.
+                </div>
+            </div>
+        </div>
+    </div>`
+});
+
+// Form bloğu
+blockManager.add('form', {
+    label: 'Form',
+    category: 'bootstrap',
+    attributes: { class: 'fa fa-wpforms' },
+    content: `<form>
+        <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Email adresi</label>
+            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+            <div id="emailHelp" class="form-text">Email adresinizi asla paylaşmayacağız.</div>
+        </div>
+        <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Şifre</label>
+            <input type="password" class="form-control" id="exampleInputPassword1">
+        </div>
+        <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="exampleCheck1">
+            <label class="form-check-label" for="exampleCheck1">Beni hatırla</label>
+        </div>
+        <button type="submit" class="btn btn-primary">Gönder</button>
+    </form>`
+});
+
+// Modal bloğu
+blockManager.add('modal', {
+    label: 'Modal',
+    category: 'bootstrap',
+    attributes: { class: 'fa fa-window-maximize' },
+    content: `
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            Modalı Aç
+        </button>
         
-        console.log('Bootstrap blokları kaydedildi');
-    }
-    
-    /**
-     * Bootstrap blokları için varsayılan ayarları al
-     * @returns {Object} Varsayılan ayarlar
-     */
-    function getBootstrapBlockDefaults() {
-        return {
-            card: {
-                header: true,
-                footer: false,
-                image: true,
-                'border-color': '',
-                'text-color': ''
-            },
-            navbar: {
-                'navbar-color': 'navbar-light bg-light',
-                'navbar-fixed': false,
-                'navbar-position': ''
-            },
-            alert: {
-                'alert-type': 'alert-primary',
-                'alert-dismissible': false
-            }
-        };
-    }
-    
-    // Dışa aktarılan fonksiyonlar
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Modal Başlığı</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+                    </div>
+                    <div class="modal-body">
+                        Modal içeriği buraya gelecek.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                        <button type="button" class="btn btn-primary">Kaydet</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `
+});
+
+console.log('Bootstrap blokları kaydedildi');
+}
+
+/**
+ * Bootstrap blokları için varsayılan ayarları al
+ * @returns {Object} Varsayılan ayarlar
+ */
+function getBootstrapBlockDefaults() {
     return {
-        registerBootstrapComponents: registerBootstrapComponents,
-        registerBootstrapBlocks: registerBootstrapBlocks,
-        getBootstrapBlockDefaults: getBootstrapBlockDefaults
+        card: {
+            header: true,
+            footer: false,
+            image: true,
+            'border-color': '',
+            'text-color': ''
+        },
+        navbar: {
+            'navbar-color': 'navbar-light bg-light',
+            'navbar-fixed': false,
+            'navbar-position': ''
+        },
+        alert: {
+            'alert-type': 'alert-primary',
+            'alert-dismissible': false
+        }
     };
+}
+
+// Dışa aktarılan fonksiyonlar
+return {
+    registerBootstrapComponents: registerBootstrapComponents,
+    registerBootstrapBlocks: registerBootstrapBlocks,
+    getBootstrapBlockDefaults: getBootstrapBlockDefaults
+};
 })();
 
 // Global olarak kullanılabilir yap

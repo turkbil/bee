@@ -1,3 +1,5 @@
+// Modules/Studio/resources/assets/js/blocks/registry.js
+
 /**
  * Studio Blocks Registry
  * Blok yönetimini sağlayan temel modül
@@ -88,18 +90,9 @@ const StudioBlocks = (function() {
                 const categoryTitle = category.charAt(0).toUpperCase() + category.slice(1);
                 
                 blocksHTML += `
-                    <div class="accordion-item category-section mb-2">
-                        <h2 class="accordion-header" id="heading-${category}">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse" 
-                                    data-bs-target="#collapse-${category}" aria-expanded="true" 
-                                    aria-controls="collapse-${category}">
-                                ${categoryTitle}
-                            </button>
-                        </h2>
-                        <div id="collapse-${category}" class="accordion-collapse collapse show" 
-                             aria-labelledby="heading-${category}">
-                            <div class="accordion-body p-2">
-                                <div class="row g-2">
+                    <div class="category-section mb-3">
+                        <h6 class="category-title mb-2">${categoryTitle}</h6>
+                        <div class="row g-2">
                 `;
                 
                 categorizedBlocks[category].forEach(block => {
@@ -116,8 +109,6 @@ const StudioBlocks = (function() {
                 });
                 
                 blocksHTML += `
-                                </div>
-                            </div>
                         </div>
                     </div>
                 `;
@@ -130,18 +121,9 @@ const StudioBlocks = (function() {
                 const categoryTitle = category.charAt(0).toUpperCase() + category.slice(1);
                 
                 blocksHTML += `
-                    <div class="accordion-item category-section mb-2">
-                        <h2 class="accordion-header" id="heading-${category}">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse" 
-                                    data-bs-target="#collapse-${category}" aria-expanded="true" 
-                                    aria-controls="collapse-${category}">
-                                ${categoryTitle}
-                            </button>
-                        </h2>
-                        <div id="collapse-${category}" class="accordion-collapse collapse show" 
-                             aria-labelledby="heading-${category}">
-                            <div class="accordion-body p-2">
-                                <div class="row g-2">
+                    <div class="category-section mb-3">
+                        <h6 class="category-title mb-2">${categoryTitle}</h6>
+                        <div class="row g-2">
                 `;
                 
                 categorizedBlocks[category].forEach(block => {
@@ -158,8 +140,6 @@ const StudioBlocks = (function() {
                 });
                 
                 blocksHTML += `
-                                </div>
-                            </div>
                         </div>
                     </div>
                 `;
@@ -168,9 +148,6 @@ const StudioBlocks = (function() {
         
         if (blocksHTML === '') {
             blocksHTML = '<div class="alert alert-info">Henüz blok kaydedilmemiş.</div>';
-        } else {
-            // Akordiyon yapısına sar
-            blocksHTML = `<div class="accordion" id="blocksAccordion">${blocksHTML}</div>`;
         }
         
         // Bloklarla doldur
@@ -188,44 +165,14 @@ const StudioBlocks = (function() {
      */
     function setupBlockInteractions(editorInstance) {
         document.querySelectorAll('.block-item').forEach(item => {
-            // Sürükle başlangıç olayı
+            // Sürükleme başlaması olayını dinle
             item.addEventListener('dragstart', function(e) {
                 const blockId = this.getAttribute('data-block-id');
-                e.dataTransfer.setData('text/plain', blockId);
+                e.dataTransfer.setData('blockId', blockId);
                 e.dataTransfer.effectAllowed = 'copy';
-                this.classList.add('dragging');
             });
             
-            // Sürükle bitiş olayı
-            item.addEventListener('dragend', function(e) {
-                this.classList.remove('dragging');
-            });
-            
-            // Tıklama olayı (yalnızca tıklama için - sürükle olmadığında)
-            item.addEventListener('click', function(e) {
-                const blockId = this.getAttribute('data-block-id');
-                const block = editorInstance.BlockManager.get(blockId);
-                
-                if (block) {
-                    // Blok içeriğini al
-                    const content = block.get('content');
-                    
-                    // İçerik türüne göre editöre ekle
-                    if (typeof content === 'string') {
-                        const component = editorInstance.addComponents(content)[0];
-                        if (component) {
-                            // Eklenen bileşeni seç (düzenleme için)
-                            editorInstance.select(component);
-                        }
-                    } else if (typeof content === 'object') {
-                        const component = editorInstance.addComponents(editorInstance.DomComponents.addComponent(content))[0];
-                        if (component) {
-                            // Eklenen bileşeni seç (düzenleme için)
-                            editorInstance.select(component);
-                        }
-                    }
-                }
-            });
+            // Tıklama olayını kaldırıldı - artık sadece sürükle-bırak çalışacak
         });
     }
     

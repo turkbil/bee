@@ -30,10 +30,7 @@ const StudioCanvasManager = (function() {
         setupCanvasAssets();
         
         // Sürükle-bırak olaylarını yönet
-        setTimeout(() => {
-            // Canvas framei hazır olduğunda sürükle-bırak işlevlerini kur
-            handleDropEvents();
-        }, 1000);
+        handleDropEvents();
         
         // Bileşen seçimini ayarla
         setupComponentSelection();
@@ -64,103 +61,129 @@ const StudioCanvasManager = (function() {
      * Sürükle-bırak olaylarını yönet
      */
     function handleDropEvents() {
-        try {
-            const canvas = editor.Canvas;
+        const canvas = editor.Canvas;
+        
+        // Frame'i bul
+        const frame = canvas.getFrame();
+        if (!frame) {
+            console.warn('Canvas frame bulunamadı, sürükle-bırak olayları ayarlanıyor...');
             
-            // Canvas elemanını al - önce frame'i sonra body'yi al
-            const frame = canvas.getFrame();
-            if (!frame) {
-                console.warn('Canvas frame bulunamadı, yeniden deneniyor...');
-                setTimeout(handleDropEvents, 500);
-                return;
-            }
-            
-            const canvasEl = frame.view.el.contentDocument.body;
-            
-            if (!canvasEl) {
-                console.warn('Canvas body elemanı bulunamadı, yeniden deneniyor...');
-                setTimeout(handleDropEvents, 500);
-                return;
-            }
-            
-            console.log('Canvas frame bulundu, sürükle-bırak olayları ayarlanıyor...');
-            
-            // Frame içindeki canvas'ı al
-            const canvasBody = canvasEl;
-            
-            // Canvas'ta sürükleme olayları
-            canvasBody.addEventListener('dragover', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                this.style.outline = '2px dashed #3b82f6';
-                this.style.outlineOffset = '-2px';
+            // Frame yoksa, yüklendiğinde tekrar dene
+            editor.on('canvas:frame:load', () => {
+                console.log('Canvas frame bulundu, sürükle-bırak işlemleri etkinleştiriliyor...');
+                setupFrameDrop(canvas.getFrame());
             });
+            return;
+        }
+        
+        console.log('Canvas frame bulundu, sürükle-bırak olayları ayarlanıyor...');
+        setupFrameDrop(frame);
+    }
+
+    /**
+     * Frame için sürükle-bırak olaylarını ayarla
+     * @param {Object} frame Canvas frame
+     */
+    function setupFrameDrop(frame) {
+        if (!frame || !frame.view || !frame.view.el || !frame.view.el.contentDocument) {
+            console.error('Geçerli frame bulunamadı');
+            return;
+        }
+        
+        const canvasBody = frame.view.el.contentDocument.body;
+        
+        if (!canvasBody) {
+            console.error('Canvas body bulunamadı');
+            return;
+        }
+        
+        // Önceki olay dinleyicileri temizle
+        canvasBody.removeEventListener('dragover', handleDragOver);
+        canvasBody.removeEventListener('dragleave', handleDragLeave);
+        canvasBody.removeEventListener('drop', handleDrop);
+        
+        // Yeni olay dinleyicileri ekle
+        canvasBody.addEventListener('dragover', handleDragOver);
+        canvasBody.addEventListener('dragleave', handleDragLeave);
+        canvasBody.addEventListener('drop', handleDrop);
+        
+        console.log('Canvas sürükle-bırak işlemleri başarıyla etkinleştirildi');
+    }
+
+    /**
+     * Sürükleme üzerinde olay işleyicisi
+     * @param {Event} e Sürükleme olayı
+     */
+    function handleDragOver(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.classList.add('gjs-droppable-active');
+    }
+
+    /**
+     * Sürükleme çıkışı olay işleyicisi
+     * @param {Event} e Sürükleme olayı
+     */
+    function handleDragLeave(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.classList.remove('gjs-droppable-active');
+    }
+
+    /**
+     * Bırakma olay işleyicisi
+     * @param {Event} e Bırakma olayı
+     */
+    function handleDrop(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.classList.remove('gjs-droppable-active');
+        
+        // Blok sürüklenme kontrolü
+        if (e.dataTransfer.getData('blockId')) {
+            const blockId = e.dataTransfer.getData('blockId');
+            const block = editor.BlockManager.get(blockId);
             
-            canvasBody.addEventListener('dragleave', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                this.style.outline = 'none';
-                this.style.outlineOffset = '0';
-            });
-            
-            canvasBody.addEventListener('drop', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                this.style.outline = 'none';
-                this.style.outlineOffset = '0';
+            if (block) {
+                const content = block.get('content');
+                let component;
                 
-                // Blok sürüklenme kontrolü
-                const blockId = e.dataTransfer.getData('text/plain');
-                if (blockId) {
-                    const block = editor.BlockManager.get(blockId);
-                    
-                    if (block) {
-                        // Blok içeriğini al
-                        const content = block.get('content');
-                        
-                        // İçerik türüne göre editöre ekle
-                        if (typeof content === 'string') {
-                            const component = editor.addComponents(content)[0];
-                            if (component) {
-                                // Eklenen bileşeni seç (düzenleme için)
-                                editor.select(component);
-                            }
-                        } else if (typeof content === 'object') {
-                            const component = editor.addComponents(editor.DomComponents.addComponent(content))[0];
-                            if (component) {
-                                // Eklenen bileşeni seç (düzenleme için)
-                                editor.select(component);
-                            }
-                        }
-                    }
+                if (typeof content === 'string') {
+                    component = editor.addComponents(content)[0];
+                } else if (typeof content === 'object') {
+                    component = editor.addComponents(editor.DomComponents.addComponent(content))[0];
                 }
-                // Dosya sürüklenme kontrolü
-                else if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
-                    const files = e.dataTransfer.files;
-                    handleFilesDrop(files, e);
+                
+                // Bileşeni seç
+                if (component) {
+                    // Seçimi daha sonra yap - seçim sorunlarını önler
+                    setTimeout(() => {
+                        editor.select(component);
+                    }, 100);
                 }
-            });
-            
-            console.log('Sürükle-bırak olayları başarıyla ayarlandı');
-        } catch (error) {
-            console.error('Sürükle-bırak olaylarını ayarlarken hata:', error);
+            }
+        }
+        // Dosya sürüklenme kontrolü
+        else if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
+            const files = e.dataTransfer.files;
+            handleFilesDrop(files, e);
         }
     }
     
     /**
      * Dosya sürükle-bırak işlemini yönet
-* @param {FileList} files Dosya listesi
-* @param {Event} dropEvent Sürükle-bırak olayı
+     * @param {FileList} files Dosya listesi
+     * @param {Event} dropEvent Sürükle-bırak olayı
      */
     function handleFilesDrop(files, dropEvent) {
         if (!files || !files.length) {
-        return;
-    }
-    
-    // Dosya tiplerini kontrol et (sadece görsel dosyalarını kabul et)
-    Array.from(files).forEach(file => {
-        if (file.type.startsWith('image/')) {
-            uploadImage(file, dropEvent);
+            return;
+        }
+        
+        // Dosya tiplerini kontrol et (sadece görsel dosyalarını kabul et)
+        Array.from(files).forEach(file => {
+            if (file.type.startsWith('image/')) {
+                uploadImage(file, dropEvent);
             } else {
                 showNotification('Yalnızca görsel dosyaları kabul edilir.', 'error');
             }
@@ -249,6 +272,12 @@ const StudioCanvasManager = (function() {
                 } 
             });
             document.dispatchEvent(event);
+            
+            // Özellikler sekmesini otomatik aç
+            const traitsTab = document.querySelector('.panel-tab[data-tab="traits"]');
+            if (traitsTab && !traitsTab.classList.contains('active')) {
+                traitsTab.click();
+            }
         });
         
         // Bileşen deselect edildiğinde
@@ -256,6 +285,21 @@ const StudioCanvasManager = (function() {
             // Bileşen deselect olayını tetikle
             const event = new CustomEvent('studio:component-deselected');
             document.dispatchEvent(event);
+        });
+        
+        // Bileşen eklendiğinde
+        editor.on('component:add', (model) => {
+            // Bileşen eklendiğinde otomatik seçim yap
+            setTimeout(() => {
+                editor.select(model);
+            }, 100);
+        });
+        
+        // Bileşenler güncellendiğinde traits panelini güncelle
+        editor.on('component:update', (model) => {
+            if (editor.getSelected() === model) {
+                updateTraitPanel(model);
+            }
         });
         
         console.log('Bileşen seçimi işlevselliği ayarlandı');
@@ -266,11 +310,11 @@ const StudioCanvasManager = (function() {
      * @param {Object} model Seçilen bileşen modeli
      */
     function updateTraitPanel(model) {
-        // Tab'ı otomatik olarak açma
+        // Tab'ı otomatik olarak açma (isteğe bağlı)
         const traitsTab = document.querySelector('.panel-tab[data-tab="traits"]');
         if (traitsTab && !traitsTab.classList.contains('active')) {
-            // Özellikleri tab'ını otomatik olarak aktifleştir
-            traitsTab.click();
+            // İsteğe bağlı: otomatik tab geçişi
+            // traitsTab.click();
         }
     }
     

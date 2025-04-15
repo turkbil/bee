@@ -100,7 +100,7 @@ window.StudioBlocks = (function() {
             // Bu kategoriye ait blokları al
             const categoryBlocks = [];
             
-            // GrapesJS koleksiyonlarını doğru şekilde işleme
+            // GrapesJS blok koleksiyonunu doğru şekilde işle
             editor.BlockManager.getAll().each(block => {
                 const blockCategory = block.get('category');
                 
@@ -147,10 +147,22 @@ window.StudioBlocks = (function() {
                     blockEl.className = 'block-item';
                     blockEl.setAttribute('data-block-id', block.id);
                     
-                    // İçeriği oluştur
+                    // İçeriği oluştur - BU SATIR HATAYA NEDEN OLUYORDU - ÖNEMLİ DEĞİŞİKLİK
+                    let iconClass = 'fa fa-cube'; // Varsayılan ikon
+                    
+                    // Attributes özelliğini güvenli bir şekilde al
+                    try {
+                        const attributes = block.get('attributes');
+                        if (attributes && attributes.class) {
+                            iconClass = attributes.class;
+                        }
+                    } catch (error) {
+                        console.warn(`"${block.id}" bloğu için öznitelikleri alırken hata:`, error);
+                    }
+                    
                     blockEl.innerHTML = `
                         <div class="block-item-icon">
-                            <i class="${block.getAttributes().class || 'fa fa-cube'}"></i>
+                            <i class="${iconClass}"></i>
                         </div>
                         <div class="block-item-label">${block.get('label')}</div>
                     `;
@@ -270,8 +282,8 @@ window.StudioBlocks = (function() {
     
     /**
      * Blok araması için event listener ekle
- * @param {Object} editor - GrapesJS editor örneği
- */
+     * @param {Object} editor - GrapesJS editor örneği
+     */
     function setupBlockSearch(editor) {
         const searchInput = document.getElementById('blocks-search');
         if (!searchInput) return;
@@ -356,6 +368,7 @@ window.StudioBlocks = (function() {
     
     return {
         registerBlocks: registerBlocks,
-        updateBlocksInCategories: updateBlocksInCategories
+        updateBlocksInCategories: updateBlocksInCategories,
+        setupBlockSearch: setupBlockSearch
     };
 })();

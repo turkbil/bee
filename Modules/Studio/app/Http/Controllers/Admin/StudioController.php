@@ -7,6 +7,7 @@ use Illuminate\Routing\Controller;
 use Modules\Studio\App\Services\EditorService;
 use Modules\Studio\App\Services\WidgetService;
 use Modules\Studio\App\Services\AssetService;
+use Modules\Studio\App\Services\BlockService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\JsonResponse;
 
@@ -15,16 +16,19 @@ class StudioController extends Controller
     protected $editorService;
     protected $widgetService;
     protected $assetService;
+    protected $blockService;
     
     public function __construct(
         EditorService $editorService, 
         WidgetService $widgetService,
-        AssetService $assetService
+        AssetService $assetService,
+        BlockService $blockService
     )
     {
         $this->editorService = $editorService;
         $this->widgetService = $widgetService;
         $this->assetService = $assetService;
+        $this->blockService = $blockService;
     }
     
     /**
@@ -181,8 +185,17 @@ class StudioController extends Controller
     public function getBlocks(): JsonResponse
     {
         try {
-            $blockService = app(BlockService::class);
-            $blocks = $blockService->getAllBlocks();
+            $blocks = $this->blockService->getAllBlocks();
+            
+            // Debug log ekle
+            Log::debug('getBlocks HTTP yanıtı', [
+                'blocks_count' => count($blocks)
+            ]);
+            
+            // Her bir bloğu logla
+            foreach ($blocks as $index => $block) {
+                Log::debug("Blok #{$index}: {$block['id']} - {$block['label']} - Kategori: {$block['category']}");
+            }
             
             // Kategori isimleri
             $categories = config('studio.blocks.categories', [
@@ -197,15 +210,22 @@ class StudioController extends Controller
                 'testimonials' => ['name' => 'Müşteri Yorumları', 'icon' => 'fa fa-quote-right'],
             ]);
             
+            $categoriesForResponse = [];
+            foreach ($categories as $key => $cat) {
+                $categoriesForResponse[$key] = $cat['name'];
+            }
+            
+            Log::debug('Yanıt kategorileri', $categoriesForResponse);
+            
             return response()->json([
                 'success' => true,
                 'blocks' => $blocks,
-                'categories' => array_map(function($cat) {
-                    return $cat['name'];
-                }, $categories)
+                'categories' => $categoriesForResponse
             ]);
         } catch (\Exception $e) {
-            Log::error('Blok verileri alınırken hata: ' . $e->getMessage());
+            Log::error('Blok verileri alınırken hata: ' . $e->getMessage(), [
+                'exception' => $e
+            ]);
             
             return response()->json([
                 'success' => false,

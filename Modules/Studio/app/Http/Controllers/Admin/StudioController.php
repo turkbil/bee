@@ -174,6 +174,43 @@ class StudioController extends Controller
     }
 
     /**
+     * Blokları getir
+     *
+     * @return JsonResponse
+     */
+    public function getBlocks(): JsonResponse
+    {
+        try {
+            $blockService = app(BlockService::class);
+            $blocks = $blockService->getAllBlocks();
+            
+            // Kategori isimleri
+            $categories = config('studio.blocks.categories', [
+                'layout' => ['name' => 'Düzen', 'icon' => 'fa fa-columns'],
+                'content' => ['name' => 'İçerik', 'icon' => 'fa fa-font'],
+                'form' => ['name' => 'Form', 'icon' => 'fa fa-wpforms'],
+                'media' => ['name' => 'Medya', 'icon' => 'fa fa-image'],
+                'widget' => ['name' => 'Widgetlar', 'icon' => 'fa fa-puzzle-piece'],
+            ]);
+            
+            return response()->json([
+                'success' => true,
+                'blocks' => $blocks,
+                'categories' => array_map(function($cat) {
+                    return $cat['name'];
+                }, $categories)
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Blok verileri alınırken hata: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Blok verileri alınamadı: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * Statik kaynakları kopyala
      * 
      * @return \Illuminate\Http\RedirectResponse

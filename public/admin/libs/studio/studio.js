@@ -143,7 +143,7 @@ window.initStudioEditor = function (config) {
             storageManager: false,
             panels: { defaults: [] },
             blockManager: {
-                appendTo: '.blocks-container'
+                appendTo: '#blocks-container'
             },
             styleManager: {
                 appendTo: "#styles-container",

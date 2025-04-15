@@ -51,6 +51,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     window.StudioBlocks.registerBlocks(editor);
                 }
                 
+                // Arama özelliğini ayarla
+                if (window.StudioBlocks && typeof window.StudioBlocks.setupBlockSearch === 'function') {
+                    window.StudioBlocks.setupBlockSearch(editor);
+                }
+                
                 // UI bileşenlerini ayarla
                 if (window.StudioUI && typeof window.StudioUI.setupUI === 'function') {
                     window.StudioUI.setupUI(editor);

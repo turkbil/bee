@@ -4,6 +4,7 @@ namespace Modules\Studio\App\Services;
 
 use Illuminate\Support\Facades\Config;
 use Modules\Page\App\Models\Page;
+use Illuminate\Support\Facades\Log;
 
 class EditorService
 {
@@ -84,7 +85,7 @@ class EditorService
                 $result['js'] = $page->js ?? '';
                 $result['title'] = $page->title ?? 'Sayfa Düzenleyici';
             } catch (\Exception $e) {
-                \Illuminate\Support\Facades\Log::error('Sayfa yüklenirken hata: ' . $e->getMessage());
+                Log::error('Sayfa yüklenirken hata: ' . $e->getMessage());
             }
         }
         
@@ -111,16 +112,20 @@ class EditorService
                 $page->js = $js;
                 $result = $page->save();
                 
-                if (function_exists('log_activity')) {
-                    log_activity($page, 'studio ile düzenlendi');
-                }
-                
                 // ContentSaved eventini tetikle
                 event(new \Modules\Studio\App\Events\ContentSaved($module, $id, $content));
                 
+                // Log mesajı ekle
+                Log::info('Log: ' . ($page->title ?? 'Sayfa') . ' - studio ile düzenlendi');
+                
                 return $result;
             } catch (\Exception $e) {
-                \Illuminate\Support\Facades\Log::error('İçerik kaydedilirken hata: ' . $e->getMessage());
+                Log::error('İçerik kaydedilirken hata: ' . $e->getMessage(), [
+                    'exception' => get_class($e),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'trace' => $e->getTraceAsString()
+                ]);
                 return false;
             }
         }

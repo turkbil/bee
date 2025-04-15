@@ -29,13 +29,8 @@ class ContentSavedListener
                 'content_length' => strlen($event->content)
             ]);
             
-            // Aktivite kaydı (eğer fonksiyon varsa)
-            if (function_exists('log_activity')) {
-                log_activity([
-                    'module' => $event->module,
-                    'module_id' => $event->moduleId
-                ], 'studio ile içerik kaydedildi');
-            }
+            // Aktivite logunu burada oluşturmak yerine sadece log mesajı bırak
+            Log::info('Log: ' . $event->module . ' - studio ile düzenlendi');
         } catch (\Exception $e) {
             Log::error('ContentSavedListener hata: ' . $e->getMessage(), [
                 'exception' => get_class($e),

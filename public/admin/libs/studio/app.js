@@ -47,6 +47,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Blokları kaydet
                 if (window.StudioBlocks && typeof window.StudioBlocks.registerBlocks === 'function') {
                     window.StudioBlocks.registerBlocks(editor);
+                    
+                    // Kategorileri DOM'a ekle
+                    setTimeout(function() {
+                        updateBlocksInCategories(editor);
+                    }, 500);
                 }
                 
                 // Butonları ayarla
@@ -98,5 +103,72 @@ function setupTabs() {
                 }
             });
         });
+    });
+}
+
+/**
+ * Editördeki blokları kategori elementlerine ekler
+ */
+function updateBlocksInCategories(editor) {
+    if (!editor) {
+        console.error('Editor örneği bulunamadı');
+        return;
+    }
+    
+    // Tüm blokları al
+    const blocks = editor.BlockManager.getAll();
+    
+    // Her bir kategori için blokları işle
+    const categories = document.querySelectorAll('.block-category');
+    
+    categories.forEach(category => {
+        const categoryId = category.querySelector('.block-category-header')?.textContent?.trim().toLowerCase();
+        if (!categoryId) return;
+        
+        // Kategori adını belirle
+        let catName = '';
+        if (categoryId.includes('düzen')) catName = 'layout';
+        else if (categoryId.includes('içerik')) catName = 'content';
+        else if (categoryId.includes('form')) catName = 'form';
+        else if (categoryId.includes('medya')) catName = 'media';
+        else if (categoryId.includes('widget')) catName = 'widget';
+        
+        // Kategori içerik alanını temizle
+        const blockItems = category.querySelector('.block-items');
+        if (blockItems) {
+            blockItems.innerHTML = '';
+            
+            // Bu kategoriye ait blokları ekle
+            blocks.filter(block => block.get('category') === catName).forEach(block => {
+                const blockEl = document.createElement('div');
+                blockEl.className = 'block-item';
+                blockEl.setAttribute('data-block-id', block.get('id'));
+                
+                // İçeriği oluştur
+                blockEl.innerHTML = `
+                    <div class="block-item-icon">
+                        <i class="${block.getAttributes().class || 'fa fa-cube'}"></i>
+                    </div>
+                    <div class="block-item-label">${block.get('label')}</div>
+                `;
+                
+                // Drag-drop işlevini ekle
+                blockEl.setAttribute('draggable', 'true');
+                blockEl.addEventListener('dragstart', (e) => {
+                    editor.runCommand('select-comp', { event: e });
+                    blockEl.classList.add('dragging');
+                });
+                
+                blockEl.addEventListener('dragend', () => {
+                    blockEl.classList.remove('dragging');
+                });
+                
+                blockEl.addEventListener('click', () => {
+                    editor.BlockManager.add(block.get('id'));
+                });
+                
+                blockItems.appendChild(blockEl);
+            });
+        }
     });
 }

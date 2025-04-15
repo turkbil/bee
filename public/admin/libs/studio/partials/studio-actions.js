@@ -74,14 +74,20 @@ window.StudioActions = (function() {
                 let htmlContent, cssContent, jsContent;
                 
                 // HTML içeriğini al
-                htmlContent = editor.getHtml();
+                htmlContent = editor.getHtml() || '';
                 
                 // CSS içeriğini al
-                cssContent = editor.getCss();
+                cssContent = editor.getCss() || '';
                 
                 // JS içeriğini al
                 const jsContentEl = document.getElementById("js-content");
-                jsContent = jsContentEl ? jsContentEl.value : '';
+                jsContent = jsContentEl ? jsContentEl.value || '' : '';
+
+                console.log("Save content preparation:", {
+                    htmlContentLength: htmlContent.length,
+                    cssContentLength: cssContent.length,
+                    jsContentLength: jsContent.length
+                });
 
                 // moduleId'nin sayı olduğundan emin ol
                 const moduleId = parseInt(config.moduleId);
@@ -168,13 +174,29 @@ window.StudioActions = (function() {
             
             newPreviewBtn.addEventListener("click", function () {
                 // İçeriği al
-                const html = editor.getHtml();
-                const css = editor.getCss();
+                const html = editor.getHtml() || '';
+                const css = editor.getCss() || '';
                 const jsContentEl = document.getElementById("js-content");
-                const js = jsContentEl ? jsContentEl.value : '';
+                const js = jsContentEl ? jsContentEl.value || '' : '';
+                
+                console.log("Preview content:", {
+                    htmlLength: html.length,
+                    cssLength: css.length,
+                    jsLength: js.length
+                });
                 
                 // Önizleme penceresi oluştur
                 const previewWindow = window.open('', '_blank');
+                
+                if (!previewWindow) {
+                    console.error("Preview window could not be opened!");
+                    if (window.StudioUtils && typeof window.StudioUtils.showNotification === 'function') {
+                        window.StudioUtils.showNotification('Uyarı', 'Önizleme penceresi açılamadı. Lütfen popup engelleyicinizi kontrol edin.', 'warning');
+                    } else {
+                        alert('Önizleme penceresi açılamadı. Lütfen popup engelleyicinizi kontrol edin.');
+                    }
+                    return;
+                }
                 
                 // HTML içeriğini oluştur
                 const previewContent = `
@@ -228,10 +250,10 @@ window.StudioActions = (function() {
                 }
                 
                 // İçeriği al
-                const html = editor.getHtml();
-                const css = editor.getCss();
+                const html = editor.getHtml() || '';
+                const css = editor.getCss() || '';
                 const jsContentEl = document.getElementById("js-content");
-                const js = jsContentEl ? jsContentEl.value : '';
+                const js = jsContentEl ? jsContentEl.value || '' : '';
 
                 const exportContent = `
 <!DOCTYPE html>
@@ -258,7 +280,27 @@ ${js}
                 // Dışa aktarma modalını göster
                 if (window.StudioUtils && typeof window.StudioUtils.showEditModal === 'function') {
                     window.StudioUtils.showEditModal("HTML Dışa Aktar", exportContent, function(newContent) {
-                        // Burada bir şey yapmaya gerek yok, sadece görüntüle
+                        // HTML olarak indirme seçeneği eklenebilir
+                        try {
+                            const blob = new Blob([newContent], {type: 'text/html'});
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = 'exported-page.html';
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                            URL.revokeObjectURL(url);
+                            
+                            if (window.StudioUtils) {
+                                window.StudioUtils.showNotification('Başarılı', 'Sayfa başarıyla dışa aktarıldı!', 'success');
+                            }
+                        } catch (error) {
+                            console.error('Dışa aktarma hatası:', error);
+                            if (window.StudioUtils) {
+                                window.StudioUtils.showNotification('Hata', 'Dışa aktarma sırasında bir hata oluştu: ' + error.message, 'error');
+                            }
+                        }
                     });
                 }
             });

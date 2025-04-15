@@ -30,7 +30,7 @@ class BlockService
         
         return $blocks;
     }
-    
+        
     /**
      * Blade şablonlarından blokları yükle
      *
@@ -156,7 +156,7 @@ class BlockService
     
     /**
      * Kategori adını formatla
-     * 
+     *
      * @param string $categoryName
      * @return string
      */

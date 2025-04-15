@@ -63,17 +63,17 @@
             </div>
             
             <button id="cmd-code-edit" class="btn btn-tool me-1" title="HTML Düzenle">
-                <i class="fas fa-code"></i>
+                <i class="fas fa-code me-1"></i>
                 <span>HTML</span>
             </button>
             
             <button id="cmd-css-edit" class="btn btn-tool me-1" title="CSS Düzenle">
-                <i class="fas fa-paint-brush"></i>
+                <i class="fas fa-paint-brush me-1"></i>
                 <span>CSS</span>
             </button>
             
             <button id="export-btn" class="btn btn-tool me-2" title="Dışa Aktar">
-                <i class="fas fa-download"></i>
+                <i class="fas fa-download me-1"></i>
                 <span>Dışa Aktar</span>
             </button>
             

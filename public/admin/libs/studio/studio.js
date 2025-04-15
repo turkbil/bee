@@ -21,6 +21,23 @@ window.initStudioEditor = function (config) {
             existingLoader.remove();
         }
         
+        // İlerleme durumu
+        let currentProgress = 0;
+        
+        // Yükleme aşamaları
+        const loadingStages = [
+            { text: "Bileşenler yükleniyor...", icon: "fa-puzzle-piece" },
+            { text: "Modüller hazırlanıyor...", icon: "fa-cube" },
+            { text: "Görsel motoru başlatılıyor...", icon: "fa-paint-brush" },
+            { text: "Blok sistemi oluşturuluyor...", icon: "fa-cubes" },
+            { text: "İçerik analiz ediliyor...", icon: "fa-microscope" },
+            { text: "Düzenleme araçları hazırlanıyor...", icon: "fa-tools" },
+            { text: "Stil şablonları yükleniyor...", icon: "fa-palette" },
+            { text: "Widget sistemi entegre ediliyor...", icon: "fa-cogs" },
+            { text: "Kullanıcı arayüzü optimize ediliyor...", icon: "fa-sliders-h" },
+            { text: "Son hazırlıklar tamamlanıyor...", icon: "fa-check-double" }
+        ];
+        
         // Yükleme göstergesi ekle
         const loaderElement = document.createElement('div');
         loaderElement.className = 'studio-loader';
@@ -29,7 +46,7 @@ window.initStudioEditor = function (config) {
         loaderElement.style.left = '0';
         loaderElement.style.width = '100%';
         loaderElement.style.height = '100%';
-        loaderElement.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+        loaderElement.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
         loaderElement.style.display = 'flex';
         loaderElement.style.alignItems = 'center';
         loaderElement.style.justifyContent = 'center';
@@ -37,18 +54,85 @@ window.initStudioEditor = function (config) {
         loaderElement.style.transition = 'opacity 0.3s ease';
         
         loaderElement.innerHTML = `
-            <div class="studio-loader-content" style="text-align: center; background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
-                <div style="margin-bottom: 15px;">
-                    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
-                        <span class="visually-hidden">Yükleniyor...</span>
+            <div class="studio-loader-content" style="text-align: center; background-color: #ffffff; padding: 40px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); max-width: 500px; width: 90%;">
+                <div style="margin-bottom: 30px;">
+                    <div style="font-size: 28px; margin-bottom: 15px; color: #206bc4;">
+                        <i class="fas fa-wand-magic-sparkles"></i> Studio Editor
+                    </div>
+                    <div id="loader-spinner" style="margin-bottom: 25px;">
+                        <div class="spinner-grow text-primary mx-1" role="status" style="width: 0.8rem; height: 0.8rem;"></div>
+                        <div class="spinner-grow text-primary mx-1" role="status" style="width: 0.8rem; height: 0.8rem; animation-delay: 0.2s;"></div>
+                        <div class="spinner-grow text-primary mx-1" role="status" style="width: 0.8rem; height: 0.8rem; animation-delay: 0.4s;"></div>
                     </div>
                 </div>
-                <h3 style="margin-bottom: 10px;">Studio Editor Yükleniyor</h3>
-                <p style="color: #6c757d;">Lütfen bekleyin...</p>
+                
+                <div id="loading-icon" style="margin-bottom: 20px; font-size: 36px; color: #206bc4;">
+                    <i class="fas fa-puzzle-piece"></i>
+                </div>
+                
+                <h4 id="loading-text" style="margin-bottom: 30px; color: #334155; font-weight: 500;">Bileşenler yükleniyor...</h4>
+                
+                <div style="background-color: #f0f5fa; height: 12px; border-radius: 6px; overflow: hidden; margin-bottom: 15px;">
+                    <div id="loading-progress" style="height: 100%; width: 0%; background-color: #206bc4; border-radius: 6px; transition: width 0.5s ease;"></div>
+                </div>
+                
+                <div id="loading-status" style="font-size: 13px; color: #64748b;">
+                    %0
+                </div>
             </div>
         `;
         
         document.body.appendChild(loaderElement);
+        
+        // İlerleme çubuğunu güncelleme fonksiyonu
+        function updateProgress(stage, isCompleted = false) {
+            const loadingText = document.getElementById('loading-text');
+            const loadingIcon = document.getElementById('loading-icon');
+            const loadingProgress = document.getElementById('loading-progress');
+            const loadingStatus = document.getElementById('loading-status');
+            
+            if (!loadingText || !loadingIcon || !loadingProgress || !loadingStatus) return;
+            
+            if (isCompleted) {
+                // Tamamlandı durumu
+                loadingText.textContent = "Studio Editor Hazır!";
+                loadingIcon.innerHTML = '<i class="fas fa-check-circle"></i>';
+                loadingProgress.style.width = "100%";
+                loadingStatus.textContent = "%100";
+                return;
+            }
+            
+            // Normal ilerleme
+            if (stage < loadingStages.length) {
+                loadingText.textContent = loadingStages[stage].text;
+                loadingIcon.innerHTML = `<i class="fas ${loadingStages[stage].icon}"></i>`;
+                currentProgress = Math.round((stage + 1) * (90 / loadingStages.length)); // %90'a kadar ilerle
+                loadingProgress.style.width = `${currentProgress}%`;
+                loadingStatus.textContent = `%${currentProgress}`;
+            }
+        }
+        
+        // Aşamalı ilerleme
+        function startLoading() {
+            let currentStage = 0;
+            
+            function nextStage() {
+                if (currentStage >= loadingStages.length) return;
+                
+                updateProgress(currentStage);
+                currentStage++;
+                
+                if (currentStage < loadingStages.length) {
+                    setTimeout(nextStage, 700);
+                }
+            }
+            
+            // İlk aşamayı başlat
+            nextStage();
+        }
+        
+        // Yükleme başlat
+        startLoading();
         
         // GrapesJS Editor yapılandırması
         let editor = grapesjs.init({
@@ -143,16 +227,21 @@ window.initStudioEditor = function (config) {
         editor.on('load', function() {
             console.log('Editor loaded event triggered');
 
-            // Editor yüklendi, animasyonu gizle
-            const loaderElement = document.querySelector('.studio-loader');
-            if (loaderElement) {
-                loaderElement.style.opacity = '0';
-                setTimeout(() => {
-                    if (loaderElement && loaderElement.parentNode) {
-                        loaderElement.parentNode.removeChild(loaderElement);
-                    }
-                }, 300);
-            }
+            // Tamamlandı göster (%100)
+            updateProgress(0, true);
+            
+            // Bekle ve animasyonu gizle
+            setTimeout(() => {
+                const loaderElement = document.querySelector('.studio-loader');
+                if (loaderElement) {
+                    loaderElement.style.opacity = '0';
+                    setTimeout(() => {
+                        if (loaderElement && loaderElement.parentNode) {
+                            loaderElement.parentNode.removeChild(loaderElement);
+                        }
+                    }, 300);
+                }
+            }, 800);
             
             // Blokları kaydet
             registerBlocks(editor);

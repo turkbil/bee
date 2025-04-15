@@ -42,5 +42,11 @@ Route::middleware(['web', 'auth', 'tenant'])
                 Route::get('/publish-resources', [StudioController::class, 'publishResources'])
                     ->middleware('module.permission:studio,update')
                     ->name('publish-resources');
+
+                // Blokları getir
+                Route::get('/api/blocks', [StudioController::class, 'getBlocks'])
+                    ->middleware('module.permission:studio,view')
+                    ->name('api.blocks');
+
             });
     });

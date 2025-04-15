@@ -1,5 +1,5 @@
 <div>
-    <!-- İçerik editörü alanlarını sakla - normal textarea ile (hidden field değil) -->
+    <!-- İçerik editörü alanlarını sakla -->
     <textarea id="html-content" style="display:none;">{!! $content !!}</textarea>
     <textarea id="css-content" style="display:none;">{!! $css !!}</textarea>
     <textarea id="js-content" style="display:none;">{!! $js !!}</textarea>
@@ -28,29 +28,13 @@
                     <input type="text" id="blocks-search" class="form-control form-control-sm" placeholder="Bileşen ara...">
                 </div>
                 
-                <div class="blocks-container">
-                    <!-- Kategorileri dinamik oluştur -->
-                    @foreach($categories as $categoryKey => $category)
-                    <div class="block-category">
-                        <div class="block-category-header">
-                            <i class="{{ $category['icon'] }}"></i>
-                            <span>{{ $category['name'] }}</span>
-                            <i class="fa fa-chevron-down toggle-icon"></i>
-                        </div>
-                        <div class="block-items">
-                            <!-- Bu kategoriye ait bloklar eklenecek (JS tarafında) -->
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
+                <!-- GrapesJS blok konteynerı -->
+                <div id="blocks-container" class="blocks-container"></div>
             </div>
             
             <!-- Stiller İçeriği -->
             <div class="panel-tab-content" data-tab-content="styles">
-                <!-- Özellikler sekmesi içeriği burada -->
                 <div id="traits-container" class="traits-container"></div>
-                
-                <!-- Stil konteynerı burada -->
                 <div id="styles-container" class="styles-container"></div>
             </div>
             

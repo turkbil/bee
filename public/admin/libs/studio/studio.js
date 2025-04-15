@@ -50,444 +50,582 @@ window.initStudioEditor = function (config) {
         
         document.body.appendChild(loaderElement);
         
-        // Dummy editor objesi oluştur (asenkron yükleme öncesi)
-        const dummyEditor = {
-            on: function(eventName, callback) {
-                // Event'leri kaydet
-                if (!window.studioEditorEvents) {
-                    window.studioEditorEvents = {};
-                }
-                if (!window.studioEditorEvents[eventName]) {
-                    window.studioEditorEvents[eventName] = [];
-                }
-                window.studioEditorEvents[eventName].push(callback);
-                console.log(`Event dinleyicisi eklendi: ${eventName}`);
+        // GrapesJS Editor yapılandırması
+        let editor = grapesjs.init({
+            container: "#" + config.elementId,
+            fromElement: false,
+            height: "100%",
+            width: "100%",
+            storageManager: false,
+            panels: { defaults: [] },
+            blockManager: {
+                appendTo: '.blocks-container'
             },
-            getComponents: function() { return []; },
-            getStyle: function() { return {}; }
-        };
-        
-        // Asenkron yükleme işlemi
-        setTimeout(() => {
-            try {
-                // Blok konteynerini sorgula
-                const blocksContainer = document.querySelector('.blocks-container');
-                
-                // Yapılandırmayı güncelle
-                if (blocksContainer) {
-                    config.blocksContainer = blocksContainer;
-                }
-                
-                let realEditor = null;
-                
-                // GrapesJS Editor yapılandırması
-                if (window.StudioCore && typeof window.StudioCore.initEditor === 'function') {
-                    realEditor = window.StudioCore.initEditor(config);
-                } else {
-                    console.error('StudioCore.initEditor bulunamadı!');
-                    return null;
-                }
-                
-                if (!realEditor) {
-                    console.error('Editor başlatılamadı!');
-                    return null;
-                }
-                
-                // Başlangıçta mevcut blokları logla
-                if (realEditor) {
-                    setTimeout(() => {
-                        console.log('Kayıtlı Bloklar:', 
-                            realEditor.BlockManager ? 
-                            realEditor.BlockManager.getAll().models.map(b => b.id) : 
-                            'BlockManager bulunamadı');
-                    }, 2000);
-                }
-                
-                // Dummy üzerine kayıtlı event'leri gerçek editöre geçir
-                if (window.studioEditorEvents) {
-                    Object.keys(window.studioEditorEvents).forEach(eventName => {
-                        window.studioEditorEvents[eventName].forEach(callback => {
-                            realEditor.on(eventName, callback);
-                        });
-                    });
-                }
-                
-                // Global erişim için editörü güncelle
-                window.studioEditor = realEditor;
-                
-                // Eklentileri yükle
-                if (window.StudioPluginLoader && typeof window.StudioPluginLoader.loadPlugins === 'function') {
-                    try {
-                        window.StudioPluginLoader.loadPlugins(realEditor);
-                    } catch (error) {
-                        console.error('Eklentiler yüklenirken hata:', error);
+            styleManager: {
+                appendTo: "#styles-container",
+                sectors: [
+                    {
+                        name: 'Boyut',
+                        open: true,
+                        properties: [
+                            'width', 'height', 'max-width', 'min-height', 'margin', 'padding'
+                        ]
+                    },
+                    {
+                        name: 'Düzen',
+                        open: false,
+                        properties: [
+                            'display', 'position', 'top', 'right', 'bottom', 'left', 'float', 'clear', 'z-index'
+                        ]
+                    },
+                    {
+                        name: 'Flex',
+                        open: false,
+                        properties: [
+                            'flex-direction', 'flex-wrap', 'justify-content', 'align-items', 'align-content', 'order', 'flex-basis', 'flex-grow', 'flex-shrink', 'align-self'
+                        ]
+                    },
+                    {
+                        name: 'Tipografi',
+                        open: false,
+                        properties: [
+                            'font-family', 'font-size', 'font-weight', 'letter-spacing', 'color', 'line-height', 'text-align', 'text-decoration', 'text-shadow'
+                        ]
+                    },
+                    {
+                        name: 'Dekorasyon',
+                        open: false,
+                        properties: [
+                            'background-color', 'border', 'border-radius', 'box-shadow'
+                        ]
                     }
-                }
-                
-                // Komutları ve diğer işlemleri ekle
-                try {
-                    if (window.StudioBlocks) window.StudioBlocks.registerBlocks(realEditor);
-                    if (window.StudioUI) window.StudioUI.setupUI(realEditor);
-                    if (window.StudioActions) window.StudioActions.setupActions(realEditor, config);
-                    
-                    setupCustomCommands(realEditor);
-                    enhanceDragDrop(realEditor);
-                } catch (error) {
-                    console.error('Editör modülleri yüklenirken hata:', error);
-                }
-                
-                // Yükleme işlemi tamamlandı
-                console.log("Studio Editor başarıyla yüklendi!");
-                
-            } catch (error) {
-                console.error('Studio Editor başlatılırken beklenmeyen hata:', error);
+                ]
+            },
+            layerManager: {
+                appendTo: "#layers-container",
+            },
+            traitManager: {
+                appendTo: "#traits-container",
+            },
+            deviceManager: {
+                devices: [
+                    {
+                        name: "Desktop",
+                        width: "",
+                    },
+                    {
+                        name: "Tablet",
+                        width: "768px",
+                        widthMedia: "992px",
+                    },
+                    {
+                        name: "Mobile",
+                        width: "320px",
+                        widthMedia: "480px",
+                    },
+                ],
+            },
+            canvas: {
+                scripts: [
+                    "https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js",
+                ],
+                styles: [
+                    "https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css",
+                    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
+                ]
             }
-        }, 500);
+        });
+
+        // İçerik yükleme işlemi
+        loadContent(editor, config);
+
+        // Editor'ü yükleme olayını dinle
+        editor.on('load', function() {
+            console.log('Editor loaded event triggered');
+
+            // Editor yüklendi, animasyonu gizle
+            const loaderElement = document.querySelector('.studio-loader');
+            if (loaderElement) {
+                loaderElement.style.opacity = '0';
+                setTimeout(() => {
+                    if (loaderElement && loaderElement.parentNode) {
+                        loaderElement.parentNode.removeChild(loaderElement);
+                    }
+                }, 300);
+            }
+            
+            // Blokları kaydet
+            registerBlocks(editor);
+            
+            // Butonlara olay dinleyiciler ekle
+            setupButtons(editor, config);
+        });
         
-        return dummyEditor;
+        // Global erişim için editörü kaydet
+        window.studioEditor = editor;
+        
+        return editor;
         
     } catch (error) {
         console.error('Studio Editor başlatılırken kritik hata:', error);
-        return {
-            on: function() {} // Boş fonksiyon
-        };
+        return null;
     }
 };
 
-function setupCustomCommands(editor) {
-    // Öğeleri görünür/gizli yap - Noktalı çizgilerle
-    editor.Commands.add('sw-visibility', {
-        toggleVisibility: false, // Görünürlük durumunu takip et
-        
-        run(editor) {
-            this.toggleVisibility = !this.toggleVisibility;
+/**
+ * İçeriği yükle
+ * @param {Object} editor - GrapesJS editor örneği
+ * @param {Object} config - Yapılandırma
+ */
+function loadContent(editor, config) {
+    // İçerik yükleme gecikmesi - canvas hazır olduktan sonra
+    setTimeout(() => {
+        try {
+            console.log('İçerik yükleme işlemi başlatılıyor...');
             
-            try {
-                // Canvas iframe'ine eriş
-                const frame = editor.Canvas.getFrames()[0]; 
-                if (!frame) return false;
+            const htmlContentEl = document.getElementById('html-content');
+            const cssContentEl = document.getElementById('css-content');
+            const jsContentEl = document.getElementById('js-content');
+            
+            let content = htmlContentEl ? htmlContentEl.value : '';
+            
+            // İçerik kontrolü - geçerli HTML içeriği var mı?
+            if (!content || content.trim() === '' || content.trim() === '<body></body>' || content.length < 20) {
+                console.warn('Geçerli içerik bulunamadı. Varsayılan içerik yükleniyor...');
                 
-                const win = frame.view.getWindow();
-                if (!win) return false;
-                
-                const doc = win.document;
-                if (!doc) return false;
-                
-                // Bileşenlere stil uygulamak için stil sayfası ekle/kaldır
-                let styleEl = doc.getElementById('gjs-component-outline-styles');
-                
-                if (this.toggleVisibility) {
-                    // Stil elementini oluştur
-                    if (!styleEl) {
-                        styleEl = doc.createElement('style');
-                        styleEl.id = 'gjs-component-outline-styles';
-                        doc.head.appendChild(styleEl);
-                    }
-                    
-                    // Stiller - Tüm bileşenler için noktalı çizgi
-                    styleEl.innerHTML = `
-                    /* Tüm bileşenler için noktalı çizgi */
-                    [data-gjs-type] {
-                        outline: 1px dashed rgba(41, 98, 255, 0.7) !important;
-                        outline-offset: 1px !important;
-                        transition: outline 0.2s ease-in-out, outline-offset 0.2s ease-in-out !important;
-                    }
-                    
-                    /* Hover efekti - daha belirgin noktalı */
-                    [data-gjs-type]:hover {
-                        outline: 2px solid rgba(0, 123, 255, 0.9) !important;
-                        outline-offset: 2px !important;
-                        z-index: 1 !important;
-                    }
-                    
-                    /* Seçili bileşenler - solid olsun */
-                    .gjs-selected {
-                        outline: 2px solid rgba(0, 123, 255, 1) !important;
-                        outline-offset: 2px !important;
-                        z-index: 2 !important;
-                    }
-                    `;
-                    
-                    // Göz butonunu aktif duruma getir
-                    const button = document.getElementById('sw-visibility');
-                    if (button) button.classList.add('active');
-                    
-                } else {
-                    // Stil elementini kaldır
-                    if (styleEl) {
-                        styleEl.parentNode.removeChild(styleEl);
-                    }
-                    
-                    // Göz butonunu pasif duruma getir
-                    const button = document.getElementById('sw-visibility');
-                    if (button) button.classList.remove('active');
-                }
-                
-                // Canvas yenileme işlemini doğru yöntemle yap
-                editor.refresh();
-                
-                return this.toggleVisibility;
-            } catch (error) {
-                console.error('Bileşen sınırlarını gösterme/gizleme hatası:', error);
-                return false;
+                content = `
+                <div class="container py-4">
+                    <div class="row">
+                        <div class="col-12">
+                            <h1 class="mb-4">Yeni Sayfa</h1>
+                            <p class="lead">Bu sayfayı düzenlemek için sol taraftaki bileşenleri kullanabilirsiniz.</p>
+                            <div class="alert alert-info mt-4">
+                                <i class="fas fa-info-circle me-2"></i> Studio Editor ile görsel düzenleme yapabilirsiniz.
+                                Düzenlemelerinizi kaydetmek için sağ üstteki Kaydet butonunu kullanın.
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
             }
-        },
-        
-        stop() {
-            this.toggleVisibility = false;
-        }
-    });
-
-    // İçeriği temizle
-    editor.Commands.add('core:canvas-clear', {
-        run(editor) {
-            editor.DomComponents.clear();
-            editor.CssComposer.clear();
-        }
-    });
-
-    // Geri al komutunu iyileştir
-    editor.Commands.add('core:undo', {
-        run(editor) {
-            editor.UndoManager.undo();
-        }
-    });
-
-    // Yinele komutunu iyileştir
-    editor.Commands.add('core:redo', {
-        run(editor) {
-            editor.UndoManager.redo();
-        }
-    });
-    
-    // Bileşen sınırlarını göster komutu - sw-visibility'i çağırır
-    editor.Commands.add('core:component-outline', {
-        run(editor) {
-            try {
-                // sw-visibility komutunu çalıştır
-                editor.runCommand('sw-visibility');
-            } catch (error) {
-                console.error('Bileşen outline hatası:', error);
+            
+            // İçeriği editöre yükle
+            editor.setComponents(content);
+            console.log('İçerik editöre başarıyla yüklendi');
+            
+            // CSS içeriği
+            if (cssContentEl && cssContentEl.value) {
+                editor.setStyle(cssContentEl.value);
             }
+            
+        } catch (error) {
+            console.error('İçerik yüklenirken hata oluştu:', error);
         }
-    });
+    }, 500);
 }
 
-function enhanceDragDrop(editor) {
-    // GrapesJS bloklarını sürüklemek için ayarlar
-    editor.on('block:drag:start', function(model) {
-        console.log('Blok sürükleniyor:', model.get('label'));
-        document.body.classList.add('dragging-mode');
+/**
+ * Blokları kaydet
+ * @param {Object} editor - GrapesJS editor örneği
+ */
+function registerBlocks(editor) {
+    try {
+        // Temel blokları ekle
+        editor.BlockManager.add("section-1col", {
+            label: "1 Sütun",
+            category: "layout",
+            attributes: { class: "fa fa-columns" },
+            content: `<section class="container py-5">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h2>Başlık Buraya</h2>
+                        <p>İçerik buraya gelecek. Çift tıklayarak düzenleyebilirsiniz.</p>
+                    </div>
+                </div>
+            </section>`
+        });
+
+        editor.BlockManager.add("section-2col", {
+            label: "2 Sütun",
+            category: "layout",
+            attributes: { class: "fa fa-columns" },
+            content: `<section class="container py-5">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h3>Başlık 1</h3>
+                        <p>İçerik buraya gelecek. Çift tıklayarak düzenleyebilirsiniz.</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h3>Başlık 2</h3>
+                        <p>İçerik buraya gelecek. Çift tıklayarak düzenleyebilirsiniz.</p>
+                    </div>
+                </div>
+            </section>`
+        });
+
+        editor.BlockManager.add("text", {
+            label: "Metin",
+            category: "content",
+            attributes: { class: "fa fa-font" },
+            content: `<div class="my-3">
+                <h3>Başlık</h3>
+                <p>Buraya metin içeriği gelecek. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </div>`
         });
         
-        editor.on('block:drag:stop', function(model) {
-            console.log('Blok sürükleme bitti');
-            document.body.classList.remove('dragging-mode');
-        });
+        // Diğer bloklar eklenebilir
+    } catch (error) {
+        console.error('Bloklar kaydedilirken hata:', error);
     }
+}
 
-    // Butonlara tooltip ekle
-    function addTooltips() {
-        const buttons = document.querySelectorAll('.toolbar-btn');
-        buttons.forEach(btn => {
-            const id = btn.id;
-            let tooltipText = '';
-            
-            // Buton türüne göre tooltip metni
-            switch(id) {
-                case 'sw-visibility':
-                    tooltipText = 'Bileşen sınırlarını göster/gizle';
-                    break;
-                case 'cmd-clear':
-                    tooltipText = 'İçeriği temizle';
-                    break;
-                case 'cmd-undo':
-                    tooltipText = 'Geri al';
-                    break;
-                case 'cmd-redo':
-                    tooltipText = 'Yinele';
-                    break;
-                case 'cmd-code-edit':
-                    tooltipText = 'HTML düzenle';
-                    break;
-                case 'cmd-css-edit':
-                    tooltipText = 'CSS düzenle';
-                    break;
-                case 'cmd-js-edit':
-                    tooltipText = 'JavaScript düzenle';
-                    break;
-                case 'export-btn':
-                    tooltipText = 'Dışa aktar';
-                    break;
-                case 'device-desktop':
-                    tooltipText = 'Masaüstü görünümü';
-                    break;
-                case 'device-tablet':
-                    tooltipText = 'Tablet görünümü';
-                    break;
-                case 'device-mobile':
-                    tooltipText = 'Mobil görünümü';
-                    break;
-                default:
-                    tooltipText = '';
-            }
-            
-            if (tooltipText) {
-                // Tooltip elementi oluştur
-                const tooltip = document.createElement('div');
-                tooltip.className = 'studio-tooltip';
-                tooltip.textContent = tooltipText;
-                tooltip.style.position = 'absolute';
-                tooltip.style.top = '-30px';
-                tooltip.style.left = '50%';
-                tooltip.style.transform = 'translateX(-50%)';
-                tooltip.style.backgroundColor = '#333';
-                tooltip.style.color = 'white';
-                tooltip.style.padding = '5px 10px';
-                tooltip.style.borderRadius = '4px';
-                tooltip.style.fontSize = '12px';
-                tooltip.style.zIndex = '999';
-                tooltip.style.pointerEvents = 'none';
-                tooltip.style.opacity = '0';
-                tooltip.style.transition = 'opacity 0.3s ease';
-                
-                // Butonu tooltip için hazırla
-                if (btn.style.position !== 'relative') {
-                    btn.style.position = 'relative';
-                }
-                
-                btn.appendChild(tooltip);
-                
-                // Fare olayları
-                btn.addEventListener('mouseenter', () => {
-                    tooltip.style.opacity = '1';
-                });
-                
-                btn.addEventListener('mouseleave', () => {
-                    tooltip.style.opacity = '0';
-                });
-            }
-        });
-    }
-
-    // Editor yükleme olayını dinle
-    document.addEventListener('editor:loaded', function() {
-        console.log('Editor yüklendi olayı algılandı');
-        
-        // Akordeonları ve blokları yeniden başlat
-        if (window.StudioUI && typeof window.StudioUI.setupUI === 'function') {
-            const editor = window.StudioCore.getEditor();
-            if (editor) {
-                window.StudioUI.setupUI(editor);
-            }
+/**
+ * Butonlara olay dinleyiciler ekle
+ * @param {Object} editor - GrapesJS editor örneği
+ * @param {Object} config - Yapılandırma
+ */
+function setupButtons(editor, config) {
+    try {
+        // Bileşen görünürlük butonu
+        const swVisibility = document.getElementById("sw-visibility");
+        if (swVisibility) {
+            swVisibility.addEventListener("click", () => {
+                editor.runCommand("sw-visibility");
+                swVisibility.classList.toggle("active");
+            });
         }
-        
-        // Tooltip ekle
-        setTimeout(addTooltips, 500);
-        
-        // Kategori panel özelleştirmeleri
-        setTimeout(customizePanels, 500);
-    });
 
-    // Panel özelleştirmeleri
-    function customizePanels() {
-        // Katmanlar panelini özelleştir
-        const layersPanel = document.querySelector('#layers-container');
-        if (layersPanel) {
-            layersPanel.classList.add('custom-layers-panel');
-            
-            // Ebeveyn konteyner
-            const parent = layersPanel.parentElement;
-            if (parent && !parent.querySelector('.custom-panel-header')) {
-                // Başlık ekle
-                const layersHeader = document.createElement('div');
-                layersHeader.className = 'custom-panel-header';
-                layersHeader.style.padding = '12px 15px';
-                layersHeader.style.backgroundColor = '#f1f5f9';
-                layersHeader.style.borderBottom = '1px solid #e5e5e5';
-                layersHeader.style.fontWeight = '600';
-                layersHeader.style.color = '#64748b';
-                layersHeader.innerHTML = '<i class="fas fa-layer-group me-2"></i> Katmanlar';
-                
-                // Başlığı panelin önüne ekle
-                parent.insertBefore(layersHeader, layersPanel);
-            }
-        }
-        
-        // Stiller panelini özelleştir
-        const stylesPanel = document.querySelector('#styles-container');
-        if (stylesPanel) {
-            stylesPanel.classList.add('custom-styles-panel');
-            
-            // Stil kategorilerine renk kodu ekle
-            document.querySelectorAll('.gjs-sm-sector').forEach((sector, index) => {
-                const categoryColors = [
-                    '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'
-                ];
-                
-                const colorIndex = index % categoryColors.length;
-                const color = categoryColors[colorIndex];
-                
-                // Kategori başlığına renk çubuğu ekle
-                const title = sector.querySelector('.gjs-sm-sector-title');
-                if (title) {
-                    title.style.borderLeft = `4px solid ${color}`;
-                    title.style.paddingLeft = '12px';
+        // İçerik temizle butonu
+        const cmdClear = document.getElementById("cmd-clear");
+        if (cmdClear) {
+            cmdClear.addEventListener("click", () => {
+                if (confirm("İçeriği temizlemek istediğinize emin misiniz? Bu işlem geri alınamaz.")) {
+                    editor.DomComponents.clear();
+                    editor.CssComposer.clear();
                 }
             });
         }
-        
-        // Editor'ü başlatır ve gerekli modülleri yükler
-        function initializeEditor(config) {
-            if (!config || !config.moduleId || config.moduleId <= 0) {
-                console.error('Geçersiz konfigürasyon veya modül ID:', config);
-                return;
-            }
-            
-            // Global değişkende sakla
-            window.studioEditorConfig = config;
-            
-            // Editor başlat
-            if (typeof window.initStudioEditor === 'function') {
-                try {
-                    const editor = window.initStudioEditor(config);
-                    // Global erişim için kaydet
-                    window.studioEditor = editor;
-                    
-                    // Stil yöneticisi sorununu çöz
-                    setTimeout(() => {
-                        if (window.StudioCore && typeof window.StudioCore.fixStyleManagerIssues === 'function') {
-                            window.StudioCore.fixStyleManagerIssues();
-                        }
-                    }, 1500); // Editor yüklendikten sonra yeterli bekleme
-                } catch (error) {
-                    console.error('Studio Editor başlatılırken hata:', error);
-                }
-            } else {
-                console.error('Studio Editor başlatılamıyor: initStudioEditor fonksiyonu bulunamadı!');
-            }
+
+        // Geri Al butonu
+        const cmdUndo = document.getElementById("cmd-undo");
+        if (cmdUndo) {
+            cmdUndo.addEventListener("click", () => {
+                editor.UndoManager.undo();
+            });
         }
 
-        // Özellikler panelini özelleştir
-        const traitsPanel = document.querySelector('#traits-container');
-        if (traitsPanel) {
-            traitsPanel.classList.add('custom-traits-panel');
-            
-            // Ebeveyn konteyner
-            const parent = traitsPanel.parentElement;
-            if (parent && !parent.querySelector('.custom-panel-header')) {
-                // Başlık ekle
-                const traitsHeader = document.createElement('div');
-                traitsHeader.className = 'custom-panel-header';
-                traitsHeader.style.padding = '12px 15px';
-                traitsHeader.style.backgroundColor = '#f1f5f9';
-                traitsHeader.style.borderBottom = '1px solid #e5e5e5';
-                traitsHeader.style.fontWeight = '600';
-                traitsHeader.style.color = '#64748b';
-                traitsHeader.innerHTML = '<i class="fas fa-sliders-h me-2"></i> Özellikler';
+        // Yinele butonu
+        const cmdRedo = document.getElementById("cmd-redo");
+        if (cmdRedo) {
+            cmdRedo.addEventListener("click", () => {
+                editor.UndoManager.redo();
+            });
+        }
+        
+        // Kaydet butonu
+        const saveBtn = document.getElementById("save-btn");
+        if (saveBtn) {
+            saveBtn.addEventListener("click", () => {
+                // Kaydedilecek içeriği hazırla
+                const htmlContent = editor.getHtml();
+                const cssContent = editor.getCss();
                 
-                // Başlığı panelin önüne ekle
-                parent.insertBefore(traitsHeader, traitsPanel);
+                // JS içeriğini al
+                const jsContentEl = document.getElementById("js-content");
+                const jsContent = jsContentEl ? jsContentEl.value : '';
+                
+                // CSRF token
+                const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                
+                // Kaydetme URL'si
+                const saveUrl = `/admin/studio/save/${config.module}/${config.moduleId}`;
+                
+                // İçeriği kaydet
+                fetch(saveUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': token,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        content: htmlContent,
+                        css: cssContent,
+                        js: jsContent
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showNotification('Başarılı', data.message || 'İçerik başarıyla kaydedildi!');
+                    } else {
+                        showNotification('Hata', data.message || 'Kayıt işlemi başarısız.', 'error');
+                    }
+                })
+                .catch(error => {
+                    showNotification('Hata', error.message || 'Sunucuya bağlanırken bir hata oluştu.', 'error');
+                });
+            });
+        }
+        
+        // HTML kodu düzenleme
+        const cmdCodeEdit = document.getElementById("cmd-code-edit");
+        if (cmdCodeEdit) {
+            cmdCodeEdit.addEventListener("click", () => {
+                const htmlContent = editor.getHtml();
+                showEditModal("HTML Düzenle", htmlContent, (newHtml) => {
+                    editor.setComponents(newHtml);
+                });
+            });
+        }
+
+        // CSS kodu düzenleme
+        const cmdCssEdit = document.getElementById("cmd-css-edit");
+        if (cmdCssEdit) {
+            cmdCssEdit.addEventListener("click", () => {
+                const cssContent = editor.getCss();
+                const cssContentEl = document.getElementById("css-content");
+                showEditModal("CSS Düzenle", cssContent, (newCss) => {
+                    if (cssContentEl) {
+                        cssContentEl.value = newCss;
+                    }
+                    editor.setStyle(newCss);
+                });
+            });
+        }
+        
+        // Cihaz görünümü değiştirme butonları
+        setupDeviceButtons(editor);
+    } catch (error) {
+        console.error('Buton ayarlarken hata:', error);
+    }
+}
+
+/**
+ * Cihaz görünümü değiştirme butonlarını ayarla
+ * @param {Object} editor - GrapesJS editor örneği
+ */
+function setupDeviceButtons(editor) {
+    const deviceDesktop = document.getElementById("device-desktop");
+    const deviceTablet = document.getElementById("device-tablet");
+    const deviceMobile = document.getElementById("device-mobile");
+
+    function toggleDeviceButtons(activeBtn) {
+        const deviceBtns = document.querySelectorAll(".device-btns button");
+        if (deviceBtns) {
+            deviceBtns.forEach((btn) => {
+                btn.classList.remove("active");
+            });
+            if (activeBtn) {
+                activeBtn.classList.add("active");
             }
         }
     }
+
+    if (deviceDesktop) {
+        deviceDesktop.addEventListener("click", function () {
+            editor.setDevice("Desktop");
+            toggleDeviceButtons(this);
+        });
+    }
+
+    if (deviceTablet) {
+        deviceTablet.addEventListener("click", function () {
+            editor.setDevice("Tablet");
+            toggleDeviceButtons(this);
+        });
+    }
+
+    if (deviceMobile) {
+        deviceMobile.addEventListener("click", function () {
+            editor.setDevice("Mobile");
+            toggleDeviceButtons(this);
+        });
+    }
+}
+
+/**
+ * Kod düzenleme modalı göster
+ * @param {string} title - Modal başlığı
+ * @param {string} content - Düzenlenecek içerik
+ * @param {Function} callback - Değişiklik kaydedildiğinde çağrılacak fonksiyon
+ */
+function showEditModal(title, content, callback) {
+    // Mevcut modalı temizle
+    const existingModal = document.getElementById("codeEditModal");
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    // Mevcut backdrop'ları temizle
+    const backdropElements = document.querySelectorAll('.modal-backdrop');
+    backdropElements.forEach(element => {
+        if (element.parentNode) {
+            element.parentNode.removeChild(element);
+        }
+    });
+    
+    const modal = document.createElement("div");
+    modal.className = "modal fade";
+    modal.id = "codeEditModal";
+    modal.setAttribute("tabindex", "-1");
+    modal.setAttribute("aria-modal", "true");
+    modal.setAttribute("role", "dialog");
+    modal.innerHTML = `
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">${title}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+                </div>
+                <div class="modal-body">
+                    <textarea id="code-editor" class="form-control font-monospace" rows="20">${content}</textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="button" class="btn btn-primary" id="saveCodeBtn">Uygula</button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    // Bootstrap.Modal nesnesi mevcut mu kontrol et
+    if (typeof bootstrap !== "undefined" && bootstrap.Modal) {
+        const modalInstance = new bootstrap.Modal(modal);
+        modalInstance.show();
+
+        document
+            .getElementById("saveCodeBtn")
+            .addEventListener("click", function () {
+                const newCode = document.getElementById("code-editor").value;
+                callback(newCode);
+                modalInstance.hide();
+            });
+
+        modal.addEventListener("hidden.bs.modal", function () {
+            modal.remove();
+            const backdrops = document.querySelectorAll('.modal-backdrop');
+            backdrops.forEach(backdrop => {
+                if (backdrop.parentNode) {
+                    backdrop.parentNode.removeChild(backdrop);
+                }
+            });
+        });
+    } else {
+        // Fallback - basit modal gösterimi
+        modal.style.display = "block";
+        modal.style.backgroundColor = "rgba(0,0,0,0.5)";
+
+        const saveBtn = modal.querySelector("#saveCodeBtn");
+        if (saveBtn) {
+            saveBtn.addEventListener("click", function () {
+                const newCode =
+                    document.getElementById("code-editor").value;
+                callback(newCode);
+                document.body.removeChild(modal);
+            });
+        }
+
+        const closeBtn = modal.querySelector(".btn-close");
+        if (closeBtn) {
+            closeBtn.addEventListener("click", function () {
+                document.body.removeChild(modal);
+            });
+        }
+
+        const cancelBtn = modal.querySelector(".btn-secondary");
+        if (cancelBtn) {
+            cancelBtn.addEventListener("click", function () {
+                document.body.removeChild(modal);
+            });
+        }
+    }
+}
+
+/**
+ * Bildirim göster
+ * @param {string} title - Bildirim başlığı
+ * @param {string} message - Bildirim mesajı
+ * @param {string} type - Bildirim tipi (success, error, warning, info)
+ */
+function showNotification(title, message, type = "success") {
+    const notif = document.createElement("div");
+    notif.className = `toast align-items-center text-white bg-${
+        type === "success" ? "success" : 
+        type === "error" ? "danger" : 
+        type === "warning" ? "warning" : 
+        "info"
+    } border-0`;
+    notif.setAttribute("role", "alert");
+    notif.setAttribute("aria-live", "assertive");
+    notif.setAttribute("aria-atomic", "true");
+
+    notif.innerHTML = `
+    <div class="d-flex">
+        <div class="toast-body">
+            <strong>${title}</strong>: ${message}
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Kapat"></button>
+    </div>
+    `;
+
+    // Toast container
+    let container = document.querySelector(".toast-container");
+    if (!container) {
+        container = document.createElement("div");
+        container.className =
+            "toast-container position-fixed top-0 end-0 p-3";
+        container.style.zIndex = "9999";
+        document.body.appendChild(container);
+    }
+
+    container.appendChild(notif);
+
+    // Bootstrap Toast API mevcut mu kontrol et
+    if (typeof bootstrap !== "undefined" && bootstrap.Toast) {
+        const toast = new bootstrap.Toast(notif, {
+            autohide: true,
+            delay: 3000,
+        });
+        toast.show();
+    } else {
+        // Fallback - basit toast gösterimi
+        notif.style.display = "block";
+        setTimeout(() => {
+            notif.style.opacity = "0";
+            setTimeout(() => {
+                if (container.contains(notif)) {
+                    container.removeChild(notif);
+                }
+            }, 300);
+        }, 3000);
+    }
+
+    // Belli bir süre sonra kaldır
+    setTimeout(() => {
+        if (container.contains(notif)) {
+            container.removeChild(notif);
+        }
+    }, 3300);
+}
+
+// Sayfada editor var mı kontrol et ve başlat
+document.addEventListener('DOMContentLoaded', function() {
+    const editorElement = document.getElementById('gjs');
+    if (editorElement) {
+        // Konfigürasyon oluştur
+        const config = {
+            elementId: 'gjs',
+            module: editorElement.getAttribute('data-module-type') || 'page',
+            moduleId: parseInt(editorElement.getAttribute('data-module-id') || '0'),
+            content: document.getElementById('html-content') ? document.getElementById('html-content').value : '',
+            css: document.getElementById('css-content') ? document.getElementById('css-content').value : '',
+        };
+        
+        // Editor başlat
+        if (typeof window.initStudioEditor === 'function') {
+            window.initStudioEditor(config);
+        }
+    }
+});

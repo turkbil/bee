@@ -1,10 +1,18 @@
 <?php
-
+// Modules/Studio/routes/api.php
 use Illuminate\Support\Facades\Route;
 use Modules\Studio\App\Http\Controllers\Api\StudioApiController;
 
-Route::middleware(['auth:sanctum'])->prefix('v1/studio')->group(function () {
-    Route::get('/widgets', [StudioApiController::class, 'getWidgets']);
-    Route::get('/themes', [StudioApiController::class, 'getThemes']);
-    Route::post('/save-content', [StudioApiController::class, 'saveContent']);
-});
+// API rotaları
+Route::middleware(['auth:sanctum'])
+    ->prefix('api/v1/studio')
+    ->name('api.studio.')
+    ->group(function () {
+        // Widgetlar
+        Route::get('/widgets', [StudioApiController::class, 'getWidgets'])
+            ->name('widgets');
+        
+        // İçerik kaydetme
+        Route::post('/save-content', [StudioApiController::class, 'saveContent'])
+            ->name('save-content');
+    });

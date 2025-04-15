@@ -188,58 +188,11 @@ window.StudioUtils = (function() {
         div.textContent = str;
         return div.innerHTML;
     }
-    
-    /**
-     * Widget içeriklerini temizle
-     * @param {string} html - Temizlenecek HTML
-     * @returns {string} - Temizlenmiş HTML
-     */
-    function cleanWidgetHtml(html) {
-        // Basit temizleme - script etiketlerini kaldır
-        return html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
-    }
-    
-    /**
-     * AJAX isteği gönder
-     * @param {string} url - İstek URL'i
-     * @param {Object} data - Gönderilecek veri
-     * @param {Function} successCallback - Başarılı olduğunda çağrılacak fonksiyon
-     * @param {Function} errorCallback - Hata olduğunda çağrılacak fonksiyon
-     */
-    function sendRequest(url, data, successCallback, errorCallback) {
-        // CSRF token'ı al
-        const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-        
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': token,
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify(data)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                successCallback?.(data);
-                showNotification('Başarılı', data.message || 'İşlem başarıyla tamamlandı.');
-            } else {
-                throw new Error(data.message || 'Bir hata oluştu.');
-            }
-        })
-        .catch(error => {
-            errorCallback?.(error);
-            showNotification('Hata', error.message || 'Bir hata oluştu.', 'error');
-        });
-    }
 
     return {
         showNotification: showNotification,
         showEditModal: showEditModal,
         generateUniqueId: generateUniqueId,
-        escapeHtml: escapeHtml,
-        cleanWidgetHtml: cleanWidgetHtml,
-        sendRequest: sendRequest
+        escapeHtml: escapeHtml
     };
 })();

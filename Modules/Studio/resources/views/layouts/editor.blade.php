@@ -1,4 +1,3 @@
-<!-- Modules/Studio/resources/views/layouts/editor.blade.php -->
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -15,10 +14,7 @@
     <link rel="stylesheet" href="{{ asset('admin/libs/fontawesome-pro@6.7.1/css/all.min.css') }}">
     
     <!-- GrapesJS CSS -->
-    <link rel="stylesheet" href="{{ asset('admin/libs/studio/css/grapes.min.css') }}?v={{ filemtime(public_path('admin/libs/studio/css/grapes.min.css')) }}">
-    <link rel="stylesheet" href="{{ asset('admin/libs/studio/css/studio-editor.css') }}?v={{ filemtime(public_path('admin/libs/studio/css/studio-editor.css')) }}">
-    <link rel="stylesheet" href="{{ asset('admin/libs/studio/css/studio-editor-ui.css') }}?v={{ filemtime(public_path('admin/libs/studio/css/studio-editor-ui.css')) }}">
-    <link rel="stylesheet" href="{{ asset('admin/libs/studio/css/studio-grapes-overrides.css') }}?v={{ filemtime(public_path('admin/libs/studio/css/studio-grapes-overrides.css')) }}">
+    @studiocss
 
     @livewireStyles
 </head>
@@ -98,38 +94,14 @@
     </div>
     
     <!-- jQuery -->
-    <script src="{{ asset('admin/libs/jquery@3.7.1/jquery.min.js') }}?v={{ filemtime(public_path('admin/libs/jquery@3.7.1/jquery.min.js')) }}"></script>
+    <script src="{{ asset('admin/libs/jquery@3.7.1/jquery.min.js') }}"></script>
         
     <!-- Tabler JS -->
-    <script src="{{ asset('admin/js/tabler.min.js') }}?v={{ filemtime(public_path('admin/js/tabler.min.js')) }}"></script>
+    <script src="{{ asset('admin/js/tabler.min.js') }}"></script>
 
     <!-- GrapesJS ve Eklentileri -->
-    <script src="{{ asset('admin/libs/studio/grapes.min.js') }}?v={{ filemtime(public_path('admin/libs/studio/grapes.min.js')) }}"></script>
-
-    <!-- Studio Düzeltme Modülü - ÖNCE YÜKLENMELİ -->
-    <script src="{{ asset('admin/libs/studio/partials/studio-fix.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-fix.js')) }}"></script>
-
-    <!-- Studio Modüler JS Dosyaları -->
-    <script src="{{ asset('admin/libs/studio/partials/studio-utils.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-utils.js')) }}"></script>
-    <script src="{{ asset('admin/libs/studio/partials/studio-plugins.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-plugins.js')) }}"></script>
-    <script src="{{ asset('admin/libs/studio/partials/studio-plugins-loader.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-plugins-loader.js')) }}"></script>
-    <script src="{{ asset('admin/libs/studio/partials/studio-core.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-core.js')) }}"></script>
-    <script src="{{ asset('admin/libs/studio/partials/studio-blocks.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-blocks.js')) }}"></script>
-    <script src="{{ asset('admin/libs/studio/partials/studio-ui.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-ui.js')) }}"></script>
-    <script src="{{ asset('admin/libs/studio/partials/studio-actions.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-actions.js')) }}"></script>
-    <script src="{{ asset('admin/libs/studio/partials/studio-init.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-init.js')) }}"></script>
-
-    <!-- Özel Studio JS -->
-    <script src="{{ asset('admin/libs/studio/studio.js') }}?v={{ filemtime(public_path('admin/libs/studio/studio.js')) }}"></script>
-    <script src="{{ asset('admin/libs/studio/app.js') }}?v={{ filemtime(public_path('admin/libs/studio/app.js')) }}"></script>
-
-    <!-- Editor Yapılandırması - Doğrudan hidden input kullanıyoruz JSON ayrıştırma sorunları nedeniyle -->
-    <div style="display:none;">
-        <textarea id="html-content">{{ $content ?? '' }}</textarea>
-        <textarea id="css-content">{{ $css ?? '' }}</textarea>
-        <textarea id="js-content">{{ $js ?? '' }}</textarea>
-    </div>
-        
+    @studiojs
+    
     @livewireScripts
 </body>
 </html>

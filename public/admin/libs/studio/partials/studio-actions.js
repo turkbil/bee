@@ -73,21 +73,11 @@ window.StudioActions = (function() {
             try {
                 let htmlContent, cssContent, jsContent;
                 
-                // HTML içeriğini StudioHtmlParser ile hazırla
-                if (window.StudioHtmlParser && typeof window.StudioHtmlParser.prepareContentForSave === 'function') {
-                    htmlContent = window.StudioHtmlParser.prepareContentForSave(editor);
-                } else {
-                    // Fallback: Direkt editor'den al
-                    htmlContent = editor.getHtml();
-                }
+                // HTML içeriğini al
+                htmlContent = editor.getHtml();
                 
                 // CSS içeriğini al
-                try {
-                    cssContent = editor.getCss();
-                } catch (cssError) {
-                    console.error('CSS içeriği alınırken hata:', cssError);
-                    cssContent = '';
-                }
+                cssContent = editor.getCss();
                 
                 // JS içeriğini al
                 const jsContentEl = document.getElementById("js-content");
@@ -97,28 +87,10 @@ window.StudioActions = (function() {
                 const moduleId = parseInt(config.moduleId);
                 
                 // Kaydetme URL'si
-                const saveUrl = `/admin/studio/save/${config.moduleType}/${moduleId}`;
+                const saveUrl = `/admin/studio/save/${config.module}/${moduleId}`;
 
-                // Debug için konsola yazdır
-                console.log("Kaydediliyor:", {
-                    url: saveUrl,
-                    moduleType: config.moduleType,
-                    moduleId: moduleId,
-                    contentLength: htmlContent.length,
-                    contentPreview: htmlContent.substring(0, 100) + '...',
-                    cssLength: cssContent.length, 
-                    jsLength: jsContent.length
-                });
-
-                // Doğrudan fetch API ile manuel gönderim
+                // CSRF token al
                 const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-                
-                // Request body oluştur
-                const params = {
-                    content: htmlContent,
-                    css: cssContent,
-                    js: jsContent
-                };
                 
                 // AJAX isteği
                 fetch(saveUrl, {
@@ -128,7 +100,11 @@ window.StudioActions = (function() {
                         'X-CSRF-TOKEN': token,
                         'Accept': 'application/json'
                     },
-                    body: JSON.stringify(params)
+                    body: JSON.stringify({
+                        content: htmlContent,
+                        css: cssContent,
+                        js: jsContent
+                    })
                 })
                 .then(response => {
                     console.log("Sunucu yanıt durumu:", response.status);
@@ -138,15 +114,21 @@ window.StudioActions = (function() {
                     console.log("Sunucu yanıtı:", data);
                     if (data.success) {
                         console.log("Kayıt başarılı:", data.message);
-                        StudioUtils.showNotification('Başarılı', data.message || 'İçerik başarıyla kaydedildi!');
+                        if (window.StudioUtils) {
+                            window.StudioUtils.showNotification('Başarılı', data.message || 'İçerik başarıyla kaydedildi!');
+                        }
                     } else {
                         console.error("Kayıt başarısız:", data.message);
-                        StudioUtils.showNotification('Hata', data.message || 'Kayıt işlemi başarısız.', 'error');
+                        if (window.StudioUtils) {
+                            window.StudioUtils.showNotification('Hata', data.message || 'Kayıt işlemi başarısız.', 'error');
+                        }
                     }
                 })
                 .catch(error => {
                     console.error('Kaydetme hatası:', error);
-                    StudioUtils.showNotification('Hata', error.message || 'Sunucuya bağlanırken bir hata oluştu.', 'error');
+                    if (window.StudioUtils) {
+                        window.StudioUtils.showNotification('Hata', error.message || 'Sunucuya bağlanırken bir hata oluştu.', 'error');
+                    }
                 })
                 .finally(() => {
                     // Butonu normal haline getir
@@ -164,7 +146,9 @@ window.StudioActions = (function() {
                 this.disabled = false;
                 this.innerHTML = originalText;
                 isSaveInProgress = false; // Hata durumunda kilidi kaldır
-                StudioUtils.showNotification('Hata', 'İçerik kaydedilirken bir sorun oluştu: ' + error.message, 'error');
+                if (window.StudioUtils) {
+                    window.StudioUtils.showNotification('Hata', 'İçerik kaydedilirken bir sorun oluştu: ' + error.message, 'error');
+                }
             }
         });
     }
@@ -183,11 +167,8 @@ window.StudioActions = (function() {
             }
             
             newPreviewBtn.addEventListener("click", function () {
-                // Özel önizleme mantığı
-                const html = window.StudioHtmlParser ? 
-                    window.StudioHtmlParser.prepareContentForSave(editor) : 
-                    editor.getHtml();
-                    
+                // İçeriği al
+                const html = editor.getHtml();
                 const css = editor.getCss();
                 const jsContentEl = document.getElementById("js-content");
                 const js = jsContentEl ? jsContentEl.value : '';
@@ -246,10 +227,8 @@ window.StudioActions = (function() {
                     existingModal.remove();
                 }
                 
-                const html = window.StudioHtmlParser ? 
-                    window.StudioHtmlParser.prepareContentForSave(editor) : 
-                    editor.getHtml();
-                    
+                // İçeriği al
+                const html = editor.getHtml();
                 const css = editor.getCss();
                 const jsContentEl = document.getElementById("js-content");
                 const js = jsContentEl ? jsContentEl.value : '';
@@ -276,111 +255,10 @@ ${js}
 </body>
 </html>`;
 
-                // Dışa aktarma modalı oluştur
-                const modal = document.createElement("div");
-                modal.className = "modal fade";
-                modal.id = "exportModal";
-                modal.setAttribute("tabindex", "-1");
-                modal.innerHTML = `
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">HTML Dışa Aktar</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
-                        </div>
-                        <div class="modal-body">
-                            <textarea id="export-content" class="form-control font-monospace" rows="20">${exportContent}</textarea>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
-                            <button type="button" class="btn btn-primary" id="copyExportBtn">Kopyala</button>
-                            <button type="button" class="btn btn-success" id="downloadExportBtn">İndir</button>
-                        </div>
-                    </div>
-                </div>
-                `;
-
-                document.body.appendChild(modal);
-
-                if (typeof bootstrap !== "undefined" && bootstrap.Modal) {
-                    const modalInstance = new bootstrap.Modal(modal);
-                    modalInstance.show();
-
-                    // Kopyala butonu işlevi
-                    document
-                        .getElementById("copyExportBtn")
-                        .addEventListener("click", function () {
-                            const exportContent =
-                                document.getElementById("export-content");
-                            exportContent.select();
-                            document.execCommand("copy");
-                            StudioUtils.showNotification(
-                                "Başarılı",
-                                "İçerik panoya kopyalandı.",
-                                "success"
-                            );
-                        });
-
-                    // İndir butonu işlevi
-                    document
-                        .getElementById("downloadExportBtn")
-                        .addEventListener("click", function () {
-                            const blob = new Blob([exportContent], {
-                                type: "text/html",
-                            });
-                            const url = URL.createObjectURL(blob);
-                            const a = document.createElement("a");
-                            a.href = url;
-                            a.download = "sayfa_export.html";
-                            a.click();
-                            URL.revokeObjectURL(url);
-                        });
-
-                    modal.addEventListener("hidden.bs.modal", function () {
-                        modal.remove();
-                    });
-                } else {
-                    // Fallback - basit modal gösterimi
-                    modal.style.display = "block";
-
-                    // Kopyala butonu
-                    const copyBtn = modal.querySelector("#copyExportBtn");
-                    if (copyBtn) {
-                        copyBtn.addEventListener("click", function () {
-                            const exportContent =
-                                modal.querySelector("#export-content");
-                            if (exportContent) {
-                                exportContent.select();
-                                document.execCommand("copy");
-                                alert("İçerik panoya kopyalandı.");
-                            }
-                        });
-                    }
-
-                    // İndir butonu
-                    const downloadBtn = modal.querySelector("#downloadExportBtn");
-                    if (downloadBtn) {
-                        downloadBtn.addEventListener("click", function () {
-                            const blob = new Blob([exportContent], {
-                                type: "text/html",
-                            });
-                            const url = URL.createObjectURL(blob);
-                            const a = document.createElement("a");
-                            a.href = url;
-                            a.download = "sayfa_export.html";
-                            a.click();
-                            URL.revokeObjectURL(url);
-                        });
-                    }
-
-                    // Kapat butonları
-                    const closeButtons = modal.querySelectorAll(
-                        ".btn-close, .btn-secondary"
-                    );
-                    closeButtons.forEach((btn) => {
-                        btn.addEventListener("click", function () {
-                            document.body.removeChild(modal);
-                        });
+                // Dışa aktarma modalını göster
+                if (window.StudioUtils && typeof window.StudioUtils.showEditModal === 'function') {
+                    window.StudioUtils.showEditModal("HTML Dışa Aktar", exportContent, function(newContent) {
+                        // Burada bir şey yapmaya gerek yok, sadece görüntüle
                     });
                 }
             });

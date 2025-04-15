@@ -2,6 +2,8 @@
  * Studio Editor - Yardımcı İşlevler Modülü
  * Yardımcı fonksiyonlar ve genel araçlar
  */
+// public/admin/libs/studio/partials/studio-utils.js
+
 window.StudioUtils = (function() {
     /**
      * Bildirim göster

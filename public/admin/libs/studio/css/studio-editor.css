@@ -1,4 +1,5 @@
 /* Studio Editor CSS - Modern Canvas Builder Style */
+/* public/admin/libs/studio/css/studio-editor.css */
 
 /* Temel Layout */
 html, body {
@@ -396,36 +397,65 @@ body {
     color: var(--primary-color);
 }
 
+/* Loader Stil */
+.studio-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    transition: opacity 0.3s ease;
+}
+
+/* Toast Bildirimler */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+}
+
+.toast {
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+    max-width: 350px;
+}
+
 /* Responsive Ayarlamalar */
 @media (max-width: 992px) {
     .panel__left {
-      width: 260px;
+        width: 260px;
     }
     
     .block-items {
-      grid-template-columns: 1fr;
+        grid-template-columns: 1fr;
     }
     
     .panel-tab {
-      padding: 12px 6px;
+        padding: 12px 6px;
     }
     
     .panel-tab .tab-text {
-      font-size: 12px;
+        font-size: 12px;
     }
 }
 
 @media (max-width: 768px) {
     .panel__left {
-      width: 240px;
+        width: 240px;
     }
     
     .panel-tab .tab-text {
-      display: none;
+        display: none;
     }
     
     .panel-tab .tab-icon {
-      margin-right: 0;
-      font-size: 16px;
+        margin-right: 0;
+        font-size: 16px;
     }
 }

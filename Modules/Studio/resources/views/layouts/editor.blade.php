@@ -14,7 +14,9 @@
     <link rel="stylesheet" href="{{ asset('admin/libs/fontawesome-pro@6.7.1/css/all.min.css') }}">
     
     <!-- GrapesJS CSS -->
-    @studiocss
+    <link rel="stylesheet" href="{{ asset('admin/libs/studio/css/grapes.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin/libs/studio/css/studio-editor.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin/libs/studio/css/studio-grapes-overrides.css') }}">
 
     @livewireStyles
 </head>
@@ -99,8 +101,18 @@
     <!-- Tabler JS -->
     <script src="{{ asset('admin/js/tabler.min.js') }}"></script>
 
-    <!-- GrapesJS ve Eklentileri -->
-    @studiojs
+    <!-- GrapesJS Core -->
+    <script src="{{ asset('admin/libs/studio/grapes.min.js') }}"></script>
+    
+    <!-- Studio Modülleri -->
+    <script src="{{ asset('admin/libs/studio/partials/studio-fix.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/partials/studio-utils.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/partials/studio-html-parser.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/partials/studio-blocks.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/partials/studio-ui.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/partials/studio-actions.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/partials/studio-core.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/app.js') }}"></script>
     
     @livewireScripts
     

@@ -3,50 +3,100 @@
  * Tüm modülleri yükler ve uygulamayı başlatır
  */
 document.addEventListener('DOMContentLoaded', function() {
-    // Önce düzeltmeleri uygula
-    if (window.StudioFix && typeof window.StudioFix.applyFixes === 'function') {
-        window.StudioFix.applyFixes();
+    // Editor element'ini bul
+    const editorElement = document.getElementById('gjs');
+    if (!editorElement) {
+        console.log('Studio Editor başlatılamıyor: #gjs elementi bulunamadı!');
+        return;
     }
     
-    // Modül kontrolünü daha esnek hale getir
-    if (!window.StudioCore) {
-        console.warn('app.js: StudioCore modülü bulunamadı, ancak işleme devam ediliyor.');
+    // Konfigürasyon oluştur
+    const config = {
+        elementId: 'gjs',
+        module: editorElement.getAttribute('data-module-type') || 'page',
+        moduleId: parseInt(editorElement.getAttribute('data-module-id') || '0'),
+        content: document.getElementById('html-content') ? document.getElementById('html-content').value : '',
+        css: document.getElementById('css-content') ? document.getElementById('css-content').value : '',
+    };
+    
+    // Sadece bir kez başlatıldığından emin ol
+    if (window._studioEditorInitialized) {
+        console.warn('Studio Editor zaten başlatılmış, tekrar başlatma işlemi atlanıyor.');
+        return;
+    }
+    window._studioEditorInitialized = true;
+
+    if (!config || !config.moduleId || config.moduleId <= 0) {
+        console.error('Geçersiz konfigürasyon veya modül ID:', config);
+        window._studioEditorInitialized = false; // Hata durumunda bayrağı geri al
+        return;
     }
     
-    // studio-init.js'in editörü başlatmasını bekle (zaten DOMContentLoaded içinde çalışıyor)
-    // ve ardından 'load' olayını dinle.
+    // Global değişkende sakla
+    window.studioEditorConfig = config;
     
-    // window.studioEditor nesnesinin varlığını kontrol et (studio-init.js tarafından oluşturulur)
-    if (window.studioEditor && typeof window.studioEditor.on === 'function') {
-        console.log('app.js: Zaten başlatılmış studioEditor nesnesi bulundu. \"load\" olayı dinleniyor.');
-        window.studioEditor.on('load', function() {
-            console.log('app.js: studioEditor \"load\" olayı tetiklendi.');
-            if (window.StudioFix && typeof window.StudioFix.fixStyleManager === 'function') {
-                console.log('app.js: Stil yöneticisi düzeltmeleri uygulanıyor.');
-                window.StudioFix.fixStyleManager();
-            } else {
-                console.warn('app.js: StudioFix.fixStyleManager fonksiyonu bulunamadı.');
-            }
-        });
+    // Editor başlat
+    if (typeof window.initStudioEditor === 'function') {
+        try {
+            const editor = window.initStudioEditor(config);
+            
+            // Editor yükleme olayını dinle
+            editor.on('load', function() {
+                console.log('Editor yükleme olayı tetiklendi');
+                
+                // Blokları kaydet
+                if (window.StudioBlocks && typeof window.StudioBlocks.registerBlocks === 'function') {
+                    window.StudioBlocks.registerBlocks(editor);
+                }
+                
+                // Butonları ayarla
+                if (window.StudioActions && typeof window.StudioActions.setupActions === 'function') {
+                    window.StudioActions.setupActions(editor, config);
+                }
+                
+                // Panel sekmelerini ayarla
+                setupTabs();
+            });
+            
+            // Global erişim için kaydet
+            window.studioEditor = editor;
+        } catch (error) {
+            console.error('Studio Editor başlatılırken hata:', error);
+        }
     } else {
-        // Eğer hemen bulunamazsa, küçük bir gecikme ile tekrar kontrol et
-        // Bu durum normalde olmamalı, çünkü studio-init de DOMContentLoaded'i bekliyor.
-        console.warn('app.js: studioEditor nesnesi DOMContentLoaded sonrası hemen bulunamadı. Küçük bir gecikme ile tekrar denenecek.');
-        setTimeout(() => {
-            if (window.studioEditor && typeof window.studioEditor.on === 'function') {
-                 console.log('app.js: Gecikmeli kontrolde studioEditor nesnesi bulundu. \"load\" olayı dinleniyor.');
-                 window.studioEditor.on('load', function() {
-                    console.log('app.js: Gecikmeli studioEditor \"load\" olayı tetiklendi.');
-                    if (window.StudioFix && typeof window.StudioFix.fixStyleManager === 'function') {
-                        console.log('app.js: Stil yöneticisi düzeltmeleri (gecikmeli) uygulanıyor.');
-                        window.StudioFix.fixStyleManager();
-                    } else {
-                         console.warn('app.js: StudioFix.fixStyleManager fonksiyonu (gecikmeli) bulunamadı.');
-                    }
-                });
-            } else {
-                 console.error('app.js: Gecikmeli kontrolde de studioEditor nesnesi bulunamadı veya \"on\" metodu yok.');
-            }
-        }, 500); // 500ms bekle
+        console.error('Studio Editor başlatılamıyor: initStudioEditor fonksiyonu bulunamadı!');
     }
 });
+
+/**
+ * Sol panel sekmelerini ayarla
+ */
+function setupTabs() {
+    const tabs = document.querySelectorAll(".panel-tab");
+    const tabContents = document.querySelectorAll(".panel-tab-content");
+
+    tabs.forEach((tab) => {
+        // Eski event listener'ları temizle
+        const newTab = tab.cloneNode(true);
+        if (tab.parentNode) {
+            tab.parentNode.replaceChild(newTab, tab);
+        }
+        
+        newTab.addEventListener("click", function () {
+            const tabName = this.getAttribute("data-tab");
+
+            // Aktif tab değiştir
+            tabs.forEach((t) => t.classList.remove("active"));
+            this.classList.add("active");
+
+            // İçeriği değiştir
+            tabContents.forEach((content) => {
+                if (content.getAttribute("data-tab-content") === tabName) {
+                    content.classList.add("active");
+                } else {
+                    content.classList.remove("active");
+                }
+            });
+        });
+    });
+}

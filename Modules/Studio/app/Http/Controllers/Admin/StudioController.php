@@ -4,20 +4,27 @@ namespace Modules\Studio\App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Modules\Studio\App\Services\StudioWidgetService;
-use Modules\Studio\App\Services\StudioThemeService;
-use Modules\Page\App\Models\Page;
+use Modules\Studio\App\Services\EditorService;
+use Modules\Studio\App\Services\WidgetService;
+use Modules\Studio\App\Services\AssetService;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Http\JsonResponse;
 
 class StudioController extends Controller
 {
+    protected $editorService;
     protected $widgetService;
-    protected $themeService;
+    protected $assetService;
     
-    public function __construct(StudioWidgetService $widgetService, StudioThemeService $themeService)
+    public function __construct(
+        EditorService $editorService, 
+        WidgetService $widgetService,
+        AssetService $assetService
+    )
     {
+        $this->editorService = $editorService;
         $this->widgetService = $widgetService;
-        $this->themeService = $themeService;
+        $this->assetService = $assetService;
     }
     
     /**
@@ -26,9 +33,9 @@ class StudioController extends Controller
      * @param Request $request
      * @param string $module
      * @param int $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function save(Request $request, $module, $id)
+    public function save(Request $request, string $module, int $id): JsonResponse
     {
         try {
             // Debug: Gelen request bilgilerini logla
@@ -37,69 +44,31 @@ class StudioController extends Controller
                 'id' => $id,
                 'content_size' => strlen($request->input('content', '')),
                 'css_size' => strlen($request->input('css', '')),
-                'js_size' => strlen($request->input('js', '')),
-                'request_method' => $request->method(),
-                'content_type' => $request->header('Content-Type')
+                'js_size' => strlen($request->input('js', ''))
             ]);
 
             $content = $request->input('content');
             $css = $request->input('css');
             $js = $request->input('js');
             
-            // ID'yi integer'a çevir
-            $id = (int)$id;
+            $result = $this->editorService->saveContent($module, $id, $content, $css, $js);
             
-            if ($module === 'page') {
-                $page = Page::findOrFail($id);
-                
-                // Debug: Güncelleme öncesi durum
-                Log::debug("Studio Save - Before Update", [
-                    'page_id' => $page->page_id,
-                    'old_body_length' => strlen($page->body ?? ''),
-                    'new_body_length' => strlen($content ?? ''),
-                    'old_css_length' => strlen($page->css ?? ''),
-                    'new_css_length' => strlen($css ?? ''),
-                    'old_js_length' => strlen($page->js ?? ''),
-                    'new_js_length' => strlen($js ?? '')
-                ]);
-                
-                $page->body = $content;
-                $page->css = $css;
-                $page->js = $js;
-                
-                // Kaydetme işlemi
-                $saveResult = $page->save();
-                
-                // Debug: Kaydetme sonrası
-                Log::debug("Studio Save - After Save", [
-                    'save_result' => $saveResult ? 'success' : 'failed', 
-                    'final_body_length' => strlen($page->body ?? ''),
-                    'final_css_length' => strlen($page->css ?? ''),
-                    'final_js_length' => strlen($page->js ?? '')
-                ]);
-                
-                if (function_exists('log_activity')) {
-                    log_activity($page, 'studio ile düzenlendi');
-                }
-                
+            if ($result) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'Sayfa başarıyla kaydedildi.'
+                    'message' => 'İçerik başarıyla kaydedildi.'
                 ]);
             }
             
             return response()->json([
                 'success' => false,
-                'message' => 'Desteklenmeyen modül: ' . $module
+                'message' => 'İçerik kaydedilemedi.'
             ], 400);
         } catch (\Exception $e) {
             Log::error('Studio içerik kaydederken hata: ' . $e->getMessage(), [
                 'exception' => get_class($e),
-                'message' => $e->getMessage(),
-                'code' => $e->getCode(),
                 'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'trace' => $e->getTraceAsString()
+                'line' => $e->getLine()
             ]);
             
             return response()->json([
@@ -112,9 +81,9 @@ class StudioController extends Controller
     /**
      * Widgetları getir
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function getWidgets()
+    public function getWidgets(): JsonResponse
     {
         try {
             return response()->json([
@@ -132,38 +101,12 @@ class StudioController extends Controller
     }
     
     /**
-     * Temaları getir
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function getThemes()
-    {
-        try {
-            $defaultTheme = $this->themeService->getDefaultTheme();
-            $themeName = $defaultTheme ? $defaultTheme['folder_name'] : 'blank';
-            
-            return response()->json([
-                'themes' => $this->themeService->getAllThemes(),
-                'defaultTheme' => $defaultTheme,
-                'templates' => $this->themeService->getHeaderFooterTemplates($themeName)
-            ]);
-        } catch (\Exception $e) {
-            Log::error('Tema verileri alınırken hata: ' . $e->getMessage());
-            
-            return response()->json([
-                'success' => false,
-                'message' => 'Tema verileri alınamadı: ' . $e->getMessage()
-            ], 500);
-        }
-    }
-    
-    /**
      * Dosya yükleme işlemini gerçekleştirir
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function uploadAssets(Request $request)
+    public function uploadAssets(Request $request): JsonResponse
     {
         $result = ['success' => false];
         
@@ -174,24 +117,8 @@ class StudioController extends Controller
                 
                 foreach ($files as $file) {
                     if ($file->isValid()) {
-                        $fileName = time() . '_' . $file->getClientOriginalName();
-                        $mimeType = $file->getMimeType();
-                        $size = $file->getSize();
-                        
-                        // Şu anki tenant için dosyayı yükle
-                        $path = $file->storeAs(
-                            'studio/assets', 
-                            $fileName, 
-                            'public'
-                        );
-                        
-                        // Dosya bilgilerini ekle
-                        $uploadedFiles[] = [
-                            'name' => $fileName,
-                            'type' => $mimeType,
-                            'size' => $size,
-                            'src' => asset('storage/' . $path)
-                        ];
+                        $assetData = $this->assetService->uploadAsset($file);
+                        $uploadedFiles[] = $assetData;
                     }
                 }
                 
@@ -275,37 +202,10 @@ class StudioController extends Controller
                 mkdir($destPartialsPath, 0755, true);
             }
             
-            // Public içerisindeki partials dosyalarını da kopyala
-            $publicPartialsPath = public_path('admin/libs/studio/partials');
-            if (is_dir($publicPartialsPath)) {
-                // Partials dosyalarını kopyala
-                foreach (glob($publicPartialsPath . '/*.js') as $file) {
-                    copy($file, $destPartialsPath . '/' . basename($file));
-                }
-            }
-            
             return redirect()->back()->with('success', 'Kaynaklar başarıyla kopyalandı');
         } catch (\Exception $e) {
             Log::error('Kaynakları kopyalama hatası: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Kaynaklar kopyalanırken hata oluştu: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Widget sayfası
-     *
-     * @return \Illuminate\View\View
-     */
-    public function widgets()
-    {
-        try {
-            return view('studio::admin.widgets', [
-                'widgets' => $this->widgetService->getAllWidgets(),
-                'categories' => $this->widgetService->getCategories()
-            ]);
-        } catch (\Exception $e) {
-            Log::error('Widget sayfası yüklenirken hata: ' . $e->getMessage());
-            return redirect()->route('admin.dashboard')->with('error', 'Widget sayfası yüklenirken hata oluştu.');
         }
     }
 }

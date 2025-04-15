@@ -1,5 +1,5 @@
 <?php
-namespace Modules\Studio\Providers;
+namespace Modules\Studio\App\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -11,11 +11,14 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'Modules\Studio\Events\StudioEditorOpened' => [
-            'Modules\Studio\Listeners\StudioEditorOpenedListener',
+        'Modules\Studio\App\Events\ContentSaved' => [
+            'Modules\Studio\App\Listeners\ContentSavedListener',
         ],
-        'Modules\Studio\Events\StudioContentSaved' => [
-            'Modules\Studio\Listeners\StudioContentSavedListener',
+        'Modules\Studio\App\Events\EditorOpened' => [
+            'Modules\Studio\App\Listeners\LogEditorActivity',
+        ],
+        'Modules\Studio\App\Events\WidgetUpdated' => [
+            'Modules\Studio\App\Listeners\ContentSavedListener',
         ],
     ];
 

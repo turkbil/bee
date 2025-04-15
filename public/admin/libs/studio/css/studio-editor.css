@@ -1,4 +1,4 @@
-/* Studio Editor CSS - Modern Wix/Canvas Builder Style */
+/* Studio Editor CSS - Modern Canvas Builder Style */
 
 /* Temel Layout */
 html, body {
@@ -18,7 +18,7 @@ body {
 /* Editor Main Container */
 .editor-main {
     display: flex;
-    height: calc(100vh - 96px); /* Header + Toolbar yüksekliği */
+    height: calc(100vh - 56px); /* Header yüksekliği */
     overflow: hidden;
     background-color: #f8f9fa;
 }
@@ -222,18 +222,6 @@ body {
     background-color: rgba(59, 130, 246, 0.08);
 }
 
-/* Sağ Panel */
-.panel__right {
-    width: 300px;
-    background-color: var(--panel-bg);
-    border-left: 1px solid var(--border-color);
-    display: flex;
-    flex-direction: column;
-    flex-shrink: 0;
-    box-shadow: var(--panel-shadow);
-    z-index: 10;
-}
-
 /* Tab Paneli */
 .panel-tabs {
     display: flex;
@@ -292,473 +280,152 @@ body {
     display: block;
 }
 
-/* GrapesJS Canvas Override */
-.gjs-cv-canvas {
-    width: 100% !important;
-    height: 100% !important;
-    top: 0 !important;
-    left: 0 !important;
-}
-
-/* GrapesJS Style Manager Override */
-.gjs-sm-sector {
-    margin-bottom: 5px !important;
-    background-color: var(--panel-bg) !important;
-    border-bottom: 1px solid var(--border-color) !important;
-    overflow: visible !important;
-}
-
-.gjs-sm-sector-title {
-    display: flex !important;
-    align-items: center !important;
-    padding: 14px 16px !important;
-    background-color: var(--panel-header) !important;
-    cursor: pointer !important;
-    border-bottom: 1px solid var(--border-color) !important;
-    color: var(--secondary-color) !important;
-    font-weight: 600 !important;
-    font-size: 14px !important;
-    transition: background-color 0.2s ease !important;
-}
-
-.gjs-sm-sector-title:hover {
-    background-color: #e9eef6 !important;
-}
-
-.gjs-sm-sector-title::after {
-    content: "\f107" !important;
-    font-family: "Font Awesome 6 Pro", FontAwesome !important;
-    margin-left: auto !important;
-    transition: transform 0.3s !important;
-    color: var(--secondary-color) !important;
-}
-
-.gjs-sm-sector.gjs-collapsed .gjs-sm-sector-title::after {
-    transform: rotate(-90deg) !important;
-}
-
-.gjs-sm-sector.gjs-collapsed .gjs-sm-properties {
-    display: none !important;
-}
-
-.gjs-field {
-    background-color: var(--light-bg) !important;
-    border-radius: 6px !important;
-    border: 1px solid #d1d5db !important;
-    box-shadow: none !important;
-    transition: all 0.2s ease !important;
-}
-
-.gjs-field:focus-within {
-    border-color: var(--primary-color) !important;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3) !important;
-}
-
-.gjs-sm-properties {
-    padding: 15px !important;
-}
-
-.gjs-sm-label {
-    font-size: 13px !important;
-    font-weight: 500 !important;
-    color: var(--secondary-color) !important;
-    margin-bottom: 6px !important;
-}
-
-.gjs-sm-property {
-    margin-bottom: 14px !important;
-    padding-bottom: 5px !important;
-    border-bottom: 1px dashed rgba(100, 116, 139, 0.2) !important;
-}
-
-/* Toolbar */
-.editor-toolbar {
-    display: flex;
-    align-items: center;
-    padding: 12px 15px;
+/* Header Stili */
+.studio-header {
+    height: 56px;
     background-color: var(--panel-bg);
     border-bottom: 1px solid var(--border-color);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-}
-
-.toolbar-group {
     display: flex;
-    margin-right: 15px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    box-shadow: var(--panel-shadow);
+    z-index: 100;
 }
 
-.toolbar-divider {
-    width: 1px;
-    height: 24px;
-    background-color: var(--border-color);
-    margin: 0 15px;
+.header-left, .header-center, .header-right {
+    display: flex;
+    align-items: center;
 }
 
-.toolbar-btn {
-    width: 38px;
-    height: 38px;
-    border: none;
-    background: var(--light-bg);
+.header-left {
+    flex: 1;
+}
+
+.header-center {
+    flex: 1;
+    justify-content: center;
+}
+
+.header-right {
+    flex: 1;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.studio-brand {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+}
+
+/* Butonlar */
+.btn-back {
+    background-color: #eef2f7;
+    color: #1f2937;
+}
+
+.btn-back:hover {
+    background-color: #e4e9f1;
+}
+
+.btn-tool {
+    background-color: #f1f3f9;
+    color: #475569;
+}
+
+.btn-tool:hover {
+    background-color: #e6eaf2;
+    color: var(--primary-color);
+}
+
+.btn-tool.active {
+    background-color: #e6f0ff;
+    color: var(--primary-color);
+}
+
+.btn-view {
+    background-color: #fff4de;
+    color: #b45309;
+}
+
+.btn-view:hover {
+    background-color: #ffe5bc;
+}
+
+.btn-save {
+    background-color: #dcf5e7;
+    color: #0d9455;
+}
+
+.btn-save:hover {
+    background-color: #c5efd7;
+}
+
+/* Cihaz Butonları */
+.device-btns {
+    display: flex;
     border-radius: 6px;
-    cursor: pointer;
+    overflow: hidden;
+    background-color: #f1f3f9;
+    margin-right: 10px;
+}
+
+.device-btns button {
+    height: 36px;
+    width: 36px;
+    border: none;
+    background: transparent;
+    color: #475569;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--secondary-color);
-    margin-right: 5px;
-    border: 1px solid var(--border-color);
+    cursor: pointer;
     transition: all 0.2s ease;
 }
 
-.toolbar-btn:hover {
-    background-color: var(--item-hover-bg);
+.device-btns button:hover {
+    background-color: #e6eaf2;
     color: var(--primary-color);
-    border-color: var(--item-hover-border);
 }
 
-.toolbar-btn.active {
-    background-color: var(--item-active-bg);
+.device-btns button.active {
+    background-color: #e6f0ff;
     color: var(--primary-color);
-    border-color: var(--primary-color);
 }
 
-.device-btns {
-    margin-left: auto;
-}
-
-/* GrapesJS Layer Manager Override */
-.gjs-layer-title-c {
-    display: flex !important;
-    align-items: center !important;
-}
-
-.gjs-layer {
-    padding: 12px !important;
-    font-size: 13px !important;
-    border-bottom: 1px solid var(--border-color) !important;
-    background-color: var(--panel-bg) !important;
-    transition: all 0.2s ease !important;
-}
-
-.gjs-layer:hover {
-    background-color: var(--item-hover-bg) !important;
-}
-
-.gjs-layer.gjs-selected {
-    background-color: var(--item-active-bg) !important;
-}
-
-.gjs-layer-title {
-    font-weight: 500 !important;
-    color: var(--secondary-color) !important;
-}
-
-.gjs-layer-count {
-    background-color: #e5e7eb !important;
-    color: var(--secondary-color) !important;
-    font-size: 11px !important;
-    padding: 2px 6px !important;
-    border-radius: 12px !important;
-}
-
-.gjs-layer-vis {
-    color: var(--secondary-color) !important;
-    transition: color 0.2s ease !important;
-}
-
-.gjs-layer-vis:hover {
-    color: var(--primary-color) !important;
-}
-
-/* GrapesJS Trait Manager Override */
-.gjs-trt-trait {
-    padding: 12px !important;
-    margin-bottom: 8px !important;
-    border-bottom: 1px solid var(--border-color) !important;
-}
-
-.gjs-label-wrp {
-    font-size: 13px !important;
-    font-weight: 500 !important;
-    color: var(--secondary-color) !important;
-    margin-bottom: 6px !important;
-}
-
-/* Modal Override */
-.gjs-mdl-container {
-    background-color: rgba(0, 0, 0, 0.5) !important;
-}
-
-.gjs-mdl-dialog {
-    border-radius: 10px !important;
-    border: none !important;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
-    overflow: hidden !important;
-}
-
-.gjs-mdl-header {
-    padding: 16px !important;
-    background-color: var(--panel-header) !important;
-    border-bottom: 1px solid var(--border-color) !important;
-}
-
-.gjs-mdl-title {
-    font-weight: 600 !important;
-    font-size: 16px !important;
-    color: var(--secondary-color) !important;
-}
-
-.gjs-mdl-content {
-    padding: 20px !important;
-    background-color: var(--panel-bg) !important;
-}
-
-.gjs-mdl-btn-close {
-    background-color: transparent !important;
-    color: var(--secondary-color) !important;
-}
-
-.gjs-btn-prim {
-    background-color: var(--primary-color) !important;
-    color: white !important;
-    border: none !important;
-    border-radius: 6px !important;
-    padding: 10px 18px !important;
-    font-size: 14px !important;
-    font-weight: 500 !important;
-    transition: background-color 0.2s !important;
-}
-
-.gjs-btn-prim:hover {
-    background-color: var(--primary-hover) !important;
-}
-
-/* Daha iyi sürükleme işlevi için */
-.gjs-block {
-    cursor: grab !important;
-    background-color: var(--light-bg) !important;
-    border: 1px solid var(--border-color) !important;
-    border-radius: 8px !important;
-    transition: all 0.2s ease !important;
-    margin: 8px !important;
-    padding: 15px !important;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05) !important;
-}
-
-.gjs-block:hover {
-    background-color: var(--item-hover-bg) !important;
-    border-color: var(--item-hover-border) !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
-}
-
-.gjs-block:active {
-    cursor: grabbing !important;
-}
-
-.custom-gjs-block {
-    background-color: var(--light-bg) !important;
-    border: 1px solid var(--border-color) !important;
-    border-radius: 8px !important;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05) !important;
-}
-
-.custom-gjs-block-hover {
-    background-color: var(--item-hover-bg) !important;
-    border-color: var(--item-hover-border) !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
-}
-
-.custom-gjs-block-dragging {
-    opacity: 0.7 !important;
-    cursor: grabbing !important;
-    transform: scale(1.05) !important;
-}
-
-/* Sol panel ile sağ panel eşleşmesi */
-.gjs-block-category {
-    margin-bottom: 12px !important;
-    border-radius: 8px !important;
-    background-color: var(--panel-bg) !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
-    overflow: hidden !important;
-}
-
-.gjs-block-category .gjs-title {
-    display: flex !important;
-    align-items: center !important;
-    padding: 14px 16px !important;
-    background-color: var(--panel-header) !important;
-    cursor: pointer !important;
-    border-bottom: 1px solid var(--border-color) !important;
-    color: var(--secondary-color) !important;
-    font-weight: 600 !important;
-    font-size: 14px !important;
-}
-
-.gjs-block-category .gjs-title::after {
-    content: "\f107" !important;
-    font-family: "Font Awesome 6 Pro", FontAwesome !important;
-    margin-left: auto !important;
-    transition: transform 0.3s !important;
-}
-
-.gjs-block-category.gjs-open .gjs-title::after {
-    transform: rotate(180deg) !important;
-}
-
-.gjs-blocks-c {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 12px !important;
-    padding: 16px !important;
-    background-color: var(--panel-bg) !important;
-}
-
-.gjs-block-category.gjs-collapsed .gjs-blocks-c,
-.gjs-block-category:not(.gjs-open) .gjs-blocks-c {
-    display: none !important;
-}
-
-/* Canvas Komponent Özelleştirmeleri */
-.custom-selected-component {
-    outline: 2px solid var(--primary-color) !important;
-    outline-offset: 2px !important;
-}
-
-.custom-component-hover {
-    outline: 1px dashed var(--primary-color) !important;
-    outline-offset: 1px !important;
-}
-
-/* Renk Alanı Özelleştirmeleri */
-.custom-color-field {
-    transition: all 0.2s ease !important;
-    border-radius: 6px !important;
-    overflow: hidden !important;
-}
-
-.active-color-picker {
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3) !important;
-}
-
-/* Select Alanı Özelleştirmeleri */
-.custom-select-field {
-    border-radius: 6px !important;
-    overflow: hidden !important;
-}
-
-/* Input Alanı Özelleştirmeleri */
-.custom-input-field {
-    border-radius: 6px !important;
-}
-
-/* Özel Sektör Başlığı */
-.custom-sector-title {
-    font-weight: 600 !important;
-    color: var(--secondary-color) !important;
-}
-
-.custom-style-sector {
-    margin-bottom: 8px !important;
-    border-radius: 0 !important;
-}
-
-.custom-right-panel .gjs-sm-sector:first-child {
-    border-top: none !important;
-}
-
-/* Katmanlar Görünümü */
-.custom-layer {
-    display: flex !important;
-    align-items: center !important;
-    padding: 10px 12px !important;
-    transition: all 0.2s ease !important;
-}
-
-.gjs-layer-children {
-    margin-top: 5px !important;
-    border-left: 1px solid var(--border-color) !important;
-    margin-left: 10px !important;
-}
-
-/* Notifications */
-.toast-container {
-    z-index: 9999;
-}
-
-/* Editor Toolbar Geliştirmeleri */
-.toolbar-btn i {
-    font-size: 16px;
-}
-
-.editor-toolbar {
-    padding: 10px 15px;
-}
-
-/* Overlay Loader */
-.studio-loader {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(255, 255, 255, 0.7);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10000;
-}
-
-.studio-loader-content {
-    text-align: center;
-    background-color: var(--panel-bg);
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
-
-/* Cihaz Görünümü Butonları */
-.device-btns .toolbar-btn {
-    font-size: 16px;
-}
-
-/* Tooltip */
-.studio-tooltip {
-    position: absolute;
-    background-color: #333;
-    color: white;
-    padding: 5px 10px;
-    border-radius: 4px;
-    font-size: 12px;
-    z-index: 999;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.3s;
-}
-
-.toolbar-btn:hover .studio-tooltip {
-    opacity: 1;
-}
-
-.gjs-layer.gjs-selected .gjs-layer-item {
-    background-color: var(--gjs-main-light-color) !important;
-}
-
-/* Responsive Tasarım */
-@media (max-width: 1200px) {
-    .editor-main {
-        flex-direction: column;
-        height: auto;
+/* Responsive Ayarlamalar */
+@media (max-width: 992px) {
+    .panel__left {
+      width: 260px;
     }
     
-    .panel__left, .panel__right {
-        width: 100%;
-        max-height: 250px;
+    .block-items {
+      grid-template-columns: 1fr;
     }
     
-    .editor-canvas {
-        height: calc(100vh - 596px);
-        min-height: 300px;
+    .panel-tab {
+      padding: 12px 6px;
+    }
+    
+    .panel-tab .tab-text {
+      font-size: 12px;
+    }
+}
+
+@media (max-width: 768px) {
+    .panel__left {
+      width: 240px;
+    }
+    
+    .panel-tab .tab-text {
+      display: none;
+    }
+    
+    .panel-tab .tab-icon {
+      margin-right: 0;
+      font-size: 16px;
     }
 }

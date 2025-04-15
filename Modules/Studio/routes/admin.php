@@ -2,8 +2,8 @@
 // Modules/Studio/routes/admin.php
 use Illuminate\Support\Facades\Route;
 use Modules\Studio\App\Http\Controllers\Admin\StudioController;
-use Modules\Studio\App\Http\Controllers\Admin\StudioAssetsController;
-use Modules\Studio\App\Http\Livewire\StudioEditor;
+use Modules\Studio\App\Http\Livewire\EditorComponent;
+use Modules\Studio\App\Http\Livewire\WidgetManagerComponent;
 
 // Admin rotaları
 Route::middleware(['web', 'auth', 'tenant'])
@@ -13,31 +13,32 @@ Route::middleware(['web', 'auth', 'tenant'])
         Route::prefix('studio')
             ->name('studio.')
             ->group(function () {
-                Route::get('/editor/{module}/{id}', StudioEditor::class)
+                // Editor
+                Route::get('/editor/{module}/{id}', EditorComponent::class)
                     ->middleware('module.permission:studio,view')
                     ->name('editor');
                 
+                // İçerik kaydetme
                 Route::post('/save/{module}/{id}', [StudioController::class, 'save'])
                     ->middleware('module.permission:studio,update')
                     ->name('save');
                 
-                Route::get('/widgets', [StudioController::class, 'widgets'])
+                // Widgetlar
+                Route::get('/widgets', WidgetManagerComponent::class)
                     ->middleware('module.permission:studio,view')
                     ->name('widgets');
                 
+                // API endpoint'leri
                 Route::get('/api/widgets', [StudioController::class, 'getWidgets'])
                     ->middleware('module.permission:studio,view')
                     ->name('api.widgets');
                 
-                Route::get('/api/themes', [StudioController::class, 'getThemes'])
-                    ->middleware('module.permission:studio,view')
-                    ->name('api.themes');
-                
-                // Varlık yükleme rotası
+                // Varlık yükleme
                 Route::post('/api/assets/upload', [StudioController::class, 'uploadAssets'])
-                    ->middleware('module.permission:studio,view')
+                    ->middleware('module.permission:studio,update')
                     ->name('api.assets.upload');
-
+                
+                // Kaynakları yayınla
                 Route::get('/publish-resources', [StudioController::class, 'publishResources'])
                     ->middleware('module.permission:studio,update')
                     ->name('publish-resources');

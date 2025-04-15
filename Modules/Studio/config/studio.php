@@ -89,7 +89,34 @@ return [
                 'icon' => 'fa fa-puzzle-piece',
                 'order' => 5,
             ],
+            // Yeni kategoriler
+            'hero' => [
+                'name' => 'Hero',
+                'icon' => 'fa fa-star',
+                'order' => 6,
+            ],
+            'cards' => [
+                'name' => 'Kartlar',
+                'icon' => 'fa fa-id-card',
+                'order' => 7,
+            ],
+            'testimonials' => [
+                'name' => 'Yorumlar',
+                'icon' => 'fa fa-quote-right',
+                'order' => 8,
+            ],
+            'pricing' => [
+                'name' => 'Fiyatlandırma',
+                'icon' => 'fa fa-tag',
+                'order' => 9,
+            ],
+            'features' => [
+                'name' => 'Özellikler',
+                'icon' => 'fa fa-list-check',
+                'order' => 10,
+            ],
         ],
+
         'defaults' => [
             'enabled' => true,  // Varsayılan blokları etkinleştir
         ],

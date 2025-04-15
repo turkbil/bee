@@ -2,6 +2,8 @@
  * Studio Editor - Düzeltme Modülü
  * GrapesJS'deki kritik hataları sessizce düzeltir
  */
+// public/admin/libs/studio/partials/studio-fix.js
+
 window.StudioFix = (function() {
     /**
      * GrapesJS'in problematik davranışlarını düzeltir
@@ -96,6 +98,11 @@ window.StudioFix = (function() {
             console.error('Stil düzeltme hatası');
         }
     }
+    
+    // Sayfa yüklendiğinde düzeltmeleri uygula
+    document.addEventListener('DOMContentLoaded', function() {
+        applyFixes();
+    });
     
     return {
         applyFixes: applyFixes,

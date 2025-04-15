@@ -2,6 +2,8 @@
  * Studio Editor - Eylemler Modülü
  * Kaydetme, dışa aktarma ve önizleme işlemleri
  */
+// public/admin/libs/studio/partials/studio-actions.js
+
 window.StudioActions = (function() {
     // İsteğin çalışıp çalışmadığını izleyen bir flag
     let isSaveInProgress = false;

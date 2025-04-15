@@ -14,9 +14,9 @@
                     </div>
                     
                     <div class="list-group">
-                        @foreach($widgets as $widget)
+                        @foreach($filteredWidgets as $widget)
                             <a href="#" 
-                               class="list-group-item list-group-item-action {{ $selectedWidget && $selectedWidget->id == $widget['id'] ? 'active' : '' }}"
+                               class="list-group-item list-group-item-action {{ $selectedWidgetId == $widget['id'] ? 'active' : '' }}"
                                wire:click.prevent="selectWidget({{ $widget['id'] }})">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
@@ -39,7 +39,7 @@
                     <h3 class="card-title">Widget Düzenleyici</h3>
                 </div>
                 <div class="card-body">
-                    @if($selectedWidget)
+                    @if($selectedWidgetId)
                         <ul class="nav nav-tabs" data-bs-toggle="tabs">
                             <li class="nav-item">
                                 <a href="#tabs-html" class="nav-link active" data-bs-toggle="tab">HTML</a>

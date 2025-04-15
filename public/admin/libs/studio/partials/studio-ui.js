@@ -2,6 +2,8 @@
  * Studio Editor - UI Modülü
  * Modern arayüz işlevleri
  */
+// public/admin/libs/studio/partials/studio-ui.js
+
 window.StudioUI = (function() {
     // Editor örneğini global olarak sakla
     let editorInstance = null;
@@ -16,6 +18,7 @@ window.StudioUI = (function() {
         setupTabs();
         setupDeviceToggle(editor);
         initializeBlockCategories();
+        setupEditorStyles();
     }
     
     /**
@@ -151,7 +154,70 @@ window.StudioUI = (function() {
         }
     }
     
+    /**
+     * Editor içindeki stilleri özelleştirir
+     */
+    function setupEditorStyles() {
+        // Stil yöneticisi için gecikmeli düzeltme
+        setTimeout(() => {
+            // GrapesJS'in stil panelini gizle/göster işlevi için
+            const styleManager = document.querySelector('.gjs-sm-sectors');
+            if (styleManager) {
+                const sectors = styleManager.querySelectorAll('.gjs-sm-sector');
+                
+                sectors.forEach((sector, index) => {
+                    const title = sector.querySelector('.gjs-sm-sector-title');
+                    const properties = sector.querySelector('.gjs-sm-properties');
+                    
+                    if (title && properties) {
+                        title.addEventListener('click', function() {
+                            sector.classList.toggle('gjs-collapsed');
+                            properties.style.display = sector.classList.contains('gjs-collapsed') ? 'none' : 'block';
+                        });
+                        
+                        // İlk sektör açık, diğerleri kapalı başlasın
+                        if (index === 0) {
+                            sector.classList.remove('gjs-collapsed');
+                            properties.style.display = 'block';
+                        } else {
+                            sector.classList.add('gjs-collapsed');
+                            properties.style.display = 'none';
+                        }
+                    }
+                });
+            }
+        }, 500);
+    }
+    
+    /**
+     * Editöre özel özellikler ekle
+     * @param {Object} editor - GrapesJS editor örneği 
+     */
+    function addCustomFunctions(editor) {
+        // Canvası görünür kılma (bileşen sınırlarını göster/gizle)
+        editor.Commands.add('sw-visibility', {
+            run(editor) {
+                const canvas = editor.Canvas;
+                const classCanvas = 'gjs-cv-canvas';
+                const classVisible = 'gjs-cv-visible';
+                
+                const frames = canvas.getFrames();
+                frames.forEach(frame => {
+                    const canvasBody = frame.view.getBody();
+                    const canvasWrapper = frame.view.getWrapper();
+                    
+                    canvasWrapper.classList.toggle(classVisible);
+                    canvasBody.classList.toggle(`${classCanvas}__${classVisible}`);
+                });
+            },
+            stop(editor) {
+                this.run(editor);
+            }
+        });
+    }
+    
     return {
-        setupUI: setupUI
+        setupUI: setupUI,
+        addCustomFunctions: addCustomFunctions
     };
 })();

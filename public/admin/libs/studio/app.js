@@ -2,6 +2,8 @@
  * Studio Editor Uygulama Başlatıcı
  * Tüm modülleri yükler ve uygulamayı başlatır
  */
+// public/admin/libs/studio/app.js
+
 document.addEventListener('DOMContentLoaded', function() {
     // Editor element'ini bul
     const editorElement = document.getElementById('gjs');
@@ -50,7 +52,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     // Kategorileri DOM'a ekle
                     setTimeout(function() {
-                        updateBlocksInCategories(editor);
+                        if (window.StudioBlocks.updateBlocksInCategories) {
+                            window.StudioBlocks.updateBlocksInCategories(editor);
+                        }
                     }, 500);
                 }
                 
@@ -127,16 +131,8 @@ function updateBlocksInCategories(editor) {
     const categories = document.querySelectorAll('.block-category');
     
     categories.forEach(category => {
-        const categoryId = category.querySelector('.block-category-header')?.textContent?.trim().toLowerCase();
+        const categoryId = category.getAttribute('data-category');
         if (!categoryId) return;
-        
-        // Kategori adını belirle
-        let catName = '';
-        if (categoryId.includes('düzen')) catName = 'layout';
-        else if (categoryId.includes('içerik')) catName = 'content';
-        else if (categoryId.includes('form')) catName = 'form';
-        else if (categoryId.includes('medya')) catName = 'media';
-        else if (categoryId.includes('widget')) catName = 'widget';
         
         // Kategori içerik alanını temizle
         const blockItems = category.querySelector('.block-items');
@@ -144,7 +140,7 @@ function updateBlocksInCategories(editor) {
             blockItems.innerHTML = '';
             
             // Bu kategoriye ait blokları ekle
-            blocks.filter(block => block.get('category') === catName).forEach(block => {
+            blocks.filter(block => block.get('category') === categoryId).forEach(block => {
                 const blockEl = document.createElement('div');
                 blockEl.className = 'block-item';
                 blockEl.setAttribute('data-block-id', block.get('id'));

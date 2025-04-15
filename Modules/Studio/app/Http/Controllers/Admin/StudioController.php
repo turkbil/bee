@@ -191,6 +191,10 @@ class StudioController extends Controller
                 'form' => ['name' => 'Form', 'icon' => 'fa fa-wpforms'],
                 'media' => ['name' => 'Medya', 'icon' => 'fa fa-image'],
                 'widget' => ['name' => 'Widgetlar', 'icon' => 'fa fa-puzzle-piece'],
+                'hero' => ['name' => 'Hero', 'icon' => 'fa fa-star'],
+                'cards' => ['name' => 'Kartlar', 'icon' => 'fa fa-id-card'],
+                'features' => ['name' => 'Özellikler', 'icon' => 'fa fa-list-check'],
+                'testimonials' => ['name' => 'Müşteri Yorumları', 'icon' => 'fa fa-quote-right'],
             ]);
             
             return response()->json([

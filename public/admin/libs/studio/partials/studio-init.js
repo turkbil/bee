@@ -2,6 +2,8 @@
  * Studio Editor - Başlatıcı
  * Studio Editor'ün sayfa yüklendiğinde başlatılmasını yönetir
  */
+// public/admin/libs/studio/partials/studio-init.js
+
 (function() {
     // DOM yüklendiğinde çalışacak kod
     document.addEventListener('DOMContentLoaded', function() {
@@ -42,6 +44,36 @@
             try {
                 const editor = window.initStudioEditor(config);
                 
+                // Editor yükleme olayını dinle
+                editor.on('load', function() {
+                    console.log('Editor yükleme olayı tetiklendi');
+                    
+                    // Blokları kaydet
+                    if (window.StudioBlocks && typeof window.StudioBlocks.registerBlocks === 'function') {
+                        window.StudioBlocks.registerBlocks(editor);
+                        
+                        // Kategorileri DOM'a ekle
+                        setTimeout(function() {
+                            if (window.StudioBlocks.updateBlocksInCategories) {
+                                window.StudioBlocks.updateBlocksInCategories(editor);
+                            }
+                        }, 500);
+                    }
+                    
+                    // UI bileşenlerini ayarla
+                    if (window.StudioUI && typeof window.StudioUI.setupUI === 'function') {
+                        window.StudioUI.setupUI(editor);
+                    }
+                    
+                    // Butonları ayarla
+                    if (window.StudioActions && typeof window.StudioActions.setupActions === 'function') {
+                        window.StudioActions.setupActions(editor, config);
+                    }
+                    
+                    // Panel sekmelerini ayarla
+                    setupTabs();
+                });
+                
                 // Global erişim için kaydet
                 window.studioEditor = editor;
             } catch (error) {
@@ -51,4 +83,37 @@
             console.error('Studio Editor başlatılamıyor: initStudioEditor fonksiyonu bulunamadı!');
         }
     });
+
+    /**
+     * Sol panel sekmelerini ayarla
+     */
+    function setupTabs() {
+        const tabs = document.querySelectorAll(".panel-tab");
+        const tabContents = document.querySelectorAll(".panel-tab-content");
+
+        tabs.forEach((tab) => {
+            // Eski event listener'ları temizle
+            const newTab = tab.cloneNode(true);
+            if (tab.parentNode) {
+                tab.parentNode.replaceChild(newTab, tab);
+            }
+            
+            newTab.addEventListener("click", function () {
+                const tabName = this.getAttribute("data-tab");
+
+                // Aktif tab değiştir
+                tabs.forEach((t) => t.classList.remove("active"));
+                this.classList.add("active");
+
+                // İçeriği değiştir
+                tabContents.forEach((content) => {
+                    if (content.getAttribute("data-tab-content") === tabName) {
+                        content.classList.add("active");
+                    } else {
+                        content.classList.remove("active");
+                    }
+                });
+            });
+        });
+    }
 })();

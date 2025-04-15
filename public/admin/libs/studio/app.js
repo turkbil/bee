@@ -49,13 +49,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Blokları kaydet
                 if (window.StudioBlocks && typeof window.StudioBlocks.registerBlocks === 'function') {
                     window.StudioBlocks.registerBlocks(editor);
-                    
-                    // Kategorileri DOM'a ekle
-                    setTimeout(function() {
-                        if (window.StudioBlocks.updateBlocksInCategories) {
-                            window.StudioBlocks.updateBlocksInCategories(editor);
-                        }
-                    }, 500);
                 }
                 
                 // UI bileşenlerini ayarla
@@ -112,64 +105,5 @@ function setupTabs() {
                 }
             });
         });
-    });
-}
-
-/**
- * Editördeki blokları kategori elementlerine ekler
- */
-function updateBlocksInCategories(editor) {
-    if (!editor) {
-        console.error('Editor örneği bulunamadı');
-        return;
-    }
-    
-    // Tüm blokları al
-    const blocks = editor.BlockManager.getAll();
-    
-    // Her bir kategori için blokları işle
-    const categories = document.querySelectorAll('.block-category');
-    
-    categories.forEach(category => {
-        const categoryId = category.getAttribute('data-category');
-        if (!categoryId) return;
-        
-        // Kategori içerik alanını temizle
-        const blockItems = category.querySelector('.block-items');
-        if (blockItems) {
-            blockItems.innerHTML = '';
-            
-            // Bu kategoriye ait blokları ekle
-            blocks.filter(block => block.get('category') === categoryId).forEach(block => {
-                const blockEl = document.createElement('div');
-                blockEl.className = 'block-item';
-                blockEl.setAttribute('data-block-id', block.get('id'));
-                
-                // İçeriği oluştur
-                blockEl.innerHTML = `
-                    <div class="block-item-icon">
-                        <i class="${block.getAttributes().class || 'fa fa-cube'}"></i>
-                    </div>
-                    <div class="block-item-label">${block.get('label')}</div>
-                `;
-                
-                // Drag-drop işlevini ekle
-                blockEl.setAttribute('draggable', 'true');
-                blockEl.addEventListener('dragstart', (e) => {
-                    editor.runCommand('select-comp', { event: e });
-                    blockEl.classList.add('dragging');
-                });
-                
-                blockEl.addEventListener('dragend', () => {
-                    blockEl.classList.remove('dragging');
-                });
-                
-                blockEl.addEventListener('click', () => {
-                    editor.BlockManager.add(block.get('id'));
-                });
-                
-                blockItems.appendChild(blockEl);
-            });
-        }
     });
 }

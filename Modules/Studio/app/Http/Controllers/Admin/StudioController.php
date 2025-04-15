@@ -198,29 +198,25 @@ class StudioController extends Controller
             }
             
             // Kategori isimleri
-            $categories = config('studio.blocks.categories', [
-                'layout' => ['name' => 'Düzen', 'icon' => 'fa fa-columns'],
-                'content' => ['name' => 'İçerik', 'icon' => 'fa fa-font'],
-                'form' => ['name' => 'Form', 'icon' => 'fa fa-wpforms'],
-                'media' => ['name' => 'Medya', 'icon' => 'fa fa-image'],
-                'widget' => ['name' => 'Widgetlar', 'icon' => 'fa fa-puzzle-piece'],
-                'hero' => ['name' => 'Hero', 'icon' => 'fa fa-star'],
-                'cards' => ['name' => 'Kartlar', 'icon' => 'fa fa-id-card'],
-                'features' => ['name' => 'Özellikler', 'icon' => 'fa fa-list-check'],
-                'testimonials' => ['name' => 'Müşteri Yorumları', 'icon' => 'fa fa-quote-right'],
-            ]);
+            $categories = [
+                'layout' => 'Düzen',
+                'content' => 'İçerik',
+                'form' => 'Form',
+                'media' => 'Medya',
+                'widget' => 'Widgetlar',
+                'hero' => 'Hero',
+                'cards' => 'Kartlar',
+                'testimonials' => 'Yorumlar',
+                'pricing' => 'Fiyatlandırma',
+                'features' => 'Özellikler',
+            ];
             
-            $categoriesForResponse = [];
-            foreach ($categories as $key => $cat) {
-                $categoriesForResponse[$key] = $cat['name'];
-            }
-            
-            Log::debug('Yanıt kategorileri', $categoriesForResponse);
+            Log::debug('Yanıt kategorileri', $categories);
             
             return response()->json([
                 'success' => true,
                 'blocks' => $blocks,
-                'categories' => $categoriesForResponse
+                'categories' => $categories
             ]);
         } catch (\Exception $e) {
             Log::error('Blok verileri alınırken hata: ' . $e->getMessage(), [

@@ -86,6 +86,10 @@ class StudioServiceProvider extends ServiceProvider
             return new WidgetService();
         });
         
+        $this->app->bind(BlockService::class, function ($app) {
+            return new BlockService();
+        });
+        
         // Parser'ları kaydet
         $this->app->bind(HtmlParser::class, function ($app) {
             return new HtmlParser();
@@ -220,7 +224,8 @@ class StudioServiceProvider extends ServiceProvider
             'studio.block',
             'studio.editor',
             'studio.widget',
-            'studio'
+            'studio',
+            BlockService::class
         ];
     }
 

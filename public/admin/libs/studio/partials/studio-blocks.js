@@ -39,15 +39,15 @@ window.StudioBlocks = (function() {
                     
                     console.log("GrapesJS Kategorileri: ", editor.BlockManager.getCategories().models);
                     
-                    // ÖNEMLİ: Blokları eklerken kategori değerini STRING olarak ver
+                    // DÜZELTME: Blokları eklerken content nesne değil, doğrudan HTML içeriği olmalı
                     data.blocks.forEach(block => {
                         console.log("Blok ekleniyor:", block.id, "-", block.label, "-", "Kategori:", block.category);
                         
-                        // Blok konfigürasyonu - kategori ID'sini string olarak kullan
+                        // İçerik doğrudan HTML olarak kullanılmalı
                         const blockConfig = {
                             label: block.label,
                             category: block.category,
-                            content: block.content,
+                            content: block.content, // Bu doğrudan HTML string olmalı
                             attributes: { class: block.icon || 'fa fa-cube' }
                         };
                         
@@ -169,9 +169,25 @@ window.StudioBlocks = (function() {
                     
                     // Drag-drop işlevini ekle
                     blockEl.setAttribute('draggable', 'true');
+                    console.log("Block content type:", typeof block.get('content'));
+                    console.log("Block content:", block.get('content'));
                     blockEl.addEventListener('dragstart', (e) => {
-                        const blockId = block.id;
-                        e.dataTransfer.setData('text/plain', blockId);
+                        // Blok ID'si yerine doğrudan içeriği aktaralım
+                        const blockContent = block.get('content');
+                        // İçerik bir dize mi yoksa nesne mi kontrol et
+                        let contentToAdd;
+                        if (typeof blockContent === 'string') {
+                            contentToAdd = blockContent;
+                        } else if (typeof blockContent === 'object' && blockContent.html) {
+                            contentToAdd = blockContent.html;
+                        } else {
+                            contentToAdd = blockContent;
+                        }
+                        
+                        // DataTransfer nesnesine içeriği aktar (önemli!)
+                        e.dataTransfer.setData('text/html', contentToAdd);
+                        // Yedek olarak ID'yi de ayarla (GrapesJS'in kendi mekanizması için)
+                        e.dataTransfer.setData('text/plain', block.id);
                         blockEl.classList.add('dragging');
                     });
                     
@@ -180,8 +196,15 @@ window.StudioBlocks = (function() {
                     });
                     
                     blockEl.addEventListener('click', () => {
-                        // Blok içeriğini editöre ekle
-                        editor.addComponents(block.get('content'));
+                        // İçerik string mi yoksa obje mi kontrol et
+                        const content = block.get('content');
+                        if (typeof content === 'string') {
+                            editor.addComponents(content);
+                        } else if (typeof content === 'object' && content.html) {
+                            editor.addComponents(content.html);
+                        } else {
+                            editor.addComponents(block.get('content'));
+                        }
                     });
                     
                     blockItems.appendChild(blockEl);
@@ -191,6 +214,7 @@ window.StudioBlocks = (function() {
         
         console.log("Bloklar başarıyla kategorilere eklendi");
     }
+    
     /**
      * DOM'da blok kategorileri oluştur
      * @param {Object} editor - GrapesJS editor örneği

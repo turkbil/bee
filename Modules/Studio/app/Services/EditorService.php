@@ -115,6 +115,9 @@ class EditorService
                     log_activity($page, 'studio ile düzenlendi');
                 }
                 
+                // ContentSaved eventini tetikle
+                event(new \Modules\Studio\App\Events\ContentSaved($module, $id, $content));
+                
                 return $result;
             } catch (\Exception $e) {
                 \Illuminate\Support\Facades\Log::error('İçerik kaydedilirken hata: ' . $e->getMessage());

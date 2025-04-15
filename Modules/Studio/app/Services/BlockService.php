@@ -30,7 +30,7 @@ class BlockService
         
         return $blocks;
     }
-        
+            
     /**
      * Blade şablonlarından blokları yükle
      *
@@ -111,8 +111,9 @@ class BlockService
                     
                     try {
                         // Dosya içeriğini doğrudan oku
+                        // Bu kısımda, içeriği yüklerken:
                         $content = File::get($file->getPathname());
-                        
+                                            
                         // PHP ve Blade etiketlerini temizle (basit bir temizleme)
                         $content = preg_replace('/<\?php.*?\?>/s', '', $content);
                         $content = preg_replace('/@(php|if|foreach|for|while|switch|case).*?@end\1/s', '', $content);

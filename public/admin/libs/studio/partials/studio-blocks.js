@@ -18,32 +18,18 @@ window.StudioBlocks = (function() {
         
         // Server'dan blokları al
         fetch('/admin/studio/api/blocks')
-            .then(response => {
-                console.log("API yanıtı alındı:", response.status);
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => {
-                console.log("API verileri alındı:", data);
-                
-                if (data.success && data.blocks && data.blocks.length > 0) {
-                    console.log("Bloklar: ", data.blocks);
-                    console.log("Kategoriler: ", data.categories);
-                    
+                if (data.success && data.blocks) {
                     // Kategorileri tanımla
                     const categories = {};
                     Object.keys(data.categories || {}).forEach(key => {
                         categories[key] = data.categories[key];
-                        console.log(`Kategori ekleniyor: ${key} - ${data.categories[key]}`);
                         editor.BlockManager.getCategories().add({ id: key, label: data.categories[key] });
                     });
                     
-                    // GrapesJS kategorilerini kontrol et
-                    const editorCategories = editor.BlockManager.getCategories().models;
-                    console.log("GrapesJS Kategorileri: ", editorCategories);
-                    
                     // Blokları ekle
                     data.blocks.forEach(block => {
-                        console.log(`Blok ekleniyor: ${block.id} - ${block.label} - Kategori: ${block.category}`);
                         editor.BlockManager.add(block.id, {
                             label: block.label,
                             category: block.category,
@@ -52,23 +38,17 @@ window.StudioBlocks = (function() {
                         });
                     });
                     
-                    // GrapesJS bloklarını kontrol et
-                    const editorBlocks = editor.BlockManager.getAll().models;
-                    console.log("GrapesJS Blokları: ", editorBlocks);
-                    
                     console.log(`${data.blocks.length} adet blok başarıyla yüklendi`);
                     
                     // DOM'da blok kategorileri oluştur
-                    console.log("Blok kategorileri oluşturuluyor...");
                     createBlockCategories(editor, data.categories || {});
                     
                     // Kategorilere blokları ekle
                     setTimeout(() => {
-                        console.log("Bloklar kategorilere ekleniyor...");
                         updateBlocksInCategories(editor);
-                    }, 1000);
+                    }, 500);
                 } else {
-                    console.error("Blok yüklenemedi:", data.message || "Server yanıt vermedi veya blok bulunamadı");
+                    console.error("Blok yüklenemedi:", data.message || "Server yanıt vermedi");
                 }
             })
             .catch(error => {
@@ -85,40 +65,17 @@ window.StudioBlocks = (function() {
         const blocksContainer = document.getElementById('blocks-container');
         
         if (!blocksContainer) {
-            console.error("Blok container bulunamadı! ID: blocks-container eleman bulunamadı");
-            
-            // Alternatif metod: DOM'u tarayarak uygun container'ı bul
-            const possibleContainers = document.querySelectorAll('.blocks-container, .gjs-blocks-container');
-            if (possibleContainers.length > 0) {
-                console.log("Alternatif container bulundu: ", possibleContainers[0]);
-                blocksContainer = possibleContainers[0];
-            } else {
-                console.error("Hiçbir uygun container bulunamadı!");
-                return;
-            }
+            console.error("Blok container bulunamadı!");
+            return;
         }
         
         // Önce içeriği temizle
-        console.log("Blok container içeriği temizleniyor...");
         blocksContainer.innerHTML = '';
-        
-        // DOM yolunu görüntüle
-        let parent = blocksContainer;
-        let domPath = 'blocks-container';
-        while (parent.parentNode && parent.parentNode.tagName) {
-            parent = parent.parentNode;
-            domPath = parent.tagName + (parent.id ? '#' + parent.id : '') + ' > ' + domPath;
-        }
-        console.log("Blok container DOM yolu: ", domPath);
-        
-        console.log("Kategoriler oluşturuluyor:", categories);
         
         // Her kategori için bir div oluştur
         Object.keys(categories).forEach(categoryId => {
             const categoryName = categories[categoryId];
             const categoryIcon = getCategoryIcon(categoryId);
-            
-            console.log(`Kategori oluşturuluyor: ${categoryId} - ${categoryName}`);
             
             const categoryDiv = document.createElement('div');
             categoryDiv.className = 'block-category';
@@ -133,7 +90,6 @@ window.StudioBlocks = (function() {
                 <div class="block-items"></div>
             `;
             
-            console.log(`Kategori DOM'a ekleniyor: ${categoryId}`);
             blocksContainer.appendChild(categoryDiv);
             
             // Kategori başlığına tıklama olayı ekle
@@ -148,8 +104,6 @@ window.StudioBlocks = (function() {
                 }
             });
         });
-        
-        console.log("Tüm kategoriler oluşturuldu");
     }
     
     /**
@@ -184,36 +138,14 @@ window.StudioBlocks = (function() {
         }
         
         // Tüm blokları al
-        const blocks = editor.BlockManager.getAll().models;
-        
-        if (!blocks || blocks.length === 0) {
-            console.warn('Güncellenecek blok bulunamadı. Editor blok sayısı: 0');
-            return;
-        }
-        
-        console.log(`Editor blokları güncelleniyor. Toplam ${blocks.length} blok var.`);
+        const blocks = editor.BlockManager.getAll();
         
         // Her bir kategori için blokları işle
         const categories = document.querySelectorAll('.block-category');
         
-        if (categories.length === 0) {
-            console.error('Kategori elementleri bulunamadı. DOM\'da .block-category elementi mevcut değil.');
-            
-            // HTML yapısını görüntüle
-            console.log("Blocks container HTML: ", document.getElementById('blocks-container')?.innerHTML || "Container bulunamadı");
-            return;
-        }
-        
-        console.log(`${categories.length} adet kategori elementi bulundu`);
-        
         categories.forEach(category => {
             const categoryId = category.getAttribute('data-category');
-            if (!categoryId) {
-                console.warn('Kategori ID\'si bulunamadı');
-                return;
-            }
-            
-            console.log(`Kategori için bloklar işleniyor: ${categoryId}`);
+            if (!categoryId) return;
             
             // Kategori içerik alanını temizle
             const blockItems = category.querySelector('.block-items');
@@ -221,60 +153,39 @@ window.StudioBlocks = (function() {
                 blockItems.innerHTML = '';
                 
                 // Bu kategoriye ait blokları ekle
-                const categoryBlocks = blocks.filter(block => block.get('category') === categoryId);
-                
-                console.log(`${categoryId} kategorisine ${categoryBlocks.length} blok ekleniyor`);
-                
-                if (categoryBlocks.length === 0) {
-                    blockItems.innerHTML = `<div class="block-empty">Bu kategoride blok bulunamadı</div>`;
-                } else {
-                    // Bu kategoriye ait blokları ekle
-                    categoryBlocks.forEach(block => {
-                        const blockId = block.get('id');
-                        const blockLabel = block.get('label');
-                        const blockAttributes = block.getAttributes() || {};
-                        const iconClass = blockAttributes.class || 'fa fa-cube';
-                        
-                        console.log(`Blok ekleniyor: ${blockId} - ${blockLabel} - Icon: ${iconClass}`);
-                        
-                        const blockEl = document.createElement('div');
-                        blockEl.className = 'block-item';
-                        blockEl.setAttribute('data-block-id', blockId);
-                        
-                        // İçeriği oluştur
-                        blockEl.innerHTML = `
-                            <div class="block-item-icon">
-                                <i class="${iconClass}"></i>
-                            </div>
-                            <div class="block-item-label">${blockLabel}</div>
-                        `;
-                        
-                        // Drag-drop işlevini ekle
-                        blockEl.setAttribute('draggable', 'true');
-                        blockEl.addEventListener('dragstart', (e) => {
-                            e.dataTransfer.setData('block-id', blockId);
-                            blockEl.classList.add('dragging');
-                        });
-                        
-                        blockEl.addEventListener('dragend', () => {
-                            blockEl.classList.remove('dragging');
-                        });
-                        
-                        blockEl.addEventListener('click', () => {
-                            console.log(`Blok tıklandı: ${blockId}`);
-                            // Blok içeriğini editöre ekle
-                            editor.addComponents(block.get('content'));
-                        });
-                        
-                        blockItems.appendChild(blockEl);
+                blocks.filter(block => block.get('category') === categoryId).forEach(block => {
+                    const blockEl = document.createElement('div');
+                    blockEl.className = 'block-item';
+                    blockEl.setAttribute('data-block-id', block.get('id'));
+                    
+                    // İçeriği oluştur
+                    blockEl.innerHTML = `
+                        <div class="block-item-icon">
+                            <i class="${block.getAttributes().class || 'fa fa-cube'}"></i>
+                        </div>
+                        <div class="block-item-label">${block.get('label')}</div>
+                    `;
+                    
+                    // Drag-drop işlevini ekle
+                    blockEl.setAttribute('draggable', 'true');
+                    blockEl.addEventListener('dragstart', (e) => {
+                        e.dataTransfer.setData('block-id', block.get('id'));
+                        blockEl.classList.add('dragging');
                     });
-                }
-            } else {
-                console.error(`Kategori için block-items elementi bulunamadı: ${categoryId}`);
+                    
+                    blockEl.addEventListener('dragend', () => {
+                        blockEl.classList.remove('dragging');
+                    });
+                    
+                    blockEl.addEventListener('click', () => {
+                        // Blok içeriğini editöre ekle
+                        editor.addComponents(block.get('content'));
+                    });
+                    
+                    blockItems.appendChild(blockEl);
+                });
             }
         });
-        
-        console.log("Bloklar başarıyla kategorilere eklendi");
         
         // Arama işlevini ekle
         setupBlockSearch(editor);
@@ -286,10 +197,7 @@ window.StudioBlocks = (function() {
      */
     function setupBlockSearch(editor) {
         const searchInput = document.getElementById('blocks-search');
-        if (!searchInput) {
-            console.warn('Arama kutusu bulunamadı (#blocks-search)');
-            return;
-        }
+        if (!searchInput) return;
         
         // Eski event listener'ı temizle
         const newSearchInput = searchInput.cloneNode(true);
@@ -301,8 +209,6 @@ window.StudioBlocks = (function() {
             const searchText = this.value.toLowerCase();
             filterBlocks(searchText, editor);
         });
-        
-        console.log("Arama işlevi ayarlandı");
     }
     
     /**

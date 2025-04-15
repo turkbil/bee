@@ -44,14 +44,36 @@ class StudioController extends Controller
                 'id' => $id,
                 'content_size' => strlen($request->input('content', '')),
                 'css_size' => strlen($request->input('css', '')),
-                'js_size' => strlen($request->input('js', ''))
+                'js_size' => strlen($request->input('js', '')),
+                'content_type' => gettype($request->input('content')),
+                'css_type' => gettype($request->input('css')),
+                'js_type' => gettype($request->input('js'))
             ]);
 
-            $content = $request->input('content');
-            $css = $request->input('css');
-            $js = $request->input('js');
+            // Tüm parametreler için varsayılan boş string değeri kullan
+            $content = $request->input('content') ?? '';
+            $css = $request->input('css') ?? '';
+            $js = $request->input('js') ?? '';
             
-            $result = $this->editorService->saveContent($module, $id, $content, $css, $js);
+            // Eğer veri tipi string değilse, dönüştür
+            if (!is_string($content)) $content = (string)$content;
+            if (!is_string($css)) $css = (string)$css;
+            if (!is_string($js)) $js = (string)$js;
+            
+            Log::debug("Studio Save - Prepared Values", [
+                'content_type' => gettype($content),
+                'css_type' => gettype($css),
+                'js_type' => gettype($js)
+            ]);
+            
+            // EditorService ile içeriği kaydet
+            $result = $this->editorService->saveContent(
+                $module, 
+                $id, 
+                $content, 
+                $css, 
+                $js
+            );
             
             if ($result) {
                 return response()->json([
@@ -68,7 +90,8 @@ class StudioController extends Controller
             Log::error('Studio içerik kaydederken hata: ' . $e->getMessage(), [
                 'exception' => get_class($e),
                 'file' => $e->getFile(),
-                'line' => $e->getLine()
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
             ]);
             
             return response()->json([

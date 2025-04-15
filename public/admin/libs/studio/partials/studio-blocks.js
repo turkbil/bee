@@ -8,6 +8,7 @@ window.StudioBlocks = (function() {
      * @param {Object} editor - GrapesJS editor örneği
      */
     function registerBlocks(editor) {
+        console.log("Başlangıç blokları yükleniyor...");
         // Reset mevcut kategoriler ve bloklar
         editor.BlockManager.getAll().reset();
         
@@ -150,6 +151,114 @@ window.StudioBlocks = (function() {
                 </form>
             </div>`
         });
+        
+        // Hero Bileşeni
+        editor.BlockManager.add("hero", {
+            label: "Hero Bölümü",
+            category: "content",
+            attributes: { class: "fa fa-star" },
+            content: `<div class="px-4 py-5 my-5 text-center">
+                <h1 class="display-5 fw-bold">Hero Başlık</h1>
+                <div class="col-lg-6 mx-auto">
+                    <p class="lead mb-4">
+                        Hızlı ve etkili bir şekilde içeriklerinizi tasarlayın. Özel bileşenlerle
+                        web sitenizin görünümünü kolayca değiştirin ve ziyaretçilerinize etkileyici deneyimler sunun.
+                    </p>
+                    <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                        <button type="button" class="btn btn-primary btn-lg px-4 gap-3">Ana Buton</button>
+                        <button type="button" class="btn btn-outline-secondary btn-lg px-4">İkincil Buton</button>
+                    </div>
+                </div>
+            </div>`
+        });
+        
+        // Özellikler Bileşeni
+        editor.BlockManager.add("features", {
+            label: "Özellikler",
+            category: "content",
+            attributes: { class: "fa fa-list" },
+            content: `<div class="container px-4 py-5">
+                <h2 class="pb-2 border-bottom">Özellikler</h2>
+                <div class="row g-4 py-5 row-cols-1 row-cols-md-3">
+                    <div class="col d-flex align-items-start">
+                        <div class="icon-square bg-light text-dark flex-shrink-0 me-3 p-3 rounded">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div>
+                            <h2>Özellik 1</h2>
+                            <p>Bu özelliğin detaylı açıklaması burada yer alacak.</p>
+                        </div>
+                    </div>
+                    <div class="col d-flex align-items-start">
+                        <div class="icon-square bg-light text-dark flex-shrink-0 me-3 p-3 rounded">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div>
+                            <h2>Özellik 2</h2>
+                            <p>Bu özelliğin detaylı açıklaması burada yer alacak.</p>
+                        </div>
+                    </div>
+                    <div class="col d-flex align-items-start">
+                        <div class="icon-square bg-light text-dark flex-shrink-0 me-3 p-3 rounded">
+                            <i class="fas fa-flag"></i>
+                        </div>
+                        <div>
+                            <h2>Özellik 3</h2>
+                            <p>Bu özelliğin detaylı açıklaması burada yer alacak.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>`
+        });
+        
+        // Footer
+        editor.BlockManager.add("footer", {
+            label: "Footer",
+            category: "layout",
+            attributes: { class: "fa fa-window-minimize" },
+            content: `<footer class="py-5 bg-light">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <h5>Hakkımızda</h5>
+                            <p class="text-muted">
+                                Kısa şirket açıklaması burada yer alacak. İşletmenizin
+                                amacını ve değerlerini burada belirtebilirsiniz.
+                            </p>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <h5>Hızlı Linkler</h5>
+                            <ul class="nav flex-column">
+                                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Ana Sayfa</a></li>
+                                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Hakkımızda</a></li>
+                                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Hizmetler</a></li>
+                                <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">İletişim</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-5 mb-3">
+                            <form>
+                                <h5>Bültenimize Abone Olun</h5>
+                                <p class="text-muted">Aylık güncellemeler ve teklifler için kaydolun.</p>
+                                <div class="d-flex w-100 gap-2">
+                                    <input type="email" class="form-control" placeholder="E-posta adresiniz">
+                                    <button class="btn btn-primary" type="button">Abone Ol</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between py-4 my-4 border-top">
+                        <p>© 2025 Şirket Adı. Tüm hakları saklıdır.</p>
+                        <ul class="list-unstyled d-flex">
+                            <li class="ms-3"><a class="link-dark" href="#"><i class="fab fa-facebook"></i></a></li>
+                            <li class="ms-3"><a class="link-dark" href="#"><i class="fab fa-instagram"></i></a></li>
+                            <li class="ms-3"><a class="link-dark" href="#"><i class="fab fa-twitter"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </footer>`
+        });
+        
+        console.log("Bloklar başarıyla yüklendi");
     }
     
     return {

@@ -288,16 +288,28 @@ function setupButtons(editor, config) {
         // Bileşen görünürlük butonu
         const swVisibility = document.getElementById("sw-visibility");
         if (swVisibility) {
-            swVisibility.addEventListener("click", () => {
+            // Eski event listener'ları temizle
+            const newVisibility = swVisibility.cloneNode(true);
+            if (swVisibility.parentNode) {
+                swVisibility.parentNode.replaceChild(newVisibility, swVisibility);
+            }
+            
+            newVisibility.addEventListener("click", function() {
                 editor.runCommand("sw-visibility");
-                swVisibility.classList.toggle("active");
+                this.classList.toggle("active");
             });
         }
 
         // İçerik temizle butonu
         const cmdClear = document.getElementById("cmd-clear");
         if (cmdClear) {
-            cmdClear.addEventListener("click", () => {
+            // Eski event listener'ları temizle
+            const newClear = cmdClear.cloneNode(true);
+            if (cmdClear.parentNode) {
+                cmdClear.parentNode.replaceChild(newClear, cmdClear);
+            }
+            
+            newClear.addEventListener("click", function() {
                 if (confirm("İçeriği temizlemek istediğinize emin misiniz? Bu işlem geri alınamaz.")) {
                     editor.DomComponents.clear();
                     editor.CssComposer.clear();
@@ -308,7 +320,13 @@ function setupButtons(editor, config) {
         // Geri Al butonu
         const cmdUndo = document.getElementById("cmd-undo");
         if (cmdUndo) {
-            cmdUndo.addEventListener("click", () => {
+            // Eski event listener'ları temizle
+            const newUndo = cmdUndo.cloneNode(true);
+            if (cmdUndo.parentNode) {
+                cmdUndo.parentNode.replaceChild(newUndo, cmdUndo);
+            }
+            
+            newUndo.addEventListener("click", function() {
                 editor.UndoManager.undo();
             });
         }
@@ -316,15 +334,66 @@ function setupButtons(editor, config) {
         // Yinele butonu
         const cmdRedo = document.getElementById("cmd-redo");
         if (cmdRedo) {
-            cmdRedo.addEventListener("click", () => {
+            // Eski event listener'ları temizle
+            const newRedo = cmdRedo.cloneNode(true);
+            if (cmdRedo.parentNode) {
+                cmdRedo.parentNode.replaceChild(newRedo, cmdRedo);
+            }
+            
+            newRedo.addEventListener("click", function() {
                 editor.UndoManager.redo();
+            });
+        }
+        
+        // HTML kodu düzenleme
+        const cmdCodeEdit = document.getElementById("cmd-code-edit");
+        if (cmdCodeEdit) {
+            // Eski event listener'ları temizle
+            const newCodeEdit = cmdCodeEdit.cloneNode(true);
+            if (cmdCodeEdit.parentNode) {
+                cmdCodeEdit.parentNode.replaceChild(newCodeEdit, cmdCodeEdit);
+            }
+            
+            newCodeEdit.addEventListener("click", function() {
+                const htmlContent = editor.getHtml();
+                showEditModal("HTML Düzenle", htmlContent, (newHtml) => {
+                    editor.setComponents(newHtml);
+                });
+            });
+        }
+
+        // CSS kodu düzenleme
+        const cmdCssEdit = document.getElementById("cmd-css-edit");
+        if (cmdCssEdit) {
+            // Eski event listener'ları temizle
+            const newCssEdit = cmdCssEdit.cloneNode(true);
+            if (cmdCssEdit.parentNode) {
+                cmdCssEdit.parentNode.replaceChild(newCssEdit, cmdCssEdit);
+            }
+            
+            newCssEdit.addEventListener("click", function() {
+                const cssContent = editor.getCss();
+                showEditModal("CSS Düzenle", cssContent, (newCss) => {
+                    editor.setStyle(newCss);
+                });
             });
         }
         
         // Kaydet butonu
         const saveBtn = document.getElementById("save-btn");
         if (saveBtn) {
-            saveBtn.addEventListener("click", () => {
+            // Eski event listener'ları temizle
+            const newSaveBtn = saveBtn.cloneNode(true);
+            if (saveBtn.parentNode) {
+                saveBtn.parentNode.replaceChild(newSaveBtn, saveBtn);
+            }
+            
+            newSaveBtn.addEventListener("click", function() {
+                // Butonu devre dışı bırak ve animasyon ekle
+                this.disabled = true;
+                const originalText = this.innerHTML;
+                this.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Kaydediliyor...';
+                
                 // Kaydedilecek içeriği hazırla
                 const htmlContent = editor.getHtml();
                 const cssContent = editor.getCss();
@@ -363,33 +432,153 @@ function setupButtons(editor, config) {
                 })
                 .catch(error => {
                     showNotification('Hata', error.message || 'Sunucuya bağlanırken bir hata oluştu.', 'error');
+                })
+                .finally(() => {
+                    // Butonu normal haline getir
+                    this.disabled = false;
+                    this.innerHTML = originalText;
                 });
             });
         }
         
-        // HTML kodu düzenleme
-        const cmdCodeEdit = document.getElementById("cmd-code-edit");
-        if (cmdCodeEdit) {
-            cmdCodeEdit.addEventListener("click", () => {
-                const htmlContent = editor.getHtml();
-                showEditModal("HTML Düzenle", htmlContent, (newHtml) => {
-                    editor.setComponents(newHtml);
-                });
+        // Önizleme butonu
+        const previewBtn = document.getElementById("preview-btn");
+        if (previewBtn) {
+            // Eski event listener'ları temizle
+            const newPreviewBtn = previewBtn.cloneNode(true);
+            if (previewBtn.parentNode) {
+                previewBtn.parentNode.replaceChild(newPreviewBtn, previewBtn);
+            }
+            
+            newPreviewBtn.addEventListener("click", function() {
+                // Butonu devre dışı bırak ve animasyon ekle
+                this.disabled = true;
+                const originalText = this.innerHTML;
+                this.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Yükleniyor...';
+                
+                try {
+                    // İçeriği al
+                    const html = editor.getHtml() || '';
+                    const css = editor.getCss() || '';
+                    const jsContentEl = document.getElementById("js-content");
+                    const js = jsContentEl ? jsContentEl.value || '' : '';
+                    
+                    // Önizleme penceresi oluştur
+                    const previewWindow = window.open('', '_blank');
+                    
+                    if (!previewWindow) {
+                        showNotification('Uyarı', 'Önizleme penceresi açılamadı. Lütfen popup engelleyicinizi kontrol edin.', 'warning');
+                        return;
+                    }
+                    
+                    // HTML içeriğini oluştur
+                    const previewContent = `
+                    <!DOCTYPE html>
+                    <html lang="tr">
+                    <head>
+                        <meta charset="UTF-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <title>Sayfa Önizleme</title>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+                        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+                        <style>
+                            ${css}
+                        </style>
+                    </head>
+                    <body>
+                        ${html}
+                        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+                        <script>
+                            ${js}
+                        </script>
+                    </body>
+                    </html>`;
+                    
+                    // İçeriği yaz ve pencereyi kapat
+                    previewWindow.document.open();
+                    previewWindow.document.write(previewContent);
+                    previewWindow.document.close();
+                } catch (error) {
+                    showNotification('Hata', 'Önizleme oluşturulurken bir hata oluştu: ' + error.message, 'error');
+                } finally {
+                    // Butonu normal haline getir
+                    this.disabled = false;
+                    this.innerHTML = originalText;
+                }
             });
         }
+        
+        // Dışa aktar butonu
+        const exportBtn = document.getElementById("export-btn");
+        if (exportBtn) {
+            // Eski event listener'ları temizle
+            const newExportBtn = exportBtn.cloneNode(true);
+            if (exportBtn.parentNode) {
+                exportBtn.parentNode.replaceChild(newExportBtn, exportBtn);
+            }
+            
+            newExportBtn.addEventListener("click", function() {
+                // Butonu devre dışı bırak ve animasyon ekle
+                this.disabled = true;
+                const originalText = this.innerHTML;
+                this.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Hazırlanıyor...';
+                
+                try {
+                    // İçeriği al
+                    const html = editor.getHtml() || '';
+                    const css = editor.getCss() || '';
+                    const jsContentEl = document.getElementById("js-content");
+                    const js = jsContentEl ? jsContentEl.value || '' : '';
 
-        // CSS kodu düzenleme
-        const cmdCssEdit = document.getElementById("cmd-css-edit");
-        if (cmdCssEdit) {
-            cmdCssEdit.addEventListener("click", () => {
-                const cssContent = editor.getCss();
-                const cssContentEl = document.getElementById("css-content");
-                showEditModal("CSS Düzenle", cssContent, (newCss) => {
-                    if (cssContentEl) {
-                        cssContentEl.value = newCss;
-                    }
-                    editor.setStyle(newCss);
-                });
+                    const exportContent = `<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dışa Aktarılan Sayfa</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+${css}
+    </style>
+</head>
+<body>
+${html}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+${js}
+    </script>
+</body>
+</html>`;
+
+                    // Dışa aktarma modalını göster
+                    showEditModal("HTML Dışa Aktar", exportContent, function(newContent) {
+                        // HTML olarak indirme seçeneği
+                        try {
+                            const blob = new Blob([newContent], {type: 'text/html'});
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = 'exported-page.html';
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                            URL.revokeObjectURL(url);
+                            
+                            showNotification('Başarılı', 'Sayfa başarıyla dışa aktarıldı!', 'success');
+                        } catch (error) {
+                            showNotification('Hata', 'Dışa aktarma sırasında bir hata oluştu: ' + error.message, 'error');
+                        }
+                    });
+                } catch (error) {
+                    showNotification('Hata', 'Dışa aktarma sırasında bir hata oluştu: ' + error.message, 'error');
+                } finally {
+                    // Butonu normal haline getir
+                    setTimeout(() => {
+                        this.disabled = false;
+                        this.innerHTML = originalText;
+                    }, 500);
+                }
             });
         }
         
@@ -409,6 +598,21 @@ function setupDeviceButtons(editor) {
     const deviceTablet = document.getElementById("device-tablet");
     const deviceMobile = document.getElementById("device-mobile");
 
+    // Tüm butonları kopyalama ve eski olay dinleyicileri temizleme
+    function recreateButton(button) {
+        if (!button) return null;
+        
+        const newButton = button.cloneNode(true);
+        if (button.parentNode) {
+            button.parentNode.replaceChild(newButton, button);
+        }
+        return newButton;
+    }
+    
+    const newDesktopBtn = recreateButton(deviceDesktop);
+    const newTabletBtn = recreateButton(deviceTablet);
+    const newMobileBtn = recreateButton(deviceMobile);
+
     function toggleDeviceButtons(activeBtn) {
         const deviceBtns = document.querySelectorAll(".device-btns button");
         if (deviceBtns) {
@@ -421,22 +625,22 @@ function setupDeviceButtons(editor) {
         }
     }
 
-    if (deviceDesktop) {
-        deviceDesktop.addEventListener("click", function () {
+    if (newDesktopBtn) {
+        newDesktopBtn.addEventListener("click", function () {
             editor.setDevice("Desktop");
             toggleDeviceButtons(this);
         });
     }
 
-    if (deviceTablet) {
-        deviceTablet.addEventListener("click", function () {
+    if (newTabletBtn) {
+        newTabletBtn.addEventListener("click", function () {
             editor.setDevice("Tablet");
             toggleDeviceButtons(this);
         });
     }
 
-    if (deviceMobile) {
-        deviceMobile.addEventListener("click", function () {
+    if (newMobileBtn) {
+        newMobileBtn.addEventListener("click", function () {
             editor.setDevice("Mobile");
             toggleDeviceButtons(this);
         });
@@ -569,7 +773,7 @@ function showNotification(title, message, type = "success") {
         <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Kapat"></button>
     </div>
     `;
-
+ 
     // Toast container
     let container = document.querySelector(".toast-container");
     if (!container) {
@@ -579,9 +783,9 @@ function showNotification(title, message, type = "success") {
         container.style.zIndex = "9999";
         document.body.appendChild(container);
     }
-
+ 
     container.appendChild(notif);
-
+ 
     // Bootstrap Toast API mevcut mu kontrol et
     if (typeof bootstrap !== "undefined" && bootstrap.Toast) {
         const toast = new bootstrap.Toast(notif, {
@@ -601,17 +805,20 @@ function showNotification(title, message, type = "success") {
             }, 300);
         }, 3000);
     }
-
+ 
     // Belli bir süre sonra kaldır
     setTimeout(() => {
         if (container.contains(notif)) {
             container.removeChild(notif);
         }
     }, 3300);
-}
-
-// Sayfada editor var mı kontrol et ve başlat
-document.addEventListener('DOMContentLoaded', function() {
+ }
+ 
+ // Cihaz görünümü değiştirme butonları için tab işlemleri
+ document.addEventListener('DOMContentLoaded', function() {
+    setupTabs();
+    
+    // Editor elementini kontrol et
     const editorElement = document.getElementById('gjs');
     if (editorElement) {
         // Konfigürasyon oluştur
@@ -628,4 +835,37 @@ document.addEventListener('DOMContentLoaded', function() {
             window.initStudioEditor(config);
         }
     }
-});
+ });
+ 
+ /**
+ * Sol panel sekmelerini ayarla
+ */
+ function setupTabs() {
+    const tabs = document.querySelectorAll(".panel-tab");
+    const tabContents = document.querySelectorAll(".panel-tab-content");
+ 
+    tabs.forEach((tab) => {
+        // Eski event listener'ları temizle
+        const newTab = tab.cloneNode(true);
+        if (tab.parentNode) {
+            tab.parentNode.replaceChild(newTab, tab);
+        }
+        
+        newTab.addEventListener("click", function () {
+            const tabName = this.getAttribute("data-tab");
+ 
+            // Aktif tab değiştir
+            tabs.forEach((t) => t.classList.remove("active"));
+            this.classList.add("active");
+ 
+            // İçeriği değiştir
+            tabContents.forEach((content) => {
+                if (content.getAttribute("data-tab-content") === tabName) {
+                    content.classList.add("active");
+                } else {
+                    content.classList.remove("active");
+                }
+            });
+        });
+    });
+ }

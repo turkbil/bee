@@ -54,6 +54,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     }, 500);
                 }
                 
+                // UI bileşenlerini ayarla
+                if (window.StudioUI && typeof window.StudioUI.setupUI === 'function') {
+                    window.StudioUI.setupUI(editor);
+                }
+                
                 // Butonları ayarla
                 if (window.StudioActions && typeof window.StudioActions.setupActions === 'function') {
                     window.StudioActions.setupActions(editor, config);

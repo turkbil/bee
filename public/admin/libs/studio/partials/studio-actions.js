@@ -20,13 +20,15 @@ window.StudioActions = (function() {
         setupSaveButton(editor, config);
         setupPreviewButton(editor);
         setupExportButton(editor);
+        setupVisibilityButton(editor);
+        setupCommandButtons(editor);
     }
     
     /**
      * Önceden eklenmiş olay dinleyicilerini temizler
      */
     function cleanup() {
-        const buttons = ['save-btn', 'preview-btn', 'export-btn'];
+        const buttons = ['save-btn', 'preview-btn', 'export-btn', 'sw-visibility', 'cmd-clear', 'cmd-undo', 'cmd-redo', 'cmd-code-edit', 'cmd-css-edit'];
         
         buttons.forEach(buttonId => {
             const button = document.getElementById(buttonId);
@@ -37,6 +39,79 @@ window.StudioActions = (function() {
                 }
             }
         });
+    }
+    
+    /**
+     * Görünürlük düğmesini ayarlar
+     * @param {Object} editor - GrapesJS editor örneği
+     */
+    function setupVisibilityButton(editor) {
+        const swVisibility = document.getElementById("sw-visibility");
+        if (swVisibility) {
+            swVisibility.addEventListener("click", () => {
+                editor.runCommand("sw-visibility");
+                swVisibility.classList.toggle("active");
+            });
+        }
+    }
+    
+    /**
+     * Komut düğmelerini ayarlar (Temizle, Geri Al, İleri Al)
+     * @param {Object} editor - GrapesJS editor örneği
+     */
+    function setupCommandButtons(editor) {
+        // İçerik temizle butonu
+        const cmdClear = document.getElementById("cmd-clear");
+        if (cmdClear) {
+            cmdClear.addEventListener("click", () => {
+                if (confirm("İçeriği temizlemek istediğinize emin misiniz? Bu işlem geri alınamaz.")) {
+                    editor.DomComponents.clear();
+                    editor.CssComposer.clear();
+                }
+            });
+        }
+
+        // Geri Al butonu
+        const cmdUndo = document.getElementById("cmd-undo");
+        if (cmdUndo) {
+            cmdUndo.addEventListener("click", () => {
+                editor.UndoManager.undo();
+            });
+        }
+
+        // Yinele butonu
+        const cmdRedo = document.getElementById("cmd-redo");
+        if (cmdRedo) {
+            cmdRedo.addEventListener("click", () => {
+                editor.UndoManager.redo();
+            });
+        }
+        
+        // HTML kodu düzenleme
+        const cmdCodeEdit = document.getElementById("cmd-code-edit");
+        if (cmdCodeEdit) {
+            cmdCodeEdit.addEventListener("click", () => {
+                const htmlContent = editor.getHtml();
+                if (window.StudioUtils && typeof window.StudioUtils.showEditModal === 'function') {
+                    window.StudioUtils.showEditModal("HTML Düzenle", htmlContent, (newHtml) => {
+                        editor.setComponents(newHtml);
+                    });
+                }
+            });
+        }
+
+        // CSS kodu düzenleme
+        const cmdCssEdit = document.getElementById("cmd-css-edit");
+        if (cmdCssEdit) {
+            cmdCssEdit.addEventListener("click", () => {
+                const cssContent = editor.getCss();
+                if (window.StudioUtils && typeof window.StudioUtils.showEditModal === 'function') {
+                    window.StudioUtils.showEditModal("CSS Düzenle", cssContent, (newCss) => {
+                        editor.setStyle(newCss);
+                    });
+                }
+            });
+        }
     }
     
     /**
@@ -165,14 +240,21 @@ window.StudioActions = (function() {
      */
     function setupPreviewButton(editor) {
         const previewBtn = document.getElementById("preview-btn");
-        if (previewBtn) {
-            // Eski listener'ları temizle
-            const newPreviewBtn = previewBtn.cloneNode(true);
-            if (previewBtn.parentNode) {
-                previewBtn.parentNode.replaceChild(newPreviewBtn, previewBtn);
-            }
+        if (!previewBtn) {
+            console.error("Preview button (#preview-btn) not found.");
+            return;
+        }
+        
+        // Önizleme işlemini yapacak fonksiyon 
+        previewBtn.addEventListener("click", function(e) {
+            e.preventDefault();
             
-            newPreviewBtn.addEventListener("click", function () {
+            // Butonu geçici olarak devre dışı bırak
+            this.disabled = true;
+            const originalText = this.innerHTML;
+            this.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Yükleniyor...';
+            
+            try {
                 // İçeriği al
                 const html = editor.getHtml() || '';
                 const css = editor.getCss() || '';
@@ -225,8 +307,17 @@ window.StudioActions = (function() {
                 previewWindow.document.open();
                 previewWindow.document.write(previewContent);
                 previewWindow.document.close();
-            });
-        }
+            } catch (error) {
+                console.error("Preview operation error:", error);
+                if (window.StudioUtils) {
+                    window.StudioUtils.showNotification('Hata', 'Önizleme oluşturulurken bir sorun oluştu: ' + error.message, 'error');
+                }
+            } finally {
+                // Butonu normal haline getir
+                this.disabled = false;
+                this.innerHTML = originalText;
+            }
+        });
     }
     
     /**
@@ -235,14 +326,21 @@ window.StudioActions = (function() {
      */
     function setupExportButton(editor) {
         const exportBtn = document.getElementById("export-btn");
-        if (exportBtn) {
-            // Eski listener'ları temizle
-            const newExportBtn = exportBtn.cloneNode(true);
-            if (exportBtn.parentNode) {
-                exportBtn.parentNode.replaceChild(newExportBtn, exportBtn);
-            }
+        if (!exportBtn) {
+            console.error("Export button (#export-btn) not found.");
+            return;
+        }
+        
+        // Dışa aktarma işlemini yapacak fonksiyon
+        exportBtn.addEventListener("click", function(e) {
+            e.preventDefault();
             
-            newExportBtn.addEventListener("click", function () {
+            // Butonu geçici olarak devre dışı bırak
+            this.disabled = true;
+            const originalText = this.innerHTML;
+            this.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Hazırlanıyor...';
+            
+            try {
                 // Daha önce oluşturulmuş bir modal varsa kaldır
                 const existingModal = document.getElementById("exportModal");
                 if (existingModal) {
@@ -255,8 +353,7 @@ window.StudioActions = (function() {
                 const jsContentEl = document.getElementById("js-content");
                 const js = jsContentEl ? jsContentEl.value || '' : '';
 
-                const exportContent = `
-<!DOCTYPE html>
+                const exportContent = `<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
@@ -280,7 +377,7 @@ ${js}
                 // Dışa aktarma modalını göster
                 if (window.StudioUtils && typeof window.StudioUtils.showEditModal === 'function') {
                     window.StudioUtils.showEditModal("HTML Dışa Aktar", exportContent, function(newContent) {
-                        // HTML olarak indirme seçeneği eklenebilir
+                        // HTML olarak indirme seçeneği
                         try {
                             const blob = new Blob([newContent], {type: 'text/html'});
                             const url = URL.createObjectURL(blob);
@@ -303,8 +400,17 @@ ${js}
                         }
                     });
                 }
-            });
-        }
+            } catch (error) {
+                console.error("Export operation error:", error);
+                if (window.StudioUtils) {
+                    window.StudioUtils.showNotification('Hata', 'Dışa aktarma sırasında bir sorun oluştu: ' + error.message, 'error');
+                }
+            } finally {
+                // Butonu normal haline getir
+                this.disabled = false;
+                this.innerHTML = originalText;
+            }
+        });
     }
     
     return {

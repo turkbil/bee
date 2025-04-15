@@ -14,7 +14,6 @@ window.StudioUI = (function() {
         editorInstance = editor;
         
         setupTabs();
-        setupToolbar(editor);
         setupDeviceToggle(editor);
         initializeBlockCategories();
     }
@@ -95,52 +94,6 @@ window.StudioUI = (function() {
     }
     
     /**
-     * Toolbar butonlarını yapılandırır
-     * @param {Object} editor - GrapesJS editor örneği
-     */
-    function setupToolbar(editor) {
-        // Bileşen görünürlük butonu
-        const swVisibility = document.getElementById("sw-visibility");
-        if (swVisibility) {
-            swVisibility.addEventListener("click", () => {
-                editor.runCommand("sw-visibility");
-                swVisibility.classList.toggle("active");
-            });
-        }
-
-        // İçerik temizle butonu
-        const cmdClear = document.getElementById("cmd-clear");
-        if (cmdClear) {
-            cmdClear.addEventListener("click", () => {
-                if (
-                    confirm(
-                        "İçeriği temizlemek istediğinize emin misiniz? Bu işlem geri alınamaz."
-                    )
-                ) {
-                    editor.DomComponents.clear();
-                    editor.CssComposer.clear();
-                }
-            });
-        }
-
-        // Geri Al butonu
-        const cmdUndo = document.getElementById("cmd-undo");
-        if (cmdUndo) {
-            cmdUndo.addEventListener("click", () => {
-                editor.UndoManager.undo();
-            });
-        }
-
-        // Yinele butonu
-        const cmdRedo = document.getElementById("cmd-redo");
-        if (cmdRedo) {
-            cmdRedo.addEventListener("click", () => {
-                editor.UndoManager.redo();
-            });
-        }
-    }
-    
-    /**
      * Cihaz görünümü değiştirme butonlarını yapılandırır
      * @param {Object} editor - GrapesJS editor örneği
      */
@@ -148,6 +101,21 @@ window.StudioUI = (function() {
         const deviceDesktop = document.getElementById("device-desktop");
         const deviceTablet = document.getElementById("device-tablet");
         const deviceMobile = document.getElementById("device-mobile");
+
+        // Tüm butonları temizle ve yeniden oluştur
+        function recreateButton(button) {
+            if (!button) return null;
+            
+            const newButton = button.cloneNode(true);
+            if (button.parentNode) {
+                button.parentNode.replaceChild(newButton, button);
+            }
+            return newButton;
+        }
+        
+        const newDesktopBtn = recreateButton(deviceDesktop);
+        const newTabletBtn = recreateButton(deviceTablet);
+        const newMobileBtn = recreateButton(deviceMobile);
 
         function toggleDeviceButtons(activeBtn) {
             const deviceBtns = document.querySelectorAll(".device-btns button");
@@ -161,22 +129,22 @@ window.StudioUI = (function() {
             }
         }
 
-        if (deviceDesktop) {
-            deviceDesktop.addEventListener("click", function () {
+        if (newDesktopBtn) {
+            newDesktopBtn.addEventListener("click", function () {
                 editor.setDevice("Desktop");
                 toggleDeviceButtons(this);
             });
         }
 
-        if (deviceTablet) {
-            deviceTablet.addEventListener("click", function () {
+        if (newTabletBtn) {
+            newTabletBtn.addEventListener("click", function () {
                 editor.setDevice("Tablet");
                 toggleDeviceButtons(this);
             });
         }
 
-        if (deviceMobile) {
-            deviceMobile.addEventListener("click", function () {
+        if (newMobileBtn) {
+            newMobileBtn.addEventListener("click", function () {
                 editor.setDevice("Mobile");
                 toggleDeviceButtons(this);
             });

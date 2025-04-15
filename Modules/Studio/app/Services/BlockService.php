@@ -17,13 +17,7 @@ class BlockService
      */
     public function getAllBlocks(): array
     {
-        // Önbellekten blokları al
-        $cacheKey = 'studio_blocks_' . (function_exists('tenant_id') ? tenant_id() : 'default');
-        $cacheTtl = config('studio.cache.ttl', 3600);
-        
-        // Önbelleği temizle (debugging için)
-        Cache::forget($cacheKey);
-        
+        // Blade şablonlarından blokları yükle
         $blocks = $this->loadBlocksFromTemplates();
         
         // Eğer bloklar boşsa, varsayılan blokları yükle

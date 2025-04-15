@@ -18,29 +18,43 @@ window.StudioBlocks = (function() {
         
         // Server'dan blokları al
         fetch('/admin/studio/api/blocks')
-            .then(response => response.json())
+            .then(response => {
+                console.log("API yanıtı alındı:", response.status);
+                return response.json();
+            })
             .then(data => {
+                console.log("API verileri alındı:", data);
+                console.log("Bloklar: ", data.blocks);
+                console.log("Kategoriler: ", data.categories);
+                
                 if (data.success && data.blocks) {
                     // Kategorileri tanımla
-                    const categories = {};
                     Object.keys(data.categories || {}).forEach(key => {
-                        categories[key] = data.categories[key];
-                        editor.BlockManager.getCategories().add({ id: key, label: data.categories[key] });
+                        console.log("Kategori ekleniyor:", key, "-", data.categories[key]);
+                        editor.BlockManager.getCategories().add({ 
+                            id: key, 
+                            label: data.categories[key] 
+                        });
                     });
+                    
+                    console.log("GrapesJS Kategorileri: ", editor.BlockManager.getCategories().models);
                     
                     // Blokları ekle
                     data.blocks.forEach(block => {
+                        console.log("Blok ekleniyor:", block.id, "-", block.label, "-", "Kategori:", block.category);
                         editor.BlockManager.add(block.id, {
                             label: block.label,
                             category: block.category,
-                            attributes: { class: block.icon },
+                            attributes: { class: block.icon || 'fa fa-cube' },
                             content: block.content
                         });
                     });
                     
+                    console.log("GrapesJS Blokları: ", editor.BlockManager.getAll().models);
                     console.log(`${data.blocks.length} adet blok başarıyla yüklendi`);
                     
-                    // DOM'da blok kategorileri oluştur
+                    // Blokları kategorilere atamalıyız
+                    console.log("Blok kategorileri oluşturuluyor...");
                     createBlockCategories(editor, data.categories || {});
                     
                     // Kategorilere blokları ekle
@@ -70,12 +84,26 @@ window.StudioBlocks = (function() {
         }
         
         // Önce içeriği temizle
+        console.log("Blok container içeriği temizleniyor...");
         blocksContainer.innerHTML = '';
         
+        // DOM yolunu göster
+        let element = blocksContainer;
+        let path = element.id;
+        while(element.parentElement) {
+            element = element.parentElement;
+            if (element.tagName) 
+                path = element.tagName + " > " + path;
+        }
+        console.log("Blok container DOM yolu: ", path);
+        
         // Her kategori için bir div oluştur
+        console.log("Kategoriler oluşturuluyor:", categories);
         Object.keys(categories).forEach(categoryId => {
             const categoryName = categories[categoryId];
             const categoryIcon = getCategoryIcon(categoryId);
+            
+            console.log("Kategori oluşturuluyor:", categoryId, "-", categoryName);
             
             const categoryDiv = document.createElement('div');
             categoryDiv.className = 'block-category';
@@ -91,6 +119,7 @@ window.StudioBlocks = (function() {
             `;
             
             blocksContainer.appendChild(categoryDiv);
+            console.log("Kategori DOM'a ekleniyor:", categoryId);
             
             // Kategori başlığına tıklama olayı ekle
             const header = categoryDiv.querySelector('.block-category-header');
@@ -104,6 +133,8 @@ window.StudioBlocks = (function() {
                 }
             });
         });
+        
+        console.log("Tüm kategoriler oluşturuldu");
     }
     
     /**
@@ -122,6 +153,7 @@ window.StudioBlocks = (function() {
             'cards': 'fa fa-id-card',
             'features': 'fa fa-list-check',
             'testimonials': 'fa fa-quote-right',
+            'pricing': 'fa fa-tag'
         };
         
         return icons[categoryId] || 'fa fa-cube';
@@ -132,28 +164,46 @@ window.StudioBlocks = (function() {
      * @param {Object} editor - GrapesJS editor örneği
      */
     function updateBlocksInCategories(editor) {
-        if (!editor) {
-            console.error('Editor örneği bulunamadı');
-            return;
-        }
-        
-        // Tüm blokları al
-        const blocks = editor.BlockManager.getAll();
+        console.log("Editor blokları güncelleniyor. Toplam " + editor.BlockManager.getAll().length + " blok var.");
         
         // Her bir kategori için blokları işle
         const categories = document.querySelectorAll('.block-category');
+        console.log(categories.length + " adet kategori elementi bulundu");
         
         categories.forEach(category => {
             const categoryId = category.getAttribute('data-category');
             if (!categoryId) return;
             
-            // Kategori içerik alanını temizle
+            console.log("Kategori için bloklar işleniyor:", categoryId);
+            
+            // Bu kategoriye ait blokları al
+            // ÖNEMLİ DÜZELTME: BlockManager.getAll().filter() yerine doğrudan array üzerinde filter kullanılmalı
+            const categoryBlocks = [];
+            editor.BlockManager.getAll().models.forEach(block => {
+                if (block.get('category') === categoryId) {
+                    categoryBlocks.push(block);
+                }
+            });
+            
+            // Kategori içerik alanını bul
             const blockItems = category.querySelector('.block-items');
             if (blockItems) {
+                // İçeriği temizle
                 blockItems.innerHTML = '';
                 
+                console.log(categoryId + " kategorisine " + categoryBlocks.length + " blok ekleniyor");
+                
+                // Bu kategoriye blok yok mesajı göster
+                if (categoryBlocks.length === 0) {
+                    const emptyMessage = document.createElement('div');
+                    emptyMessage.className = 'block-empty';
+                    emptyMessage.textContent = 'Bu kategoride blok bulunamadı';
+                    blockItems.appendChild(emptyMessage);
+                    return;
+                }
+                
                 // Bu kategoriye ait blokları ekle
-                blocks.filter(block => block.get('category') === categoryId).forEach(block => {
+                categoryBlocks.forEach(block => {
                     const blockEl = document.createElement('div');
                     blockEl.className = 'block-item';
                     blockEl.setAttribute('data-block-id', block.get('id'));
@@ -169,7 +219,8 @@ window.StudioBlocks = (function() {
                     // Drag-drop işlevini ekle
                     blockEl.setAttribute('draggable', 'true');
                     blockEl.addEventListener('dragstart', (e) => {
-                        e.dataTransfer.setData('block-id', block.get('id'));
+                        const blockId = block.get('id');
+                        e.dataTransfer.setData('text/plain', blockId);
                         blockEl.classList.add('dragging');
                     });
                     
@@ -186,6 +237,8 @@ window.StudioBlocks = (function() {
                 });
             }
         });
+        
+        console.log("Bloklar başarıyla kategorilere eklendi");
         
         // Arama işlevini ekle
         setupBlockSearch(editor);
@@ -209,6 +262,8 @@ window.StudioBlocks = (function() {
             const searchText = this.value.toLowerCase();
             filterBlocks(searchText, editor);
         });
+        
+        console.log("Arama işlevi ayarlandı");
     }
     
     /**

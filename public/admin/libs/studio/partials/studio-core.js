@@ -220,29 +220,49 @@ window.initStudioEditor = function (config) {
                 ]
             }
         });
-
+                                
         // Canvası görünür kılma komutu ekle
         editor.Commands.add('sw-visibility', {
-            run: function(editor) {
+            state: false,
+            
+            run(editor) {
+                const $ = editor.$;
+                const state = !this.state;
+                this.state = state;
+                
                 const canvas = editor.Canvas;
                 const frames = canvas.getFrames();
+                
                 frames.forEach(frame => {
-                    const body = frame.view.getBody();
-                    const css = body.ownerDocument.createElement('style');
-                    css.innerHTML = `* {outline: 1px dashed rgba(170, 170, 170, 0.7); outline-offset: -1px}`;
-                    frame.view.getHead().appendChild(css);
-                });
-                return css;
-            },
-            stop: function(editor) {
-                const canvas = editor.Canvas;
-                const frames = canvas.getFrames();
-                frames.forEach(frame => {
-                    const styleEl = frame.view.getHead().querySelector('style');
-                    if (styleEl) {
-                        styleEl.remove();
+                    const $elFrame = $(frame.getBody());
+                    const $allElsFrame = $elFrame.find('*');
+                    
+                    if (state) {
+                        $allElsFrame.each((i, el) => {
+                            const $el = $(el);
+                            const pfx = $el.css('outline-style') || 'none';
+                            
+                            if (pfx === 'none') {
+                                $el.css('outline', '1px solid rgba(170, 170, 170, 0.7)');
+                            }
+                        });
+                    } else {
+                        $allElsFrame.css('outline', '');
                     }
                 });
+                
+                // Buton aktif durumunu güncelle
+                const btn = document.getElementById('sw-visibility');
+                if (btn) {
+                    state ? btn.classList.add('active') : btn.classList.remove('active');
+                }
+                
+                return state;
+            },
+            
+            stop() {
+                this.state = false;
+                this.run(editor);
             }
         });
 

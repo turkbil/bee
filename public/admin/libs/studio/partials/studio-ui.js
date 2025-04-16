@@ -786,47 +786,65 @@ function addCustomFunctions(editor) {
  * Sayı girişi butonlarını düzeltme
  */
 function fixNumberInputs() {
-    // Number input butonlarını düzeltmek için MutationObserver kullan
-    const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-            if (mutation.addedNodes && mutation.addedNodes.length > 0) {
-                mutation.addedNodes.forEach((node) => {
-                    if (node.nodeType === 1) { // ELEMENT_NODE
-                        const arrows = node.querySelectorAll('.gjs-field-arrow-u, .gjs-field-arrow-d');
-                        arrows.forEach(arrow => {
-                            // Her okun olay dinleyicilerini kaldır ve yenisini ekle
-                            const newArrow = arrow.cloneNode(true);
-                            arrow.parentNode.replaceChild(newArrow, arrow);
-                            
-                            newArrow.addEventListener('click', function() {
-                                const input = this.closest('.gjs-field-integer').querySelector('input');
-                                if (!input) return;
-                                
-                                let value = parseInt(input.value) || 0;
-                                
-                                if (this.classList.contains('gjs-field-arrow-u')) {
-                                    value++;
-                                } else {
-                                    value--;
-                                }
-                                
-                                input.value = value;
-                                // Değişiklik olayını tetikle
-                                const event = new Event('change', { bubbles: true });
-                                input.dispatchEvent(event);
-                            });
-                        });
-                    }
-                });
+    // GrapesJS elementlerini hedeflemek için gecikme kullan
+    setTimeout(() => {
+        const allNumberInputs = document.querySelectorAll('.gjs-field-integer');
+        
+        allNumberInputs.forEach(container => {
+            const arrowsContainer = container.querySelector('.gjs-field-arrows');
+            if (!arrowsContainer) return;
+            
+            // Ok butonları
+            const arrowUp = container.querySelector('.gjs-field-arrow-u');
+            const arrowDown = container.querySelector('.gjs-field-arrow-d');
+            
+            if (!arrowUp || !arrowDown) return;
+            
+            // Input alanı
+            const input = container.querySelector('input');
+            if (!input) return;
+            
+            // Her bir ok için event listener ekle
+            const newArrowUp = arrowUp.cloneNode(true);
+            const newArrowDown = arrowDown.cloneNode(true);
+            
+            if (arrowUp.parentNode) {
+                arrowUp.parentNode.replaceChild(newArrowUp, arrowUp);
             }
+            
+            if (arrowDown.parentNode) {
+                arrowDown.parentNode.replaceChild(newArrowDown, arrowDown);
+            }
+            
+            // Yukarı ok tıklama
+            newArrowUp.addEventListener('click', function() {
+                const value = parseInt(input.value) || 0;
+                const step = parseInt(input.getAttribute('step')) || 1;
+                const max = parseInt(input.getAttribute('max')) || 9999;
+                
+                const newValue = Math.min(max, value + step);
+                input.value = newValue;
+                
+                // Değişikliği editöre bildir
+                const event = new Event('change', { bubbles: true });
+                input.dispatchEvent(event);
+            });
+            
+            // Aşağı ok tıklama
+            newArrowDown.addEventListener('click', function() {
+                const value = parseInt(input.value) || 0;
+                const step = parseInt(input.getAttribute('step')) || 1;
+                const min = parseInt(input.getAttribute('min')) || -9999;
+                
+                const newValue = Math.max(min, value - step);
+                input.value = newValue;
+                
+                // Değişikliği editöre bildir
+                const event = new Event('change', { bubbles: true });
+                input.dispatchEvent(event);
+            });
         });
-    });
-    
-    // Panelleri gözlemle
-    const rightPanel = document.querySelector('.panel__right');
-    if (rightPanel) {
-        observer.observe(rightPanel, { childList: true, subtree: true });
-    }
+    }, 1000); // Sayfa tamamen yüklendikten 1 saniye sonra çalıştır
 }
 
 return {

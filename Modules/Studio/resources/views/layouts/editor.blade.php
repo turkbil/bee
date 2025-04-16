@@ -34,7 +34,7 @@
             
             <div class="editor-toolbar btn-group me-2">
                 <button id="sw-visibility" class="btn btn-tool btn-icon" title="Bileşen sınırlarını göster/gizle">
-                    <i class="fas fa-eye"></i>
+                    <i class="fas fa-border-all"></i>
                 </button>
                 
                 <button id="cmd-clear" class="btn btn-tool btn-icon" title="İçeriği temizle">
@@ -121,6 +121,7 @@
     <script src="{{ asset('admin/libs/studio/partials/studio-ui.js') }}"></script>
     <script src="{{ asset('admin/libs/studio/partials/studio-actions.js') }}"></script>
     <script src="{{ asset('admin/libs/studio/partials/studio-core.js') }}"></script>
+    <script src="{{ asset('admin/libs/js-cookie@3.0.5/js.cookie.min.js') }}"></script>
     <script src="{{ asset('admin/libs/studio/app.js') }}"></script>
     
     @livewireScripts

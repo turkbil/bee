@@ -17,6 +17,7 @@ window.StudioUI = (function() {
         setupTabs();
         setupDeviceToggle(editor);
         setupPanelSearch();
+        initializePanelToggles();
         initializeBlockCategories();
         setupEditorStyles();
         standardizeLayerPanel();
@@ -61,8 +62,109 @@ window.StudioUI = (function() {
                         content.classList.remove("active");
                     }
                 });
+                
+                // Aktif sekme bilgisini localStorage'a kaydet
+                localStorage.setItem('studio_active_tab', tabName);
             });
         });
+        
+        // Önceki aktif sekmeyi yükle
+        const savedTab = localStorage.getItem('studio_active_tab');
+        if (savedTab) {
+            const activeTab = document.querySelector(`.panel-tab[data-tab="${savedTab}"]`);
+            if (activeTab) {
+                activeTab.click();
+            }
+        }
+    }
+    
+    /**
+     * Panel açma/kapama butonlarını ekle ve yapılandır
+     */
+    function initializePanelToggles() {
+        // Sol panel açma/kapama butonu
+        createPanelToggle('panel__left', 'fa-chevron-left');
+        
+        // Sağ panel açma/kapama butonu
+        createPanelToggle('panel__right', 'fa-chevron-right');
+        
+        // Önceki panel durumlarını yükle
+        loadPanelStates();
+    }
+    
+    /**
+     * Panel toggle butonunu oluştur
+     * @param {string} panelClass - Panel sınıfı
+     * @param {string} iconClass - İkon sınıfı
+     */
+    function createPanelToggle(panelClass, iconClass) {
+        const panel = document.querySelector(`.${panelClass}`);
+        if (!panel) return;
+        
+        // Zaten bir toggle butonu varsa kaldır
+        const existingToggle = panel.querySelector('.panel-toggle');
+        if (existingToggle) {
+            existingToggle.remove();
+        }
+        
+        // Toggle butonunu oluştur
+        const toggleBtn = document.createElement('div');
+        toggleBtn.className = 'panel-toggle';
+        toggleBtn.innerHTML = `<i class="fas ${iconClass}"></i>`;
+        
+        // Toggle butonuna tıklama olayı ekle
+        toggleBtn.addEventListener('click', function() {
+            // Panel durumunu değiştir
+            panel.classList.toggle('collapsed');
+            
+            // Panel durumunu localStorage'a kaydet
+            savePanelStates();
+        });
+        
+        // Panele toggle butonunu ekle
+        panel.appendChild(toggleBtn);
+    }
+    
+    /**
+     * Panel açık/kapalı durumlarını localStorage'a kaydet
+     */
+    function savePanelStates() {
+        // Sol panel durumu
+        const leftPanel = document.querySelector('.panel__left');
+        const leftCollapsed = leftPanel && leftPanel.classList.contains('collapsed');
+        
+        // Sağ panel durumu
+        const rightPanel = document.querySelector('.panel__right');
+        const rightCollapsed = rightPanel && rightPanel.classList.contains('collapsed');
+        
+        // Durumları localStorage'a kaydet
+        localStorage.setItem('studio_left_panel_collapsed', leftCollapsed ? 'true' : 'false');
+        localStorage.setItem('studio_right_panel_collapsed', rightCollapsed ? 'true' : 'false');
+    }
+    
+    /**
+     * Panel açık/kapalı durumlarını localStorage'dan yükle
+     */
+    function loadPanelStates() {
+        // Sol panel durumu
+        const leftPanel = document.querySelector('.panel__left');
+        const leftSavedState = localStorage.getItem('studio_left_panel_collapsed');
+        
+        if (leftPanel && leftSavedState === 'true') {
+            leftPanel.classList.add('collapsed');
+        } else if (leftPanel) {
+            leftPanel.classList.remove('collapsed');
+        }
+        
+        // Sağ panel durumu
+        const rightPanel = document.querySelector('.panel__right');
+        const rightSavedState = localStorage.getItem('studio_right_panel_collapsed');
+        
+        if (rightPanel && rightSavedState === 'true') {
+            rightPanel.classList.add('collapsed');
+        } else if (rightPanel) {
+            rightPanel.classList.remove('collapsed');
+        }
     }
     
     /**
@@ -196,18 +298,65 @@ window.StudioUI = (function() {
                         content.style.display = 'grid';
                     }
                 }
+                
+                // Kategori durumlarını kaydet
+                saveBlockCategoryStates();
             });
-
-            // İlk başta tüm kategoriler açık olsun
-            const parent = newCategory.closest('.block-category');
-            if (parent) {
-                parent.classList.remove('collapsed');
-                const content = parent.querySelector('.block-items');
-                if (content) {
-                    content.style.display = 'grid';
-                }
+        });
+        
+        // Kategori durumlarını yükle
+        loadBlockCategoryStates();
+    }
+    
+    /**
+     * Kategori açık/kapalı durumlarını localStorage'a kaydet
+     */
+    function saveBlockCategoryStates() {
+        const categories = document.querySelectorAll('.block-category');
+        const states = {};
+        
+        categories.forEach(category => {
+            const categoryId = category.getAttribute('data-category');
+            if (categoryId) {
+                states[categoryId] = category.classList.contains('collapsed');
             }
         });
+        
+        localStorage.setItem('studio_block_categories', JSON.stringify(states));
+    }
+    
+    /**
+     * Kategori açık/kapalı durumlarını localStorage'dan yükle
+     */
+    function loadBlockCategoryStates() {
+        const savedStates = localStorage.getItem('studio_block_categories');
+        if (!savedStates) return;
+        
+        try {
+            const states = JSON.parse(savedStates);
+            const categories = document.querySelectorAll('.block-category');
+            
+            categories.forEach(category => {
+                const categoryId = category.getAttribute('data-category');
+                if (categoryId && states[categoryId] !== undefined) {
+                    if (states[categoryId]) {
+                        category.classList.add('collapsed');
+                        const content = category.querySelector('.block-items');
+                        if (content) {
+                            content.style.display = 'none';
+                        }
+                    } else {
+                        category.classList.remove('collapsed');
+                        const content = category.querySelector('.block-items');
+                        if (content) {
+                            content.style.display = 'grid';
+                        }
+                    }
+                }
+            });
+        } catch (e) {
+            console.error('Block category states could not be loaded:', e);
+        }
     }
     
     /**
@@ -280,6 +429,13 @@ window.StudioUI = (function() {
                 }, 300);
             });
             
+            // Sağ tıklama menüsü
+            editor.on('contextmenu', function(event, model) {
+                if (model) {
+                    createContextMenu(event, model, editor);
+                }
+            });
+            
             // Sürükle-bırak hedefi olarak canvas
             const editorCanvas = document.querySelector('.editor-canvas');
             if (editorCanvas) {
@@ -299,6 +455,83 @@ window.StudioUI = (function() {
             }
         } catch (error) {
             console.warn('Canvas olayları ayarlanırken hata:', error);
+        }
+    }
+    
+    /**
+     * Sağ tıklama menüsü oluştur
+     * @param {Event} event - Olay
+     * @param {Object} model - Bileşen modeli
+     * @param {Object} editor - GrapesJS editor örneği
+     */
+    function createContextMenu(event, model, editor) {
+        event.preventDefault();
+        
+        // Mevcut menüyü temizle
+        const existingMenu = document.querySelector('.studio-context-menu');
+        if (existingMenu) {
+            existingMenu.remove();
+        }
+        
+        // Menü oluştur
+        const menu = document.createElement('div');
+        menu.className = 'studio-context-menu';
+        menu.style.left = event.pageX + 'px';
+        menu.style.top = event.pageY + 'px';
+        
+        // Menü öğelerini ekle
+        const menuItems = [
+            { text: 'Düzenle', icon: 'fa-edit', action: () => editor.select(model) },
+            { text: 'Kopyala', icon: 'fa-copy', action: () => editor.runCommand('tlb-clone', { target: model }) },
+            { text: 'Sil', icon: 'fa-trash', action: () => model.remove() },
+            { type: 'divider' },
+            { text: 'İçeriği Temizle', icon: 'fa-eraser', action: () => model.empty() },
+            { type: 'divider' },
+            { text: 'HTML Göster', icon: 'fa-code', action: () => showElementHtml(model) }
+        ];
+        
+        menuItems.forEach(item => {
+            if (item.type === 'divider') {
+                const divider = document.createElement('div');
+                divider.className = 'studio-context-menu-divider';
+                menu.appendChild(divider);
+            } else {
+                const menuItem = document.createElement('div');
+                menuItem.className = 'studio-context-menu-item';
+                menuItem.innerHTML = `<i class="fas ${item.icon}"></i> ${item.text}`;
+                menuItem.addEventListener('click', () => {
+                    item.action();
+                    menu.remove();
+                });
+                menu.appendChild(menuItem);
+            }
+        });
+        
+        // Menüyü ekle
+        document.body.appendChild(menu);
+        
+        // Dışarı tıklandığında menüyü kapat
+        document.addEventListener('click', function closeMenu(e) {
+            if (!menu.contains(e.target)) {
+                menu.remove();
+                document.removeEventListener('click', closeMenu);
+            }
+        });
+    }
+    
+    /**
+     * Element HTML'ini göster
+     * @param {Object} model - Bileşen modeli
+     */
+    function showElementHtml(model) {
+        const html = model.toHTML();
+        
+        if (window.StudioUtils && typeof window.StudioUtils.showEditModal === 'function') {
+            window.StudioUtils.showEditModal('Element HTML', html, function(newHtml) {
+                model.replaceWith(newHtml);
+            });
+        } else {
+            alert(html);
         }
     }
     
@@ -323,6 +556,9 @@ window.StudioUI = (function() {
                     content.classList.add('active');
                 }
             });
+            
+            // Aktif sekmeyi localStorage'a kaydet
+            localStorage.setItem('studio_active_tab', 'styles');
         }
     }
     
@@ -360,6 +596,12 @@ window.StudioUI = (function() {
                     activeBtn.classList.add("active");
                 }
             }
+            
+            // Aktif cihazı localStorage'a kaydet
+            if (activeBtn) {
+                const deviceId = activeBtn.id.replace('device-', '');
+                localStorage.setItem('studio_active_device', deviceId);
+            }
         }
 
         if (newDesktopBtn) {
@@ -381,6 +623,15 @@ window.StudioUI = (function() {
                 editor.setDevice("Mobile");
                 toggleDeviceButtons(this);
             });
+        }
+        
+        // Önceki aktif cihazı yükle
+        const savedDevice = localStorage.getItem('studio_active_device');
+        if (savedDevice) {
+            const activeDeviceBtn = document.getElementById(`device-${savedDevice}`);
+            if (activeDeviceBtn) {
+                activeDeviceBtn.click();
+            }
         }
     }
     
@@ -446,9 +697,12 @@ window.StudioUI = (function() {
                         } else {
                             properties.style.display = 'block';
                         }
+                        
+                        // Stil sektörü durumlarını kaydet
+                        saveStyleSectorStates();
                     });
                     
-                    // İlk sektör açık, diğerleri kapalı olsun
+                    // İlk sektör açık, diğerleri kapalı olsun (özel durum yoksa)
                     if (index === 0) {
                         newSector.parentElement.classList.remove('gjs-collapsed');
                         properties.style.display = 'block';
@@ -458,7 +712,65 @@ window.StudioUI = (function() {
                     }
                 }
             });
+            
+            // Stil sektörü durumlarını yükle
+            loadStyleSectorStates();
         }, 500);
+    }
+    
+    /**
+     * Stil sektörü açık/kapalı durumlarını localStorage'a kaydet
+     */
+    function saveStyleSectorStates() {
+        const sectors = document.querySelectorAll('.gjs-sm-sector');
+        const states = {};
+        
+        sectors.forEach(sector => {
+            const sectorTitle = sector.querySelector('.gjs-sm-sector-title');
+            if (sectorTitle) {
+                const sectorName = sectorTitle.textContent.trim();
+                states[sectorName] = sector.classList.contains('gjs-collapsed');
+            }
+        });
+        
+        localStorage.setItem('studio_style_sectors', JSON.stringify(states));
+    }
+    
+    /**
+     * Stil sektörü açık/kapalı durumlarını localStorage'dan yükle
+     */
+    function loadStyleSectorStates() {
+        const savedStates = localStorage.getItem('studio_style_sectors');
+        if (!savedStates) return;
+        
+        try {
+            const states = JSON.parse(savedStates);
+            const sectors = document.querySelectorAll('.gjs-sm-sector');
+            
+            sectors.forEach(sector => {
+                const sectorTitle = sector.querySelector('.gjs-sm-sector-title');
+                if (sectorTitle) {
+                    const sectorName = sectorTitle.textContent.trim();
+                    if (states[sectorName] !== undefined) {
+                        if (states[sectorName]) {
+                            sector.classList.add('gjs-collapsed');
+                            const properties = sector.querySelector('.gjs-sm-properties');
+                            if (properties) {
+                                properties.style.display = 'none';
+                            }
+                        } else {
+                            sector.classList.remove('gjs-collapsed');
+                            const properties = sector.querySelector('.gjs-sm-properties');
+                            if (properties) {
+                                properties.style.display = 'block';
+                            }
+                        }
+                    }
+                }
+            });
+        } catch (e) {
+            console.error('Style sector states could not be loaded:', e);
+        }
     }
     
     /**
@@ -497,6 +809,7 @@ window.StudioUI = (function() {
         standardizeLayerPanel: standardizeLayerPanel,
         handleCanvasEvents: handleCanvasEvents,
         addCustomFunctions: addCustomFunctions,
-        activateStylePanel: activateStylePanel
+        activateStylePanel: activateStylePanel,
+        initializePanelToggles: initializePanelToggles
     };
 })();

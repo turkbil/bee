@@ -3,19 +3,20 @@
 
 /* Temel değişkenler ve renkler - tutarlılık için tek yerden yönetim */
 :root {
-    --primary-color: #3b82f6;
-    --primary-light: #dbeafe;
-    --primary-hover: #2563eb;
-    --secondary-color: #64748b;
-    --secondary-light: #94a3b8;
-    --border-color: #e2e8f0;
+    --primary-color: #206bc4;
+    --primary-light: #e7f0ff;
+    --primary-hover: #1a569c;
+    --secondary-color: #4a5568;
+    --secondary-light: #9aa3b2;
+    --border-color: #dadfe5;
     --panel-bg: #ffffff;
-    --panel-header: #f1f5f9;
-    --light-bg: #f8fafc;
+    --panel-header: #f6f8fa;
+    --light-bg: #f9fafb;
     --hover-bg: #f1f5f9;
-    --active-bg: #eff6ff;
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
-    --shadow-md: 0 4px 6px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.1);
+    --active-bg: #e8f1fd;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-panel: 0 0 10px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.08);
     --radius-sm: 4px;
     --radius-md: 6px;
     --radius-lg: 8px;
@@ -30,6 +31,7 @@
     --spacing-lg: 16px;
     --spacing-xl: 20px;
     --transition-normal: all 0.2s ease;
+    --transition-slow: all 0.3s ease;
 }
 
 /* Temel Layout */
@@ -41,6 +43,7 @@ html, body {
     overflow: hidden;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     color: #1e293b;
+    background-color: var(--light-bg);
 }
 
 body {
@@ -64,8 +67,80 @@ body {
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-panel);
     z-index: 10;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+/* Sağ Panel */
+.panel__right {
+    width: 280px;
+    background-color: var(--panel-bg);
+    border-left: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    box-shadow: var(--shadow-panel);
+    z-index: 10;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+/* Panel Toggle Button */
+.panel-toggle {
+    position: absolute;
+    top: 50%;
+    width: 22px;
+    height: 40px;
+    background-color: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 11;
+    transform: translateY(-50%);
+    transition: var(--transition-normal);
+}
+
+.panel__left .panel-toggle {
+    right: -22px;
+    border-left: none;
+}
+
+.panel__right .panel-toggle {
+    left: -22px;
+    border-right: none;
+}
+
+.panel-toggle:hover {
+    background-color: var(--hover-bg);
+}
+
+.panel-toggle i {
+    color: var(--secondary-color);
+    font-size: var(--font-lg);
+    transition: transform 0.3s ease;
+}
+
+.panel__left.collapsed .panel-toggle i {
+    transform: rotate(180deg);
+}
+
+.panel__right.collapsed .panel-toggle i {
+    transform: rotate(180deg);
+}
+
+/* Collapsed Panel States */
+.panel__left.collapsed {
+    margin-left: -280px;
+}
+
+.panel__right.collapsed {
+    margin-right: -280px;
 }
 
 /* Tab Paneli ve Sekmeler - Tüm bölümler için ortak */
@@ -73,6 +148,8 @@ body {
     display: flex;
     border-bottom: 1px solid var(--border-color);
     background-color: var(--panel-header);
+    padding: 0;
+    margin: 0;
 }
 
 .panel-tab {
@@ -89,17 +166,28 @@ body {
     align-items: center;
     justify-content: center;
     gap: var(--spacing-xs);
+    position: relative;
 }
 
 .panel-tab:hover {
     color: var(--primary-color);
-    background-color: rgba(59, 130, 246, 0.05);
+    background-color: rgba(32, 107, 196, 0.05);
 }
 
 .panel-tab.active {
     color: var(--primary-color);
     border-bottom-color: var(--primary-color);
     background-color: var(--panel-bg);
+}
+
+.panel-tab.active::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--primary-color);
 }
 
 .panel-tab .tab-icon {
@@ -184,7 +272,7 @@ body {
 .gjs-sm-search input:focus,
 .gjs-layer-search input:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    box-shadow: 0 0 0 3px rgba(32, 107, 196, 0.2);
     border-color: var(--primary-color);
 }
 
@@ -263,6 +351,7 @@ body {
     background-color: var(--panel-bg);
     border: 1px solid var(--border-color);
     overflow: hidden;
+    box-shadow: var(--shadow-sm);
 }
 
 /* Blok Öğeleri için Grid Layout */
@@ -283,11 +372,12 @@ body {
     background-color: var(--light-bg);
     border: 1px solid var(--border-color);
     cursor: grab;
-    transition: var(--transition-normal);
+    transition: var(--transition-slow);
     text-align: center;
     position: relative;
     user-select: none;
     min-height: 90px;
+    box-shadow: var(--shadow-sm);
 }
 
 .block-item:hover {
@@ -332,18 +422,22 @@ body {
     background-color: #f1f5f9;
     transition: outline 0.3s ease;
     padding: 10px;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.03);
 }
 
 #gjs {
     height: 100%;
     width: 100%;
     transition: all 0.3s ease;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
 }
 
 .editor-canvas.drop-target {
     outline: 3px dashed var(--primary-color);
     outline-offset: -5px;
-    background-color: rgba(59, 130, 246, 0.05);
+    background-color: rgba(32, 107, 196, 0.05);
 }
 
 /* Üst Menü Bölümü */
@@ -477,10 +571,103 @@ body {
     color: var(--primary-color);
 }
 
+/* Context Menu */
+.studio-context-menu {
+    position: absolute;
+    background-color: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    padding: var(--spacing-xs) 0;
+    z-index: 1000;
+    min-width: 180px;
+}
+
+.studio-context-menu-item {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    display: flex;
+    align-items: center;
+    color: var(--secondary-color);
+    font-size: var(--font-md);
+    cursor: pointer;
+    transition: var(--transition-normal);
+}
+
+.studio-context-menu-item:hover {
+    background-color: var(--hover-bg);
+    color: var(--primary-color);
+}
+
+.studio-context-menu-item i {
+    margin-right: var(--spacing-sm);
+    width: 16px;
+    text-align: center;
+}
+
+.studio-context-menu-divider {
+    height: 1px;
+    background-color: var(--border-color);
+    margin: var(--spacing-xs) 0;
+}
+
+/* Toolbar */
+.editor-toolbar {
+    display: flex;
+    align-items: center;
+    background-color: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.editor-toolbar button {
+    height: 36px;
+    min-width: 36px;
+    border: none;
+    background: transparent;
+    color: var(--secondary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition-normal);
+    padding: 0 var(--spacing-sm);
+}
+
+.editor-toolbar button:hover {
+    background-color: var(--hover-bg);
+    color: var(--primary-color);
+}
+
+.editor-toolbar button.active {
+    background-color: var(--active-bg);
+    color: var(--primary-color);
+}
+
+.editor-toolbar-divider {
+    width: 1px;
+    height: 24px;
+    background-color: var(--border-color);
+    margin: 0 var(--spacing-xs);
+}
+
 /* Responsive Ayarlamalar */
+@media (max-width: 1200px) {
+    .panel__left, .panel__right {
+        width: 260px;
+    }
+}
+
 @media (max-width: 992px) {
     .panel__left {
-        width: 260px;
+        width: 240px;
+    }
+    
+    .panel__right {
+        position: absolute;
+        right: 0;
+        height: 100%;
+        z-index: 100;
     }
     
     .block-items {
@@ -498,7 +685,10 @@ body {
 
 @media (max-width: 768px) {
     .panel__left {
-        width: 240px;
+        position: absolute;
+        left: 0;
+        height: 100%;
+        z-index: 100;
     }
     
     .panel-tab .tab-text {
@@ -508,6 +698,20 @@ body {
     .panel-tab .tab-icon {
         margin-right: 0;
         font-size: var(--font-lg);
+    }
+    
+    .studio-header {
+        padding: 0 var(--spacing-sm);
+    }
+    
+    .header-center {
+        display: none;
+    }
+    
+    .btn-tool span,
+    .btn-view span,
+    .btn-save span {
+        display: none;
     }
 }
 
@@ -585,3 +789,4 @@ body {
     line-height: 1.5;
     resize: vertical;
 }
+

@@ -17,6 +17,14 @@ class BlockService
      */
     public function getAllBlocks(): array
     {
+        // Önbellekle blokları saklayarak arka arkaya aynı istekleri önleyelim
+        static $cachedBlocks = null;
+        
+        // Eğer bloklar daha önce yüklendiyse tekrar yüklemeye gerek yok
+        if ($cachedBlocks !== null) {
+            return $cachedBlocks;
+        }
+        
         // Blade şablonlarından blokları yükle
         $blocks = $this->loadBlocksFromTemplates();
         
@@ -28,6 +36,8 @@ class BlockService
         // Log dosyasına detayları yaz
         Log::info('Yüklenen bloklar:', ['count' => count($blocks)]);
         
+        // Blokları önbelleğe al ve döndür
+        $cachedBlocks = $blocks;
         return $blocks;
     }
             

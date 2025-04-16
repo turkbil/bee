@@ -4,9 +4,20 @@
  */
 // public/admin/libs/studio/partials/studio-init.js
 
+/**
+ * Studio Editor - Başlatıcı
+ * Studio Editor'ün sayfa yüklendiğinde başlatılmasını yönetir
+ */
+
 (function() {
     // DOM yüklendiğinde çalışacak kod
     document.addEventListener('DOMContentLoaded', function() {
+        // Editor zaten başlatılmışsa tekrar başlatma
+        if (window._studioEditorInitialized) {
+            console.log('Studio Editor zaten başlatılmış, init.js bu çağrıyı atlıyor.');
+            return;
+        }
+        
         // Editor element'ini bul
         const editorElement = document.getElementById('gjs');
         if (!editorElement) {
@@ -23,41 +34,25 @@
             css: document.getElementById('css-content') ? document.getElementById('css-content').value : '',
         };
         
-        // Sadece bir kez başlatıldığından emin ol
-        if (window._studioEditorInitialized) {
-            console.warn('Studio Editor zaten başlatılmış, tekrar başlatma işlemi atlanıyor.');
-            return;
-        }
-        window._studioEditorInitialized = true;
-
-        if (!config || !config.moduleId || config.moduleId <= 0) {
-            console.error('Geçersiz konfigürasyon veya modül ID:', config);
-            window._studioEditorInitialized = false; // Hata durumunda bayrağı geri al
-            return;
-        }
-        
-        // Global değişkende sakla
-        window.studioEditorConfig = config;
-        
         // Editor başlat
         if (typeof window.initStudioEditor === 'function') {
             try {
+                window._studioEditorInitialized = true;
                 const editor = window.initStudioEditor(config);
                 
                 // Editor yükleme olayını dinle
                 editor.on('load', function() {
                     console.log('Editor yükleme olayı tetiklendi');
                     
-                    // Blokları kaydet
-                    if (window.StudioBlocks && typeof window.StudioBlocks.registerBlocks === 'function') {
+                    // Blokları sadece bir kez yükle
+                    if (!window._studioBlocksInitialized && window.StudioBlocks && typeof window.StudioBlocks.registerBlocks === 'function') {
+                        window._studioBlocksInitialized = true;
                         window.StudioBlocks.registerBlocks(editor);
-                        
-                        // Kategorileri DOM'a ekle
-                        setTimeout(function() {
-                            if (window.StudioBlocks.updateBlocksInCategories) {
-                                window.StudioBlocks.updateBlocksInCategories(editor);
-                            }
-                        }, 500);
+                    }
+                    
+                    // Arama özelliğini ayarla
+                    if (window.StudioBlocks && typeof window.StudioBlocks.setupBlockSearch === 'function') {
+                        window.StudioBlocks.setupBlockSearch(editor);
                     }
                     
                     // UI bileşenlerini ayarla
@@ -78,6 +73,7 @@
                 window.studioEditor = editor;
             } catch (error) {
                 console.error('Studio Editor başlatılırken hata:', error);
+                window._studioEditorInitialized = false; // Hata durumunda temizle
             }
         } else {
             console.error('Studio Editor başlatılamıyor: initStudioEditor fonksiyonu bulunamadı!');

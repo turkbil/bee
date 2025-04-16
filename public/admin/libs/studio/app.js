@@ -45,8 +45,9 @@ document.addEventListener('DOMContentLoaded', function() {
             editor.on('load', function() {
                 console.log('Editor yükleme olayı tetiklendi');
                 
-                // Blokları kaydet
-                if (window.StudioBlocks && typeof window.StudioBlocks.registerBlocks === 'function') {
+                // Blokları sadece bir kez yükle
+                if (!window._studioBlocksInitialized && window.StudioBlocks && typeof window.StudioBlocks.registerBlocks === 'function') {
+                    window._studioBlocksInitialized = true;
                     window.StudioBlocks.registerBlocks(editor);
                 }
                 

@@ -2,7 +2,6 @@
  * Studio Editor - UI Modülü
  * Modern arayüz işlevleri
  */
-// public/admin/libs/studio/partials/studio-ui.js
 
 window.StudioUI = (function() {
     // Editor örneğini global olarak sakla
@@ -17,8 +16,20 @@ window.StudioUI = (function() {
         
         setupTabs();
         setupDeviceToggle(editor);
+        setupPanelSearch();
         initializeBlockCategories();
         setupEditorStyles();
+        standardizeLayerPanel();
+        addCustomFunctions(editor);
+        handleCanvasEvents(editor);
+        
+        // Bileşen seçimi olayı
+        editor.on('component:selected', function() {
+            // Stiller sekmesini etkinleştir
+            setTimeout(() => {
+                activateStylePanel();
+            }, 100);
+        });
     }
     
     /**
@@ -52,6 +63,109 @@ window.StudioUI = (function() {
                 });
             });
         });
+    }
+    
+    /**
+     * Panel arama kutuları için olay dinleyicileri ekle
+     */
+    function setupPanelSearch() {
+        // Bileşenler arama - zaten mevcut 
+        
+        // Stiller arama
+        const stylesSearch = document.getElementById("styles-search");
+        if (stylesSearch) {
+            // Mevcut listener'ı kaldır (varsa)
+            const newStylesSearch = stylesSearch.cloneNode(true);
+            if (stylesSearch.parentNode) {
+                stylesSearch.parentNode.replaceChild(newStylesSearch, stylesSearch);
+            }
+            
+            newStylesSearch.addEventListener("input", function() {
+                const searchText = this.value.toLowerCase();
+                const styleProperties = document.querySelectorAll('.gjs-sm-property');
+                const styleSectors = document.querySelectorAll('.gjs-sm-sector');
+                
+                if (searchText === '') {
+                    // Arama boşsa her şeyi göster
+                    styleProperties.forEach(prop => prop.style.display = '');
+                    styleSectors.forEach(sector => sector.style.display = '');
+                    return;
+                }
+                
+                // Arama varlığında eşleşen özellikleri göster
+                let foundInSectors = new Set();
+                
+                styleProperties.forEach(prop => {
+                    const label = prop.querySelector('.gjs-sm-label');
+                    if (label && label.textContent.toLowerCase().includes(searchText)) {
+                        prop.style.display = '';
+                        const sector = prop.closest('.gjs-sm-sector');
+                        if (sector) {
+                            foundInSectors.add(sector);
+                            sector.classList.remove('gjs-collapsed');
+                        }
+                    } else {
+                        prop.style.display = 'none';
+                    }
+                });
+                
+                // Eşleşmeyen bölümleri gizle
+                styleSectors.forEach(sector => {
+                    if (foundInSectors.has(sector)) {
+                        sector.style.display = '';
+                    } else {
+                        sector.style.display = 'none';
+                    }
+                });
+            });
+        }
+        
+        // Katmanlar arama
+        const layersSearch = document.getElementById("layers-search");
+        if (layersSearch) {
+            // Mevcut listener'ı kaldır (varsa)
+            const newLayersSearch = layersSearch.cloneNode(true);
+            if (layersSearch.parentNode) {
+                layersSearch.parentNode.replaceChild(newLayersSearch, layersSearch);
+            }
+            
+            newLayersSearch.addEventListener("input", function() {
+                const searchText = this.value.toLowerCase();
+                const layers = document.querySelectorAll('.gjs-layer');
+                
+                layers.forEach(layer => {
+                    const title = layer.querySelector('.gjs-layer-title');
+                    if (title && title.textContent.toLowerCase().includes(searchText)) {
+                        layer.style.display = '';
+                        
+                        // Ebeveyn katmanları da göster
+                        let parent = layer.parentElement;
+                        while (parent) {
+                            if (parent.classList.contains('gjs-layer-children')) {
+                                parent.style.display = '';
+                                const parentLayer = parent.closest('.gjs-layer');
+                                if (parentLayer) {
+                                    parentLayer.style.display = '';
+                                }
+                            }
+                            parent = parent.parentElement;
+                        }
+                    } else {
+                        // Çocuğu var mı kontrol et
+                        const children = layer.querySelector('.gjs-layer-children');
+                        const hasVisibleChild = children && 
+                            Array.from(children.querySelectorAll('.gjs-layer'))
+                            .some(child => child.style.display !== 'none');
+                        
+                        if (hasVisibleChild) {
+                            layer.style.display = '';
+                        } else {
+                            layer.style.display = 'none';
+                        }
+                    }
+                });
+            });
+        }
     }
     
     /**
@@ -94,6 +208,122 @@ window.StudioUI = (function() {
                 }
             }
         });
+    }
+    
+    /**
+     * Katmanlar panelini standartlaştır
+     */
+    function standardizeLayerPanel() {
+        // GrapesJS yüklendikten sonra çalışması için bekle
+        setTimeout(() => {
+            // Katmanlar bölümünü Bileşenler/Stiller ile uyumlu hale getir
+            const layerContainer = document.getElementById('layers-container');
+            if (layerContainer) {
+                // Arama alanı oluştur (eğer yoksa)
+                if (!document.getElementById('layers-search')) {
+                    const searchBox = document.createElement('div');
+                    searchBox.className = 'blocks-search';
+                    searchBox.innerHTML = `<input type="text" id="layers-search" class="form-control" placeholder="Katman ara...">`;
+                    
+                    if (layerContainer.previousElementSibling && layerContainer.previousElementSibling.classList.contains('blocks-search')) {
+                        // Arama alanı var, güncelleme yapma
+                    } else {
+                        layerContainer.parentNode.insertBefore(searchBox, layerContainer);
+                    }
+                }
+                
+                // Katmanlar panel başlıklarına ikon ekle
+                const layerGroupHeaders = layerContainer.querySelectorAll('.gjs-layer-group-header');
+                layerGroupHeaders.forEach(header => {
+                    if (!header.querySelector('i.fa')) {
+                        const icon = document.createElement('i');
+                        icon.className = 'fa fa-layer-group';
+                        header.insertBefore(icon, header.firstChild);
+                        
+                        // Toggle ikon ekle (açılır/kapanır)
+                        if (!header.querySelector('.toggle-icon')) {
+                            const toggleIcon = document.createElement('i');
+                            toggleIcon.className = 'toggle-icon';
+                            header.appendChild(toggleIcon);
+                        }
+                    }
+                });
+                
+                // Layer katmanlarına hover efekti ve diğer düzenlemeler için
+                const allLayers = layerContainer.querySelectorAll('.gjs-layer');
+                allLayers.forEach(layer => {
+                    layer.classList.add('layer-styled');
+                });
+            }
+        }, 1000);
+    }
+    
+    /**
+     * Canvas/Editor olaylarını işle
+     * @param {Object} editor - GrapesJS editor örneği
+     */
+    function handleCanvasEvents(editor) {
+        try {
+            // Canvas içindeki değişiklikleri dinle
+            editor.on('component:update', function() {
+                // Katmanlar panelini güncelle
+                setTimeout(function() {
+                    standardizeLayerPanel();
+                }, 300);
+            });
+            
+            // Yeni bir bileşen eklendiğinde
+            editor.on('component:add', function() {
+                // Katmanlar panelini güncelle
+                setTimeout(function() {
+                    standardizeLayerPanel();
+                }, 300);
+            });
+            
+            // Sürükle-bırak hedefi olarak canvas
+            const editorCanvas = document.querySelector('.editor-canvas');
+            if (editorCanvas) {
+                editorCanvas.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    this.classList.add('drop-target');
+                });
+                
+                editorCanvas.addEventListener('dragleave', function(e) {
+                    e.preventDefault();
+                    this.classList.remove('drop-target');
+                });
+                
+                editorCanvas.addEventListener('drop', function(e) {
+                    this.classList.remove('drop-target');
+                });
+            }
+        } catch (error) {
+            console.warn('Canvas olayları ayarlanırken hata:', error);
+        }
+    }
+    
+    /**
+     * Stiller paneli otomatik aktivasyonu
+     */
+    function activateStylePanel() {
+        const stylesTab = document.querySelector('.panel-tab[data-tab="styles"]');
+        if (stylesTab && !stylesTab.classList.contains('active')) {
+            // Mevcut aktif sekmeyi devre dışı bırak
+            document.querySelectorAll('.panel-tab.active').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Stiller sekmesini etkinleştir
+            stylesTab.classList.add('active');
+            
+            // İçerik panellerini güncelle
+            document.querySelectorAll('.panel-tab-content').forEach(content => {
+                content.classList.remove('active');
+                if (content.getAttribute('data-tab-content') === 'styles') {
+                    content.classList.add('active');
+                }
+            });
+        }
     }
     
     /**
@@ -160,32 +390,74 @@ window.StudioUI = (function() {
     function setupEditorStyles() {
         // Stil yöneticisi için gecikmeli düzeltme
         setTimeout(() => {
-            // GrapesJS'in stil panelini gizle/göster işlevi için
-            const styleManager = document.querySelector('.gjs-sm-sectors');
-            if (styleManager) {
-                const sectors = styleManager.querySelectorAll('.gjs-sm-sector');
-                
-                sectors.forEach((sector, index) => {
-                    const title = sector.querySelector('.gjs-sm-sector-title');
-                    const properties = sector.querySelector('.gjs-sm-properties');
+            // Stiller arama alanı oluştur (eğer yoksa)
+            const stylesContainer = document.getElementById('styles-container');
+            if (stylesContainer) {
+                if (!document.getElementById('styles-search')) {
+                    const searchBox = document.createElement('div');
+                    searchBox.className = 'blocks-search';
+                    searchBox.innerHTML = `<input type="text" id="styles-search" class="form-control" placeholder="Stil ara...">`;
                     
-                    if (title && properties) {
-                        title.addEventListener('click', function() {
-                            sector.classList.toggle('gjs-collapsed');
-                            properties.style.display = sector.classList.contains('gjs-collapsed') ? 'none' : 'block';
-                        });
-                        
-                        // İlk sektör açık, diğerleri kapalı başlasın
-                        if (index === 0) {
-                            sector.classList.remove('gjs-collapsed');
-                            properties.style.display = 'block';
-                        } else {
-                            sector.classList.add('gjs-collapsed');
-                            properties.style.display = 'none';
-                        }
+                    if (stylesContainer.previousElementSibling && stylesContainer.previousElementSibling.classList.contains('blocks-search')) {
+                        // Arama alanı var, güncelleme yapma
+                    } else {
+                        stylesContainer.parentNode.insertBefore(searchBox, stylesContainer);
                     }
-                });
+                }
             }
+            
+            // Stil sektörlerine ikon ekle
+            const styleSectors = document.querySelectorAll('.gjs-sm-sector-title');
+            
+            styleSectors.forEach((sector, index) => {
+                // İkon ekle (eğer yoksa)
+                if (!sector.querySelector('i.fa')) {
+                    const sectorName = sector.textContent.trim().toLowerCase();
+                    let iconClass = 'fa-palette';
+                    
+                    // Sektör isminden ikon belirle
+                    if (sectorName.includes('boyut')) iconClass = 'fa-ruler';
+                    else if (sectorName.includes('düzen')) iconClass = 'fa-th-large';
+                    else if (sectorName.includes('flex')) iconClass = 'fa-columns';
+                    else if (sectorName.includes('tipografi')) iconClass = 'fa-font';
+                    else if (sectorName.includes('dekorasyon')) iconClass = 'fa-paint-brush';
+                    
+                    const icon = document.createElement('i');
+                    icon.className = 'fa ' + iconClass;
+                    sector.insertBefore(icon, sector.firstChild);
+                }
+                
+                // Katlanma işlevselliği
+                const properties = sector.nextElementSibling;
+                
+                if (properties && properties.classList.contains('gjs-sm-properties')) {
+                    // Mevcut listener'ı kaldır
+                    const newSector = sector.cloneNode(true);
+                    if (sector.parentNode) {
+                        sector.parentNode.replaceChild(newSector, sector);
+                    }
+                    
+                    newSector.addEventListener('click', function() {
+                        const sectorDiv = this.parentElement;
+                        sectorDiv.classList.toggle('gjs-collapsed');
+                        
+                        if (sectorDiv.classList.contains('gjs-collapsed')) {
+                            properties.style.display = 'none';
+                        } else {
+                            properties.style.display = 'block';
+                        }
+                    });
+                    
+                    // İlk sektör açık, diğerleri kapalı olsun
+                    if (index === 0) {
+                        newSector.parentElement.classList.remove('gjs-collapsed');
+                        properties.style.display = 'block';
+                    } else {
+                        newSector.parentElement.classList.add('gjs-collapsed');
+                        properties.style.display = 'none';
+                    }
+                }
+            });
         }, 500);
     }
     
@@ -214,10 +486,17 @@ window.StudioUI = (function() {
                 this.run(editor);
             }
         });
+        
+        // Başka özel komutlar buraya eklenebilir
     }
     
     return {
         setupUI: setupUI,
-        addCustomFunctions: addCustomFunctions
+        initializeBlockCategories: initializeBlockCategories,
+        setupEditorStyles: setupEditorStyles,
+        standardizeLayerPanel: standardizeLayerPanel,
+        handleCanvasEvents: handleCanvasEvents,
+        addCustomFunctions: addCustomFunctions,
+        activateStylePanel: activateStylePanel
     };
 })();

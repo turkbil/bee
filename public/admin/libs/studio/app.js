@@ -2,7 +2,6 @@
  * Studio Editor Uygulama Başlatıcı
  * Tüm modülleri yükler ve uygulamayı başlatır
  */
-// public/admin/libs/studio/app.js
 
 document.addEventListener('DOMContentLoaded', function() {
     // Editor element'ini bul

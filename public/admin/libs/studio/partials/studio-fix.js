@@ -2,7 +2,6 @@
  * Studio Editor - Düzeltme Modülü
  * GrapesJS'deki kritik hataları sessizce düzeltir
  */
-// public/admin/libs/studio/partials/studio-fix.js
 
 window.StudioFix = (function() {
     /**

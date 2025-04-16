@@ -5,7 +5,7 @@
     <textarea id="js-content" style="display:none;">{!! $js !!}</textarea>
     
     <div class="editor-main">
-        <!-- Sol Panel: Tab'lı Panel -->
+        <!-- Sol Panel: Bileşenler, Stiller, Katmanlar -->
         <div class="panel__left">
             <div class="panel-tabs">
                 <div class="panel-tab active" data-tab="blocks">
@@ -25,21 +25,27 @@
             <!-- Bileşenler İçeriği -->
             <div class="panel-tab-content active" data-tab-content="blocks">
                 <div class="blocks-search">
-                    <input type="text" id="blocks-search" class="form-control form-control-sm" placeholder="Bileşen ara...">
+                    <input type="text" id="blocks-search" class="form-control" placeholder="Bileşen ara...">
                 </div>
-                
-                <!-- GrapesJS blok konteynerı -->
                 <div id="blocks-container" class="blocks-container"></div>
             </div>
             
             <!-- Stiller İçeriği -->
             <div class="panel-tab-content" data-tab-content="styles">
+                <div class="blocks-search">
+                    <input type="text" id="styles-search" class="form-control" placeholder="Stil ara...">
+                </div>
+                <!-- Trait Manager (Özelleştirme) -->
                 <div id="traits-container" class="traits-container"></div>
+                <!-- Stil Yöneticisi -->
                 <div id="styles-container" class="styles-container"></div>
             </div>
             
             <!-- Katmanlar İçeriği -->
             <div class="panel-tab-content" data-tab-content="layers">
+                <div class="blocks-search">
+                    <input type="text" id="layers-search" class="form-control" placeholder="Katman ara...">
+                </div>
                 <div id="layers-container" class="layers-container"></div>
             </div>
         </div>

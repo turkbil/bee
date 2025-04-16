@@ -17,42 +17,49 @@
     <link rel="stylesheet" href="{{ asset('admin/libs/studio/css/grapes.min.css') }}">
     <link rel="stylesheet" href="{{ asset('admin/libs/studio/css/studio-editor.css') }}">
     <link rel="stylesheet" href="{{ asset('admin/libs/studio/css/studio-grapes-overrides.css') }}">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
 
     @livewireStyles
 </head>
-<body>
+<body class="studio-editor-body">
     <div class="studio-header">
         <div class="header-left">
-            <a href="{{ url()->previous() }}" class="btn btn-back me-2">
+            <a href="{{ url()->previous() }}" class="btn btn-back me-2" title="Geri">
                 <i class="fa-solid fa-arrow-left"></i>
             </a>
             
-            <button id="sw-visibility" class="btn btn-tool btn-icon me-1" title="Bileşen sınırlarını göster/gizle">
-                <i class="fas fa-eye"></i>
-            </button>
-            
-            <button id="cmd-clear" class="btn btn-tool btn-icon me-1" title="İçeriği temizle">
-                <i class="fas fa-trash-alt"></i>
-            </button>
-            
-            <button id="cmd-undo" class="btn btn-tool btn-icon me-1" title="Geri al">
-                <i class="fas fa-undo"></i>
-            </button>
-            
-            <button id="cmd-redo" class="btn btn-tool btn-icon me-1" title="Yinele">
-                <i class="fas fa-redo"></i>
-            </button>
+            <div class="editor-toolbar btn-group me-2">
+                <button id="sw-visibility" class="btn btn-tool btn-icon" title="Bileşen sınırlarını göster/gizle">
+                    <i class="fas fa-eye"></i>
+                </button>
+                
+                <button id="cmd-clear" class="btn btn-tool btn-icon" title="İçeriği temizle">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+                
+                <button id="cmd-undo" class="btn btn-tool btn-icon" title="Geri al">
+                    <i class="fas fa-undo"></i>
+                </button>
+                
+                <button id="cmd-redo" class="btn btn-tool btn-icon" title="Yinele">
+                    <i class="fas fa-redo"></i>
+                </button>
+            </div>
         </div>
         
         <div class="header-center">
             <div class="studio-brand">
-                Studio <i class="fa-solid fa-wand-magic-sparkles mx-2"></i>
-                Editor
+                <i class="fa-solid fa-wand-magic-sparkles me-2 text-primary"></i>
+                Studio Editor
             </div>
         </div>
         
         <div class="header-right">
-            <div class="device-btns">
+            <div class="device-btns btn-group me-2">
                 <button id="device-desktop" class="active" title="Masaüstü">
                     <i class="fas fa-desktop"></i>
                 </button>
@@ -64,15 +71,17 @@
                 </button>
             </div>
             
-            <button id="cmd-code-edit" class="btn btn-tool me-1" title="HTML Düzenle">
-                <i class="fas fa-code me-1"></i>
-                <span>HTML</span>
-            </button>
-            
-            <button id="cmd-css-edit" class="btn btn-tool me-1" title="CSS Düzenle">
-                <i class="fas fa-paint-brush me-1"></i>
-                <span>CSS</span>
-            </button>
+            <div class="code-btns btn-group me-2">
+                <button id="cmd-code-edit" class="btn btn-tool" title="HTML Düzenle">
+                    <i class="fas fa-code me-1"></i>
+                    <span>HTML</span>
+                </button>
+                
+                <button id="cmd-css-edit" class="btn btn-tool" title="CSS Düzenle">
+                    <i class="fas fa-paint-brush me-1"></i>
+                    <span>CSS</span>
+                </button>
+            </div>
             
             <button id="export-btn" class="btn btn-tool me-2" title="Dışa Aktar">
                 <i class="fas fa-download me-1"></i>

@@ -1,26 +1,55 @@
 /* GrapesJS Stil Yöneticisi Özelleştirmeleri */
 /* public/admin/libs/studio/css/studio-grapes-overrides.css */
 
+/* Renk ve Değişkenler - studio-editor.css ile uyumlu olması için */
+:root {
+  --primary-color: #3b82f6;
+  --primary-light: #dbeafe;
+  --primary-hover: #2563eb;
+  --secondary-color: #64748b;
+  --secondary-light: #94a3b8;
+  --border-color: #e2e8f0;
+  --panel-bg: #ffffff;
+  --panel-header: #f1f5f9;
+  --light-bg: #f8fafc;
+  --hover-bg: #f1f5f9;
+  --active-bg: #eff6ff;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+  --spacing-xs: 5px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --font-xs: 11px;
+  --font-sm: 12px;
+  --font-md: 13px;
+  --font-lg: 14px;
+  --transition-normal: all 0.2s ease;
+}
+
+/* Stil Yöneticisi Akordeon Sekmeleri */
 .gjs-sm-sector {
-  margin-bottom: 5px !important;
-  background-color: #fff !important;
-  border-bottom: 1px solid #eaedf2 !important;
+  margin-bottom: var(--spacing-sm) !important;
+  background-color: var(--panel-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 4px !important;
+  overflow: hidden !important;
 }
 
 .gjs-sm-sector-title {
   display: flex !important;
   align-items: center !important;
-  padding: 12px 15px !important;
-  background-color: #f8f9fa !important;
+  padding: var(--spacing-md) var(--spacing-lg) !important;
+  background-color: var(--panel-header) !important;
   cursor: pointer !important;
   font-weight: 500 !important;
-  color: #475569 !important;
-  font-size: 13px !important;
+  color: var(--secondary-color) !important;
+  font-size: var(--font-md) !important;
+  border-bottom: 1px solid var(--border-color) !important;
 }
 
 .gjs-sm-sector-title:hover {
-  background-color: #f0f2f8 !important;
-  color: #206bc4 !important;
+  background-color: var(--hover-bg) !important;
+  color: var(--primary-color) !important;
 }
 
 .gjs-sm-sector-title::after {
@@ -28,7 +57,7 @@
   font-family: "Font Awesome 6 Pro", FontAwesome !important;
   margin-left: auto !important;
   transition: transform 0.3s !important;
-  color: #94a3b8 !important;
+  color: var(--secondary-light) !important;
 }
 
 .gjs-sm-sector.gjs-collapsed .gjs-sm-sector-title::after {
@@ -36,30 +65,31 @@
 }
 
 .gjs-sm-properties {
-  padding: 10px 0 !important;
-  background-color: #fff !important;
+  padding: var(--spacing-md) !important;
+  background-color: var(--panel-bg) !important;
 }
 
+/* Stil Özellik Etiketleri ve Alanları */
 .gjs-sm-label {
-  font-size: 12px !important;
+  font-size: var(--font-sm) !important;
   font-weight: 500 !important;
-  color: #64748b !important;
-  margin-bottom: 5px !important;
+  color: var(--secondary-color) !important;
+  margin-bottom: var(--spacing-xs) !important;
 }
 
 .gjs-sm-property {
-  margin-bottom: 12px !important;
-  padding: 0 15px 10px !important;
+  margin-bottom: var(--spacing-md) !important;
+  padding: 0 0 var(--spacing-md) 0 !important;
   border-bottom: 1px dashed rgba(203, 213, 225, 0.5) !important;
-  background-color: #fff !important;
+  background-color: var(--panel-bg) !important;
 }
 
 .gjs-field {
-  background-color: #f8fafc !important;
+  background-color: var(--light-bg) !important;
   border-radius: 4px !important;
-  border: 1px solid #e2e8f0 !important;
+  border: 1px solid var(--border-color) !important;
   box-shadow: none !important;
-  transition: all 0.2s ease !important;
+  transition: var(--transition-normal) !important;
   color: #333 !important;
 }
 
@@ -67,63 +97,68 @@
 .gjs-field select, 
 .gjs-field textarea {
   color: #333 !important;
-  background-color: #f8fafc !important;
+  background-color: var(--light-bg) !important;
 }
 
 .gjs-field:focus-within {
-  border-color: #94c0fd !important;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
 }
 
 .gjs-field-arrow-u, 
 .gjs-field-arrow-d {
-  border-color: #cbd5e1 !important;
-  background-color: #f8fafc !important;
+  border-color: var(--border-color) !important;
+  background-color: var(--light-bg) !important;
 }
 
 .gjs-field-units {
-  background-color: #f8fafc !important;
+  background-color: var(--light-bg) !important;
 }
 
 .gjs-field-unit {
-  color: #64748b !important;
-  background-color: #e9ecef !important;
-  border-color: #e2e8f0 !important;
+  color: var(--secondary-color) !important;
+  background-color: var(--panel-header) !important;
+  border-color: var(--border-color) !important;
 }
 
-/* Katmanlar Paneli Özelleştirmeleri - Açık Tema */
+/* Katmanlar Paneli Özelleştirmeleri */
+.gjs-layer-container {
+  padding: 0 !important;
+  background-color: var(--panel-bg) !important;
+}
+
 .gjs-layer {
   padding: 0 !important;
   margin: 0 !important;
-  background-color: #f8f9fa !important;
-  border-bottom: 1px solid #e5e7eb !important;
-  font-size: 12px !important;
-  transition: none !important;
+  background-color: var(--light-bg) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  font-size: var(--font-sm) !important;
+  transition: var(--transition-normal) !important;
   position: relative !important;
-  line-height: 1 !important;
+  line-height: 1.2 !important;
 }
 
 .gjs-layer-title-c {
-  padding: 8px 10px !important;
+  padding: var(--spacing-sm) var(--spacing-md) !important;
   display: flex !important;
   align-items: center !important;
   cursor: pointer !important;
   margin: 0 !important;
-  transition: none !important;
-  height: 30px !important;
+  transition: var(--transition-normal) !important;
+  height: 34px !important;
 }
 
 .gjs-layer:hover {
-  background-color: #f1f5f9 !important;
+  background-color: var(--hover-bg) !important;
 }
 
 .gjs-layer.gjs-selected {
-  background-color: #e9effd !important;
+  background-color: var(--active-bg) !important;
 }
 
 .gjs-layer-title {
-  padding-left: 5px !important;
-  font-size: 12px !important;
+  padding-left: var(--spacing-xs) !important;
+  font-size: var(--font-sm) !important;
   color: #333 !important;
   margin: 0 !important;
   flex-grow: 1 !important;
@@ -133,32 +168,32 @@
 }
 
 .gjs-layer-vis {
-  color: #6c757d !important;
-  margin-right: 5px !important;
+  color: var(--secondary-color) !important;
+  margin-right: var(--spacing-xs) !important;
 }
 
 .gjs-layer-vis:hover {
-  color: #206bc4 !important;
+  color: var(--primary-color) !important;
 }
 
 .gjs-layer-vis.fa-eye-slash {
-  color: #adb5bd !important;
+  color: var(--secondary-light) !important;
 }
 
 .gjs-layer-children {
-  padding-left: 20px !important;
-  border-left: 1px solid #e5e7eb !important;
-  margin-left: 8px !important;
-  background-color: #ffffff !important;
+  padding-left: var(--spacing-lg) !important;
+  border-left: 1px solid var(--border-color) !important;
+  margin-left: var(--spacing-md) !important;
+  background-color: var(--panel-bg) !important;
 }
 
 .gjs-layer-count {
-  background-color: #e9effd !important;
-  color: #206bc4 !important;
-  font-size: 10px !important;
-  border-radius: 2px !important;
+  background-color: var(--primary-light) !important;
+  color: var(--primary-color) !important;
+  font-size: var(--font-xs) !important;
+  border-radius: 3px !important;
   padding: 0px 4px !important;
-  margin-left: 6px !important;
+  margin-left: var(--spacing-xs) !important;
   min-width: 14px !important;
   height: 14px !important;
   display: inline-flex !important;
@@ -166,24 +201,67 @@
   justify-content: center !important;
 }
 
-/* Diğer GrapesJS elemanlarda açık tema için gerekli düzeltmeler */
+/* Katmanlar Grubu - Akordeon stillemesi ile uyumlu */
+.gjs-layer-group {
+  margin-bottom: var(--spacing-sm) !important;
+  background-color: var(--panel-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 4px !important;
+  overflow: hidden !important;
+}
+
+.gjs-layer-group-header {
+  display: flex !important;
+  align-items: center !important;
+  padding: var(--spacing-md) var(--spacing-lg) !important;
+  background-color: var(--panel-header) !important;
+  cursor: pointer !important;
+  font-weight: 500 !important;
+  color: var(--secondary-color) !important;
+  font-size: var(--font-md) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+}
+
+.gjs-layer-group-header:hover {
+  background-color: var(--hover-bg) !important;
+  color: var(--primary-color) !important;
+}
+
+.gjs-layer-group-header::after {
+  content: "\f107" !important;
+  font-family: "Font Awesome 6 Pro", FontAwesome !important;
+  margin-left: auto !important;
+  transition: transform 0.3s !important;
+  color: var(--secondary-light) !important;
+}
+
+.gjs-layer-group.closed .gjs-layer-group-header::after {
+  transform: rotate(-90deg) !important;
+}
+
+.gjs-layer-group-items {
+  padding: var(--spacing-md) !important;
+  background-color: var(--panel-bg) !important;
+}
+
+/* Global GrapesJS Renk Düzeltmeleri */
 .gjs-one-bg {
-  background-color: #fff !important;
+  background-color: var(--panel-bg) !important;
 }
 
 .gjs-two-color {
-  color: #475569 !important;
+  color: var(--secondary-color) !important;
 }
 
 .gjs-three-bg {
-  background-color: #f8f9fa !important;
+  background-color: var(--panel-header) !important;
 }
 
 .gjs-four-color, .gjs-four-color-h:hover {
-  color: #206bc4 !important;
+  color: var(--primary-color) !important;
 }
 
-/* Modal Override */
+/* Modal Görünümü */
 .gjs-mdl-container {
   background-color: rgba(0, 0, 0, 0.5) !important;
 }
@@ -196,38 +274,211 @@
 }
 
 .gjs-mdl-header {
-  padding: 16px !important;
-  background-color: #f1f5f9 !important;
-  border-bottom: 1px solid #e5e5e5 !important;
+  padding: var(--spacing-lg) !important;
+  background-color: var(--panel-header) !important;
+  border-bottom: 1px solid var(--border-color) !important;
 }
 
 .gjs-mdl-title {
   font-weight: 600 !important;
-  font-size: 16px !important;
-  color: #64748b !important;
+  font-size: var(--font-lg) !important;
+  color: var(--secondary-color) !important;
 }
 
 .gjs-mdl-content {
-  padding: 20px !important;
-  background-color: #fff !important;
+  padding: var(--spacing-xl) !important;
+  background-color: var(--panel-bg) !important;
 }
 
 .gjs-mdl-btn-close {
   background-color: transparent !important;
-  color: #64748b !important;
+  color: var(--secondary-color) !important;
 }
 
 .gjs-btn-prim {
-  background-color: #206bc4 !important;
+  background-color: var(--primary-color) !important;
   color: white !important;
   border: none !important;
   border-radius: 6px !important;
   padding: 10px 18px !important;
-  font-size: 14px !important;
+  font-size: var(--font-md) !important;
   font-weight: 500 !important;
   transition: background-color 0.2s !important;
 }
 
 .gjs-btn-prim:hover {
-  background-color: #175195 !important;
+  background-color: var(--primary-hover) !important;
+}
+
+
+/* Trait Manager (Özelleştirme Paneli) Düzenlemeleri */
+.gjs-trt-traits {
+  padding: var(--spacing-md) !important;
+  background-color: var(--panel-bg) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  margin-bottom: var(--spacing-md) !important;
+}
+
+.gjs-trt-header {
+  font-size: var(--font-md) !important;
+  font-weight: 600 !important;
+  color: var(--primary-color) !important;
+  margin-bottom: var(--spacing-sm) !important;
+  padding-bottom: var(--spacing-xs) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.gjs-trt-header::before {
+  content: "\f1de" !important;
+  font-family: "Font Awesome 6 Pro", FontAwesome !important;
+  margin-right: var(--spacing-xs) !important;
+  color: var(--primary-color) !important;
+}
+
+.gjs-field {
+  margin-bottom: var(--spacing-sm) !important;
+}
+
+.gjs-traits-label {
+  font-size: var(--font-sm) !important;
+  font-weight: 500 !important;
+  color: var(--secondary-color) !important;
+  margin-bottom: var(--spacing-xs) !important;
+}
+
+/* Stiller panelinde trait manager'ı en üstte göster */
+#styles-container .gjs-trt-traits {
+  order: -1 !important;
+}
+
+#styles-container, #traits-container {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* Element özellikleri başlığı ekle */
+#traits-container::before {
+  content: "Element Özellikleri" !important;
+  font-size: var(--font-md) !important;
+  font-weight: 600 !important;
+  color: var(--primary-color) !important;
+  padding: var(--spacing-md) !important;
+  background-color: var(--panel-header) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+#traits-container::before i {
+  margin-right: var(--spacing-xs) !important;
+}
+
+/* Bileşene özel özelleştirme alanlarını güzelleştir */
+.gjs-trt-trait {
+  padding: var(--spacing-xs) 0 !important;
+  margin-bottom: var(--spacing-xs) !important;
+}
+
+.gjs-trt-trait .gjs-label {
+  font-size: var(--font-sm) !important;
+  font-weight: 500 !important;
+  color: var(--secondary-color) !important;
+  margin-bottom: var(--spacing-xs) !important;
+  display: block !important;
+}
+
+/* Özelleştirilmiş butonlar ve form elemanları */
+.gjs-btn, 
+.gjs-btn-prim, 
+.gjs-btn-alt {
+  border-radius: var(--radius-sm) !important;
+  font-weight: 500 !important;
+  transition: var(--transition-normal) !important;
+  padding: 8px 12px !important;
+}
+
+.gjs-select {
+  border-radius: var(--radius-sm) !important;
+  border: 1px solid var(--border-color) !important;
+  font-size: var(--font-sm) !important;
+}
+
+.gjs-select:focus {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
+}
+
+/* Stil paneli içindeki başlıklar */
+.gjs-sm-sector-title {
+  font-weight: 600 !important;
+  font-size: var(--font-md) !important;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0 !important;
+}
+
+/* Seçici ve sınıf paneli görünümünü düzeltme */
+.gjs-clm-tags {
+  border-radius: var(--radius-sm) !important;
+  overflow: hidden !important;
+}
+
+.gjs-tag-label {
+  color: var(--secondary-color) !important;
+  font-size: var(--font-sm) !important;
+}
+
+.gjs-tag:hover .gjs-tag-label {
+  color: var(--primary-color) !important;
+}
+
+.gjs-clm-add {
+  background-color: var(--panel-header) !important;
+  padding: var(--spacing-md) !important;
+  display: flex !important;
+  border-top: 1px solid var(--border-color) !important;
+}
+
+.gjs-clm-add-input {
+  border-radius: var(--radius-sm) !important;
+  border: 1px solid var(--border-color) !important;
+  font-size: var(--font-sm) !important;
+  padding: 6px 8px !important;
+  transition: var(--transition-normal) !important;
+}
+
+.gjs-clm-add-input:focus {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
+}
+
+.gjs-clm-add-label {
+  color: var(--secondary-color) !important;
+  font-size: var(--font-sm) !important;
+  font-weight: 500 !important;
+}
+
+/* Boş durum mesajları */
+.gjs-sm-empty, 
+.gjs-clm-tags-empty, 
+.gjs-am-assets-cont-empty {
+  color: var(--secondary-light) !important;
+  font-size: var(--font-sm) !important;
+  font-style: italic !important;
+  padding: var(--spacing-md) !important;
+  text-align: center !important;
+}
+
+/* Vurgu renkleri */
+.gjs-block-highlight {
+  box-shadow: 0 0 0 2px var(--primary-color) !important;
+}
+
+/* Renkli arka planlar için tutarlı görünüm */
+.gjs-bg-main {
+  background-color: var(--primary-color) !important;
+}
+
+.gjs-color-main {
+  color: var(--primary-color) !important;
 }

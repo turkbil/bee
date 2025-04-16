@@ -2,7 +2,6 @@
  * Studio Editor - Yardımcı İşlevler Modülü
  * Yardımcı fonksiyonlar ve genel araçlar
  */
-// public/admin/libs/studio/partials/studio-utils.js
 
 window.StudioUtils = (function() {
     /**
@@ -26,6 +25,12 @@ window.StudioUtils = (function() {
         notif.innerHTML = `
         <div class="d-flex">
             <div class="toast-body">
+                <i class="fas ${
+                    type === "success" ? "fa-check-circle" : 
+                    type === "error" ? "fa-times-circle" : 
+                    type === "warning" ? "fa-exclamation-triangle" : 
+                    "fa-info-circle"
+                } me-2"></i>
                 <strong>${title}</strong>: ${message}
             </div>
             <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Kapat"></button>
@@ -100,18 +105,34 @@ window.StudioUtils = (function() {
         modal.setAttribute("aria-modal", "true");
         modal.setAttribute("role", "dialog");
         modal.innerHTML = `
-            <div class="modal-dialog modal-lg">
+            <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">${title}</h5>
+                        <h5 class="modal-title d-flex align-items-center">
+                            <i class="fas fa-code text-primary me-2"></i>${title}
+                        </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
                     </div>
-                    <div class="modal-body">
-                        <textarea id="code-editor" class="form-control font-monospace" rows="20">${content}</textarea>
+                    <div class="modal-body p-0">
+                        <div class="p-2 bg-light border-bottom d-flex justify-content-end">
+                            <span class="badge bg-secondary me-2">
+                                <i class="fas fa-info-circle me-1"></i>
+                                <span id="line-count">0</span> satır
+                            </span>
+                            <span class="badge bg-secondary">
+                                <i class="fas fa-text-width me-1"></i>
+                                <span id="char-count">0</span> karakter
+                            </span>
+                        </div>
+                        <textarea id="code-editor" class="form-control font-monospace" style="min-height: 70vh" rows="25">${content}</textarea>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
-                        <button type="button" class="btn btn-primary" id="saveCodeBtn">Uygula</button>
+                    <div class="modal-footer bg-light">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-1"></i>İptal
+                        </button>
+                        <button type="button" class="btn btn-primary" id="saveCodeBtn">
+                            <i class="fas fa-check me-1"></i>Uygula
+                        </button>
                     </div>
                 </div>
             </div>
@@ -119,10 +140,30 @@ window.StudioUtils = (function() {
 
         document.body.appendChild(modal);
 
+        // Satır ve karakter sayacı
+        const updateCounts = () => {
+            const codeEditor = document.getElementById("code-editor");
+            if (codeEditor) {
+                const text = codeEditor.value;
+                const lines = text.split('\n').length;
+                const chars = text.length;
+                
+                document.getElementById("line-count").textContent = lines;
+                document.getElementById("char-count").textContent = chars;
+            }
+        };
+
         // Bootstrap.Modal nesnesi mevcut mu kontrol et
         if (typeof bootstrap !== "undefined" && bootstrap.Modal) {
             const modalInstance = new bootstrap.Modal(modal);
             modalInstance.show();
+
+            const codeEditor = document.getElementById("code-editor");
+            if (codeEditor) {
+                codeEditor.addEventListener('input', updateCounts);
+                // İlk sayımı yap
+                updateCounts();
+            }
 
             document
                 .getElementById("saveCodeBtn")
@@ -145,6 +186,13 @@ window.StudioUtils = (function() {
             // Fallback - basit modal gösterimi
             modal.style.display = "block";
             modal.style.backgroundColor = "rgba(0,0,0,0.5)";
+
+            const codeEditor = document.getElementById("code-editor");
+            if (codeEditor) {
+                codeEditor.addEventListener('input', updateCounts);
+                // İlk sayımı yap
+                updateCounts();
+            }
 
             const saveBtn = modal.querySelector("#saveCodeBtn");
             if (saveBtn) {

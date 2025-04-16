@@ -2,7 +2,6 @@
  * Studio Editor - Bloklar Modülü
  * Blade şablonlarından yüklenen bloklar
  */
-// public/admin/libs/studio/partials/studio-blocks.js
 
 window.StudioBlocks = (function() {
     /**
@@ -24,8 +23,6 @@ window.StudioBlocks = (function() {
             })
             .then(data => {
                 console.log("API verileri alındı:", data);
-                console.log("Bloklar: ", data.blocks);
-                console.log("Kategoriler: ", data.categories);
                 
                 if (data.success && data.blocks) {
                     // Kategorileri tanımla
@@ -39,15 +36,15 @@ window.StudioBlocks = (function() {
                     
                     console.log("GrapesJS Kategorileri: ", editor.BlockManager.getCategories().models);
                     
-                    // DÜZELTME: Blokları eklerken content nesne değil, doğrudan HTML içeriği olmalı
+                    // Blokları ekle
                     data.blocks.forEach(block => {
                         console.log("Blok ekleniyor:", block.id, "-", block.label, "-", "Kategori:", block.category);
                         
-                        // İçerik doğrudan HTML olarak kullanılmalı
+                        // Blok konfigürasyonu
                         const blockConfig = {
                             label: block.label,
                             category: block.category,
-                            content: block.content, // Bu doğrudan HTML string olmalı
+                            content: block.content,
                             attributes: { class: block.icon || 'fa fa-cube' }
                         };
                         
@@ -63,7 +60,7 @@ window.StudioBlocks = (function() {
                     console.log("GrapesJS Blokları: ", editor.BlockManager.getAll().models);
                     console.log(`${data.blocks.length} adet blok başarıyla yüklendi`);
                     
-                    // Blokları kategorilere atamalıyız
+                    // Blokları kategorilere ata
                     console.log("Blok kategorileri oluşturuluyor...");
                     createBlockCategories(editor, data.categories || {});
                     
@@ -147,7 +144,7 @@ window.StudioBlocks = (function() {
                     blockEl.className = 'block-item';
                     blockEl.setAttribute('data-block-id', block.id);
                     
-                    // İçeriği oluştur - BU SATIR HATAYA NEDEN OLUYORDU - ÖNEMLİ DEĞİŞİKLİK
+                    // İçeriği oluştur
                     let iconClass = 'fa fa-cube'; // Varsayılan ikon
                     
                     // Attributes özelliğini güvenli bir şekilde al
@@ -169,13 +166,11 @@ window.StudioBlocks = (function() {
                     
                     // Drag-drop işlevini ekle
                     blockEl.setAttribute('draggable', 'true');
-                    console.log("Block content type:", typeof block.get('content'));
-                    console.log("Block content:", block.get('content'));
                     blockEl.addEventListener('dragstart', (e) => {
-                        // Blok ID'si yerine doğrudan içeriği aktaralım
+                        // Blok içeriğini doğrudan aktarma
                         const blockContent = block.get('content');
-                        // İçerik bir dize mi yoksa nesne mi kontrol et
                         let contentToAdd;
+                        
                         if (typeof blockContent === 'string') {
                             contentToAdd = blockContent;
                         } else if (typeof blockContent === 'object' && blockContent.html) {
@@ -184,9 +179,8 @@ window.StudioBlocks = (function() {
                             contentToAdd = blockContent;
                         }
                         
-                        // DataTransfer nesnesine içeriği aktar (önemli!)
+                        // DataTransfer nesnesine içeriği aktar
                         e.dataTransfer.setData('text/html', contentToAdd);
-                        // Yedek olarak ID'yi de ayarla (GrapesJS'in kendi mekanizması için)
                         e.dataTransfer.setData('text/plain', block.id);
                         blockEl.classList.add('dragging');
                     });
@@ -232,16 +226,6 @@ window.StudioBlocks = (function() {
         console.log("Blok container içeriği temizleniyor...");
         blocksContainer.innerHTML = '';
         
-        // DOM yolunu göster
-        let element = blocksContainer;
-        let path = element.id;
-        while(element.parentElement) {
-            element = element.parentElement;
-            if (element.tagName) 
-                path = element.tagName + " > " + path;
-        }
-        console.log("Blok container DOM yolu: ", path);
-        
         // Her kategori için bir div oluştur
         console.log("Kategoriler oluşturuluyor:", categories);
         Object.keys(categories).forEach(categoryId => {
@@ -256,7 +240,7 @@ window.StudioBlocks = (function() {
             
             categoryDiv.innerHTML = `
                 <div class="block-category-header">
-                    <i class="${categoryIcon}"></i>
+                    <i class="${categoryIcon} text-primary"></i>
                     <span>${categoryName}</span>
                     <i class="fas fa-chevron-down toggle-icon"></i>
                 </div>

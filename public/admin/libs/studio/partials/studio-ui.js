@@ -234,22 +234,27 @@ window.StudioUI = (function() {
             });
         }
     }
-    
+            
     /**
      * Blok kategorilerini başlat
      */
     function initializeBlockCategories() {
+        // Bu fonksiyon sadece bir kez çalışmalı
+        if (window._blockCategoriesInitialized) {
+            console.log("Blok kategorileri zaten başlatılmış, tekrar başlatma atlanıyor.");
+            return;
+        }
+        window._blockCategoriesInitialized = true;
+        
         const categories = document.querySelectorAll('.block-category-header');
-
+        
         categories.forEach(category => {
-            // Mevcut listener'ı kaldır (varsa)
-            const newCategory = category.cloneNode(true);
-            if (category.parentNode) {
-                category.parentNode.replaceChild(newCategory, category);
-            }
-            
-            // Tıklama olayını ekle
-            newCategory.addEventListener('click', function() {
+            // Tıklama olayını ekle - event izleyerek çakışmayı önle
+            category.addEventListener('click', function(event) {
+                // Eğer olay zaten işlendiyse, tekrar işleme
+                if (event._categoryHandled) return;
+                event._categoryHandled = true;
+                
                 const parent = this.closest('.block-category');
                 if (!parent) return;
                 
@@ -265,12 +270,17 @@ window.StudioUI = (function() {
                 }
                 
                 // Kategori durumlarını kaydet
-                saveBlockCategoryStates();
+                if (window.StudioBlocks && typeof window.StudioBlocks.saveBlockCategoryStates === 'function') {
+                    window.StudioBlocks.saveBlockCategoryStates();
+                }
             });
         });
         
-        // Kategori durumlarını yükle
-        loadBlockCategoryStates();
+        // Eğer StudioBlocks modülü yüklendiyse ve kategori durumları daha önce yüklenmemişse
+        if (window.StudioBlocks && typeof window.StudioBlocks.loadBlockCategoryStates === 'function' && !window._blockCategoryStatesLoaded) {
+            window._blockCategoryStatesLoaded = true;
+            window.StudioBlocks.loadBlockCategoryStates();
+        }
     }
     
     /**

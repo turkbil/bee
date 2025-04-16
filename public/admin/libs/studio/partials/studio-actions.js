@@ -101,21 +101,22 @@ window.StudioActions = (function() {
     function setupBackButton(editor, config) {
         const backBtn = document.getElementById("btn-back");
         if (backBtn) {
-            console.log("Geri butonu bulundu:", backBtn);
-            console.log("Config:", config);
+            // Eski event listener'ları temizle
+            const newBackBtn = backBtn.cloneNode(true);
+            if (backBtn.parentNode) {
+                backBtn.parentNode.replaceChild(newBackBtn, backBtn);
+            }
             
-            backBtn.addEventListener("click", function() {
+            newBackBtn.addEventListener("click", function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
                 // Module ve ID bilgilerini config'den al
                 const module = config.module || 'page';
                 const id = config.moduleId || 0;
                 
-                console.log(`Geri butonuna tıklandı: Modül=${module}, ID=${id}`);
-                
-                // Yönetim sayfasına geri dön
-                const url = `/admin/${module}/manage/${id}`;
-                console.log("Yönlendirilen URL:", url);
-                
-                window.location.href = url;
+                // Sayfa yönetim URL'sine yönlendir
+                window.location.href = `/admin/${module}/manage/${id}`;
             });
         } else {
             console.error("Geri butonu (#btn-back) bulunamadı!");
@@ -153,7 +154,7 @@ window.StudioActions = (function() {
                 editor.UndoManager.redo();
             });
         }
-        
+                
         // HTML kodu düzenleme
         const cmdCodeEdit = document.getElementById("cmd-code-edit");
         if (cmdCodeEdit) {
@@ -171,13 +172,41 @@ window.StudioActions = (function() {
         const cmdCssEdit = document.getElementById("cmd-css-edit");
         if (cmdCssEdit) {
             cmdCssEdit.addEventListener("click", () => {
-                const cssContent = editor.getCss();
+                // CSS içeriğini al ve tekrarları temizle
+                let cssContent = editor.getCss();
+                
+                // Varsayılan CSS'i temizle
+                const defaultStylePattern = /\*\s*{\s*box-sizing:\s*border-box;\s*}\s*body\s*{\s*margin(-top|-right|-bottom|-left)?:?\s*0(px)?;?\s*}/g;
+                cssContent = cssContent.replace(defaultStylePattern, '');
+                
+                // Temizlenmiş CSS'i tek bir varsayılan blokla birleştir
+                cssContent = '* { box-sizing: border-box; }\nbody { margin: 0; }\n' + cssContent;
+                
                 if (window.StudioUtils && typeof window.StudioUtils.showEditModal === 'function') {
                     window.StudioUtils.showEditModal("CSS Düzenle", cssContent, (newCss) => {
+                        // CSS'i tamamen temizle
+                        editor.CssComposer.clear();
+                        
+                        // Temizlenmiş CSS'i uygula (defaultStyles: false ayarıyla)
                         editor.setStyle(newCss);
                     });
                 }
             });
+        }
+
+        // CSS içeriğindeki tekrarları temizleme fonksiyonu
+        function removeDuplicateCSS(cssText) {
+            if (!cssText) return '';
+            
+            // Temel CSS kurallarını tek seferde ekle
+            let cleanCss = '* { box-sizing: border-box; }\nbody { margin: 0; }\n';
+            
+            // Temel kuralların dışındaki CSS kurallarını al
+            const otherRules = cssText.replace(/\*\s*{\s*box-sizing:\s*border-box;\s*}\s*body\s*{\s*margin-top:\s*0px;\s*margin-right:\s*0px;\s*margin-bottom:\s*0px;\s*margin-left:\s*0px;\s*}/g, '');
+            const simplifiedRules = otherRules.replace(/\*\s*{\s*box-sizing:\s*border-box;\s*}\s*body\s*{\s*margin:\s*0;\s*}/g, '');
+            
+            // Temizlenmiş CSS'i döndür
+            return cleanCss + simplifiedRules.trim();
         }
     }
     

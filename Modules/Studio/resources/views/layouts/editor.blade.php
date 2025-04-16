@@ -28,7 +28,7 @@
 <body class="studio-editor-body">
     <div class="studio-header">
         <div class="header-left">
-            <a href="{{ url()->previous() }}" class="btn btn-back me-2" title="Geri">
+            <a href="{{ url()->previous() }}" class="btn btn-back me-2" id="btn-back" title="Geri">
                 <i class="fa-solid fa-arrow-left"></i>
             </a>
             

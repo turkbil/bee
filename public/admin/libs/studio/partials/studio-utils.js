@@ -155,7 +155,10 @@ window.StudioUtils = (function() {
 
         // Bootstrap.Modal nesnesi mevcut mu kontrol et
         if (typeof bootstrap !== "undefined" && bootstrap.Modal) {
-            const modalInstance = new bootstrap.Modal(modal);
+            const modalInstance = new bootstrap.Modal(modal, {
+    backdrop: 'static',
+    keyboard: false
+});
             modalInstance.show();
 
             const codeEditor = document.getElementById("code-editor");

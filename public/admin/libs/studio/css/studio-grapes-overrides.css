@@ -613,5 +613,178 @@
   }
 }
 
+/* Katmanlar Paneli İyileştirilmiş Stil Düzenlemeleri */
+.gjs-layer-container {
+  padding: 0 !important;
+  border-top: none !important;
+  overflow-y: auto !important;
+}
 
+/* Katman öğesi temel stili */
+.gjs-layer {
+  padding: 0 !important;
+  margin: 0 !important;
+  background-color: var(--panel-bg) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  border-radius: 0 !important;
+  transition: background-color 0.15s ease !important;
+}
+
+.gjs-layer:hover {
+  background-color: var(--hover-bg) !important;
+}
+
+.gjs-layer.gjs-selected {
+  background-color: var(--active-bg) !important;
+}
+
+/* Katman başlık hücresi */
+.gjs-layer-title-c {
+  padding: 8px 10px !important;
+  display: flex !important;
+  align-items: center !important;
+  cursor: pointer !important;
+  height: 38px !important;
+  margin: 0 !important;
+}
+
+/* Katman başlığı metni */
+.gjs-layer-title {
+  font-size: var(--font-sm) !important;
+  color: var(--secondary-color) !important;
+  margin: 0 !important;
+  flex-grow: 1 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  padding-left: 0 !important;
+}
+
+.gjs-layer.gjs-selected .gjs-layer-title {
+  color: var(--primary-color) !important;
+  font-weight: 500 !important;
+}
+
+/* Katman göster/gizle ikonu */
+.gjs-layer-vis {
+  color: var(--secondary-color) !important;
+  margin-right: 5px !important;
+  font-size: 14px !important;
+}
+
+.gjs-layer-vis:hover {
+  color: var(--primary-color) !important;
+}
+
+/* Çocuk katman sayacı (içindeki öğe sayısı) */
+.gjs-layer-count {
+  background-color: var(--primary-light) !important;
+  color: var(--primary-color) !important;
+  font-size: 10px !important;
+  border-radius: 3px !important;
+  padding: 1px 4px !important;
+  margin-left: 5px !important;
+  min-width: 14px !important;
+  height: 14px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* İç içe katman yapısı için geliştirilmiş stil */
+.gjs-layer-children {
+  background-color: var(--panel-bg) !important;
+  border-left: 1px solid var(--border-color) !important;
+  margin-left: 15px !important;
+  padding-left: 0 !important;
+}
+
+.gjs-layer-children .gjs-layer {
+  border-left: none !important;
+}
+
+/* Layer tipi ikon düzenlemesi */
+.gjs-layer-caret {
+  font-size: 10px !important;
+  margin-right: 5px !important;
+  min-width: 10px !important;
+  text-align: center !important;
+  color: var(--secondary-light) !important;
+  transition: transform 0.2s ease !important;
+}
+
+/* Katman ikonu */
+.gjs-layer-type {
+  width: 16px !important;
+  margin-right: 5px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 12px !important;
+  color: var(--secondary-light) !important;
+}
+
+.gjs-layer.gjs-selected .gjs-layer-type {
+  color: var(--primary-color) !important;
+}
+
+/* Katmanlar arama */
+.gjs-layer-search {
+  padding: 10px !important;
+  background-color: var(--panel-header) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+}
+
+.gjs-layer-search input {
+  border: 1px solid var(--border-color) !important;
+  border-radius: 4px !important;
+  padding: 6px 10px !important;
+  width: 100% !important;
+  background-color: var(--light-bg) !important;
+  font-size: var(--font-sm) !important;
+}
+
+.gjs-layer-search input:focus {
+  border-color: var(--primary-color) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(32, 107, 196, 0.2) !important;
+}
+
+/* Katmanlar grubu - Akordeon stillemesi */
+.gjs-layer-group {
+  margin: 8px !important;
+  background-color: var(--panel-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 4px !important;
+  overflow: hidden !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.gjs-layer-group-header {
+  display: flex !important;
+  align-items: center !important;
+  padding: 10px 12px !important;
+  background-color: var(--panel-header) !important;
+  cursor: pointer !important;
+  font-weight: 500 !important;
+  color: var(--secondary-color) !important;
+  font-size: var(--font-md) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+}
+
+.gjs-layer-group-header > i {
+  margin-right: 8px !important;
+  font-size: 14px !important;
+  color: var(--primary-color) !important;
+}
+
+.gjs-layer-group-header:hover {
+  background-color: var(--hover-bg) !important;
+  color: var(--primary-color) !important;
+}
+
+.gjs-layer-group-items {
+  padding: 0 !important;
+  background-color: var(--panel-bg) !important;
+}
 

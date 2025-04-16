@@ -115,11 +115,11 @@ window.StudioUtils = (function() {
                     </div>
                     <div class="modal-body p-0">
                         <div class="p-2 bg-light border-bottom d-flex justify-content-end">
-                            <span class="badge bg-secondary me-2">
+                            <span class="badge me-2">
                                 <i class="fas fa-info-circle me-1"></i>
                                 <span id="line-count">0</span> satır
                             </span>
-                            <span class="badge bg-secondary">
+                            <span class="badge">
                                 <i class="fas fa-text-width me-1"></i>
                                 <span id="char-count">0</span> karakter
                             </span>

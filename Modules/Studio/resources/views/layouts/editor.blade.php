@@ -14,9 +14,8 @@
     <link rel="stylesheet" href="{{ asset('admin/libs/fontawesome-pro@6.7.1/css/all.min.css') }}">
     
     <!-- GrapesJS CSS -->
-    <link rel="stylesheet" href="{{ asset('admin/libs/studio/css/grapes.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('admin/libs/studio/css/studio-editor.css') }}">
-    <link rel="stylesheet" href="{{ asset('admin/libs/studio/css/studio-grapes-overrides.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin/libs/studio/css/grapes.min.css') }}?v={{ filemtime(public_path('admin/libs/studio/css/grapes.min.css')) }}">
+    <link rel="stylesheet" href="{{ asset('admin/libs/studio/css/studio-editor.css') }}?v={{ filemtime(public_path('admin/libs/studio/css/studio-editor.css')) }}">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -110,18 +109,18 @@
     <script src="{{ asset('admin/js/tabler.min.js') }}"></script>
 
     <!-- GrapesJS Core -->
-    <script src="{{ asset('admin/libs/studio/grapes.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/grapes.min.js') }}?v={{ filemtime(public_path('admin/libs/studio/grapes.min.js')) }}"></script>
     
     <!-- Studio Modülleri -->
-    <script src="{{ asset('admin/libs/studio/partials/studio-fix.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/partials/studio-utils.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/partials/studio-html-parser.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/partials/studio-blocks.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/partials/studio-ui.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/partials/studio-actions.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/partials/studio-core.js') }}"></script>
-    <script src="{{ asset('admin/libs/js-cookie@3.0.5/js.cookie.min.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/app.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/partials/studio-fix.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-fix.js')) }}"></script>
+    <script src="{{ asset('admin/libs/studio/partials/studio-utils.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-utils.js')) }}"></script>
+    <script src="{{ asset('admin/libs/studio/partials/studio-html-parser.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-html-parser.js')) }}"></script>
+    <script src="{{ asset('admin/libs/studio/partials/studio-blocks.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-blocks.js')) }}"></script>
+    <script src="{{ asset('admin/libs/studio/partials/studio-ui.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-ui.js')) }}"></script>
+    <script src="{{ asset('admin/libs/studio/partials/studio-actions.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-actions.js')) }}"></script>
+    <script src="{{ asset('admin/libs/studio/partials/studio-core.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-core.js')) }}"></script>
+    <script src="{{ asset('admin/libs/js-cookie@3.0.5/js.cookie.min.js') }}?v={{ filemtime(public_path('admin/libs/js-cookie@3.0.5/js.cookie.min.js')) }}"></script>
+    <script src="{{ asset('admin/libs/studio/app.js') }}?v={{ filemtime(public_path('admin/libs/studio/app.js')) }}"></script>
     
     @livewireScripts
     

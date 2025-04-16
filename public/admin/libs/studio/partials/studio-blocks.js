@@ -4,19 +4,24 @@
  */
 
 window.StudioBlocks = (function() {
-    // Blokların yüklendiğini takip etmek için bayrak
+    // Global kilitleme için flag
     let blocksLoaded = false;
+    let apiRequested = false;
+    let categoriesCreated = false;
     
     /**
      * Blade şablonlarından blokları kaydet
      * @param {Object} editor - GrapesJS editor örneği
      */
     function registerBlocks(editor) {
-        // Eğer bloklar zaten yüklendiyse tekrar yükleme
-        if (blocksLoaded) {
-            console.log("Bloklar zaten yüklenmiş, tekrar yükleme atlanıyor...");
+        // Global kilitleme sistemi - eğer zaten istek yapıldıysa veya bloklar yüklendiyse işlem yapma
+        if (blocksLoaded || apiRequested) {
+            console.log("Bloklar zaten yüklenmiş veya API isteği yapılmış, işlem atlanıyor.");
             return;
         }
+        
+        // API isteği kilidi aktif
+        apiRequested = true;
         
         console.log("Server tarafından bloklar yükleniyor...");
         
@@ -43,8 +48,6 @@ window.StudioBlocks = (function() {
                         });
                     });
                     
-                    console.log("GrapesJS Kategorileri: ", editor.BlockManager.getCategories().models);
-                    
                     // Blokları ekle
                     data.blocks.forEach(block => {
                         console.log("Blok ekleniyor:", block.id, "-", block.label, "-", "Kategori:", block.category);
@@ -58,36 +61,43 @@ window.StudioBlocks = (function() {
                         };
                         
                         editor.BlockManager.add(block.id, blockConfig);
-                        
-                        // Blok kategorisini kontrol et
-                        const addedBlock = editor.BlockManager.get(block.id);
-                        if (addedBlock) {
-                            console.log(`${block.id} bloğu eklendi. Kategori:`, addedBlock.get('category'));
-                        }
                     });
                     
-                    console.log("GrapesJS Blokları: ", editor.BlockManager.getAll().models);
                     console.log(`${data.blocks.length} adet blok başarıyla yüklendi`);
                     
-                    // Blokları kategorilere ata
-                    console.log("Blok kategorileri oluşturuluyor...");
-                    createBlockCategories(editor, data.categories || {});
-                    
-                    // Kategorilere blokları ekle ve işlemi tamamla
-                    setTimeout(() => {
-                        updateBlocksInCategories(editor);
-                        // İşaretleyelim ki tekrar yüklenmesin
-                        blocksLoaded = true;
-                    }, 500);
+                    // Blokları kategorilere ata - bir kez yapılıyor
+                    if (!categoriesCreated) {
+                        console.log("Blok kategorileri oluşturuluyor...");
+                        createBlockCategories(editor, data.categories || {});
+                        categoriesCreated = true;
+                        
+                        // Kategorilere blokları ekle ve işlemi tamamla
+                        setTimeout(() => {
+                            updateBlocksInCategories(editor);
+                            // İşaretleyelim ki tekrar yüklenmesin
+                            blocksLoaded = true;
+                            
+                            // Kategori durumlarını yükle
+                            if (window._blockCategoryStatesLoaded !== true) {
+                                window._blockCategoryStatesLoaded = true;
+                                loadBlockCategoryStates();
+                            }
+                        }, 500);
+                    }
 
-                    // Arama işlevini ayarla
-                    setupBlockSearch(editor);
+                    // Arama işlevini bir kez ayarla
+                    if (!window._searchSetupDone) {
+                        setupBlockSearch(editor);
+                        window._searchSetupDone = true;
+                    }
                 } else {
                     console.error("Blok yüklenemedi:", data.message || "Server yanıt vermedi");
                 }
             })
             .catch(error => {
                 console.error("Bloklar yüklenirken hata oluştu:", error);
+                // Hata durumunda kilidi serbest bırak ki yeniden deneme yapılabilsin
+                apiRequested = false;
             });
     }
 
@@ -96,17 +106,20 @@ window.StudioBlocks = (function() {
      * @param {Object} editor - GrapesJS editor örneği
      */
     function updateBlocksInCategories(editor) {
+        // Bu metod yalnızca bir kez çalışmalı
+        if (window._blocksUpdatedInCategories) {
+            return;
+        }
+        window._blocksUpdatedInCategories = true;
+        
         console.log("Editor blokları güncelleniyor. Toplam " + editor.BlockManager.getAll().length + " blok var.");
         
         // Her bir kategori için blokları işle
         const categories = document.querySelectorAll('.block-category');
-        console.log(categories.length + " adet kategori elementi bulundu");
         
         categories.forEach(category => {
             const categoryId = category.getAttribute('data-category');
             if (!categoryId) return;
-            
-            console.log("Kategori için bloklar işleniyor:", categoryId);
             
             // Bu kategoriye ait blokları al
             const categoryBlocks = [];
@@ -121,13 +134,11 @@ window.StudioBlocks = (function() {
                 // Kategori değeri bir string mi?
                 if (typeof blockCategory === 'string') {
                     categoryMatch = blockCategory === categoryId;
-                    console.log(`Blok: ${block.id} - Kategori(string): ${blockCategory} - Eşleşme: ${categoryMatch}`);
                 } 
                 // Kategori değeri bir obje mi?
                 else if (typeof blockCategory === 'object' && blockCategory !== null) {
                     // Objedeki id değeri ile karşılaştır
                     categoryMatch = blockCategory.id === categoryId;
-                    console.log(`Blok: ${block.id} - Kategori(obje): id=${blockCategory.id} - Eşleşme: ${categoryMatch}`);
                 }
                 
                 if (categoryMatch) {
@@ -140,8 +151,6 @@ window.StudioBlocks = (function() {
             if (blockItems) {
                 // İçeriği temizle
                 blockItems.innerHTML = '';
-                
-                console.log(categoryId + " kategorisine " + categoryBlocks.length + " blok ekleniyor");
                 
                 // Bu kategoriye blok yok mesajı göster
                 if (categoryBlocks.length === 0) {
@@ -232,6 +241,12 @@ window.StudioBlocks = (function() {
      * @param {Object} categories - Kategori bilgileri
      */
     function createBlockCategories(editor, categories) {
+        // Bu metod yalnızca bir kez çalışmalı
+        if (window._blockCategoriesCreated) {
+            return;
+        }
+        window._blockCategoriesCreated = true;
+        
         const blocksContainer = document.getElementById('blocks-container');
         
         if (!blocksContainer) {
@@ -240,16 +255,12 @@ window.StudioBlocks = (function() {
         }
         
         // Önce içeriği temizle
-        console.log("Blok container içeriği temizleniyor...");
         blocksContainer.innerHTML = '';
         
         // Her kategori için bir div oluştur
-        console.log("Kategoriler oluşturuluyor:", categories);
         Object.keys(categories).forEach(categoryId => {
             const categoryName = categories[categoryId];
             const categoryIcon = getCategoryIcon(categoryId);
-            
-            console.log("Kategori oluşturuluyor:", categoryId, "-", categoryName);
             
             const categoryDiv = document.createElement('div');
             categoryDiv.className = 'block-category';
@@ -265,51 +276,63 @@ window.StudioBlocks = (function() {
             `;
             
             blocksContainer.appendChild(categoryDiv);
-            console.log("Kategori DOM'a ekleniyor:", categoryId);
             
-            // Kategori başlığına tıklama olayı ekle
+            // Kategori başlığına tıklama olayı ekle - ancak sadece bir kez
             const header = categoryDiv.querySelector('.block-category-header');
-            header.addEventListener('click', function() {
-                categoryDiv.classList.toggle('collapsed');
-                const itemsContainer = categoryDiv.querySelector('.block-items');
-                if (categoryDiv.classList.contains('collapsed')) {
-                    itemsContainer.style.display = 'none';
-                } else {
-                    itemsContainer.style.display = 'grid';
+            header.addEventListener('click', function(e) {
+                // Zaten bu olaya yanıt veriliyorsa işleme devam etme
+                if (e._categoryClickHandled) return;
+                e._categoryClickHandled = true;
+                
+                const parent = this.closest('.block-category');
+                if (!parent) return;
+
+                parent.classList.toggle('collapsed');
+                const itemsContainer = parent.querySelector('.block-items');
+                if (itemsContainer) {
+                    itemsContainer.style.display = parent.classList.contains('collapsed') ? 'none' : 'grid';
                 }
 
                 // Kategori durumlarını localStorage'a kaydet
                 saveBlockCategoryStates();
             });
         });
-        
-        console.log("Tüm kategoriler oluşturuldu");
-        
-        // Kategori durumlarını yükle
-        loadBlockCategoryStates();
     }
     
     /**
      * Kategori açılıp kapanma durumlarını localStorage'a kaydet
      */
     function saveBlockCategoryStates() {
-        const categories = document.querySelectorAll('.block-category');
-        const states = {};
+        // Eğer bir zamanlayıcı zaten aktifse onu temizle ve yeni bir tane oluştur
+        if (window._saveBlockCategoriesTimeout) {
+            clearTimeout(window._saveBlockCategoriesTimeout);
+        }
         
-        categories.forEach(category => {
-            const categoryId = category.getAttribute('data-category');
-            if (categoryId) {
-                states[categoryId] = category.classList.contains('collapsed');
-            }
-        });
-        
-        localStorage.setItem('studio_block_categories', JSON.stringify(states));
+        window._saveBlockCategoriesTimeout = setTimeout(() => {
+            const categories = document.querySelectorAll('.block-category');
+            const states = {};
+            
+            categories.forEach(category => {
+                const categoryId = category.getAttribute('data-category');
+                if (categoryId) {
+                    states[categoryId] = category.classList.contains('collapsed');
+                }
+            });
+            
+            localStorage.setItem('studio_block_categories', JSON.stringify(states));
+        }, 300);
     }
     
     /**
      * Kategori açılıp kapanma durumlarını localStorage'dan yükle
      */
     function loadBlockCategoryStates() {
+        // Bu metod yalnızca bir kez çalışmalı
+        if (window._blockCategoryStatesLoaded) {
+            return;
+        }
+        window._blockCategoryStatesLoaded = true;
+        
         const savedStates = localStorage.getItem('studio_block_categories');
         if (!savedStates) return;
         
@@ -362,173 +385,171 @@ window.StudioBlocks = (function() {
         return icons[categoryId] || 'fa fa-cube';
     }
     
-/**
+    /**
      * Blok araması için event listener ekle
      * @param {Object} editor - GrapesJS editor örneği
      */
-function setupBlockSearch(editor) {
-    const searchInput = document.getElementById('blocks-search');
-    if (!searchInput) return;
-    
-    // Eski event listener'ı temizle
-    const newSearchInput = searchInput.cloneNode(true);
-    if (searchInput.parentNode) {
-        searchInput.parentNode.replaceChild(newSearchInput, searchInput);
+    function setupBlockSearch(editor) {
+        // Bu metod yalnızca bir kez çalışmalı
+        if (window._searchSetupDone) {
+            return;
+        }
+        window._searchSetupDone = true;
+        
+        const searchInput = document.getElementById('blocks-search');
+        if (!searchInput) return;
+        
+        searchInput.addEventListener('input', function() {
+            const searchText = this.value.toLowerCase();
+            filterBlocks(searchText, editor);
+        });
     }
-    
-    newSearchInput.addEventListener('input', function() {
-        const searchText = this.value.toLowerCase();
-        filterBlocks(searchText, editor);
-    });
-    
-    console.log("Arama işlevi ayarlandı");
-}
 
-/**
- * Arama metnine göre blokları filtrele
- * @param {string} searchText - Arama metni
- * @param {Object} editor - GrapesJS editor örneği
- */
-function filterBlocks(searchText, editor) {
-    const blockItems = document.querySelectorAll('.block-item');
-    const categories = document.querySelectorAll('.block-category');
-    
-    // Arama metni boşsa tüm kategorileri ve blokları göster
-    if (!searchText) {
+    /**
+     * Arama metnine göre blokları filtrele
+     * @param {string} searchText - Arama metni
+     * @param {Object} editor - GrapesJS editor örneği
+     */
+    function filterBlocks(searchText, editor) {
+        const blockItems = document.querySelectorAll('.block-item');
+        const categories = document.querySelectorAll('.block-category');
+        
+        // Arama metni boşsa tüm kategorileri ve blokları göster
+        if (!searchText) {
+            blockItems.forEach(item => {
+                item.style.display = 'flex';
+            });
+            
+            categories.forEach(category => {
+                category.style.display = 'block';
+                if (category.classList.contains('collapsed')) {
+                    category.classList.remove('collapsed');
+                    const itemsContainer = category.querySelector('.block-items');
+                    if (itemsContainer) {
+                        itemsContainer.style.display = 'grid';
+                    }
+                }
+            });
+            return;
+        }
+        
+        // Her bloğu kontrol et
+        let visibleCategoryIds = new Set();
+        
         blockItems.forEach(item => {
-            item.style.display = 'flex';
+            const label = item.querySelector('.block-item-label')?.textContent.toLowerCase() || '';
+            const blockId = item.getAttribute('data-block-id') || '';
+            const visible = label.includes(searchText) || blockId.includes(searchText);
+            
+            item.style.display = visible ? 'flex' : 'none';
+            
+            if (visible) {
+                const category = item.closest('.block-category');
+                if (category) {
+                    visibleCategoryIds.add(category.getAttribute('data-category'));
+                }
+            }
         });
         
+        // Kategorileri göster/gizle
         categories.forEach(category => {
-            category.style.display = 'block';
-            if (category.classList.contains('collapsed')) {
-                category.classList.remove('collapsed');
-                const itemsContainer = category.querySelector('.block-items');
-                if (itemsContainer) {
-                    itemsContainer.style.display = 'grid';
+            const categoryId = category.getAttribute('data-category');
+            if (visibleCategoryIds.has(categoryId)) {
+                category.style.display = 'block';
+                if (category.classList.contains('collapsed')) {
+                    category.classList.remove('collapsed');
+                    const itemsContainer = category.querySelector('.block-items');
+                    if (itemsContainer) {
+                        itemsContainer.style.display = 'grid';
+                    }
                 }
+            } else {
+                category.style.display = 'none';
             }
         });
-        return;
     }
-    
-    // Her bloğu kontrol et
-    let visibleCategoryIds = new Set();
-    
-    blockItems.forEach(item => {
-        const label = item.querySelector('.block-item-label').textContent.toLowerCase();
-        const blockId = item.getAttribute('data-block-id');
-        const visible = label.includes(searchText) || blockId.includes(searchText);
-        
-        item.style.display = visible ? 'flex' : 'none';
-        
-        if (visible) {
-            const category = item.closest('.block-category');
-            if (category) {
-                visibleCategoryIds.add(category.getAttribute('data-category'));
-            }
-        }
-    });
-    
-    // Kategorileri göster/gizle
-    categories.forEach(category => {
-        const categoryId = category.getAttribute('data-category');
-        if (visibleCategoryIds.has(categoryId)) {
-            category.style.display = 'block';
-            if (category.classList.contains('collapsed')) {
-                category.classList.remove('collapsed');
-                const itemsContainer = category.querySelector('.block-items');
-                if (itemsContainer) {
-                    itemsContainer.style.display = 'grid';
-                }
-            }
-        } else {
-            category.style.display = 'none';
-        }
-    });
-}
 
-/**
- * Bildirim toast'ı göster
- * @param {string} message - Bildirim mesajı 
- * @param {string} type - Bildirim tipi (success, error, warning, info)
- */
-function showToast(message, type = 'info') {
-    // Toast container kontrol et
-    let container = document.querySelector(".toast-container");
-    if (!container) {
-        container = document.createElement("div");
-        container.className = "toast-container position-fixed top-0 end-0 p-3";
-        container.style.zIndex = "9999";
-        document.body.appendChild(container);
-    }
-    
-    // Toast elementi oluştur
-    const toastEl = document.createElement('div');
-    toastEl.className = `toast align-items-center text-white bg-${
-        type === "success" ? "success" : 
-        type === "error" ? "danger" : 
-        type === "warning" ? "warning" : 
-        "info"
-    } border-0`;
-    toastEl.setAttribute('role', 'alert');
-    toastEl.setAttribute('aria-live', 'assertive');
-    toastEl.setAttribute('aria-atomic', 'true');
-    
-    // Toast içeriği
-    toastEl.innerHTML = `
-    <div class="d-flex">
-        <div class="toast-body">
-            <i class="fas ${
-                type === "success" ? "fa-check-circle" : 
-                type === "error" ? "fa-times-circle" : 
-                type === "warning" ? "fa-exclamation-triangle" : 
-                "fa-info-circle"
-            } me-2"></i>
-            ${message}
+    /**
+     * Bildirim toast'ı göster
+     * @param {string} message - Bildirim mesajı 
+     * @param {string} type - Bildirim tipi (success, error, warning, info)
+     */
+    function showToast(message, type = 'info') {
+        // Toast container kontrol et
+        let container = document.querySelector(".toast-container");
+        if (!container) {
+            container = document.createElement("div");
+            container.className = "toast-container position-fixed top-0 end-0 p-3";
+            container.style.zIndex = "9999";
+            document.body.appendChild(container);
+        }
+        
+        // Toast elementi oluştur
+        const toastEl = document.createElement('div');
+        toastEl.className = `toast align-items-center text-white bg-${
+            type === "success" ? "success" : 
+            type === "error" ? "danger" : 
+            type === "warning" ? "warning" : 
+            "info"
+        } border-0`;
+        toastEl.setAttribute('role', 'alert');
+        toastEl.setAttribute('aria-live', 'assertive');
+        toastEl.setAttribute('aria-atomic', 'true');
+        
+        // Toast içeriği
+        toastEl.innerHTML = `
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="fas ${
+                    type === "success" ? "fa-check-circle" : 
+                    type === "error" ? "fa-times-circle" : 
+                    type === "warning" ? "fa-exclamation-triangle" : 
+                    "fa-info-circle"
+                } me-2"></i>
+                ${message}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Kapat"></button>
         </div>
-        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Kapat"></button>
-    </div>
-    `;
-    
-    // Container'a ekle
-    container.appendChild(toastEl);
-    
-    // Bootstrap toast API'si varsa kullan
-    if (typeof bootstrap !== "undefined" && bootstrap.Toast) {
-        const toast = new bootstrap.Toast(toastEl, {
-            autohide: true,
-            delay: 3000
-        });
-        toast.show();
-    } else {
-        // Fallback - basit toast gösterimi
-        toastEl.style.display = 'block';
-        setTimeout(() => {
-            toastEl.style.opacity = '0';
+        `;
+        
+        // Container'a ekle
+        container.appendChild(toastEl);
+        
+        // Bootstrap toast API'si varsa kullan
+        if (typeof bootstrap !== "undefined" && bootstrap.Toast) {
+            const toast = new bootstrap.Toast(toastEl, {
+                autohide: true,
+                delay: 3000
+            });
+            toast.show();
+        } else {
+            // Fallback - basit toast gösterimi
+            toastEl.style.display = 'block';
             setTimeout(() => {
-                if (container.contains(toastEl)) {
-                    container.removeChild(toastEl);
-                }
-            }, 300);
-        }, 3000);
-    }
-    
-    // Otomatik kaldır
-    setTimeout(() => {
-        if (container.contains(toastEl)) {
-            container.removeChild(toastEl);
+                toastEl.style.opacity = '0';
+                setTimeout(() => {
+                    if (container.contains(toastEl)) {
+                        container.removeChild(toastEl);
+                    }
+                }, 300);
+            }, 3000);
         }
-    }, 3300);
-}
+        
+        // Otomatik kaldır
+        setTimeout(() => {
+            if (container.contains(toastEl)) {
+                container.removeChild(toastEl);
+            }
+        }, 3300);
+    }
 
-return {
-    registerBlocks: registerBlocks,
-    updateBlocksInCategories: updateBlocksInCategories,
-    setupBlockSearch: setupBlockSearch,
-    filterBlocks: filterBlocks,
-    showToast: showToast,
-    saveBlockCategoryStates: saveBlockCategoryStates,
-    loadBlockCategoryStates: loadBlockCategoryStates
-};
+    return {
+        registerBlocks: registerBlocks,
+        updateBlocksInCategories: updateBlocksInCategories,
+        setupBlockSearch: setupBlockSearch,
+        filterBlocks: filterBlocks,
+        showToast: showToast,
+        saveBlockCategoryStates: saveBlockCategoryStates,
+        loadBlockCategoryStates: loadBlockCategoryStates
+    };
 })();

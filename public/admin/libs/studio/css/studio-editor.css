@@ -1,7 +1,7 @@
 /* Studio Editor CSS - Modern Canvas Builder Style */
 /* public/admin/libs/studio/css/studio-editor.css */
 
-/* Temel değişkenler ve renkler - tutarlılık için tek yerden yönetim */
+/* Temel değişkenler ve renkler */
 :root {
     --primary-color: #206bc4;
     --primary-light: #e7f0ff;
@@ -143,7 +143,7 @@ body {
     margin-right: -280px;
 }
 
-/* Tab Paneli ve Sekmeler - Tüm bölümler için ortak */
+/* Tab Paneli ve Sekmeler - Yeni Tasarım */
 .panel-tabs {
     display: flex;
     border-bottom: 1px solid var(--border-color);
@@ -153,7 +153,7 @@ body {
 }
 
 .panel-tab {
-    padding: var(--spacing-md) var(--spacing-lg);
+    padding: var(--spacing-md) var(--spacing-xs);
     font-size: var(--font-md);
     color: var(--secondary-color);
     cursor: pointer;
@@ -163,10 +163,28 @@ body {
     flex: 1;
     transition: var(--transition-normal);
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: var(--spacing-xs);
     position: relative;
+}
+
+.tab-icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--spacing-xs);
+}
+
+.panel-tab .tab-icon {
+    font-size: 20px;
+    color: var(--secondary-color);
+}
+
+.panel-tab .tab-text {
+    font-size: var(--font-sm);
+    font-weight: 500;
 }
 
 .panel-tab:hover {
@@ -174,10 +192,18 @@ body {
     background-color: rgba(32, 107, 196, 0.05);
 }
 
+.panel-tab:hover .tab-icon {
+    color: var(--primary-color);
+}
+
 .panel-tab.active {
     color: var(--primary-color);
     border-bottom-color: var(--primary-color);
     background-color: var(--panel-bg);
+}
+
+.panel-tab.active .tab-icon {
+    color: var(--primary-color);
 }
 
 .panel-tab.active::after {
@@ -190,16 +216,12 @@ body {
     background-color: var(--primary-color);
 }
 
-.panel-tab .tab-icon {
-    font-size: var(--font-lg);
-}
-
 /* Panel İçerik Alanları - Tüm bölümler için ortak */
 .panel-tab-content {
     display: none;
     flex: 1;
     overflow-y: auto;
-    height: calc(100% - 49px);
+    height: calc(100% - 70px); /* Tab yüksekliği için uyarlandı */
     padding: 0;
     background-color: var(--panel-bg);
 }
@@ -276,7 +298,7 @@ body {
     border-color: var(--primary-color);
 }
 
-/* Akordeon Başlıkları - Tüm bölümler için ortak stil */
+/* Akordeon Başlıkları - Katmanlar ve stil bölümleri için */
 .block-category-header,
 .gjs-sm-sector-title,
 .gjs-layer-group-header {
@@ -656,6 +678,382 @@ body {
     margin: 0 var(--spacing-xs);
 }
 
+/* Katmanlar Paneli Düzenlemeleri */
+.gjs-layer-container {
+    padding: 0 !important;
+    border-top: 1px solid var(--border-color);
+}
+
+.gjs-layer {
+    padding: 0 !important;
+    margin: 0 !important;
+    background-color: var(--light-bg) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    transition: var(--transition-normal) !important;
+}
+
+.gjs-layer-title-c {
+    padding: var(--spacing-sm) var(--spacing-md) !important;
+    display: flex !important;
+    align-items: center !important;
+    cursor: pointer !important;
+    margin: 0 !important;
+}
+
+.gjs-layer:hover {
+    background-color: var(--hover-bg) !important;
+}
+
+.gjs-layer.gjs-selected {
+    background-color: var(--active-bg) !important;
+}
+
+.gjs-layer-title {
+    padding-left: var(--spacing-xs) !important;
+    font-size: var(--font-sm) !important;
+    color: var(--secondary-color) !important;
+    margin: 0 !important;
+    flex-grow: 1 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+.gjs-layer-vis {
+    color: var(--secondary-color) !important;
+    margin-right: var(--spacing-xs) !important;
+}
+
+.gjs-layer-vis:hover {
+    color: var(--primary-color) !important;
+}
+
+.gjs-layer-count {
+    background-color: var(--primary-light) !important;
+    color: var(--primary-color) !important;
+    font-size: var(--font-xs) !important;
+    border-radius: 3px !important;
+    padding: 0px 4px !important;
+    margin-left: var(--spacing-xs) !important;
+    min-width: 14px !important;
+    height: 14px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.gjs-layer-children {
+    padding-left: var(--spacing-lg) !important;
+    border-left: 1px solid var(--border-color) !important;
+    margin-left: var(--spacing-md) !important;
+    background-color: var(--panel-bg) !important;
+}
+
+/* Katmanlar Grubu - Akordeon stillemesi */
+.gjs-layer-group {
+    margin-bottom: var(--spacing-sm) !important;
+    background-color: var(--panel-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 4px !important;
+    overflow: hidden !important;
+    box-shadow: var(--shadow-sm) !important;
+}
+
+.gjs-layer-group-header {
+    display: flex !important;
+    align-items: center !important;
+    padding: var(--spacing-md) var(--spacing-lg) !important;
+    background-color: var(--panel-header) !important;
+    cursor: pointer !important;
+    font-weight: 500 !important;
+    color: var(--secondary-color) !important;
+    font-size: var(--font-md) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+.gjs-layer-group-header:hover {
+    background-color: var(--hover-bg) !important;
+    color: var(--primary-color) !important;
+}
+
+.gjs-layer-group-header::after {
+    content: "\f107" !important;
+    font-family: "Font Awesome 6 Pro", FontAwesome !important;
+    margin-left: auto !important;
+    transition: transform 0.3s !important;
+    color: var(--secondary-light) !important;
+}
+
+.gjs-layer-group.closed .gjs-layer-group-header::after {
+    transform: rotate(-90deg) !important;
+}
+
+.gjs-layer-group-items {
+    padding: var(--spacing-md) !important;
+    background-color: var(--panel-bg) !important;
+}
+
+/* Stil Yöneticisi Düzenlemeleri */
+.gjs-sm-sector {
+    margin-bottom: var(--spacing-sm) !important;
+    background-color: var(--panel-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 4px !important;
+    overflow: hidden !important;
+    box-shadow: var(--shadow-sm) !important;
+}
+
+.gjs-sm-sector-title {
+    display: flex !important;
+    align-items: center !important;
+    padding: var(--spacing-md) var(--spacing-lg) !important;
+    background-color: var(--panel-header) !important;
+    cursor: pointer !important;
+    font-weight: 500 !important;
+    color: var(--secondary-color) !important;
+    font-size: var(--font-md) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+.gjs-sm-sector-title:hover {
+    background-color: var(--hover-bg) !important;
+    color: var(--primary-color) !important;
+}
+
+.gjs-sm-sector-title::after {
+    content: "\f107" !important;
+    font-family: "Font Awesome 6 Pro", FontAwesome !important;
+    margin-left: auto !important;
+    transition: transform 0.3s !important;
+    color: var(--secondary-light) !important;
+}
+
+.gjs-sm-sector.gjs-collapsed .gjs-sm-sector-title::after {
+    transform: rotate(-90deg) !important;
+}
+
+.gjs-sm-properties {
+    padding: var(--spacing-md) !important;
+    background-color: var(--panel-bg) !important;
+}
+
+.gjs-sm-label {
+    font-size: var(--font-sm) !important;
+    font-weight: 500 !important;
+    color: var(--secondary-color) !important;
+    margin-bottom: var(--spacing-xs) !important;
+}
+
+.gjs-sm-property {
+    margin-bottom: var(--spacing-md) !important;
+    padding: 0 0 var(--spacing-md) 0 !important;
+    border-bottom: 1px dashed rgba(203, 213, 225, 0.5) !important;
+    background-color: var(--panel-bg) !important;
+}
+
+/* Form Elemanları Düzenlemeleri */
+.gjs-field {
+    background-color: var(--light-bg) !important;
+    border-radius: 4px !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: none !important;
+    transition: var(--transition-normal) !important;
+    color: #333 !important;
+    overflow: hidden !important;
+}
+
+.gjs-field input, 
+.gjs-field select, 
+.gjs-field textarea {
+    color: #333 !important;
+    background-color: var(--light-bg) !important;
+    font-size: var(--font-md) !important;
+    padding: 4px 8px !important;
+}
+
+.gjs-field:focus-within {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 2px rgba(32, 107, 196, 0.1) !important;
+}
+
+/* Number Input İçin Yukarı-Aşağı Butonları Düzeltmesi */
+.gjs-field-integer {
+    display: flex !important;
+    align-items: center !important;
+    border-radius: 4px !important;
+    overflow: hidden !important;
+}
+
+.gjs-field-integer input {
+    flex: 1 !important;
+    border: none !important;
+    text-align: center !important;
+    -moz-appearance: textfield !important;
+}
+
+.gjs-field-integer input::-webkit-inner-spin-button,
+.gjs-field-integer input::-webkit-outer-spin-button {
+    -webkit-appearance: none !important;
+    margin: 0 !important;
+}
+
+.gjs-field-arrow-u,
+.gjs-field-arrow-d {
+    width: 20px !important;
+    height: 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    background-color: var(--panel-header) !important;
+    border: none !important;
+    border-left: 1px solid var(--border-color) !important;
+    color: var(--secondary-color) !important;
+    font-size: 10px !important;
+    transition: var(--transition-normal) !important;
+}
+
+.gjs-field-arrow-u:hover,
+.gjs-field-arrow-d:hover {
+    background-color: var(--hover-bg) !important;
+    color: var(--primary-color) !important;
+}
+
+.gjs-field-arrow-u::before {
+    content: "\f077" !important; /* Yukarı ok */
+    font-family: "Font Awesome 6 Pro", FontAwesome !important;
+}
+
+.gjs-field-arrow-d::before {
+    content: "\f078" !important; /* Aşağı ok */
+    font-family: "Font Awesome 6 Pro", FontAwesome !important;
+}
+
+/* Units Dropdown Düzeltmesi */
+.gjs-field-units {
+    width: 40px !important;
+    text-align: center !important;
+    border-left: 1px solid var(--border-color) !important;
+    background-color: var(--panel-header) !important;
+    cursor: pointer !important;
+    position: relative !important;
+    color: var(--secondary-color) !important;
+}
+
+.gjs-field-unit {
+    font-size: var(--font-sm) !important;
+    padding: 2px 5px !important;
+    background-color: var(--panel-header) !important;
+    transition: var(--transition-normal) !important;
+}
+
+.gjs-field-unit:hover {
+    background-color: var(--hover-bg) !important;
+    color: var(--primary-color) !important;
+}
+
+.gjs-field-units .gjs-field-units-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 5px;
+    background-color: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    overflow: hidden;
+    z-index: 10;
+    box-shadow: var(--shadow-md);
+}
+
+.gjs-field-units:hover .gjs-field-units-dropdown {
+    display: block;
+}
+
+/* Renk Seçici Düzeltmesi */
+.gjs-field-color {
+    position: relative !important;
+    overflow: visible !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.gjs-field-color .gjs-field-colorp-c {
+    border-radius: 4px !important;
+    margin-right: 10px !important;
+    border: 1px solid var(--border-color) !important;
+    width: 24px !important;
+    height: 24px !important;
+}
+
+.gjs-one-bg {
+    background-color: var(--panel-bg) !important;
+}
+
+.gjs-two-color {
+    color: var(--secondary-color) !important;
+}
+
+.gjs-three-bg {
+    background-color: var(--panel-header) !important;
+}
+
+.gjs-four-color, .gjs-four-color-h:hover {
+    color: var(--primary-color) !important;
+}
+
+/* Empty State Paneler için */
+.gjs-sm-empty, 
+.gjs-clm-tags-empty, 
+.gjs-am-assets-cont-empty {
+    color: var(--secondary-light) !important;
+    font-size: var(--font-sm) !important;
+    font-style: italic !important;
+    padding: var(--spacing-md) !important;
+    text-align: center !important;
+}
+
+/* CSS seçici düzeltmeleri */
+.gjs-clm-tags {
+    border-radius: var(--radius-sm) !important;
+    overflow: hidden !important;
+}
+
+.gjs-tag-label {
+    color: var(--secondary-color) !important;
+    font-size: var(--font-sm) !important;
+}
+
+.gjs-tag:hover .gjs-tag-label {
+    color: var(--primary-color) !important;
+}
+
+.gjs-clm-add {
+    background-color: var(--panel-header) !important;
+    padding: var(--spacing-md) !important;
+    display: flex !important;
+    border-top: 1px solid var(--border-color) !important;
+}
+
+.gjs-clm-add-input {
+    border-radius: var(--radius-sm) !important;
+    border: 1px solid var(--border-color) !important;
+    font-size: var(--font-sm) !important;
+    padding: 6px 8px !important;
+    transition: var(--transition-normal) !important;
+}
+
+.gjs-clm-add-input:focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 2px rgba(32, 107, 196, 0.1) !important;
+}
+
+.gjs-clm-add-label {
+    color: var(--secondary-color) !important;
+    font-size: var(--font-sm) !important;
+    font-weight: 500 !important;
+}
+
 /* Responsive Ayarlamalar */
 @media (max-width: 1200px) {
     .panel__left, .panel__right {
@@ -678,14 +1076,6 @@ body {
     .block-items {
         grid-template-columns: 1fr;
     }
-    
-    .panel-tab {
-        padding: var(--spacing-sm) var(--spacing-sm);
-    }
-    
-    .panel-tab .tab-text {
-        font-size: var(--font-sm);
-    }
 }
 
 @media (max-width: 768px) {
@@ -700,9 +1090,8 @@ body {
         display: none;
     }
     
-    .panel-tab .tab-icon {
-        margin-right: 0;
-        font-size: var(--font-lg);
+    .tab-icon-container {
+        margin-bottom: 0;
     }
     
     .studio-header {
@@ -720,21 +1109,43 @@ body {
     }
 }
 
-/* Katman stilleri için ek özelleştirmeler */
-.layer-styled {
-    transition: background-color 0.15s ease !important;
+/* Traits Yöneticisi (Özelleştirme Paneli) İyileştirmeleri */
+#traits-container {
+    padding: var(--spacing-md);
 }
 
-.layer-styled:hover {
-    background-color: var(--hover-bg) !important;
+.gjs-trt-traits {
+    margin-bottom: var(--spacing-md) !important;
+    background-color: var(--panel-bg) !important;
 }
 
-.gjs-layer-name {
+.gjs-trt-trait {
+    padding: var(--spacing-md) 0 !important;
+    margin-bottom: var(--spacing-xs) !important;
+    border-bottom: 1px dashed var(--border-color) !important;
+}
+
+.gjs-trt-trait .gjs-label {
     font-size: var(--font-sm) !important;
+    font-weight: 500 !important;
     color: var(--secondary-color) !important;
+    margin-bottom: var(--spacing-xs) !important;
+    display: block !important;
 }
 
-/* Genel yükleme göstergesi */
+/* Element özellikleri başlığı */
+#traits-container::before {
+    content: "Element Özellikleri" !important;
+    font-size: var(--font-md) !important;
+    font-weight: 600 !important;
+    color: var(--primary-color) !important;
+    display: block !important;
+    margin-bottom: var(--spacing-md) !important;
+    padding-bottom: var(--spacing-xs) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+/* Yükleme göstergesi */
 .studio-loading {
     position: absolute;
     top: 0;
@@ -743,6 +1154,7 @@ body {
     height: 100%;
     background-color: rgba(255, 255, 255, 0.8);
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     z-index: 999;
@@ -751,58 +1163,18 @@ body {
 }
 
 .studio-loading i {
-    margin-right: var(--spacing-sm);
-}
-
-/* Komponent seçili durumu */
-.gjs-selected {
-    outline: 2px solid var(--primary-color) !important;
-    outline-offset: 1px !important;
-}
-
-/* Toast bildirimleri için stil */
-.toast-container {
-    z-index: 9999;
-}
-
-.toast {
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-md);
-}
-
-/* Modal stilleri */
-.modal-content {
-    border-radius: var(--radius-md);
-    border: none;
-    box-shadow: var(--shadow-md);
-}
-
-.modal-header {
-    border-bottom: 1px solid var(--border-color);
-    background-color: var(--panel-header);
-}
-
-.modal-footer {
-    border-top: 1px solid var(--border-color);
-    background-color: var(--panel-header);
-}
-
-/* Kod editörü için özelleştirme */
-#code-editor {
-    border-radius: var(--radius-md);
-    font-family: 'Fira Code', monospace;
-    line-height: 1.5;
-    resize: vertical;
+    font-size: 32px;
+    margin-bottom: var(--spacing-md);
 }
 
 /* Canvas görünüm düzeltmeleri */
 .gjs-cv-canvas {
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    position: absolute;
-    overflow: hidden;
+    width: 100% !important;
+    height: 100% !important;
+    top: 0 !important;
+    left: 0 !important;
+    position: absolute !important;
+    overflow: hidden !important;
 }
 
 .gjs-frame {
@@ -811,29 +1183,19 @@ body {
     border: none !important;
 }
 
-/* Kaydırma çubuklarını sadece gerektiğinde göster */
-.panel-tab-content,
-.blocks-container,
-.gjs-sm-sectors,
-.gjs-sm-properties,
-.gjs-layer-container {
-    overflow-y: auto;
-    overflow-x: hidden;
+/* Seçili element */
+.gjs-selected {
+    outline: 2px solid var(--primary-color) !important;
+    outline-offset: 1px !important;
 }
 
-/* "gjs-cv-canvas gjs-no-touch-actions gjs-cv-canvas-bg" sorunu için düzeltme */
-.gjs-cv-canvas-bg {
-    margin: 0 !important;
-    padding: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important; 
-    bottom: 0 !important;
-    overflow: hidden !important;
+/* Toast */
+.toast-container {
+    z-index: 9999;
 }
 
-.gjs-no-touch-actions {
-    touch-action: none;
+.toast {
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    opacity: 1 !important;
 }

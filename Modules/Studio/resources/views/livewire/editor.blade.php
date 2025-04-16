@@ -5,19 +5,19 @@
     <textarea id="js-content" style="display:none;">{!! $js !!}</textarea>
     
     <div class="editor-main">
-        <!-- Sol Panel: Bileşenler, Stiller, Katmanlar -->
+        <!-- Sol Panel: Bileşenler ve Katmanlar -->
         <div class="panel__left">
             <div class="panel-tabs">
                 <div class="panel-tab active" data-tab="blocks">
-                    <i class="fa fa-cubes tab-icon"></i>
+                    <div class="tab-icon-container">
+                        <i class="fa fa-cubes tab-icon"></i>
+                    </div>
                     <span class="tab-text">Bileşenler</span>
                 </div>
-                <div class="panel-tab" data-tab="styles">
-                    <i class="fa fa-paint-brush tab-icon"></i>
-                    <span class="tab-text">Stiller</span>
-                </div>
                 <div class="panel-tab" data-tab="layers">
-                    <i class="fa fa-layer-group tab-icon"></i>
+                    <div class="tab-icon-container">
+                        <i class="fa fa-layer-group tab-icon"></i>
+                    </div>
                     <span class="tab-text">Katmanlar</span>
                 </div>
             </div>
@@ -28,17 +28,6 @@
                     <input type="text" id="blocks-search" class="form-control" placeholder="Bileşen ara...">
                 </div>
                 <div id="blocks-container" class="blocks-container"></div>
-            </div>
-            
-            <!-- Stiller İçeriği -->
-            <div class="panel-tab-content" data-tab-content="styles">
-                <div class="blocks-search">
-                    <input type="text" id="styles-search" class="form-control" placeholder="Stil ara...">
-                </div>
-                <!-- Trait Manager (Özelleştirme) -->
-                <div id="traits-container" class="traits-container"></div>
-                <!-- Stil Yöneticisi -->
-                <div id="styles-container" class="styles-container"></div>
             </div>
             
             <!-- Katmanlar İçeriği -->
@@ -59,15 +48,21 @@
         <div class="panel__right">
             <div class="panel-tabs">
                 <div class="panel-tab active" data-tab="element-properties">
-                    <i class="fa fa-sliders-h tab-icon"></i>
+                    <div class="tab-icon-container">
+                        <i class="fa fa-sliders-h tab-icon"></i>
+                    </div>
                     <span class="tab-text">Özellikler</span>
                 </div>
                 <div class="panel-tab" data-tab="element-styles">
-                    <i class="fa fa-palette tab-icon"></i>
+                    <div class="tab-icon-container">
+                        <i class="fa fa-palette tab-icon"></i>
+                    </div>
                     <span class="tab-text">Stiller</span>
                 </div>
                 <div class="panel-tab" data-tab="global-settings">
-                    <i class="fa fa-cog tab-icon"></i>
+                    <div class="tab-icon-container">
+                        <i class="fa fa-cog tab-icon"></i>
+                    </div>
                     <span class="tab-text">Ayarlar</span>
                 </div>
             </div>
@@ -75,20 +70,14 @@
             <!-- Element Özellikleri İçeriği -->
             <div class="panel-tab-content active" data-tab-content="element-properties">
                 <div id="element-properties-container">
-                    <div class="p-3 text-center text-muted">
-                        <i class="fas fa-hand-pointer fa-2x mb-3 opacity-50"></i>
-                        <p>Özelliklerini düzenlemek için bir element seçin</p>
-                    </div>
+                    <div id="traits-container" class="traits-container"></div>
                 </div>
             </div>
             
             <!-- Element Stiller İçeriği -->
             <div class="panel-tab-content" data-tab-content="element-styles">
                 <div id="element-styles-container">
-                    <div class="p-3 text-center text-muted">
-                        <i class="fas fa-paint-brush fa-2x mb-3 opacity-50"></i>
-                        <p>Stillerini düzenlemek için bir element seçin</p>
-                    </div>
+                    <div id="styles-container" class="styles-container"></div>
                 </div>
             </div>
             

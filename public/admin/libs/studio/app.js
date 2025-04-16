@@ -83,10 +83,14 @@ document.addEventListener('DOMContentLoaded', function() {
  * Sol panel sekmelerini ayarla
  */
 function setupTabs() {
-    const tabs = document.querySelectorAll(".panel-tab");
-    const tabContents = document.querySelectorAll(".panel-tab-content");
+    const leftPanelTabs = document.querySelectorAll(".panel__left .panel-tab");
+    const leftPanelContents = document.querySelectorAll(".panel__left .panel-tab-content");
+    
+    const rightPanelTabs = document.querySelectorAll(".panel__right .panel-tab");
+    const rightPanelContents = document.querySelectorAll(".panel__right .panel-tab-content");
 
-    tabs.forEach((tab) => {
+    // Sol panel sekmeleri için
+    leftPanelTabs.forEach((tab) => {
         // Eski event listener'ları temizle
         const newTab = tab.cloneNode(true);
         if (tab.parentNode) {
@@ -96,18 +100,67 @@ function setupTabs() {
         newTab.addEventListener("click", function () {
             const tabName = this.getAttribute("data-tab");
 
-            // Aktif tab değiştir
-            tabs.forEach((t) => t.classList.remove("active"));
+            // Aktif tab değiştir (sadece sol panel içinde)
+            leftPanelTabs.forEach((t) => t.classList.remove("active"));
             this.classList.add("active");
 
-            // İçeriği değiştir
-            tabContents.forEach((content) => {
+            // İçeriği değiştir (sadece sol panel içinde)
+            leftPanelContents.forEach((content) => {
                 if (content.getAttribute("data-tab-content") === tabName) {
                     content.classList.add("active");
                 } else {
                     content.classList.remove("active");
                 }
             });
+            
+            // Aktif sekme bilgisini localStorage'a kaydet (sol panel için)
+            localStorage.setItem('studio_left_panel_tab', tabName);
         });
     });
+    
+    // Sağ panel sekmeleri için
+    rightPanelTabs.forEach((tab) => {
+        // Eski event listener'ları temizle
+        const newTab = tab.cloneNode(true);
+        if (tab.parentNode) {
+            tab.parentNode.replaceChild(newTab, tab);
+        }
+        
+        newTab.addEventListener("click", function () {
+            const tabName = this.getAttribute("data-tab");
+
+            // Aktif tab değiştir (sadece sağ panel içinde)
+            rightPanelTabs.forEach((t) => t.classList.remove("active"));
+            this.classList.add("active");
+
+            // İçeriği değiştir (sadece sağ panel içinde)
+            rightPanelContents.forEach((content) => {
+                if (content.getAttribute("data-tab-content") === tabName) {
+                    content.classList.add("active");
+                } else {
+                    content.classList.remove("active");
+                }
+            });
+            
+            // Aktif sekme bilgisini localStorage'a kaydet (sağ panel için)
+            localStorage.setItem('studio_right_panel_tab', tabName);
+        });
+    });
+    
+    // Önceki aktif sekmeleri yükle
+    const savedLeftTab = localStorage.getItem('studio_left_panel_tab');
+    if (savedLeftTab) {
+        const activeLeftTab = document.querySelector(`.panel__left .panel-tab[data-tab="${savedLeftTab}"]`);
+        if (activeLeftTab) {
+            activeLeftTab.click();
+        }
+    }
+    
+    const savedRightTab = localStorage.getItem('studio_right_panel_tab');
+    if (savedRightTab) {
+        const activeRightTab = document.querySelector(`.panel__right .panel-tab[data-tab="${savedRightTab}"]`);
+        if (activeRightTab) {
+            activeRightTab.click();
+        }
+    }
 }

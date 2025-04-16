@@ -53,8 +53,7 @@
         
         <div class="header-center">
             <div class="studio-brand">
-                <i class="fa-solid fa-wand-magic-sparkles me-2 text-primary"></i>
-                Studio Editor
+                Studio <i class="fa-solid fa-wand-magic-sparkles mx-2 text-primary"></i> Editor
             </div>
         </div>
         

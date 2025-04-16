@@ -28,7 +28,7 @@ window.StudioUI = (function() {
         editor.on('component:selected', function() {
             // Özellikler sekmesini etkinleştir
             setTimeout(() => {
-                activateStylePanel();
+                activateStylePanel('right');
             }, 100);
         });
     }
@@ -494,7 +494,7 @@ function createContextMenu(event, model, editor) {
     });
 }
 
-/**
+    /**
  * Element HTML'ini göster
  * @param {Object} model - Bileşen modeli
  */
@@ -509,33 +509,49 @@ function showElementHtml(model) {
         alert(html);
     }
 }
-
-/**
- * Özellikler paneli otomatik aktivasyonu
- */
-function activateStylePanel() {
-    const propertiesTab = document.querySelector('.panel-tab[data-tab="element-properties"]');
-    if (propertiesTab && !propertiesTab.classList.contains('active')) {
-        // Mevcut aktif sekmeyi devre dışı bırak
-        document.querySelectorAll('.panel-tab.active').forEach(tab => {
-            tab.classList.remove('active');
-        });
+    function showElementHtml(model) {
+        const html = model.toHTML();
         
-        // Özellikler sekmesini etkinleştir
-        propertiesTab.classList.add('active');
-        
-        // İçerik panellerini güncelle
-        document.querySelectorAll('.panel-tab-content').forEach(content => {
-            content.classList.remove('active');
-            if (content.getAttribute('data-tab-content') === 'element-properties') {
-                content.classList.add('active');
-            }
-        });
-        
-        // Aktif sekmeyi localStorage'a kaydet
-        localStorage.setItem('studio_active_tab', 'element-properties');
+        if (window.StudioUtils && typeof window.StudioUtils.showEditModal === 'function') {
+            window.StudioUtils.showEditModal('Element HTML', html, function(newHtml) {
+                model.replaceWith(newHtml);
+            });
+        } else {
+            alert(html);
+        }
     }
-}
+
+
+    /**
+ * Özellikler paneli otomatik aktivasyonu
+ * @param {string} panelType - Panel tipi ('left' veya 'right')
+ */
+    function activateStylePanel(panelType = 'right') {
+        // Sadece sağ panelde sekme değişimini uygula
+        if (panelType === 'right') {
+            const propertiesTab = document.querySelector('.panel__right .panel-tab[data-tab="element-properties"]');
+            if (propertiesTab && !propertiesTab.classList.contains('active')) {
+                // Mevcut aktif sekmeyi devre dışı bırak (sadece sağ panelde)
+                document.querySelectorAll('.panel__right .panel-tab.active').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                
+                // Özellikler sekmesini etkinleştir
+                propertiesTab.classList.add('active');
+                
+                // İçerik panellerini güncelle (sadece sağ panelde)
+                document.querySelectorAll('.panel__right .panel-tab-content').forEach(content => {
+                    content.classList.remove('active');
+                    if (content.getAttribute('data-tab-content') === 'element-properties') {
+                        content.classList.add('active');
+                    }
+                });
+                
+                // Aktif sekmeyi localStorage'a kaydet
+                localStorage.setItem('studio_right_panel_tab', 'element-properties');
+            }
+        }
+    }
 
 /**
  * Cihaz görünümü değiştirme butonlarını yapılandırır

@@ -26,7 +26,7 @@ window.StudioUI = (function() {
         
         // Bileşen seçimi olayı
         editor.on('component:selected', function() {
-            // Stiller sekmesini etkinleştir
+            // Özellikler sekmesini etkinleştir
             setTimeout(() => {
                 activateStylePanel();
             }, 100);
@@ -171,54 +171,19 @@ window.StudioUI = (function() {
      * Panel arama kutuları için olay dinleyicileri ekle
      */
     function setupPanelSearch() {
-        // Bileşenler arama - zaten mevcut 
-        
-        // Stiller arama
-        const stylesSearch = document.getElementById("styles-search");
-        if (stylesSearch) {
+        // Bileşenler arama
+        const blocksSearch = document.getElementById("blocks-search");
+        if (blocksSearch) {
             // Mevcut listener'ı kaldır (varsa)
-            const newStylesSearch = stylesSearch.cloneNode(true);
-            if (stylesSearch.parentNode) {
-                stylesSearch.parentNode.replaceChild(newStylesSearch, stylesSearch);
+            const newBlocksSearch = blocksSearch.cloneNode(true);
+            if (blocksSearch.parentNode) {
+                blocksSearch.parentNode.replaceChild(newBlocksSearch, blocksSearch);
             }
             
-            newStylesSearch.addEventListener("input", function() {
-                const searchText = this.value.toLowerCase();
-                const styleProperties = document.querySelectorAll('.gjs-sm-property');
-                const styleSectors = document.querySelectorAll('.gjs-sm-sector');
-                
-                if (searchText === '') {
-                    // Arama boşsa her şeyi göster
-                    styleProperties.forEach(prop => prop.style.display = '');
-                    styleSectors.forEach(sector => sector.style.display = '');
-                    return;
+            newBlocksSearch.addEventListener("input", function() {
+                if (window.StudioBlocks && window.StudioBlocks.filterBlocks) {
+                    window.StudioBlocks.filterBlocks(this.value.toLowerCase(), editorInstance);
                 }
-                
-                // Arama varlığında eşleşen özellikleri göster
-                let foundInSectors = new Set();
-                
-                styleProperties.forEach(prop => {
-                    const label = prop.querySelector('.gjs-sm-label');
-                    if (label && label.textContent.toLowerCase().includes(searchText)) {
-                        prop.style.display = '';
-                        const sector = prop.closest('.gjs-sm-sector');
-                        if (sector) {
-                            foundInSectors.add(sector);
-                            sector.classList.remove('gjs-collapsed');
-                        }
-                    } else {
-                        prop.style.display = 'none';
-                    }
-                });
-                
-                // Eşleşmeyen bölümleri gizle
-                styleSectors.forEach(sector => {
-                    if (foundInSectors.has(sector)) {
-                        sector.style.display = '';
-                    } else {
-                        sector.style.display = 'none';
-                    }
-                });
             });
         }
         
@@ -407,256 +372,243 @@ window.StudioUI = (function() {
         }, 1000);
     }
     
-    /**
+/**
      * Canvas/Editor olaylarını işle
      * @param {Object} editor - GrapesJS editor örneği
      */
-    function handleCanvasEvents(editor) {
-        try {
-            // Canvas içindeki değişiklikleri dinle
-            editor.on('component:update', function() {
-                // Katmanlar panelini güncelle
-                setTimeout(function() {
-                    standardizeLayerPanel();
-                }, 300);
-            });
-            
-            // Yeni bir bileşen eklendiğinde
-            editor.on('component:add', function() {
-                // Katmanlar panelini güncelle
-                setTimeout(function() {
-                    standardizeLayerPanel();
-                }, 300);
-            });
-            
-            // Sağ tıklama menüsü
-            editor.on('contextmenu', function(event, model) {
-                if (model) {
-                    createContextMenu(event, model, editor);
-                }
-            });
-            
-            // Sürükle-bırak hedefi olarak canvas
-            const editorCanvas = document.querySelector('.editor-canvas');
-            if (editorCanvas) {
-                editorCanvas.addEventListener('dragover', function(e) {
-                    e.preventDefault();
-                    this.classList.add('drop-target');
-                });
-                
-                editorCanvas.addEventListener('dragleave', function(e) {
-                    e.preventDefault();
-                    this.classList.remove('drop-target');
-                });
-                
-                editorCanvas.addEventListener('drop', function(e) {
-                    this.classList.remove('drop-target');
-                });
-            }
-        } catch (error) {
-            console.warn('Canvas olayları ayarlanırken hata:', error);
-        }
-    }
-    
-    /**
-     * Sağ tıklama menüsü oluştur
-     * @param {Event} event - Olay
-     * @param {Object} model - Bileşen modeli
-     * @param {Object} editor - GrapesJS editor örneği
-     */
-    function createContextMenu(event, model, editor) {
-        event.preventDefault();
+function handleCanvasEvents(editor) {
+    try {
+        // Canvas içindeki değişiklikleri dinle
+        editor.on('component:update', function() {
+            // Katmanlar panelini güncelle
+            setTimeout(function() {
+                standardizeLayerPanel();
+            }, 300);
+        });
         
-        // Mevcut menüyü temizle
-        const existingMenu = document.querySelector('.studio-context-menu');
-        if (existingMenu) {
-            existingMenu.remove();
-        }
+        // Yeni bir bileşen eklendiğinde
+        editor.on('component:add', function() {
+            // Katmanlar panelini güncelle
+            setTimeout(function() {
+                standardizeLayerPanel();
+            }, 300);
+        });
         
-        // Menü oluştur
-        const menu = document.createElement('div');
-        menu.className = 'studio-context-menu';
-        menu.style.left = event.pageX + 'px';
-        menu.style.top = event.pageY + 'px';
-        
-        // Menü öğelerini ekle
-        const menuItems = [
-            { text: 'Düzenle', icon: 'fa-edit', action: () => editor.select(model) },
-            { text: 'Kopyala', icon: 'fa-copy', action: () => editor.runCommand('tlb-clone', { target: model }) },
-            { text: 'Sil', icon: 'fa-trash', action: () => model.remove() },
-            { type: 'divider' },
-            { text: 'İçeriği Temizle', icon: 'fa-eraser', action: () => model.empty() },
-            { type: 'divider' },
-            { text: 'HTML Göster', icon: 'fa-code', action: () => showElementHtml(model) }
-        ];
-        
-        menuItems.forEach(item => {
-            if (item.type === 'divider') {
-                const divider = document.createElement('div');
-                divider.className = 'studio-context-menu-divider';
-                menu.appendChild(divider);
-            } else {
-                const menuItem = document.createElement('div');
-                menuItem.className = 'studio-context-menu-item';
-                menuItem.innerHTML = `<i class="fas ${item.icon}"></i> ${item.text}`;
-                menuItem.addEventListener('click', () => {
-                    item.action();
-                    menu.remove();
-                });
-                menu.appendChild(menuItem);
+        // Sağ tıklama menüsü
+        editor.on('contextmenu', function(event, model) {
+            if (model) {
+                createContextMenu(event, model, editor);
             }
         });
         
-        // Menüyü ekle
-        document.body.appendChild(menu);
-        
-        // Dışarı tıklandığında menüyü kapat
-        document.addEventListener('click', function closeMenu(e) {
-            if (!menu.contains(e.target)) {
-                menu.remove();
-                document.removeEventListener('click', closeMenu);
-            }
-        });
+        // Sürükle-bırak hedefi olarak canvas
+        const editorCanvas = document.querySelector('.editor-canvas');
+        if (editorCanvas) {
+            editorCanvas.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('drop-target');
+            });
+            
+            editorCanvas.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                this.classList.remove('drop-target');
+            });
+            
+            editorCanvas.addEventListener('drop', function(e) {
+                this.classList.remove('drop-target');
+            });
+        }
+    } catch (error) {
+        console.warn('Canvas olayları ayarlanırken hata:', error);
+    }
+}
+
+/**
+ * Sağ tıklama menüsü oluştur
+ * @param {Event} event - Olay
+ * @param {Object} model - Bileşen modeli
+ * @param {Object} editor - GrapesJS editor örneği
+ */
+function createContextMenu(event, model, editor) {
+    event.preventDefault();
+    
+    // Mevcut menüyü temizle
+    const existingMenu = document.querySelector('.studio-context-menu');
+    if (existingMenu) {
+        existingMenu.remove();
     }
     
-    /**
-     * Element HTML'ini göster
-     * @param {Object} model - Bileşen modeli
-     */
-    function showElementHtml(model) {
-        const html = model.toHTML();
-        
-        if (window.StudioUtils && typeof window.StudioUtils.showEditModal === 'function') {
-            window.StudioUtils.showEditModal('Element HTML', html, function(newHtml) {
-                model.replaceWith(newHtml);
-            });
+    // Menü oluştur
+    const menu = document.createElement('div');
+    menu.className = 'studio-context-menu';
+    menu.style.left = event.pageX + 'px';
+    menu.style.top = event.pageY + 'px';
+    
+    // Menü öğelerini ekle
+    const menuItems = [
+        { text: 'Düzenle', icon: 'fa-edit', action: () => editor.select(model) },
+        { text: 'Kopyala', icon: 'fa-copy', action: () => editor.runCommand('tlb-clone', { target: model }) },
+        { text: 'Sil', icon: 'fa-trash', action: () => model.remove() },
+        { type: 'divider' },
+        { text: 'İçeriği Temizle', icon: 'fa-eraser', action: () => model.empty() },
+        { type: 'divider' },
+        { text: 'HTML Göster', icon: 'fa-code', action: () => showElementHtml(model) }
+    ];
+    
+    menuItems.forEach(item => {
+        if (item.type === 'divider') {
+            const divider = document.createElement('div');
+            divider.className = 'studio-context-menu-divider';
+            menu.appendChild(divider);
         } else {
-            alert(html);
-        }
-    }
-    
-    /**
-     * Stiller paneli otomatik aktivasyonu
-     */
-    function activateStylePanel() {
-        const stylesTab = document.querySelector('.panel-tab[data-tab="styles"]');
-        if (stylesTab && !stylesTab.classList.contains('active')) {
-            // Mevcut aktif sekmeyi devre dışı bırak
-            document.querySelectorAll('.panel-tab.active').forEach(tab => {
-                tab.classList.remove('active');
+            const menuItem = document.createElement('div');
+            menuItem.className = 'studio-context-menu-item';
+            menuItem.innerHTML = `<i class="fas ${item.icon}"></i> ${item.text}`;
+            menuItem.addEventListener('click', () => {
+                item.action();
+                menu.remove();
             });
-            
-            // Stiller sekmesini etkinleştir
-            stylesTab.classList.add('active');
-            
-            // İçerik panellerini güncelle
-            document.querySelectorAll('.panel-tab-content').forEach(content => {
-                content.classList.remove('active');
-                if (content.getAttribute('data-tab-content') === 'styles') {
-                    content.classList.add('active');
-                }
-            });
-            
-            // Aktif sekmeyi localStorage'a kaydet
-            localStorage.setItem('studio_active_tab', 'styles');
+            menu.appendChild(menuItem);
         }
-    }
+    });
     
-    /**
-     * Cihaz görünümü değiştirme butonlarını yapılandırır
-     * @param {Object} editor - GrapesJS editor örneği
-     */
-    function setupDeviceToggle(editor) {
-        const deviceDesktop = document.getElementById("device-desktop");
-        const deviceTablet = document.getElementById("device-tablet");
-        const deviceMobile = document.getElementById("device-mobile");
+    // Menüyü ekle
+    document.body.appendChild(menu);
+    
+    // Dışarı tıklandığında menüyü kapat
+    document.addEventListener('click', function closeMenu(e) {
+        if (!menu.contains(e.target)) {
+            menu.remove();
+            document.removeEventListener('click', closeMenu);
+        }
+    });
+}
 
-        // Tüm butonları temizle ve yeniden oluştur
-        function recreateButton(button) {
-            if (!button) return null;
-            
-            const newButton = button.cloneNode(true);
-            if (button.parentNode) {
-                button.parentNode.replaceChild(newButton, button);
-            }
-            return newButton;
-        }
+/**
+ * Element HTML'ini göster
+ * @param {Object} model - Bileşen modeli
+ */
+function showElementHtml(model) {
+    const html = model.toHTML();
+    
+    if (window.StudioUtils && typeof window.StudioUtils.showEditModal === 'function') {
+        window.StudioUtils.showEditModal('Element HTML', html, function(newHtml) {
+            model.replaceWith(newHtml);
+        });
+    } else {
+        alert(html);
+    }
+}
+
+/**
+ * Özellikler paneli otomatik aktivasyonu
+ */
+function activateStylePanel() {
+    const propertiesTab = document.querySelector('.panel-tab[data-tab="element-properties"]');
+    if (propertiesTab && !propertiesTab.classList.contains('active')) {
+        // Mevcut aktif sekmeyi devre dışı bırak
+        document.querySelectorAll('.panel-tab.active').forEach(tab => {
+            tab.classList.remove('active');
+        });
         
-        const newDesktopBtn = recreateButton(deviceDesktop);
-        const newTabletBtn = recreateButton(deviceTablet);
-        const newMobileBtn = recreateButton(deviceMobile);
-
-        function toggleDeviceButtons(activeBtn) {
-            const deviceBtns = document.querySelectorAll(".device-btns button");
-            if (deviceBtns) {
-                deviceBtns.forEach((btn) => {
-                    btn.classList.remove("active");
-                });
-                if (activeBtn) {
-                    activeBtn.classList.add("active");
-                }
+        // Özellikler sekmesini etkinleştir
+        propertiesTab.classList.add('active');
+        
+        // İçerik panellerini güncelle
+        document.querySelectorAll('.panel-tab-content').forEach(content => {
+            content.classList.remove('active');
+            if (content.getAttribute('data-tab-content') === 'element-properties') {
+                content.classList.add('active');
             }
-            
-            // Aktif cihazı localStorage'a kaydet
+        });
+        
+        // Aktif sekmeyi localStorage'a kaydet
+        localStorage.setItem('studio_active_tab', 'element-properties');
+    }
+}
+
+/**
+ * Cihaz görünümü değiştirme butonlarını yapılandırır
+ * @param {Object} editor - GrapesJS editor örneği
+ */
+function setupDeviceToggle(editor) {
+    const deviceDesktop = document.getElementById("device-desktop");
+    const deviceTablet = document.getElementById("device-tablet");
+    const deviceMobile = document.getElementById("device-mobile");
+
+    // Tüm butonları temizle ve yeniden oluştur
+    function recreateButton(button) {
+        if (!button) return null;
+        
+        const newButton = button.cloneNode(true);
+        if (button.parentNode) {
+            button.parentNode.replaceChild(newButton, button);
+        }
+        return newButton;
+    }
+    
+    const newDesktopBtn = recreateButton(deviceDesktop);
+    const newTabletBtn = recreateButton(deviceTablet);
+    const newMobileBtn = recreateButton(deviceMobile);
+
+    function toggleDeviceButtons(activeBtn) {
+        const deviceBtns = document.querySelectorAll(".device-btns button");
+        if (deviceBtns) {
+            deviceBtns.forEach((btn) => {
+                btn.classList.remove("active");
+            });
             if (activeBtn) {
-                const deviceId = activeBtn.id.replace('device-', '');
-                localStorage.setItem('studio_active_device', deviceId);
+                activeBtn.classList.add("active");
             }
-        }
-
-        if (newDesktopBtn) {
-            newDesktopBtn.addEventListener("click", function () {
-                editor.setDevice("Desktop");
-                toggleDeviceButtons(this);
-            });
-        }
-
-        if (newTabletBtn) {
-            newTabletBtn.addEventListener("click", function () {
-                editor.setDevice("Tablet");
-                toggleDeviceButtons(this);
-            });
-        }
-
-        if (newMobileBtn) {
-            newMobileBtn.addEventListener("click", function () {
-                editor.setDevice("Mobile");
-                toggleDeviceButtons(this);
-            });
         }
         
-        // Önceki aktif cihazı yükle
-        const savedDevice = localStorage.getItem('studio_active_device');
-        if (savedDevice) {
-            const activeDeviceBtn = document.getElementById(`device-${savedDevice}`);
-            if (activeDeviceBtn) {
-                activeDeviceBtn.click();
-            }
+        // Aktif cihazı localStorage'a kaydet
+        if (activeBtn) {
+            const deviceId = activeBtn.id.replace('device-', '');
+            localStorage.setItem('studio_active_device', deviceId);
         }
     }
+
+    if (newDesktopBtn) {
+        newDesktopBtn.addEventListener("click", function () {
+            editor.setDevice("Desktop");
+            toggleDeviceButtons(this);
+        });
+    }
+
+    if (newTabletBtn) {
+        newTabletBtn.addEventListener("click", function () {
+            editor.setDevice("Tablet");
+            toggleDeviceButtons(this);
+        });
+    }
+
+    if (newMobileBtn) {
+        newMobileBtn.addEventListener("click", function () {
+            editor.setDevice("Mobile");
+            toggleDeviceButtons(this);
+        });
+    }
     
-    /**
-     * Editor içindeki stilleri özelleştirir
-     */
-    function setupEditorStyles() {
-        // Stil yöneticisi için gecikmeli düzeltme
-        setTimeout(() => {
-            // Stiller arama alanı oluştur (eğer yoksa)
-            const stylesContainer = document.getElementById('styles-container');
-            if (stylesContainer) {
-                if (!document.getElementById('styles-search')) {
-                    const searchBox = document.createElement('div');
-                    searchBox.className = 'blocks-search';
-                    searchBox.innerHTML = `<input type="text" id="styles-search" class="form-control" placeholder="Stil ara...">`;
-                    
-                    if (stylesContainer.previousElementSibling && stylesContainer.previousElementSibling.classList.contains('blocks-search')) {
-                        // Arama alanı var, güncelleme yapma
-                    } else {
-                        stylesContainer.parentNode.insertBefore(searchBox, stylesContainer);
-                    }
-                }
-            }
-            
+    // Önceki aktif cihazı yükle
+    const savedDevice = localStorage.getItem('studio_active_device');
+    if (savedDevice) {
+        const activeDeviceBtn = document.getElementById(`device-${savedDevice}`);
+        if (activeDeviceBtn) {
+            activeDeviceBtn.click();
+        }
+    }
+}
+
+/**
+ * Editor içindeki stilleri özelleştirir
+ */
+function setupEditorStyles() {
+    // Stil yöneticisi için gecikmeli düzeltme
+    setTimeout(() => {
+        // Stiller arama alanı oluştur (eğer yoksa)
+        const stylesContainer = document.getElementById('styles-container');
+        if (stylesContainer) {
             // Stil sektörlerine ikon ekle
             const styleSectors = document.querySelectorAll('.gjs-sm-sector-title');
             
@@ -715,101 +667,151 @@ window.StudioUI = (function() {
             
             // Stil sektörü durumlarını yükle
             loadStyleSectorStates();
-        }, 500);
-    }
+        }
+    }, 500);
+}
+
+/**
+ * Stil sektörü açık/kapalı durumlarını localStorage'a kaydet
+ */
+function saveStyleSectorStates() {
+    const sectors = document.querySelectorAll('.gjs-sm-sector');
+    const states = {};
     
-    /**
-     * Stil sektörü açık/kapalı durumlarını localStorage'a kaydet
-     */
-    function saveStyleSectorStates() {
+    sectors.forEach(sector => {
+        const sectorTitle = sector.querySelector('.gjs-sm-sector-title');
+        if (sectorTitle) {
+            const sectorName = sectorTitle.textContent.trim();
+            states[sectorName] = sector.classList.contains('gjs-collapsed');
+        }
+    });
+    
+    localStorage.setItem('studio_style_sectors', JSON.stringify(states));
+}
+
+/**
+ * Stil sektörü açık/kapalı durumlarını localStorage'dan yükle
+ */
+function loadStyleSectorStates() {
+    const savedStates = localStorage.getItem('studio_style_sectors');
+    if (!savedStates) return;
+    
+    try {
+        const states = JSON.parse(savedStates);
         const sectors = document.querySelectorAll('.gjs-sm-sector');
-        const states = {};
         
         sectors.forEach(sector => {
             const sectorTitle = sector.querySelector('.gjs-sm-sector-title');
             if (sectorTitle) {
                 const sectorName = sectorTitle.textContent.trim();
-                states[sectorName] = sector.classList.contains('gjs-collapsed');
-            }
-        });
-        
-        localStorage.setItem('studio_style_sectors', JSON.stringify(states));
-    }
-    
-    /**
-     * Stil sektörü açık/kapalı durumlarını localStorage'dan yükle
-     */
-    function loadStyleSectorStates() {
-        const savedStates = localStorage.getItem('studio_style_sectors');
-        if (!savedStates) return;
-        
-        try {
-            const states = JSON.parse(savedStates);
-            const sectors = document.querySelectorAll('.gjs-sm-sector');
-            
-            sectors.forEach(sector => {
-                const sectorTitle = sector.querySelector('.gjs-sm-sector-title');
-                if (sectorTitle) {
-                    const sectorName = sectorTitle.textContent.trim();
-                    if (states[sectorName] !== undefined) {
-                        if (states[sectorName]) {
-                            sector.classList.add('gjs-collapsed');
-                            const properties = sector.querySelector('.gjs-sm-properties');
-                            if (properties) {
-                                properties.style.display = 'none';
-                            }
-                        } else {
-                            sector.classList.remove('gjs-collapsed');
-                            const properties = sector.querySelector('.gjs-sm-properties');
-                            if (properties) {
-                                properties.style.display = 'block';
-                            }
+                if (states[sectorName] !== undefined) {
+                    if (states[sectorName]) {
+                        sector.classList.add('gjs-collapsed');
+                        const properties = sector.querySelector('.gjs-sm-properties');
+                        if (properties) {
+                            properties.style.display = 'none';
+                        }
+                    } else {
+                        sector.classList.remove('gjs-collapsed');
+                        const properties = sector.querySelector('.gjs-sm-properties');
+                        if (properties) {
+                            properties.style.display = 'block';
                         }
                     }
                 }
-            });
-        } catch (e) {
-            console.error('Style sector states could not be loaded:', e);
-        }
-    }
-    
-    /**
-     * Editöre özel özellikler ekle
-     * @param {Object} editor - GrapesJS editor örneği 
-     */
-    function addCustomFunctions(editor) {
-        // Canvası görünür kılma (bileşen sınırlarını göster/gizle)
-        editor.Commands.add('sw-visibility', {
-            run(editor) {
-                const canvas = editor.Canvas;
-                const classCanvas = 'gjs-cv-canvas';
-                const classVisible = 'gjs-cv-visible';
-                
-                const frames = canvas.getFrames();
-                frames.forEach(frame => {
-                    const canvasBody = frame.view.getBody();
-                    const canvasWrapper = frame.view.getWrapper();
-                    
-                    canvasWrapper.classList.toggle(classVisible);
-                    canvasBody.classList.toggle(`${classCanvas}__${classVisible}`);
-                });
-            },
-            stop(editor) {
-                this.run(editor);
             }
         });
-        
-        // Başka özel komutlar buraya eklenebilir
+    } catch (e) {
+        console.error('Style sector states could not be loaded:', e);
     }
+}
+
+/**
+ * Editöre özel özellikler ekle
+ * @param {Object} editor - GrapesJS editor örneği 
+ */
+function addCustomFunctions(editor) {
+    // Canvası görünür kılma (bileşen sınırlarını göster/gizle)
+    editor.Commands.add('sw-visibility', {
+        run(editor) {
+            const canvas = editor.Canvas;
+            const classCanvas = 'gjs-cv-canvas';
+            const classVisible = 'gjs-cv-visible';
+            
+            const frames = canvas.getFrames();
+            frames.forEach(frame => {
+                const canvasBody = frame.view.getBody();
+                const canvasWrapper = frame.view.getWrapper();
+                
+                canvasWrapper.classList.toggle(classVisible);
+                canvasBody.classList.toggle(`${classCanvas}__${classVisible}`);
+            });
+        },
+        stop(editor) {
+            this.run(editor);
+        }
+    });
     
-    return {
-        setupUI: setupUI,
-        initializeBlockCategories: initializeBlockCategories,
-        setupEditorStyles: setupEditorStyles,
-        standardizeLayerPanel: standardizeLayerPanel,
-        handleCanvasEvents: handleCanvasEvents,
-        addCustomFunctions: addCustomFunctions,
-        activateStylePanel: activateStylePanel,
-        initializePanelToggles: initializePanelToggles
-    };
+    // Number input butonları için düzeltme
+    fixNumberInputs();
+}
+
+/**
+ * Sayı girişi butonlarını düzeltme
+ */
+function fixNumberInputs() {
+    // Number input butonlarını düzeltmek için MutationObserver kullan
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.addedNodes && mutation.addedNodes.length > 0) {
+                mutation.addedNodes.forEach((node) => {
+                    if (node.nodeType === 1) { // ELEMENT_NODE
+                        const arrows = node.querySelectorAll('.gjs-field-arrow-u, .gjs-field-arrow-d');
+                        arrows.forEach(arrow => {
+                            // Her okun olay dinleyicilerini kaldır ve yenisini ekle
+                            const newArrow = arrow.cloneNode(true);
+                            arrow.parentNode.replaceChild(newArrow, arrow);
+                            
+                            newArrow.addEventListener('click', function() {
+                                const input = this.closest('.gjs-field-integer').querySelector('input');
+                                if (!input) return;
+                                
+                                let value = parseInt(input.value) || 0;
+                                
+                                if (this.classList.contains('gjs-field-arrow-u')) {
+                                    value++;
+                                } else {
+                                    value--;
+                                }
+                                
+                                input.value = value;
+                                // Değişiklik olayını tetikle
+                                const event = new Event('change', { bubbles: true });
+                                input.dispatchEvent(event);
+                            });
+                        });
+                    }
+                });
+            }
+        });
+    });
+    
+    // Panelleri gözlemle
+    const rightPanel = document.querySelector('.panel__right');
+    if (rightPanel) {
+        observer.observe(rightPanel, { childList: true, subtree: true });
+    }
+}
+
+return {
+    setupUI: setupUI,
+    initializeBlockCategories: initializeBlockCategories,
+    setupEditorStyles: setupEditorStyles,
+    standardizeLayerPanel: standardizeLayerPanel,
+    handleCanvasEvents: handleCanvasEvents,
+    addCustomFunctions: addCustomFunctions,
+    activateStylePanel: activateStylePanel,
+    initializePanelToggles: initializePanelToggles,
+    fixNumberInputs: fixNumberInputs
+};
 })();

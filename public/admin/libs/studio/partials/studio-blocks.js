@@ -4,11 +4,20 @@
  */
 
 window.StudioBlocks = (function() {
+    // Blokların yüklendiğini takip etmek için bayrak
+    let blocksLoaded = false;
+    
     /**
      * Blade şablonlarından blokları kaydet
      * @param {Object} editor - GrapesJS editor örneği
      */
     function registerBlocks(editor) {
+        // Eğer bloklar zaten yüklendiyse tekrar yükleme
+        if (blocksLoaded) {
+            console.log("Bloklar zaten yüklenmiş, tekrar yükleme atlanıyor...");
+            return;
+        }
+        
         console.log("Server tarafından bloklar yükleniyor...");
         
         // Reset mevcut kategoriler ve bloklar
@@ -64,9 +73,11 @@ window.StudioBlocks = (function() {
                     console.log("Blok kategorileri oluşturuluyor...");
                     createBlockCategories(editor, data.categories || {});
                     
-                    // Kategorilere blokları ekle
+                    // Kategorilere blokları ekle ve işlemi tamamla
                     setTimeout(() => {
                         updateBlocksInCategories(editor);
+                        // İşaretleyelim ki tekrar yüklenmesin
+                        blocksLoaded = true;
                     }, 500);
 
                     // Arama işlevini ayarla

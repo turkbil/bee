@@ -1,3 +1,5 @@
+// public/admin/libs/studio/app.js
+
 /**
  * Studio Editor Uygulama Başlatıcı
  * Tüm modülleri yükler ve uygulamayı başlatır
@@ -49,6 +51,9 @@ if (window._studioAppInitialized) {
         // Global değişkende sakla
         window.studioEditorConfig = config;
         
+        // İlk önce varsayılan sekmeleri aktifleştir (editör yüklenmeden önce)
+        setupPanelTabsOnStartup();
+        
         // Editor başlat
         if (typeof window.initStudioEditor === 'function') {
             try {
@@ -76,6 +81,11 @@ if (window._studioAppInitialized) {
                     
                     // Panel sekmelerini ayarla
                     setupTabs();
+                    
+                    // Bloklara içerik yüklendikten sonra blok sekmesini yeniden aktif et
+                    setTimeout(function() {
+                        activateTab('blocks', 'left');
+                    }, 500);
                 });
                 
                 // Global erişim için kaydet
@@ -89,7 +99,56 @@ if (window._studioAppInitialized) {
     });
 
     /**
-     * Sol panel sekmelerini ayarla
+     * Belirli bir sekmeyi aktif hale getirir
+     * @param {string} tabName - Sekme adı
+     * @param {string} panel - Panel tipi ('left' veya 'right')
+     */
+    function activateTab(tabName, panel = 'left') {
+        const tabSelector = panel === 'left' ? 
+            `.panel__left .panel-tab[data-tab="${tabName}"]` : 
+            `.panel__right .panel-tab[data-tab="${tabName}"]`;
+            
+        const contentSelector = panel === 'left' ? 
+            `.panel__left .panel-tab-content[data-tab-content="${tabName}"]` : 
+            `.panel__right .panel-tab-content[data-tab-content="${tabName}"]`;
+        
+        // Sekmeyi aktifleştir
+        const allTabs = document.querySelectorAll(panel === 'left' ? `.panel__left .panel-tab` : `.panel__right .panel-tab`);
+        allTabs.forEach(tab => tab.classList.remove('active'));
+        
+        const tab = document.querySelector(tabSelector);
+        if (tab) {
+            tab.classList.add('active');
+        }
+        
+        // İçeriği görünür yap
+        const allContents = document.querySelectorAll(panel === 'left' ? `.panel__left .panel-tab-content` : `.panel__right .panel-tab-content`);
+        allContents.forEach(content => content.classList.remove('active'));
+        
+        const content = document.querySelector(contentSelector);
+        if (content) {
+            content.classList.add('active');
+        }
+        
+        // LocalStorage'e kaydet
+        localStorage.setItem(panel === 'left' ? 'studio_left_panel_tab' : 'studio_right_panel_tab', tabName);
+    }
+    
+    /**
+     * Sayfa yüklendiğinde varsayılan sekmeleri aktifleştirir
+     */
+    function setupPanelTabsOnStartup() {
+        // Sol panel
+        const leftTab = localStorage.getItem('studio_left_panel_tab') || 'blocks';
+        activateTab(leftTab, 'left');
+        
+        // Sağ panel
+        const rightTab = localStorage.getItem('studio_right_panel_tab') || 'element-properties';
+        activateTab(rightTab, 'right');
+    }
+
+    /**
+     * Panel sekmelerini ayarla
      */
     function setupTabs() {
         // İşaretlenen işlemi tekrar yapmayı engelle
@@ -99,94 +158,58 @@ if (window._studioAppInitialized) {
         }
         window._tabsInitialized = true;
         
-        const leftPanelTabs = document.querySelectorAll(".panel__left .panel-tab");
-        const leftPanelContents = document.querySelectorAll(".panel__left .panel-tab-content");
+        // Tüm önceki event listener'ları temizle
+        cleanupTabListeners();
         
-        const rightPanelTabs = document.querySelectorAll(".panel__right .panel-tab");
-        const rightPanelContents = document.querySelectorAll(".panel__right .panel-tab-content");
-
-        // Event sayılarını saymak için - gerçekten her öğeye tek bir olay eklediğimizden emin olmak için
-        let eventCounter = 0;
-
-        // Sol panel sekmeleri için
-        leftPanelTabs.forEach((tab) => {
-            tab.addEventListener("click", function (event) {
-                // Eğer bu tıklamada olay işlenmişse, tekrar işleme
-                if (event._processed) return;
-                event._processed = true;
-                
-                const tabName = this.getAttribute("data-tab");
-
-                // Aktif tab değiştir (sadece sol panel içinde)
-                leftPanelTabs.forEach((t) => t.classList.remove("active"));
-                this.classList.add("active");
-
-                // İçeriği değiştir (sadece sol panel içinde)
-                leftPanelContents.forEach((content) => {
-                    if (content.getAttribute("data-tab-content") === tabName) {
-                        content.classList.add("active");
-                    } else {
-                        content.classList.remove("active");
-                    }
-                });
-                
-                // Aktif sekme bilgisini localStorage'a kaydet (sol panel için)
-                localStorage.setItem('studio_left_panel_tab', tabName);
-                
-                eventCounter++;
+        // Sol panel tablarını ayarla
+        setupPanelTabs('left');
+        
+        // Sağ panel tablarını ayarla
+        setupPanelTabs('right');
+    }
+    
+    /**
+     * Belirli bir panel için tab işlevlerini ayarla
+     * @param {string} panelType - Panel tipi ('left' veya 'right')
+     */
+    function setupPanelTabs(panelType) {
+        const panelSelector = panelType === 'left' ? '.panel__left' : '.panel__right';
+        const tabs = document.querySelectorAll(`${panelSelector} .panel-tab`);
+        
+        tabs.forEach((tab) => {
+            const clonedTab = tab.cloneNode(true);
+            tab.parentNode.replaceChild(clonedTab, tab);
+            
+            clonedTab.addEventListener('click', () => {
+                const tabName = clonedTab.getAttribute('data-tab');
+                activateTab(tabName, panelType);
             });
         });
         
-        // Sağ panel sekmeleri için
-        rightPanelTabs.forEach((tab) => {
-            tab.addEventListener("click", function (event) {
-                // Eğer bu tıklamada olay işlenmişse, tekrar işleme
-                if (event._processed) return;
-                event._processed = true;
-                
-                const tabName = this.getAttribute("data-tab");
-
-                // Aktif tab değiştir (sadece sağ panel içinde)
-                rightPanelTabs.forEach((t) => t.classList.remove("active"));
-                this.classList.add("active");
-
-                // İçeriği değiştir (sadece sağ panel içinde)
-                rightPanelContents.forEach((content) => {
-                    if (content.getAttribute("data-tab-content") === tabName) {
-                        content.classList.add("active");
-                    } else {
-                        content.classList.remove("active");
-                    }
-                });
-                
-                // Aktif sekme bilgisini localStorage'a kaydet (sağ panel için)
-                localStorage.setItem('studio_right_panel_tab', tabName);
-                
-                eventCounter++;
-            });
+        // Varsayılan sekmeyi yükle
+        const savedTab = localStorage.getItem(panelType === 'left' ? 'studio_left_panel_tab' : 'studio_right_panel_tab');
+        if (savedTab) {
+            activateTab(savedTab, panelType);
+        } else {
+            // Varsayılan değerler
+            activateTab(panelType === 'left' ? 'blocks' : 'element-properties', panelType);
+        }
+    }
+    
+    /**
+     * Tüm sekme olay dinleyicilerini temizle
+     */
+    function cleanupTabListeners() {
+        // Sol panel tabları
+        document.querySelectorAll('.panel__left .panel-tab').forEach(tab => {
+            const clone = tab.cloneNode(true);
+            tab.parentNode.replaceChild(clone, tab);
         });
         
-        // Önceki aktif sekmeleri yükle
-        const savedLeftTab = localStorage.getItem('studio_left_panel_tab');
-        if (savedLeftTab) {
-            const activeLeftTab = document.querySelector(`.panel__left .panel-tab[data-tab="${savedLeftTab}"]`);
-            if (activeLeftTab) {
-                // Programmatic click, _processed false olmalı
-                const clickEvent = new MouseEvent('click');
-                clickEvent._processed = false;
-                activeLeftTab.dispatchEvent(clickEvent);
-            }
-        }
-        
-        const savedRightTab = localStorage.getItem('studio_right_panel_tab');
-        if (savedRightTab) {
-            const activeRightTab = document.querySelector(`.panel__right .panel-tab[data-tab="${savedRightTab}"]`);
-            if (activeRightTab) {
-                // Programmatic click, _processed false olmalı
-                const clickEvent = new MouseEvent('click');
-                clickEvent._processed = false;
-                activeRightTab.dispatchEvent(clickEvent);
-            }
-        }
+        // Sağ panel tabları
+        document.querySelectorAll('.panel__right .panel-tab').forEach(tab => {
+            const clone = tab.cloneNode(true);
+            tab.parentNode.replaceChild(clone, tab);
+        });
     }
 }

@@ -212,19 +212,18 @@ window.StudioBlocks = (function() {
                         blockEl.classList.remove('dragging');
                     });
                     
-                    blockEl.addEventListener('click', () => {
-                        // İçerik string mi yoksa obje mi kontrol et
-                        const content = block.get('content');
-                        if (typeof content === 'string') {
-                            editor.addComponents(content);
-                        } else if (typeof content === 'object' && content.html) {
-                            editor.addComponents(content.html);
-                        } else {
-                            editor.addComponents(block.get('content'));
-                        }
-
-                        // İşlem bildirimini göster
-                        showToast('Blok eklendi', 'success');
+                    // Tıklamayla içerik ekleme kaldırıldı, yalnızca sürükle-bırak özelliği korundu
+                    blockEl.addEventListener('click', (e) => {
+                        // Sadece blok seçimi için UI geri bildirimi göster (içerik ekleme yok)
+                        blockEl.classList.add('selected');
+                        setTimeout(() => {
+                            blockEl.classList.remove('selected');
+                        }, 300);
+                        
+                        // Kullanıcıya bileşenlerin sürükle-bırak ile ekleneceğini bildir
+                        showToast('Bileşeni eklemek için sürükleyip bırakın', 'info');
+                        e.preventDefault();
+                        e.stopPropagation();
                     });
                     
                     blockItems.appendChild(blockEl);

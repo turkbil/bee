@@ -134,117 +134,131 @@ window.initStudioEditor = function (config) {
         
         // Yükleme başlat
         startLoading();
-        
+                
         // GrapesJS Editor yapılandırması
-    let editor = grapesjs.init({
-        container: "#" + config.elementId,
-        fromElement: false,
-        height: "100%",
-        width: "100%",
-        storageManager: false,
-        panels: { defaults: [] },
-        blockManager: {
-            appendTo: '#blocks-container'
-        },
-        styleManager: {
-            appendTo: "#styles-container",
-            sectors: [
-                {
-                    name: 'Boyut',
-                    open: true,
-                    properties: [
-                        'width', 'height', 'max-width', 'min-height', 'margin', 'padding'
-                    ]
-                },
-                {
-                    name: 'Düzen',
-                    open: false,
-                    properties: [
-                        'display', 'position', 'top', 'right', 'bottom', 'left', 'float', 'clear', 'z-index'
-                    ]
-                },
-                {
-                    name: 'Flex',
-                    open: false,
-                    properties: [
-                        'flex-direction', 'flex-wrap', 'justify-content', 'align-items', 'align-content', 'order', 'flex-basis', 'flex-grow', 'flex-shrink', 'align-self'
-                    ]
-                },
-                {
-                    name: 'Tipografi',
-                    open: false,
-                    properties: [
-                        'font-family', 'font-size', 'font-weight', 'letter-spacing', 'color', 'line-height', 'text-align', 'text-decoration', 'text-shadow'
-                    ]
-                },
-                {
-                    name: 'Dekorasyon',
-                    open: false,
-                    properties: [
-                        'background-color', 'border', 'border-radius', 'box-shadow'
-                    ]
-                }
-            ]
-        },
-        layerManager: {
-            appendTo: "#layers-container",
-        },
-        traitManager: {
-            appendTo: "#traits-container",
-        },
-        deviceManager: {
-            devices: [
-                {
-                    name: "Desktop",
-                    width: "",
-                },
-                {
-                    name: "Tablet",
-                    width: "768px",
-                    widthMedia: "992px",
-                },
-                {
-                    name: "Mobile",
-                    width: "320px",
-                    widthMedia: "480px",
-                },
-            ],
-        },
-        canvas: {
-            scripts: [
-                "https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js",
-            ],
-            styles: [
-                "https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css",
-                "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
-            ]
-        },
-        cssComposer: {
-            clearOnRender: true,
-            preserveStyledOnRemove: false,
-            fileStyle: ''
-        }
-    });
+        let editor = grapesjs.init({
+            container: "#" + config.elementId,
+            fromElement: false,
+            height: "100%",
+            width: "100%",
+            storageManager: false,
+            panels: { defaults: [] },
+            blockManager: {
+                appendTo: '#blocks-container'
+            },
+            styleManager: {
+                appendTo: "#styles-container",
+                sectors: [
+                    {
+                        name: 'Boyut',
+                        open: true,
+                        properties: [
+                            'width', 'height', 'max-width', 'min-height', 'margin', 'padding'
+                        ]
+                    },
+                    {
+                        name: 'Düzen',
+                        open: false,
+                        properties: [
+                            'display', 'position', 'top', 'right', 'bottom', 'left', 'float', 'clear', 'z-index'
+                        ]
+                    },
+                    {
+                        name: 'Flex',
+                        open: false,
+                        properties: [
+                            'flex-direction', 'flex-wrap', 'justify-content', 'align-items', 'align-content', 'order', 'flex-basis', 'flex-grow', 'flex-shrink', 'align-self'
+                        ]
+                    },
+                    {
+                        name: 'Tipografi',
+                        open: false,
+                        properties: [
+                            'font-family', 'font-size', 'font-weight', 'letter-spacing', 'color', 'line-height', 'text-align', 'text-decoration', 'text-shadow'
+                        ]
+                    },
+                    {
+                        name: 'Dekorasyon',
+                        open: false,
+                        properties: [
+                            'background-color', 'border', 'border-radius', 'box-shadow'
+                        ]
+                    }
+                ]
+            },
+            layerManager: {
+                appendTo: "#layers-container",
+            },
+            traitManager: {
+                appendTo: "#traits-container",
+            },
+            deviceManager: {
+                devices: [
+                    {
+                        name: "Desktop",
+                        width: "",
+                    },
+                    {
+                        name: "Tablet",
+                        width: "768px",
+                        widthMedia: "992px",
+                    },
+                    {
+                        name: "Mobile",
+                        width: "320px",
+                        widthMedia: "480px",
+                    },
+                ],
+            },
+            canvas: {
+                scripts: [
+                    "https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js",
+                ],
+                styles: [
+                    "https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css",
+                    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
+                ]
+            },
+            cssComposer: {
+                clearOnRender: true, // Render sırasında mevcut CSS'i temizler
+                preserveStyledOnRemove: false, // Stil verilen elemanlar kaldırıldığında stil korunmaz
+                fileStyle: '', // Harici stil dosyası belirtilmez
+                defaults: []  // Varsayılan stiller boş bırakılır
+            }
+        });
 
-    // CSS Composer'ın default rule davranışını engelle
-    editor.on('load', () => {
-        const originalGetCss = editor.getCss;
-        
-        editor.getCss = function(opts = {}) {
-            const existingCss = originalGetCss.call(this, opts);
+        // Editor yüklendiğinde CSS tekrarlama sorununu çöz
+        editor.on('load', () => {
+            // Default CSS kurallarını tamamen devre dışı bırak
+            editor.CssComposer.getConfig().defaults = [];
             
-            // Varsayılan stiller (box-sizing ve margin) tekrarları temizle
-            let cleanCss = existingCss;
-            const defaultStylePattern = /\*\s*{\s*box-sizing:\s*border-box;\s*}\s*body\s*{\s*margin(-top|-right|-bottom|-left)?:?\s*0(px)?;?\s*}/g;
+            // Özel CSS temizleme fonksiyonu
+            const removeDuplicateDefaultStyles = (css) => {
+                // Tekrarlanan default stiller için regex pattern
+                const pattern = /\*\s*{\s*box-sizing:\s*border-box;\s*}\s*body\s*{\s*margin(-top|-right|-bottom|-left)?:?\s*0(px)?;?\s*}/g;
+                // Tüm eşleşmeleri kaldır
+                const cleaned = css.replace(pattern, '');
+                // Sadece en başa bir kez ekle
+                return '* { box-sizing: border-box; }\nbody { margin: 0; }\n' + cleaned;
+            };
             
-            // Tekrarlanan default stilleri temizle
-            cleanCss = cleanCss.replace(defaultStylePattern, '');
+            // GetCSS metodunu override et
+            const originalGetCss = editor.getCss.bind(editor);
+            editor.getCss = function(opts) {
+                const css = originalGetCss(opts);
+                return removeDuplicateDefaultStyles(css);
+            };
             
-            // Sadece bir kez ekle
-            return '* { box-sizing: border-box; }\nbody { margin: 0; }\n' + cleanCss;
-        };
-    });
-                                
+            // SetStyle metodunu override et
+            const originalSetStyle = editor.setStyle.bind(editor);
+            editor.setStyle = function(css, opts) {
+                if (typeof css === 'string') {
+                    css = removeDuplicateDefaultStyles(css);
+                }
+                return originalSetStyle(css, opts);
+            };
+        });
+
         // Canvası görünür kılma komutu ekle
         editor.Commands.add('sw-visibility', {
             state: false,

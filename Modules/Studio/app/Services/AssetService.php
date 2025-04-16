@@ -79,13 +79,11 @@ class AssetService
             'studio-fix.js',
             'studio-utils.js',
             'studio-plugins.js',
-            'studio-plugins-loader.js',
             'studio-core.js',
             'studio-blocks.js',
             'studio-ui.js',
             'studio-actions.js',
             'studio-html-parser.js',
-            'studio-init.js'
         ];
         
         foreach ($partialFiles as $file) {

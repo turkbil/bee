@@ -788,3 +788,166 @@
   background-color: var(--panel-bg) !important;
 }
 
+/* Traits Manager (Özelleştirme Paneli) İyileştirilmiş Düzenlemeler */
+.gjs-trt-traits {
+  padding: var(--spacing-md) !important;
+  background-color: var(--panel-bg) !important;
+  margin-bottom: var(--spacing-md) !important;
+  border-radius: var(--radius-md) !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.gjs-trt-trait {
+  padding: var(--spacing-md) 0 !important;
+  margin-bottom: var(--spacing-sm) !important;
+  border-bottom: 1px dashed rgba(203, 213, 225, 0.5) !important;
+}
+
+.gjs-trt-trait:last-child {
+  border-bottom: none !important;
+  margin-bottom: 0 !important;
+}
+
+.gjs-trt-trait .gjs-label {
+  font-size: var(--font-sm) !important;
+  font-weight: 600 !important;
+  color: var(--secondary-color) !important;
+  margin-bottom: var(--spacing-sm) !important;
+  display: block !important;
+}
+
+/* Trait Header */
+.gjs-trt-header {
+  font-size: var(--font-md) !important;
+  font-weight: 600 !important;
+  color: var(--primary-color) !important;
+  margin-bottom: var(--spacing-md) !important;
+  padding-bottom: var(--spacing-sm) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.gjs-trt-header::before {
+  content: "\f0ad" !important;
+  font-family: "Font Awesome 6 Pro", FontAwesome !important;
+  margin-right: var(--spacing-sm) !important;
+  color: var(--primary-color) !important;
+}
+
+/* Number Input Düzeltmeleri */
+.gjs-field-arrows {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  border-left: 1px solid var(--border-color) !important;
+  background-color: var(--panel-header) !important;
+  border-radius: 0 4px 4px 0 !important;
+  overflow: hidden !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.gjs-field-arrow-u,
+.gjs-field-arrow-d {
+  width: 24px !important;
+  height: 24px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  background-color: var(--panel-header) !important;
+  border: none !important;
+  border-left: 1px solid var(--border-color) !important;
+  color: var(--secondary-color) !important;
+  font-size: 12px !important;
+  transition: var(--transition-normal) !important;
+  position: relative !important;
+}
+
+.gjs-field-arrow-u::before {
+  content: "\f077" !important;
+  font-family: "Font Awesome 6 Pro", FontAwesome !important;
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+.gjs-field-arrow-d::before {
+  content: "\f078" !important;
+  font-family: "Font Awesome 6 Pro", FontAwesome !important;
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+/* Özellikler ve Ayarlar sekmesi düzeltmeleri */
+#traits-container, 
+#styles-container {
+    padding: var(--spacing-md) !important;
+    background-color: var(--panel-bg) !important;
+}
+
+/* Boş durum için UI düzeltmeleri */
+.gjs-four-color:empty {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    min-height: 100px !important;
+    color: var(--secondary-light) !important;
+    font-style: italic !important;
+    font-size: var(--font-sm) !important;
+}
+
+.gjs-four-color:empty::before {
+    content: "Lütfen bir öğe seçin" !important;
+}
+
+/* Sayı girişi butonları düzeltmeleri */
+.gjs-field-integer {
+    position: relative !important;
+    overflow: visible !important;
+}
+
+.gjs-field-arrows {
+    position: absolute !important;
+    right: 0 !important;
+    top: 0 !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    border-left: 1px solid var(--border-color) !important;
+    background-color: var(--panel-header) !important;
+    border-radius: 0 4px 4px 0 !important;
+    overflow: hidden !important;
+    width: 24px !important;
+}
+
+.gjs-field-arrow-u,
+.gjs-field-arrow-d {
+    width: 100% !important;
+    height: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    background-color: var(--panel-header) !important;
+    color: var(--secondary-color) !important;
+    font-size: 10px !important;
+    transition: var(--transition-normal) !important;
+    position: relative !important;
+}
+
+.gjs-field-arrow-u {
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+.gjs-field-arrow-u::before,
+.gjs-field-arrow-d::before {
+    position: absolute !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+}

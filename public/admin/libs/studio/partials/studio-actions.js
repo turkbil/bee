@@ -23,13 +23,14 @@ window.StudioActions = (function() {
         setupExportButton(editor);
         setupVisibilityButton(editor);
         setupCommandButtons(editor);
+        setupBackButton(editor, config);
     }
     
     /**
      * Önceden eklenmiş olay dinleyicilerini temizler
      */
     function cleanup() {
-        const buttons = ['save-btn', 'preview-btn', 'export-btn', 'sw-visibility', 'cmd-clear', 'cmd-undo', 'cmd-redo', 'cmd-code-edit', 'cmd-css-edit'];
+        const buttons = ['save-btn', 'preview-btn', 'export-btn', 'sw-visibility', 'cmd-clear', 'cmd-undo', 'cmd-redo', 'cmd-code-edit', 'cmd-css-edit', 'btn-back'];
         
         buttons.forEach(buttonId => {
             const button = document.getElementById(buttonId);
@@ -50,8 +51,27 @@ window.StudioActions = (function() {
         const swVisibility = document.getElementById("sw-visibility");
         if (swVisibility) {
             swVisibility.addEventListener("click", () => {
-                editor.runCommand("sw-visibility");
+                const isActive = editor.runCommand("sw-visibility");
                 swVisibility.classList.toggle("active");
+            });
+        }
+    }
+    
+    /**
+     * Geri butonunu ayarlar
+     * @param {Object} editor - GrapesJS editor örneği
+     * @param {Object} config - Yapılandırma parametreleri
+     */
+    function setupBackButton(editor, config) {
+        const backBtn = document.getElementById("btn-back");
+        if (backBtn) {
+            backBtn.addEventListener("click", function() {
+                // Module ve ID bilgilerini config'den al
+                const module = config.module || 'page';
+                const id = config.moduleId || 0;
+                
+                // Yönetim sayfasına geri dön
+                window.location.href = `/admin/${module}/manage/${id}`;
             });
         }
     }

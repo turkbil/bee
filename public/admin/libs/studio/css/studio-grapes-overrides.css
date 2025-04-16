@@ -3,18 +3,18 @@
 
 /* Renk ve Değişkenler - studio-editor.css ile uyumlu olması için */
 :root {
-  --primary-color: #3b82f6;
-  --primary-light: #dbeafe;
-  --primary-hover: #2563eb;
-  --secondary-color: #64748b;
-  --secondary-light: #94a3b8;
-  --border-color: #e2e8f0;
+  --primary-color: #206bc4;
+  --primary-light: #e7f0ff;
+  --primary-hover: #1a569c;
+  --secondary-color: #4a5568;
+  --secondary-light: #9aa3b2;
+  --border-color: #dadfe5;
   --panel-bg: #ffffff;
-  --panel-header: #f1f5f9;
-  --light-bg: #f8fafc;
+  --panel-header: #f6f8fa;
+  --light-bg: #f9fafb;
   --hover-bg: #f1f5f9;
-  --active-bg: #eff6ff;
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+  --active-bg: #e8f1fd;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
   --spacing-xs: 5px;
   --spacing-sm: 8px;
   --spacing-md: 12px;
@@ -33,6 +33,7 @@
   border: 1px solid var(--border-color) !important;
   border-radius: 4px !important;
   overflow: hidden !important;
+  box-shadow: var(--shadow-sm) !important;
 }
 
 .gjs-sm-sector-title {
@@ -102,7 +103,7 @@
 
 .gjs-field:focus-within {
   border-color: var(--primary-color) !important;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
+  box-shadow: 0 0 0 2px rgba(32, 107, 196, 0.1) !important;
 }
 
 .gjs-field-arrow-u, 
@@ -208,6 +209,7 @@
   border: 1px solid var(--border-color) !important;
   border-radius: 4px !important;
   overflow: hidden !important;
+  box-shadow: var(--shadow-sm) !important;
 }
 
 .gjs-layer-group-header {
@@ -407,7 +409,7 @@
 
 .gjs-select:focus {
   border-color: var(--primary-color) !important;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
+  box-shadow: 0 0 0 2px rgba(32, 107, 196, 0.1) !important;
 }
 
 /* Stil paneli içindeki başlıklar */
@@ -449,7 +451,7 @@
 
 .gjs-clm-add-input:focus {
   border-color: var(--primary-color) !important;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
+  box-shadow: 0 0 0 2px rgba(32, 107, 196, 0.1) !important;
 }
 
 .gjs-clm-add-label {

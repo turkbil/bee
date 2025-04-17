@@ -134,7 +134,7 @@ window.initStudioEditor = function (config) {
         
         // Yükleme başlat
         startLoading();
-                
+                                
         // GrapesJS Editor yapılandırması
         let editor = grapesjs.init({
             container: "#" + config.elementId,
@@ -219,44 +219,37 @@ window.initStudioEditor = function (config) {
                     "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
                 ]
             },
-            cssComposer: {
-                clearOnRender: true, // Render sırasında mevcut CSS'i temizler
-                preserveStyledOnRemove: false, // Stil verilen elemanlar kaldırıldığında stil korunmaz
-                fileStyle: '', // Harici stil dosyası belirtilmez
-                defaults: []  // Varsayılan stiller boş bırakılır
-            }
+            protectedCss: '' // Koruma altındaki CSS'i devre dışı bırak
         });
 
         // Editor yüklendiğinde CSS tekrarlama sorununu çöz
-        editor.on('load', () => {
-            // Default CSS kurallarını tamamen devre dışı bırak
-            editor.CssComposer.getConfig().defaults = [];
-            
-            // Özel CSS temizleme fonksiyonu
-            const removeDuplicateDefaultStyles = (css) => {
-                // Tekrarlanan default stiller için regex pattern
-                const pattern = /\*\s*{\s*box-sizing:\s*border-box;\s*}\s*body\s*{\s*margin(-top|-right|-bottom|-left)?:?\s*0(px)?;?\s*}/g;
-                // Tüm eşleşmeleri kaldır
-                const cleaned = css.replace(pattern, '');
-                // Sadece en başa bir kez ekle
-                return '* { box-sizing: border-box; }\nbody { margin: 0; }\n' + cleaned;
+        editor.on('load', function() {
+            // CSS'i çekme metodunu tamamen override et
+            const originalGetCss = editor.getCss;
+            editor.getCss = function(opts = {}) {
+                // Her zaman avoidProtected: true kullan
+                opts.avoidProtected = true;
+                
+                // Orijinal metodu çağır
+                let css = originalGetCss.call(this, opts);
+                
+                // Yine de box-sizing ve margin sıfırlama kodu varsa kaldır
+                return css.replace(/\*\s*{\s*box-sizing:\s*border-box;\s*}\s*body\s*{\s*margin(-top|-right|-bottom|-left)?:?\s*0(px)?;?\s*}/g, '');
             };
             
-            // GetCSS metodunu override et
-            const originalGetCss = editor.getCss.bind(editor);
-            editor.getCss = function(opts) {
-                const css = originalGetCss(opts);
-                return removeDuplicateDefaultStyles(css);
-            };
+            // CSS Composer Config'ini değiştir
+            if (editor.CssComposer) {
+                editor.CssComposer.getConfig().protectedCss = '';
+            }
             
-            // SetStyle metodunu override et
-            const originalSetStyle = editor.setStyle.bind(editor);
-            editor.setStyle = function(css, opts) {
-                if (typeof css === 'string') {
-                    css = removeDuplicateDefaultStyles(css);
-                }
-                return originalSetStyle(css, opts);
-            };
+            // Stil Composer'ın buildCSS metodunu da override et (başka bir yaklaşım)
+            if (editor.CssComposer && editor.CssComposer.buildCSS) {
+                const originalBuildCSS = editor.CssComposer.buildCSS;
+                editor.CssComposer.buildCSS = function() {
+                    const result = originalBuildCSS.apply(this, arguments);
+                    return result.replace(/\*\s*{\s*box-sizing:\s*border-box;\s*}\s*body\s*{\s*margin(-top|-right|-bottom|-left)?:?\s*0(px)?;?\s*}/g, '');
+                };
+            }
         });
 
         // Canvası görünür kılma komutu ekle

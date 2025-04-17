@@ -47,17 +47,11 @@
         <!-- Sağ Panel: Element Özellikleri ve Stiller -->
         <div class="panel__right">
             <div class="panel-tabs">
-                <div class="panel-tab active" data-tab="element-properties">
+                <div class="panel-tab active" data-tab="element-combined">
                     <div class="tab-icon-container">
                         <i class="fa fa-sliders-h tab-icon"></i>
                     </div>
                     <span class="tab-text">Özellikler</span>
-                </div>
-                <div class="panel-tab" data-tab="element-styles">
-                    <div class="tab-icon-container">
-                        <i class="fa fa-palette tab-icon"></i>
-                    </div>
-                    <span class="tab-text">Stiller</span>
                 </div>
                 <div class="panel-tab" data-tab="global-settings">
                     <div class="tab-icon-container">
@@ -67,15 +61,11 @@
                 </div>
             </div>
             
-            <!-- Element Özellikleri İçeriği -->
-            <div class="panel-tab-content active" data-tab-content="element-properties">
+            <!-- Birleştirilmiş Özellikler ve Stiller İçeriği -->
+            <div class="panel-tab-content active" data-tab-content="element-combined">
                 <div id="element-properties-container">
                     <div id="traits-container" class="traits-container"></div>
                 </div>
-            </div>
-            
-            <!-- Element Stiller İçeriği -->
-            <div class="panel-tab-content" data-tab-content="element-styles">
                 <div id="element-styles-container">
                     <div id="styles-container" class="styles-container"></div>
                 </div>

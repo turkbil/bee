@@ -1255,7 +1255,6 @@ body {
 #traits-container {
     display: flex !important;
     flex-direction: column !important;
-    padding: var(--spacing-md) !important;
 }
 
 /* Yardımcı Sınıflar */
@@ -1263,7 +1262,7 @@ body {
 .gjs-block-category.gjs-open,
 .gjs-sm-sector:not(.gjs-collapsed),
 .gjs-layer-group:not(.closed) {
-    border-radius: 4px 4px 0 0 !important;
+    border-radius: 0 !important;
 }
 
 /* CSS seçici düzeltmeleri */
@@ -1438,7 +1437,19 @@ body {
     }
 }
 
+
+
+
 /* Ek düzeltmeler */
 .gjs-field input, .gjs-field select, .gjs-field textarea {
     width: 40px;
+}
+
+#traits-container {
+    margin-bottom: var(--spacing-lg) !important;
+}
+
+#styles-container {
+    border-top: 1px solid var(--border-color) !important;
+    padding-top: var(--spacing-md) !important;
 }

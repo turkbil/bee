@@ -523,13 +523,13 @@ function showElementHtml(model) {
 
 
     /**
- * Özellikler paneli otomatik aktivasyonu
- * @param {string} panelType - Panel tipi ('left' veya 'right')
- */
+     * Özellikler paneli otomatik aktivasyonu
+     * @param {string} panelType - Panel tipi ('left' veya 'right')
+     */
     function activateStylePanel(panelType = 'right') {
         // Sadece sağ panelde sekme değişimini uygula
         if (panelType === 'right') {
-            const propertiesTab = document.querySelector('.panel__right .panel-tab[data-tab="element-properties"]');
+            const propertiesTab = document.querySelector('.panel__right .panel-tab[data-tab="element-combined"]');
             if (propertiesTab && !propertiesTab.classList.contains('active')) {
                 // Mevcut aktif sekmeyi devre dışı bırak (sadece sağ panelde)
                 document.querySelectorAll('.panel__right .panel-tab.active').forEach(tab => {
@@ -542,13 +542,13 @@ function showElementHtml(model) {
                 // İçerik panellerini güncelle (sadece sağ panelde)
                 document.querySelectorAll('.panel__right .panel-tab-content').forEach(content => {
                     content.classList.remove('active');
-                    if (content.getAttribute('data-tab-content') === 'element-properties') {
+                    if (content.getAttribute('data-tab-content') === 'element-combined') {
                         content.classList.add('active');
                     }
                 });
                 
                 // Aktif sekmeyi localStorage'a kaydet
-                localStorage.setItem('studio_right_panel_tab', 'element-properties');
+                localStorage.setItem('studio_right_panel_tab', 'element-combined');
             }
         }
     }

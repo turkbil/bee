@@ -172,23 +172,13 @@ window.StudioActions = (function() {
         const cmdCssEdit = document.getElementById("cmd-css-edit");
         if (cmdCssEdit) {
             cmdCssEdit.addEventListener("click", () => {
-                // CSS içeriğini al ve tekrarları temizle
-                let cssContent = editor.getCss();
-                
-                // Varsayılan CSS'i temizle
-                const defaultStylePattern = /\*\s*{\s*box-sizing:\s*border-box;\s*}\s*body\s*{\s*margin(-top|-right|-bottom|-left)?:?\s*0(px)?;?\s*}/g;
-                cssContent = cssContent.replace(defaultStylePattern, '');
-                
-                // Temizlenmiş CSS'i tek bir varsayılan blokla birleştir
-                cssContent = '* { box-sizing: border-box; }\nbody { margin: 0; }\n' + cssContent;
+                // avoidProtected parametresi ile CSS içeriğini al
+                const cssContent = editor.getCss({ avoidProtected: true });
                 
                 if (window.StudioUtils && typeof window.StudioUtils.showEditModal === 'function') {
                     window.StudioUtils.showEditModal("CSS Düzenle", cssContent, (newCss) => {
-                        // CSS'i tamamen temizle
-                        editor.CssComposer.clear();
-                        
-                        // Temizlenmiş CSS'i uygula (defaultStyles: false ayarıyla)
-                        editor.setStyle(newCss);
+                        // CSS'i tamamen temizlemeden setle
+                        editor.setStyle(newCss, { avoidProtected: true });
                     });
                 }
             });

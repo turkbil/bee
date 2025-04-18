@@ -1,113 +1,111 @@
-/* Modern Stil Yöneticisi - Tabler.io uyumlu */
 #element-properties-container, 
 #element-styles-container {
-    padding: 12px;
+  padding: 0;
+  margin: 0;
 }
 
 .gjs-trt-header {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--primary-color);
-    margin-bottom: 12px;
-    padding-bottom: 6px;
-    border-bottom: 1px solid var(--border-color);
-    display: flex;
-    align-items: center;
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+  margin: 0;
+  padding: 10px 12px;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  background-color: #f9fafb;
 }
 
 #traits-container::before {
-    content: "Element Özellikleri";
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--primary-color);
-    display: block;
-    margin-bottom: 12px;
-    padding-bottom: 6px;
-    border-bottom: 1px solid var(--border-color);
-}
-
-#styles-container .gjs-trt-traits {
-    order: -1;
+  content: "Element Özellikleri";
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+  display: block;
+  margin: 0;
+  padding: 10px 12px;
+  border-bottom: 1px solid #e5e7eb;
+  background-color: #f9fafb;
 }
 
 #styles-container, 
 #traits-container {
-    display: flex;
-    flex-direction: column;
-}
-
-#traits-container {
-    margin-bottom: 16px;
-}
-
-#styles-container {
-    border-top: 1px solid var(--border-color);
-    padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
 }
 
 .gjs-sm-sector {
-    margin-bottom: 0;
-    background-color: white;
-    border-radius: 0;
-    overflow: hidden;
-    border: 1px solid var(--border-color);
-    width: 100%;
-}
-
-.gjs-sm-sector + .gjs-sm-sector {
-    margin-top: -1px;
+  margin: 0;
+  padding: 0;
+  background-color: white;
+  border-radius: 0;
+  overflow: hidden;
+  border: 0;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .gjs-sm-sector-title {
-    display: flex;
-    align-items: center;
-    padding: 10px 12px;
-    background-color: var(--panel-header);
-    cursor: pointer;
-    font-weight: 500;
-    color: #232e3c;
-    font-size: 13px;
-    position: relative;
-    transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  background-color: #f9fafb;
+  cursor: pointer;
+  font-weight: 500;
+  color: #374151;
+  font-size: 13px;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.gjs-sm-sector-title i {
+  margin-right: 8px;
+  color: #3b82f6;
+  width: 16px;
+  text-align: center;
 }
 
 .gjs-sm-sector-title:hover {
-    background-color: #ebeef2;
+  background-color: #f3f4f6;
+  color: #3b82f6;
 }
 
 .gjs-sm-sector-title::after {
-    content: "\f107";
-    font-family: "Font Awesome 6 Pro", FontAwesome;
-    margin-left: auto;
-    transition: transform 0.2s ease;
-    color: #656d77;
+  content: "\f107";
+  font-family: "Font Awesome 6 Pro", FontAwesome;
+  margin-left: auto;
+  font-size: 13px;
+  transition: transform 0.2s ease;
+  color: #9ca3af;
 }
 
 .gjs-sm-sector.gjs-collapsed .gjs-sm-sector-title::after {
-    transform: rotate(-90deg);
+  transform: rotate(-90deg);
 }
 
 .gjs-sm-properties {
-    padding: 12px;
-    background-color: white;
+  padding: 10px 12px;
+  background-color: white;
+  margin: 0;
 }
 
 .gjs-sm-label {
-    font-size: 12px;
-    font-weight: 500;
-    color: #495057;
-    margin-bottom: 5px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #4b5563;
+  margin-bottom: 5px;
 }
 
 .gjs-sm-property {
-    margin-bottom: 12px;
-    padding: 0 0 12px 0;
-    border-bottom: 1px solid #e6e7e9;
-    position: relative;
+  margin-bottom: 12px;
+  padding: 0 0 12px 0;
+  border-bottom: 1px solid #e5e7eb;
+  position: relative;
 }
 
 .gjs-sm-property:last-child {
-    border-bottom: none;
-    margin-bottom: 0;
-    padding-bottom: 0;
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
 }

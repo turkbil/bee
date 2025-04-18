@@ -1,8 +1,8 @@
-/* Tabler.io stili katmanlar paneli */
 .gjs-layer-container {
   padding: 0 !important;
+  margin: 0 !important;
   background-color: white !important;
-  border-top: 1px solid var(--border-color) !important;
+  border-top: 0 !important;
   width: 100% !important;
 }
 
@@ -10,7 +10,7 @@
   padding: 0 !important;
   margin: 0 !important;
   background-color: white !important;
-  border-bottom: 1px solid var(--border-color) !important;
+  border-bottom: 1px solid #e5e7eb !important;
   font-size: 13px !important;
   transition: all 0.2s ease !important;
   position: relative !important;
@@ -24,26 +24,26 @@
   cursor: pointer !important;
   margin: 0 !important;
   transition: all 0.2s ease !important;
-  height: 36px !important;
+  height: 32px !important;
 }
 
 .gjs-layer:hover {
-  background-color: #f6f8fb !important;
+  background-color: #f3f4f6 !important;
 }
 
 .gjs-layer.gjs-selected {
-  background-color: #edf3fa !important;
+  background-color: #f3f4f6 !important;
 }
 
 .gjs-layer.gjs-selected .gjs-layer-title {
-  color: var(--primary-color) !important;
+  color: #3b82f6 !important;
   font-weight: 500 !important;
 }
 
 .gjs-layer-title {
   padding-left: 5px !important;
   font-size: 13px !important;
-  color: #232e3c !important;
+  color: #374151 !important;
   margin: 0 !important;
   flex-grow: 1 !important;
   white-space: nowrap !important;
@@ -52,23 +52,21 @@
 }
 
 .gjs-layer-vis {
-  color: #656d77 !important;
+  color: #9ca3af !important;
   margin-right: 6px !important;
   font-size: 13px !important;
-  opacity: 0.8 !important;
-  transition: all 0.2s ease !important;
   width: 16px !important;
   text-align: center !important;
+  transition: color 0.2s ease !important;
 }
 
 .gjs-layer-vis:hover {
-  color: var(--primary-color) !important;
-  opacity: 1 !important;
+  color: #3b82f6 !important;
 }
 
 .gjs-layer-count {
-  background-color: var(--primary-light) !important;
-  color: var(--primary-color) !important;
+  background-color: #f3f4f6 !important;
+  color: #3b82f6 !important;
   font-size: 11px !important;
   border-radius: 0 !important;
   padding: 0px 6px !important;
@@ -82,35 +80,63 @@
 
 .gjs-layer-children {
   padding-left: 0 !important;
-  border-left: 1px solid var(--border-color) !important;
+  border-left: 1px solid #e5e7eb !important;
   margin-left: 16px !important;
-  background-color: #fcfdfe !important;
+  background-color: white !important;
 }
 
 .gjs-layer-group {
   margin: 0 !important;
+  padding: 0 !important;
   background-color: white !important;
-  border: 1px solid var(--border-color) !important;
+  border: 0 !important;
+  border-bottom: 1px solid #e5e7eb !important;
   border-radius: 0 !important;
   overflow: hidden !important;
   width: 100% !important;
 }
 
-.gjs-layer-group + .gjs-layer-group {
-  margin-top: -1px !important;
-}
-
 .gjs-layer-group-header {
   padding: 10px 12px !important;
-  background-color: var(--panel-header) !important;
+  background-color: #f9fafb !important;
   font-weight: 500 !important;
-  color: #232e3c !important;
+  color: #374151 !important;
   cursor: pointer !important;
   transition: all 0.2s ease !important;
   display: flex !important;
   align-items: center !important;
+  border-bottom: 1px solid #e5e7eb !important;
 }
 
 .gjs-layer-group-header:hover {
-  background-color: #ebeef2 !important;
+  background-color: #f3f4f6 !important;
+  color: #3b82f6 !important;
+}
+
+.gjs-layer-group-header i {
+  margin-right: 8px !important;
+  color: #3b82f6 !important;
+  width: 16px !important;
+  text-align: center !important;
+}
+
+.gjs-layer-group-header::after {
+  content: "\f107" !important;
+  font-family: "Font Awesome 6 Pro", FontAwesome !important;
+  margin-left: auto !important;
+  transition: transform 0.3s !important;
+  color: #9ca3af !important;
+  font-size: 13px !important;
+}
+
+.gjs-layer-group.closed .gjs-layer-group-header::after {
+  transform: rotate(-90deg) !important;
+}
+
+.gjs-layer-group.closed .gjs-layer-group-items {
+  display: none !important;
+}
+
+.gjs-layer-group-items {
+  padding: 4px 0 !important;
 }

@@ -1,0 +1,10 @@
+/* Toast */
+.toast-container {
+    z-index: 9999;
+}
+
+.toast {
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    opacity: 1 !important;
+}

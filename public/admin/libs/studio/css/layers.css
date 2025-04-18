@@ -1,0 +1,116 @@
+/* Tabler.io stili katmanlar paneli */
+.gjs-layer-container {
+  padding: 0 !important;
+  background-color: white !important;
+  border-top: 1px solid var(--border-color) !important;
+  width: 100% !important;
+}
+
+.gjs-layer {
+  padding: 0 !important;
+  margin: 0 !important;
+  background-color: white !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  font-size: 13px !important;
+  transition: all 0.2s ease !important;
+  position: relative !important;
+  line-height: 1.4 !important;
+}
+
+.gjs-layer-title-c {
+  padding: 8px 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  cursor: pointer !important;
+  margin: 0 !important;
+  transition: all 0.2s ease !important;
+  height: 36px !important;
+}
+
+.gjs-layer:hover {
+  background-color: #f6f8fb !important;
+}
+
+.gjs-layer.gjs-selected {
+  background-color: #edf3fa !important;
+}
+
+.gjs-layer.gjs-selected .gjs-layer-title {
+  color: var(--primary-color) !important;
+  font-weight: 500 !important;
+}
+
+.gjs-layer-title {
+  padding-left: 5px !important;
+  font-size: 13px !important;
+  color: #232e3c !important;
+  margin: 0 !important;
+  flex-grow: 1 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.gjs-layer-vis {
+  color: #656d77 !important;
+  margin-right: 6px !important;
+  font-size: 13px !important;
+  opacity: 0.8 !important;
+  transition: all 0.2s ease !important;
+  width: 16px !important;
+  text-align: center !important;
+}
+
+.gjs-layer-vis:hover {
+  color: var(--primary-color) !important;
+  opacity: 1 !important;
+}
+
+.gjs-layer-count {
+  background-color: var(--primary-light) !important;
+  color: var(--primary-color) !important;
+  font-size: 11px !important;
+  border-radius: 0 !important;
+  padding: 0px 6px !important;
+  margin-left: 6px !important;
+  min-width: 16px !important;
+  height: 16px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.gjs-layer-children {
+  padding-left: 0 !important;
+  border-left: 1px solid var(--border-color) !important;
+  margin-left: 16px !important;
+  background-color: #fcfdfe !important;
+}
+
+.gjs-layer-group {
+  margin: 0 !important;
+  background-color: white !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 0 !important;
+  overflow: hidden !important;
+  width: 100% !important;
+}
+
+.gjs-layer-group + .gjs-layer-group {
+  margin-top: -1px !important;
+}
+
+.gjs-layer-group-header {
+  padding: 10px 12px !important;
+  background-color: var(--panel-header) !important;
+  font-weight: 500 !important;
+  color: #232e3c !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.gjs-layer-group-header:hover {
+  background-color: #ebeef2 !important;
+}

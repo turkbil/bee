@@ -1,0 +1,79 @@
+/* Header Toolbar */
+.editor-toolbar {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    height: 36px;
+}
+
+.editor-toolbar button {
+    height: 100%;
+    min-width: 36px;
+    border: none;
+    background: transparent;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    padding: 0 10px;
+}
+
+.editor-toolbar button:hover {
+    background-color: var(--hover-bg);
+    color: var(--primary-color);
+}
+
+.editor-toolbar button.active {
+    background-color: var(--active-bg);
+    color: var(--primary-color);
+}
+
+.editor-toolbar-divider {
+    width: 1px;
+    height: 20px;
+    background-color: var(--border-color);
+}
+
+/* Button Groups */
+.btn-group {
+    display: inline-flex;
+    background-color: white;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+}
+
+.btn-group button {
+    height: 36px;
+    min-width: 36px;
+    border: none;
+    background: transparent;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    padding: 0 12px;
+}
+
+.btn-group button:not(:last-child) {
+    border-right: 1px solid var(--border-color);
+}
+
+.btn-group button:hover {
+    background-color: var(--hover-bg);
+    color: var(--primary-color);
+}
+
+.btn-group button.active {
+    background-color: var(--active-bg);
+    color: var(--primary-color);
+}

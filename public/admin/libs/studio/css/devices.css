@@ -1,0 +1,64 @@
+/* Cihaz Butonları */
+.device-btns {
+    display: flex;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background-color: #f5f7ff;
+    box-shadow: var(--shadow-sm);
+}
+
+.device-btns button {
+    height: 36px;
+    width: 36px;
+    border: none;
+    background: transparent;
+    color: #475569;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition-normal);
+}
+
+.device-btns button:hover {
+    background-color: var(--hover-bg);
+    color: var(--primary-color);
+}
+
+.device-btns button.active {
+    background-color: var(--active-bg);
+    color: var(--primary-color);
+}
+
+/* Canvas görünüm düzeltmeleri */
+.gjs-devices-c {
+    background-color: var(--panel-header) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    padding: 8px !important;
+}
+
+.gjs-devices {
+    display: flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+}
+
+.gjs-device-button {
+    background-color: transparent !important;
+    color: var(--secondary-color) !important;
+    border: 1px solid transparent !important;
+    padding: 5px 10px !important;
+    border-radius: var(--radius-sm) !important;
+    transition: all 0.2s ease !important;
+}
+
+.gjs-device-button:hover {
+    background-color: var(--hover-bg) !important;
+    color: var(--primary-color) !important;
+}
+
+.gjs-device-button.gjs-device-active {
+    background-color: var(--active-bg) !important;
+    color: var(--primary-color) !important;
+    border-color: var(--border-color) !important;
+}

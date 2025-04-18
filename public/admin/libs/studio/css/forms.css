@@ -1,0 +1,294 @@
+/* Tabler.io stil formları için temel ayarlar */
+.gjs-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 32px;
+  background-color: #ffffff;
+  border: 1px solid #d9dbde;
+  border-radius: 0;
+  padding: 0;
+  margin-bottom: 10px;
+  transition: border-color .15s ease-in-out;
+}
+
+.gjs-field:hover {
+  border-color: #bcc1ca;
+}
+
+.gjs-field:focus-within {
+  border-color: #90b5e2;
+  box-shadow: 0 0 0 2px rgba(32, 107, 196, 0.25);
+}
+
+.gjs-field input,
+.gjs-field select,
+.gjs-field textarea {
+  display: block;
+  width: 100%;
+  height: 30px;
+  padding: 5px 8px;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: #232e3c;
+  background-color: transparent;
+  border: none;
+  transition: border-color .15s ease-in-out;
+}
+
+.gjs-field input:focus,
+.gjs-field select:focus,
+.gjs-field textarea:focus {
+  outline: 0;
+  box-shadow: none;
+}
+
+.gjs-field-integer {
+  display: flex;
+}
+
+.gjs-field-integer input {
+  flex: 1;
+  padding-right: 20px;
+  -moz-appearance: textfield;
+}
+
+.gjs-field-integer input::-webkit-inner-spin-button,
+.gjs-field-integer input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.gjs-field-arrows {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 20px;
+  display: flex;
+  flex-direction: column;
+  background-color: #f6f8fb;
+  border-left: 1px solid #d9dbde;
+}
+
+.gjs-field-arrow-u,
+.gjs-field-arrow-d {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  cursor: pointer;
+  color: #656d77;
+  transition: all 0.15s ease;
+}
+
+.gjs-field-arrow-u:hover,
+.gjs-field-arrow-d:hover {
+  background-color: #e9edf1;
+  color: #232e3c;
+}
+
+.gjs-field-arrow-u {
+  border-bottom: 1px solid #d9dbde;
+}
+
+.gjs-field-arrow-u:after {
+  content: "\f077";
+  font-family: "Font Awesome 6 Pro", FontAwesome;
+  font-size: 9px;
+}
+
+.gjs-field-arrow-d:after {
+  content: "\f078";
+  font-family: "Font Awesome 6 Pro", FontAwesome;
+  font-size: 9px;
+}
+
+.gjs-field-select {
+  position: relative;
+}
+
+.gjs-field-select select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 24px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' stroke-width='2' stroke='%23656d77' fill='none'%3E%3Cpath d='M6 9l6 6l6 -6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 6px center;
+  background-size: 16px;
+}
+
+.gjs-field-units {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 25px;
+  height: 100%;
+  right: 0;
+  top: 0;
+  color: #656d77;
+  font-size: 11px;
+  cursor: pointer;
+  background-color: #f6f8fb;
+  border-left: 1px solid #d9dbde;
+}
+
+.gjs-field-units:hover {
+  background-color: #e9edf1;
+  color: #232e3c;
+}
+
+.gjs-field-units:before {
+  content: attr(data-units);
+}
+
+.gjs-sm-label {
+  font-size: 12px;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #495057;
+  display: block;
+}
+
+.gjs-sm-property {
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e6e7e9;
+}
+
+.gjs-sm-clear {
+  position: absolute;
+  cursor: pointer;
+  color: #656d77;
+  font-size: 12px;
+  opacity: 0.7;
+  transition: opacity 0.15s ease;
+  right: 8px;
+  top: 8px;
+  z-index: 2;
+  background-color: rgba(255,255,255,0.8);
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gjs-sm-clear:hover {
+  opacity: 1;
+  color: #d63939;
+}
+
+.gjs-sm-clear:after {
+  content: "\f00d";
+  font-family: "Font Awesome 6 Pro", FontAwesome;
+  font-size: 12px;
+}
+
+.gjs-field-color {
+  padding: 5px;
+}
+
+.gjs-field-colorp {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.gjs-field-colorp-c {
+  height: 20px;
+  width: 20px;
+  border-radius: 0;
+  margin-right: 5px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.gjs-btn-prim {
+  color: #fff;
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  display: inline-block;
+  font-weight: 400;
+  text-align: center;
+  vertical-align: middle;
+  user-select: none;
+  border: 1px solid transparent;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  border-radius: 0;
+  transition: all 0.15s ease;
+}
+
+.gjs-btn-prim:hover {
+  color: #fff;
+  background-color: var(--primary-hover);
+  border-color: #174f91;
+}
+
+.gjs-field-checkbox input {
+  margin-right: 0.5rem;
+}
+
+.gjs-sm-sector-title {
+  padding: 10px 12px;
+  font-weight: 600;
+  font-size: 13px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  background-color: var(--panel-header);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.gjs-sm-sector-title:hover {
+  background-color: #ebeef2;
+}
+
+.gjs-sm-sector-title::after {
+  content: "\f107";
+  font-family: "Font Awesome 6 Pro", FontAwesome;
+  font-size: 14px;
+  transition: transform 0.2s ease;
+}
+
+.gjs-sm-sector.gjs-collapsed .gjs-sm-sector-title::after {
+  transform: rotate(-90deg);
+}
+
+.gjs-sm-properties {
+  padding: 12px;
+}
+
+.gjs-sm-sector.gjs-collapsed .gjs-sm-properties {
+  display: none;
+}
+
+/* Margin/Padding düzenlemesi için grid görünümü */
+.gjs-sm-property.gjs-sm-margin .gjs-fields,
+.gjs-sm-property.gjs-sm-padding .gjs-fields {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.gjs-sm-property.gjs-sm-margin .gjs-field-integer,
+.gjs-sm-property.gjs-sm-padding .gjs-field-integer {
+  margin-bottom: 0;
+}
+
+.gjs-sm-property.gjs-sm-margin .gjs-sm-clear,
+.gjs-sm-property.gjs-sm-padding .gjs-sm-clear {
+  top: -16px;
+  right: 0;
+  transform: none;
+}

@@ -1,93 +1,89 @@
 .editor-canvas {
-    flex: 1;
-    position: relative;
-    overflow: hidden;
-    background-color: #f9fafb;
-    padding: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  #gjs {
-    height: 100%;
-    width: 100%;
-    transition: all 0.3s ease;
-    overflow: hidden;
-    max-width: 100%;
-    max-height: 100%;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    background-color: white;
-  }
-  
-  .editor-canvas.drop-target {
-    outline: 2px dashed #0d6efd;
-    outline-offset: -8px;
-    background-color: rgba(13, 110, 253, 0.05);
-  }
-  
-  .gjs-frame-wrapper {
-    padding: 24px !important;
-    background-color: #f9fafb !important;
-    border-radius: 8px !important;
-  }
-  
-  .gjs-frame {
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
-    border-radius: 8px !important;
-    transition: all 0.3s ease !important;
-  }
-  
-  .gjs-selected {
-    outline: 2px solid #0d6efd !important;
-    outline-offset: 3px !important;
-    box-shadow: 0 0 0 5px rgba(13, 110, 253, 0.15) !important;
-  }
-  
-  .gjs-highlighter, 
-  .gjs-highlighter-sel {
-    outline: 1px solid #0d6efd !important;
-    outline-offset: 2px !important;
-  }
-  
-  .gjs-comp-selected {
-    outline: 2px solid #0d6efd !important;
-    outline-offset: 2px !important;
-    box-shadow: 0 0 0 5px rgba(13, 110, 253, 0.15) !important;
-  }
-  
-  .gjs-toolbar {
-    background-color: white !important;
-    border-radius: 8px !important;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
-    border: none !important;
-    padding: 6px !important;
-    display: flex !important;
-    gap: 4px !important;
-    transform: translateY(-50px) !important;
-  }
-  
-  .gjs-toolbar-item {
-    padding: 8px !important;
-    font-size: 14px !important;
-    color: #495057 !important;
-    border-radius: 6px !important;
-    cursor: pointer !important;
-    transition: all 0.2s ease !important;
-  }
-  
-  .gjs-toolbar-item:hover {
-    background-color: #f0f3f6 !important;
-    color: #0d6efd !important;
-  }
-  
-  .gjs-badge {
-    background-color: #0d6efd !important;
-    color: white !important;
-    font-weight: 500 !important;
-    font-size: 10px !important;
-    padding: 3px 8px !important;
-    border-radius: 12px !important;
-    box-shadow: 0 2px 5px rgba(13, 110, 253, 0.3) !important;
-  }
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background-color: #f3f4f6;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#gjs {
+  height: 100%;
+  width: 100%;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  max-width: 100%;
+  max-height: 100%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 0;
+  background-color: white;
+}
+
+.editor-canvas.drop-target {
+  outline: 2px dashed #3b82f6;
+  outline-offset: -8px;
+  background-color: rgba(59, 130, 246, 0.05);
+}
+
+.gjs-frame-wrapper {
+  padding: 24px !important;
+  background-color: #f3f4f6 !important;
+  border-radius: 0 !important;
+}
+
+.gjs-frame {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+  border-radius: 0 !important;
+  transition: all 0.3s ease !important;
+}
+
+.gjs-selected {
+  outline: 2px solid #3b82f6 !important;
+  outline-offset: 2px !important;
+}
+
+.gjs-highlighter, 
+.gjs-highlighter-sel {
+  outline: 1px solid #3b82f6 !important;
+  outline-offset: 2px !important;
+}
+
+.gjs-comp-selected {
+  outline: 2px solid #3b82f6 !important;
+  outline-offset: 2px !important;
+}
+
+.gjs-toolbar {
+  background-color: white !important;
+  border-radius: 0 !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid #e5e7eb !important;
+  padding: 4px !important;
+  display: flex !important;
+  gap: 4px !important;
+}
+
+.gjs-toolbar-item {
+  padding: 6px !important;
+  font-size: 13px !important;
+  color: #4b5563 !important;
+  border-radius: 0 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.gjs-toolbar-item:hover {
+  background-color: #f3f4f6 !important;
+  color: #3b82f6 !important;
+}
+
+.gjs-badge {
+  background-color: #3b82f6 !important;
+  color: white !important;
+  font-weight: 500 !important;
+  font-size: 10px !important;
+  padding: 2px 6px !important;
+  border-radius: 0 !important;
+}

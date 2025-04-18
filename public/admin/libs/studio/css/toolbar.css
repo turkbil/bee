@@ -1,79 +1,178 @@
-/* Header Toolbar */
 .editor-toolbar {
     display: flex;
     align-items: center;
     background-color: white;
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
+    border: 1px solid #e5e7eb;
+    border-radius: 0;
     overflow: hidden;
-    box-shadow: var(--shadow-sm);
     height: 36px;
-}
-
-.editor-toolbar button {
-    height: 100%;
-    min-width: 36px;
-    border: none;
-    background: transparent;
-    color: var(--text-color);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: var(--transition-fast);
-    padding: 0 10px;
-}
-
-.editor-toolbar button:hover {
-    background-color: var(--hover-bg);
-    color: var(--primary-color);
-}
-
-.editor-toolbar button.active {
-    background-color: var(--active-bg);
-    color: var(--primary-color);
-}
-
-.editor-toolbar-divider {
-    width: 1px;
-    height: 20px;
-    background-color: var(--border-color);
-}
-
-/* Button Groups */
-.btn-group {
-    display: inline-flex;
-    background-color: white;
-    border-radius: var(--radius-sm);
-    overflow: hidden;
-    box-shadow: var(--shadow-sm);
-    border: 1px solid var(--border-color);
-}
-
-.btn-group button {
+  }
+  
+  .editor-toolbar button {
     height: 36px;
     min-width: 36px;
     border: none;
     background: transparent;
-    color: var(--text-color);
+    color: #4b5563;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: var(--transition-fast);
+    transition: all 0.2s ease;
     padding: 0 12px;
-}
-
-.btn-group button:not(:last-child) {
-    border-right: 1px solid var(--border-color);
-}
-
-.btn-group button:hover {
-    background-color: var(--hover-bg);
-    color: var(--primary-color);
-}
-
-.btn-group button.active {
-    background-color: var(--active-bg);
-    color: var(--primary-color);
-}
+    font-size: 13px;
+    font-weight: 500;
+  }
+  
+  .editor-toolbar button:hover {
+    background-color: #f3f4f6;
+    color: #3b82f6;
+  }
+  
+  .editor-toolbar button.active {
+    background-color: #f3f4f6;
+    color: #3b82f6;
+  }
+  
+  .editor-toolbar button i {
+    font-size: 14px;
+    width: 16px;
+    text-align: center;
+  }
+  
+  .editor-toolbar button span {
+    margin-left: 6px;
+  }
+  
+  .editor-toolbar-divider {
+    width: 1px;
+    height: 24px;
+    background-color: #e5e7eb;
+    margin: 0 4px;
+  }
+  
+  .btn-group {
+    display: inline-flex;
+    height: 36px;
+  }
+  
+  .btn-group button {
+    height: 36px;
+    min-width: 36px;
+    border: 1px solid #e5e7eb;
+    background: white;
+    color: #4b5563;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0 12px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  
+  .btn-group button:hover {
+    background-color: #f3f4f6;
+    color: #3b82f6;
+  }
+  
+  .btn-group button.active {
+    background-color: #f3f4f6;
+    color: #3b82f6;
+  }
+  
+  .btn-group button:not(:last-child) {
+    border-right: none;
+  }
+  
+  .device-btns {
+    display: flex;
+    height: 36px;
+  }
+  
+  .device-btns button {
+    height: 36px;
+    width: 36px;
+    border: 1px solid #e5e7eb;
+    background: white;
+    color: #4b5563;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+    font-size: 14px;
+  }
+  
+  .device-btns button:hover {
+    background-color: #f3f4f6;
+    color: #3b82f6;
+  }
+  
+  .device-btns button.active {
+    background-color: #f3f4f6;
+    color: #3b82f6;
+    border-color: #3b82f6;
+  }
+  
+  .device-btns button:not(:last-child) {
+    border-right: none;
+  }
+  
+  .btn-back,
+  .btn-tool,
+  .btn-view,
+  .btn-save {
+    height: 36px;
+    border: 1px solid #e5e7eb;
+    background: white;
+    color: #4b5563;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0 12px;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 0;
+  }
+  
+  .btn-back:hover,
+  .btn-tool:hover {
+    background-color: #f3f4f6;
+    color: #3b82f6;
+    border-color: #e5e7eb;
+  }
+  
+  .btn-tool.active {
+    background-color: #f3f4f6;
+    color: #3b82f6;
+    border-color: #3b82f6;
+  }
+  
+  .btn-view {
+    background-color: #fef3c7;
+    color: #b45309;
+    border-color: #fbbf24;
+  }
+  
+  .btn-view:hover {
+    background-color: #fde68a;
+    color: #92400e;
+    border-color: #f59e0b;
+  }
+  
+  .btn-save {
+    background-color: #dbeafe;
+    color: #1d4ed8;
+    border-color: #93c5fd;
+  }
+  
+  .btn-save:hover {
+    background-color: #bfdbfe;
+    color: #1e40af;
+    border-color: #60a5fa;
+  }

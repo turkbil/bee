@@ -381,7 +381,7 @@ window.StudioUI = (function() {
             }
         }, 1000);
     }
-    
+
 /**
      * Canvas/Editor olaylarını işle
      * @param {Object} editor - GrapesJS editor örneği
@@ -495,20 +495,9 @@ function createContextMenu(event, model, editor) {
 }
 
     /**
- * Element HTML'ini göster
- * @param {Object} model - Bileşen modeli
- */
-function showElementHtml(model) {
-    const html = model.toHTML();
-    
-    if (window.StudioUtils && typeof window.StudioUtils.showEditModal === 'function') {
-        window.StudioUtils.showEditModal('Element HTML', html, function(newHtml) {
-            model.replaceWith(newHtml);
-        });
-    } else {
-        alert(html);
-    }
-}
+     * Element HTML'ini göster
+     * @param {Object} model - Bileşen modeli
+     */
     function showElementHtml(model) {
         const html = model.toHTML();
         
@@ -520,7 +509,6 @@ function showElementHtml(model) {
             alert(html);
         }
     }
-
 
     /**
      * Özellikler paneli otomatik aktivasyonu
@@ -653,6 +641,8 @@ function setupEditorStyles() {
                     
                     const icon = document.createElement('i');
                     icon.className = 'fa ' + iconClass;
+                    icon.style.marginRight = '8px';
+                    icon.style.color = '#3b82f6';
                     sector.insertBefore(icon, sector.firstChild);
                 }
                 

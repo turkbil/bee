@@ -1,0 +1,17 @@
+/* Renk Düzeltmeleri */
+.gjs-one-bg {
+    background-color: var(--panel-bg) !important;
+}
+
+.gjs-two-color {
+    color: var(--secondary-color) !important;
+}
+
+.gjs-three-bg {
+    background-color: var(--panel-header) !important;
+}
+
+.gjs-four-color, 
+.gjs-four-color-h:hover {
+    color: var(--primary-color) !important;
+}

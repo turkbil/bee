@@ -42,7 +42,7 @@ window.StudioUtils = (function() {
         if (!container) {
             container = document.createElement("div");
             container.className =
-                "toast-container position-fixed top-0 end-0 p-3";
+                "toast-container position-fixed bottom-0 end-0 p-3";
             container.style.zIndex = "9999";
             document.body.appendChild(container);
         }

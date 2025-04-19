@@ -41,11 +41,19 @@
 <body class="studio-editor-body">
     <div class="studio-header">
         <div class="header-left">
-            <a href="{{ url()->previous() }}" class="btn-back me-2" id="btn-back" title="Geri">
-                <i class="fa-solid fa-arrow-left"></i>
-            </a>
-            
-            <div class="btn-group me-2">
+            <div class="btn-group btn-group-sm me-4">
+                <button id="device-desktop" class="btn btn-light btn-sm active" title="Masaüstü">
+                    <i class="fas fa-desktop"></i>
+                </button>
+                <button id="device-tablet" class="btn btn-light btn-sm" title="Tablet">
+                    <i class="fas fa-tablet-alt"></i>
+                </button>
+                <button id="device-mobile" class="btn btn-light btn-sm" title="Mobil">
+                    <i class="fas fa-mobile-alt"></i>
+                </button>
+            </div>
+
+            <div class="btn-group btn-group-sm me-4">
                 <button id="sw-visibility" class="btn btn-light btn-sm" title="Bileşen sınırlarını göster/gizle">
                     <i class="fas fa-border-all"></i>
                 </button>
@@ -62,6 +70,7 @@
                     <i class="fas fa-redo"></i>
                 </button>
             </div>
+
         </div>
         
         <div class="header-center">
@@ -71,31 +80,19 @@
         </div>
         
         <div class="header-right">
-            <div class="btn-group me-2">
-                <button id="device-desktop" class="btn btn-light btn-sm active" title="Masaüstü">
-                    <i class="fas fa-desktop"></i>
-                </button>
-                <button id="device-tablet" class="btn btn-light btn-sm" title="Tablet">
-                    <i class="fas fa-tablet-alt"></i>
-                </button>
-                <button id="device-mobile" class="btn btn-light btn-sm" title="Mobil">
-                    <i class="fas fa-mobile-alt"></i>
-                </button>
-            </div>
+
             
-            <div class="btn-group me-2">
-                <button id="cmd-code-edit" class="btn btn-light btn-sm" title="HTML Düzenle">
-                    <i class="fas fa-code me-1"></i>
-                    <span>HTML</span>
-                </button>
-                
-                <button id="cmd-css-edit" class="btn btn-light btn-sm" title="CSS Düzenle">
-                    <i class="fas fa-paint-brush me-1"></i>
-                    <span>CSS</span>
-                </button>
-            </div>
+            <button id="cmd-code-edit" class="btn btn-light btn-sm" title="HTML Düzenle">
+                <i class="fas fa-code me-1"></i>
+                <span>HTML</span>
+            </button>
             
-            <button id="preview-btn" class="btn btn-warning btn-sm me-2" title="Önizleme">
+            <button id="cmd-css-edit" class="btn btn-light btn-sm" title="CSS Düzenle">
+                <i class="fas fa-paint-brush me-1"></i>
+                <span>CSS</span>
+            </button>
+
+            <button id="preview-btn" class="btn btn-light btn-sm me-2" title="Önizleme">
                 <i class="fa-solid fa-eye me-1"></i>
                 <span>Önizleme</span>
             </button>
@@ -133,6 +130,6 @@
     
     @livewireScripts
     
-    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index:9999;"></div>
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index:9999;"></div>
 </body>
 </html>

@@ -3,12 +3,12 @@ namespace Modules\Page\App\Models;
 
 use App\Models\BaseModel;
 use Cviebrock\EloquentSluggable\Sluggable;
-use App\Traits\HasPageViews;
+use App\Traits\HasContentViews;
 use CyrildeWit\EloquentViewable\Contracts\Viewable;
 
 class Page extends BaseModel implements Viewable
 {
-    use Sluggable, HasPageViews;
+    use Sluggable, HasContentViews;
 
     protected $primaryKey = 'page_id';
     
@@ -23,6 +23,11 @@ class Page extends BaseModel implements Viewable
         'metakey',
         'metadesc',
         'is_active',
+        'is_homepage',
+    ];
+
+    protected $casts = [
+        'is_homepage' => 'boolean',
     ];
 
     /**

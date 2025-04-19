@@ -7,5 +7,6 @@
     "TenantManagement": true,
     "WidgetManagement": true,
     "ThemeManagement": true,
-    "Studio": true
+    "Studio": true,
+    "Announcement": true
 }

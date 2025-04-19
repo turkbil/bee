@@ -42,6 +42,10 @@ if (window._studioAppInitialized) {
         }
         window._studioEditorInitialized = true;
 
+        if (window.StudioWidgetManager) {
+            window.StudioWidgetManager.loadWidgetData();
+        }
+
         if (!config || !config.moduleId || config.moduleId <= 0) {
             console.error('Geçersiz konfigürasyon veya modül ID:', config);
             window._studioEditorInitialized = false; // Hata durumunda bayrağı geri al
@@ -63,6 +67,11 @@ if (window._studioAppInitialized) {
                 // `once` ile event bir kez tetiklendikten sonra dinleyici kaldırılır
                 editor.once('load', function() {
                     console.log('Editor yükleme olayı tetiklendi');
+
+                    // Widget manager kurulumunu yap
+                    if (window.StudioWidgetManager && typeof window.StudioWidgetManager.setup === 'function') {
+                        window.StudioWidgetManager.setup(editor);
+                    }
                     
                     // Blokları sadece bir kez yükle
                     if (window.StudioBlocks && typeof window.StudioBlocks.registerBlocks === 'function') {
@@ -78,7 +87,7 @@ if (window._studioAppInitialized) {
                     if (window.StudioActions && typeof window.StudioActions.setupActions === 'function') {
                         window.StudioActions.setupActions(editor, config);
                     }
-                    
+                        
                     // Panel sekmelerini ayarla
                     setupTabs();
                     

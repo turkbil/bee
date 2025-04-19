@@ -12,9 +12,17 @@ Route::middleware(['auth:sanctum'])
         Route::get('/widgets', [StudioApiController::class, 'getWidgets'])
             ->name('widgets');
         
+        // Temalar
+        Route::get('/themes', [StudioApiController::class, 'getThemes'])
+            ->name('themes');
+        
         // Widget ekle
         Route::post('/widgets/add', [StudioApiController::class, 'addWidget'])
             ->name('widgets.add');
+        
+        // Widget içeriği getir
+        Route::get('/widgets/{id}', [StudioApiController::class, 'getWidgetContent'])
+            ->name('widgets.get');
         
         // İçerik kaydetme
         Route::post('/save-content', [StudioApiController::class, 'saveContent'])

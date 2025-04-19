@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('metakey')->nullable();
             $table->string('metadesc')->nullable();
             $table->boolean('is_active')->default(true)->index();
+            $table->boolean('is_homepage')->default(false)->index();
             $table->timestamps();
             $table->softDeletes();
             

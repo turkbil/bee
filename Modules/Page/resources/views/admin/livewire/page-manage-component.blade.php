@@ -16,13 +16,11 @@
                     </li>
                 </ul>
                 
-                @if($studioEnabled)
                 <div class="card-actions">
                     <button type="button" class="btn btn-primary" wire:click="openStudioEditor">
                         <i class="fas fa-pen-fancy me-2"></i> Studio ile Düzenle
                     </button>
                 </div>
-                @endif
             </div>
             <div class="card-body">
                 <div class="tab-content">

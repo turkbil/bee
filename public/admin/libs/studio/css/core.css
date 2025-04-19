@@ -36,6 +36,8 @@
     --font-xl: 16px;
     --transition-fast: all 0.15s ease;
     --transition-normal: all 0.2s ease;
+    --gjs-canvas-top: 0;
+    --gjs-left-width: -0%;
   }
   
   html, body {

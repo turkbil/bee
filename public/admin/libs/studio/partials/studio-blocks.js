@@ -90,6 +90,9 @@ window.StudioBlocks = (function() {
                         setupBlockSearch(editor);
                         window._searchSetupDone = true;
                     }
+                    
+                    // Widget API'sini çağır ve widget bloklarını yükle
+                    loadWidgetBlocks(editor);
                 } else {
                     console.error("Blok yüklenemedi:", data.message || "Server yanıt vermedi");
                 }
@@ -99,6 +102,135 @@ window.StudioBlocks = (function() {
                 // Hata durumunda kilidi serbest bırak ki yeniden deneme yapılabilsin
                 apiRequested = false;
             });
+    }
+
+    /**
+     * Widget bloklarını yükle
+     * @param {Object} editor - GrapesJS editor örneği
+     */
+    function loadWidgetBlocks(editor) {
+        fetch('/admin/studio/api/widgets')
+            .then(response => response.json())
+            .then(data => {
+                if (data.widgets && Array.isArray(data.widgets)) {
+                    console.log(`${data.widgets.length} adet widget bulundu`);
+                    
+                    // Widget'ları blok olarak ekle
+                    data.widgets.forEach(widget => {
+                        // Widget ID ve adını kontrol et
+                        if (!widget.id || !widget.name) {
+                            console.warn("Geçersiz widget verisi:", widget);
+                            return;
+                        }
+                        
+                        // Widget için blok ID ve HTML oluştur
+                        const blockId = `widget-${widget.id}`;
+                        const widgetHtml = `<div data-widget-id="${widget.id}" class="gjs-widget-wrapper" data-type="widget">
+                            ${widget.content_html || `<div class="widget-placeholder">Widget: ${widget.name}</div>`}
+                        </div>`;
+                        
+                        // CSS ve JS içeriği (varsa)
+                        const widgetCss = widget.content_css || '';
+                        const widgetJs = widget.content_js || '';
+                        
+                        // Kategori kontrolü
+                        const category = widget.category || 'widget';
+                        
+                        // Widget bloğunu ekle
+                        editor.BlockManager.add(blockId, {
+                            label: widget.name,
+                            category: category,
+                            attributes: { class: 'fa fa-puzzle-piece' },
+                            content: {
+                                type: 'widget',
+                                widget_id: widget.id,
+                                html: widgetHtml,
+                                css: widgetCss,
+                                js: widgetJs
+                            }
+                        });
+                        
+                        console.log(`Widget bloğu eklendi: ${widget.name} (ID: ${widget.id})`);
+                    });
+                    
+                    // Widget komponentlerini tanımla
+                    registerWidgetComponents(editor);
+                    
+                    // Widget bloklarını kategorilere ekle
+                    setTimeout(() => {
+                        updateBlocksInCategories(editor);
+                    }, 500);
+                }
+            })
+            .catch(error => {
+                console.error("Widget blokları yüklenirken hata:", error);
+            });
+    }
+    
+    /**
+     * Widget komponentlerini tanımla
+     * @param {Object} editor - GrapesJS editor örneği
+     */
+    function registerWidgetComponents(editor) {
+        // Widget komponenti özelliklerini tanımla
+        const widgetType = 'widget';
+        
+        // Halihazırda tanımlı ise yeniden tanımlama
+        if (editor.Components.getType(widgetType)) {
+            return;
+        }
+        
+        // Widget komponenti tanımla
+        editor.DomComponents.addType(widgetType, {
+            model: {
+                defaults: {
+                    name: 'Widget',
+                    tagName: 'div',
+                    draggable: true,
+                    droppable: false,
+                    attributes: {
+                        class: 'gjs-widget-wrapper'
+                    },
+                    traits: [
+                        {
+                            type: 'select',
+                            name: 'widget_id',
+                            label: 'Widget',
+                            changeProp: 1,
+                            options: []
+                        }
+                    ],
+                    
+                    // Widget ID değiştiğinde içeriği güncelle
+                    init() {
+                        this.on('change:widget_id', this.onWidgetIdChange);
+                    },
+                    
+                    onWidgetIdChange() {
+                        const widgetId = this.get('widget_id');
+                        if (widgetId) {
+                            // Widget içeriğini güncelle (gelecekte implement edilecek)
+                        }
+                    }
+                }
+            },
+            
+            view: {
+                events: {
+                    dblclick: 'onDblClick'
+                },
+                
+                onDblClick() {
+                    const model = this.model;
+                    const widgetId = model.get('widget_id') || model.getAttributes()['data-widget-id'];
+                    
+                    if (widgetId) {
+                        // Widget düzenleme sayfasına yönlendir
+                        window.open(`/admin/widgetmanagement/items/${widgetId}`, '_blank');
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -194,7 +326,25 @@ window.StudioBlocks = (function() {
                         const blockContent = block.get('content');
                         let contentToAdd;
                         
-                        if (typeof blockContent === 'string') {
+                        // Widget bloğu mu kontrol et
+                        const isWidget = block.id.startsWith('widget-');
+                        
+                        if (isWidget && typeof blockContent === 'object') {
+                            // Özel widget içeriğini doğru şekilde ekle
+                            contentToAdd = blockContent.html;
+                            
+                            // Widget bilgisini data attribute olarak kaydet
+                            if (blockContent.widget_id) {
+                                const tempDiv = document.createElement('div');
+                                tempDiv.innerHTML = contentToAdd;
+                                const wrapperEl = tempDiv.querySelector('.gjs-widget-wrapper');
+                                if (wrapperEl) {
+                                    wrapperEl.setAttribute('data-widget-id', blockContent.widget_id);
+                                    wrapperEl.setAttribute('data-type', 'widget');
+                                }
+                                contentToAdd = tempDiv.innerHTML;
+                            }
+                        } else if (typeof blockContent === 'string') {
                             contentToAdd = blockContent;
                         } else if (typeof blockContent === 'object' && blockContent.html) {
                             contentToAdd = blockContent.html;
@@ -206,10 +356,38 @@ window.StudioBlocks = (function() {
                         e.dataTransfer.setData('text/html', contentToAdd);
                         e.dataTransfer.setData('text/plain', block.id);
                         blockEl.classList.add('dragging');
+                        
+                        // Widget için ekstra bilgileri canvas'a aktar
+                        if (isWidget && typeof blockContent === 'object') {
+                            // Widget CSS ve JS verilerini kaydet
+                            if (blockContent.css) {
+                                const styleEl = document.createElement('style');
+                                styleEl.innerHTML = blockContent.css;
+                                styleEl.setAttribute('data-widget-css', 'true');
+                                document.head.appendChild(styleEl);
+                            }
+                            
+                            // Widget bilgilerini geçici olarak sakla
+                            window._lastDraggedWidget = {
+                                id: blockContent.widget_id,
+                                html: blockContent.html,
+                                css: blockContent.css,
+                                js: blockContent.js
+                            };
+                        }
                     });
                     
                     blockEl.addEventListener('dragend', () => {
                         blockEl.classList.remove('dragging');
+                        
+                        // Geçici widget stil elementlerini temizle
+                        const widgetStyles = document.querySelectorAll('style[data-widget-css="true"]');
+                        widgetStyles.forEach(el => el.remove());
+                        
+                        // Widget bilgilerini temizle
+                        setTimeout(() => {
+                            window._lastDraggedWidget = null;
+                        }, 300);
                     });
                     
                     // Tıklamayla içerik ekleme kaldırıldı, yalnızca sürükle-bırak özelliği korundu
@@ -231,7 +409,62 @@ window.StudioBlocks = (function() {
             }
         });
         
+        // Widget bileşenlerini editöre doğru şekilde ekleyebilmek için
+        // drop olayını dinle ve widget elementlerini doğru şekilde işle
+        setupCanvasDropEvents(editor);
+        
         console.log("Bloklar başarıyla kategorilere eklendi");
+    }
+    
+    /**
+     * Canvas drop olaylarını ayarla
+     * @param {Object} editor - GrapesJS editor örneği
+     */
+    function setupCanvasDropEvents(editor) {
+        editor.on('block:drag:stop', (component, block) => {
+            // Yeni eklenen komponenti kontrol et
+            if (!component) return;
+            
+            // Block widget mi kontrol et
+            const blockId = block.get('id');
+            if (!blockId || !blockId.startsWith('widget-')) return;
+            
+            // Widget ID'sini al
+            const widgetId = block.get('content').widget_id;
+            if (!widgetId) return;
+            
+            // Tüm yeni eklenen komponentleri dolaş ve widget sınıfı içerenleri bul
+            const checkComponents = (innerComponent) => {
+                if (!innerComponent) return;
+                
+                // Element widget wrapper ise tipini ayarla
+                if (innerComponent.getClasses().includes('gjs-widget-wrapper') || 
+                    innerComponent.getAttributes()['data-type'] === 'widget') {
+                    
+                    // Komponentin tipini widget olarak ayarla
+                    innerComponent.set('type', 'widget');
+                    innerComponent.set('widget_id', widgetId);
+                    
+                    // Data attribute ekle
+                    innerComponent.addAttributes({
+                        'data-widget-id': widgetId,
+                        'data-type': 'widget'
+                    });
+                    
+                    console.log(`Widget komponenti ayarlandı: ${widgetId}`);
+                }
+                
+                // Alt komponentleri kontrol et
+                if (innerComponent.get('components')) {
+                    innerComponent.get('components').each(child => {
+                        checkComponents(child);
+                    });
+                }
+            };
+            
+            // Komponenti kontrol et
+            checkComponents(component);
+        });
     }
     
     /**

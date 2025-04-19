@@ -2,11 +2,7 @@
  * Studio Editor Ana Modül
  * Tüm modülleri birleştiren ve başlatan ana dosya
  */
-// public/admin/libs/studio/partials/studio-core.js
 
-/**
- * Studio Editor için GrapesJS yapılandırması
- */
 window.initStudioEditor = function (config) {
     console.log('Studio Editor başlatılıyor:', config);
     
@@ -222,6 +218,88 @@ window.initStudioEditor = function (config) {
             protectedCss: '' // Koruma altındaki CSS'i devre dışı bırak
         });
 
+        // Widget bileşeni tipini kaydet
+        editor.DomComponents.addType('widget', {
+            model: {
+                defaults: {
+                    name: 'Widget',
+                    draggable: true,
+                    droppable: false,
+                    editable: true,
+                    attributes: {
+                        'data-type': 'widget'
+                    },
+                    traits: [
+                        {
+                            type: 'text',
+                            name: 'widget_id',
+                            label: 'Widget ID',
+                            changeProp: true
+                        }
+                    ],
+                    
+                    // Widget ID değiştiğinde içeriği güncelle
+                    init() {
+                        this.on('change:widget_id', this.updateWidgetContent);
+                    },
+                    
+                    updateWidgetContent() {
+                        const widgetId = this.get('widget_id');
+                        if (widgetId) {
+                            // Widget içeriği buraya yüklenecek
+                            console.log(`Widget ID ${widgetId} için içerik güncellenecek`);
+                        }
+                    }
+                }
+            },
+            
+            view: {
+                events: {
+                    'dblclick': 'onDblClick'
+                },
+                
+                onDblClick() {
+                    // Widget ID'sini doğru şekilde al
+                    const model = this.model;
+                    const widgetId = model.get('widget_id') || model.getAttributes()['data-widget-id'];
+                    
+                    if (widgetId) {
+                        // Widget düzenleme sayfasına yönlendir
+                        window.open(`/admin/widgetmanagement/items/${widgetId}`, '_blank');
+                    }
+                },
+                
+                onRender() {
+                    // Widget görünümü için stil ekle
+                    const el = this.el;
+                    if (el) {
+                        el.style.border = '2px dashed #2a6dcf';
+                        el.style.padding = '5px';
+                        el.style.borderRadius = '3px';
+                        el.style.position = 'relative';
+                        
+                        // Widget etiketi ekle
+                        if (!el.querySelector('.widget-label')) {
+                            const label = document.createElement('div');
+                            label.className = 'widget-label';
+                            label.innerHTML = '<i class="fa fa-puzzle-piece"></i> Widget';
+                            label.style.position = 'absolute';
+                            label.style.top = '-15px';
+                            label.style.left = '10px';
+                            label.style.backgroundColor = '#2a6dcf';
+                            label.style.color = 'white';
+                            label.style.padding = '2px 6px';
+                            label.style.fontSize = '10px';
+                            label.style.borderRadius = '3px';
+                            label.style.zIndex = '1';
+                            
+                            el.appendChild(label);
+                        }
+                    }
+                }
+            }
+        });
+
         // Editor yüklendiğinde CSS tekrarlama sorununu çöz
         editor.on('load', function() {
             // CSS'i çekme metodunu tamamen override et
@@ -250,6 +328,9 @@ window.initStudioEditor = function (config) {
                     return result.replace(/\*\s*{\s*box-sizing:\s*border-box;\s*}\s*body\s*{\s*margin(-top|-right|-bottom|-left)?:?\s*0(px)?;?\s*}/g, '');
                 };
             }
+            
+            // Widget bileşenlerini tanımla
+            registerWidgetComponents(editor);
         });
 
         // Canvası görünür kılma komutu ekle
@@ -307,6 +388,87 @@ window.initStudioEditor = function (config) {
 
         // İçerik yükleme işlemi
         loadContent(editor, config);
+
+        // Widget bileşenlerini kaydet ve tanımla
+        function registerWidgetComponents(editor) {
+            // Drop olayını izle ve widget elementlerini tanımla
+            editor.on('block:drag:stop', (component, block) => {
+                if (!component) return;
+                
+                // Block widget mi kontrol et - ID kontrol et
+                const blockId = block?.get('id');
+                if (!blockId || !blockId.startsWith('widget-')) return;
+                
+                // Widget ID'yi al (widget-123 formatındaki ID'den 123 kısmını çıkar)
+                const widgetId = blockId.replace('widget-', '');
+                
+                // Widget tipinde bileşenleri bul ve doğru şekilde işaretle
+                function processComponent(comp) {
+                    if (!comp) return;
+                    
+                    // Data attribute'lardan widget tipini kontrol et
+                    const attrs = comp.getAttributes();
+                    if (attrs['data-type'] === 'widget' || attrs['data-widget-id']) {
+                        // Komponentin tipini 'widget' olarak ayarla ve widget_id özelliğini ekle
+                        comp.set('type', 'widget');
+                        comp.set('widget_id', attrs['data-widget-id'] || widgetId);
+                        
+                        // Widget özelliklerini güncelle - başlık, sınır renkleri vs.
+                        comp.addAttributes({
+                            'data-widget-id': attrs['data-widget-id'] || widgetId,
+                            'data-type': 'widget'
+                        });
+                        
+                        console.log(`Widget komponenti ayarlandı: ${widgetId}`);
+                    }
+                    
+                    // Alt bileşenleri kontrol et
+                    if (comp.get('components')) {
+                        comp.get('components').each(child => {
+                            processComponent(child);
+                        });
+                    }
+                }
+                
+                // Ana bileşeni işle
+                processComponent(component);
+            });
+            
+            // Widget API'sini çağır ve mevcut widget'ları yükle
+            fetch('/admin/studio/api/widgets')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.widgets && Array.isArray(data.widgets)) {
+                        console.log(`${data.widgets.length} adet widget bulundu`);
+                        
+                        // Widget'lar için blok tanımla
+                        data.widgets.forEach(widget => {
+                            const blockId = `widget-${widget.id}`;
+                            const blockContent = `<div data-widget-id="${widget.id}" data-type="widget" class="gjs-widget-wrapper">
+                                ${widget.content_html || `<div class="widget-placeholder">Widget: ${widget.name}</div>`}
+                            </div>`;
+                            
+                            // Widget bloğunu kaydet
+                            editor.BlockManager.add(blockId, {
+                                label: widget.name,
+                                category: widget.category || 'widget',
+                                attributes: { class: 'fa fa-puzzle-piece' },
+                                content: blockContent
+                            });
+                        });
+                        
+                        // Blokları güncelle - StudioBlocks modülü mevcut ise bunu çağır
+                        if (window.StudioBlocks && typeof window.StudioBlocks.updateBlocksInCategories === 'function') {
+                            setTimeout(() => {
+                                window.StudioBlocks.updateBlocksInCategories(editor);
+                            }, 500);
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error("Widget yüklenirken hata:", error);
+                });
+        }
 
         // Editor'ü yükleme olayını dinle
         editor.on('load', function() {

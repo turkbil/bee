@@ -4,7 +4,7 @@ namespace Modules\Studio\App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Modules\Studio\App\Services\StudioWidgetService;
+use Modules\Studio\App\Services\WidgetService;
 use Modules\Studio\App\Services\StudioThemeService;
 
 class StudioApiController extends Controller
@@ -12,7 +12,7 @@ class StudioApiController extends Controller
     protected $widgetService;
     protected $themeService;
     
-    public function __construct(StudioWidgetService $widgetService, StudioThemeService $themeService)
+    public function __construct(WidgetService $widgetService, StudioThemeService $themeService)
     {
         $this->widgetService = $widgetService;
         $this->themeService = $themeService;
@@ -46,6 +46,58 @@ class StudioApiController extends Controller
             'defaultTheme' => $defaultTheme,
             'templates' => $this->themeService->getHeaderFooterTemplates($themeName)
         ]);
+    }
+    
+    /**
+     * Widget ekle
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function addWidget(Request $request)
+    {
+        $widgetId = $request->input('widget_id');
+        
+        try {
+            if (class_exists('Modules\WidgetManagement\App\Models\Widget') && 
+                class_exists('Modules\WidgetManagement\App\Models\TenantWidget')) {
+                $widget = \Modules\WidgetManagement\App\Models\Widget::findOrFail($widgetId);
+                
+                // Tenant Widget oluştur
+                $tenantWidget = new \Modules\WidgetManagement\App\Models\TenantWidget();
+                $tenantWidget->widget_id = $widgetId;
+                $tenantWidget->position = 'content';
+                $tenantWidget->order = \Modules\WidgetManagement\App\Models\TenantWidget::max('order') + 1;
+                $tenantWidget->settings = [
+                    'unique_id' => (string) \Illuminate\Support\Str::uuid(),
+                    'title' => $widget->name
+                ];
+                $tenantWidget->save();
+                
+                // Önbelleği temizle
+                Cache::forget('studio_widgets_' . (function_exists('tenant_id') ? tenant_id() : 'default'));
+                
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Widget başarıyla eklendi.',
+                    'widget' => [
+                        'id' => $tenantWidget->id,
+                        'name' => $widget->name
+                    ]
+                ]);
+            }
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'WidgetManagement modülü bulunamadı.'
+            ], 404);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Hata: ' . $e->getMessage()
+            ], 500);
+        }
     }
     
     /**

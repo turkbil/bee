@@ -115,19 +115,16 @@ class WidgetService
         
         foreach ($widgets as $widget) {
             $blocks[] = [
-                'id' => 'widget-' . $widget['id'],
-                'label' => $widget['name'],
+                'id' => $widget['id'],
+                'name' => $widget['name'],
+                'description' => $widget['description'] ?? '',
+                'type' => $widget['type'] ?? 'static',
                 'category' => isset($widget['category']) ? $widget['category'] : 'widget',
-                'content' => [
-                    'widget_id' => $widget['id'],
-                    'type' => 'widget',
-                    'html' => $widget['content_html'] ?? '<div class="widget-placeholder">Widget: ' . $widget['name'] . '</div>',
-                    'css' => $widget['content_css'] ?? '',
-                    'js' => $widget['content_js'] ?? '',
-                ],
-                'attributes' => [
-                    'class' => 'fa fa-puzzle-piece'
-                ]
+                'thumbnail' => $widget['thumbnail'] ?? '',
+                'content_html' => $widget['content_html'] ?? '<div class="widget-placeholder">Widget: ' . $widget['name'] . '</div>',
+                'content_css' => $widget['content_css'] ?? '',
+                'content_js' => $widget['content_js'] ?? '',
+                'has_items' => $widget['has_items'] ?? false
             ];
         }
         

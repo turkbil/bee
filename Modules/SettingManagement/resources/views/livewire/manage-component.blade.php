@@ -174,7 +174,7 @@ Diğer"></textarea>
                                 @enderror
                             </div> 
                             @endif
-                            <div class="mb-3 d-none">
+                            <div class="mb-3">
                                 <label class="form-label">Varsayılan Değer</label>
                                 
                                 @if($inputs['type'] === 'textarea')

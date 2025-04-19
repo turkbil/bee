@@ -87,7 +87,7 @@ class ModuleManagementSeeder extends Seeder
                 ],
                 [
                     'name' => 'studio',
-                    'display_name' => 'Studio',
+                    'display_name' => 'Studio Editör',
                     'description' => 'Studio ile site yönetimi',
                     'version' => '1.0.0',
                     'settings' => null,

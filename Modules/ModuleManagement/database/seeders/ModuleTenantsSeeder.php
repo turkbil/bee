@@ -52,19 +52,30 @@ class ModuleTenantsSeeder extends Seeder
                 return;
             }
 
-            // Her tenant ve modül kombinasyonu için rastgele atamalar yapalım
-            // Ama bazı tenant'larda bazı modüller eksik olacak şekilde
+            // Tüm tenantlara atanacak zorunlu modüller
+            $zorunluModuller = [
+                'modulemanagement',
+                'usermanagement',
+                'settingmanagement',
+                'widgetmanagement',
+                'thememanagement',
+                'studio',
+            ];
+            // Rastgele atanacak modüller
+            $rastgeleModuller = [
+                'announcement',
+                'page',
+                'portfolio',
+            ];
+
             foreach ($tenants as $tenant) {
-                // Her tenant için farklı bir seed kullanarak
                 $tenantSeed = crc32($tenant);
                 srand($tenantSeed);
-                
+
+                // Önce zorunlu modülleri ata
                 foreach ($modules as $module) {
-                    // %70 ihtimalle modülü tenant'a ekleyelim (%30 ihtimalle eksik olacak)
-                    if (rand(1, 100) <= 50) {
-                        // %80 ihtimalle aktif olsun
-                        $isActive = rand(1, 100) <= 90;
-                        
+                    if (in_array($module->name, $zorunluModuller)) {
+                        $isActive = rand(1, 100) <= 90; // %90 aktif olsun
                         DB::table('module_tenants')->insert([
                             'tenant_id' => $tenant,
                             'module_id' => $module->module_id,
@@ -72,10 +83,27 @@ class ModuleTenantsSeeder extends Seeder
                             'created_at' => now(),
                             'updated_at' => now()
                         ]);
-
-                        // Modül etkinse, ilgili izinleri tenant'a ekleyelim
                         if ($isActive) {
                             $this->createPermissionsForTenant($tenant, $module->name);
+                        }
+                    }
+                }
+                // Sonra rastgele modülleri ata
+                foreach ($modules as $module) {
+                    if (in_array($module->name, $rastgeleModuller)) {
+                        // %50 ihtimalle tenant'a eklensin
+                        if (rand(1, 100) <= 50) {
+                            $isActive = rand(1, 100) <= 90;
+                            DB::table('module_tenants')->insert([
+                                'tenant_id' => $tenant,
+                                'module_id' => $module->module_id,
+                                'is_active' => $isActive,
+                                'created_at' => now(),
+                                'updated_at' => now()
+                            ]);
+                            if ($isActive) {
+                                $this->createPermissionsForTenant($tenant, $module->name);
+                            }
                         }
                     }
                 }

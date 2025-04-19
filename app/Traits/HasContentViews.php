@@ -5,7 +5,7 @@ namespace App\Traits;
 use CyrildeWit\EloquentViewable\InteractsWithViews;
 use CyrildeWit\EloquentViewable\Contracts\Viewable;
 
-trait HasPageViews
+trait HasContentViews
 {
     use InteractsWithViews;
 

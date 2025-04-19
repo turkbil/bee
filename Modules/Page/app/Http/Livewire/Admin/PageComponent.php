@@ -56,6 +56,15 @@ class PageComponent extends Component
         $page = Page::where('page_id', $id)->first();
     
         if ($page) {
+            // Eğer ana sayfa ise pasif yapılmasına izin verme
+            if ($page->is_homepage && $page->is_active) {
+                $this->dispatch('toast', [
+                    'title' => 'Uyarı',
+                    'message' => 'Ana sayfa pasif yapılamaz!',
+                    'type' => 'warning',
+                ]);
+                return;
+            }
             $page->update(['is_active' => !$page->is_active]);
             
             log_activity(
@@ -68,6 +77,15 @@ class PageComponent extends Component
                 'message' => "\"{$page->title}\" " . ($page->is_active ? 'aktif' : 'pasif') . " edildi.",
                 'type' => $page->is_active ? 'success' : 'warning',
             ]);
+        }
+    }
+
+    public function openStudioEditor($pageId = null)
+    {
+        if ($pageId) {
+            return redirect()->route('admin.studio.editor', ['module' => 'page', 'id' => $pageId]);
+        } else {
+            return redirect()->route('admin.studio.editor', ['module' => 'page', 'id' => $this->pageId]);
         }
     }
 

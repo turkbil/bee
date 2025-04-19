@@ -109,34 +109,35 @@ window.StudioBlocks = (function() {
      * @param {Object} editor - GrapesJS editor örneği
      */
     function loadWidgetBlocks(editor) {
+        // Yeni widget manager modülünü kullan
+        if (window.StudioWidgetManager && typeof window.StudioWidgetManager.loadWidgetBlocks === 'function') {
+            window.StudioWidgetManager.loadWidgetBlocks(editor);
+            return;
+        }
+        
+        // Eski fonksiyon içeriği (uyumluluk için)
         fetch('/admin/studio/api/widgets')
             .then(response => response.json())
             .then(data => {
                 if (data.widgets && Array.isArray(data.widgets)) {
                     console.log(`${data.widgets.length} adet widget bulundu`);
                     
-                    // Widget'ları blok olarak ekle
                     data.widgets.forEach(widget => {
-                        // Widget ID ve adını kontrol et
                         if (!widget.id || !widget.name) {
                             console.warn("Geçersiz widget verisi:", widget);
                             return;
                         }
                         
-                        // Widget için blok ID ve HTML oluştur
                         const blockId = `widget-${widget.id}`;
                         const widgetHtml = `<div data-widget-id="${widget.id}" class="gjs-widget-wrapper" data-type="widget">
                             ${widget.content_html || `<div class="widget-placeholder">Widget: ${widget.name}</div>`}
                         </div>`;
                         
-                        // CSS ve JS içeriği (varsa)
                         const widgetCss = widget.content_css || '';
                         const widgetJs = widget.content_js || '';
                         
-                        // Kategori kontrolü
                         const category = widget.category || 'widget';
                         
-                        // Widget bloğunu ekle
                         editor.BlockManager.add(blockId, {
                             label: widget.name,
                             category: category,
@@ -149,14 +150,8 @@ window.StudioBlocks = (function() {
                                 js: widgetJs
                             }
                         });
-                        
-                        console.log(`Widget bloğu eklendi: ${widget.name} (ID: ${widget.id})`);
                     });
                     
-                    // Widget komponentlerini tanımla
-                    registerWidgetComponents(editor);
-                    
-                    // Widget bloklarını kategorilere ekle
                     setTimeout(() => {
                         updateBlocksInCategories(editor);
                     }, 500);
@@ -167,20 +162,26 @@ window.StudioBlocks = (function() {
             });
     }
     
+
+    
     /**
      * Widget komponentlerini tanımla
      * @param {Object} editor - GrapesJS editor örneği
      */
     function registerWidgetComponents(editor) {
-        // Widget komponenti özelliklerini tanımla
+        // Yeni widget manager modülünü kullan
+        if (window.StudioWidgetManager && typeof window.StudioWidgetManager.registerWidgetComponents === 'function') {
+            window.StudioWidgetManager.registerWidgetComponents(editor);
+            return;
+        }
+        
+        // Eski fonksiyon içeriği (uyumluluk için)
         const widgetType = 'widget';
         
-        // Halihazırda tanımlı ise yeniden tanımlama
         if (editor.Components.getType(widgetType)) {
             return;
         }
         
-        // Widget komponenti tanımla
         editor.DomComponents.addType(widgetType, {
             model: {
                 defaults: {
@@ -201,7 +202,6 @@ window.StudioBlocks = (function() {
                         }
                     ],
                     
-                    // Widget ID değiştiğinde içeriği güncelle
                     init() {
                         this.on('change:widget_id', this.onWidgetIdChange);
                     },
@@ -225,7 +225,6 @@ window.StudioBlocks = (function() {
                     const widgetId = model.get('widget_id') || model.getAttributes()['data-widget-id'];
                     
                     if (widgetId) {
-                        // Widget düzenleme sayfasına yönlendir
                         window.open(`/admin/widgetmanagement/items/${widgetId}`, '_blank');
                     }
                 }

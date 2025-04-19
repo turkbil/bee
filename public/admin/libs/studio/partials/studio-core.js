@@ -529,7 +529,6 @@ window.initStudioEditor = function (config) {
  * @param {Object} config - Yapılandırma
  */
 function loadContent(editor, config) {
-    // İçerik yükleme gecikmesi - canvas hazır olduktan sonra
     setTimeout(() => {
         try {
             console.log('İçerik yükleme işlemi başlatılıyor...');
@@ -540,7 +539,6 @@ function loadContent(editor, config) {
             
             let content = htmlContentEl ? htmlContentEl.value : '';
             
-            // İçerik kontrolü - geçerli HTML içeriği var mı?
             if (!content || content.trim() === '' || content.trim() === '<body></body>' || content.length < 20) {
                 console.warn('Geçerli içerik bulunamadı. Varsayılan içerik yükleniyor...');
                 
@@ -559,14 +557,18 @@ function loadContent(editor, config) {
                 </div>`;
             }
             
-            // İçeriği editöre yükle
             editor.setComponents(content);
             console.log('İçerik editöre başarıyla yüklendi');
             
-            // CSS içeriği
             if (cssContentEl && cssContentEl.value) {
                 editor.setStyle(cssContentEl.value);
             }
+            
+            setTimeout(() => {
+                if (window.StudioWidgetManager && typeof window.StudioWidgetManager.processExistingWidgets === 'function') {
+                    window.StudioWidgetManager.processExistingWidgets(editor);
+                }
+            }, 1000);
             
         } catch (error) {
             console.error('İçerik yüklenirken hata oluştu:', error);

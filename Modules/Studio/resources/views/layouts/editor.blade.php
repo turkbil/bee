@@ -127,7 +127,8 @@
     <script src="{{ asset('admin/libs/studio/partials/studio-core.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-core.js')) }}"></script>
     <script src="{{ asset('admin/libs/js-cookie@3.0.5/js.cookie.min.js') }}?v={{ filemtime(public_path('admin/libs/js-cookie@3.0.5/js.cookie.min.js')) }}"></script>
     <script src="{{ asset('admin/libs/studio/app.js') }}?v={{ filemtime(public_path('admin/libs/studio/app.js')) }}"></script>
-    
+    <script src="{{ asset('admin/libs/studio/partials/studio-widget-manager.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-widget-manager.js')) }}"></script>
+
     @livewireScripts
     
     <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index:9999;"></div>

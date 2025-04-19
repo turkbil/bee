@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Studio\App\Services\WidgetService;
 use Modules\Studio\App\Services\StudioThemeService;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class StudioApiController extends Controller
 {
@@ -18,71 +21,130 @@ class StudioApiController extends Controller
         $this->themeService = $themeService;
     }
     
-    /**
-     * Widgetları getir
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function getWidgets()
     {
-        return response()->json([
-            'widgets' => $this->widgetService->getWidgetsAsBlocks(),
-            'categories' => $this->widgetService->getCategories()
-        ]);
+        try {
+            $widgets = $this->widgetService->getWidgetsAsBlocks();
+            $categories = $this->widgetService->getCategories();
+            
+            return response()->json([
+                'success' => true,
+                'widgets' => $widgets,
+                'categories' => $categories
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Widget verileri alınırken hata: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Widget verileri alınırken hata: ' . $e->getMessage()
+            ], 500);
+        }
     }
     
-    /**
-     * Temaları getir
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function getThemes()
     {
-        $defaultTheme = $this->themeService->getDefaultTheme();
-        $themeName = $defaultTheme ? $defaultTheme['folder_name'] : 'blank';
-        
-        return response()->json([
-            'themes' => $this->themeService->getAllThemes(),
-            'defaultTheme' => $defaultTheme,
-            'templates' => $this->themeService->getHeaderFooterTemplates($themeName)
-        ]);
+        try {
+            $defaultTheme = $this->themeService->getDefaultTheme();
+            $themeName = $defaultTheme ? $defaultTheme['folder_name'] : 'blank';
+            
+            return response()->json([
+                'success' => true,
+                'themes' => $this->themeService->getAllThemes(),
+                'defaultTheme' => $defaultTheme,
+                'templates' => $this->themeService->getHeaderFooterTemplates($themeName)
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Tema verileri alınırken hata: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Tema verileri alınırken hata: ' . $e->getMessage()
+            ], 500);
+        }
     }
     
-    /**
-     * Widget ekle
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function addWidget(Request $request)
     {
         $widgetId = $request->input('widget_id');
         
         try {
-            if (class_exists('Modules\WidgetManagement\App\Models\Widget') && 
-                class_exists('Modules\WidgetManagement\App\Models\TenantWidget')) {
-                $widget = \Modules\WidgetManagement\App\Models\Widget::findOrFail($widgetId);
+            $settings = $request->input('settings', []);
+            $items = $request->input('items', []);
+            
+            $tenantWidget = $this->widgetService->createTenantWidget($widgetId, $settings, $items);
+            
+            if (!$tenantWidget) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Widget eklenemedi. Veritabanı hatası.'
+                ], 500);
+            }
+            
+            // Widget temel bilgilerini getir
+            $widget = \Modules\WidgetManagement\App\Models\Widget::find($widgetId);
+            
+            $widgetData = [
+                'id' => $tenantWidget->id,
+                'widget_id' => $widgetId,
+                'name' => $widget->name,
+                'content_html' => $widget->content_html,
+                'content_css' => $widget->content_css,
+                'content_js' => $widget->content_js,
+                'css_files' => $widget->css_files ?? [],
+                'js_files' => $widget->js_files ?? [],
+                'settings' => $tenantWidget->settings,
+                'has_items' => $widget->has_items
+            ];
+            
+            if ($widget->has_items) {
+                $widgetData['items'] = $tenantWidget->items->map(function($item) {
+                    return $item->content;
+                })->toArray();
+            }
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Widget başarıyla eklendi.',
+                'widget' => $widgetData
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Widget eklenirken hata: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Widget eklenirken hata: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+    
+    public function getWidgetContent($id)
+    {
+        try {
+            if (class_exists('Modules\WidgetManagement\App\Models\Widget')) {
+                $widget = \Modules\WidgetManagement\App\Models\Widget::find($id);
                 
-                // Tenant Widget oluştur
-                $tenantWidget = new \Modules\WidgetManagement\App\Models\TenantWidget();
-                $tenantWidget->widget_id = $widgetId;
-                $tenantWidget->position = 'content';
-                $tenantWidget->order = \Modules\WidgetManagement\App\Models\TenantWidget::max('order') + 1;
-                $tenantWidget->settings = [
-                    'unique_id' => (string) \Illuminate\Support\Str::uuid(),
-                    'title' => $widget->name
-                ];
-                $tenantWidget->save();
-                
-                // Önbelleği temizle
-                Cache::forget('studio_widgets_' . (function_exists('tenant_id') ? tenant_id() : 'default'));
+                if (!$widget) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Widget bulunamadı.'
+                    ], 404);
+                }
                 
                 return response()->json([
                     'success' => true,
-                    'message' => 'Widget başarıyla eklendi.',
                     'widget' => [
-                        'id' => $tenantWidget->id,
-                        'name' => $widget->name
+                        'id' => $widget->id,
+                        'name' => $widget->name,
+                        'type' => $widget->type,
+                        'content_html' => $widget->content_html,
+                        'content_css' => $widget->content_css,
+                        'content_js' => $widget->content_js,
+                        'css_files' => $widget->css_files ?? [],
+                        'js_files' => $widget->js_files ?? [],
+                        'has_items' => $widget->has_items,
+                        'settings_schema' => $widget->settings_schema,
+                        'item_schema' => $widget->item_schema
                     ]
                 ]);
             }
@@ -91,25 +153,20 @@ class StudioApiController extends Controller
                 'success' => false,
                 'message' => 'WidgetManagement modülü bulunamadı.'
             ], 404);
-            
         } catch (\Exception $e) {
+            Log::error('Widget içeriği alınırken hata: ' . $e->getMessage());
+            
             return response()->json([
                 'success' => false,
-                'message' => 'Hata: ' . $e->getMessage()
+                'message' => 'Widget içeriği alınırken hata: ' . $e->getMessage()
             ], 500);
         }
     }
     
-    /**
-     * İçerik kaydetme
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function saveContent(Request $request)
     {
         $module = $request->input('module');
-        $id = (int)$request->input('id'); // ID'yi integer'a çevir
+        $id = (int)$request->input('id');
         $content = $request->input('content');
         $css = $request->input('css');
         $js = $request->input('js');
@@ -122,11 +179,20 @@ class StudioApiController extends Controller
                 $page->js = $js;
                 $page->save();
                 
-                log_activity($page, 'studio ile düzenlendi');
+                if (function_exists('log_activity')) {
+                    log_activity($page, 'studio ile düzenlendi');
+                }
                 
                 return response()->json([
                     'success' => true,
                     'message' => 'Sayfa başarıyla kaydedildi.'
+                ]);
+            } elseif ($module === 'widget' && class_exists('Modules\WidgetManagement\App\Models\Widget')) {
+                $result = $this->widgetService->updateWidgetContent($id, $content, $css, $js);
+                
+                return response()->json([
+                    'success' => $result,
+                    'message' => $result ? 'Widget başarıyla kaydedildi.' : 'Widget kaydedilemedi.'
                 ]);
             }
             
@@ -135,9 +201,11 @@ class StudioApiController extends Controller
                 'message' => 'Desteklenmeyen modül: ' . $module
             ], 400);
         } catch (\Exception $e) {
+            Log::error('İçerik kaydedilirken hata: ' . $e->getMessage());
+            
             return response()->json([
                 'success' => false,
-                'message' => 'Hata: ' . $e->getMessage()
+                'message' => 'İçerik kaydedilirken hata: ' . $e->getMessage()
             ], 500);
         }
     }

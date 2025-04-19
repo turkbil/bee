@@ -8,12 +8,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use App\Traits\HasPageViews;
+use App\Traits\HasContentViews;
 use CyrildeWit\EloquentViewable\Contracts\Viewable;
 
 class Portfolio extends BaseModel implements HasMedia, Viewable
 {
-    use Sluggable, SoftDeletes, InteractsWithMedia, HasPageViews;
+    use Sluggable, SoftDeletes, InteractsWithMedia, HasContentViews;
 
     protected $primaryKey = 'portfolio_id';
     

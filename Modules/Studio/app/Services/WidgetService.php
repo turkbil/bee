@@ -3,6 +3,7 @@
 namespace Modules\Studio\App\Services;
 
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class WidgetService
 {
@@ -67,10 +68,12 @@ class WidgetService
                         'slug' => $widget->slug,
                         'description' => $widget->description,
                         'type' => $widget->type,
-                        'thumbnail' => $widget->thumbnail,
+                        'thumbnail' => $widget->getThumbnailUrl(),
                         'content_html' => $widget->content_html,
                         'content_css' => $widget->content_css,
                         'content_js' => $widget->content_js,
+                        'css_files' => $widget->css_files ?? [],
+                        'js_files' => $widget->js_files ?? [],
                         'has_items' => $widget->has_items,
                         'category' => isset($widget->data['category']) ? $widget->data['category'] : 'widget',
                     ];
@@ -100,6 +103,8 @@ class WidgetService
             'html' => $widget->content_html,
             'css' => $widget->content_css,
             'js' => $widget->content_js,
+            'css_files' => $widget->css_files ?? [],
+            'js_files' => $widget->js_files ?? [],
         ];
     }
     
@@ -124,6 +129,8 @@ class WidgetService
                 'content_html' => $widget['content_html'] ?? '<div class="widget-placeholder">Widget: ' . $widget['name'] . '</div>',
                 'content_css' => $widget['content_css'] ?? '',
                 'content_js' => $widget['content_js'] ?? '',
+                'css_files' => $widget['css_files'] ?? [],
+                'js_files' => $widget['js_files'] ?? [],
                 'has_items' => $widget['has_items'] ?? false
             ];
         }
@@ -163,8 +170,66 @@ class WidgetService
             
             return $result;
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Widget içeriği güncellenirken hata: ' . $e->getMessage());
+            Log::error('Widget içeriği güncellenirken hata: ' . $e->getMessage());
             return false;
         }
+    }
+    
+    /**
+     * Tenant widget oluştur
+     *
+     * @param int $widgetId
+     * @param array $settings
+     * @param array $items
+     * @return \Modules\WidgetManagement\App\Models\TenantWidget|null
+     */
+    public function createTenantWidget(int $widgetId, array $settings = [], array $items = [])
+    {
+        if (!class_exists('Modules\WidgetManagement\App\Models\Widget') || 
+            !class_exists('Modules\WidgetManagement\App\Models\TenantWidget')) {
+            return null;
+        }
+        
+        try {
+            $widget = \Modules\WidgetManagement\App\Models\Widget::findOrFail($widgetId);
+            
+            $tenantWidget = new \Modules\WidgetManagement\App\Models\TenantWidget();
+            $tenantWidget->widget_id = $widgetId;
+            $tenantWidget->position = $settings['position'] ?? 'content';
+            $tenantWidget->order = \Modules\WidgetManagement\App\Models\TenantWidget::max('order') + 1;
+            $tenantWidget->settings = array_merge([
+                'unique_id' => (string) \Illuminate\Support\Str::uuid(),
+                'title' => $widget->name
+            ], $settings);
+            $tenantWidget->save();
+            
+            if ($widget->has_items && !empty($items)) {
+                foreach ($items as $index => $itemData) {
+                    $widgetItem = new \Modules\WidgetManagement\App\Models\WidgetItem();
+                    $widgetItem->tenant_widget_id = $tenantWidget->id;
+                    $widgetItem->content = is_array($itemData) ? $itemData : ['content' => $itemData, 'is_active' => true];
+                    $widgetItem->order = $index;
+                    $widgetItem->save();
+                }
+            }
+            
+            // Önbelleği temizle
+            $cacheKey = 'studio_widgets_' . (function_exists('tenant_id') ? tenant_id() : 'default');
+            Cache::forget($cacheKey);
+            
+            return $tenantWidget;
+        } catch (\Exception $e) {
+            Log::error('Tenant widget oluşturulurken hata: ' . $e->getMessage());
+            return null;
+        }
+    }
+    
+    /**
+     * Widget önbelleğini temizle
+     */
+    public function clearWidgetCache(): void
+    {
+        $cacheKey = 'studio_widgets_' . (function_exists('tenant_id') ? tenant_id() : 'default');
+        Cache::forget($cacheKey);
     }
 }

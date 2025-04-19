@@ -22,6 +22,7 @@ class PageManageComponent extends Component
        'css' => '',
        'js' => '',
        'is_active' => true,
+       'is_homepage' => false,
    ];
    
    public $studioEnabled = false;
@@ -48,6 +49,7 @@ class PageManageComponent extends Component
            'inputs.css' => 'nullable|string',
            'inputs.js' => 'nullable|string',
            'inputs.is_active' => 'boolean',
+           'inputs.is_homepage' => 'boolean',
        ];
    }
 
@@ -67,6 +69,16 @@ class PageManageComponent extends Component
           'metakey' => is_array($this->inputs['metakey']) ? implode(',', $this->inputs['metakey']) : $this->inputs['metakey'],
           'metadesc' => Str::limit($this->inputs['metadesc'] ?? $this->inputs['body'], 191, '')
       ]);
+
+      // Eğer ana sayfa ise pasif yapılmasına izin verme
+      if (($this->inputs['is_homepage'] || ($this->pageId && Page::find($this->pageId)?->is_homepage)) && isset($data['is_active']) && $data['is_active'] == false) {
+          $this->dispatch('toast', [
+              'title' => 'Uyarı',
+              'message' => 'Ana sayfa pasif yapılamaz!',
+              'type' => 'warning',
+          ]);
+          return;
+      }
    
       if ($this->pageId) {
           $page = Page::findOrFail($this->pageId);

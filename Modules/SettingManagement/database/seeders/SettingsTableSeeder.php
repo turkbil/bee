@@ -11,15 +11,15 @@ class SettingsTableSeeder extends Seeder
     {
         $settings = [
             [
-                'group_id' => 5,
+                'group_id' => 6,
                 'label' => 'Site Başlığı',
                 'key' => 'site_title',
                 'type' => 'text',
-                'default_value' => 'Örnek Site',
+                'default_value' => 'Türk Bilişim',
                 'sort_order' => 1
             ],
             [
-                'group_id' => 5,
+                'group_id' => 6,
                 'label' => 'Site Logo',
                 'key' => 'site_logo',
                 'type' => 'file',
@@ -27,7 +27,7 @@ class SettingsTableSeeder extends Seeder
                 'sort_order' => 2
             ],
             [
-                'group_id' => 5,
+                'group_id' => 6,
                 'label' => 'Favicon',
                 'key' => 'site_favicon',
                 'type' => 'file',
@@ -35,28 +35,20 @@ class SettingsTableSeeder extends Seeder
                 'sort_order' => 3
             ],
             [
-                'group_id' => 5,
+                'group_id' => 6,
                 'label' => 'Ana E-posta Adresi',
-                'key' => 'contact_email',
+                'key' => 'site_email',
                 'type' => 'text',
-                'default_value' => 'info@orneksite.com',
+                'default_value' => 'info@turkbilisim.com.tr',
                 'sort_order' => 4
             ],
             [
-                'group_id' => 5,
+                'group_id' => 6,
                 'label' => 'Google Analytics Kodu',
-                'key' => 'google_analytics_code',
+                'key' => 'site_google_analytics_code',
                 'type' => 'text',
                 'default_value' => null,
                 'sort_order' => 5
-            ],
-            [
-                'group_id' => 5,
-                'label' => 'Footer Açıklaması',
-                'key' => 'footer_description',
-                'type' => 'textarea',
-                'default_value' => '© 2025 Tüm hakları saklıdır.',
-                'sort_order' => 6
             ]
         ];
 

@@ -7,7 +7,19 @@ if (!function_exists('settings')) {
             return app('settings');
         }
 
-        return app('settings')->get($key, $default);
+        try {
+            // Tenant bağlantısını zorlayalım
+            if (function_exists('is_tenant') && is_tenant()) {
+                // Tenant veritabanında çalıştığımızdan emin olalım
+                config(['database.connections.tenant.driver' => 'mysql']);
+                \Illuminate\Support\Facades\DB::purge('tenant');
+            }
+            
+            return app('settings')->get($key, $default);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error("Settings helper error: " . $e->getMessage());
+            return $default;
+        }
     }
 }
 
@@ -18,6 +30,18 @@ if (!function_exists('settings_id')) {
             return app('settings');
         }
 
-        return app('settings')->getById($id, $default);
+        try {
+            // Tenant bağlantısını zorlayalım
+            if (function_exists('is_tenant') && is_tenant()) {
+                // Tenant veritabanında çalıştığımızdan emin olalım
+                config(['database.connections.tenant.driver' => 'mysql']);
+                \Illuminate\Support\Facades\DB::purge('tenant');
+            }
+            
+            return app('settings')->getById($id, $default);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error("Settings ID helper error: " . $e->getMessage());
+            return $default;
+        }
     }
 }

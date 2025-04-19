@@ -95,11 +95,6 @@
                 </button>
             </div>
             
-            <button id="export-btn" class="btn btn-light btn-sm me-2" title="Dışa Aktar">
-                <i class="fas fa-download me-1"></i>
-                <span>Dışa Aktar</span>
-            </button>
-            
             <button id="preview-btn" class="btn btn-warning btn-sm me-2" title="Önizleme">
                 <i class="fa-solid fa-eye me-1"></i>
                 <span>Önizleme</span>

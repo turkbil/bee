@@ -1,12 +1,12 @@
-{{-- Modules/TaskManagement/resources/views/admin/helper.blade.php --}}
+{{-- Modules/Studio/resources/views/admin/helper.blade.php --}}
 {{-- PreTitle --}}
 @push('pretitle')
-Görevler
+Studio
 @endpush
 
 {{-- Başlık --}}
 @push('title')
-Görev Yönetimi
+Studio Görsel Editör
 @endpush
 
 {{-- Modül Menüsü --}}
@@ -15,16 +15,16 @@ Görev Yönetimi
     <a href="#" class="btn dropdown-toggle d-inline-block d-lg-none" data-bs-toggle="dropdown">Menü</a>
     <div class="dropdown-menu dropdown-module-menu">
         <div class="module-menu-revert">
-            @hasmoduleaccess('taskmanagement', 'view')
-            <a href="{{ route('admin.taskmanagement.index') }}" class="dropdown-module-item btn btn-ghost-secondary">
-                Görevler
+            @hasmoduleaccess('studio', 'view')
+            <a href="{{ route('admin.studio.index') }}" class="dropdown-module-item btn btn-ghost-secondary">
+                Studio Editör
             </a>
             @endhasmoduleaccess
 
-            @hasmoduleaccess('taskmanagement', 'create')
-            <button type="button" class="dropdown-module-item btn btn-primary" wire:click="showTaskModal()">
-                <i class="fas fa-plus me-2"></i> Yeni Görev
-            </button>
+            @hasmoduleaccess('studio', 'view')
+            <a href="{{ route('admin.studio.widgets') }}" class="dropdown-module-item btn btn-ghost-secondary">
+                Widget Yönetimi
+            </a>
             @endhasmoduleaccess
         </div>
     </div>

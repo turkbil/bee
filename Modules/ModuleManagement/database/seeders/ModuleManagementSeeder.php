@@ -86,6 +86,15 @@ class ModuleManagementSeeder extends Seeder
                     'is_active' => true
                 ],
                 [
+                    'name' => 'studio',
+                    'display_name' => 'Studio',
+                    'description' => 'Studio ile site yönetimi',
+                    'version' => '1.0.0',
+                    'settings' => null,
+                    'type' => 'system',
+                    'is_active' => true
+                ],
+                [
                     'name' => 'announcement',
                     'display_name' => 'Duyurular',
                     'description' => 'Duyuru yönetimi',

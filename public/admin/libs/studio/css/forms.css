@@ -1,15 +1,12 @@
 .gjs-field {
-  position: relative;
-  display: flex;
-  align-items: center;
   width: 100%;
-  min-height: 32px;
   background-color: #ffffff;
   border: 1px solid #e5e7eb;
-  border-radius: 0;
+  border-radius: 4px;
   padding: 0;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   transition: border-color 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
 }
 
 .gjs-field:hover {
@@ -24,7 +21,6 @@
 .gjs-field input,
 .gjs-field select,
 .gjs-field textarea {
-  display: block;
   width: 100%;
   height: 30px;
   padding: 5px 8px;
@@ -48,10 +44,13 @@
   display: flex;
 }
 
+.gjs-input-unit {
+  font-size: 11px !important;
+  padding: 0 20px 0 2px !important;}
+
 .gjs-field-integer input {
   flex: 1;
   padding-right: 24px;
-  text-align: center;
   -moz-appearance: textfield;
 }
 
@@ -59,18 +58,6 @@
 .gjs-field-integer input::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
-}
-
-.gjs-field-arrows {
-  position: absolute;
-  right: 0;
-  top: 0;
-  height: 100%;
-  width: 24px;
-  display: flex;
-  flex-direction: column;
-  background-color: #f9fafb;
-  border-left: 1px solid #e5e7eb;
 }
 
 .gjs-field-arrow-u,
@@ -156,13 +143,12 @@
 }
 
 .gjs-sm-property {
-  margin-bottom: 12px;
-  padding: 0 0 12px 0;
+  margin-bottom: 10px;
+  padding: 0 5px 10px 0;
   border-bottom: 1px solid #e5e7eb;
 }
 
 .gjs-sm-clear {
-  position: absolute;
   cursor: pointer;
   color: #6b7280;
   font-size: 11px;
@@ -183,11 +169,6 @@
 .gjs-sm-clear:hover {
   opacity: 1;
   color: #ef4444;
-}
-
-.gjs-sm-clear:after {
-  content: "\f00d";
-  font-family: "Font Awesome 6 Pro", FontAwesome;
 }
 
 .gjs-field-color {
@@ -242,4 +223,22 @@
   flex: 1 0 calc(50% - 3px);
   margin-bottom: 6px;
   padding-bottom: 6px;
+}
+
+/* Text shadow fixes */
+.gjs-sm-property.gjs-sm-text-shadow .gjs-fields {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+}
+
+.gjs-sm-property.gjs-sm-text-shadow .gjs-field-color {
+  display: flex;
+  align-items: center;
+}
+
+.gjs-sm-property.gjs-sm-text-shadow .gjs-field-color .gjs-field-colorp-c {
+  height: 20px;
+  width: 20px;
+  margin-right: 5px;
 }

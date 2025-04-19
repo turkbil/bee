@@ -566,14 +566,14 @@ function setupDeviceToggle(editor) {
     const newMobileBtn = recreateButton(deviceMobile);
 
     function toggleDeviceButtons(activeBtn) {
-        const deviceBtns = document.querySelectorAll(".device-btns button");
-        if (deviceBtns) {
-            deviceBtns.forEach((btn) => {
-                btn.classList.remove("active");
-            });
-            if (activeBtn) {
-                activeBtn.classList.add("active");
-            }
+        // Tüm butonlardan active sınıfını kaldır
+        if (newDesktopBtn) newDesktopBtn.classList.remove("active");
+        if (newTabletBtn) newTabletBtn.classList.remove("active");
+        if (newMobileBtn) newMobileBtn.classList.remove("active");
+        
+        // Sadece aktif butona active sınıfı ekle
+        if (activeBtn) {
+            activeBtn.classList.add("active");
         }
         
         // Aktif cihazı localStorage'a kaydet
@@ -609,7 +609,20 @@ function setupDeviceToggle(editor) {
     if (savedDevice) {
         const activeDeviceBtn = document.getElementById(`device-${savedDevice}`);
         if (activeDeviceBtn) {
-            activeDeviceBtn.click();
+            toggleDeviceButtons(activeDeviceBtn);
+            editor.setDevice(savedDevice.charAt(0).toUpperCase() + savedDevice.slice(1));
+        } else {
+            // Varsayılan olarak masaüstünü aktif yap
+            if (newDesktopBtn) {
+                toggleDeviceButtons(newDesktopBtn);
+                editor.setDevice("Desktop");
+            }
+        }
+    } else {
+        // Varsayılan olarak masaüstünü aktif yap
+        if (newDesktopBtn) {
+            toggleDeviceButtons(newDesktopBtn);
+            editor.setDevice("Desktop");
         }
     }
 }

@@ -73,7 +73,7 @@ window.StudioActions = (function() {
                         if (!currentState) {
                             console.log("Sınırları göster işlemi yapılıyor");
                             allElements.forEach(el => {
-                                el.style.outline = '1px solid rgba(170, 170, 170, 0.7)';
+                                el.style.outline = '1px dashed rgba(170, 170, 170, 0.7)';
                             });
                         } else {
                             console.log("Sınırları gizle işlemi yapılıyor");

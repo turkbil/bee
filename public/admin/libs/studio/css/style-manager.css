@@ -32,8 +32,13 @@
 #traits-container {
   display: flex;
   flex-direction: column;
-  margin: 0;
   padding: 0;
+}
+
+#blocks-container, .block-container,
+#styles-container, 
+#traits-container {
+  margin: 0 0 32px 0;
 }
 
 .gjs-sm-sector {
@@ -57,10 +62,6 @@
   font-size: 13px;
   transition: all 0.2s ease;
   border-bottom: 1px solid #e5e7eb;
-}
-
-.gjs-sm-sector-title i {
-  display: none;
 }
 
 .gjs-sm-sector-title:hover {
@@ -92,4 +93,15 @@
   font-weight: 500;
   color: #4b5563;
   margin-bottom: 5px;
+}
+
+.gjs-sm-sector-title i {
+    margin-right: 8px;
+    color: #3b82f6;
+    width: 16px;
+    text-align: center;
+}
+
+.gjs-sm-sector-caret {
+	display: none;
 }

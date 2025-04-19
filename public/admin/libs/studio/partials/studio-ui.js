@@ -848,4 +848,4 @@ return {
     initializePanelToggles: initializePanelToggles,
     fixNumberInputs: fixNumberInputs
 };
-})();
+})();   

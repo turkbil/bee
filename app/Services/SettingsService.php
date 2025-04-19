@@ -5,11 +5,12 @@ namespace App\Services;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 use Modules\SettingManagement\App\Models\Setting;
 
 class SettingsService
 {
-    protected $cacheTtl = 1440; // 24 saat cache süresini uzattık
+    protected $cacheTtl = 1440; // 24 saat cache süresi
 
     public function get($key, $default = null)
     {
@@ -19,10 +20,8 @@ class SettingsService
         // Cache anahtarını oluştur
         $cacheKey = $isTenant ? "tenant_{$tenantId}_settings_{$key}" : "settings_{$key}";
         
-        // Önbelleği kapat - doğrudan veritabanından oku
-        // Hata çözümü için önbelleği devre dışı bıraktık
         try {
-            // Central veritabanından settings kaydını bul
+            // Önce setting ID'sini bul
             $setting = Setting::where('key', $key)
                 ->where('is_active', true)
                 ->first();
@@ -31,21 +30,29 @@ class SettingsService
                 return $default;
             }
             
-            // Eğer tenant ise, doğrudan tenant veritabanına bak
-            if ($isTenant && $tenantId) {
-                try {
-                    // SQL sorgusu ile tenant_values tablosunu kontrol et
-                    $tenantValue = DB::select("SELECT value FROM settings_values WHERE setting_id = ? LIMIT 1", [$setting->id]);
+            // Her durumda önce settings_values tablosuna bak
+            try {
+                if (Schema::hasTable('settings_values')) {
+                    // Önce settings_values tablosunu sorgula
+                    $customValue = DB::table('settings_values')
+                        ->where('setting_id', $setting->id)
+                        ->first();
                     
-                    if (!empty($tenantValue) && isset($tenantValue[0]->value) && $tenantValue[0]->value !== null && $tenantValue[0]->value !== '') {
-                        return $tenantValue[0]->value;
+                    // Özel değer varsa döndür
+                    if ($customValue && $customValue->value !== null && $customValue->value !== '') {
+                        return $customValue->value;
                     }
-                } catch (\Exception $e) {
-                    Log::error("Tenant değeri okuma hatası: " . $e->getMessage(), ['key' => $key]);
                 }
+            } catch (\Exception $e) {
+                Log::error("Settings values okuma hatası: " . $e->getMessage(), [
+                    'key' => $key, 
+                    'setting_id' => $setting->id,
+                    'isTenant' => $isTenant,
+                    'tenant_id' => $tenantId
+                ]);
             }
             
-            // Tenant değeri yoksa varsayılan değeri döndür
+            // Özel değer yoksa varsayılan değeri döndür
             return $setting->default_value ?? $default;
         } catch (\Exception $e) {
             Log::error("Settings hatası: " . $e->getMessage(), ['key' => $key]);
@@ -66,21 +73,28 @@ class SettingsService
                 return $default;
             }
             
-            // Eğer tenant ise, tenant veritabanına bak
-            if ($isTenant && $tenantId) {
-                try {
-                    // Direkt SQL sorgusu çalıştır
-                    $tenantValue = DB::select("SELECT value FROM settings_values WHERE setting_id = ? LIMIT 1", [$id]);
+            // Her durumda önce settings_values tablosuna bak
+            try {
+                if (Schema::hasTable('settings_values')) {
+                    // Önce settings_values tablosunu sorgula
+                    $customValue = DB::table('settings_values')
+                        ->where('setting_id', $id)
+                        ->first();
                     
-                    if (!empty($tenantValue) && isset($tenantValue[0]->value) && $tenantValue[0]->value !== null && $tenantValue[0]->value !== '') {
-                        return $tenantValue[0]->value;
+                    // Özel değer varsa döndür
+                    if ($customValue && $customValue->value !== null && $customValue->value !== '') {
+                        return $customValue->value;
                     }
-                } catch (\Exception $e) {
-                    Log::error("Tenant değeri okuma hatası: " . $e->getMessage(), ['id' => $id]);
                 }
+            } catch (\Exception $e) {
+                Log::error("Settings values ID ile okuma hatası: " . $e->getMessage(), [
+                    'id' => $id,
+                    'isTenant' => $isTenant,
+                    'tenant_id' => $tenantId
+                ]);
             }
             
-            // Tenant değeri yoksa varsayılan değeri döndür
+            // Özel değer yoksa varsayılan değeri döndür
             return $setting->default_value ?? $default;
         } catch (\Exception $e) {
             Log::error("Settings ID hatası: " . $e->getMessage(), ['id' => $id]);
@@ -93,7 +107,13 @@ class SettingsService
         $isTenant = function_exists('is_tenant') ? is_tenant() : false;
         $tenantId = function_exists('tenant_id') ? tenant_id() : null;
         
-        // Tüm önbelleği temizle
-        Cache::flush();
+        if ($key) {
+            // Belirli bir anahtarın önbelleğini temizle
+            $cacheKey = $isTenant ? "tenant_{$tenantId}_settings_{$key}" : "settings_{$key}";
+            Cache::forget($cacheKey);
+        } else {
+            // Tüm önbelleği temizle
+            Cache::flush();
+        }
     }
 }

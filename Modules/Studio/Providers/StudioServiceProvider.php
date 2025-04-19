@@ -18,6 +18,7 @@ use Modules\Studio\App\Parsers\CssParser;
 use Modules\Studio\App\Repositories\SettingsRepository;
 use Modules\Studio\App\Support\BlockManager;
 use Modules\Studio\App\Support\StudioHelper;
+use Modules\Studio\App\Http\Livewire\Admin\StudioComponent;
 
 class StudioServiceProvider extends ServiceProvider
 {
@@ -44,7 +45,7 @@ class StudioServiceProvider extends ServiceProvider
         // Livewire bileşenlerini kaydet
         Livewire::component('studio-editor', EditorComponent::class);
         Livewire::component('studio-widget-manager', WidgetManagerComponent::class);
-        
+        Livewire::component('studio-component', StudioComponent::class);        
         // Blade direktiflerini kaydet
         Blade::directive('studiocss', function () {
             return "<?php echo app('studio.asset')->renderCss(); ?>";

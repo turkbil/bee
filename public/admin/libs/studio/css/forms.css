@@ -51,7 +51,6 @@
 .gjs-field-integer input {
   flex: 1;
   padding-right: 24px;
-  -moz-appearance: textfield;
 }
 
 .gjs-field-integer input::-webkit-inner-spin-button,

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Modules\Studio\App\Http\Controllers\Admin\StudioController;
 use Modules\Studio\App\Http\Controllers\Admin\AssetController;
+use Modules\Studio\App\Http\Livewire\Admin\StudioComponent;
 use Modules\Studio\App\Http\Livewire\EditorComponent;
 use Modules\Studio\App\Http\Livewire\WidgetManagerComponent;
 
@@ -14,6 +15,10 @@ Route::middleware(['web', 'auth', 'tenant'])
         Route::prefix('studio')
             ->name('studio.')
             ->group(function () {
+                Route::get('/', StudioComponent::class)
+                ->middleware('module.permission:studio,view')
+                ->name('index');
+
                 // Editor
                 Route::get('/editor/{module}/{id}', EditorComponent::class)
                     ->middleware('module.permission:studio,view')

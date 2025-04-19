@@ -91,13 +91,17 @@
 .device-btns {
   display: flex;
   height: 36px;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
 }
 
 .device-btns button {
   height: 36px;
   width: 36px;
-  border: 1px solid #e5e7eb;
-  background: white;
+  border: none;
+  background: transparent;
   color: #4b5563;
   display: flex;
   align-items: center;
@@ -116,11 +120,7 @@
 .device-btns button.active {
   background-color: #eff6ff;
   color: #3b82f6;
-  border-color: #3b82f6;
-}
-
-.device-btns button:not(:last-child) {
-  border-right: none;
+  border-bottom: 2px solid #3b82f6;
 }
 
 .btn-back,
@@ -128,7 +128,7 @@
 .btn-view,
 .btn-save {
   height: 36px;
-  border: 1px solid #e5e7eb;
+  border: none;
   background: white;
   color: #4b5563;
   display: flex;
@@ -140,41 +140,42 @@
   font-size: 13px;
   font-weight: 500;
   border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .btn-back:hover,
 .btn-tool:hover {
   background-color: #f3f4f6;
   color: #3b82f6;
-  border-color: #e5e7eb;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .btn-tool.active {
   background-color: #eff6ff;
   color: #3b82f6;
-  border-color: #3b82f6;
+  box-shadow: 0 1px 3px rgba(59, 130, 246, 0.3);
 }
 
 .btn-view {
   background-color: #fef3c7;
   color: #b45309;
-  border-color: #fbbf24;
+  box-shadow: 0 1px 3px rgba(180, 83, 9, 0.2);
 }
 
 .btn-view:hover {
   background-color: #fde68a;
   color: #92400e;
-  border-color: #f59e0b;
+  box-shadow: 0 2px 4px rgba(146, 64, 14, 0.2);
 }
 
 .btn-save {
   background-color: #dbeafe;
   color: #1d4ed8;
-  border-color: #93c5fd;
+  box-shadow: 0 1px 3px rgba(29, 78, 216, 0.2);
 }
 
 .btn-save:hover {
   background-color: #bfdbfe;
   color: #1e40af;
-  border-color: #60a5fa;
+  box-shadow: 0 2px 4px rgba(30, 64, 175, 0.2);
 }

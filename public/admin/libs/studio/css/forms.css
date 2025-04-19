@@ -146,17 +146,18 @@
   margin-bottom: 10px;
   padding: 0 5px 10px 0;
   border-bottom: 1px solid #e5e7eb;
+  position: relative;
 }
 
 .gjs-sm-clear {
+  position: absolute;
+  right: 5px;
+  top: 3px;
   cursor: pointer;
   color: #6b7280;
   font-size: 11px;
   opacity: 0.7;
   transition: opacity 0.2s ease, color 0.2s ease;
-  right: 8px;
-  top: 8px;
-  z-index: 2;
   background-color: rgba(255,255,255,0.8);
   width: 16px;
   height: 16px;
@@ -164,6 +165,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
+  z-index: 10;
 }
 
 .gjs-sm-clear:hover {
@@ -191,6 +193,15 @@
   overflow: hidden;
 }
 
+.gjs-sm-property.gjs-sm-margin,
+.gjs-sm-property.gjs-sm-padding {
+  margin-bottom: 15px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  padding: 15px;
+  border: none;
+}
+
 .gjs-sm-property.gjs-sm-margin .gjs-fields,
 .gjs-sm-property.gjs-sm-padding .gjs-fields {
   display: grid;
@@ -206,8 +217,8 @@
 
 .gjs-sm-property.gjs-sm-margin .gjs-sm-clear,
 .gjs-sm-property.gjs-sm-padding .gjs-sm-clear {
-  top: -16px;
-  right: 0;
+  top: 5px;
+  right: 5px;
   transform: none;
 }
 
@@ -223,6 +234,24 @@
   flex: 1 0 calc(50% - 3px);
   margin-bottom: 6px;
   padding-bottom: 6px;
+}
+
+/* Position seçici düzenlemesi */
+.gjs-sm-property.gjs-sm-position .gjs-fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.gjs-sm-property.gjs-sm-position .gjs-field {
+  margin-bottom: 0;
+  flex: 1;
+}
+
+.gjs-sm-property.gjs-sm-position .gjs-field.gjs-on {
+  background-color: #eff6ff;
+  border-color: #3b82f6;
+  color: #3b82f6;
 }
 
 /* Text shadow fixes */
@@ -241,4 +270,8 @@
   height: 20px;
   width: 20px;
   margin-right: 5px;
+}
+
+.gjs-radio-item input:checked+.gjs-radio-item-label {
+  background-color: #f3f4f6;
 }

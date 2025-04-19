@@ -33,6 +33,10 @@
     
     // Aktif segment/tip bilgisini al
     $activeType = request()->segment(2);
+    
+    // Settings helper ile site başlığı ve logo bilgilerini al
+    $siteTitle = settings('site_title', config('app.name'));
+    $siteLogo = settings('site_logo');
 @endphp
 
 <header class="navbar navbar-expand-md d-print-none">
@@ -42,7 +46,11 @@
         </button>
         <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
             <a href="{{ route('admin.dashboard') }}">
-                {{ config('app.name') }}
+                @if($siteLogo)
+                    <img src="{{ cdn($siteLogo) }}" alt="{{ $siteTitle }}" class="navbar-brand-image" style="max-height: 40px;">
+                @else
+                    {{ $siteTitle }}
+                @endif
                 @if(!$isCentral && $tenantId)
                     @php
                         $tenant = \App\Models\Tenant::find($tenantId);

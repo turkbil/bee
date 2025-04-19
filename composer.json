@@ -51,7 +51,8 @@
             "Modules\\SettingManagement\\App\\": "Modules/SettingManagement/app/",
             "Modules\\TenantManagement\\App\\": "Modules/TenantManagement/app/",
             "Modules\\WidgetManagement\\App\\": "Modules/WidgetManagement/app/",
-            "Modules\\ThemeManagement\\App\\": "Modules/ThemeManagement/app/"
+            "Modules\\ThemeManagement\\App\\": "Modules/ThemeManagement/app/",
+            "Modules\\Announcement\\App\\": "Modules/Announcement/app/"
         },
         "files": [
             "app/Helpers/Functions.php",

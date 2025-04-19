@@ -22,6 +22,8 @@ class PageServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Page Observer kaydı
+        \Modules\Page\App\Models\Page::observe(\Modules\Page\App\Observers\PageObserver::class);
         $this->registerCommands();
         $this->registerCommandSchedules();
         $this->registerTranslations();

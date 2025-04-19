@@ -59,24 +59,6 @@ class ModuleManagementSeeder extends Seeder
                     'is_active' => true
                 ],
                 [
-                    'name' => 'page',
-                    'display_name' => 'Sayfalar',
-                    'description' => 'Statik sayfa yönetim sistemi',
-                    'version' => '1.0.0',
-                    'settings' => '9',
-                    'type' => 'content',
-                    'is_active' => true
-                ],
-                [
-                    'name' => 'portfolio',
-                    'display_name' => 'Portfolyo',
-                    'description' => 'Portföy yönetim sistemi',
-                    'version' => '1.0.0',
-                    'settings' => '10',
-                    'type' => 'content',
-                    'is_active' => true
-                ],
-                [
                     'name' => 'settingmanagement',
                     'display_name' => 'Ayarlar Yönetimi',
                     'description' => 'Sistem ayarlarının yönetimi',
@@ -102,7 +84,34 @@ class ModuleManagementSeeder extends Seeder
                     'settings' => null,
                     'type' => 'system',
                     'is_active' => true
-                ]
+                ],
+                [
+                    'name' => 'announcement',
+                    'display_name' => 'Duyurular',
+                    'description' => 'Duyuru yönetimi',
+                    'version' => '1.0.0',
+                    'settings' => null,
+                    'type' => 'content',
+                    'is_active' => true
+                ],
+                [
+                    'name' => 'page',
+                    'display_name' => 'Sayfalar',
+                    'description' => 'Statik sayfa yönetim sistemi',
+                    'version' => '1.0.0',
+                    'settings' => '9',
+                    'type' => 'content',
+                    'is_active' => true
+                ],
+                [
+                    'name' => 'portfolio',
+                    'display_name' => 'Portfolyo',
+                    'description' => 'Portföy yönetim sistemi',
+                    'version' => '1.0.0',
+                    'settings' => '10',
+                    'type' => 'content',
+                    'is_active' => true
+                ],
             ];
 
             // Tablo var mı kontrol et

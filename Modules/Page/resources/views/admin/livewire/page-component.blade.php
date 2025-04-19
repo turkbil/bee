@@ -102,7 +102,10 @@
                                 Hit
                             </button>
                         </th>
-                        <th class="text-center" style="width: 120px">İşlemler</th>
+                        <th class="text-center" style="width: 50px" data-bs-toggle="tooltip" data-bs-placement="top" title="Ana Sayfa">
+                            <i class="fa-solid fa-house"></i>
+                        </th>
+                        <th class="text-center" style="width: 160px">İşlemler</th>
                     </tr>
                 </thead>
                 <tbody class="table-tbody">
@@ -152,6 +155,7 @@
                             @endif
                         </td>
                         <td wire:key="status-{{ $page->page_id }}" class="text-center align-middle">
+                            @if(!$page->is_homepage)
                             <button wire:click="toggleActive({{ $page->page_id }})"
                                 class="btn btn-icon btn-sm {{ $page->is_active ? 'text-muted bg-transparent' : 'text-red bg-transparent' }}">
                                 <!-- Loading Durumu -->
@@ -167,11 +171,17 @@
                                     @endif
                                 </div>
                             </button>
+                            @endif
                         </td>
                         <td class="text-center align-middle">
                             <span class="badge text-center align-middle">
                                 {{ $page->views_count ?? 0 }} 
                             </span>
+                        </td>
+                        <td class="text-center align-middle">
+                            @if($page->is_homepage)
+                                <i class="fa-solid fa-house link-secondary" title="Ana Sayfa"></i>
+                            @endif
                         </td>
                         <td class="text-center align-middle">
                             <div class="container">
@@ -182,7 +192,14 @@
                                             <i class="fa-solid fa-pen-to-square link-secondary fa-lg"></i>
                                         </a>
                                     </div>
+                                    <div class="col">
+                                        <a href="javascript:void(0);" wire:click="openStudioEditor({{ $page->page_id }})"
+                                           data-bs-toggle="tooltip" data-bs-placement="top" title="Studio Editör">
+                                            <i class="fa-solid fa-wand-magic-sparkles link-secondary fa-lg"></i>
+                                        </a>
+                                    </div>
                                     <div class="col lh-1">
+                                        @if(!$page->is_homepage)
                                         @hasmoduleaccess('page', 'delete')
                                         <div class="dropdown mt-1">
                                             <a class="dropdown-toggle text-secondary" href="#" data-bs-toggle="dropdown"
@@ -200,6 +217,8 @@
                                             </div>
                                         </div>
                                         @endhasmoduleaccess
+                                    @endif
+
                                     </div>
                                 </div>
                             </div>

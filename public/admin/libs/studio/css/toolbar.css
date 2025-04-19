@@ -81,12 +81,9 @@
 .btn-group button.active {
   background-color: #eff6ff;
   color: #3b82f6;
-  border-color: #3b82f6;
 }
 
-.btn-group button:not(:last-child) {
-  border-right: none;
-}
+
 
 .device-btns {
   display: flex;

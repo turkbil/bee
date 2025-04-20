@@ -42,11 +42,11 @@
             <div class="card-body">
                 <div class="row g-3">
                     @foreach($schema as $field)
-                    <div class="col-md-6 mb-3">
+                    <div class="col-12 mb-3">
                         <div class="form-group">
                             <label for="field-{{ $field['name'] }}" class="form-label{{ isset($field['required']) && $field['required'] ? ' required' : '' }}">
                                 {{ $field['label'] }}
-                                @if(isset($field['system']) && $field['system'])
+                                @if(isset($field['system']) && $field['system'] && $field['name'] != 'unique_id')
                                 <span class="badge bg-primary ms-1">Sistem</span>
                                 @endif
                             </label>
@@ -156,7 +156,7 @@
                                                         <div class="text-center">
                                                             <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
                                                             <h4 class="text-muted">Görselleri sürükleyip bırakın veya tıklayın</h4>
-                                                            <p class="text-muted small">PNG, JPG, WEBP, GIF - Maks 2MB - <strong>Toplu seçim yapabilirsiniz</strong></p>
+                                                            <p class="text-muted small">PNG, JPG, WEBP, GIF - Maks 3MB - <strong>Toplu seçim yapabilirsiniz</strong></p>
                                                         </div>
                                                     </div>
                                                 </form>
@@ -248,12 +248,14 @@
                                     @break
                                 
                                 @default
-                                    <div class="input-icon">
-                                        <span class="input-icon-addon">
-                                            <i class="fas fa-font"></i>
-                                        </span>
-                                        <input type="{{ $field['type'] }}" class="form-control" wire:model.live="formData.{{ $field['name'] }}">
-                                    </div>
+                                    @if($field['name'] != 'unique_id')
+                                        <div class="input-icon">
+                                            <span class="input-icon-addon">
+                                                <i class="fas fa-font"></i>
+                                            </span>
+                                            <input type="{{ $field['type'] }}" class="form-control" wire:model.live="formData.{{ $field['name'] }}">
+                                        </div>
+                                    @endif
                             @endswitch
                             
                             @error('formData.' . $field['name'])

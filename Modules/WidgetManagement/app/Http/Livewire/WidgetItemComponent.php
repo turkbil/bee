@@ -132,7 +132,7 @@ class WidgetItemComponent extends Component
             
             foreach ($photosToProcess as $photo) {
                 $this->validate([
-                    'tempPhoto.*' => 'image|max:2048', // 2MB Max
+                    'tempPhoto.*' => 'image|max:3072', // 3MB Max
                 ]);
                 
                 if (!isset($this->photos[$this->photoField])) {
@@ -369,7 +369,7 @@ class WidgetItemComponent extends Component
             }
             
             if ($field['type'] === 'image' && isset($this->temporaryImages[$field['name']])) {
-                $rules['temporaryImages.' . $field['name']] = 'image|max:2048';
+                $rules['temporaryImages.' . $field['name']] = 'image|max:3072'; // 3MB
             }
         }
         

@@ -9,6 +9,7 @@ use Livewire\Attributes\Layout;
 use Illuminate\Support\Facades\Auth;
 use Modules\WidgetManagement\app\Models\Widget;
 use Modules\WidgetManagement\app\Models\TenantWidget;
+use Modules\WidgetManagement\app\Models\WidgetCategory;
 
 #[Layout('admin.layout')]
 class WidgetGalleryComponent extends Component
@@ -20,6 +21,9 @@ class WidgetGalleryComponent extends Component
     
     #[Url]
     public $typeFilter = '';
+    
+    #[Url]
+    public $categoryFilter = '';
     
     #[Url]
     public $perPage = 12;
@@ -34,6 +38,11 @@ class WidgetGalleryComponent extends Component
     }
     
     public function updatedTypeFilter()
+    {
+        $this->resetPage();
+    }
+    
+    public function updatedCategoryFilter()
     {
         $this->resetPage();
     }
@@ -110,6 +119,11 @@ class WidgetGalleryComponent extends Component
             }
         }
         
+        // Tüm kategorileri getir
+        $categories = WidgetCategory::where('is_active', true)
+            ->orderBy('order')
+            ->get();
+        
         // Kullanılabilir şablonları getir
         $query = Widget::where('is_active', true)
             ->when($this->search, function ($q) {
@@ -118,6 +132,9 @@ class WidgetGalleryComponent extends Component
             })
             ->when($this->typeFilter, function ($q) {
                 $q->where('type', $this->typeFilter);
+            })
+            ->when($this->categoryFilter, function ($q) {
+                $q->where('widget_category_id', $this->categoryFilter);
             });
             
         $templates = $query->orderBy('name')
@@ -131,6 +148,7 @@ class WidgetGalleryComponent extends Component
                 'module' => 'Modül',
                 'content' => 'İçerik'
             ],
+            'categories' => $categories,
             'hasRootPermission' => $hasRootPermission
         ]);
     }

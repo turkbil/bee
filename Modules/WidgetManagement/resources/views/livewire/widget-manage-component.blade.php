@@ -72,6 +72,16 @@
         </div>
         
         <div class="mb-3">
+            <label class="form-label">Kategori</label>
+            <select wire:model="widget.widget_category_id" class="form-select">
+                <option value="">Kategori Seçiniz</option>
+                @foreach($categories as $category)
+                <option value="{{ $category->widget_category_id }}">{{ $category->title }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="mb-3">
             <label class="form-label">Açıklama</label>
             <textarea wire:model="widget.description" 
                 class="form-control @error('widget.description') is-invalid @enderror" 

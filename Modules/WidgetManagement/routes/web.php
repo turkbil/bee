@@ -5,10 +5,11 @@ use Illuminate\Support\Facades\Route;
 use Modules\WidgetManagement\app\Http\Livewire\WidgetComponent;
 use Modules\WidgetManagement\app\Http\Livewire\WidgetGalleryComponent;
 use Modules\WidgetManagement\app\Http\Livewire\WidgetManageComponent;
-use Modules\WidgetManagement\app\Http\Livewire\WidgetSectionComponent;
 use Modules\WidgetManagement\app\Http\Livewire\WidgetItemComponent;
 use Modules\WidgetManagement\app\Http\Livewire\WidgetItemManageComponent;
 use Modules\WidgetManagement\app\Http\Livewire\WidgetSettingsComponent;
+use Modules\WidgetManagement\app\Http\Livewire\WidgetCategoryComponent;
+use Modules\WidgetManagement\app\Http\Livewire\WidgetCategoryManageComponent;
 use Modules\WidgetManagement\app\Http\Controllers\WidgetPreviewController;
 
 Route::middleware(['web', 'auth', 'tenant'])
@@ -34,22 +35,6 @@ Route::middleware(['web', 'auth', 'tenant'])
                     ->middleware(['role:root'])
                     ->name('manage');
                 
-                // Bölüm Yönetimi
-                Route::get('/section', WidgetSectionComponent::class)
-                    ->middleware('module.permission:widgetmanagement,view')
-                    ->name('section');
-                
-                // Konum parametreli route
-                Route::get('/section/position/{position}', WidgetSectionComponent::class)
-                    ->middleware('module.permission:widgetmanagement,view')
-                    ->name('section.position');
-                    
-                // Genel bakış görünümü için route
-                Route::get('/section/overview', WidgetSectionComponent::class)
-                    ->defaults('overview', true)
-                    ->middleware('module.permission:widgetmanagement,view')
-                    ->name('section.overview');
-                
                 // Widget İçerik Yönetimi (Görüntüleme)
                 Route::get('/items/{tenantWidgetId}', WidgetItemComponent::class)
                     ->middleware('module.permission:widgetmanagement,view')
@@ -74,5 +59,14 @@ Route::middleware(['web', 'auth', 'tenant'])
                     ->middleware('module.permission:widgetmanagement,view')
                     ->where('id', '[0-9]+')
                     ->name('preview');
+                
+                // Kategori Yönetimi Rotaları
+                Route::get('/category', WidgetCategoryComponent::class)
+                    ->middleware('module.permission:widgetmanagement,view')
+                    ->name('category.index');
+                
+                Route::get('/category/manage/{id?}', WidgetCategoryManageComponent::class)
+                    ->middleware('module.permission:widgetmanagement,update')
+                    ->name('category.manage');
             });
     });

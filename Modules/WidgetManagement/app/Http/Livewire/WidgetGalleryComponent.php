@@ -126,6 +126,7 @@ class WidgetGalleryComponent extends Component
         
         // Kullanılabilir şablonları getir
         $query = Widget::where('is_active', true)
+            ->where('type', '!=', 'file') // file tipindeki widgetları hariç tut
             ->when($this->search, function ($q) {
                 $q->where('name', 'like', "%{$this->search}%")
                   ->orWhere('description', 'like', "%{$this->search}%");

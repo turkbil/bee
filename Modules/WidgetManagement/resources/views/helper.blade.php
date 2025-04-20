@@ -1,15 +1,3 @@
-{{-- Modules/WidgetManagement/resources/views/helper.blade.php --}}
-{{-- PreTitle --}}
-@push('pretitle')
-Bileşen Yönetimi
-@endpush
-
-{{-- Başlık --}}
-@push('title')
-Bileşen Yönetimi
-@endpush
-
-{{-- Modül Menüsü --}}
 @push('module-menu')
 <div class="dropdown d-grid d-md-flex module-menu">
     <a href="#" class="btn dropdown-toggle d-inline-block d-lg-none" data-bs-toggle="dropdown">Menü</a>
@@ -34,6 +22,14 @@ Bileşen Yönetimi
                         <i class="fas fa-th-large me-2"></i> Bileşen Galerisi
                     </a>
                     @endhasmoduleaccess
+                    
+                    <!-- Root kullanıcılar için hazır dosya linki -->
+                    @if(auth()->user()->hasRole('root'))
+                    <a class="dropdown-item {{ request()->routeIs('admin.widgetmanagement.file.index') ? 'active' : '' }}" 
+                       href="{{ route('admin.widgetmanagement.file.index') }}">
+                        <i class="fas fa-file-code me-2"></i> Hazır Dosya Bileşenleri
+                    </a>
+                    @endif
                     
                     <h6 class="dropdown-menu-header card-header-light">
                         <span class="dropdown-header">Kategori İşlemleri</span>
@@ -63,6 +59,7 @@ Bileşen Yönetimi
                 </div>
             </div>
             
+            <!-- Konuma göre farklı butonlar -->
             @if(request()->routeIs('admin.widgetmanagement.index'))
             <a href="{{ route('admin.widgetmanagement.gallery') }}" class="btn btn-primary">
                 <i class="fas fa-plus me-2"></i> Yeni Bileşen Ekle
@@ -70,6 +67,12 @@ Bileşen Yönetimi
             @endif
             
             @if(request()->routeIs('admin.widgetmanagement.gallery'))
+            <a href="{{ route('admin.widgetmanagement.index') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-list me-2"></i> Aktif Bileşenler
+            </a>
+            @endif
+            
+            @if(request()->routeIs('admin.widgetmanagement.file.index'))
             <a href="{{ route('admin.widgetmanagement.index') }}" class="btn btn-outline-secondary">
                 <i class="fas fa-list me-2"></i> Aktif Bileşenler
             </a>

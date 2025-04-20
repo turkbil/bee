@@ -221,7 +221,7 @@
                                         {{ $field['label'] }}
                                     </label>
                                     
-                                    @include('settingmanagement::livewire.partials.image-upload', [
+                                    @include('widgetmanagement::partials.image-upload', [
                                         'imageKey' => $field['name'],
                                         'label' => 'Görseli sürükleyip bırakın veya tıklayın',
                                         'values' => $formData
@@ -234,7 +234,7 @@
                                         {{ $field['label'] }}
                                     </label>
                                     
-                                    @include('settingmanagement::livewire.partials.file-upload', [
+                                    @include('widgetmanagement::partials.file-upload', [
                                         'fileKey' => $field['name'],
                                         'label' => 'Dosyayı sürükleyip bırakın veya tıklayın',
                                         'values' => $formData

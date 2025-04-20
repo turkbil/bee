@@ -20,6 +20,7 @@ return new class extends Migration
             $table->longText('custom_html')->nullable();
             $table->longText('custom_css')->nullable();
             $table->longText('custom_js')->nullable();
+            $table->boolean('is_active')->default(true)->index();
             $table->timestamps();
         });
     }

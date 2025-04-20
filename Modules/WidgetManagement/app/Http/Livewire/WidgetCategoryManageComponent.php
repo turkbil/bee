@@ -15,9 +15,8 @@ class WidgetCategoryManageComponent extends Component
        'title' => '',
        'slug' => '',
        'description' => '',
+       'icon' => 'fa-puzzle-piece',
        'order' => 0,
-       'metakey' => '',
-       'metadesc' => '',
        'is_active' => true,
    ];
 
@@ -38,9 +37,8 @@ class WidgetCategoryManageComponent extends Component
            'inputs.title' => 'required|min:3|max:255',
            'inputs.slug' => 'nullable|unique:widget_categories,slug,' . $this->categoryId . ',widget_category_id',
            'inputs.description' => 'nullable',
+           'inputs.icon' => 'nullable|string|max:50',
            'inputs.order' => 'required|integer|min:0',
-           'inputs.metakey' => 'nullable',
-           'inputs.metadesc' => 'nullable|string|max:255',
            'inputs.is_active' => 'boolean',
        ];
    }
@@ -62,8 +60,7 @@ class WidgetCategoryManageComponent extends Component
        $data = array_merge($this->inputs, [
            'title' => Str::limit($this->inputs['title'], 191, ''),
            'slug' => $this->inputs['slug'] ?: Str::slug($this->inputs['title']),
-           'metakey' => is_array($this->inputs['metakey']) ? implode(',', $this->inputs['metakey']) : $this->inputs['metakey'],
-           'metadesc' => Str::limit($this->inputs['metadesc'] ?? $this->inputs['description'], 191, '')
+           'icon' => $this->inputs['icon'] ?: 'fa-puzzle-piece',
        ]);
     
        if ($this->categoryId) {

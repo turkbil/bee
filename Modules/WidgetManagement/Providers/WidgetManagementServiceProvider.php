@@ -6,17 +6,19 @@ use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Modules\WidgetManagement\app\Http\Livewire\WidgetComponent;
 use Modules\WidgetManagement\app\Http\Livewire\WidgetManageComponent;
-use Modules\WidgetManagement\app\Http\Livewire\WidgetSectionComponent;
 use Modules\WidgetManagement\app\Http\Livewire\WidgetItemComponent;
 use Modules\WidgetManagement\app\Http\Livewire\WidgetItemManageComponent;
 use Modules\WidgetManagement\app\Http\Livewire\WidgetSettingsComponent;
 use Modules\WidgetManagement\app\Http\Livewire\WidgetGalleryComponent;
+use Modules\WidgetManagement\app\Http\Livewire\WidgetCategoryComponent;
+use Modules\WidgetManagement\app\Http\Livewire\WidgetCategoryManageComponent;
 use Modules\WidgetManagement\app\Services\WidgetService;
 use Modules\WidgetManagement\app\Services\WidgetItemService;
+use Nwidart\Modules\Traits\PathNamespace;
 
 class WidgetManagementServiceProvider extends ServiceProvider
 {
-    use \Nwidart\Modules\Traits\PathNamespace;
+    use PathNamespace;
     
     protected string $name = 'WidgetManagement';
     
@@ -52,15 +54,19 @@ class WidgetManagementServiceProvider extends ServiceProvider
         // Livewire bileşenlerini kaydedelim
         Livewire::component('widget-component', WidgetComponent::class);
         Livewire::component('widget-manage-component', WidgetManageComponent::class);
-        Livewire::component('widget-section-component', WidgetSectionComponent::class);
         Livewire::component('widget-item-component', WidgetItemComponent::class);
         Livewire::component('widget-item-manage-component', WidgetItemManageComponent::class);
         Livewire::component('widget-settings-component', WidgetSettingsComponent::class);
         Livewire::component('widget-gallery-component', WidgetGalleryComponent::class);
+        Livewire::component('widget-category-component', WidgetCategoryComponent::class);
+        Livewire::component('widget-category-manage-component', WidgetCategoryManageComponent::class);
     }
 
     public function register()
     {
+        $this->app->register(EventServiceProvider::class);
+        $this->app->register(RouteServiceProvider::class);
+        
         $this->app->singleton('widget.service', function ($app) {
             return new WidgetService();
         });

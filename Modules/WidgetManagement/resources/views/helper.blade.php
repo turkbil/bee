@@ -35,10 +35,21 @@ Bileşen Yönetimi
                     </a>
                     @endhasmoduleaccess
                     
+                    <h6 class="dropdown-menu-header card-header-light">
+                        <span class="dropdown-header">Kategori İşlemleri</span>
+                    </h6>
+                    
                     @hasmoduleaccess('widgetmanagement', 'view')
-                    <a class="dropdown-item {{ request()->routeIs('admin.widgetmanagement.section*') ? 'active' : '' }}" 
-                       href="{{ route('admin.widgetmanagement.section') }}">
-                        <i class="fas fa-columns me-2"></i> Bölüm Yönetimi
+                    <a class="dropdown-item {{ request()->routeIs('admin.widgetmanagement.category.index') ? 'active' : '' }}" 
+                       href="{{ route('admin.widgetmanagement.category.index') }}">
+                        <i class="fas fa-folder me-2"></i> Kategoriler
+                    </a>
+                    @endhasmoduleaccess
+                    
+                    @hasmoduleaccess('widgetmanagement', 'create')
+                    <a class="dropdown-item {{ request()->routeIs('admin.widgetmanagement.category.manage') && !request()->route('id') ? 'active' : '' }}" 
+                       href="{{ route('admin.widgetmanagement.category.manage') }}">
+                        <i class="fas fa-folder-plus me-2"></i> Kategori Ekle
                     </a>
                     @endhasmoduleaccess
                     
@@ -64,9 +75,9 @@ Bileşen Yönetimi
             </a>
             @endif
             
-            @if(request()->routeIs('admin.widgetmanagement.section*'))
-            <a href="{{ route('admin.widgetmanagement.index') }}" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left me-2"></i> Bileşenlere Dön
+            @if(request()->routeIs('admin.widgetmanagement.category.index'))
+            <a href="{{ route('admin.widgetmanagement.category.manage') }}" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i> Yeni Kategori
             </a>
             @endif
             

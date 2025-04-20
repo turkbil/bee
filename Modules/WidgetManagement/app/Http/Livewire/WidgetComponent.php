@@ -9,6 +9,7 @@ use Livewire\Attributes\Layout;
 use Illuminate\Support\Facades\Auth;
 use Modules\WidgetManagement\app\Models\Widget;
 use Modules\WidgetManagement\app\Models\TenantWidget;
+use Modules\WidgetManagement\app\Models\WidgetCategory;
 use Spatie\Permission\Models\Role;
 
 #[Layout('admin.layout')]
@@ -23,6 +24,9 @@ class WidgetComponent extends Component
     public $typeFilter = '';
     
     #[Url]
+    public $categoryFilter = '';
+    
+    #[Url]
     public $perPage = 12;
     
     public function updatedSearch()
@@ -31,6 +35,11 @@ class WidgetComponent extends Component
     }
     
     public function updatedTypeFilter()
+    {
+        $this->resetPage();
+    }
+    
+    public function updatedCategoryFilter()
     {
         $this->resetPage();
     }
@@ -110,6 +119,11 @@ class WidgetComponent extends Component
             }
         }
         
+        // Tüm widget kategorilerini getir
+        $categories = WidgetCategory::where('is_active', true)
+            ->orderBy('order')
+            ->get();
+        
         // Aktif kullanılan tüm tenant widget'ları getir
         $query = TenantWidget::with(['widget', 'items'])
             ->when($this->search, function ($q) {
@@ -121,6 +135,11 @@ class WidgetComponent extends Component
             ->when($this->typeFilter, function ($q) {
                 $q->whereHas('widget', function($wq) {
                     $wq->where('type', $this->typeFilter);
+                });
+            })
+            ->when($this->categoryFilter, function ($q) {
+                $q->whereHas('widget', function($wq) {
+                    $wq->where('widget_category_id', $this->categoryFilter);
                 });
             });
             
@@ -137,6 +156,7 @@ class WidgetComponent extends Component
                 'module' => 'Modül',
                 'content' => 'İçerik'
             ],
+            'categories' => $categories,
             'hasRootPermission' => $hasRootPermission
         ]);
     }

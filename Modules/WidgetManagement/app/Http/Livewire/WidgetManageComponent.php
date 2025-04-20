@@ -5,6 +5,7 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\Attributes\Layout;
 use Modules\WidgetManagement\app\Models\Widget;
+use Modules\WidgetManagement\app\Models\WidgetCategory;
 use Modules\WidgetManagement\app\Http\Livewire\Traits\WithImageUpload;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
@@ -21,11 +22,13 @@ class WidgetManageComponent extends Component
     public $temporaryMultipleImages = [];
     public $imagePreview = null;
     public $isSubmitting = false;
+    public $categories = [];
     
     public $widget = [
         'name' => '',
         'slug' => '',
         'description' => '',
+        'widget_category_id' => null,
         'type' => 'static',
         'module_ids' => [],
         'content_html' => '',
@@ -79,6 +82,7 @@ class WidgetManageComponent extends Component
         'widget.name' => 'required|min:3|max:255',
         'widget.slug' => 'required|regex:/^[a-z0-9\-_]+$/i|max:255',
         'widget.description' => 'nullable|max:1000',
+        'widget.widget_category_id' => 'nullable|exists:widget_categories,widget_category_id',
         'widget.type' => 'required|in:static,dynamic,module,content',
         'widget.module_ids' => 'nullable|array',
         'widget.content_html' => 'nullable',
@@ -102,6 +106,11 @@ class WidgetManageComponent extends Component
     
     public function mount($id = null)
     {
+        // Kategorileri yükle
+        $this->categories = WidgetCategory::where('is_active', true)
+            ->orderBy('title')
+            ->get();
+            
         $this->widgetId = $id;
         
         if ($id) {
@@ -111,6 +120,7 @@ class WidgetManageComponent extends Component
                 'name' => $widget->name,
                 'slug' => $widget->slug,
                 'description' => $widget->description,
+                'widget_category_id' => $widget->widget_category_id,
                 'type' => $widget->type,
                 'module_ids' => $widget->module_ids ?? [],
                 'content_html' => $widget->content_html,

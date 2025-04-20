@@ -29,7 +29,8 @@ class Widget extends Model
         'item_schema', 
         'settings_schema',
         'is_active', 
-        'is_core'
+        'is_core',
+        'file_path'
     ];
 
     protected $casts = [

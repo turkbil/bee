@@ -52,10 +52,22 @@ class WidgetItemManageComponent extends Component
             // Her zaman önce TenantWidget bilgilerini yükle
             if ($tenantWidgetId) {
                 $this->tenantWidget = TenantWidget::with('widget')->findOrFail($tenantWidgetId);
-                $this->schema = $this->tenantWidget->widget->getItemSchema();
                 
-                // Widget tipini belirle - önemli değişken
-                $this->isStaticWidget = $this->tenantWidget->widget->type === 'static';
+                // Widget null değilse şema bilgilerini al
+                if ($this->tenantWidget && $this->tenantWidget->widget) {
+                    $this->schema = $this->tenantWidget->widget->getItemSchema();
+                    
+                    // Widget tipini belirle - önemli değişken
+                    $this->isStaticWidget = $this->tenantWidget->widget->type === 'static';
+                } else {
+                    // Widget yoksa boş şema ve varsayılan değerler
+                    $this->schema = [];
+                    $this->isStaticWidget = false;
+                    
+                    Log::error("Widget bulunamadı veya TenantWidget'a bağlı değil: {$tenantWidgetId}");
+                    session()->flash('error', 'Widget bulunamadı veya TenantWidget\'a bağlı değil.');
+                    return redirect()->route('admin.widgetmanagement.index');
+                }
             }
             
             // Eğer itemId varsa (düzenleme modu), öğe verilerini yükle
@@ -63,10 +75,18 @@ class WidgetItemManageComponent extends Component
                 $item = WidgetItem::findOrFail($itemId);
                 Log::info("Item bulundu:", ['item' => $item->toArray()]);
                 
-                // TenantWidget henüz yüklenmediyse yükle
-                if (!$this->tenantWidget) {
+                // TenantWidget henüz yüklenmedi veya hatalıysa yükle
+                if (!$this->tenantWidget || !$this->tenantWidget->widget) {
                     $this->tenantWidgetId = $item->tenant_widget_id;
                     $this->tenantWidget = TenantWidget::with('widget')->findOrFail($item->tenant_widget_id);
+                    
+                    // Widget null kontrolü
+                    if (!$this->tenantWidget->widget) {
+                        Log::error("Widget bulunamadı: TenantWidget ID {$item->tenant_widget_id}");
+                        session()->flash('error', 'Widget bulunamadı.');
+                        return redirect()->route('admin.widgetmanagement.index');
+                    }
+                    
                     $this->schema = $this->tenantWidget->widget->getItemSchema();
                     $this->isStaticWidget = $this->tenantWidget->widget->type === 'static';
                 }

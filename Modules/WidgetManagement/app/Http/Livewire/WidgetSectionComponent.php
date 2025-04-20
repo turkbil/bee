@@ -15,8 +15,6 @@ use Illuminate\Support\Facades\Auth;
 #[Layout('admin.layout')]
 class WidgetSectionComponent extends Component
 {
-    public $pageId;
-    public $module;
     public $position;
     public $widgets = [];
     public $allPositionsWidgets = [];
@@ -34,10 +32,8 @@ class WidgetSectionComponent extends Component
         $this->widgetService = $widgetService;
     }
     
-    public function mount($pageId = null, $module = null, $position = 'top', $widgetId = null, $overview = false)
+    public function mount($position = 'top', $widgetId = null, $overview = false)
     {
-        $this->pageId = $pageId;
-        $this->module = $module;
         $this->position = $position;
         $this->showAllPositions = $overview;
         
@@ -56,13 +52,7 @@ class WidgetSectionComponent extends Component
     
     public function loadWidgets()
     {
-        $this->widgets = TenantWidget::when($this->pageId, function ($query) {
-                $query->where('page_id', $this->pageId);
-            })
-            ->when($this->module, function ($query) {
-                $query->where('module', $this->module);
-            })
-            ->when($this->position, function ($query) {
+        $this->widgets = TenantWidget::when($this->position, function ($query) {
                 $query->where('position', $this->position);
             })
             ->with('widget')
@@ -76,13 +66,7 @@ class WidgetSectionComponent extends Component
         $positions = ['top', 'center-top', 'left', 'center', 'right', 'center-bottom', 'bottom'];
         
         foreach ($positions as $pos) {
-            $this->allPositionsWidgets[$pos] = TenantWidget::when($this->pageId, function ($query) {
-                    $query->where('page_id', $this->pageId);
-                })
-                ->when($this->module, function ($query) {
-                    $query->where('module', $this->module);
-                })
-                ->where('position', $pos)
+            $this->allPositionsWidgets[$pos] = TenantWidget::where('position', $pos)
                 ->with('widget')
                 ->orderBy('order')
                 ->get();
@@ -114,20 +98,12 @@ class WidgetSectionComponent extends Component
         }
         
         // Widget maksimum sıra numarasını al
-        $maxOrder = TenantWidget::when($this->pageId, function ($query) {
-                $query->where('page_id', $this->pageId);
-            })
-            ->when($this->module, function ($query) {
-                $query->where('module', $this->module);
-            })
-            ->where('position', $position)
+        $maxOrder = TenantWidget::where('position', $position)
             ->max('order') ?? 0;
         
         // Yeni widget ekle
         $tenantWidget = TenantWidget::create([
             'widget_id' => $widgetId,
-            'page_id' => $this->pageId,
-            'module' => $this->module,
             'position' => $position,
             'order' => $maxOrder + 1,
             'settings' => [
@@ -177,8 +153,6 @@ class WidgetSectionComponent extends Component
         if (empty($list)) {
             Log::warning('Boş veya geçersiz liste alındı.', [
                 'user_id' => Auth::id(),
-                'page_id' => $this->pageId,
-                'module' => $this->module,
                 'position' => $this->position,
             ]);
             return;
@@ -274,9 +248,6 @@ class WidgetSectionComponent extends Component
     }
     
     /**
-     * Widget'i başka bir pozisyona taşır (sürükle-bırak için)
-     */
-    /**
      * Widget'i sil
      */
     public function deleteWidget($widgetId)
@@ -353,38 +324,10 @@ class WidgetSectionComponent extends Component
     public function render()
     {
         // Kullanılabilir widget'ları getir
-        $availableWidgets = [];
-        
-        if ($this->module) {
-            try {
-                // Modül için uygun widget'lar
-                $moduleId = null;
-                if (app()->bound('module.service')) {
-                    $moduleId = app('module.service')->getModuleIdByName($this->module);
-                }
-                
-                if ($moduleId) {
-                    $availableWidgets = $this->widgetService->getWidgetsForModule($moduleId);
-                } else {
-                    $availableWidgets = $this->widgetService->getActiveWidgets();
-                }
-            } catch (\Exception $e) {
-                // Hata durumunda aktif tüm widget'ları getir
-                $availableWidgets = $this->widgetService->getActiveWidgets();
-            }
-        } else {
-            // Sayfa için tüm aktif widget'lar
-            $availableWidgets = $this->widgetService->getActiveWidgets();
-        }
-        
-        $page = null;
-        if ($this->pageId) {
-            $page = Page::find($this->pageId);
-        }
+        $availableWidgets = $this->widgetService->getActiveWidgets();
         
         return view('widgetmanagement::livewire.widget-section-component', [
             'availableWidgets' => $availableWidgets,
-            'page' => $page,
             'positionLabels' => [
                 'top' => 'Üst Alan',
                 'center-top' => 'Merkez-Üst', 

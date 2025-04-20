@@ -96,9 +96,7 @@ class SliderWidgetSeeder extends Seeder
                     'show_indicators' => true,
                     'show_controls' => true
                 ],
-                'position' => 'top',
-                'page_id' => null,
-                'module' => null
+                'order' => 0
             ]);
 
             WidgetItem::create([

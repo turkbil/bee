@@ -7,6 +7,7 @@ use Modules\WidgetManagement\app\Http\Livewire\WidgetGalleryComponent;
 use Modules\WidgetManagement\app\Http\Livewire\WidgetManageComponent;
 use Modules\WidgetManagement\app\Http\Livewire\WidgetSectionComponent;
 use Modules\WidgetManagement\app\Http\Livewire\WidgetItemComponent;
+use Modules\WidgetManagement\app\Http\Livewire\WidgetItemManageComponent;
 use Modules\WidgetManagement\app\Http\Livewire\WidgetSettingsComponent;
 use Modules\WidgetManagement\app\Http\Controllers\WidgetPreviewController;
 
@@ -49,11 +50,23 @@ Route::middleware(['web', 'auth', 'tenant'])
                     ->middleware('module.permission:widgetmanagement,view')
                     ->name('section.overview');
                 
-                // Widget İçerik Yönetimi
+                // Widget İçerik Yönetimi (Görüntüleme)
                 Route::get('/items/{tenantWidgetId}', WidgetItemComponent::class)
-                    ->middleware('module.permission:widgetmanagement,update')
+                    ->middleware('module.permission:widgetmanagement,view')
                     ->where('tenantWidgetId', '[0-9]+')
                     ->name('items');
+                
+                // Widget İçerik Ekleme
+                Route::get('/content/create/{tenantWidgetId}', WidgetItemManageComponent::class)
+                    ->middleware('module.permission:widgetmanagement,update')
+                    ->where('tenantWidgetId', '[0-9]+')
+                    ->name('content.create');
+                
+                // Widget İçerik Düzenleme
+                Route::get('/content/edit/{itemId}', WidgetItemManageComponent::class)
+                    ->middleware('module.permission:widgetmanagement,update')
+                    ->where('itemId', '[0-9]+')
+                    ->name('content.edit');
                 
                 // Widget Ayarları
                 Route::get('/settings/{tenantWidgetId}', WidgetSettingsComponent::class)
@@ -61,7 +74,7 @@ Route::middleware(['web', 'auth', 'tenant'])
                     ->where('tenantWidgetId', '[0-9]+')
                     ->name('settings');
                 
-                // Widget Önizleme - önceki dosyada vardı, muhafaza edelim
+                // Widget Önizleme
                 Route::get('/preview/{id}', [WidgetPreviewController::class, 'show'])
                     ->middleware('module.permission:widgetmanagement,view')
                     ->where('id', '[0-9]+')

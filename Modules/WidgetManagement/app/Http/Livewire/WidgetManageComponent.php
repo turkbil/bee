@@ -89,9 +89,9 @@ class WidgetManageComponent extends Component
         'widget.settings_schema' => 'nullable|array',
         'widget.is_active' => 'boolean',
         'widget.is_core' => 'boolean',
-        'thumbnail' => 'nullable|image|max:1024',
-        'temporaryImages.*' => 'nullable|image|max:2048',
-        'temporaryMultipleImages.*' => 'nullable|image|max:2048',
+        'thumbnail' => 'nullable|image|max:3072',
+        'temporaryImages.*' => 'nullable|image|max:3072',
+        'temporaryMultipleImages.*' => 'nullable|image|max:3072',
     ];
     
     // Lint hatalarını düzeltmek için özel değişkenler
@@ -497,7 +497,7 @@ class WidgetManageComponent extends Component
     public function updatedThumbnail()
     {
         $this->validateOnly('thumbnail', [
-            'thumbnail' => 'image|max:1024'
+            'thumbnail' => 'image|max:3072'
         ]);
         
         if ($this->thumbnail) {
@@ -520,7 +520,7 @@ class WidgetManageComponent extends Component
     {
         // Doğrulama yap
         $this->validateOnly("temporaryMultipleImages.{$key}", [
-            "temporaryMultipleImages.{$key}" => ['image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            "temporaryMultipleImages.{$key}" => ['image', 'mimes:jpg,jpeg,png,webp', 'max:3072'],
         ]);
         
         // Değişiklik olduğunu işaretle
@@ -586,7 +586,8 @@ class WidgetManageComponent extends Component
                         'label' => 'Benzersiz ID',
                         'type' => 'text',
                         'required' => false,
-                        'system' => true
+                        'system' => true,
+                        'hidden' => true
                     ];
                 }
             }
@@ -620,7 +621,8 @@ class WidgetManageComponent extends Component
                     'label' => 'Benzersiz ID',
                     'type' => 'text',
                     'required' => false,
-                    'system' => true
+                    'system' => true,
+                    'hidden' => true
                 ];
             }
             
@@ -716,5 +718,5 @@ class WidgetManageComponent extends Component
         return view('widgetmanagement::livewire.widget-manage-component', [
             'modules' => $modules
         ]);
-    }
+    } 
 }

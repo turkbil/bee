@@ -67,7 +67,7 @@ class WidgetService
                         'name' => $widget->name,
                         'slug' => $widget->slug,
                         'description' => $widget->description,
-                        'type' => $widget->type,
+                        'type' => $widget->type ?: ($widget->has_items ? 'dynamic' : 'static'), // has_items varsa dynamic yoksa static
                         'thumbnail' => $widget->getThumbnailUrl(),
                         'content_html' => $widget->content_html,
                         'content_css' => $widget->content_css,
@@ -123,7 +123,7 @@ class WidgetService
                 'id' => $widget['id'],
                 'name' => $widget['name'],
                 'description' => $widget['description'] ?? '',
-                'type' => $widget['type'] ?? 'static',
+                'type' => $widget['type'] ?? ($widget['has_items'] ? 'dynamic' : 'static'),
                 'category' => isset($widget['category']) ? $widget['category'] : 'widget',
                 'thumbnail' => $widget['thumbnail'] ?? '',
                 'content_html' => $widget['content_html'] ?? '<div class="widget-placeholder">Widget: ' . $widget['name'] . '</div>',

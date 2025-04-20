@@ -30,7 +30,7 @@
             <!-- Ortadaki Loading -->
             <div class="col-md-4 position-relative d-flex justify-content-center align-items-center">
                 <div wire:loading
-                    wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, createInstance, deleteInstance, toggleActive"
+                    wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, createInstance"
                     class="position-absolute top-50 start-50 translate-middle text-center"
                     style="width: 100%; max-width: 250px;">
                     <div class="small text-muted mb-2">Güncelleniyor...</div>
@@ -56,77 +56,66 @@
         <!-- Üstteki Butonlar -->
         <div class="d-flex justify-content-between mb-4">
             <div>
-                <h3 class="card-title">Aktif Bileşenler</h3>
-                <p class="text-muted">Kullanmakta olduğunuz bileşenleri yönetin</p>
+                <h3 class="card-title">Bileşen Galerisi</h3>
+                <p class="text-muted">Kullanmak istediğiniz bileşeni seçin ve kuruluma başlayın</p>
             </div>
             <div>
-                <a href="{{ route('admin.widgetmanagement.gallery') }}" class="btn btn-outline-primary">
-                    <i class="fas fa-th-large me-2"></i> Bileşen Galerisi
+                <a href="{{ route('admin.widgetmanagement.index') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-list me-2"></i> Aktif Bileşenler
                 </a>
             </div>
         </div>
         
         <!-- Bileşen Listesi -->
         <div class="row row-cards">
-            @forelse($entities as $instance)
+            @forelse($templates as $template)
             <div class="col-12 col-sm-6 col-lg-4 col-xl-4">
                 <div class="card">
-                    <div class="card-status-top {{ $instance->widget->is_active ? 'bg-primary' : 'bg-danger' }}"></div>
+                    <div class="card-status-top {{ $template->is_active ? 'bg-primary' : 'bg-danger' }}"></div>
                     
                     <!-- Kart Header -->
                     <div class="card-header d-flex align-items-center">
                         <div class="me-auto">
-                            <h3 class="card-title mb-0">
-                                <a href="{{ route('admin.widgetmanagement.items', $instance->id) }}">
-                                    {{ $instance->settings['title'] ?? $instance->widget->name }}
-                                </a>
-                            </h3>
+                            <h3 class="card-title mb-0">{{ $template->name }}</h3>
                         </div>
                         <div class="dropdown">
-                            <a href="#" class="btn btn-icon" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-ellipsis-v"></i>
                             </a>
                             
                             <div class="dropdown-menu dropdown-menu-end">
-                                <a href="{{ route('admin.widgetmanagement.settings', $instance->id) }}" class="dropdown-item">
-                                    <i class="fas fa-sliders-h me-2"></i> Ayarlar
-                                </a>
-                                <a href="{{ route('admin.widgetmanagement.items', $instance->id) }}" class="dropdown-item">
-                                    <i class="fas fa-layer-group me-2"></i> İçerik
-                                </a>
-                                <div class="dropdown-divider"></div>
                                 @if($hasRootPermission)
-                                <a href="{{ route('admin.widgetmanagement.manage', $instance->widget->id) }}" class="dropdown-item">
-                                    <i class="fas fa-tools me-2"></i> Yapılandır
+                                <a href="{{ route('admin.widgetmanagement.manage', $template->id) }}" class="dropdown-item">
+                                    <i class="fas fa-tools me-2"></i> Düzenle
                                 </a>
                                 @endif
-                                <button class="dropdown-item text-danger" wire:click="deleteInstance({{ $instance->id }})"
-                                onclick="return confirm('Bu bileşeni silmek istediğinize emin misiniz?')">
-                                    <i class="fas fa-trash me-2"></i>Sil
-                                </button>
                             </div>
                         </div>
                     </div>
 
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item py-2 bg-muted-lt">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-fill small text-muted">
+                                    <div class="mt-1" style="height: 40px; overflow: hidden;">
+                                        {{ $template->description ? Str::limit($template->description, 80) : 'Açıklama yok' }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <!-- Kart Footer -->
                     <div class="card-footer">
                         <div class="d-flex align-items-center justify-content-between">
                             <div class="d-flex gap-2">
-                                <a href="{{ route('admin.widgetmanagement.items', $instance->id) }}" class="text-body">
-                                    <i class="fas fa-layer-group me-1"></i>
-                                    İçerikler
-                                </a>
+                                <button wire:click="createInstance({{ $template->id }})" class="btn btn-outline">
+                                    <i class="fas fa-plus me-1"></i> Kullanmaya Başla
+                                </button>
                             </div>
-                            <div class="d-flex align-items-center">
-                                <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
-                                    <input type="checkbox" wire:click="toggleActive({{ $instance->id }})"
-                                        {{ $instance->widget->is_active ? 'checked' : '' }} value="1" />
-                                    <div class="state p-success p-on ms-2">
-                                        <label>Aktif</label>
-                                    </div>
-                                    <div class="state p-danger p-off ms-2">
-                                        <label>Aktif Değil</label>
-                                    </div>
+                            <div class="d-flex gap-2">
+                                <div class="badge badge-outline-primary me-2">
+                                    {{ $types[$template->type] ?? $template->type }}
                                 </div>
                             </div>
                         </div>
@@ -140,24 +129,20 @@
                         <img src="{{ asset('tabler/static/illustrations/undraw_quitting_time_dm8t.svg') }}"
                             height="128" alt="">
                     </div>
-                    <p class="empty-title">Hiç bileşen bulunamadı</p>
+                    <p class="empty-title">Hiç bileşen şablonu bulunamadı</p>
                     <p class="empty-subtitle text-muted">
-                        Yeni bir bileşen eklemek için "Bileşen Galerisi" sayfasına geçebilirsiniz
+                        Filtrelemeye uygun bileşen şablonu bulunamadı.
                     </p>
-                    <div class="empty-action">
-                        <a href="{{ route('admin.widgetmanagement.gallery') }}" class="btn btn-primary">
-                            <i class="fas fa-th-large me-2"></i> Bileşen Galerisine Git
-                        </a>
-                    </div>
                 </div>
             </div>
             @endforelse
         </div>
     </div>
+    
     <!-- Pagination -->
-    @if($entities->hasPages())
+    @if($templates->hasPages())
     <div class="card-footer d-flex align-items-center justify-content-end">
-        {{ $entities->links() }}
+        {{ $templates->links() }}
     </div>
     @endif
 </div>

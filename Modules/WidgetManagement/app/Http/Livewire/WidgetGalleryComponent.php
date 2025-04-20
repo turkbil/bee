@@ -9,10 +9,9 @@ use Livewire\Attributes\Layout;
 use Illuminate\Support\Facades\Auth;
 use Modules\WidgetManagement\app\Models\Widget;
 use Modules\WidgetManagement\app\Models\TenantWidget;
-use Spatie\Permission\Models\Role;
 
 #[Layout('admin.layout')]
-class WidgetComponent extends Component
+class WidgetGalleryComponent extends Component
 {
     use WithPagination;
     
@@ -60,40 +59,9 @@ class WidgetComponent extends Component
                 'message' => 'Yeni bileşen oluşturuldu.',
                 'type' => 'success'
             ]);
+            
+            return redirect()->route('admin.widgetmanagement.index');
         }
-    }
-    
-    public function deleteInstance($tenantWidgetId)
-    {
-        $tenantWidget = TenantWidget::findOrFail($tenantWidgetId);
-        $name = $tenantWidget->settings['title'] ?? 'Bileşen';
-        
-        if ($tenantWidget->delete()) {
-            $this->dispatch('toast', [
-                'title' => 'Başarılı!',
-                'message' => "$name silindi.",
-                'type' => 'success'
-            ]);
-        }
-    }
-    
-    public function toggleActive($id)
-    {
-        $tenantWidget = TenantWidget::findOrFail($id);
-        $widget = $tenantWidget->widget;
-        
-        // Widget'ın aktif durumunu değiştir
-        $widget->is_active = !$widget->is_active;
-        $widget->save();
-        
-        $status = $widget->is_active ? 'aktifleştirildi' : 'devre dışı bırakıldı';
-        $type = $widget->is_active ? 'success' : 'warning';
-        
-        $this->dispatch('toast', [
-            'title' => 'Başarılı!',
-            'message' => "Bileşen $status.",
-            'type' => $type
-        ]);
     }
     
     public function render()
@@ -111,27 +79,21 @@ class WidgetComponent extends Component
             }
         }
         
-        // Aktif kullanılan tüm tenant widget'ları getir
-        $query = TenantWidget::with(['widget', 'items'])
+        // Kullanılabilir şablonları getir
+        $query = Widget::where('is_active', true)
             ->when($this->search, function ($q) {
-                $q->where('settings->title', 'like', "%{$this->search}%")
-                  ->orWhereHas('widget', function($wq) {
-                      $wq->where('name', 'like', "%{$this->search}%");
-                  });
+                $q->where('name', 'like', "%{$this->search}%")
+                  ->orWhere('description', 'like', "%{$this->search}%");
             })
             ->when($this->typeFilter, function ($q) {
-                $q->whereHas('widget', function($wq) {
-                    $wq->where('type', $this->typeFilter);
-                });
+                $q->where('type', $this->typeFilter);
             });
             
-        $instances = $query->orderBy('updated_at', 'desc')
+        $templates = $query->orderBy('name')
             ->paginate($this->perPage);
-            
-        $entities = $instances;
-            
-        return view('widgetmanagement::livewire.widget-component', [
-            'entities' => $entities,
+        
+        return view('widgetmanagement::livewire.widget-gallery-component', [
+            'templates' => $templates,
             'types' => [
                 'static' => 'Statik',
                 'dynamic' => 'Dinamik',

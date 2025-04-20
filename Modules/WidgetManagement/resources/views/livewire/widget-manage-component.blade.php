@@ -597,6 +597,7 @@ Diğer"></textarea>
                                 </thead>
                                 <tbody>
                                     @foreach($widget['item_schema'] as $index => $field)
+                                    @if(!isset($field['hidden']) || !$field['hidden'])
                                     <tr>
                                         <td>
                                             <code>{{ $field['name'] }}</code>
@@ -671,6 +672,7 @@ Diğer"></textarea>
                                             @endif
                                         </td>
                                     </tr>
+                                    @endif
                                     @endforeach
                                 </tbody>
                             </table>
@@ -684,7 +686,6 @@ Diğer"></textarea>
 </div>
 @endif
 
-<!-- Özelleştirme Seçenekleri (Ayar Şeması) -->
 @if($formMode === 'settings')
 <div class="row">
     <div class="col-md-12">
@@ -901,6 +902,7 @@ Diğer"></textarea>
                                 </thead>
                                 <tbody>
                                     @foreach($widget['settings_schema'] as $index => $field)
+                                    @if(!isset($field['hidden']) || !$field['hidden'])
                                     <tr>
                                         <td>
                                             <code>{{ $field['name'] }}</code>
@@ -975,6 +977,7 @@ Diğer"></textarea>
                                             @endif
                                         </td>
                                     </tr>
+                                    @endif
                                     @endforeach
                                 </tbody>
                             </table>

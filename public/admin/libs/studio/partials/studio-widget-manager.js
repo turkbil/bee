@@ -31,12 +31,18 @@ window.StudioWidgetManager = (function() {
     function cleanTemplateVariables(html) {
         if (!html) return html;
         
+        // Mustache değişkenlerini ({{variable}}) temizle
         html = html.replace(/\{\{([^}]+)\}\}/g, function(match, content) {
+            // Özel direktifler (# ve /) ise tamamen kaldır
             if (content.trim().startsWith('#') || content.trim().startsWith('/')) {
                 return '';
             }
-            return content.trim();
+            // Normal değişkenleri ismiyle değiştir (placeholder olarak)
+            return `<span class="widget-variable">${content.trim()}</span>`;
         });
+        
+        // Blade direktiflerini temizle (@if, @foreach gibi)
+        html = html.replace(/@(if|foreach|for|while|php|switch|case|break|continue|endforeach|endif|endfor|endwhile|endswitch|yield|section|endsection|include|extends)(\s*\([^)]*\)|\s+[^{]*)/g, '');
         
         return html;
     }
@@ -133,70 +139,98 @@ window.StudioWidgetManager = (function() {
                     
                     const isDynamic = widget.type === 'dynamic';
                     
-                    // Widget tamamını tıklanabilir yap
-                    el.style.position = 'relative';
-                    el.style.padding = '10px';
-                    el.style.margin = '10px 0';
-                    el.style.borderRadius = '4px';
-                    el.style.cursor = isDynamic ? 'pointer' : 'default';
+                    // Tüm stil ve sınıfları temizle
+                    el.className = 'gjs-widget-wrapper';
                     
+                    // Widget tipine göre farklı görsel stil uygula
                     if (isDynamic) {
-                        el.style.border = '1px solid transparent';
+                        el.classList.add('dynamic-widget');
+                        el.style.border = '2px solid #3b82f6';
+                        el.style.backgroundColor = 'rgba(59, 130, 246, 0.05)';
                         el.style.boxShadow = '0 0 0 1px rgba(59, 130, 246, 0.5)';
+                        el.style.padding = '12px';
+                        el.style.margin = '10px 0';
+                        el.style.borderRadius = '6px';
+                        el.style.position = 'relative';
+                        el.style.cursor = 'pointer';
                         el.contentEditable = "false";
                         
-                        // Tamamı tıklanabilir olsun
-                        el.style.pointerEvents = 'auto';
+                        // Tüm içeriklerin düzenlenebilmesini engelle
+                        const allChildren = el.querySelectorAll('*');
+                        allChildren.forEach(child => {
+                            child.contentEditable = "false";
+                            child.style.pointerEvents = 'inherit';
+                        });
+                        
+                        // Template değişkenlerini temizle ve görsel olarak göster
+                        const templateText = el.innerHTML;
+                        el.innerHTML = cleanTemplateVariables(templateText);
+                    } else {
+                        el.classList.add('static-widget');
+                        el.style.border = '2px solid #10b981';
+                        el.style.backgroundColor = 'rgba(16, 185, 129, 0.05)';
+                        el.style.padding = '12px';
+                        el.style.margin = '10px 0';
+                        el.style.borderRadius = '6px';
+                        el.style.position = 'relative';
+                    }
+                    
+                    // Mevcut widget etiketlerini temizle
+                    const existingLabels = el.querySelectorAll('.widget-label, .widget-edit-icon, .widget-mini-label');
+                    existingLabels.forEach(label => label.remove());
+                    
+                    // Widget etiketini ekle
+                    const labelElement = document.createElement('div');
+                    labelElement.className = 'widget-label';
+                    labelElement.style.position = 'absolute';
+                    labelElement.style.top = '-10px';
+                    labelElement.style.left = '10px';
+                    labelElement.style.fontSize = '11px';
+                    labelElement.style.fontWeight = 'bold';
+                    labelElement.style.padding = '2px 8px';
+                    labelElement.style.borderRadius = '3px';
+                    labelElement.style.zIndex = '10';
+                    
+                    if (isDynamic) {
+                        labelElement.style.backgroundColor = '#3b82f6';
+                        labelElement.style.color = 'white';
+                        labelElement.innerHTML = '<i class="fa fa-puzzle-piece me-1"></i> Dinamik Widget';
+                        
+                        // Dinamik widget'a tıklama olayı ekle
                         el.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            showWidgetModal(widgetId);
+                        });
+                        
+                        // Düzenleme ikonu ekle (sağ üst köşe)
+                        const editIcon = document.createElement('div');
+                        editIcon.className = 'widget-edit-icon';
+                        editIcon.style.position = 'absolute';
+                        editIcon.style.top = '-10px';
+                        editIcon.style.right = '10px';
+                        editIcon.style.backgroundColor = '#3b82f6';
+                        editIcon.style.color = 'white';
+                        editIcon.style.padding = '2px 8px';
+                        editIcon.style.borderRadius = '3px';
+                        editIcon.style.fontSize = '11px';
+                        editIcon.style.fontWeight = 'bold';
+                        editIcon.style.zIndex = '10';
+                        editIcon.style.cursor = 'pointer';
+                        editIcon.innerHTML = '<i class="fa fa-edit"></i> Düzenle';
+                        editIcon.addEventListener('click', (e) => {
                             e.stopPropagation();
                             if (widgetId) {
                                 window.open(`/admin/widgetmanagement/items/${widgetId}`, '_blank');
                             }
                         });
-                        
-                        // Alt öğeleri koru
-                        const allChildren = el.querySelectorAll('*');
-                        allChildren.forEach(child => {
-                            child.contentEditable = "false";
-                            // Her elementi tıklanabilir yap
-                            child.style.pointerEvents = 'auto';
-                            child.addEventListener('click', (e) => {
-                                e.stopPropagation();
-                                if (widgetId) {
-                                    window.open(`/admin/widgetmanagement/items/${widgetId}`, '_blank');
-                                }
-                            });
-                        });
-                        
-                        const templateText = el.innerHTML;
-                        el.innerHTML = cleanTemplateVariables(templateText);
+                        el.appendChild(editIcon);
                     } else {
-                        el.style.border = '1px solid #e2e8f0';
+                        labelElement.style.backgroundColor = '#10b981';
+                        labelElement.style.color = 'white';
+                        labelElement.innerHTML = '<i class="fa fa-code me-1"></i> Statik Widget';
                     }
                     
-                    // Widget kontrollerini temizle
-                    const existingControls = el.querySelectorAll('.widget-controls');
-                    existingControls.forEach(control => control.remove());
-                    
-                    if (isDynamic) {
-                        // Dynamic widget için mini etiket ekle
-                        const miniLabel = document.createElement('div');
-                        miniLabel.className = 'widget-mini-label';
-                        miniLabel.style.position = 'absolute';
-                        miniLabel.style.top = '-8px';
-                        miniLabel.style.right = '8px';
-                        miniLabel.style.backgroundColor = '#3b82f6';
-                        miniLabel.style.color = 'white';
-                        miniLabel.style.padding = '1px 4px';
-                        miniLabel.style.borderRadius = '2px';
-                        miniLabel.style.fontSize = '9px';
-                        miniLabel.style.fontWeight = 'bold';
-                        miniLabel.style.opacity = '0.7';
-                        miniLabel.style.zIndex = '10';
-                        miniLabel.style.pointerEvents = 'none';
-                        miniLabel.innerHTML = 'Widget';
-                        el.appendChild(miniLabel);
-                    }
+                    el.appendChild(labelElement);
                 },
                 
                 onDblClick(e) {
@@ -268,10 +302,15 @@ window.StudioWidgetManager = (function() {
         modalContent.style.maxHeight = '90%';
         modalContent.style.overflow = 'auto';
         
+        const modalHeaderColor = widget.type === 'dynamic' ? '#3b82f6' : '#10b981';
+        
         modalContent.innerHTML = `
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
-                <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #1e293b;">
-                    ${widget.name} (${widget.type === 'dynamic' ? 'Dinamik' : 'Statik'})
+                <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: ${modalHeaderColor};">
+                    ${widget.name} 
+                    <span style="display: inline-block; padding: 2px 6px; background-color: ${modalHeaderColor}; color: white; font-size: 12px; border-radius: 4px; margin-left: 8px;">
+                        ${widget.type === 'dynamic' ? 'Dinamik' : 'Statik'}
+                    </span>
                 </h3>
                 <button id="widget-modal-close" style="background: none; border: none; cursor: pointer; font-size: 18px;">
                     <i class="fa fa-times"></i>
@@ -283,7 +322,7 @@ window.StudioWidgetManager = (function() {
             <div style="text-align: center; margin-top: 20px;">
                 <a href="/admin/widgetmanagement/items/${widgetId}" target="_blank" style="
                     display: inline-block;
-                    background-color: #3b82f6;
+                    background-color: ${modalHeaderColor};
                     color: white;
                     padding: 8px 16px;
                     border-radius: 4px;
@@ -356,11 +395,45 @@ window.StudioWidgetManager = (function() {
                                 <i class="${isDynamic ? 'fa fa-puzzle-piece' : 'fa fa-code'}"></i>
                                 <div class="gjs-block-label">${widget.name}</div>
                                 ${widget.thumbnail ? `<img src="${widget.thumbnail}" alt="${widget.name}" class="gjs-block-thumbnail" />` : ''}
+                                <div class="gjs-block-type-badge ${isDynamic ? 'dynamic' : 'static'}">${isDynamic ? 'Dinamik' : 'Statik'}</div>
                             </div>
                         `;
                     }
                 });
             });
+            
+            // Blok tipleri için stil ekle (eğer yoksa)
+            if (!document.getElementById('widget-block-styles')) {
+                const styleEl = document.createElement('style');
+                styleEl.id = 'widget-block-styles';
+                styleEl.innerHTML = `
+                    .gjs-block-type-badge {
+                        position: absolute;
+                        right: 5px;
+                        bottom: 5px;
+                        font-size: 9px;
+                        padding: 1px 4px;
+                        border-radius: 3px;
+                    }
+                    .gjs-block-type-badge.dynamic {
+                        background-color: #3b82f6;
+                        color: white;
+                    }
+                    .gjs-block-type-badge.static {
+                        background-color: #10b981;
+                        color: white;
+                    }
+                    .widget-variable {
+                        display: inline-block;
+                        background-color: rgba(59, 130, 246, 0.1);
+                        padding: 0 4px;
+                        border-radius: 3px;
+                        color: #3b82f6;
+                        font-style: italic;
+                    }
+                `;
+                document.head.appendChild(styleEl);
+            }
             
             if (window.StudioBlocks && typeof window.StudioBlocks.updateBlocksInCategories === 'function') {
                 setTimeout(() => {
@@ -390,8 +463,8 @@ window.StudioWidgetManager = (function() {
                         
                         if (widget.type === 'dynamic') {
                             component.set('editable', false);
-                            component.set('highlightable', false);
-                            component.set('selectable', false);
+                            component.set('highlightable', true);
+                            component.set('selectable', true);
                         } else {
                             component.set('editable', true);
                         }
@@ -430,8 +503,8 @@ window.StudioWidgetManager = (function() {
                     
                     if (widget.type === 'dynamic') {
                         component.set('editable', false);
-                        component.set('highlightable', false);
-                        component.set('selectable', false);
+                        component.set('highlightable', true);
+                        component.set('selectable', true);
                     }
                 }
                 

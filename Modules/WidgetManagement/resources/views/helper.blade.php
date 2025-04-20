@@ -24,7 +24,14 @@ Bileşen Yönetimi
                     @hasmoduleaccess('widgetmanagement', 'view')
                     <a class="dropdown-item {{ request()->routeIs('admin.widgetmanagement.index') ? 'active' : '' }}" 
                        href="{{ route('admin.widgetmanagement.index') }}">
-                        <i class="fas fa-puzzle-piece me-2"></i> Bileşenler
+                        <i class="fas fa-puzzle-piece me-2"></i> Aktif Bileşenler
+                    </a>
+                    @endhasmoduleaccess
+                    
+                    @hasmoduleaccess('widgetmanagement', 'view')
+                    <a class="dropdown-item {{ request()->routeIs('admin.widgetmanagement.gallery') ? 'active' : '' }}" 
+                       href="{{ route('admin.widgetmanagement.gallery') }}">
+                        <i class="fas fa-th-large me-2"></i> Bileşen Galerisi
                     </a>
                     @endhasmoduleaccess
                     
@@ -60,8 +67,14 @@ Bileşen Yönetimi
             </div>
             
             @if(request()->routeIs('admin.widgetmanagement.index'))
-            <a href="#" class="btn btn-primary" onclick="window.location.href='{{ route('admin.widgetmanagement.manage') }}'; Livewire.dispatch('changeViewMode', { mode: 'gallery' })">
-                <i class="fas fa-plus me-2"></i> Yeni Bileşen Oluştur
+            <a href="{{ route('admin.widgetmanagement.gallery') }}" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i> Yeni Bileşen Ekle
+            </a>
+            @endif
+            
+            @if(request()->routeIs('admin.widgetmanagement.gallery'))
+            <a href="{{ route('admin.widgetmanagement.index') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-list me-2"></i> Aktif Bileşenler
             </a>
             @endif
             

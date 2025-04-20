@@ -206,7 +206,7 @@ class WidgetItemManageComponent extends Component
         }
     }
     
-    public function saveItem()
+    public function save($redirect = false, $resetForm = false)
     {
         // Form verilerini doğrula
         $rules = [];
@@ -222,7 +222,7 @@ class WidgetItemManageComponent extends Component
         }
         
         $this->validate($rules);
-        
+
         try {
             // Benzersiz ID otomatik ekle - kullanıcı görmesin
             if (!isset($this->formData['unique_id'])) {
@@ -316,13 +316,24 @@ class WidgetItemManageComponent extends Component
             $this->photos = [];
             $this->temporaryImages = [];
             
+            if ($redirect) {
+                session()->flash('toast', [
+                    'title' => 'Başarılı!',
+                    'message' => $successMessage,
+                    'type' => 'success'
+                ]);
+                return redirect()->route('admin.widgetmanagement.items', $this->tenantWidgetId);
+            }
+            
             $this->dispatch('toast', [
                 'title' => 'Başarılı!',
                 'message' => $successMessage,
                 'type' => 'success'
             ]);
             
-            return redirect()->route('admin.widgetmanagement.items', $this->tenantWidgetId);
+            if ($resetForm && !$this->itemId) {
+                $this->reset();
+            }
             
         } catch (\Exception $e) {
             $this->dispatch('toast', [

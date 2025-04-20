@@ -71,6 +71,48 @@ class Widget extends Model
     {
         return $this->hasMany(TenantWidget::class);
     }
-
-    // Diğer metodlar aynı kalır...
+    
+    /**
+     * Item şemasını döndür
+     */
+    public function getItemSchema()
+    {
+        if (!$this->has_items) {
+            return [];
+        }
+        
+        $schema = $this->item_schema;
+        
+        if (empty($schema)) {
+            return [];
+        }
+        
+        return $schema;
+    }
+    
+    /**
+     * Settings şemasını döndür
+     */
+    public function getSettingsSchema()
+    {
+        $schema = $this->settings_schema;
+        
+        if (empty($schema)) {
+            return [];
+        }
+        
+        return $schema;
+    }
+    
+    /**
+     * Thumbnail URL'ini döndür
+     */
+    public function getThumbnailUrl()
+    {
+        if (empty($this->thumbnail)) {
+            return null;
+        }
+        
+        return $this->thumbnail;
+    }
 }

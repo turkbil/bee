@@ -24,12 +24,12 @@ return new class extends Migration
             $table->string('icon')->nullable();
             $table->integer('order')->default(0)->index();
             $table->boolean('is_active')->default(true)->index();
+            $table->softDeletes();
             $table->timestamps();
             
             // İlave indeksler
             $table->index('created_at');
             $table->index('updated_at');
-            $table->index('deleted_at');
         });
     }
 

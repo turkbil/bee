@@ -6,6 +6,14 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Merkezi veritabanında çalışacak
+     */
+    public function getConnection()
+    {
+        return config('database.default');
+    }
+    
     public function up(): void
     {
         Schema::create('widget_categories', function (Blueprint $table) {

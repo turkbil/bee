@@ -4,6 +4,7 @@ namespace Modules\WidgetManagement\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\WidgetManagement\App\Models\Widget;
+use Modules\WidgetManagement\App\Models\WidgetCategory;
 use Modules\WidgetManagement\App\Models\TenantWidget;
 use Modules\WidgetManagement\App\Models\WidgetItem;
 use Illuminate\Support\Str;
@@ -13,7 +14,19 @@ class SliderWidgetSeeder extends Seeder
     public function run()
     {
         if (!Widget::where('slug', 'slider')->exists()) {
+            // Slider kategorisini bul veya oluştur
+            $category = WidgetCategory::firstOrCreate(
+                ['slug' => 'slider-bilesenleri'],
+                [
+                    'title' => 'Slider Bileşenleri',
+                    'description' => 'Slider ve carousel içeren bileşenler',
+                    'order' => 7,
+                    'is_active' => true
+                ]
+            );
+            
             $widget = Widget::create([
+                'widget_category_id' => $category->widget_category_id,
                 'name' => 'Slider',
                 'slug' => 'slider',
                 'description' => 'Varsayılan yapıdaki temel slayt bileşeni',

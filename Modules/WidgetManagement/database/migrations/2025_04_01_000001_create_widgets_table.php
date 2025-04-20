@@ -19,17 +19,17 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::hasTable('widget_categories')) {
+            throw new \Exception('widget_categories tablosu bulunamadı. Lütfen önce bu tabloyu oluşturun.');
+        }
+        
         Schema::create('widgets', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('widget_category_id')->nullable()->after('id');
-            $table->foreign('widget_category_id')
-                  ->references('id')
-                  ->on('widget_categories')
-                  ->onDelete('set null');
+            $table->unsignedBigInteger('widget_category_id')->nullable();
             $table->string('name')->index();
             $table->string('slug')->unique();
             $table->text('description')->nullable();
-            $table->string('type', 50)->index(); // static, dynamic, module, content
+            $table->string('type', 50)->index(); 
             $table->json('module_ids')->nullable();
             $table->longText('content_html')->nullable();
             $table->longText('content_css')->nullable();
@@ -43,6 +43,11 @@ return new class extends Migration
             $table->boolean('is_active')->default(true)->index();
             $table->boolean('is_core')->default(false);
             $table->timestamps();
+            
+            $table->foreign('widget_category_id')
+                  ->references('widget_category_id')
+                  ->on('widget_categories')
+                  ->onDelete('set null');
         });
     }
 

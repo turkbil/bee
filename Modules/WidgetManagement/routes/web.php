@@ -79,6 +79,5 @@ Route::middleware(['web', 'auth', 'tenant'])
                     ->middleware(['role:root'])
                     ->where('id', '[0-9]+')
                     ->name('file.preview');
-
             });
     });

@@ -93,70 +93,70 @@
         <div class="mb-3">
             <label class="form-label required">Widget Tipi</label>
             <div class="row g-2">
-                <div class="col-md-4 col-xl-2">
+                <div class="col-md-4 col-xl-4">
                     <label class="form-selectgroup-item">
                         <input type="radio" name="widget-type" value="static" wire:model="widget.type" class="form-selectgroup-input">
                         <span class="form-selectgroup-label d-flex align-items-center p-3">
                             <span class="me-3">
                                 <span class="form-selectgroup-check"></span>
                             </span>
-                            <span class="form-selectgroup-label-content">
+                            <span class="form-selectgroup-label-content text-start">
                                 <span class="form-selectgroup-title strong mb-1">Statik</span>
                                 <span class="d-block text-muted">Sabit içerikli</span>
                             </span>
                         </span>
                     </label>
                 </div>
-                <div class="col-md-4 col-xl-2">
+                <div class="col-md-4 col-xl-4">
                     <label class="form-selectgroup-item">
                         <input type="radio" name="widget-type" value="dynamic" wire:model="widget.type" class="form-selectgroup-input">
                         <span class="form-selectgroup-label d-flex align-items-center p-3">
                             <span class="me-3">
                                 <span class="form-selectgroup-check"></span>
                             </span>
-                            <span class="form-selectgroup-label-content">
+                            <span class="form-selectgroup-label-content text-start">
                                 <span class="form-selectgroup-title strong mb-1">Dinamik</span>
                                 <span class="d-block text-muted">Eklenebilir içerik</span>
                             </span>
                         </span>
                     </label>
                 </div>
-                <div class="col-md-4 col-xl-2">
+                <div class="col-md-4 col-xl-4">
                     <label class="form-selectgroup-item">
                         <input type="radio" name="widget-type" value="module" wire:model="widget.type" class="form-selectgroup-input">
                         <span class="form-selectgroup-label d-flex align-items-center p-3">
                             <span class="me-3">
                                 <span class="form-selectgroup-check"></span>
                             </span>
-                            <span class="form-selectgroup-label-content">
+                            <span class="form-selectgroup-label-content text-start">
                                 <span class="form-selectgroup-title strong mb-1">Modül</span>
                                 <span class="d-block text-muted">Özel modül</span>
                             </span>
                         </span>
                     </label>
                 </div>
-                <div class="col-md-4 col-xl-2">
+                <div class="col-md-4 col-xl-4">
                     <label class="form-selectgroup-item">
                         <input type="radio" name="widget-type" value="content" wire:model="widget.type" class="form-selectgroup-input">
                         <span class="form-selectgroup-label d-flex align-items-center p-3">
                             <span class="me-3">
                                 <span class="form-selectgroup-check"></span>
                             </span>
-                            <span class="form-selectgroup-label-content">
+                            <span class="form-selectgroup-label-content text-start">
                                 <span class="form-selectgroup-title strong mb-1">İçerik</span>
                                 <span class="d-block text-muted">Sayfa içeriği</span>
                             </span>
                         </span>
                     </label>
                 </div>
-                <div class="col-md-4 col-xl-2">
+                <div class="col-md-4 col-xl-4">
                     <label class="form-selectgroup-item">
                         <input type="radio" name="widget-type" value="file" wire:model="widget.type" class="form-selectgroup-input">
                         <span class="form-selectgroup-label d-flex align-items-center p-3">
                             <span class="me-3">
                                 <span class="form-selectgroup-check"></span>
                             </span>
-                            <span class="form-selectgroup-label-content">
+                            <span class="form-selectgroup-label-content text-start">
                                 <span class="form-selectgroup-title strong mb-1">Dosya</span>
                                 <span class="d-block text-muted">Hazır view dosyası</span>
                             </span>
@@ -166,6 +166,7 @@
             </div>
             @error('widget.type') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
         </div>
+        
     </div>
     <div class="col-md-4">
         <div class="card">

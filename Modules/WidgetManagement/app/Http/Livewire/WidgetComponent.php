@@ -46,7 +46,6 @@ class WidgetComponent extends Component
         // Yeni widget oluştur
         $tenantWidget = TenantWidget::create([
             'widget_id' => $widgetId,
-            'position' => 'content',
             'order' => $maxOrder + 1,
             'settings' => [
                 'unique_id' => (string) \Illuminate\Support\Str::uuid(),

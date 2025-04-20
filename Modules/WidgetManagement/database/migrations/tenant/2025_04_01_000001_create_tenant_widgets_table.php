@@ -14,9 +14,6 @@ return new class extends Migration
         Schema::create('tenant_widgets', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('widget_id');
-            $table->unsignedBigInteger('page_id')->nullable()->index();
-            $table->string('module')->nullable()->index();
-            $table->string('position', 50)->index();
             $table->integer('order')->default(0)->index();
             $table->json('settings')->nullable();
             $table->boolean('is_custom')->default(false);

@@ -71,7 +71,7 @@
             @forelse($entities as $instance)
             <div class="col-12 col-sm-6 col-lg-4 col-xl-4">
                 <div class="card">
-                    <div class="card-status-top {{ $instance->widget->is_active ? 'bg-primary' : 'bg-danger' }}"></div>
+                    <div class="card-status-top {{ $instance->widget && $instance->widget->is_active ? 'bg-primary' : 'bg-danger' }}"></div>
                     
                     <!-- Kart Header -->
                     <div class="card-header d-flex align-items-center">
@@ -120,7 +120,7 @@
                             <div class="d-flex align-items-center">
                                 <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
                                     <input type="checkbox" wire:click="toggleActive({{ $instance->id }})"
-                                        {{ $instance->widget->is_active ? 'checked' : '' }} value="1" />
+                                        {{ $instance->widget && $instance->widget->is_active ? 'checked' : '' }} value="1" />
                                     <div class="state p-success p-on ms-2">
                                         <label>Aktif</label>
                                     </div>
@@ -137,7 +137,7 @@
             <div class="col-12">
                 <div class="empty">
                     <div class="empty-img">
-                        <img src="{{ asset('tabler/static/illustrations/undraw_quitting_time_dm8t.svg') }}"
+                        <img src="{{ asset('images/empty.svg') }}"
                             height="128" alt="">
                     </div>
                     <p class="empty-title">Hiç bileşen bulunamadı</p>

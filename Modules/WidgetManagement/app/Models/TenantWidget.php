@@ -10,7 +10,7 @@ use Modules\Page\app\Models\Page;
 class TenantWidget extends Model
 {
     protected $fillable = [
-        'widget_id', 'page_id', 'module', 'position', 'order',
+        'widget_id', 'order',
         'settings', 'is_custom', 'custom_html', 'custom_css', 'custom_js'
     ];
     
@@ -25,14 +25,6 @@ class TenantWidget extends Model
     public function widget(): BelongsTo
     {
         return $this->belongsTo(Widget::class);
-    }
-    
-    /**
-     * Widget'ın yerleştirildiği sayfa
-     */
-    public function page(): BelongsTo
-    {
-        return $this->belongsTo(Page::class);
     }
     
     /**

@@ -126,7 +126,7 @@
             <div class="col-12">
                 <div class="empty">
                     <div class="empty-img">
-                        <img src="{{ asset('tabler/static/illustrations/undraw_quitting_time_dm8t.svg') }}"
+                        <img src="{{ asset('images/empty.svg') }}"
                             height="128" alt="">
                     </div>
                     <p class="empty-title">Hiç bileşen şablonu bulunamadı</p>

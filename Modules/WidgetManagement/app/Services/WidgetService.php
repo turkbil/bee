@@ -87,17 +87,9 @@ class WidgetService
     /**
      * Tenant için widget örneklerini getir
      */
-    public function getTenantWidgets($pageId = null, $module = null, $position = null): Collection
+    public function getTenantWidgets($position = null): Collection
     {
         $query = TenantWidget::query();
-        
-        if ($pageId) {
-            $query->where('page_id', $pageId);
-        }
-        
-        if ($module) {
-            $query->where('module', $module);
-        }
         
         if ($position) {
             $query->where('position', $position);
@@ -111,12 +103,12 @@ class WidgetService
     /**
      * Konuma göre widget'ları render et
      */
-    public function renderWidgetsInPosition(string $position, $pageId = null, $module = null): string
+    public function renderWidgetsInPosition(string $position): string
     {
-        $cacheKey = $this->cachePrefix . tenant()->id . "_pos_{$position}" . ($pageId ? "_page_{$pageId}" : "") . ($module ? "_module_{$module}" : "");
+        $cacheKey = $this->cachePrefix . tenant()->id . "_pos_{$position}";
         
-        return Cache::remember($cacheKey, $this->cacheDuration, function () use ($position, $pageId, $module) {
-            $tenantWidgets = $this->getTenantWidgets($pageId, $module, $position);
+        return Cache::remember($cacheKey, $this->cacheDuration, function () use ($position) {
+            $tenantWidgets = $this->getTenantWidgets($position);
             
             $output = '';
             foreach ($tenantWidgets as $tenantWidget) {

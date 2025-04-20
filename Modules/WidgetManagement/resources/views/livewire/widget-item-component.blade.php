@@ -34,7 +34,7 @@
         <!-- İçerik Listesi -->
         <div class="row row-cards" id="sortable-list" data-sortable-id="items-container">
             @forelse($items as $item)
-            <div class="col-12 widget-item-row" data-id="{{ $item->id }}" id="item-{{ $item->id }}">
+            <div class="col-12 col-sm-6 col-lg-4 widget-item-row" data-id="{{ $item->id }}" id="item-{{ $item->id }}">
                 <div class="card mb-3">
                     <div class="card-status-top {{ isset($item->content['is_active']) && $item->content['is_active'] ? 'bg-primary' : 'bg-danger' }}"></div>
                     <div class="card-header widget-item-drag-handle cursor-move" wire:sortable.item="{{ $item->id }}">
@@ -61,99 +61,93 @@
                         </div>
                     </div>
                     
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-3">
-                                @if(isset($item->content['image']) && $item->content['image'])
-                                <img src="{{ cdn($item->content['image']) }}" 
-                                    alt="{{ $item->content['title'] ?? 'İçerik görseli' }}" 
-                                    class="w-100 img-fluid rounded"
-                                    style="max-height: 150px; object-fit: cover;">
-                                @elseif(isset($item->content['image_url']) && $item->content['image_url'])
-                                <img src="{{ cdn($item->content['image_url']) }}" 
-                                    alt="{{ $item->content['title'] ?? 'İçerik görseli' }}" 
-                                    class="w-100 img-fluid rounded"
-                                    style="max-height: 150px; object-fit: cover;">
-                                @else
-                                    @php
-                                        $multipleImageField = null;
-                                        $multipleImages = [];
-                                        
-                                        // İçeriğin tüm alanlarını kontrol et
-                                        foreach ($item->content as $fieldName => $fieldValue) {
-                                            // Dizi olan ve boş olmayan alanları bul
-                                            if (is_array($fieldValue) && !empty($fieldValue)) {
-                                                // İlk elemanın string olup olmadığını kontrol et (görsel URL'si olmalı)
-                                                $firstItem = reset($fieldValue);
-                                                if (is_string($firstItem)) {
-                                                    $multipleImageField = $fieldName;
-                                                    $multipleImages = $fieldValue;
-                                                    break;
-                                                }
-                                            }
+                    <div class="list-group list-group-flush">
+                        @if(isset($item->content['image']) && $item->content['image'])
+                        <div class="list-group-item p-0">
+                            <img src="{{ cdn($item->content['image']) }}" 
+                                alt="{{ $item->content['title'] ?? 'İçerik görseli' }}" 
+                                class="w-100 img-fluid"
+                                style="max-height: 150px; object-fit: cover;">
+                        </div>
+                        @elseif(isset($item->content['image_url']) && $item->content['image_url'])
+                        <div class="list-group-item p-0">
+                            <img src="{{ cdn($item->content['image_url']) }}" 
+                                alt="{{ $item->content['title'] ?? 'İçerik görseli' }}" 
+                                class="w-100 img-fluid"
+                                style="max-height: 150px; object-fit: cover;">
+                        </div>
+                        @else
+                            @php
+                                $multipleImageField = null;
+                                $multipleImages = [];
+                                
+                                // İçeriğin tüm alanlarını kontrol et
+                                foreach ($item->content as $fieldName => $fieldValue) {
+                                    // Dizi olan ve boş olmayan alanları bul
+                                    if (is_array($fieldValue) && !empty($fieldValue)) {
+                                        // İlk elemanın string olup olmadığını kontrol et (görsel URL'si olmalı)
+                                        $firstItem = reset($fieldValue);
+                                        if (is_string($firstItem)) {
+                                            $multipleImageField = $fieldName;
+                                            $multipleImages = $fieldValue;
+                                            break;
                                         }
-                                    @endphp
-                                    
-                                    @if($multipleImageField && !empty($multipleImages))
-                                    <div class="d-flex overflow-auto">
-                                        @foreach($multipleImages as $multipleImage)
-                                            <img src="{{ cdn($multipleImage) }}" 
-                                                alt="{{ $item->content['title'] ?? 'Çoklu görsel' }}" 
-                                                class="img-fluid me-1 rounded"
-                                                style="max-height: 150px; max-width: 150px; object-fit: cover;">
-                                            @if($loop->iteration >= 3)
-                                                <div class="d-flex align-items-center justify-content-center px-3">
-                                                    <span class="badge bg-blue">+{{ count($multipleImages) - 3 }} resim</span>
-                                                </div>
-                                                @break
-                                            @endif
-                                        @endforeach
-                                    </div>
-                                    @else
-                                    <div class="placeholder-image d-flex align-items-center justify-content-center bg-light rounded" style="height: 150px;">
-                                        <i class="fas fa-image text-muted fa-3x"></i>
-                                    </div>
-                                    @endif
-                                @endif
-                            </div>
+                                    }
+                                }
+                            @endphp
                             
-                            <div class="col-md-9">
-                                <div class="d-flex flex-column h-100">
-                                    <div class="mb-2">
-                                        <h4 class="mb-0">{{ $item->content['title'] ?? 'Başlıksız İçerik' }}</h4>
-                                        
-                                        @if(isset($item->content['subtitle']) && $item->content['subtitle'])
-                                        <div class="text-muted small">{{ $item->content['subtitle'] }}</div>
-                                        @endif
-                                    </div>
-                                    
-                                    <div class="mb-3 flex-grow-1">
-                                        @if(isset($item->content['description']) && $item->content['description'])
-                                        <div class="text-muted">{{ Str::limit($item->content['description'], 200) }}</div>
-                                        @elseif(isset($item->content['uzun_metin']) && $item->content['uzun_metin'])
-                                        <div class="text-muted">{{ Str::limit($item->content['uzun_metin'], 200) }}</div>
-                                        @endif
-                                    </div>
-                                    
-                                    <div class="d-flex justify-content-between align-items-center mt-auto">
-                                        <div>
-                                            <a href="{{ route('admin.widgetmanagement.content.edit', $item->id) }}" class="btn btn-outline-primary btn-sm">
-                                                <i class="fas fa-edit me-1"></i> Düzenle
-                                            </a>
-                                        </div>
-                                        
-                                        <div class="d-flex align-items-center">
-                                            <div class="pretty p-default p-curve p-toggle p-smooth">
-                                                <input type="checkbox" wire:click="toggleItemActive({{ $item->id }})"
-                                                    {{ isset($item->content['is_active']) && $item->content['is_active'] ? 'checked' : '' }} value="1" />
-                                                <div class="state p-success p-on ms-2">
-                                                    <label>Aktif</label>
-                                                </div>
-                                                <div class="state p-danger p-off ms-2">
-                                                    <label>Aktif Değil</label>
-                                                </div>
+                            @if($multipleImageField && !empty($multipleImages))
+                            <div class="list-group-item p-0">
+                                <div class="d-flex overflow-auto">
+                                    @foreach($multipleImages as $multipleImage)
+                                        <img src="{{ cdn($multipleImage) }}" 
+                                            alt="{{ $item->content['title'] ?? 'Çoklu görsel' }}" 
+                                            class="img-fluid me-1"
+                                            style="max-height: 150px; max-width: 150px; object-fit: cover;">
+                                        @if($loop->iteration >= 3)
+                                            <div class="d-flex align-items-center justify-content-center px-3">
+                                                <span class="badge bg-blue">+{{ count($multipleImages) - 3 }} resim</span>
                                             </div>
-                                        </div>
+                                            @break
+                                        @endif
+                                    @endforeach
+                                </div>
+                            </div>
+                            @endif
+                        @endif
+                        
+                        @if(isset($item->content['subtitle']) && $item->content['subtitle'])
+                        <div class="list-group-item">
+                            <div class="text-muted small">{{ Str::limit($item->content['subtitle'], 100) }}</div>
+                        </div>
+                        @elseif(isset($item->content['description']) && $item->content['description'])
+                        <div class="list-group-item">
+                            <div class="text-muted small">{{ Str::limit($item->content['description'], 100) }}</div>
+                        </div>
+                        @elseif(isset($item->content['uzun_metin']) && $item->content['uzun_metin'])
+                        <div class="list-group-item">
+                            <div class="text-muted small">{{ Str::limit($item->content['uzun_metin'], 100) }}</div>
+                        </div>
+                        @endif
+                    </div>
+
+                    <!-- Kart Footer -->
+                    <div class="card-footer">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex gap-2">
+                                <a href="{{ route('admin.widgetmanagement.content.edit', $item->id) }}" class="btn btn-link text-body p-0">
+                                    <i class="fas fa-edit me-1"></i> Düzenle
+                                </a>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="pretty p-default p-curve p-toggle p-smooth">
+                                    <input type="checkbox" wire:click="toggleItemActive({{ $item->id }})"
+                                        {{ isset($item->content['is_active']) && $item->content['is_active'] ? 'checked' : '' }} value="1" />
+                                    <div class="state p-success p-on ms-2">
+                                        <label>Aktif</label>
+                                    </div>
+                                    <div class="state p-danger p-off ms-2">
+                                        <label>Aktif Değil</label>
                                     </div>
                                 </div>
                             </div>
@@ -165,7 +159,7 @@
             <div class="col-12">
                 <div class="empty">
                     <div class="empty-img">
-                        <img src="{{ asset('images/empty.svg') }}"
+                        <img src="{{ asset('tabler/static/illustrations/undraw_quitting_time_dm8t.svg') }}"
                             height="128" alt="">
                     </div>
                     <p class="empty-title">Henüz içerik bulunmuyor</p>

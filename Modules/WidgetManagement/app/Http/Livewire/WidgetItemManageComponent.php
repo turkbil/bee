@@ -9,6 +9,7 @@ use Modules\WidgetManagement\app\Models\TenantWidget;
 use Modules\WidgetManagement\app\Models\WidgetItem;
 use Modules\WidgetManagement\app\Services\WidgetItemService;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 #[Layout('admin.layout')]
 class WidgetItemManageComponent extends Component
@@ -39,74 +40,111 @@ class WidgetItemManageComponent extends Component
     
     public function mount($tenantWidgetId = null, $itemId = null)
     {
+        Log::info("WidgetItemManageComponent::mount", [
+            'tenantWidgetId' => $tenantWidgetId,
+            'itemId' => $itemId
+        ]);
+        
         $this->tenantWidgetId = $tenantWidgetId;
         $this->itemId = $itemId;
         
-        if ($tenantWidgetId) {
-            $this->tenantWidget = TenantWidget::with('widget')->findOrFail($tenantWidgetId);
-            $this->schema = $this->tenantWidget->widget->getItemSchema();
+        try {
+            // Her zaman önce TenantWidget bilgilerini yükle
+            if ($tenantWidgetId) {
+                $this->tenantWidget = TenantWidget::with('widget')->findOrFail($tenantWidgetId);
+                $this->schema = $this->tenantWidget->widget->getItemSchema();
+                
+                // Widget tipini belirle - önemli değişken
+                $this->isStaticWidget = $this->tenantWidget->widget->type === 'static';
+            }
             
-            // Widget tipini belirle - önemli değişken
-            $this->isStaticWidget = $this->tenantWidget->widget->type === 'static';
-        } elseif ($itemId) {
-            $item = WidgetItem::findOrFail($itemId);
-            $this->tenantWidgetId = $item->tenant_widget_id;
-            $this->tenantWidget = TenantWidget::with('widget')->findOrFail($item->tenant_widget_id);
-            $this->schema = $this->tenantWidget->widget->getItemSchema();
-            $this->formData = $item->content;
+            // Eğer itemId varsa (düzenleme modu), öğe verilerini yükle
+            if ($itemId) {
+                $item = WidgetItem::findOrFail($itemId);
+                Log::info("Item bulundu:", ['item' => $item->toArray()]);
+                
+                // TenantWidget henüz yüklenmediyse yükle
+                if (!$this->tenantWidget) {
+                    $this->tenantWidgetId = $item->tenant_widget_id;
+                    $this->tenantWidget = TenantWidget::with('widget')->findOrFail($item->tenant_widget_id);
+                    $this->schema = $this->tenantWidget->widget->getItemSchema();
+                    $this->isStaticWidget = $this->tenantWidget->widget->type === 'static';
+                }
+                
+                // İçerik verilerini form verilerine aktar
+                $this->formData = $item->content;
+                Log::info("Form verileri yüklendi:", ['formData' => $this->formData]);
+            }
             
-            // Widget tipini belirle - önemli değişken
-            $this->isStaticWidget = $this->tenantWidget->widget->type === 'static';
-        }
-        
-        // Her zaman title ve is_active alanları olmalı - bunlar değiştirilemez
-        $hasTitle = false;
-        $hasActive = false;
+            // Her zaman title ve is_active alanları olmalı - bunlar değiştirilemez
+            $hasTitle = false;
+            $hasActive = false;
+            $hasUniqueId = false;
 
-        if (is_array($this->schema)) {
-            foreach ($this->schema as $field) {
-                if ($field['name'] === 'title') $hasTitle = true;
-                if ($field['name'] === 'is_active') $hasActive = true;
+            if (is_array($this->schema)) {
+                foreach ($this->schema as $field) {
+                    if ($field['name'] === 'title') $hasTitle = true;
+                    if ($field['name'] === 'is_active') $hasActive = true;
+                    if ($field['name'] === 'unique_id') $hasUniqueId = true;
+                }
+            } else {
+                $this->schema = [];
             }
-        } else {
-            $this->schema = [];
-        }
-        
-        // Title alanı yoksa ekle
-        if (!$hasTitle) {
-            $this->schema = array_merge([[
-                'name' => 'title',
-                'label' => 'Başlık',
-                'type' => 'text',
-                'required' => true,
-                'system' => true // Sistem alanı olduğunu belirt
-            ]], $this->schema ?? []);
-        }
-        
-        // Aktif/Pasif alanı yoksa ekle
-        if (!$hasActive) {
-            $this->schema[] = [
-                'name' => 'is_active',
-                'label' => 'Aktif',
-                'type' => 'checkbox',
-                'required' => false,
-                'system' => true // Sistem alanı olduğunu belirt
-            ];
-        }
-        
-        // Eğer formData boşsa, başlangıç değerleri oluştur
-        if (empty($this->formData)) {
-            $this->initFormData();
-        }
-        
-        // Statik widget durumunda, eğer düzenleme değilse, mevcut öğeyi al
-        if ($this->isStaticWidget && !$this->itemId) {
-            $items = $this->itemService->getItemsForWidget($this->tenantWidgetId);
             
-            if ($items->isNotEmpty()) {
-                $this->itemId = $items->first()->id;
-                $this->formData = $items->first()->content;
+            // Title alanı yoksa ekle
+            if (!$hasTitle) {
+                $this->schema = array_merge([[
+                    'name' => 'title',
+                    'label' => 'Başlık',
+                    'type' => 'text',
+                    'required' => true,
+                    'system' => true
+                ]], $this->schema ?? []);
             }
+            
+            // Aktif/Pasif alanı yoksa ekle
+            if (!$hasActive) {
+                $this->schema[] = [
+                    'name' => 'is_active',
+                    'label' => 'Aktif',
+                    'type' => 'checkbox',
+                    'required' => false,
+                    'system' => true
+                ];
+            }
+            
+            // Unique ID alanı yoksa ekle
+            if (!$hasUniqueId) {
+                $this->schema[] = [
+                    'name' => 'unique_id',
+                    'label' => 'Benzersiz ID',
+                    'type' => 'text',
+                    'required' => false,
+                    'system' => true,
+                    'hidden' => true
+                ];
+            }
+            
+            // Eğer formData boşsa, başlangıç değerleri oluştur
+            if (empty($this->formData)) {
+                $this->initFormData();
+            }
+            
+            // Statik widget durumunda, eğer düzenleme değilse, mevcut öğeyi al
+            if ($this->isStaticWidget && !$this->itemId) {
+                $items = $this->itemService->getItemsForWidget($this->tenantWidgetId);
+                
+                if ($items->isNotEmpty()) {
+                    $this->itemId = $items->first()->id;
+                    $this->formData = $items->first()->content;
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("WidgetItemManageComponent mount hatası: " . $e->getMessage(), [
+                'exception' => $e,
+                'trace' => $e->getTraceAsString()
+            ]);
+            session()->flash('error', 'İçerik yüklenirken bir hata oluştu: ' . $e->getMessage());
         }
     }
     

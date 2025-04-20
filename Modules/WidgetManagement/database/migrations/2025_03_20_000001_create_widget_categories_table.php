@@ -21,12 +21,10 @@ return new class extends Migration
             $table->string('title', 255)->index();
             $table->string('slug')->unique();
             $table->text('description')->nullable();
+            $table->string('icon')->nullable();
             $table->integer('order')->default(0)->index();
-            $table->string('metakey', 255)->nullable();
-            $table->string('metadesc', 255)->nullable();
             $table->boolean('is_active')->default(true)->index();
             $table->timestamps();
-            $table->softDeletes();
             
             // İlave indeksler
             $table->index('created_at');

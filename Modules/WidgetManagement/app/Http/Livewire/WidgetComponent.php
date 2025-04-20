@@ -88,14 +88,13 @@ class WidgetComponent extends Component
     public function toggleActive($id)
     {
         $tenantWidget = TenantWidget::findOrFail($id);
-        $widget = $tenantWidget->widget;
         
-        // Widget'ın aktif durumunu değiştir
-        $widget->is_active = !$widget->is_active;
-        $widget->save();
+        // TenantWidget'ın aktif durumunu değiştir
+        $tenantWidget->is_active = !$tenantWidget->is_active;
+        $tenantWidget->save();
         
-        $status = $widget->is_active ? 'aktifleştirildi' : 'devre dışı bırakıldı';
-        $type = $widget->is_active ? 'success' : 'warning';
+        $status = $tenantWidget->is_active ? 'aktifleştirildi' : 'devre dışı bırakıldı';
+        $type = $tenantWidget->is_active ? 'success' : 'warning';
         
         $this->dispatch('toast', [
             'title' => 'Başarılı!',

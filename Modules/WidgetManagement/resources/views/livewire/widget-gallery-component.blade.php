@@ -31,7 +31,7 @@
                 <!-- Ortadaki Loading -->
                 <div class="col-md-4 position-relative d-flex justify-content-center align-items-center">
                     <div wire:loading
-                        wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, createInstance"
+                        wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, createInstance, categoryFilter"
                         class="position-absolute top-50 start-50 translate-middle text-center"
                         style="width: 100%; max-width: 250px;">
                         <div class="small text-muted mb-2">Güncelleniyor...</div>
@@ -67,6 +67,24 @@
                 </div>
             </div>
             
+            <!-- Kategori Filtresi -->
+            @if($categories->count() > 0)
+            <div class="mb-3">
+                <div class="d-flex flex-wrap gap-2">
+                    <button class="btn {{ $categoryFilter == '' ? 'btn-primary' : 'btn-outline-secondary' }}" 
+                        wire:click="$set('categoryFilter', '')">
+                        Tümü
+                    </button>
+                    @foreach($categories as $category)
+                    <button class="btn {{ $categoryFilter == $category->widget_category_id ? 'btn-primary' : 'btn-outline-secondary' }}" 
+                        wire:click="$set('categoryFilter', '{{ $category->widget_category_id }}')">
+                        {{ $category->title }}
+                    </button>
+                    @endforeach
+                </div>
+            </div>
+            @endif
+            
             <!-- Bileşen Listesi -->
             <div class="row row-cards">
                 @forelse($templates as $template)
@@ -78,6 +96,11 @@
                         <div class="card-header d-flex align-items-center">
                             <div class="me-auto">
                                 <h3 class="card-title mb-0">{{ $template->name }}</h3>
+                                @if($template->category)
+                                <div class="text-muted small">
+                                    Kategori: {{ $template->category->title }}
+                                </div>
+                                @endif
                             </div>
                             <div class="dropdown">
                                 <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">

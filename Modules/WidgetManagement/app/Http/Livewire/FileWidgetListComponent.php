@@ -43,7 +43,7 @@ class FileWidgetListComponent extends Component
             ->get();
         
         // File tipindeki widgetları getir
-        $query = Widget::where('is_active', true)
+        $query = Widget::where('widgets.is_active', true)
             ->where('type', 'file')
             ->when($this->search, function ($q) {
                 $q->where('name', 'like', "%{$this->search}%")
@@ -54,7 +54,11 @@ class FileWidgetListComponent extends Component
                 $q->where('widget_category_id', $this->categoryFilter);
             });
             
-        $widgets = $query->orderBy('name')
+        // Önce kategoriye göre, sonra alfabetik olarak sırala
+        $widgets = $query->join('widget_categories', 'widgets.widget_category_id', '=', 'widget_categories.widget_category_id')
+            ->orderBy('widget_categories.order')
+            ->orderBy('widgets.name')
+            ->select('widgets.*')
             ->paginate($this->perPage);
         
         return view('widgetmanagement::livewire.file-widget-list-component', [

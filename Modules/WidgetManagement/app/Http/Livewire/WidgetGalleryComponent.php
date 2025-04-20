@@ -24,6 +24,10 @@ class WidgetGalleryComponent extends Component
     #[Url]
     public $perPage = 12;
     
+    public $showNameModal = false;
+    public $selectedWidgetId = null;
+    public $newWidgetName = '';
+    
     public function updatedSearch()
     {
         $this->resetPage();
@@ -36,19 +40,37 @@ class WidgetGalleryComponent extends Component
     
     public function createInstance($widgetId)
     {
-        // Widget şablonundan yeni bir TenantWidget oluştur
+        // Seçilen widget ID'sini kaydet ve modal'ı göster
+        $this->selectedWidgetId = $widgetId;
         $widget = Widget::findOrFail($widgetId);
+        $this->newWidgetName = $widget->name;
+        $this->showNameModal = true;
+    }
+    
+    public function createInstanceWithName()
+    {
+        if (!$this->selectedWidgetId || empty($this->newWidgetName)) {
+            $this->dispatch('toast', [
+                'title' => 'Hata!',
+                'message' => 'Bileşen adı boş olamaz.',
+                'type' => 'error'
+            ]);
+            return;
+        }
+        
+        // Widget şablonundan yeni bir TenantWidget oluştur
+        $widget = Widget::findOrFail($this->selectedWidgetId);
         
         // Mevcut sıra numarasını bul
         $maxOrder = TenantWidget::max('order') ?? 0;
         
         // Yeni widget oluştur
         $tenantWidget = TenantWidget::create([
-            'widget_id' => $widgetId,
+            'widget_id' => $this->selectedWidgetId,
             'order' => $maxOrder + 1,
             'settings' => [
                 'unique_id' => (string) \Illuminate\Support\Str::uuid(),
-                'title' => $widget->name
+                'title' => $this->newWidgetName
             ]
         ]);
         
@@ -59,8 +81,18 @@ class WidgetGalleryComponent extends Component
                 'type' => 'success'
             ]);
             
+            // Modal'ı kapat ve değerleri temizle
+            $this->resetModal();
+            
             return redirect()->route('admin.widgetmanagement.index');
         }
+    }
+    
+    public function resetModal()
+    {
+        $this->showNameModal = false;
+        $this->selectedWidgetId = null;
+        $this->newWidgetName = '';
     }
     
     public function render()

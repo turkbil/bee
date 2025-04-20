@@ -18,7 +18,7 @@ Bileşen Yönetimi
             <div class="dropdown">
                 <button type="button" class="dropdown-module-item dropdown-toggle btn btn-ghost-secondary"
                     data-bs-toggle="dropdown">
-                    Bileşen Menüsü
+                    Bileşen İşlemleri
                 </button>
                 <div class="dropdown-menu">
                     @hasmoduleaccess('widgetmanagement', 'view')
@@ -38,7 +38,7 @@ Bileşen Yönetimi
                     @hasmoduleaccess('widgetmanagement', 'view')
                     <a class="dropdown-item {{ request()->routeIs('admin.widgetmanagement.section*') ? 'active' : '' }}" 
                        href="{{ route('admin.widgetmanagement.section') }}">
-                        <i class="fas fa-th-large me-2"></i> Bölüm Yönetimi
+                        <i class="fas fa-columns me-2"></i> Bölüm Yönetimi
                     </a>
                     @endhasmoduleaccess
                     
@@ -47,20 +47,6 @@ Bileşen Yönetimi
                     <a class="dropdown-item {{ request()->routeIs('admin.widgetmanagement.manage*') ? 'active' : '' }}" 
                        href="{{ route('admin.widgetmanagement.manage') }}">
                         <i class="fas fa-tools me-2"></i> Bileşen Şablonları
-                    </a>
-                    @endif
-                    
-                    @if(request()->routeIs('admin.widgetmanagement.items*'))
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item active" href="{{ url()->current() }}">
-                        <i class="fas fa-layer-group me-2"></i> İçerik Düzenle
-                    </a>
-                    @endif
-                    
-                    @if(request()->routeIs('admin.widgetmanagement.settings*'))
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item active" href="{{ url()->current() }}">
-                        <i class="fas fa-sliders-h me-2"></i> Bileşen Ayarları
                     </a>
                     @endif
                 </div>
@@ -84,7 +70,7 @@ Bileşen Yönetimi
             </a>
             @endif
             
-            @if(request()->routeIs('admin.widgetmanagement.items*') || request()->routeIs('admin.widgetmanagement.settings*'))
+            @if(request()->routeIs('admin.widgetmanagement.content*') || request()->routeIs('admin.widgetmanagement.items*') || request()->routeIs('admin.widgetmanagement.settings*'))
             <a href="{{ route('admin.widgetmanagement.index') }}" class="btn btn-outline-secondary">
                 <i class="fas fa-arrow-left me-2"></i> Bileşenlere Dön
             </a>

@@ -56,17 +56,12 @@ Route::middleware(['web', 'auth', 'tenant'])
                     ->where('tenantWidgetId', '[0-9]+')
                     ->name('items');
                 
-                // Widget İçerik Ekleme
-                Route::get('/content/create/{tenantWidgetId}', WidgetItemManageComponent::class)
+                // Widget İçerik Yönetimi (Ekleme/Düzenleme) - Manage Mantığı
+                Route::get('/manage/item/{tenantWidgetId}/{itemId?}', WidgetItemManageComponent::class)
                     ->middleware('module.permission:widgetmanagement,update')
                     ->where('tenantWidgetId', '[0-9]+')
-                    ->name('content.create');
-                
-                // Widget İçerik Düzenleme
-                Route::get('/content/edit/{itemId}', WidgetItemManageComponent::class)
-                    ->middleware('module.permission:widgetmanagement,update')
                     ->where('itemId', '[0-9]+')
-                    ->name('content.edit');
+                    ->name('item.manage');
                 
                 // Widget Ayarları
                 Route::get('/settings/{tenantWidgetId}', WidgetSettingsComponent::class)

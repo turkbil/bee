@@ -93,7 +93,7 @@
         <div class="mb-3">
             <label class="form-label required">Widget Tipi</label>
             <div class="row g-2">
-                <div class="col-md-6 col-xl-3">
+                <div class="col-md-4 col-xl-2">
                     <label class="form-selectgroup-item">
                         <input type="radio" name="widget-type" value="static" wire:model="widget.type" class="form-selectgroup-input">
                         <span class="form-selectgroup-label d-flex align-items-center p-3">
@@ -107,7 +107,7 @@
                         </span>
                     </label>
                 </div>
-                <div class="col-md-6 col-xl-3">
+                <div class="col-md-4 col-xl-2">
                     <label class="form-selectgroup-item">
                         <input type="radio" name="widget-type" value="dynamic" wire:model="widget.type" class="form-selectgroup-input">
                         <span class="form-selectgroup-label d-flex align-items-center p-3">
@@ -121,7 +121,7 @@
                         </span>
                     </label>
                 </div>
-                <div class="col-md-6 col-xl-3">
+                <div class="col-md-4 col-xl-2">
                     <label class="form-selectgroup-item">
                         <input type="radio" name="widget-type" value="module" wire:model="widget.type" class="form-selectgroup-input">
                         <span class="form-selectgroup-label d-flex align-items-center p-3">
@@ -135,7 +135,7 @@
                         </span>
                     </label>
                 </div>
-                <div class="col-md-6 col-xl-3">
+                <div class="col-md-4 col-xl-2">
                     <label class="form-selectgroup-item">
                         <input type="radio" name="widget-type" value="content" wire:model="widget.type" class="form-selectgroup-input">
                         <span class="form-selectgroup-label d-flex align-items-center p-3">
@@ -145,6 +145,20 @@
                             <span class="form-selectgroup-label-content">
                                 <span class="form-selectgroup-title strong mb-1">İçerik</span>
                                 <span class="d-block text-muted">Sayfa içeriği</span>
+                            </span>
+                        </span>
+                    </label>
+                </div>
+                <div class="col-md-4 col-xl-2">
+                    <label class="form-selectgroup-item">
+                        <input type="radio" name="widget-type" value="file" wire:model="widget.type" class="form-selectgroup-input">
+                        <span class="form-selectgroup-label d-flex align-items-center p-3">
+                            <span class="me-3">
+                                <span class="form-selectgroup-check"></span>
+                            </span>
+                            <span class="form-selectgroup-label-content">
+                                <span class="form-selectgroup-title strong mb-1">Dosya</span>
+                                <span class="d-block text-muted">Hazır view dosyası</span>
                             </span>
                         </span>
                     </label>
@@ -260,6 +274,40 @@
 @if($formMode === 'design')
 <div class="row">
     <div class="col-12">
+        @if($widget['type'] === 'file')
+        <div class="alert alert-info">
+            <div class="d-flex">
+                <div>
+                    <i class="fas fa-info-circle text-blue me-2" style="margin-top: 3px"></i>
+                </div>
+                <div>
+                    <h4 class="alert-title">Hazır Dosya Kullanımı</h4>
+                    <div class="text-muted">
+                        Bu widget için bir blade dosyası belirtebilirsiniz. Kullanılacak dosya yolu "blocks" klasörüne göredir. Örneğin: "cards/basic" şeklinde yolu belirtin.
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label">
+                <i class="fas fa-file-code text-primary me-1"></i> View Dosya Yolu
+            </label>
+            <div class="input-icon">
+                <span class="input-icon-addon">
+                    <i class="fas fa-folder"></i>
+                </span>
+                <input type="text" 
+                    wire:model="widget.file_path" 
+                    class="form-control font-monospace" 
+                    placeholder="Örnek: cards/basic">
+            </div>
+            <div class="form-hint">
+                <i class="fas fa-info-circle me-1 text-blue"></i>
+                Dosya yolu, "resources/views/blocks/" klasörüne göre belirtilir.
+            </div>
+        </div>
+        @else
         <div class="alert alert-info">
             <div class="d-flex">
                 <div>
@@ -311,6 +359,7 @@
             style="font-size: 14px;"
             placeholder="document.addEventListener('DOMContentLoaded', function() { // JS Kodu });">{{ $widget['content_js'] }}</textarea>
         </div>
+        @endif
         
         <div class="row">
             <div class="col-md-6">
@@ -324,28 +373,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        @if(empty($widget['css_files']))
-                            <div class="text-muted text-center py-3">
-                                <i class="fas fa-info-circle me-1"></i>
-                                Henüz CSS dosya bağlantısı eklenmemiş.
-                            </div>
-                        @else
-                            @foreach($widget['css_files'] as $index => $cssFile)
-                                <div class="input-group mb-2">
-                                    <span class="input-icon-addon">
-                                        <i class="fas fa-link"></i>
-                                    </span>
-                                    <input type="text" 
-                                        class="form-control" 
-                                        placeholder="https://örnek.com/style.css" 
-                                        value="{{ $cssFile }}" 
-                                        wire:change="updateCssFile({{ $index }}, $event.target.value)">
-                                    <button type="button" class="btn btn-outline-danger" wire:click="removeCssFile({{ $index }})">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            @endforeach
-                        @endif
+                        <!-- CSS dosyaları listesi burada -->
                     </div>
                 </div>
             </div>
@@ -360,28 +388,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        @if(empty($widget['js_files']))
-                            <div class="text-muted text-center py-3">
-                                <i class="fas fa-info-circle me-1"></i>
-                                Henüz JavaScript dosya bağlantısı eklenmemiş.
-                            </div>
-                        @else
-                            @foreach($widget['js_files'] as $index => $jsFile)
-                                <div class="input-group mb-2">
-                                    <span class="input-icon-addon">
-                                        <i class="fas fa-link"></i>
-                                    </span>
-                                    <input type="text" 
-                                        class="form-control" 
-                                        placeholder="https://örnek.com/script.js" 
-                                        value="{{ $jsFile }}" 
-                                        wire:change="updateJsFile({{ $index }}, $event.target.value)">
-                                    <button type="button" class="btn btn-outline-danger" wire:click="removeJsFile({{ $index }})">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            @endforeach
-                        @endif
+                        <!-- JS dosyaları listesi burada -->
                     </div>
                 </div>
             </div>

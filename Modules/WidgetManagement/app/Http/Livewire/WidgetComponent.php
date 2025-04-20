@@ -125,6 +125,9 @@ class WidgetComponent extends Component
         
         // Aktif kullanılan tüm tenant widget'ları getir
         $query = TenantWidget::with(['widget', 'items'])
+            ->whereHas('widget', function($q) {
+                $q->where('type', '!=', 'file'); // file tipindeki widgetları hariç tut
+            })
             ->when($this->search, function ($q) {
                 $q->where('settings->title', 'like', "%{$this->search}%")
                   ->orWhereHas('widget', function($wq) {

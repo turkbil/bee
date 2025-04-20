@@ -118,7 +118,7 @@ class WidgetService
             return $output;
         });
     }
-    
+        
     /**
      * Tek bir widget'ı render et
      */
@@ -143,6 +143,21 @@ class WidgetService
                 
                 if (!$widget || !$widget->is_active) {
                     return '';
+                }
+                
+                // File tipinde widget için doğrudan view dosyasını render et
+                if ($widget->type === 'file' && !empty($widget->file_path)) {
+                    try {
+                        $viewPath = 'widgetmanagement::blocks.' . $widget->file_path;
+                        if (view()->exists($viewPath)) {
+                            $settings = $tenantWidget->settings ?? [];
+                            return view($viewPath, ['settings' => $settings])->render();
+                        } else {
+                            return '<div class="alert alert-danger">Belirtilen view dosyası bulunamadı: ' . $viewPath . '</div>';
+                        }
+                    } catch (\Exception $e) {
+                        return '<div class="alert alert-danger">View render hatası: ' . $e->getMessage() . '</div>';
+                    }
                 }
                 
                 $html = $widget->content_html;

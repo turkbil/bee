@@ -23,9 +23,9 @@
                 </div>
             </div>
             
-            <!-- Sağ Taraf (Geri Dön) -->
+            <!-- Sağ Taraf (Buton) -->
             <div class="col-md-2 text-md-end">
-                <a href="{{ route('admin.widgetmanagement.content.create', $tenantWidgetId) }}" class="btn btn-primary">
+                <a href="{{ route('admin.widgetmanagement.item.manage', $tenantWidgetId) }}" class="btn btn-primary">
                     <i class="fas fa-plus me-2"></i> Yeni İçerik Ekle
                 </a>
             </div>
@@ -43,12 +43,12 @@
                                 <i class="fas fa-grip-vertical text-muted me-2"></i>
                                 <h3 class="card-title mb-0">{{ $item->content['title'] ?? 'İçerik #' . $loop->iteration }}</h3>
                             </div>
-                            <div class="dropdown position-absolute end-0 me-3">
-                                <a href="#" class="btn btn-icon" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="dropdown">
+                                <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fas fa-ellipsis-v"></i>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end">
-                                    <a href="{{ route('admin.widgetmanagement.content.edit', $item->id) }}" class="dropdown-item">
+                                    <a href="{{ route('admin.widgetmanagement.item.manage', [$tenantWidgetId, $item->id]) }}" class="dropdown-item">
                                         <i class="fas fa-edit me-2"></i> Düzenle
                                     </a>
                                     <button class="dropdown-item text-danger"
@@ -135,7 +135,7 @@
                     <div class="card-footer">
                         <div class="d-flex align-items-center justify-content-between">
                             <div class="d-flex gap-2">
-                                <a href="{{ route('admin.widgetmanagement.content.edit', $item->id) }}" class="btn btn-link text-body p-0">
+                                <a href="{{ route('admin.widgetmanagement.item.manage', [$tenantWidgetId, $item->id]) }}" class="btn btn-outline-primary btn-sm">
                                     <i class="fas fa-edit me-1"></i> Düzenle
                                 </a>
                             </div>
@@ -159,13 +159,17 @@
             <div class="col-12">
                 <div class="empty">
                     <div class="empty-img">
-                        <img src="{{ asset('tabler/static/illustrations/undraw_quitting_time_dm8t.svg') }}"
-                            height="128" alt="">
+                        <i class="fas fa-layer-group fa-4x text-muted"></i>
                     </div>
                     <p class="empty-title">Henüz içerik bulunmuyor</p>
                     <p class="empty-subtitle text-muted">
                         "Yeni İçerik Ekle" butonunu kullanarak bileşen içeriklerinizi oluşturun.
                     </p>
+                    <div class="empty-action">
+                        <a href="{{ route('admin.widgetmanagement.item.manage', $tenantWidgetId) }}" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i> Yeni İçerik Ekle
+                        </a>
+                    </div>
                 </div>
             </div>
             @endforelse

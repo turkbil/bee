@@ -11,12 +11,13 @@ class TenantWidget extends Model
 {
     protected $fillable = [
         'widget_id', 'order',
-        'settings', 'is_custom', 'custom_html', 'custom_css', 'custom_js'
+        'settings', 'is_custom', 'custom_html', 'custom_css', 'custom_js', 'is_active'
     ];
     
     protected $casts = [
         'settings' => 'json',
         'is_custom' => 'boolean',
+        'is_active' => 'boolean',
     ];
     
     /**

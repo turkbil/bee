@@ -143,7 +143,7 @@
                             <div class="d-flex align-items-center">
                                 <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
                                     <input type="checkbox" wire:click="toggleActive({{ $instance->id }})"
-                                        {{ $instance->widget && $instance->widget->is_active ? 'checked' : '' }} value="1" />
+                                        {{ $instance->is_active ? 'checked' : '' }} value="1" />
                                     <div class="state p-success p-on ms-2">
                                         <label>Aktif</label>
                                     </div>

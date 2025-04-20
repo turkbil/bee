@@ -4,12 +4,11 @@ namespace Modules\WidgetManagement\app\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Cviebrock\EloquentSluggable\Sluggable;
 
 class WidgetCategory extends Model
 {
-    use SoftDeletes, Sluggable;
+    use Sluggable;
 
     protected $primaryKey = 'widget_category_id';
 
@@ -18,8 +17,7 @@ class WidgetCategory extends Model
         'slug',
         'description',
         'order',
-        'metakey',
-        'metadesc',
+        'icon',
         'is_active',
     ];
 
@@ -38,7 +36,6 @@ class WidgetCategory extends Model
                 'source' => 'title',
                 'onUpdate' => true,
                 'unique' => true,
-                'includeTrashed' => true,
             ],
         ];
     }

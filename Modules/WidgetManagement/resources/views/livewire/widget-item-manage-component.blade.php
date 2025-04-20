@@ -6,7 +6,11 @@
                 <div class="col-md-6">
                     <h3 class="card-title d-flex align-items-center mb-0">
                         <i class="fas fa-layer-group me-2"></i>
-                        {{ $itemId ? 'İçerik Düzenle' : 'Yeni İçerik Ekle' }} - {{ $tenantWidget->settings['title'] ?? $tenantWidget->widget->name }}
+                        @if($itemId)
+                            İçerik Düzenle - {{ $tenantWidget->settings['title'] ?? $tenantWidget->widget->name }}
+                        @else
+                            Yeni İçerik Ekle - {{ $tenantWidget->settings['title'] ?? $tenantWidget->widget->name }}
+                        @endif
                     </h3>
                 </div>
                 <div class="col-md-3 position-relative d-flex justify-content-center align-items-center">
@@ -31,8 +35,8 @@
 
     <form wire:submit.prevent="save(true)">
         <div class="row">
-            <div class="col-md-8">
-                <div class="card">
+            <div class="col-md-12">
+                <div class="card mb-3">
                     <div class="card-status-start bg-primary"></div>
                     <div class="card-header">
                         <h3 class="card-title">Temel Bilgiler</h3>
@@ -40,8 +44,8 @@
                     <div class="card-body">
                         <div class="row g-3">
                             @foreach($schema as $field)
-                                @if($field['name'] !== 'unique_id' && !($field['type'] === 'checkbox' || $field['type'] === 'image' || $field['type'] === 'image_multiple' || $field['type'] === 'file'))
-                                    <div class="col-12 mb-2">
+                                @if($field['name'] !== 'unique_id' && ($field['type'] === 'text' || $field['type'] === 'textarea' || $field['type'] === 'select' || $field['type'] === 'number' || $field['type'] === 'email' || $field['type'] === 'tel' || $field['type'] === 'url' || $field['type'] === 'color' || $field['type'] === 'date' || $field['type'] === 'time'))
+                                    <div class="col-12 mb-3">
                                         <label for="field-{{ $field['name'] }}" class="form-label{{ isset($field['required']) && $field['required'] ? ' required' : '' }}">
                                             {{ $field['label'] }}
                                             @if(isset($field['system']) && $field['system'] && $field['name'] != 'unique_id')
@@ -174,171 +178,163 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            
-            <div class="col-md-4">
-                <div class="row">
-                    <!-- Ayarlar ve Özellikler -->
-                    <div class="col-12 mb-3">
-                        <div class="card">
-                            <div class="card-status-start bg-green"></div>
-                            <div class="card-header">
-                                <h3 class="card-title">Yayın Ayarları</h3>
-                            </div>
-                            <div class="card-body">
-                                @foreach($schema as $field)
-                                    @if($field['type'] === 'checkbox')
-                                        <div class="mb-3">
-                                            <label class="form-check form-switch">
-                                                <input type="checkbox" 
-                                                    wire:model="formData.{{ $field['name'] }}" 
-                                                    class="form-check-input">
-                                                <span class="form-check-label">{{ $field['label'] }}</span>
-                                            </label>
-                                            @error('formData.' . $field['name'])
-                                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    @endif
-                                @endforeach
-                            </div>
-                        </div>
+
+                <!-- Yayın Ayarları -->
+                <div class="card mb-3">
+                    <div class="card-status-start bg-green"></div>
+                    <div class="card-header">
+                        <h3 class="card-title">Yayın Ayarları</h3>
                     </div>
-                    
-                    <!-- Görseller ve Medya Alanları -->
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-status-start bg-purple"></div>
-                            <div class="card-header">
-                                <h3 class="card-title">Görseller ve Medya</h3>
-                            </div>
-                            <div class="card-body">
-                                @php $hasMediaFields = false; @endphp
-                                
-                                @foreach($schema as $field)
-                                    @if($field['type'] === 'image')
-                                        @php $hasMediaFields = true; @endphp
-                                        <div class="mb-4">
-                                            <label class="form-label{{ isset($field['required']) && $field['required'] ? ' required' : '' }}">
-                                                {{ $field['label'] }}
-                                            </label>
-                                            
-                                            @include('settingmanagement::livewire.partials.image-upload', [
-                                                'imageKey' => $field['name'],
-                                                'label' => 'Görseli sürükleyip bırakın veya tıklayın',
-                                                'values' => $formData
-                                            ])
-                                        </div>
-                                    @elseif($field['type'] === 'file')
-                                        @php $hasMediaFields = true; @endphp
-                                        <div class="mb-4">
-                                            <label class="form-label{{ isset($field['required']) && $field['required'] ? ' required' : '' }}">
-                                                {{ $field['label'] }}
-                                            </label>
-                                            
-                                            @include('settingmanagement::livewire.partials.file-upload', [
-'fileKey' => $field['name'],
-                                                'label' => 'Dosyayı sürükleyip bırakın veya tıklayın',
-                                                'values' => $formData
-                                            ])
-                                        </div>
-                                    @elseif($field['type'] === 'image_multiple')
-                                        @php $hasMediaFields = true; @endphp
-                                        <div class="mb-4">
-                                            <label class="form-label{{ isset($field['required']) && $field['required'] ? ' required' : '' }}">
-                                                {{ $field['label'] }}
-                                            </label>
-                                            
-                                            <!-- Mevcut Çoklu Resimler -->
-                                            @php
-                                                $fieldName = $field['name'];
-                                                $currentImages = isset($formData[$fieldName]) && is_array($formData[$fieldName]) ? $formData[$fieldName] : [];
-                                            @endphp
-                                            
-                                            <div class="mb-3">
-                                                @if(count($currentImages) > 0)
+                    <div class="card-body">
+                        @foreach($schema as $field)
+                            @if($field['type'] === 'checkbox')
+                                <div class="mb-3">
+                                    <label class="form-check form-switch">
+                                        <input type="checkbox" 
+                                            wire:model="formData.{{ $field['name'] }}" 
+                                            class="form-check-input">
+                                        <span class="form-check-label">{{ $field['label'] }}</span>
+                                    </label>
+                                    @error('formData.' . $field['name'])
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            @endif
+                        @endforeach
+                    </div>
+                </div>
+                
+                <!-- Görseller ve Medya Alanları -->
+                <div class="card mb-3">
+                    <div class="card-status-start bg-purple"></div>
+                    <div class="card-header">
+                        <h3 class="card-title">Görseller ve Medya</h3>
+                    </div>
+                    <div class="card-body">
+                        @php $hasMediaFields = false; @endphp
+                        
+                        @foreach($schema as $field)
+                            @if($field['type'] === 'image')
+                                @php $hasMediaFields = true; @endphp
+                                <div class="mb-4">
+                                    <label class="form-label{{ isset($field['required']) && $field['required'] ? ' required' : '' }}">
+                                        {{ $field['label'] }}
+                                    </label>
+                                    
+                                    @include('settingmanagement::livewire.partials.image-upload', [
+                                        'imageKey' => $field['name'],
+                                        'label' => 'Görseli sürükleyip bırakın veya tıklayın',
+                                        'values' => $formData
+                                    ])
+                                </div>
+                            @elseif($field['type'] === 'file')
+                                @php $hasMediaFields = true; @endphp
+                                <div class="mb-4">
+                                    <label class="form-label{{ isset($field['required']) && $field['required'] ? ' required' : '' }}">
+                                        {{ $field['label'] }}
+                                    </label>
+                                    
+                                    @include('settingmanagement::livewire.partials.file-upload', [
+                                        'fileKey' => $field['name'],
+                                        'label' => 'Dosyayı sürükleyip bırakın veya tıklayın',
+                                        'values' => $formData
+                                    ])
+                                </div>
+                            @elseif($field['type'] === 'image_multiple')
+                                @php $hasMediaFields = true; @endphp
+                                <div class="mb-4">
+                                    <label class="form-label{{ isset($field['required']) && $field['required'] ? ' required' : '' }}">
+                                        {{ $field['label'] }}
+                                    </label>
+                                    
+                                    <!-- Mevcut Çoklu Resimler -->
+                                    @php
+                                        $fieldName = $field['name'];
+                                        $currentImages = isset($formData[$fieldName]) && is_array($formData[$fieldName]) ? $formData[$fieldName] : [];
+                                    @endphp
+                                    
+                                    <div class="mb-3">
+                                        @if(count($currentImages) > 0)
+                                            <div class="row g-2">
+                                                @foreach($currentImages as $imageIndex => $imagePath)
+                                                    <div class="col-6 col-sm-4 col-lg-3">
+                                                        <div class="position-relative">
+                                                            <div class="position-absolute top-0 end-0 p-1">
+                                                                <button type="button" class="btn btn-danger btn-icon btn-sm"
+                                                                        wire:click="removeExistingMultipleImage('{{ $fieldName }}', {{ $imageIndex }})"
+                                                                        wire:confirm="Bu görseli silmek istediğinize emin misiniz?">
+                                                                    <i class="fas fa-times"></i>
+                                                                </button>
+                                                            </div>
+                                                            
+                                                            <a data-fslightbox="gallery-{{ $field['name'] }}" href="{{ cdn($imagePath) }}">
+                                                                <div class="img-responsive img-responsive-1x1 rounded border" 
+                                                                     style="background-image: url({{ cdn($imagePath) }})">
+                                                                </div>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        @else
+                                            <div class="text-muted text-center p-3 mb-3 border rounded">
+                                                <i class="fas fa-images me-2"></i> Henüz görsel eklenmemiş
+                                            </div>
+                                        @endif
+                                    </div>
+                                    
+                                    <!-- Yükleme Alanı -->
+                                    <div class="card">
+                                        <div class="card-body p-3">
+                                            <form wire:submit="updatedTempPhoto">
+                                                <div class="dropzone p-4" onclick="document.getElementById('file-upload-{{ $fieldName }}').click()">
+                                                    <input type="file" id="file-upload-{{ $fieldName }}" class="d-none" 
+                                                        wire:model="tempPhoto" accept="image/*" multiple
+                                                        wire:click="setPhotoField('{{ $fieldName }}')">
+                                                        
+                                                    <div class="text-center">
+                                                        <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-2"></i>
+                                                        <h5 class="text-muted">Görselleri sürükleyip bırakın veya tıklayın</h5>
+                                                        <p class="text-muted small">PNG, JPG, WEBP, GIF - Maks 3MB - <strong>Toplu seçim yapabilirsiniz</strong></p>
+                                                    </div>
+                                                </div>
+                                            </form>
+
+                                            <!-- Geçici yüklenen görseller -->
+                                            @if(isset($photos[$fieldName]) && count($photos[$fieldName]) > 0)
+                                                <div class="mt-3">
+                                                    <h6 class="mb-2">Yüklemeye Hazır Görseller:</h6>
                                                     <div class="row g-2">
-                                                        @foreach($currentImages as $imageIndex => $imagePath)
-                                                            <div class="col-6 col-sm-4 col-lg-4">
+                                                        @foreach($photos[$fieldName] as $index => $photo)
+                                                            <div class="col-6 col-sm-4 col-lg-3">
                                                                 <div class="position-relative">
                                                                     <div class="position-absolute top-0 end-0 p-1">
                                                                         <button type="button" class="btn btn-danger btn-icon btn-sm"
-                                                                                wire:click="removeExistingMultipleImage('{{ $fieldName }}', {{ $imageIndex }})"
-                                                                                wire:confirm="Bu görseli silmek istediğinize emin misiniz?">
+                                                                                wire:click="removePhoto('{{ $fieldName }}', {{ $index }})">
                                                                             <i class="fas fa-times"></i>
                                                                         </button>
                                                                     </div>
-                                                                    
-                                                                    <a data-fslightbox="gallery-{{ $field['name'] }}" href="{{ cdn($imagePath) }}">
-                                                                        <div class="img-responsive img-responsive-1x1 rounded border" 
-                                                                             style="background-image: url({{ cdn($imagePath) }})">
-                                                                        </div>
-                                                                    </a>
+                                                                    <div class="img-responsive img-responsive-1x1 rounded border" 
+                                                                         style="background-image: url({{ $photo->temporaryUrl() }})">
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         @endforeach
                                                     </div>
-                                                @else
-                                                    <div class="text-muted text-center p-3 mb-3 border rounded">
-                                                        <i class="fas fa-images me-2"></i> Henüz görsel eklenmemiş
-                                                    </div>
-                                                @endif
-                                            </div>
-                                            
-                                            <!-- Yükleme Alanı -->
-                                            <div class="card">
-                                                <div class="card-body p-3">
-                                                    <form wire:submit="updatedTempPhoto">
-                                                        <div class="dropzone p-4" onclick="document.getElementById('file-upload-{{ $fieldName }}').click()">
-                                                            <input type="file" id="file-upload-{{ $fieldName }}" class="d-none" 
-                                                                wire:model="tempPhoto" accept="image/*" multiple
-                                                                wire:click="setPhotoField('{{ $fieldName }}')">
-                                                                
-                                                            <div class="text-center">
-                                                                <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-2"></i>
-                                                                <h5 class="text-muted">Görselleri sürükleyip bırakın veya tıklayın</h5>
-                                                                <p class="text-muted small">PNG, JPG, WEBP, GIF - Maks 3MB - <strong>Toplu seçim yapabilirsiniz</strong></p>
-                                                            </div>
-                                                        </div>
-                                                    </form>
-
-                                                    <!-- Geçici yüklenen görseller -->
-                                                    @if(isset($photos[$fieldName]) && count($photos[$fieldName]) > 0)
-                                                        <div class="mt-3">
-                                                            <h6 class="mb-2">Yüklemeye Hazır Görseller:</h6>
-                                                            <div class="row g-2">
-                                                                @foreach($photos[$fieldName] as $index => $photo)
-                                                                    <div class="col-6 col-sm-4 col-lg-4">
-                                                                        <div class="position-relative">
-                                                                            <div class="position-absolute top-0 end-0 p-1">
-                                                                                <button type="button" class="btn btn-danger btn-icon btn-sm"
-                                                                                        wire:click="removePhoto('{{ $fieldName }}', {{ $index }})">
-                                                                                    <i class="fas fa-times"></i>
-                                                                                </button>
-                                                                            </div>
-                                                                            <div class="img-responsive img-responsive-1x1 rounded border" 
-                                                                                 style="background-image: url({{ $photo->temporaryUrl() }})">
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                @endforeach
-                                                            </div>
-                                                        </div>
-                                                    @endif
                                                 </div>
-                                            </div>
+                                            @endif
                                         </div>
-                                    @endif
-                                @endforeach
-                                
-                                @if(!$hasMediaFields)
-                                    <div class="text-center text-muted p-4">
-                                        <i class="fas fa-info-circle fa-2x mb-2"></i>
-                                        <p>Bu içerik türü için görsel veya medya alanı tanımlanmamış.</p>
                                     </div>
-                                @endif
+                                </div>
+                            @endif
+                        @endforeach
+                        
+                        @if(!$hasMediaFields)
+                            <div class="text-center text-muted p-4">
+                                <i class="fas fa-info-circle fa-2x mb-2"></i>
+                                <p>Bu içerik türü için görsel veya medya alanı tanımlanmamış.</p>
                             </div>
-                        </div>
+                        @endif
                     </div>
                 </div>
             </div>

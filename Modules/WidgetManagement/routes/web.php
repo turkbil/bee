@@ -3,6 +3,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\WidgetManagement\app\Http\Livewire\WidgetComponent;
+use Modules\WidgetManagement\app\Http\Livewire\WidgetGalleryComponent;
 use Modules\WidgetManagement\app\Http\Livewire\WidgetManageComponent;
 use Modules\WidgetManagement\app\Http\Livewire\WidgetSectionComponent;
 use Modules\WidgetManagement\app\Http\Livewire\WidgetItemComponent;
@@ -17,10 +18,15 @@ Route::middleware(['web', 'auth', 'tenant'])
         Route::prefix('widgetmanagement')
             ->name('widgetmanagement.')
             ->group(function () {
-                // Bileşen Yönetimi Ana Sayfa (Aktif Bileşenler ve Galeri)
+                // Bileşen Yönetimi Ana Sayfa (Aktif Bileşenler)
                 Route::get('/', WidgetComponent::class)
                     ->middleware('module.permission:widgetmanagement,view')
                     ->name('index');
+                
+                // Bileşen Galerisi Sayfası
+                Route::get('/gallery', WidgetGalleryComponent::class)
+                    ->middleware('module.permission:widgetmanagement,view')
+                    ->name('gallery');
                     
                 // Widget Şablonu Yönetimi - SADECE ROOT
                 Route::get('/manage/{id?}', WidgetManageComponent::class)

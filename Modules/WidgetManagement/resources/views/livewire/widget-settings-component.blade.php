@@ -39,6 +39,33 @@
                 </div>
             
                 <form wire:submit.prevent="save" class="row g-3">
+                    <!-- Başlık alanı -->
+                    <div class="col-md-12 mb-3">
+                        <div class="card">
+                            <div class="card-status-start bg-primary"></div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="field-title" class="form-label required">
+                                        Bileşen Başlığı
+                                    </label>
+                                    <div class="input-icon">
+                                        <span class="input-icon-addon">
+                                            <i class="fas fa-heading"></i>
+                                        </span>
+                                        <input type="text" 
+                                            wire:model="settings.title" 
+                                            id="field-title" 
+                                            class="form-control @error('settings.title') is-invalid @enderror"
+                                            placeholder="Bileşen Başlığı">
+                                    </div>
+                                    @error('settings.title')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
                     @foreach($schema as $field)
                         <div class="col-md-6 mb-3">
                             <div class="card">

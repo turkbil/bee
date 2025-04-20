@@ -12,6 +12,7 @@ use Modules\WidgetManagement\app\Http\Livewire\WidgetSettingsComponent;
 use Modules\WidgetManagement\app\Http\Livewire\WidgetGalleryComponent;
 use Modules\WidgetManagement\app\Http\Livewire\WidgetCategoryComponent;
 use Modules\WidgetManagement\app\Http\Livewire\WidgetCategoryManageComponent;
+use Modules\WidgetManagement\app\Http\Livewire\FileWidgetListComponent;
 use Modules\WidgetManagement\app\Services\WidgetService;
 use Modules\WidgetManagement\app\Services\WidgetItemService;
 use Nwidart\Modules\Traits\PathNamespace;
@@ -60,6 +61,7 @@ class WidgetManagementServiceProvider extends ServiceProvider
         Livewire::component('widget-gallery-component', WidgetGalleryComponent::class);
         Livewire::component('widget-category-component', WidgetCategoryComponent::class);
         Livewire::component('widget-category-manage-component', WidgetCategoryManageComponent::class);
+        Livewire::component('file-widget-list-component', FileWidgetListComponent::class);
     }
 
     public function register()

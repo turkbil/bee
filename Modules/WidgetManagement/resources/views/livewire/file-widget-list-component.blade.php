@@ -36,10 +36,10 @@
                 <div class="col-md-2">
                     <div class="d-flex align-items-center justify-content-end gap-3">
                         <select wire:model.live="perPage" class="form-select" style="width: 80px">
-                            <option value="10">10</option>
-                            <option value="40">40</option>
-                            <option value="100">100</option>
-                            <option value="200">200</option>
+                            <option value="12">12</option>
+                            <option value="24">24</option>
+                            <option value="48">48</option>
+                            <option value="96">96</option>
                         </select>
                     </div>
                 </div>
@@ -76,57 +76,89 @@
             </div>
             @endif
             
-            <!-- Bileşen Listesi -->
-            <div class="row row-cards">
+            <!-- Bileşen Listesi (Kategoriye Göre Gruplandırılmış) -->
+            <div class="row g-3">
+                @php
+                    $currentCategory = null;
+                @endphp
+                
                 @forelse($widgets as $widget)
-                <div class="col-12 col-sm-6 col-lg-4 col-xl-4">
-                    <div class="card">
-                        <div class="card-status-top {{ $widget->is_active ? 'bg-primary' : 'bg-danger' }}"></div>
-                        
-                        <!-- Kart Header -->
-                        <div class="card-header d-flex align-items-center">
-                            <div class="me-auto">
-                                <h3 class="card-title mb-0">{{ $widget->name }}</h3>
-                                @if($widget->category)
-                                <div class="text-muted small">
-                                    Kategori: {{ $widget->category->title }}
-                                </div>
-                                @endif
-                            </div>
+                    @if($currentCategory != $widget->widget_category_id)
+                        @php $currentCategory = $widget->widget_category_id; @endphp
+                        <div class="col-12">
+                            <h3 class="mt-4 mb-3 border-bottom pb-2">
+                                {{ $widget->category ? $widget->category->title : 'Diğer' }}
+                            </h3>
                         </div>
-    
-                        <div class="list-group list-group-flush">
-                            <div class="list-group-item py-2 bg-muted-lt">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-fill small text-muted">
-                                        <div class="mt-1">
-                                            <strong>Dosya Yolu:</strong> <code>{{ $widget->file_path }}</code>
-                                        </div>
-                                        <div class="mt-1" style="height: 40px; overflow: hidden;">
-                                            {{ $widget->description ? Str::limit($widget->description, 80) : 'Açıklama yok' }}
-                                        </div>
+                    @endif
+                    
+                    <div class="col-12 col-sm-6 col-lg-4 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-status-top {{ $widget->is_active ? 'bg-primary' : 'bg-danger' }}"></div>
+                            
+                            <!-- Kart Header -->
+                            <div class="card-header d-flex align-items-center">
+                                <div class="me-auto">
+                                    <h3 class="card-title mb-0">
+                                        <a href="{{ route('admin.widgetmanagement.items', $widget->id) }}">
+                                            {{ $widget->name }}
+                                        </a>
+                                    </h3>
+
+                                    <div class="text-muted small mt-1">
+                                         <code>{{ $widget->file_path }}</code>
+                                    </div>
+                                </div>
+                                <div class="dropdown">
+                                    <a href="#" class="btn btn-icon" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-end">
+                                        <a href="{{ route('admin.widgetmanagement.manage', $widget->id) }}" class="dropdown-item">
+                                            <i class="fas fa-tools me-2"></i> Yapılandır
+                                        </a>
+                                        <a href="{{ route('admin.widgetmanagement.file.preview', $widget->id) }}" class="dropdown-item" target="_blank">
+                                            <i class="fas fa-eye me-2"></i> Önizleme
+                                        </a>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <!-- Kart Footer -->
-                        <div class="card-footer">
-                            <div class="d-flex align-items-center justify-content-between">
-                                <div class="d-flex gap-2">
-                                    <a href="{{ route('admin.widgetmanagement.file.preview', $widget->id) }}" class="btn btn-outline-primary" target="_blank">
+                            
+                            <div class="card-body pt-2">
+                                @if($widget->description)
+                                <p class="text-muted mt-2">{{ $widget->description }}</p>
+                                @endif
+                                
+                                <div class="mt-2">
+                                    @if($widget->thumbnail)
+                                        <img src="{{ $widget->thumbnail }}" class="img-fluid rounded" alt="{{ $widget->name }}">
+                                    @else
+                                        <div class="alert alert-light text-center p-2">
+                                            <i class="fas fa-image fa-2x text-muted my-2"></i>
+                                            <p class="text-muted small mb-0">Önizleme görseli yok</p>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                            
+                            <!-- Kart Footer -->
+                            <div class="card-footer">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <a href="{{ route('admin.widgetmanagement.file.preview', $widget->id) }}" class="btn btn-outline-primary w-100" target="_blank">
                                         <i class="fas fa-eye me-1"></i> Önizleme
                                     </a>
                                 </div>
-                                <div class="d-flex gap-2">
-                                    <div class="badge bg-blue-lt me-2">
-                                        Hazır Dosya
-                                    </div>
+                                
+                                <div class="d-flex align-items-center justify-content-between mt-2">
+                                    <span class="badge bg-blue-lt">
+                                        <i class="fas fa-folder me-1"></i> {{ $widget->category ? $widget->category->title : 'Kategorilendirilmemiş' }}
+                                    </span>
+                                    
+                                    <span class="badge bg-primary">Hazır Dosya</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
                 @empty
                 <div class="col-12">
                     <div class="empty">

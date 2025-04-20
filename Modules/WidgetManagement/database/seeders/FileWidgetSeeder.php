@@ -53,7 +53,7 @@ class FileWidgetSeeder extends Seeder
         // Önce tüm klasörleri oluştur (kategoriler)
         foreach ($categoryMappings as $folder => $categoryName) {
             $category = WidgetCategory::firstOrCreate(
-                ['slug' => Str::slug($categoryName)],
+                ['title' => $categoryName],
                 [
                     'title' => $categoryName,
                     'description' => $categoryName . ' için şablonlar',

@@ -6,31 +6,38 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Modules\WidgetManagement\app\Models\Widget;
 use Modules\WidgetManagement\app\Models\TenantWidget;
-use Modules\WidgetManagement\app\Models\WidgetItem;
+use Modules\WidgetManagement\app\Services\Widget\WidgetRenderService;
+use Modules\WidgetManagement\app\Services\Widget\WidgetCacheService;
 
 class WidgetService
 {
-    /**
-     * Cache öneki
-     */
+    protected $renderService;
+    protected $cacheService;
+    
     protected $cachePrefix = 'widget_';
+    protected $cacheDuration = 1440;
+    protected $useCache = false; // Önbellek kullanımını varsayılan olarak kapalı yap
     
-    /**
-     * Cache süresi (dakika)
-     */
-    protected $cacheDuration = 1440; // 24 saat
+    public function __construct(
+        WidgetRenderService $renderService = null,
+        WidgetCacheService $cacheService = null
+    ) {
+        $this->renderService = $renderService ?? new WidgetRenderService();
+        $this->cacheService = $cacheService ?? new WidgetCacheService($this->cachePrefix);
+    }
     
-    /**
-     * Tüm widget'ları getir
-     */
+    // Önbellek kullanımını ayarla
+    public function setCacheUsage($useCache)
+    {
+        $this->useCache = $useCache;
+        return $this;
+    }
+    
     public function getAllWidgets(): Collection
     {
         return Widget::all();
     }
     
-    /**
-     * Aktif widget'ları getir
-     */
     public function getActiveWidgets(): Collection
     {
         return Widget::where('is_active', true)
@@ -38,9 +45,6 @@ class WidgetService
             ->get();
     }
     
-    /**
-     * Widget tipine göre widget'ları getir
-     */
     public function getWidgetsByType(string $type): Collection
     {
         return Widget::where('type', $type)
@@ -48,28 +52,18 @@ class WidgetService
             ->get();
     }
     
-    /**
-     * Widget ID'sine göre widget getir
-     */
     public function getWidgetById($widgetId): ?Widget
     {
         return Widget::find($widgetId);
     }
     
-    /**
-     * Widget slug'ına göre widget getir
-     */
     public function getWidgetBySlug($slug): ?Widget
     {
         return Widget::where('slug', $slug)->first();
     }
     
-    /**
-     * Belirli bir modüle uygun widget'ları getir
-     */
     public function getWidgetsForModule($moduleId): Collection
     {
-        // moduleId null ise tüm widget'ları döndür
         if ($moduleId === null) {
             return $this->getActiveWidgets();
         }
@@ -84,9 +78,6 @@ class WidgetService
             ->get();
     }
     
-    /**
-     * Tenant için widget örneklerini getir
-     */
     public function getTenantWidgets($position = null): Collection
     {
         $query = TenantWidget::query();
@@ -100,257 +91,180 @@ class WidgetService
             ->get();
     }
     
-    /**
-     * Konuma göre widget'ları render et
-     */
     public function renderWidgetsInPosition(string $position): string
     {
         $cacheKey = $this->cachePrefix . tenant()->id . "_pos_{$position}";
         
-        return Cache::remember($cacheKey, $this->cacheDuration, function () use ($position) {
-            $tenantWidgets = $this->getTenantWidgets($position);
-            
-            $output = '';
-            foreach ($tenantWidgets as $tenantWidget) {
-                $output .= $this->renderSingleWidget($tenantWidget);
-            }
-            
-            return $output;
-        });
+        if ($this->useCache) {
+            return Cache::remember($cacheKey, $this->cacheDuration, function () use ($position) {
+                return $this->generatePositionOutput($position);
+            });
+        }
+        
+        return $this->generatePositionOutput($position);
+    }
+    
+    private function generatePositionOutput(string $position): string
+    {
+        $tenantWidgets = $this->getTenantWidgets($position);
+        
+        $output = '';
+        foreach ($tenantWidgets as $tenantWidget) {
+            $output .= $this->renderSingleWidget($tenantWidget);
+        }
+        
+        return $output;
     }
         
-    /**
-     * Tek bir widget'ı render et
-     */
     public function renderSingleWidget(TenantWidget $tenantWidget): string
     {
         $cacheKey = $this->cachePrefix . tenant()->id . "_widget_{$tenantWidget->id}";
         
-        return Cache::remember($cacheKey, $this->cacheDuration, function () use ($tenantWidget) {
-            // Özel widget ise
-            if ($tenantWidget->is_custom) {
-                $html = $tenantWidget->custom_html;
-                $css = $tenantWidget->custom_css;
-                $js = $tenantWidget->custom_js;
-                $cssFiles = [];
-                $jsFiles = [];
-                
-                // Değişkenleri değiştir
-                $html = $this->processVariables($html, $tenantWidget->settings ?? []);
-            } else {
-                // Merkezi widget
-                $widget = $tenantWidget->widget;
-                
-                if (!$widget || !$widget->is_active) {
-                    return '';
-                }
-                
-                // File tipinde widget için doğrudan view dosyasını render et
-                if ($widget->type === 'file' && !empty($widget->file_path)) {
-                    try {
-                        $viewPath = 'widgetmanagement::blocks.' . $widget->file_path;
-                        if (view()->exists($viewPath)) {
-                            $settings = $tenantWidget->settings ?? [];
-                            return view($viewPath, ['settings' => $settings])->render();
-                        } else {
-                            return '<div class="alert alert-danger">Belirtilen view dosyası bulunamadı: ' . $viewPath . '</div>';
-                        }
-                    } catch (\Exception $e) {
-                        return '<div class="alert alert-danger">View render hatası: ' . $e->getMessage() . '</div>';
-                    }
-                }
-                
-                $html = $widget->content_html;
-                $css = $widget->content_css;
-                $js = $widget->content_js;
-                $cssFiles = $widget->css_files ?? [];
-                $jsFiles = $widget->js_files ?? [];
-                
-                // Widget'ın ayarlarını al
-                $settings = $tenantWidget->settings ?? [];
-                
-                // Dinamik widget'lar için öğeleri al
-                $items = [];
-                if ($widget->has_items) {
-                    $items = $tenantWidget->items
-                        ->where('content.is_active', true) // Sadece aktif öğeleri getir
-                        ->map(function ($item) {
-                            return $item->content;
-                        })->toArray();
-                    
-                    // Öğeleri şablona yerleştir
-                    $html = $this->processItems($html, $items);
-                }
-                
-                // Değişkenleri değiştir
-                $html = $this->processVariables($html, $settings);
-                
-                // Koşullu blokları işle
-                $html = $this->processConditionalBlocks($html, $settings);
-            }
-            
-            // Sonuç HTML
-            $result = '';
-            
-            // CSS dosya bağlantıları
-            if (!empty($cssFiles)) {
-                foreach ($cssFiles as $cssFile) {
-                    if (!empty($cssFile)) {
-                        $result .= "<link rel=\"stylesheet\" href=\"{$cssFile}\">\n";
-                    }
-                }
-            }
-            
-            // CSS varsa ekle
-            if (!empty($css)) {
-                $result .= "<style>{$css}</style>\n";
-            }
-            
-            // HTML içerik
-            $result .= $html;
-            
-            // JS dosya bağlantıları
-            if (!empty($jsFiles)) {
-                foreach ($jsFiles as $jsFile) {
-                    if (!empty($jsFile)) {
-                        $result .= "<script src=\"{$jsFile}\"></script>\n";
-                    }
-                }
-            }
-            
-            // JS varsa ekle
-            if (!empty($js)) {
-                $result .= "<script>{$js}</script>\n";
-            }
-            
-            return $result;
-        });
-    }
-    
-    /**
-     * Değişkenleri işle
-     */
-    protected function processVariables(string $content, array $settings): string
-    {
-        return preg_replace_callback('/\{\{(.*?)\}\}/', function ($matches) use ($settings) {
-            $key = trim($matches[1]);
-            
-            // Değişken kontrolü
-            if (strpos($key, '#') === 0 || strpos($key, '/') === 0) {
-                return $matches[0]; // Özel direktifleri koru
-            }
-            
-            // Nokta notasyonu desteği
-            if (strpos($key, '.') !== false) {
-                $parts = explode('.', $key);
-                $value = $settings;
-                
-                foreach ($parts as $part) {
-                    if (isset($value[$part])) {
-                        $value = $value[$part];
-                    } else {
-                        return ''; // Değer bulunamadı
-                    }
-                }
-                
-                return is_scalar($value) ? $value : '';
-            }
-            
-            // Basit değişken
-            return $settings[$key] ?? '';
-        }, $content);
-    }
-    
-    /**
-     * Öğeleri işle
-     */
-    protected function processItems(string $content, array $items): string
-    {
-        // {{#each items}} ... {{/each}} bloklarını işle
-        $pattern = '/\{\{#each\s+items\}\}(.*?)\{\{\/each\}\}/s';
+        if ($this->useCache) {
+            return Cache::remember($cacheKey, $this->cacheDuration, function () use ($tenantWidget) {
+                return $this->processWidget($tenantWidget);
+            });
+        }
         
-        return preg_replace_callback($pattern, function ($matches) use ($items) {
-            $itemTemplate = $matches[1];
-            $result = '';
-            
-            foreach ($items as $item) {
-                // Her öğe için şablonu işle
-                $itemContent = $this->processVariables($itemTemplate, $item);
-                $result .= $itemContent;
-            }
-            
-            return $result;
-        }, $content);
+        return $this->processWidget($tenantWidget);
     }
     
-    /**
-     * Koşullu blokları işle
-     */
-    protected function processConditionalBlocks(string $content, array $settings): string
+    private function processWidget(TenantWidget $tenantWidget): string
     {
-        // {{#if condition}} ... {{/if}} bloklarını işle
-        $pattern = '/\{\{#if\s+(.*?)\}\}(.*?)(?:\{\{else\}\}(.*?))?\{\{\/if\}\}/s';
-        
-        return preg_replace_callback($pattern, function ($matches) use ($settings) {
-            $condition = trim($matches[1]);
-            $trueContent = $matches[2];
-            $falseContent = $matches[3] ?? '';
+        if ($tenantWidget->is_custom) {
+            $html = $tenantWidget->custom_html;
+            $css = $tenantWidget->custom_css;
+            $js = $tenantWidget->custom_js;
+            $cssFiles = [];
+            $jsFiles = [];
             
-            // Nokta notasyonu desteği
-            if (strpos($condition, '.') !== false) {
-                $parts = explode('.', $condition);
-                $value = $settings;
-                
-                foreach ($parts as $part) {
-                    if (isset($value[$part])) {
-                        $value = $value[$part];
-                    } else {
-                        $value = null;
-                        break;
-                    }
-                }
-                
-                return $value ? $trueContent : $falseContent;
-            }
-            
-            // Basit koşul
-            return isset($settings[$condition]) && $settings[$condition] ? $trueContent : $falseContent;
-        }, $content);
-    }
-    
-    /**
-     * Widget önbelleğini temizle
-     */
-    public function clearWidgetCache($tenantId = null, $widgetId = null): void
-    {
-        if ($widgetId) {
-            // Belirli bir widget için önbelleği temizle
-            if ($tenantId) {
-                Cache::forget($this->cachePrefix . $tenantId . "_widget_{$widgetId}");
-            } else {
-                // tenantId null ise, merkezi widget önbelleğini temizle
-                Cache::forget($this->cachePrefix . "central_widget_{$widgetId}");
-            }
+            $html = $this->renderService->processVariables($html, $tenantWidget->settings ?? []);
         } else {
-            // Tüm widget önbelleklerini temizle
-            if ($tenantId) {
-                $keys = Cache::get($this->cachePrefix . "keys_{$tenantId}", []);
-                
-                foreach ($keys as $key) {
-                    Cache::forget($key);
+            $widget = $tenantWidget->widget;
+            
+            if (!$widget || !$widget->is_active) {
+                return '';
+            }
+            
+            if ($widget->type === 'file' && !empty($widget->file_path)) {
+                try {
+                    $viewPath = 'widgetmanagement::blocks.' . $widget->file_path;
+                    if (view()->exists($viewPath)) {
+                        $settings = $tenantWidget->settings ?? [];
+                        return view($viewPath, ['settings' => $settings])->render();
+                    } else {
+                        return '<div class="alert alert-danger">Belirtilen view dosyası bulunamadı: ' . $viewPath . '</div>';
+                    }
+                } catch (\Exception $e) {
+                    return '<div class="alert alert-danger">View render hatası: ' . $e->getMessage() . '</div>';
                 }
+            }
+            
+            $html = $widget->content_html;
+            $css = $widget->content_css;
+            $js = $widget->content_js;
+            $cssFiles = $widget->css_files ?? [];
+            $jsFiles = $widget->js_files ?? [];
+            
+            $settings = $tenantWidget->settings ?? [];
+            
+            $items = [];
+            if ($widget->has_items) {
+                $items = $tenantWidget->items
+                    ->where('content.is_active', true)
+                    ->map(function ($item) {
+                        return $item->content;
+                    })->toArray();
                 
-                Cache::forget($this->cachePrefix . "keys_{$tenantId}");
-            } else {
-                // Tüm tenant'lar için temizlik (bu işlem daha dikkatli yapılmalı)
-                $globalKeys = Cache::get($this->cachePrefix . "global_keys", []);
-                
-                foreach ($globalKeys as $key) {
-                    Cache::forget($key);
+                $html = $this->renderService->processItems($html, $items);
+            }
+            
+            if ($widget->type === 'module') {
+                $moduleItems = $this->getModuleData($widget->data_source, $settings);
+                $html = $this->renderService->processModuleData($html, $moduleItems);
+            }
+            
+            $html = $this->renderService->processVariables($html, $settings);
+            $html = $this->renderService->processConditionalBlocks($html, $settings);
+        }
+        
+        $result = '';
+        
+        if (!empty($cssFiles)) {
+            foreach ($cssFiles as $cssFile) {
+                if (!empty($cssFile)) {
+                    $result .= "<link rel=\"stylesheet\" href=\"{$cssFile}\">\n";
                 }
-                
-                Cache::forget($this->cachePrefix . "global_keys");
             }
         }
+        
+        if (!empty($css)) {
+            $result .= "<style>{$css}</style>\n";
+        }
+        
+        $result .= $html;
+        
+        if (!empty($jsFiles)) {
+            foreach ($jsFiles as $jsFile) {
+                if (!empty($jsFile)) {
+                    $result .= "<script src=\"{$jsFile}\"></script>\n";
+                }
+            }
+        }
+        
+        if (!empty($js)) {
+            $result .= "<script>{$js}</script>\n";
+        }
+        
+        return $result;
+    }
+    
+    public function clearWidgetCache($tenantId = null, $widgetId = null): void
+    {
+        $this->cacheService->clearCache($tenantId, $widgetId);
+    }
+    
+    /**
+     * Modül verilerini al (önbelleksiz)
+     * 
+     * @param string|null $dataSource Veri kaynağı sınıfı yolu
+     * @param array $settings Ayarlar
+     * @return array Modül verileri
+     */
+    public function getModuleData($dataSource = null, array $settings = []): array
+    {
+        if (empty($dataSource)) {
+            return [];
+        }
+        
+        // İlk olarak tam sınıf yolu verilmişse direk kullan
+        if (class_exists($dataSource)) {
+            $module = new $dataSource();
+            if (method_exists($module, 'getData')) {
+                return $module->getData($settings);
+            }
+            return [];
+        }
+        
+        // Modules/ öneki yoksa, resources/views/blocks/modules/ altında arama yap
+        if (strpos($dataSource, 'Modules\\') !== 0) {
+            // Dosya yolunu çıkar (page/recent)
+            $parts = explode('/', $dataSource);
+            if (count($parts) >= 2) {
+                $moduleName = $parts[0]; // page, portfolio, vb.
+                
+                // Sınıf dosyasını kontrol et
+                $moduleClassName = 'Modules\\WidgetManagement\\resources\\views\\blocks\\modules\\' . $moduleName . '\\' . ucfirst($moduleName) . 'Modules';
+                
+                if (class_exists($moduleClassName)) {
+                    $module = new $moduleClassName();
+                    if (method_exists($module, 'getData')) {
+                        return $module->getData($settings);
+                    }
+                }
+            }
+        }
+        
+        return [];
     }
 }

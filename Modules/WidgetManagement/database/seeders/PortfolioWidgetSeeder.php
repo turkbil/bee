@@ -20,49 +20,22 @@ class PortfolioWidgetSeeder extends Seeder
             return;
         }
         
-        // Önce "Modüller" kategorisini bul veya oluştur
-        $mainCategory = WidgetCategory::where('slug', 'moduller')->first();
+        // "İçerikler" ana kategorisini bul
+        $mainCategory = WidgetCategory::where('slug', 'icerikler')->first();
         
         if (!$mainCategory) {
-            $mainCategory = WidgetCategory::create([
-                'title' => 'Modüller',
-                'slug' => 'moduller',
-                'description' => 'Sistem modüllerine bağlı bileşenler',
-                'order' => 3,
-                'is_active' => true,
-                'icon' => 'fa-puzzle-piece'
-                // has_subcategories alanı kaldırıldı
-            ]);
-            
-            // Kategori oluşturulduktan sonra has_subcategories alanını güncelle
-            if ($mainCategory) {
-                $mainCategory->has_subcategories = true;
-                $mainCategory->save();
-            }
+            $this->command->info('İçerikler kategorisi bulunamadı, ContentCategoriesSeeder\'ı önce çalıştırın.');
+            return;
         }
         
-        // "Portfolio Modülü" alt kategorisini bul veya oluştur
+        // "Portfolio Modülü" alt kategorisini bul
         $category = WidgetCategory::where('slug', 'portfolio-modulu')
                                   ->where('parent_id', $mainCategory->widget_category_id)
                                   ->first();
         
         if (!$category) {
-            $category = WidgetCategory::create([
-                'title' => 'Portfolio Modülü',
-                'slug' => 'portfolio-modulu',
-                'description' => 'Portfolio modülünden veri çeken bileşenler',
-                'order' => 2, // Sayfa modülünden sonra
-                'is_active' => true,
-                'parent_id' => $mainCategory->widget_category_id,
-                'icon' => 'fa-image'
-                // has_subcategories alanı kaldırıldı
-            ]);
-            
-            // Ana kategorinin has_subcategories değerini true yap
-            if ($mainCategory && $category) {
-                $mainCategory->has_subcategories = true;
-                $mainCategory->save();
-            }
+            $this->command->info('Portfolio Modülü kategorisi bulunamadı, ContentCategoriesSeeder\'ı önce çalıştırın.');
+            return;
         }
         
         // Portfolio Liste Widget'ı

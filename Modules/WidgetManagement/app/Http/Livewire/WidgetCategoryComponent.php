@@ -18,7 +18,6 @@ class WidgetCategoryComponent extends Component
     public $newCategoryTitle = '';
     public $parentId = null;
     public $categories = [];
-    public $maxWidgetsCount = 0;
     public $expandedCategories = [];
     public $editCategoryId = null;
     public $editData = [
@@ -29,6 +28,17 @@ class WidgetCategoryComponent extends Component
         'parent_id' => null,
         'is_active' => true
     ];
+    
+    // Arama için
+    public $search = '';
+    
+    // Seçim işlemleri için
+    public $selectedItems = [];
+    public $selectAll = false;
+    
+    // Sıralama için
+    public $sortField = 'order';
+    public $sortDirection = 'asc';
 
     protected $rules = [
         'title' => 'required|min:3|max:255',
@@ -58,14 +68,42 @@ class WidgetCategoryComponent extends Component
     public function loadCategories()
     {
         // Tüm kategorileri hiyerarşik yapıda yükle
-        $categories = WidgetCategory::withCount('widgets')
-            ->with('children')
-            ->whereNull('parent_id')
-            ->orderBy('order')
-            ->get();
+        $query = WidgetCategory::query();
+        
+        // Arama varsa uygula
+        if ($this->search) {
+            $query->where('title', 'like', '%' . $this->search . '%');
+        }
+        
+        // Sıralama
+        $query->orderBy($this->sortField, $this->sortDirection);
+        
+        // Ana kategoriler ve alt kategorileri al
+        if (empty($this->search)) {
+            $categories = $query->withCount('widgets')
+                ->with(['children' => function ($q) {
+                    $q->withCount('widgets')->orderBy('order');
+                }])
+                ->whereNull('parent_id')
+                ->get();
+        } else {
+            // Arama varsa tüm kategorileri getir, parent_id filtrelemesi yapma
+            $categories = $query->withCount('widgets')->get();
+        }
 
         $this->categories = $categories;
-        $this->maxWidgetsCount = WidgetCategory::withCount('widgets')->max('widgets_count') ?? 1;
+    }
+    
+    public function sortBy($field)
+    {
+        if ($this->sortField === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortField = $field;
+            $this->sortDirection = 'asc';
+        }
+        
+        $this->loadCategories();
     }
 
     public function toggleExpand($categoryId)
@@ -75,6 +113,18 @@ class WidgetCategoryComponent extends Component
         } else {
             $this->expandedCategories[$categoryId] = true;
         }
+    }
+    
+    public function expandAll()
+    {
+        foreach ($this->categories as $category) {
+            $this->expandedCategories[$category->widget_category_id] = true;
+        }
+    }
+    
+    public function collapseAll()
+    {
+        $this->expandedCategories = [];
     }
 
     public function startEdit($categoryId)
@@ -196,11 +246,99 @@ class WidgetCategoryComponent extends Component
 
         $this->loadCategories();
     }
+    
+    public function bulkDelete()
+    {
+        if (empty($this->selectedItems)) {
+            $this->dispatch('toast', [
+                'title' => 'Uyarı!',
+                'message' => 'Lütfen silinecek kategorileri seçin.',
+                'type' => 'warning'
+            ]);
+            return;
+        }
+        
+        $categories = WidgetCategory::whereIn('widget_category_id', $this->selectedItems)->get();
+        
+        foreach ($categories as $category) {
+            if ($category->widgets()->count() > 0) {
+                $this->dispatch('toast', [
+                    'title' => 'Uyarı!',
+                    'message' => "'{$category->title}' kategorisine bağlı widget'lar var. Bu kategori silinemedi.",
+                    'type' => 'warning'
+                ]);
+                continue;
+            }
+            
+            if ($category->children()->count() > 0) {
+                $this->dispatch('toast', [
+                    'title' => 'Uyarı!',
+                    'message' => "'{$category->title}' kategorisinin alt kategorileri var. Bu kategori silinemedi.",
+                    'type' => 'warning'
+                ]);
+                continue;
+            }
+            
+            $category->delete();
+            
+            if (function_exists('log_activity')) {
+                log_activity($category, 'toplu silme işlemi ile silindi');
+            }
+        }
+        
+        $this->dispatch('toast', [
+            'title' => 'Başarılı!',
+            'message' => 'Seçili kategoriler silindi.',
+            'type' => 'success'
+        ]);
+        
+        $this->selectAll = false;
+        $this->selectedItems = [];
+        $this->loadCategories();
+    }
+    
+    public function bulkToggleActive($status)
+    {
+        if (empty($this->selectedItems)) {
+            $this->dispatch('toast', [
+                'title' => 'Uyarı!',
+                'message' => 'Lütfen durumu değiştirilecek kategorileri seçin.',
+                'type' => 'warning'
+            ]);
+            return;
+        }
+        
+        $categories = WidgetCategory::whereIn('widget_category_id', $this->selectedItems)->get();
+        
+        foreach ($categories as $category) {
+            $category->is_active = $status;
+            $category->save();
+            
+            if (function_exists('log_activity')) {
+                log_activity(
+                    $category,
+                    $status ? 'toplu aktifleştirme ile aktif edildi' : 'toplu pasifleştirme ile pasif edildi'
+                );
+            }
+        }
+        
+        $this->dispatch('toast', [
+            'title' => 'Başarılı!',
+            'message' => 'Seçili kategoriler ' . ($status ? 'aktifleştirildi' : 'pasifleştirildi') . '.',
+            'type' => 'success'
+        ]);
+        
+        $this->selectAll = false;
+        $this->selectedItems = [];
+        $this->loadCategories();
+    }
 
     public function quickAdd()
     {
         try {
-            $this->validate();
+            $this->validate([
+                'title' => 'required|min:3|max:255'
+            ]);
             
             $maxOrder = WidgetCategory::whereNull('parent_id')->max('order') ?? 0;
             
@@ -252,16 +390,33 @@ class WidgetCategoryComponent extends Component
         }
 
         foreach ($list as $item) {
-            if (!isset($item['value'], $item['order'], $item['parent'])) {
+            if (!isset($item['id'], $item['order'], $item['parentId'])) {
                 continue;
             }
 
-            $category = WidgetCategory::find($item['value']);
+            $category = WidgetCategory::find($item['id']);
             if ($category) {
+                $oldParentId = $category->parent_id;
+                $newParentId = !empty($item['parentId']) ? $item['parentId'] : null;
+                
                 $category->update([
                     'order' => $item['order'],
-                    'parent_id' => $item['parent'] ?: null
+                    'parent_id' => $newParentId
                 ]);
+                
+                // Parent değişimi olursa log
+                if ($oldParentId != $newParentId) {
+                    if (function_exists('log_activity')) {
+                        if ($newParentId) {
+                            $parentCategory = WidgetCategory::find($newParentId);
+                            $logMessage = 'kategori "' . ($parentCategory->title ?? 'Bilinmeyen') . '" altına taşındı';
+                        } else {
+                            $logMessage = 'ana kategori olarak taşındı';
+                        }
+                        
+                        log_activity($category, $logMessage);
+                    }
+                }
             }
         }
 
@@ -272,6 +427,30 @@ class WidgetCategoryComponent extends Component
             'message' => 'Kategori sıralaması güncellendi.',
             'type' => 'success',
         ]);
+    }
+    
+    public function updatedSelectAll()
+    {
+        if ($this->selectAll) {
+            $this->selectedItems = $this->categories->pluck('widget_category_id')->toArray();
+            
+            // Alt kategorileri de ekle
+            foreach ($this->categories as $category) {
+                if ($category->children) {
+                    $this->selectedItems = array_merge(
+                        $this->selectedItems, 
+                        $category->children->pluck('widget_category_id')->toArray()
+                    );
+                }
+            }
+        } else {
+            $this->selectedItems = [];
+        }
+    }
+    
+    public function updatedSearch()
+    {
+        $this->loadCategories();
     }
 
     public function render()

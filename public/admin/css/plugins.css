@@ -476,6 +476,49 @@ body.table-compact .table > :not(caption) > * > * {
 .order-number.animate {
     animation: numberChange 0.5s ease forwards;
 }
+.category-drag-handle {
+    cursor: move;
+}
+
+.category-item {
+    transition: background-color 0.2s;
+}
+
+.category-sortable-ghost {
+    background-color: rgba(32, 107, 196, 0.1) !important;
+    border: 1px dashed #206bc4 !important;
+}
+
+.category-sortable-drag {
+    opacity: 0.8;
+}
+
+#category-sortable-list {
+    min-height: 50px;
+}
+
+.category-drop-indicator {
+    border-left: 4px solid #206bc4;
+    padding-left: 16px !important;
+}
+
+.category-progress-bar-indeterminate {
+    width: 100%;
+    position: relative;
+    animation: category-progress-indeterminate 1s linear infinite;
+    background-color: #206bc4;
+}
+
+@keyframes category-progress-indeterminate {
+    from {
+        left: -25%;
+        width: 25%;
+    }
+    to {
+        left: 100%;
+        width: 25%;
+    }
+}
 
 @keyframes numberChange {
     0% {

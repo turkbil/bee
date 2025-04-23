@@ -15,7 +15,7 @@
                         style="width: 100%; max-width: 250px; z-index: 10;">
                         <div class="small text-muted mb-2">Güncelleniyor...</div>
                         <div class="progress mb-1">
-                            <div class="progress-bar progress-bar-indeterminate"></div>
+                            <div class="category-progress-bar-indeterminate"></div>
                         </div>
                     </div>
                     
@@ -130,14 +130,19 @@
                         </div>
                         
                         <div class="mb-3">
-                            <label class="form-check form-switch">
+                            <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
                                 @if($editCategoryId)
-                                    <input type="checkbox" wire:model="editData.is_active" class="form-check-input">
+                                    <input type="checkbox" wire:model="editData.is_active" value="1" />
                                 @else
-                                    <input type="checkbox" wire:model="is_active" class="form-check-input">
+                                    <input type="checkbox" wire:model="is_active" value="1" />
                                 @endif
-                                <span class="form-check-label">Aktif</span>
-                            </label>
+                                <div class="state p-success p-on ms-2">
+                                    <label>Aktif</label>
+                                </div>
+                                <div class="state p-danger p-off ms-2">
+                                    <label>Aktif Değil</label>
+                                </div>
+                            </div>
                         </div>
                         
                         <div class="d-flex justify-content-between">
@@ -181,12 +186,12 @@
                         style="width: 100%; max-width: 250px; z-index: 10;">
                         <div class="small text-muted mb-2">Güncelleniyor...</div>
                         <div class="progress mb-1">
-                            <div class="progress-bar progress-bar-indeterminate"></div>
+                            <div class="category-progress-bar-indeterminate"></div>
                         </div>
                     </div>
                     
                     <div wire:loading.class="opacity-50" wire:target="loadCategories, toggleActive, delete, updatedSearch, updateOrder">
-                        <div class="list-group list-group-flush" id="sortable-list">
+                        <div class="list-group list-group-flush" id="category-sortable-list">
                             @forelse($categories as $category)
                                 <!-- Ana Kategori -->
                                 <div class="category-item list-group-item p-2" 
@@ -196,7 +201,7 @@
                                     data-is-parent="1">
                                     <div class="d-flex align-items-center">
                                         <!-- Sürükleme Kolu -->
-                                        <div class="drag-handle me-2">
+                                        <div class="category-drag-handle me-2">
                                             <i class="fas fa-grip-vertical text-muted"></i>
                                         </div>
                                         
@@ -211,9 +216,6 @@
                                             <div class="d-flex align-items-center justify-content-between">
                                                 <div>
                                                     <div class="h4 mb-0">{{ $category->title }}</div>
-                                                    <a href="javascript:void(0);" class="text-muted">
-                                                        {{ $category->widgets_count ?? 0 }} widget
-                                                    </a>
                                                 </div>
                                                 
                                                 <!-- İşlem Butonları -->
@@ -276,7 +278,7 @@
                                             data-is-parent="0">
                                             <div class="d-flex align-items-center">
                                                 <!-- Sürükleme Kolu -->
-                                                <div class="drag-handle me-2">
+                                                <div class="category-drag-handle me-2">
                                                     <i class="fas fa-grip-vertical text-muted"></i>
                                                 </div>
                                                 
@@ -291,9 +293,6 @@
                                                     <div class="d-flex align-items-center justify-content-between">
                                                         <div>
                                                             <div class="h4 mb-0">{{ $child->title }}</div>
-                                                            <a href="javascript:void(0);" class="text-muted">
-                                                                {{ $child->widgets_count ?? 0 }} widget
-                                                            </a>
                                                         </div>
                                                         
                                                         <!-- İşlem Butonları -->
@@ -378,199 +377,8 @@
     </div>
 </div>
 
-@push('styles')
-<style>
-    .drag-handle {
-        cursor: move;
-    }
-    
-    .category-item {
-        transition: background-color 0.2s;
-    }
-    
-    .sortable-ghost {
-        background-color: rgba(32, 107, 196, 0.1) !important;
-        border: 1px dashed #206bc4 !important;
-    }
-    
-    .sortable-drag {
-        opacity: 0.8;
-    }
-    
-    #sortable-list {
-        min-height: 50px;
-    }
-    
-    .category-drop-indicator {
-        border-left: 4px solid #206bc4;
-        padding-left: 16px !important;
-    }
-    
-    .progress-bar-indeterminate {
-        width: 100%;
-        position: relative;
-        animation: progress-indeterminate 1s linear infinite;
-        background-color: #206bc4;
-    }
-
-    @keyframes progress-indeterminate {
-        from {
-            left: -25%;
-            width: 25%;
-        }
-        to {
-            left: 100%;
-            width: 25%;
-        }
-    }
-</style>
-@endpush
 
 @push('scripts')
 <script src="{{ asset('admin/libs/sortable/sortable.min.js') }}"></script>
-<script>
-document.addEventListener('livewire:initialized', function() {
-    initSortable();
-    
-    Livewire.hook('morph.updated', () => {
-        initSortable();
-    });
-    
-    function initSortable() {
-        const container = document.getElementById('sortable-list');
-        if (!container) {
-            console.log('Sortable listesi bulunamadı');
-            return;
-        }
-        
-        // Mevcut sortable'ı temizle
-        if (window.categorySortable) {
-            window.categorySortable.destroy();
-            window.categorySortable = null;
-        }
-        
-        // Yeni sortable oluştur
-        window.categorySortable = new Sortable(container, {
-            animation: 150,
-            ghostClass: 'sortable-ghost',
-            dragClass: 'sortable-drag',
-            handle: '.drag-handle',
-            group: 'categories',
-            
-            onStart: function(evt) {
-                const item = evt.item;
-                item._indentLevel = item.classList.contains('ps-5') ? 1 : 0;
-            },
-            
-            onMove: function(evt) {
-                return true;
-            },
-            
-            onChange: function(evt) {
-                // Sürükleme sırasında alt kategori görsel göstergesini ayarla
-                const item = evt.item;
-                const previousItem = item.previousElementSibling;
-                
-                if (previousItem && !previousItem.classList.contains('ps-5') && 
-                    !item.hasAttribute('data-is-parent') || item.getAttribute('data-is-parent') === "0") {
-                    
-                    // Potansiyel alt kategori olarak göster
-                    const dragOffset = evt.originalEvent?.clientX || 0;
-                    const itemRect = item.getBoundingClientRect();
-                    const itemLeft = itemRect.left;
-                    
-                    // Sağa doğru sürüklendiyse alt kategori olarak göster
-                    if (dragOffset > itemLeft + 50) {
-                        item.classList.add('category-drop-indicator');
-                    } else {
-                        item.classList.remove('category-drop-indicator');
-                    }
-                } else {
-                    item.classList.remove('category-drop-indicator');
-                }
-            },
-            
-            onEnd: function(evt) {
-                // Sürükleme sona erdiğinde
-                const item = evt.item;
-                const previousItem = item.previousElementSibling;
-                const nextItem = item.nextElementSibling;
-                
-                // Görsel göstergeyi kaldır
-                item.classList.remove('category-drop-indicator');
-                
-                // Alt kategori veya ana kategori belirleme
-                let isSubcategory = false;
-                let parentId = null;
-                
-                // Gerçek konumu ve parent-child ilişkisini belirle
-                if (previousItem) {
-                    const dragOffset = evt.originalEvent?.clientX || 0;
-                    const itemRect = item.getBoundingClientRect();
-                    const itemLeft = itemRect.left;
-                    
-                    // Eğer önceki öğe bir ana kategori ise VE sağa doğru sürüklendiyse
-                    if (!previousItem.classList.contains('ps-5') && dragOffset > itemLeft + 50) {
-                        isSubcategory = true;
-                        parentId = previousItem.getAttribute('data-id');
-                        // Alt kategori görsel stilini uygula
-                        item.classList.add('ps-5');
-                    } else {
-                        // Ana kategori stilini uygula
-                        item.classList.remove('ps-5');
-                    }
-                } else {
-                    // Listedeki ilk öğe ana kategori olmalı
-                    item.classList.remove('ps-5');
-                }
-                
-                // Tüm kategorileri dolaşıp sıralama ve parent-child ilişkilerini güncelle
-                const items = [];
-                const allItems = Array.from(container.querySelectorAll('.category-item'));
-                
-                allItems.forEach((item, index) => {
-                    if (!item) return;
-                    
-                    const id = item.getAttribute('data-id');
-                    if (!id) return;
-                    
-                    // Alt kategori mi ana kategori mi belirle
-                    const isChild = item.classList.contains('ps-5');
-                    
-                    // Alt kategoriyse parent'ını bul
-                    let itemParentId = null;
-                    if (isChild) {
-                        let prevSibling = item.previousElementSibling;
-                        while (prevSibling) {
-                            // Eğer bir ana kategori bulunursa
-                            if (!prevSibling.classList.contains('ps-5')) {
-                                itemParentId = prevSibling.getAttribute('data-id');
-                                break;
-                            }
-                            prevSibling = prevSibling.previousElementSibling;
-                        }
-                    }
-                    
-                    items.push({
-                        id: id,
-                        order: index + 1,
-                        parentId: itemParentId
-                    });
-                });
-                
-                // Livewire'a sıralama verilerini gönder
-                if (items.length > 0) {
-                    @this.updateOrder(items);
-                    
-                    // Sürüklemeyi tamamladıktan sonra DOM değiştiğinden tekrar Sortable'ı başlat
-                    // Bu bir sonraki sürüklemeyi hızlandıracak
-                    setTimeout(() => {
-                        initSortable();
-                    }, 500);
-                }
-            }
-        });
-    }
-});
-</script>
+<script src="{{ asset('admin/libs/sortable/sortable-settings.js') }}"></script>
 @endpush

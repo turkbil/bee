@@ -346,17 +346,13 @@ class WidgetCategoryComponent extends Component
         }
     
         try {
-            logger()->info('Sıralama güncellemesi: ' . json_encode($list));
-            
             foreach ($list as $item) {
                 if (!isset($item['id'])) {
-                    logger()->warning('updateOrder: ID eksik - ' . json_encode($item));
                     continue;
                 }
                 
                 if (!isset($item['order'])) {
                     $item['order'] = 0;
-                    logger()->warning('updateOrder: Order değeri eksik - varsayılan kullanılıyor');
                 }
                 
                 $category = WidgetCategory::find($item['id']);
@@ -382,8 +378,6 @@ class WidgetCategoryComponent extends Component
                             log_activity($category, $logMessage);
                         }
                     }
-                } else {
-                    logger()->warning('updateOrder: Kategori bulunamadı - ID: ' . $item['id']);
                 }
             }
     

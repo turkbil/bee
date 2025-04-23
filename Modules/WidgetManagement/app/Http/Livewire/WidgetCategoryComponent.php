@@ -183,7 +183,6 @@ class WidgetCategoryComponent extends Component
             $this->cancelEdit();
             $this->loadCategories();
         } catch (\Exception $e) {
-            // Hata durumunda konsola log
             logger()->error('WidgetCategoryComponent saveEdit hatası: ' . $e->getMessage());
             
             $this->dispatch('toast', [
@@ -216,7 +215,6 @@ class WidgetCategoryComponent extends Component
 
             $this->loadCategories();
         } catch (\Exception $e) {
-            // Hata durumunda konsola log
             logger()->error('WidgetCategoryComponent toggleActive hatası: ' . $e->getMessage());
             
             $this->dispatch('toast', [
@@ -267,7 +265,6 @@ class WidgetCategoryComponent extends Component
 
             $this->loadCategories();
         } catch (\Exception $e) {
-            // Hata durumunda konsola log
             logger()->error('WidgetCategoryComponent delete hatası: ' . $e->getMessage());
             
             $this->dispatch('toast', [
@@ -322,7 +319,6 @@ class WidgetCategoryComponent extends Component
             $this->loadCategories();
 
         } catch (\Illuminate\Validation\ValidationException $e) {
-            // Validasyon hatası
             logger()->error('WidgetCategoryComponent quickAdd validasyon hatası: ' . json_encode($e->errors()));
             
             $this->dispatch('toast', [
@@ -331,7 +327,6 @@ class WidgetCategoryComponent extends Component
                 'type' => 'error',
             ]);
         } catch (\Exception $e) {
-            // Genel hata
             logger()->error('WidgetCategoryComponent quickAdd hatası: ' . $e->getMessage());
             
             $this->dispatch('toast', [
@@ -351,23 +346,19 @@ class WidgetCategoryComponent extends Component
         }
     
         try {
-            // Loglama için
             logger()->info('Sıralama güncellemesi: ' . json_encode($list));
             
             foreach ($list as $item) {
-                // Eski kontrolü kaldırıyoruz, bunun yerine her bir alanı ayrı kontrol edeceğiz
                 if (!isset($item['id'])) {
                     logger()->warning('updateOrder: ID eksik - ' . json_encode($item));
                     continue;
                 }
                 
                 if (!isset($item['order'])) {
-                    $item['order'] = 0; // Varsayılan değer
+                    $item['order'] = 0;
                     logger()->warning('updateOrder: Order değeri eksik - varsayılan kullanılıyor');
                 }
                 
-                // parentId null olabilir, bu yüzden bu kontrolü kaldırıyoruz
-    
                 $category = WidgetCategory::find($item['id']);
                 if ($category) {
                     $oldParentId = $category->parent_id;
@@ -396,6 +387,7 @@ class WidgetCategoryComponent extends Component
                 }
             }
     
+            // Değişiklikleri görmek için kategorileri yeniden yükleme
             $this->loadCategories();
             
             $this->dispatch('toast', [
@@ -404,7 +396,6 @@ class WidgetCategoryComponent extends Component
                 'type' => 'success',
             ]);
         } catch (\Exception $e) {
-            // Hata durumunda konsola log
             logger()->error('WidgetCategoryComponent updateOrder hatası: ' . $e->getMessage());
             
             $this->dispatch('toast', [

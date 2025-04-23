@@ -66,31 +66,51 @@ class WidgetCategoryComponent extends Component
     #[On('refreshPage')] 
     public function loadCategories()
     {
-        // Tüm kategorileri hiyerarşik yapıda yükle
-        $query = WidgetCategory::query();
-        
-        // Arama varsa uygula
-        if ($this->search) {
-            $query->where('title', 'like', '%' . $this->search . '%');
-        }
-        
-        // Sıralama
-        $query->orderBy($this->sortField, $this->sortDirection);
-        
-        // Ana kategoriler ve alt kategorileri al
-        if (empty($this->search)) {
-            $categories = $query->withCount('widgets')
-                ->with(['children' => function ($q) {
-                    $q->withCount('widgets')->orderBy('order');
-                }])
-                ->whereNull('parent_id')
-                ->get();
-        } else {
-            // Arama varsa tüm kategorileri getir, parent_id filtrelemesi yapma
-            $categories = $query->withCount('widgets')->get();
-        }
+        try {
+            // Tüm kategorileri hiyerarşik yapıda yükle
+            $query = WidgetCategory::query();
+            
+            // Arama varsa uygula
+            if ($this->search) {
+                $query->where('title', 'like', '%' . $this->search . '%');
+            }
+            
+            // Sıralama
+            $query->orderBy($this->sortField, $this->sortDirection);
+            
+            // Ana kategoriler ve alt kategorileri al
+            if (empty($this->search)) {
+                $categories = $query->whereNull('parent_id')
+                    ->with(['children' => function ($q) {
+                        $q->orderBy('order');
+                    }])
+                    ->get();
+                    
+                // Her kategori için widget sayılarını manuel olarak hesapla
+                foreach ($categories as $category) {
+                    $category->widgets_count = $category->widgets()->count();
+                    
+                    if ($category->children) {
+                        foreach ($category->children as $child) {
+                            $child->widgets_count = $child->widgets()->count();
+                        }
+                    }
+                }
+            } else {
+                // Arama varsa tüm kategorileri getir, parent_id filtrelemesi yapma
+                $categories = $query->get();
+                
+                // Her kategori için widget sayılarını manuel olarak hesapla
+                foreach ($categories as $category) {
+                    $category->widgets_count = $category->widgets()->count();
+                }
+            }
 
-        $this->categories = $categories;
+            $this->categories = $categories;
+        } catch (\Exception $e) {
+            // Hata durumunda konsola log
+            logger()->error('WidgetCategoryComponent loadCategories hatası: ' . $e->getMessage());
+        }
     }
     
     public function sortBy($field)
@@ -140,89 +160,122 @@ class WidgetCategoryComponent extends Component
             'editData.slug' => 'nullable|regex:/^[a-z0-9\-_]+$/i|max:255',
         ]);
 
-        $category = WidgetCategory::findOrFail($this->editCategoryId);
-        
-        // Slug boşsa otomatik oluştur
-        if (empty($this->editData['slug'])) {
-            $this->editData['slug'] = Str::slug($this->editData['title']);
+        try {
+            $category = WidgetCategory::findOrFail($this->editCategoryId);
+            
+            // Slug boşsa otomatik oluştur
+            if (empty($this->editData['slug'])) {
+                $this->editData['slug'] = Str::slug($this->editData['title']);
+            }
+            
+            $category->update($this->editData);
+
+            if (function_exists('log_activity')) {
+                log_activity($category, 'güncellendi');
+            }
+
+            $this->dispatch('toast', [
+                'title' => 'Başarılı!', 
+                'message' => 'Kategori başarıyla güncellendi.',
+                'type' => 'success'
+            ]);
+
+            $this->cancelEdit();
+            $this->loadCategories();
+        } catch (\Exception $e) {
+            // Hata durumunda konsola log
+            logger()->error('WidgetCategoryComponent saveEdit hatası: ' . $e->getMessage());
+            
+            $this->dispatch('toast', [
+                'title' => 'Hata!', 
+                'message' => 'Kategori güncellenirken bir hata oluştu.',
+                'type' => 'error'
+            ]);
         }
-        
-        $category->update($this->editData);
-
-        if (function_exists('log_activity')) {
-            log_activity($category, 'güncellendi');
-        }
-
-        $this->dispatch('toast', [
-            'title' => 'Başarılı!', 
-            'message' => 'Kategori başarıyla güncellendi.',
-            'type' => 'success'
-        ]);
-
-        $this->cancelEdit();
-        $this->loadCategories();
     }
 
     public function toggleActive($id)
     {
-        $category = WidgetCategory::findOrFail($id);
-        $category->is_active = !$category->is_active;
-        $category->save();
+        try {
+            $category = WidgetCategory::findOrFail($id);
+            $category->is_active = !$category->is_active;
+            $category->save();
 
-        if (function_exists('log_activity')) {
-            log_activity(
-                $category,
-                $category->is_active ? 'aktif edildi' : 'pasif edildi'
-            );
+            if (function_exists('log_activity')) {
+                log_activity(
+                    $category,
+                    $category->is_active ? 'aktif edildi' : 'pasif edildi'
+                );
+            }
+
+            $this->dispatch('toast', [
+                'title' => 'Başarılı!', 
+                'message' => "Kategori " . ($category->is_active ? 'aktif' : 'pasif') . " edildi.",
+                'type' => 'success'
+            ]);
+
+            $this->loadCategories();
+        } catch (\Exception $e) {
+            // Hata durumunda konsola log
+            logger()->error('WidgetCategoryComponent toggleActive hatası: ' . $e->getMessage());
+            
+            $this->dispatch('toast', [
+                'title' => 'Hata!', 
+                'message' => 'Kategori durumu değiştirilirken bir hata oluştu.',
+                'type' => 'error'
+            ]);
         }
-
-        $this->dispatch('toast', [
-            'title' => 'Başarılı!', 
-            'message' => "Kategori " . ($category->is_active ? 'aktif' : 'pasif') . " edildi.",
-            'type' => 'success'
-        ]);
-
-        $this->loadCategories();
     }
 
     public function delete($id)
     {
-        $category = WidgetCategory::findOrFail($id);
-        
-        if ($category->widgets()->count() > 0) {
+        try {
+            $category = WidgetCategory::findOrFail($id);
+            
+            if ($category->widgets()->count() > 0) {
+                $this->dispatch('toast', [
+                    'title' => 'Uyarı!',
+                    'message' => 'Bu kategoriye bağlı widget\'lar var. Önce bunları silmelisiniz veya başka kategoriye taşımalısınız.',
+                    'type' => 'warning'
+                ]);
+                return;
+            }
+            
+            if ($category->children()->count() > 0) {
+                $this->dispatch('toast', [
+                    'title' => 'Uyarı!',
+                    'message' => 'Bu kategorinin alt kategorileri var. Önce alt kategorileri silmelisiniz.',
+                    'type' => 'warning'
+                ]);
+                return;
+            }
+            
+            $category->delete();
+
+            if (function_exists('log_activity')) {
+                log_activity(
+                    $category,
+                    'silindi'
+                );
+            }
+
             $this->dispatch('toast', [
-                'title' => 'Uyarı!',
-                'message' => 'Bu kategoriye bağlı widget\'lar var. Önce bunları silmelisiniz veya başka kategoriye taşımalısınız.',
-                'type' => 'warning'
+                'title' => 'Başarılı!',
+                'message' => 'Kategori başarıyla silindi.',
+                'type' => 'success'
             ]);
-            return;
-        }
-        
-        if ($category->children()->count() > 0) {
+
+            $this->loadCategories();
+        } catch (\Exception $e) {
+            // Hata durumunda konsola log
+            logger()->error('WidgetCategoryComponent delete hatası: ' . $e->getMessage());
+            
             $this->dispatch('toast', [
-                'title' => 'Uyarı!',
-                'message' => 'Bu kategorinin alt kategorileri var. Önce alt kategorileri silmelisiniz.',
-                'type' => 'warning'
+                'title' => 'Hata!', 
+                'message' => 'Kategori silinirken bir hata oluştu.',
+                'type' => 'error'
             ]);
-            return;
         }
-        
-        $category->delete();
-
-        if (function_exists('log_activity')) {
-            log_activity(
-                $category,
-                'silindi'
-            );
-        }
-
-        $this->dispatch('toast', [
-            'title' => 'Başarılı!',
-            'message' => 'Kategori başarıyla silindi.',
-            'type' => 'success'
-        ]);
-
-        $this->loadCategories();
     }
 
     public function quickAdd()
@@ -269,15 +322,21 @@ class WidgetCategoryComponent extends Component
             $this->loadCategories();
 
         } catch (\Illuminate\Validation\ValidationException $e) {
+            // Validasyon hatası
+            logger()->error('WidgetCategoryComponent quickAdd validasyon hatası: ' . json_encode($e->errors()));
+            
             $this->dispatch('toast', [
                 'title' => 'Hata!',
                 'message' => 'Lütfen form alanlarını kontrol ediniz.',
                 'type' => 'error',
             ]);
         } catch (\Exception $e) {
+            // Genel hata
+            logger()->error('WidgetCategoryComponent quickAdd hatası: ' . $e->getMessage());
+            
             $this->dispatch('toast', [
                 'title' => 'Hata!',
-                'message' => 'Kategori eklenirken bir hata oluştu: ' . $e->getMessage(),
+                'message' => 'Kategori eklenirken bir hata oluştu.',
                 'type' => 'error',
             ]);
         }
@@ -287,47 +346,73 @@ class WidgetCategoryComponent extends Component
     public function updateOrder($list)
     {
         if (!is_array($list)) {
+            logger()->error('WidgetCategoryComponent updateOrder: Liste dizi değil');
             return;
         }
-
-        foreach ($list as $item) {
-            if (!isset($item['id'], $item['order'], $item['parentId'])) {
-                continue;
-            }
-
-            $category = WidgetCategory::find($item['id']);
-            if ($category) {
-                $oldParentId = $category->parent_id;
-                $newParentId = !empty($item['parentId']) ? $item['parentId'] : null;
+    
+        try {
+            // Loglama için
+            logger()->info('Sıralama güncellemesi: ' . json_encode($list));
+            
+            foreach ($list as $item) {
+                // Eski kontrolü kaldırıyoruz, bunun yerine her bir alanı ayrı kontrol edeceğiz
+                if (!isset($item['id'])) {
+                    logger()->warning('updateOrder: ID eksik - ' . json_encode($item));
+                    continue;
+                }
                 
-                $category->update([
-                    'order' => $item['order'],
-                    'parent_id' => $newParentId
-                ]);
+                if (!isset($item['order'])) {
+                    $item['order'] = 0; // Varsayılan değer
+                    logger()->warning('updateOrder: Order değeri eksik - varsayılan kullanılıyor');
+                }
                 
-                // Parent değişimi olursa log
-                if ($oldParentId != $newParentId) {
-                    if (function_exists('log_activity')) {
-                        if ($newParentId) {
-                            $parentCategory = WidgetCategory::find($newParentId);
-                            $logMessage = 'kategori "' . ($parentCategory->title ?? 'Bilinmeyen') . '" altına taşındı';
-                        } else {
-                            $logMessage = 'ana kategori olarak taşındı';
+                // parentId null olabilir, bu yüzden bu kontrolü kaldırıyoruz
+    
+                $category = WidgetCategory::find($item['id']);
+                if ($category) {
+                    $oldParentId = $category->parent_id;
+                    $newParentId = isset($item['parentId']) && !empty($item['parentId']) ? $item['parentId'] : null;
+                    
+                    $category->update([
+                        'order' => $item['order'],
+                        'parent_id' => $newParentId
+                    ]);
+                    
+                    // Parent değişimi olursa log
+                    if ($oldParentId != $newParentId) {
+                        if (function_exists('log_activity')) {
+                            if ($newParentId) {
+                                $parentCategory = WidgetCategory::find($newParentId);
+                                $logMessage = 'kategori "' . ($parentCategory->title ?? 'Bilinmeyen') . '" altına taşındı';
+                            } else {
+                                $logMessage = 'ana kategori olarak taşındı';
+                            }
+                            
+                            log_activity($category, $logMessage);
                         }
-                        
-                        log_activity($category, $logMessage);
                     }
+                } else {
+                    logger()->warning('updateOrder: Kategori bulunamadı - ID: ' . $item['id']);
                 }
             }
+    
+            $this->loadCategories();
+            
+            $this->dispatch('toast', [
+                'title' => 'Başarılı!',
+                'message' => 'Kategori sıralaması güncellendi.',
+                'type' => 'success',
+            ]);
+        } catch (\Exception $e) {
+            // Hata durumunda konsola log
+            logger()->error('WidgetCategoryComponent updateOrder hatası: ' . $e->getMessage());
+            
+            $this->dispatch('toast', [
+                'title' => 'Hata!', 
+                'message' => 'Kategori sıralaması güncellenirken bir hata oluştu.',
+                'type' => 'error'
+            ]);
         }
-
-        $this->loadCategories();
-        
-        $this->dispatch('toast', [
-            'title' => 'Başarılı!',
-            'message' => 'Kategori sıralaması güncellendi.',
-            'type' => 'success',
-        ]);
     }
     
     public function updatedSearch()

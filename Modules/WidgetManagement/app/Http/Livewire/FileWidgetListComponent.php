@@ -51,7 +51,7 @@ class FileWidgetListComponent extends Component
                   ->orWhere('file_path', 'like', "%{$this->search}%");
             })
             ->when($this->categoryFilter, function ($q) {
-                $q->where('widget_category_id', $this->categoryFilter);
+                $q->where('widgets.widget_category_id', $this->categoryFilter);
             });
             
         // Önce kategoriye göre, sonra alfabetik olarak sırala

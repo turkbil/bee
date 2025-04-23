@@ -42,13 +42,6 @@
                     </a>
                     @endhasmoduleaccess
                     
-                    @hasmoduleaccess('widgetmanagement', 'create')
-                    <a class="dropdown-item {{ request()->routeIs('admin.widgetmanagement.category.manage') && !request()->route('id') ? 'active' : '' }}" 
-                       href="{{ route('admin.widgetmanagement.category.manage') }}">
-                        <i class="fas fa-folder-plus me-2"></i> Kategori Ekle
-                    </a>
-                    @endhasmoduleaccess
-                    
                     @if(auth()->user()->hasRole('root'))
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item {{ request()->routeIs('admin.widgetmanagement.manage*') ? 'active' : '' }}" 
@@ -75,12 +68,6 @@
             @if(request()->routeIs('admin.widgetmanagement.file.index'))
             <a href="{{ route('admin.widgetmanagement.index') }}" class="btn btn-outline-secondary">
                 <i class="fas fa-list me-2"></i> Aktif Bileşenler
-            </a>
-            @endif
-            
-            @if(request()->routeIs('admin.widgetmanagement.category.index'))
-            <a href="{{ route('admin.widgetmanagement.category.manage') }}" class="btn btn-primary">
-                <i class="fas fa-plus me-2"></i> Yeni Kategori
             </a>
             @endif
             

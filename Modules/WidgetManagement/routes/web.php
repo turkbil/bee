@@ -9,7 +9,6 @@ use Modules\WidgetManagement\app\Http\Livewire\WidgetItemComponent;
 use Modules\WidgetManagement\app\Http\Livewire\WidgetItemManageComponent;
 use Modules\WidgetManagement\app\Http\Livewire\WidgetSettingsComponent;
 use Modules\WidgetManagement\app\Http\Livewire\WidgetCategoryComponent;
-use Modules\WidgetManagement\app\Http\Livewire\WidgetCategoryManageComponent;
 use Modules\WidgetManagement\app\Http\Controllers\WidgetPreviewController;
 use Modules\WidgetManagement\app\Http\Livewire\FileWidgetListComponent;
 
@@ -66,9 +65,10 @@ Route::middleware(['web', 'auth', 'tenant'])
                     ->middleware('module.permission:widgetmanagement,view')
                     ->name('category.index');
                 
-                Route::get('/category/manage/{id?}', WidgetCategoryManageComponent::class)
-                    ->middleware('module.permission:widgetmanagement,update')
-                    ->name('category.manage');
+                // Artık ayrı bir düzenleme/ekleme sayfasına gerek yok, tek sayfada birleştirildi
+                // Route::get('/category/manage/{id?}', WidgetCategoryManageComponent::class)
+                //     ->middleware('module.permission:widgetmanagement,update')
+                //     ->name('category.manage');
 
                 // File Widget Routes (sadece root yetkileri)
                 Route::get('/file-widgets', FileWidgetListComponent::class)

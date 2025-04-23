@@ -161,12 +161,6 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <!-- Debug Bilgisi -->
-                            <div class="alert alert-info mb-3" style="display: none;" id="debug-info">
-                                <h4 class="alert-title">Debug Bilgisi</h4>
-                                <div id="debug-content"></div>
-                            </div>
-                            
                             <!-- Loading Spinner -->
                             <div wire:loading wire:target="loadCategories, toggleActive, delete, quickAdd, saveEdit, updatedSearch, updateOrder"
                                 class="text-center my-3">
@@ -182,7 +176,6 @@
                                             <tr>
                                                 <th style="width: 50px;"></th>
                                                 <th>Kategori Adı</th>
-                                                <th>Slug</th>
                                                 <th>İçerik</th>
                                                 <th style="width: 80px" class="text-center">Durum</th>
                                                 <th style="width: 120px" class="text-end">İşlemler</th>
@@ -213,7 +206,6 @@
                                                             <div class="text-muted small">{{ Str::limit($category->description, 50) }}</div>
                                                         @endif
                                                     </td>
-                                                    <td class="text-muted">{{ $category->slug }}</td>
                                                     <td>
                                                         <span class="badge bg-blue-lt">{{ $category->widgets_count }} içerik</span>
                                                         @if($category->children && $category->children->count() > 0)
@@ -235,16 +227,31 @@
                                                             </div>
                                                         </button>
                                                     </td>
-                                                    <td class="text-end">
-                                                        <div class="btn-list">
-                                                            <button wire:click="startEdit({{ $category->widget_category_id }})" class="btn btn-icon btn-sm">
-                                                                <i class="fa-solid fa-pen-to-square link-secondary"></i>
-                                                            </button>
-                                                            <button wire:click="delete({{ $category->widget_category_id }})" 
-                                                                class="btn btn-icon btn-sm"
-                                                                onclick="return confirm('Bu kategoriyi silmek istediğinize emin misiniz?')">
-                                                                <i class="fa-solid fa-trash link-danger"></i>
-                                                            </button>
+                                                    <td class="text-end align-middle">
+                                                        <div class="container">
+                                                            <div class="row">
+                                                                <div class="col">
+                                                                    <a href="javascript:void(0);" wire:click="startEdit({{ $category->widget_category_id }})" 
+                                                                        data-bs-toggle="tooltip" data-bs-placement="top" title="Düzenle">
+                                                                        <i class="fa-solid fa-pen-to-square link-secondary fa-lg"></i>
+                                                                    </a>
+                                                                </div>
+                                                                <div class="col lh-1">
+                                                                    <div class="dropdown mt-1">
+                                                                        <a class="dropdown-toggle text-secondary" href="#" data-bs-toggle="dropdown"
+                                                                            aria-haspopup="true" aria-expanded="false">
+                                                                            <i class="fa-solid fa-bars-sort fa-flip-horizontal fa-lg"></i>
+                                                                        </a>
+                                                                        <div class="dropdown-menu dropdown-menu-end">
+                                                                            <a href="javascript:void(0);" wire:click="delete({{ $category->widget_category_id }})" 
+                                                                                class="dropdown-item link-danger"
+                                                                                onclick="return confirm('Bu kategoriyi silmek istediğinize emin misiniz?')">
+                                                                                <i class="fas fa-trash me-2"></i> Sil
+                                                                            </a>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -277,7 +284,6 @@
                                                                     <div class="text-muted small">{{ Str::limit($child->description, 50) }}</div>
                                                                 @endif
                                                             </td>
-                                                            <td class="text-muted">{{ $child->slug }}</td>
                                                             <td>
                                                                 <span class="badge bg-blue-lt">{{ $child->widgets_count }} içerik</span>
                                                             </td>
@@ -296,16 +302,31 @@
                                                                     </div>
                                                                 </button>
                                                             </td>
-                                                            <td class="text-end">
-                                                                <div class="btn-list">
-                                                                    <button wire:click="startEdit({{ $child->widget_category_id }})" class="btn btn-icon btn-sm">
-                                                                        <i class="fa-solid fa-pen-to-square link-secondary"></i>
-                                                                    </button>
-                                                                    <button wire:click="delete({{ $child->widget_category_id }})" 
-                                                                        class="btn btn-icon btn-sm"
-                                                                        onclick="return confirm('Bu kategoriyi silmek istediğinize emin misiniz?')">
-                                                                        <i class="fa-solid fa-trash link-danger"></i>
-                                                                    </button>
+                                                            <td class="text-end align-middle">
+                                                                <div class="container">
+                                                                    <div class="row">
+                                                                        <div class="col">
+                                                                            <a href="javascript:void(0);" wire:click="startEdit({{ $child->widget_category_id }})" 
+                                                                                data-bs-toggle="tooltip" data-bs-placement="top" title="Düzenle">
+                                                                                <i class="fa-solid fa-pen-to-square link-secondary fa-lg"></i>
+                                                                            </a>
+                                                                        </div>
+                                                                        <div class="col lh-1">
+                                                                            <div class="dropdown mt-1">
+                                                                                <a class="dropdown-toggle text-secondary" href="#" data-bs-toggle="dropdown"
+                                                                                    aria-haspopup="true" aria-expanded="false">
+                                                                                    <i class="fa-solid fa-bars-sort fa-flip-horizontal fa-lg"></i>
+                                                                                </a>
+                                                                                <div class="dropdown-menu dropdown-menu-end">
+                                                                                    <a href="javascript:void(0);" wire:click="delete({{ $child->widget_category_id }})" 
+                                                                                        class="dropdown-item link-danger"
+                                                                                        onclick="return confirm('Bu kategoriyi silmek istediğinize emin misiniz?')">
+                                                                                        <i class="fas fa-trash me-2"></i> Sil
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                             </td>
                                                         </tr>
@@ -313,7 +334,7 @@
                                                 @endif
                                             @empty
                                                 <tr>
-                                                    <td colspan="6" class="text-center py-4">
+                                                    <td colspan="5" class="text-center py-4">
                                                         <div class="empty">
                                                             <div class="empty-img">
                                                                 <i class="fas fa-folder-open fa-4x text-muted"></i>
@@ -365,15 +386,6 @@
     .child-row {
         background-color: rgba(32, 107, 196, 0.03) !important;
     }
-    
-    /* Debug bilgisi */
-    #debug-info {
-        font-family: monospace;
-        font-size: 12px;
-        white-space: pre-wrap;
-        max-height: 300px;
-        overflow: auto;
-    }
 </style>
 @endpush
 
@@ -381,82 +393,30 @@
 <script src="{{ asset('admin/libs/sortable/sortable.min.js') }}"></script>
 <script>
 document.addEventListener('livewire:initialized', function() {
-    // Debug fonksiyonu
-    function showDebugInfo(message, data) {
-        const debugInfo = document.getElementById('debug-info');
-        const debugContent = document.getElementById('debug-content');
-        
-        if (debugInfo && debugContent) {
-            debugInfo.style.display = 'block';
-            
-            const timestamp = new Date().toLocaleTimeString();
-            const debugMessage = `<div>[${timestamp}] ${message}</div>`;
-            const debugData = data ? `<pre>${JSON.stringify(data, null, 2)}</pre>` : '';
-            
-            debugContent.innerHTML += debugMessage + debugData;
-            
-            // Otomatik scroll
-            debugInfo.scrollTop = debugInfo.scrollHeight;
-        }
-    }
-    
-    // Hata yakalama
-    window.addEventListener('error', function(event) {
-        showDebugInfo('HATA: ' + event.message + ' (' + event.filename + ':' + event.lineno + ')', {
-            message: event.message,
-            file: event.filename,
-            line: event.lineno,
-            column: event.colno
-        });
-    });
-    
-    // Aktivasyon
-    document.getElementById('debug-info').style.display = 'block';
-    showDebugInfo('Debug modu aktif', { time: new Date().toISOString() });
-    
     initSortable();
     
     Livewire.hook('morph.updated', () => {
-        showDebugInfo('DOM güncellendi, sortable yeniden başlatılıyor');
         initSortable();
     });
     
     function initSortable() {
         const container = document.getElementById('sortable-list')?.querySelector('tbody');
         if (!container) {
-            showDebugInfo('Sortable container bulunamadı!');
             return;
         }
         
         // Mevcut sortable'ı temizle
         if (window.categorySortable) {
-            showDebugInfo('Mevcut sortable temizleniyor');
             window.categorySortable.destroy();
             window.categorySortable = null;
         }
-        
-        showDebugInfo('Yeni sortable oluşturuluyor');
         
         // Yeni sortable oluştur
         window.categorySortable = new Sortable(container, {
             animation: 150,
             ghostClass: 'sortable-ghost',
             handle: '.cursor-move',
-            onStart: function(evt) {
-                showDebugInfo('Sıralama başladı', { 
-                    item: evt.item.id,
-                    oldIndex: evt.oldIndex
-                });
-            },
             onEnd: function(evt) {
-                showDebugInfo('Sıralama tamamlandı', { 
-                    item: evt.item.id,
-                    oldIndex: evt.oldIndex,
-                    newIndex: evt.newIndex,
-                    from: evt.from.id,
-                    to: evt.to.id
-                });
-                
                 if (evt.oldIndex !== evt.newIndex || evt.from !== evt.to) {
                     const items = [];
                     const allRows = Array.from(container.querySelectorAll('tr.sortable-row'));
@@ -472,22 +432,13 @@ document.addEventListener('livewire:initialized', function() {
                         });
                     });
                     
-                    showDebugInfo('Sıralama verisi hazırlandı', { items: items });
-                    
                     // Livewire'a sıralama verilerini gönder
                     if (items.length > 0) {
-                        showDebugInfo('Livewire\'a veri gönderiliyor');
-                        @this.updateOrder(items).then(function(response) {
-                            showDebugInfo('Livewire yanıtı', response);
-                        }).catch(function(error) {
-                            showDebugInfo('Livewire hatası', error);
-                        });
+                        @this.updateOrder(items);
                     }
                 }
             }
         });
-        
-        showDebugInfo('Sortable başarıyla oluşturuldu');
     }
 });
 </script>

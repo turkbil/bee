@@ -20,49 +20,22 @@ class PageWidgetSeeder extends Seeder
             return;
         }
         
-        // Önce "Modüller" kategorisini bul veya oluştur
-        $mainCategory = WidgetCategory::where('slug', 'moduller')->first();
+        // "İçerikler" ana kategorisini bul
+        $mainCategory = WidgetCategory::where('slug', 'icerikler')->first();
         
         if (!$mainCategory) {
-            $mainCategory = WidgetCategory::create([
-                'title' => 'Modüller',
-                'slug' => 'moduller',
-                'description' => 'Sistem modüllerine bağlı bileşenler',
-                'order' => 3,
-                'is_active' => true,
-                'icon' => 'fa-puzzle-piece'
-                // has_subcategories alanı kaldırıldı, otomatik olarak false değeri atanacak
-            ]);
-            
-            // Kategori oluşturulduktan sonra has_subcategories alanını güncelle
-            if ($mainCategory) {
-                $mainCategory->has_subcategories = true;
-                $mainCategory->save();
-            }
+            $this->command->info('İçerikler kategorisi bulunamadı, ContentCategoriesSeeder\'ı önce çalıştırın.');
+            return;
         }
         
-        // "Sayfa Modülü" alt kategorisini bul veya oluştur
+        // "Sayfa Modülü" alt kategorisini bul
         $category = WidgetCategory::where('slug', 'sayfa-modulu')
                                   ->where('parent_id', $mainCategory->widget_category_id)
                                   ->first();
         
         if (!$category) {
-            $category = WidgetCategory::create([
-                'title' => 'Sayfa Modülü',
-                'slug' => 'sayfa-modulu',
-                'description' => 'Sayfa modülünden veri çeken bileşenler',
-                'order' => 1,
-                'is_active' => true,
-                'parent_id' => $mainCategory->widget_category_id,
-                'icon' => 'fa-file'
-                // has_subcategories alanı kaldırıldı, otomatik olarak false değeri atanacak
-            ]);
-            
-            // Ana kategorinin has_subcategories değerini true yap
-            if ($mainCategory && $category) {
-                $mainCategory->has_subcategories = true;
-                $mainCategory->save();
-            }
+            $this->command->info('Sayfa Modülü kategorisi bulunamadı, ContentCategoriesSeeder\'ı önce çalıştırın.');
+            return;
         }
         
         // Son Eklenen Sayfalar Widget'ı

@@ -30,7 +30,7 @@ class FileWidgetSeeder extends Seeder
             'layout' => 'duzen-bilesenleri',
             'media' => 'medya-bilesenleri',
             'testimonials' => 'icerik-bilesenleri',
-            'modules' => 'modul-bilesenleri'
+            'modules' => 'icerikler' // Değiştirildi: modules klasörü artık İçerikler kategorisine gidecek
         ];
         
         // Header/Footer için özel eşleştirme

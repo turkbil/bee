@@ -1,6 +1,6 @@
-// public/admin/js/theme.js
+// Tema Ayarları JS
 document.addEventListener('DOMContentLoaded', function() {
-    // Tema modunu değiştirme (açık/koyu/sistem)
+    // Tema modu değiştirme (açık/koyu/sistem)
     const themeRadios = document.querySelectorAll('input[name="theme"]');
     themeRadios.forEach(radio => {
         radio.addEventListener('change', function() {
@@ -14,36 +14,31 @@ document.addEventListener('DOMContentLoaded', function() {
                 body.setAttribute('data-bs-theme', 'dark');
                 body.classList.remove('light');
                 body.classList.add('dark');
-                document.getElementById('switch').checked = true;
+                // Navbar tema düğmesini güncelle
+                if (document.getElementById('switch')) {
+                    document.getElementById('switch').checked = true;
+                }
             } else if (themeMode === 'light') {
                 body.setAttribute('data-bs-theme', 'light');
                 body.classList.remove('dark');
                 body.classList.add('light');
-                document.getElementById('switch').checked = false;
+                if (document.getElementById('switch')) {
+                    document.getElementById('switch').checked = false;
+                }
             } else if (themeMode === 'auto') {
                 // Sistem ayarını kontrol et
                 const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
                 body.setAttribute('data-bs-theme', prefersDarkMode ? 'dark' : 'light');
                 body.classList.remove(prefersDarkMode ? 'light' : 'dark');
                 body.classList.add(prefersDarkMode ? 'dark' : 'light');
-                document.getElementById('switch').checked = prefersDarkMode;
-            }
-            
-            // Radyo butonlarının görsel durumlarını güncelle
-            themeRadios.forEach(r => {
-                const parent = r.closest('.form-selectgroup-item');
-                if (parent) {
-                    if (r.checked) {
-                        parent.classList.add('active');
-                    } else {
-                        parent.classList.remove('active');
-                    }
+                if (document.getElementById('switch')) {
+                    document.getElementById('switch').checked = prefersDarkMode;
                 }
-            });
+            }
         });
     });
 
-    // Renk şeması değiştirme
+    // Ana renk değiştirme
     const colorRadios = document.querySelectorAll('input[name="theme-primary"]');
     colorRadios.forEach(radio => {
         radio.addEventListener('change', function() {
@@ -53,43 +48,37 @@ document.addEventListener('DOMContentLoaded', function() {
             // Sayfa yenilemeden rengi değiştir
             document.documentElement.style.setProperty('--primary-color', color);
             updateTextColor(color);
+            
+            // Radius örneklerini güncelle (aktif renk değişimi için)
+            updateRadiusExamples();
         });
     });
 
     // Köşe yuvarlaklığı değiştirme - Range slider
     const radiusSlider = document.getElementById('radius-slider');
     const radiusValue = document.getElementById('radius-value');
+    const radiusExamples = document.querySelectorAll('.radius-example');
     
     if (radiusSlider && radiusValue) {
         const radiusMap = ['0', '0.25rem', '0.5rem', '0.75rem', '1rem'];
         
         radiusSlider.addEventListener('input', function() {
-            const selectedRadius = radiusMap[this.value];
+            const selectedIndex = parseInt(this.value);
+            const selectedRadius = radiusMap[selectedIndex];
             radiusValue.value = selectedRadius;
             
             // Cookie güncelleme ve CSS değişkeni ayarlama
             document.cookie = `themeRadius=${selectedRadius};path=/;max-age=31536000`;
             document.documentElement.style.setProperty('--tblr-border-radius', selectedRadius);
             
-            // Örnekleri vurgula
-            document.querySelectorAll('.radius-example').forEach((example, index) => {
-                if (index == this.value) {
-                    example.style.borderColor = 'var(--primary-color)';
-                    example.style.borderWidth = '2px';
+            // Örnekleri güncelle
+            radiusExamples.forEach((example, index) => {
+                if (index === selectedIndex) {
+                    example.classList.add('active');
                 } else {
-                    example.style.borderColor = 'var(--tblr-border-color)';
-                    example.style.borderWidth = '1px';
+                    example.classList.remove('active');
                 }
             });
-        });
-        
-        // Sayfa yüklendiğinde doğru örneği vurgulama
-        const currentIndex = parseInt(radiusSlider.value);
-        document.querySelectorAll('.radius-example').forEach((example, index) => {
-            if (index == currentIndex) {
-                example.style.borderColor = 'var(--primary-color)';
-                example.style.borderWidth = '2px';
-            }
         });
     }
 
@@ -104,23 +93,11 @@ document.addEventListener('DOMContentLoaded', function() {
             document.documentElement.style.setProperty('--tblr-font-family', font);
             document.body.style.fontFamily = font;
             
-            // Roboto ve Poppins için özel işlem
+            // Roboto ve Poppins için Google Fonts
             if (font === "'Roboto', sans-serif") {
-                if (!document.getElementById('roboto-font')) {
-                    const link = document.createElement('link');
-                    link.id = 'roboto-font';
-                    link.rel = 'stylesheet';
-                    link.href = 'https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap';
-                    document.head.appendChild(link);
-                }
+                ensureGoogleFont('roboto-font', 'https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
             } else if (font === "'Poppins', sans-serif") {
-                if (!document.getElementById('poppins-font')) {
-                    const link = document.createElement('link');
-                    link.id = 'poppins-font';
-                    link.rel = 'stylesheet';
-                    link.href = 'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap';
-                    document.head.appendChild(link);
-                }
+                ensureGoogleFont('poppins-font', 'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap');
             }
         });
     });
@@ -135,18 +112,6 @@ document.addEventListener('DOMContentLoaded', function() {
             // Gri tonu güncelle
             document.body.classList.remove('theme-base-slate', 'theme-base-gray', 'theme-base-zinc', 'theme-base-neutral', 'theme-base-stone');
             document.body.classList.add(`theme-base-${baseTheme}`);
-            
-            // Radyo butonlarının görsel durumlarını güncelle
-            baseRadios.forEach(r => {
-                const parent = r.closest('.form-imagecheck');
-                if (parent) {
-                    if (r.checked) {
-                        parent.classList.add('active');
-                    } else {
-                        parent.classList.remove('active');
-                    }
-                }
-            });
         });
     });
 
@@ -163,18 +128,6 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 document.body.classList.remove('table-compact');
             }
-            
-            // Radyo butonlarının görsel durumlarını güncelle
-            tableCompactRadios.forEach(r => {
-                const parent = r.closest('.form-imagecheck');
-                if (parent) {
-                    if (r.checked) {
-                        parent.classList.add('active');
-                    } else {
-                        parent.classList.remove('active');
-                    }
-                }
-            });
         });
     });
 
@@ -227,22 +180,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 const lightRadio = document.querySelector('input[name="theme"][value="light"]');
                 if (lightRadio) lightRadio.checked = true;
             }
-            
-            // Tema radyo butonlarının görsellerini güncelle
-            themeRadios.forEach(r => {
-                const parent = r.closest('.form-selectgroup-item');
-                if (parent) {
-                    if (r.checked) {
-                        parent.classList.add('active');
-                    } else {
-                        parent.classList.remove('active');
-                    }
-                }
-            });
         });
     }
 
-    // Metin rengini hesaplama fonksiyonu
+    // Yardımcı Fonksiyonlar
+    
+    // Metin rengini hesaplama
     function updateTextColor(backgroundColor) {
         // Rengi parçalara ayır
         let r, g, b;
@@ -272,60 +215,85 @@ document.addEventListener('DOMContentLoaded', function() {
         document.documentElement.style.setProperty('--primary-text-color', textColor);
         document.cookie = `siteTextColor=${textColor};path=/;max-age=31536000`;
     }
+    
+    // Radius örneklerini güncelle
+    function updateRadiusExamples() {
+        const examples = document.querySelectorAll('.radius-example');
+        examples.forEach(example => {
+            if (example.classList.contains('active')) {
+                example.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
+            }
+        });
+    }
+    
+    // Google Fonts yükleme
+    function ensureGoogleFont(id, href) {
+        if (!document.getElementById(id)) {
+            const link = document.createElement('link');
+            link.id = id;
+            link.rel = 'stylesheet';
+            link.href = href;
+            document.head.appendChild(link);
+        }
+    }
 
-    // Cookie okuma yardımcı fonksiyonu
+    // Cookie okuma
     function getCookie(name) {
         const value = `; ${document.cookie}`;
         const parts = value.split(`; ${name}=`);
         if (parts.length === 2) return parts.pop().split(';').shift();
     }
 
-    // Sayfa yüklendiğinde mevcut tema ayarlarını uygula
-    function applyBaseTheme() {
+    // Başlangıç durumunu ayarla
+    function initializeThemeSettings() {
+        // Mevcut tema rengi için metin rengini güncelle
+        const currentColor = getCookie('siteColor') || '#066fd1';
+        updateTextColor(currentColor);
+        
+        // Tablo görünümünü ayarla
+        const tableCompact = getCookie('tableCompact') || '1';
+        if (tableCompact === '1') {
+            document.body.classList.add('table-compact');
+        } else {
+            document.body.classList.remove('table-compact');
+        }
+        
+        // Gri tonu ayarla
         const baseTheme = getCookie('themeBase') || 'gray';
         document.body.classList.remove('theme-base-slate', 'theme-base-gray', 'theme-base-zinc', 'theme-base-neutral', 'theme-base-stone');
         document.body.classList.add(`theme-base-${baseTheme}`);
-    }
-
-    // Sistem teması kontrolü ve uygulama
-    function applySystemTheme() {
-        if (getCookie('dark') === 'auto') {
-            const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            document.body.setAttribute('data-bs-theme', prefersDarkMode ? 'dark' : 'light');
-            document.body.classList.remove(prefersDarkMode ? 'light' : 'dark');
-            document.body.classList.add(prefersDarkMode ? 'dark' : 'light');
-            
-            if (document.getElementById('switch')) {
-                document.getElementById('switch').checked = prefersDarkMode;
+        
+        // Gerekli Google fontlarını yükle
+        const currentFont = getCookie('themeFont');
+        if (currentFont) {
+            if (currentFont.includes('Roboto')) {
+                ensureGoogleFont('roboto-font', 'https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+            } else if (currentFont.includes('Poppins')) {
+                ensureGoogleFont('poppins-font', 'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap');
             }
         }
+        
+        // Radius örneklerini başlangıçta ayarla
+        updateRadiusExamples();
+        
+        // Sistem teması değişikliğini dinle
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+            if (getCookie('dark') === 'auto') {
+                const prefersDarkMode = e.matches;
+                document.body.setAttribute('data-bs-theme', prefersDarkMode ? 'dark' : 'light');
+                document.body.classList.remove(prefersDarkMode ? 'light' : 'dark');
+                document.body.classList.add(prefersDarkMode ? 'dark' : 'light');
+                
+                if (document.getElementById('switch')) {
+                    document.getElementById('switch').checked = prefersDarkMode;
+                }
+            }
+        });
     }
-
-    // Sayfa yüklendiğinde tema ayarlarını uygula
-    applyBaseTheme();
-    applySystemTheme();
     
-    // Mevcut tema rengi için metin rengini güncelle
-    const currentColor = getCookie('siteColor') || '#066fd1';
-    updateTextColor(currentColor);
+    // Tema ayarlarını başlat
+    initializeThemeSettings();
     
-    // Sistem temasını dinle
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-        applySystemTheme();
-    });
-    
-    // Sayfa ilk yüklendiğinde, radyo butonlarının görsel durumlarını ayarla
-    document.querySelectorAll('.form-selectgroup-item input:checked').forEach(radio => {
-        const parent = radio.closest('.form-selectgroup-item');
-        if (parent) {
-            parent.classList.add('active');
-        }
-    });
-    
-    document.querySelectorAll('.form-imagecheck input:checked').forEach(radio => {
-        const parent = radio.closest('.form-imagecheck');
-        if (parent) {
-            parent.classList.add('active');
-        }
-    });
+    // Koyu tema değiştiğinde radius örneklerini güncelle
+    document.addEventListener('darkModeChange', updateRadiusExamples);
 });

@@ -130,7 +130,9 @@ class WidgetComponent extends Component
         // Ana kategorileri getir
         $parentCategories = WidgetCategory::whereNull('parent_id')
             ->where('is_active', true)
-            ->withCount(['widgets', 'children'])
+            ->withCount(['widgets' => function($query) {
+                $query->whereHas('tenantWidgets')->where('type', '!=', 'file')->where('type', '!=', 'module');
+            }, 'children'])
             ->orderBy('order')
             ->get();
         
@@ -139,7 +141,9 @@ class WidgetComponent extends Component
         if ($this->parentCategoryFilter) {
             $childCategories = WidgetCategory::where('parent_id', $this->parentCategoryFilter)
                 ->where('is_active', true)
-                ->withCount('widgets')
+                ->withCount(['widgets' => function($query) {
+                    $query->whereHas('tenantWidgets')->where('type', '!=', 'file')->where('type', '!=', 'module');
+                }])
                 ->orderBy('order')
                 ->get();
         }
@@ -147,7 +151,8 @@ class WidgetComponent extends Component
         // Aktif kullanılan tüm tenant widget'ları getir
         $query = TenantWidget::with(['widget', 'items'])
             ->whereHas('widget', function($q) {
-                $q->where('type', '!=', 'file'); // file tipindeki widgetları hariç tut
+                $q->where('type', '!=', 'file') // file tipindeki widgetları hariç tut
+                  ->where('type', '!=', 'module'); // module tipindeki widgetları hariç tut
             })
             ->when($this->search, function ($q) {
                 $q->where('settings->title', 'like', "%{$this->search}%")
@@ -195,7 +200,6 @@ class WidgetComponent extends Component
             'types' => [
                 'static' => 'Statik',
                 'dynamic' => 'Dinamik',
-                'module' => 'Modül',
                 'content' => 'İçerik'
             ],
             'parentCategories' => $parentCategories,

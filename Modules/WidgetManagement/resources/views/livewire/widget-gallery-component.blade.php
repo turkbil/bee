@@ -60,11 +60,6 @@
                     <h3 class="card-title">Bileşen Galerisi</h3>
                     <p class="text-muted">Kullanmak istediğiniz bileşeni seçin ve kuruluma başlayın</p>
                 </div>
-                <div>
-                    <a href="{{ route('admin.widgetmanagement.index') }}" class="btn btn-outline-primary">
-                        <i class="fas fa-list me-2"></i> Aktif Bileşenler
-                    </a>
-                </div>
             </div>
             
             <!-- Ana Kategori Filtresi -->

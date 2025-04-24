@@ -13,7 +13,7 @@
                                     <i class="fas fa-search"></i>
                                 </span>
                                 <input type="text" wire:model.live.debounce.300ms="search" class="form-control"
-                                    placeholder="Hazır dosya ara...">
+                                    placeholder="Modül bileşeni ara...">
                             </div>
                         </div>
                     </div>
@@ -48,8 +48,8 @@
             <!-- Üstteki Butonlar -->
             <div class="d-flex justify-content-between mb-4">
                 <div>
-                    <h3 class="card-title">Hazır Dosya Bileşenleri</h3>
-                    <p class="text-muted">Hazır view dosyalarına dayalı bileşenleri görüntüleyin</p>
+                    <h3 class="card-title">Modül Bileşenleri</h3>
+                    <p class="text-muted">Modüller tarafından sağlanan bileşenleri görüntüleyin</p>
                 </div>
             </div>
             
@@ -123,14 +123,10 @@
                             <div class="card-header d-flex align-items-center">
                                 <div class="me-auto">
                                     <h3 class="card-title mb-0">
-                                        <a href="{{ route('admin.widgetmanagement.items', $widget->id) }}">
+                                        <a href="{{ route('admin.widgetmanagement.manage', $widget->id) }}">
                                             {{ $widget->name }}
                                         </a>
                                     </h3>
-
-                                    <div class="text-muted small mt-1">
-                                         <code>{{ $widget->file_path }}</code>
-                                    </div>
                                 </div>
                                 <div class="dropdown">
                                     <a href="#" class="btn btn-icon" data-bs-toggle="dropdown" aria-expanded="false">
@@ -139,9 +135,6 @@
                                     <div class="dropdown-menu dropdown-menu-end">
                                         <a href="{{ route('admin.widgetmanagement.manage', $widget->id) }}" class="dropdown-item">
                                             <i class="fas fa-tools me-2"></i> Yapılandır
-                                        </a>
-                                        <a href="{{ route('admin.widgetmanagement.file.preview', $widget->id) }}" class="dropdown-item" target="_blank">
-                                            <i class="fas fa-eye me-2"></i> Önizleme
                                         </a>
                                     </div>
                                 </div>
@@ -157,7 +150,7 @@
                                         <img src="{{ $widget->thumbnail }}" class="img-fluid rounded" alt="{{ $widget->name }}">
                                     @else
                                         <div class="alert alert-light text-center p-2">
-                                            <i class="fas fa-image fa-2x text-muted my-2"></i>
+                                            <i class="fas fa-puzzle-piece fa-2x text-muted my-2"></i>
                                             <p class="text-muted small mb-0">Önizleme görseli yok</p>
                                         </div>
                                     @endif
@@ -167,8 +160,8 @@
                             <!-- Kart Footer -->
                             <div class="card-footer">
                                 <div class="d-flex align-items-center justify-content-between">
-                                    <a href="{{ route('admin.widgetmanagement.file.preview', $widget->id) }}" class="btn btn-outline-primary w-100" target="_blank">
-                                        <i class="fas fa-eye me-1"></i> Önizleme
+                                    <a href="{{ route('admin.widgetmanagement.manage', $widget->id) }}" class="btn btn-outline-primary w-100">
+                                        <i class="fas fa-tools me-1"></i> Yapılandır
                                     </a>
                                 </div>
                                 
@@ -177,7 +170,7 @@
                                         <i class="fas fa-folder me-1"></i> {{ $widget->category ? $widget->category->title : 'Kategorilendirilmemiş' }}
                                     </span>
                                     
-                                    <span class="badge bg-primary">Hazır Dosya</span>
+                                    <span class="badge bg-purple">Modül Bileşeni</span>
                                 </div>
                             </div>
                         </div>
@@ -188,9 +181,9 @@
                         <div class="empty-img">
                             <img src="{{ asset('images/empty.svg') }}" height="128" alt="">
                         </div>
-                        <p class="empty-title">Hiç hazır dosya bileşeni bulunamadı</p>
+                        <p class="empty-title">Hiç modül bileşeni bulunamadı</p>
                         <p class="empty-subtitle text-muted">
-                            Filtrelemeye uygun hazır dosya bulunamadı.
+                            Filtrelemeye uygun modül bileşeni bulunamadı.
                         </p>
                     </div>
                 </div>

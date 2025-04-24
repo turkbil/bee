@@ -9,9 +9,14 @@ use Modules\WidgetManagement\app\Models\TenantWidget;
 use Modules\WidgetManagement\app\Models\WidgetItem;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
 
 class SliderWidgetSeeder extends Seeder
 {
+    // Çalıştırma izleme anahtarı
+    private static $runKey = 'slider_widget_seeder_executed';
+
     public function run()
     {
         // Tenant kontrolü
@@ -22,32 +27,64 @@ class SliderWidgetSeeder extends Seeder
             Log::info('Tenant contextinde çalışıyor, SliderWidgetSeeder atlanıyor. Tenant ID: ' . tenant('id'));
             return;
         }
-        
+
+        // Seeder'ın daha önce çalıştırılıp çalıştırılmadığını kontrol et
+        $cacheKey = self::$runKey . '_' . Config::get('database.default');
+        if (Cache::has($cacheKey)) {
+            Log::info('SliderWidgetSeeder zaten çalıştırılmış, atlanıyor...');
+            return;
+        }
+
         Log::info('SliderWidgetSeeder merkezi veritabanında çalışıyor...');
-        
+
         try {
             // Slider bileşeni oluştur
             $this->createSliderWidget();
-            
+
             Log::info('Slider bileşeni başarıyla oluşturuldu.');
+
+            // Seeder'ın çalıştırıldığını işaretle (10 dakika süreyle cache'de tut)
+            Cache::put($cacheKey, true, 600);
         } catch (\Exception $e) {
             Log::error('SliderWidgetSeeder hatası: ' . $e->getMessage());
             Log::error($e->getTraceAsString());
-            
+
             if ($this->command) {
                 $this->command->error('SliderWidgetSeeder hatası: ' . $e->getMessage());
             }
         }
     }
-    
+
     private function createSliderWidget()
     {
-        // Slider kategorisini bul
+        // Slider kategorisini bul, yoksa oluştur
         $sliderCategory = WidgetCategory::where('slug', 'sliderlar')->first();
         
         if (!$sliderCategory) {
-            Log::warning('Slider kategorisi bulunamadı, slider widget oluşturulamıyor...');
-            return;
+            Log::warning('Slider kategorisi bulunamadı, oluşturuluyor...');
+            
+            try {
+                $sliderCategory = WidgetCategory::create([
+                    'title' => 'Sliderlar',
+                    'slug' => 'sliderlar',
+                    'description' => 'Slider ve carousel bileşenleri',
+                    'icon' => 'fa-images',
+                    'order' => 10,
+                    'is_active' => true,
+                    'parent_id' => null,
+                    'has_subcategories' => false
+                ]);
+                
+                Log::info("Slider kategorisi oluşturuldu: Sliderlar (slug: sliderlar)");
+            } catch (\Exception $e) {
+                Log::error("Slider kategorisi oluşturulamadı. Hata: " . $e->getMessage());
+                return;
+            }
+            
+            if (!$sliderCategory) {
+                Log::error("Slider kategorisi oluşturulamadı.");
+                return;
+            }
         }
         
         // Slider widget'ı zaten var mı kontrolü

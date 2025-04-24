@@ -6,12 +6,14 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\Url;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Component as LWComponent;
 use Illuminate\Support\Facades\Auth;
 use Modules\WidgetManagement\app\Models\Widget;
 use Modules\WidgetManagement\app\Models\TenantWidget;
 use Modules\WidgetManagement\app\Models\WidgetCategory;
 
 #[Layout('admin.layout')]
+#[LWComponent('modules.widget-management.app.http.livewire.module-widget-list-component')]
 class ModuleWidgetListComponent extends Component
 {
     use WithPagination;

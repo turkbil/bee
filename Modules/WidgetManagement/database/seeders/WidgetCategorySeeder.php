@@ -29,13 +29,6 @@ class WidgetCategorySeeder extends Seeder
             return;
         }
         
-        // Seeder'ın daha önce çalıştırılıp çalıştırılmadığını kontrol et
-        $cacheKey = self::$runKey . '_' . Config::get('database.default');
-        if (Cache::has($cacheKey)) {
-            Log::info('WidgetCategorySeeder zaten çalıştırılmış, atlanıyor...');
-            return;
-        }
-        
         Log::info('WidgetCategorySeeder merkezi veritabanında çalışıyor...');
         
         // Tablo var mı kontrol et
@@ -48,8 +41,8 @@ class WidgetCategorySeeder extends Seeder
         }
 
         try {
-            // Önce duplicate kategorileri temizle
-            $this->cleanupDuplicateCategories();
+            // Önce tüm kategorileri ve widget'ları temizle
+            $this->cleanupAllCategories();
 
             // Ana kategorileri oluştur
             $modulesCategory = $this->createMainCategories();
@@ -64,8 +57,9 @@ class WidgetCategorySeeder extends Seeder
             
             Log::info('Widget kategorileri başarıyla oluşturuldu.');
             
-            // Seeder'ın çalıştırıldığını işaretle (10 dakika süreyle cache'de tut)
-            Cache::put($cacheKey, true, 600);
+            if ($this->command) {
+                $this->command->info('Widget kategorileri ve widget\'lar başarıyla oluşturuldu.');
+            }
         } catch (\Exception $e) {
             Log::error('WidgetCategorySeeder hatası: ' . $e->getMessage());
             Log::error($e->getTraceAsString());
@@ -122,7 +116,7 @@ class WidgetCategorySeeder extends Seeder
         // Önce tüm kategorileri temizle
         $this->cleanupAllCategories();
         
-        // Modül bileşenleri için ana kategori
+        // 1. Modül bileşenleri için ana kategori
         $modulesCategory = WidgetCategory::create([
             'title' => 'Modül Bileşenleri',
             'slug' => 'modul-bilesenleri',
@@ -136,7 +130,7 @@ class WidgetCategorySeeder extends Seeder
         
         Log::info("Ana kategori oluşturuldu: {$modulesCategory->title} (slug: {$modulesCategory->slug})");
         
-        // Blocks klasörünü tara ve içindeki klasörleri kategori olarak oluştur
+        // 3. Blocks klasörünü tara ve modules dışındaki her ana klasörü kategori olarak oluştur
         $blocksPath = base_path('Modules/WidgetManagement/resources/views/blocks');
         
         if (File::isDirectory($blocksPath)) {
@@ -171,6 +165,9 @@ class WidgetCategorySeeder extends Seeder
                 ]);
                 
                 Log::info("Kategori oluşturuldu: {$category->title} (slug: {$category->slug})");
+                
+                // 4. Ana klasörlerin içindeki her klasör, o klasörün kategorisinin widget'ı olacak
+                $this->createWidgetsForCategory($folder, $category);
             }
         }
         
@@ -202,9 +199,29 @@ class WidgetCategorySeeder extends Seeder
      */
     private function cleanupAllCategories()
     {
-        // Önce tüm kategorileri temizle
-        WidgetCategory::truncate();
-        Log::info("Tüm kategoriler temizlendi.");
+        try {
+            // Foreign key constraint nedeniyle truncate kullanamıyoruz
+            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+            
+            // Önce tüm widget'ı temizle
+            Widget::query()->delete();
+            Log::info("Tüm widget'lar silindi.");
+            
+            // Sonra tüm kategorileri temizle
+            WidgetCategory::query()->delete();
+            Log::info("Tüm kategoriler silindi.");
+            
+            // Veritabanı tablolarını sıfırla
+            DB::statement('ALTER TABLE widgets AUTO_INCREMENT = 1;');
+            DB::statement('ALTER TABLE widget_categories AUTO_INCREMENT = 1;');
+            
+            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+            
+            Log::info("Tüm kategoriler ve widget'lar güvenli bir şekilde temizlendi.");
+        } catch (\Exception $e) {
+            Log::error("Kategori ve widget temizleme hatası: " . $e->getMessage());
+            throw $e;
+        }
     }
     
     private function createModuleSubcategories($modulesCategory)
@@ -214,7 +231,7 @@ class WidgetCategorySeeder extends Seeder
             return;
         }
         
-        // Modules klasörünü tara ve içindeki modül klasörlerini alt kategori olarak oluştur
+        // 2. Modules klasörünü tara ve içindeki modül klasörlerini alt kategori olarak oluştur
         $modulesPath = base_path('Modules/WidgetManagement/resources/views/blocks/modules');
         
         if (File::isDirectory($modulesPath)) {
@@ -244,38 +261,12 @@ class WidgetCategorySeeder extends Seeder
                 ]);
                 
                 Log::info("Alt kategori oluşturuldu: {$subcategory->title} (slug: {$subcategory->slug})");
+                
+                // 4. Modüllerin içindeki her klasör, o modülün widget'ı olacak
+                $this->createWidgetsForModule($moduleFolder, $subcategory);
             }
         } else {
-            // Modül klasörü yoksa, varsayılan olarak Page ve Portfolio modüllerini ekle
-            $defaultModules = [
-                [
-                    'name' => 'page',
-                    'title' => 'Sayfa Modülü',
-                    'icon' => 'fa-file-alt'
-                ],
-                [
-                    'name' => 'portfolio',
-                    'title' => 'Portfolio Modülü',
-                    'icon' => 'fa-briefcase'
-                ]
-            ];
-            
-            foreach ($defaultModules as $index => $module) {
-                $slug = Str::slug($module['name']) . '-modulu';
-                
-                $subcategory = WidgetCategory::create([
-                    'title' => $module['title'],
-                    'slug' => $slug,
-                    'description' => $module['title'] . ' bileşenleri',
-                    'icon' => $module['icon'],
-                    'order' => $index + 1,
-                    'is_active' => true,
-                    'parent_id' => $modulesCategory->widget_category_id,
-                    'has_subcategories' => false
-                ]);
-                
-                Log::info("Varsayılan alt kategori oluşturuldu: {$subcategory->title} (slug: {$subcategory->slug})");
-            }
+            Log::warning("Modül klasörü bulunamadı: $modulesPath");
         }
     }
     
@@ -297,5 +288,218 @@ class WidgetCategorySeeder extends Seeder
         ];
         
         return $icons[$moduleName] ?? 'fa-puzzle-piece';
+    }
+    
+    /**
+     * Kategori için widget'ları oluştur
+     */
+    private function createWidgetsForCategory($categoryFolder, $category)
+    {
+        // Kategori klasörü içindeki alt klasörleri widget olarak oluştur
+        if (File::isDirectory($categoryFolder)) {
+            $widgetFolders = File::directories($categoryFolder);
+            
+            foreach ($widgetFolders as $widgetFolder) {
+                $widgetName = basename($widgetFolder);
+                $widgetViewPath = $widgetFolder . '/view.blade.php';
+                
+                // Eğer view.blade.php dosyası varsa
+                if (File::exists($widgetViewPath)) {
+                    $widgetTitle = ucfirst(str_replace(['-', '_'], ' ', $widgetName));
+                    $widgetSlug = Str::slug(basename($categoryFolder) . '-' . $widgetName);
+                    
+                    // Widget'ın zaten var olup olmadığını kontrol et
+                    $existingWidget = Widget::where('slug', $widgetSlug)->first();
+                    
+                    if (!$existingWidget) {
+                        Widget::create([
+                            'widget_category_id' => $category->widget_category_id,
+                            'name' => $widgetTitle,
+                            'slug' => $widgetSlug,
+                            'description' => $widgetTitle . ' bileşeni',
+                            'type' => 'file',
+                            'file_path' => basename($categoryFolder) . '/' . $widgetName . '/view',
+                            'has_items' => false,
+                            'is_active' => true,
+                            'is_core' => true,
+                            'settings_schema' => $this->getWidgetSettings($widgetName)
+                        ]);
+                        
+                        Log::info("Widget oluşturuldu: $widgetTitle (path: " . basename($categoryFolder) . "/{$widgetName}/view)");
+                    } else {
+                        // Varolan widget'ı güncelle
+                        $existingWidget->update([
+                            'widget_category_id' => $category->widget_category_id,
+                            'type' => 'file',
+                            'file_path' => basename($categoryFolder) . '/' . $widgetName . '/view'
+                        ]);
+                        
+                        Log::info("Widget güncellendi: $widgetTitle (slug: $widgetSlug)");
+                    }
+                }
+            }
+        }
+    }
+    
+    /**
+     * Modül için widget'ları oluştur
+     */
+    private function createWidgetsForModule($moduleFolder, $moduleCategory)
+    {
+        // Modül klasörü içindeki alt klasörleri widget olarak oluştur
+        if (File::isDirectory($moduleFolder)) {
+            $widgetFolders = File::directories($moduleFolder);
+            
+            foreach ($widgetFolders as $widgetFolder) {
+                $widgetName = basename($widgetFolder);
+                $widgetViewPath = $widgetFolder . '/view.blade.php';
+                $moduleName = basename($moduleFolder);
+                
+                // Eğer view.blade.php dosyası varsa
+                if (File::exists($widgetViewPath)) {
+                    $widgetTitle = ucfirst(str_replace(['-', '_'], ' ', $widgetName));
+                    $widgetSlug = Str::slug($moduleName . '-' . $widgetName);
+                    
+                    // Widget'ın zaten var olup olmadığını kontrol et
+                    $existingWidget = Widget::where('slug', $widgetSlug)->first();
+                    
+                    if (!$existingWidget) {
+                        Widget::create([
+                            'widget_category_id' => $moduleCategory->widget_category_id,
+                            'name' => $widgetTitle,
+                            'slug' => $widgetSlug,
+                            'description' => $widgetTitle . ' modül bileşeni',
+                            'type' => 'module',
+                            'file_path' => 'modules/' . $moduleName . '/' . $widgetName . '/view',
+                            'has_items' => false,
+                            'is_active' => true,
+                            'is_core' => true,
+                            'settings_schema' => $this->getModuleWidgetSettings($moduleName, $widgetName)
+                        ]);
+                        
+                        Log::info("Modül widget'ı oluşturuldu: $widgetTitle (path: modules/{$moduleName}/{$widgetName}/view)");
+                    } else {
+                        // Varolan widget'ı güncelle
+                        $existingWidget->update([
+                            'widget_category_id' => $moduleCategory->widget_category_id,
+                            'type' => 'module',
+                            'file_path' => 'modules/' . $moduleName . '/' . $widgetName . '/view'
+                        ]);
+                        
+                        Log::info("Modül widget'ı güncellendi: $widgetTitle (slug: $widgetSlug)");
+                    }
+                }
+            }
+        }
+    }
+    
+    /**
+     * Widget için temel ayarları getir
+     */
+    private function getWidgetSettings($widgetName)
+    {
+        // Temel ayarlar
+        $settings = [
+            [
+                'name' => 'title',
+                'label' => 'Başlık',
+                'type' => 'text',
+                'required' => true,
+                'system' => true
+            ],
+            [
+                'name' => 'unique_id',
+                'label' => 'Benzersiz ID',
+                'type' => 'text',
+                'required' => false,
+                'system' => true,
+                'hidden' => true
+            ]
+        ];
+        
+        return $settings;
+    }
+    
+    /**
+     * Modül widget'ı için ayarları getir
+     */
+    private function getModuleWidgetSettings($moduleName, $widgetName)
+    {
+        // Temel ayarlar
+        $settings = [
+            [
+                'name' => 'title',
+                'label' => 'Başlık',
+                'type' => 'text',
+                'required' => true,
+                'system' => true
+            ],
+            [
+                'name' => 'unique_id',
+                'label' => 'Benzersiz ID',
+                'type' => 'text',
+                'required' => false,
+                'system' => true,
+                'hidden' => true
+            ]
+        ];
+        
+        // Modül ve widget tipine göre özel ayarlar ekle
+        if ($moduleName == 'page') {
+            if ($widgetName == 'recent') {
+                $settings[] = [
+                    'name' => 'show_dates',
+                    'label' => 'Tarihleri Göster',
+                    'type' => 'checkbox',
+                    'required' => false
+                ];
+                $settings[] = [
+                    'name' => 'limit',
+                    'label' => 'Gösterilecek Sayfa Sayısı',
+                    'type' => 'number',
+                    'required' => false,
+                    'default' => 5
+                ];
+            } elseif ($widgetName == 'home') {
+                $settings[] = [
+                    'name' => 'show_title',
+                    'label' => 'Sayfa Başlığını Göster',
+                    'type' => 'checkbox',
+                    'required' => false
+                ];
+            }
+        } elseif ($moduleName == 'portfolio') {
+            if ($widgetName == 'list') {
+                $settings[] = [
+                    'name' => 'show_description',
+                    'label' => 'Açıklamayı Göster',
+                    'type' => 'checkbox',
+                    'required' => false
+                ];
+                $settings[] = [
+                    'name' => 'limit',
+                    'label' => 'Gösterilecek Proje Sayısı',
+                    'type' => 'number',
+                    'required' => false,
+                    'default' => 6
+                ];
+            } elseif ($widgetName == 'detail') {
+                $settings[] = [
+                    'name' => 'project_id',
+                    'label' => 'Proje ID',
+                    'type' => 'number',
+                    'required' => false
+                ];
+                $settings[] = [
+                    'name' => 'show_gallery',
+                    'label' => 'Galeriyi Göster',
+                    'type' => 'checkbox',
+                    'required' => false,
+                    'default' => true
+                ];
+            }
+        }
+        
+        return $settings;
     }
 }

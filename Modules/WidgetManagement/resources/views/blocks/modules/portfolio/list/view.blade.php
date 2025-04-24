@@ -1,5 +1,6 @@
 <?php
-use Modules\Portfolio\app\Models\Project;
+use Modules\Portfolio\App\Models\Portfolio;
+use Modules\Portfolio\App\Models\PortfolioCategory;
 use Illuminate\Support\Str;
 
 // Limit değerini ayarlardan al, varsayılan olarak 6
@@ -12,10 +13,10 @@ $orderDirection = $settings['order_direction'] ?? 'desc';
 $categoryId = $settings['category_id'] ?? null;
 
 // Veritabanından en son eklenen projeleri çek
-$query = Project::where('is_active', true);
+$query = Portfolio::where('is_active', true);
 
 if ($categoryId) {
-    $query->where('category_id', $categoryId);
+    $query->where('portfolio_category_id', $categoryId);
 }
 
 $projects = $query->orderBy('created_at', $orderDirection)
@@ -36,8 +37,8 @@ $projects = $query->orderBy('created_at', $orderDirection)
         @forelse($projects as $project)
             <div class="col-md-4 mb-4">
                 <div class="card h-100">
-                    @if($project->cover_image)
-                    <img src="{{ $project->cover_image }}" class="card-img-top" alt="{{ $project->title }}">
+                    @if($project->image)
+                    <img src="{{ $project->image }}" class="card-img-top" alt="{{ $project->title }}">
                     @else
                     <div class="bg-light text-center py-5">
                         <i class="fas fa-image fa-3x text-muted"></i>
@@ -45,10 +46,10 @@ $projects = $query->orderBy('created_at', $orderDirection)
                     @endif
                     <div class="card-body">
                         <h5 class="card-title">{{ $project->title }}</h5>
-                        <p class="card-text">{{ Str::limit($project->description, 100) }}</p>
+                        <p class="card-text">{{ Str::limit($project->body, 100) }}</p>
                         
                         @if($project->category)
-                        <span class="badge bg-primary">{{ $project->category->name }}</span>
+                        <span class="badge bg-primary">{{ $project->category->title }}</span>
                         @endif
                     </div>
                     <div class="card-footer">

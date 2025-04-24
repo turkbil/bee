@@ -7,6 +7,7 @@ use Illuminate\Session\TokenMismatchException;
 use Illuminate\Support\Facades\Redirect;
 use Throwable;
 use App\Exceptions\TenantOfflineException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -42,6 +43,13 @@ class Handler extends ExceptionHandler
         // Genel HTTP 503 hataları için offline sayfasını göster
         $this->renderable(function (\Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException $e, $request) {
             return response()->view('errors.offline', [], 503);
+        });
+
+        // Tüm HTTP 403 hataları için özel sayfa
+        $this->renderable(function (\Symfony\Component\HttpKernel\Exception\HttpException $e, $request) {
+            if ($e->getStatusCode() === 403) {
+                return response()->view('errors.403', [], 403);
+            }
         });
     }
 }

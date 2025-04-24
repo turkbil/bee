@@ -51,9 +51,10 @@ class ModuleWidgetListComponent extends Component
         // Module tipindeki widgetları getir (sayılar için)
         $moduleWidgetsQuery = Widget::where('type', 'module')->where('is_active', true);
         
-        // Ana kategorileri getir
+        // Ana kategorileri getir - Sadece 1 nolu kategoriyi göster (Modül Bileşenleri)
         $parentCategories = WidgetCategory::whereNull('parent_id')
             ->where('is_active', true)
+            ->where('widget_category_id', '=', 1) // Sadece Modül Bileşenleri (1 nolu kategori) göster
             ->withCount(['widgets' => function($query) use ($moduleWidgetsQuery) {
                 $query->whereIn('id', $moduleWidgetsQuery->pluck('id'));
             }, 'children'])
@@ -82,11 +83,27 @@ class ModuleWidgetListComponent extends Component
                 }])
                 ->orderBy('order')
                 ->get();
+        } else {
+            // Eğer bir ana kategori seçilmemişse, 1 nolu kategorinin alt kategorilerini getir
+            $moduleCategory = WidgetCategory::where('widget_category_id', 1)->first();
+            if ($moduleCategory) {
+                $childCategories = WidgetCategory::where('parent_id', $moduleCategory->widget_category_id)
+                    ->where('is_active', true)
+                    ->withCount(['widgets' => function($query) use ($moduleWidgetsQuery) {
+                        $query->whereIn('id', $moduleWidgetsQuery->pluck('id'));
+                    }])
+                    ->orderBy('order')
+                    ->get();
+            }
         }
         
         // Module tipindeki widgetları getir
         $query = Widget::where('widgets.is_active', true)
             ->where('type', 'module')
+            ->whereHas('category', function($cq) {
+                $cq->where('widget_category_id', '=', 1)
+                   ->orWhere('parent_id', '=', 1); // Modül bileşenleri kategorisi ve alt kategorileri
+            })
             ->when($this->search, function ($q) {
                 $q->where('name', 'like', "%{$this->search}%")
                   ->orWhere('description', 'like', "%{$this->search}%");

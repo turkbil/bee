@@ -25,6 +25,11 @@
             ?>;
             --primary-text-color: <?php echo isset($_COOKIE['siteTextColor']) ? $_COOKIE['siteTextColor']: '#ffffff';
             ?>;
+            --tblr-font-family: <?php echo isset($_COOKIE['themeFont']) ? $_COOKIE['themeFont'] : 'Inter, system-ui, -apple-system, \'Segoe UI\', Roboto, \'Helvetica Neue\', Arial, \'Noto Sans\', sans-serif'; ?>;
+            --tblr-border-radius: <?php echo isset($_COOKIE['themeRadius']) ? $_COOKIE['themeRadius'] : '0.5rem'; ?>;
+        }
+        body {
+            font-family: var(--tblr-font-family);
         }
     </style>
 </head>
@@ -126,6 +131,7 @@
 <script src="{{ asset('admin/libs/tom-select/dist/js/plugins/restore_on_backspace.js') }}"></script>
 <script src="{{ asset('admin/js/main.js') }}?v={{ filemtime(public_path('admin/js/main.js')) }}"></script>
 <script src="{{ asset('admin/js/toast.js') }}?v={{ filemtime(public_path('admin/js/toast.js')) }}"></script>
+<script src="{{ asset('admin/js/theme.js') }}?v={{ filemtime(public_path('admin/js/theme.js')) }}"></script>
 {{-- Modüle özel silme modalı --}}
 @livewireScripts
 @stack('scripts') @stack('js')
@@ -141,28 +147,6 @@
 </script>
 @endif
 
-<script>
-    // Tablo düzeni kodu
-    function toggleTableMode(isCompact) {
-        document.cookie = `tableCompact=${isCompact ? '1' : '0'}; max-age=${60*60*24*30}; path=/`;
-        const body = document.body;
-        const darkClass = body.classList.contains('dark') ? 'dark' : 'light';
-        body.className = `${darkClass}${isCompact ? ' table-compact' : ''}`;
-    }
-
-// Başlangıç rengini ayarla
-window.addEventListener('load', () => {
-    const cookieColor = getCookie('siteColor') || '#2196F3';
-    changeColor(cookieColor);
-});
-
-function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-}
-
-</script>
 @if (request()->routeIs('admin.*.manage*'))
     <x-head.tinymce-config />
 @endif

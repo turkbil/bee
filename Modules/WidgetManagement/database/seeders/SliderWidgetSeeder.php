@@ -4,30 +4,72 @@ namespace Modules\WidgetManagement\database\seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\WidgetManagement\app\Models\Widget;
+use Modules\WidgetManagement\app\Models\WidgetCategory;
 use Modules\WidgetManagement\app\Models\TenantWidget;
 use Modules\WidgetManagement\app\Models\WidgetItem;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
 
 class SliderWidgetSeeder extends Seeder
 {
     public function run()
     {
-        // Önce kontrol et, eğer bu slug ile widget varsa oluşturma
-        if (!Widget::where('slug', 'slider')->exists()) {
-            // Slider Widget'ı oluştur (widgets tablosuna ekle)
+        // Tenant kontrolü
+        if (function_exists('tenant') && tenant()) {
+            if ($this->command) {
+                $this->command->info('Tenant contextinde çalışıyor, SliderWidgetSeeder atlanıyor.');
+            }
+            Log::info('Tenant contextinde çalışıyor, SliderWidgetSeeder atlanıyor. Tenant ID: ' . tenant('id'));
+            return;
+        }
+        
+        Log::info('SliderWidgetSeeder merkezi veritabanında çalışıyor...');
+        
+        try {
+            // Slider bileşeni oluştur
+            $this->createSliderWidget();
+            
+            Log::info('Slider bileşeni başarıyla oluşturuldu.');
+        } catch (\Exception $e) {
+            Log::error('SliderWidgetSeeder hatası: ' . $e->getMessage());
+            Log::error($e->getTraceAsString());
+            
+            if ($this->command) {
+                $this->command->error('SliderWidgetSeeder hatası: ' . $e->getMessage());
+            }
+        }
+    }
+    
+    private function createSliderWidget()
+    {
+        // Slider kategorisini bul
+        $sliderCategory = WidgetCategory::where('slug', 'sliderlar')->first();
+        
+        if (!$sliderCategory) {
+            Log::warning('Slider kategorisi bulunamadı, slider widget oluşturulamıyor...');
+            return;
+        }
+        
+        // Slider widget'ı zaten var mı kontrolü
+        $existingWidget = Widget::where('slug', 'dinamik-slider')->first();
+        
+        if (!$existingWidget) {
+            // Slider widget'ı oluştur
             $widget = Widget::create([
-                'name' => 'Slider',
-                'slug' => 'slider',
+                'widget_category_id' => $sliderCategory->widget_category_id,
+                'name' => 'Dinamik Slider',
+                'slug' => 'dinamik-slider',
                 'description' => 'Dinamik slaytlar ekleyebileceğiniz carousel slider',
                 'type' => 'dynamic',
                 'content_html' => '
                 <div id="slider-{{unique_id}}" class="carousel slide" data-bs-ride="carousel">
+                    {{#if show_indicators}}
                     <div class="carousel-indicators">
                         {{#each items}}
-                        <button type="button" data-bs-target="#slider-{{unique_id}}" data-bs-slide-to="{{@index}}" {{#if @first}}class="active"{{/if}}></button>
+                        <button type="button" data-bs-target="#slider-{{../unique_id}}" data-bs-slide-to="{{@index}}" {{#if @first}}class="active"{{/if}}></button>
                         {{/each}}
                     </div>
+                    {{/if}}
                     <div class="carousel-inner">
                         {{#each items}}
                         <div class="carousel-item {{#if @first}}active{{/if}}">
@@ -42,6 +84,7 @@ class SliderWidgetSeeder extends Seeder
                         </div>
                         {{/each}}
                     </div>
+                    {{#if show_controls}}
                     <button class="carousel-control-prev" type="button" data-bs-target="#slider-{{unique_id}}" data-bs-slide="prev">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                         <span class="visually-hidden">Önceki</span>
@@ -50,6 +93,7 @@ class SliderWidgetSeeder extends Seeder
                         <span class="carousel-control-next-icon" aria-hidden="true"></span>
                         <span class="visually-hidden">Sonraki</span>
                     </button>
+                    {{/if}}
                 </div>
                 ',
                 'content_css' => '
@@ -77,13 +121,14 @@ class SliderWidgetSeeder extends Seeder
                 });
                 ',
                 'has_items' => true,
+                'is_active' => true,
+                'is_core' => true,
                 'item_schema' => [
                     [
                         'name' => 'title',
                         'label' => 'Başlık',
                         'type' => 'text',
-                        'required' => true,
-                        'system' => true
+                        'required' => true
                     ],
                     [
                         'name' => 'description',
@@ -95,8 +140,7 @@ class SliderWidgetSeeder extends Seeder
                         'name' => 'image',
                         'label' => 'Görsel',
                         'type' => 'image',
-                        'required' => true,
-                        'system' => true
+                        'required' => true
                     ],
                     [
                         'name' => 'button_text',
@@ -112,6 +156,21 @@ class SliderWidgetSeeder extends Seeder
                     ]
                 ],
                 'settings_schema' => [
+                    [
+                        'name' => 'title',
+                        'label' => 'Başlık',
+                        'type' => 'text',
+                        'required' => true,
+                        'system' => true
+                    ],
+                    [
+                        'name' => 'unique_id',
+                        'label' => 'Benzersiz ID',
+                        'type' => 'text',
+                        'required' => false,
+                        'system' => true,
+                        'hidden' => true
+                    ],
                     [
                         'name' => 'height',
                         'label' => 'Yükseklik (px)',
@@ -154,57 +213,64 @@ class SliderWidgetSeeder extends Seeder
                         'required' => false,
                         'default' => '#ffffff'
                     ]
-                ],
-                'is_active' => true,
-                'is_core' => true
-            ]);
-
-            // Tenant için widget oluştur (tenant_widgets tablosuna ekle)
-            $tenantWidget = TenantWidget::create([
-                'widget_id' => $widget->id,
-                'settings' => [
-                    'unique_id' => (string) Str::uuid(),
-                    'title' => 'Ana Sayfa Slider',
-                    'height' => 500,
-                    'interval' => 5000,
-                    'show_indicators' => true,
-                    'show_controls' => true,
-                    'caption_bg_color' => 'rgba(0,0,0,0.5)',
-                    'caption_text_color' => '#ffffff'
-                ],
-                'order' => 0,
-                'is_active' => true
-            ]);
-
-            // Slider için 2 adet örnek item oluştur (widget_items tablosuna ekle)
-            $items = [
-                [
-                    'title' => 'Web Sitesi Çözümleri',
-                    'description' => 'Modern ve responsive web siteleri ile işletmenizi dijital dünyada öne çıkarın',
-                    'image' => asset('storage/images/widgets/slider/slider-1.jpg'),
-                    'button_text' => 'Detaylı Bilgi',
-                    'button_url' => '/web-cozumleri',
-                    'unique_id' => (string) Str::uuid()
-                ],
-                [
-                    'title' => 'E-Ticaret Platformları',
-                    'description' => 'Güvenli ve kullanıcı dostu e-ticaret çözümleri ile satışlarınızı artırın',
-                    'image' => asset('storage/images/widgets/slider/slider-2.jpg'),
-                    'button_text' => 'Hemen Başlayın',
-                    'button_url' => '/e-ticaret',
-                    'unique_id' => (string) Str::uuid()
                 ]
-            ];
-
-            // Widget item'larını oluştur - sadece 2 item
-            foreach ($items as $index => $item) {
-                WidgetItem::create([
-                    'tenant_widget_id' => $tenantWidget->id,
-                    'content' => $item,
-                    'order' => $index + 1,
-                    'is_active' => true
-                ]);
-            }
+            ]);
+            
+            Log::info('Dinamik Slider bileşeni oluşturuldu.');
+            
+            // Demo olarak bir tenant widget ve öğeler oluştur
+            $this->createDemoTenantSlider($widget);
+        } else {
+            Log::info('Dinamik Slider bileşeni zaten mevcut, atlanıyor...');
         }
+    }
+    
+    private function createDemoTenantSlider($widget)
+    {
+        // Tenant için widget oluştur (tenant_widgets tablosuna ekle)
+        $tenantWidget = TenantWidget::create([
+            'widget_id' => $widget->id,
+            'settings' => [
+                'unique_id' => (string) Str::uuid(),
+                'title' => 'Ana Sayfa Slider',
+                'height' => 500,
+                'interval' => 5000,
+                'show_indicators' => true,
+                'show_controls' => true,
+                'caption_bg_color' => 'rgba(0,0,0,0.5)',
+                'caption_text_color' => '#ffffff'
+            ],
+            'order' => 0,
+            'is_active' => true
+        ]);
+        
+        // Slider için 2 adet örnek item oluştur
+        $items = [
+            [
+                'title' => 'Web Sitesi Çözümleri',
+                'description' => 'Modern ve responsive web siteleri ile işletmenizi dijital dünyada öne çıkarın',
+                'image' => 'https://via.placeholder.com/1200x600',
+                'button_text' => 'Detaylı Bilgi',
+                'button_url' => '/web-cozumleri'
+            ],
+            [
+                'title' => 'E-Ticaret Platformları',
+                'description' => 'Güvenli ve kullanıcı dostu e-ticaret çözümleri ile satışlarınızı artırın',
+                'image' => 'https://via.placeholder.com/1200x600',
+                'button_text' => 'Hemen Başlayın',
+                'button_url' => '/e-ticaret'
+            ]
+        ];
+        
+        // Widget item'larını oluştur
+        foreach ($items as $index => $item) {
+            WidgetItem::create([
+                'tenant_widget_id' => $tenantWidget->id,
+                'content' => $item,
+                'order' => $index + 1
+            ]);
+        }
+        
+        Log::info('Demo tenant slider oluşturuldu.');
     }
 }

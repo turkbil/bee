@@ -1,0 +1,213 @@
+<?php
+
+namespace Modules\WidgetManagement\database\seeders;
+
+use Illuminate\Database\Seeder;
+use Modules\WidgetManagement\app\Models\Widget;
+use Modules\WidgetManagement\app\Models\WidgetCategory;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
+
+class BlockWidgetSeeder extends Seeder
+{
+    public function run()
+    {
+        // Tenant kontrolü
+        if (function_exists('tenant') && tenant()) {
+            if ($this->command) {
+                $this->command->info('Tenant contextinde çalışıyor, BlockWidgetSeeder atlanıyor.');
+            }
+            Log::info('Tenant contextinde çalışıyor, BlockWidgetSeeder atlanıyor. Tenant ID: ' . tenant('id'));
+            return;
+        }
+        
+        Log::info('BlockWidgetSeeder merkezi veritabanında çalışıyor...');
+        
+        try {
+            // Blok kategorileri oluştur
+            $this->createBlockWidgets();
+            
+            Log::info('Blok bileşenleri başarıyla oluşturuldu.');
+        } catch (\Exception $e) {
+            Log::error('BlockWidgetSeeder hatası: ' . $e->getMessage());
+            Log::error($e->getTraceAsString());
+            
+            if ($this->command) {
+                $this->command->error('BlockWidgetSeeder hatası: ' . $e->getMessage());
+            }
+        }
+    }
+    
+    private function createBlockWidgets()
+    {
+        // Blok dizini
+        $blockBasePath = base_path('Modules/WidgetManagement/resources/views/blocks');
+        
+        // Kategori eşleştirmeleri
+        $categoryMappings = [
+            'cards' => 'kartlar',
+            'content' => 'icerikler',
+            'features' => 'ozellikler',
+            'form' => 'formlar',
+            'hero' => 'herolar',
+            'layout' => 'yerlesimler',
+            'media' => 'medya',
+            'testimonials' => 'referanslar',
+            'slider' => 'sliderlar'
+        ];
+        
+        // Blok açıklamaları
+        $blockDescriptions = [
+            'cards/basic' => 'Temel kart bileşeni',
+            'cards/grid' => 'Grid şeklinde düzenlenmiş kartlar',
+            'content/hero' => 'Hero içerik alanı',
+            'content/text' => 'Temel metin bileşeni',
+            'features/basic' => 'Özellik listeleme bileşeni',
+            'form/contact-form' => 'İletişim formu',
+            'hero/simple' => 'Basit hero bileşeni',
+            'layout/footer' => 'Sayfa alt kısmı',
+            'layout/header' => 'Sayfa üst kısmı',
+            'layout/one-column' => 'Tek sütunlu yerleşim',
+            'layout/two-columns' => 'İki sütunlu yerleşim',
+            'layout/three-columns' => 'Üç sütunlu yerleşim',
+            'media/image' => 'Görsel bileşeni',
+            'testimonials/basic' => 'Müşteri yorumu bileşeni'
+        ];
+        
+        if (File::isDirectory($blockBasePath)) {
+            $categoryFolders = File::directories($blockBasePath);
+            
+            foreach ($categoryFolders as $categoryFolder) {
+                $categoryName = basename($categoryFolder);
+                
+                // modules klasörünü atla
+                if ($categoryName === 'modules') {
+                    continue;
+                }
+                
+                // Kategori eşleştirmesini bul
+                $categorySlug = $categoryMappings[$categoryName] ?? Str::slug($categoryName);
+                
+                // Kategoriyi bul
+                $category = WidgetCategory::where('slug', $categorySlug)->first();
+                
+                if (!$category) {
+                    Log::warning("Kategori bulunamadı: $categorySlug, atlanıyor...");
+                    continue;
+                }
+                
+                // Bu kategorideki tüm bileşenleri bul ve alt klasörleri de tara
+                $blockPaths = $this->getBlocksInFolder($categoryName);
+                
+                Log::info("$categoryName klasöründe " . count($blockPaths) . " blok bulundu.");
+                
+                foreach ($blockPaths as $blockPath) {
+                    $fullPath = "$categoryName/$blockPath";
+                    $blockName = $this->getBlockName($blockPath);
+                    $blockSlug = Str::slug($categoryName . '-' . $blockPath);
+                    
+                    // Widget'ın zaten var olup olmadığını kontrol et
+                    $existingWidget = Widget::where('slug', $blockSlug)->first();
+                    
+                    if (!$existingWidget) {
+                        Widget::create([
+                            'widget_category_id' => $category->widget_category_id,
+                            'name' => $blockName,
+                            'slug' => $blockSlug,
+                            'description' => $blockDescriptions[$fullPath] ?? "$blockName bileşeni",
+                            'type' => 'file',
+                            'file_path' => $fullPath,
+                            'has_items' => false,
+                            'is_active' => true,
+                            'is_core' => true,
+                            'settings_schema' => [
+                                [
+                                    'name' => 'title',
+                                    'label' => 'Başlık',
+                                    'type' => 'text',
+                                    'required' => true,
+                                    'system' => true
+                                ],
+                                [
+                                    'name' => 'unique_id',
+                                    'label' => 'Benzersiz ID',
+                                    'type' => 'text',
+                                    'required' => false,
+                                    'system' => true,
+                                    'hidden' => true
+                                ]
+                            ]
+                        ]);
+                        
+                        Log::info("Widget oluşturuldu: $blockName (path: $fullPath)");
+                    } else {
+                        Log::info("Widget zaten mevcut: $blockName (slug: $blockSlug)");
+                    }
+                }
+            }
+        } else {
+            Log::warning("Blok klasörü bulunamadı: $blockBasePath");
+        }
+    }
+    
+    private function getBlocksInFolder($folder)
+    {
+        $blocks = [];
+        $path = base_path('Modules/WidgetManagement/resources/views/blocks/' . $folder);
+        
+        if (File::isDirectory($path)) {
+            $files = File::files($path);
+            
+            foreach ($files as $file) {
+                $fileName = $file->getFilename();
+                if (Str::endsWith($fileName, '.blade.php')) {
+                    $baseName = Str::replaceLast('.blade.php', '', $fileName);
+                    $blocks[] = $baseName;
+                }
+            }
+            
+            // Alt klasörleri kontrol et
+            $directories = File::directories($path);
+            foreach ($directories as $directory) {
+                $subFolder = basename($directory);
+                
+                // Alt klasöre ait view.blade.php dosyası var mı kontrol et
+                $viewFile = $directory . '/view.blade.php';
+                if (File::exists($viewFile)) {
+                    $blocks[] = $subFolder . '/view';
+                } else {
+                    // Alt klasörlerdeki tüm blade dosyalarını kontrol et
+                    $subFiles = File::files($directory);
+                    foreach ($subFiles as $file) {
+                        $fileName = $file->getFilename();
+                        if (Str::endsWith($fileName, '.blade.php')) {
+                            $baseName = Str::replaceLast('.blade.php', '', $fileName);
+                            $blocks[] = $subFolder . '/' . $baseName;
+                        }
+                    }
+                }
+            }
+        } else {
+            Log::warning("Klasör bulunamadı: $path");
+        }
+        
+        return $blocks;
+    }
+    
+    private function getBlockName($path)
+    {
+        $parts = explode('/', $path);
+        
+        if (count($parts) > 1 && end($parts) === 'view') {
+            // Eğer alt klasöründe view.blade.php varsa, alt klasör adını kullan
+            $blockName = $parts[count($parts) - 2];
+        } else {
+            // Diğer durumda son parçayı kullan
+            $blockName = end($parts);
+        }
+        
+        // İlk harfi büyük yap ve tire/alt çizgi karakterlerini boşluğa dönüştür
+        return ucfirst(str_replace(['-', '_'], ' ', $blockName));
+    }
+}

@@ -1,0 +1,141 @@
+<?php
+
+namespace Modules\WidgetManagement\database\seeders;
+
+use Illuminate\Database\Seeder;
+use Modules\WidgetManagement\app\Models\Widget;
+use Modules\WidgetManagement\app\Models\WidgetCategory;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
+
+class HeroWidgetSeeder extends Seeder
+{
+    public function run()
+    {
+        // Tenant kontrolü
+        if (function_exists('tenant') && tenant()) {
+            if ($this->command) {
+                $this->command->info('Tenant contextinde çalışıyor, HeroWidgetSeeder atlanıyor.');
+            }
+            Log::info('Tenant contextinde çalışıyor, HeroWidgetSeeder atlanıyor. Tenant ID: ' . tenant('id'));
+            return;
+        }
+        
+        Log::info('HeroWidgetSeeder merkezi veritabanında çalışıyor...');
+        
+        try {
+            // Hero klasörünü oluştur
+            $this->createHeroFolder();
+            
+            // Statik hero widget'ı oluştur
+            $this->createHeroWidget();
+            
+            Log::info('Hero bileşeni başarıyla oluşturuldu.');
+        } catch (\Exception $e) {
+            Log::error('HeroWidgetSeeder hatası: ' . $e->getMessage());
+            Log::error($e->getTraceAsString());
+            
+            if ($this->command) {
+                $this->command->error('HeroWidgetSeeder hatası: ' . $e->getMessage());
+            }
+        }
+    }
+    
+    private function createHeroFolder()
+    {
+        // Hero klasör yolu
+        $heroBasePath = base_path('Modules/WidgetManagement/resources/views/blocks/hero');
+        $hero1Path = $heroBasePath . '/hero-1';
+        
+        // Klasör yoksa oluştur
+        if (!File::exists($hero1Path)) {
+            File::makeDirectory($hero1Path, 0755, true);
+            
+            // Hero view dosyasını oluştur
+            $viewContent = '<div class="py-5 text-center bg-light">
+    <div class="container">
+        <div class="row py-lg-5">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                <h1 class="fw-light">Full Width Hero</h1>
+                <p class="lead text-muted">Etkileyici bir hero bileşeni ile sayfanızın üst kısmını tasarlayın. İsterseniz arka plan rengini değiştirerek modern bir görünüm kazandırabilirsiniz.</p>
+                <p>
+                    <a href="#" class="btn btn-primary my-2 me-2">Ana Buton</a>
+                    <a href="#" class="btn btn-secondary my-2">İkincil Buton</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>';
+            
+            File::put($hero1Path . '/view.blade.php', $viewContent);
+            Log::info('Hero-1 view.blade.php dosyası oluşturuldu.');
+        } else {
+            Log::info('Hero-1 klasörü zaten mevcut, atlanıyor...');
+        }
+    }
+    
+    private function createHeroWidget()
+    {
+        // Hero kategorisini bul
+        $heroCategory = WidgetCategory::where('slug', 'herolar')->first();
+        
+        if (!$heroCategory) {
+            Log::warning('Hero kategorisi bulunamadı, hero widget oluşturulamıyor...');
+            return;
+        }
+        
+        // Hero widget'ı zaten var mı kontrolü
+        $existingWidget = Widget::where('slug', 'full-width-hero')->first();
+        
+        if (!$existingWidget) {
+            // Hero widget'ı oluştur
+            Widget::create([
+                'widget_category_id' => $heroCategory->widget_category_id,
+                'name' => 'Full Width Hero',
+                'slug' => 'full-width-hero',
+                'description' => 'Sayfanın üst kısmında kullanılabilecek tam genişlikte hero bileşeni',
+                'type' => 'file',
+                'file_path' => 'hero/hero-1/view',
+                'has_items' => false,
+                'is_active' => true,
+                'is_core' => true,
+                'settings_schema' => [
+                    [
+                        'name' => 'title',
+                        'label' => 'Başlık',
+                        'type' => 'text',
+                        'required' => true,
+                        'system' => true
+                    ],
+                    [
+                        'name' => 'unique_id',
+                        'label' => 'Benzersiz ID',
+                        'type' => 'text',
+                        'required' => false,
+                        'system' => true,
+                        'hidden' => true
+                    ],
+                    [
+                        'name' => 'bg_color',
+                        'label' => 'Arkaplan Rengi',
+                        'type' => 'color',
+                        'required' => false,
+                        'default' => '#f8f9fa'
+                    ],
+                    [
+                        'name' => 'text_color',
+                        'label' => 'Metin Rengi',
+                        'type' => 'color',
+                        'required' => false,
+                        'default' => '#212529'
+                    ]
+                ]
+            ]);
+            
+            Log::info('Full Width Hero bileşeni oluşturuldu.');
+        } else {
+            Log::info('Full Width Hero bileşeni zaten mevcut, atlanıyor...');
+        }
+    }
+}

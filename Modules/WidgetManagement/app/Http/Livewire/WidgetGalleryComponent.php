@@ -132,7 +132,9 @@ class WidgetGalleryComponent extends Component
         $parentCategories = WidgetCategory::whereNull('parent_id')
             ->where('is_active', true)
             ->withCount(['widgets' => function($query) {
-                $query->where('type', '!=', 'file')->where('is_active', true);
+                $query->where('type', '!=', 'file')
+                      ->where('type', '!=', 'module')
+                      ->where('is_active', true);
             }, 'children'])
             ->orderBy('order')
             ->get();
@@ -143,7 +145,9 @@ class WidgetGalleryComponent extends Component
             $childCategories = WidgetCategory::where('parent_id', $this->parentCategoryFilter)
                 ->where('is_active', true)
                 ->withCount(['widgets' => function($query) {
-                    $query->where('type', '!=', 'file')->where('is_active', true);
+                    $query->where('type', '!=', 'file')
+                          ->where('type', '!=', 'module')
+                          ->where('is_active', true);
                 }])
                 ->orderBy('order')
                 ->get();
@@ -152,6 +156,7 @@ class WidgetGalleryComponent extends Component
         // Kullanılabilir şablonları getir
         $query = Widget::where('is_active', true)
             ->where('type', '!=', 'file') // file tipindeki widgetları hariç tut
+            ->where('type', '!=', 'module') // module tipindeki widgetları hariç tut
             ->when($this->search, function ($q) {
                 $q->where('name', 'like', "%{$this->search}%")
                   ->orWhere('description', 'like', "%{$this->search}%");
@@ -186,7 +191,6 @@ class WidgetGalleryComponent extends Component
             'types' => [
                 'static' => 'Statik',
                 'dynamic' => 'Dinamik',
-                'module' => 'Modül',
                 'content' => 'İçerik'
             ],
             'parentCategories' => $parentCategories,

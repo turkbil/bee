@@ -11,6 +11,7 @@ use Modules\WidgetManagement\app\Http\Livewire\WidgetSettingsComponent;
 use Modules\WidgetManagement\app\Http\Livewire\WidgetCategoryComponent;
 use Modules\WidgetManagement\app\Http\Controllers\WidgetPreviewController;
 use Modules\WidgetManagement\app\Http\Livewire\FileWidgetListComponent;
+use Modules\WidgetManagement\app\Http\Livewire\ModuleWidgetListComponent;
 
 Route::middleware(['web', 'auth', 'tenant'])
     ->prefix('admin')
@@ -73,11 +74,16 @@ Route::middleware(['web', 'auth', 'tenant'])
                 // File Widget Routes (sadece root yetkileri)
                 Route::get('/file-widgets', FileWidgetListComponent::class)
                     ->middleware(['role:root'])
-                    ->name('file.index');
+                    ->name('files');
 
                 Route::get('/file-widgets/preview/{id}', [WidgetPreviewController::class, 'showFile'])
                     ->middleware(['role:root'])
                     ->where('id', '[0-9]+')
                     ->name('file.preview');
+                    
+                // Module Widget Routes (sadece root yetkileri)
+                Route::get('/modules', ModuleWidgetListComponent::class)
+                    ->middleware(['role:root'])
+                    ->name('modules');
             });
     });

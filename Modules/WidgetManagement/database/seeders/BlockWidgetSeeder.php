@@ -27,23 +27,23 @@ class BlockWidgetSeeder extends Seeder
             return;
         }
 
-        // Seeder'ın daha önce çalıştırılıp çalıştırılmadığını kontrol et
+        // Debug: Cache'i zorla temizle
         $cacheKey = self::$runKey . '_' . Config::get('database.default');
-        if (Cache::has($cacheKey)) {
-            Log::info('BlockWidgetSeeder zaten çalıştırılmış, atlanıyor...');
-            return;
-        }
+        Cache::forget($cacheKey);
+        Log::info('BlockWidgetSeeder cache temizlendi: ' . $cacheKey);
 
         Log::info('BlockWidgetSeeder merkezi veritabanında çalışıyor...');
 
         try {
             // Blok kategorileri oluştur
+            Log::info('Blok kategorileri oluşturuluyor...');
             $this->createBlockWidgets();
 
             Log::info('Blok bileşenleri başarıyla oluşturuldu.');
 
             // Seeder'ın çalıştırıldığını işaretle (10 dakika süreyle cache'de tut)
             Cache::put($cacheKey, true, 600);
+            Log::info('BlockWidgetSeeder cache kaydedildi: ' . $cacheKey);
         } catch (\Exception $e) {
             Log::error('BlockWidgetSeeder hatası: ' . $e->getMessage());
             Log::error($e->getTraceAsString());
@@ -115,24 +115,30 @@ class BlockWidgetSeeder extends Seeder
                         $categoryTitle = ucfirst(str_replace(['-', '_'], ' ', $categoryName));
                         
                         // Kategori oluştur
-                        $category = WidgetCategory::create([
+                        $category = new WidgetCategory([
                             'title' => $categoryTitle,
                             'slug' => $categorySlug,
                             'description' => $categoryTitle . ' bileşenleri',
                             'icon' => 'fa-puzzle-piece',
                             'order' => 999,
                             'is_active' => true,
-                            'parent_id' => null,
-                            'has_subcategories' => false
+                            'parent_id' => null
                         ]);
                         
-                        Log::info("Kategori oluşturuldu: $categoryTitle (slug: $categorySlug)");
+                        $category->save();
+                        
+                        // Kategori ID'sini doğrula
+                        if (!$category->widget_category_id) {
+                            throw new \Exception("Kategori ID oluşturulamadı");
+                        }
+                        
+                        Log::info("Kategori oluşturuldu: $categoryTitle (slug: $categorySlug) (ID: {$category->widget_category_id})");
                     } catch (\Exception $e) {
                         Log::error("Kategori oluşturulamadı: $categorySlug. Hata: " . $e->getMessage());
                         continue;
                     }
                     
-                    if (!$category) {
+                    if (!$category || !$category->widget_category_id) {
                         Log::error("Kategori oluşturulamadı: $categorySlug");
                         continue;
                     }
@@ -152,38 +158,64 @@ class BlockWidgetSeeder extends Seeder
                     $existingWidget = Widget::where('slug', $blockSlug)->first();
                     
                     if (!$existingWidget) {
-                        Widget::create([
-                            'widget_category_id' => $category->widget_category_id,
-                            'name' => $blockName,
-                            'slug' => $blockSlug,
-                            'description' => $blockDescriptions[$fullPath] ?? "$blockName bileşeni",
-                            'type' => 'file',
-                            'file_path' => $fullPath,
-                            'has_items' => false,
-                            'is_active' => true,
-                            'is_core' => true,
-                            'settings_schema' => [
-                                [
-                                    'name' => 'title',
-                                    'label' => 'Başlık',
-                                    'type' => 'text',
-                                    'required' => true,
-                                    'system' => true
-                                ],
-                                [
-                                    'name' => 'unique_id',
-                                    'label' => 'Benzersiz ID',
-                                    'type' => 'text',
-                                    'required' => false,
-                                    'system' => true,
-                                    'hidden' => true
+                        try {
+                            // Kategori ID'sini kontrol et
+                            if (!$category) {
+                                Log::error("Widget oluşturulamadı: Kategori bulunamadı");
+                                continue;
+                            }
+                            
+                            if (!$category->widget_category_id) {
+                                Log::error("Widget oluşturulamadı: Kategori ID'si bulunamadı. Kategori: " . json_encode($category->toArray()));
+                                continue;
+                            }
+                            
+                            Log::info("Kategori bulundu: ID={$category->widget_category_id}, Slug={$category->slug}");
+                            
+                            $widget = new Widget([
+                                'widget_category_id' => $category->widget_category_id,
+                                'name' => $blockName,
+                                'slug' => $blockSlug,
+                                'description' => $blockDescriptions[$fullPath] ?? "$blockName bileşeni",
+                                'type' => 'file',
+                                'file_path' => $fullPath,
+                                'has_items' => false,
+                                'is_active' => true,
+                                'is_core' => true,
+                                'settings_schema' => [
+                                    [
+                                        'name' => 'title',
+                                        'label' => 'Başlık',
+                                        'type' => 'text',
+                                        'required' => true,
+                                        'system' => true
+                                    ],
+                                    [
+                                        'name' => 'unique_id',
+                                        'label' => 'Benzersiz ID',
+                                        'type' => 'text',
+                                        'required' => false,
+                                        'system' => true,
+                                        'hidden' => true
+                                    ]
                                 ]
-                            ]
-                        ]);
-                        
-                        Log::info("Widget oluşturuldu: $blockName (path: $fullPath)");
+                            ]);
+                            
+                            $widget->save();
+                            
+                            Log::info("Widget oluşturuldu: $blockName (path: $fullPath) (Kategori ID: {$category->widget_category_id})");
+                        } catch (\Exception $e) {
+                            Log::error("Widget oluşturulamadı: $blockName. Hata: " . $e->getMessage());
+                        }
                     } else {
-                        Log::info("Widget zaten mevcut: $blockName (slug: $blockSlug)");
+                        // Eğer widget varsa ama kategori ID'si yoksa güncelle
+                        if (!$existingWidget->widget_category_id && $category && $category->widget_category_id) {
+                            $existingWidget->widget_category_id = $category->widget_category_id;
+                            $existingWidget->save();
+                            Log::info("Widget güncellendi: $blockName (Kategori ID eklendi: {$category->widget_category_id})");
+                        } else {
+                            Log::info("Widget zaten mevcut: $blockName (slug: $blockSlug)");
+                        }
                     }
                 }
             }

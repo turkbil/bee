@@ -27,16 +27,16 @@ class HeroWidgetSeeder extends Seeder
             return;
         }
 
-        // Seeder'ın daha önce çalıştırılıp çalıştırılmadığını kontrol et
-        $cacheKey = self::$runKey . '_' . Config::get('database.default');
-        if (Cache::has($cacheKey)) {
-            Log::info('HeroWidgetSeeder zaten çalıştırılmış, atlanıyor...');
-            return;
-        }
-
         Log::info('HeroWidgetSeeder merkezi veritabanında çalışıyor...');
 
         try {
+            // Önce mevcut hero widget'ını temizle
+            $existingWidget = Widget::where('slug', 'full-width-hero')->first();
+            if ($existingWidget) {
+                $existingWidget->delete();
+                Log::info('Mevcut Full Width Hero widget\'\u0131 silindi.');
+            }
+            
             // Hero klasörünü oluştur
             $this->createHeroFolder();
 
@@ -45,8 +45,9 @@ class HeroWidgetSeeder extends Seeder
 
             Log::info('Hero bileşeni başarıyla oluşturuldu.');
 
-            // Seeder'ın çalıştırıldığını işaretle (10 dakika süreyle cache'de tut)
-            Cache::put($cacheKey, true, 600);
+            if ($this->command) {
+                $this->command->info('Hero bileşeni başarıyla oluşturuldu.');
+            }
         } catch (\Exception $e) {
             Log::error('HeroWidgetSeeder hatası: ' . $e->getMessage());
             Log::error($e->getTraceAsString());
@@ -95,10 +96,14 @@ class HeroWidgetSeeder extends Seeder
         // Hero kategorisini bul, yoksa oluştur
         $heroCategory = WidgetCategory::where('slug', 'herolar')->first();
         
+        // Eğer hero kategorisi yoksa, önce 'Content' kategorisini kontrol et
         if (!$heroCategory) {
-            Log::warning('Hero kategorisi bulunamadı, oluşturuluyor...');
+            $contentCategory = WidgetCategory::where('slug', 'content')->first();
             
-            try {
+            if ($contentCategory) {
+                Log::info('Content kategorisi bulundu, hero bu kategori altına eklenecek.');
+                
+                // Hero alt kategorisini oluştur
                 $heroCategory = WidgetCategory::create([
                     'title' => 'Herolar',
                     'slug' => 'herolar',
@@ -106,19 +111,37 @@ class HeroWidgetSeeder extends Seeder
                     'icon' => 'fa-heading',
                     'order' => 5,
                     'is_active' => true,
-                    'parent_id' => null,
+                    'parent_id' => $contentCategory->widget_category_id,
                     'has_subcategories' => false
                 ]);
                 
-                Log::info("Hero kategorisi oluşturuldu: Herolar (slug: herolar)");
-            } catch (\Exception $e) {
-                Log::error("Hero kategorisi oluşturulamadı. Hata: " . $e->getMessage());
-                return;
-            }
-            
-            if (!$heroCategory) {
-                Log::error("Hero kategorisi oluşturulamadı.");
-                return;
+                Log::info("Hero alt kategorisi oluşturuldu: Herolar (slug: herolar)");
+            } else {
+                // Content kategorisi yoksa, ana kategori olarak oluştur
+                Log::warning('Hero kategorisi bulunamadı, oluşturuluyor...');
+                
+                try {
+                    $heroCategory = WidgetCategory::create([
+                        'title' => 'Herolar',
+                        'slug' => 'herolar',
+                        'description' => 'Sayfa üst kısmında kullanılabilecek hero bileşenleri',
+                        'icon' => 'fa-heading',
+                        'order' => 5,
+                        'is_active' => true,
+                        'parent_id' => null,
+                        'has_subcategories' => false
+                    ]);
+                    
+                    Log::info("Hero kategorisi oluşturuldu: Herolar (slug: herolar)");
+                } catch (\Exception $e) {
+                    Log::error("Hero kategorisi oluşturulamadı. Hata: " . $e->getMessage());
+                    return;
+                }
+                
+                if (!$heroCategory) {
+                    Log::error("Hero kategorisi oluşturulamadı.");
+                    return;
+                }
             }
         }
         

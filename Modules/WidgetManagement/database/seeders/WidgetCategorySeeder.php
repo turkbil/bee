@@ -33,6 +33,9 @@ class WidgetCategorySeeder extends Seeder
         }
 
         try {
+            // Önce tüm modül kategorilerini temizle
+            WidgetCategory::where('slug', 'modul-bilesenleri')->delete();
+            
             // Ana kategorileri oluştur
             $this->createMainCategories();
             
@@ -142,7 +145,15 @@ class WidgetCategorySeeder extends Seeder
                     
                     Log::info("Kategori oluşturuldu: {$category['title']} (slug: $slug)");
                 } else {
-                    Log::info("Kategori zaten mevcut: {$category['title']} (slug: $slug)");
+                    $existingCategory->update([
+                        'title' => $category['title'],
+                        'description' => $category['description'],
+                        'order' => $category['order'],
+                        'is_active' => true,
+                        'icon' => $category['icon'],
+                        'has_subcategories' => $category['has_subcategories'] ?? false
+                    ]);
+                    Log::info("Kategori güncellendi: {$category['title']} (slug: $slug)");
                 }
             } catch (\Exception $e) {
                 Log::error("Kategori oluşturma hatası (slug: $slug): " . $e->getMessage());
@@ -196,7 +207,16 @@ class WidgetCategorySeeder extends Seeder
                     ]);
                     Log::info("Alt kategori oluşturuldu: {$category['title']} (slug: $slug)");
                 } else {
-                    Log::info("Alt kategori zaten mevcut: {$category['title']} (slug: $slug)");
+                    $existingSubcategory->update([
+                        'title' => $category['title'],
+                        'description' => $category['description'],
+                        'order' => $category['order'],
+                        'is_active' => true,
+                        'icon' => $category['icon'],
+                        'parent_id' => $modulesCategory->widget_category_id,
+                        'has_subcategories' => false
+                    ]);
+                    Log::info("Alt kategori güncellendi: {$category['title']} (slug: $slug)");
                 }
             } catch (\Exception $e) {
                 Log::error("Alt kategori oluşturma hatası (slug: $slug): " . $e->getMessage());

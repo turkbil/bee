@@ -209,357 +209,235 @@
 <!-- Tema Builder Offcanvas -->
 <div class="offcanvas offcanvas-start shadow-lg" tabindex="-1" id="offcanvasTheme" aria-labelledby="offcanvasThemeLabel">
     <div class="offcanvas-header border-bottom py-2">
-        <h5 class="offcanvas-title fw-bold" id="offcanvasThemeLabel">
-            <i class="fa-solid fa-palette me-2"></i>Tema Ayarları
+        <h5 class="offcanvas-title" id="offcanvasThemeLabel">
+            <i class="fa-solid fa-palette me-2"></i>Tema
         </h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
-    <div class="offcanvas-body p-2">
-        <div class="card mb-2">
-            <div class="card-header py-2">
-                <h3 class="card-title">
-                    <i class="fa-solid fa-circle-half-stroke me-2"></i>Renk Modu
-                </h3>
+    <div class="offcanvas-body p-0">
+        <!-- Renk modu -->
+        <div class="list-group list-group-flush border-bottom">
+            <div class="list-group-item py-2 px-3 bg-subtle">
+                <strong><i class="fa-solid fa-circle-half-stroke me-2"></i>Görünüm</strong>
             </div>
-            <div class="card-body p-2">
-                <div class="d-flex gap-1">
-                    <label class="theme-option flex-grow-1 text-center p-2 border rounded position-relative">
-                        <input type="radio" name="theme" value="light" class="position-absolute opacity-0" {{ !isset($_COOKIE['dark']) || $_COOKIE['dark'] != '1' ? 'checked' : '' }} />
-                        <div class="theme-preview bg-white border mb-1" style="height:60px; border-radius: 4px;"></div>
-                        <span class="d-block small">Açık</span>
-                        <div class="theme-check position-absolute end-0 top-0 m-1 text-primary {{ !isset($_COOKIE['dark']) || $_COOKIE['dark'] != '1' ? '' : 'd-none' }}">
-                            <i class="fa-solid fa-circle-check"></i>
-                        </div>
+            <label class="list-group-item py-2 d-flex align-items-center">
+                <input type="radio" name="theme" value="light" class="form-check-input me-2" {{ !isset($_COOKIE['dark']) || $_COOKIE['dark'] != '1' ? 'checked' : '' }}>
+                <span>Açık</span>
+            </label>
+            <label class="list-group-item py-2 d-flex align-items-center">
+                <input type="radio" name="theme" value="dark" class="form-check-input me-2" {{ isset($_COOKIE['dark']) && $_COOKIE['dark'] == '1' ? 'checked' : '' }}>
+                <span>Koyu</span>
+            </label>
+            <label class="list-group-item py-2 d-flex align-items-center">
+                <input type="radio" name="theme" value="auto" class="form-check-input me-2" {{ isset($_COOKIE['dark']) && $_COOKIE['dark'] == 'auto' ? 'checked' : '' }}>
+                <span>Sistem</span>
+            </label>
+        </div>
+
+        <!-- Ana renk -->
+        <div class="list-group-item py-2 px-3 bg-subtle">
+            <strong><i class="fa-solid fa-droplet me-2"></i>Ana Renk</strong>
+        </div>
+        <div class="p-2 border-bottom">
+            <div class="row row-cols-6 g-1">
+                <div class="col">
+                    <label class="form-colorinput mb-0">
+                        <input name="theme-primary" type="radio" value="#066fd1" class="form-colorinput-input" {{ (!isset($_COOKIE['siteColor']) || $_COOKIE['siteColor'] == '#066fd1') ? 'checked' : '' }}>
+                        <span class="form-colorinput-color" style="background-color: #066fd1"></span>
                     </label>
-                    <label class="theme-option flex-grow-1 text-center p-2 border rounded position-relative">
-                        <input type="radio" name="theme" value="dark" class="position-absolute opacity-0" {{ isset($_COOKIE['dark']) && $_COOKIE['dark'] == '1' ? 'checked' : '' }} />
-                        <div class="theme-preview bg-dark border mb-1" style="height:60px; border-radius: 4px;"></div>
-                        <span class="d-block small">Koyu</span>
-                        <div class="theme-check position-absolute end-0 top-0 m-1 text-primary {{ isset($_COOKIE['dark']) && $_COOKIE['dark'] == '1' ? '' : 'd-none' }}">
-                            <i class="fa-solid fa-circle-check"></i>
-                        </div>
+                </div>
+                <div class="col">
+                    <label class="form-colorinput mb-0">
+                        <input name="theme-primary" type="radio" value="#FA5252" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#FA5252') ? 'checked' : '' }}>
+                        <span class="form-colorinput-color" style="background-color: #FA5252"></span>
                     </label>
-                    <label class="theme-option flex-grow-1 text-center p-2 border rounded position-relative">
-                        <input type="radio" name="theme" value="auto" class="position-absolute opacity-0" {{ isset($_COOKIE['dark']) && $_COOKIE['dark'] == 'auto' ? 'checked' : '' }} />
-                        <div class="theme-preview border mb-1" style="height:60px; border-radius: 4px; background: linear-gradient(to right, #fff 50%, #151f2c 50%);"></div>
-                        <span class="d-block small">Sistem</span>
-                        <div class="theme-check position-absolute end-0 top-0 m-1 text-primary {{ isset($_COOKIE['dark']) && $_COOKIE['dark'] == 'auto' ? '' : 'd-none' }}">
-                            <i class="fa-solid fa-circle-check"></i>
-                        </div>
+                </div>
+                <div class="col">
+                    <label class="form-colorinput mb-0">
+                        <input name="theme-primary" type="radio" value="#E64980" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#E64980') ? 'checked' : '' }}>
+                        <span class="form-colorinput-color" style="background-color: #E64980"></span>
+                    </label>
+                </div>
+                <div class="col">
+                    <label class="form-colorinput mb-0">
+                        <input name="theme-primary" type="radio" value="#BE4BDB" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#BE4BDB') ? 'checked' : '' }}>
+                        <span class="form-colorinput-color" style="background-color: #BE4BDB"></span>
+                    </label>
+                </div>
+                <div class="col">
+                    <label class="form-colorinput mb-0">
+                        <input name="theme-primary" type="radio" value="#7950F2" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#7950F2') ? 'checked' : '' }}>
+                        <span class="form-colorinput-color" style="background-color: #7950F2"></span>
+                    </label>
+                </div>
+                <div class="col">
+                    <label class="form-colorinput mb-0">
+                        <input name="theme-primary" type="radio" value="#4C6EF5" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#4C6EF5') ? 'checked' : '' }}>
+                        <span class="form-colorinput-color" style="background-color: #4C6EF5"></span>
+                    </label>
+                </div>
+                <div class="col">
+                    <label class="form-colorinput mb-0">
+                        <input name="theme-primary" type="radio" value="#228BE6" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#228BE6') ? 'checked' : '' }}>
+                        <span class="form-colorinput-color" style="background-color: #228BE6"></span>
+                    </label>
+                </div>
+                <div class="col">
+                    <label class="form-colorinput mb-0">
+                        <input name="theme-primary" type="radio" value="#15AABF" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#15AABF') ? 'checked' : '' }}>
+                        <span class="form-colorinput-color" style="background-color: #15AABF"></span>
+                    </label>
+                </div>
+                <div class="col">
+                    <label class="form-colorinput mb-0">
+                        <input name="theme-primary" type="radio" value="#12B886" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#12B886') ? 'checked' : '' }}>
+                        <span class="form-colorinput-color" style="background-color: #12B886"></span>
+                    </label>
+                </div>
+                <div class="col">
+                    <label class="form-colorinput mb-0">
+                        <input name="theme-primary" type="radio" value="#40C057" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#40C057') ? 'checked' : '' }}>
+                        <span class="form-colorinput-color" style="background-color: #40C057"></span>
+                    </label>
+                </div>
+                <div class="col">
+                    <label class="form-colorinput mb-0">
+                        <input name="theme-primary" type="radio" value="#82C91E" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#82C91E') ? 'checked' : '' }}>
+                        <span class="form-colorinput-color" style="background-color: #82C91E"></span>
+                    </label>
+                </div>
+                <div class="col">
+                    <label class="form-colorinput mb-0">
+                        <input name="theme-primary" type="radio" value="#FAB005" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#FAB005') ? 'checked' : '' }}>
+                        <span class="form-colorinput-color" style="background-color: #FAB005"></span>
+                    </label>
+                </div>
+                <div class="col">
+                    <label class="form-colorinput mb-0">
+                        <input name="theme-primary" type="radio" value="#FD7E14" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#FD7E14') ? 'checked' : '' }}>
+                        <span class="form-colorinput-color" style="background-color: #FD7E14"></span>
+                    </label>
+                </div>
+                <div class="col">
+                    <label class="form-colorinput mb-0">
+                        <input name="theme-primary" type="radio" value="#FF922B" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#FF922B') ? 'checked' : '' }}>
+                        <span class="form-colorinput-color" style="background-color: #FF922B"></span>
+                    </label>
+                </div>
+                <div class="col">
+                    <label class="form-colorinput mb-0">
+                        <input name="theme-primary" type="radio" value="#FCC419" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#FCC419') ? 'checked' : '' }}>
+                        <span class="form-colorinput-color" style="background-color: #FCC419"></span>
+                    </label>
+                </div>
+                <div class="col">
+                    <label class="form-colorinput mb-0">
+                        <input name="theme-primary" type="radio" value="#F03E3E" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#F03E3E') ? 'checked' : '' }}>
+                        <span class="form-colorinput-color" style="background-color: #F03E3E"></span>
                     </label>
                 </div>
             </div>
         </div>
 
-        <div class="card mb-2">
-            <div class="card-header py-2">
-                <h3 class="card-title">
-                    <i class="fa-solid fa-swatchbook me-2"></i>Ana Renk
-                </h3>
+        <!-- Köşe yuvarlaklığı -->
+        <div class="list-group-item py-2 px-3 bg-subtle">
+            <strong><i class="fa-solid fa-square-corners me-2"></i>Köşe Yuvarlaklığı</strong>
+        </div>
+        <div class="p-3 border-bottom">
+            <input type="range" class="form-range" id="radius-slider" min="0" max="4" step="1" value="{{ $radiusValue = isset($_COOKIE['themeRadius']) ? (($_COOKIE['themeRadius'] == '0') ? 0 : (($_COOKIE['themeRadius'] == '0.25rem') ? 1 : (($_COOKIE['themeRadius'] == '0.5rem') ? 2 : (($_COOKIE['themeRadius'] == '0.75rem') ? 3 : 4)))) : 2 }}">
+            <div class="d-flex justify-content-between mt-1">
+                <div class="radius-example" style="width:45px; height:24px; border:1px solid var(--tblr-border-color); border-radius: 0;"></div>
+                <div class="radius-example" style="width:45px; height:24px; border:1px solid var(--tblr-border-color); border-radius: 0.25rem;"></div>
+                <div class="radius-example" style="width:45px; height:24px; border:1px solid var(--tblr-border-color); border-radius: 0.5rem;"></div>
+                <div class="radius-example" style="width:45px; height:24px; border:1px solid var(--tblr-border-color); border-radius: 0.75rem;"></div>
+                <div class="radius-example" style="width:45px; height:24px; border:1px solid var(--tblr-border-color); border-radius: 1rem;"></div>
             </div>
-            <div class="card-body p-2">
-                <div class="theme-color-grid">
-                    <div class="row g-1 color-row">
-                        <div class="col-3">
-                            <label class="color-item position-relative mb-0 w-100">
-                                <input name="theme-primary" type="radio" value="#FA5252" class="position-absolute opacity-0" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#FA5252') ? 'checked' : '' }} />
-                                <span class="color-preview rounded-circle d-block mx-auto" style="background-color: #FA5252; width: 30px; height: 30px;"></span>
-                                <div class="color-check position-absolute start-50 top-50 translate-middle text-white {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#FA5252') ? '' : 'd-none' }}">
-                                    <i class="fa-solid fa-check"></i>
-                                </div>
-                            </label>
-                        </div>
-                        <div class="col-3">
-                            <label class="color-item position-relative mb-0 w-100">
-                                <input name="theme-primary" type="radio" value="#E64980" class="position-absolute opacity-0" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#E64980') ? 'checked' : '' }} />
-                                <span class="color-preview rounded-circle d-block mx-auto" style="background-color: #E64980; width: 30px; height: 30px;"></span>
-                                <div class="color-check position-absolute start-50 top-50 translate-middle text-white {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#E64980') ? '' : 'd-none' }}">
-                                    <i class="fa-solid fa-check"></i>
-                                </div>
-                            </label>
-                        </div>
-                        <div class="col-3">
-                            <label class="color-item position-relative mb-0 w-100">
-                                <input name="theme-primary" type="radio" value="#BE4BDB" class="position-absolute opacity-0" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#BE4BDB') ? 'checked' : '' }} />
-                                <span class="color-preview rounded-circle d-block mx-auto" style="background-color: #BE4BDB; width: 30px; height: 30px;"></span>
-                                <div class="color-check position-absolute start-50 top-50 translate-middle text-white {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#BE4BDB') ? '' : 'd-none' }}">
-                                    <i class="fa-solid fa-check"></i>
-                                </div>
-                            </label>
-                        </div>
-                        <div class="col-3">
-                            <label class="color-item position-relative mb-0 w-100">
-                                <input name="theme-primary" type="radio" value="#7950F2" class="position-absolute opacity-0" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#7950F2') ? 'checked' : '' }} />
-                                <span class="color-preview rounded-circle d-block mx-auto" style="background-color: #7950F2; width: 30px; height: 30px;"></span>
-                                <div class="color-check position-absolute start-50 top-50 translate-middle text-white {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#7950F2') ? '' : 'd-none' }}">
-                                    <i class="fa-solid fa-check"></i>
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-                    
-                    <div class="row g-1 mt-1 color-row">
-                        <div class="col-3">
-                            <label class="color-item position-relative mb-0 w-100">
-                                <input name="theme-primary" type="radio" value="#4C6EF5" class="position-absolute opacity-0" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#4C6EF5') ? 'checked' : '' }} />
-                                <span class="color-preview rounded-circle d-block mx-auto" style="background-color: #4C6EF5; width: 30px; height: 30px;"></span>
-                                <div class="color-check position-absolute start-50 top-50 translate-middle text-white {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#4C6EF5') ? '' : 'd-none' }}">
-                                    <i class="fa-solid fa-check"></i>
-                                </div>
-                            </label>
-                        </div>
-                        <div class="col-3">
-                            <label class="color-item position-relative mb-0 w-100">
-                                <input name="theme-primary" type="radio" value="#228BE6" class="position-absolute opacity-0" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#228BE6') ? 'checked' : '' }} />
-                                <span class="color-preview rounded-circle d-block mx-auto" style="background-color: #228BE6; width: 30px; height: 30px;"></span>
-                                <div class="color-check position-absolute start-50 top-50 translate-middle text-white {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#228BE6') ? '' : 'd-none' }}">
-                                    <i class="fa-solid fa-check"></i>
-                                </div>
-                            </label>
-                        </div>
-                        <div class="col-3">
-                            <label class="color-item position-relative mb-0 w-100">
-                                <input name="theme-primary" type="radio" value="#15AABF" class="position-absolute opacity-0" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#15AABF') ? 'checked' : '' }} />
-                                <span class="color-preview rounded-circle d-block mx-auto" style="background-color: #15AABF; width: 30px; height: 30px;"></span>
-                                <div class="color-check position-absolute start-50 top-50 translate-middle text-white {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#15AABF') ? '' : 'd-none' }}">
-                                    <i class="fa-solid fa-check"></i>
-                                </div>
-                            </label>
-                        </div>
-                        <div class="col-3">
-                            <label class="color-item position-relative mb-0 w-100">
-                                <input name="theme-primary" type="radio" value="#12B886" class="position-absolute opacity-0" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#12B886') ? 'checked' : '' }} />
-                                <span class="color-preview rounded-circle d-block mx-auto" style="background-color: #12B886; width: 30px; height: 30px;"></span>
-                                <div class="color-check position-absolute start-50 top-50 translate-middle text-white {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#12B886') ? '' : 'd-none' }}">
-                                    <i class="fa-solid fa-check"></i>
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-                    
-                    <div class="row g-1 mt-1 color-row">
-                        <div class="col-3">
-                            <label class="color-item position-relative mb-0 w-100">
-                                <input name="theme-primary" type="radio" value="#40C057" class="position-absolute opacity-0" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#40C057') ? 'checked' : '' }} />
-                                <span class="color-preview rounded-circle d-block mx-auto" style="background-color: #40C057; width: 30px; height: 30px;"></span>
-                                <div class="color-check position-absolute start-50 top-50 translate-middle text-white {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#40C057') ? '' : 'd-none' }}">
-                                    <i class="fa-solid fa-check"></i>
-                                </div>
-                            </label>
-                        </div>
-                        <div class="col-3">
-                            <label class="color-item position-relative mb-0 w-100">
-                                <input name="theme-primary" type="radio" value="#82C91E" class="position-absolute opacity-0" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#82C91E') ? 'checked' : '' }} />
-                                <span class="color-preview rounded-circle d-block mx-auto" style="background-color: #82C91E; width: 30px; height: 30px;"></span>
-                                <div class="color-check position-absolute start-50 top-50 translate-middle text-white {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#82C91E') ? '' : 'd-none' }}">
-                                    <i class="fa-solid fa-check"></i>
-                                </div>
-                            </label>
-                        </div>
-                        <div class="col-3">
-                            <label class="color-item position-relative mb-0 w-100">
-                                <input name="theme-primary" type="radio" value="#FAB005" class="position-absolute opacity-0" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#FAB005') ? 'checked' : '' }} />
-                                <span class="color-preview rounded-circle d-block mx-auto" style="background-color: #FAB005; width: 30px; height: 30px;"></span>
-                                <div class="color-check position-absolute start-50 top-50 translate-middle text-white {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#FAB005') ? '' : 'd-none' }}">
-                                    <i class="fa-solid fa-check"></i>
-                                </div>
-                            </label>
-                        </div>
-                        <div class="col-3">
-                            <label class="color-item position-relative mb-0 w-100">
-                                <input name="theme-primary" type="radio" value="#FD7E14" class="position-absolute opacity-0" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#FD7E14') ? 'checked' : '' }} />
-                                <span class="color-preview rounded-circle d-block mx-auto" style="background-color: #FD7E14; width: 30px; height: 30px;"></span>
-                                <div class="color-check position-absolute start-50 top-50 translate-middle text-white {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#FD7E14') ? '' : 'd-none' }}">
-                                    <i class="fa-solid fa-check"></i>
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-                    
-                    <div class="row g-1 mt-1 color-row">
-                        <div class="col-3">
-                            <label class="color-item position-relative mb-0 w-100">
-                                <input name="theme-primary" type="radio" value="#FF922B" class="position-absolute opacity-0" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#FF922B') ? 'checked' : '' }} />
-                                <span class="color-preview rounded-circle d-block mx-auto" style="background-color: #FF922B; width: 30px; height: 30px;"></span>
-                                <div class="color-check position-absolute start-50 top-50 translate-middle text-white {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#FF922B') ? '' : 'd-none' }}">
-                                    <i class="fa-solid fa-check"></i>
-                                </div>
-                            </label>
-                        </div>
-                        <div class="col-3">
-                            <label class="color-item position-relative mb-0 w-100">
-                                <input name="theme-primary" type="radio" value="#FCC419" class="position-absolute opacity-0" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#FCC419') ? 'checked' : '' }} />
-                                <span class="color-preview rounded-circle d-block mx-auto" style="background-color: #FCC419; width: 30px; height: 30px;"></span>
-                                <div class="color-check position-absolute start-50 top-50 translate-middle text-white {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#FCC419') ? '' : 'd-none' }}">
-                                    <i class="fa-solid fa-check"></i>
-                                </div>
-                            </label>
-                        </div>
-                        <div class="col-3">
-                            <label class="color-item position-relative mb-0 w-100">
-                                <input name="theme-primary" type="radio" value="#066fd1" class="position-absolute opacity-0" {{ (!isset($_COOKIE['siteColor']) || $_COOKIE['siteColor'] == '#066fd1') ? 'checked' : '' }} />
-                                <span class="color-preview rounded-circle d-block mx-auto" style="background-color: #066fd1; width: 30px; height: 30px;"></span>
-                                <div class="color-check position-absolute start-50 top-50 translate-middle text-white {{ (!isset($_COOKIE['siteColor']) || $_COOKIE['siteColor'] == '#066fd1') ? '' : 'd-none' }}">
-                                    <i class="fa-solid fa-check"></i>
-                                </div>
-                            </label>
-                        </div>
-                        <div class="col-3">
-                            <label class="color-item position-relative mb-0 w-100">
-                                <input name="theme-primary" type="radio" value="#F03E3E" class="position-absolute opacity-0" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#F03E3E') ? 'checked' : '' }} />
-                                <span class="color-preview rounded-circle d-block mx-auto" style="background-color: #F03E3E; width: 30px; height: 30px;"></span>
-                                <div class="color-check position-absolute start-50 top-50 translate-middle text-white {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#F03E3E') ? '' : 'd-none' }}">
-                                    <i class="fa-solid fa-check"></i>
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <input type="hidden" id="radius-value" name="theme-radius" value="{{ isset($_COOKIE['themeRadius']) ? $_COOKIE['themeRadius'] : '0.5rem' }}">
         </div>
 
-        <div class="card mb-2">
-            <div class="card-header py-2">
-                <h3 class="card-title">
-                    <i class="fa-solid fa-font me-2"></i>Yazı Tipi
-                </h3>
+        <!-- Yazı tipi -->
+        <div class="list-group list-group-flush border-bottom">
+            <div class="list-group-item py-2 px-3 bg-subtle">
+                <strong><i class="fa-solid fa-font me-2"></i>Yazı Tipi</strong>
             </div>
-            <div class="card-body p-0">
-                <div class="list-group list-group-flush">
-                    <label class="list-group-item d-flex align-items-center py-2">
-                        <input type="radio" name="theme-font" class="form-check-input me-2" value="Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" {{ (!isset($_COOKIE['themeFont']) || $_COOKIE['themeFont'] == "Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif") ? 'checked' : '' }} />
-                        <span style="font-family: Inter, system-ui;">Inter (Modern)</span>
-                    </label>
-                    <label class="list-group-item d-flex align-items-center py-2">
-                        <input type="radio" name="theme-font" class="form-check-input me-2" value="'Roboto', sans-serif" {{ (isset($_COOKIE['themeFont']) && $_COOKIE['themeFont'] == "'Roboto', sans-serif") ? 'checked' : '' }} />
-                        <span style="font-family: 'Roboto', sans-serif;">Roboto (Yaygın)</span>
-                    </label>
-                    <label class="list-group-item d-flex align-items-center py-2">
-                        <input type="radio" name="theme-font" class="form-check-input me-2" value="'Poppins', sans-serif" {{ (isset($_COOKIE['themeFont']) && $_COOKIE['themeFont'] == "'Poppins', sans-serif") ? 'checked' : '' }} />
-                        <span style="font-family: 'Roboto', sans-serif;">Poppins (Modern)</span>
-                    </label>
-                    <label class="list-group-item d-flex align-items-center py-2">
-                        <input type="radio" name="theme-font" class="form-check-input me-2" value="Georgia, 'Times New Roman', Times, serif" {{ (isset($_COOKIE['themeFont']) && $_COOKIE['themeFont'] == "Georgia, 'Times New Roman', Times, serif") ? 'checked' : '' }} />
-                        <span style="font-family: Georgia, 'Times New Roman', Times, serif;">Georgia (Klasik)</span>
-                    </label>
-                    <label class="list-group-item d-flex align-items-center py-2">
-                        <input type="radio" name="theme-font" class="form-check-input me-2" value="'Courier New', Courier, monospace" {{ (isset($_COOKIE['themeFont']) && $_COOKIE['themeFont'] == "'Courier New', Courier, monospace") ? 'checked' : '' }} />
-                        <span style="font-family: 'Courier New', Courier, monospace;">Courier (Kod)</span>
-                    </label>
-                </div>
-            </div>
+            <label class="list-group-item py-2 d-flex align-items-center">
+                <input type="radio" name="theme-font" class="form-check-input me-2" value="Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" {{ (!isset($_COOKIE['themeFont']) || $_COOKIE['themeFont'] == "Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif") ? 'checked' : '' }}>
+                <span style="font-family: Inter, system-ui;">Inter</span>
+            </label>
+            <label class="list-group-item py-2 d-flex align-items-center">
+                <input type="radio" name="theme-font" class="form-check-input me-2" value="'Roboto', sans-serif" {{ (isset($_COOKIE['themeFont']) && $_COOKIE['themeFont'] == "'Roboto', sans-serif") ? 'checked' : '' }}>
+                <span style="font-family: 'Roboto', sans-serif;">Roboto</span>
+            </label>
+            <label class="list-group-item py-2 d-flex align-items-center">
+                <input type="radio" name="theme-font" class="form-check-input me-2" value="'Poppins', sans-serif" {{ (isset($_COOKIE['themeFont']) && $_COOKIE['themeFont'] == "'Poppins', sans-serif") ? 'checked' : '' }}>
+                <span style="font-family: 'Poppins', sans-serif;">Poppins</span>
+            </label>
+            <label class="list-group-item py-2 d-flex align-items-center">
+                <input type="radio" name="theme-font" class="form-check-input me-2" value="Georgia, 'Times New Roman', Times, serif" {{ (isset($_COOKIE['themeFont']) && $_COOKIE['themeFont'] == "Georgia, 'Times New Roman', Times, serif") ? 'checked' : '' }}>
+                <span style="font-family: Georgia, 'Times New Roman', Times, serif;">Georgia</span>
+            </label>
+            <label class="list-group-item py-2 d-flex align-items-center">
+                <input type="radio" name="theme-font" class="form-check-input me-2" value="'Courier New', Courier, monospace" {{ (isset($_COOKIE['themeFont']) && $_COOKIE['themeFont'] == "'Courier New', Courier, monospace") ? 'checked' : '' }}>
+                <span style="font-family: 'Courier New', Courier, monospace;">Courier</span>
+            </label>
         </div>
 
-        <div class="card mb-2">
-            <div class="card-header py-2">
-                <h3 class="card-title">
-                    <i class="fa-solid fa-square-full me-2"></i>Köşe Yuvarlaklığı
-                </h3>
+        <!-- Gri ton -->
+        <div class="list-group list-group-flush border-bottom">
+            <div class="list-group-item py-2 px-3 bg-subtle">
+                <strong><i class="fa-solid fa-swatchbook me-2"></i>Gri Ton</strong>
             </div>
-            <div class="card-body p-2">
-                <div class="d-flex gap-1 justify-content-between">
-                    <label class="text-center position-relative" style="width: 60px;">
-                        <input type="radio" name="theme-radius" value="0" class="position-absolute opacity-0" {{ (isset($_COOKIE['themeRadius']) && $_COOKIE['themeRadius'] == '0') ? 'checked' : '' }} />
-                        <div class="bg-body-tertiary border mb-1" style="height: 36px; border-radius: 0;"></div>
-                        <span class="d-block small">Keskin</span>
-                        <div class="position-absolute end-0 top-0 m-1 text-primary {{ (isset($_COOKIE['themeRadius']) && $_COOKIE['themeRadius'] == '0') ? '' : 'd-none' }}">
-                            <i class="fa-solid fa-check-circle"></i>
-                        </div>
-                    </label>
-                    <label class="text-center position-relative" style="width: 60px;">
-                        <input type="radio" name="theme-radius" value="0.25rem" class="position-absolute opacity-0" {{ (isset($_COOKIE['themeRadius']) && $_COOKIE['themeRadius'] == '0.25rem') ? 'checked' : '' }} />
-                        <div class="bg-body-tertiary border mb-1" style="height: 36px; border-radius: 0.25rem;"></div>
-                        <span class="d-block small">Hafif</span>
-                        <div class="position-absolute end-0 top-0 m-1 text-primary {{ (isset($_COOKIE['themeRadius']) && $_COOKIE['themeRadius'] == '0.25rem') ? '' : 'd-none' }}">
-                            <i class="fa-solid fa-check-circle"></i>
-                        </div>
-                    </label>
-                    <label class="text-center position-relative" style="width: 60px;">
-                        <input type="radio" name="theme-radius" value="0.5rem" class="position-absolute opacity-0" {{ (!isset($_COOKIE['themeRadius']) || $_COOKIE['themeRadius'] == '0.5rem') ? 'checked' : '' }} />
-                        <div class="bg-body-tertiary border mb-1" style="height: 36px; border-radius: 0.5rem;"></div>
-                        <span class="d-block small">Orta</span>
-                        <div class="position-absolute end-0 top-0 m-1 text-primary {{ (!isset($_COOKIE['themeRadius']) || $_COOKIE['themeRadius'] == '0.5rem') ? '' : 'd-none' }}">
-                            <i class="fa-solid fa-check-circle"></i>
-                        </div>
-                    </label>
-                    <label class="text-center position-relative" style="width: 60px;">
-                        <input type="radio" name="theme-radius" value="0.75rem" class="position-absolute opacity-0" {{ (isset($_COOKIE['themeRadius']) && $_COOKIE['themeRadius'] == '0.75rem') ? 'checked' : '' }} />
-                        <div class="bg-body-tertiary border mb-1" style="height: 36px; border-radius: 0.75rem;"></div>
-                        <span class="d-block small">Büyük</span>
-                        <div class="position-absolute end-0 top-0 m-1 text-primary {{ (isset($_COOKIE['themeRadius']) && $_COOKIE['themeRadius'] == '0.75rem') ? '' : 'd-none' }}">
-                            <i class="fa-solid fa-check-circle"></i>
-                        </div>
-                    </label>
-                    <label class="text-center position-relative" style="width: 60px;">
-                        <input type="radio" name="theme-radius" value="1rem" class="position-absolute opacity-0" {{ (isset($_COOKIE['themeRadius']) && $_COOKIE['themeRadius'] == '1rem') ? 'checked' : '' }} />
-                        <div class="bg-body-tertiary border mb-1" style="height: 36px; border-radius: 1rem;"></div>
-                        <span class="d-block small">Tam</span>
-                        <div class="position-absolute end-0 top-0 m-1 text-primary {{ (isset($_COOKIE['themeRadius']) && $_COOKIE['themeRadius'] == '1rem') ? '' : 'd-none' }}">
-                            <i class="fa-solid fa-check-circle"></i>
-                        </div>
-                    </label>
-                </div>
-            </div>
+            <label class="list-group-item py-2 d-flex align-items-center">
+                <input type="radio" name="theme-base" class="form-check-input me-2" value="slate" {{ (isset($_COOKIE['themeBase']) && $_COOKIE['themeBase'] == 'slate') ? 'checked' : '' }}>
+                <span>Slate</span>
+                <span class="ms-auto avatar" style="background: linear-gradient(to right, #0f172a, #f8fafc);"></span>
+            </label>
+            <label class="list-group-item py-2 d-flex align-items-center">
+                <input type="radio" name="theme-base" class="form-check-input me-2" value="gray" {{ (!isset($_COOKIE['themeBase']) || $_COOKIE['themeBase'] == 'gray') ? 'checked' : '' }}>
+                <span>Gray</span>
+                <span class="ms-auto avatar" style="background: linear-gradient(to right, #111827, #f9fafb);"></span>
+            </label>
+            <label class="list-group-item py-2 d-flex align-items-center">
+                <input type="radio" name="theme-base" class="form-check-input me-2" value="zinc" {{ (isset($_COOKIE['themeBase']) && $_COOKIE['themeBase'] == 'zinc') ? 'checked' : '' }}>
+                <span>Zinc</span>
+                <span class="ms-auto avatar" style="background: linear-gradient(to right, #18181b, #fafafa);"></span>
+            </label>
+            <label class="list-group-item py-2 d-flex align-items-center">
+                <input type="radio" name="theme-base" class="form-check-input me-2" value="neutral" {{ (isset($_COOKIE['themeBase']) && $_COOKIE['themeBase'] == 'neutral') ? 'checked' : '' }}>
+                <span>Neutral</span>
+                <span class="ms-auto avatar" style="background: linear-gradient(to right, #171717, #fafafa);"></span>
+            </label>
+            <label class="list-group-item py-2 d-flex align-items-center">
+                <input type="radio" name="theme-base" class="form-check-input me-2" value="stone" {{ (isset($_COOKIE['themeBase']) && $_COOKIE['themeBase'] == 'stone') ? 'checked' : '' }}>
+                <span>Stone</span>
+                <span class="ms-auto avatar" style="background: linear-gradient(to right, #1c1917, #fafaf9);"></span>
+            </label>
         </div>
 
-        <div class="card mb-2">
-            <div class="card-header py-2">
-                <h3 class="card-title">
-                    <i class="fa-solid fa-palette me-2"></i>Gri Ton
-                </h3>
+        <!-- Tablo görünümü -->
+        <div class="list-group list-group-flush border-bottom">
+            <div class="list-group-item py-2 px-3 bg-subtle">
+                <strong><i class="fa-solid fa-table-list me-2"></i>Tablo Görünümü</strong>
             </div>
-            <div class="card-body p-0">
-                <div class="list-group list-group-flush">
-                    <label class="list-group-item d-flex align-items-center py-2">
-                        <input type="radio" name="theme-base" class="form-check-input me-2" value="slate" {{ (isset($_COOKIE['themeBase']) && $_COOKIE['themeBase'] == 'slate') ? 'checked' : '' }} />
-                        <span>Slate (Koyu)</span>
-                    </label>
-                    <label class="list-group-item d-flex align-items-center py-2">
-                        <input type="radio" name="theme-base" class="form-check-input me-2" value="gray" {{ (!isset($_COOKIE['themeBase']) || $_COOKIE['themeBase'] == 'gray') ? 'checked' : '' }} />
-                        <span>Gray (Standart)</span>
-                    </label>
-                    <label class="list-group-item d-flex align-items-center py-2">
-                        <input type="radio" name="theme-base" class="form-check-input me-2" value="zinc" {{ (isset($_COOKIE['themeBase']) && $_COOKIE['themeBase'] == 'zinc') ? 'checked' : '' }} />
-                        <span>Zinc (Metal)</span>
-                    </label>
-                    <label class="list-group-item d-flex align-items-center py-2">
-                        <input type="radio" name="theme-base" class="form-check-input me-2" value="neutral" {{ (isset($_COOKIE['themeBase']) && $_COOKIE['themeBase'] == 'neutral') ? 'checked' : '' }} />
-                        <span>Neutral (Nötr)</span>
-                    </label>
-                    <label class="list-group-item d-flex align-items-center py-2">
-                        <input type="radio" name="theme-base" class="form-check-input me-2" value="stone" {{ (isset($_COOKIE['themeBase']) && $_COOKIE['themeBase'] == 'stone') ? 'checked' : '' }} />
-                        <span>Stone (Taş)</span>
-                    </label>
-                </div>
-            </div>
-        </div>
-
-        <div class="card mb-2">
-            <div class="card-header py-2">
-                <h3 class="card-title">
-                    <i class="fa-solid fa-table-list me-2"></i>Tablo Görünümü
-                </h3>
-            </div>
-            <div class="card-body p-2">
-                <div class="d-flex gap-4">
-                    <label class="form-check form-check-inline">
-                        <input type="radio" name="table-compact" class="form-check-input" value="1" {{ (!isset($_COOKIE['tableCompact']) || $_COOKIE['tableCompact'] == '1') ? 'checked' : '' }} />
-                        <span class="form-check-label">Kompakt</span>
-                    </label>
-                    <label class="form-check form-check-inline">
-                        <input type="radio" name="table-compact" class="form-check-input" value="0" {{ (isset($_COOKIE['tableCompact']) && $_COOKIE['tableCompact'] == '0') ? 'checked' : '' }} />
-                        <span class="form-check-label">Normal</span>
-                    </label>
-                </div>
+            <div class="list-group-item py-2 d-flex justify-content-around">
+                <label class="d-flex flex-column align-items-center">
+                    <input type="radio" name="table-compact" value="1" class="form-check-input mb-2" {{ (!isset($_COOKIE['tableCompact']) || $_COOKIE['tableCompact'] == '1') ? 'checked' : '' }}>
+                    <i class="fa-solid fa-table-cells fa-lg"></i>
+                    <span class="d-block mt-1 small">Kompakt</span>
+                </label>
+                <label class="d-flex flex-column align-items-center">
+                    <input type="radio" name="table-compact" value="0" class="form-check-input mb-2" {{ (isset($_COOKIE['tableCompact']) && $_COOKIE['tableCompact'] == '0') ? 'checked' : '' }}>
+                    <i class="fa-solid fa-table fa-lg"></i>
+                    <span class="d-block mt-1 small">Normal</span>
+                </label>
             </div>
         </div>
         
-        <div class="card mb-2">
-            <div class="card-body p-2">
-                <button type="button" class="btn btn-primary w-100" id="reset-changes">
-                    <i class="fa-solid fa-rotate-left me-2"></i>Varsayılan Ayarlara Dön
-                </button>
-            </div>
+        <!-- Sıfırlama düğmesi -->
+        <div class="p-3">
+            <button type="button" class="btn btn-danger w-100" id="reset-changes">
+                <i class="fa-solid fa-rotate-left me-2"></i>Varsayılan Ayarlar
+            </button>
         </div>
     </div>
 </div>

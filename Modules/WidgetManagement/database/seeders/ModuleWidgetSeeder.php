@@ -102,7 +102,7 @@ class ModuleWidgetSeeder extends Seeder
                                 'name' => $widgetTitle,
                                 'slug' => $widgetSlug,
                                 'description' => $widgetTitle . ' modül bileşeni',
-                                'type' => 'file',
+                                'type' => 'module',
                                 'file_path' => 'modules/' . $moduleName . '/' . $widgetName . '/view',
                                 'has_items' => false,
                                 'is_active' => true,
@@ -112,7 +112,14 @@ class ModuleWidgetSeeder extends Seeder
                             
                             Log::info("Widget oluşturuldu: $widgetTitle (path: modules/{$moduleName}/{$widgetName}/view)");
                         } else {
-                            Log::info("Widget zaten mevcut: $widgetTitle (slug: $widgetSlug)");
+                            // Varolan widget'ı güncelle - tip yanlışsa düzelt
+                            $existingWidget->update([
+                                'type' => 'module',
+                                'file_path' => 'modules/' . $moduleName . '/' . $widgetName . '/view',
+                                'widget_category_id' => $moduleCategory->widget_category_id
+                            ]);
+                            
+                            Log::info("Widget güncellendi: $widgetTitle (slug: $widgetSlug)");
                         }
                     }
                 }

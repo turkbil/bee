@@ -8,9 +8,14 @@ use Modules\WidgetManagement\app\Models\WidgetCategory;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
 
 class HeroWidgetSeeder extends Seeder
 {
+    // Çalıştırma izleme anahtarı
+    private static $runKey = 'hero_widget_seeder_executed';
+
     public function run()
     {
         // Tenant kontrolü
@@ -21,27 +26,37 @@ class HeroWidgetSeeder extends Seeder
             Log::info('Tenant contextinde çalışıyor, HeroWidgetSeeder atlanıyor. Tenant ID: ' . tenant('id'));
             return;
         }
-        
+
+        // Seeder'ın daha önce çalıştırılıp çalıştırılmadığını kontrol et
+        $cacheKey = self::$runKey . '_' . Config::get('database.default');
+        if (Cache::has($cacheKey)) {
+            Log::info('HeroWidgetSeeder zaten çalıştırılmış, atlanıyor...');
+            return;
+        }
+
         Log::info('HeroWidgetSeeder merkezi veritabanında çalışıyor...');
-        
+
         try {
             // Hero klasörünü oluştur
             $this->createHeroFolder();
-            
+
             // Statik hero widget'ı oluştur
             $this->createHeroWidget();
-            
+
             Log::info('Hero bileşeni başarıyla oluşturuldu.');
+
+            // Seeder'ın çalıştırıldığını işaretle (10 dakika süreyle cache'de tut)
+            Cache::put($cacheKey, true, 600);
         } catch (\Exception $e) {
             Log::error('HeroWidgetSeeder hatası: ' . $e->getMessage());
             Log::error($e->getTraceAsString());
-            
+
             if ($this->command) {
                 $this->command->error('HeroWidgetSeeder hatası: ' . $e->getMessage());
             }
         }
     }
-    
+
     private function createHeroFolder()
     {
         // Hero klasör yolu
@@ -77,12 +92,34 @@ class HeroWidgetSeeder extends Seeder
     
     private function createHeroWidget()
     {
-        // Hero kategorisini bul
+        // Hero kategorisini bul, yoksa oluştur
         $heroCategory = WidgetCategory::where('slug', 'herolar')->first();
         
         if (!$heroCategory) {
-            Log::warning('Hero kategorisi bulunamadı, hero widget oluşturulamıyor...');
-            return;
+            Log::warning('Hero kategorisi bulunamadı, oluşturuluyor...');
+            
+            try {
+                $heroCategory = WidgetCategory::create([
+                    'title' => 'Herolar',
+                    'slug' => 'herolar',
+                    'description' => 'Sayfa üst kısmında kullanılabilecek hero bileşenleri',
+                    'icon' => 'fa-heading',
+                    'order' => 5,
+                    'is_active' => true,
+                    'parent_id' => null,
+                    'has_subcategories' => false
+                ]);
+                
+                Log::info("Hero kategorisi oluşturuldu: Herolar (slug: herolar)");
+            } catch (\Exception $e) {
+                Log::error("Hero kategorisi oluşturulamadı. Hata: " . $e->getMessage());
+                return;
+            }
+            
+            if (!$heroCategory) {
+                Log::error("Hero kategorisi oluşturulamadı.");
+                return;
+            }
         }
         
         // Hero widget'ı zaten var mı kontrolü

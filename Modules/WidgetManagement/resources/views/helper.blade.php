@@ -52,8 +52,17 @@ Bileşen Yönetimi
                     @endrole
                 </div>
             </div>
+            <a href="{{ route('admin.widgetmanagement.index') }}" class="dropdown-module-item btn {{ request()->routeIs('admin.widgetmanagement.index') ? 'btn-primary' : 'btn-outline-primary' }}">
+                Aktif Bileşenler
+            </a>
+            <a href="{{ route('admin.widgetmanagement.gallery') }}" class="dropdown-module-item btn {{ request()->routeIs('admin.widgetmanagement.gallery') ? 'btn-primary' : 'btn-outline-primary' }}">
+                Bileşen Galerisi
+            </a>
             @role('root')
-            <a href="{{ route('admin.widgetmanagement.category.index') }}" class="dropdown-module-item btn btn-primary">
+            <a href="{{ route('admin.widgetmanagement.modules') }}" class="dropdown-module-item btn {{ request()->routeIs('admin.widgetmanagement.modules') ? 'btn-primary' : 'btn-outline-primary' }}">
+                Modül Bileşenleri
+            </a>
+            <a href="{{ route('admin.widgetmanagement.category.index') }}" class="dropdown-module-item btn {{ request()->routeIs('admin.widgetmanagement.category.index') ? 'btn-primary' : 'btn-outline-primary' }}">
                 Kategoriler
             </a>
             @endrole

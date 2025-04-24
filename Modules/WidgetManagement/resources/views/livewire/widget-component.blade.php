@@ -1,209 +1,262 @@
 @include('widgetmanagement::helper')
-<div class="card">
-    <div class="card-body">
-        <div class="row mb-3">
-            <!-- Sol Taraf (Arama ve Filtreler) -->
-            <div class="col-md-6">
-                <div class="row g-2">
-                    <!-- Arama Kutusu -->
-                    <div class="col-md-8">
-                        <div class="input-icon">
-                            <span class="input-icon-addon">
-                                <i class="fas fa-search"></i>
-                            </span>
-                            <input type="text" wire:model.live.debounce.300ms="search" class="form-control"
-                                placeholder="Bileşen ara...">
-                        </div>
-                    </div>
-                    <!-- Tip Filtresi -->
-                    <div class="col-md-4">
-                        <select wire:model.live="typeFilter" class="form-select">
-                            <option value="">Tüm Tipler</option>
-                            @foreach($types as $key => $label)
-                            <option value="{{ $key }}">{{ $label }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Ortadaki Loading -->
-            <div class="col-md-4 position-relative d-flex justify-content-center align-items-center">
-                <div wire:loading
-                    wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, createInstance, deleteInstance, toggleActive, categoryFilter, parentCategoryFilter"
-                    class="position-absolute top-50 start-50 translate-middle text-center"
-                    style="width: 100%; max-width: 250px;">
-                    <div class="small text-muted mb-2">Güncelleniyor...</div>
-                    <div class="progress mb-1">
-                        <div class="progress-bar progress-bar-indeterminate"></div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Sağ Taraf (Sayfalama) -->
-            <div class="col-md-2">
-                <div class="d-flex align-items-center justify-content-end gap-3">
-                    <select wire:model.live="perPage" class="form-select" style="width: 80px">
-                        <option value="10">10</option>
-                        <option value="40">40</option>
-                        <option value="100">100</option>
-                        <option value="200">200</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Üstteki Butonlar -->
-        <div class="d-flex justify-content-between mb-4">
-            <div>
-                <h3 class="card-title">Aktif Bileşenler</h3>
-                <p class="text-muted">Kullanmakta olduğunuz bileşenleri yönetin</p>
-            </div>
-        </div>
-        
-        <!-- Ana Kategori Filtresi -->
-        @if($parentCategories->count() > 0)
-        <div class="mb-3">
-            <div class="d-flex flex-wrap gap-2">
-                <button class="btn {{ $parentCategoryFilter == '' ? 'btn-primary' : 'btn-outline-secondary' }}" 
-                    wire:click="$set('parentCategoryFilter', '')">
-                    Tümü
-                </button>
-                @foreach($parentCategories as $category)
-                <button class="btn {{ $parentCategoryFilter == $category->widget_category_id ? 'btn-primary' : 'btn-outline-secondary' }}" 
-                    wire:click="$set('parentCategoryFilter', '{{ $category->widget_category_id }}')">
-                    {{ $category->title }} 
-                    <span class="badge ms-1">{{ $category->widgets_count + $category->children->sum('widgets_count') }}</span>
-                    @if($category->children_count > 0)
-                    <span class="badge ms-1" title="{{ $category->children_count }} alt kategori">
-                        <i class="fas fa-sitemap fa-xs"></i>
-                    </span>
-                    @endif
-                </button>
-                @endforeach
-            </div>
-        </div>
-        @endif
-
-        <!-- Alt Kategori Filtresi - Sadece bir ana kategori seçildiğinde görünür -->
-        @if($childCategories->count() > 0)
-        <div class="mb-3 ms-4 border-start ps-2">
-            <div class="d-flex flex-wrap gap-2">
-                <button class="btn {{ $categoryFilter == '' ? 'btn-info' : 'btn-outline-info' }}" 
-                    wire:click="$set('categoryFilter', '')">
-                    Tüm Alt Kategoriler
-                </button>
-                @foreach($childCategories as $childCategory)
-                <button class="btn {{ $categoryFilter == $childCategory->widget_category_id ? 'btn-info' : 'btn-outline-info' }}" 
-                    wire:click="$set('categoryFilter', '{{ $childCategory->widget_category_id }}')">
-                    {{ $childCategory->title }}
-                    <span class="badge bg-secondary ms-1">{{ $childCategory->widgets_count }}</span>
-                </button>
-                @endforeach
-            </div>
-        </div>
-        @endif
-        
-        <!-- Bileşen Listesi -->
-        <div class="row row-cards">
-            @forelse($entities as $instance)
-            <div class="col-12 col-sm-6 col-lg-4 col-xl-4">
+<div>
+    <div class="row g-4">
+        <div class="col-md-3">
+            <form class="sticky-top" style="top: 20px;">
                 <div class="card">
-                    <div class="card-status-top {{ $instance->widget && $instance->widget->is_active ? 'bg-primary' : 'bg-danger' }}"></div>
-                    
-                    <!-- Kart Header -->
-                    <div class="card-header d-flex align-items-center">
-                        <div class="me-auto">
-                            <h3 class="card-title mb-0">
-                                <a href="{{ route('admin.widgetmanagement.items', $instance->id) }}">
-                                    {{ $instance->settings['title'] ?? $instance->widget->name }}
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-3">
+                            <div>
+                                <h3 class="card-title">Kategoriler</h3>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="input-icon">
+                                <span class="input-icon-addon">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                                <input type="text" wire:model.live.debounce.300ms="search" class="form-control"
+                                    placeholder="Bileşen ara...">
+                            </div>
+                        </div>
+                        
+                        <!-- Tip Filtresi -->
+                        <div class="mb-4">
+                            <div class="form-label">Bileşen Tipi</div>
+                            <select wire:model.live="typeFilter" class="form-select">
+                                <option value="">Tüm Tipler</option>
+                                @foreach($types as $key => $label)
+                                <option value="{{ $key }}">{{ $label }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        
+                        <!-- Ana Kategoriler -->
+                        <div class="form-label">Ana Kategoriler</div>
+                        <div class="mb-4">
+                            <div class="list-group list-group-transparent mb-3">
+                                <a class="list-group-item list-group-item-action d-flex align-items-center {{ $parentCategoryFilter == '' ? 'active' : '' }}" 
+                                   wire:click.prevent="$set('parentCategoryFilter', '')" href="#">
+                                    Tüm Kategoriler
+                                    <small class="text-secondary ms-auto">{{ $entities->total() }}</small>
                                 </a>
-                            </h3>
-                            @if($instance->widget->category)
-                            <div class="text-muted small">
-                                Kategori: {{ $instance->widget->category->title }}
-                                @if($instance->widget->category->parent)
-                                <span class="text-muted"> / {{ $instance->widget->category->parent->title }}</span>
+                                
+                                @foreach($parentCategories as $category)
+                                <a class="list-group-item list-group-item-action d-flex align-items-center {{ $parentCategoryFilter == $category->widget_category_id ? 'active' : '' }}" 
+                                   wire:click.prevent="$set('parentCategoryFilter', '{{ $category->widget_category_id }}')" href="#">
+                                    {{ $category->title }}
+                                    <small class="text-secondary ms-auto">{{ $category->widgets_count + $category->children->sum('widgets_count') }}</small>
+                                </a>
+                                
+                                @if($category->children_count > 0)
+                                    @foreach($category->children as $childCategory)
+                                    <a class="list-group-item list-group-item-action d-flex align-items-center ps-5 {{ $categoryFilter == $childCategory->widget_category_id ? 'active' : '' }}" 
+                                       wire:click.prevent="$set('categoryFilter', '{{ $childCategory->widget_category_id }}')" href="#">
+                                        <i class="fas fa-angle-right me-2"></i> {{ $childCategory->title }}
+                                        <small class="text-secondary ms-auto">{{ $childCategory->widgets_count }}</small>
+                                    </a>
+                                    @endforeach
                                 @endif
+                                @endforeach
+                            </div>
+                        </div>
+                        
+                        <!-- Alt Kategoriler - Seçilen Ana Kategoriye göre -->
+                        @if($childCategories->count() > 0 && $parentCategoryFilter && !$categoryFilter)
+                        <div class="form-label">Alt Kategoriler</div>
+                        <div class="mb-4">
+                            <div class="list-group list-group-transparent mb-3">
+                                <a class="list-group-item list-group-item-action d-flex align-items-center {{ $categoryFilter == '' ? 'active' : '' }}" 
+                                   wire:click.prevent="$set('categoryFilter', '')" href="#">
+                                    Tümünü Göster
+                                </a>
+                                
+                                @foreach($childCategories as $childCategory)
+                                <a class="list-group-item list-group-item-action d-flex align-items-center {{ $categoryFilter == $childCategory->widget_category_id ? 'active' : '' }}" 
+                                   wire:click.prevent="$set('categoryFilter', '{{ $childCategory->widget_category_id }}')" href="#">
+                                    {{ $childCategory->title }}
+                                    <small class="text-secondary ms-auto">{{ $childCategory->widgets_count }}</small>
+                                </a>
+                                @endforeach
+                            </div>
+                        </div>
+                        @endif
+                        
+                        <!-- Sayfalama Ayarı -->
+                        <div class="form-label">Sayfa Başına</div>
+                        <div class="mb-4">
+                            <select wire:model.live="perPage" class="form-select">
+                                <option value="12">12 Bileşen</option>
+                                <option value="24">24 Bileşen</option>
+                                <option value="48">48 Bileşen</option>
+                                <option value="96">96 Bileşen</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <div class="d-flex gap-2">
+                                <a href="{{ route('admin.widgetmanagement.index') }}" class="btn btn-outline-primary w-100 {{ request()->routeIs('admin.widgetmanagement.index') ? 'active' : '' }}">
+                                    <i class="fas fa-th-list me-1"></i> Aktif Bileşenler
+                                </a>
+                            </div>
+                            <div class="d-flex gap-2 mt-2">
+                                <a href="{{ route('admin.widgetmanagement.gallery') }}" class="btn btn-outline-secondary w-100 {{ request()->routeIs('admin.widgetmanagement.gallery') ? 'active' : '' }}">
+                                    <i class="fas fa-th-large me-1"></i> Bileşen Galerisi
+                                </a>
+                            </div>
+                            @if($hasRootPermission)
+                            <div class="d-flex gap-2 mt-2">
+                                <a href="{{ route('admin.widgetmanagement.modules') }}" class="btn btn-outline-secondary w-100 {{ request()->routeIs('admin.widgetmanagement.modules') ? 'active' : '' }}">
+                                    <i class="fas fa-puzzle-piece me-1"></i> Modül Bileşenleri
+                                </a>
+                            </div>
+                            <div class="d-flex gap-2 mt-2">
+                                <a href="{{ route('admin.widgetmanagement.files') }}" class="btn btn-outline-secondary w-100 {{ request()->routeIs('admin.widgetmanagement.files') ? 'active' : '' }}">
+                                    <i class="fas fa-file-code me-1"></i> Hazır Dosyalar
+                                </a>
                             </div>
                             @endif
                         </div>
-                        <div class="dropdown">
-                            <a href="#" class="btn btn-icon" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </a>
-                            
-                            <div class="dropdown-menu dropdown-menu-end">
-                                <a href="{{ route('admin.widgetmanagement.settings', $instance->id) }}" class="dropdown-item">
-                                    <i class="fas fa-sliders-h me-2"></i> Ayarlar
-                                </a>
-                                <a href="{{ route('admin.widgetmanagement.items', $instance->id) }}" class="dropdown-item">
-                                    <i class="fas fa-layer-group me-2"></i> İçerik
-                                </a>
-                                <div class="dropdown-divider"></div>
-                                @if($hasRootPermission)
-                                <a href="{{ route('admin.widgetmanagement.manage', $instance->widget->id) }}" class="dropdown-item">
-                                    <i class="fas fa-tools me-2"></i> Yapılandır
-                                </a>
-                                @endif
-                                <button class="dropdown-item text-danger" wire:click="deleteInstance({{ $instance->id }})"
-                                onclick="return confirm('Bu bileşeni silmek istediğinize emin misiniz?')">
-                                    <i class="fas fa-trash me-2"></i>Sil
-                                </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-body">
+                    <!-- Üstteki Butonlar ve Başlık -->
+                    <div class="d-flex justify-content-between mb-4">
+                        <div>
+                            <h3 class="card-title">Aktif Bileşenler</h3>
+                            <p class="text-muted">Kullanmakta olduğunuz bileşenleri yönetin</p>
+                        </div>
+                        
+                        <!-- Loading İndikatörü -->
+                        <div class="position-relative d-flex justify-content-center align-items-center">
+                            <div wire:loading
+                                wire:target="render, search, perPage, gotoPage, previousPage, nextPage, createInstance, deleteInstance, toggleActive, categoryFilter, parentCategoryFilter"
+                                class="text-center">
+                                <div class="small text-muted me-2">Güncelleniyor...</div>
+                                <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Kart Footer -->
-                    <div class="card-footer">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div class="d-flex gap-2">
-                                <a href="{{ route('admin.widgetmanagement.items', $instance->id) }}" class="text-body">
-                                    <i class="fas fa-layer-group me-1"></i>
-                                    İçerikler
-                                </a>
-                            </div>
-                            <div class="d-flex align-items-center">
-                                <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
-                                    <input type="checkbox" wire:click="toggleActive({{ $instance->id }})"
-                                        {{ $instance->is_active ? 'checked' : '' }} value="1" />
-                                    <div class="state p-success p-on ms-2">
-                                        <label>Aktif</label>
+                    
+                    <!-- Bileşenleri Kategoriye Göre Gruplandırma -->
+                    @php
+                        $groupedEntities = $entities->groupBy(function($item) {
+                            return $item->widget->category->title ?? 'Kategori Atanmamış';
+                        });
+                    @endphp
+                    
+                    @forelse($groupedEntities as $categoryName => $categoryEntities)
+                    <div class="mb-4">
+                        <h4 class="border-bottom pb-2 mb-3">{{ $categoryName }}</h4>
+                        <div class="row row-cards">
+                            @foreach($categoryEntities as $instance)
+                            <div class="col-12 col-sm-6 col-lg-6">
+                                <div class="card h-100">
+                                    <div class="card-status-top {{ $instance->widget && $instance->widget->is_active ? 'bg-primary' : 'bg-danger' }}"></div>
+                                    
+                                    <!-- Kart Header -->
+                                    <div class="card-header d-flex align-items-center">
+                                        <div class="me-auto">
+                                            <h3 class="card-title mb-0">
+                                                <a href="{{ route('admin.widgetmanagement.items', $instance->id) }}">
+                                                    {{ $instance->settings['title'] ?? $instance->widget->name }}
+                                                </a>
+                                            </h3>
+                                            @if($instance->widget->category)
+                                            <div class="text-muted small">
+                                                @if($instance->widget->category->parent)
+                                                <span>{{ $instance->widget->category->parent->title }} / {{ $instance->widget->category->title }}</span>
+                                                @else
+                                                <span>{{ $instance->widget->category->title }}</span>
+                                                @endif
+                                            </div>
+                                            @endif
+                                        </div>
+                                        <div class="dropdown">
+                                            <a href="#" class="btn btn-icon" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </a>
+                                            
+                                            <div class="dropdown-menu dropdown-menu-end">
+                                                <a href="{{ route('admin.widgetmanagement.settings', $instance->id) }}" class="dropdown-item">
+                                                    <i class="fas fa-sliders-h me-2"></i> Ayarlar
+                                                </a>
+                                                <a href="{{ route('admin.widgetmanagement.items', $instance->id) }}" class="dropdown-item">
+                                                    <i class="fas fa-layer-group me-2"></i> İçerik
+                                                </a>
+                                                <div class="dropdown-divider"></div>
+                                                @if($hasRootPermission)
+                                                <a href="{{ route('admin.widgetmanagement.manage', $instance->widget->id) }}" class="dropdown-item">
+                                                    <i class="fas fa-tools me-2"></i> Yapılandır
+                                                </a>
+                                                @endif
+                                                <button class="dropdown-item text-danger" wire:click="deleteInstance({{ $instance->id }})"
+                                                onclick="return confirm('Bu bileşeni silmek istediğinize emin misiniz?')">
+                                                    <i class="fas fa-trash me-2"></i>Sil
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="state p-danger p-off ms-2">
-                                        <label>Aktif Değil</label>
+
+                                    <!-- Kart Footer -->
+                                    <div class="card-footer">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="d-flex gap-2">
+                                                <a href="{{ route('admin.widgetmanagement.items', $instance->id) }}" class="text-body">
+                                                    <i class="fas fa-layer-group me-1"></i>
+                                                    İçerikler
+                                                </a>
+                                            </div>
+                                            <div class="d-flex align-items-center">
+                                                <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
+                                                    <input type="checkbox" wire:click="toggleActive({{ $instance->id }})"
+                                                        {{ $instance->is_active ? 'checked' : '' }} value="1" />
+                                                    <div class="state p-success p-on ms-2">
+                                                        <label>Aktif</label>
+                                                    </div>
+                                                    <div class="state p-danger p-off ms-2">
+                                                        <label>Aktif Değil</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                            @endforeach
                         </div>
                     </div>
-                </div>
-            </div>
-            @empty
-            <div class="col-12">
-                <div class="empty">
-                    <div class="empty-img">
-                        <img src="{{ asset('images/empty.svg') }}"
-                            height="128" alt="">
+                    @empty
+                    <div class="empty">
+                        <div class="empty-img">
+                            <img src="{{ asset('images/empty.svg') }}" height="128" alt="">
+                        </div>
+                        <p class="empty-title">Hiç bileşen bulunamadı</p>
+                        <p class="empty-subtitle text-muted">
+                            Yeni bir bileşen eklemek için "Bileşen Galerisi" sayfasına geçebilirsiniz
+                        </p>
+                        <div class="empty-action">
+                            <a href="{{ route('admin.widgetmanagement.gallery') }}" class="btn btn-primary">
+                                <i class="fas fa-th-large me-2"></i> Bileşen Galerisine Git
+                            </a>
+                        </div>
                     </div>
-                    <p class="empty-title">Hiç bileşen bulunamadı</p>
-                    <p class="empty-subtitle text-muted">
-                        Yeni bir bileşen eklemek için "Bileşen Galerisi" sayfasına geçebilirsiniz
-                    </p>
-                    <div class="empty-action">
-                        <a href="{{ route('admin.widgetmanagement.gallery') }}" class="btn btn-primary">
-                            <i class="fas fa-th-large me-2"></i> Bileşen Galerisine Git
-                        </a>
-                    </div>
+                    @endforelse
                 </div>
+                
+                <!-- Pagination -->
+                @if($entities->hasPages())
+                <div class="card-footer d-flex align-items-center justify-content-end">
+                    {{ $entities->links() }}
+                </div>
+                @endif
             </div>
-            @endforelse
         </div>
     </div>
-    <!-- Pagination -->
-    @if($entities->hasPages())
-    <div class="card-footer d-flex align-items-center justify-content-end">
-        {{ $entities->links() }}
-    </div>
-    @endif
 </div>

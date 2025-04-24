@@ -27,7 +27,7 @@ return new class extends Migration
             $table->string('version')->nullable();
             $table->text('description')->nullable();
             $table->unsignedBigInteger('settings')->nullable();
-            $table->enum('type', ['content', 'management', 'system'])->default('content')->index();
+            $table->enum('type', ['content', 'management', 'system', 'widget'])->default('content')->index();
             $table->boolean('is_active')->default(true)->index();
             $table->timestamps();
             

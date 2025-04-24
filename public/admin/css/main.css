@@ -620,3 +620,80 @@ td:hover .edit-icon {
     font-size: 0.75rem;
     color: var(--tblr-gray-500);
 }
+
+
+    /* Tema Builder Css */
+    .color-preview {
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: 2px solid transparent;
+    }
+    
+    .color-item input:checked + .color-preview {
+        transform: scale(1.2);
+        border: 2px solid #fff;
+        box-shadow: 0 0 0 2px var(--primary-color);
+    }
+    
+    /* Offcanvas Genişliği */
+    .offcanvas-start {
+        width: 380px;
+    }
+    
+    /* Kaydırma çubuğu */
+    .offcanvas-body {
+        overflow-y: auto;
+        scrollbar-width: thin;
+    }
+    
+    .offcanvas-body::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    .offcanvas-body::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    
+    .offcanvas-body::-webkit-scrollbar-thumb {
+        background-color: rgba(var(--tblr-primary-rgb), 0.5);
+        border-radius: 20px;
+    }
+
+    .color-preview {
+        cursor: pointer;
+        transition: all 0.1s ease;
+        border: 2px solid transparent;
+    }
+    
+    .color-item input:checked + .color-preview {
+        transform: scale(1.1);
+        border: 2px solid #fff;
+        box-shadow: 0 0 0 2px var(--primary-color);
+    }
+    
+    .offcanvas-start {
+        width: 320px;
+    }
+    
+    .offcanvas-body {
+        overflow-y: auto;
+        scrollbar-width: thin;
+    }
+    
+    .offcanvas-body::-webkit-scrollbar {
+        width: 4px;
+    }
+    
+    .offcanvas-body::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    
+    .offcanvas-body::-webkit-scrollbar-thumb {
+        background-color: rgba(var(--tblr-primary-rgb), 0.5);
+        border-radius: 20px;
+    }
+
+    .card-title, .form-label {
+        font-size: 14px;
+        font-weight: 600;
+    }

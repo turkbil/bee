@@ -22,7 +22,7 @@
                 <!-- Ortadaki Loading -->
                 <div class="col-md-4 position-relative d-flex justify-content-center align-items-center">
                     <div wire:loading
-                        wire:target="render, search, perPage, gotoPage, previousPage, nextPage, categoryFilter"
+                        wire:target="render, search, perPage, gotoPage, previousPage, nextPage, categoryFilter, parentCategoryFilter"
                         class="position-absolute top-50 start-50 translate-middle text-center"
                         style="width: 100%; max-width: 250px;">
                         <div class="small text-muted mb-2">Güncelleniyor...</div>
@@ -58,18 +58,43 @@
                 </div>
             </div>
             
-            <!-- Kategori Filtresi -->
-            @if($categories->count() > 0)
+            <!-- Ana Kategori Filtresi -->
+            @if($parentCategories->count() > 0)
             <div class="mb-3">
                 <div class="d-flex flex-wrap gap-2">
-                    <button class="btn {{ $categoryFilter == '' ? 'btn-primary' : 'btn-outline-secondary' }}" 
-                        wire:click="$set('categoryFilter', '')">
+                    <button class="btn {{ $parentCategoryFilter == '' ? 'btn-primary' : 'btn-outline-secondary' }}" 
+                        wire:click="$set('parentCategoryFilter', '')">
                         Tümü
                     </button>
-                    @foreach($categories as $category)
-                    <button class="btn {{ $categoryFilter == $category->widget_category_id ? 'btn-primary' : 'btn-outline-secondary' }}" 
-                        wire:click="$set('categoryFilter', '{{ $category->widget_category_id }}')">
-                        {{ $category->title }}
+                    @foreach($parentCategories as $category)
+                    <button class="btn {{ $parentCategoryFilter == $category->widget_category_id ? 'btn-primary' : 'btn-outline-secondary' }}" 
+                        wire:click="$set('parentCategoryFilter', '{{ $category->widget_category_id }}')">
+                        {{ $category->title }} 
+                        <span class="badge ms-1">{{ $category->widgets_count + $category->children->sum('widgets_count') }}</span>
+                        @if($category->children_count > 0)
+                        <span class="badge ms-1" title="{{ $category->children_count }} alt kategori">
+                            <i class="fas fa-sitemap fa-xs"></i>
+                        </span>
+                        @endif
+                    </button>
+                    @endforeach
+                </div>
+            </div>
+            @endif
+
+            <!-- Alt Kategori Filtresi - Sadece bir ana kategori seçildiğinde görünür -->
+            @if($childCategories->count() > 0)
+            <div class="mb-3 ms-4 border-start ps-2">
+                <div class="d-flex flex-wrap gap-2">
+                    <button class="btn {{ $categoryFilter == '' ? 'btn-info' : 'btn-outline-info' }}" 
+                        wire:click="$set('categoryFilter', '')">
+                        Tüm Alt Kategoriler
+                    </button>
+                    @foreach($childCategories as $childCategory)
+                    <button class="btn {{ $categoryFilter == $childCategory->widget_category_id ? 'btn-info' : 'btn-outline-info' }}" 
+                        wire:click="$set('categoryFilter', '{{ $childCategory->widget_category_id }}')">
+                        {{ $childCategory->title }}
+                        <span class="badge bg-secondary ms-1">{{ $childCategory->widgets_count }}</span>
                     </button>
                     @endforeach
                 </div>
@@ -88,6 +113,9 @@
                         <div class="col-12">
                             <h3 class="mt-4 mb-3 border-bottom pb-2">
                                 {{ $widget->category ? $widget->category->title : 'Diğer' }}
+                                @if($widget->category && $widget->category->parent)
+                                <small class="text-muted"> / {{ $widget->category->parent->title }}</small>
+                                @endif
                             </h3>
                         </div>
                     @endif

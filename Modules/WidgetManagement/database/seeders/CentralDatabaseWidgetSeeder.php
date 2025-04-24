@@ -74,8 +74,8 @@ class CentralDatabaseWidgetSeeder extends Seeder
         // Ana kategoriler
         $categories = [
             [
-                'title' => 'Kart Bileşenleri',
-                'slug' => 'kart-bilesenleri',
+                'title' => 'Kartlar',
+                'slug' => 'kartlar',
                 'description' => 'Kart tipi bileşenler için şablonlar',
                 'icon' => 'fa-th-large',
                 'order' => 1,
@@ -84,8 +84,8 @@ class CentralDatabaseWidgetSeeder extends Seeder
                 'has_subcategories' => false
             ],
             [
-                'title' => 'İçerik Bileşenleri',
-                'slug' => 'icerik-bilesenleri',
+                'title' => 'İçerikler',
+                'slug' => 'icerikler',
                 'description' => 'Metin ve içerik türleri için şablonlar',
                 'icon' => 'fa-file-alt',
                 'order' => 2,
@@ -94,8 +94,8 @@ class CentralDatabaseWidgetSeeder extends Seeder
                 'has_subcategories' => false
             ],
             [
-                'title' => 'Özellik Bileşenleri',
-                'slug' => 'ozellik-bilesenleri',
+                'title' => 'Özellikler',
+                'slug' => 'ozellikler',
                 'description' => 'Özellik listeleme bileşenleri',
                 'icon' => 'fa-list',
                 'order' => 3,
@@ -104,8 +104,8 @@ class CentralDatabaseWidgetSeeder extends Seeder
                 'has_subcategories' => false
             ],
             [
-                'title' => 'Form Bileşenleri',
-                'slug' => 'form-bilesenleri',
+                'title' => 'Formlar',
+                'slug' => 'formlar',
                 'description' => 'Form ve giriş elemanları',
                 'icon' => 'fa-wpforms',
                 'order' => 4,
@@ -114,7 +114,7 @@ class CentralDatabaseWidgetSeeder extends Seeder
                 'has_subcategories' => false
             ],
             [
-                'title' => 'Hero Bileşenleri',
+                'title' => 'Hero\'lar',
                 'slug' => 'hero-bilesenleri',
                 'description' => 'Ana başlık ve tanıtım bileşenleri',
                 'icon' => 'fa-heading',
@@ -124,8 +124,8 @@ class CentralDatabaseWidgetSeeder extends Seeder
                 'has_subcategories' => false
             ],
             [
-                'title' => 'Yerleşim Bileşenleri',
-                'slug' => 'yerlesim-bilesenleri',
+                'title' => 'Yerleşimler',
+                'slug' => 'yerlesimler',
                 'description' => 'Sayfa düzeni ve yerleşim şablonları',
                 'icon' => 'fa-columns',
                 'order' => 6,
@@ -134,8 +134,8 @@ class CentralDatabaseWidgetSeeder extends Seeder
                 'has_subcategories' => false
             ],
             [
-                'title' => 'Medya Bileşenleri',
-                'slug' => 'medya-bilesenleri',
+                'title' => 'Medya',
+                'slug' => 'medya',
                 'description' => 'Görsel, video ve diğer medya elemanları',
                 'icon' => 'fa-photo-video',
                 'order' => 7,
@@ -144,8 +144,8 @@ class CentralDatabaseWidgetSeeder extends Seeder
                 'has_subcategories' => false
             ],
             [
-                'title' => 'Referans Bileşenleri',
-                'slug' => 'referans-bilesenleri',
+                'title' => 'Referanslar',
+                'slug' => 'referanslar',
                 'description' => 'Müşteri yorumları ve referanslar',
                 'icon' => 'fa-comment-dots',
                 'order' => 8,
@@ -154,8 +154,8 @@ class CentralDatabaseWidgetSeeder extends Seeder
                 'has_subcategories' => false
             ],
             [
-                'title' => 'Slider Bileşenleri',
-                'slug' => 'slider-bilesenleri',
+                'title' => 'Slider\'lar',
+                'slug' => 'sliderlar',
                 'description' => 'Slider ve carousel içeren bileşenler',
                 'icon' => 'fa-sliders-h',
                 'order' => 9,

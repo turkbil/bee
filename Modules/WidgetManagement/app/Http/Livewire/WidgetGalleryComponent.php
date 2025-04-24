@@ -26,6 +26,9 @@ class WidgetGalleryComponent extends Component
     public $categoryFilter = '';
     
     #[Url]
+    public $parentCategoryFilter = '';
+    
+    #[Url]
     public $perPage = 12;
     
     public $showNameModal = false;
@@ -44,6 +47,12 @@ class WidgetGalleryComponent extends Component
     
     public function updatedCategoryFilter()
     {
+        $this->resetPage();
+    }
+    
+    public function updatedParentCategoryFilter()
+    {
+        $this->categoryFilter = '';
         $this->resetPage();
     }
     
@@ -119,10 +128,26 @@ class WidgetGalleryComponent extends Component
             }
         }
         
-        // Tüm kategorileri getir
-        $categories = WidgetCategory::where('is_active', true)
+        // Ana kategorileri getir
+        $parentCategories = WidgetCategory::whereNull('parent_id')
+            ->where('is_active', true)
+            ->withCount(['widgets' => function($query) {
+                $query->where('type', '!=', 'file')->where('is_active', true);
+            }, 'children'])
             ->orderBy('order')
             ->get();
+        
+        // Eğer bir ana kategori seçilmişse, o kategorinin alt kategorilerini getir
+        $childCategories = collect([]);
+        if ($this->parentCategoryFilter) {
+            $childCategories = WidgetCategory::where('parent_id', $this->parentCategoryFilter)
+                ->where('is_active', true)
+                ->withCount(['widgets' => function($query) {
+                    $query->where('type', '!=', 'file')->where('is_active', true);
+                }])
+                ->orderBy('order')
+                ->get();
+        }
         
         // Kullanılabilir şablonları getir
         $query = Widget::where('is_active', true)
@@ -134,7 +159,22 @@ class WidgetGalleryComponent extends Component
             ->when($this->typeFilter, function ($q) {
                 $q->where('type', $this->typeFilter);
             })
-            ->when($this->categoryFilter, function ($q) {
+            ->when($this->parentCategoryFilter, function ($q) {
+                if ($this->categoryFilter) {
+                    // Eğer alt kategori seçilmişse, sadece o kategoriyi filtrele
+                    $q->where('widget_category_id', $this->categoryFilter);
+                } else {
+                    // Ana kategori seçilmişse ve alt kategori seçilmemişse
+                    // Ana kategoriye ait tüm alt kategorileri dahil et
+                    $q->where(function($query) {
+                        $query->where('widget_category_id', $this->parentCategoryFilter)
+                              ->orWhereHas('category', function($cq) {
+                                  $cq->where('parent_id', $this->parentCategoryFilter);
+                              });
+                    });
+                }
+            })
+            ->when(!$this->parentCategoryFilter && $this->categoryFilter, function ($q) {
                 $q->where('widget_category_id', $this->categoryFilter);
             });
             
@@ -149,7 +189,8 @@ class WidgetGalleryComponent extends Component
                 'module' => 'Modül',
                 'content' => 'İçerik'
             ],
-            'categories' => $categories,
+            'parentCategories' => $parentCategories,
+            'childCategories' => $childCategories,
             'hasRootPermission' => $hasRootPermission
         ]);
     }

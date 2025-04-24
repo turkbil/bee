@@ -172,9 +172,7 @@ class SliderWidgetSeeder extends Seeder
                     'caption_bg_color' => 'rgba(0,0,0,0.5)',
                     'caption_text_color' => '#ffffff'
                 ],
-                'position' => 'top',
-                'page_id' => null,
-                'module' => null,
+                'order' => 0,
                 'is_active' => true
             ]);
 

@@ -62,47 +62,47 @@ class WidgetCategorySeeder extends Seeder
         // Önceden tanımlanmış ana kategoriler
         $predefinedCategories = [
             'kart-bilesenleri' => [
-                'title' => 'Kart Bileşenleri',
+                'title' => 'Kartlar',
                 'description' => 'Kart tipi bileşenler için şablonlar',
                 'icon' => 'fa-th-large'
             ],
             'icerik-bilesenleri' => [
-                'title' => 'İçerik Bileşenleri',
+                'title' => 'İçerikler',
                 'description' => 'Metin ve içerik türleri için şablonlar',
                 'icon' => 'fa-file-alt'
             ],
             'ozellik-bilesenleri' => [
-                'title' => 'Özellik Bileşenleri',
+                'title' => 'Özellikler',
                 'description' => 'Özellik listeleme bileşenleri',
                 'icon' => 'fa-list'
             ],
             'form-bilesenleri' => [
-                'title' => 'Form Bileşenleri',
+                'title' => 'Formlar',
                 'description' => 'Form ve giriş elemanları',
                 'icon' => 'fa-wpforms'
             ],
             'hero-bilesenleri' => [
-                'title' => 'Hero Bileşenleri',
+                'title' => 'Herolar',
                 'description' => 'Ana başlık ve tanıtım bileşenleri',
                 'icon' => 'fa-heading'
             ],
             'yerlesim-bilesenleri' => [
-                'title' => 'Yerleşim Bileşenleri',
+                'title' => 'Yerleşimler',
                 'description' => 'Sayfa düzeni ve yerleşim şablonları',
                 'icon' => 'fa-columns'
             ],
             'medya-bilesenleri' => [
-                'title' => 'Medya Bileşenleri',
+                'title' => 'Medya',
                 'description' => 'Görsel, video ve diğer medya elemanları',
                 'icon' => 'fa-photo-video'
             ],
             'referans-bilesenleri' => [
-                'title' => 'Referans Bileşenleri',
+                'title' => 'Referanslar',
                 'description' => 'Müşteri yorumları ve referanslar',
                 'icon' => 'fa-comment-dots'
             ],
             'slider-bilesenleri' => [
-                'title' => 'Slider Bileşenleri',
+                'title' => 'Sliderlar',
                 'description' => 'Slider ve carousel içeren bileşenler',
                 'icon' => 'fa-sliders-h'
             ],

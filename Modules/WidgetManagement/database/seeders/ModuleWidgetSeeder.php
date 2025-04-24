@@ -25,8 +25,16 @@ class ModuleWidgetSeeder extends Seeder
         Log::info('ModuleWidgetSeeder merkezi veritabanında çalışıyor...');
         
         try {
+            // Ana modul kategorisi
+            $mainModuleCategory = WidgetCategory::where('slug', 'modul-bilesenleri')->first();
+            
+            if (!$mainModuleCategory) {
+                Log::error("Ana modül kategorisi (modul-bilesenleri) bulunamadı, widget oluşturulamıyor.");
+                return;
+            }
+            
             // Modül kategorilerini oluştur
-            $this->createModuleWidgets();
+            $this->createModuleWidgets($mainModuleCategory);
             
             Log::info('Modül bileşenleri başarıyla oluşturuldu.');
         } catch (\Exception $e) {
@@ -39,7 +47,7 @@ class ModuleWidgetSeeder extends Seeder
         }
     }
     
-    private function createModuleWidgets()
+    private function createModuleWidgets($mainModuleCategory)
     {
         // Modül dizini
         $moduleBasePath = base_path('Modules/WidgetManagement/resources/views/blocks/modules');
@@ -57,14 +65,6 @@ class ModuleWidgetSeeder extends Seeder
                 
                 if (!$moduleCategory) {
                     Log::warning("Modül kategorisi bulunamadı: $moduleSlug, yeni kategori oluşturuluyor...");
-                    
-                    // Önce ana modül kategorisini bul
-                    $mainModuleCategory = WidgetCategory::where('slug', 'modul-bilesenleri')->first();
-                    
-                    if (!$mainModuleCategory) {
-                        Log::error("Ana modül kategorisi bulunamadı, işlem atlanıyor...");
-                        continue;
-                    }
                     
                     // Yeni modül kategorisi oluştur
                     $moduleCategory = WidgetCategory::create([

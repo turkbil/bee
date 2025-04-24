@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
     themeRadios.forEach(radio => {
         radio.addEventListener('change', function() {
             const themeMode = this.value; // light, dark veya auto
-            document.cookie = `dark=${themeMode};path=/;max-age=31536000`;
+            document.cookie = `dark=${themeMode === 'dark' ? '1' : (themeMode === 'auto' ? 'auto' : '0')};path=/;max-age=31536000`;
             
             // Sayfa yenilemeden temayı değiştir
             const body = document.body;
@@ -27,22 +27,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 body.classList.remove(prefersDarkMode ? 'light' : 'dark');
                 body.classList.add(prefersDarkMode ? 'dark' : 'light');
                 document.getElementById('switch').checked = prefersDarkMode;
-                
-                // Tüm tik işaretlerini gizle ve sadece auto için olanı göster
-                document.querySelectorAll('.theme-check').forEach(check => {
-                    check.classList.add('d-none');
-                });
-                this.parentElement.querySelector('.theme-check').classList.remove('d-none');
             }
             
-            // Radyo butonlarının tik işaretlerini güncelle
+            // Radyo butonlarının görsel durumlarını güncelle
             themeRadios.forEach(r => {
-                const checkIcon = r.parentElement.querySelector('.theme-check');
-                if (checkIcon) {
+                const parent = r.closest('.form-selectgroup-item');
+                if (parent) {
                     if (r.checked) {
-                        checkIcon.classList.remove('d-none');
+                        parent.classList.add('active');
                     } else {
-                        checkIcon.classList.add('d-none');
+                        parent.classList.remove('active');
                     }
                 }
             });
@@ -59,12 +53,75 @@ document.addEventListener('DOMContentLoaded', function() {
             // Sayfa yenilemeden rengi değiştir
             document.documentElement.style.setProperty('--primary-color', color);
             updateTextColor(color);
+        });
+    });
+
+    // Köşe yuvarlaklığı değiştirme - Range slider
+    const radiusSlider = document.getElementById('radius-slider');
+    const radiusValue = document.getElementById('radius-value');
+    
+    if (radiusSlider && radiusValue) {
+        const radiusMap = ['0', '0.25rem', '0.5rem', '0.75rem', '1rem'];
+        
+        radiusSlider.addEventListener('input', function() {
+            const selectedRadius = radiusMap[this.value];
+            radiusValue.value = selectedRadius;
             
-            // Seçilen rengin tik işaretini göster, diğerlerini gizle
-            document.querySelectorAll('.color-check').forEach(check => {
-                check.classList.add('d-none');
+            // Cookie güncelleme ve CSS değişkeni ayarlama
+            document.cookie = `themeRadius=${selectedRadius};path=/;max-age=31536000`;
+            document.documentElement.style.setProperty('--tblr-border-radius', selectedRadius);
+            
+            // Örnekleri vurgula
+            document.querySelectorAll('.radius-example').forEach((example, index) => {
+                if (index == this.value) {
+                    example.style.borderColor = 'var(--primary-color)';
+                    example.style.borderWidth = '2px';
+                } else {
+                    example.style.borderColor = 'var(--tblr-border-color)';
+                    example.style.borderWidth = '1px';
+                }
             });
-            this.parentElement.querySelector('.color-check').classList.remove('d-none');
+        });
+        
+        // Sayfa yüklendiğinde doğru örneği vurgulama
+        const currentIndex = parseInt(radiusSlider.value);
+        document.querySelectorAll('.radius-example').forEach((example, index) => {
+            if (index == currentIndex) {
+                example.style.borderColor = 'var(--primary-color)';
+                example.style.borderWidth = '2px';
+            }
+        });
+    }
+
+    // Yazı tipi değiştirme
+    const fontRadios = document.querySelectorAll('input[name="theme-font"]');
+    fontRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            const font = this.value;
+            document.cookie = `themeFont=${encodeURIComponent(font)};path=/;max-age=31536000`;
+            
+            // Sayfa yenilemeden yazı tipini değiştir
+            document.documentElement.style.setProperty('--tblr-font-family', font);
+            document.body.style.fontFamily = font;
+            
+            // Roboto ve Poppins için özel işlem
+            if (font === "'Roboto', sans-serif") {
+                if (!document.getElementById('roboto-font')) {
+                    const link = document.createElement('link');
+                    link.id = 'roboto-font';
+                    link.rel = 'stylesheet';
+                    link.href = 'https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap';
+                    document.head.appendChild(link);
+                }
+            } else if (font === "'Poppins', sans-serif") {
+                if (!document.getElementById('poppins-font')) {
+                    const link = document.createElement('link');
+                    link.id = 'poppins-font';
+                    link.rel = 'stylesheet';
+                    link.href = 'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap';
+                    document.head.appendChild(link);
+                }
+            }
         });
     });
 
@@ -78,40 +135,15 @@ document.addEventListener('DOMContentLoaded', function() {
             // Gri tonu güncelle
             document.body.classList.remove('theme-base-slate', 'theme-base-gray', 'theme-base-zinc', 'theme-base-neutral', 'theme-base-stone');
             document.body.classList.add(`theme-base-${baseTheme}`);
-        });
-    });
-
-    // Yazı tipi değiştirme
-    const fontRadios = document.querySelectorAll('input[name="theme-font"]');
-    fontRadios.forEach(radio => {
-        radio.addEventListener('change', function() {
-            const font = this.value;
-            document.cookie = `themeFont=${encodeURIComponent(font)};path=/;max-age=31536000`;
             
-            // Sayfa yenilemeden yazı tipini değiştir
-            document.documentElement.style.setProperty('--tblr-font-family', font);
-            document.body.style.fontFamily = font;
-        });
-    });
-
-    // Köşe yuvarlaklığı değiştirme
-    const radiusRadios = document.querySelectorAll('input[name="theme-radius"]');
-    radiusRadios.forEach(radio => {
-        radio.addEventListener('change', function() {
-            const radius = this.value;
-            document.cookie = `themeRadius=${radius};path=/;max-age=31536000`;
-            
-            // Sayfa yenilemeden köşe yuvarlaklığını değiştir
-            document.documentElement.style.setProperty('--tblr-border-radius', radius);
-            
-            // Seçilen köşe yuvarlaklığının tik işaretini göster, diğerlerini gizle
-            radiusRadios.forEach(r => {
-                const checkIcon = r.parentElement.querySelector('div:last-child');
-                if (checkIcon) {
+            // Radyo butonlarının görsel durumlarını güncelle
+            baseRadios.forEach(r => {
+                const parent = r.closest('.form-imagecheck');
+                if (parent) {
                     if (r.checked) {
-                        checkIcon.classList.remove('d-none');
+                        parent.classList.add('active');
                     } else {
-                        checkIcon.classList.add('d-none');
+                        parent.classList.remove('active');
                     }
                 }
             });
@@ -131,6 +163,18 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 document.body.classList.remove('table-compact');
             }
+            
+            // Radyo butonlarının görsel durumlarını güncelle
+            tableCompactRadios.forEach(r => {
+                const parent = r.closest('.form-imagecheck');
+                if (parent) {
+                    if (r.checked) {
+                        parent.classList.add('active');
+                    } else {
+                        parent.classList.remove('active');
+                    }
+                }
+            });
         });
     });
 
@@ -174,14 +218,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Radio butonları güncelle
                 const darkRadio = document.querySelector('input[name="theme"][value="dark"]');
                 if (darkRadio) darkRadio.checked = true;
-                
-                // Tik işaretlerini güncelle
-                document.querySelectorAll('.theme-check').forEach(check => {
-                    check.classList.add('d-none');
-                });
-                if (darkRadio && darkRadio.parentElement.querySelector('.theme-check')) {
-                    darkRadio.parentElement.querySelector('.theme-check').classList.remove('d-none');
-                }
             } else {
                 body.setAttribute('data-bs-theme', 'light');
                 body.classList.remove('dark');
@@ -190,15 +226,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Radio butonları güncelle
                 const lightRadio = document.querySelector('input[name="theme"][value="light"]');
                 if (lightRadio) lightRadio.checked = true;
-                
-                // Tik işaretlerini güncelle
-                document.querySelectorAll('.theme-check').forEach(check => {
-                    check.classList.add('d-none');
-                });
-                if (lightRadio && lightRadio.parentElement.querySelector('.theme-check')) {
-                    lightRadio.parentElement.querySelector('.theme-check').classList.remove('d-none');
-                }
             }
+            
+            // Tema radyo butonlarının görsellerini güncelle
+            themeRadios.forEach(r => {
+                const parent = r.closest('.form-selectgroup-item');
+                if (parent) {
+                    if (r.checked) {
+                        parent.classList.add('active');
+                    } else {
+                        parent.classList.remove('active');
+                    }
+                }
+            });
         });
     }
 
@@ -272,5 +312,20 @@ document.addEventListener('DOMContentLoaded', function() {
     // Sistem temasını dinle
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
         applySystemTheme();
+    });
+    
+    // Sayfa ilk yüklendiğinde, radyo butonlarının görsel durumlarını ayarla
+    document.querySelectorAll('.form-selectgroup-item input:checked').forEach(radio => {
+        const parent = radio.closest('.form-selectgroup-item');
+        if (parent) {
+            parent.classList.add('active');
+        }
+    });
+    
+    document.querySelectorAll('.form-imagecheck input:checked').forEach(radio => {
+        const parent = radio.closest('.form-imagecheck');
+        if (parent) {
+            parent.classList.add('active');
+        }
     });
 });

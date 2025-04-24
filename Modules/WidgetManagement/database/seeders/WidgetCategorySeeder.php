@@ -1,11 +1,10 @@
 <?php
+
 namespace Modules\WidgetManagement\database\seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\WidgetManagement\app\Models\WidgetCategory;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 
@@ -34,7 +33,7 @@ class WidgetCategorySeeder extends Seeder
         }
 
         try {
-            // Ana kategorileri önce oluştur
+            // Ana kategorileri oluştur
             $this->createMainCategories();
             
             // Tüm tabloyu yenile - veritabanından en güncel bilgileri al
@@ -59,62 +58,71 @@ class WidgetCategorySeeder extends Seeder
     
     private function createMainCategories(): void
     {
-        // Önceden tanımlanmış ana kategoriler
+        // Ana kategoriler
         $predefinedCategories = [
-            'kart-bilesenleri' => [
-                'title' => 'Kartlar',
-                'description' => 'Kart tipi bileşenler için şablonlar',
-                'icon' => 'fa-th-large'
-            ],
-            'icerik-bilesenleri' => [
-                'title' => 'İçerikler',
-                'description' => 'Metin ve içerik türleri için şablonlar',
-                'icon' => 'fa-file-alt'
-            ],
-            'ozellik-bilesenleri' => [
-                'title' => 'Özellikler',
-                'description' => 'Özellik listeleme bileşenleri',
-                'icon' => 'fa-list'
-            ],
-            'form-bilesenleri' => [
-                'title' => 'Formlar',
-                'description' => 'Form ve giriş elemanları',
-                'icon' => 'fa-wpforms'
-            ],
-            'hero-bilesenleri' => [
-                'title' => 'Herolar',
-                'description' => 'Ana başlık ve tanıtım bileşenleri',
-                'icon' => 'fa-heading'
-            ],
-            'yerlesim-bilesenleri' => [
-                'title' => 'Yerleşimler',
-                'description' => 'Sayfa düzeni ve yerleşim şablonları',
-                'icon' => 'fa-columns'
-            ],
-            'medya-bilesenleri' => [
-                'title' => 'Medya',
-                'description' => 'Görsel, video ve diğer medya elemanları',
-                'icon' => 'fa-photo-video'
-            ],
-            'referans-bilesenleri' => [
-                'title' => 'Referanslar',
-                'description' => 'Müşteri yorumları ve referanslar',
-                'icon' => 'fa-comment-dots'
-            ],
-            'slider-bilesenleri' => [
-                'title' => 'Sliderlar',
-                'description' => 'Slider ve carousel içeren bileşenler',
-                'icon' => 'fa-sliders-h'
-            ],
             'modul-bilesenleri' => [
                 'title' => 'Modül Bileşenleri',
                 'description' => 'Sistem modüllerine ait bileşenler',
                 'icon' => 'fa-cubes',
+                'order' => 1,
                 'has_subcategories' => true
+            ],
+            'kartlar' => [
+                'title' => 'Kartlar',
+                'description' => 'Kart tipi bileşenler için şablonlar',
+                'icon' => 'fa-th-large',
+                'order' => 2
+            ],
+            'icerikler' => [
+                'title' => 'İçerikler',
+                'description' => 'Metin ve içerik türleri için şablonlar',
+                'icon' => 'fa-file-alt',
+                'order' => 3
+            ],
+            'ozellikler' => [
+                'title' => 'Özellikler',
+                'description' => 'Özellik listeleme bileşenleri',
+                'icon' => 'fa-list',
+                'order' => 4
+            ],
+            'formlar' => [
+                'title' => 'Formlar',
+                'description' => 'Form ve giriş elemanları',
+                'icon' => 'fa-wpforms',
+                'order' => 5
+            ],
+            'herolar' => [
+                'title' => 'Herolar',
+                'description' => 'Ana başlık ve tanıtım bileşenleri',
+                'icon' => 'fa-heading',
+                'order' => 6
+            ],
+            'yerlesimler' => [
+                'title' => 'Yerleşimler',
+                'description' => 'Sayfa düzeni ve yerleşim şablonları',
+                'icon' => 'fa-columns',
+                'order' => 7
+            ],
+            'medya' => [
+                'title' => 'Medya',
+                'description' => 'Görsel, video ve diğer medya elemanları',
+                'icon' => 'fa-photo-video',
+                'order' => 8
+            ],
+            'referanslar' => [
+                'title' => 'Referanslar',
+                'description' => 'Müşteri yorumları ve referanslar',
+                'icon' => 'fa-comment-dots',
+                'order' => 9
+            ],
+            'sliderlar' => [
+                'title' => 'Sliderlar',
+                'description' => 'Slider ve carousel içeren bileşenler',
+                'icon' => 'fa-sliders-h',
+                'order' => 10
             ]
         ];
         
-        $order = 1;
         foreach ($predefinedCategories as $slug => $category) {
             try {
                 // Önce mevcut kategoriyi kontrol et
@@ -125,16 +133,17 @@ class WidgetCategorySeeder extends Seeder
                         'title' => $category['title'],
                         'slug' => $slug,
                         'description' => $category['description'],
-                        'order' => $order,
+                        'order' => $category['order'],
                         'is_active' => true,
                         'icon' => $category['icon'],
                         'parent_id' => null,
                         'has_subcategories' => $category['has_subcategories'] ?? false
                     ]);
+                    
+                    Log::info("Kategori oluşturuldu: {$category['title']} (slug: $slug)");
+                } else {
+                    Log::info("Kategori zaten mevcut: {$category['title']} (slug: $slug)");
                 }
-                
-                Log::info("Kategori oluşturuldu veya güncellendi: {$category['title']} (slug: $slug)");
-                $order++;
             } catch (\Exception $e) {
                 Log::error("Kategori oluşturma hatası (slug: $slug): " . $e->getMessage());
             }
@@ -144,45 +153,10 @@ class WidgetCategorySeeder extends Seeder
     private function createModuleSubcategories(): void
     {
         // Modüller ana kategorisini bul
-        $modulesCategory = DB::table('widget_categories')
-            ->where('slug', 'modul-bilesenleri')
-            ->first();
+        $modulesCategory = WidgetCategory::where('slug', 'modul-bilesenleri')->first();
         
         if (!$modulesCategory) {
-            Log::warning('Modül ana kategorisi bulunamadı, alt kategoriler oluşturulamıyor... Doğrudan SQL ile bakılıyor.');
-            
-            // Direkt SQL ile kontrol et
-            $result = DB::select('SELECT * FROM widget_categories WHERE slug = ?', ['modul-bilesenleri']);
-            
-            if (empty($result)) {
-                if ($this->command) {
-                    $this->command->info('Modül ana kategorisi SQL ile de bulunamadı, şimdi oluşturulacak...');
-                }
-                
-                // Modüller ana kategorisini doğrudan oluştur
-                $moduleCategoryId = DB::table('widget_categories')->insertGetId([
-                    'title' => 'Modül Bileşenleri',
-                    'slug' => 'modul-bilesenleri', 
-                    'description' => 'Sistem modüllerine ait bileşenler',
-                    'icon' => 'fa-cubes',
-                    'order' => 99,
-                    'is_active' => true,
-                    'parent_id' => null,
-                    'has_subcategories' => true,
-                    'created_at' => now(),
-                    'updated_at' => now()
-                ]);
-                
-                Log::info('Modül ana kategorisi manuel olarak oluşturuldu. ID: ' . $moduleCategoryId);
-                $modulesCategory = (object) ['widget_category_id' => $moduleCategoryId];
-            } else {
-                $modulesCategory = $result[0];
-                Log::info('Modül kategorisi SQL ile bulundu. ID: ' . $modulesCategory->widget_category_id);
-            }
-        }
-        
-        if (!$modulesCategory) {
-            Log::error('Modül kategorisi oluşturulamadı, işlem durduruluyor...');
+            Log::warning('Modül ana kategorisi bulunamadı, alt kategoriler oluşturulamıyor...');
             return;
         }
         

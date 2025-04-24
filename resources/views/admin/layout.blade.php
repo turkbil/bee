@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="{{ asset('admin/css/plugins.css') }}?v={{ filemtime(public_path('admin/css/plugins.css')) }}" />
     <link rel="stylesheet" href="{{ asset('admin/libs/fontawesome-pro@6.7.1/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ asset('admin/css/main.css') }}?v={{ filemtime(public_path('admin/css/main.css')) }}" />
+    <link rel="stylesheet" href="{{ asset('admin/css/theme-builder.css') }}?v={{ filemtime(public_path('admin/css/theme-builder.css')) }}" />
     <link rel="stylesheet" href="{{ asset('admin/css/responsive.css') }}?v={{ filemtime(public_path('admin/css/responsive.css')) }}" />
     @stack('styles') @stack('css')
     <style>

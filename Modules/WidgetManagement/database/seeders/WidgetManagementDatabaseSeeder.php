@@ -6,6 +6,8 @@ use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class WidgetManagementDatabaseSeeder extends Seeder
 {
@@ -25,13 +27,13 @@ class WidgetManagementDatabaseSeeder extends Seeder
             $currentConnection = Config::get('database.default');
             Log::info('Mevcut veritabanı bağlantısı: ' . $currentConnection);
             
-            // Seeder'ları çalıştır
+            // Seeder'ları çalıştır - dikkat edilmesi gereken sıralama önemli!
             $this->call([
-                WidgetCategorySeeder::class,
-                ModuleWidgetSeeder::class,
-                BlockWidgetSeeder::class,
-                SliderWidgetSeeder::class,
-                HeroWidgetSeeder::class
+                WidgetCategorySeeder::class, // İlk önce kategorileri oluştur
+                ModuleWidgetSeeder::class,   // Sonra modül bileşenlerini oluştur
+                BlockWidgetSeeder::class,    // Sonra blok bileşenlerini oluştur
+                SliderWidgetSeeder::class,   // Sonra slider bileşenlerini oluştur
+                HeroWidgetSeeder::class      // En son hero bileşenlerini oluştur
             ]);
             
             Log::info('WidgetManagementDatabaseSeeder başarıyla tamamlandı.');

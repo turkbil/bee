@@ -5,12 +5,7 @@
             <form class="sticky-top" style="top: 20px;">
                 <div class="card">
                     <div class="card-body">
-                        <div class="d-flex justify-content-between mb-3">
-                            <div>
-                                <h3 class="card-title">Kategoriler</h3>
-                            </div>
-                        </div>
-                        
+
                         <div class="mb-3">
                             <div class="input-icon">
                                 <span class="input-icon-addon">
@@ -22,15 +17,9 @@
                         </div>
                         
                         <!-- Ana Kategoriler -->
-                        <div class="form-label">Ana Kategoriler</div>
                         <div class="mb-4">
                             <div class="list-group list-group-transparent mb-3">
-                                <a class="list-group-item list-group-item-action d-flex align-items-center {{ $parentCategoryFilter == '' ? 'active' : '' }}" 
-                                wire:click.prevent="$set('parentCategoryFilter', '')" href="#">
-                                 Tüm Kategoriler
-                                 <small class="text-secondary ms-auto">{{ $widgets->total() }}</small>
-                                </a>
-                             
+
                              @foreach($parentCategories as $category)
                              <a class="list-group-item list-group-item-action d-flex align-items-center {{ $parentCategoryFilter == $category->widget_category_id ? 'active' : '' }}" 
                                 wire:click.prevent="$set('parentCategoryFilter', '{{ $category->widget_category_id }}')" href="#">
@@ -76,37 +65,13 @@
                         <div class="form-label">Sayfa Başına</div>
                         <div class="mb-4">
                             <select wire:model.live="perPage" class="form-select">
-                                <option value="12">12 Bileşen</option>
-                                <option value="24">24 Bileşen</option>
-                                <option value="48">48 Bileşen</option>
-                                <option value="96">96 Bileşen</option>
+                                <option value="100">100 Bileşen</option>
+                                <option value="200">200 Bileşen</option>
+                                <option value="500">500 Bileşen</option>
+                                <option value="1000">1000 Bileşen</option>
                             </select>
                         </div>
-                        
-                        <div class="mt-4">
-                            <div class="d-flex gap-2">
-                                <a href="{{ route('admin.widgetmanagement.index') }}" class="btn btn-outline-secondary w-100 {{ request()->routeIs('admin.widgetmanagement.index') ? 'active' : '' }}">
-                                    <i class="fas fa-th-list me-1"></i> Aktif Bileşenler
-                                </a>
-                            </div>
-                            <div class="d-flex gap-2 mt-2">
-                                <a href="{{ route('admin.widgetmanagement.gallery') }}" class="btn btn-outline-secondary w-100 {{ request()->routeIs('admin.widgetmanagement.gallery') ? 'active' : '' }}">
-                                    <i class="fas fa-th-large me-1"></i> Bileşen Galerisi
-                                </a>
-                            </div>
-                            @if(auth()->user()->hasRole('root'))
-                            <div class="d-flex gap-2 mt-2">
-                                <a href="{{ route('admin.widgetmanagement.modules') }}" class="btn btn-outline-primary w-100 {{ request()->routeIs('admin.widgetmanagement.modules') ? 'active' : '' }}">
-                                    <i class="fas fa-puzzle-piece me-1"></i> Modül Bileşenleri
-                                </a>
-                            </div>
-                            <div class="d-flex gap-2 mt-2">
-                                <a href="{{ route('admin.widgetmanagement.files') }}" class="btn btn-outline-secondary w-100 {{ request()->routeIs('admin.widgetmanagement.files') ? 'active' : '' }}">
-                                    <i class="fas fa-file-code me-1"></i> Hazır Dosyalar
-                                </a>
-                            </div>
-                            @endif
-                        </div>
+
                     </div>
                 </div>
             </form>

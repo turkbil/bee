@@ -175,8 +175,8 @@ class WidgetGalleryComponent extends Component
                 $cq->where('widget_category_id', '!=', 1); // Modül bileşenleri kategorisini (1 nolu) hariç tut
             })
             ->when($this->search, function ($q) {
-                $q->where('name', 'like', "%{$this->search}%")
-                  ->orWhere('description', 'like', "%{$this->search}%");
+                $q->where('widgets.name', 'like', "%{$this->search}%")
+                  ->orWhere('widgets.description', 'like', "%{$this->search}%");
             })
             ->when($this->typeFilter, function ($q) {
                 $q->where('type', $this->typeFilter);

@@ -59,11 +59,6 @@
                 <h3 class="card-title">Aktif Bileşenler</h3>
                 <p class="text-muted">Kullanmakta olduğunuz bileşenleri yönetin</p>
             </div>
-            <div>
-                <a href="{{ route('admin.widgetmanagement.gallery') }}" class="btn btn-outline-primary">
-                    <i class="fas fa-th-large me-2"></i> Bileşen Galerisi
-                </a>
-            </div>
         </div>
         
         <!-- Ana Kategori Filtresi -->

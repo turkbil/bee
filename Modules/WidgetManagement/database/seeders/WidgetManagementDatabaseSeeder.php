@@ -28,8 +28,10 @@ class WidgetManagementDatabaseSeeder extends Seeder
             // Seeder'ları çalıştır
             $this->call([
                 WidgetCategorySeeder::class,
-                FileWidgetSeeder::class,
-                SliderWidgetSeeder::class
+                ModuleWidgetSeeder::class,
+                BlockWidgetSeeder::class,
+                SliderWidgetSeeder::class,
+                HeroWidgetSeeder::class
             ]);
             
             Log::info('WidgetManagementDatabaseSeeder başarıyla tamamlandı.');

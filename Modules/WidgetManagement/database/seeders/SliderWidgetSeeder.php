@@ -28,23 +28,24 @@ class SliderWidgetSeeder extends Seeder
             return;
         }
 
-        // Seeder'ın daha önce çalıştırılıp çalıştırılmadığını kontrol et
-        $cacheKey = self::$runKey . '_' . Config::get('database.default');
-        if (Cache::has($cacheKey)) {
-            Log::info('SliderWidgetSeeder zaten çalıştırılmış, atlanıyor...');
-            return;
-        }
-
         Log::info('SliderWidgetSeeder merkezi veritabanında çalışıyor...');
 
         try {
+            // Önce mevcut slider widget'ını temizle
+            $existingWidget = Widget::where('slug', 'dinamik-slider')->first();
+            if ($existingWidget) {
+                $existingWidget->delete();
+                Log::info('Mevcut Dinamik Slider widget\'\u0131 silindi.');
+            }
+            
             // Slider bileşeni oluştur
             $this->createSliderWidget();
 
             Log::info('Slider bileşeni başarıyla oluşturuldu.');
 
-            // Seeder'ın çalıştırıldığını işaretle (10 dakika süreyle cache'de tut)
-            Cache::put($cacheKey, true, 600);
+            if ($this->command) {
+                $this->command->info('Slider bileşeni başarıyla oluşturuldu.');
+            }
         } catch (\Exception $e) {
             Log::error('SliderWidgetSeeder hatası: ' . $e->getMessage());
             Log::error($e->getTraceAsString());
@@ -60,10 +61,14 @@ class SliderWidgetSeeder extends Seeder
         // Slider kategorisini bul, yoksa oluştur
         $sliderCategory = WidgetCategory::where('slug', 'sliderlar')->first();
         
+        // Eğer slider kategorisi yoksa, önce 'Media' kategorisini kontrol et
         if (!$sliderCategory) {
-            Log::warning('Slider kategorisi bulunamadı, oluşturuluyor...');
+            $mediaCategory = WidgetCategory::where('slug', 'media')->first();
             
-            try {
+            if ($mediaCategory) {
+                Log::info('Media kategorisi bulundu, slider bu kategori altına eklenecek.');
+                
+                // Slider alt kategorisini oluştur
                 $sliderCategory = WidgetCategory::create([
                     'title' => 'Sliderlar',
                     'slug' => 'sliderlar',
@@ -71,19 +76,37 @@ class SliderWidgetSeeder extends Seeder
                     'icon' => 'fa-images',
                     'order' => 10,
                     'is_active' => true,
-                    'parent_id' => null,
+                    'parent_id' => $mediaCategory->widget_category_id,
                     'has_subcategories' => false
                 ]);
                 
-                Log::info("Slider kategorisi oluşturuldu: Sliderlar (slug: sliderlar)");
-            } catch (\Exception $e) {
-                Log::error("Slider kategorisi oluşturulamadı. Hata: " . $e->getMessage());
-                return;
-            }
-            
-            if (!$sliderCategory) {
-                Log::error("Slider kategorisi oluşturulamadı.");
-                return;
+                Log::info("Slider alt kategorisi oluşturuldu: Sliderlar (slug: sliderlar)");
+            } else {
+                // Media kategorisi yoksa, ana kategori olarak oluştur
+                Log::warning('Slider kategorisi bulunamadı, oluşturuluyor...');
+                
+                try {
+                    $sliderCategory = WidgetCategory::create([
+                        'title' => 'Sliderlar',
+                        'slug' => 'sliderlar',
+                        'description' => 'Slider ve carousel bileşenleri',
+                        'icon' => 'fa-images',
+                        'order' => 10,
+                        'is_active' => true,
+                        'parent_id' => null,
+                        'has_subcategories' => false
+                    ]);
+                    
+                    Log::info("Slider kategorisi oluşturuldu: Sliderlar (slug: sliderlar)");
+                } catch (\Exception $e) {
+                    Log::error("Slider kategorisi oluşturulamadı. Hata: " . $e->getMessage());
+                    return;
+                }
+                
+                if (!$sliderCategory) {
+                    Log::error("Slider kategorisi oluşturulamadı.");
+                    return;
+                }
             }
         }
         

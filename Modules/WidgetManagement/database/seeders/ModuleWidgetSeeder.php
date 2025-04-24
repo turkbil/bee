@@ -26,52 +26,47 @@ class ModuleWidgetSeeder extends Seeder
             return;
         }
         
-        // Seeder'ın daha önce çalıştırılıp çalıştırılmadığını kontrol et
+        // Cache'i temizle ve her zaman çalıştır
         $cacheKey = self::$runKey . '_' . Config::get('database.default');
-        if (Cache::has($cacheKey)) {
-            Log::info('ModuleWidgetSeeder zaten çalıştırılmış, atlanıyor...');
-            return;
-        }
+        Cache::forget($cacheKey);
+        Log::info('ModuleWidgetSeeder cache temizlendi: ' . $cacheKey);
         
         Log::info('ModuleWidgetSeeder merkezi veritabanında çalışıyor...');
         
         try {
-            // Ana modul kategorisi - önce kontrol et, yoksa oluştur
-            $mainModuleCategory = WidgetCategory::where('slug', 'modul-bilesenleri')->first();
+            // Önce tüm olası slug değerlerini kontrol et
+            $mainModuleCategory = WidgetCategory::where('slug', 'modul-bilesenleri')->orWhere('slug', 'moduel-bilesenleri')->first();
             
             if (!$mainModuleCategory) {
-                // Kategori bulunamazsa, veritabanı işlemlerinin tamamlanması için kısa bir bekleme ekleyelim
-                Log::warning("Ana modül kategorisi (modul-bilesenleri) bulunamadı, oluşturuluyor...");
-                sleep(1); // 1 saniye bekle
+                Log::warning("Ana modül kategorisi bulunamadı, oluşturuluyor...");
                 
-                // Tekrar deneyelim
-                $mainModuleCategory = WidgetCategory::where('slug', 'modul-bilesenleri')->first();
-                
-                if (!$mainModuleCategory) {
-                    // Kategori oluştur
-                    try {
-                        $mainModuleCategory = WidgetCategory::create([
-                            'title' => 'Modül Bileşenleri',
-                            'slug' => 'modul-bilesenleri',
-                            'description' => 'Sistem modüllerine ait bileşenler',
-                            'icon' => 'fa-cubes',
-                            'order' => 1,
-                            'is_active' => true,
-                            'parent_id' => null,
-                            'has_subcategories' => true
-                        ]);
-                        
-                        Log::info("Ana modül kategorisi oluşturuldu: Modül Bileşenleri (slug: modul-bilesenleri)");
-                    } catch (\Exception $e) {
-                        Log::error("Ana modül kategorisi (modul-bilesenleri) oluşturulamadı. Hata: " . $e->getMessage());
-                        return;
+                try {
+                    // Önce yeni bir kategori nesnesi oluştur
+                    $mainModuleCategory = new WidgetCategory([
+                        'title' => 'Modül Bileşenleri',
+                        'slug' => 'modul-bilesenleri',
+                        'description' => 'Sistem modüllerine ait bileşenler',
+                        'icon' => 'fa-cubes',
+                        'order' => 1,
+                        'is_active' => true,
+                        'parent_id' => null
+                    ]);
+                    
+                    // Kaydet
+                    $mainModuleCategory->save();
+                    
+                    // Kategori ID'sini doğrula
+                    if (!$mainModuleCategory->widget_category_id) {
+                        throw new \Exception("Kategori ID oluşturulamadı");
                     }
-                }
-                
-                if (!$mainModuleCategory) {
-                    Log::error("Ana modül kategorisi (modul-bilesenleri) bulunamadı ve oluşturulamadı, widget oluşturulamıyor.");
+                    
+                    Log::info("Ana modül kategorisi oluşturuldu: Modül Bileşenleri (slug: {$mainModuleCategory->slug}) (ID: {$mainModuleCategory->widget_category_id})");
+                } catch (\Exception $e) {
+                    Log::error("Ana modül kategorisi oluşturulamadı. Hata: " . $e->getMessage());
                     return;
                 }
+            } else {
+                Log::info("Ana modül kategorisi bulundu: {$mainModuleCategory->title} (slug: {$mainModuleCategory->slug}) (ID: {$mainModuleCategory->widget_category_id})");
             }
             
             // Modül kategorilerini oluştur
@@ -93,46 +88,72 @@ class ModuleWidgetSeeder extends Seeder
     
     private function createModuleWidgets($mainModuleCategory)
     {
+        // Önce tüm mevcut modül kategorilerini temizle
+        try {
+            $existingCategories = WidgetCategory::where('parent_id', $mainModuleCategory->widget_category_id)->get();
+            
+            if ($existingCategories->count() > 0) {
+                Log::info("Mevcut {$existingCategories->count()} modül kategorisi temizleniyor...");
+                
+                foreach ($existingCategories as $category) {
+                    // Bu kategoriye ait widget'ları sil
+                    $widgets = Widget::where('widget_category_id', $category->widget_category_id)->get();
+                    
+                    foreach ($widgets as $widget) {
+                        $widget->delete();
+                    }
+                    
+                    // Kategoriyi sil
+                    $category->delete();
+                    Log::info("Kategori silindi: {$category->title} (ID: {$category->widget_category_id})");
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Mevcut kategoriler temizlenirken hata oluştu: " . $e->getMessage());
+        }
+        
         // Modül dizini
         $moduleBasePath = base_path('Modules/WidgetManagement/resources/views/blocks/modules');
         
         // Modül dizini varsa
         if (File::isDirectory($moduleBasePath)) {
             $moduleFolders = File::directories($moduleBasePath);
+            $processedModules = [];
             
             foreach ($moduleFolders as $moduleFolder) {
                 $moduleName = basename($moduleFolder);
+                
+                // Aynı modülü birden fazla işlemeyi önle
+                if (in_array($moduleName, $processedModules)) {
+                    Log::warning("Modül '{$moduleName}' zaten işlendi, atlanıyor.");
+                    continue;
+                }
+                
+                $processedModules[] = $moduleName;
                 $moduleSlug = Str::slug($moduleName) . '-modulu';
                 
-                // Modül kategorisini bul - yoksa oluştur
-                $moduleCategory = WidgetCategory::where('slug', $moduleSlug)->first();
-                
-                if (!$moduleCategory) {
-                    Log::warning("Modül kategorisi bulunamadı: $moduleSlug, yeni kategori oluşturuluyor...");
+                // Modül kategorisini oluştur
+                try {
+                    $moduleCategory = new WidgetCategory([
+                        'title' => ucfirst($moduleName) . ' Modülü',
+                        'slug' => $moduleSlug,
+                        'description' => ucfirst($moduleName) . ' modülüne ait bileşenler',
+                        'icon' => 'fa-puzzle-piece',
+                        'order' => 999,
+                        'is_active' => true,
+                        'parent_id' => $mainModuleCategory->widget_category_id
+                    ]);
                     
-                    // Yeni modül kategorisi oluştur
-                    try {
-                        $moduleCategory = WidgetCategory::create([
-                            'title' => ucfirst($moduleName) . ' Modülü',
-                            'slug' => $moduleSlug,
-                            'description' => ucfirst($moduleName) . ' modülüne ait bileşenler',
-                            'icon' => 'fa-puzzle-piece',
-                            'order' => 999,
-                            'is_active' => true,
-                            'parent_id' => $mainModuleCategory->widget_category_id,
-                            'has_subcategories' => false
-                        ]);
-                        
-                        Log::info("Yeni modül kategorisi oluşturuldu: {$moduleCategory->title}");
-                    } catch (\Exception $e) {
-                        Log::error("Modül kategorisi oluşturulamadı: $moduleSlug. Hata: " . $e->getMessage());
-                        continue;
+                    $moduleCategory->save();
+                    
+                    if (!$moduleCategory->widget_category_id) {
+                        throw new \Exception("Kategori ID oluşturulamadı");
                     }
                     
-                    if (!$moduleCategory) {
-                        Log::error("Modül kategorisi oluşturulamadı: $moduleSlug");
-                        continue;
-                    }
+                    Log::info("Yeni modül kategorisi oluşturuldu: {$moduleCategory->title} (ID: {$moduleCategory->widget_category_id})");
+                } catch (\Exception $e) {
+                    Log::error("Modül kategorisi oluşturulamadı: $moduleSlug. Hata: " . $e->getMessage());
+                    continue;
                 }
                 
                 // Bu modüle ait widget dizinleri

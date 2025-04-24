@@ -28,7 +28,7 @@ class ModuleWidgetListComponent extends Component
     public $parentCategoryFilter = '';
     
     #[Url]
-    public $perPage = 12;
+    public $perPage = 100;
     
     public function updatedSearch()
     {
@@ -48,22 +48,37 @@ class ModuleWidgetListComponent extends Component
     
     public function render()
     {
+        // Module tipindeki widgetları getir (sayılar için)
+        $moduleWidgetsQuery = Widget::where('type', 'module')->where('is_active', true);
+        
         // Ana kategorileri getir
         $parentCategories = WidgetCategory::whereNull('parent_id')
             ->where('is_active', true)
-            ->withCount(['widgets' => function($query) {
-                $query->where('type', 'module');
+            ->withCount(['widgets' => function($query) use ($moduleWidgetsQuery) {
+                $query->whereIn('id', $moduleWidgetsQuery->pluck('id'));
             }, 'children'])
             ->orderBy('order')
             ->get();
+        
+        // Her ana kategori için toplam widget sayısını hesapla
+        $parentCategories->each(function($category) use ($moduleWidgetsQuery) {
+            // Alt kategorilerdeki widget sayısı
+            $childCategoryIds = $category->children->pluck('widget_category_id');
+            $childWidgetsCount = Widget::whereIn('widget_category_id', $childCategoryIds)
+                ->whereIn('id', $moduleWidgetsQuery->pluck('id'))
+                ->count();
+            
+            // Ana kategorideki widget sayısı + alt kategorilerdeki widget sayısı
+            $category->total_widgets_count = $category->widgets_count + $childWidgetsCount;
+        });
         
         // Eğer bir ana kategori seçilmişse, o kategorinin alt kategorilerini getir
         $childCategories = collect([]);
         if ($this->parentCategoryFilter) {
             $childCategories = WidgetCategory::where('parent_id', $this->parentCategoryFilter)
                 ->where('is_active', true)
-                ->withCount(['widgets' => function($query) {
-                    $query->where('type', 'module');
+                ->withCount(['widgets' => function($query) use ($moduleWidgetsQuery) {
+                    $query->whereIn('id', $moduleWidgetsQuery->pluck('id'));
                 }])
                 ->orderBy('order')
                 ->get();

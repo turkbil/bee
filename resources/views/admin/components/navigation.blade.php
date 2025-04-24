@@ -39,7 +39,7 @@
 @endphp
 
 <header class="navbar navbar-expand-md d-print-none">
-    <div class="container-xl">
+    <div class="container">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -120,25 +120,19 @@
                         <a class="nav-link dropdown-toggle" href="#navbar-content" data-bs-toggle="dropdown"
                             data-bs-auto-close="outside" role="button" aria-expanded="false">
                             <span class="nav-link-icon d-md-none d-lg-inline-block">
-                                <i class="fa-solid fa-user-graduate"></i>
+                                <i class="fa-solid fa-file-lines"></i>
                             </span>
                             <span class="nav-link-title">İçerik</span>
                         </a>
                         <div class="dropdown-menu">
                             <div class="dropdown-menu-columns">
-                                @php
-                                $contentModules = $groupedModules['content'];
-                                $contentChunks = $contentModules->chunk(ceil($contentModules->count() / 2));
-                                @endphp
-                                @foreach($contentChunks as $chunk)
                                 <div class="dropdown-menu-column">
-                                    @foreach($chunk as $module)
+                                    @foreach($groupedModules['content'] as $module)
                                     <a class="dropdown-item" href="{{ route('admin.' . strtolower($module->name) . '.index') }}">
                                         {{ $module->display_name }}
                                     </a>
                                     @endforeach
                                 </div>
-                                @endforeach
                             </div>
                         </div>
                     </li>
@@ -149,7 +143,7 @@
                         <a class="nav-link dropdown-toggle" href="#navbar-widget" data-bs-toggle="dropdown"
                             data-bs-auto-close="outside" role="button" aria-expanded="false">
                             <span class="nav-link-icon d-md-none d-lg-inline-block">
-                                <i class="fa-solid fa-user-chef"></i>
+                                <i class="fa-solid fa-puzzle-piece"></i>
                             </span>
                             <span class="nav-link-title">Bileşenler</span>
                         </a>
@@ -168,7 +162,7 @@
                         <a class="nav-link dropdown-toggle" href="#navbar-management" data-bs-toggle="dropdown"
                             data-bs-auto-close="outside" role="button" aria-expanded="false">
                             <span class="nav-link-icon d-md-none d-lg-inline-block">
-                                <i class="fa-solid fa-user-police-tie"></i>
+                                <i class="fa-solid fa-cog"></i>
                             </span>
                             <span class="nav-link-title">Yönetim</span>
                         </a>
@@ -187,7 +181,7 @@
                         <a class="nav-link dropdown-toggle" href="#navbar-system" data-bs-toggle="dropdown" data-bs-auto-close="outside"
                             role="button" aria-expanded="false">
                             <span class="nav-link-icon d-md-none d-lg-inline-block">
-                                <i class="fa-solid fa-user-doctor"></i>
+                                <i class="fa-solid fa-server"></i>
                             </span>
                             <span class="nav-link-title">Sistem</span>
                         </a>

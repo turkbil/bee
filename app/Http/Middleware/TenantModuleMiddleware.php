@@ -41,13 +41,13 @@ class ModulePermissionMiddleware
             
             if (!$module) {
                 Log::error("ModulePermissionMiddleware: Module not found: {$moduleName}");
-                abort(403, 'Erişim reddedildi.');
+                return redirect()->route('errors.403');
             }
             
             $isModuleAssigned = $moduleService->isModuleAssignedToTenant($module->module_id, tenant()->id);
             if (!$isModuleAssigned) {
                 Log::warning("Kullanıcı {$user->id} ({$user->email}) tenant'a atanmamış modüle erişmeye çalışıyor: {$moduleName}");
-                abort(403, 'Erişim reddedildi.');
+                return redirect()->route('errors.403');
             }
         }
         
@@ -57,7 +57,7 @@ class ModulePermissionMiddleware
         
         if (!$permissionExists) {
             Log::error("Permission not found: {$permissionName}");
-            abort(403, 'Erişim reddedildi.');
+            return redirect()->route('errors.403');
         }
         
         // Log - hangi kullanıcı, hangi modül, hangi izin tipi
@@ -77,7 +77,7 @@ class ModulePermissionMiddleware
                 // Central'da ise, admin'in erişemeyeceği modülleri kontrol et
                 if (in_array($moduleName, config('module-permissions.admin_restricted_modules', []))) {
                     Log::warning("Admin {$user->id} ({$user->email}) kısıtlı modüle erişmeye çalışıyor: {$moduleName}");
-                    abort(403, 'Erişim reddedildi.');
+                    return redirect()->route('errors.403');
                 }
             }
             
@@ -87,7 +87,7 @@ class ModulePermissionMiddleware
         // Editor veya diğer roller için, önce kullanıcının modül bazlı izni var mı kontrol et
         if (!$user->hasModulePermission($moduleName, $permissionType)) {
             Log::warning("User {$user->id} ({$user->email}) doesn't have permission {$permissionType} for module {$moduleName}");
-            abort(403, 'Erişim reddedildi.');
+            return redirect()->route('errors.403');
         }
         
         // Tüm kontroller geçildi, erişime izin ver

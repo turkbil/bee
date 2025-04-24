@@ -2,8 +2,8 @@
 
 namespace Modules\WidgetManagement\resources\views\blocks\modules\portfolio;
 
-use Modules\Portfolio\app\Models\Project;
-use Modules\Portfolio\app\Models\Category;
+use Modules\Portfolio\App\Models\Portfolio;
+use Modules\Portfolio\App\Models\PortfolioCategory;
 use Illuminate\Support\Str;
 
 class PortfolioModules
@@ -18,10 +18,10 @@ class PortfolioModules
         $categoryId = $settings['category_id'] ?? null;
         
         // Veritabanından doğrudan çek, önbellek yok
-        $query = Project::where('is_active', true);
+        $query = Portfolio::where('is_active', true);
 
         if ($categoryId) {
-            $query->where('category_id', $categoryId);
+            $query->where('portfolio_category_id', $categoryId);
         }
 
         $projects = $query->orderBy('created_at', $orderDirection)
@@ -31,21 +31,21 @@ class PortfolioModules
         $result = [
             'projects' => $projects->map(function($project) {
                 return [
-                    'id' => $project->id,
+                    'id' => $project->portfolio_id,
                     'title' => $project->title,
                     'slug' => $project->slug,
-                    'description' => Str::limit(strip_tags($project->description), 150),
-                    'cover_image' => $project->cover_image,
+                    'description' => Str::limit(strip_tags($project->body), 150),
+                    'cover_image' => $project->image,
                     'category' => $project->category ? [
-                        'id' => $project->category->id,
-                        'name' => $project->category->name
+                        'id' => $project->category->portfolio_category_id,
+                        'name' => $project->category->title
                     ] : null,
                     'created_at' => $project->created_at->format('d.m.Y H:i'),
                     'url' => '/portfolio/' . $project->slug,
                 ];
             })->toArray(),
             'meta' => [
-                'total' => Project::where('is_active', true)->count(),
+                'total' => Portfolio::where('is_active', true)->count(),
                 'count' => $projects->count()
             ]
         ];
@@ -64,11 +64,11 @@ class PortfolioModules
         $project = null;
         
         if ($projectId) {
-            $project = Project::find($projectId);
+            $project = Portfolio::find($projectId);
         } elseif ($projectSlug) {
-            $project = Project::where('slug', $projectSlug)->first();
+            $project = Portfolio::where('slug', $projectSlug)->first();
         } else {
-            $project = Project::where('is_active', true)
+            $project = Portfolio::where('is_active', true)
                 ->orderBy('created_at', 'desc')
                 ->first();
         }
@@ -85,19 +85,19 @@ class PortfolioModules
         // İlişkili projeleri getir
         $relatedProjects = [];
         if ($settings['show_related'] ?? false) {
-            $relatedProjects = Project::where('is_active', true)
-                ->where('id', '!=', $project->id)
-                ->when($project->category_id, function($query) use ($project) {
-                    return $query->where('category_id', $project->category_id);
+            $relatedProjects = Portfolio::where('is_active', true)
+                ->where('portfolio_id', '!=', $project->portfolio_id)
+                ->when($project->portfolio_category_id, function($query) use ($project) {
+                    return $query->where('portfolio_category_id', $project->portfolio_category_id);
                 })
                 ->limit(3)
                 ->get()
                 ->map(function($relatedProject) {
                     return [
-                        'id' => $relatedProject->id,
+                        'id' => $relatedProject->portfolio_id,
                         'title' => $relatedProject->title,
                         'slug' => $relatedProject->slug,
-                        'cover_image' => $relatedProject->cover_image,
+                        'cover_image' => $relatedProject->image,
                         'url' => '/portfolio/' . $relatedProject->slug,
                     ];
                 })
@@ -106,16 +106,16 @@ class PortfolioModules
         
         return [
             'project' => [
-                'id' => $project->id,
+                'id' => $project->portfolio_id,
                 'title' => $project->title,
                 'slug' => $project->slug,
-                'description' => $project->description,
-                'content' => $project->content,
-                'cover_image' => $project->cover_image,
-                'gallery' => $project->gallery,
+                'description' => Str::limit(strip_tags($project->body), 150),
+                'content' => $project->body,
+                'cover_image' => $project->image,
+                'gallery' => $project->getMedia('images') ?? [],
                 'category' => $project->category ? [
-                    'id' => $project->category->id,
-                    'name' => $project->category->name
+                    'id' => $project->category->portfolio_category_id,
+                    'name' => $project->category->title
                 ] : null,
                 'created_at' => $project->created_at->format('d.m.Y H:i'),
                 'url' => '/portfolio/' . $project->slug,
@@ -132,15 +132,15 @@ class PortfolioModules
      */
     public function getCategories($settings)
     {
-        $categories = Category::where('is_active', true)
-            ->orderBy('name')
+        $categories = PortfolioCategory::where('is_active', true)
+            ->orderBy('title')
             ->get()
             ->map(function($category) {
                 return [
-                    'id' => $category->id,
-                    'name' => $category->name,
+                    'id' => $category->portfolio_category_id,
+                    'name' => $category->title,
                     'slug' => $category->slug,
-                    'project_count' => $category->projects()->where('is_active', true)->count()
+                    'project_count' => $category->portfolios()->where('is_active', true)->count()
                 ];
             })
             ->toArray();

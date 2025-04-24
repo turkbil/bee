@@ -1,5 +1,6 @@
 <?php
-use Modules\Portfolio\app\Models\Project;
+use Modules\Portfolio\App\Models\Portfolio;
+use Illuminate\Support\Str;
 
 // ID veya slug ayarlardan alınır
 $projectId = $settings['project_id'] ?? null;
@@ -9,12 +10,12 @@ $projectSlug = $settings['project_slug'] ?? null;
 $project = null;
 
 if ($projectId) {
-    $project = Project::find($projectId);
+    $project = Portfolio::find($projectId);
 } elseif ($projectSlug) {
-    $project = Project::where('slug', $projectSlug)->first();
+    $project = Portfolio::where('slug', $projectSlug)->first();
 } else {
     // Eğer belirli bir proje belirtilmemişse, en son eklenen aktif projeyi göster
-    $project = Project::where('is_active', true)
+    $project = Portfolio::where('is_active', true)
         ->orderBy('created_at', 'desc')
         ->first();
 }
@@ -33,29 +34,29 @@ if ($projectId) {
             
             @if($project->category && ($settings['show_category'] ?? true))
             <div class="project-category">
-                <span class="badge bg-primary">{{ $project->category->name }}</span>
+                <span class="badge bg-primary">{{ $project->category->title }}</span>
             </div>
             @endif
         </div>
         
-        @if($project->cover_image && ($settings['show_cover'] ?? true))
+        @if($project->image && ($settings['show_cover'] ?? true))
         <div class="project-cover mb-4">
-            <img src="{{ $project->cover_image }}" class="img-fluid rounded" alt="{{ $project->title }}">
+            <img src="{{ $project->image }}" class="img-fluid rounded" alt="{{ $project->title }}">
         </div>
         @endif
         
         <div class="project-content mb-4">
-            {!! $project->content !!}
+            {!! $project->body !!}
         </div>
         
-        @if($project->gallery && count($project->gallery) > 0 && ($settings['show_gallery'] ?? true))
+        @if(method_exists($project, 'getMedia') && $project->getMedia('images')->count() > 0 && ($settings['show_gallery'] ?? true))
         <div class="project-gallery mb-4">
             <h4>Proje Görselleri</h4>
             <div class="row g-3">
-                @foreach($project->gallery as $image)
+                @foreach($project->getMedia('images') as $image)
                 <div class="col-md-4">
-                    <a href="{{ $image }}" data-fslightbox="gallery">
-                        <img src="{{ $image }}" class="img-fluid rounded" alt="{{ $project->title }} - Görsel {{ $loop->iteration }}">
+                    <a href="{{ $image->getUrl() }}" data-fslightbox="gallery">
+                        <img src="{{ $image->getUrl() }}" class="img-fluid rounded" alt="{{ $project->title }} - Görsel {{ $loop->iteration }}">
                     </a>
                 </div>
                 @endforeach
@@ -68,10 +69,10 @@ if ($projectId) {
             <h4>Benzer Projeler</h4>
             <div class="row">
                 @php
-                $relatedProjects = Project::where('is_active', true)
-                    ->where('id', '!=', $project->id)
-                    ->when($project->category_id, function($query) use ($project) {
-                        return $query->where('category_id', $project->category_id);
+                $relatedProjects = Portfolio::where('is_active', true)
+                    ->where('portfolio_id', '!=', $project->portfolio_id)
+                    ->when($project->portfolio_category_id, function($query) use ($project) {
+                        return $query->where('portfolio_category_id', $project->portfolio_category_id);
                     })
                     ->limit(3)
                     ->get();
@@ -80,8 +81,8 @@ if ($projectId) {
                 @forelse($relatedProjects as $relatedProject)
                 <div class="col-md-4 mb-3">
                     <div class="card h-100">
-                        @if($relatedProject->cover_image)
-                        <img src="{{ $relatedProject->cover_image }}" class="card-img-top" alt="{{ $relatedProject->title }}">
+                        @if($relatedProject->image)
+                        <img src="{{ $relatedProject->image }}" class="card-img-top" alt="{{ $relatedProject->title }}">
                         @endif
                         <div class="card-body">
                             <h5 class="card-title">{{ $relatedProject->title }}</h5>

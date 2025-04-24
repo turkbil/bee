@@ -30,7 +30,7 @@ class ModulePermissionMiddleware
         // Özel durum: widgetmanagement için, manage route'u sadece root tarafından erişilebilir
         if ($moduleName === 'widgetmanagement' && $request->routeIs('admin.widgetmanagement.manage')) {
             if (!$user->hasRole('root')) {
-                abort(403, 'Bu sayfaya erişim yetkiniz bulunmamaktadır');
+                return redirect()->route('errors.403');
             }
             // Root kullanıcısı ise, diğer izin kontrollerini atla ve devam et
              return $next($request);
@@ -61,13 +61,13 @@ class ModulePermissionMiddleware
             
             if (!$module) {
                 Log::error("ModulePermissionMiddleware: Module not found: {$moduleName}");
-                abort(403, 'Erişim reddedildi.');
+                return redirect()->route('errors.403');
             }
             
             $isModuleAssigned = $moduleService->isModuleAssignedToTenant($module->module_id, tenant()->id);
             if (!$isModuleAssigned) {
                 Log::warning("Kullanıcı {$user->id} ({$user->email}) tenant'a atanmamış modüle erişmeye çalışıyor: {$moduleName}");
-                abort(403, 'Erişim reddedildi.');
+                return redirect()->route('errors.403');
             }
         }
         
@@ -77,7 +77,7 @@ class ModulePermissionMiddleware
         
         if (!$permissionExists) {
             Log::error("Permission not found: {$permissionName}");
-            abort(403, 'Erişim reddedildi.');
+            return redirect()->route('errors.403');
         }
         
         Log::info("ModulePermissionMiddleware: User ID: {$user->id}, Email: {$user->email}, Module: {$moduleName}, Permission: {$permissionType}, Roles: " . implode(',', $user->getRoleNames()->toArray()));
@@ -96,7 +96,7 @@ class ModulePermissionMiddleware
                 // Central'da ise, admin'in erişemeyeceği modülleri kontrol et
                 if (in_array($moduleName, config('module-permissions.admin_restricted_modules', []))) {
                     Log::warning("Admin {$user->id} ({$user->email}) kısıtlı modüle erişmeye çalışıyor: {$moduleName}");
-                    abort(403, 'Erişim reddedildi.');
+                    return redirect()->route('errors.403');
                 }
             }
             
@@ -106,7 +106,7 @@ class ModulePermissionMiddleware
         // Editor veya diğer roller için, önce kullanıcının modül bazlı izni var mı kontrol et
         if (!$user->hasModulePermission($moduleName, $permissionType)) {
             Log::warning("User {$user->id} ({$user->email}) doesn't have permission {$permissionType} for module {$moduleName}");
-            abort(403, 'Erişim reddedildi.');
+            return redirect()->route('errors.403');
         }
         
         // Tüm kontroller geçildi, erişime izin ver

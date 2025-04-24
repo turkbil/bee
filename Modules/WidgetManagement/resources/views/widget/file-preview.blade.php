@@ -120,7 +120,7 @@
                 <span class="badge bg-blue me-2">Hazır Dosya</span>
                 <span class="badge bg-green">{{ $widget->category->title ?? 'Kategori Yok' }}</span>
             </div>
-            <a href="{{ route('admin.widgetmanagement.file.index') }}" class="btn btn-primary">
+            <a href="{{ route('admin.widgetmanagement.files') }}" class="btn btn-primary">
                 <i class="fas fa-arrow-left me-1"></i> Listeye Dön
             </a>
         </div>

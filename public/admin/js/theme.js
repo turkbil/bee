@@ -93,10 +93,10 @@ document.addEventListener('DOMContentLoaded', function() {
             document.documentElement.style.setProperty('--tblr-font-family', font);
             document.body.style.fontFamily = font;
             
-            // Roboto ve Poppins için Google Fonts
-            if (font === "'Roboto', sans-serif") {
+            // Roboto ve Poppins için Google Fonts yükleme
+            if (font.includes('Roboto')) {
                 ensureGoogleFont('roboto-font', 'https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
-            } else if (font === "'Poppins', sans-serif") {
+            } else if (font.includes('Poppins')) {
                 ensureGoogleFont('poppins-font', 'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap');
             }
         });

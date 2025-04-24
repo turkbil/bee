@@ -94,9 +94,9 @@ class FileWidgetListComponent extends Component
                    ->orWhere('parent_id', '!=', 1); // Modül bileşenleri kategorisi (1 nolu) ve alt kategorileri hariç tut
             })
             ->when($this->search, function ($q) {
-                $q->where('name', 'like', "%{$this->search}%")
-                  ->orWhere('description', 'like', "%{$this->search}%")
-                  ->orWhere('file_path', 'like', "%{$this->search}%");
+                $q->where('widgets.name', 'like', "%{$this->search}%")
+                  ->orWhere('widgets.description', 'like', "%{$this->search}%")
+                  ->orWhere('widgets.file_path', 'like', "%{$this->search}%");
             })
             ->when($this->parentCategoryFilter, function ($q) {
                 if ($this->categoryFilter) {

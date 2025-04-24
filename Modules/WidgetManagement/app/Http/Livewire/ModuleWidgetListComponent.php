@@ -105,8 +105,8 @@ class ModuleWidgetListComponent extends Component
                    ->orWhere('parent_id', '=', 1); // Modül bileşenleri kategorisi ve alt kategorileri
             })
             ->when($this->search, function ($q) {
-                $q->where('name', 'like', "%{$this->search}%")
-                  ->orWhere('description', 'like', "%{$this->search}%");
+                $q->where('widgets.name', 'like', "%{$this->search}%")
+                  ->orWhere('widgets.description', 'like', "%{$this->search}%");
             })
             ->when($this->parentCategoryFilter, function ($q) {
                 if ($this->categoryFilter) {

@@ -144,6 +144,25 @@
                     </li>
                     @endif
 
+                    @if($groupedModules->has('widget') && $groupedModules['widget']->count() > 0)
+                    <li class="nav-item {{ $activeType == 'widget' ? 'active' : '' }} dropdown">
+                        <a class="nav-link dropdown-toggle" href="#navbar-widget" data-bs-toggle="dropdown"
+                            data-bs-auto-close="outside" role="button" aria-expanded="false">
+                            <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                <i class="fa-solid fa-user-chef"></i>
+                            </span>
+                            <span class="nav-link-title">Bileşenler</span>
+                        </a>
+                        <div class="dropdown-menu">
+                            @foreach($groupedModules['widget'] as $module)
+                            <a class="dropdown-item" href="{{ route('admin.' . strtolower($module->name) . '.index') }}">
+                                {{ $module->display_name }}
+                            </a>
+                            @endforeach
+                        </div>
+                    </li>
+                    @endif
+
                     @if($groupedModules->has('management') && $groupedModules['management']->count() > 0)
                     <li class="nav-item {{ $activeType == 'management' ? 'active' : '' }} dropdown">
                         <a class="nav-link dropdown-toggle" href="#navbar-management" data-bs-toggle="dropdown"

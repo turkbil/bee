@@ -33,20 +33,19 @@ class WidgetCategorySeeder extends Seeder
         }
 
         try {
-            // Önce tüm modül kategorilerini temizle
-            WidgetCategory::where('slug', 'modul-bilesenleri')->delete();
+            // Önce mevcut duplicate kategorileri temizle ve yeniden oluştur
+            // Bu işlemi tam değil, sadece var olan kategorileri güncelleme/oluşturma olarak yapacağız
             
             // Ana kategorileri oluştur
-            $this->createMainCategories();
+            $modulesCategory = $this->createMainCategories();
             
-            // Tüm tabloyu yenile - veritabanından en güncel bilgileri al
-            DB::reconnect();
+            if (!$modulesCategory) {
+                Log::error('Modül ana kategorisi oluşturulamadı veya bulunamadı, alt kategoriler oluşturulamıyor...');
+                return;
+            }
             
-            // Bir süre bekleyelim
-            sleep(1);
-            
-            // Modules alt kategorilerini oluştur
-            $this->createModuleSubcategories();
+            // Alt kategorileri oluştur
+            $this->createModuleSubcategories($modulesCategory);
             
             Log::info('Widget kategorileri başarıyla oluşturuldu.');
         } catch (\Exception $e) {
@@ -59,7 +58,7 @@ class WidgetCategorySeeder extends Seeder
         }
     }
     
-    private function createMainCategories(): void
+    private function createMainCategories()
     {
         // Ana kategoriler
         $predefinedCategories = [
@@ -126,13 +125,16 @@ class WidgetCategorySeeder extends Seeder
             ]
         ];
         
+        $modulesCategory = null;
+        
         foreach ($predefinedCategories as $slug => $category) {
             try {
-                // Önce mevcut kategoriyi kontrol et
+                // Mevcut kategori var mı kontrol et
                 $existingCategory = WidgetCategory::where('slug', $slug)->first();
                 
                 if (!$existingCategory) {
-                    WidgetCategory::create([
+                    // Yoksa yenisini oluştur
+                    $newCategory = WidgetCategory::create([
                         'title' => $category['title'],
                         'slug' => $slug,
                         'description' => $category['description'],
@@ -144,35 +146,38 @@ class WidgetCategorySeeder extends Seeder
                     ]);
                     
                     Log::info("Kategori oluşturuldu: {$category['title']} (slug: $slug)");
+                    
+                    if ($slug === 'modul-bilesenleri') {
+                        $modulesCategory = $newCategory;
+                    }
                 } else {
+                    // Varsa güncelle
                     $existingCategory->update([
                         'title' => $category['title'],
                         'description' => $category['description'],
                         'order' => $category['order'],
                         'is_active' => true,
                         'icon' => $category['icon'],
+                        'parent_id' => null,
                         'has_subcategories' => $category['has_subcategories'] ?? false
                     ]);
+                    
                     Log::info("Kategori güncellendi: {$category['title']} (slug: $slug)");
+                    
+                    if ($slug === 'modul-bilesenleri') {
+                        $modulesCategory = $existingCategory;
+                    }
                 }
             } catch (\Exception $e) {
                 Log::error("Kategori oluşturma hatası (slug: $slug): " . $e->getMessage());
             }
         }
+        
+        return $modulesCategory;
     }
     
-    private function createModuleSubcategories(): void
+    private function createModuleSubcategories($modulesCategory): void
     {
-        // Modüller ana kategorisini bul
-        $modulesCategory = WidgetCategory::where('slug', 'modul-bilesenleri')->first();
-        
-        if (!$modulesCategory) {
-            Log::warning('Modül ana kategorisi bulunamadı, alt kategoriler oluşturulamıyor...');
-            return;
-        }
-        
-        Log::info('Modül Kategorisi ID: ' . $modulesCategory->widget_category_id);
-        
         // Alt kategoriler
         $subCategories = [
             'sayfa-modulu' => [
@@ -191,11 +196,12 @@ class WidgetCategorySeeder extends Seeder
         
         foreach ($subCategories as $slug => $category) {
             try {
-                // Önce mevcut alt kategoriyi kontrol et
+                // Mevcut alt kategori var mı kontrol et
                 $existingSubcategory = WidgetCategory::where('slug', $slug)->first();
                 
                 if (!$existingSubcategory) {
-                    WidgetCategory::create([
+                    // Yoksa yenisini oluştur
+                    $newSubcategory = WidgetCategory::create([
                         'title' => $category['title'],
                         'slug' => $slug,
                         'description' => $category['description'],
@@ -205,8 +211,10 @@ class WidgetCategorySeeder extends Seeder
                         'parent_id' => $modulesCategory->widget_category_id,
                         'has_subcategories' => false
                     ]);
+                    
                     Log::info("Alt kategori oluşturuldu: {$category['title']} (slug: $slug)");
                 } else {
+                    // Varsa güncelle
                     $existingSubcategory->update([
                         'title' => $category['title'],
                         'description' => $category['description'],
@@ -216,6 +224,7 @@ class WidgetCategorySeeder extends Seeder
                         'parent_id' => $modulesCategory->widget_category_id,
                         'has_subcategories' => false
                     ]);
+                    
                     Log::info("Alt kategori güncellendi: {$category['title']} (slug: $slug)");
                 }
             } catch (\Exception $e) {

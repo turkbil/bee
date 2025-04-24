@@ -8,9 +8,13 @@ use Modules\WidgetManagement\app\Models\WidgetCategory;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
 
 class ModuleWidgetSeeder extends Seeder
 {
+    // Çalıştırma izleme anahtarı
+    private static $runKey = 'module_widget_seeder_executed';
     public function run()
     {
         // Tenant kontrolü
@@ -22,21 +26,61 @@ class ModuleWidgetSeeder extends Seeder
             return;
         }
         
+        // Seeder'ın daha önce çalıştırılıp çalıştırılmadığını kontrol et
+        $cacheKey = self::$runKey . '_' . Config::get('database.default');
+        if (Cache::has($cacheKey)) {
+            Log::info('ModuleWidgetSeeder zaten çalıştırılmış, atlanıyor...');
+            return;
+        }
+        
         Log::info('ModuleWidgetSeeder merkezi veritabanında çalışıyor...');
         
         try {
-            // Ana modul kategorisi
+            // Ana modul kategorisi - önce kontrol et, yoksa oluştur
             $mainModuleCategory = WidgetCategory::where('slug', 'modul-bilesenleri')->first();
             
             if (!$mainModuleCategory) {
-                Log::error("Ana modül kategorisi (modul-bilesenleri) bulunamadı, widget oluşturulamıyor.");
-                return;
+                // Kategori bulunamazsa, veritabanı işlemlerinin tamamlanması için kısa bir bekleme ekleyelim
+                Log::warning("Ana modül kategorisi (modul-bilesenleri) bulunamadı, oluşturuluyor...");
+                sleep(1); // 1 saniye bekle
+                
+                // Tekrar deneyelim
+                $mainModuleCategory = WidgetCategory::where('slug', 'modul-bilesenleri')->first();
+                
+                if (!$mainModuleCategory) {
+                    // Kategori oluştur
+                    try {
+                        $mainModuleCategory = WidgetCategory::create([
+                            'title' => 'Modül Bileşenleri',
+                            'slug' => 'modul-bilesenleri',
+                            'description' => 'Sistem modüllerine ait bileşenler',
+                            'icon' => 'fa-cubes',
+                            'order' => 1,
+                            'is_active' => true,
+                            'parent_id' => null,
+                            'has_subcategories' => true
+                        ]);
+                        
+                        Log::info("Ana modül kategorisi oluşturuldu: Modül Bileşenleri (slug: modul-bilesenleri)");
+                    } catch (\Exception $e) {
+                        Log::error("Ana modül kategorisi (modul-bilesenleri) oluşturulamadı. Hata: " . $e->getMessage());
+                        return;
+                    }
+                }
+                
+                if (!$mainModuleCategory) {
+                    Log::error("Ana modül kategorisi (modul-bilesenleri) bulunamadı ve oluşturulamadı, widget oluşturulamıyor.");
+                    return;
+                }
             }
             
             // Modül kategorilerini oluştur
             $this->createModuleWidgets($mainModuleCategory);
             
             Log::info('Modül bileşenleri başarıyla oluşturuldu.');
+            
+            // Seeder'ın çalıştırıldığını işaretle (10 dakika süreyle cache'de tut)
+            Cache::put($cacheKey, true, 600);
         } catch (\Exception $e) {
             Log::error('ModuleWidgetSeeder hatası: ' . $e->getMessage());
             Log::error($e->getTraceAsString());
@@ -60,25 +104,35 @@ class ModuleWidgetSeeder extends Seeder
                 $moduleName = basename($moduleFolder);
                 $moduleSlug = Str::slug($moduleName) . '-modulu';
                 
-                // Modül kategorisini bul
+                // Modül kategorisini bul - yoksa oluştur
                 $moduleCategory = WidgetCategory::where('slug', $moduleSlug)->first();
                 
                 if (!$moduleCategory) {
                     Log::warning("Modül kategorisi bulunamadı: $moduleSlug, yeni kategori oluşturuluyor...");
                     
                     // Yeni modül kategorisi oluştur
-                    $moduleCategory = WidgetCategory::create([
-                        'title' => ucfirst($moduleName) . ' Modülü',
-                        'slug' => $moduleSlug,
-                        'description' => ucfirst($moduleName) . ' modülüne ait bileşenler',
-                        'icon' => 'fa-puzzle-piece',
-                        'order' => 999,
-                        'is_active' => true,
-                        'parent_id' => $mainModuleCategory->widget_category_id,
-                        'has_subcategories' => false
-                    ]);
+                    try {
+                        $moduleCategory = WidgetCategory::create([
+                            'title' => ucfirst($moduleName) . ' Modülü',
+                            'slug' => $moduleSlug,
+                            'description' => ucfirst($moduleName) . ' modülüne ait bileşenler',
+                            'icon' => 'fa-puzzle-piece',
+                            'order' => 999,
+                            'is_active' => true,
+                            'parent_id' => $mainModuleCategory->widget_category_id,
+                            'has_subcategories' => false
+                        ]);
+                        
+                        Log::info("Yeni modül kategorisi oluşturuldu: {$moduleCategory->title}");
+                    } catch (\Exception $e) {
+                        Log::error("Modül kategorisi oluşturulamadı: $moduleSlug. Hata: " . $e->getMessage());
+                        continue;
+                    }
                     
-                    Log::info("Yeni modül kategorisi oluşturuldu: {$moduleCategory->title}");
+                    if (!$moduleCategory) {
+                        Log::error("Modül kategorisi oluşturulamadı: $moduleSlug");
+                        continue;
+                    }
                 }
                 
                 // Bu modüle ait widget dizinleri

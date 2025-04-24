@@ -8,9 +8,14 @@ use Modules\WidgetManagement\app\Models\WidgetCategory;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
 
 class BlockWidgetSeeder extends Seeder
 {
+    // Çalıştırma izleme anahtarı
+    private static $runKey = 'block_widget_seeder_executed';
+
     public function run()
     {
         // Tenant kontrolü
@@ -21,24 +26,34 @@ class BlockWidgetSeeder extends Seeder
             Log::info('Tenant contextinde çalışıyor, BlockWidgetSeeder atlanıyor. Tenant ID: ' . tenant('id'));
             return;
         }
-        
+
+        // Seeder'ın daha önce çalıştırılıp çalıştırılmadığını kontrol et
+        $cacheKey = self::$runKey . '_' . Config::get('database.default');
+        if (Cache::has($cacheKey)) {
+            Log::info('BlockWidgetSeeder zaten çalıştırılmış, atlanıyor...');
+            return;
+        }
+
         Log::info('BlockWidgetSeeder merkezi veritabanında çalışıyor...');
-        
+
         try {
             // Blok kategorileri oluştur
             $this->createBlockWidgets();
-            
+
             Log::info('Blok bileşenleri başarıyla oluşturuldu.');
+
+            // Seeder'ın çalıştırıldığını işaretle (10 dakika süreyle cache'de tut)
+            Cache::put($cacheKey, true, 600);
         } catch (\Exception $e) {
             Log::error('BlockWidgetSeeder hatası: ' . $e->getMessage());
             Log::error($e->getTraceAsString());
-            
+
             if ($this->command) {
                 $this->command->error('BlockWidgetSeeder hatası: ' . $e->getMessage());
             }
         }
     }
-    
+
     private function createBlockWidgets()
     {
         // Blok dizini
@@ -89,12 +104,38 @@ class BlockWidgetSeeder extends Seeder
                 // Kategori eşleştirmesini bul
                 $categorySlug = $categoryMappings[$categoryName] ?? Str::slug($categoryName);
                 
-                // Kategoriyi bul
+                // Kategoriyi bul, yoksa oluştur
                 $category = WidgetCategory::where('slug', $categorySlug)->first();
                 
                 if (!$category) {
-                    Log::warning("Kategori bulunamadı: $categorySlug, atlanıyor...");
-                    continue;
+                    Log::warning("Kategori bulunamadı: $categorySlug, oluşturuluyor...");
+                    
+                    try {
+                        // Kategori adını düzgün formatta oluştur
+                        $categoryTitle = ucfirst(str_replace(['-', '_'], ' ', $categoryName));
+                        
+                        // Kategori oluştur
+                        $category = WidgetCategory::create([
+                            'title' => $categoryTitle,
+                            'slug' => $categorySlug,
+                            'description' => $categoryTitle . ' bileşenleri',
+                            'icon' => 'fa-puzzle-piece',
+                            'order' => 999,
+                            'is_active' => true,
+                            'parent_id' => null,
+                            'has_subcategories' => false
+                        ]);
+                        
+                        Log::info("Kategori oluşturuldu: $categoryTitle (slug: $categorySlug)");
+                    } catch (\Exception $e) {
+                        Log::error("Kategori oluşturulamadı: $categorySlug. Hata: " . $e->getMessage());
+                        continue;
+                    }
+                    
+                    if (!$category) {
+                        Log::error("Kategori oluşturulamadı: $categorySlug");
+                        continue;
+                    }
                 }
                 
                 // Bu kategorideki tüm bileşenleri bul ve alt klasörleri de tara

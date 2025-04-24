@@ -1,13 +1,17 @@
 @include('widgetmanagement::helper')
 <div>
-    <div class="card">
-        <div class="card-body">
-            <div class="row mb-3">
-                <!-- Sol Taraf (Arama ve Filtreler) -->
-                <div class="col-md-6">
-                    <div class="row g-2">
-                        <!-- Arama Kutusu -->
-                        <div class="col-md-8">
+    <div class="row g-4">
+        <div class="col-md-3">
+            <form class="sticky-top" style="top: 20px;">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-3">
+                            <div>
+                                <h3 class="card-title">Kategoriler</h3>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
                             <div class="input-icon">
                                 <span class="input-icon-addon">
                                     <i class="fas fa-search"></i>
@@ -16,193 +20,223 @@
                                     placeholder="Hazır dosya ara...">
                             </div>
                         </div>
-                    </div>
-                </div>
-                
-                <!-- Ortadaki Loading -->
-                <div class="col-md-4 position-relative d-flex justify-content-center align-items-center">
-                    <div wire:loading
-                        wire:target="render, search, perPage, gotoPage, previousPage, nextPage, categoryFilter, parentCategoryFilter"
-                        class="position-absolute top-50 start-50 translate-middle text-center"
-                        style="width: 100%; max-width: 250px;">
-                        <div class="small text-muted mb-2">Güncelleniyor...</div>
-                        <div class="progress mb-1">
-                            <div class="progress-bar progress-bar-indeterminate"></div>
+                        
+                        <!-- Ana Kategoriler -->
+                        <div class="form-label">Ana Kategoriler</div>
+                        <div class="mb-4">
+                            <div class="list-group list-group-transparent mb-3">
+                                <a class="list-group-item list-group-item-action d-flex align-items-center {{ $parentCategoryFilter == '' ? 'active' : '' }}" 
+                                   wire:click.prevent="$set('parentCategoryFilter', '')" href="#">
+                                    Tüm Kategoriler
+                                    <small class="text-secondary ms-auto">{{ $widgets->total() }}</small>
+                                </a>
+                                
+                                @foreach($parentCategories as $category)
+                                <a class="list-group-item list-group-item-action d-flex align-items-center {{ $parentCategoryFilter == $category->widget_category_id ? 'active' : '' }}" 
+                                   wire:click.prevent="$set('parentCategoryFilter', '{{ $category->widget_category_id }}')" href="#">
+                                    {{ $category->title }}
+                                    <small class="text-secondary ms-auto">{{ $category->widgets_count + $category->children->sum('widgets_count') }}</small>
+                                </a>
+                                
+                                @if($category->children_count > 0)
+                                    @foreach($category->children as $childCategory)
+                                    <a class="list-group-item list-group-item-action d-flex align-items-center ps-5 {{ $categoryFilter == $childCategory->widget_category_id ? 'active' : '' }}" 
+                                       wire:click.prevent="$set('categoryFilter', '{{ $childCategory->widget_category_id }}')" href="#">
+                                        <i class="fas fa-angle-right me-2"></i> {{ $childCategory->title }}
+                                        <small class="text-secondary ms-auto">{{ $childCategory->widgets_count }}</small>
+                                    </a>
+                                    @endforeach
+                                @endif
+                                @endforeach
+                            </div>
                         </div>
-                    </div>
-                </div>
-                
-                <!-- Sağ Taraf (Sayfalama) -->
-                <div class="col-md-2">
-                    <div class="d-flex align-items-center justify-content-end gap-3">
-                        <select wire:model.live="perPage" class="form-select" style="width: 80px">
-                            <option value="12">12</option>
-                            <option value="24">24</option>
-                            <option value="48">48</option>
-                            <option value="96">96</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Üstteki Butonlar -->
-            <div class="d-flex justify-content-between mb-4">
-                <div>
-                    <h3 class="card-title">Hazır Dosya Bileşenleri</h3>
-                    <p class="text-muted">Hazır view dosyalarına dayalı bileşenleri görüntüleyin</p>
-                </div>
-            </div>
-            
-            <!-- Ana Kategori Filtresi -->
-            @if($parentCategories->count() > 0)
-            <div class="mb-3">
-                <div class="d-flex flex-wrap gap-2">
-                    <button class="btn {{ $parentCategoryFilter == '' ? 'btn-primary' : 'btn-outline-secondary' }}" 
-                        wire:click="$set('parentCategoryFilter', '')">
-                        Tümü
-                    </button>
-                    @foreach($parentCategories as $category)
-                    <button class="btn {{ $parentCategoryFilter == $category->widget_category_id ? 'btn-primary' : 'btn-outline-secondary' }}" 
-                        wire:click="$set('parentCategoryFilter', '{{ $category->widget_category_id }}')">
-                        {{ $category->title }} 
-                        <span class="badge ms-1">{{ $category->widgets_count + $category->children->sum('widgets_count') }}</span>
-                        @if($category->children_count > 0)
-                        <span class="badge ms-1" title="{{ $category->children_count }} alt kategori">
-                            <i class="fas fa-sitemap fa-xs"></i>
-                        </span>
+                        
+                        <!-- Alt Kategoriler - Seçilen Ana Kategoriye göre -->
+                        @if($childCategories->count() > 0 && $parentCategoryFilter && !$categoryFilter)
+                        <div class="form-label">Alt Kategoriler</div>
+                        <div class="mb-4">
+                            <div class="list-group list-group-transparent mb-3">
+                                <a class="list-group-item list-group-item-action d-flex align-items-center {{ $categoryFilter == '' ? 'active' : '' }}" 
+                                   wire:click.prevent="$set('categoryFilter', '')" href="#">
+                                    Tümünü Göster
+                                </a>
+                                
+                                @foreach($childCategories as $childCategory)
+                                <a class="list-group-item list-group-item-action d-flex align-items-center {{ $categoryFilter == $childCategory->widget_category_id ? 'active' : '' }}" 
+                                   wire:click.prevent="$set('categoryFilter', '{{ $childCategory->widget_category_id }}')" href="#">
+                                    {{ $childCategory->title }}
+                                    <small class="text-secondary ms-auto">{{ $childCategory->widgets_count }}</small>
+                                </a>
+                                @endforeach
+                            </div>
+                        </div>
                         @endif
-                    </button>
-                    @endforeach
-                </div>
-            </div>
-            @endif
-
-            <!-- Alt Kategori Filtresi - Sadece bir ana kategori seçildiğinde görünür -->
-            @if($childCategories->count() > 0)
-            <div class="mb-3 ms-4 border-start ps-2">
-                <div class="d-flex flex-wrap gap-2">
-                    <button class="btn {{ $categoryFilter == '' ? 'btn-info' : 'btn-outline-info' }}" 
-                        wire:click="$set('categoryFilter', '')">
-                        Tüm Alt Kategoriler
-                    </button>
-                    @foreach($childCategories as $childCategory)
-                    <button class="btn {{ $categoryFilter == $childCategory->widget_category_id ? 'btn-info' : 'btn-outline-info' }}" 
-                        wire:click="$set('categoryFilter', '{{ $childCategory->widget_category_id }}')">
-                        {{ $childCategory->title }}
-                        <span class="badge bg-secondary ms-1">{{ $childCategory->widgets_count }}</span>
-                    </button>
-                    @endforeach
-                </div>
-            </div>
-            @endif
-            
-            <!-- Bileşen Listesi (Kategoriye Göre Gruplandırılmış) -->
-            <div class="row g-3">
-                @php
-                    $currentCategory = null;
-                @endphp
-                
-                @forelse($widgets as $widget)
-                    @if($currentCategory != $widget->widget_category_id)
-                        @php $currentCategory = $widget->widget_category_id; @endphp
-                        <div class="col-12">
-                            <h3 class="mt-4 mb-3 border-bottom pb-2">
-                                {{ $widget->category ? $widget->category->title : 'Diğer' }}
-                                @if($widget->category && $widget->category->parent)
-                                <small class="text-muted"> / {{ $widget->category->parent->title }}</small>
-                                @endif
-                            </h3>
+                        
+                        <!-- Sayfalama Ayarı -->
+                        <div class="form-label">Sayfa Başına</div>
+                        <div class="mb-4">
+                            <select wire:model.live="perPage" class="form-select">
+                                <option value="12">12 Bileşen</option>
+                                <option value="24">24 Bileşen</option>
+                                <option value="48">48 Bileşen</option>
+                                <option value="96">96 Bileşen</option>
+                            </select>
                         </div>
-                    @endif
-                    
-                    <div class="col-12 col-sm-6 col-lg-4 mb-4">
-                        <div class="card h-100 shadow-sm">
-                            <div class="card-status-top {{ $widget->is_active ? 'bg-primary' : 'bg-danger' }}"></div>
-                            
-                            <!-- Kart Header -->
-                            <div class="card-header d-flex align-items-center">
-                                <div class="me-auto">
-                                    <h3 class="card-title mb-0">
-                                        <a href="{{ route('admin.widgetmanagement.items', $widget->id) }}">
-                                            {{ $widget->name }}
-                                        </a>
-                                    </h3>
-
-                                    <div class="text-muted small mt-1">
-                                         <code>{{ $widget->file_path }}</code>
-                                    </div>
-                                </div>
-                                <div class="dropdown">
-                                    <a href="#" class="btn btn-icon" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="fas fa-ellipsis-v"></i>
-                                    </a>
-                                    <div class="dropdown-menu dropdown-menu-end">
-                                        <a href="{{ route('admin.widgetmanagement.manage', $widget->id) }}" class="dropdown-item">
-                                            <i class="fas fa-tools me-2"></i> Yapılandır
-                                        </a>
-                                        <a href="{{ route('admin.widgetmanagement.file.preview', $widget->id) }}" class="dropdown-item" target="_blank">
-                                            <i class="fas fa-eye me-2"></i> Önizleme
-                                        </a>
-                                    </div>
-                                </div>
+                        
+                        <div class="mt-4">
+                            <div class="d-flex gap-2">
+                                <a href="{{ route('admin.widgetmanagement.index') }}" class="btn btn-outline-secondary w-100 {{ request()->routeIs('admin.widgetmanagement.index') ? 'active' : '' }}">
+                                    <i class="fas fa-th-list me-1"></i> Aktif Bileşenler
+                                </a>
                             </div>
-                            
-                            <div class="card-body pt-2">
-                                @if($widget->description)
-                                <p class="text-muted mt-2">{{ $widget->description }}</p>
-                                @endif
-                                
-                                <div class="mt-2">
-                                    @if($widget->thumbnail)
-                                        <img src="{{ $widget->thumbnail }}" class="img-fluid rounded" alt="{{ $widget->name }}">
-                                    @else
-                                        <div class="alert alert-light text-center p-2">
-                                            <i class="fas fa-image fa-2x text-muted my-2"></i>
-                                            <p class="text-muted small mb-0">Önizleme görseli yok</p>
-                                        </div>
-                                    @endif
-                                </div>
+                            <div class="d-flex gap-2 mt-2">
+                                <a href="{{ route('admin.widgetmanagement.gallery') }}" class="btn btn-outline-secondary w-100 {{ request()->routeIs('admin.widgetmanagement.gallery') ? 'active' : '' }}">
+                                    <i class="fas fa-th-large me-1"></i> Bileşen Galerisi
+                                </a>
                             </div>
-                            
-                            <!-- Kart Footer -->
-                            <div class="card-footer">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <a href="{{ route('admin.widgetmanagement.file.preview', $widget->id) }}" class="btn btn-outline-primary w-100" target="_blank">
-                                        <i class="fas fa-eye me-1"></i> Önizleme
-                                    </a>
-                                </div>
-                                
-                                <div class="d-flex align-items-center justify-content-between mt-2">
-                                    <span class="badge bg-blue-lt">
-                                        <i class="fas fa-folder me-1"></i> {{ $widget->category ? $widget->category->title : 'Kategorilendirilmemiş' }}
-                                    </span>
-                                    
-                                    <span class="badge bg-primary">Hazır Dosya</span>
-                                </div>
+                            @if(auth()->user()->hasRole('root'))
+                            <div class="d-flex gap-2 mt-2">
+                                <a href="{{ route('admin.widgetmanagement.modules') }}" class="btn btn-outline-secondary w-100 {{ request()->routeIs('admin.widgetmanagement.modules') ? 'active' : '' }}">
+                                    <i class="fas fa-puzzle-piece me-1"></i> Modül Bileşenleri
+                                </a>
                             </div>
+                            <div class="d-flex gap-2 mt-2">
+                                <a href="{{ route('admin.widgetmanagement.files') }}" class="btn btn-outline-primary w-100 {{ request()->routeIs('admin.widgetmanagement.files') ? 'active' : '' }}">
+                                    <i class="fas fa-file-code me-1"></i> Hazır Dosyalar
+                                </a>
+                            </div>
+                            @endif
                         </div>
                     </div>
-                @empty
-                <div class="col-12">
-                    <div class="empty">
-                        <div class="empty-img">
-                            <img src="{{ asset('images/empty.svg') }}" height="128" alt="">
-                        </div>
-                        <p class="empty-title">Hiç hazır dosya bileşeni bulunamadı</p>
-                        <p class="empty-subtitle text-muted">
-                            Filtrelemeye uygun hazır dosya bulunamadı.
-                        </p>
-                    </div>
                 </div>
-                @endforelse
-            </div>
+            </form>
         </div>
         
-        <!-- Pagination -->
-        @if($widgets->hasPages())
-        <div class="card-footer d-flex align-items-center justify-content-end">
-            {{ $widgets->links() }}
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-body">
+                    <!-- Üstteki Butonlar ve Başlık -->
+                    <div class="d-flex justify-content-between mb-4">
+                        <div>
+                            <h3 class="card-title">Hazır Dosya Bileşenleri</h3>
+                            <p class="text-muted">Hazır view dosyalarına dayalı bileşenleri görüntüleyin</p>
+                        </div>
+                        
+                        <!-- Loading İndikatörü -->
+                        <div class="position-relative d-flex justify-content-center align-items-center">
+                            <div wire:loading
+                                wire:target="render, search, perPage, gotoPage, previousPage, nextPage, categoryFilter, parentCategoryFilter"
+                                class="text-center">
+                                <div class="small text-muted me-2">Güncelleniyor...</div>
+                                <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Bileşenleri Kategoriye Göre Gruplandırma -->
+                    @php
+                        $groupedWidgets = $widgets->groupBy(function($item) {
+                            return $item->category->title ?? 'Kategori Atanmamış';
+                        });
+                    @endphp
+                    
+                    @forelse($groupedWidgets as $categoryName => $categoryWidgets)
+                    <div class="mb-4">
+                        <h4 class="border-bottom pb-2 mb-3">{{ $categoryName }}</h4>
+                        <div class="row row-cards">
+                            @foreach($categoryWidgets as $widget)
+                            <div class="col-12 col-sm-6">
+                                <div class="card h-100 shadow-sm">
+                                    <div class="card-status-top {{ $widget->is_active ? 'bg-primary' : 'bg-danger' }}"></div>
+                                    
+                                    <!-- Kart Header -->
+                                    <div class="card-header d-flex align-items-center">
+                                        <div class="me-auto">
+                                            <h3 class="card-title mb-0">
+                                                <a href="{{ route('admin.widgetmanagement.items', $widget->id) }}">
+                                                    {{ $widget->name }}
+                                                </a>
+                                            </h3>
+
+                                            <div class="text-muted small mt-1">
+                                                 <code>{{ $widget->file_path }}</code>
+                                            </div>
+                                        </div>
+                                        <div class="dropdown">
+                                            <a href="#" class="btn btn-icon" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-end">
+                                                <a href="{{ route('admin.widgetmanagement.manage', $widget->id) }}" class="dropdown-item">
+                                                    <i class="fas fa-tools me-2"></i> Yapılandır
+                                                </a>
+                                                <a href="{{ route('admin.widgetmanagement.file.preview', $widget->id) }}" class="dropdown-item" target="_blank">
+                                                    <i class="fas fa-eye me-2"></i> Önizleme
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="card-body pt-2">
+                                        @if($widget->description)
+                                        <p class="text-muted mt-2">{{ $widget->description }}</p>
+                                        @endif
+                                        
+                                        <div class="mt-2">
+                                            @if($widget->thumbnail)
+                                                <img src="{{ $widget->thumbnail }}" class="img-fluid rounded" alt="{{ $widget->name }}">
+                                            @else
+                                                <div class="alert alert-light text-center p-2">
+                                                    <i class="fas fa-image fa-2x text-muted my-2"></i>
+                                                    <p class="text-muted small mb-0">Önizleme görseli yok</p>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Kart Footer -->
+                                    <div class="card-footer">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <a href="{{ route('admin.widgetmanagement.file.preview', $widget->id) }}" class="btn btn-outline-primary w-100" target="_blank">
+                                                <i class="fas fa-eye me-1"></i> Önizleme
+                                            </a>
+                                        </div>
+                                        
+                                        <div class="d-flex align-items-center justify-content-between mt-2">
+                                            <span class="badge bg-blue-lt">
+                                                <i class="fas fa-folder me-1"></i> {{ $widget->category ? $widget->category->title : 'Kategorilendirilmemiş' }}
+                                            </span>
+                                            
+                                            <span class="badge bg-primary">Hazır Dosya</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    @empty
+                    <div class="col-12">
+                        <div class="empty">
+                            <div class="empty-img">
+                                <img src="{{ asset('images/empty.svg') }}" height="128" alt="">
+                            </div>
+                            <p class="empty-title">Hiç hazır dosya bileşeni bulunamadı</p>
+                            <p class="empty-subtitle text-muted">
+                                Filtrelemeye uygun hazır dosya bulunamadı.
+                            </p>
+                        </div>
+                    </div>
+                    @endforelse
+                </div>
+                
+                <!-- Pagination -->
+                @if($widgets->hasPages())
+                <div class="card-footer d-flex align-items-center justify-content-end">
+                    {{ $widgets->links() }}
+                </div>
+                @endif
+            </div>
         </div>
-        @endif
     </div>
 </div>

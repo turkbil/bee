@@ -1,4 +1,3 @@
-{{-- resources/views/admin/layout.blade.php --}}
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
@@ -48,7 +47,7 @@
     
     <div class="page-wrapper">
         <div class="page-header d-print-none">
-            <div class="container-xl">
+            <div class="container">
                 <div class="row g-2 align-items-center">
                     <div class="col">
                         <div class="page-pretitle">
@@ -58,8 +57,8 @@
                             @stack('title')
                         </h2>
                     </div>
-                    <div class="col-auto ms-auto d-print-none" style="height: 36px;">
-                        <div class=" btn-list">
+                    <div class="col-auto ms-auto d-print-none">
+                        <div class="btn-list">
                             @stack('module-menu')
                         </div>
                     </div>
@@ -68,7 +67,7 @@
         </div>
 
         <div class="page-body">
-            <div class="container-xl">
+            <div class="container">
                 @hasSection('content')
                 @yield('content') {{-- Blade sayfaları için --}}
                 @else
@@ -78,9 +77,9 @@
         </div>
 
         <footer class="footer footer-transparent d-print-none">
-            <div class="container-xl">
+            <div class="container">
                 <div class="row text-center align-items-center flex-row-reverse">
-                    <div class="col-lg-auto ms-lg-auto">
+                    <div class="col-auto ms-auto">
                         <ul class="list-inline list-inline-dots mb-0">
                             <li class="list-inline-item">
                                 <a href="#" class="link-secondary" rel="noopener">
@@ -137,7 +136,6 @@
 <script src="{{ asset('admin/js/main.js') }}?v={{ filemtime(public_path('admin/js/main.js')) }}"></script>
 <script src="{{ asset('admin/js/toast.js') }}?v={{ filemtime(public_path('admin/js/toast.js')) }}"></script>
 <script src="{{ asset('admin/js/theme.js') }}?v={{ filemtime(public_path('admin/js/theme.js')) }}"></script>
-{{-- Modüle özel silme modalı --}}
 @livewireScripts
 @stack('scripts') @stack('js')
 

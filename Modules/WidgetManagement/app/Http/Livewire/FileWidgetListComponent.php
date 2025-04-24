@@ -23,6 +23,9 @@ class FileWidgetListComponent extends Component
     public $categoryFilter = '';
     
     #[Url]
+    public $parentCategoryFilter = '';
+    
+    #[Url]
     public $perPage = 12;
     
     public function updatedSearch()
@@ -35,12 +38,34 @@ class FileWidgetListComponent extends Component
         $this->resetPage();
     }
     
+    public function updatedParentCategoryFilter()
+    {
+        $this->categoryFilter = '';
+        $this->resetPage();
+    }
+    
     public function render()
     {
-        // Tüm kategorileri getir
-        $categories = WidgetCategory::where('is_active', true)
+        // Ana kategorileri getir
+        $parentCategories = WidgetCategory::whereNull('parent_id')
+            ->where('is_active', true)
+            ->withCount(['widgets' => function($query) {
+                $query->where('type', 'file');
+            }, 'children'])
             ->orderBy('order')
             ->get();
+        
+        // Eğer bir ana kategori seçilmişse, o kategorinin alt kategorilerini getir
+        $childCategories = collect([]);
+        if ($this->parentCategoryFilter) {
+            $childCategories = WidgetCategory::where('parent_id', $this->parentCategoryFilter)
+                ->where('is_active', true)
+                ->withCount(['widgets' => function($query) {
+                    $query->where('type', 'file');
+                }])
+                ->orderBy('order')
+                ->get();
+        }
         
         // File tipindeki widgetları getir
         $query = Widget::where('widgets.is_active', true)
@@ -50,7 +75,22 @@ class FileWidgetListComponent extends Component
                   ->orWhere('description', 'like', "%{$this->search}%")
                   ->orWhere('file_path', 'like', "%{$this->search}%");
             })
-            ->when($this->categoryFilter, function ($q) {
+            ->when($this->parentCategoryFilter, function ($q) {
+                if ($this->categoryFilter) {
+                    // Eğer alt kategori seçilmişse, sadece o kategoriyi filtrele
+                    $q->where('widgets.widget_category_id', $this->categoryFilter);
+                } else {
+                    // Ana kategori seçilmişse ve alt kategori seçilmemişse
+                    // Ana kategoriye ait tüm alt kategorileri dahil et
+                    $q->where(function($query) {
+                        $query->where('widgets.widget_category_id', $this->parentCategoryFilter)
+                              ->orWhereHas('category', function($cq) {
+                                  $cq->where('parent_id', $this->parentCategoryFilter);
+                              });
+                    });
+                }
+            })
+            ->when(!$this->parentCategoryFilter && $this->categoryFilter, function ($q) {
                 $q->where('widgets.widget_category_id', $this->categoryFilter);
             });
             
@@ -63,7 +103,8 @@ class FileWidgetListComponent extends Component
         
         return view('widgetmanagement::livewire.file-widget-list-component', [
             'widgets' => $widgets,
-            'categories' => $categories
+            'parentCategories' => $parentCategories,
+            'childCategories' => $childCategories
         ]);
     }
 }

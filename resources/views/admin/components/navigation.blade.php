@@ -60,30 +60,35 @@
             <!-- Tema Ayarları Butonu -->
             <div class="nav-item me-2">
                 <a href="#" class="d-flex lh-1 text-reset p-0" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTheme">
-                    <span class="mb-1 me-2">
-                        <i class="fa-solid fa-brush" style="font-size: 18px "></i>
+                    <span class="me-2">
+                        <i class="fa-solid fa-brush" style="font-size: 18px"></i>
                     </span>
                 </a>
             </div>
-
-            <div class="theme-mode pt-2 me-1">
-                <input type="checkbox" id="switch" class="dark-switch">
-                <div class="app">
-                    <div class="switch-content">
-                        <div class="switch-label"></div>
-                        <label for="switch">
-                            <div class="toggle"></div>
-                            <div class="names">
-                                <p class="light"><i class="fa-light fa-moon"></i></p>
-                                <p class="dark"><i class="fa-light fa-brightness-low" style="margin-top: 6px;"></i></p>
-                            </div>
-                        </label>
+            
+            <div class="d-none d-md-flex">
+                <!-- Karanlık mod switch'i -->
+                <!-- Karanlık mod switch'i - orijinal tasarım korundu -->
+                <div class="theme-mode mt-0 pt-2 me-2" data-theme="light">
+                    <input type="checkbox" id="switch" class="dark-switch">
+                    <div class="app">
+                        <div class="switch-content">
+                            <div class="switch-label"></div>
+                            <label for="switch">
+                                <div class="toggle"></div>
+                                <div class="names">
+                                    <p class="light"><i class="fa-solid fa-moon"></i></p>
+                                    <p class="dark"><i class="fa-solid fa-sun"></i></p>
+                                    <p class="auto"><i class="fa-solid fa-circle-half-stroke"></i></p>
+                                </div>
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>
-
             <div class="nav-item dropdown">
-                <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown">
+                <a href="#" class="nav-link d-flex p-0 px-1" data-bs-toggle="dropdown" aria-label="Open user menu">
+                    <span class="avatar avatar-sm"><i class="fa-solid fa-user"></i> </span>
                     <div class="d-none d-xl-block ps-2">
                         <div>{{ Auth::user()->name }}</div>
                         <div class="mt-1 small text-secondary">
@@ -103,7 +108,10 @@
                         </div>
                     </div>
                 </a>
-                <div class="dropdown-menu dropdown-menu-end">
+                <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                    <a href="{{ route('admin.usermanagement.user.activity.logs', ['id' => auth()->id()]) }}" class="dropdown-item">Aktivitelerim</a>
+                    <a href="{{ route('admin.usermanagement.manage', ['id' => auth()->id()]) }}" class="dropdown-item">Profilim</a>
+                    <div class="dropdown-divider"></div>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" class="dropdown-item">Çıkış Yap</button>

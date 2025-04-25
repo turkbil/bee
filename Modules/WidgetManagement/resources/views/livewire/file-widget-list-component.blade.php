@@ -122,7 +122,7 @@
                                     <div class="card-header d-flex align-items-center">
                                         <div class="me-auto">
                                             <h3 class="card-title mb-0">
-                                                <a href="{{ route('admin.widgetmanagement.items', $widget->id) }}">
+                                                <a href="{{ route('admin.widgetmanagement.manage', $widget->id) }}">
                                                     {{ $widget->name }}
                                                 </a>
                                             </h3>
@@ -166,8 +166,11 @@
                                     <!-- Kart Footer -->
                                     <div class="card-footer">
                                         <div class="d-flex align-items-center justify-content-between">
-                                            <a href="{{ route('admin.widgetmanagement.file.preview', $widget->id) }}" class="btn btn-outline-primary w-100" target="_blank">
-                                                <i class="fas fa-eye me-1"></i> Önizleme
+                                            <a href="{{ route('admin.widgetmanagement.manage', $widget->id) }}" class="btn btn-outline-primary">
+                                                <i class="fas fa-tools me-1"></i> Yapılandır
+                                            </a>
+                                            <a href="{{ route('admin.widgetmanagement.file.preview', $widget->id) }}" class="btn btn-outline-secondary" target="_blank">
+                                                <i class="fas fa-eye me-1"></i> Önizle
                                             </a>
                                         </div>
                                         

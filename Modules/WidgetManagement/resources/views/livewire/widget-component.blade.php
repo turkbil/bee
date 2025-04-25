@@ -29,14 +29,14 @@
                         <!-- Ana Kategoriler -->
                         <div class="mb-4">
                             <div class="list-group list-group-transparent mb-3">
-                                <a class="list-group-item list-group-item-action d-flex align-items-center {{ $parentCategoryFilter == '' ? 'active' : '' }}" 
+                                <a class="list-group-item list-group-item-action py-2 d-flex align-items-center {{ $parentCategoryFilter == '' ? 'active' : '' }}" 
                                 wire:click.prevent="$set('parentCategoryFilter', '')" href="#">
                                  Tüm Kategoriler
                                  <small class="text-secondary ms-auto">{{ $entities->total() }}</small>
                                 </a>
                                 
                                 @foreach($parentCategories as $category)
-                                <a class="list-group-item list-group-item-action d-flex align-items-center {{ $parentCategoryFilter == $category->widget_category_id ? 'active' : '' }}" 
+                                <a class="list-group-item list-group-item-action py-2 d-flex align-items-center {{ $parentCategoryFilter == $category->widget_category_id ? 'active' : '' }}" 
                                     wire:click.prevent="$set('parentCategoryFilter', '{{ $category->widget_category_id }}')" href="#">
                                     {{ $category->title }}
                                     <small class="text-secondary ms-auto">{{ $category->total_widgets_count }}</small>
@@ -44,7 +44,7 @@
                                                              
                                 @if($category->children_count > 0)
                                     @foreach($category->children as $childCategory)
-                                    <a class="list-group-item list-group-item-action d-flex align-items-center ps-5 {{ $categoryFilter == $childCategory->widget_category_id ? 'active' : '' }}" 
+                                    <a class="list-group-item list-group-item-action py-2 d-flex align-items-center ps-5 {{ $categoryFilter == $childCategory->widget_category_id ? 'active' : '' }}" 
                                        wire:click.prevent="$set('categoryFilter', '{{ $childCategory->widget_category_id }}')" href="#">
                                         <i class="fas fa-angle-right me-2"></i> {{ $childCategory->title }}
                                         <small class="text-secondary ms-auto">{{ $childCategory->widgets_count }}</small>
@@ -60,13 +60,13 @@
                         <div class="form-label">Alt Kategoriler</div>
                         <div class="mb-4">
                             <div class="list-group list-group-transparent mb-3">
-                                <a class="list-group-item list-group-item-action d-flex align-items-center {{ $categoryFilter == '' ? 'active' : '' }}" 
+                                <a class="list-group-item list-group-item-action py-2 d-flex align-items-center {{ $categoryFilter == '' ? 'active' : '' }}" 
                                    wire:click.prevent="$set('categoryFilter', '')" href="#">
                                     Tümünü Göster
                                 </a>
                                 
                                 @foreach($childCategories as $childCategory)
-                                <a class="list-group-item list-group-item-action d-flex align-items-center {{ $categoryFilter == $childCategory->widget_category_id ? 'active' : '' }}" 
+                                <a class="list-group-item list-group-item-action py-2 d-flex align-items-center {{ $categoryFilter == $childCategory->widget_category_id ? 'active' : '' }}" 
                                    wire:click.prevent="$set('categoryFilter', '{{ $childCategory->widget_category_id }}')" href="#">
                                     {{ $childCategory->title }}
                                     <small class="text-secondary ms-auto">{{ $childCategory->widgets_count }}</small>

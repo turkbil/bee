@@ -59,14 +59,14 @@
         <div class="navbar-nav flex-row order-md-last">
             <!-- Tema Ayarları Butonu -->
             <div class="nav-item me-2">
-                <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTheme">
-                    <span class="avatar avatar-sm rounded-circle bg-primary">
-                        <i class="fa-solid fa-brush" style="line-height: 24px;"></i>
+                <a href="#" class="d-flex lh-1 text-reset p-0" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTheme">
+                    <span class="mb-1 me-2">
+                        <i class="fa-solid fa-brush" style="font-size: 18px "></i>
                     </span>
                 </a>
             </div>
 
-            <div class="theme-mode pt-2">
+            <div class="theme-mode pt-2 me-1">
                 <input type="checkbox" id="switch" class="dark-switch">
                 <div class="app">
                     <div class="switch-content">
@@ -120,7 +120,7 @@
                         <a class="nav-link dropdown-toggle" href="#navbar-content" data-bs-toggle="dropdown"
                             data-bs-auto-close="outside" role="button" aria-expanded="false">
                             <span class="nav-link-icon d-md-none d-lg-inline-block">
-                                <i class="fa-solid fa-file-lines"></i>
+                                <i class="fa-solid fa-user-graduate"></i>
                             </span>
                             <span class="nav-link-title">İçerik</span>
                         </a>
@@ -143,7 +143,7 @@
                         <a class="nav-link dropdown-toggle" href="#navbar-widget" data-bs-toggle="dropdown"
                             data-bs-auto-close="outside" role="button" aria-expanded="false">
                             <span class="nav-link-icon d-md-none d-lg-inline-block">
-                                <i class="fa-solid fa-puzzle-piece"></i>
+                                <i class="fa-solid fa-user-chef"></i>
                             </span>
                             <span class="nav-link-title">Bileşenler</span>
                         </a>
@@ -162,7 +162,7 @@
                         <a class="nav-link dropdown-toggle" href="#navbar-management" data-bs-toggle="dropdown"
                             data-bs-auto-close="outside" role="button" aria-expanded="false">
                             <span class="nav-link-icon d-md-none d-lg-inline-block">
-                                <i class="fa-solid fa-cog"></i>
+                                <i class="fa-solid fa-user-police-tie"></i>
                             </span>
                             <span class="nav-link-title">Yönetim</span>
                         </a>
@@ -181,7 +181,7 @@
                         <a class="nav-link dropdown-toggle" href="#navbar-system" data-bs-toggle="dropdown" data-bs-auto-close="outside"
                             role="button" aria-expanded="false">
                             <span class="nav-link-icon d-md-none d-lg-inline-block">
-                                <i class="fa-solid fa-server"></i>
+                                <i class="fa-solid fa-user-doctor"></i>
                             </span>
                             <span class="nav-link-title">Sistem</span>
                         </a>

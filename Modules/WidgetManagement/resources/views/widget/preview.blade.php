@@ -52,6 +52,7 @@
             border-radius: 4px;
             min-height: 200px;
             margin: 1rem 0;
+            padding: 1rem;
         }
         
         .device-switcher {
@@ -75,7 +76,7 @@
         }
         
         /* Widget CSS */
-        {!! $widget->content_css !!}
+        {!! $widget->content_css ?? '' !!}
     </style>
 </head>
 <body>
@@ -109,8 +110,9 @@
                     <i class="fas fa-info-circle me-2"></i>
                 </div>
                 <div>
-                    <strong>Önizleme Notu:</strong> Bu basit bir önizlemedir. Gerçek widget içeriğinden farklı görünebilir.
-                    Dinamik içerikler ve özel ayarlar bu önizlemede görünmeyebilir.
+                    <strong>Önizleme Bilgileri:</strong><br>
+                    <strong>Tür:</strong> {{ ucfirst($widget->type) }}<br>
+                    <strong>Açıklama:</strong> {{ $widget->description }}
                 </div>
             </div>
         </div>
@@ -118,18 +120,34 @@
         <div class="preview-frame" id="preview-frame">
             <div class="preview-content">
                 <!-- Widget HTML -->
-                {!! $widget->content_html !!}
+                @if($widget->type == 'module')
+                    <!-- Modül bileşenleri farklı görünümde gösteriliyor -->
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Bu modül bileşeni için HTML şablonu tanımlanmamış. Lütfen widget'ı düzenleyin ve bir HTML şablonu ekleyin.
+                    </div>
+                @else
+                    {!! $widget->content_html !!}
+                @endif
             </div>
         </div>
         
         <div class="mt-4 d-flex justify-content-between align-items-center">
             <div>
-                <span class="badge bg-blue me-2">{{ $widget->type }}</span>
+                <span class="badge bg-blue me-2">{{ ucfirst($widget->type) }}</span>
+                
                 @if($widget->has_items)
-                <span class="badge bg-orange">Dinamik İçerik</span>
+                <span class="badge bg-orange me-2">Dinamik İçerik</span>
                 @endif
+                
+                <span class="badge bg-green">{{ $widget->category->title ?? 'Kategori Yok' }}</span>
             </div>
-            @if(auth()->user()->hasRole('root'))
+            
+            @if($widget->type == 'module')
+            <a href="{{ route('admin.widgetmanagement.modules') }}" class="btn btn-primary">
+                <i class="fas fa-arrow-left me-1"></i> Listeye Dön
+            </a>
+            @elseif(auth()->user()->hasRole('root'))
             <a href="{{ route('admin.widgetmanagement.manage', $widget->id) }}" class="btn btn-primary">
                 <i class="fas fa-edit me-1"></i> Widget'ı Düzenle
             </a>
@@ -171,7 +189,7 @@
     
     <!-- Widget JavaScript -->
     <script>
-        {!! $widget->content_js !!}
+        {!! $widget->content_js ?? '' !!}
     </script>
 </body>
 </html>

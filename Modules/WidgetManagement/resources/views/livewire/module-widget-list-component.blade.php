@@ -136,6 +136,9 @@
                                                 <a href="{{ route('admin.widgetmanagement.manage', $widget->id) }}" class="dropdown-item">
                                                     <i class="fas fa-tools me-2"></i> Yapılandır
                                                 </a>
+                                                <a href="{{ route('admin.widgetmanagement.preview', $widget->id) }}" class="dropdown-item" target="_blank">
+                                                    <i class="fas fa-eye me-2"></i> Önizleme
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
@@ -160,8 +163,11 @@
                                     <!-- Kart Footer -->
                                     <div class="card-footer">
                                         <div class="d-flex align-items-center justify-content-between">
-                                            <a href="{{ route('admin.widgetmanagement.manage', $widget->id) }}" class="btn btn-outline-primary w-100">
+                                            <a href="{{ route('admin.widgetmanagement.manage', $widget->id) }}" class="btn btn-outline-primary">
                                                 <i class="fas fa-tools me-1"></i> Yapılandır
+                                            </a>
+                                            <a href="{{ route('admin.widgetmanagement.preview', $widget->id) }}" class="btn btn-outline-secondary" target="_blank">
+                                                <i class="fas fa-eye me-1"></i> Önizle
                                             </a>
                                         </div>
                                         

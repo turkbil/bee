@@ -29,6 +29,13 @@ class WidgetCategorySeeder extends Seeder
             return;
         }
         
+        // Cache kontrolü
+        $cacheKey = self::$runKey . '_' . Config::get('database.default');
+        if (Cache::has($cacheKey)) {
+            Log::info('WidgetCategorySeeder zaten çalıştırılmış, atlanıyor...');
+            return;
+        }
+        
         Log::info('WidgetCategorySeeder merkezi veritabanında çalışıyor...');
         
         // Tablo var mı kontrol et
@@ -60,6 +67,10 @@ class WidgetCategorySeeder extends Seeder
             if ($this->command) {
                 $this->command->info('Widget kategorileri ve widget\'lar başarıyla oluşturuldu.');
             }
+            
+            // Seeder'ın çalıştırıldığını işaretle (10 dakika süreyle cache'de tut)
+            $cacheKey = self::$runKey . '_' . Config::get('database.default');
+            Cache::put($cacheKey, true, 600);
         } catch (\Exception $e) {
             Log::error('WidgetCategorySeeder hatası: ' . $e->getMessage());
             Log::error($e->getTraceAsString());

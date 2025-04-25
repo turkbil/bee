@@ -27,10 +27,12 @@ class BlockWidgetSeeder extends Seeder
             return;
         }
 
-        // Debug: Cache'i zorla temizle
+        // Cache kontrolü
         $cacheKey = self::$runKey . '_' . Config::get('database.default');
-        Cache::forget($cacheKey);
-        Log::info('BlockWidgetSeeder cache temizlendi: ' . $cacheKey);
+        if (Cache::has($cacheKey)) {
+            Log::info('BlockWidgetSeeder zaten çalıştırılmış, atlanıyor...');
+            return;
+        }
 
         Log::info('BlockWidgetSeeder merkezi veritabanında çalışıyor...');
 

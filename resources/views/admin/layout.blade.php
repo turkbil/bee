@@ -13,6 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     @livewireStyles
     <link rel="stylesheet" href="{{ asset('admin/css/tabler.min.css') }}?v={{ filemtime(public_path('admin/css/tabler.min.css')) }}">
+    <link rel="stylesheet" href="{{ asset('admin/css/theme-font-size.css') }}?v={{ filemtime(public_path('admin/css/theme-font-size.css')) }}">
     <link rel="stylesheet" href="{{ asset('admin/css/tabler-vendors.min.css') }}?v={{ filemtime(public_path('admin/css/tabler-vendors.min.css')) }}">
     @if (Str::contains(Request::url(), ['create', 'edit', 'manage', 'form']))
     @else
@@ -21,6 +22,7 @@
     <link rel="stylesheet" href="{{ asset('admin/libs/fontawesome-pro@6.7.1/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ asset('admin/css/main.css') }}?v={{ filemtime(public_path('admin/css/main.css')) }}" />
     <link rel="stylesheet" href="{{ asset('admin/css/theme-builder.css') }}?v={{ filemtime(public_path('admin/css/theme-builder.css')) }}" />
+    <link rel="stylesheet" href="{{ asset('admin/css/theme-font-size.css') }}?v={{ filemtime(public_path('admin/css/theme-font-size.css')) }}" />
     <link rel="stylesheet" href="{{ asset('admin/css/responsive.css') }}?v={{ filemtime(public_path('admin/css/responsive.css')) }}" />
     @stack('styles') @stack('css')
     <style>
@@ -50,18 +52,18 @@
                 <div class="row g-2 align-items-center">
                     <div class="col">
                         <div class="page-pretitle">
-                            @stack('pretitle')
-                        </div>
-                        <h2 class="page-title">
-                            @stack('title')
-                        </h2>
-                    </div>
-                    <div class="col-auto ms-auto d-print-none">
-                        <div class="btn-list">
-                            @stack('module-menu')
-                        </div>
-                    </div>
+                  @stack('pretitle')
                 </div>
+                <h2 class="page-title">
+                  @stack('title')
+                </h2>
+              </div>
+              <!-- Page title actions -->
+              <div class="col-auto ms-auto d-print-none">
+                <div class="btn-list">
+                  @stack('module-menu')
+                </div>
+              </div>
             </div>
         </div>
 

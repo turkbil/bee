@@ -1,7 +1,6 @@
 {{-- resources\views\admin\index.blade.php --}}
 @extends('admin.layout')
 @section('content')
-<div class="container-xl">
     <div class="row row-cards">
         <div class="col-3">
             <div class="card placeholder-glow">
@@ -199,5 +198,4 @@
             </div>
         </div>
     </div>
-</div>
 @endsection

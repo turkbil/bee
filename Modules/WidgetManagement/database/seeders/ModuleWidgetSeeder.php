@@ -26,10 +26,12 @@ class ModuleWidgetSeeder extends Seeder
             return;
         }
         
-        // Cache'i temizle ve her zaman çalıştır
+        // Cache kontrolü
         $cacheKey = self::$runKey . '_' . Config::get('database.default');
-        Cache::forget($cacheKey);
-        Log::info('ModuleWidgetSeeder cache temizlendi: ' . $cacheKey);
+        if (Cache::has($cacheKey)) {
+            Log::info('ModuleWidgetSeeder zaten çalıştırılmış, atlanıyor...');
+            return;
+        }
         
         Log::info('ModuleWidgetSeeder merkezi veritabanında çalışıyor...');
         

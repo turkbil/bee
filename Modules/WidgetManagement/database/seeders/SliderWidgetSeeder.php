@@ -28,15 +28,16 @@ class SliderWidgetSeeder extends Seeder
             return;
         }
 
+        // Cache kontrolü
+        $cacheKey = self::$runKey . '_' . Config::get('database.default');
+        if (Cache::has($cacheKey)) {
+            Log::info('SliderWidgetSeeder zaten çalıştırılmış, atlanıyor...');
+            return;
+        }
+        
         Log::info('SliderWidgetSeeder merkezi veritabanında çalışıyor...');
 
         try {
-            // Önce mevcut slider widget'ını temizle
-            $existingWidget = Widget::where('slug', 'dinamik-slider')->first();
-            if ($existingWidget) {
-                $existingWidget->delete();
-                Log::info('Mevcut Dinamik Slider widget\'\u0131 silindi.');
-            }
             
             // Slider bileşeni oluştur
             $this->createSliderWidget();
@@ -46,6 +47,10 @@ class SliderWidgetSeeder extends Seeder
             if ($this->command) {
                 $this->command->info('Slider bileşeni başarıyla oluşturuldu.');
             }
+            
+            // Seeder'ın çalıştırıldığını işaretle (10 dakika süreyle cache'de tut)
+            $cacheKey = self::$runKey . '_' . Config::get('database.default');
+            Cache::put($cacheKey, true, 600);
         } catch (\Exception $e) {
             Log::error('SliderWidgetSeeder hatası: ' . $e->getMessage());
             Log::error($e->getTraceAsString());

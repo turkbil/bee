@@ -1,3 +1,142 @@
+
+[data-bs-theme=dark],body[data-bs-theme=dark] [data-bs-theme=light] {
+    --tblr-body-color: #dce1e7;
+    --tblr-body-color-rgb: 220,225,231;
+    --tblr-muted: #49566c;
+    --tblr-body-bg: #151f2c;
+    --tblr-body-bg-rgb: 21,31,44;
+    --tblr-emphasis-color: #ffffff;
+    --tblr-emphasis-color-rgb: 255,255,255;
+    --tblr-bg-forms: #151f2c;
+    --tblr-bg-surface: #182433;
+    --tblr-bg-surface-dark: #151f2c;
+    --tblr-bg-surface-secondary: #1b293a;
+    --tblr-bg-surface-tertiary: #151f2c;
+    --tblr-link-color: #0884f8;
+    --tblr-link-hover-color: #066fd1;
+    --tblr-active-bg: #1b293a;
+    --tblr-disabled-color: var(--tblr-gray-700);
+    --tblr-border-color: var(--tblr-dark-mode-border-color);
+    --tblr-border-color-translucent: var( --tblr-dark-mode-border-color-translucent );
+    --tblr-border-dark-color: var(--tblr-dark-mode-border-dark-color);
+    --tblr-border-active-color: var( --tblr-dark-mode-border-active-color );
+    --tblr-btn-color: #151f2c;
+    --tblr-code-color: var(--tblr-body-color);
+    --tblr-code-bg: #1f2e41;
+    --tblr-primary-lt: #162c43;
+    --tblr-primary-lt-rgb: 22,44,67;
+    --tblr-secondary-lt: #202d3c;
+    --tblr-secondary-lt-rgb: 32,45,60;
+    --tblr-success-lt: #1a3235;
+    --tblr-success-lt-rgb: 26,50,53;
+    --tblr-info-lt: #1c3044;
+    --tblr-info-lt-rgb: 28,48,68;
+    --tblr-warning-lt: #2e2b2f;
+    --tblr-warning-lt-rgb: 46,43,47;
+    --tblr-danger-lt: #2b2634;
+    --tblr-danger-lt-rgb: 43,38,52;
+    --tblr-light-lt: #2e3947;
+    --tblr-light-lt-rgb: 46,57,71;
+    --tblr-dark-lt: #182433;
+    --tblr-dark-lt-rgb: 24,36,51;
+    --tblr-muted-lt: #202d3c;
+    --tblr-muted-lt-rgb: 32,45,60;
+    --tblr-blue-lt: #162c43;
+    --tblr-blue-lt-rgb: 22,44,67;
+    --tblr-azure-lt: #1c3044;
+    --tblr-azure-lt-rgb: 28,48,68;
+    --tblr-indigo-lt: #1c2a45;
+    --tblr-indigo-lt-rgb: 28,42,69;
+    --tblr-purple-lt: #272742;
+    --tblr-purple-lt-rgb: 39,39,66;
+    --tblr-pink-lt: #2b2639;
+    --tblr-pink-lt-rgb: 43,38,57;
+    --tblr-red-lt: #2b2634;
+    --tblr-red-lt-rgb: 43,38,52;
+    --tblr-orange-lt: #2e2b2f;
+    --tblr-orange-lt-rgb: 46,43,47;
+    --tblr-yellow-lt: #2e302e;
+    --tblr-yellow-lt-rgb: 46,48,46;
+    --tblr-lime-lt: #213330;
+    --tblr-lime-lt-rgb: 33,51,48;
+    --tblr-green-lt: #1a3235;
+    --tblr-green-lt-rgb: 26,50,53;
+    --tblr-teal-lt: #17313a;
+    --tblr-teal-lt-rgb: 23,49,58;
+    --tblr-cyan-lt: #183140;
+    --tblr-cyan-lt-rgb: 24,49,64;
+    --tblr-tabler-lt: #162c43;
+    --tblr-tabler-lt-rgb: 22,44,67
+}
+
+/* Tema taban stilleri */
+.theme-base-slate {
+    --tblr-gray-50: #f8fafc;
+    --tblr-gray-100: #f1f5f9;
+    --tblr-gray-200: #e2e8f0;
+    --tblr-gray-300: #cbd5e1;
+    --tblr-gray-400: #94a3b8;
+    --tblr-gray-500: #64748b;
+    --tblr-gray-600: #475569;
+    --tblr-gray-700: #334155;
+    --tblr-gray-800: #1e293b;
+    --tblr-gray-900: #0f172a;
+}
+
+.theme-base-gray {
+    --tblr-gray-50: #f9fafb;
+    --tblr-gray-100: #f3f4f6;
+    --tblr-gray-200: #e5e7eb;
+    --tblr-gray-300: #d1d5db;
+    --tblr-gray-400: #9ca3af;
+    --tblr-gray-500: #6b7280;
+    --tblr-gray-600: #4b5563;
+    --tblr-gray-700: #374151;
+    --tblr-gray-800: #1f2937;
+    --tblr-gray-900: #111827;
+}
+
+.theme-base-zinc {
+    --tblr-gray-50: #fafafa;
+    --tblr-gray-100: #f4f4f5;
+    --tblr-gray-200: #e4e4e7;
+    --tblr-gray-300: #d4d4d8;
+    --tblr-gray-400: #a1a1aa;
+    --tblr-gray-500: #71717a;
+    --tblr-gray-600: #52525b;
+    --tblr-gray-700: #3f3f46;
+    --tblr-gray-800: #27272a;
+    --tblr-gray-900: #18181b;
+}
+
+.theme-base-neutral {
+    --tblr-gray-50: #fafafa;
+    --tblr-gray-100: #f5f5f5;
+    --tblr-gray-200: #e5e5e5;
+    --tblr-gray-300: #d4d4d4;
+    --tblr-gray-400: #a3a3a3;
+    --tblr-gray-500: #737373;
+    --tblr-gray-600: #525252;
+    --tblr-gray-700: #404040;
+    --tblr-gray-800: #262626;
+    --tblr-gray-900: #171717;
+}
+
+.theme-base-stone {
+    --tblr-gray-50: #fafaf9;
+    --tblr-gray-100: #f5f5f4;
+    --tblr-gray-200: #e7e5e4;
+    --tblr-gray-300: #d6d3d1;
+    --tblr-gray-400: #a8a29e;
+    --tblr-gray-500: #78716c;
+    --tblr-gray-600: #57534e;
+    --tblr-gray-700: #44403c;
+    --tblr-gray-800: #292524;
+    --tblr-gray-900: #1c1917;
+}
+
+
+
 /* Tema Builder Ana Stiller */
 .theme-builder {
     --tb-spacing: 0.75rem;
@@ -55,7 +194,6 @@
 
 .theme-section {
     border-bottom: 1px solid var(--tb-border-color);
-    margin-bottom: 0.5rem;
 }
 
 .theme-section-header {
@@ -622,4 +760,39 @@
     .appearance-options {
         flex-wrap: wrap;
     }
+}
+
+
+/* Card öğeleri için radius ayarlaması */
+.card, .card-body, .card-header, .card-footer {
+    border-radius: var(--tblr-border-radius);
+}
+
+/* Font önizleme stilleri */
+.font-size-preview span {
+    display: inline-block;
+    margin-top: 18px;
+    font-weight: bold;
+}
+
+/* Font boyutu sınıfları */
+.font-size-small {
+    --tblr-font-size: 0.75rem !important;
+    --tblr-body-font-size: 0.75rem !important;
+    --tblr-dropdown-font-size: 0.75rem !important;
+    font-size: 0.75rem !important;
+}
+
+.font-size-normal {
+    --tblr-font-size: 0.875rem !important;
+    --tblr-body-font-size: 0.875rem !important;
+    --tblr-dropdown-font-size: 0.875rem !important;
+    font-size: 0.875rem !important;
+}
+
+.font-size-large {
+    --tblr-font-size: 1rem !important;
+    --tblr-body-font-size: 1rem !important;
+    --tblr-dropdown-font-size: 1rem !important;
+    font-size: 1rem !important;
 }

@@ -71,6 +71,10 @@ document.addEventListener('DOMContentLoaded', function() {
             document.cookie = `themeRadius=${selectedRadius};path=/;max-age=31536000`;
             document.documentElement.style.setProperty('--tblr-border-radius', selectedRadius);
             
+            // Card body elementlerinin radius değerlerini güncelle
+            document.documentElement.style.setProperty('--card-border-radius', selectedRadius);
+            updateCardBodyRadiuses(selectedRadius);
+            
             // Örnekleri güncelle
             radiusExamples.forEach((example, index) => {
                 if (index === selectedIndex) {
@@ -81,6 +85,23 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
+
+    // Font Boyutu değiştirme
+    const fontSizeRadios = document.querySelectorAll('input[name="theme-font-size"]');
+    fontSizeRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            const fontSize = this.value;
+            document.cookie = `themeFontSize=${fontSize};path=/;max-age=31536000`;
+            
+            // Sayfa yenilemeden font boyutunu değiştir
+            document.body.classList.remove('font-size-small', 'font-size-normal', 'font-size-large');
+            document.body.classList.add(`font-size-${fontSize}`);
+            
+            // Tüm font boyutlarını güncelle
+            updateFontSizes(fontSize);
+        });
+    });
+    
 
     // Yazı tipi değiştirme
     const fontRadios = document.querySelectorAll('input[name="theme-font"]');
@@ -142,6 +163,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.cookie = 'themeFont=Inter, system-ui, -apple-system, \'Segoe UI\', Roboto, \'Helvetica Neue\', Arial, \'Noto Sans\', sans-serif;path=/;max-age=31536000';
             document.cookie = 'themeRadius=0.5rem;path=/;max-age=31536000';
             document.cookie = 'tableCompact=1;path=/;max-age=31536000';
+            document.cookie = 'themeFontSize=normal;path=/;max-age=31536000';
             
             // Sayfayı yenile
             window.location.reload();
@@ -226,6 +248,20 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    // Card body elementlerinin radius değerlerini güncelle
+    function updateCardBodyRadiuses(radius) {
+        const cardBodies = document.querySelectorAll('.card-body');
+        cardBodies.forEach(cardBody => {
+            cardBody.style.borderRadius = radius;
+        });
+        
+        // Buton radius değerlerini de güncelle
+        const buttons = document.querySelectorAll('.btn:not(.btn-pill):not(.btn-square)');
+        buttons.forEach(button => {
+            button.style.borderRadius = radius;
+        });
+    }
+    
     // Google Fonts yükleme
     function ensureGoogleFont(id, href) {
         if (!document.getElementById(id)) {
@@ -242,6 +278,50 @@ document.addEventListener('DOMContentLoaded', function() {
         const value = `; ${document.cookie}`;
         const parts = value.split(`; ${name}=`);
         if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+
+    // Font boyutlarını güncelleme fonksiyonu
+    function updateFontSizes(sizeCategory) {
+        // Varsayılan boyutlar (normal boyut için)
+        const defaultSizes = {
+            'font-size': '0.875rem',
+            'body-font-size': '0.875rem',
+            'dropdown-font-size': '0.875rem',
+            'code-font-size': '0.875rem',
+            'h1-font-size': '2rem',
+            'h2-font-size': '1.75rem',
+            'h3-font-size': '1.5rem',
+            'h4-font-size': '1.25rem',
+            'h5-font-size': '1rem',
+            'h6-font-size': '0.875rem',
+            'small-font-size': '0.75rem',
+            'btn-font-size': '0.875rem',
+            'btn-sm-font-size': '0.75rem',
+            'btn-lg-font-size': '1rem',
+            'input-font-size': '0.875rem',
+            'input-sm-font-size': '0.75rem',
+            'input-lg-font-size': '1rem',
+            'table-font-size': '0.875rem',
+            'table-sm-font-size': '0.75rem',
+            'table-lg-font-size': '1rem',
+            'blockquote-font-size': '1rem',
+            'nav-link-font-size': '0.875rem'
+        };
+        
+        // Boyut çarpanları
+        let factor = 1;
+        if (sizeCategory === 'small') factor = 0.857;
+        if (sizeCategory === 'large') factor = 1.143;
+        
+        // Tüm CSS değişkenlerini güncelle
+        for (const [key, value] of Object.entries(defaultSizes)) {
+            // Rem değerini alıp sayısal değere dönüştür
+            const remValue = parseFloat(value);
+            // Yeni boyutu hesapla ve rem olarak ayarla
+            const newSize = (remValue * factor).toFixed(3) + 'rem';
+            // CSS değişkenini güncelle
+            document.documentElement.style.setProperty(`--tblr-${key}`, newSize);
+        }
     }
 
     // Başlangıç durumunu ayarla
@@ -262,6 +342,18 @@ document.addEventListener('DOMContentLoaded', function() {
         const baseTheme = getCookie('themeBase') || 'gray';
         document.body.classList.remove('theme-base-slate', 'theme-base-gray', 'theme-base-zinc', 'theme-base-neutral', 'theme-base-stone');
         document.body.classList.add(`theme-base-${baseTheme}`);
+        
+        // Font boyutunu ayarla
+        const fontSize = getCookie('themeFontSize') || 'normal';
+        document.body.classList.remove('font-size-small', 'font-size-normal', 'font-size-large');
+        document.body.classList.add(`font-size-${fontSize}`);
+        
+        // Tüm font boyutlarını güncelle
+        updateFontSizes(fontSize);
+        
+        // Card Body radius değerlerini ayarla
+        const themeRadius = getCookie('themeRadius') || '0.5rem';
+        updateCardBodyRadiuses(themeRadius);
         
         // Gerekli Google fontlarını yükle
         const currentFont = getCookie('themeFont');
@@ -290,6 +382,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+    
     
     // Tema ayarlarını başlat
     initializeThemeSettings();

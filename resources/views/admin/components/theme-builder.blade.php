@@ -13,7 +13,7 @@
                     <i class="fa-solid fa-circle-half-stroke"></i>
                     <span>Görünüm Modu</span>
                 </div>
-                <div class="theme-section-body">
+                <div class="theme-section-body pt-4">
                     <div class="appearance-options mb-2">
                         <label class="appearance-option" for="theme-light">
                             <input type="radio" id="theme-light" name="theme" value="light" {{ !isset($_COOKIE['dark']) || $_COOKIE['dark'] != '1' ? 'checked' : '' }}>
@@ -40,7 +40,7 @@
                     <i class="fa-solid fa-droplet"></i>
                     <span>Ana Renk</span>
                 </div>
-                <div class="theme-section-body">
+                <div class="theme-section-body pt-4">
                     <div class="row g-2 mb-2">
                         <div class="col-auto">
                             <label class="form-colorinput">
@@ -184,27 +184,60 @@
                     <i class="fa-solid fa-font"></i>
                     <span>Yazı Tipi</span>
                 </div>
-                <div class="theme-section-body">
+                <div class="theme-section-body py-4">
                     <div class="font-menu">
                         <label class="dropdown-item font-option">
                             <input class="form-check-input m-0 me-2" type="radio" id="font-inter" name="theme-font" value="Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" {{ (!isset($_COOKIE['themeFont']) || $_COOKIE['themeFont'] == "Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif") ? 'checked' : '' }}>
-                            <span style="font-family: Inter, system-ui;">Inter</span>
+                            <span style="font-family: Inter, system-ui;">Inter System-ui</span>
                         </label>
                         <label class="dropdown-item font-option">
                             <input class="form-check-input m-0 me-2" type="radio" id="font-roboto" name="theme-font" value="'Roboto', sans-serif" {{ (isset($_COOKIE['themeFont']) && $_COOKIE['themeFont'] == "'Roboto', sans-serif") ? 'checked' : '' }}>
-                            <span style="font-family: 'Roboto', sans-serif;">Roboto</span>
+                            <span style="font-family: 'Roboto', sans-serif;">Roboto Sans-serif</span>
                         </label>
                         <label class="dropdown-item font-option">
                             <input class="form-check-input m-0 me-2" type="radio" id="font-poppins" name="theme-font" value="'Poppins', sans-serif" {{ (isset($_COOKIE['themeFont']) && $_COOKIE['themeFont'] == "'Poppins', sans-serif") ? 'checked' : '' }}>
-                            <span style="font-family: 'Poppins', sans-serif;">Poppins</span>
+                            <span style="font-family: 'Poppins', sans-serif;">Poppins Sans-serif</span>
                         </label>
                         <label class="dropdown-item font-option">
                             <input class="form-check-input m-0 me-2" type="radio" id="font-georgia" name="theme-font" value="Georgia, 'Times New Roman', Times, serif" {{ (isset($_COOKIE['themeFont']) && $_COOKIE['themeFont'] == "Georgia, 'Times New Roman', Times, serif") ? 'checked' : '' }}>
-                            <span style="font-family: Georgia, 'Times New Roman', Times, serif;">Georgia</span>
+                            <span style="font-family: Georgia, 'Times New Roman', Times, serif;">Georgia Serif</span>
                         </label>
                         <label class="dropdown-item font-option">
                             <input class="form-check-input m-0 me-2" type="radio" id="font-courier" name="theme-font" value="'Courier New', Courier, monospace" {{ (isset($_COOKIE['themeFont']) && $_COOKIE['themeFont'] == "'Courier New', Courier, monospace") ? 'checked' : '' }}>
-                            <span style="font-family: 'Courier New', Courier, monospace;">Courier</span>
+                            <span style="font-family: 'Courier New', Courier, monospace;">Courier Monospace</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Font Boyutu -->
+            <div class="theme-section">
+                <div class="theme-section-header">
+                    <i class="fa-solid fa-text-size"></i>
+                    <span>Font Boyutu</span>
+                </div>
+                <div class="theme-section-body pt-4">
+                    <div class="appearance-options mb-2">
+                        <label class="appearance-option" for="font-size-small">
+                            <input type="radio" id="font-size-small" name="theme-font-size" value="small" {{ (isset($_COOKIE['themeFontSize']) && $_COOKIE['themeFontSize'] == 'small') ? 'checked' : '' }}>
+                            <div class="appearance-preview">
+                                <span style="font-size: 0.75rem;">Aa<br/>Bb<br/>Cc</span>
+                            </div>
+                            <span>Küçük</span>
+                        </label>
+                        <label class="appearance-option" for="font-size-normal">
+                            <input type="radio" id="font-size-normal" name="theme-font-size" value="normal" {{ (!isset($_COOKIE['themeFontSize']) || $_COOKIE['themeFontSize'] == 'normal') ? 'checked' : '' }}>
+                            <div class="appearance-preview">
+                                <span style="font-size: 0.875rem;">Aa<br/>Bb<br/>Cc</span>
+                            </div>
+                            <span>Normal</span>
+                        </label>
+                        <label class="appearance-option" for="font-size-large">
+                            <input type="radio" id="font-size-large" name="theme-font-size" value="large" {{ (isset($_COOKIE['themeFontSize']) && $_COOKIE['themeFontSize'] == 'large') ? 'checked' : '' }}>
+                            <div class="appearance-preview">
+                                <span style="font-size: 1rem;">Aa<br/>Bb<br/>Cc</span>
+                            </div>
+                            <span>Büyük</span>
                         </label>
                     </div>
                 </div>
@@ -216,10 +249,10 @@
                     <i class="fa-solid fa-square"></i>
                     <span>Köşe Yuvarlaklığı</span>
                 </div>
-                <div class="theme-section-body">
-                    <div class="radius-slider-container">
+                <div class="theme-section-body py-4">
+                    <div class="radius-slider-container pt-2 px-3">
                         <input type="range" class="radius-slider" id="radius-slider" min="0" max="4" step="1" value="{{ $radiusValue = isset($_COOKIE['themeRadius']) ? (($_COOKIE['themeRadius'] == '0') ? 0 : (($_COOKIE['themeRadius'] == '0.25rem') ? 1 : (($_COOKIE['themeRadius'] == '0.5rem') ? 2 : (($_COOKIE['themeRadius'] == '0.75rem') ? 3 : 4)))) : 2 }}">
-                        <div class="radius-preview">
+                        <div class="radius-preview pt-3">
                             <div class="radius-example radius-0 {{ $radiusValue == 0 ? 'active' : '' }}"></div>
                             <div class="radius-example radius-1 {{ $radiusValue == 1 ? 'active' : '' }}"></div>
                             <div class="radius-example radius-2 {{ $radiusValue == 2 ? 'active' : '' }}"></div>
@@ -231,13 +264,40 @@
                 </div>
             </div>
 
+            <!-- Tablo Görünümü -->
+            <div class="theme-section">
+                <div class="theme-section-header">
+                    <i class="fa-solid fa-table-list"></i>
+                    <span>Tablo Görünümü</span>
+                </div>
+                <div class="theme-section-body py-4">
+                    <div class="appearance-options">
+                        <label class="appearance-option" for="table-compact">
+                            <input type="radio" id="table-compact" name="table-compact" value="1" {{ (!isset($_COOKIE['tableCompact']) || $_COOKIE['tableCompact'] == '1') ? 'checked' : '' }}>
+                            <div class="appearance-preview compact-preview"></div>
+                            <span>Kompakt</span>
+                        </label>
+                        <label class="appearance-option" for="table-normal">
+                            <input type="radio" id="table-normal" name="table-compact" value="0" {{ (isset($_COOKIE['tableCompact']) && $_COOKIE['tableCompact'] == '0') ? 'checked' : '' }}>
+                            <div class="appearance-preview normal-preview"></div>
+                            <span>Normal</span>
+                        </label>
+                        <div class="appearance-option invisible">
+                            <div class="appearance-preview"></div>
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
             <!-- Gri Tonlar -->
             <div class="theme-section">
                 <div class="theme-section-header">
                     <i class="fa-solid fa-swatchbook"></i>
                     <span>Gri Tonları</span>
                 </div>
-                <div class="theme-section-body">
+                <div class="theme-section-body py-4">
                     <div class="gray-options">
                         <div class="appearance-options mb-2">
                             <label class="appearance-option" for="gray-slate">
@@ -276,37 +336,12 @@
                 </div>
             </div>
 
-            <!-- Tablo Görünümü -->
-            <div class="theme-section">
-                <div class="theme-section-header">
-                    <i class="fa-solid fa-table-list"></i>
-                    <span>Tablo Görünümü</span>
-                </div>
-                <div class="theme-section-body">
-                    <div class="appearance-options">
-                        <label class="appearance-option" for="table-compact">
-                            <input type="radio" id="table-compact" name="table-compact" value="1" {{ (!isset($_COOKIE['tableCompact']) || $_COOKIE['tableCompact'] == '1') ? 'checked' : '' }}>
-                            <div class="appearance-preview compact-preview"></div>
-                            <span>Kompakt</span>
-                        </label>
-                        <label class="appearance-option" for="table-normal">
-                            <input type="radio" id="table-normal" name="table-compact" value="0" {{ (isset($_COOKIE['tableCompact']) && $_COOKIE['tableCompact'] == '0') ? 'checked' : '' }}>
-                            <div class="appearance-preview normal-preview"></div>
-                            <span>Normal</span>
-                        </label>
-                        <div class="appearance-option invisible">
-                            <div class="appearance-preview"></div>
-                            <span></span>
-                        </div>
-                    </div>
-                </div>
+            <div class="theme-actions">
+                <button type="button" class="btn btn-reset btn-primary" id="reset-changes">
+                    <i class="fa-solid fa-rotate-left me-2"></i>Varsayılana Dön
+                </button>
             </div>
-        </div>
 
-        <div class="theme-actions">
-            <button type="button" class="btn btn-reset" id="reset-changes">
-                <i class="fa-solid fa-rotate-left me-2"></i>Varsayılana Dön
-            </button>
         </div>
     </div>
 </div>

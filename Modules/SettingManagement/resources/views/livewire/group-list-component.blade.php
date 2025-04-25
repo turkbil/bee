@@ -85,7 +85,7 @@
                                         <div class="d-flex align-items-center">
                                             <div class="flex-fill">
                                                 <div class="font-weight-medium d-flex align-items-center"> 
-                                                    <a href="{{ route('admin.settingmanagement.items', $child->id) }}"
+                                                    <a href="{{ route('admin.settingmanagement.values', $child->id) }}"
                                                         class="text-reset">
                                                         {{ $child->name }}
                                                     </a>
@@ -109,9 +109,9 @@
                                                     <div class="dropdown-menu dropdown-menu-end">
 
 
-                                                        <a href="{{ route('admin.settingmanagement.values', $child->id) }}"
+                                                        <a href="{{ route('admin.settingmanagement.items', $child->id) }}"
                                                             class="dropdown-item">
-                                                            <i class="fas fa-edit me-2"></i> Site Ayarlarını Özelleştir
+                                                            <i class="fas fa-edit me-2"></i> Ayarları Yapılandır
                                                         </a>
                                                         <a href="{{ route('admin.settingmanagement.group.manage', $child->id) }}"
                                                             class="dropdown-item">

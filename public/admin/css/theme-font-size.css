@@ -1,0 +1,713 @@
+/**
+ * Tabler Tema Font Boyutları Özelleştirmesi
+ * Standart font boyutları: 0.75rem, 0.875rem, 1rem
+ */
+
+/* Temel font boyutları - Normal boyut için */
+:root {
+  /* Ana font boyutu değişkenleri */
+  --tblr-body-font-size: 0.875rem; /* Varsayılan font boyutu */
+  --tblr-font-size-xs: 0.75rem;    /* Ekstra küçük font boyutu */
+  --tblr-font-size-sm: 0.75rem;    /* Küçük font boyutu */
+  --tblr-font-size-base: 0.875rem; /* Temel font boyutu */
+  --tblr-font-size-lg: 1rem;       /* Büyük font boyutu */
+  --tblr-font-size-xl: 1.25rem;    /* Ekstra büyük font boyutu */
+  
+  /* Başlık boyutları */
+  --tblr-h1-font-size: 1.5rem;
+  --tblr-h2-font-size: 1.25rem;
+  --tblr-h3-font-size: 1rem;
+  --tblr-h4-font-size: 0.875rem;
+  --tblr-h5-font-size: 0.75rem;
+  --tblr-h6-font-size: 0.625rem;
+  
+  /* Dropdown menü değişkenleri */
+  --tblr-dropdown-font-size: 0.875rem;
+  --tblr-dropdown-item-padding-y: 0.5rem;
+  --tblr-dropdown-header-padding-y: 0.25rem;
+  
+  /* Buton değişkenleri */
+  --tblr-btn-font-size: 0.875rem;
+  --tblr-btn-sm-font-size: 0.75rem;
+  --tblr-btn-lg-font-size: 1rem;
+  
+  /* Form elemanları */
+  --tblr-input-font-size: 0.875rem;
+  --tblr-input-sm-font-size: 0.75rem;
+  --tblr-input-lg-font-size: 1rem;
+  
+  /* Tablo boyutları */
+  --tblr-table-font-size: 0.875rem;
+  --tblr-table-sm-font-size: 0.75rem;
+  --tblr-table-lg-font-size: 1rem;
+  
+  /* Navigasyon değişkenleri */
+  --tblr-nav-link-font-size: 0.875rem;
+  
+  /* Breadcrumb değişkenleri */
+  --tblr-breadcrumb-font-size: 0.875rem;
+  
+  /* Pagination değişkenleri */
+  --tblr-pagination-font-size: 0.875rem;
+  
+  /* Tooltip ve Popover değişkenleri */
+  --tblr-tooltip-font-size: 0.75rem;
+  --tblr-popover-font-size: 0.875rem;
+  
+  /* Küçük metin */
+  --tblr-small-font-size: 0.75rem;
+}
+
+/* Küçük font boyutu - 0.857 çarpanı */
+.font-size-small {
+  --tblr-body-font-size: 0.75rem;
+  --tblr-font-size-xs: 0.643rem;
+  --tblr-font-size-sm: 0.643rem;
+  --tblr-font-size-base: 0.75rem;
+  --tblr-font-size-lg: 0.857rem;
+  --tblr-font-size-xl: 1.071rem;
+  
+  /* Başlık boyutları */
+  --tblr-h1-font-size: 1.286rem;
+  --tblr-h2-font-size: 1.071rem;
+  --tblr-h3-font-size: 0.857rem;
+  --tblr-h4-font-size: 0.75rem;
+  --tblr-h5-font-size: 0.643rem;
+  --tblr-h6-font-size: 0.536rem;
+  
+  /* Dropdown menü değişkenleri */
+  --tblr-dropdown-font-size: 0.75rem;
+  --tblr-dropdown-header-padding-y: 0.214rem;
+  
+  /* Buton değişkenleri */
+  --tblr-btn-font-size: 0.75rem;
+  --tblr-btn-sm-font-size: 0.643rem;
+  --tblr-btn-lg-font-size: 0.857rem;
+  
+  /* Form elemanları */
+  --tblr-input-font-size: 0.75rem;
+  --tblr-input-sm-font-size: 0.643rem;
+  --tblr-input-lg-font-size: 0.857rem;
+  
+  /* Tablo boyutları */
+  --tblr-table-font-size: 0.75rem;
+  --tblr-table-sm-font-size: 0.643rem;
+  --tblr-table-lg-font-size: 0.857rem;
+  
+  /* Navigasyon değişkenleri */
+  --tblr-nav-link-font-size: 0.75rem;
+  
+  /* Breadcrumb değişkenleri */
+  --tblr-breadcrumb-font-size: 0.75rem;
+  
+  /* Pagination değişkenleri */
+  --tblr-pagination-font-size: 0.75rem;
+  
+  /* Tooltip ve Popover değişkenleri */
+  --tblr-tooltip-font-size: 0.643rem;
+  --tblr-popover-font-size: 0.75rem;
+  
+  /* Küçük metin */
+  --tblr-small-font-size: 0.643rem;
+}
+
+/* Büyük font boyutu - 1.143 çarpanı */
+.font-size-large {
+  --tblr-body-font-size: 1rem;
+  --tblr-font-size-xs: 0.857rem;
+  --tblr-font-size-sm: 0.857rem;
+  --tblr-font-size-base: 1rem;
+  --tblr-font-size-lg: 1.143rem;
+  --tblr-font-size-xl: 1.429rem;
+  
+  /* Başlık boyutları */
+  --tblr-h1-font-size: 1.714rem;
+  --tblr-h2-font-size: 1.429rem;
+  --tblr-h3-font-size: 1.143rem;
+  --tblr-h4-font-size: 1rem;
+  --tblr-h5-font-size: 0.857rem;
+  --tblr-h6-font-size: 0.714rem;
+  
+  /* Dropdown menü değişkenleri */
+  --tblr-dropdown-font-size: 1rem;
+  --tblr-dropdown-header-padding-y: 0.286rem;
+  
+  /* Buton değişkenleri */
+  --tblr-btn-font-size: 1rem;
+  --tblr-btn-sm-font-size: 0.857rem;
+  --tblr-btn-lg-font-size: 1.143rem;
+  
+  /* Form elemanları */
+  --tblr-input-font-size: 1rem;
+  --tblr-input-sm-font-size: 0.857rem;
+  --tblr-input-lg-font-size: 1.143rem;
+  
+  /* Tablo boyutları */
+  --tblr-table-font-size: 1rem;
+  --tblr-table-sm-font-size: 0.857rem;
+  --tblr-table-lg-font-size: 1.143rem;
+  
+  /* Navigasyon değişkenleri */
+  --tblr-nav-link-font-size: 1rem;
+  
+  /* Breadcrumb değişkenleri */
+  --tblr-breadcrumb-font-size: 1rem;
+  
+  /* Pagination değişkenleri */
+  --tblr-pagination-font-size: 1rem;
+  
+  /* Tooltip ve Popover değişkenleri */
+  --tblr-tooltip-font-size: 0.857rem;
+  --tblr-popover-font-size: 1rem;
+  
+  /* Küçük metin */
+  --tblr-small-font-size: 0.857rem;
+}
+
+/* Başlık boyutları */
+h1, .h1 { font-size: var(--tblr-h1-font-size); }
+h2, .h2 { font-size: var(--tblr-h2-font-size); }
+h3, .h3 { font-size: var(--tblr-h3-font-size); }
+h4, .h4 { font-size: var(--tblr-h4-font-size); }
+h5, .h5 { font-size: var(--tblr-h5-font-size); }
+h6, .h6 { font-size: var(--tblr-h6-font-size); }
+
+/* Diğer font boyutu sınıfları */
+.lead { font-size: var(--tblr-font-size-lg); }
+.display-1 { font-size: calc(var(--tblr-font-size-xl) * 2.4); }
+.display-2 { font-size: calc(var(--tblr-font-size-xl) * 2.2); }
+.display-3 { font-size: calc(var(--tblr-font-size-xl) * 2); }
+.display-4 { font-size: calc(var(--tblr-font-size-xl) * 1.8); }
+.display-5 { font-size: calc(var(--tblr-font-size-xl) * 1.6); }
+.display-6 { font-size: calc(var(--tblr-font-size-xl) * 1.4); }
+
+/* Küçük metin */
+small, .small { font-size: var(--tblr-small-font-size); }
+sub, sup { font-size: var(--tblr-small-font-size); }
+
+/* Form elemanları */
+.form-label { font-size: var(--tblr-input-font-size); }
+.form-text { font-size: var(--tblr-small-font-size); }
+.form-control { font-size: var(--tblr-input-font-size); }
+.form-control-sm { font-size: var(--tblr-input-sm-font-size); }
+.form-control-lg { font-size: var(--tblr-input-lg-font-size); }
+.form-select { font-size: var(--tblr-input-font-size); }
+.form-select-sm { font-size: var(--tblr-input-sm-font-size); }
+.form-select-lg { font-size: var(--tblr-input-lg-font-size); }
+.form-check-label { font-size: var(--tblr-input-font-size); }
+.input-group-text { font-size: var(--tblr-input-font-size); }
+
+/* Butonlar */
+.btn { font-size: var(--tblr-btn-font-size); }
+.btn-sm { font-size: var(--tblr-btn-sm-font-size); }
+.btn-lg { font-size: var(--tblr-btn-lg-font-size); }
+
+/* Dropdown menüler */
+.dropdown-menu { font-size: var(--tblr-dropdown-font-size); }
+.dropdown-item { font-size: var(--tblr-dropdown-font-size); }
+.dropdown-header { font-size: var(--tblr-small-font-size); }
+.dropdown-toggle { font-size: var(--tblr-dropdown-font-size); }
+
+/* Navigasyon */
+.nav-link { font-size: var(--tblr-nav-link-font-size); }
+.navbar-brand { font-size: var(--tblr-font-size-lg); }
+.navbar-nav .nav-link { font-size: var(--tblr-nav-link-font-size); }
+.navbar-text { font-size: var(--tblr-body-font-size); }
+
+/* Kartlar */
+.card-title { font-size: var(--tblr-font-size-lg); }
+.card-subtitle { font-size: var(--tblr-body-font-size); }
+.card-text { font-size: var(--tblr-body-font-size); }
+.card-header { font-size: var(--tblr-body-font-size); }
+.card-footer { font-size: var(--tblr-body-font-size); }
+
+/* Breadcrumb */
+.breadcrumb { font-size: var(--tblr-breadcrumb-font-size); }
+.breadcrumb-item { font-size: var(--tblr-breadcrumb-font-size); }
+
+/* Pagination */
+.pagination { font-size: var(--tblr-pagination-font-size); }
+.pagination-lg { font-size: var(--tblr-font-size-lg); }
+.pagination-sm { font-size: var(--tblr-small-font-size); }
+.page-link { font-size: var(--tblr-pagination-font-size); }
+
+/* Tablolar */
+.table { font-size: var(--tblr-table-font-size); }
+.table-sm { font-size: var(--tblr-table-sm-font-size); }
+.table th, .table td { font-size: var(--tblr-table-font-size); }
+
+/* Uyarılar */
+.alert { font-size: var(--tblr-body-font-size); }
+.alert-heading { font-size: var(--tblr-font-size-lg); }
+
+/* Rozetler */
+.badge { font-size: var(--tblr-small-font-size); }
+
+/* Tooltip ve Popover */
+/* Listeler */
+.font-size-small .list-group-item {
+  font-size: 0.75rem !important;
+}
+.font-size-normal .list-group-item {
+  font-size: 0.875rem !important;
+}
+.font-size-large .list-group-item {
+  font-size: 1rem !important;
+}
+
+/* Kod blokları */
+.font-size-small code, 
+.font-size-small kbd, 
+.font-size-small pre, 
+.font-size-small samp {
+  font-size: 0.75rem !important;
+}
+.font-size-normal code, 
+.font-size-normal kbd, 
+.font-size-normal pre, 
+.font-size-normal samp {
+  font-size: 0.875rem !important;
+}
+.font-size-large code, 
+.font-size-large kbd, 
+.font-size-large pre, 
+.font-size-large samp {
+  font-size: 1rem !important;
+}
+
+/* Modal */
+.font-size-small .modal-title {
+  font-size: 0.857rem !important;
+}
+.font-size-normal .modal-title {
+  font-size: 1rem !important;
+}
+.font-size-large .modal-title {
+  font-size: 1.143rem !important;
+}
+
+.font-size-small .modal-body,
+.font-size-small .modal-footer {
+  font-size: 0.75rem !important;
+}
+.font-size-normal .modal-body,
+.font-size-normal .modal-footer {
+  font-size: 0.875rem !important;
+}
+.font-size-large .modal-body,
+.font-size-large .modal-footer {
+  font-size: 1rem !important;
+}
+
+/* Butonlar */
+.font-size-small .btn {
+  font-size: 0.75rem !important;
+}
+.font-size-normal .btn {
+  font-size: 0.875rem !important;
+}
+.font-size-large .btn {
+  font-size: 1rem !important;
+}
+
+.font-size-small .btn-sm {
+  font-size: 0.643rem !important;
+}
+.font-size-normal .btn-sm {
+  font-size: 0.75rem !important;
+}
+.font-size-large .btn-sm {
+  font-size: 0.857rem !important;
+}
+
+.font-size-small .btn-lg {
+  font-size: 0.857rem !important;
+}
+.font-size-normal .btn-lg {
+  font-size: 1rem !important;
+}
+.font-size-large .btn-lg {
+  font-size: 1.143rem !important;
+}
+
+/* Form elemanları */
+.font-size-small .form-control,
+.font-size-small .form-select,
+.font-size-small .form-label,
+.font-size-small .form-check-label,
+.font-size-small .input-group-text {
+  font-size: 0.75rem !important;
+}
+.font-size-normal .form-control,
+.font-size-normal .form-select,
+.font-size-normal .form-label,
+.font-size-normal .form-check-label,
+.font-size-normal .input-group-text {
+  font-size: 0.875rem !important;
+}
+.font-size-large .form-control,
+.font-size-large .form-select,
+.font-size-large .form-label,
+.font-size-large .form-check-label,
+.font-size-large .input-group-text {
+  font-size: 1rem !important;
+}
+
+.font-size-small .form-control-sm,
+.font-size-small .form-select-sm {
+  font-size: 0.643rem !important;
+}
+.font-size-normal .form-control-sm,
+.font-size-normal .form-select-sm {
+  font-size: 0.75rem !important;
+}
+.font-size-large .form-control-sm,
+.font-size-large .form-select-sm {
+  font-size: 0.857rem !important;
+}
+
+.font-size-small .form-control-lg,
+.font-size-small .form-select-lg {
+  font-size: 0.857rem !important;
+}
+.font-size-normal .form-control-lg,
+.font-size-normal .form-select-lg {
+  font-size: 1rem !important;
+}
+.font-size-large .form-control-lg,
+.font-size-large .form-select-lg {
+  font-size: 1.143rem !important;
+}
+
+.font-size-small .form-text {
+  font-size: 0.643rem !important;
+}
+.font-size-normal .form-text {
+  font-size: 0.75rem !important;
+}
+.font-size-large .form-text {
+  font-size: 0.857rem !important;
+}
+
+/* Tablolar */
+.font-size-small .table,
+.font-size-small .table th,
+.font-size-small .table td {
+  font-size: 0.75rem !important;
+}
+.font-size-normal .table,
+.font-size-normal .table th,
+.font-size-normal .table td {
+  font-size: 0.875rem !important;
+}
+.font-size-large .table,
+.font-size-large .table th,
+.font-size-large .table td {
+  font-size: 1rem !important;
+}
+
+.font-size-small .table-sm {
+  font-size: 0.643rem !important;
+}
+.font-size-normal .table-sm {
+  font-size: 0.75rem !important;
+}
+.font-size-large .table-sm {
+  font-size: 0.857rem !important;
+}
+
+/* Navigasyon */
+.font-size-small .nav-link,
+.font-size-small .navbar-nav .nav-link {
+  font-size: 0.75rem !important;
+}
+.font-size-normal .nav-link,
+.font-size-normal .navbar-nav .nav-link {
+  font-size: 0.875rem !important;
+}
+.font-size-large .nav-link,
+.font-size-large .navbar-nav .nav-link {
+  font-size: 1rem !important;
+}
+
+.font-size-small .navbar-brand {
+  font-size: 0.857rem !important;
+}
+.font-size-normal .navbar-brand {
+  font-size: 1rem !important;
+}
+.font-size-large .navbar-brand {
+  font-size: 1.143rem !important;
+}
+
+/* Breadcrumb */
+.font-size-small .breadcrumb,
+.font-size-small .breadcrumb-item {
+  font-size: 0.75rem !important;
+}
+.font-size-normal .breadcrumb,
+.font-size-normal .breadcrumb-item {
+  font-size: 0.875rem !important;
+}
+.font-size-large .breadcrumb,
+.font-size-large .breadcrumb-item {
+  font-size: 1rem !important;
+}
+
+/* Pagination */
+.font-size-small .pagination,
+.font-size-small .page-link {
+  font-size: 0.75rem !important;
+}
+.font-size-normal .pagination,
+.font-size-normal .page-link {
+  font-size: 0.875rem !important;
+}
+.font-size-large .pagination,
+.font-size-large .page-link {
+  font-size: 1rem !important;
+}
+
+.font-size-small .pagination-sm {
+  font-size: 0.643rem !important;
+}
+.font-size-normal .pagination-sm {
+  font-size: 0.75rem !important;
+}
+.font-size-large .pagination-sm {
+  font-size: 0.857rem !important;
+}
+
+.font-size-small .pagination-lg {
+  font-size: 0.857rem !important;
+}
+.font-size-normal .pagination-lg {
+  font-size: 1rem !important;
+}
+.font-size-large .pagination-lg {
+  font-size: 1.143rem !important;
+}
+
+/* Uyarılar */
+.font-size-small .alert {
+  font-size: 0.75rem !important;
+}
+.font-size-normal .alert {
+  font-size: 0.875rem !important;
+}
+.font-size-large .alert {
+  font-size: 1rem !important;
+}
+
+.font-size-small .alert-heading {
+  font-size: 0.857rem !important;
+}
+.font-size-normal .alert-heading {
+  font-size: 1rem !important;
+}
+.font-size-large .alert-heading {
+  font-size: 1.143rem !important;
+}
+
+/* Rozetler */
+.font-size-small .badge {
+  font-size: 0.643rem !important;
+}
+.font-size-normal .badge {
+  font-size: 0.75rem !important;
+}
+.font-size-large .badge {
+  font-size: 0.857rem !important;
+}
+
+/* Offcanvas */
+.font-size-small .offcanvas-title {
+  font-size: 0.857rem !important;
+}
+.font-size-normal .offcanvas-title {
+  font-size: 1rem !important;
+}
+.font-size-large .offcanvas-title {
+  font-size: 1.143rem !important;
+}
+
+.font-size-small .offcanvas-body {
+  font-size: 0.75rem !important;
+}
+.font-size-normal .offcanvas-body {
+  font-size: 0.875rem !important;
+}
+.font-size-large .offcanvas-body {
+  font-size: 1rem !important;
+}
+
+/* Accordion */
+.font-size-small .accordion-button,
+.font-size-small .accordion-body {
+  font-size: 0.75rem !important;
+}
+.font-size-normal .accordion-button,
+.font-size-normal .accordion-body {
+  font-size: 0.875rem !important;
+}
+.font-size-large .accordion-button,
+.font-size-large .accordion-body {
+  font-size: 1rem !important;
+}
+
+/* Progress */
+.font-size-small .progress {
+  font-size: 0.643rem !important;
+}
+.font-size-normal .progress {
+  font-size: 0.75rem !important;
+}
+.font-size-large .progress {
+  font-size: 0.857rem !important;
+}
+
+/* Toasts */
+.font-size-small .toast-header,
+.font-size-small .toast-body {
+  font-size: 0.75rem !important;
+}
+.font-size-normal .toast-header,
+.font-size-normal .toast-body {
+  font-size: 0.875rem !important;
+}
+.font-size-large .toast-header,
+.font-size-large .toast-body {
+  font-size: 1rem !important;
+}
+
+/* Tabs */
+.font-size-small .nav-tabs .nav-link,
+.font-size-small .nav-pills .nav-link {
+  font-size: 0.75rem !important;
+}
+.font-size-normal .nav-tabs .nav-link,
+.font-size-normal .nav-pills .nav-link {
+  font-size: 0.875rem !important;
+}
+.font-size-large .nav-tabs .nav-link,
+.font-size-large .nav-pills .nav-link {
+  font-size: 1rem !important;
+}
+
+.font-size-small .tab-content {
+  font-size: 0.75rem !important;
+}
+.font-size-normal .tab-content {
+  font-size: 0.875rem !important;
+}
+.font-size-large .tab-content {
+  font-size: 1rem !important;
+}
+
+/* CSS sınıflarının içindeki değişkenler için */
+:root, [data-bs-theme=light], .font-size-small, .font-size-normal, .font-size-large {
+  /* Dropdown menü içi değişkenler */
+  --tblr-dropdown-min-width: 11rem;
+  --tblr-dropdown-padding-x: 0;
+  --tblr-dropdown-padding-y: 0.25rem;
+  --tblr-dropdown-spacer: 1px;
+  --tblr-dropdown-color: var(--tblr-body-color);
+  --tblr-dropdown-bg: var(--tblr-bg-surface);
+  --tblr-dropdown-border-color: var(--tblr-border-color-translucent);
+  --tblr-dropdown-border-radius: var(--tblr-border-radius);
+  --tblr-dropdown-border-width: var(--tblr-border-width);
+  --tblr-dropdown-inner-border-radius: calc(var(--tblr-border-radius) - var(--tblr-border-width));
+  --tblr-dropdown-divider-bg: var(--tblr-border-color-translucent);
+  --tblr-dropdown-divider-margin-y: var(--tblr-spacer-2);
+  --tblr-dropdown-box-shadow: var(--tblr-shadow-dropdown);
+  --tblr-dropdown-link-color: inherit;
+  --tblr-dropdown-link-hover-color: inherit;
+  --tblr-dropdown-link-hover-bg: rgba(var(--tblr-secondary-rgb), 0.08);
+  --tblr-dropdown-link-active-color: var(--tblr-primary);
+  --tblr-dropdown-link-active-bg: var(--tblr-active-bg);
+  --tblr-dropdown-link-disabled-color: var(--tblr-tertiary-color);
+  --tblr-dropdown-item-padding-x: 0.75rem;
+  --tblr-dropdown-header-color: #4b5563;
+  --tblr-dropdown-header-padding-x: 0.75rem;
+}
+
+/* Dropdown menüler - Doğrudan sınıflara boyut uygulama */
+.font-size-small .dropdown-menu,
+.font-size-small .dropdown-item,
+.font-size-small .dropdown-toggle {
+  font-size: 0.75rem !important;
+}
+
+.font-size-normal .dropdown-menu,
+.font-size-normal .dropdown-item,
+.font-size-normal .dropdown-toggle {
+  font-size: 0.875rem !important;
+}
+
+.font-size-large .dropdown-menu,
+.font-size-large .dropdown-item,
+.font-size-large .dropdown-toggle {
+  font-size: 1rem !important;
+}
+
+.font-size-small .dropdown-header {
+  font-size: 0.643rem !important;
+  padding: 0.214rem 0.75rem !important;
+}
+
+.font-size-normal .dropdown-header {
+  font-size: 0.75rem !important;
+  padding: 0.25rem 0.75rem !important;
+}
+
+.font-size-large .dropdown-header {
+  font-size: 0.857rem !important;
+  padding: 0.286rem 0.75rem !important;
+}
+
+.dropdown-item {
+  padding: var(--tblr-dropdown-item-padding-y) var(--tblr-dropdown-item-padding-x) !important;
+}
+/* Popover ve Tooltip */
+.font-size-small .popover {
+  font-size: 0.75rem !important;
+}
+.font-size-normal .popover {
+  font-size: 0.875rem !important;
+}
+.font-size-large .popover {
+  font-size: 1rem !important;
+}
+
+.font-size-small .tooltip {
+  font-size: 0.643rem !important;
+}
+.font-size-normal .tooltip {
+  font-size: 0.75rem !important;
+}
+.font-size-large .tooltip {
+  font-size: 0.857rem !important;
+}
+
+.font-size-small .popover-body,
+.font-size-small .popover-header {
+  font-size: 0.75rem !important;
+}
+.font-size-normal .popover-body,
+.font-size-normal .popover-header {
+  font-size: 0.875rem !important;
+}
+.font-size-large .popover-body,
+.font-size-large .popover-header {
+  font-size: 1rem !important;
+}
+
+/* Listeler */
+.list-group-item {
+  font-size: 0.875rem;
+}
+
+/* Kod blokları */
+code, kbd, pre, samp {
+  font-size: 0.875rem;
+}

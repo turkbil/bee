@@ -9,17 +9,23 @@ $(document).ready(function() {
     }
     $('#table').bootstrapTable();
 
-    // Dark mode
-    var darkModeCookie = Cookies.get("dark");
-    if (darkModeCookie && darkModeCookie === "1") {
-        $("body").removeClass("light").addClass("dark").attr('data-bs-theme', 'dark');
-        $('.dark-switch').prop('checked', true);
-    } else {
-        $("body").removeClass("dark").addClass("light").attr('data-bs-theme', 'light');
-        $('.dark-switch').prop('checked', false);
+    // Dark mode - Sayfa yüklendiğinde durumu ayarla
+    function initDarkMode() {
+        var darkModeCookie = Cookies.get("dark");
+        if (darkModeCookie && darkModeCookie === "1") {
+            $("body").removeClass("light").addClass("dark").attr('data-bs-theme', 'dark');
+            $('.dark-switch').prop('checked', true);
+        } else {
+            $("body").removeClass("dark").addClass("light").attr('data-bs-theme', 'light');
+            $('.dark-switch').prop('checked', false);
+        }
     }
-
-    $('.dark-switch').off('change').on('change', function() {
+    
+    // İlk yüklemede dark mode durumunu ayarla
+    initDarkMode();
+    
+    // Olay dinleyiciyi doğrudan bağla (off kullanmadan)
+    $(document).on('change', '.dark-switch', function() {
         if ($(this).is(":checked")) {
             $("body").removeClass("light").addClass("dark").attr('data-bs-theme', 'dark');
             Cookies.set("dark", "1", { expires: 365 });

@@ -15,15 +15,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 body.classList.remove('light');
                 body.classList.add('dark');
                 // Navbar tema düğmesini güncelle
-                if (document.getElementById('switch')) {
-                    document.getElementById('switch').checked = true;
+                const themeContainer = document.querySelector('.theme-mode');
+                if (themeContainer) {
+                    themeContainer.setAttribute('data-theme', 'dark');
+                }
+                const themeSwitch = document.getElementById('switch');
+                if (themeSwitch) {
+                    themeSwitch.checked = true;
                 }
             } else if (themeMode === 'light') {
                 body.setAttribute('data-bs-theme', 'light');
                 body.classList.remove('dark');
                 body.classList.add('light');
-                if (document.getElementById('switch')) {
-                    document.getElementById('switch').checked = false;
+                const themeContainer = document.querySelector('.theme-mode');
+                if (themeContainer) {
+                    themeContainer.setAttribute('data-theme', 'light');
+                }
+                const themeSwitch = document.getElementById('switch');
+                if (themeSwitch) {
+                    themeSwitch.checked = false;
                 }
             } else if (themeMode === 'auto') {
                 // Sistem ayarını kontrol et
@@ -31,12 +41,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 body.setAttribute('data-bs-theme', prefersDarkMode ? 'dark' : 'light');
                 body.classList.remove(prefersDarkMode ? 'light' : 'dark');
                 body.classList.add(prefersDarkMode ? 'dark' : 'light');
-                if (document.getElementById('switch')) {
-                    document.getElementById('switch').checked = prefersDarkMode;
+                const themeContainer = document.querySelector('.theme-mode');
+                if (themeContainer) {
+                    themeContainer.setAttribute('data-theme', 'auto');
+                }
+                const themeSwitch = document.getElementById('switch');
+                if (themeSwitch) {
+                    themeSwitch.checked = prefersDarkMode;
                 }
             }
         });
     });
+    
+    // Karanlık mod switch için tema geçiş fonksiyonu
+    initThemeSwitch();
 
     // Ana renk değiştirme
     const colorRadios = document.querySelectorAll('input[name="theme-primary"]');
@@ -170,37 +188,126 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Navbar'daki tema geçiş düğmesi
-    const themeSwitch = document.getElementById('switch');
-    if (themeSwitch) {
-        themeSwitch.addEventListener('change', function() {
-            const isDark = this.checked;
+    // Navbar'daki tema geçiş düğmesi - Sırayla Açık -> Karanlık -> Sistem modları arasında geçiş yapar
+    function initThemeSwitch() {
+        // Tema düğmesini bul
+        const themeSwitch = document.getElementById('switch');
+        
+        if (!themeSwitch) return;
+        
+        // Cookie'den mevcut temayı al
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return null;
+        }
+        
+        // Mevcut tema ayarını al
+        let currentTheme = getCookie('dark');
+        
+        // Eğer tema ayarı yoksa, varsayılan olarak açık tema kullan
+        if (!currentTheme || (currentTheme !== '0' && currentTheme !== '1' && currentTheme !== 'auto')) {
+            currentTheme = '0'; // Açık tema
+        }
+        
+        // Tema durumunu güncelle
+        function updateThemeState() {
+            const themeContainer = document.querySelector('.theme-mode');
+            if (!themeContainer) return;
             
-            // Auto modunda ise değiştirme
-            if (getCookie('dark') === 'auto') {
-                return;
+            // Önce mevcut tema durumunu temizle
+            themeContainer.removeAttribute('data-theme');
+            
+            // Mevcut temaya göre data-theme özniteliğini ayarla
+            if (currentTheme === 'auto') {
+                // Sistem teması için
+                themeContainer.setAttribute('data-theme', 'auto');
+                
+                // Sistem teması için, sistem ayarına göre switch'i ayarla
+                const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                themeSwitch.checked = prefersDarkMode;
+            } else if (currentTheme === '1') {
+                // Karanlık mod
+                themeContainer.setAttribute('data-theme', 'dark');
+                themeSwitch.checked = true;
+            } else {
+                // Açık mod
+                themeContainer.setAttribute('data-theme', 'light');
+                themeSwitch.checked = false;
+            }
+        }
+        
+        // Sistem temasını kontrol et
+        function checkSystemTheme() {
+            if (currentTheme === 'auto') {
+                const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const body = document.body;
+                
+                body.setAttribute('data-bs-theme', prefersDarkMode ? 'dark' : 'light');
+                body.classList.remove(prefersDarkMode ? 'light' : 'dark');
+                body.classList.add(prefersDarkMode ? 'dark' : 'light');
+                
+                // Sistem teması değiştiğinde tema durumunu güncelle
+                updateThemeState();
+            }
+        }
+        
+        // Başlangıçta tema durumunu ayarla ve sistem temasını kontrol et
+        updateThemeState();
+        checkSystemTheme();
+        
+        // Tema düğmesine tıklama olayı ekle
+        themeSwitch.addEventListener('change', function() {
+            // Sırayla geçiş: Açık -> Karanlık -> Sistem -> Açık ...
+            if (currentTheme === '0') {
+                // Açık moddan karanlık moda geç
+                currentTheme = '1';
+            } else if (currentTheme === '1') {
+                // Karanlık moddan sistem moduna geç
+                currentTheme = 'auto';
+            } else {
+                // Sistem modundan açık moda geç
+                currentTheme = '0';
             }
             
-            document.cookie = `dark=${isDark ? '1' : '0'};path=/;max-age=31536000`;
+            // Cookie'yi ayarla
+            document.cookie = `dark=${currentTheme};path=/;max-age=31536000`;
             
-            // Sayfa yenilemeden tema modunu değiştir
+            // Tema sınıflarını güncelle
             const body = document.body;
-            if (isDark) {
+            
+            if (currentTheme === '1') {
                 body.setAttribute('data-bs-theme', 'dark');
                 body.classList.remove('light');
                 body.classList.add('dark');
-                
-                // Radio butonları güncelle
-                const darkRadio = document.querySelector('input[name="theme"][value="dark"]');
-                if (darkRadio) darkRadio.checked = true;
-            } else {
+            } else if (currentTheme === '0') {
                 body.setAttribute('data-bs-theme', 'light');
                 body.classList.remove('dark');
                 body.classList.add('light');
+            } else if (currentTheme === 'auto') {
+                const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                body.setAttribute('data-bs-theme', prefersDarkMode ? 'dark' : 'light');
+                body.classList.remove(prefersDarkMode ? 'light' : 'dark');
+                body.classList.add(prefersDarkMode ? 'dark' : 'light');
+            }
+            
+            // Tema durumunu güncelle
+            updateThemeState();
+        });
+        
+        // Sistem teması değiştiğinde otomatik güncelleme
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+            if (currentTheme === 'auto') {
+                const prefersDarkMode = e.matches;
+                const body = document.body;
                 
-                // Radio butonları güncelle
-                const lightRadio = document.querySelector('input[name="theme"][value="light"]');
-                if (lightRadio) lightRadio.checked = true;
+                body.setAttribute('data-bs-theme', prefersDarkMode ? 'dark' : 'light');
+                body.classList.remove(prefersDarkMode ? 'light' : 'dark');
+                body.classList.add(prefersDarkMode ? 'dark' : 'light');
+                
+                // Sistem teması değiştiğinde tema durumunu güncelle
+                updateThemeState();
             }
         });
     }
@@ -389,4 +496,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Koyu tema değiştiğinde radius örneklerini güncelle
     document.addEventListener('darkModeChange', updateRadiusExamples);
+    
+    // Sayfa tamamen yüklendikten sonra bir kez daha tema düğmesini kontrol et
+    window.addEventListener('load', function() {
+        initThemeSwitch();
+    });
 });

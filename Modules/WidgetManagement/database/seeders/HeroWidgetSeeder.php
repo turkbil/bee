@@ -29,7 +29,9 @@ class HeroWidgetSeeder extends Seeder
         // Central işlemleri
         try {
             // Modül Bileşenleri kategorisini kontrol et
-            $moduleCategory = WidgetCategory::where('slug', 'modul-bilesenleri')->orWhere('slug', 'moduel-bilesenleri')->first();
+            $moduleCategory = WidgetCategory::where('slug', 'modul-bilesenleri')
+                ->orWhere('title', 'Modül Bileşenleri')
+                ->first();
             
             if (!$moduleCategory) {
                 try {
@@ -45,12 +47,13 @@ class HeroWidgetSeeder extends Seeder
                     ]);
                     
                     $moduleCategory->save();
+                    
                 } catch (\Exception $e) {
                     Log::error("Modül Bileşenleri kategorisi oluşturulamadı. Hata: " . $e->getMessage());
                 }
+            } else {
             }
             
-            // Önce central veritabanındaki fazla hero kayıtlarını temizleyelim
             $this->cleanupExtraHeroes();
             
             // Statik hero widget'ı oluştur
@@ -446,7 +449,6 @@ class HeroWidgetSeeder extends Seeder
             return;
         }
         
-        // Central veritabanındaki tenant_widgets tablosuna ekleme yapılıyor
         $tenantWidget = TenantWidget::create([
             'widget_id' => $widget->id,
             'settings' => [

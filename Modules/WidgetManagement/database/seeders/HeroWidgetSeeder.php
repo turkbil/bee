@@ -51,7 +51,6 @@ class HeroWidgetSeeder extends Seeder
                 } catch (\Exception $e) {
                     Log::error("Modül Bileşenleri kategorisi oluşturulamadı. Hata: " . $e->getMessage());
                 }
-            } else {
             }
             
             $this->cleanupExtraHeroes();
@@ -60,11 +59,11 @@ class HeroWidgetSeeder extends Seeder
             $widget = $this->createHeroWidget();
             
             if ($widget) {
-                // Central veritabanı için sadece bir tane hero oluşturalım
-                $this->createDemoTenantHero($widget);
+                // Central için örnek bir hero oluştur (tenant değil)
+                $this->createCentralHeroExample($widget);
                 
-                // Tüm mevcut tenant'lar için hero'ları oluştur
-                $this->createHeroForAllTenants($widget);
+                // SADECE gerçek tenant'lar için hero'ları oluştur
+                $this->createHeroForTenants($widget);
             }
         } catch (\Exception $e) {
             Log::error('HeroWidgetSeeder central hatası: ' . $e->getMessage());
@@ -439,28 +438,31 @@ class HeroWidgetSeeder extends Seeder
         }
     }
     
-    private function createDemoTenantHero($widget)
+    // Central veritabanı için örnek hero - sadece central veritabanında çalışır, tenant değildir
+    private function createCentralHeroExample($widget)
     {
-        // Önce mevcut widget'ları kontrol edelim ve temizleyelim
+        // Bu fonksiyon sadece bir kez çalışır ve central için bir örnek oluşturur
+        
+        // Önce central veritabanını kontrol et
         $existingWidgets = TenantWidget::where('widget_id', $widget->id)->get();
         
         if ($existingWidgets->count() >= 1) {
-            // Zaten bir tane var, yenisini oluşturmaya gerek yok
+            // Zaten var, yeni oluşturmaya gerek yok
             return;
         }
         
-        $tenantWidget = TenantWidget::create([
+        TenantWidget::create([
             'widget_id' => $widget->id,
             'settings' => [
                 'unique_id' => (string) Str::uuid(),
-                'title' => 'Full Width Hero',
-                'subtitle' => 'Modern ve Etkileyici',
-                'description' => 'Etkileyici bir hero bileşeni ile sayfanızın üst kısmını tasarlayın. İsterseniz arka plan rengini değiştirerek modern bir görünüm kazandırabilirsiniz.',
-                'button_text' => 'Daha Fazla',
+                'title' => 'Central Hero Demo',
+                'subtitle' => 'Demo Amaçlı',
+                'description' => 'Bu hero widget sadece central veritabanı için örnektir.',
+                'button_text' => 'Demo',
                 'button_url' => '#',
                 'show_secondary_button' => true,
-                'secondary_button_text' => 'İletişim',
-                'secondary_button_url' => '/iletisim',
+                'secondary_button_text' => 'Örnek',
+                'secondary_button_url' => '#',
                 'bg_color' => '#f8f9fa',
                 'text_color' => '#212529'
             ],
@@ -469,18 +471,22 @@ class HeroWidgetSeeder extends Seeder
         ]);
     }
     
-    private function createHeroForAllTenants($widget)
+    // Sadece gerçek tenant'lar için hero oluşturur - central tenant için çalışmaz
+    private function createHeroForTenants($widget)
     {
-        // Tüm tenant'ları al
+        // SADECE central=false olan gerçek tenant'ları al
         $tenants = Tenant::where('central', false)->get();
         
         if ($tenants->isEmpty()) {
+            Log::info("Hiç gerçek tenant bulunamadı.");
             return;
         }
         
         foreach ($tenants as $tenant) {
             try {
+                // Her tenant için ayrı ayrı çalıştır
                 $tenant->run(function () use ($widget, $tenant) {
+                    
                     // Önce tenant'ta fazla widget'ları temizleyelim
                     $existingWidgets = TenantWidget::where('widget_id', $widget->id)->get();
                     
@@ -502,7 +508,7 @@ class HeroWidgetSeeder extends Seeder
                     }
                     
                     // Tenant için widget oluştur
-                    $tenantWidget = TenantWidget::create([
+                    TenantWidget::create([
                         'widget_id' => $widget->id,
                         'settings' => [
                             'unique_id' => (string) Str::uuid(),

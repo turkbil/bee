@@ -40,7 +40,8 @@ class WidgetManageComponent extends Component
         'item_schema' => [],
         'settings_schema' => [],
         'is_active' => true,
-        'is_core' => false
+        'is_core' => false,
+        'file_path' => ''
     ];
     
     // Yeni şema alanı için form
@@ -83,7 +84,7 @@ class WidgetManageComponent extends Component
         'widget.slug' => 'required|regex:/^[a-z0-9\-_]+$/i|max:255',
         'widget.description' => 'nullable|max:1000',
         'widget.widget_category_id' => 'nullable|exists:widget_categories,widget_category_id',
-        'widget.type' => 'required|in:static,dynamic,module,content',
+        'widget.type' => 'required|in:static,dynamic,module,file',
         'widget.module_ids' => 'nullable|array',
         'widget.content_html' => 'nullable',
         'widget.content_css' => 'nullable',
@@ -93,11 +94,12 @@ class WidgetManageComponent extends Component
         'widget.settings_schema' => 'nullable|array',
         'widget.is_active' => 'boolean',
         'widget.is_core' => 'boolean',
+        'widget.file_path' => 'nullable|string|max:255',
         'thumbnail' => 'nullable|image|max:3072', // 3MB = 3072KB
         'temporaryImages.*' => 'nullable|image|max:3072',
         'temporaryMultipleImages.*' => 'nullable|image|max:3072',
     ];
-        
+    
     // Lint hatalarını düzeltmek için özel değişkenler
     protected $casts = [
         'widget.item_schema' => 'array',
@@ -132,18 +134,21 @@ class WidgetManageComponent extends Component
                 'item_schema' => $widget->item_schema ?? [],
                 'settings_schema' => $widget->settings_schema ?? [],
                 'is_active' => $widget->is_active,
-                'is_core' => $widget->is_core
+                'is_core' => $widget->is_core,
+                'file_path' => $widget->file_path
             ];
             
             // 'title' ve 'is_active' her zaman item_schema'da olmalı
             if ($widget->has_items) {
                 $hasTitle = false;
                 $hasActive = false;
+                $hasUniqueId = false;
                 
                 if (is_array($this->widget['item_schema'])) {
                     foreach ($this->widget['item_schema'] as $field) {
                         if ($field['name'] === 'title') $hasTitle = true;
                         if ($field['name'] === 'is_active') $hasActive = true;
+                        if ($field['name'] === 'unique_id') $hasUniqueId = true;
                     }
                 }
                 
@@ -164,6 +169,17 @@ class WidgetManageComponent extends Component
                         'type' => 'checkbox',
                         'required' => false,
                         'system' => true
+                    ];
+                }
+                
+                if (!$hasUniqueId) {
+                    $this->widget['item_schema'][] = [
+                        'name' => 'unique_id',
+                        'label' => 'Benzersiz ID',
+                        'type' => 'text',
+                        'required' => false,
+                        'system' => true,
+                        'hidden' => true
                     ];
                 }
             }

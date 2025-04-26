@@ -25,18 +25,14 @@ class WidgetCategorySeeder extends Seeder
             if ($this->command) {
                 $this->command->info('Tenant contextinde çalışıyor, WidgetCategorySeeder atlanıyor.');
             }
-            Log::info('Tenant contextinde çalışıyor, WidgetCategorySeeder atlanıyor. Tenant ID: ' . tenant('id'));
             return;
         }
         
         // Cache kontrolü
         $cacheKey = self::$runKey . '_' . Config::get('database.default');
         if (Cache::has($cacheKey)) {
-            Log::info('WidgetCategorySeeder zaten çalıştırılmış, atlanıyor...');
             return;
         }
-        
-        Log::info('WidgetCategorySeeder merkezi veritabanında çalışıyor...');
         
         // Tablo var mı kontrol et
         if (!Schema::hasTable('widget_categories')) {
@@ -48,8 +44,47 @@ class WidgetCategorySeeder extends Seeder
         }
 
         try {
-            // Önce tüm kategorileri ve widget'ları temizle
-            $this->cleanupAllCategories();
+            // Modül Bileşenleri kategorisini kontrol et
+            $moduleCategory = WidgetCategory::where('slug', 'modul-bilesenleri')
+                ->orWhere('title', 'Modül Bileşenleri')
+                ->first();
+            
+            if (!$moduleCategory) {
+                
+                try {
+                    // Önce tüm kategorileri ve widget'ları temizle
+                    $this->cleanupAllCategories();
+            
+                    // Auto increment değerini sıfırla
+                    DB::statement('ALTER TABLE widget_categories AUTO_INCREMENT = 1;');
+                    
+                    // Doğrudan SQL ile ID'si 1 olacak şekilde oluştur
+                    DB::statement('INSERT INTO widget_categories (title, slug, description, icon, `order`, is_active, parent_id, has_subcategories, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())', [
+                        'Modül Bileşenleri',
+                        'modul-bilesenleri',
+                        'Sistem modüllerine ait bileşenler',
+                        'fa-cubes',
+                        1, // order
+                        1, // is_active
+                        null, // parent_id
+                        1 // has_subcategories
+                    ]);
+                    
+                    $moduleCategory = WidgetCategory::find(1);
+                    
+                    if (!$moduleCategory) {
+                        throw new \Exception("Modül Bileşenleri kategorisi ID 1 olarak oluşturulamadı");
+                    }
+                    
+                } catch (\Exception $e) {
+                    Log::error("Modül Bileşenleri kategorisi oluşturulamadı. Hata: " . $e->getMessage());
+                    return;
+                }
+            } else {
+                
+                // Önce tüm kategorileri ve widget'ları temizle
+                $this->cleanupAllCategories();
+            }
 
             // Ana kategorileri oluştur
             $modulesCategory = $this->createMainCategories();
@@ -62,14 +97,11 @@ class WidgetCategorySeeder extends Seeder
             // Alt kategorileri oluştur
             $this->createModuleSubcategories($modulesCategory);
             
-            Log::info('Widget kategorileri başarıyla oluşturuldu.');
-            
             if ($this->command) {
                 $this->command->info('Widget kategorileri ve widget\'lar başarıyla oluşturuldu.');
             }
             
             // Seeder'ın çalıştırıldığını işaretle (10 dakika süreyle cache'de tut)
-            $cacheKey = self::$runKey . '_' . Config::get('database.default');
             Cache::put($cacheKey, true, 600);
         } catch (\Exception $e) {
             Log::error('WidgetCategorySeeder hatası: ' . $e->getMessage());
@@ -124,38 +156,36 @@ class WidgetCategorySeeder extends Seeder
     
     private function createMainCategories()
     {
-        // Önce tüm kategorileri temizle
-        $this->cleanupAllCategories();
-        
-        // Auto increment değerini sıfırla
-        DB::statement('ALTER TABLE widget_categories AUTO_INCREMENT = 1;');
-        
-        // 1. Modül bileşenleri için ana kategori - İLK SIRADA OLUŞTUR
-        $modulesCategory = null;
-        
-        try {
-            // Doğrudan SQL ile ID'si 1 olacak şekilde oluştur
-            DB::statement('INSERT INTO widget_categories (title, slug, description, icon, `order`, is_active, parent_id, has_subcategories, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())', [
-                'Modül Bileşenleri',
-                'modul-bilesenleri',
-                'Sistem modüllerine ait bileşenler',
-                'fa-cubes',
-                1, // order
-                1, // is_active
-                null, // parent_id
-                1 // has_subcategories
-            ]);
+        // Modül Bileşenleri kategorisini kontrol et ve yoksa oluştur
+        $modulesCategory = WidgetCategory::where('slug', 'modul-bilesenleri')
+            ->orWhere('title', 'Modül Bileşenleri')
+            ->first();
             
-            $modulesCategory = WidgetCategory::find(1);
-            
-            if (!$modulesCategory) {
-                throw new \Exception("Modül Bileşenleri kategorisi ID 1 olarak oluşturulamadı");
+        if (!$modulesCategory) {
+            try {
+                // Doğrudan SQL ile ID'si 1 olacak şekilde oluştur
+                DB::statement('INSERT INTO widget_categories (title, slug, description, icon, `order`, is_active, parent_id, has_subcategories, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())', [
+                    'Modül Bileşenleri',
+                    'modul-bilesenleri',
+                    'Sistem modüllerine ait bileşenler',
+                    'fa-cubes',
+                    1, // order
+                    1, // is_active
+                    null, // parent_id
+                    1 // has_subcategories
+                ]);
+                
+                $modulesCategory = WidgetCategory::find(1);
+                
+                if (!$modulesCategory) {
+                    throw new \Exception("Modül Bileşenleri kategorisi ID 1 olarak oluşturulamadı");
+                }
+                
+            } catch (\Exception $e) {
+                Log::error("Modül Bileşenleri kategorisi oluşturma hatası: " . $e->getMessage());
+                return null;
             }
-            
-            Log::info("Ana kategori oluşturuldu: {$modulesCategory->title} (ID: {$modulesCategory->widget_category_id})");
-        } catch (\Exception $e) {
-            Log::error("Modül Bileşenleri kategorisi oluşturma hatası: " . $e->getMessage());
-            return null;
+        } else {
         }
         
         // 3. Blocks klasörünü tara ve modules dışındaki her ana klasörü kategori olarak oluştur
@@ -185,14 +215,12 @@ class WidgetCategorySeeder extends Seeder
                     'title' => $title,
                     'slug' => $slug,
                     'description' => $title . ' bileşenleri',
-                    'icon' => $icon,
+'icon' => $icon,
                     'order' => $order++,
                     'is_active' => true,
                     'parent_id' => null,
                     'has_subcategories' => false
                 ]);
-                
-                Log::info("Kategori oluşturuldu: {$category->title} (slug: {$category->slug})");
                 
                 // 4. Ana klasörlerin içindeki her klasör, o klasörün kategorisinin widget'ı olacak
                 $this->createWidgetsForCategory($folder, $category);
@@ -233,11 +261,9 @@ class WidgetCategorySeeder extends Seeder
             
             // Önce tüm widget'ı temizle
             Widget::query()->delete();
-            Log::info("Tüm widget'lar silindi.");
             
             // Sonra tüm kategorileri temizle
             WidgetCategory::query()->delete();
-            Log::info("Tüm kategoriler silindi.");
             
             // Veritabanı tablolarını sıfırla
             DB::statement('ALTER TABLE widgets AUTO_INCREMENT = 1;');
@@ -245,7 +271,6 @@ class WidgetCategorySeeder extends Seeder
             
             DB::statement('SET FOREIGN_KEY_CHECKS=1;');
             
-            Log::info("Tüm kategoriler ve widget'lar güvenli bir şekilde temizlendi.");
         } catch (\Exception $e) {
             Log::error("Kategori ve widget temizleme hatası: " . $e->getMessage());
             throw $e;
@@ -288,7 +313,6 @@ class WidgetCategorySeeder extends Seeder
                     'has_subcategories' => false
                 ]);
                 
-                Log::info("Alt kategori oluşturuldu: {$subcategory->title} (slug: {$subcategory->slug})");
                 
                 // 4. Modüllerin içindeki her klasör, o modülün widget'ı olacak
                 $this->createWidgetsForModule($moduleFolder, $subcategory);
@@ -353,7 +377,6 @@ class WidgetCategorySeeder extends Seeder
                             'settings_schema' => $this->getWidgetSettings($widgetName)
                         ]);
                         
-                        Log::info("Widget oluşturuldu: $widgetTitle (path: " . basename($categoryFolder) . "/{$widgetName}/view)");
                     } else {
                         // Varolan widget'ı güncelle
                         $existingWidget->update([
@@ -405,7 +428,6 @@ class WidgetCategorySeeder extends Seeder
                             'settings_schema' => $this->getModuleWidgetSettings($moduleName, $widgetName)
                         ]);
                         
-                        Log::info("Modül widget'ı oluşturuldu: $widgetTitle (path: modules/{$moduleName}/{$widgetName}/view)");
                     } else {
                         // Varolan widget'ı güncelle
                         $existingWidget->update([

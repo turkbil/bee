@@ -23,29 +23,52 @@ class BlockWidgetSeeder extends Seeder
             if ($this->command) {
                 $this->command->info('Tenant contextinde çalışıyor, BlockWidgetSeeder atlanıyor.');
             }
-            Log::info('Tenant contextinde çalışıyor, BlockWidgetSeeder atlanıyor. Tenant ID: ' . tenant('id'));
             return;
         }
 
         // Cache kontrolü
         $cacheKey = self::$runKey . '_' . Config::get('database.default');
         if (Cache::has($cacheKey)) {
-            Log::info('BlockWidgetSeeder zaten çalıştırılmış, atlanıyor...');
             return;
         }
 
-        Log::info('BlockWidgetSeeder merkezi veritabanında çalışıyor...');
-
         try {
+            // "Modül Bileşenleri" kategorisinin varlığını kontrol et
+            $modulesCategory = WidgetCategory::where('slug', 'modul-bilesenleri')
+                ->orWhere('title', 'Modül Bileşenleri')
+                ->first();
+            
+            if (!$modulesCategory) {
+                
+                try {
+                    $modulesCategory = new WidgetCategory([
+                        'title' => 'Modül Bileşenleri',
+                        'slug' => 'modul-bilesenleri',
+                        'description' => 'Sistem modüllerine ait bileşenler',
+                        'icon' => 'fa-cubes',
+                        'order' => 1,
+                        'is_active' => true,
+                        'parent_id' => null,
+                        'has_subcategories' => true
+                    ]);
+                    
+                    $modulesCategory->save();
+                    
+                    if (!$modulesCategory->widget_category_id) {
+                        throw new \Exception("Kategori ID oluşturulamadı");
+                    }
+                    
+                } catch (\Exception $e) {
+                    Log::error("Modül Bileşenleri kategorisi oluşturulamadı. Hata: " . $e->getMessage());
+                }
+            } else {
+            }
+            
             // Blok kategorileri oluştur
-            Log::info('Blok kategorileri oluşturuluyor...');
             $this->createBlockWidgets();
-
-            Log::info('Blok bileşenleri başarıyla oluşturuldu.');
 
             // Seeder'ın çalıştırıldığını işaretle (10 dakika süreyle cache'de tut)
             Cache::put($cacheKey, true, 600);
-            Log::info('BlockWidgetSeeder cache kaydedildi: ' . $cacheKey);
         } catch (\Exception $e) {
             Log::error('BlockWidgetSeeder hatası: ' . $e->getMessage());
             Log::error($e->getTraceAsString());
@@ -110,8 +133,6 @@ class BlockWidgetSeeder extends Seeder
                 $category = WidgetCategory::where('slug', $categorySlug)->first();
                 
                 if (!$category) {
-                    Log::warning("Kategori bulunamadı: $categorySlug, oluşturuluyor...");
-                    
                     try {
                         // Kategori adını düzgün formatta oluştur
                         $categoryTitle = ucfirst(str_replace(['-', '_'], ' ', $categoryName));
@@ -134,7 +155,6 @@ class BlockWidgetSeeder extends Seeder
                             throw new \Exception("Kategori ID oluşturulamadı");
                         }
                         
-                        Log::info("Kategori oluşturuldu: $categoryTitle (slug: $categorySlug) (ID: {$category->widget_category_id})");
                     } catch (\Exception $e) {
                         Log::error("Kategori oluşturulamadı: $categorySlug. Hata: " . $e->getMessage());
                         continue;
@@ -149,8 +169,6 @@ class BlockWidgetSeeder extends Seeder
                 // Bu kategorideki tüm bileşenleri bul ve alt klasörleri de tara
                 $blockPaths = $this->getBlocksInFolder($categoryName);
                 
-                Log::info("$categoryName klasöründe " . count($blockPaths) . " blok bulundu.");
-                
                 foreach ($blockPaths as $blockPath) {
                     $fullPath = "$categoryName/$blockPath";
                     $blockName = $this->getBlockName($blockPath);
@@ -163,16 +181,12 @@ class BlockWidgetSeeder extends Seeder
                         try {
                             // Kategori ID'sini kontrol et
                             if (!$category) {
-                                Log::error("Widget oluşturulamadı: Kategori bulunamadı");
                                 continue;
                             }
                             
                             if (!$category->widget_category_id) {
-                                Log::error("Widget oluşturulamadı: Kategori ID'si bulunamadı. Kategori: " . json_encode($category->toArray()));
                                 continue;
                             }
-                            
-                            Log::info("Kategori bulundu: ID={$category->widget_category_id}, Slug={$category->slug}");
                             
                             $widget = new Widget([
                                 'widget_category_id' => $category->widget_category_id,
@@ -205,7 +219,6 @@ class BlockWidgetSeeder extends Seeder
                             
                             $widget->save();
                             
-                            Log::info("Widget oluşturuldu: $blockName (path: $fullPath) (Kategori ID: {$category->widget_category_id})");
                         } catch (\Exception $e) {
                             Log::error("Widget oluşturulamadı: $blockName. Hata: " . $e->getMessage());
                         }

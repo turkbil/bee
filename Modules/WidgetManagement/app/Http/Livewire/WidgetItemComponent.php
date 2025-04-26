@@ -143,6 +143,12 @@ class WidgetItemComponent extends Component
     
     public function render()
     {
+        // Statik widget kontrolü - doğrudan düzenleme sayfasına yönlendir
+        if ($this->isStaticWidget && !empty($this->items) && $this->items->count() > 0) {
+            $firstItem = $this->items->first();
+            return redirect()->route('admin.widgetmanagement.item.manage', [$this->tenantWidgetId, $firstItem->id]);
+        }
+        
         return view('widgetmanagement::livewire.widget-item-component');
     }
 }

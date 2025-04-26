@@ -7,7 +7,7 @@
                     <i class="fas fa-sliders-h me-2"></i>
                     {{ $tenantWidget->widget->name }} - Özelleştirme
                 </h3>
-                <a href="{{ route('admin.widgetmanagement.section') }}" class="btn btn-outline-secondary">
+                <a href="{{ route('admin.widgetmanagement.index') }}" class="btn btn-outline-secondary">
                     <i class="fas fa-arrow-left me-2"></i> Bölümlere Dön
                 </a>
             </div>
@@ -189,7 +189,7 @@
                     
                     <div class="col-12">
                         <div class="card-footer d-flex justify-content-between mt-4">
-                            <a href="{{ route('admin.widgetmanagement.section') }}" class="btn btn-outline-secondary">
+                            <a href="{{ route('admin.widgetmanagement.index') }}" class="btn btn-outline-secondary">
                                 <i class="fas fa-times me-1"></i> İptal
                             </a>
                             <button type="submit" class="btn btn-primary">

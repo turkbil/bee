@@ -50,8 +50,23 @@ class BlockService
                 // İçeriği hazırla
                 $content = $this->prepareWidgetContent($widget, $type);
                 
-                // Editör özelliklerini belirle
-                $editable = ($type === 'static' || $type === 'file');
+                // Editör özelliklerini belirle - burada değişiklik yapıyoruz
+                $editable = false;
+                $disable_interactions = false;
+                
+                // Widget tipine göre davranışları belirle
+                switch ($type) {
+                    case 'static':
+                    case 'file':
+                        $editable = true;
+                        $disable_interactions = false;
+                        break;
+                    case 'dynamic':
+                    case 'module':
+                        $editable = false;
+                        $disable_interactions = true;
+                        break;
+                }
                 
                 $blocks[] = [
                     'id' => 'widget-' . $widget->id,
@@ -70,6 +85,7 @@ class BlockService
                     'meta' => [
                         'file_path' => $widget->file_path,
                         'editable' => $editable,
+                        'disable_interactions' => $disable_interactions,
                         'module_type' => ($type === 'module')
                     ]
                 ];
@@ -159,6 +175,14 @@ class BlockService
                 break;
         }
         
+        // Widget tipine göre özel sınıf ekle
+        if ($type === 'dynamic' || $type === 'module') {
+            $content = '<div class="widget-container widget-type-' . $type . '" data-widget-type="' . $type . '">' . 
+                       '<div class="widget-overlay"><span class="widget-type-badge">' . strtoupper($type) . '</span></div>' . 
+                       $content . 
+                       '</div>';
+        }
+        
         return $content;
     }
     
@@ -216,6 +240,30 @@ class BlockService
                     ? $tenantWidget->custom_html 
                     : $this->prepareWidgetContent($widget, $type);
                 
+                // Editör özelliklerini belirle - tenant widget'lar için uyarla
+                $editable = false;
+                $disable_interactions = false;
+                
+                // Widget tipine göre davranışları belirle
+                switch ($type) {
+                    case 'static':
+                    case 'file':
+                        $editable = true;
+                        $disable_interactions = false;
+                        break;
+                    case 'dynamic':
+                    case 'module':
+                        $editable = false;
+                        $disable_interactions = true;
+                        break;
+                }
+                
+                // Özel tenant widget davranışını belirle
+                if ($tenantWidget->is_custom) {
+                    $editable = true;
+                    $disable_interactions = false;
+                }
+                
                 $blocks[] = [
                     'id' => 'tenant-widget-' . $tenantWidget->id,
                     'label' => $tenantWidget->settings['title'] ?? $widget->name,
@@ -232,7 +280,8 @@ class BlockService
                     'icon' => 'fa fa-star',
                     'meta' => [
                         'file_path' => $widget->file_path,
-                        'editable' => ($type === 'static' || $type === 'file'),
+                        'editable' => $editable,
+                        'disable_interactions' => $disable_interactions,
                         'module_type' => ($type === 'module')
                     ]
                 ];

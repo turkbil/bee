@@ -17,289 +17,228 @@ class BlockService
      */
     public function getAllBlocks(): array
     {
-        // Önbellekle blokları saklayarak arka arkaya aynı istekleri önleyelim
-        static $cachedBlocks = null;
-        
-        // Eğer bloklar daha önce yüklendiyse tekrar yüklemeye gerek yok
-        if ($cachedBlocks !== null) {
-            return $cachedBlocks;
-        }
+        Log::info('BlockService::getAllBlocks - Bloklar yükleniyor');
         
         $blocks = [];
         
-        // 1. Aktif tenant widget'larını yükle (en öncelikli)
-        $tenantWidgetBlocks = $this->loadTenantWidgets();
-        
-        // 2. WidgetManagement'dan widget'ları kategorilerine göre yükle
-        $widgetBlocks = $this->loadWidgetsFromWidgetManagementHierarchical();
-        
-        // Tüm blokları birleştir
-        $blocks = array_merge($tenantWidgetBlocks, $widgetBlocks);
-        
-        // Log dosyasına detayları yaz
-        Log::info('Yüklenen bloklar:', ['count' => count($blocks)]);
-        
-        // Blokları önbelleğe al ve döndür
-        $cachedBlocks = $blocks;
-        return $blocks;
-    }
-    
-    /**
-     * WidgetManagement'dan widgetları hiyerarşik kategorilere göre yükle
-     *
-     * @return array
-     */
-    protected function loadWidgetsFromWidgetManagementHierarchical(): array
-    {
-        $blocks = [];
-        
         try {
-            // WidgetManagement modülünün yüklü olup olmadığını kontrol et
-            if (!class_exists('Modules\WidgetManagement\App\Models\Widget') ||
-                !class_exists('Modules\WidgetManagement\App\Models\WidgetCategory')) {
-                Log::info('WidgetManagement modülü bulunamadı veya yüklenmedi.');
-                return [];
+            if (!class_exists('Modules\WidgetManagement\App\Models\Widget')) {
+                Log::warning('WidgetManagement modülü bulunamadı');
+                return $blocks;
             }
             
-            // Önce ana kategorileri al (parent_id=null)
-            $rootCategories = \Modules\WidgetManagement\App\Models\WidgetCategory::where('is_active', true)
-                ->whereNull('parent_id')
-                ->orderBy('order')
-                ->get();
-                
-            Log::info('Ana widget kategorileri yüklendi:', ['count' => $rootCategories->count()]);
+            // Aktif tenant widget'ları
+            $blocks = array_merge($blocks, $this->getActiveTenantWidgets());
             
-            // Her ana kategori için blokları al
-            foreach ($rootCategories as $rootCategory) {
-                // Ana kategori widgetlarını ekle (önce module tipindekiler)
-                $this->addCategoryWidgetsToBlocks($rootCategory, $blocks, 'module');
-                $this->addCategoryWidgetsToBlocks($rootCategory, $blocks, 'file');
-                $this->addCategoryWidgetsToBlocks($rootCategory, $blocks, null); // Diğer tipler
-                
-                // Alt kategorileri al
-                $childCategories = \Modules\WidgetManagement\App\Models\WidgetCategory::where('is_active', true)
-                    ->where('parent_id', $rootCategory->widget_category_id)
-                    ->orderBy('order')
-                    ->get();
-                
-                Log::info("Kategori {$rootCategory->title} alt kategorileri:", ['count' => $childCategories->count()]);
-                
-                // Her alt kategori için blokları al
-                foreach ($childCategories as $childCategory) {
-                    // Alt kategori widgetlarını ekle (önce module tipindekiler)
-                    $this->addCategoryWidgetsToBlocks($childCategory, $blocks, 'module');
-                    $this->addCategoryWidgetsToBlocks($childCategory, $blocks, 'file');
-                    $this->addCategoryWidgetsToBlocks($childCategory, $blocks, null); // Diğer tipler
-                    
-                    // Üçüncü seviye kategoriler (iç içe kategoriler) için kontrol et
-                    $grandchildCategories = \Modules\WidgetManagement\App\Models\WidgetCategory::where('is_active', true)
-                        ->where('parent_id', $childCategory->widget_category_id)
-                        ->orderBy('order')
-                        ->get();
-                    
-                    foreach ($grandchildCategories as $grandchildCategory) {
-                        // Üçüncü seviye kategorilerin widgetlarını ekle (önce module tipindekiler)
-                        $this->addCategoryWidgetsToBlocks($grandchildCategory, $blocks, 'module');
-                        $this->addCategoryWidgetsToBlocks($grandchildCategory, $blocks, 'file');
-                        $this->addCategoryWidgetsToBlocks($grandchildCategory, $blocks, null); // Diğer tipler
-                    }
-                }
-            }
+            // Widget tablosundaki bileşenleri ekle (dynamic, static, module, file)
+            $widgets = \Modules\WidgetManagement\App\Models\Widget::where('is_active', true)->get();
             
-            Log::info('WidgetManagement widget blokları hiyerarşik olarak yüklendi:', ['count' => count($blocks)]);
-        } catch (\Exception $e) {
-            Log::error('Widget blokları hiyerarşik olarak yüklenirken hata oluştu: ' . $e->getMessage(), [
-                'exception' => $e
-            ]);
-        }
-        
-        return $blocks;
-    }
-    
-    /**
-     * Belirli bir kategorinin widgetlarını bloklar dizisine ekle
-     * 
-     * @param \Modules\WidgetManagement\App\Models\WidgetCategory $category
-     * @param array &$blocks
-     * @param string $typeFilter Widget tipi filtresi (module, file, vs.)
-     * @return void
-     */
-    protected function addCategoryWidgetsToBlocks($category, &$blocks, $typeFilter = null)
-    {
-        try {
-            // Kategoriye ait widget'ları getir
-            $widgetsQuery = \Modules\WidgetManagement\App\Models\Widget::where('widget_category_id', $category->widget_category_id)
-                ->where('is_active', true);
-                
-            // Eğer tip filtresi belirtilmişse ekle
-            if ($typeFilter) {
-                $widgetsQuery->where('type', $typeFilter);
-            } elseif ($typeFilter === null) {
-                // null ile çağrıldıysa, module ve file dışındakileri getir
-                $widgetsQuery->whereNotIn('type', ['module', 'file']);
-            }
+            // Kategori bilgilerini al
+            $categories = \Modules\WidgetManagement\App\Models\WidgetCategory::get()->keyBy('widget_category_id');
             
-            $widgets = $widgetsQuery->orderBy('name')->get();
-            
-            $logType = $typeFilter ?: 'diğer';
-            Log::info("Kategori {$category->title} widget'ları {$logType} tipine göre:", ['count' => $widgets->count()]);
-            
-            // Widget'ları block formatına çevir
             foreach ($widgets as $widget) {
-                $blockId = 'widget-' . $widget->id;
-                $categorySlug = $category->slug;
-                $parentCategory = null;
-                
-                // Eğer alt kategori ise, parent bilgisini de ekle
-                if ($category->parent_id) {
-                    $parentCategory = \Modules\WidgetManagement\App\Models\WidgetCategory::find($category->parent_id);
-                    if ($parentCategory) {
-                        $categorySlug = $parentCategory->slug . '-' . $categorySlug;
-                        
-                        // Eğer üst kategorinin de parenti varsa (3. seviye kategori)
-                        if ($parentCategory->parent_id) {
-                            $grandParentCategory = \Modules\WidgetManagement\App\Models\WidgetCategory::find($parentCategory->parent_id);
-                            if ($grandParentCategory) {
-                                $categorySlug = $grandParentCategory->slug . '-' . $categorySlug;
-                            }
-                        }
-                    }
+                // Widget tipini belirle
+                $type = $widget->type;
+                if (empty($type)) {
+                    $type = $widget->has_items ? 'dynamic' : 'static';
                 }
+                
+                // Kategori bilgilerini hazırla
+                $categoryInfo = $this->getCategoryInfo($widget, $categories);
+                $category = $categoryInfo['category'];
+                
+                // İçeriği hazırla
+                $content = $this->prepareWidgetContent($widget, $type);
+                
+                // Editör özelliklerini belirle
+                $editable = ($type === 'static' || $type === 'file');
                 
                 $blocks[] = [
-                    'id' => $blockId,
+                    'id' => 'widget-' . $widget->id,
                     'label' => $widget->name,
-                    'category' => $categorySlug,
-                    'icon' => $category->icon ?? 'fa fa-puzzle-piece',
-                    'content' => $widget->content_html ?? '<div class="widget-placeholder">' . $widget->name . '</div>',
+                    'category' => $category,
+                    'content' => $content,
+                    'css_content' => $widget->content_css ?? '',
+                    'js_content' => $widget->content_js ?? '',
+                    'css_files' => $widget->css_files ?? [],
+                    'js_files' => $widget->js_files ?? [],
                     'widget_id' => $widget->id,
-                    'description' => $widget->description,
-                    'thumbnail' => $widget->thumbnail,
-                    'type' => $widget->type ?? 'widget',
+                    'type' => $type,
                     'has_items' => $widget->has_items,
-                    'category_name' => $category->title,
-                    'parent_category_name' => $parentCategory ? $parentCategory->title : null,
-                    'is_widget' => true
+                    'is_widget' => true,
+                    'icon' => $this->getIconForType($type),
+                    'meta' => [
+                        'file_path' => $widget->file_path,
+                        'editable' => $editable,
+                        'module_type' => ($type === 'module')
+                    ]
                 ];
             }
+            
+            Log::info('BlockService - Toplam ' . count($blocks) . ' adet blok yüklendi');
         } catch (\Exception $e) {
-            Log::error("Kategori widgetları eklenirken hata: " . $e->getMessage(), [
-                'category' => $category->title,
-                'type_filter' => $typeFilter
-            ]);
-        }
-    }
-    
-    /**
-     * Tenant widget'larını tipine göre sıralayarak yükle (aktif kullanılan widgetlar)
-     *
-     * @return array
-     */
-    protected function loadTenantWidgets(): array
-    {
-        $blocks = [];
-        
-        try {
-            // WidgetManagement modülünün yüklü olup olmadığını kontrol et
-            if (!class_exists('Modules\WidgetManagement\App\Models\TenantWidget')) {
-                return [];
-            }
-            
-            // Özel category_id oluştur
-            $activeCategoryId = 'active-widgets';
-            
-            // Önce dynamic tipindeki widget'ları al
-            $dynamicWidgets = $this->loadTenantWidgetsByType('dynamic');
-            $blocks = array_merge($blocks, $dynamicWidgets);
-            
-            // Sonra static tipindeki widget'ları al
-            $staticWidgets = $this->loadTenantWidgetsByType('static');
-            $blocks = array_merge($blocks, $staticWidgets);
-            
-            Log::info('Tenant widget blokları tipine göre yüklendi:', ['count' => count($blocks)]);
-        } catch (\Exception $e) {
-            Log::error('Tenant widget blokları yüklenirken hata oluştu: ' . $e->getMessage(), [
-                'exception' => $e
-            ]);
+            Log::error('BlockService - Blok yükleme hatası: ' . $e->getMessage());
         }
         
         return $blocks;
     }
     
     /**
-     * Belirli tipteki tenant widget'larını yükle
-     * 
-     * @param string $type Widget tipi (dynamic, static)
-     * @return array
+     * Kategori bilgilerini elde eder
      */
-    protected function loadTenantWidgetsByType($type = 'dynamic'): array
+    private function getCategoryInfo($widget, $categories): array
+    {
+        $category = '';
+        $categoryId = $widget->widget_category_id;
+        
+        // Özel kategori atamaları
+        $type = $widget->type ?: ($widget->has_items ? 'dynamic' : 'static');
+        
+        // Kategori bilgisini belirle
+        if ($categoryId && isset($categories[$categoryId])) {
+            $currentCategory = $categories[$categoryId];
+            $category = $currentCategory->slug;
+            
+            // Eğer üst kategorisi varsa, birleştir
+            if ($currentCategory->parent_id && isset($categories[$currentCategory->parent_id])) {
+                $parentCategory = $categories[$currentCategory->parent_id];
+                $category = $parentCategory->slug . '-' . $category;
+                
+                // Üçüncü seviye için kontrol
+                if ($parentCategory->parent_id && isset($categories[$parentCategory->parent_id])) {
+                    $grandparentCategory = $categories[$parentCategory->parent_id];
+                    $category = $grandparentCategory->slug . '-' . $category;
+                }
+            }
+        } else {
+            // Varsayılan kategori atamaları
+            if ($type === 'module') {
+                $category = 'moduller';
+            } else if ($type === 'file') {
+                $category = 'page';
+            } else if ($type === 'dynamic' || $type === 'static') {
+                $category = 'content';
+            }
+        }
+        
+        return [
+            'category' => $category
+        ];
+    }
+    
+    /**
+     * Widget içeriğini hazırla
+     */
+    private function prepareWidgetContent($widget, $type): string
+    {
+        $content = '';
+        
+        switch ($type) {
+            case 'module':
+            case 'file':
+                if (!empty($widget->file_path)) {
+                    try {
+                        $viewPath = 'widgetmanagement::blocks.' . $widget->file_path;
+                        if (View::exists($viewPath)) {
+                            $content = View::make($viewPath, ['settings' => []])->render();
+                        } else {
+                            $content = '<div class="widget-placeholder">Görünüm bulunamadı: ' . $viewPath . '</div>';
+                        }
+                    } catch (\Exception $e) {
+                        $content = '<div class="widget-placeholder">Hata: ' . $e->getMessage() . '</div>';
+                    }
+                } else {
+                    $content = $widget->content_html ?? '<div class="widget-placeholder">' . $widget->name . '</div>';
+                }
+                break;
+                
+            case 'dynamic':
+            case 'static':
+            default:
+                $content = $widget->content_html ?? '<div class="widget-placeholder">' . $widget->name . '</div>';
+                break;
+        }
+        
+        return $content;
+    }
+    
+    /**
+     * Widget tipine göre ikon belirle
+     */
+    private function getIconForType($type): string
+    {
+        switch ($type) {
+            case 'module':
+                return 'fa fa-cube';
+            case 'file':
+                return 'fa fa-file';
+            case 'dynamic':
+                return 'fa fa-puzzle-piece';
+            case 'static':
+                return 'fa fa-puzzle-piece';
+            default:
+                return 'fa fa-puzzle-piece';
+        }
+    }
+    
+    /**
+     * Aktif tenant widget'ları 
+     */
+    private function getActiveTenantWidgets(): array
     {
         $blocks = [];
-        $activeCategoryId = 'active-widgets';
         
         try {
-            // Aktif tenant widget'larını getir
             $tenantWidgets = \Modules\WidgetManagement\App\Models\TenantWidget::where('is_active', true)
                 ->orderBy('order')
                 ->get();
-                
-            // Widget'ların orijinal tiplerini almak için widget ID'lerini topla
-            $widgetIds = $tenantWidgets->pluck('widget_id')->filter()->toArray();
-            $widgetsMap = [];
             
-            if (!empty($widgetIds)) {
-                $widgets = \Modules\WidgetManagement\App\Models\Widget::whereIn('id', $widgetIds)->get();
-                foreach ($widgets as $widget) {
-                    $widgetsMap[$widget->id] = $widget;
-                }
+            if ($tenantWidgets->isEmpty()) {
+                return [];
             }
             
-            // Filtreleme ve blok oluşturma
+            // Widget bilgilerini al
+            $widgetIds = $tenantWidgets->pluck('widget_id')->filter()->toArray();
+            $widgets = \Modules\WidgetManagement\App\Models\Widget::whereIn('id', $widgetIds)->get()->keyBy('id');
+            
             foreach ($tenantWidgets as $tenantWidget) {
-                $blockId = 'tenant-widget-' . $tenantWidget->id;
-                $isTargetType = false;
+                $widget = $widgets->get($tenantWidget->widget_id);
+                if (!$widget) continue;
                 
-                // Widget bilgilerini getir
-                $widget = isset($widgetsMap[$tenantWidget->widget_id]) ? $widgetsMap[$tenantWidget->widget_id] : null;
-                $widgetName = 'Widget #' . $tenantWidget->id;
-                $content = '<div class="widget-placeholder">Aktif Widget #' . $tenantWidget->id . '</div>';
-                $widgetType = 'static'; // varsayılan tip
-                
-                if ($widget) {
-                    $widgetName = $widget->name;
-                    $content = $widget->content_html ?? $content;
-                    $widgetType = $widget->has_items ? 'dynamic' : 'static';
+                // Widget tipini belirle
+                $type = $widget->type;
+                if (empty($type)) {
+                    $type = $widget->has_items ? 'dynamic' : 'static';
                 }
                 
-                // Özel widget kontrolü
-                if ($tenantWidget->is_custom) {
-                    $content = $tenantWidget->custom_html ?? $content;
-                }
+                // İçeriği belirle (özel mi yoksa widget'tan mı)
+                $content = $tenantWidget->is_custom 
+                    ? $tenantWidget->custom_html 
+                    : $this->prepareWidgetContent($widget, $type);
                 
-                // Widget başlığını ayarlardan alabilir miyiz?
-                if (isset($tenantWidget->settings['title'])) {
-                    $widgetName = $tenantWidget->settings['title'];
-                }
-                
-                // Belirtilen tipe uyan widget'ları filtrele
-                if ($widgetType === $type) {
-                    // Bloğu ekle
-                    $blocks[] = [
-                        'id' => $blockId,
-                        'label' => $widgetName . ' (' . ($type === 'dynamic' ? 'Dinamik' : 'Statik') . ')',
-                        'category' => $activeCategoryId,
-                        'icon' => 'fa fa-star',
-                        'content' => $content,
-                        'tenant_widget_id' => $tenantWidget->id,
-                        'widget_id' => $tenantWidget->widget_id,
-                        'type' => $widgetType,
-                        'is_tenant_widget' => true,
-                        'is_active' => true
-                    ];
-                }
+                $blocks[] = [
+                    'id' => 'tenant-widget-' . $tenantWidget->id,
+                    'label' => $tenantWidget->settings['title'] ?? $widget->name,
+                    'category' => 'active-widgets',
+                    'content' => $content,
+                    'css_content' => $tenantWidget->is_custom ? $tenantWidget->custom_css : $widget->content_css,
+                    'js_content' => $tenantWidget->is_custom ? $tenantWidget->custom_js : $widget->content_js,
+                    'css_files' => $widget->css_files ?? [],
+                    'js_files' => $widget->js_files ?? [],
+                    'tenant_widget_id' => $tenantWidget->id,
+                    'widget_id' => $widget->id,
+                    'type' => $type,
+                    'is_tenant_widget' => true,
+                    'icon' => 'fa fa-star',
+                    'meta' => [
+                        'file_path' => $widget->file_path,
+                        'editable' => ($type === 'static' || $type === 'file'),
+                        'module_type' => ($type === 'module')
+                    ]
+                ];
             }
         } catch (\Exception $e) {
-            Log::error("Tenant widget blokları '{$type}' tipine göre yüklenirken hata oluştu: " . $e->getMessage());
+            Log::error('Tenant widget yükleme hatası: ' . $e->getMessage());
         }
         
         return $blocks;
@@ -332,35 +271,31 @@ class BlockService
         
         foreach ($blocks as $block) {
             if ($block['id'] === $blockId) {
-                // Eğer widget ise
-                if (isset($block['is_widget']) && $block['is_widget'] && 
-                    isset($block['widget_id']) && class_exists('Modules\WidgetManagement\App\Models\Widget')) {
-                    
-                    $widget = \Modules\WidgetManagement\App\Models\Widget::find($block['widget_id']);
-                    if ($widget) {
-                        return $widget->content_html ?? '';
+                $result = '';
+                
+                if (!empty($block['css_content'])) {
+                    $result .= '<style>' . $block['css_content'] . '</style>';
+                }
+                
+                if (!empty($block['css_files']) && is_array($block['css_files'])) {
+                    foreach ($block['css_files'] as $cssFile) {
+                        $result .= '<link rel="stylesheet" href="' . $cssFile . '">';
                     }
                 }
                 
-                // Eğer tenant widget ise
-                if (isset($block['is_tenant_widget']) && $block['is_tenant_widget'] && 
-                    isset($block['tenant_widget_id']) && class_exists('Modules\WidgetManagement\App\Models\TenantWidget')) {
-                    
-                    $tenantWidget = \Modules\WidgetManagement\App\Models\TenantWidget::find($block['tenant_widget_id']);
-                    if ($tenantWidget) {
-                        if ($tenantWidget->is_custom) {
-                            return $tenantWidget->custom_html ?? '';
-                        } elseif ($tenantWidget->widget_id) {
-                            $widget = \Modules\WidgetManagement\App\Models\Widget::find($tenantWidget->widget_id);
-                            if ($widget) {
-                                return $widget->content_html ?? '';
-                            }
-                        }
+                $result .= $block['content'] ?? '';
+                
+                if (!empty($block['js_files']) && is_array($block['js_files'])) {
+                    foreach ($block['js_files'] as $jsFile) {
+                        $result .= '<script src="' . $jsFile . '"></script>';
                     }
                 }
                 
-                // Normal blok içeriği
-                return $block['content'] ?? '';
+                if (!empty($block['js_content'])) {
+                    $result .= '<script>' . $block['js_content'] . '</script>';
+                }
+                
+                return $result;
             }
         }
         

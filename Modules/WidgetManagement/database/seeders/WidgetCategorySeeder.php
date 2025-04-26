@@ -44,9 +44,9 @@ class WidgetCategorySeeder extends Seeder
         }
 
         try {
-            // Modül Bileşenleri kategorisini kontrol et
-            $moduleCategory = WidgetCategory::where('slug', 'modul-bilesenleri')
-                ->orWhere('title', 'Modül Bileşenleri')
+            // Moduller kategorisini kontrol et
+            $moduleCategory = WidgetCategory::where('slug', 'moduller')
+                ->orWhere('title', 'Moduller')
                 ->first();
             
             if (!$moduleCategory) {
@@ -60,8 +60,8 @@ class WidgetCategorySeeder extends Seeder
                     
                     // Doğrudan SQL ile ID'si 1 olacak şekilde oluştur
                     DB::statement('INSERT INTO widget_categories (title, slug, description, icon, `order`, is_active, parent_id, has_subcategories, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())', [
-                        'Modül Bileşenleri',
-                        'modul-bilesenleri',
+                        'Moduller',
+                        'moduller',
                         'Sistem modüllerine ait bileşenler',
                         'fa-cubes',
                         1, // order
@@ -73,11 +73,11 @@ class WidgetCategorySeeder extends Seeder
                     $moduleCategory = WidgetCategory::find(1);
                     
                     if (!$moduleCategory) {
-                        throw new \Exception("Modül Bileşenleri kategorisi ID 1 olarak oluşturulamadı");
+                        throw new \Exception("Moduller kategorisi ID 1 olarak oluşturulamadı");
                     }
                     
                 } catch (\Exception $e) {
-                    Log::error("Modül Bileşenleri kategorisi oluşturulamadı. Hata: " . $e->getMessage());
+                    Log::error("Moduller kategorisi oluşturulamadı. Hata: " . $e->getMessage());
                     return;
                 }
             } else {
@@ -156,17 +156,17 @@ class WidgetCategorySeeder extends Seeder
     
     private function createMainCategories()
     {
-        // Modül Bileşenleri kategorisini kontrol et ve yoksa oluştur
-        $modulesCategory = WidgetCategory::where('slug', 'modul-bilesenleri')
-            ->orWhere('title', 'Modül Bileşenleri')
+        // Moduller kategorisini kontrol et ve yoksa oluştur
+        $modulesCategory = WidgetCategory::where('slug', 'moduller')
+            ->orWhere('title', 'Moduller')
             ->first();
             
         if (!$modulesCategory) {
             try {
                 // Doğrudan SQL ile ID'si 1 olacak şekilde oluştur
                 DB::statement('INSERT INTO widget_categories (title, slug, description, icon, `order`, is_active, parent_id, has_subcategories, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())', [
-                    'Modül Bileşenleri',
-                    'modul-bilesenleri',
+                    'Moduller',
+                    'moduller',
                     'Sistem modüllerine ait bileşenler',
                     'fa-cubes',
                     1, // order
@@ -178,11 +178,11 @@ class WidgetCategorySeeder extends Seeder
                 $modulesCategory = WidgetCategory::find(1);
                 
                 if (!$modulesCategory) {
-                    throw new \Exception("Modül Bileşenleri kategorisi ID 1 olarak oluşturulamadı");
+                    throw new \Exception("Moduller kategorisi ID 1 olarak oluşturulamadı");
                 }
                 
             } catch (\Exception $e) {
-                Log::error("Modül Bileşenleri kategorisi oluşturma hatası: " . $e->getMessage());
+                Log::error("Moduller kategorisi oluşturma hatası: " . $e->getMessage());
                 return null;
             }
         } else {

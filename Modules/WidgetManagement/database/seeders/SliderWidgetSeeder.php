@@ -45,16 +45,16 @@ class SliderWidgetSeeder extends Seeder
 
         // Central işlemleri
         try {
-            // Modül Bileşenleri kategorisini kontrol et
-            $moduleCategory = WidgetCategory::where('slug', 'modul-bilesenleri')->orWhere('slug', 'moduel-bilesenleri')->first();
+            // Moduller kategorisini kontrol et
+            $moduleCategory = WidgetCategory::where('slug', 'moduller')->orWhere('slug', 'moduller')->first();
             
             if (!$moduleCategory) {
-                Log::info('Modül Bileşenleri kategorisi bulunamadı, oluşturuluyor...');
+                Log::info('Moduller kategorisi bulunamadı, oluşturuluyor...');
                 
                 try {
                     $moduleCategory = new WidgetCategory([
-                        'title' => 'Modül Bileşenleri',
-                        'slug' => 'modul-bilesenleri',
+                        'title' => 'Moduller',
+                        'slug' => 'moduller',
                         'description' => 'Sistem modüllerine ait bileşenler',
                         'icon' => 'fa-cubes',
                         'order' => 1,
@@ -65,9 +65,9 @@ class SliderWidgetSeeder extends Seeder
                     
                     $moduleCategory->save();
                     
-                    Log::info("Modül Bileşenleri kategorisi oluşturuldu (ID: {$moduleCategory->widget_category_id})");
+                    Log::info("Moduller kategorisi oluşturuldu (ID: {$moduleCategory->widget_category_id})");
                 } catch (\Exception $e) {
-                    Log::error("Modül Bileşenleri kategorisi oluşturulamadı. Hata: " . $e->getMessage());
+                    Log::error("Moduller kategorisi oluşturulamadı. Hata: " . $e->getMessage());
                 }
             } else {
             }

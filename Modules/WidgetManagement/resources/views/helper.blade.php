@@ -35,7 +35,7 @@ Bileşen Yönetimi
                     </h6>
                     
                     <a class="dropdown-item" href="{{ route('admin.widgetmanagement.modules') }}">
-                        Modül Bileşenleri
+                        Moduller
                     </a>
                     
                     <a class="dropdown-item" href="{{ route('admin.widgetmanagement.files') }}">

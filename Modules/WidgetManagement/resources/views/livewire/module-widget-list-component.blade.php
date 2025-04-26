@@ -83,7 +83,7 @@
                     <!-- Üstteki Butonlar ve Başlık -->
                     <div class="d-flex justify-content-between mb-4">
                         <div>
-                            <h3 class="card-title">Modül Bileşenleri</h3>
+                            <h3 class="card-title">Moduller</h3>
                             <p class="text-muted">Modüller tarafından sağlanan bileşenleri görüntüleyin</p>
                         </div>
                         

@@ -80,16 +80,14 @@ class WidgetManagementDatabaseSeeder extends Seeder
                 }
             }
             
-            $this->call([
-                WidgetCategorySeeder::class,   // Widget kategorilerini oluştur
-                ModuleWidgetSeeder::class,   // Modül bileşenlerini oluştur
-                BlockWidgetSeeder::class,    // Blok bileşenlerini oluştur
-                SliderWidgetSeeder::class,   // Slider bileşenlerini oluştur
-                HeroWidgetSeeder::class      // Hero bileşenlerini oluştur
-            ]);
+            // Her bir seeder'ı ayrı ayrı çalıştır
+            $this->call(WidgetCategorySeeder::class);
+            $this->call(ModuleWidgetSeeder::class);
+            $this->call(BlockWidgetSeeder::class);
+            $this->call(SliderWidgetSeeder::class);
+            $this->call(HeroWidgetSeeder::class); // HeroWidgetSeeder en son çalışsın
             
-            
-            // Seeder'ın çalıştırıldığını işaretle (10 dakika süreyle cache'de tut)
+            // Seeder'ın çalıştırıldığını işaretle
             Cache::put($cacheKey, true, 600);
         } catch (\Exception $e) {
             Log::error('WidgetManagementDatabaseSeeder hatası: ' . $e->getMessage());

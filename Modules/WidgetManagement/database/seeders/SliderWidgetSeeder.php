@@ -24,6 +24,7 @@ class SliderWidgetSeeder extends Seeder
         // Cache kontrolü
         $cacheKey = self::$runKey . '_' . config('database.default');
         if (Cache::has($cacheKey)) {
+            Log::info('SliderWidgetSeeder zaten çalıştırılmış, atlanıyor...');
             return;
         }
 
@@ -45,11 +46,10 @@ class SliderWidgetSeeder extends Seeder
         // Central işlemleri
         try {
             // Modül Bileşenleri kategorisini kontrol et
-            $moduleCategory = WidgetCategory::where('slug', 'modul-bilesenleri')
-                ->orWhere('title', 'Modül Bileşenleri')
-                ->first();
+            $moduleCategory = WidgetCategory::where('slug', 'modul-bilesenleri')->orWhere('slug', 'moduel-bilesenleri')->first();
             
             if (!$moduleCategory) {
+                Log::info('Modül Bileşenleri kategorisi bulunamadı, oluşturuluyor...');
                 
                 try {
                     $moduleCategory = new WidgetCategory([
@@ -65,12 +65,14 @@ class SliderWidgetSeeder extends Seeder
                     
                     $moduleCategory->save();
                     
+                    Log::info("Modül Bileşenleri kategorisi oluşturuldu (ID: {$moduleCategory->widget_category_id})");
                 } catch (\Exception $e) {
                     Log::error("Modül Bileşenleri kategorisi oluşturulamadı. Hata: " . $e->getMessage());
                 }
             } else {
             }
             
+            // Önce central veritabanındaki fazla slider kayıtlarını temizleyelim
             $this->cleanupExtraSliders();
             
             // Slider bileşeni oluştur
@@ -84,6 +86,8 @@ class SliderWidgetSeeder extends Seeder
                 $this->createSliderForAllTenants($widget);
             }
 
+            Log::info('Slider bileşeni başarıyla oluşturuldu.');
+            
             // Seeder'ın çalıştırıldığını işaretle (10 dakika süreyle cache'de tut)
             Cache::put($cacheKey, true, 600);
         } catch (\Exception $e) {
@@ -123,6 +127,7 @@ class SliderWidgetSeeder extends Seeder
             }
         }
         
+        Log::info("Central veritabanında fazla slider widget'ları temizlendi");
     }
 
     private function createTenantSlider()
@@ -132,10 +137,9 @@ class SliderWidgetSeeder extends Seeder
         $tenantCacheKey = self::$runKey . '_tenant_' . $tenantId;
         
         if (Cache::has($tenantCacheKey)) {
+            Log::info('Tenant içinde slider widget zaten oluşturulmuş, atlanıyor...');
             return;
         }
-        
-        Log::info('Tenant içinde slider widget oluşturuluyor. Tenant ID: ' . $tenantId);
         
         // Merkezi veritabanından slider widget'ı al
         $centralWidget = null;
@@ -242,6 +246,8 @@ class SliderWidgetSeeder extends Seeder
             $mediaCategory = WidgetCategory::where('slug', 'media')->first();
             
             if ($mediaCategory) {
+                Log::info('Media kategorisi bulundu, slider bu kategori altına eklenecek.');
+                
                 // Slider alt kategorisini oluştur
                 $sliderCategory = WidgetCategory::create([
                     'title' => 'Sliderlar',
@@ -254,7 +260,10 @@ class SliderWidgetSeeder extends Seeder
                     'has_subcategories' => false
                 ]);
                 
+                Log::info("Slider alt kategorisi oluşturuldu: Sliderlar (slug: sliderlar)");
             } else {
+                // Media kategorisi yoksa, ana kategori olarak oluştur
+                Log::warning('Slider kategorisi bulunamadı, oluşturuluyor...');
                 
                 try {
                     $sliderCategory = WidgetCategory::create([
@@ -268,6 +277,7 @@ class SliderWidgetSeeder extends Seeder
                         'has_subcategories' => false
                     ]);
                     
+                    Log::info("Slider kategorisi oluşturuldu: Sliderlar (slug: sliderlar)");
                 } catch (\Exception $e) {
                     Log::error("Slider kategorisi oluşturulamadı. Hata: " . $e->getMessage());
                     return null;
@@ -448,6 +458,7 @@ class SliderWidgetSeeder extends Seeder
             
             return $widget;
         } else {
+            Log::info('Dinamik Slider bileşeni zaten mevcut, atlanıyor...');
             return $existingWidget;
         }
     }
@@ -459,6 +470,7 @@ class SliderWidgetSeeder extends Seeder
         
         if ($existingWidgets->count() >= 1) {
             // Zaten bir tane var, yenisini oluşturmaya gerek yok
+            Log::info('Central veritabanında Demo Slider widget zaten var, atlanıyor...');
             return;
         }
         
@@ -505,6 +517,8 @@ class SliderWidgetSeeder extends Seeder
                 'order' => $index + 1
             ]);
         }
+        
+        Log::info('Central veritabanında demo tenant slider oluşturuldu.');
     }
     
     private function createSliderForAllTenants($widget)
@@ -527,7 +541,8 @@ class SliderWidgetSeeder extends Seeder
             }
             
             try {
-                $tenant->run(function () use ($widget, $tenant, $tenantCacheKey) {
+                $tenant->run(function () use ($widget, $tenant) {
+                    
                     // Önce tenant'ta fazla widget'ları temizleyelim
                     $existingWidgets = TenantWidget::where('widget_id', $widget->id)->get();
                     
@@ -597,6 +612,8 @@ class SliderWidgetSeeder extends Seeder
                             'order' => $index + 1
                         ]);
                     }
+                    
+                    Log::info("Tenant {$tenant->id} için slider başarıyla oluşturuldu.");
                     
                     // Bu tenant için çalıştırıldığını işaretle
                     Cache::put($tenantCacheKey, true, 600);

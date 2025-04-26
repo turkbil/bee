@@ -184,7 +184,7 @@ class ModuleWidgetSeeder extends Seeder
                                 'has_items' => false,
                                 'is_active' => true,
                                 'is_core' => true,
-                                'settings_schema' => $this->getModuleWidgetSettings($moduleName, $widgetName)
+                                'settings_schema' => $this->generateWidgetSettings($moduleName, $widgetName, $widgetViewPath)
                             ]);
                             
                             Log::info("Widget oluşturuldu: $widgetTitle (path: modules/{$moduleName}/{$widgetName}/view)");
@@ -193,7 +193,8 @@ class ModuleWidgetSeeder extends Seeder
                             $existingWidget->update([
                                 'type' => 'module',
                                 'file_path' => 'modules/' . $moduleName . '/' . $widgetName . '/view',
-                                'widget_category_id' => $moduleCategory->widget_category_id
+                                'widget_category_id' => $moduleCategory->widget_category_id,
+                                'settings_schema' => $this->generateWidgetSettings($moduleName, $widgetName, $widgetViewPath)
                             ]);
                             
                             Log::info("Widget güncellendi: $widgetTitle (slug: $widgetSlug)");
@@ -206,9 +207,9 @@ class ModuleWidgetSeeder extends Seeder
         }
     }
     
-    private function getModuleWidgetSettings($moduleName, $widgetName)
+    private function generateWidgetSettings($moduleName, $widgetName, $viewPath)
     {
-        // Temel ayarlar
+        // Temel ayarlar her widget için olmalı
         $settings = [
             [
                 'name' => 'title',
@@ -227,74 +228,99 @@ class ModuleWidgetSeeder extends Seeder
             ]
         ];
         
-        // Modül ve widget tipine göre özel ayarlar ekle
-        if ($moduleName == 'page') {
-            if ($widgetName == 'recent') {
-                $settings[] = [
-                    'name' => 'show_dates',
-                    'label' => 'Tarihleri Göster',
-                    'type' => 'checkbox',
-                    'required' => false
-                ];
-                $settings[] = [
-                    'name' => 'limit',
-                    'label' => 'Gösterilecek Sayfa Sayısı',
-                    'type' => 'number',
-                    'required' => false,
-                    'default' => 5
-                ];
-            } elseif ($widgetName == 'home') {
-                $settings[] = [
-                    'name' => 'show_title',
-                    'label' => 'Sayfa Başlığını Göster',
-                    'type' => 'checkbox',
-                    'required' => false
-                ];
-            }
-        } elseif ($moduleName == 'portfolio') {
-            if ($widgetName == 'list') {
-                $settings[] = [
-                    'name' => 'show_description',
-                    'label' => 'Açıklamayı Göster',
-                    'type' => 'checkbox',
-                    'required' => false
-                ];
-                $settings[] = [
-                    'name' => 'description',
-                    'label' => 'Açıklama Metni',
-                    'type' => 'textarea',
-                    'required' => false
-                ];
-                $settings[] = [
-                    'name' => 'show_all_link',
-                    'label' => 'Tümünü Göster Bağlantısı',
-                    'type' => 'checkbox',
-                    'required' => false
-                ];
-                $settings[] = [
-                    'name' => 'limit',
-                    'label' => 'Gösterilecek Proje Sayısı',
-                    'type' => 'number',
-                    'required' => false,
-                    'default' => 6
-                ];
-            } elseif ($widgetName == 'detail') {
-                $settings[] = [
-                    'name' => 'project_id',
-                    'label' => 'Proje ID',
-                    'type' => 'number',
-                    'required' => false
-                ];
-                $settings[] = [
-                    'name' => 'show_gallery',
-                    'label' => 'Galeriyi Göster',
-                    'type' => 'checkbox',
-                    'required' => false,
-                    'default' => true
-                ];
+        // View dosyasını okuyarak içeriğindeki PHP kodundaki değişkenleri tespit et
+        if (File::exists($viewPath)) {
+            $content = File::get($viewPath);
+            
+            // Değişkenleri bul (özellikle $settings array'inden alınanlar)
+            preg_match_all('/\$settings\[\'([^\']+)\'\]/', $content, $matches);
+            
+            if (!empty($matches[1])) {
+                $settingKeys = array_unique($matches[1]);
+                
+                foreach ($settingKeys as $key) {
+                    // Sistem ayarlarını tekrar eklemeyi önle
+                    if (in_array($key, ['title', 'unique_id'])) {
+                        continue;
+                    }
+                    
+                    // Varsayılan değerleri belirle
+                    $defaultValue = null;
+                    preg_match('/\$settings\[\'' . $key . '\'\]\s+\?\?\s+([^;]+)/', $content, $defaultMatch);
+                    if (!empty($defaultMatch[1])) {
+                        $defaultValue = trim($defaultMatch[1]);
+                        // Stringler için tırnak işaretlerini kaldır
+                        if (preg_match('/^[\'"](.*)[\'"]\s*$/', $defaultValue, $strMatch)) {
+                            $defaultValue = $strMatch[1];
+                        } elseif ($defaultValue === 'true') {
+                            $defaultValue = true;
+                        } elseif ($defaultValue === 'false') {
+                            $defaultValue = false;
+                        } elseif (is_numeric($defaultValue)) {
+                            $defaultValue = (int)$defaultValue;
+                        }
+                    }
+                    
+                    // Ayar tipini belirle
+                    $type = 'text'; // Varsayılan tip
+                    
+                    // Anahtar adına göre tip tahmini yap
+                    if (Str::contains($key, ['show_', 'is_', 'has_', 'enable_'])) {
+                        $type = 'checkbox';
+                    } elseif (Str::contains($key, ['count', 'limit', '_id', 'size', 'width', 'height'])) {
+                        $type = 'number';
+                    } elseif (Str::contains($key, ['color', 'colour'])) {
+                        $type = 'color';
+                    } elseif (Str::contains($key, ['content', 'description', 'body', 'text'])) {
+                        $type = 'textarea';
+                    } elseif (Str::contains($key, ['date'])) {
+                        $type = 'date';
+                    } elseif (Str::contains($key, ['image', 'photo', 'picture'])) {
+                        $type = 'image';
+                    } elseif (Str::contains($key, ['type', 'category', 'style'])) {
+                        $type = 'select';
+                    }
+                    
+                    // Ayarı ekle
+                    $setting = [
+                        'name' => $key,
+                        'label' => $this->generateReadableLabel($key),
+                        'type' => $type,
+                        'required' => false
+                    ];
+                    
+                    // Varsayılan değer varsa ekle
+                    if ($defaultValue !== null) {
+                        $setting['default'] = $defaultValue;
+                    }
+                    
+                    $settings[] = $setting;
+                }
             }
         }
         
         return $settings;
+    }
+    
+    private function generateReadableLabel($key)
+    {
+        // Alt çizgileri boşluklara dönüştür
+        $label = str_replace('_', ' ', $key);
+        
+        // Her kelimenin ilk harfini büyük yap
+        $label = ucwords($label);
+        
+        // Özel düzeltmeler
+        $replacements = [
+            'Id' => 'ID',
+            'Url' => 'URL',
+            'Bg' => 'Arkaplan',
+        ];
+        
+        foreach ($replacements as $search => $replace) {
+            $label = str_replace($search, $replace, $label);
+        }
+        
+        return $label;
     }
 }

@@ -5,92 +5,155 @@ namespace Modules\WidgetManagement\database\seeders;
 use Illuminate\Database\Seeder;
 use Modules\WidgetManagement\app\Models\Widget;
 use Modules\WidgetManagement\app\Models\WidgetCategory;
+use Modules\WidgetManagement\app\Models\TenantWidget;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Config;
+use App\Models\Tenant;
+use Illuminate\Support\Facades\DB;
 
 class HeroWidgetSeeder extends Seeder
 {
-    // Çalıştırma izleme anahtarı
-    private static $runKey = 'hero_widget_seeder_executed';
-
     public function run()
     {
+        Log::info('HeroWidgetSeeder çalıştırılıyor...');
+
         // Tenant kontrolü
         if (function_exists('tenant') && tenant()) {
-            if ($this->command) {
-                $this->command->info('Tenant contextinde çalışıyor, HeroWidgetSeeder atlanıyor.');
+            try {
+                $this->createTenantHero();
+                return;
+            } catch (\Exception $e) {
+                Log::error('Tenant HeroWidgetSeeder hatası: ' . $e->getMessage());
+                return;
             }
-            Log::info('Tenant contextinde çalışıyor, HeroWidgetSeeder atlanıyor. Tenant ID: ' . tenant('id'));
-            return;
         }
 
-        Log::info('HeroWidgetSeeder merkezi veritabanında çalışıyor...');
-
+        // Central işlemleri
         try {
-            // Önce mevcut hero widget'ını temizle
-            $existingWidget = Widget::where('slug', 'full-width-hero')->first();
-            if ($existingWidget) {
-                $existingWidget->delete();
-                Log::info('Mevcut Full Width Hero widget\'\u0131 silindi.');
-            }
+            // Önce central veritabanındaki fazla hero kayıtlarını temizleyelim
+            $this->cleanupExtraHeroes();
             
-            // Hero klasörünü oluştur
-            $this->createHeroFolder();
-
             // Statik hero widget'ı oluştur
-            $this->createHeroWidget();
+            $widget = $this->createHeroWidget();
+            
+            if ($widget) {
+                // Central veritabanı için sadece bir tane hero oluşturalım
+                $this->createDemoTenantHero($widget);
+                
+                // Tüm mevcut tenant'lar için hero'ları oluştur
+                $this->createHeroForAllTenants($widget);
+            }
 
             Log::info('Hero bileşeni başarıyla oluşturuldu.');
-
-            if ($this->command) {
-                $this->command->info('Hero bileşeni başarıyla oluşturuldu.');
-            }
         } catch (\Exception $e) {
-            Log::error('HeroWidgetSeeder hatası: ' . $e->getMessage());
+            Log::error('HeroWidgetSeeder central hatası: ' . $e->getMessage());
             Log::error($e->getTraceAsString());
-
-            if ($this->command) {
-                $this->command->error('HeroWidgetSeeder hatası: ' . $e->getMessage());
-            }
         }
     }
 
-    private function createHeroFolder()
+    private function cleanupExtraHeroes()
     {
-        // Hero klasör yolu
-        $heroBasePath = base_path('Modules/WidgetManagement/resources/views/blocks/hero');
-        $hero1Path = $heroBasePath . '/hero-1';
+        // Hero widget'ını al
+        $widget = Widget::where('slug', 'full-width-hero')->first();
         
-        // Klasör yoksa oluştur
-        if (!File::exists($hero1Path)) {
-            File::makeDirectory($hero1Path, 0755, true);
-            
-            // Hero view dosyasını oluştur
-            $viewContent = '<div class="py-5 text-center bg-light">
-    <div class="container">
-        <div class="row py-lg-5">
-            <div class="col-lg-8 col-md-10 mx-auto">
-                <h1 class="fw-light">Full Width Hero</h1>
-                <p class="lead text-muted">Etkileyici bir hero bileşeni ile sayfanızın üst kısmını tasarlayın. İsterseniz arka plan rengini değiştirerek modern bir görünüm kazandırabilirsiniz.</p>
-                <p>
-                    <a href="#" class="btn btn-primary my-2 me-2">Ana Buton</a>
-                    <a href="#" class="btn btn-secondary my-2">İkincil Buton</a>
-                </p>
-            </div>
-        </div>
-    </div>
-</div>';
-            
-            File::put($hero1Path . '/view.blade.php', $viewContent);
-            Log::info('Hero-1 view.blade.php dosyası oluşturuldu.');
-        } else {
-            Log::info('Hero-1 klasörü zaten mevcut, atlanıyor...');
+        if (!$widget) {
+            return;
         }
+        
+        // Bu widget'a ait tüm tenant_widgets kayıtlarını kontrol et
+        $tenantWidgets = TenantWidget::where('widget_id', $widget->id)->get();
+        
+        if ($tenantWidgets->count() <= 1) {
+            return; // Zaten sadece bir tane varsa işlem yapmaya gerek yok
+        }
+        
+        // İlk kaydı koru, diğerlerini sil
+        $firstWidgetId = $tenantWidgets->first()->id;
+        
+        foreach ($tenantWidgets as $tenantWidget) {
+            if ($tenantWidget->id != $firstWidgetId) {
+                // Widget'ı silelim
+                $tenantWidget->delete();
+                
+                Log::info("Fazla hero widget silindi: ID {$tenantWidget->id}");
+            }
+        }
+        
+        Log::info("Central veritabanında fazla hero widget'ları temizlendi");
     }
     
+    private function createTenantHero()
+    {
+        Log::info('Tenant içinde hero widget oluşturuluyor. Tenant ID: ' . tenant('id'));
+        
+        // Merkezi veritabanından hero widget'ı al
+        $centralWidget = null;
+        
+        try {
+            // Geçici olarak central bağlantısına geç
+            $connection = config('database.default');
+            config(['database.default' => config('tenancy.database.central_connection')]);
+            
+            $centralWidget = Widget::where('slug', 'full-width-hero')->first();
+            
+            // Bağlantıyı geri al
+            config(['database.default' => $connection]);
+        } catch (\Exception $e) {
+            Log::error('Merkezi widget erişim hatası: ' . $e->getMessage());
+            return;
+        }
+        
+        if (!$centralWidget) {
+            Log::error('Merkezi hero widget bulunamadı');
+            return;
+        }
+        
+        // Önce tenant'ta fazla widget'ları temizleyelim
+        $existingWidgets = TenantWidget::where('widget_id', $centralWidget->id)->get();
+        
+        if ($existingWidgets->count() >= 1) {
+            // İlk kaydı koru, diğerlerini sil
+            $firstWidgetId = $existingWidgets->first()->id;
+            
+            foreach ($existingWidgets as $existingWidget) {
+                if ($existingWidget->id != $firstWidgetId) {
+                    // Widget'ı silelim
+                    $existingWidget->delete();
+                    
+                    Log::info("Tenant'ta fazla hero widget silindi: ID {$existingWidget->id}");
+                }
+            }
+            
+            // Zaten bir tane var, yenisini oluşturmaya gerek yok
+            if ($existingWidgets->count() >= 1) {
+                Log::info('Tenant içinde hero widget zaten var, atlanıyor...');
+                return;
+            }
+        }
+        
+        // Tenant için widget oluştur
+        $tenantWidget = TenantWidget::create([
+            'widget_id' => $centralWidget->id,
+            'settings' => [
+                'unique_id' => (string) Str::uuid(),
+                'title' => 'Full Width Hero',
+                'subtitle' => 'Modern ve Etkileyici',
+                'description' => 'Etkileyici bir hero bileşeni ile sayfanızın üst kısmını tasarlayın.',
+                'button_text' => 'Daha Fazla',
+                'button_url' => '#',
+                'show_secondary_button' => true,
+                'secondary_button_text' => 'İletişim',
+                'secondary_button_url' => '/iletisim',
+                'bg_color' => '#f8f9fa',
+                'text_color' => '#212529'
+            ],
+            'order' => 0,
+            'is_active' => true
+        ]);
+        
+        Log::info('Tenant içinde hero widget başarıyla oluşturuldu. Tenant ID: ' . tenant('id'));
+    }
+
     private function createHeroWidget()
     {
         // Hero kategorisini bul, yoksa oluştur
@@ -135,12 +198,12 @@ class HeroWidgetSeeder extends Seeder
                     Log::info("Hero kategorisi oluşturuldu: Herolar (slug: herolar)");
                 } catch (\Exception $e) {
                     Log::error("Hero kategorisi oluşturulamadı. Hata: " . $e->getMessage());
-                    return;
+                    return null;
                 }
                 
                 if (!$heroCategory) {
                     Log::error("Hero kategorisi oluşturulamadı.");
-                    return;
+                    return null;
                 }
             }
         }
@@ -149,14 +212,34 @@ class HeroWidgetSeeder extends Seeder
         $existingWidget = Widget::where('slug', 'full-width-hero')->first();
         
         if (!$existingWidget) {
-            // Hero widget'ı oluştur
-            Widget::create([
+            // Hero widget'ı oluştur - static tip olarak
+            $widget = Widget::create([
                 'widget_category_id' => $heroCategory->widget_category_id,
                 'name' => 'Full Width Hero',
                 'slug' => 'full-width-hero',
                 'description' => 'Sayfanın üst kısmında kullanılabilecek tam genişlikte hero bileşeni',
-                'type' => 'file',
-                'file_path' => 'hero/hero-1/view',
+                'type' => 'static',
+                'content_html' => '<div class="py-5 text-center" style="background-color: {{bg_color}}; color: {{text_color}};">
+    <div class="container">
+        <div class="row py-lg-5">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                <h1 class="fw-light">{{title}}</h1>
+                <h3 class="fw-light">{{subtitle}}</h3>
+                <p class="lead">{{description}}</p>
+                <p>
+                    {{#if button_text}}
+                    <a href="{{button_url}}" class="btn btn-primary my-2 me-2">{{button_text}}</a>
+                    {{/if}}
+                    {{#if show_secondary_button}}
+                    <a href="{{secondary_button_url}}" class="btn btn-secondary my-2">{{secondary_button_text}}</a>
+                    {{/if}}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>',
+                'content_css' => '',
+                'content_js' => '',
                 'has_items' => false,
                 'is_active' => true,
                 'is_core' => true,
@@ -166,15 +249,56 @@ class HeroWidgetSeeder extends Seeder
                         'label' => 'Başlık',
                         'type' => 'text',
                         'required' => true,
-                        'system' => true
+                        'default' => 'Full Width Hero'
                     ],
                     [
-                        'name' => 'unique_id',
-                        'label' => 'Benzersiz ID',
+                        'name' => 'subtitle',
+                        'label' => 'Alt Başlık',
                         'type' => 'text',
                         'required' => false,
-                        'system' => true,
-                        'hidden' => true
+                        'default' => 'Modern ve Etkileyici'
+                    ],
+                    [
+                        'name' => 'description',
+                        'label' => 'Açıklama',
+                        'type' => 'textarea',
+                        'required' => false,
+                        'default' => 'Etkileyici bir hero bileşeni ile sayfanızın üst kısmını tasarlayın. İsterseniz arka plan rengini değiştirerek modern bir görünüm kazandırabilirsiniz.'
+                    ],
+                    [
+                        'name' => 'button_text',
+                        'label' => 'Buton Metni',
+                        'type' => 'text',
+                        'required' => false,
+                        'default' => 'Daha Fazla'
+                    ],
+                    [
+                        'name' => 'button_url',
+                        'label' => 'Buton URL',
+                        'type' => 'text',
+                        'required' => false,
+                        'default' => '#'
+                    ],
+                    [
+                        'name' => 'show_secondary_button',
+                        'label' => 'İkinci Butonu Göster',
+                        'type' => 'checkbox',
+                        'required' => false,
+                        'default' => true
+                    ],
+                    [
+                        'name' => 'secondary_button_text',
+                        'label' => 'İkinci Buton Metni',
+                        'type' => 'text',
+                        'required' => false,
+                        'default' => 'İletişim'
+                    ],
+                    [
+                        'name' => 'secondary_button_url',
+                        'label' => 'İkinci Buton URL',
+                        'type' => 'text',
+                        'required' => false,
+                        'default' => '/iletisim'
                     ],
                     [
                         'name' => 'bg_color',
@@ -189,13 +313,231 @@ class HeroWidgetSeeder extends Seeder
                         'type' => 'color',
                         'required' => false,
                         'default' => '#212529'
+                    ],
+                    [
+                        'name' => 'unique_id',
+                        'label' => 'Benzersiz ID',
+                        'type' => 'text',
+                        'required' => false,
+                        'system' => true,
+                        'hidden' => true
                     ]
                 ]
             ]);
             
             Log::info('Full Width Hero bileşeni oluşturuldu.');
+            return $widget;
         } else {
-            Log::info('Full Width Hero bileşeni zaten mevcut, atlanıyor...');
+            // Widget varsa ama tipi "file" ise "static" olarak güncelle
+            if ($existingWidget->type === 'file') {
+                $existingWidget->update([
+                    'type' => 'static',
+                    'file_path' => null,
+                    'content_html' => '<div class="py-5 text-center" style="background-color: {{bg_color}}; color: {{text_color}};">
+    <div class="container">
+        <div class="row py-lg-5">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                <h1 class="fw-light">{{title}}</h1>
+                <h3 class="fw-light">{{subtitle}}</h3>
+                <p class="lead">{{description}}</p>
+                <p>
+                    {{#if button_text}}
+                    <a href="{{button_url}}" class="btn btn-primary my-2 me-2">{{button_text}}</a>
+                    {{/if}}
+                    {{#if show_secondary_button}}
+                    <a href="{{secondary_button_url}}" class="btn btn-secondary my-2">{{secondary_button_text}}</a>
+                    {{/if}}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>',
+                    'settings_schema' => [
+                        [
+                            'name' => 'title',
+                            'label' => 'Başlık',
+                            'type' => 'text',
+                            'required' => true,
+                            'default' => 'Full Width Hero'
+                        ],
+                        [
+                            'name' => 'subtitle',
+                            'label' => 'Alt Başlık',
+                            'type' => 'text',
+                            'required' => false,
+                            'default' => 'Modern ve Etkileyici'
+                        ],
+                        [
+                            'name' => 'description',
+                            'label' => 'Açıklama',
+                            'type' => 'textarea',
+                            'required' => false,
+                            'default' => 'Etkileyici bir hero bileşeni ile sayfanızın üst kısmını tasarlayın. İsterseniz arka plan rengini değiştirerek modern bir görünüm kazandırabilirsiniz.'
+                        ],
+                        [
+                            'name' => 'button_text',
+                            'label' => 'Buton Metni',
+                            'type' => 'text',
+                            'required' => false,
+                            'default' => 'Daha Fazla'
+                        ],
+                        [
+                            'name' => 'button_url',
+                            'label' => 'Buton URL',
+                            'type' => 'text',
+                            'required' => false,
+                            'default' => '#'
+                        ],
+                        [
+                            'name' => 'show_secondary_button',
+                            'label' => 'İkinci Butonu Göster',
+                            'type' => 'checkbox',
+                            'required' => false,
+                            'default' => true
+                        ],
+                        [
+                            'name' => 'secondary_button_text',
+                            'label' => 'İkinci Buton Metni',
+                            'type' => 'text',
+                            'required' => false,
+                            'default' => 'İletişim'
+                        ],
+                        [
+                            'name' => 'secondary_button_url',
+                            'label' => 'İkinci Buton URL',
+                            'type' => 'text',
+                            'required' => false,
+                            'default' => '/iletisim'
+                        ],
+                        [
+                            'name' => 'bg_color',
+                            'label' => 'Arkaplan Rengi',
+                            'type' => 'color',
+                            'required' => false,
+                            'default' => '#f8f9fa'
+                        ],
+                        [
+                            'name' => 'text_color',
+                            'label' => 'Metin Rengi',
+                            'type' => 'color',
+                            'required' => false,
+                            'default' => '#212529'
+                        ],
+                        [
+                            'name' => 'unique_id',
+                            'label' => 'Benzersiz ID',
+                            'type' => 'text',
+                            'required' => false,
+                            'system' => true,
+                            'hidden' => true
+                        ]
+                    ]
+                ]);
+                Log::info('Full Width Hero bileşeni static olarak güncellendi.');
+            } else {
+                Log::info('Full Width Hero bileşeni zaten mevcut, atlanıyor...');
+            }
+            return $existingWidget;
+        }
+    }
+    
+    private function createDemoTenantHero($widget)
+    {
+        // Önce mevcut widget'ları kontrol edelim ve temizleyelim
+        $existingWidgets = TenantWidget::where('widget_id', $widget->id)->get();
+        
+        if ($existingWidgets->count() >= 1) {
+            // Zaten bir tane var, yenisini oluşturmaya gerek yok
+            Log::info('Central veritabanında Demo Hero widget zaten var, atlanıyor...');
+            return;
+        }
+        
+        // Central veritabanındaki tenant_widgets tablosuna ekleme yapılıyor
+        $tenantWidget = TenantWidget::create([
+            'widget_id' => $widget->id,
+            'settings' => [
+                'unique_id' => (string) Str::uuid(),
+                'title' => 'Full Width Hero',
+                'subtitle' => 'Modern ve Etkileyici',
+                'description' => 'Etkileyici bir hero bileşeni ile sayfanızın üst kısmını tasarlayın. İsterseniz arka plan rengini değiştirerek modern bir görünüm kazandırabilirsiniz.',
+                'button_text' => 'Daha Fazla',
+                'button_url' => '#',
+                'show_secondary_button' => true,
+                'secondary_button_text' => 'İletişim',
+                'secondary_button_url' => '/iletisim',
+                'bg_color' => '#f8f9fa',
+                'text_color' => '#212529'
+            ],
+            'order' => 0,
+            'is_active' => true
+        ]);
+        
+        Log::info('Central veritabanında demo tenant hero oluşturuldu.');
+    }
+    
+    private function createHeroForAllTenants($widget)
+    {
+        // Tüm tenant'ları al
+        $tenants = Tenant::where('central', false)->get();
+        
+        if ($tenants->isEmpty()) {
+            Log::info('Tenant bulunamadı, tenant hero oluşturulamıyor.');
+            return;
+        }
+        
+        foreach ($tenants as $tenant) {
+            try {
+                $tenant->run(function () use ($widget, $tenant) {
+                    Log::info("Tenant {$tenant->id} için hero oluşturuluyor...");
+                    
+                    // Önce tenant'ta fazla widget'ları temizleyelim
+                    $existingWidgets = TenantWidget::where('widget_id', $widget->id)->get();
+                    
+                    if ($existingWidgets->count() > 1) {
+                        // İlk kaydı koru, diğerlerini sil
+                        $firstWidgetId = $existingWidgets->first()->id;
+                        
+                        foreach ($existingWidgets as $existingWidget) {
+                            if ($existingWidget->id != $firstWidgetId) {
+                                // Widget'ı silelim
+                                $existingWidget->delete();
+                                
+                                Log::info("Tenant {$tenant->id} için fazla hero widget silindi: ID {$existingWidget->id}");
+                            }
+                        }
+                    }
+                    
+                    // Zaten bir tane var, yenisini oluşturmaya gerek yok
+                    if ($existingWidgets->count() >= 1) {
+                        Log::info("Tenant {$tenant->id} için hero widget zaten var, atlanıyor...");
+                        return;
+                    }
+                    
+                    // Tenant için widget oluştur
+                    $tenantWidget = TenantWidget::create([
+                        'widget_id' => $widget->id,
+                        'settings' => [
+                            'unique_id' => (string) Str::uuid(),
+                            'title' => $tenant->title . ' Hero',
+                            'subtitle' => 'Hoş Geldiniz',
+                            'description' => $tenant->title . ' web sitesine hoş geldiniz. Modern ve özelleştirilebilir tasarımımızla hizmetinizdeyiz.',
+                            'button_text' => 'Keşfet',
+                            'button_url' => '/hakkimizda',
+                            'show_secondary_button' => true,
+                            'secondary_button_text' => 'İletişim',
+                            'secondary_button_url' => '/iletisim',
+                            'bg_color' => '#f8f9fa',
+                            'text_color' => '#212529'
+                        ],
+                        'order' => 0,
+                        'is_active' => true
+                    ]);
+                    
+                    Log::info("Tenant {$tenant->id} için hero başarıyla oluşturuldu.");
+                });
+            } catch (\Exception $e) {
+                Log::error("Tenant {$tenant->id} için hero oluşturma hatası: " . $e->getMessage());
+            }
         }
     }
 }

@@ -55,7 +55,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Tooltip başlat
     const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-    if (tooltips.length) {
+    if (tooltips.length && typeof window.Tooltip !== 'undefined') {
+        tooltips.forEach(function (tooltip) {
+            new window.Tooltip(tooltip);
+        });
+    } else if (tooltips.length && typeof bootstrap !== 'undefined' && bootstrap.Tooltip) {
         tooltips.forEach(function (tooltip) {
             new bootstrap.Tooltip(tooltip);
         });

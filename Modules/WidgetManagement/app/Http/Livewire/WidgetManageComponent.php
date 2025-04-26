@@ -93,11 +93,11 @@ class WidgetManageComponent extends Component
         'widget.settings_schema' => 'nullable|array',
         'widget.is_active' => 'boolean',
         'widget.is_core' => 'boolean',
-        'thumbnail' => 'nullable|image|max:3072',
+        'thumbnail' => 'nullable|image|max:3072', // 3MB = 3072KB
         'temporaryImages.*' => 'nullable|image|max:3072',
         'temporaryMultipleImages.*' => 'nullable|image|max:3072',
     ];
-    
+        
     // Lint hatalarını düzeltmek için özel değişkenler
     protected $casts = [
         'widget.item_schema' => 'array',

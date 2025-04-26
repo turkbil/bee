@@ -15,8 +15,6 @@ class HeroWidgetSeeder extends Seeder
 {
     public function run()
     {
-        Log::info('HeroWidgetSeeder çalıştırılıyor...');
-
         // Tenant kontrolü
         if (function_exists('tenant') && tenant()) {
             try {
@@ -34,8 +32,6 @@ class HeroWidgetSeeder extends Seeder
             $moduleCategory = WidgetCategory::where('slug', 'modul-bilesenleri')->orWhere('slug', 'moduel-bilesenleri')->first();
             
             if (!$moduleCategory) {
-                Log::info('Modül Bileşenleri kategorisi bulunamadı, oluşturuluyor...');
-                
                 try {
                     $moduleCategory = new WidgetCategory([
                         'title' => 'Modül Bileşenleri',
@@ -49,13 +45,9 @@ class HeroWidgetSeeder extends Seeder
                     ]);
                     
                     $moduleCategory->save();
-                    
-                    Log::info("Modül Bileşenleri kategorisi oluşturuldu (ID: {$moduleCategory->widget_category_id})");
                 } catch (\Exception $e) {
                     Log::error("Modül Bileşenleri kategorisi oluşturulamadı. Hata: " . $e->getMessage());
                 }
-            } else {
-                Log::info("Modül Bileşenleri kategorisi bulundu (ID: {$moduleCategory->widget_category_id})");
             }
             
             // Önce central veritabanındaki fazla hero kayıtlarını temizleyelim
@@ -71,8 +63,6 @@ class HeroWidgetSeeder extends Seeder
                 // Tüm mevcut tenant'lar için hero'ları oluştur
                 $this->createHeroForAllTenants($widget);
             }
-
-            Log::info('Hero bileşeni başarıyla oluşturuldu.');
         } catch (\Exception $e) {
             Log::error('HeroWidgetSeeder central hatası: ' . $e->getMessage());
             Log::error($e->getTraceAsString());
@@ -102,18 +92,12 @@ class HeroWidgetSeeder extends Seeder
             if ($tenantWidget->id != $firstWidgetId) {
                 // Widget'ı silelim
                 $tenantWidget->delete();
-                
-                Log::info("Fazla hero widget silindi: ID {$tenantWidget->id}");
             }
         }
-        
-        Log::info("Central veritabanında fazla hero widget'ları temizlendi");
     }
     
     private function createTenantHero()
     {
-        Log::info('Tenant içinde hero widget oluşturuluyor. Tenant ID: ' . tenant('id'));
-        
         // Merkezi veritabanından hero widget'ı al
         $centralWidget = null;
         
@@ -147,14 +131,11 @@ class HeroWidgetSeeder extends Seeder
                 if ($existingWidget->id != $firstWidgetId) {
                     // Widget'ı silelim
                     $existingWidget->delete();
-                    
-                    Log::info("Tenant'ta fazla hero widget silindi: ID {$existingWidget->id}");
                 }
             }
             
             // Zaten bir tane var, yenisini oluşturmaya gerek yok
             if ($existingWidgets->count() >= 1) {
-                Log::info('Tenant içinde hero widget zaten var, atlanıyor...');
                 return;
             }
         }
@@ -178,8 +159,6 @@ class HeroWidgetSeeder extends Seeder
             'order' => 0,
             'is_active' => true
         ]);
-        
-        Log::info('Tenant içinde hero widget başarıyla oluşturuldu. Tenant ID: ' . tenant('id'));
     }
 
     private function createHeroWidget()
@@ -192,8 +171,6 @@ class HeroWidgetSeeder extends Seeder
             $contentCategory = WidgetCategory::where('slug', 'content')->first();
             
             if ($contentCategory) {
-                Log::info('Content kategorisi bulundu, hero bu kategori altına eklenecek.');
-                
                 // Hero alt kategorisini oluştur
                 $heroCategory = WidgetCategory::create([
                     'title' => 'Herolar',
@@ -205,12 +182,8 @@ class HeroWidgetSeeder extends Seeder
                     'parent_id' => $contentCategory->widget_category_id,
                     'has_subcategories' => false
                 ]);
-                
-                Log::info("Hero alt kategorisi oluşturuldu: Herolar (slug: herolar)");
             } else {
                 // Content kategorisi yoksa, ana kategori olarak oluştur
-                Log::warning('Hero kategorisi bulunamadı, oluşturuluyor...');
-                
                 try {
                     $heroCategory = WidgetCategory::create([
                         'title' => 'Herolar',
@@ -222,8 +195,6 @@ class HeroWidgetSeeder extends Seeder
                         'parent_id' => null,
                         'has_subcategories' => false
                     ]);
-                    
-                    Log::info("Hero kategorisi oluşturuldu: Herolar (slug: herolar)");
                 } catch (\Exception $e) {
                     Log::error("Hero kategorisi oluşturulamadı. Hata: " . $e->getMessage());
                     return null;
@@ -353,7 +324,6 @@ class HeroWidgetSeeder extends Seeder
                 ]
             ]);
             
-            Log::info('Full Width Hero bileşeni oluşturuldu.');
             return $widget;
         } else {
             // Widget varsa ama tipi "file" ise "static" olarak güncelle
@@ -461,9 +431,6 @@ class HeroWidgetSeeder extends Seeder
                         ]
                     ]
                 ]);
-                Log::info('Full Width Hero bileşeni static olarak güncellendi.');
-            } else {
-                Log::info('Full Width Hero bileşeni zaten mevcut, atlanıyor...');
             }
             return $existingWidget;
         }
@@ -476,7 +443,6 @@ class HeroWidgetSeeder extends Seeder
         
         if ($existingWidgets->count() >= 1) {
             // Zaten bir tane var, yenisini oluşturmaya gerek yok
-            Log::info('Central veritabanında Demo Hero widget zaten var, atlanıyor...');
             return;
         }
         
@@ -499,8 +465,6 @@ class HeroWidgetSeeder extends Seeder
             'order' => 0,
             'is_active' => true
         ]);
-        
-        Log::info('Central veritabanında demo tenant hero oluşturuldu.');
     }
     
     private function createHeroForAllTenants($widget)
@@ -509,15 +473,12 @@ class HeroWidgetSeeder extends Seeder
         $tenants = Tenant::where('central', false)->get();
         
         if ($tenants->isEmpty()) {
-            Log::info('Tenant bulunamadı, tenant hero oluşturulamıyor.');
             return;
         }
         
         foreach ($tenants as $tenant) {
             try {
                 $tenant->run(function () use ($widget, $tenant) {
-                    Log::info("Tenant {$tenant->id} için hero oluşturuluyor...");
-                    
                     // Önce tenant'ta fazla widget'ları temizleyelim
                     $existingWidgets = TenantWidget::where('widget_id', $widget->id)->get();
                     
@@ -529,15 +490,12 @@ class HeroWidgetSeeder extends Seeder
                             if ($existingWidget->id != $firstWidgetId) {
                                 // Widget'ı silelim
                                 $existingWidget->delete();
-                                
-                                Log::info("Tenant {$tenant->id} için fazla hero widget silindi: ID {$existingWidget->id}");
                             }
                         }
                     }
                     
                     // Zaten bir tane var, yenisini oluşturmaya gerek yok
                     if ($existingWidgets->count() >= 1) {
-                        Log::info("Tenant {$tenant->id} için hero widget zaten var, atlanıyor...");
                         return;
                     }
                     
@@ -560,8 +518,6 @@ class HeroWidgetSeeder extends Seeder
                         'order' => 0,
                         'is_active' => true
                     ]);
-                    
-                    Log::info("Tenant {$tenant->id} için hero başarıyla oluşturuldu.");
                 });
             } catch (\Exception $e) {
                 Log::error("Tenant {$tenant->id} için hero oluşturma hatası: " . $e->getMessage());

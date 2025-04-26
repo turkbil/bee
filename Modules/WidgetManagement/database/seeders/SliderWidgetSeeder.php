@@ -46,6 +46,34 @@ class SliderWidgetSeeder extends Seeder
 
         // Central işlemleri
         try {
+            // Modül Bileşenleri kategorisini kontrol et
+            $moduleCategory = WidgetCategory::where('slug', 'modul-bilesenleri')->orWhere('slug', 'moduel-bilesenleri')->first();
+            
+            if (!$moduleCategory) {
+                Log::info('Modül Bileşenleri kategorisi bulunamadı, oluşturuluyor...');
+                
+                try {
+                    $moduleCategory = new WidgetCategory([
+                        'title' => 'Modül Bileşenleri',
+                        'slug' => 'modul-bilesenleri',
+                        'description' => 'Sistem modüllerine ait bileşenler',
+                        'icon' => 'fa-cubes',
+                        'order' => 1,
+                        'is_active' => true,
+                        'parent_id' => null,
+                        'has_subcategories' => true
+                    ]);
+                    
+                    $moduleCategory->save();
+                    
+                    Log::info("Modül Bileşenleri kategorisi oluşturuldu (ID: {$moduleCategory->widget_category_id})");
+                } catch (\Exception $e) {
+                    Log::error("Modül Bileşenleri kategorisi oluşturulamadı. Hata: " . $e->getMessage());
+                }
+            } else {
+                Log::info("Modül Bileşenleri kategorisi bulundu (ID: {$moduleCategory->widget_category_id})");
+            }
+            
             // Önce central veritabanındaki fazla slider kayıtlarını temizleyelim
             $this->cleanupExtraSliders();
             

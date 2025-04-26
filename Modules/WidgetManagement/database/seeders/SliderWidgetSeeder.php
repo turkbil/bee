@@ -9,56 +9,180 @@ use Modules\WidgetManagement\app\Models\TenantWidget;
 use Modules\WidgetManagement\app\Models\WidgetItem;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Config;
+use App\Models\Tenant;
+use Illuminate\Support\Facades\DB;
 
 class SliderWidgetSeeder extends Seeder
 {
-    // Çalıştırma izleme anahtarı
-    private static $runKey = 'slider_widget_seeder_executed';
-
     public function run()
     {
+        Log::info('SliderWidgetSeeder çalıştırılıyor...');
+
         // Tenant kontrolü
         if (function_exists('tenant') && tenant()) {
-            if ($this->command) {
-                $this->command->info('Tenant contextinde çalışıyor, SliderWidgetSeeder atlanıyor.');
+            try {
+                $this->createTenantSlider();
+                return;
+            } catch (\Exception $e) {
+                Log::error('Tenant SliderWidgetSeeder hatası: ' . $e->getMessage());
+                return;
             }
-            Log::info('Tenant contextinde çalışıyor, SliderWidgetSeeder atlanıyor. Tenant ID: ' . tenant('id'));
-            return;
         }
 
-        // Cache kontrolü
-        $cacheKey = self::$runKey . '_' . Config::get('database.default');
-        if (Cache::has($cacheKey)) {
-            Log::info('SliderWidgetSeeder zaten çalıştırılmış, atlanıyor...');
+        // Central işlemleri
+        try {
+            // Önce central veritabanındaki fazla slider kayıtlarını temizleyelim
+            $this->cleanupExtraSliders();
+            
+            // Slider bileşeni oluştur
+            $widget = $this->createSliderWidget();
+
+            if ($widget) {
+                // Central veritabanı için sadece bir tane slider oluşturalım
+                $this->createDemoTenantSlider($widget);
+                
+                // Tüm mevcut tenant'lar için slider'ları oluştur
+                $this->createSliderForAllTenants($widget);
+            }
+
+            Log::info('Slider bileşeni başarıyla oluşturuldu.');
+        } catch (\Exception $e) {
+            Log::error('SliderWidgetSeeder central hatası: ' . $e->getMessage());
+            Log::error($e->getTraceAsString());
+        }
+    }
+
+    private function cleanupExtraSliders()
+    {
+        // Slider widget'ını al
+        $widget = Widget::where('slug', 'dinamik-slider')->first();
+        
+        if (!$widget) {
             return;
         }
         
-        Log::info('SliderWidgetSeeder merkezi veritabanında çalışıyor...');
-
-        try {
-            
-            // Slider bileşeni oluştur
-            $this->createSliderWidget();
-
-            Log::info('Slider bileşeni başarıyla oluşturuldu.');
-
-            if ($this->command) {
-                $this->command->info('Slider bileşeni başarıyla oluşturuldu.');
-            }
-            
-            // Seeder'ın çalıştırıldığını işaretle (10 dakika süreyle cache'de tut)
-            $cacheKey = self::$runKey . '_' . Config::get('database.default');
-            Cache::put($cacheKey, true, 600);
-        } catch (\Exception $e) {
-            Log::error('SliderWidgetSeeder hatası: ' . $e->getMessage());
-            Log::error($e->getTraceAsString());
-
-            if ($this->command) {
-                $this->command->error('SliderWidgetSeeder hatası: ' . $e->getMessage());
+        // Bu widget'a ait tüm tenant_widgets kayıtlarını kontrol et
+        $tenantWidgets = TenantWidget::where('widget_id', $widget->id)->get();
+        
+        if ($tenantWidgets->count() <= 1) {
+            return; // Zaten sadece bir tane varsa işlem yapmaya gerek yok
+        }
+        
+        // İlk kaydı koru, diğerlerini sil
+        $firstWidgetId = $tenantWidgets->first()->id;
+        
+        foreach ($tenantWidgets as $tenantWidget) {
+            if ($tenantWidget->id != $firstWidgetId) {
+                // Widget item'larını da silelim
+                WidgetItem::where('tenant_widget_id', $tenantWidget->id)->delete();
+                
+                // Widget'ı silelim
+                $tenantWidget->delete();
+                
+                Log::info("Fazla slider widget silindi: ID {$tenantWidget->id}");
             }
         }
+        
+        Log::info("Central veritabanında fazla slider widget'ları temizlendi");
+    }
+
+    private function createTenantSlider()
+    {
+        Log::info('Tenant içinde slider widget oluşturuluyor. Tenant ID: ' . tenant('id'));
+        
+        // Merkezi veritabanından slider widget'ı al
+        $centralWidget = null;
+        
+        try {
+            // Geçici olarak central bağlantısına geç
+            $connection = config('database.default');
+            config(['database.default' => config('tenancy.database.central_connection')]);
+            
+            $centralWidget = Widget::where('slug', 'dinamik-slider')->first();
+            
+            // Bağlantıyı geri al
+            config(['database.default' => $connection]);
+        } catch (\Exception $e) {
+            Log::error('Merkezi widget erişim hatası: ' . $e->getMessage());
+            return;
+        }
+        
+        if (!$centralWidget) {
+            Log::error('Merkezi slider widget bulunamadı');
+            return;
+        }
+        
+        // Önce tenant'ta fazla widget'ları temizleyelim
+        $existingWidgets = TenantWidget::where('widget_id', $centralWidget->id)->get();
+        
+        if ($existingWidgets->count() >= 1) {
+            // İlk kaydı koru, diğerlerini sil
+            $firstWidgetId = $existingWidgets->first()->id;
+            
+            foreach ($existingWidgets as $existingWidget) {
+                if ($existingWidget->id != $firstWidgetId) {
+                    // Widget item'larını da silelim
+                    WidgetItem::where('tenant_widget_id', $existingWidget->id)->delete();
+                    
+                    // Widget'ı silelim
+                    $existingWidget->delete();
+                    
+                    Log::info("Tenant'ta fazla slider widget silindi: ID {$existingWidget->id}");
+                }
+            }
+            
+            // Zaten bir tane var, yenisini oluşturmaya gerek yok
+            if ($existingWidgets->count() >= 1) {
+                Log::info('Tenant içinde slider widget zaten var, atlanıyor...');
+                return;
+            }
+        }
+        
+        // Tenant için widget oluştur
+        $tenantWidget = TenantWidget::create([
+            'widget_id' => $centralWidget->id,
+            'settings' => [
+                'unique_id' => (string) Str::uuid(),
+                'title' => 'Ana Sayfa Slider',
+                'height' => 500,
+                'interval' => 5000,
+                'show_indicators' => true,
+                'show_controls' => true,
+                'caption_bg_color' => 'rgba(0,0,0,0.5)',
+                'caption_text_color' => '#ffffff'
+            ],
+            'order' => 0,
+            'is_active' => true
+        ]);
+        
+        // Slider için 2 adet örnek item oluştur
+        $items = [
+            [
+                'title' => 'Web Sitesi Çözümleri',
+                'description' => 'Modern ve responsive web siteleri ile işletmenizi dijital dünyada öne çıkarın',
+                'image' => 'https://via.placeholder.com/1200x600',
+                'button_text' => 'Detaylı Bilgi',
+                'button_url' => '/web-cozumleri'
+            ],
+            [
+                'title' => 'E-Ticaret Platformları',
+                'description' => 'Güvenli ve kullanıcı dostu e-ticaret çözümleri ile satışlarınızı artırın',
+                'image' => 'https://via.placeholder.com/1200x600',
+                'button_text' => 'Hemen Başlayın',
+                'button_url' => '/e-ticaret'
+            ]
+        ];
+        
+        // Widget item'larını oluştur
+        foreach ($items as $index => $item) {
+            WidgetItem::create([
+                'tenant_widget_id' => $tenantWidget->id,
+                'content' => $item,
+                'order' => $index + 1
+            ]);
+        }
+        
+        Log::info('Tenant içinde slider widget başarıyla oluşturuldu. Tenant ID: ' . tenant('id'));
     }
 
     private function createSliderWidget()
@@ -105,12 +229,12 @@ class SliderWidgetSeeder extends Seeder
                     Log::info("Slider kategorisi oluşturuldu: Sliderlar (slug: sliderlar)");
                 } catch (\Exception $e) {
                     Log::error("Slider kategorisi oluşturulamadı. Hata: " . $e->getMessage());
-                    return;
+                    return null;
                 }
                 
                 if (!$sliderCategory) {
                     Log::error("Slider kategorisi oluşturulamadı.");
-                    return;
+                    return null;
                 }
             }
         }
@@ -282,17 +406,25 @@ class SliderWidgetSeeder extends Seeder
             ]);
             
             Log::info('Dinamik Slider bileşeni oluşturuldu.');
-            
-            // Demo olarak bir tenant widget ve öğeler oluştur
-            $this->createDemoTenantSlider($widget);
+            return $widget;
         } else {
             Log::info('Dinamik Slider bileşeni zaten mevcut, atlanıyor...');
+            return $existingWidget;
         }
     }
     
     private function createDemoTenantSlider($widget)
     {
-        // Tenant için widget oluştur (tenant_widgets tablosuna ekle)
+        // Önce mevcut widget'ları kontrol edelim ve temizleyelim
+        $existingWidgets = TenantWidget::where('widget_id', $widget->id)->get();
+        
+        if ($existingWidgets->count() >= 1) {
+            // Zaten bir tane var, yenisini oluşturmaya gerek yok
+            Log::info('Central veritabanında Demo Slider widget zaten var, atlanıyor...');
+            return;
+        }
+        
+        // Central veritabanındaki tenant_widgets tablosuna ekleme yapılıyor
         $tenantWidget = TenantWidget::create([
             'widget_id' => $widget->id,
             'settings' => [
@@ -336,6 +468,99 @@ class SliderWidgetSeeder extends Seeder
             ]);
         }
         
-        Log::info('Demo tenant slider oluşturuldu.');
+        Log::info('Central veritabanında demo tenant slider oluşturuldu.');
+    }
+    
+    private function createSliderForAllTenants($widget)
+    {
+        // Tüm tenant'ları al
+        $tenants = Tenant::where('central', false)->get();
+        
+        if ($tenants->isEmpty()) {
+            Log::info('Tenant bulunamadı, tenant slider oluşturulamıyor.');
+            return;
+        }
+        
+        foreach ($tenants as $tenant) {
+            try {
+                $tenant->run(function () use ($widget, $tenant) {
+                    Log::info("Tenant {$tenant->id} için slider oluşturuluyor...");
+                    
+                    // Önce tenant'ta fazla widget'ları temizleyelim
+                    $existingWidgets = TenantWidget::where('widget_id', $widget->id)->get();
+                    
+                    if ($existingWidgets->count() > 1) {
+                        // İlk kaydı koru, diğerlerini sil
+                        $firstWidgetId = $existingWidgets->first()->id;
+                        
+                        foreach ($existingWidgets as $existingWidget) {
+                            if ($existingWidget->id != $firstWidgetId) {
+                                // Widget item'larını da silelim
+                                WidgetItem::where('tenant_widget_id', $existingWidget->id)->delete();
+                                
+                                // Widget'ı silelim
+                                $existingWidget->delete();
+                                
+                                Log::info("Tenant {$tenant->id} için fazla slider widget silindi: ID {$existingWidget->id}");
+                            }
+                        }
+                    }
+                    
+                    // Zaten bir tane var, yenisini oluşturmaya gerek yok
+                    if ($existingWidgets->count() >= 1) {
+                        Log::info("Tenant {$tenant->id} için slider widget zaten var, atlanıyor...");
+                        return;
+                    }
+                    
+                    // Tenant için widget oluştur
+                    $tenantWidget = TenantWidget::create([
+                        'widget_id' => $widget->id,
+                        'settings' => [
+                            'unique_id' => (string) Str::uuid(),
+                            'title' => $tenant->title . ' Slider',
+                            'height' => 500,
+                            'interval' => 5000,
+                            'show_indicators' => true,
+                            'show_controls' => true,
+                            'caption_bg_color' => 'rgba(0,0,0,0.5)',
+                            'caption_text_color' => '#ffffff'
+                        ],
+                        'order' => 0,
+                        'is_active' => true
+                    ]);
+                    
+                    // Slider için 2 adet örnek item oluştur
+                    $items = [
+                        [
+                            'title' => $tenant->title . ' Web Sitesi',
+                            'description' => 'Modern ve responsive web siteleri ile işletmenizi dijital dünyada öne çıkarın',
+                            'image' => 'https://via.placeholder.com/1200x600',
+                            'button_text' => 'Detaylı Bilgi',
+                            'button_url' => '/web-cozumleri'
+                        ],
+                        [
+                            'title' => $tenant->title . ' E-Ticaret',
+                            'description' => 'Güvenli ve kullanıcı dostu e-ticaret çözümleri ile satışlarınızı artırın',
+                            'image' => 'https://via.placeholder.com/1200x600',
+                            'button_text' => 'Hemen Başlayın',
+                            'button_url' => '/e-ticaret'
+                        ]
+                    ];
+                    
+                    // Widget item'larını oluştur
+                    foreach ($items as $index => $item) {
+                        WidgetItem::create([
+                            'tenant_widget_id' => $tenantWidget->id,
+                            'content' => $item,
+                            'order' => $index + 1
+                        ]);
+                    }
+                    
+                    Log::info("Tenant {$tenant->id} için slider başarıyla oluşturuldu.");
+                });
+            } catch (\Exception $e) {
+                Log::error("Tenant {$tenant->id} için slider oluşturma hatası: " . $e->getMessage());
+            }
+        }
     }
 }

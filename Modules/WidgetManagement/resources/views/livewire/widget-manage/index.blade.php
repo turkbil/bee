@@ -8,16 +8,16 @@
                     <i class="fas fa-{{ $widgetId ? 'edit' : 'plus' }} me-2"></i>
                     {{ $widgetId ? 'Widget Düzenle: ' . $widget['name'] : 'Yeni Widget Ekle' }}
                 </h3>
-            </div>
-            
-            <div wire:loading class="position-fixed top-0 start-0 w-100" style="z-index: 1050;" wire:target="setFormMode">
-                <div class="progress rounded-0" style="height: 12px;">
-                    <div class="progress-bar progress-bar-striped progress-bar-indeterminate bg-primary"></div>
+                <div wire:loading class="position-relative mx-4" style="width: 60%; max-width: 400px;" wire:target="setFormMode">
+                    <div class="small text-muted mb-1">Güncelleniyor...</div>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-indeterminate"></div>
+                    </div>
                 </div>
             </div>
             
             <div class="card-body">
-                <div class="d-flex mb-3">
+                <div class="d-flex mb-4">
                     <ul class="nav nav-tabs nav-fill w-100">
                         <li class="nav-item">
                             <a class="nav-link {{ $formMode === 'base' ? 'active' : '' }}" href="#" wire:click.prevent="setFormMode('base')">
@@ -85,6 +85,16 @@
 .file-drop-area.is-active {
     background-color: #eef2f7;
     border-color: #adb5bd;
+}
+
+/* Widget seçenek alanları için boşluk */
+.form-check {
+    margin-bottom: 1rem;
+}
+
+/* Ekle butonları için sağa dayalı tasarım */
+.header-button-right {
+    float: right;
 }
 </style>
 @endpush

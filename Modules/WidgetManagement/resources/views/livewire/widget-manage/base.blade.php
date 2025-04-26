@@ -2,7 +2,7 @@
 <div class="tab-pane fade {{ $formMode === 'base' ? 'active show' : '' }}" id="tab-base">
     <div class="row">
         <div class="col-md-8">
-            <div class="form-floating mb-3">
+            <div class="form-floating mb-4">
                 <input type="text" wire:model.live="widget.name" 
                     class="form-control @error('widget.name') is-invalid @enderror"
                     placeholder="Widget adı" id="widget-name">
@@ -10,7 +10,7 @@
                 @error('widget.name') <div class="invalid-feedback">{{ $message }}</div> @enderror
             </div>
             
-            <div class="form-floating mb-3">
+            <div class="form-floating mb-4 d-none">
                 <input type="text" wire:model="widget.slug" 
                     class="form-control @error('widget.slug') is-invalid @enderror"
                     placeholder="Slug" id="widget-slug">
@@ -22,17 +22,18 @@
                 </div>
             </div>
             
-            <div class="form-floating mb-3">
-                <select wire:model="widget.widget_category_id" class="form-select" id="widget-category">
+            <div class="form-floating mb-4">
+                <select wire:model="widget.widget_category_id" class="form-select @error('widget.widget_category_id') is-invalid @enderror" id="widget-category">
                     <option value="">Kategori Seçiniz</option>
                     @foreach($categories as $category)
                     <option value="{{ $category->widget_category_id }}">{{ $category->title }}</option>
                     @endforeach
                 </select>
                 <label for="widget-category">Kategori</label>
+                @error('widget.widget_category_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
             </div>
 
-            <div class="form-floating mb-3">
+            <div class="form-floating mb-4">
                 <textarea wire:model="widget.description" 
                     class="form-control @error('widget.description') is-invalid @enderror" 
                     placeholder="Bu widget ne işe yarar? Kısaca açıklayın."
@@ -42,10 +43,10 @@
                 @error('widget.description') <div class="invalid-feedback">{{ $message }}</div> @enderror
             </div>
             
-            <div class="mb-3">
+            <div class="mb-4">
                 <label class="form-label required">Widget Tipi</label>
                 <div class="row g-3">
-                    <div class="col-md-4 col-xl-4">
+                    <div class="col-md-3 col-xl-3">
                         <label class="form-selectgroup-item">
                             <input type="radio" name="widget-type" value="static" wire:model="widget.type" class="form-selectgroup-input">
                             <span class="form-selectgroup-label d-flex align-items-center p-3">
@@ -59,7 +60,7 @@
                             </span>
                         </label>
                     </div>
-                    <div class="col-md-4 col-xl-4">
+                    <div class="col-md-3 col-xl-3">
                         <label class="form-selectgroup-item">
                             <input type="radio" name="widget-type" value="dynamic" wire:model="widget.type" class="form-selectgroup-input">
                             <span class="form-selectgroup-label d-flex align-items-center p-3">
@@ -73,7 +74,7 @@
                             </span>
                         </label>
                     </div>
-                    <div class="col-md-4 col-xl-4">
+                    <div class="col-md-3 col-xl-3">
                         <label class="form-selectgroup-item">
                             <input type="radio" name="widget-type" value="module" wire:model="widget.type" class="form-selectgroup-input">
                             <span class="form-selectgroup-label d-flex align-items-center p-3">
@@ -87,7 +88,7 @@
                             </span>
                         </label>
                     </div>
-                    <div class="col-md-4 col-xl-4">
+                    <div class="col-md-3 col-xl-3">
                         <label class="form-selectgroup-item">
                             <input type="radio" name="widget-type" value="file" wire:model="widget.type" class="form-selectgroup-input">
                             <span class="form-selectgroup-label d-flex align-items-center p-3">
@@ -111,7 +112,7 @@
                     <h3 class="card-title">Önizleme Görseli</h3>
                 </div>
                 <div class="card-body">
-                    <div class="mb-3">
+                    <div class="mb-4">
                         <div class="form-control position-relative" 
                             onclick="document.getElementById('thumbnail-upload').click()"
                             style="height: auto; min-height: 200px; cursor: pointer; border: 2px dashed #ccc;">
@@ -146,7 +147,7 @@
                     <div class="mt-4">
                         <div class="form-label">Widget Seçenekleri</div>
                         
-                        <div class="mb-2">
+                        <div class="mb-3">
                             <label class="form-check form-switch">
                                 <input type="checkbox" id="has_items" class="form-check-input" wire:model.live="widget.has_items">
                                 <span class="form-check-label">İçerik Ekleme Özelliği</span>
@@ -157,14 +158,14 @@
                             </div>
                         </div>
                         
-                        <div class="mb-2">
+                        <div class="mb-3">
                             <label class="form-check form-switch">
                                 <input type="checkbox" id="is_active" class="form-check-input" wire:model="widget.is_active">
                                 <span class="form-check-label">Widget Aktif</span>
                             </label>
                         </div>
                         
-                        <div class="mb-2">
+                        <div class="mb-3">
                             <label class="form-check form-switch">
                                 <input type="checkbox" id="is_core" class="form-check-input" wire:model="widget.is_core">
                                 <span class="form-check-label">Sistem Widget'ı</span>

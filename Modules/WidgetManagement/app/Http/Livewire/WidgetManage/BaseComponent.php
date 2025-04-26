@@ -72,6 +72,27 @@ class BaseComponent extends Component
         'widget.item_schema' => 'array',
         'widget.settings_schema' => 'array',
     ];
+
+    // Özel doğrulama mesajları
+    protected $messages = [
+        'widget.name.required' => 'Widget adı zorunludur.',
+        'widget.name.min' => 'Widget adı en az 3 karakter olmalıdır.',
+        'widget.name.max' => 'Widget adı en fazla 255 karakter olabilir.',
+        'widget.slug.required' => 'Benzersiz tanımlayıcı (slug) zorunludur.',
+        'widget.slug.regex' => 'Benzersiz tanımlayıcı (slug) sadece harf, rakam, tire ve alt çizgi içerebilir.',
+        'widget.slug.max' => 'Benzersiz tanımlayıcı (slug) en fazla 255 karakter olabilir.',
+        'widget.description.max' => 'Açıklama en fazla 1000 karakter olabilir.',
+        'widget.widget_category_id.exists' => 'Seçilen kategori geçerli değil.',
+        'widget.type.required' => 'Widget tipi zorunludur.',
+        'widget.type.in' => 'Geçersiz widget tipi seçildi.',
+        'widget.file_path.max' => 'Dosya yolu en fazla 255 karakter olabilir.',
+        'thumbnail.image' => 'Yüklenen dosya bir görsel olmalıdır.',
+        'thumbnail.max' => 'Görsel boyutu en fazla 3MB olabilir.',
+        'temporaryImages.*.image' => 'Yüklenen dosya bir görsel olmalıdır.',
+        'temporaryImages.*.max' => 'Görsel boyutu en fazla 3MB olabilir.',
+        'temporaryMultipleImages.*.image' => 'Yüklenen dosya bir görsel olmalıdır.',
+        'temporaryMultipleImages.*.max' => 'Görsel boyutu en fazla 3MB olabilir.',
+    ];
     
     public function mount($id = null)
     {
@@ -160,6 +181,7 @@ class BaseComponent extends Component
     
     public function updatedWidgetName()
     {
+        // Widget adı değiştiğinde otomatik olarak slug oluştur (zaten varsa değiştirme)
         if (empty($this->widget['slug'])) {
             $this->widget['slug'] = Str::slug($this->widget['name']);
         }
@@ -173,6 +195,11 @@ class BaseComponent extends Component
     public function save()
     {
         $this->isSubmitting = true;
+        
+        // Widget adından slug oluştur (kaydetmeden önce)
+        if (empty($this->widget['slug'])) {
+            $this->widget['slug'] = Str::slug($this->widget['name']);
+        }
         
         $this->validate();
         

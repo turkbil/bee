@@ -38,11 +38,9 @@ class WidgetManagementDatabaseSeeder extends Seeder
             $currentConnection = Config::get('database.default');
             Log::info('Mevcut veritabanı bağlantısı: ' . $currentConnection);
             
-            // Önce kategorileri oluştur ve veritabanına kaydet
-            $this->call(WidgetCategorySeeder::class);
-            
             // Diğer seeder'ları çalıştır - kategori oluşturulduktan sonra
             $this->call([
+                WidgetCategorySeeder::class,   // Widget kategorilerini oluştur
                 ModuleWidgetSeeder::class,   // Modül bileşenlerini oluştur
                 BlockWidgetSeeder::class,    // Blok bileşenlerini oluştur
                 SliderWidgetSeeder::class,   // Slider bileşenlerini oluştur

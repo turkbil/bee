@@ -51,10 +51,10 @@ class ModuleWidgetListComponent extends Component
         // Module tipindeki widgetları getir (sayılar için)
         $moduleWidgetsQuery = Widget::where('type', 'module')->where('is_active', true);
         
-        // Ana kategorileri getir - Sadece 1 nolu kategoriyi göster (Modül Bileşenleri)
+        // Ana kategorileri getir - Sadece 1 nolu kategoriyi göster (Moduller)
         $parentCategories = WidgetCategory::whereNull('parent_id')
             ->where('is_active', true)
-            ->where('widget_category_id', '=', 1) // Sadece Modül Bileşenleri (1 nolu kategori) göster
+            ->where('widget_category_id', '=', 1) // Sadece Moduller (1 nolu kategori) göster
             ->withCount(['widgets' => function($query) use ($moduleWidgetsQuery) {
                 $query->whereIn('id', $moduleWidgetsQuery->pluck('id'));
             }, 'children'])
@@ -102,7 +102,7 @@ class ModuleWidgetListComponent extends Component
             ->where('type', 'module')
             ->whereHas('category', function($cq) {
                 $cq->where('widget_category_id', '=', 1)
-                   ->orWhere('parent_id', '=', 1); // Modül bileşenleri kategorisi ve alt kategorileri
+                   ->orWhere('parent_id', '=', 1); // Moduller kategorisi ve alt kategorileri
             })
             ->when($this->search, function ($q) {
                 $q->where('widgets.name', 'like', "%{$this->search}%")

@@ -135,7 +135,7 @@ class WidgetComponent extends Component
         // Ana kategorileri getir
         $parentCategories = WidgetCategory::whereNull('parent_id')
             ->where('is_active', true)
-            ->where('widget_category_id', '!=', 1) // Modül bileşenleri (1 nolu kategori) hariç tut
+            ->where('widget_category_id', '!=', 1) // Moduller (1 nolu kategori) hariç tut
             ->withCount(['widgets' => function($query) use ($standardWidgetsQuery) {
                 $query->whereHas('tenantWidgets', function($q) use ($standardWidgetsQuery) {
                     $q->whereIn('id', $standardWidgetsQuery->pluck('id'));
@@ -180,7 +180,7 @@ class WidgetComponent extends Component
                 $q->where('type', '!=', 'file') // file tipindeki widgetları hariç tut
                   ->where('type', '!=', 'module') // module tipindeki widgetları hariç tut
                   ->whereHas('category', function($cq) {
-                      $cq->where('widget_category_id', '!=', 1); // Modül bileşenleri kategorisini (1 nolu) hariç tut
+                      $cq->where('widget_category_id', '!=', 1); // Moduller kategorisini (1 nolu) hariç tut
                   });
             })
             ->when($this->search, function ($q) {

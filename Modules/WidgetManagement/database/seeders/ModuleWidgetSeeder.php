@@ -32,9 +32,9 @@ class ModuleWidgetSeeder extends Seeder
         }
         
         try {
-            // Modül Bileşenleri kategorisini kontrol et
-            $mainModuleCategory = WidgetCategory::where('slug', 'modul-bilesenleri')
-                ->orWhere('title', 'Modül Bileşenleri')
+            // Moduller kategorisini kontrol et
+            $mainModuleCategory = WidgetCategory::where('slug', 'moduller')
+                ->orWhere('title', 'Moduller')
                 ->first();
             
             if (!$mainModuleCategory) {
@@ -42,8 +42,8 @@ class ModuleWidgetSeeder extends Seeder
                 try {
                     // Önce yeni bir kategori nesnesi oluştur
                     $mainModuleCategory = new WidgetCategory([
-                        'title' => 'Modül Bileşenleri',
-                        'slug' => 'modul-bilesenleri',
+                        'title' => 'Moduller',
+                        'slug' => 'moduller',
                         'description' => 'Sistem modüllerine ait bileşenler',
                         'icon' => 'fa-cubes',
                         'order' => 1,
@@ -61,7 +61,7 @@ class ModuleWidgetSeeder extends Seeder
                     }
                     
                 } catch (\Exception $e) {
-                    Log::error("Modül Bileşenleri kategorisi oluşturulamadı. Hata: " . $e->getMessage());
+                    Log::error("Moduller kategorisi oluşturulamadı. Hata: " . $e->getMessage());
                     return;
                 }
             } else {

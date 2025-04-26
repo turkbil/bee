@@ -102,6 +102,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         });
+        
+        // Köşe yuvarlaklığı örneklerine tıklama olayı ekleme
+        radiusExamples.forEach((example) => {
+            example.addEventListener('click', function() {
+                const selectedIndex = this.getAttribute('data-radius');
+                radiusSlider.value = selectedIndex;
+                
+                // Slider değişimi olayını tetikle
+                const event = new Event('input');
+                radiusSlider.dispatchEvent(event);
+            });
+        });
     }
 
     // Font Boyutu değiştirme
@@ -149,7 +161,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.cookie = `themeBase=${baseTheme};path=/;max-age=31536000`;
             
             // Gri tonu güncelle
-            document.body.classList.remove('theme-base-slate', 'theme-base-gray', 'theme-base-zinc', 'theme-base-neutral', 'theme-base-stone');
+            document.body.classList.remove('theme-base-slate', 'theme-base-cool', 'theme-base-neutral', 'theme-base-warm', 'theme-base-indigo', 'theme-base-azure');
             document.body.classList.add(`theme-base-${baseTheme}`);
         });
     });
@@ -175,13 +187,13 @@ document.addEventListener('DOMContentLoaded', function() {
     if (resetButton) {
         resetButton.addEventListener('click', function() {
             // Varsayılan değerleri ayarla
-            document.cookie = 'dark=0;path=/;max-age=31536000';
+            document.cookie = 'dark=auto;path=/;max-age=31536000';
             document.cookie = 'siteColor=#066fd1;path=/;max-age=31536000';
-            document.cookie = 'themeBase=gray;path=/;max-age=31536000';
+            document.cookie = 'themeBase=cool;path=/;max-age=31536000';
             document.cookie = 'themeFont=Inter, system-ui, -apple-system, \'Segoe UI\', Roboto, \'Helvetica Neue\', Arial, \'Noto Sans\', sans-serif;path=/;max-age=31536000';
             document.cookie = 'themeRadius=0.5rem;path=/;max-age=31536000';
-            document.cookie = 'tableCompact=1;path=/;max-age=31536000';
-            document.cookie = 'themeFontSize=normal;path=/;max-age=31536000';
+            document.cookie = 'tableCompact=0;path=/;max-age=31536000';
+            document.cookie = 'themeFontSize=small;path=/;max-age=31536000';
             
             // Sayfayı yenile
             window.location.reload();
@@ -206,9 +218,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Mevcut tema ayarını al
         let currentTheme = getCookie('dark');
         
-        // Eğer tema ayarı yoksa, varsayılan olarak açık tema kullan
+        // Eğer tema ayarı yoksa, varsayılan olarak sistem teması kullan
         if (!currentTheme || (currentTheme !== '0' && currentTheme !== '1' && currentTheme !== 'auto')) {
-            currentTheme = '0'; // Açık tema
+            currentTheme = 'auto'; // Sistem teması
         }
         
         // Tema durumunu güncelle
@@ -395,12 +407,12 @@ document.addEventListener('DOMContentLoaded', function() {
             'body-font-size': '0.875rem',
             'dropdown-font-size': '0.875rem',
             'code-font-size': '0.875rem',
-            'h1-font-size': '2rem',
-            'h2-font-size': '1.75rem',
-            'h3-font-size': '1.5rem',
-            'h4-font-size': '1.25rem',
-            'h5-font-size': '1rem',
-            'h6-font-size': '0.875rem',
+            'h1-font-size': '1.5rem',
+            'h2-font-size': '1.25rem',
+            'h3-font-size': '1.125rem',
+            'h4-font-size': '1rem',
+            'h5-font-size': '0.875rem',
+            'h6-font-size': '0.75rem',
             'small-font-size': '0.75rem',
             'btn-font-size': '0.875rem',
             'btn-sm-font-size': '0.75rem',
@@ -438,7 +450,7 @@ document.addEventListener('DOMContentLoaded', function() {
         updateTextColor(currentColor);
         
         // Tablo görünümünü ayarla
-        const tableCompact = getCookie('tableCompact') || '1';
+        const tableCompact = getCookie('tableCompact') || '0';
         if (tableCompact === '1') {
             document.body.classList.add('table-compact');
         } else {
@@ -446,12 +458,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Gri tonu ayarla
-        const baseTheme = getCookie('themeBase') || 'gray';
-        document.body.classList.remove('theme-base-slate', 'theme-base-gray', 'theme-base-zinc', 'theme-base-neutral', 'theme-base-stone');
+        const baseTheme = getCookie('themeBase') || 'cool';
+        document.body.classList.remove('theme-base-slate', 'theme-base-cool', 'theme-base-neutral', 'theme-base-warm', 'theme-base-indigo', 'theme-base-azure');
         document.body.classList.add(`theme-base-${baseTheme}`);
         
         // Font boyutunu ayarla
-        const fontSize = getCookie('themeFontSize') || 'normal';
+        const fontSize = getCookie('themeFontSize') || 'small';
         document.body.classList.remove('font-size-small', 'font-size-normal', 'font-size-large');
         document.body.classList.add(`font-size-${fontSize}`);
         

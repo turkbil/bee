@@ -7,6 +7,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>{{ config('app.name') }} - @yield('title')</title>
+    <!-- Sistem teması kontrolü - Sayfa yüklenmeden çalışır -->
+    <script>
+        (function() {
+            var darkMode = "<?php echo isset($_COOKIE['dark']) ? $_COOKIE['dark'] : 'auto'; ?>";
+            if(darkMode === 'auto') {
+                // Sistem karanlık modunu kontrol et
+                if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.documentElement.setAttribute('data-bs-theme', 'dark');
+                    document.documentElement.classList.add('dark');
+                    document.documentElement.classList.remove('light');
+                } else {
+                    document.documentElement.setAttribute('data-bs-theme', 'light');
+                    document.documentElement.classList.add('light');
+                    document.documentElement.classList.remove('dark');
+                }
+            } else if(darkMode === '1') {
+                document.documentElement.setAttribute('data-bs-theme', 'dark');
+                document.documentElement.classList.add('dark');
+                document.documentElement.classList.remove('light');
+            } else {
+                document.documentElement.setAttribute('data-bs-theme', 'light');
+                document.documentElement.classList.add('light');
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+    </script>
     <!-- Google Fontları -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,17 +57,37 @@
             ?>;
             --primary-text-color: <?php echo isset($_COOKIE['siteTextColor']) ? $_COOKIE['siteTextColor']: '#ffffff';
             ?>;
-            --tblr-font-family: <?php echo isset($_COOKIE['themeFont']) ? $_COOKIE['themeFont'] : 'Inter, Poppins, Roboto, system-ui, -apple-system, \'Segoe UI\', \'Helvetica Neue\', Arial, \'Noto Sans\', sans-serif'; ?>;            --tblr-border-radius: <?php echo isset($_COOKIE['themeRadius']) ? $_COOKIE['themeRadius'] : '0.5rem'; ?>;
+            --tblr-font-family: <?php echo isset($_COOKIE['themeFont']) ? $_COOKIE['themeFont'] : 'Inter, Poppins, Roboto, system-ui, -apple-system, \'Segoe UI\', \'Helvetica Neue\', Arial, \'Noto Sans\', sans-serif'; ?>;
+            --tblr-border-radius: <?php echo isset($_COOKIE['themeRadius']) ? $_COOKIE['themeRadius'] : '0.5rem'; ?>;
         }
         body {
             font-family: var(--tblr-font-family);
         }
     </style>
 </head>
-<body<?php echo (isset($_COOKIE['dark']) && $_COOKIE['dark']=='1' ) ? ' class="dark' . (!isset($_COOKIE['tableCompact'])
-    || $_COOKIE['tableCompact']=='1' ? ' table-compact' : '' ) . '" data-bs-theme="dark"' : ' class="light' .
-    (!isset($_COOKIE['tableCompact']) || $_COOKIE['tableCompact']=='1' ? ' table-compact' : '' )
-    . '" data-bs-theme="light"' ; ?>>
+<body<?php
+    $darkMode = isset($_COOKIE['dark']) ? $_COOKIE['dark'] : 'auto';
+    $tableCompact = isset($_COOKIE['tableCompact']) ? $_COOKIE['tableCompact'] : '0';
+    $themeFontSize = isset($_COOKIE['themeFontSize']) ? $_COOKIE['themeFontSize'] : 'small';
+    
+    // Sistem teması kontrolü için PHP tarafında
+    $isDark = false;
+    if ($darkMode == '1') {
+        $isDark = true;
+    } elseif ($darkMode == 'auto' && isset($_SERVER['HTTP_SEC_CH_PREFERS_COLOR_SCHEME'])) {
+        // HTTP başlığından tarayıcı tercihini kontrol et (modern tarayıcılar için)
+        $isDark = $_SERVER['HTTP_SEC_CH_PREFERS_COLOR_SCHEME'] === 'dark';
+    }
+    
+    if ($isDark) {
+        echo ' class="dark' . ($tableCompact == '1' ? ' table-compact' : '') . ' font-size-' . $themeFontSize . '" data-bs-theme="dark"';
+    } else if ($darkMode == '0') {
+        echo ' class="light' . ($tableCompact == '1' ? ' table-compact' : '') . ' font-size-' . $themeFontSize . '" data-bs-theme="light"';
+    } else {
+        // auto mode - başlangıçta nötr, JS ile kontrol edilecek
+        echo ' class="' . (($tableCompact == '1') ? 'table-compact ' : '') . 'font-size-' . $themeFontSize . '"';
+    }
+?>>
 
 <div class="page">
     @include('admin.components.navigation')

@@ -16,7 +16,7 @@
                 <div class="theme-section-body pt-4">
                     <div class="appearance-options mb-2">
                         <label class="appearance-option" for="theme-light">
-                            <input type="radio" id="theme-light" name="theme" value="light" {{ !isset($_COOKIE['dark']) || $_COOKIE['dark'] != '1' ? 'checked' : '' }}>
+                            <input type="radio" id="theme-light" name="theme" value="light" {{ isset($_COOKIE['dark']) && $_COOKIE['dark'] == '0' ? 'checked' : '' }}>
                             <div class="appearance-preview light-preview"></div>
                             <span>Açık</span>
                         </label>
@@ -26,7 +26,7 @@
                             <span>Koyu</span>
                         </label>
                         <label class="appearance-option" for="theme-auto">
-                            <input type="radio" id="theme-auto" name="theme" value="auto" {{ isset($_COOKIE['dark']) && $_COOKIE['dark'] == 'auto' ? 'checked' : '' }}>
+                            <input type="radio" id="theme-auto" name="theme" value="auto" {{ !isset($_COOKIE['dark']) || $_COOKIE['dark'] == 'auto' ? 'checked' : '' }}>
                             <div class="appearance-preview auto-preview"></div>
                             <span>Sistem</span>
                         </label>
@@ -219,14 +219,14 @@
                 <div class="theme-section-body pt-4">
                     <div class="appearance-options mb-2">
                         <label class="appearance-option" for="font-size-small">
-                            <input type="radio" id="font-size-small" name="theme-font-size" value="small" {{ (isset($_COOKIE['themeFontSize']) && $_COOKIE['themeFontSize'] == 'small') ? 'checked' : '' }}>
+                            <input type="radio" id="font-size-small" name="theme-font-size" value="small" {{ (!isset($_COOKIE['themeFontSize']) || $_COOKIE['themeFontSize'] == 'small') ? 'checked' : '' }}>
                             <div class="appearance-preview">
                                 <span style="font-size: 0.75rem;">Aa<br/>Bb<br/>Cc</span>
                             </div>
                             <span>Küçük</span>
                         </label>
                         <label class="appearance-option" for="font-size-normal">
-                            <input type="radio" id="font-size-normal" name="theme-font-size" value="normal" {{ (!isset($_COOKIE['themeFontSize']) || $_COOKIE['themeFontSize'] == 'normal') ? 'checked' : '' }}>
+                            <input type="radio" id="font-size-normal" name="theme-font-size" value="normal" {{ (isset($_COOKIE['themeFontSize']) && $_COOKIE['themeFontSize'] == 'normal') ? 'checked' : '' }}>
                             <div class="appearance-preview">
                                 <span style="font-size: 0.875rem;">Aa<br/>Bb<br/>Cc</span>
                             </div>
@@ -253,11 +253,11 @@
                     <div class="radius-slider-container pt-2 px-3">
                         <input type="range" class="radius-slider" id="radius-slider" min="0" max="4" step="1" value="{{ $radiusValue = isset($_COOKIE['themeRadius']) ? (($_COOKIE['themeRadius'] == '0') ? 0 : (($_COOKIE['themeRadius'] == '0.25rem') ? 1 : (($_COOKIE['themeRadius'] == '0.5rem') ? 2 : (($_COOKIE['themeRadius'] == '0.75rem') ? 3 : 4)))) : 2 }}">
                         <div class="radius-preview pt-3">
-                            <div class="radius-example radius-0 {{ $radiusValue == 0 ? 'active' : '' }}"></div>
-                            <div class="radius-example radius-1 {{ $radiusValue == 1 ? 'active' : '' }}"></div>
-                            <div class="radius-example radius-2 {{ $radiusValue == 2 ? 'active' : '' }}"></div>
-                            <div class="radius-example radius-3 {{ $radiusValue == 3 ? 'active' : '' }}"></div>
-                            <div class="radius-example radius-4 {{ $radiusValue == 4 ? 'active' : '' }}"></div>
+                            <div class="radius-example radius-0 {{ $radiusValue == 0 ? 'active' : '' }}" data-radius="0"></div>
+                            <div class="radius-example radius-1 {{ $radiusValue == 1 ? 'active' : '' }}" data-radius="1"></div>
+                            <div class="radius-example radius-2 {{ $radiusValue == 2 ? 'active' : '' }}" data-radius="2"></div>
+                            <div class="radius-example radius-3 {{ $radiusValue == 3 ? 'active' : '' }}" data-radius="3"></div>
+                            <div class="radius-example radius-4 {{ $radiusValue == 4 ? 'active' : '' }}" data-radius="4"></div>
                         </div>
                         <input type="hidden" id="radius-value" name="theme-radius" value="{{ isset($_COOKIE['themeRadius']) ? $_COOKIE['themeRadius'] : '0.5rem' }}">
                     </div>
@@ -273,12 +273,12 @@
                 <div class="theme-section-body py-4">
                     <div class="appearance-options">
                         <label class="appearance-option" for="table-compact">
-                            <input type="radio" id="table-compact" name="table-compact" value="1" {{ (!isset($_COOKIE['tableCompact']) || $_COOKIE['tableCompact'] == '1') ? 'checked' : '' }}>
+                            <input type="radio" id="table-compact" name="table-compact" value="1" {{ (isset($_COOKIE['tableCompact']) && $_COOKIE['tableCompact'] == '1') ? 'checked' : '' }}>
                             <div class="appearance-preview compact-preview"></div>
                             <span>Kompakt</span>
                         </label>
                         <label class="appearance-option" for="table-normal">
-                            <input type="radio" id="table-normal" name="table-compact" value="0" {{ (isset($_COOKIE['tableCompact']) && $_COOKIE['tableCompact'] == '0') ? 'checked' : '' }}>
+                            <input type="radio" id="table-normal" name="table-compact" value="0" {{ (!isset($_COOKIE['tableCompact']) || $_COOKIE['tableCompact'] == '0') ? 'checked' : '' }}>
                             <div class="appearance-preview normal-preview"></div>
                             <span>Normal</span>
                         </label>
@@ -290,12 +290,11 @@
                 </div>
             </div>
 
-
             <!-- Gri Tonlar -->
             <div class="theme-section">
                 <div class="theme-section-header">
                     <i class="fa-solid fa-swatchbook"></i>
-                    <span>Gri Tonları</span>
+                    <span>Renk Teması</span>
                 </div>
                 <div class="theme-section-body py-4">
                     <div class="gray-options">
@@ -305,32 +304,33 @@
                                 <div class="appearance-preview slate-preview"></div>
                                 <span>Slate</span>
                             </label>
-                            <label class="appearance-option" for="gray-gray">
-                                <input type="radio" id="gray-gray" name="theme-base" value="gray" {{ (!isset($_COOKIE['themeBase']) || $_COOKIE['themeBase'] == 'gray') ? 'checked' : '' }}>
-                                <div class="appearance-preview gray-preview"></div>
-                                <span>Gray</span>
+                            <label class="appearance-option" for="gray-cool">
+                                <input type="radio" id="gray-cool" name="theme-base" value="cool" {{ (!isset($_COOKIE['themeBase']) || $_COOKIE['themeBase'] == 'cool') ? 'checked' : '' }}>
+                                <div class="appearance-preview cool-preview"></div>
+                                <span>Cool</span>
                             </label>
-                            <label class="appearance-option" for="gray-zinc">
-                                <input type="radio" id="gray-zinc" name="theme-base" value="zinc" {{ (isset($_COOKIE['themeBase']) && $_COOKIE['themeBase'] == 'zinc') ? 'checked' : '' }}>
-                                <div class="appearance-preview zinc-preview"></div>
-                                <span>Zinc</span>
-                            </label>
-                        </div>
-                        <div class="appearance-options">
                             <label class="appearance-option" for="gray-neutral">
                                 <input type="radio" id="gray-neutral" name="theme-base" value="neutral" {{ (isset($_COOKIE['themeBase']) && $_COOKIE['themeBase'] == 'neutral') ? 'checked' : '' }}>
                                 <div class="appearance-preview neutral-preview"></div>
                                 <span>Neutral</span>
                             </label>
-                            <label class="appearance-option" for="gray-stone">
-                                <input type="radio" id="gray-stone" name="theme-base" value="stone" {{ (isset($_COOKIE['themeBase']) && $_COOKIE['themeBase'] == 'stone') ? 'checked' : '' }}>
-                                <div class="appearance-preview stone-preview"></div>
-                                <span>Stone</span>
+                        </div>
+                        <div class="appearance-options">
+                            <label class="appearance-option" for="gray-warm">
+                                <input type="radio" id="gray-warm" name="theme-base" value="warm" {{ (isset($_COOKIE['themeBase']) && $_COOKIE['themeBase'] == 'warm') ? 'checked' : '' }}>
+                                <div class="appearance-preview warm-preview"></div>
+                                <span>Warm</span>
                             </label>
-                            <div class="appearance-option invisible">
-                                <div class="appearance-preview"></div>
-                                <span></span>
-                            </div>
+                            <label class="appearance-option" for="gray-indigo">
+                                <input type="radio" id="gray-indigo" name="theme-base" value="indigo" {{ (isset($_COOKIE['themeBase']) && $_COOKIE['themeBase'] == 'indigo') ? 'checked' : '' }}>
+                                <div class="appearance-preview indigo-preview"></div>
+                                <span>Indigo</span>
+                            </label>
+                            <label class="appearance-option" for="gray-azure">
+                                <input type="radio" id="gray-azure" name="theme-base" value="azure" {{ (isset($_COOKIE['themeBase']) && $_COOKIE['themeBase'] == 'azure') ? 'checked' : '' }}>
+                                <div class="appearance-preview azure-preview"></div>
+                                <span>Azure</span>
+                            </label>
                         </div>
                     </div>
                 </div>

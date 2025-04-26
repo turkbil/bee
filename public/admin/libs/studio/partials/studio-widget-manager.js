@@ -107,11 +107,22 @@ window.StudioWidgetManager = (function() {
                             
                             // Widget tipine göre düzenlenebilirlik ayarları
                             if (widget.type === 'dynamic' || widget.type === 'module') {
+                                // Dynamic ve module tipi bileşenler tamamen kilitli
                                 this.set('editable', false);
+                                this.set('draggable', false);  // Pozisyon değiştirmeyi engelle
+                                this.set('droppable', false);  // İçine bir şey bırakılamaz
+                                this.set('selectable', false);  // Seçim yapılamaz
+                                this.set('highlightable', false); // Vurgulanmaz
+                                this.set('hoverable', false);  // Hover efekti yok
+                                this.set('locked', true);      // Tamamen kilitli
+                            } else if (widget.type === 'static' || widget.type === 'file') {
+                                // Static ve file tipi bileşenler düzenlenebilir
+                                this.set('editable', true);
+                                this.set('draggable', true);
                                 this.set('highlightable', true);
                                 this.set('selectable', true);
-                            } else if (widget.type === 'static' || widget.type === 'file') {
-                                this.set('editable', true);
+                                this.set('hoverable', true);
+                                this.set('locked', false);
                             }
                         }
                     }
@@ -161,7 +172,8 @@ window.StudioWidgetManager = (function() {
                             el.style.border = '2px solid #3b82f6'; // Mavi
                             el.style.backgroundColor = 'rgba(59, 130, 246, 0.05)';
                             el.style.boxShadow = '0 0 0 1px rgba(59, 130, 246, 0.5)';
-                            el.contentEditable = "false";
+                            el.style.pointerEvents = 'none'; // Tüm etkileşimi kapat
+                            el.setAttribute('data-locked', 'true');
                             break;
                             
                         case 'module':
@@ -169,7 +181,8 @@ window.StudioWidgetManager = (function() {
                             el.style.border = '2px solid #8b5cf6'; // Mor
                             el.style.backgroundColor = 'rgba(139, 92, 246, 0.05)';
                             el.style.boxShadow = '0 0 0 1px rgba(139, 92, 246, 0.5)';
-                            el.contentEditable = "false";
+                            el.style.pointerEvents = 'none'; // Tüm etkileşimi kapat
+                            el.setAttribute('data-locked', 'true');
                             break;
                             
                         case 'file':
@@ -194,24 +207,74 @@ window.StudioWidgetManager = (function() {
                     el.style.borderRadius = '6px';
                     el.style.position = 'relative';
                     
-                    // Düzenlenemeyen widget'lar için içerik koruma
-                    if (!isEditable) {
-                        // Tüm içeriklerin düzenlenebilmesini engelle
-                        const allChildren = el.querySelectorAll('*');
-                        allChildren.forEach(child => {
-                            child.contentEditable = "false";
-                            child.style.pointerEvents = 'inherit';
+                    // Dynamic ve Module tipi widget'lar için koruyucu katman ekle
+                    if (widgetType === 'dynamic' || widgetType === 'module') {
+                        // Önce mevcut overlay katmanlarını temizle
+                        const existingOverlays = el.querySelectorAll('.widget-overlay');
+                        existingOverlays.forEach(overlay => overlay.remove());
+                        
+                        // Koruyucu katman oluştur
+                        const overlay = document.createElement('div');
+                        overlay.className = 'widget-overlay';
+                        overlay.style.position = 'absolute';
+                        overlay.style.top = '0';
+                        overlay.style.left = '0';
+                        overlay.style.width = '100%';
+                        overlay.style.height = '100%';
+                        overlay.style.background = 'repeating-linear-gradient(45deg, rgba(0,0,0,0.03), rgba(0,0,0,0.03) 10px, rgba(0,0,0,0.05) 10px, rgba(0,0,0,0.05) 20px)';
+                        overlay.style.zIndex = '100';
+                        overlay.style.pointerEvents = 'auto'; // Overlay üzerine tıklanabilir
+                        overlay.style.cursor = 'not-allowed';
+                        
+                        // Etiket ekle
+                        const badge = document.createElement('span');
+                        badge.className = 'widget-type-badge';
+                        badge.style.position = 'absolute';
+                        badge.style.top = '50%';
+                        badge.style.left = '50%';
+                        badge.style.transform = 'translate(-50%, -50%)';
+                        badge.style.padding = '5px 10px';
+                        badge.style.borderRadius = '3px';
+                        badge.style.fontSize = '12px';
+                        badge.style.fontWeight = 'bold';
+                        badge.style.color = 'white';
+                        badge.style.background = widgetType === 'dynamic' ? '#3b82f6' : '#8b5cf6';
+                        badge.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
+                        badge.style.textTransform = 'uppercase';
+                        badge.style.letterSpacing = '1px';
+                        badge.innerHTML = widgetType === 'dynamic' ? 'DİNAMİK BİLEŞEN' : 'MODÜL BİLEŞEN';
+                        
+                        // Tıklama olayı ekle
+                        overlay.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            showWidgetModal(widgetId);
                         });
                         
-                        // Template değişkenlerini temizle ve görsel olarak göster
-                        if (widgetType === 'dynamic') {
-                            const templateText = el.innerHTML;
-                            el.innerHTML = cleanTemplateVariables(templateText);
-                        }
+                        overlay.appendChild(badge);
+                        el.appendChild(overlay);
                         
-                        // Module tipinde widget'lar için canlı veri gösterimini simüle et
-                        if (widgetType === 'module' && filePath) {
-                            el.setAttribute('data-file-path', filePath);
+                        // Tüm içerikleri devre dışı bırak
+                        const allChildren = el.querySelectorAll('*:not(.widget-overlay):not(.widget-type-badge)');
+                        allChildren.forEach(child => {
+                            if (child !== overlay && !overlay.contains(child)) {
+                                child.style.pointerEvents = 'none';
+                                child.contentEditable = "false";
+                                
+                                // İçeriğin parlaklığını azalt
+                                child.style.filter = 'grayscale(20%) blur(0.3px)';
+                                child.style.opacity = '0.7';
+                            }
+                        });
+                    } else {
+                        // Düzenlenebilir widget'lar için (static, file)
+                        if (isEditable) {
+                            // Overlay'ı kaldır (eğer varsa)
+                            const overlays = el.querySelectorAll('.widget-overlay');
+                            overlays.forEach(overlay => overlay.remove());
+                            
+                            // İçeriğe erişim izni ver
+                            el.style.pointerEvents = 'auto';
+                            el.removeAttribute('data-locked');
                         }
                     }
                     
@@ -219,40 +282,50 @@ window.StudioWidgetManager = (function() {
                     const existingLabels = el.querySelectorAll('.widget-label, .widget-edit-icon, .widget-mini-label');
                     existingLabels.forEach(label => label.remove());
                     
-                    // Widget etiketi oluştur
-                    createWidgetLabel(el, widget, widgetType);
-                    
-                    // Düzenlenemez widget'lar için düzenleme butonu ekle
-                    if (!isEditable) {
-                        createEditButton(el, widget, widgetType);
+                    // Widget etiketi oluştur (dynamic ve module olmayan widget'lar için)
+                    if (isEditable) {
+                        createWidgetLabel(el, widget, widgetType);
                     }
                     
                     // Widget tipine göre içerik davranışı ayarla
-                    setupWidgetContentBehavior(el, widget, widgetType);
+                    if (isEditable) {
+                        setupWidgetContentBehavior(el, widget, widgetType);
+                    }
+                    
+                    // Module ve file tiplerinde dosya yolunu göster
+                    if ((widgetType === 'module' || widgetType === 'file') && widget.file_path && isEditable) {
+                        // Dosya yolu bilgisini widget alt kısmında göster
+                        const filePathInfo = document.createElement('div');
+                        filePathInfo.className = 'widget-file-path';
+                        filePathInfo.style.borderTop = '1px dashed rgba(0,0,0,0.1)';
+                        filePathInfo.style.marginTop = '8px';
+                        filePathInfo.style.paddingTop = '4px';
+                        filePathInfo.style.fontSize = '10px';
+                        filePathInfo.style.color = '#666';
+                        filePathInfo.innerHTML = `<i class="fa fa-link me-1"></i> ${widget.file_path}`;
+                        
+                        el.appendChild(filePathInfo);
+                    }
                 },
                 
                 onDblClick(e) {
-                    if (e) {
-                        e.stopPropagation();
-                        e.preventDefault();
-                    }
-                    
                     const model = this.model;
                     const widgetId = model.get('widget_id') || model.getAttributes()['data-widget-id'];
                     
-                    if (widgetId) {
-                        const widget = widgetData[widgetId];
-                        if (!widget) return;
-                        
-                        const widgetType = widget.type || 'static';
-                        
-                        // Widget tipine göre davranış
-                        if (widgetType === 'dynamic' || widgetType === 'module') {
-                            showWidgetModal(widgetId);
-                        } else if (widgetType === 'file' && widget.file_path) {
-                            // File tipi için dosya yolu bilgisi göster
-                            alert(`Dosya Yolu: ${widget.file_path}`);
+                    if (!widgetId) return;
+                    
+                    const widget = widgetData[widgetId];
+                    if (!widget) return;
+                    
+                    const widgetType = widget.type || 'static';
+                    
+                    // Static ve file tipleri için normal davranış, diğerleri için modal göster
+                    if (widgetType === 'dynamic' || widgetType === 'module') {
+                        if (e) {
+                            e.stopPropagation();
+                            e.preventDefault();
                         }
+                        showWidgetModal(widgetId);
                     }
                 },
                 
@@ -267,18 +340,11 @@ window.StudioWidgetManager = (function() {
                     
                     const widgetType = widget.type || 'static';
                     
-                    // Dynamic ve Module tipleri için özel tıklama davranışı
+                    // Dynamic ve Module tipleri için hiçbir şey yapma
                     if (widgetType === 'dynamic' || widgetType === 'module') {
                         e.stopPropagation();
                         e.preventDefault();
                         showWidgetModal(widgetId);
-                    } else {
-                        // Static ve File tipleri için normal seçim davranışı
-                        this.model.set('status', 'selected');
-                        
-                        if (window.studioEditor) {
-                            window.studioEditor.select(this.model);
-                        }
                     }
                 }
             }
@@ -332,69 +398,12 @@ window.StudioWidgetManager = (function() {
         el.appendChild(labelElement);
     }
     
-    // Düzenleme butonu oluşturma yardımcı fonksiyonu
-    function createEditButton(el, widget, widgetType) {
-        // Butonu sadece dynamic ve module tiplerinde göster
-        if (widgetType !== 'dynamic' && widgetType !== 'module') return;
-        
-        const editIcon = document.createElement('div');
-        editIcon.className = 'widget-edit-icon';
-        editIcon.style.position = 'absolute';
-        editIcon.style.top = '-10px';
-        editIcon.style.right = '10px';
-        editIcon.style.color = 'white';
-        editIcon.style.padding = '2px 8px';
-        editIcon.style.borderRadius = '3px';
-        editIcon.style.fontSize = '11px';
-        editIcon.style.fontWeight = 'bold';
-        editIcon.style.zIndex = '10';
-        editIcon.style.cursor = 'pointer';
-        
-        // Widget tipine göre buton rengi
-        if (widgetType === 'dynamic') {
-            editIcon.style.backgroundColor = '#3b82f6'; // Mavi
-        } else if (widgetType === 'module') {
-            editIcon.style.backgroundColor = '#8b5cf6'; // Mor
-        }
-        
-        editIcon.innerHTML = '<i class="fa fa-edit"></i> Düzenle';
-        
-        editIcon.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (widget.id) {
-                window.open(`/admin/widgetmanagement/items/${widget.id}`, '_blank');
-            }
-        });
-        
-        el.appendChild(editIcon);
-    }
-    
     // Widget içerik davranışı ayarlama yardımcı fonksiyonu
     function setupWidgetContentBehavior(el, widget, widgetType) {
-        // Dynamic ve module tiplerinde tıklama ve düzenleme özelliklerini engelle
-        if (widgetType === 'dynamic' || widgetType === 'module') {
-            el.style.cursor = 'pointer';
-            
-            // İçeriğe tıklandığında widget modal göster
-            el.addEventListener('click', (e) => {
-                e.stopPropagation();
-                showWidgetModal(widget.id);
-            });
-        }
-        
-        // Module ve file tiplerinde dosya yolunu göster
-        if ((widgetType === 'module' || widgetType === 'file') && widget.file_path) {
-            // Dosya yolu bilgisini widget alt kısmında göster
-            const filePathInfo = document.createElement('div');
-            filePathInfo.className = 'widget-file-path';
-            filePathInfo.style.borderTop = '1px dashed rgba(0,0,0,0.1)';
-            filePathInfo.style.marginTop = '8px';
-            filePathInfo.style.paddingTop = '4px';
-            filePathInfo.style.fontSize = '10px';
-            filePathInfo.style.color = '#666';
-            filePathInfo.innerHTML = `<i class="fa fa-link me-1"></i> ${widget.file_path}`;
-            
-            el.appendChild(filePathInfo);
+        // Static ve file tiplerinde normal davranış
+        if (widgetType === 'file' && widget.file_path) {
+            // File tipindeki widgetlar için özel içerik davranışı
+            // Örneğin dosya içeriğini görüntüleme
         }
     }
     
@@ -519,9 +528,26 @@ window.StudioWidgetManager = (function() {
                     widgetHtml = cleanTemplateVariables(widgetHtml);
                 }
                 
-                const widgetWrapped = `<div data-widget-id="${widget.id}" class="gjs-widget-wrapper" data-type="widget" data-widget-type="${widgetType}" ${!isEditable ? 'contenteditable="false"' : ''} ${widget.file_path ? `data-file-path="${widget.file_path}"` : ''}>
-                    ${widgetHtml}
-                </div>`;
+                // Widget wrapper oluştur - dynamic ve module için koruyucu overlay ekle
+                let widgetWrapped = '';
+                
+                if (widgetType === 'dynamic' || widgetType === 'module') {
+                    // Koruyucu overlay ile sarmalama
+                    widgetWrapped = `
+                    <div data-widget-id="${widget.id}" class="gjs-widget-wrapper" data-type="widget" data-widget-type="${widgetType}" data-locked="true" contenteditable="false" style="pointer-events:none;" data-file-path="${widget.file_path || ''}">
+                        <div class="widget-overlay" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:100;background:repeating-linear-gradient(45deg,rgba(0,0,0,0.03),rgba(0,0,0,0.03) 10px,rgba(0,0,0,0.05) 10px,rgba(0,0,0,0.05) 20px);cursor:not-allowed;">
+                            <span class="widget-type-badge" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);padding:5px 10px;border-radius:3px;font-size:12px;font-weight:bold;color:white;background:${widgetType === 'dynamic' ? '#3b82f6' : '#8b5cf6'};text-transform:uppercase;letter-spacing:1px;">
+                                ${widgetType === 'dynamic' ? 'DİNAMİK BİLEŞEN' : 'MODÜL BİLEŞEN'}
+                            </span>
+                        </div>
+                        ${widgetHtml}
+                    </div>`;
+                } else {
+                    // Normal sarmalama
+                    widgetWrapped = `<div data-widget-id="${widget.id}" class="gjs-widget-wrapper" data-type="widget" data-widget-type="${widgetType}" ${widget.file_path ? `data-file-path="${widget.file_path}"` : ''}>
+                        ${widgetHtml}
+                    </div>`;
+                }
                 
                 // Widget tipine göre icon ve kategori belirle
                 let iconClass = 'fa fa-code'; // Varsayılan (static)
@@ -557,7 +583,9 @@ window.StudioWidgetManager = (function() {
                         html: widgetWrapped,
                         css: widget.content_css || '',
                         js: widget.content_js || '',
-                        editable: isEditable
+                        draggable: !(widgetType === 'dynamic' || widgetType === 'module'),
+                        editable: isEditable,
+                        locked: (widgetType === 'dynamic' || widgetType === 'module')
                     },
                     render: ({ model, className }) => {
                         return `
@@ -609,6 +637,24 @@ window.StudioWidgetManager = (function() {
                         color: #3b82f6;
                         font-style: italic;
                     }
+                    
+                    /* Kilitli widget'lar için stiller */
+                    [data-locked="true"] {
+                        user-select: none !important;
+                        -webkit-user-select: none !important;
+                        cursor: not-allowed !important;
+                    }
+                    
+                    .dynamic-widget *:not(.widget-overlay):not(.widget-type-badge),
+                    .module-widget *:not(.widget-overlay):not(.widget-type-badge) {
+                        pointer-events: none !important;
+                        user-select: none !important;
+                        -webkit-user-select: none !important;
+                    }
+                    
+                    .widget-overlay {
+                        pointer-events: auto !important;
+                    }
                 `;
                 document.head.appendChild(styleEl);
             }
@@ -647,9 +693,21 @@ window.StudioWidgetManager = (function() {
                         const widgetType = widget.type || 'static';
                         const isEditable = widgetType === 'static' || widgetType === 'file';
                         
-                        component.set('editable', isEditable);
-                        component.set('highlightable', true);
-                        component.set('selectable', true);
+                        // Dynamic ve module için sıkı kısıtlamalar
+                        if (widgetType === 'dynamic' || widgetType === 'module') {
+                            component.set('editable', false);
+                            component.set('draggable', false);
+                            component.set('droppable', false);
+                            component.set('selectable', false);
+                            component.set('highlightable', false);
+                            component.set('hoverable', false);
+                            component.set('locked', true);
+                        } else {
+                            // Static ve file için normal erişim
+                            component.set('editable', isEditable);
+                            component.set('highlightable', true);
+                            component.set('selectable', true);
+                        }
                         
                         // Görünümü güncelle
                         const view = component.view;
@@ -692,10 +750,22 @@ window.StudioWidgetManager = (function() {
                 }
                 
                 // Widget tipine göre editör davranışını ayarla
-                const isEditable = widgetType === 'static' || widgetType === 'file';
-                component.set('editable', isEditable);
-                component.set('highlightable', true);
-                component.set('selectable', true);
+                if (widgetType === 'dynamic' || widgetType === 'module') {
+                    // Dynamic ve module tipi widget'lar için sıkı kısıtlamalar
+                    component.set('draggable', false);
+                    component.set('droppable', false);
+                    component.set('selectable', false);
+                    component.set('highlightable', false);
+                    component.set('editable', false);
+                    component.set('locked', true);
+                } else {
+                    // Static ve file tipi widget'lar için normal davranış
+                    component.set('draggable', true);
+                    component.set('selectable', true);
+                    component.set('highlightable', true);
+                    component.set('editable', true);
+                    component.set('locked', false);
+                }
                 
                 // Görünümü güncelle
                 const view = component.view;
@@ -703,6 +773,35 @@ window.StudioWidgetManager = (function() {
                     view.onRender();
                 }
             }
+        });
+        
+        // Editor canvas'a özel olay dinleyicisi ekle - dynamic ve module bloklarını kesinlikle korumak için
+        editor.on('canvas:drop', (droppedModel) => {
+            // Doğrudan eklenen bileşeni kontrol et
+            setTimeout(() => {
+                const allWidgets = editor.DomComponents.getWrapper().find('[data-widget-id]');
+                allWidgets.forEach(widget => {
+                    const attrs = widget.getAttributes();
+                    const widgetType = attrs['data-widget-type'];
+                    
+                    // Dynamic ve module tipindeki widget'lar için güçlü kısıtlamalar uygula
+                    if (widgetType === 'dynamic' || widgetType === 'module') {
+                        widget.set('type', 'widget');
+                        widget.set('draggable', false);
+                        widget.set('droppable', false);
+                        widget.set('selectable', false);
+                        widget.set('highlightable', false);
+                        widget.set('editable', false);
+                        widget.set('locked', true);
+                        
+                        // Görünümü güncelle
+                        const view = widget.view;
+                        if (view && typeof view.onRender === 'function') {
+                            view.onRender();
+                        }
+                    }
+                });
+            }, 100);
         });
     }
     

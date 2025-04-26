@@ -11,17 +11,32 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use App\Models\Tenant;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class SliderWidgetSeeder extends Seeder
 {
+    // Çalıştırma izleme anahtarı
+    private static $runKey = 'slider_widget_seeder_executed';
+    
     public function run()
     {
         Log::info('SliderWidgetSeeder çalıştırılıyor...');
+
+        // Cache kontrolü
+        $cacheKey = self::$runKey . '_' . config('database.default');
+        if (Cache::has($cacheKey)) {
+            Log::info('SliderWidgetSeeder zaten çalıştırılmış, atlanıyor...');
+            return;
+        }
 
         // Tenant kontrolü
         if (function_exists('tenant') && tenant()) {
             try {
                 $this->createTenantSlider();
+                
+                // Bu tenant için çalıştırıldığını işaretle
+                $tenantId = tenant('id');
+                Cache::put(self::$runKey . '_tenant_' . $tenantId, true, 600);
                 return;
             } catch (\Exception $e) {
                 Log::error('Tenant SliderWidgetSeeder hatası: ' . $e->getMessage());
@@ -46,6 +61,9 @@ class SliderWidgetSeeder extends Seeder
             }
 
             Log::info('Slider bileşeni başarıyla oluşturuldu.');
+            
+            // Seeder'ın çalıştırıldığını işaretle (10 dakika süreyle cache'de tut)
+            Cache::put($cacheKey, true, 600);
         } catch (\Exception $e) {
             Log::error('SliderWidgetSeeder central hatası: ' . $e->getMessage());
             Log::error($e->getTraceAsString());
@@ -88,7 +106,16 @@ class SliderWidgetSeeder extends Seeder
 
     private function createTenantSlider()
     {
-        Log::info('Tenant içinde slider widget oluşturuluyor. Tenant ID: ' . tenant('id'));
+        // Tenant için daha önce çalıştırılmış mı kontrol et
+        $tenantId = tenant('id');
+        $tenantCacheKey = self::$runKey . '_tenant_' . $tenantId;
+        
+        if (Cache::has($tenantCacheKey)) {
+            Log::info('Tenant içinde slider widget zaten oluşturulmuş, atlanıyor...');
+            return;
+        }
+        
+        Log::info('Tenant içinde slider widget oluşturuluyor. Tenant ID: ' . $tenantId);
         
         // Merkezi veritabanından slider widget'ı al
         $centralWidget = null;
@@ -182,7 +209,7 @@ class SliderWidgetSeeder extends Seeder
             ]);
         }
         
-        Log::info('Tenant içinde slider widget başarıyla oluşturuldu. Tenant ID: ' . tenant('id'));
+        Log::info('Tenant içinde slider widget başarıyla oluşturuldu. Tenant ID: ' . $tenantId);
     }
 
     private function createSliderWidget()
@@ -482,6 +509,14 @@ class SliderWidgetSeeder extends Seeder
         }
         
         foreach ($tenants as $tenant) {
+            // Tenant için daha önce çalıştırılmış mı kontrol et
+            $tenantCacheKey = self::$runKey . '_tenant_' . $tenant->id;
+            
+            if (Cache::has($tenantCacheKey)) {
+                Log::info("Tenant {$tenant->id} için slider zaten oluşturulmuş, atlanıyor...");
+                continue;
+            }
+            
             try {
                 $tenant->run(function () use ($widget, $tenant) {
                     Log::info("Tenant {$tenant->id} için slider oluşturuluyor...");
@@ -557,6 +592,9 @@ class SliderWidgetSeeder extends Seeder
                     }
                     
                     Log::info("Tenant {$tenant->id} için slider başarıyla oluşturuldu.");
+                    
+                    // Bu tenant için çalıştırıldığını işaretle
+                    Cache::put($tenantCacheKey, true, 600);
                 });
             } catch (\Exception $e) {
                 Log::error("Tenant {$tenant->id} için slider oluşturma hatası: " . $e->getMessage());

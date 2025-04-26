@@ -28,7 +28,7 @@
                         <li class="nav-item">
                             <a class="nav-link {{ $formMode === 'design' ? 'active' : '' }}" href="#" wire:click.prevent="setFormMode('design')">
                                 <i class="fas fa-palette me-2"></i>
-                                İçerik
+                                {{ ($widget['type'] === 'file' || $widget['type'] === 'module') ? 'Dosya Yolu' : 'İçerik' }}
                             </a>
                         </li>
                         <li class="nav-item">
@@ -138,20 +138,6 @@
                                         </div>
                                         <div class="col-md-4 col-xl-4">
                                             <label class="form-selectgroup-item">
-                                                <input type="radio" name="widget-type" value="content" wire:model="widget.type" class="form-selectgroup-input">
-                                                <span class="form-selectgroup-label d-flex align-items-center p-3">
-                                                    <span class="me-3">
-                                                        <span class="form-selectgroup-check"></span>
-                                                    </span>
-                                                    <span class="form-selectgroup-label-content text-start">
-                                                        <span class="form-selectgroup-title strong mb-1">İçerik</span>
-                                                        <span class="d-block text-muted">Sayfa içeriği</span>
-                                                    </span>
-                                                </span>
-                                            </label>
-                                        </div>
-                                        <div class="col-md-4 col-xl-4">
-                                            <label class="form-selectgroup-item">
                                                 <input type="radio" name="widget-type" value="file" wire:model="widget.type" class="form-selectgroup-input">
                                                 <span class="form-selectgroup-label d-flex align-items-center p-3">
                                                     <span class="me-3">
@@ -167,24 +153,6 @@
                                     </div>
                                     @error('widget.type') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
                                 </div>
-                                
-                                @if($widget['type'] === 'module')
-                                <div class="mb-3">
-                                    <label class="form-label">Modül Dosya Yolu</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">
-                                            <i class="fas fa-folder-open"></i>
-                                        </span>
-                                        <input type="text" wire:model="widget.file_path" 
-                                            class="form-control" 
-                                            placeholder="Örnek: portfolio/recent">
-                                    </div>
-                                    <div class="form-hint">
-                                        <i class="fas fa-info-circle me-1 text-blue"></i>
-                                        Modül dosya yolu - Örneğin: "portfolio/recent"
-                                    </div>
-                                </div>
-                                @endif
                             </div>
                             <div class="col-md-4">
                                 <div class="card">
@@ -281,6 +249,53 @@
                                     </div>
                                 </div>
                                 
+                                <div class="mb-3">
+                                    <label class="form-label">Hazır Dosya Seçin</label>
+                                    <select class="form-select mb-2" wire:model="widget.file_path">
+                                        <option value="">Seçim Yapın</option>
+                                        @php
+                                            $blocksPath = resource_path('views/blocks');
+                                            $modulePath = $blocksPath . '/modules';
+                                            
+                                            // Blocks altındaki tüm klasörleri (modules hariç) tarayalım
+                                            $blockDirs = [];
+                                            
+                                            if (is_dir($blocksPath)) {
+                                                $dirs = new DirectoryIterator($blocksPath);
+                                                foreach ($dirs as $dir) {
+                                                    if ($dir->isDir() && !$dir->isDot() && $dir->getFilename() !== 'modules') {
+                                                        $categoryPath = $dir->getPathname();
+                                                        $categoryName = $dir->getFilename();
+                                                        
+                                                        $subDirs = new DirectoryIterator($categoryPath);
+                                                        foreach ($subDirs as $subDir) {
+                                                            if ($subDir->isDir() && !$subDir->isDot()) {
+                                                                $subDirName = $subDir->getFilename();
+                                                                $viewPath = $categoryName . '/' . $subDirName;
+                                                                
+                                                                if (file_exists($subDir->getPathname() . '/view.blade.php')) {
+                                                                    $blockDirs[$categoryName][] = [
+                                                                        'path' => $viewPath,
+                                                                        'name' => $subDirName
+                                                                    ];
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        @endphp
+                                        
+                                        @foreach($blockDirs as $category => $blocks)
+                                            <optgroup label="{{ ucfirst($category) }}">
+                                                @foreach($blocks as $block)
+                                                    <option value="{{ $block['path'] }}">{{ ucfirst($category) }} - {{ ucfirst($block['name']) }}</option>
+                                                @endforeach
+                                            </optgroup>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                
                                 <div class="form-floating mb-3">
                                     <input type="text" 
                                         wire:model="widget.file_path" 
@@ -291,6 +306,76 @@
                                     <div class="form-hint">
                                         <i class="fas fa-info-circle me-1 text-blue"></i>
                                         Dosya yolu, "resources/views/blocks/" klasörüne göre belirtilir.
+                                    </div>
+                                </div>
+                                @elseif($widget['type'] === 'module')
+                                <div class="alert alert-info">
+                                    <div class="d-flex">
+                                        <div>
+                                            <i class="fas fa-info-circle text-blue me-2" style="margin-top: 3px"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="alert-title">Modül Dosya Kullanımı</h4>
+                                            <div class="text-muted">
+                                                Bu widget için bir modül dosyası belirtebilirsiniz. Kullanılacak dosya yolu "blocks/modules" klasörüne göredir. Örneğin: "portfolio/recent" şeklinde yolu belirtin.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Hazır Modül Seçin</label>
+                                    <select class="form-select mb-2" wire:model="widget.file_path">
+                                        <option value="">Seçim Yapın</option>
+                                        @php
+                                            $modulePath = resource_path('views/blocks/modules');
+                                            $moduleDirs = [];
+                                            
+                                            if (is_dir($modulePath)) {
+                                                $dirs = new DirectoryIterator($modulePath);
+                                                foreach ($dirs as $dir) {
+                                                    if ($dir->isDir() && !$dir->isDot()) {
+                                                        $moduleName = $dir->getFilename();
+                                                        $subDirs = new DirectoryIterator($dir->getPathname());
+                                                        
+                                                        foreach ($subDirs as $subDir) {
+                                                            if ($subDir->isDir() && !$subDir->isDot()) {
+                                                                $viewName = $subDir->getFilename();
+                                                                $viewPath = $moduleName . '/' . $viewName;
+                                                                
+                                                                if (file_exists($subDir->getPathname() . '/view.blade.php')) {
+                                                                    $moduleDirs[$moduleName][] = [
+                                                                        'path' => $viewPath,
+                                                                        'name' => $viewName
+                                                                    ];
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        @endphp
+                                        
+                                        @foreach($moduleDirs as $module => $views)
+                                            <optgroup label="{{ ucfirst($module) }}">
+                                                @foreach($views as $view)
+                                                    <option value="{{ $view['path'] }}">{{ ucfirst($module) }} - {{ ucfirst($view['name']) }}</option>
+                                                @endforeach
+                                            </optgroup>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                
+                                <div class="form-floating mb-3">
+                                    <input type="text" 
+                                        wire:model="widget.file_path" 
+                                        class="form-control font-monospace"
+                                        id="module-path"
+                                        placeholder="Örnek: portfolio/recent">
+                                    <label for="module-path">Modül Dosya Yolu</label>
+                                    <div class="form-hint">
+                                        <i class="fas fa-info-circle me-1 text-blue"></i>
+                                        Dosya yolu, "resources/views/blocks/modules/" klasörüne göre belirtilir.
                                     </div>
                                 </div>
                                 @else

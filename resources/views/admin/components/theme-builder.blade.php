@@ -259,7 +259,7 @@
                             <div class="radius-example radius-3 {{ $radiusValue == 3 ? 'active' : '' }}" data-radius="3"></div>
                             <div class="radius-example radius-4 {{ $radiusValue == 4 ? 'active' : '' }}" data-radius="4"></div>
                         </div>
-                        <input type="hidden" id="radius-value" name="theme-radius" value="{{ isset($_COOKIE['themeRadius']) ? $_COOKIE['themeRadius'] : '0.5rem' }}">
+                        <input type="hidden" id="radius-value" name="theme-radius" value="{{ isset($_COOKIE['themeRadius']) ? $_COOKIE['themeRadius'] : '0.25rem' }}">
                     </div>
                 </div>
             </div>
@@ -297,41 +297,37 @@
                     <span>Renk Teması</span>
                 </div>
                 <div class="theme-section-body py-4">
-                    <div class="gray-options">
-                        <div class="appearance-options mb-2">
-                            <label class="appearance-option" for="gray-slate">
-                                <input type="radio" id="gray-slate" name="theme-base" value="slate" {{ (isset($_COOKIE['themeBase']) && $_COOKIE['themeBase'] == 'slate') ? 'checked' : '' }}>
-                                <div class="appearance-preview slate-preview"></div>
-                                <span>Slate</span>
-                            </label>
-                            <label class="appearance-option" for="gray-cool">
-                                <input type="radio" id="gray-cool" name="theme-base" value="cool" {{ (!isset($_COOKIE['themeBase']) || $_COOKIE['themeBase'] == 'cool') ? 'checked' : '' }}>
-                                <div class="appearance-preview cool-preview"></div>
-                                <span>Cool</span>
-                            </label>
-                            <label class="appearance-option" for="gray-neutral">
-                                <input type="radio" id="gray-neutral" name="theme-base" value="neutral" {{ (isset($_COOKIE['themeBase']) && $_COOKIE['themeBase'] == 'neutral') ? 'checked' : '' }}>
-                                <div class="appearance-preview neutral-preview"></div>
-                                <span>Neutral</span>
-                            </label>
-                        </div>
-                        <div class="appearance-options">
-                            <label class="appearance-option" for="gray-warm">
-                                <input type="radio" id="gray-warm" name="theme-base" value="warm" {{ (isset($_COOKIE['themeBase']) && $_COOKIE['themeBase'] == 'warm') ? 'checked' : '' }}>
-                                <div class="appearance-preview warm-preview"></div>
-                                <span>Warm</span>
-                            </label>
-                            <label class="appearance-option" for="gray-indigo">
-                                <input type="radio" id="gray-indigo" name="theme-base" value="indigo" {{ (isset($_COOKIE['themeBase']) && $_COOKIE['themeBase'] == 'indigo') ? 'checked' : '' }}>
-                                <div class="appearance-preview indigo-preview"></div>
-                                <span>Indigo</span>
-                            </label>
-                            <label class="appearance-option" for="gray-azure">
-                                <input type="radio" id="gray-azure" name="theme-base" value="azure" {{ (isset($_COOKIE['themeBase']) && $_COOKIE['themeBase'] == 'azure') ? 'checked' : '' }}>
-                                <div class="appearance-preview azure-preview"></div>
-                                <span>Azure</span>
-                            </label>
-                        </div>
+                    <div class="gray-tones-grid">
+                        <label class="tone-option" for="tone-mavi-gri">
+                            <input type="radio" id="tone-mavi-gri" name="theme-base" value="slate" {{ (isset($_COOKIE['themeBase']) && $_COOKIE['themeBase'] == 'slate') ? 'checked' : '' }}>
+                            <div class="tone-preview mavi-gri-preview"></div>
+                            <span>Mavi Gri</span>
+                        </label>
+                        <label class="tone-option" for="tone-neutral">
+                            <input type="radio" id="tone-neutral" name="theme-base" value="neutral" {{ (!isset($_COOKIE['themeBase']) || $_COOKIE['themeBase'] == 'neutral' || $_COOKIE['themeBase'] == 'cool') ? 'checked' : '' }}>
+                            <div class="tone-preview neutral-preview"></div>
+                            <span>Nötr</span>
+                        </label>
+                        <label class="tone-option" for="tone-tas-rengi">
+                            <input type="radio" id="tone-tas-rengi" name="theme-base" value="stone" {{ (isset($_COOKIE['themeBase']) && $_COOKIE['themeBase'] == 'stone') ? 'checked' : '' }}>
+                            <div class="tone-preview tas-rengi-preview"></div>
+                            <span>Taş Rengi</span>
+                        </label>
+                        <label class="tone-option" for="tone-error">
+                            <input type="radio" id="tone-error" name="theme-base" value="error" {{ (isset($_COOKIE['themeBase']) && $_COOKIE['themeBase'] == 'error') ? 'checked' : '' }}>
+                            <div class="tone-preview error-preview"></div>
+                            <span>Secondary</span>
+                        </label>
+                        <label class="tone-option" for="tone-cinko-gri">
+                            <input type="radio" id="tone-cinko-gri" name="theme-base" value="zinc" {{ (isset($_COOKIE['themeBase']) && $_COOKIE['themeBase'] == 'zinc') ? 'checked' : '' }}>
+                            <div class="tone-preview cinko-gri-preview"></div>
+                            <span>Çinko Gri</span>
+                        </label>
+                        <label class="tone-option" for="tone-neutral-variant">
+                            <input type="radio" id="tone-neutral-variant" name="theme-base" value="neutral-variant" {{ (isset($_COOKIE['themeBase']) && $_COOKIE['themeBase'] == 'neutral-variant') ? 'checked' : '' }}>
+                            <div class="tone-preview neutral-variant-preview"></div>
+                            <span>Koyu Gri</span>
+                        </label>
                     </div>
                 </div>
             </div>

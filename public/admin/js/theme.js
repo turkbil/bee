@@ -161,8 +161,18 @@ document.addEventListener('DOMContentLoaded', function() {
             document.cookie = `themeBase=${baseTheme};path=/;max-age=31536000`;
             
             // Gri tonu güncelle
-            document.body.classList.remove('theme-base-slate', 'theme-base-cool', 'theme-base-neutral', 'theme-base-warm', 'theme-base-indigo', 'theme-base-azure');
-            document.body.classList.add(`theme-base-${baseTheme}`);
+            document.body.classList.remove('theme-base-slate', 'theme-base-cool', 'theme-base-neutral', 'theme-base-warm', 'theme-base-indigo', 'theme-base-azure', 'theme-base-primary', 'theme-base-secondary', 'theme-base-tertiary', 'theme-base-error', 'theme-base-neutral-variant', 'theme-base-mavi-gri', 'theme-base-cinko-gri', 'theme-base-tas-rengi');
+            
+            // Özel isimler için sınıfları doğru şekilde ekle
+            if(baseTheme === 'slate') {
+                document.body.classList.add('theme-base-mavi-gri');
+            } else if(baseTheme === 'zinc') {
+                document.body.classList.add('theme-base-cinko-gri');
+            } else if(baseTheme === 'stone') {
+                document.body.classList.add('theme-base-tas-rengi');
+            } else {
+                document.body.classList.add(`theme-base-${baseTheme}`);
+            }
         });
     });
 
@@ -189,9 +199,9 @@ document.addEventListener('DOMContentLoaded', function() {
             // Varsayılan değerleri ayarla
             document.cookie = 'dark=auto;path=/;max-age=31536000';
             document.cookie = 'siteColor=#066fd1;path=/;max-age=31536000';
-            document.cookie = 'themeBase=cool;path=/;max-age=31536000';
+            document.cookie = 'themeBase=neutral;path=/;max-age=31536000';
             document.cookie = 'themeFont=Inter, system-ui, -apple-system, \'Segoe UI\', Roboto, \'Helvetica Neue\', Arial, \'Noto Sans\', sans-serif;path=/;max-age=31536000';
-            document.cookie = 'themeRadius=0.5rem;path=/;max-age=31536000';
+            document.cookie = 'themeRadius=0.25rem;path=/;max-age=31536000';
             document.cookie = 'tableCompact=0;path=/;max-age=31536000';
             document.cookie = 'themeFontSize=small;path=/;max-age=31536000';
             
@@ -458,8 +468,20 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Gri tonu ayarla
-        const baseTheme = getCookie('themeBase') || 'cool';
-        document.body.classList.remove('theme-base-slate', 'theme-base-cool', 'theme-base-neutral', 'theme-base-warm', 'theme-base-indigo', 'theme-base-azure');
+        const baseTheme = getCookie('themeBase') || 'neutral';
+        document.body.classList.remove(
+            'theme-base-slate', 
+            'theme-base-cool', 
+            'theme-base-neutral', 
+            'theme-base-warm', 
+            'theme-base-indigo', 
+            'theme-base-azure', 
+            'theme-base-primary', 
+            'theme-base-secondary', 
+            'theme-base-tertiary', 
+            'theme-base-error', 
+            'theme-base-neutral-variant'
+        );
         document.body.classList.add(`theme-base-${baseTheme}`);
         
         // Font boyutunu ayarla
@@ -471,7 +493,7 @@ document.addEventListener('DOMContentLoaded', function() {
         updateFontSizes(fontSize);
         
         // Card Body radius değerlerini ayarla
-        const themeRadius = getCookie('themeRadius') || '0.5rem';
+        const themeRadius = getCookie('themeRadius') || '0.25rem';
         updateCardBodyRadiuses(themeRadius);
         
         // Gerekli Google fontlarını yükle
@@ -508,7 +530,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Koyu tema değiştiğinde radius örneklerini güncelle
     document.addEventListener('darkModeChange', updateRadiusExamples);
-    
+        
     // Sayfa tamamen yüklendikten sonra bir kez daha tema düğmesini kontrol et
     window.addEventListener('load', function() {
         initThemeSwitch();

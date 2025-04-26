@@ -28,16 +28,16 @@ class HeroWidgetSeeder extends Seeder
 
         // Central işlemleri
         try {
-            // Modül Bileşenleri kategorisini kontrol et
-            $moduleCategory = WidgetCategory::where('slug', 'modul-bilesenleri')
-                ->orWhere('title', 'Modül Bileşenleri')
+            // Moduller kategorisini kontrol et
+            $moduleCategory = WidgetCategory::where('slug', 'moduller')
+                ->orWhere('title', 'Moduller')
                 ->first();
             
             if (!$moduleCategory) {
                 try {
                     $moduleCategory = new WidgetCategory([
-                        'title' => 'Modül Bileşenleri',
-                        'slug' => 'modul-bilesenleri',
+                        'title' => 'Moduller',
+                        'slug' => 'moduller',
                         'description' => 'Sistem modüllerine ait bileşenler',
                         'icon' => 'fa-cubes',
                         'order' => 1,
@@ -49,7 +49,7 @@ class HeroWidgetSeeder extends Seeder
                     $moduleCategory->save();
                     
                 } catch (\Exception $e) {
-                    Log::error("Modül Bileşenleri kategorisi oluşturulamadı. Hata: " . $e->getMessage());
+                    Log::error("Moduller kategorisi oluşturulamadı. Hata: " . $e->getMessage());
                 }
             }
             

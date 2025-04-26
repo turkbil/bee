@@ -121,7 +121,7 @@
             <div class="preview-content">
                 <!-- Widget HTML -->
                 @if($widget->type == 'module')
-                    <!-- Modül bileşenleri farklı görünümde gösteriliyor -->
+                    <!-- Moduller farklı görünümde gösteriliyor -->
                     <div class="alert alert-warning">
                         <i class="fas fa-exclamation-triangle me-2"></i>
                         Bu modül bileşeni için HTML şablonu tanımlanmamış. Lütfen widget'ı düzenleyin ve bir HTML şablonu ekleyin.

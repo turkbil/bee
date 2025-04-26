@@ -54,7 +54,7 @@ class FileWidgetListComponent extends Component
         // Ana kategorileri getir
         $parentCategories = WidgetCategory::whereNull('parent_id')
             ->where('is_active', true)
-            ->where('widget_category_id', '!=', 1) // Modül bileşenleri (1 nolu kategori) hariç tut
+            ->where('widget_category_id', '!=', 1) // Moduller (1 nolu kategori) hariç tut
             ->withCount(['widgets' => function($query) use ($fileWidgetsQuery) {
                 $query->whereIn('id', $fileWidgetsQuery->pluck('id'));
             }, 'children'])
@@ -91,7 +91,7 @@ class FileWidgetListComponent extends Component
             ->whereHas('category', function($cq) {
                 $cq->where('widget_category_id', '!=', 1)
                    ->whereNull('parent_id')
-                   ->orWhere('parent_id', '!=', 1); // Modül bileşenleri kategorisi (1 nolu) ve alt kategorileri hariç tut
+                   ->orWhere('parent_id', '!=', 1); // Moduller kategorisi (1 nolu) ve alt kategorileri hariç tut
             })
             ->when($this->search, function ($q) {
                 $q->where('widgets.name', 'like', "%{$this->search}%")

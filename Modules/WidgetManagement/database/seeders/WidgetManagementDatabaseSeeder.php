@@ -41,8 +41,8 @@ class WidgetManagementDatabaseSeeder extends Seeder
             $currentConnection = Config::get('database.default');
             
             if (!function_exists('tenant') || !tenant()) {
-                $moduleCategory = WidgetCategory::where('slug', 'modul-bilesenleri')
-                    ->orWhere('title', 'Modül Bileşenleri')
+                $moduleCategory = WidgetCategory::where('slug', 'moduller')
+                    ->orWhere('title', 'Moduller')
                     ->first();
                 
                 if (!$moduleCategory) {
@@ -56,8 +56,8 @@ class WidgetManagementDatabaseSeeder extends Seeder
                         
                         // Doğrudan SQL ile ID'si 1 olacak şekilde oluştur
                         DB::statement('INSERT INTO widget_categories (title, slug, description, icon, `order`, is_active, parent_id, has_subcategories, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())', [
-                            'Modül Bileşenleri',
-                            'modul-bilesenleri',
+                            'Moduller',
+                            'moduller',
                             'Sistem modüllerine ait bileşenler',
                             'fa-cubes',
                             1, // order
@@ -69,12 +69,12 @@ class WidgetManagementDatabaseSeeder extends Seeder
                         $moduleCategory = WidgetCategory::find(1);
                         
                         if (!$moduleCategory) {
-                            throw new \Exception("Modül Bileşenleri kategorisi ID 1 olarak oluşturulamadı");
+                            throw new \Exception("Moduller kategorisi ID 1 olarak oluşturulamadı");
                         }
                         
-                        Log::info("Modül Bileşenleri kategorisi oluşturuldu (ID: {$moduleCategory->widget_category_id})");
+                        Log::info("Moduller kategorisi oluşturuldu (ID: {$moduleCategory->widget_category_id})");
                     } catch (\Exception $e) {
-                        Log::error("Modül Bileşenleri kategorisi oluşturulamadı. Hata: " . $e->getMessage());
+                        Log::error("Moduller kategorisi oluşturulamadı. Hata: " . $e->getMessage());
                     }
                 } else {
                 }

@@ -17,9 +17,9 @@
                 </div>
             </div>
             
-            <div class="mb-3">
+            <div class="mb-4">
                 <label class="form-label">Hazır Dosya Seçin</label>
-                <select class="form-select mb-2" wire:model="widget.file_path">
+                <select class="form-select mb-2 @error('widget.file_path') is-invalid @enderror" wire:model="widget.file_path">
                     <option value="">Seçim Yapın</option>
                     @php
                         $blocksPath = resource_path('views/blocks');
@@ -62,12 +62,13 @@
                         </optgroup>
                     @endforeach
                 </select>
+                @error('widget.file_path') <div class="invalid-feedback">{{ $message }}</div> @enderror
             </div>
             
-            <div class="form-floating mb-3">
+            <div class="form-floating mb-4">
                 <input type="text" 
                     wire:model="widget.file_path" 
-                    class="form-control font-monospace"
+                    class="form-control font-monospace @error('widget.file_path') is-invalid @enderror"
                     id="file-path"
                     placeholder="Örnek: cards/basic">
                 <label for="file-path">View Dosya Yolu</label>
@@ -75,6 +76,7 @@
                     <i class="fas fa-info-circle me-1 text-blue"></i>
                     Dosya yolu, "resources/views/blocks/" klasörüne göre belirtilir.
                 </div>
+                @error('widget.file_path') <div class="invalid-feedback">{{ $message }}</div> @enderror
             </div>
             @elseif($widget['type'] === 'module')
             <div class="alert alert-info">
@@ -91,9 +93,9 @@
                 </div>
             </div>
             
-            <div class="mb-3">
+            <div class="mb-4">
                 <label class="form-label">Hazır Modül Seçin</label>
-                <select class="form-select mb-2" wire:model="widget.file_path">
+                <select class="form-select mb-2 @error('widget.file_path') is-invalid @enderror" wire:model="widget.file_path">
                     <option value="">Seçim Yapın</option>
                     @php
                         $modulePath = resource_path('views/blocks/modules');
@@ -132,12 +134,13 @@
                         </optgroup>
                     @endforeach
                 </select>
+                @error('widget.file_path') <div class="invalid-feedback">{{ $message }}</div> @enderror
             </div>
             
-            <div class="form-floating mb-3">
+            <div class="form-floating mb-4">
                 <input type="text" 
                     wire:model="widget.file_path" 
-                    class="form-control font-monospace"
+                    class="form-control font-monospace @error('widget.file_path') is-invalid @enderror"
                     id="module-path"
                     placeholder="Örnek: portfolio/recent">
                 <label for="module-path">Modül Dosya Yolu</label>
@@ -145,9 +148,10 @@
                     <i class="fas fa-info-circle me-1 text-blue"></i>
                     Dosya yolu, "resources/views/blocks/modules/" klasörüne göre belirtilir.
                 </div>
+                @error('widget.file_path') <div class="invalid-feedback">{{ $message }}</div> @enderror
             </div>
             @else
-            <div class="alert alert-info">
+            <div class="alert alert-info mb-4">
                 <div class="d-flex">
                     <div>
                         <i class="fas fa-info-circle text-blue me-2" style="margin-top: 3px"></i>
@@ -163,7 +167,39 @@
                 </div>
             </div>
             
-            <div class="card mb-3">
+            @if(!empty($widget['settings_schema']) || !empty($widget['item_schema']))
+            <div class="alert alert-success mb-4">
+                <div class="d-flex">
+                    <div>
+                        <i class="fas fa-check-circle text-green me-2" style="margin-top: 3px"></i>
+                    </div>
+                    <div>
+                        <h4 class="alert-title">Kullanılabilir Değişkenler</h4>
+                        <div class="text-muted">
+                            @if(!empty($widget['settings_schema']))
+                            <strong>Özelleştirme Değişkenleri:</strong><br>
+                            <ul class="mb-2">
+                                @foreach($widget['settings_schema'] as $field)
+                                <li><code>&lbrace;&lbrace; {{ $field['name'] }} &rbrace;&rbrace;</code> - {{ $field['label'] }}</li>
+                                @endforeach
+                            </ul>
+                            @endif
+                            
+                            @if($widget['has_items'] && !empty($widget['item_schema']))
+                            <strong>İçerik Değişkenleri (items döngüsünde):</strong><br>
+                            <ul class="mb-0">
+                                @foreach($widget['item_schema'] as $field)
+                                <li><code>&lbrace;&lbrace; {{ $field['name'] }} &rbrace;&rbrace;</code> - {{ $field['label'] }}</li>
+                                @endforeach
+                            </ul>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endif
+            
+            <div class="card mb-4">
                 <div class="card-header">
                     <h3 class="card-title">
                         <i class="fas fa-html5 text-primary me-1"></i> HTML İçeriği
@@ -172,14 +208,15 @@
                 <div class="card-body">
                     <textarea 
                         wire:model="widget.content_html" 
-                        class="form-control font-monospace" 
+                        class="form-control font-monospace @error('widget.content_html') is-invalid @enderror" 
                         rows="12"
                         style="font-size: 14px;"
                         placeholder="<div class=&quot;my-widget&quot;>Widget içeriği...</div>">{{ $widget['content_html'] }}</textarea>
+                    @error('widget.content_html') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
             </div>
             
-            <div class="card mb-3">
+            <div class="card mb-4">
                 <div class="card-header">
                     <h3 class="card-title">
                         <i class="fas fa-css3-alt text-info me-1"></i> CSS Kodu
@@ -188,14 +225,15 @@
                 <div class="card-body">
                     <textarea 
                         wire:model="widget.content_css" 
-                        class="form-control font-monospace" 
+                        class="form-control font-monospace @error('widget.content_css') is-invalid @enderror" 
                         rows="8"
                         style="font-size: 14px;"
                         placeholder=".my-widget { padding: 20px; background-color: @{{background_color}}; }">{{ $widget['content_css'] }}</textarea>
+                    @error('widget.content_css') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
             </div>
             
-            <div class="card mb-3">
+            <div class="card mb-4">
                 <div class="card-header">
                     <h3 class="card-title">
                         <i class="fab fa-js-square text-warning me-1"></i> JavaScript Kodu
@@ -204,10 +242,11 @@
                 <div class="card-body">
                     <textarea 
                         wire:model="widget.content_js" 
-                        class="form-control font-monospace" 
+                        class="form-control font-monospace @error('widget.content_js') is-invalid @enderror" 
                         rows="8"
                         style="font-size: 14px;"
                         placeholder="document.addEventListener('DOMContentLoaded', function() { // JS Kodu });">{{ $widget['content_js'] }}</textarea>
+                    @error('widget.content_js') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
             </div>
             @endif
@@ -239,9 +278,10 @@
                                                 <i class="fas fa-link"></i>
                                             </span>
                                             <input type="text" 
-                                                class="form-control form-control-sm" 
+                                                class="form-control form-control-sm @error('widget.css_files.'.$index) is-invalid @enderror" 
                                                 wire:model="widget.css_files.{{ $index }}" 
                                                 placeholder="https://site.com/style.css">
+                                            @error('widget.css_files.'.$index) <div class="invalid-feedback">{{ $message }}</div> @enderror
                                         </div>
                                     </div>
                                     <button type="button" class="btn btn-sm btn-danger ms-2" wire:click="removeCssFile({{ $index }})">
@@ -280,9 +320,10 @@
                                                 <i class="fas fa-link"></i>
                                             </span>
                                             <input type="text" 
-                                                class="form-control form-control-sm" 
+                                                class="form-control form-control-sm @error('widget.js_files.'.$index) is-invalid @enderror" 
                                                 wire:model="widget.js_files.{{ $index }}" 
                                                 placeholder="https://site.com/script.js">
+                                            @error('widget.js_files.'.$index) <div class="invalid-feedback">{{ $message }}</div> @enderror
                                         </div>
                                     </div>
                                     <button type="button" class="btn btn-sm btn-danger ms-2" wire:click="removeJsFile({{ $index }})">

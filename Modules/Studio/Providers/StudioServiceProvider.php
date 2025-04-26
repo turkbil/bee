@@ -63,6 +63,24 @@ class StudioServiceProvider extends ServiceProvider
         // Olay sağlayıcılarını kaydet
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
+        
+        // WidgetManagement modülünü kontrol et ve bağımlılık oluştur
+        if (class_exists('Modules\WidgetManagement\Providers\WidgetManagementServiceProvider')) {
+            // WidgetManagement modülü yüklü, servisleri kullan
+            if (!$this->app->bound('widget.service')) {
+                $this->app->singleton('widget.service', function ($app) {
+                    return new \Modules\WidgetManagement\App\Services\WidgetService();
+                });
+            }
+            
+            if (!$this->app->bound('widget.item.service')) {
+                $this->app->singleton('widget.item.service', function ($app) {
+                    return new \Modules\WidgetManagement\App\Services\WidgetItemService(
+                        $app['widget.service']
+                    );
+                });
+            }
+        }
     }
 
     /**

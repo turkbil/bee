@@ -192,31 +192,85 @@ class StudioController extends Controller
                 'blocks_count' => count($blocks)
             ]);
             
+            // Sistemdeki kategorilere dayalı kategori listesi
+            $categories = [];
+                
+            // "Aktif Bileşenler" kategorisi her zaman ilk sırada
+            $categories['active-widgets'] = [
+                'name' => 'Aktif Bileşenler',
+                'icon' => 'fa fa-star',
+                'order' => 0
+            ];
+            
+            // Widget kategorilerini hiyerarşik olarak ekle
+            if (class_exists('Modules\WidgetManagement\App\Models\WidgetCategory')) {
+                // Ana kategorileri al
+                $rootCategories = \Modules\WidgetManagement\App\Models\WidgetCategory::where('is_active', true)
+                    ->whereNull('parent_id')
+                    ->orderBy('order')
+                    ->get();
+                
+                $order = 1; // Kategori sıralaması
+                
+                foreach ($rootCategories as $rootCategory) {
+                    $categories[$rootCategory->slug] = [
+                        'name' => $rootCategory->title,
+                        'icon' => $rootCategory->icon ?? 'fa fa-folder',
+                        'order' => $order++
+                    ];
+                    
+                    // Alt kategorileri al ve ekle
+                    $childCategories = \Modules\WidgetManagement\App\Models\WidgetCategory::where('is_active', true)
+                        ->where('parent_id', $rootCategory->widget_category_id)
+                        ->orderBy('order')
+                        ->get();
+                    
+                    foreach ($childCategories as $childCategory) {
+                        $parentChildKey = $rootCategory->slug . '-' . $childCategory->slug;
+                        $categories[$parentChildKey] = [
+                            'name' => $childCategory->title,
+                            'icon' => $childCategory->icon ?? 'fa fa-folder-open',
+                            'order' => $order++,
+                            'parent' => $rootCategory->slug
+                        ];
+                        
+                        // Üçüncü seviye kategorileri kontrol et
+                        $grandchildCategories = \Modules\WidgetManagement\App\Models\WidgetCategory::where('is_active', true)
+                            ->where('parent_id', $childCategory->widget_category_id)
+                            ->orderBy('order')
+                            ->get();
+                        
+                        foreach ($grandchildCategories as $grandchildCategory) {
+                            $nestedKey = $parentChildKey . '-' . $grandchildCategory->slug;
+                            $categories[$nestedKey] = [
+                                'name' => $grandchildCategory->title,
+                                'icon' => $grandchildCategory->icon ?? 'fa fa-folder-open',
+                                'order' => $order++,
+                                'parent' => $parentChildKey
+                            ];
+                        }
+                    }
+                }
+            }
+            
+            // Kategorileri basitleştirilmiş formata çevir
+            $formattedCategories = [];
+            foreach ($categories as $key => $value) {
+                $formattedCategories[$key] = $value['name'];
+            }
+            
             // Her bir bloğu logla
             foreach ($blocks as $index => $block) {
                 Log::debug("Blok #{$index}: {$block['id']} - {$block['label']} - Kategori: {$block['category']}");
             }
             
-            // Kategori isimleri
-            $categories = [
-                'layout' => 'Düzen',
-                'content' => 'İçerik',
-                'form' => 'Form',
-                'media' => 'Medya',
-                'widget' => 'Widgetlar',
-                'hero' => 'Hero',
-                'cards' => 'Kartlar',
-                'testimonials' => 'Yorumlar',
-                'pricing' => 'Fiyatlandırma',
-                'features' => 'Özellikler',
-            ];
-            
-            Log::debug('Yanıt kategorileri', $categories);
+            Log::debug('Yanıt kategorileri', $formattedCategories);
             
             return response()->json([
                 'success' => true,
                 'blocks' => $blocks,
-                'categories' => $categories
+                'categories' => $formattedCategories,
+                'categories_full' => $categories
             ]);
         } catch (\Exception $e) {
             Log::error('Blok verileri alınırken hata: ' . $e->getMessage(), [

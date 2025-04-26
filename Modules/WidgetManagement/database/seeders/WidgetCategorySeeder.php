@@ -127,19 +127,36 @@ class WidgetCategorySeeder extends Seeder
         // Önce tüm kategorileri temizle
         $this->cleanupAllCategories();
         
-        // 1. Modül bileşenleri için ana kategori
-        $modulesCategory = WidgetCategory::create([
-            'title' => 'Modül Bileşenleri',
-            'slug' => 'modul-bilesenleri',
-            'description' => 'Sistem modüllerine ait bileşenler',
-            'icon' => 'fa-cubes',
-            'order' => 1,
-            'is_active' => true,
-            'parent_id' => null,
-            'has_subcategories' => true
-        ]);
+        // Auto increment değerini sıfırla
+        DB::statement('ALTER TABLE widget_categories AUTO_INCREMENT = 1;');
         
-        Log::info("Ana kategori oluşturuldu: {$modulesCategory->title} (slug: {$modulesCategory->slug})");
+        // 1. Modül bileşenleri için ana kategori - İLK SIRADA OLUŞTUR
+        $modulesCategory = null;
+        
+        try {
+            // Doğrudan SQL ile ID'si 1 olacak şekilde oluştur
+            DB::statement('INSERT INTO widget_categories (title, slug, description, icon, `order`, is_active, parent_id, has_subcategories, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())', [
+                'Modül Bileşenleri',
+                'modul-bilesenleri',
+                'Sistem modüllerine ait bileşenler',
+                'fa-cubes',
+                1, // order
+                1, // is_active
+                null, // parent_id
+                1 // has_subcategories
+            ]);
+            
+            $modulesCategory = WidgetCategory::find(1);
+            
+            if (!$modulesCategory) {
+                throw new \Exception("Modül Bileşenleri kategorisi ID 1 olarak oluşturulamadı");
+            }
+            
+            Log::info("Ana kategori oluşturuldu: {$modulesCategory->title} (ID: {$modulesCategory->widget_category_id})");
+        } catch (\Exception $e) {
+            Log::error("Modül Bileşenleri kategorisi oluşturma hatası: " . $e->getMessage());
+            return null;
+        }
         
         // 3. Blocks klasörünü tara ve modules dışındaki her ana klasörü kategori olarak oluştur
         $blocksPath = base_path('Modules/WidgetManagement/resources/views/blocks');

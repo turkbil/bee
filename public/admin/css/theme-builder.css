@@ -151,7 +151,7 @@
 /* Tema Builder Ana Stiller */
 .theme-builder {
     --tb-spacing: 0.75rem;
-    --tb-radius: 0.5rem;
+    --tb-radius: 0.25rem;
     --tb-border-color: var(--tblr-border-color);
     --tb-bg-subtle: var(--tblr-gray-100);
     width: 280px;
@@ -998,4 +998,406 @@
     --tblr-body-font-size: 1rem !important;
     --tblr-dropdown-font-size: 1rem !important;
     font-size: 1rem !important;
+}
+
+/* Yeni Eklenen Tonal Paletler Kısmı */
+.gray-tones-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.tone-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+}
+
+.tone-option input {
+    position: absolute;
+    opacity: 0;
+}
+
+.tone-preview {
+    width: 70px;
+    height: 70px;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid var(--tb-border-color);
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    position: relative;
+}
+
+.tone-option input:checked + .tone-preview {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tone-option:hover .tone-preview {
+    transform: translateY(-2px);
+}
+
+.tone-option span {
+    margin-top: 8px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-align: center;
+}
+
+/* Tonal Paletler İçin Önizleme Stilleri */
+.primary-preview {
+    background-color: #f0ead2;
+    position: relative;
+}
+
+.primary-preview:after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 10px;
+    right: 10px;
+    height: 12px;
+    background-color: #946b2d;
+    border-radius: 2px;
+}
+
+.primary-preview:before {
+    content: "";
+    position: absolute;
+    top: 40px;
+    left: 10px;
+    right: 10px;
+    height: 12px;
+    background-color: #482307;
+    border-radius: 2px;
+}
+
+.secondary-preview {
+    background-color: #f6f6f6;
+    position: relative;
+}
+
+.secondary-preview:after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 10px;
+    right: 10px;
+    height: 12px;
+    background-color: #565e64;
+    border-radius: 2px;
+}
+
+.secondary-preview:before {
+    content: "";
+    position: absolute;
+    top: 40px;
+    left: 10px;
+    right: 10px;
+    height: 12px;
+    background-color: #2a2f33;
+    border-radius: 2px;
+}
+
+.tertiary-preview {
+    background-color: #e8f5e9;
+    position: relative;
+}
+
+.tertiary-preview:after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 10px;
+    right: 10px;
+    height: 12px;
+    background-color: #4caf50;
+    border-radius: 2px;
+}
+
+.tertiary-preview:before {
+    content: "";
+    position: absolute;
+    top: 40px;
+    left: 10px;
+    right: 10px;
+    height: 12px;
+    background-color: #1b5e20;
+    border-radius: 2px;
+}
+
+.error-preview {
+    background-color: #f8f9fa;
+    position: relative;
+}
+
+.error-preview:after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 10px;
+    right: 10px;
+    height: 12px;
+    background-color: #adb5bd;
+    border-radius: 2px;
+}
+
+.error-preview:before {
+    content: "";
+    position: absolute;
+    top: 40px;
+    left: 10px;
+    right: 10px;
+    height: 12px;
+    background-color: #212529;
+    border-radius: 2px;
+}
+
+.neutral-preview {
+    background-color: #f5f5f5;
+    position: relative;
+}
+
+.neutral-preview:after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 10px;
+    right: 10px;
+    height: 12px;
+    background-color: #757575;
+    border-radius: 2px;
+}
+
+.neutral-preview:before {
+    content: "";
+    position: absolute;
+    top: 40px;
+    left: 10px;
+    right: 10px;
+    height: 12px;
+    background-color: #212121;
+    border-radius: 2px;
+}
+
+.neutral-variant-preview {
+    background-color: #eceff1;
+    position: relative;
+}
+
+.neutral-variant-preview:after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 10px;
+    right: 10px;
+    height: 12px;
+    background-color: #607d8b;
+    border-radius: 2px;
+}
+
+.neutral-variant-preview:before {
+    content: "";
+    position: absolute;
+    top: 40px;
+    left: 10px;
+    right: 10px;
+    height: 12px;
+    background-color: #263238;
+    border-radius: 2px;
+}
+
+
+/* Tonal Paletler Tema Sınıfları */
+.theme-base-primary {
+    --tblr-gray-50: #fdf8ef;
+    --tblr-gray-100: #f0ead2;
+    --tblr-gray-200: #e6d9b8;
+    --tblr-gray-300: #d2b48c;
+    --tblr-gray-400: #c3a06c;
+    --tblr-gray-500: #b08d57;
+    --tblr-gray-600: #946b2d;
+    --tblr-gray-700: #7c5520;
+    --tblr-gray-800: #634212;
+    --tblr-gray-900: #482307;
+}
+
+.theme-base-secondary {
+    --tblr-gray-50: #f8f9fa;
+    --tblr-gray-100: #f1f3f5;
+    --tblr-gray-200: #e9ecef;
+    --tblr-gray-300: #dee2e6;
+    --tblr-gray-400: #ced4da;
+    --tblr-gray-500: #adb5bd;
+    --tblr-gray-600: #6c757d;
+    --tblr-gray-700: #495057;
+    --tblr-gray-800: #343a40;
+    --tblr-gray-900: #212529;
+}
+
+.theme-base-tertiary {
+    --tblr-gray-50: #f1f8e9;
+    --tblr-gray-100: #dcedc8;
+    --tblr-gray-200: #c5e1a5;
+    --tblr-gray-300: #aed581;
+    --tblr-gray-400: #9ccc65;
+    --tblr-gray-500: #8bc34a;
+    --tblr-gray-600: #7cb342;
+    --tblr-gray-700: #689f38;
+    --tblr-gray-800: #558b2f;
+    --tblr-gray-900: #33691e;
+}
+
+.theme-base-error {
+    --tblr-gray-50: #f8f9fa;
+    --tblr-gray-100: #f1f3f5;
+    --tblr-gray-200: #e9ecef;
+    --tblr-gray-300: #dee2e6;
+    --tblr-gray-400: #ced4da;
+    --tblr-gray-500: #adb5bd;
+    --tblr-gray-600: #6c757d;
+    --tblr-gray-700: #495057;
+    --tblr-gray-800: #343a40;
+    --tblr-gray-900: #212529;
+}
+
+.theme-base-neutral-variant {
+    --tblr-gray-50: #eceff1;
+    --tblr-gray-100: #cfd8dc;
+    --tblr-gray-200: #b0bec5;
+    --tblr-gray-300: #90a4ae;
+    --tblr-gray-400: #78909c;
+    --tblr-gray-500: #607d8b;
+    --tblr-gray-600: #546e7a;
+    --tblr-gray-700: #455a64;
+    --tblr-gray-800: #37474f;
+    --tblr-gray-900: #263238;
+}
+
+/* Tonal Paletler Tema Sınıfları */
+[data-bs-theme-base=slate], .theme-base-mavi-gri {
+    --tblr-gray-50: #f8fafc;
+    --tblr-gray-100: #f1f5f9;
+    --tblr-gray-200: #e2e8f0;
+    --tblr-gray-300: #cbd5e1;
+    --tblr-gray-400: #94a3b8;
+    --tblr-gray-500: #64748b;
+    --tblr-gray-600: #475569;
+    --tblr-gray-700: #334155;
+    --tblr-gray-800: #1e293b;
+    --tblr-gray-900: #0f172a;
+    --tblr-gray-950: #020617;
+}
+
+[data-bs-theme-base=zinc], .theme-base-cinko-gri {
+    --tblr-gray-50: #fafafa;
+    --tblr-gray-100: #f4f4f5;
+    --tblr-gray-200: #e4e4e7;
+    --tblr-gray-300: #d4d4d8;
+    --tblr-gray-400: #a1a1aa;
+    --tblr-gray-500: #71717a;
+    --tblr-gray-600: #52525b;
+    --tblr-gray-700: #3f3f46;
+    --tblr-gray-800: #27272a;
+    --tblr-gray-900: #18181b;
+    --tblr-gray-950: #09090b;
+}
+
+[data-bs-theme-base=stone], .theme-base-tas-rengi {
+    --tblr-gray-50: #fafaf9;
+    --tblr-gray-100: #f5f5f4;
+    --tblr-gray-200: #e7e5e4;
+    --tblr-gray-300: #d6d3d1;
+    --tblr-gray-400: #a8a29e;
+    --tblr-gray-500: #78716c;
+    --tblr-gray-600: #57534e;
+    --tblr-gray-700: #44403c;
+    --tblr-gray-800: #292524;
+    --tblr-gray-900: #1c1917;
+    --tblr-gray-950: #0c0a09;
+}
+
+/* Tonal Paletler Önizleme Stilleri */
+.mavi-gri-preview {
+    background-color: #f8fafc;
+    position: relative;
+}
+
+.mavi-gri-preview:after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 10px;
+    right: 10px;
+    height: 12px;
+    background-color: #475569;
+    border-radius: 2px;
+}
+
+.mavi-gri-preview:before {
+    content: "";
+    position: absolute;
+    top: 40px;
+    left: 10px;
+    right: 10px;
+    height: 12px;
+    background-color: #0f172a;
+    border-radius: 2px;
+}
+
+.cinko-gri-preview {
+    background-color: #fafafa;
+    position: relative;
+}
+
+.cinko-gri-preview:after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 10px;
+    right: 10px;
+    height: 12px;
+    background-color: #52525b;
+    border-radius: 2px;
+}
+
+.cinko-gri-preview:before {
+    content: "";
+    position: absolute;
+    top: 40px;
+    left: 10px;
+    right: 10px;
+    height: 12px;
+    background-color: #18181b;
+    border-radius: 2px;
+}
+
+.tas-rengi-preview {
+    background-color: #fafaf9;
+    position: relative;
+}
+
+.tas-rengi-preview:after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 10px;
+    right: 10px;
+    height: 12px;
+    background-color: #57534e;
+    border-radius: 2px;
+}
+
+.tas-rengi-preview:before {
+    content: "";
+    position: absolute;
+    top: 40px;
+    left: 10px;
+    right: 10px;
+    height: 12px;
+    background-color: #1c1917;
+    border-radius: 2px;
 }

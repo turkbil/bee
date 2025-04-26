@@ -1,1 +1,0 @@
-<img src="https://via.placeholder.com/800x400" class="img-fluid rounded" alt="Görsel açıklaması">

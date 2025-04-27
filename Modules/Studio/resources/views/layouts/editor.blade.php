@@ -118,16 +118,35 @@
     <script src="{{ asset('admin/libs/studio/grapes.min.js') }}?v={{ filemtime(public_path('admin/libs/studio/grapes.min.js')) }}"></script>
     
     <!-- Studio Modülleri -->
+    <script src="{{ asset('admin/libs/studio/partials/studio-config.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-config.js')) }}"></script>
+    <script src="{{ asset('admin/libs/studio/partials/studio-loader.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-loader.js')) }}"></script>
+    <script src="{{ asset('admin/libs/studio/partials/studio-utils-modal.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-utils-modal.js')) }}"></script>
+    <script src="{{ asset('admin/libs/studio/partials/studio-utils-notification.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-utils-notification.js')) }}"></script>
     <script src="{{ asset('admin/libs/studio/partials/studio-fix.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-fix.js')) }}"></script>
     <script src="{{ asset('admin/libs/studio/partials/studio-utils.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-utils.js')) }}"></script>
     <script src="{{ asset('admin/libs/studio/partials/studio-html-parser.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-html-parser.js')) }}"></script>
-    <script src="{{ asset('admin/libs/studio/partials/studio-blocks.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-blocks.js')) }}"></script>
+
+    <script src="{{ asset('admin/libs/studio/partials/studio-ui-tabs.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-ui-tabs.js')) }}"></script>
+    <script src="{{ asset('admin/libs/studio/partials/studio-ui-panels.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-ui-panels.js')) }}"></script>
+    <script src="{{ asset('admin/libs/studio/partials/studio-ui-devices.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-ui-devices.js')) }}"></script>
     <script src="{{ asset('admin/libs/studio/partials/studio-ui.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-ui.js')) }}"></script>
+
+    <script src="{{ asset('admin/libs/studio/partials/studio-blocks-category.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-blocks-category.js')) }}"></script>
+    <script src="{{ asset('admin/libs/studio/partials/studio-blocks-manager.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-blocks-manager.js')) }}"></script>
+    <script src="{{ asset('admin/libs/studio/partials/studio-blocks.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-blocks.js')) }}"></script>
+
+    <script src="{{ asset('admin/libs/studio/partials/studio-actions-save.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-actions-save.js')) }}"></script>
+    <script src="{{ asset('admin/libs/studio/partials/studio-actions-export.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-actions-export.js')) }}"></script>
     <script src="{{ asset('admin/libs/studio/partials/studio-actions.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-actions.js')) }}"></script>
+
+    <script src="{{ asset('admin/libs/studio/partials/studio-widget-components.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-widget-components.js')) }}"></script>
+    <script src="{{ asset('admin/libs/studio/partials/studio-widget-loader.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-widget-loader.js')) }}"></script>
+    <script src="{{ asset('admin/libs/studio/partials/studio-widget-manager.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-widget-manager.js')) }}"></script>
+
+    <script src="{{ asset('admin/libs/studio/partials/studio-editor-setup.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-editor-setup.js')) }}"></script>
     <script src="{{ asset('admin/libs/studio/partials/studio-core.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-core.js')) }}"></script>
     <script src="{{ asset('admin/libs/js-cookie@3.0.5/js.cookie.min.js') }}?v={{ filemtime(public_path('admin/libs/js-cookie@3.0.5/js.cookie.min.js')) }}"></script>
     <script src="{{ asset('admin/libs/studio/app.js') }}?v={{ filemtime(public_path('admin/libs/studio/app.js')) }}"></script>
-    <script src="{{ asset('admin/libs/studio/partials/studio-widget-manager.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-widget-manager.js')) }}"></script>
 
     @livewireScripts
     

@@ -14,33 +14,44 @@ class WidgetService
      */
     public function getCategories(): array
     {
-        return config('studio.blocks.categories', [
-            'layout' => [
-                'name' => 'Düzen',
-                'icon' => 'fa fa-columns',
-                'order' => 1,
-            ],
-            'content' => [
-                'name' => 'İçerik',
-                'icon' => 'fa fa-font',
-                'order' => 2,
-            ],
-            'form' => [
-                'name' => 'Form',
-                'icon' => 'fa fa-wpforms',
-                'order' => 3,
-            ],
-            'media' => [
-                'name' => 'Medya',
-                'icon' => 'fa fa-image',
-                'order' => 4,
-            ],
-            'widget' => [
-                'name' => 'Widgetlar',
-                'icon' => 'fa fa-puzzle-piece',
-                'order' => 5,
-            ],
-        ]);
+        // Widget kategorilerini widgetmanagement modülünden çek
+        if (class_exists('Modules\WidgetManagement\App\Models\WidgetCategory')) {
+            $categories = [];
+            
+            // Ana kategoriler
+            $rootCategories = \Modules\WidgetManagement\App\Models\WidgetCategory::where('is_active', true)
+                ->whereNull('parent_id')
+                ->orderBy('order')
+                ->get();
+                
+            $order = 1;
+            
+            // Aktif bileşenler kategorisi her zaman ekle
+            $categories['active-widgets'] = [
+                'name' => 'Aktif Bileşenler',
+                'icon' => 'fa fa-star',
+                'order' => 0
+            ];
+            
+            foreach ($rootCategories as $rootCategory) {
+                $categories[$rootCategory->slug] = [
+                    'name' => $rootCategory->title,
+                    'icon' => $rootCategory->icon ?? 'fa fa-folder',
+                    'order' => $order++
+                ];
+            }
+            
+            return $categories;
+        }
+        
+        // Widgetmanagement modülü yoksa varsayılan kategoriler
+        return [
+            'active-widgets' => [
+                'name' => 'Aktif Bileşenler',
+                'icon' => 'fa fa-star',
+                'order' => 0
+            ]
+        ];
     }
     
     /**

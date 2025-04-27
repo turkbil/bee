@@ -38,122 +38,38 @@ class BlockManager
         if (Cache::has($cacheKey)) {
             $this->blocks = Cache::get($cacheKey, []);
         } else {
-            $this->registerDefaultBlocks();
+            $this->loadBlocksFromWidgetManagement();
         }
     }
     
     /**
-     * Varsayılan blokları kaydet
+     * Widgetmanagement modülünden blokları yükle
      */
-    protected function registerDefaultBlocks()
+    protected function loadBlocksFromWidgetManagement()
     {
-        $this->register('section-1col', [
-            'label' => '1 Sütun',
-            'category' => 'layout',
-            'icon' => 'fa fa-columns',
-            'content' => '<section class="container py-5">
-                <div class="row">
-                    <div class="col-md-12">
-                        <h2>Başlık Buraya</h2>
-                        <p>İçerik buraya gelecek. Çift tıklayarak düzenleyebilirsiniz.</p>
-                    </div>
-                </div>
-            </section>'
-        ]);
-        
-        $this->register('section-2col', [
-            'label' => '2 Sütun',
-            'category' => 'layout',
-            'icon' => 'fa fa-columns',
-            'content' => '<section class="container py-5">
-                <div class="row">
-                    <div class="col-md-6">
-                        <h3>Başlık 1</h3>
-                        <p>İçerik buraya gelecek. Çift tıklayarak düzenleyebilirsiniz.</p>
-                    </div>
-                    <div class="col-md-6">
-                        <h3>Başlık 2</h3>
-                        <p>İçerik buraya gelecek. Çift tıklayarak düzenleyebilirsiniz.</p>
-                    </div>
-                </div>
-            </section>'
-        ]);
-        
-        $this->register('section-3col', [
-            'label' => '3 Sütun',
-            'category' => 'layout',
-            'icon' => 'fa fa-columns',
-            'content' => '<section class="container py-5">
-                <div class="row">
-                    <div class="col-md-4">
-                        <h3>Başlık 1</h3>
-                        <p>İçerik buraya gelecek.</p>
-                    </div>
-                    <div class="col-md-4">
-                        <h3>Başlık 2</h3>
-                        <p>İçerik buraya gelecek.</p>
-                    </div>
-                    <div class="col-md-4">
-                        <h3>Başlık 3</h3>
-                        <p>İçerik buraya gelecek.</p>
-                    </div>
-                </div>
-            </section>'
-        ]);
-        
-        $this->register('text', [
-            'label' => 'Metin',
-            'category' => 'content',
-            'icon' => 'fa fa-font',
-            'content' => '<div class="my-3">
-                <h3>Başlık</h3>
-                <p>Buraya metin içeriği gelecek. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam suscipit velit id diam ultrices, at facilisis dui tincidunt.</p>
-            </div>'
-        ]);
-        
-        $this->register('button', [
-            'label' => 'Buton',
-            'category' => 'content',
-            'icon' => 'fa fa-square',
-            'content' => '<button class="btn btn-primary">Tıkla</button>'
-        ]);
-        
-        $this->register('image', [
-            'label' => 'Görsel',
-            'category' => 'media',
-            'icon' => 'fa fa-image',
-            'content' => '<img src="https://via.placeholder.com/800x400" class="img-fluid rounded" alt="Görsel açıklaması">'
-        ]);
-        
-        $this->register('contact-form', [
-            'label' => 'İletişim Formu',
-            'category' => 'form',
-            'icon' => 'fa fa-envelope',
-            'content' => '<div class="container py-4">
-                <form>
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Adınız</label>
-                        <input type="text" class="form-control" id="name" placeholder="Adınız Soyadınız">
-                    </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email adresiniz</label>
-                        <input type="email" class="form-control" id="email" placeholder="ornek@domain.com">
-                    </div>
-                    <div class="mb-3">
-                        <label for="message" class="form-label">Mesajınız</label>
-                        <textarea class="form-control" id="message" rows="5"></textarea>
-                    </div>
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <button class="btn btn-primary" type="submit">Gönder</button>
-                    </div>
-                </form>
-            </div>'
-        ]);
-        
-        // Önbelleğe kaydet
+        // Önbellek anahtarı oluştur
         $cacheKey = 'studio_blocks';
         $cacheTtl = config('studio.cache.ttl', 3600);
         
+        // Widgetmanagement modülünden blokları yükle
+        if (class_exists('Modules\WidgetManagement\App\Models\Widget')) {
+            $widgets = \Modules\WidgetManagement\App\Models\Widget::where('is_active', true)->get();
+            
+            foreach ($widgets as $widget) {
+                $blockId = 'widget-' . $widget->id;
+                $category = $widget->data['category'] ?? 'widget';
+                
+                $this->blocks[$blockId] = [
+                    'id' => $blockId,
+                    'label' => $widget->name,
+                    'category' => $category,
+                    'content' => $widget->content_html ?? '',
+                    'icon' => $widget->data['icon'] ?? 'fa fa-puzzle-piece'
+                ];
+            }
+        }
+        
+        // Önbelleğe kaydet
         Cache::put($cacheKey, $this->blocks, $cacheTtl);
     }
     

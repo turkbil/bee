@@ -84,21 +84,38 @@ window.StudioWidgetManager = (function() {
         // Widget tipine göre başlık rengi
         let modalHeaderColor = '#10b981'; // Varsayılan yeşil (static)
         let widgetTypeText = 'Statik';
+        let widgetTypeClass = '';
         
         switch(widget.type) {
             case 'dynamic':
                 modalHeaderColor = '#3b82f6'; // Mavi
                 widgetTypeText = 'Dinamik';
+                widgetTypeClass = 'dynamic-widget-modal';
                 break;
             case 'module':
                 modalHeaderColor = '#8b5cf6'; // Mor
                 widgetTypeText = 'Modül';
+                widgetTypeClass = 'module-widget-modal';
                 break;
             case 'file':
                 modalHeaderColor = '#f59e0b'; // Turuncu
                 widgetTypeText = 'Dosya';
+                widgetTypeClass = 'file-widget-modal';
                 break;
         }
+        
+        // Module tipi için ekstra açıklama
+        const moduleNoteHtml = widget.type === 'module' ? `
+            <div style="padding: 10px; margin: 10px 0; background-color: rgba(139, 92, 246, 0.1); border-left: 3px solid #8b5cf6; border-radius: 4px;">
+                <p style="margin: 0; color: #6d28d9; font-weight: 500; font-size: 14px;">
+                    <i class="fa fa-info-circle me-2"></i>
+                    <strong>Bu bir modül widget'ı!</strong>
+                </p>
+                <p style="margin: 5px 0 0 0; color: #6d28d9; font-size: 13px;">
+                    Modül widget'ları Studio editöründe düzenlenemez. Kaynak kodu direkt olarak dosyadan yüklenir.
+                </p>
+            </div>
+        ` : '';
         
         modalContent.innerHTML = `
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
@@ -114,6 +131,7 @@ window.StudioWidgetManager = (function() {
             </div>
             <div style="margin-bottom: 20px;">
                 <p>${widget.description || 'Bu widget hakkında açıklama yok.'}</p>
+                ${moduleNoteHtml}
                 ${widget.file_path ? `<p style="font-size: 13px; padding: 5px 10px; background-color: #f8fafc; border-radius: 4px;"><i class="fa fa-link me-1"></i> <strong>Dosya Yolu:</strong> ${widget.file_path}</p>` : ''}
             </div>
             <div style="text-align: center; margin-top: 20px;">
@@ -127,10 +145,16 @@ window.StudioWidgetManager = (function() {
                     font-weight: 500;
                     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
                 ">
-                    <i class="fa fa-edit me-2"></i> Widget'ı Düzenle
+                    <i class="fa ${widget.type === 'module' ? 'fa-eye' : 'fa-edit'} me-2"></i> 
+                    ${widget.type === 'module' ? 'Widget Detaylarını Gör' : 'Widget\'ı Düzenle'}
                 </a>
             </div>
         `;
+        
+        // Module tipine özel stil
+        if (widget.type === 'module') {
+            modalContent.style.borderLeft = '5px solid #8b5cf6';
+        }
         
         modal.appendChild(modalContent);
         document.body.appendChild(modal);
@@ -197,20 +221,39 @@ window.StudioWidgetManager = (function() {
                 if (widgetType === 'dynamic' || widgetType === 'module') {
                     component.set('draggable', false);
                     component.set('droppable', false);
-                    component.set('selectable', true);
+                    component.set('selectable', true); 
                     component.set('highlightable', false);
                     component.set('editable', false);
                     component.set('locked', true);
                     
+                    // Module tipi için ekstra kısıtlamalar
+                    if (widgetType === 'module') {
+                        component.set('selectable', false); // Seçim bile devre dışı
+                        component.getAttributes()['data-module-locked'] = 'true';
+                        
+                        // Alt bileşenleri de kilitle
+                        const inner = component.get('components');
+                        if (inner) {
+                            inner.each(child => {
+                                child.set('locked', true);
+                                child.set('editable', false);
+                                child.set('selectable', true);
+                                child.getAttributes()['data-module-element'] = 'true';
+                            });
+                        }
+                    }
+                    
+                    // Css değişiklikleri
                     component.setStyle({
                         'pointer-events': 'none',
                         'cursor': 'not-allowed'
                     });
                 } else {
-                    component.set('draggable', true);
-                    component.set('selectable', true);
-                    component.set('highlightable', true);
+                    // Static ve file tiplerini düzenlenebilir yap
                     component.set('editable', true);
+                    component.set('draggable', true);
+                    component.set('highlightable', true);
+                    component.set('selectable', true);
                     component.set('locked', false);
                 }
                 
@@ -234,10 +277,28 @@ window.StudioWidgetManager = (function() {
                         widget.set('type', 'widget');
                         widget.set('draggable', false);
                         widget.set('droppable', false);
-                        widget.set('selectable', true);
                         widget.set('highlightable', false);
                         widget.set('editable', false);
                         widget.set('locked', true);
+                        
+                        // Module tipindekiler için daha katı kısıtlamalar
+                        if (widgetType === 'module') {
+                            widget.set('selectable', false);
+                            widget.getAttributes()['data-module-locked'] = 'true';
+                            
+                            // Alt bileşenleri de kilitle
+                            const inner = widget.get('components');
+                            if (inner) {
+                                inner.each(child => {
+                                    child.set('locked', true);
+                                    child.set('editable', false);
+                                    child.set('selectable', false);
+                                    child.getAttributes()['data-module-element'] = 'true';
+                                });
+                            }
+                        } else {
+                            widget.set('selectable', true);
+                        }
                         
                         widget.setStyle({
                             'pointer-events': 'none',
@@ -254,10 +315,26 @@ window.StudioWidgetManager = (function() {
         });
     }
     
+    // Widget tipine göre ikon al
+    function getWidgetTypeIcon(type) {
+        switch(type) {
+            case 'dynamic':
+                return 'fa fa-puzzle-piece';
+            case 'module':
+                return 'fa fa-cube';
+            case 'file':
+                return 'fa fa-file-code';
+            case 'static':
+            default:
+                return 'fa fa-code';
+        }
+    }
+    
     return {
         loadWidgetData: loadWidgetData,
         getWidgetData: getWidgetData,
         showWidgetModal: showWidgetModal,
-        setup: setup
+        setup: setup,
+        getWidgetTypeIcon: getWidgetTypeIcon
     };
 })();

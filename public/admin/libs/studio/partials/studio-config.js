@@ -130,6 +130,8 @@ window.StudioConfig = (function() {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
 ${css}
+.widget-container { pointer-events: auto !important; }
+.widget-content { filter: none !important; opacity: 1 !important; }
     </style>
 </head>
 <body>

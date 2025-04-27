@@ -2,7 +2,6 @@
  * Studio Editor - HTML Parser Modülü
  * HTML içeriğini düzenlemek için yardımcı fonksiyonlar
  */
-// public/admin/libs/studio/partials/studio-html-parser.js
 
 window.StudioHtmlParser = (function() {
     /**
@@ -132,6 +131,10 @@ window.StudioHtmlParser = (function() {
      * @return {string} Varsayılan HTML içeriği
      */
     function getDefaultContent() {
+        if (window.StudioConfig && typeof window.StudioConfig.getConfig === 'function') {
+            return window.StudioConfig.getConfig('defaultHtml');
+        }
+        
         return `
         <div class="container py-4">
             <div class="row">
@@ -156,6 +159,10 @@ window.StudioHtmlParser = (function() {
      * @return {string} Birleştirilmiş tam HTML
      */
     function buildFullHtml(html, css, js) {
+        if (window.StudioConfig && typeof window.StudioConfig.getFullHtmlTemplate === 'function') {
+            return window.StudioConfig.getFullHtmlTemplate(html, css, js);
+        }
+        
         return `<!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -178,12 +185,33 @@ ${js}
 </html>`;
     }
     
+    /**
+     * HTML içeriğindeki widget etiketlerini işle
+     * @param {string} html HTML içeriği
+     * @return {string} İşlenmiş HTML
+     */
+    function processWidgetTags(html) {
+        if (!html || typeof html !== 'string') {
+            return html;
+        }
+        
+        // Widget etiketlerini işle
+        html = html.replace(/<widget\s+id="(\d+)"[^>]*><\/widget>/g, function(match, widgetId) {
+            return `<div data-widget-id="${widgetId}" data-type="widget" class="gjs-widget-wrapper">
+                <div class="widget-placeholder">Widget #${widgetId}</div>
+            </div>`;
+        });
+        
+        return html;
+    }
+    
     return {
         parseAndFixHtml: parseAndFixHtml,
         extractCss: extractCss,
         extractJs: extractJs,
         sanitizeHtml: sanitizeHtml,
         getDefaultContent: getDefaultContent,
-        buildFullHtml: buildFullHtml
+        buildFullHtml: buildFullHtml,
+        processWidgetTags: processWidgetTags
     };
 })();

@@ -14,14 +14,9 @@ window.StudioUI = (function() {
     function setupUI(editor) {
         editorInstance = editor;
         
-        setupTabs();
-        setupDeviceToggle(editor);
         setupPanelSearch();
-        initializePanelToggles();
-        initializeBlockCategories();
         setupEditorStyles();
         standardizeLayerPanel();
-        addCustomFunctions(editor);
         handleCanvasEvents(editor);
         
         // Bileşen seçimi olayı
@@ -31,140 +26,6 @@ window.StudioUI = (function() {
                 activateStylePanel('right');
             }, 100);
         });
-    }
-    
-    /**
-     * Tab panellerini yapılandırır
-     */
-    function setupTabs() {
-        const tabs = document.querySelectorAll(".panel-tab");
-        const tabContents = document.querySelectorAll(".panel-tab-content");
-
-        tabs.forEach((tab) => {
-            // Eski event listener'ları temizle
-            const newTab = tab.cloneNode(true);
-            if (tab.parentNode) {
-                tab.parentNode.replaceChild(newTab, tab);
-            }
-            
-            newTab.addEventListener("click", function () {
-                const tabName = this.getAttribute("data-tab");
-
-                // Aktif tab değiştir
-                tabs.forEach((t) => t.classList.remove("active"));
-                this.classList.add("active");
-
-                // İçeriği değiştir
-                tabContents.forEach((content) => {
-                    if (content.getAttribute("data-tab-content") === tabName) {
-                        content.classList.add("active");
-                    } else {
-                        content.classList.remove("active");
-                    }
-                });
-                
-                // Aktif sekme bilgisini localStorage'a kaydet
-                localStorage.setItem('studio_active_tab', tabName);
-            });
-        });
-        
-        // Önceki aktif sekmeyi yükle
-        const savedTab = localStorage.getItem('studio_active_tab');
-        if (savedTab) {
-            const activeTab = document.querySelector(`.panel-tab[data-tab="${savedTab}"]`);
-            if (activeTab) {
-                activeTab.click();
-            }
-        }
-    }
-    
-    /**
-     * Panel açma/kapama butonlarını ekle ve yapılandır
-     */
-    function initializePanelToggles() {
-        // Sol panel açma/kapama butonu
-        createPanelToggle('panel__left', 'fa-chevron-left');
-        
-        // Sağ panel açma/kapama butonu
-        createPanelToggle('panel__right', 'fa-chevron-right');
-        
-        // Önceki panel durumlarını yükle
-        loadPanelStates();
-    }
-    
-    /**
-     * Panel toggle butonunu oluştur
-     * @param {string} panelClass - Panel sınıfı
-     * @param {string} iconClass - İkon sınıfı
-     */
-    function createPanelToggle(panelClass, iconClass) {
-        const panel = document.querySelector(`.${panelClass}`);
-        if (!panel) return;
-        
-        // Zaten bir toggle butonu varsa kaldır
-        const existingToggle = panel.querySelector('.panel-toggle');
-        if (existingToggle) {
-            existingToggle.remove();
-        }
-        
-        // Toggle butonunu oluştur
-        const toggleBtn = document.createElement('div');
-        toggleBtn.className = 'panel-toggle';
-        toggleBtn.innerHTML = `<i class="fas ${iconClass}"></i>`;
-        
-        // Toggle butonuna tıklama olayı ekle
-        toggleBtn.addEventListener('click', function() {
-            // Panel durumunu değiştir
-            panel.classList.toggle('collapsed');
-            
-            // Panel durumunu localStorage'a kaydet
-            savePanelStates();
-        });
-        
-        // Panele toggle butonunu ekle
-        panel.appendChild(toggleBtn);
-    }
-    
-    /**
-     * Panel açık/kapalı durumlarını localStorage'a kaydet
-     */
-    function savePanelStates() {
-        // Sol panel durumu
-        const leftPanel = document.querySelector('.panel__left');
-        const leftCollapsed = leftPanel && leftPanel.classList.contains('collapsed');
-        
-        // Sağ panel durumu
-        const rightPanel = document.querySelector('.panel__right');
-        const rightCollapsed = rightPanel && rightPanel.classList.contains('collapsed');
-        
-        // Durumları localStorage'a kaydet
-        localStorage.setItem('studio_left_panel_collapsed', leftCollapsed ? 'true' : 'false');
-        localStorage.setItem('studio_right_panel_collapsed', rightCollapsed ? 'true' : 'false');
-    }
-    
-    /**
-     * Panel açık/kapalı durumlarını localStorage'dan yükle
-     */
-    function loadPanelStates() {
-        // Sol panel durumu
-        const leftPanel = document.querySelector('.panel__left');
-        const leftSavedState = localStorage.getItem('studio_left_panel_collapsed');
-        
-        if (leftPanel && leftSavedState === 'true') {
-            leftPanel.classList.add('collapsed');
-        } else if (leftPanel) {
-            leftPanel.classList.remove('collapsed');
-        }
-        
-        // Sağ panel durumu
-        const rightPanel = document.querySelector('.panel__right');
-        const rightSavedState = localStorage.getItem('studio_right_panel_collapsed');
-        
-        if (rightPanel && rightSavedState === 'true') {
-            rightPanel.classList.add('collapsed');
-        } else if (rightPanel) {
-            rightPanel.classList.remove('collapsed');
-        }
     }
     
     /**
@@ -232,105 +93,6 @@ window.StudioUI = (function() {
                     }
                 });
             });
-        }
-    }
-            
-    /**
-     * Blok kategorilerini başlat
-     */
-    function initializeBlockCategories() {
-        // Bu fonksiyon sadece bir kez çalışmalı
-        if (window._blockCategoriesInitialized) {
-            console.log("Blok kategorileri zaten başlatılmış, tekrar başlatma atlanıyor.");
-            return;
-        }
-        window._blockCategoriesInitialized = true;
-        
-        const categories = document.querySelectorAll('.block-category-header');
-        
-        categories.forEach(category => {
-            // Tıklama olayını ekle - event izleyerek çakışmayı önle
-            category.addEventListener('click', function(event) {
-                // Eğer olay zaten işlendiyse, tekrar işleme
-                if (event._categoryHandled) return;
-                event._categoryHandled = true;
-                
-                const parent = this.closest('.block-category');
-                if (!parent) return;
-                
-                parent.classList.toggle('collapsed');
-
-                const content = parent.querySelector('.block-items');
-                if (content) {
-                    if (parent.classList.contains('collapsed')) {
-                        content.style.display = 'none';
-                    } else {
-                        content.style.display = 'grid';
-                    }
-                }
-                
-                // Kategori durumlarını kaydet
-                if (window.StudioBlocks && typeof window.StudioBlocks.saveBlockCategoryStates === 'function') {
-                    window.StudioBlocks.saveBlockCategoryStates();
-                }
-            });
-        });
-        
-        // Eğer StudioBlocks modülü yüklendiyse ve kategori durumları daha önce yüklenmemişse
-        if (window.StudioBlocks && typeof window.StudioBlocks.loadBlockCategoryStates === 'function' && !window._blockCategoryStatesLoaded) {
-            window._blockCategoryStatesLoaded = true;
-            window.StudioBlocks.loadBlockCategoryStates();
-        }
-    }
-    
-    /**
-     * Kategori açık/kapalı durumlarını localStorage'a kaydet
-     */
-    function saveBlockCategoryStates() {
-        const categories = document.querySelectorAll('.block-category');
-        const states = {};
-        
-        categories.forEach(category => {
-            const categoryId = category.getAttribute('data-category');
-            if (categoryId) {
-                states[categoryId] = category.classList.contains('collapsed');
-            }
-        });
-        
-        localStorage.setItem('studio_block_categories', JSON.stringify(states));
-    }
-    
-    /**
-     * Kategori açık/kapalı durumlarını localStorage'dan yükle
-     */
-    function loadBlockCategoryStates() {
-        const savedStates = localStorage.getItem('studio_block_categories');
-        if (!savedStates) return;
-        
-        try {
-            const states = JSON.parse(savedStates);
-            const categories = document.querySelectorAll('.block-category');
-            
-            categories.forEach(category => {
-                const categoryId = category.getAttribute('data-category');
-                if (categoryId && states[categoryId] !== undefined) {
-                    if (states[categoryId]) {
-                        category.classList.add('collapsed');
-                        const content = category.querySelector('.block-items');
-                        if (content) {
-                            content.style.display = 'none';
-                        }
-                    } else {
-                        category.classList.remove('collapsed');
-                        const content = category.querySelector('.block-items');
-                        if (content) {
-                            content.style.display = 'grid';
-                        }
-                    }
-                }
-            });
-        } catch (e) {
-            console.error('Block category states could not be loaded:', e);
         }
     }
     
@@ -501,8 +263,8 @@ function createContextMenu(event, model, editor) {
     function showElementHtml(model) {
         const html = model.toHTML();
         
-        if (window.StudioUtils && typeof window.StudioUtils.showEditModal === 'function') {
-            window.StudioUtils.showEditModal('Element HTML', html, function(newHtml) {
+        if (window.StudioModal && typeof window.StudioModal.showEditModal === 'function') {
+            window.StudioModal.showEditModal('Element HTML', html, function(newHtml) {
                 model.replaceWith(newHtml);
             });
         } else {
@@ -540,92 +302,6 @@ function createContextMenu(event, model, editor) {
             }
         }
     }
-
-/**
- * Cihaz görünümü değiştirme butonlarını yapılandırır
- * @param {Object} editor - GrapesJS editor örneği
- */
-function setupDeviceToggle(editor) {
-    const deviceDesktop = document.getElementById("device-desktop");
-    const deviceTablet = document.getElementById("device-tablet");
-    const deviceMobile = document.getElementById("device-mobile");
-
-    // Tüm butonları temizle ve yeniden oluştur
-    function recreateButton(button) {
-        if (!button) return null;
-        
-        const newButton = button.cloneNode(true);
-        if (button.parentNode) {
-            button.parentNode.replaceChild(newButton, button);
-        }
-        return newButton;
-    }
-    
-    const newDesktopBtn = recreateButton(deviceDesktop);
-    const newTabletBtn = recreateButton(deviceTablet);
-    const newMobileBtn = recreateButton(deviceMobile);
-
-    function toggleDeviceButtons(activeBtn) {
-        // Tüm butonlardan active sınıfını kaldır
-        if (newDesktopBtn) newDesktopBtn.classList.remove("active");
-        if (newTabletBtn) newTabletBtn.classList.remove("active");
-        if (newMobileBtn) newMobileBtn.classList.remove("active");
-        
-        // Sadece aktif butona active sınıfı ekle
-        if (activeBtn) {
-            activeBtn.classList.add("active");
-        }
-        
-        // Aktif cihazı localStorage'a kaydet
-        if (activeBtn) {
-            const deviceId = activeBtn.id.replace('device-', '');
-            localStorage.setItem('studio_active_device', deviceId);
-        }
-    }
-
-    if (newDesktopBtn) {
-        newDesktopBtn.addEventListener("click", function () {
-            editor.setDevice("Desktop");
-            toggleDeviceButtons(this);
-        });
-    }
-
-    if (newTabletBtn) {
-        newTabletBtn.addEventListener("click", function () {
-            editor.setDevice("Tablet");
-            toggleDeviceButtons(this);
-        });
-    }
-
-    if (newMobileBtn) {
-        newMobileBtn.addEventListener("click", function () {
-            editor.setDevice("Mobile");
-            toggleDeviceButtons(this);
-        });
-    }
-    
-    // Önceki aktif cihazı yükle
-    const savedDevice = localStorage.getItem('studio_active_device');
-    if (savedDevice) {
-        const activeDeviceBtn = document.getElementById(`device-${savedDevice}`);
-        if (activeDeviceBtn) {
-            toggleDeviceButtons(activeDeviceBtn);
-            editor.setDevice(savedDevice.charAt(0).toUpperCase() + savedDevice.slice(1));
-        } else {
-            // Varsayılan olarak masaüstünü aktif yap
-            if (newDesktopBtn) {
-                toggleDeviceButtons(newDesktopBtn);
-                editor.setDevice("Desktop");
-            }
-        }
-    } else {
-        // Varsayılan olarak masaüstünü aktif yap
-        if (newDesktopBtn) {
-            toggleDeviceButtons(newDesktopBtn);
-            editor.setDevice("Desktop");
-        }
-    }
-}
 
 /**
  * Editor içindeki stilleri özelleştirir
@@ -756,36 +432,6 @@ function loadStyleSectorStates() {
 }
 
 /**
- * Editöre özel özellikler ekle
- * @param {Object} editor - GrapesJS editor örneği 
- */
-function addCustomFunctions(editor) {
-    // Canvası görünür kılma (bileşen sınırlarını göster/gizle)
-    editor.Commands.add('sw-visibility', {
-        run(editor) {
-            const canvas = editor.Canvas;
-            const classCanvas = 'gjs-cv-canvas';
-            const classVisible = 'gjs-cv-visible';
-            
-            const frames = canvas.getFrames();
-            frames.forEach(frame => {
-                const canvasBody = frame.view.getBody();
-                const canvasWrapper = frame.view.getWrapper();
-                
-                canvasWrapper.classList.toggle(classVisible);
-                canvasBody.classList.toggle(`${classCanvas}__${classVisible}`);
-            });
-        },
-        stop(editor) {
-            this.run(editor);
-        }
-    });
-    
-    // Number input butonları için düzeltme
-    fixNumberInputs();
-}
-
-/**
  * Sayı girişi butonlarını düzeltme
  */
 function fixNumberInputs() {
@@ -852,13 +498,11 @@ function fixNumberInputs() {
 
 return {
     setupUI: setupUI,
-    initializeBlockCategories: initializeBlockCategories,
     setupEditorStyles: setupEditorStyles,
     standardizeLayerPanel: standardizeLayerPanel,
     handleCanvasEvents: handleCanvasEvents,
-    addCustomFunctions: addCustomFunctions,
     activateStylePanel: activateStylePanel,
-    initializePanelToggles: initializePanelToggles,
-    fixNumberInputs: fixNumberInputs
+    fixNumberInputs: fixNumberInputs,
+    setupPanelSearch: setupPanelSearch
 };
-})();   
+})();

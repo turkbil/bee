@@ -39,7 +39,7 @@ window.StudioBlocks = (function() {
                 console.log("API verileri alındı:", data);
                 
                 if (data.success && data.blocks) {
-                    // Kategorileri tanımla
+                    // Kategorileri tanımla - API'den gelen kategorileri kaydet
                     Object.keys(data.categories || {}).forEach(key => {
                         console.log("Kategori ekleniyor:", key, "-", data.categories[key]);
                         editor.BlockManager.getCategories().add({ 
@@ -47,6 +47,11 @@ window.StudioBlocks = (function() {
                             label: data.categories[key] 
                         });
                     });
+                    
+                    // Detaylı kategori bilgilerini global değişkene kaydet
+                    if (data.categories_full) {
+                        window.studioCategories = data.categories_full;
+                    }
                     
                     // Blokları ekle
                     data.blocks.forEach(block => {

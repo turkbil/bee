@@ -188,21 +188,18 @@ window.StudioBlockCategories = (function() {
      * @return {string} - İkon sınıfı
      */
     function getCategoryIcon(categoryId) {
-        const icons = {
-            'layout': 'fa fa-columns',
-            'content': 'fa fa-font',
-            'form': 'fa fa-wpforms',
-            'media': 'fa fa-image',
-            'widget': 'fa fa-puzzle-piece',
-            'hero': 'fa fa-star',
-            'cards': 'fa fa-id-card',
-            'features': 'fa fa-list-check',
-            'testimonials': 'fa fa-quote-right',
-            'pricing': 'fa fa-tag',
+        // Eğer kategoriye özel ikon bilgisi varsa
+        const categoryData = window.studioCategories && window.studioCategories[categoryId];
+        if (categoryData && categoryData.icon) {
+            return categoryData.icon;
+        }
+        
+        // Varsayılan ikonlar (sadece fallback için)
+        const fallbackIcons = {
             'active-widgets': 'fa fa-star'
         };
         
-        return icons[categoryId] || 'fa fa-cube';
+        return fallbackIcons[categoryId] || 'fa fa-cube';
     }
     
     return {

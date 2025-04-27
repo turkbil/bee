@@ -22,8 +22,13 @@ window.StudioWidgetLoader = (function() {
                 }
                 
                 // Dynamic ve module tiplerinde değişkenleri temizle
-                if (widgetType === 'dynamic') {
+                if (widgetType === 'dynamic' || widgetType === 'module') {
                     widgetHtml = cleanTemplateVariables(widgetHtml);
+                    
+                    // Module için ekstra işlem - içeriği daha fazla koruma
+                    if (widgetType === 'module') {
+                        widgetHtml = protectModuleContent(widgetHtml);
+                    }
                 }
                 
                 // Widget wrapper oluştur
@@ -31,14 +36,30 @@ window.StudioWidgetLoader = (function() {
                 
                 if (widgetType === 'dynamic' || widgetType === 'module') {
                     // Kilitli widget - overlay ile
+                    const overlayBg = widgetType === 'module' ? 
+                        'repeating-linear-gradient(45deg,rgba(139, 92, 246, 0.05),rgba(139, 92, 246, 0.05) 10px,rgba(139, 92, 246, 0.1) 10px,rgba(139, 92, 246, 0.1) 20px)' : 
+                        'repeating-linear-gradient(45deg,rgba(0,0,0,0.03),rgba(0,0,0,0.03) 10px,rgba(0,0,0,0.05) 10px,rgba(0,0,0,0.05) 20px)';
+                    
+                    const badgeColor = widgetType === 'module' ? '#8b5cf6' : '#3b82f6';
+                    const badgeText = widgetType === 'module' ? 
+                        'MODÜL BİLEŞEN<br><small style="font-size:9px;font-weight:normal;">Düzenlenemez</small>' : 
+                        'DİNAMİK BİLEŞEN';
+                    
+                    const contentOpacity = widgetType === 'module' ? '0.6' : '0.7';
+                    const contentFilter = widgetType === 'module' ? 
+                        'grayscale(40%) blur(0.5px)' : 
+                        'grayscale(20%) blur(0.3px)';
+                    
+                    const extraAttrs = widgetType === 'module' ? 'data-module-locked="true"' : '';
+                    
                     widgetWrapped = `
-                    <div data-widget-id="${widget.id}" class="gjs-widget-wrapper" data-type="widget" data-widget-type="${widgetType}" data-locked="true" style="position:relative; padding:12px; border-radius:6px; margin:10px 0; pointer-events:none;" ${widget.file_path ? `data-file-path="${widget.file_path}"` : ''}>
-                        <div class="widget-overlay" style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:100; background:repeating-linear-gradient(45deg,rgba(0,0,0,0.03),rgba(0,0,0,0.03) 10px,rgba(0,0,0,0.05) 10px,rgba(0,0,0,0.05) 20px); cursor:not-allowed; pointer-events:auto;">
-                            <span class="widget-type-badge" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); padding:5px 10px; border-radius:3px; font-size:12px; font-weight:bold; color:white; background:${widgetType === 'dynamic' ? '#3b82f6' : '#8b5cf6'}; text-transform:uppercase; letter-spacing:1px;">
-                                ${widgetType === 'dynamic' ? 'DİNAMİK BİLEŞEN' : 'MODÜL BİLEŞEN'}
+                    <div data-widget-id="${widget.id}" class="gjs-widget-wrapper" data-type="widget" data-widget-type="${widgetType}" data-locked="true" ${extraAttrs} style="position:relative; padding:12px; border-radius:6px; margin:10px 0; pointer-events:none;" ${widget.file_path ? `data-file-path="${widget.file_path}"` : ''}>
+                        <div class="widget-overlay" style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:100; background:${overlayBg}; cursor:not-allowed; pointer-events:auto;">
+                            <span class="widget-type-badge" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); padding:5px 10px; border-radius:3px; font-size:12px; font-weight:bold; color:white; background:${badgeColor}; text-transform:uppercase; letter-spacing:1px;">
+                                ${badgeText}
                             </span>
                         </div>
-                        <div class="widget-content" style="filter:grayscale(20%) blur(0.3px); opacity:0.7;">
+                        <div class="widget-content" style="filter:${contentFilter}; opacity:${contentOpacity};">
                             ${widgetHtml}
                         </div>
                     </div>`;
@@ -68,13 +89,18 @@ window.StudioWidgetLoader = (function() {
                         break;
                 }
                 
+                // Module için daha belirgin stil
+                const extraStyleForModule = widgetType === 'module' ? 
+                    `outline: 2px dashed #8b5cf6; outline-offset: -2px;` : '';
+                
                 // Blok ekle
                 editor.BlockManager.add(blockId, {
                     label: widget.name,
                     category: widget.category || 'widget',
                     attributes: {
                         class: iconClass,
-                        title: `${widget.name} (${widgetType})`
+                        title: `${widget.name} (${widgetType})`,
+                        style: extraStyleForModule
                     },
                     content: {
                         type: 'widget',
@@ -86,15 +112,21 @@ window.StudioWidgetLoader = (function() {
                         js: widget.content_js || '',
                         draggable: !(widgetType === 'dynamic' || widgetType === 'module'),
                         editable: isEditable,
-                        locked: (widgetType === 'dynamic' || widgetType === 'module')
+                        locked: (widgetType === 'dynamic' || widgetType === 'module'),
+                        // Module için ekstra özellikler
+                        selectable: widgetType !== 'module'
                     },
                     render: ({ model, className }) => {
+                        const moduleLabel = widgetType === 'module' ? 
+                            `<span style="position:absolute;top:2px;right:2px;font-size:9px;color:white;background:#8b5cf6;padding:0 3px;border-radius:2px;">MODÜL</span>` : '';
+                        
                         return `
-                            <div class="${className}">
+                            <div class="${className}" style="${extraStyleForModule}">
                                 <i class="${iconClass}"></i>
                                 <div class="gjs-block-label">${widget.name}</div>
                                 ${widget.thumbnail ? `<img src="${widget.thumbnail}" alt="${widget.name}" class="gjs-block-thumbnail" />` : ''}
                                 <div class="gjs-block-type-badge ${badgeClass}">${widgetType}</div>
+                                ${moduleLabel}
                             </div>
                         `;
                     }
@@ -131,6 +163,18 @@ window.StudioWidgetLoader = (function() {
         return html;
     }
     
+    // Module içeriğini daha fazla koru
+    function protectModuleContent(html) {
+        // Tüm edilebilir alanları devre dışı bırak
+        html = html.replace(/<(input|textarea|select)([^>]*)>/g, '<$1$2 disabled readonly data-module-element="true">');
+        
+        // Tüm div ve container elementlerine module-protection ekle
+        html = html.replace(/<(div|section|article|main|header|footer|nav|aside)([^>]*)>/g, 
+            '<$1$2 data-module-element="true">');
+        
+        return html;
+    }
+    
     // Widget stilerini ekle
     function addWidgetStyles() {
         if (document.getElementById('widget-block-styles')) {
@@ -159,6 +203,7 @@ window.StudioWidgetLoader = (function() {
             .gjs-block-type-badge.module {
                 background-color: #8b5cf6;
                 color: white;
+                font-weight: bold;
             }
             .gjs-block-type-badge.file {
                 background-color: #f59e0b;
@@ -178,11 +223,25 @@ window.StudioWidgetLoader = (function() {
                 cursor: not-allowed !important;
                 pointer-events: none !important;
             }
+            [data-module-locked="true"] {
+                box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.3) !important;
+                outline: 2px dashed rgba(139, 92, 246, 0.5) !important;
+                outline-offset: -4px !important;
+            }
             .widget-overlay {
                 pointer-events: auto !important;
             }
             .dynamic-widget, .module-widget {
                 cursor: not-allowed !important;
+            }
+            .module-widget .widget-overlay {
+                border: 2px dashed rgba(139, 92, 246, 0.4) !important;
+                box-sizing: border-box;
+                border-radius: 4px;
+            }
+            [data-module-element="true"] {
+                pointer-events: none !important;
+                user-select: none !important;
             }
         `;
         document.head.appendChild(styleEl);
@@ -225,6 +284,23 @@ window.StudioWidgetLoader = (function() {
                                 component.set('hoverable', false);
                                 component.set('locked', true);
                                 
+                                // Module tipi için ekstra kısıtlamalar
+                                if (widgetType === 'module') {
+                                    component.set('selectable', false); // Module tipinde seçim bile devre dışı
+                                    component.getAttributes()['data-module-locked'] = 'true';
+                                    
+                                    // Varsa alt bileşenleri de kilitli yap
+                                    const inner = component.get('components');
+                                    if (inner) {
+                                        inner.each(child => {
+                                            child.set('locked', true);
+                                            child.set('editable', false);
+                                            child.set('selectable', false);
+                                            child.getAttributes()['data-module-element'] = 'true';
+                                        });
+                                    }
+                                }
+                                
                                 // Css değişiklikleri
                                 component.setStyle({
                                     'pointer-events': 'none',
@@ -255,6 +331,7 @@ window.StudioWidgetLoader = (function() {
         loadWidgetBlocks: loadWidgetBlocks,
         processExistingWidgets: processExistingWidgets,
         cleanTemplateVariables: cleanTemplateVariables,
+        protectModuleContent: protectModuleContent,
         addWidgetStyles: addWidgetStyles
     };
 })();

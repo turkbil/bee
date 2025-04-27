@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Request;
 
 class BlockService
 {
@@ -175,12 +176,12 @@ class BlockService
                 break;
         }
         
-        // Widget tipine göre özel sınıf ekle
-        if ($type === 'dynamic' || $type === 'module') {
-            $content = '<div class="widget-container widget-type-' . $type . '" data-widget-type="' . $type . '">' . 
-                       '<div class="widget-overlay"><span class="widget-type-badge">' . strtoupper($type) . '</span></div>' . 
-                       $content . 
-                       '</div>';
+        // Studio editörde kilitli container wrapper ekle
+        if (($type === 'dynamic' || $type === 'module') && Request::is('admin/studio*')) {
+            $content = '<div class="widget-container widget-type-' . $type . '" data-widget-type="' . $type . '" contenteditable="false" style="pointer-events:none;">'
+                     . '<div class="widget-content" style="filter:grayscale(20%) blur(0.3px); opacity:0.9;">'
+                     . $content
+                     . '</div></div>';
         }
         
         return $content;

@@ -120,6 +120,93 @@ window.StudioWidgetComponents = (function() {
                     
                     if (!widgetId) return;
                     
+                    // Handlebars widget içerikleri için yardımcı helper fonksiyonları tanımla
+                    if (typeof Handlebars !== 'undefined' && !window._handlebarsHelpersRegistered) {
+                        window._handlebarsHelpersRegistered = true;
+                        
+                        Handlebars.registerHelper('eq', function(v1, v2, options) {
+                            if (arguments.length < 3)
+                                throw new Error("Handlebars Helper 'eq' ihtiyaç duyduğu parametreleri almadı");
+                            return v1 === v2 ? options.fn(this) : options.inverse(this);
+                        });
+                        
+                        Handlebars.registerHelper('ne', function(v1, v2, options) {
+                            if (arguments.length < 3)
+                                throw new Error("Handlebars Helper 'ne' ihtiyaç duyduğu parametreleri almadı");
+                            return v1 !== v2 ? options.fn(this) : options.inverse(this);
+                        });
+                        
+                        Handlebars.registerHelper('lt', function(v1, v2, options) {
+                            if (arguments.length < 3)
+                                throw new Error("Handlebars Helper 'lt' ihtiyaç duyduğu parametreleri almadı");
+                            return v1 < v2 ? options.fn(this) : options.inverse(this);
+                        });
+                        
+                        Handlebars.registerHelper('gt', function(v1, v2, options) {
+                            if (arguments.length < 3)
+                                throw new Error("Handlebars Helper 'gt' ihtiyaç duyduğu parametreleri almadı");
+                            return v1 > v2 ? options.fn(this) : options.inverse(this);
+                        });
+                        
+                        Handlebars.registerHelper('lte', function(v1, v2, options) {
+                            if (arguments.length < 3)
+                                throw new Error("Handlebars Helper 'lte' ihtiyaç duyduğu parametreleri almadı");
+                            return v1 <= v2 ? options.fn(this) : options.inverse(this);
+                        });
+                        
+                        Handlebars.registerHelper('gte', function(v1, v2, options) {
+                            if (arguments.length < 3)
+                                throw new Error("Handlebars Helper 'gte' ihtiyaç duyduğu parametreleri almadı");
+                            return v1 >= v2 ? options.fn(this) : options.inverse(this);
+                        });
+                        
+                        Handlebars.registerHelper('and', function() {
+                            var options = arguments[arguments.length - 1];
+                            for (var i = 0; i < arguments.length - 1; i++) {
+                                if (!arguments[i]) {
+                                    return options.inverse(this);
+                                }
+                            }
+                            return options.fn(this);
+                        });
+                        
+                        Handlebars.registerHelper('or', function() {
+                            var options = arguments[arguments.length - 1];
+                            for (var i = 0; i < arguments.length - 1; i++) {
+                                if (arguments[i]) {
+                                    return options.fn(this);
+                                }
+                            }
+                            return options.inverse(this);
+                        });
+                        
+                        Handlebars.registerHelper('truncate', function(str, len) {
+                            if (!str || !len) {
+                                return str;
+                            }
+                            if (str.length > len) {
+                                return str.substring(0, len) + '...';
+                            }
+                            return str;
+                        });
+                        
+                        Handlebars.registerHelper('formatDate', function(date, format) {
+                            if (!date) return '';
+                            var d = new Date(date);
+                            if (isNaN(d.getTime())) return date;
+                            
+                            var day = d.getDate().toString().padStart(2, '0');
+                            var month = (d.getMonth() + 1).toString().padStart(2, '0');
+                            var year = d.getFullYear();
+                            
+                            return day + '.' + month + '.' + year;
+                        });
+                        
+                        Handlebars.registerHelper('json', function(context) {
+                            return JSON.stringify(context);
+                        });
+                    }
+                    
                     let widgetData = null;
                     if (window.StudioWidgetManager && window.StudioWidgetManager.getWidgetData) {
                         widgetData = window.StudioWidgetManager.getWidgetData(widgetId);

@@ -121,9 +121,14 @@ class WidgetPreviewController extends Controller
             }
             // Öğeler context'e ekle
             $context['items'] = $itemsData;
+            
+            // HTML içeriğindeki çift süslü parantezleri güvenli hale getir
+            $contentHtml = $widget->content_html;
+            
             return view('widgetmanagement::widget.preview', [
                 'widget' => $widget,
                 'context' => $context,
+                'useHandlebars' => true
             ]);
             
         } catch (\Exception $e) {
@@ -184,10 +189,12 @@ class WidgetPreviewController extends Controller
                 $context['unique_id'] = Str::random();
             }
             $context['items'] = $itemsData;
+            
             return view('widgetmanagement::widget.embed', [
                 'widget' => $widget,
                 'context' => $context,
-                'tenantWidgetId' => $tenantWidgetId
+                'tenantWidgetId' => $tenantWidgetId,
+                'useHandlebars' => true
             ]);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);

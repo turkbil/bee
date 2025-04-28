@@ -157,11 +157,20 @@
                         <i class="fas fa-info-circle text-blue me-2" style="margin-top: 3px"></i>
                     </div>
                     <div>
-                        <h4 class="alert-title">Şablon Değişkenleri</h4>
+                        <h4 class="alert-title">Handlebars Şablon Değişkenleri</h4>
                         <div class="text-muted">
-                            <strong>Değişkenler:</strong> <code>&lbrace;&lbrace; değişken_adı &rbrace;&rbrace;</code> şeklinde kullanın<br>
-                            <strong>Dinamik içerikler:</strong> <code>&lbrace;&lbrace; #each items &rbrace;&rbrace;...&lbrace;&lbrace; /each &rbrace;&rbrace;</code> bloklarında<br>
-                            <strong>Koşullu içerik:</strong> <code>&lbrace;&lbrace; #if değişken &rbrace;&rbrace;...&lbrace;&lbrace; else &rbrace;&rbrace;...&lbrace;&lbrace; /if &rbrace;&rbrace;</code> şeklinde
+                            <strong>Değişkenler:</strong> <code>&#123;&#123; değişken_adı &#125;&#125;</code> şeklinde kullanın<br>
+                            <strong>Dinamik içerikler:</strong> <code>&#123;&#123; #each items &#125;&#125;...&#123;&#123; /each &#125;&#125;</code> bloklarında<br>
+                            <strong>Koşullu içerik:</strong> <code>&#123;&#123; #if değişken &#125;&#125;...&#123;&#123; else &#125;&#125;...&#123;&#123; /if &#125;&#125;</code> şeklinde<br>
+                            <strong>Yardımcı fonksiyonlar:</strong>
+                            <ul class="mb-1 mt-1">
+                                <li><code>&#123;&#123; #eq val1 val2 &#125;&#125;...&#123;&#123; /eq &#125;&#125;</code> - Eşitlik kontrolü</li>
+                                <li><code>&#123;&#123; #ne val1 val2 &#125;&#125;...&#123;&#123; /ne &#125;&#125;</code> - Eşit değil kontrolü</li>
+                                <li><code>&#123;&#123; #lt val1 val2 &#125;&#125;...&#123;&#123; /lt &#125;&#125;</code> - Küçüktür kontrolü</li>
+                                <li><code>&#123;&#123; #gt val1 val2 &#125;&#125;...&#123;&#123; /gt &#125;&#125;</code> - Büyüktür kontrolü</li>
+                                <li><code>&#123;&#123; truncate string 100 &#125;&#125;</code> - Metin kısaltma</li>
+                                <li><code>&#123;&#123; formatDate date &#125;&#125;</code> - Tarih biçimlendirme</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -180,18 +189,20 @@
                             <strong>Özelleştirme Değişkenleri:</strong><br>
                             <ul class="mb-2">
                                 @foreach($widget['settings_schema'] as $field)
-                                <li><code>&lbrace;&lbrace; {{ $field['name'] }} &rbrace;&rbrace;</code> - {{ $field['label'] }}</li>
+                                <li><code>&#123;&#123; {{ $field['name'] }} &#125;&#125;</code> - {{ $field['label'] }}</li>
                                 @endforeach
                             </ul>
                             @endif
                             
                             @if($widget['has_items'] && !empty($widget['item_schema']))
                             <strong>İçerik Değişkenleri (items döngüsünde):</strong><br>
+                            <code>&#123;&#123; #each items &#125;&#125;</code>
                             <ul class="mb-0">
                                 @foreach($widget['item_schema'] as $field)
-                                <li><code>&lbrace;&lbrace; {{ $field['name'] }} &rbrace;&rbrace;</code> - {{ $field['label'] }}</li>
+                                <li><code>&#123;&#123; {{ $field['name'] }} &#125;&#125;</code> - {{ $field['label'] }}</li>
                                 @endforeach
                             </ul>
+                            <code>&#123;&#123; /each &#125;&#125;</code>
                             @endif
                         </div>
                     </div>

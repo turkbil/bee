@@ -4,12 +4,14 @@ namespace Modules\WidgetManagement\app\Services\Widget;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\View;
 
 class WidgetRenderService
 {
     protected $_contextStack = [];
     const MAX_STACK_DEPTH = 10;
     protected $debugMode = true;
+    protected $useHandlebars = true; // Handlebars kullanımı için bayrak
 
     private function debug($message, $data = [])
     {
@@ -20,6 +22,12 @@ class WidgetRenderService
 
     public function processVariables(string $content, array $settings): string
     {
+        if ($this->useHandlebars) {
+            // Handlebars şablonu için işleme yapmayız, çünkü
+            // şablon browser tarafında Handlebars.js ile yorumlanacak
+            return $content;
+        }
+
         $this->debug('processVariables - Başlangıç', ['settings' => $settings]);
         
         $result = preg_replace_callback('/\{\{(.*?)\}\}/', function ($matches) use ($settings) {
@@ -104,6 +112,12 @@ class WidgetRenderService
     
     public function processItems(string $content, array $items): string
     {
+        if ($this->useHandlebars) {
+            // Handlebars için ek bir işlem yapmıyoruz
+            // {{#each items}}...{{/each}} zaten Handlebars tarafından işlenecek
+            return $content;
+        }
+
         $this->debug('processItems - Başlangıç', ['items_count' => count($items)]);
         $pattern = '/\{\{#each\s+items\}\}(.*?)\{\{\/each\}\}/s';
         
@@ -142,6 +156,12 @@ class WidgetRenderService
     
     public function processModuleData(string $content, array $moduleData): string
     {
+        if ($this->useHandlebars) {
+            // Handlebars formatına uygun veri dönüşümü
+            // Bu noktada moduleData zaten frontend'e gönderilecek ve Handlebars tarafından işlenecek
+            return $content;
+        }
+
         $this->debug('processModuleData - Başlangıç', ['keys' => array_keys($moduleData)]);
         $content = $this->processConditionalBlocks($content, $moduleData);
         
@@ -312,6 +332,12 @@ class WidgetRenderService
     
     protected function processNestedLoops($template, $parentContext)
     {
+        if ($this->useHandlebars) {
+            // Handlebars için ek işlem yapmıyoruz
+            // İç içe each blokları Handlebars tarafından işlenecek
+            return $template;
+        }
+
         $this->debug('processNestedLoops - Başlangıç', ['parent_context_keys' => array_keys($parentContext)]);
         $pattern = '/\{\{#each\s+([\w\.]+)\}\}(.*?)\{\{\/each\}\}/s';
         
@@ -582,6 +608,11 @@ class WidgetRenderService
     
     public function processTemplateItem($template, $item)
     {
+        if ($this->useHandlebars) {
+            // Handlebars için ek işlem yapmıyoruz
+            return $template;
+        }
+
         $this->debug('processTemplateItem - Başlangıç', ['item_keys' => array_keys($item)]);
         
         $result = preg_replace_callback('/\{\{(.*?)\}\}/', function ($matches) use ($item) {
@@ -786,6 +817,12 @@ class WidgetRenderService
     
     public function processConditionalBlocks(string $content, array $settings): string
     {
+        if ($this->useHandlebars) {
+            // Handlebars için ek işlem yapmıyoruz
+            // Koşul blokları Handlebars tarafından işlenecek
+            return $content;
+        }
+
         $this->debug('processConditionalBlocks - Başlangıç', ['settings_keys' => array_keys($settings)]);
         $pattern = '/\{\{#if\s+(.*?)\}\}(.*?)(?:\{\{else\}\}(.*?))?\{\{\/if\}\}/s';
         
@@ -872,5 +909,34 @@ class WidgetRenderService
         
         $this->debug('processConditionalBlocks - Sonuç', ['result_length' => strlen($result)]);
         return $result;
+    }
+
+    // Handlebars için JSON verisine uygun şekilde dönüştürme
+    public function prepareDataForHandlebars($data)
+    {
+        if (!is_array($data)) {
+            return $data;
+        }
+
+        // Handlebars'ın daha kolay kullanabileceği formata dönüştürme işlemleri
+        // Kullanılan özel meta verileri temizleyebiliriz
+        $result = [];
+        foreach ($data as $key => $value) {
+            // İç içe dizileri de dönüştür
+            if (is_array($value)) {
+                $result[$key] = $this->prepareDataForHandlebars($value);
+            } else {
+                $result[$key] = $value;
+            }
+        }
+
+        return $result;
+    }
+
+    // Handlebars kullanımını açıp kapatmak için metot
+    public function setUseHandlebars($useHandlebars = true)
+    {
+        $this->useHandlebars = $useHandlebars;
+        return $this;
     }
 }

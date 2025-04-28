@@ -203,14 +203,16 @@ class BlockService
     private function prepareTenantWidgetContent($widget, $tenantWidget, $type): string
     {
         $route = route('admin.widgetmanagement.preview.embed', $tenantWidget->id);
+        // Embed script to load widget content dynamically
         $content = '<div class="widget-embed" data-widget-id="' . $tenantWidget->id . '"></div>'
-                 . '<script>'
-                 . '(function(){'
+                 . '<script>(function(){'
                  . 'fetch("' . $route . '")'
                  . '.then(r => r.text())'
-                 . '.then(html => { document.querySelector("[data-widget-id=\\"' . $tenantWidget->id . '\\""]").innerHTML = html; });'
-                 . '})();'
-                 . '</script>';
+                 . '.then(function(html) {'
+                 . ' var el = document.querySelector("[data-widget-id=\"' . $tenantWidget->id . '\\"]");'
+                 . ' if (el) { el.innerHTML = html; }'
+                 . '});'
+                 . '})();</script>';
         return $content;
     }
     

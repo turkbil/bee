@@ -162,6 +162,11 @@ window.StudioWidgetManager = (function() {
             window.StudioWidgetComponents.registerWidgetComponents(editor);
         }
         
+        // Widget embed bileşenini kaydet
+        if (window.StudioWidgetLoader && typeof window.StudioWidgetLoader.registerWidgetEmbedComponent === 'function') {
+            window.StudioWidgetLoader.registerWidgetEmbedComponent(editor);
+        }
+        
         // Widget bloklarını yükle
         if (window.StudioWidgetLoader && typeof window.StudioWidgetLoader.loadWidgetBlocks === 'function') {
             window.StudioWidgetLoader.loadWidgetBlocks(editor);
@@ -228,7 +233,7 @@ window.StudioWidgetManager = (function() {
                 // Görünümü güncelle
                 const view = component.view;
                 if (view && typeof view.onRender === 'function') {
-                    view.onRender();
+                    setTimeout(() => view.onRender(), 50); // Biraz gecikme ekleyerek DOM'un hazır olmasını sağla
                 }
             }
         });
@@ -236,64 +241,106 @@ window.StudioWidgetManager = (function() {
         // Canvas drop olayını izle
         editor.on('canvas:drop', (droppedModel) => {
             setTimeout(() => {
-                const allWidgets = editor.DomComponents.getWrapper().find('[data-widget-id]');
-                allWidgets.forEach(widget => {
-                    const attrs = widget.getAttributes();
-                    const widgetType = attrs['data-widget-type'];
+                // Tüm widget ve widget-embed bileşenlerini yeniden işle
+                let componentsToProcess = editor.DomComponents.getWrapper().find('[data-widget-id]');
+                componentsToProcess = componentsToProcess.concat(editor.DomComponents.getWrapper().find('.widget-embed'));
+                
+                componentsToProcess.forEach(component => {
+                    const attrs = component.getAttributes();
                     
-                    if (widgetType === 'dynamic' || widgetType === 'module') {
-                        widget.set('type', 'widget');
-                        widget.set('draggable', false);
-                        widget.set('droppable', false);
-                        widget.set('selectable', true);
-                        widget.set('highlightable', false);
-                        widget.set('editable', false);
-                        widget.set('locked', true);
+                    // Widget tipini belirle
+                    if (component.getClasses().includes('widget-embed') || 
+                        attrs['data-type'] === 'widget-embed') {
+                        // Widget-embed bileşeni
+                        component.set('type', 'widget-embed');
                         
-                        widget.setStyle({
-                            'pointer-events': 'none',
-                            'cursor': 'not-allowed'
-                        });
-                        
-                        const view = widget.view;
+                        // Görünümü güncelle
+                        const view = component.view;
                         if (view && typeof view.onRender === 'function') {
-                            view.onRender();
+                            setTimeout(() => view.onRender(), 100);
+                        }
+                    } else {
+                        // Normal widget bileşeni
+                        const widgetType = attrs['data-widget-type'];
+                        
+                        if (widgetType === 'dynamic' || widgetType === 'module') {
+                            component.set('type', 'widget');
+                            component.set('draggable', false);
+                            component.set('droppable', false);
+                            component.set('selectable', true);
+                            component.set('highlightable', false);
+                            component.set('editable', false);
+                            component.set('locked', true);
+                            
+                            component.setStyle({
+                                'pointer-events': 'none',
+                                'cursor': 'not-allowed'
+                            });
+                            
+                            const view = component.view;
+                            if (view && typeof view.onRender === 'function') {
+                                view.onRender();
+                            }
                         }
                     }
                 });
                 
-                // Widget-embed elementlerini işle
+                // Widget-embed elementlerini özel olarak işle
                 if (window.StudioWidgetLoader && typeof window.StudioWidgetLoader.processWidgetEmbeds === 'function') {
                     window.StudioWidgetLoader.processWidgetEmbeds(editor);
                 }
             }, 100);
         });
         
-        // Widget-embed bloku oluştur
-        editor.BlockManager.add('widget-embed', {
-            label: 'Dinamik Widget Referansı',
-            category: 'dynamic-widgets',
+        // Aktif Widget bileşenleri blokları
+        editor.BlockManager.add('tenant-widget-embed', {
+            label: 'Aktif Widget',
+            category: 'active-widgets',
             content: {
                 type: 'widget-embed',
                 classes: ['widget-embed'],
-                attributes: { 'data-type': 'widget-embed', 'data-widget-id': '1' },
-                components: [{
-                    tagName: 'div',
-                    classes: ['widget-embed-placeholder'],
-                    content: '<i class="fa fa-database me-2"></i> Widget #1 canlı içeriği burada görünecek'
-                }]
+                attributes: { 'data-type': 'widget-embed', 'data-widget-id': '1' }
             },
-            attributes: { class: 'fa fa-database' },
+            attributes: { class: 'fa fa-star' },
             render: ({ model, className }) => {
                 return `
                     <div class="${className}">
-                        <i class="fa fa-database"></i>
-                        <div class="gjs-block-label">Dinamik Widget Referansı</div>
+                        <i class="fa fa-star"></i>
+                        <div class="gjs-block-label">Aktif Widget</div>
                         <div class="gjs-block-type-badge dynamic">Dinamik</div>
                     </div>
                 `;
             }
         });
+        
+        // Global widget yükleme fonksiyonu
+        window.loadTenantWidget = function(widgetId) {
+            const container = document.querySelector(`.widget-embed[data-tenant-widget-id='${widgetId}'] .widget-content-placeholder`);
+            if (!container) return;
+            
+            fetch(`/admin/widgetmanagement/preview/embed/${widgetId}`)
+                .then(response => response.text())
+                .then(html => {
+                    container.innerHTML = html;
+                    
+                    // Handlebars scriptlerini çalıştır
+                    setTimeout(() => {
+                        const scripts = container.querySelectorAll('script');
+                        scripts.forEach(script => {
+                            const newScript = document.createElement('script');
+                            if (script.src) {
+                                newScript.src = script.src;
+                            } else {
+                                newScript.textContent = script.textContent;
+                            }
+                            document.body.appendChild(newScript);
+                        });
+                    }, 100);
+                })
+                .catch(error => {
+                    container.innerHTML = `<div class="alert alert-danger">Widget yüklenirken hata: ${error.message}</div>`;
+                });
+        };
     }
     
     return {

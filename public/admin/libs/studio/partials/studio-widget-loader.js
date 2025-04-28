@@ -184,6 +184,27 @@ window.StudioWidgetLoader = (function() {
             .dynamic-widget, .module-widget {
                 cursor: not-allowed !important;
             }
+            .widget-embed-placeholder {
+                border: 2px dashed #3b82f6;
+                padding: 15px;
+                border-radius: 5px;
+                background-color: rgba(59, 130, 246, 0.05);
+                text-align: center;
+                font-style: italic;
+                position: relative;
+            }
+            .widget-embed-placeholder:before {
+                content: "Dinamik Widget";
+                position: absolute;
+                top: -10px;
+                left: 10px;
+                background-color: #3b82f6;
+                color: white;
+                font-size: 10px;
+                padding: 2px 6px;
+                border-radius: 3px;
+                font-style: normal;
+            }
         `;
         document.head.appendChild(styleEl);
     }
@@ -236,6 +257,7 @@ window.StudioWidgetLoader = (function() {
                                 component.set('draggable', true);
                                 component.set('highlightable', true);
                                 component.set('selectable', true);
+                                component.set('hoverable', true);
                                 component.set('locked', false);
                             }
                             
@@ -248,6 +270,107 @@ window.StudioWidgetLoader = (function() {
                     }
                 });
             }
+            
+            // Widget embed elementlerini işle
+            processWidgetEmbeds(editor);
+        });
+    }
+    
+    // Widget embed elementlerini işle
+    function processWidgetEmbeds(editor) {
+        // Widget embed elementlerini bul
+        const embedComponents = editor.DomComponents.getWrapper().find('.widget-embed');
+        
+        if (embedComponents && embedComponents.length > 0) {
+            embedComponents.forEach(component => {
+                const widgetId = component.getAttributes()['data-widget-id'];
+                if (!widgetId) return;
+                
+                // Widget-embed tipini ekle
+                component.set('type', 'widget-embed');
+                
+                // Daha önce render edilmiş içeriği temizle
+                component.components().reset();
+                
+                // Placeholder içeriği oluştur
+                const placeholder = editor.DomComponents.createComponent({
+                    tagName: 'div',
+                    classes: ['widget-embed-placeholder'],
+                    content: `<i class="fa fa-database me-2"></i> Widget #${widgetId} canlı içeriği burada görünecek`
+                });
+                
+                // Componente placeholder ekle
+                component.append(placeholder);
+                
+                // Özellikleri ayarla
+                component.set('widget_id', widgetId);
+                component.set('editable', false);
+                component.set('droppable', false);
+                component.set('draggable', true);
+                component.set('highlightable', true);
+                component.set('selectable', true);
+            });
+        }
+    }
+    
+    // Widget-embed komponenti ekle
+    function registerWidgetEmbedComponent(editor) {
+        editor.DomComponents.addType('widget-embed', {
+            model: {
+                defaults: {
+                    tagName: 'div',
+                    classes: ['widget-embed'],
+                    attributes: {
+                        'data-type': 'widget-embed'
+                    },
+                    traits: [
+                        {
+                            type: 'number',
+                            name: 'widget_id',
+                            label: 'Widget ID',
+                            changeProp: true
+                        }
+                    ],
+                    
+                    init() {
+                        this.on('change:widget_id', this.updateWidgetId);
+                    },
+                    
+                    updateWidgetId() {
+                        const widgetId = this.get('widget_id');
+                        if (widgetId) {
+                            this.setAttributes({ 'data-widget-id': widgetId });
+                        }
+                    }
+                }
+            },
+            
+            view: {
+                onRender() {
+                    const el = this.el;
+                    if (!el) return;
+                    
+                    const model = this.model;
+                    const widgetId = model.get('widget_id') || model.getAttributes()['data-widget-id'];
+                    
+                    if (!widgetId) return;
+                    
+                    // Önceki içeriği temizle
+                    Array.from(el.children).forEach(child => {
+                        if (!child.classList.contains('widget-embed-placeholder')) {
+                            el.removeChild(child);
+                        }
+                    });
+                    
+                    // Placeholder yoksa ekle
+                    if (!el.querySelector('.widget-embed-placeholder')) {
+                        const placeholder = document.createElement('div');
+                        placeholder.className = 'widget-embed-placeholder';
+                        placeholder.innerHTML = `<i class="fa fa-database me-2"></i> Widget #${widgetId} canlı içeriği burada görünecek`;
+                        el.appendChild(placeholder);
+                    }
+                }
+            }
         });
     }
     
@@ -255,6 +378,8 @@ window.StudioWidgetLoader = (function() {
         loadWidgetBlocks: loadWidgetBlocks,
         processExistingWidgets: processExistingWidgets,
         cleanTemplateVariables: cleanTemplateVariables,
-        addWidgetStyles: addWidgetStyles
+        addWidgetStyles: addWidgetStyles,
+        registerWidgetEmbedComponent: registerWidgetEmbedComponent,
+        processWidgetEmbeds: processWidgetEmbeds
     };
 })();

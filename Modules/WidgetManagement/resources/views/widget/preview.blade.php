@@ -130,11 +130,95 @@
                     <script id="widget-template" type="text/x-handlebars-template">
                         {!! $widget->content_html !!}
                     </script>
-                    {{-- Context verisi controller’dan gelmektedir --}}
+                    {{-- Context verisi controller'dan gelmektedir --}}
                     <div id="widget-rendered"></div>
-                    <script src="https://cdn.jsdelivr.net/npm/handlebars@4.7.7/dist/handlebars.min.js"></script>
+                    <script src="{{ asset('admin/libs/handlebars/handlebars.min.js') }}?v={{ filemtime(public_path('admin/libs/handlebars/handlebars.min.js')) }}"></script>
                     <script>
                         (function() {
+                            // Handlebars helper fonksiyonları tanımlama
+                            Handlebars.registerHelper('eq', function(v1, v2, options) {
+                                if (arguments.length < 3)
+                                    throw new Error("Handlebars Helper 'eq' ihtiyaç duyduğu parametreleri almadı");
+                                return v1 === v2 ? options.fn(this) : options.inverse(this);
+                            });
+                            
+                            Handlebars.registerHelper('ne', function(v1, v2, options) {
+                                if (arguments.length < 3)
+                                    throw new Error("Handlebars Helper 'ne' ihtiyaç duyduğu parametreleri almadı");
+                                return v1 !== v2 ? options.fn(this) : options.inverse(this);
+                            });
+                            
+                            Handlebars.registerHelper('lt', function(v1, v2, options) {
+                                if (arguments.length < 3)
+                                    throw new Error("Handlebars Helper 'lt' ihtiyaç duyduğu parametreleri almadı");
+                                return v1 < v2 ? options.fn(this) : options.inverse(this);
+                            });
+                            
+                            Handlebars.registerHelper('gt', function(v1, v2, options) {
+                                if (arguments.length < 3)
+                                    throw new Error("Handlebars Helper 'gt' ihtiyaç duyduğu parametreleri almadı");
+                                return v1 > v2 ? options.fn(this) : options.inverse(this);
+                            });
+                            
+                            Handlebars.registerHelper('lte', function(v1, v2, options) {
+                                if (arguments.length < 3)
+                                    throw new Error("Handlebars Helper 'lte' ihtiyaç duyduğu parametreleri almadı");
+                                return v1 <= v2 ? options.fn(this) : options.inverse(this);
+                            });
+                            
+                            Handlebars.registerHelper('gte', function(v1, v2, options) {
+                                if (arguments.length < 3)
+                                    throw new Error("Handlebars Helper 'gte' ihtiyaç duyduğu parametreleri almadı");
+                                return v1 >= v2 ? options.fn(this) : options.inverse(this);
+                            });
+                            
+                            Handlebars.registerHelper('and', function() {
+                                var options = arguments[arguments.length - 1];
+                                for (var i = 0; i < arguments.length - 1; i++) {
+                                    if (!arguments[i]) {
+                                        return options.inverse(this);
+                                    }
+                                }
+                                return options.fn(this);
+                            });
+                            
+                            Handlebars.registerHelper('or', function() {
+                                var options = arguments[arguments.length - 1];
+                                for (var i = 0; i < arguments.length - 1; i++) {
+                                    if (arguments[i]) {
+                                        return options.fn(this);
+                                    }
+                                }
+                                return options.inverse(this);
+                            });
+                            
+                            Handlebars.registerHelper('truncate', function(str, len) {
+                                if (!str || !len) {
+                                    return str;
+                                }
+                                if (str.length > len) {
+                                    return str.substring(0, len) + '...';
+                                }
+                                return str;
+                            });
+                            
+                            Handlebars.registerHelper('formatDate', function(date, format) {
+                                // Basit tarih biçimlendirme
+                                if (!date) return '';
+                                var d = new Date(date);
+                                if (isNaN(d.getTime())) return date;
+                                
+                                var day = d.getDate().toString().padStart(2, '0');
+                                var month = (d.getMonth() + 1).toString().padStart(2, '0');
+                                var year = d.getFullYear();
+                                
+                                return day + '.' + month + '.' + year;
+                            });
+                            
+                            Handlebars.registerHelper('json', function(context) {
+                                return JSON.stringify(context);
+                            });
+
                             const data = @json($context);
                             const template = Handlebars.compile(
                                 document.getElementById('widget-template').innerHTML
@@ -202,7 +286,7 @@
     </script>
     
     <!-- Widget JavaScript -->
-    <script>
+    <script type="module">
         {!! $widget->content_js ?? '' !!}
     </script>
 </body>

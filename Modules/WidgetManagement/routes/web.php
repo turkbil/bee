@@ -61,6 +61,11 @@ Route::middleware(['web', 'auth', 'tenant'])
                     ->where('id', '[0-9]+')
                     ->name('preview');
                 
+                Route::get('/preview/embed/{tenantWidgetId}', [WidgetPreviewController::class, 'embed'])
+                    ->middleware('module.permission:widgetmanagement,view')
+                    ->where('tenantWidgetId', '[0-9]+')
+                    ->name('preview.embed');
+                
                 // Kategori Yönetimi Rotaları
                 Route::get('/category', WidgetCategoryComponent::class)
                     ->middleware('module.permission:widgetmanagement,view')

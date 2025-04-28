@@ -38,13 +38,14 @@ window.StudioBlocks = (function() {
             .then(data => {
                 console.log("API verileri alındı:", data);
                 
-                if (data.success && data.blocks) {
+                // Blokların başarıyla alındığını data.success kontrolü olmadan değerlendir
+                if (data.blocks && Array.isArray(data.blocks)) {
                     // Kategorileri tanımla - API'den gelen kategorileri kaydet
                     Object.keys(data.categories || {}).forEach(key => {
                         console.log("Kategori ekleniyor:", key, "-", data.categories[key]);
-                        editor.BlockManager.getCategories().add({ 
-                            id: key, 
-                            label: data.categories[key] 
+                        editor.BlockManager.getCategories().add({
+                            id: key,
+                            label: data.categories[key]
                         });
                     });
                     
@@ -64,6 +65,10 @@ window.StudioBlocks = (function() {
                             content: block.content,
                             attributes: { class: block.icon || 'fa fa-cube' }
                         };
+                        
+                        if (block.media) {
+                            blockConfig.media = block.media;
+                        }
                         
                         editor.BlockManager.add(block.id, blockConfig);
                     });

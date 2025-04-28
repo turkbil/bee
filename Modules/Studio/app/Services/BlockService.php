@@ -196,17 +196,17 @@ class BlockService
         
         return $content;
     }
-        
-    /**
-     * Tenant widget içeriğini hazırla (dinamik ve static)
-     */
+
     private function prepareTenantWidgetContent($widget, $tenantWidget, $type): string
     {
-        // Widget ID'sini ve bağlantı noktasını içeren div oluşturuyoruz
+        // Widget ID'sini içeren benzersiz bir ID oluştur
+        $uniqueId = 'widget-content-' . $tenantWidget->id;
+        
+        // Widget container oluştur
         $content = '<div class="widget-embed" data-widget-id="' . $tenantWidget->id . '" data-tenant-widget-id="' . $tenantWidget->id . '">';
         
-        // Widget placeholder ile başlangıç içeriği göster (JavaScript ile doldurulacak)
-        $content .= '<div class="widget-content-placeholder">';
+        // İçerik alanı oluştur (ID'li)
+        $content .= '<div class="widget-content-placeholder" id="' . $uniqueId . '">';
         $content .= '<div class="widget-loading" style="text-align:center; padding:20px;"><i class="fa fa-spin fa-spinner"></i> Widget içeriği yükleniyor...</div>';
         $content .= '</div>';
         
@@ -214,52 +214,44 @@ class BlockService
         $content .= '<div class="widget-embed-info" style="display:none;" data-widget-type="' . $type . '"></div>';
         $content .= '</div>';
         
-        // Hidden script ile widget yükleyiciyi ekle
+        // Widget yükleme scripti
         $content .= '<script>
-        (function() {
-            // Widget yükleyici fonksiyonu
-            window.loadTenantWidget = window.loadTenantWidget || function(widgetId) {
-                var container = document.querySelector(".widget-embed[data-tenant-widget-id=\'" + widgetId + "\'] .widget-content-placeholder");
-                if (!container) return;
+        document.addEventListener("DOMContentLoaded", function() {
+            (function() {
+                var widgetId = ' . $tenantWidget->id . ';
+                var containerId = "' . $uniqueId . '";
+                var container = document.getElementById(containerId);
+                
+                if (!container) {
+                    console.error("Widget container bulunamadı: #" + containerId);
+                    return;
+                }
+                
+                console.log("Widget yükleme başladı: ID=" + widgetId + ", Container=" + containerId);
                 
                 fetch("/admin/widgetmanagement/preview/embed/" + widgetId)
                     .then(function(response) { return response.text(); })
                     .then(function(html) {
                         container.innerHTML = html;
                         
-                        // Başka bir yükleyicide Handlebars bekliyor olabilir, bekleme yaparak işlemleri sıralı yapalım
-                        setTimeout(function() {
-                            // Handlebars scriptlerini çalıştır
-                            var scripts = container.querySelectorAll("script");
-                            scripts.forEach(function(script) {
-                                // İçeriği alıp yeni bir script elementi oluştur
-                                var newScript = document.createElement("script");
-                                if (script.src) {
-                                    newScript.src = script.src;
-                                } else {
-                                    newScript.textContent = script.textContent;
-                                }
-                                // Yeni scripti document.body\'ye ekle
-                                document.body.appendChild(newScript);
-                            });
-                        }, 100);
+                        // Script etiketlerini çalıştır
+                        var scripts = container.querySelectorAll("script");
+                        scripts.forEach(function(script) {
+                            var newScript = document.createElement("script");
+                            if (script.src) {
+                                newScript.src = script.src;
+                            } else {
+                                newScript.textContent = script.textContent;
+                            }
+                            document.body.appendChild(newScript);
+                        });
                     })
                     .catch(function(error) {
-                        container.innerHTML = "<div class=\'alert alert-danger\'>Widget yüklenirken hata: " + error.message + "</div>";
+                        console.error("Widget yükleme hatası:", error);
+                        container.innerHTML = "<div class=\"alert alert-danger\">Widget yüklenirken hata: " + error.message + "</div>";
                     });
-            };
-            
-            // Widget ID\'sini al ve yükleyiciyi başlat
-            var widgetId = ' . $tenantWidget->id . ';
-            // Sayfa tamamen yüklendiğinde çalıştır
-            if (document.readyState === "complete") {
-                window.loadTenantWidget(widgetId);
-            } else {
-                window.addEventListener("load", function() {
-                    window.loadTenantWidget(widgetId);
-                });
-            }
-        })();
+            })();
+        });
         </script>';
         
         return $content;

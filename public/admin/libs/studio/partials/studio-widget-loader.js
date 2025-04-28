@@ -283,24 +283,12 @@ window.StudioWidgetLoader = (function() {
         
         if (embedComponents && embedComponents.length > 0) {
             embedComponents.forEach(component => {
-                const widgetId = component.getAttributes()['data-widget-id'];
+                const widgetId = component.getAttributes()['data-widget-id'] || 
+                                  component.getAttributes()['data-tenant-widget-id'];
                 if (!widgetId) return;
                 
                 // Widget-embed tipini ekle
                 component.set('type', 'widget-embed');
-                
-                // Daha önce render edilmiş içeriği temizle
-                component.components().reset();
-                
-                // Placeholder içeriği oluştur
-                const placeholder = editor.DomComponents.createComponent({
-                    tagName: 'div',
-                    classes: ['widget-embed-placeholder'],
-                    content: `<i class="fa fa-database me-2"></i> Widget #${widgetId} canlı içeriği burada görünecek`
-                });
-                
-                // Componente placeholder ekle
-                component.append(placeholder);
                 
                 // Özellikleri ayarla
                 component.set('widget_id', widgetId);
@@ -309,12 +297,95 @@ window.StudioWidgetLoader = (function() {
                 component.set('draggable', true);
                 component.set('highlightable', true);
                 component.set('selectable', true);
+                
+                // Stiller ekle
+                component.setStyle({
+                    'position': 'relative',
+                    'display': 'block',
+                    'min-height': '50px',
+                    'border': '2px solid #3b82f6',
+                    'border-radius': '6px',
+                    'padding': '8px',
+                    'margin': '10px 0',
+                    'background-color': 'rgba(59, 130, 246, 0.05)'
+                });
+                
+                // Eğer widget içeriği yüklenmemişse yükle
+                setTimeout(() => {
+                    const el = component.view ? component.view.el : null;
+                    if (el) {
+                        // Widget tip etiketi ekle
+                        if (!el.querySelector('.widget-embed-label')) {
+                            const labelEl = document.createElement('div');
+                            labelEl.className = 'widget-embed-label';
+                            labelEl.style.position = 'absolute';
+                            labelEl.style.top = '-10px';
+                            labelEl.style.left = '10px';
+                            labelEl.style.backgroundColor = '#3b82f6';
+                            labelEl.style.color = 'white';
+                            labelEl.style.padding = '2px 6px';
+                            labelEl.style.fontSize = '10px';
+                            labelEl.style.borderRadius = '3px';
+                            labelEl.style.fontWeight = 'bold';
+                            labelEl.innerHTML = '<i class="fa fa-puzzle-piece me-1"></i> Aktif Widget #' + widgetId;
+                            el.appendChild(labelEl);
+                        }
+                        
+                        // İçerik yüklenmediyse uygun bir placeholder göster
+                        const placeholder = el.querySelector('.widget-content-placeholder');
+                        if (placeholder && placeholder.innerHTML.trim() === '') {
+                            placeholder.innerHTML = '<div class="widget-loading" style="text-align:center; padding:20px;"><i class="fa fa-spin fa-spinner"></i> Widget içeriği yükleniyor...</div>';
+                            
+                            // Global yükleme fonksiyonu varsa çağır
+                            if (typeof window.loadTenantWidget === 'function') {
+                                window.loadTenantWidget(widgetId);
+                            } else {
+                                // Yoksa yükleme fonksiyonunu oluştur ve çağır
+                                window.loadTenantWidget = function(wId) {
+                                    const container = document.querySelector(`.widget-embed[data-tenant-widget-id='${wId}'] .widget-content-placeholder`);
+                                    if (!container) return;
+                                    
+                                    fetch(`/admin/widgetmanagement/preview/embed/${wId}`)
+                                        .then(response => response.text())
+                                        .then(html => {
+                                            container.innerHTML = html;
+                                            
+                                            // Handlebars scriptlerini çalıştır
+                                            setTimeout(() => {
+                                                const scripts = container.querySelectorAll('script');
+                                                scripts.forEach(script => {
+                                                    const newScript = document.createElement('script');
+                                                    if (script.src) {
+                                                        newScript.src = script.src;
+                                                    } else {
+                                                        newScript.textContent = script.textContent;
+                                                    }
+                                                    document.body.appendChild(newScript);
+                                                });
+                                            }, 100);
+                                        })
+                                        .catch(error => {
+                                            container.innerHTML = `<div class="alert alert-danger">Widget yüklenirken hata: ${error.message}</div>`;
+                                        });
+                                };
+                                
+                                window.loadTenantWidget(widgetId);
+                            }
+                        }
+                    }
+                }, 100);
             });
         }
     }
     
     // Widget-embed komponenti ekle
     function registerWidgetEmbedComponent(editor) {
+        if (!editor) return;
+        
+        if (editor.DomComponents.getType('widget-embed')) {
+            return; // Zaten tanımlanmış
+        }
+        
         editor.DomComponents.addType('widget-embed', {
             model: {
                 defaults: {
@@ -339,9 +410,57 @@ window.StudioWidgetLoader = (function() {
                     updateWidgetId() {
                         const widgetId = this.get('widget_id');
                         if (widgetId) {
-                            this.setAttributes({ 'data-widget-id': widgetId });
+                            this.setAttributes({ 
+                                'data-widget-id': widgetId,
+                                'data-tenant-widget-id': widgetId 
+                            });
+                            
+                            // İçerik alanını sıfırla ve yükleme fonksiyonunu ekle
+                            this.components().reset();
+                            
+                            const placeholderDiv = {
+                                tagName: 'div',
+                                classes: ['widget-content-placeholder'],
+                                content: '<div class="widget-loading" style="text-align:center; padding:20px;"><i class="fa fa-spin fa-spinner"></i> Widget içeriği yükleniyor...</div>'
+                            };
+                            
+                            this.append(placeholderDiv);
+                            
+                            // Widget etiketini güncelle
+                            if (this.view && this.view.el) {
+                                let labelEl = this.view.el.querySelector('.widget-embed-label');
+                                if (!labelEl) {
+                                    labelEl = document.createElement('div');
+                                    labelEl.className = 'widget-embed-label';
+                                    labelEl.style.position = 'absolute';
+                                    labelEl.style.top = '-10px';
+                                    labelEl.style.left = '10px';
+                                    labelEl.style.backgroundColor = '#3b82f6';
+                                    labelEl.style.color = 'white';
+                                    labelEl.style.padding = '2px 6px';
+                                    labelEl.style.fontSize = '10px';
+                                    labelEl.style.borderRadius = '3px';
+                                    labelEl.style.fontWeight = 'bold';
+                                    this.view.el.appendChild(labelEl);
+                                }
+                                
+                                labelEl.innerHTML = '<i class="fa fa-puzzle-piece me-1"></i> Aktif Widget #' + widgetId;
+                                
+                                // Yükleme fonksiyonunu çağır
+                                if (typeof window.loadTenantWidget === 'function') {
+                                    window.loadTenantWidget(widgetId);
+                                }
+                            }
                         }
                     }
+                },
+                
+                isComponent(el) {
+                    if (el.classList && el.classList.contains('widget-embed') || 
+                        (el.getAttribute && el.getAttribute('data-type') === 'widget-embed')) {
+                        return { type: 'widget-embed' };
+                    }
+                    return false;
                 }
             },
             
@@ -351,23 +470,52 @@ window.StudioWidgetLoader = (function() {
                     if (!el) return;
                     
                     const model = this.model;
-                    const widgetId = model.get('widget_id') || model.getAttributes()['data-widget-id'];
+                    const widgetId = model.get('widget_id') || 
+                                     model.getAttributes()['data-widget-id'] || 
+                                     model.getAttributes()['data-tenant-widget-id'];
                     
                     if (!widgetId) return;
                     
-                    // Önceki içeriği temizle
-                    Array.from(el.children).forEach(child => {
-                        if (!child.classList.contains('widget-embed-placeholder')) {
-                            el.removeChild(child);
-                        }
-                    });
+                    // Etiket ekle
+                    let labelEl = el.querySelector('.widget-embed-label');
+                    if (!labelEl) {
+                        labelEl = document.createElement('div');
+                        labelEl.className = 'widget-embed-label';
+                        labelEl.style.position = 'absolute';
+                        labelEl.style.top = '-10px';
+                        labelEl.style.left = '10px';
+                        labelEl.style.backgroundColor = '#3b82f6';
+                        labelEl.style.color = 'white';
+                        labelEl.style.padding = '2px 6px';
+                        labelEl.style.fontSize = '10px';
+                        labelEl.style.borderRadius = '3px';
+                        labelEl.style.fontWeight = 'bold';
+                        el.appendChild(labelEl);
+                    }
                     
-                    // Placeholder yoksa ekle
-                    if (!el.querySelector('.widget-embed-placeholder')) {
+                    labelEl.innerHTML = '<i class="fa fa-puzzle-piece me-1"></i> Aktif Widget #' + widgetId;
+                    
+                    // Stil ekle
+                    el.style.position = 'relative';
+                    el.style.display = 'block';
+                    el.style.minHeight = '50px';
+                    el.style.border = '2px solid #3b82f6';
+                    el.style.borderRadius = '6px';
+                    el.style.padding = '8px';
+                    el.style.margin = '10px 0';
+                    el.style.backgroundColor = 'rgba(59, 130, 246, 0.05)';
+                    
+                    // İçerik alanı yoksa oluştur
+                    if (!el.querySelector('.widget-content-placeholder')) {
                         const placeholder = document.createElement('div');
-                        placeholder.className = 'widget-embed-placeholder';
-                        placeholder.innerHTML = `<i class="fa fa-database me-2"></i> Widget #${widgetId} canlı içeriği burada görünecek`;
+                        placeholder.className = 'widget-content-placeholder';
+                        placeholder.innerHTML = '<div class="widget-loading" style="text-align:center; padding:20px;"><i class="fa fa-spin fa-spinner"></i> Widget içeriği yükleniyor...</div>';
                         el.appendChild(placeholder);
+                        
+                        // Yükleme fonksiyonunu çağır
+                        if (typeof window.loadTenantWidget === 'function') {
+                            setTimeout(() => window.loadTenantWidget(widgetId), 100);
+                        }
                     }
                 }
             }

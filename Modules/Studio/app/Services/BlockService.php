@@ -196,23 +196,72 @@ class BlockService
         
         return $content;
     }
-    
+        
     /**
      * Tenant widget içeriğini hazırla (dinamik ve static)
      */
     private function prepareTenantWidgetContent($widget, $tenantWidget, $type): string
     {
-        $route = route('admin.widgetmanagement.preview.embed', $tenantWidget->id);
-        // Embed script to load widget content dynamically
-        $content = '<div class="widget-embed" data-widget-id="' . $tenantWidget->id . '"></div>'
-                 . '<script>(function(){'
-                 . 'fetch("' . $route . '")'
-                 . '.then(r => r.text())'
-                 . '.then(function(html) {'
-                 . ' var el = document.querySelector("[data-widget-id=\"' . $tenantWidget->id . '\\"]");'
-                 . ' if (el) { el.innerHTML = html; }'
-                 . '});'
-                 . '})();</script>';
+        // Widget ID'sini ve bağlantı noktasını içeren div oluşturuyoruz
+        $content = '<div class="widget-embed" data-widget-id="' . $tenantWidget->id . '" data-tenant-widget-id="' . $tenantWidget->id . '">';
+        
+        // Widget placeholder ile başlangıç içeriği göster (JavaScript ile doldurulacak)
+        $content .= '<div class="widget-content-placeholder">';
+        $content .= '<div class="widget-loading" style="text-align:center; padding:20px;"><i class="fa fa-spin fa-spinner"></i> Widget içeriği yükleniyor...</div>';
+        $content .= '</div>';
+        
+        // Widget tipi ve ID bilgisi
+        $content .= '<div class="widget-embed-info" style="display:none;" data-widget-type="' . $type . '"></div>';
+        $content .= '</div>';
+        
+        // Hidden script ile widget yükleyiciyi ekle
+        $content .= '<script>
+        (function() {
+            // Widget yükleyici fonksiyonu
+            window.loadTenantWidget = window.loadTenantWidget || function(widgetId) {
+                var container = document.querySelector(".widget-embed[data-tenant-widget-id=\'" + widgetId + "\'] .widget-content-placeholder");
+                if (!container) return;
+                
+                fetch("/admin/widgetmanagement/preview/embed/" + widgetId)
+                    .then(function(response) { return response.text(); })
+                    .then(function(html) {
+                        container.innerHTML = html;
+                        
+                        // Başka bir yükleyicide Handlebars bekliyor olabilir, bekleme yaparak işlemleri sıralı yapalım
+                        setTimeout(function() {
+                            // Handlebars scriptlerini çalıştır
+                            var scripts = container.querySelectorAll("script");
+                            scripts.forEach(function(script) {
+                                // İçeriği alıp yeni bir script elementi oluştur
+                                var newScript = document.createElement("script");
+                                if (script.src) {
+                                    newScript.src = script.src;
+                                } else {
+                                    newScript.textContent = script.textContent;
+                                }
+                                // Yeni scripti document.body\'ye ekle
+                                document.body.appendChild(newScript);
+                            });
+                        }, 100);
+                    })
+                    .catch(function(error) {
+                        container.innerHTML = "<div class=\'alert alert-danger\'>Widget yüklenirken hata: " + error.message + "</div>";
+                    });
+            };
+            
+            // Widget ID\'sini al ve yükleyiciyi başlat
+            var widgetId = ' . $tenantWidget->id . ';
+            // Sayfa tamamen yüklendiğinde çalıştır
+            if (document.readyState === "complete") {
+                window.loadTenantWidget(widgetId);
+            } else {
+                window.addEventListener("load", function() {
+                    window.loadTenantWidget(widgetId);
+                });
+            }
+        })();
+        </script>';
+        
         return $content;
     }
     

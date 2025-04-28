@@ -355,8 +355,8 @@ class SliderWidgetSeeder extends Seeder
                 'content_js' => '
                 document.addEventListener("DOMContentLoaded", function() {
                     new bootstrap.Carousel(document.getElementById("slider-{{unique_id}}"), {
-                        interval: {{interval}},
-                        wrap: true
+            interval: {{#if interval}}{{interval}}{{else}}5000{{/if}},
+            wrap: true
                     });
                 });
                 ',
@@ -420,9 +420,9 @@ class SliderWidgetSeeder extends Seeder
                     ],
                     [
                         'name' => 'interval',
-                        'label' => 'Slayt Geçiş Süresi (ms)',
+                        'label' => 'Slayt Değişim Süresi (ms)',
                         'type' => 'number',
-                        'required' => true,
+                        'required' => false,
                         'default' => 5000
                     ],
                     [

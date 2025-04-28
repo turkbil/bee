@@ -220,6 +220,17 @@ window.StudioWidgetManager = (function() {
                     view.onRender();
                 }
             }
+            
+            // Widget-embed tipini işle
+            if (component.getClasses().includes('widget-embed') || component.getAttributes()['data-type'] === 'widget-embed') {
+                component.set('type', 'widget-embed');
+                
+                // Görünümü güncelle
+                const view = component.view;
+                if (view && typeof view.onRender === 'function') {
+                    view.onRender();
+                }
+            }
         });
         
         // Canvas drop olayını izle
@@ -250,7 +261,38 @@ window.StudioWidgetManager = (function() {
                         }
                     }
                 });
+                
+                // Widget-embed elementlerini işle
+                if (window.StudioWidgetLoader && typeof window.StudioWidgetLoader.processWidgetEmbeds === 'function') {
+                    window.StudioWidgetLoader.processWidgetEmbeds(editor);
+                }
             }, 100);
+        });
+        
+        // Widget-embed bloku oluştur
+        editor.BlockManager.add('widget-embed', {
+            label: 'Dinamik Widget Referansı',
+            category: 'dynamic-widgets',
+            content: {
+                type: 'widget-embed',
+                classes: ['widget-embed'],
+                attributes: { 'data-type': 'widget-embed', 'data-widget-id': '1' },
+                components: [{
+                    tagName: 'div',
+                    classes: ['widget-embed-placeholder'],
+                    content: '<i class="fa fa-database me-2"></i> Widget #1 canlı içeriği burada görünecek'
+                }]
+            },
+            attributes: { class: 'fa fa-database' },
+            render: ({ model, className }) => {
+                return `
+                    <div class="${className}">
+                        <i class="fa fa-database"></i>
+                        <div class="gjs-block-label">Dinamik Widget Referansı</div>
+                        <div class="gjs-block-type-badge dynamic">Dinamik</div>
+                    </div>
+                `;
+            }
         });
     }
     

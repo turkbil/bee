@@ -113,7 +113,8 @@
     
     <!-- Bootstrap JS -->
     <script src="{{ asset('admin/libs/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
-        
+    <script src="{{ asset('admin/libs/handlebars/handlebars.min.js') }}"></script>
+
     <!-- GrapesJS Core -->
     <script src="{{ asset('admin/libs/studio/grapes.min.js') }}?v={{ filemtime(public_path('admin/libs/studio/grapes.min.js')) }}"></script>
     

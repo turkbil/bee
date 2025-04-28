@@ -4,6 +4,7 @@ namespace Modules\WidgetManagement\app\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Modules\WidgetManagement\app\Models\Widget;
+use Modules\WidgetManagement\app\Models\TenantWidget;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
@@ -64,9 +65,65 @@ class WidgetPreviewController extends Controller
                 ]);
             }
             
-            // Normal widget görünümü
+            // Dinamik veya statik widget: context oluştur
+            $tenantWidgets = $widget->tenantWidgets()
+                ->where('is_active', true)
+                ->with(['items' => fn($query) => $query->orderBy('order')])
+                ->get();
+            $itemsData = $widget->has_items
+                ? $tenantWidgets->flatMap(fn($tw) => $tw->items->pluck('content'))->toArray()
+                : [];
+            // Eğer dinamik widget için henüz öğe yoksa, schema default ve label ile placeholder oluştur
+            if ($widget->has_items && empty($itemsData)) {
+                $defaultItem = [];
+                foreach ($widget->getItemSchema() as $schema) {
+                    $key = $schema['name'];
+                    if (isset($schema['default']) && $schema['default'] !== '') {
+                        $value = $schema['default'];
+                    } else {
+                        if ($key === 'image') {
+                            $value = 'https://via.placeholder.com/800x400?text=Placeholder';
+                        } else {
+                            $value = $schema['label'] ?? ucfirst(str_replace('_', ' ', $key));
+                        }
+                    }
+                    $defaultItem[$key] = $value;
+                }
+                $itemsData = [$defaultItem];
+            }
+            // Görsel URL'lerini cdn() ile dönüştür (sadece relatif URL'ler)
+            foreach ($itemsData as &$item) {
+                if (isset($item['image']) && !preg_match('/^https?:\/\//', $item['image'])) {
+                    $item['image'] = cdn($item['image']);
+                }
+            }
+            unset($item);
+            // Tenant ayarları
+            $tenantSettings = $tenantWidgets->first()->settings ?? [];
+            // Ayar değerleri, schema üzerinden default/tenant
+            $context = [];
+            if (!empty($widget->settings_schema) && is_array($widget->settings_schema)) {
+                foreach ($widget->settings_schema as $schema) {
+                    $key = $schema['name'];
+                    if (array_key_exists($key, $tenantSettings)) {
+                        $context[$key] = $tenantSettings[$key];
+                    } elseif (array_key_exists('default', $schema)) {
+                        $context[$key] = $schema['default'];
+                    }
+                }
+            }
+            // Statik için title, unique_id özelliği ekle
+            if (!isset($context['title'])) {
+                $context['title'] = $widget->name;
+            }
+            if (!isset($context['unique_id'])) {
+                $context['unique_id'] = Str::random();
+            }
+            // Öğeler context'e ekle
+            $context['items'] = $itemsData;
             return view('widgetmanagement::widget.preview', [
-                'widget' => $widget
+                'widget' => $widget,
+                'context' => $context,
             ]);
             
         } catch (\Exception $e) {
@@ -76,6 +133,67 @@ class WidgetPreviewController extends Controller
         }
     }
     
+    /**
+     * Embed widget preview for Studio
+     */
+    public function embed($tenantWidgetId)
+    {
+        try {
+            $tw = TenantWidget::with('items')->findOrFail($tenantWidgetId);
+            $widget = $tw->widget;
+            $itemsData = $widget->has_items ? $tw->items->pluck('content')->toArray() : [];
+            if ($widget->has_items && empty($itemsData)) {
+                $defaultItem = [];
+                foreach ($widget->getItemSchema() as $schema) {
+                    $key = $schema['name'];
+                    if (isset($schema['default']) && $schema['default'] !== '') {
+                        $value = $schema['default'];
+                    } else {
+                        if ($key === 'image') {
+                            $value = 'https://via.placeholder.com/800x400?text=Placeholder';
+                        } else {
+                            $value = $schema['label'] ?? ucfirst(str_replace('_', ' ', $key));
+                        }
+                    }
+                    $defaultItem[$key] = $value;
+                }
+                $itemsData = [$defaultItem];
+            }
+            foreach ($itemsData as &$item) {
+                if (isset($item['image']) && !preg_match('/^https?:\/\//', $item['image'])) {
+                    $item['image'] = cdn($item['image']);
+                }
+            }
+            unset($item);
+            $tenantSettings = $tw->settings ?? [];
+            $context = [];
+            if (!empty($widget->settings_schema) && is_array($widget->settings_schema)) {
+                foreach ($widget->settings_schema as $schema) {
+                    $key = $schema['name'];
+                    if (array_key_exists($key, $tenantSettings)) {
+                        $context[$key] = $tenantSettings[$key];
+                    } elseif (array_key_exists('default', $schema)) {
+                        $context[$key] = $schema['default'];
+                    }
+                }
+            }
+            if (!isset($context['title'])) {
+                $context['title'] = $widget->name;
+            }
+            if (!isset($context['unique_id'])) {
+                $context['unique_id'] = Str::random();
+            }
+            $context['items'] = $itemsData;
+            return view('widgetmanagement::widget.embed', [
+                'widget' => $widget,
+                'context' => $context,
+                'tenantWidgetId' => $tenantWidgetId
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
     public function showFile($id)
     {
         try {

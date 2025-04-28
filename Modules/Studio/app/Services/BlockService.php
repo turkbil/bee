@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
+use LightnCandy\LightnCandy;
+use LightnCandy\Str;
 
 class BlockService
 {
@@ -165,25 +167,50 @@ class BlockService
                         $content = '<div class="widget-placeholder">Hata: ' . $e->getMessage() . '</div>';
                     }
                 } else {
-                    $content = $widget->content_html ?? '<div class="widget-placeholder">' . $widget->name . '</div>';
+                    if (!empty(trim($widget->content_html))) {
+                        $content = $widget->content_html;
+                    } else {
+                        $content = '<div class="widget-placeholder">Widget: ' . $widget->name . '</div>';
+                    }
                 }
                 break;
                 
             case 'dynamic':
             case 'static':
             default:
-                $content = $widget->content_html ?? '<div class="widget-placeholder">' . $widget->name . '</div>';
+                if (!empty(trim($widget->content_html))) {
+                    $content = $widget->content_html;
+                } else {
+                    $content = '<div class="widget-placeholder">Widget: ' . $widget->name . '</div>';
+                }
                 break;
         }
         
         // Studio editörde kilitli container wrapper ekle
-        if (($type === 'dynamic' || $type === 'module') && Request::is('admin/studio*')) {
+        if ($type === 'module' && Request::is('admin/studio*')) {
             $content = '<div class="widget-container widget-type-' . $type . '" data-widget-type="' . $type . '" contenteditable="false" style="pointer-events:none;">'
                      . '<div class="widget-content" style="filter:grayscale(20%) blur(0.3px); opacity:0.9;">'
                      . $content
                      . '</div></div>';
         }
         
+        return $content;
+    }
+    
+    /**
+     * Tenant widget içeriğini hazırla (dinamik ve static)
+     */
+    private function prepareTenantWidgetContent($widget, $tenantWidget, $type): string
+    {
+        $route = route('admin.widgetmanagement.preview.embed', $tenantWidget->id);
+        $content = '<div class="widget-embed" data-widget-id="' . $tenantWidget->id . '"></div>'
+                 . '<script>'
+                 . '(function(){'
+                 . 'fetch("' . $route . '")'
+                 . '.then(r => r.text())'
+                 . '.then(html => { document.querySelector("[data-widget-id=\\"' . $tenantWidget->id . '\\""]").innerHTML = html; });'
+                 . '})();'
+                 . '</script>';
         return $content;
     }
     
@@ -237,9 +264,7 @@ class BlockService
                 }
                 
                 // İçeriği belirle (özel mi yoksa widget'tan mı)
-                $content = $tenantWidget->is_custom 
-                    ? $tenantWidget->custom_html 
-                    : $this->prepareWidgetContent($widget, $type);
+                $content = $this->prepareTenantWidgetContent($widget, $tenantWidget, $type);
                 
                 // Editör özelliklerini belirle - tenant widget'lar için uyarla
                 $editable = false;
@@ -270,6 +295,7 @@ class BlockService
                     'label' => $tenantWidget->settings['title'] ?? $widget->name,
                     'category' => 'active-widgets',
                     'content' => $content,
+                    'media' => '<div class="block-media"><i class="fa fa-star"></i> ' . ($tenantWidget->settings['title'] ?? $widget->name) . '</div>',
                     'css_content' => $tenantWidget->is_custom ? $tenantWidget->custom_css : $widget->content_css,
                     'js_content' => $tenantWidget->is_custom ? $tenantWidget->custom_js : $widget->content_js,
                     'css_files' => $widget->css_files ?? [],

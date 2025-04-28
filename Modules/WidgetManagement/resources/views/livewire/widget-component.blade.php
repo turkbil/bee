@@ -171,13 +171,18 @@
                                                     </a>
                                                 @endif
                                                 
+                                                <!-- Önizleme Butonu (Dropdown İçinde) -->
+                                                <a href="{{ route('admin.widgetmanagement.preview', $instance->widget->id) }}" class="dropdown-item" target="_blank">
+                                                    <i class="fas fa-eye me-2"></i> Önizleme
+                                                </a>
+                                                
                                                 <div class="dropdown-divider"></div>
                                                 @if($hasRootPermission)
                                                 <a href="{{ route('admin.widgetmanagement.manage', $instance->widget->id) }}" class="dropdown-item">
                                                     <i class="fas fa-tools me-2"></i> Yapılandır
                                                 </a>
                                                 @endif
-                                                <button class="dropdown-item text-danger" wire:click="deleteInstance({{ $instance->id }})"
+                                                <button class="dropdown-item text-danger" wire:click="deleteInstance({{ $instance->id }})" 
                                                 onclick="return confirm('Bu bileşeni silmek istediğinize emin misiniz?')">
                                                     <i class="fas fa-trash me-2"></i>Sil
                                                 </button>
@@ -187,7 +192,7 @@
 
                                     <!-- Kart Footer -->
                                     <div class="card-footer">
-                                        <div class="d-flex align-items-center justify-content-between">
+                                        <div class="d-flex align-items-center justify-content-between mb-2">
                                             <div class="d-flex gap-2">
 
                                             @if($instance->widget->type === 'static')
@@ -195,16 +200,22 @@
                                                     $staticItem = $instance->items->first();
                                                     $itemId = $staticItem ? $staticItem->id : 0;
                                                 @endphp
-                                                <a href="{{ route('admin.widgetmanagement.item.manage', [$instance->id, $itemId]) }}" class="text-body">
+                                                <a href="{{ route('admin.widgetmanagement.item.manage', [$instance->id, $itemId]) }}" class="btn btn-sm btn-outline-primary">
                                                     <i class="fas fa-layer-group me-1"></i>
                                                     İçerik
                                                 </a>
                                             @else
-                                                <a href="{{ route('admin.widgetmanagement.items', $instance->id) }}" class="text-body">
+                                                <a href="{{ route('admin.widgetmanagement.items', $instance->id) }}" class="btn btn-sm btn-outline-primary">
                                                     <i class="fas fa-layer-group me-1"></i>
                                                     İçerikler
                                                 </a>
                                             @endif
+                                            
+                                            <!-- Kart altına önizleme butonu (buton olarak) -->
+                                            <a href="{{ route('admin.widgetmanagement.preview', $instance->widget->id) }}" class="btn btn-sm btn-outline-secondary" target="_blank">
+                                                <i class="fas fa-eye me-1"></i>
+                                                Önizle
+                                            </a>
 
                                             </div>
                                             <div class="d-flex align-items-center">

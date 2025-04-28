@@ -119,15 +119,29 @@
         
         <div class="preview-frame" id="preview-frame">
             <div class="preview-content">
-                <!-- Widget HTML -->
                 @if($widget->type == 'module')
-                    <!-- Moduller farklı görünümde gösteriliyor -->
+                    <!-- Modül için file-preview veya şablon yoksa uyarı -->
                     <div class="alert alert-warning">
                         <i class="fas fa-exclamation-triangle me-2"></i>
                         Bu modül bileşeni için HTML şablonu tanımlanmamış. Lütfen widget'ı düzenleyin ve bir HTML şablonu ekleyin.
                     </div>
                 @else
-                    {!! $widget->content_html !!}
+                    <!-- Handlebars ile widget içeriği derleniyor -->
+                    <script id="widget-template" type="text/x-handlebars-template">
+                        {!! $widget->content_html !!}
+                    </script>
+                    {{-- Context verisi controller’dan gelmektedir --}}
+                    <div id="widget-rendered"></div>
+                    <script src="https://cdn.jsdelivr.net/npm/handlebars@4.7.7/dist/handlebars.min.js"></script>
+                    <script>
+                        (function() {
+                            const data = @json($context);
+                            const template = Handlebars.compile(
+                                document.getElementById('widget-template').innerHTML
+                            );
+                            document.getElementById('widget-rendered').innerHTML = template(data);
+                        })();
+                    </script>
                 @endif
             </div>
         </div>

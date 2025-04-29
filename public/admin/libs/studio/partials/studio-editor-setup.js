@@ -3,6 +3,12 @@
  * Editor yapılandırması ve kurulumu
  */
 
+// Global olarak tek bir studio editör oluşturulmasını sağlamak için
+if (typeof window.__STUDIO_EDITOR_INSTANCE === 'undefined') {
+    window.__STUDIO_EDITOR_INSTANCE = null;
+    window.__STUDIO_EDITOR_INITIALIZED = false;
+}
+
 window.StudioEditorSetup = (function() {
     /**
      * Editor'ı yapılandır ve başlat
@@ -10,6 +16,12 @@ window.StudioEditorSetup = (function() {
      * @returns {Object} GrapesJS editor örneği
      */
     function initEditor(config) {
+        // Editör zaten başlatılmışsa mevcut örneği döndür
+        if (window.__STUDIO_EDITOR_INITIALIZED && window.__STUDIO_EDITOR_INSTANCE) {
+            console.log('Editor zaten başlatılmış, mevcut örnek döndürülüyor.');
+            return window.__STUDIO_EDITOR_INSTANCE;
+        }
+        
         console.log('Studio Editor başlatılıyor:', config);
         
         if (!config || !config.moduleId || config.moduleId <= 0) {
@@ -17,8 +29,13 @@ window.StudioEditorSetup = (function() {
             return null;
         }
         
+        // Başlatma kilidini hemen ayarla
+        window.__STUDIO_EDITOR_INITIALIZED = true;
+        
         // Yükleme göstergesini başlat
-        window.StudioLoader.show();
+        if (window.StudioLoader && typeof window.StudioLoader.show === 'function') {
+            window.StudioLoader.show();
+        }
         
         try {
             // GrapesJS Editor yapılandırması
@@ -52,6 +69,9 @@ window.StudioEditorSetup = (function() {
                 protectedCss: '' // Koruma altındaki CSS'i devre dışı bırak
             });
             
+            // Global referansı kaydet
+            window.__STUDIO_EDITOR_INSTANCE = editor;
+            
             // Widget bileşeni tipini kaydet
             setupComponentTypes(editor);
             
@@ -71,7 +91,9 @@ window.StudioEditorSetup = (function() {
                 }
                 
                 // Yükleme göstergesini gizle
-                window.StudioLoader.hide();
+                if (window.StudioLoader && typeof window.StudioLoader.hide === 'function') {
+                    window.StudioLoader.hide();
+                }
                 
                 // Custom event tetikle
                 document.dispatchEvent(new CustomEvent('editor:loaded', { detail: { editor } }));
@@ -81,8 +103,16 @@ window.StudioEditorSetup = (function() {
             
         } catch (error) {
             console.error('Studio Editor başlatılırken kritik hata:', error);
-            window.StudioLoader.hide();
-            window.StudioNotification.error('Editor başlatılırken bir hata oluştu!');
+            window.__STUDIO_EDITOR_INITIALIZED = false;
+            
+            if (window.StudioLoader && typeof window.StudioLoader.hide === 'function') {
+                window.StudioLoader.hide();
+            }
+            
+            if (window.StudioNotification && typeof window.StudioNotification.error === 'function') {
+                window.StudioNotification.error('Editor başlatılırken bir hata oluştu!');
+            }
+            
             return null;
         }
     }
@@ -119,7 +149,9 @@ window.StudioEditorSetup = (function() {
                 
             } catch (error) {
                 console.error('İçerik yüklenirken hata oluştu:', error);
-                window.StudioNotification.error('İçerik yüklenirken bir hata oluştu!');
+                if (window.StudioNotification && typeof window.StudioNotification.error === 'function') {
+                    window.StudioNotification.error('İçerik yüklenirken bir hata oluştu!');
+                }
             }
         }, 500);
     }

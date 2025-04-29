@@ -5,24 +5,27 @@
  * Tüm modülleri yükler ve uygulamayı başlatır
  */
 
+// Editör Global kilit kontrolü 
+if (typeof window.__STUDIO_EDITOR_INSTANCE === 'undefined') {
+    window.__STUDIO_EDITOR_INSTANCE = null;
+    window.__STUDIO_EDITOR_INITIALIZED = false;
+}
+
 // İkileme sorununu engellemek için global tekil başlatma kilidi
-if (window._studioAppInitialized) {
-    console.warn('Studio Editor uygulaması zaten başlatıldı, başlatma isteği atlanıyor');
+if (window.__STUDIO_EDITOR_INITIALIZED) {
+    console.log('Studio Editor uygulaması zaten başlatıldı, başlatma isteği atlanıyor');
 } else {
-    window._studioAppInitialized = true;
-    
     document.addEventListener('DOMContentLoaded', function() {
-        // Eğer başka bir yerde DOMContentLoaded olayı tetiklendiyse kilitli kalacak
-        if (window._studioDOMLoadedHandled) {
-            console.log('DOMContentLoaded olayı zaten işlendi, işlem atlanıyor');
-            return;
-        }
-        window._studioDOMLoadedHandled = true;
-        
         // Editor element'ini bul
         const editorElement = document.getElementById('gjs');
         if (!editorElement) {
             console.log('Studio Editor başlatılamıyor: #gjs elementi bulunamadı!');
+            return;
+        }
+        
+        // Editör zaten başlatılmışsa çıkış yap
+        if (window.__STUDIO_EDITOR_INITIALIZED) {
+            console.log('Studio Editor zaten başlatılmış, DOMContentLoaded olayı atlanıyor');
             return;
         }
         
@@ -35,25 +38,6 @@ if (window._studioAppInitialized) {
             css: document.getElementById('css-content') ? document.getElementById('css-content').value : '',
         };
         
-        // Sadece bir kez başlatıldığından emin ol
-        if (window._studioEditorInitialized) {
-            console.warn('Studio Editor zaten başlatılmış, tekrar başlatma işlemi atlanıyor.');
-            return;
-        }
-        window._studioEditorInitialized = true;
-
-        // Widget verilerini yükle
-        if (window.StudioWidgetManager) {
-            window.StudioWidgetManager.loadWidgetData();
-        }
-
-        // Geçerli bir konfigürasyon kontrolü
-        if (!config || !config.moduleId || config.moduleId <= 0) {
-            console.error('Geçersiz konfigürasyon veya modül ID:', config);
-            window._studioEditorInitialized = false; // Hata durumunda bayrağı geri al
-            return;
-        }
-        
         // Global değişkende sakla
         window.studioEditorConfig = config;
         
@@ -63,14 +47,15 @@ if (window._studioAppInitialized) {
         }
         
         // Editor başlat
-        if (typeof window.StudioCore.initStudioEditor === 'function') {
+        if (typeof window.StudioCore !== 'undefined' && typeof window.StudioCore.initStudioEditor === 'function') {
             try {
+                // StudioCore başlatma
                 window.StudioCore.initStudioEditor(config);
             } catch (error) {
                 console.error('Studio Editor başlatılırken hata:', error);
             }
         } else {
-            console.error('Studio Editor başlatılamıyor: initStudioEditor fonksiyonu bulunamadı!');
+            console.error('Studio Editor başlatılamıyor: StudioCore modülü bulunamadı!');
         }
     });
 }

@@ -275,6 +275,19 @@ ${js}
             </div>`;
         });
         
+        // Eksik HTML içeren formları da kontrol et
+        const emptyWidgetEmbedRegex = /<div[^>]*data-tenant-widget-id="(\d+)"[^>]*><\/div>/gi;
+        
+        html = html.replace(emptyWidgetEmbedRegex, (match, widgetId) => {
+            return `<div class="widget-embed" data-tenant-widget-id="${widgetId}" id="widget-embed-${widgetId}">
+                <div class="widget-content-placeholder" id="widget-content-${widgetId}">
+                    <div class="widget-loading" style="text-align:center; padding:20px;">
+                        <i class="fa fa-spin fa-spinner"></i> Widget içeriği yükleniyor...
+                    </div>
+                </div>
+            </div>`;
+        });
+        
         return html;
     }
     

@@ -21,20 +21,18 @@ window.StudioActions = (function() {
         // Önizleme butonunu ayarla
         window.StudioExport.setupPreviewButton(editor);
         
-        // Dışa aktarma butonunu ayarla
-        window.StudioExport.setupExportButton(editor);
-        
         // Diğer buton işlevlerini ayarla
         setupVisibilityButton(editor);
         setupCommandButtons(editor);
-        setupBackButton(editor, config);
+        
+        // Export ve Back butonları kaldırıldı
     }
     
     /**
-     * Önceden eklenmiş olay dinleyicilerini temizler
+     * Önceden eklenmiş olay dinleyicilerini temizle
      */
     function cleanup() {
-        const buttons = ['save-btn', 'preview-btn', 'export-btn', 'sw-visibility', 'cmd-clear', 'cmd-undo', 'cmd-redo', 'cmd-code-edit', 'cmd-css-edit', 'btn-back'];
+        const buttons = ['save-btn', 'preview-btn', 'sw-visibility', 'cmd-clear', 'cmd-undo', 'cmd-redo', 'cmd-code-edit', 'cmd-css-edit'];
         
         buttons.forEach(buttonId => {
             const button = document.getElementById(buttonId);
@@ -102,37 +100,8 @@ window.StudioActions = (function() {
                 }
             });
         } else {
-            console.error("Görünürlük butonu (#sw-visibility) bulunamadı!");
-        }
-    }
-    
-    /**
-     * Geri dönüş butonunu ayarlar
-     * @param {Object} editor - GrapesJS editor örneği
-     * @param {Object} config - Yapılandırma parametreleri
-     */
-    function setupBackButton(editor, config) {
-        const backBtn = document.getElementById("btn-back");
-        if (backBtn) {
-            // Eski event listener'ları temizle
-            const newBackBtn = backBtn.cloneNode(true);
-            if (backBtn.parentNode) {
-                backBtn.parentNode.replaceChild(newBackBtn, backBtn);
-            }
-            
-            newBackBtn.addEventListener("click", function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                // Module ve ID bilgilerini config'den al
-                const module = config.module || 'page';
-                const id = config.moduleId || 0;
-                
-                // Sayfa yönetim URL'sine yönlendir
-                window.location.href = `/admin/${module}/manage/${id}`;
-            });
-        } else {
-            console.error("Geri butonu (#btn-back) bulunamadı!");
+            // Hata mesajını kaldırdım, buton bulunamazsa sessizce geç
+            console.log("Görünürlük butonu mevcut değil, atlanıyor");
         }
     }
     
@@ -198,7 +167,6 @@ window.StudioActions = (function() {
         setupActions: setupActions,
         cleanup: cleanup,
         setupVisibilityButton: setupVisibilityButton,
-        setupCommandButtons: setupCommandButtons,
-        setupBackButton: setupBackButton
+        setupCommandButtons: setupCommandButtons
     };
 })();

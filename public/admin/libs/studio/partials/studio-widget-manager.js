@@ -146,12 +146,14 @@ window.StudioWidgetManager = (function() {
             }
         });
     }
-    
+        
     /**
      * Global widget yükleme fonksiyonu
      */
     function setupGlobalWidgetLoader() {
         window.studioLoadWidget = function(widgetId) {
+            console.log("studioLoadWidget başlatıldı: widget_id=" + widgetId);
+            
             // Olası tüm container ID'lerini dene
             const containerIds = [
                 `widget-content-${widgetId}`,
@@ -169,41 +171,173 @@ window.StudioWidgetManager = (function() {
                 }
             }
             
-            // ID ile bulunamadıysa, sınıf ve attribute ile dene
+            // ID ile bulunamadıysa diğer yöntemlerle dene
             if (!container) {
-                container = document.querySelector(`.widget-embed[data-tenant-widget-id='${widgetId}'] .widget-content-placeholder`);
-                if (container) {
-                    console.log(`Widget container sınıf ve attribute ile bulundu`);
+                console.log("ID ile container bulunamadı, alternatif yöntemler deneniyor...");
+                
+                // querySelector ile dene
+                for (const id of containerIds) {
+                    container = document.querySelector(`#${id}`);
+                    if (container) {
+                        console.log(`querySelector ile container bulundu: #${id}`);
+                        break;
+                    }
                 }
             }
             
-            // Hala bulunamadıysa hata ver
+            // Attribute selector ile dene
             if (!container) {
-                console.error(`Widget container bulunamadı (ID=${widgetId})`);
-                return;
+                container = document.querySelector(`[id="widget-content-${widgetId}"]`);
+                if (container) {
+                    console.log(`Attribute selector ile container bulundu`);
+                }
+            }
+            
+            // Widget embed içinde ara
+            if (!container) {
+                const widgetEmbed = document.getElementById(`widget-embed-${widgetId}`);
+                if (widgetEmbed) {
+                    container = widgetEmbed.querySelector('.widget-content-placeholder');
+                    if (container) {
+                        console.log(`Widget embed içinde placeholder bulundu`);
+                        // ID'si yoksa ekle
+                        if (!container.id) {
+                            container.id = `widget-content-${widgetId}`;
+                        }
+                    }
+                }
+            }
+            
+            // Sınıf ve attribute ile dene
+            if (!container) {
+                container = document.querySelector(`.widget-embed[data-tenant-widget-id="${widgetId}"] .widget-content-placeholder`);
+                if (container) {
+                    console.log(`Sınıf ve attribute ile container bulundu`);
+                    // ID yoksa ekle
+                    if (!container.id) {
+                        container.id = `widget-content-${widgetId}`;
+                    }
+                }
+            }
+            
+            // Son çare - tüm placeholder'ları kontrol et
+            if (!container) {
+                const allPlaceholders = document.querySelectorAll('.widget-content-placeholder');
+                console.log(`${allPlaceholders.length} adet placeholder bulundu, kontrol ediliyor...`);
+                
+                for (const placeholder of allPlaceholders) {
+                    const parent = placeholder.closest('.widget-embed');
+                    if (parent && (parent.getAttribute('data-widget-id') == widgetId || 
+                                  parent.getAttribute('data-tenant-widget-id') == widgetId)) {
+                        container = placeholder;
+                        console.log(`Eşleşen placeholder bulundu`);
+                        break;
+                    }
+                }
+                
+                if (!container && allPlaceholders.length > 0) {
+                    container = allPlaceholders[0];
+                    console.log(`Eşleşen placeholder bulunamadı, ilk placeholder kullanılıyor`);
+                    
+                    // ID ekle
+                    if (!container.id) {
+                        container.id = `widget-content-${widgetId}`;
+                    }
+                }
+            }
+            
+            // Hala bulunamadıysa, yeni bir element oluştur
+            if (!container) {
+                console.log("Hiçbir container bulunamadı, document.body içinde yeni bir element oluşturuluyor");
+                container = document.createElement('div');
+                container.id = `widget-content-${widgetId}`;
+                container.className = 'widget-content-placeholder';
+                container.innerHTML = '<div class="widget-loading"><i class="fa fa-spin fa-spinner"></i> Widget içeriği yükleniyor...</div>';
+                
+                // Editör canvas içine ekle
+                const canvas = document.querySelector('.gjs-cv-canvas__frames') || document.body;
+                canvas.appendChild(container);
             }
             
             // Widget içeriğini yükle
+            console.log(`Widget ${widgetId} içeriği yükleniyor...`);
             fetch(`/admin/widgetmanagement/preview/embed/${widgetId}`)
-                .then(response => response.text())
+                .then(response => {
+                    console.log(`Widget ${widgetId} yanıtı alındı:`, response.status);
+                    return response.text();
+                })
                 .then(html => {
-                    console.log(`Widget içeriği yüklendi (${html.length} karakter)`);
+                    console.log(`Widget ${widgetId} içeriği alındı, uzunluk:`, html.length);
                     container.innerHTML = html;
                     
-                    // Script etiketlerini çalıştır
-                    const scripts = container.querySelectorAll('script');
-                    scripts.forEach(script => {
-                        const newScript = document.createElement('script');
-                        if (script.src) {
-                            newScript.src = script.src;
-                        } else {
-                            newScript.textContent = script.textContent;
+                    // Script etiketlerini güvenli şekilde çalıştır
+                    try {
+                        const scripts = container.querySelectorAll('script');
+                        console.log(`Widget ${widgetId} için ${scripts.length} script işlenecek`);
+                        
+                        if (scripts.length > 0) {
+                            Array.from(scripts).forEach((script, index) => {
+                                try {
+                                    // Script içeriğini kontrol et
+                                    if (script.src) {
+                                        // Harici script - src özelliği var
+                                        const newScript = document.createElement('script');
+                                        newScript.src = script.src;
+                                        
+                                        // Diğer özellikleri kopyala
+                                        for (const attr of script.attributes) {
+                                            if (attr.name !== 'src') {
+                                                newScript.setAttribute(attr.name, attr.value);
+                                            }
+                                        }
+                                        
+                                        document.body.appendChild(newScript);
+                                        console.log(`Script ${index + 1}/${scripts.length} başarıyla işlendi (harici)`);
+                                    } 
+                                    else {
+                                        // İç script - eval kullanmadan işleyelim
+                                        const scriptContent = script.textContent;
+                                        
+                                        // HTML veya JSON karakterleri içeriyor mu kontrol et
+                                        if (scriptContent.includes('<') || scriptContent.includes('>') || 
+                                            scriptContent.includes('{') || scriptContent.includes('}')) {
+                                            
+                                            // İç içe etiket veya JSON varsa, IIFE ile çalıştır
+                                            const safeScript = document.createElement('script');
+                                            safeScript.type = 'text/javascript';
+                                            safeScript.text = `
+                                                try {
+                                                    (function() {
+                                                        ${scriptContent}
+                                                    })();
+                                                } catch(e) {
+                                                    console.warn("Widget script çalıştırma hatası:", e);
+                                                }
+                                            `;
+                                            document.body.appendChild(safeScript);
+                                        } 
+                                        else {
+                                            // Normal script - doğrudan ekle
+                                            const newScript = document.createElement('script');
+                                            newScript.textContent = scriptContent;
+                                            document.body.appendChild(newScript);
+                                        }
+                                        
+                                        console.log(`Script ${index + 1}/${scripts.length} başarıyla işlendi (iç script)`);
+                                    }
+                                } catch (err) {
+                                    console.error(`Script ${index + 1}/${scripts.length} çalıştırma hatası:`, err);
+                                }
+                            });
                         }
-                        document.body.appendChild(newScript);
-                    });
+                    } catch (err) {
+                        console.error(`Widget ${widgetId} script işleme genel hatası:`, err);
+                    }
+                    
+                    console.log(`Widget ${widgetId} başarıyla yüklendi`);
                 })
                 .catch(error => {
-                    console.error(`Widget yükleme hatası: ${error.message}`);
+                    console.error(`Widget ${widgetId} yükleme hatası:`, error);
                     container.innerHTML = `<div class="alert alert-danger">Widget yüklenirken hata: ${error.message}</div>`;
                 });
         };

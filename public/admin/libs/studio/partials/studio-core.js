@@ -3,23 +3,36 @@
  * Tüm modülleri birleştiren ve başlatan ana dosya
  */
 
+// Editör Global kilit kontrolü (daha önce tanımlanmadıysa oluştur)
+if (typeof window.__STUDIO_EDITOR_INSTANCE === 'undefined') {
+    window.__STUDIO_EDITOR_INSTANCE = null;
+    window.__STUDIO_EDITOR_INITIALIZED = false;
+}
+
 window.StudioCore = (function() {
-    // Editor örneğini global olarak sakla
-    let editorInstance = null;
-    
     /**
      * Studio Editor'ı başlat
      * @param {Object} config - Yapılandırma parametreleri
      * @returns {Object} GrapesJS editor örneği
      */
     function initStudioEditor(config) {
+        // Editör zaten başlatılmışsa mevcut örneği döndür
+        if (window.__STUDIO_EDITOR_INITIALIZED && window.__STUDIO_EDITOR_INSTANCE) {
+            console.log('Studio Editor zaten başlatılmış, mevcut örnek döndürülüyor.');
+            return window.__STUDIO_EDITOR_INSTANCE;
+        }
+        
         console.log('Studio Editor başlatılıyor:', config);
         
+        // Global başlatma kilidini ayarla
+        window.__STUDIO_EDITOR_INITIALIZED = true;
+        
         // Editor örneğini oluştur
-        editorInstance = window.StudioEditorSetup.initEditor(config);
+        let editorInstance = window.StudioEditorSetup.initEditor(config);
         
         if (!editorInstance) {
             console.error('Editor başlatılamadı!');
+            window.__STUDIO_EDITOR_INITIALIZED = false;
             return null;
         }
         
@@ -75,7 +88,7 @@ window.StudioCore = (function() {
      * @returns {Object|null} GrapesJS editor örneği
      */
     function getEditor() {
-        return editorInstance;
+        return window.__STUDIO_EDITOR_INSTANCE;
     }
     
     return {
@@ -85,4 +98,11 @@ window.StudioCore = (function() {
 })();
 
 // Legacy uyumluluk için global fonksiyon
-window.initStudioEditor = window.StudioCore.initStudioEditor;
+window.initStudioEditor = function(config) {
+    // Global kilit kontrolü
+    if (window.__STUDIO_EDITOR_INITIALIZED) {
+        console.log('Studio Editor zaten başlatılmış, ikinci başlatma engellendi');
+        return window.__STUDIO_EDITOR_INSTANCE;
+    }
+    return window.StudioCore.initStudioEditor(config);
+};

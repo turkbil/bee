@@ -16,7 +16,12 @@ window.StudioWidgetManager = (function() {
         if (loadedWidgets) return Promise.resolve({widgets: widgetData, tenant_widgets: tenantWidgetData});
         
         return fetch('/admin/studio/api/widgets')
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`API yanıtı başarısız: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data.widgets && Array.isArray(data.widgets)) {
                     widgetData = data.widgets.reduce((obj, widget) => {
@@ -27,7 +32,7 @@ window.StudioWidgetManager = (function() {
                 
                 if (data.tenant_widgets && Array.isArray(data.tenant_widgets)) {
                     tenantWidgetData = data.tenant_widgets.reduce((obj, widget) => {
-                        obj[widget.id] = widget;
+                        obj[widget.id.replace('tenant-widget-', '')] = widget;
                         return obj;
                     }, {});
                 }
@@ -47,8 +52,8 @@ window.StudioWidgetManager = (function() {
      * @returns {Object|null} Widget verisi
      */
     function getWidgetData(widgetId) {
-        if (widgetId.toString().startsWith('tenant-widget-')) {
-            const id = widgetId.toString().replace('tenant-widget-', '');
+        if (typeof widgetId === 'string' && widgetId.startsWith('tenant-widget-')) {
+            const id = widgetId.replace('tenant-widget-', '');
             return tenantWidgetData[id] || null;
         }
         return widgetData[widgetId] || null;
@@ -292,6 +297,9 @@ window.StudioWidgetManager = (function() {
             fetch(`/admin/widgetmanagement/preview/embed/${widgetId}`)
                 .then(response => {
                     console.log(`Widget ${widgetId} yanıtı alındı:`, response.status);
+                    if (!response.ok) {
+                        throw new Error(`Widget yanıtı başarısız: ${response.status}`);
+                    }
                     return response.text();
                 })
                 .then(html => {
@@ -375,6 +383,76 @@ window.StudioWidgetManager = (function() {
     }
     
     /**
+     * Widget bloklarını yükle
+     */
+    function loadWidgetBlocks(editor) {
+        if (!editor) return;
+        
+        loadWidgetData().then((data) => {
+            // Tenant Widget'ları yükle (aktif bileşenler)
+            if (data.tenant_widgets) {
+                const tenantWidgets = Object.values(data.tenant_widgets);
+                
+                tenantWidgets.forEach(widget => {
+                    if (!widget || !widget.id) return;
+                    
+                    const blockId = widget.id;
+                    let tenantWidgetId = blockId;
+                    
+                    // ID prefix'ini temizle
+                    if (typeof tenantWidgetId === 'string' && tenantWidgetId.startsWith('tenant-widget-')) {
+                        tenantWidgetId = tenantWidgetId.replace('tenant-widget-', '');
+                    }
+                    
+                    // Widget referans bloku oluştur
+                    editor.BlockManager.add(blockId, {
+                        label: widget.name,
+                        category: 'active-widgets',
+                        attributes: {
+                            class: 'fa fa-star',
+                            title: widget.name
+                        },
+                        content: {
+                            type: 'widget-embed',
+                            tenant_widget_id: tenantWidgetId,
+                            attributes: {
+                                'class': 'widget-embed',
+                                'data-type': 'widget-embed',
+                                'data-tenant-widget-id': tenantWidgetId,
+                                'id': 'widget-embed-' + tenantWidgetId
+                            },
+                            components: [
+                                {
+                                    type: 'div',
+                                    attributes: {
+                                        'class': 'widget-content-placeholder',
+                                        'id': 'widget-content-' + tenantWidgetId
+                                    },
+                                    content: '<div class="widget-loading" style="text-align:center; padding:20px;"><i class="fa fa-spin fa-spinner"></i> Widget içeriği yükleniyor...</div>'
+                                }
+                            ]
+                        },
+                        render: ({ model, className }) => {
+                            return `
+                                <div class="${className}">
+                                    <i class="fa fa-star"></i>
+                                    <div class="gjs-block-label">${widget.name}</div>
+                                    <div class="gjs-block-type-badge active">Aktif</div>
+                                </div>
+                            `;
+                        }
+                    });
+                });
+            }
+            
+            // Widget stillerini ekle
+            if (window.StudioWidgetLoader && typeof window.StudioWidgetLoader.addWidgetStyles === 'function') {
+                window.StudioWidgetLoader.addWidgetStyles();
+            }
+        });
+    }
+    
+    /**
      * Editör kurulumu
      * @param {Object} editor - GrapesJS editor örneği
      */
@@ -398,9 +476,7 @@ window.StudioWidgetManager = (function() {
         setupGlobalWidgetLoader();
         
         // Widget bloklarını yükle
-        if (window.StudioWidgetLoader && typeof window.StudioWidgetLoader.loadWidgetBlocks === 'function') {
-            window.StudioWidgetLoader.loadWidgetBlocks(editor);
-        }
+        loadWidgetBlocks(editor);
         
         // Editor yüklendiğinde mevcut widget'ları işle
         editor.on('load', () => {
@@ -487,6 +563,7 @@ window.StudioWidgetManager = (function() {
         getWidgetData: getWidgetData,
         getTenantWidgetData: getTenantWidgetData,
         showWidgetModal: showWidgetModal,
-        setup: setup
+        setup: setup,
+        loadWidgetBlocks: loadWidgetBlocks
     };
 })();

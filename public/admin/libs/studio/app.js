@@ -5,10 +5,11 @@
  * Tüm modülleri yükler ve uygulamayı başlatır
  */
 
-// Editör Global kilit kontrolü 
+// Global değişkenler - tek bir noktada tanımlanıyor
 if (typeof window.__STUDIO_EDITOR_INSTANCE === 'undefined') {
     window.__STUDIO_EDITOR_INSTANCE = null;
     window.__STUDIO_EDITOR_INITIALIZED = false;
+    console.log('Global Studio Editor değişkenleri oluşturuldu');
 }
 
 // İkileme sorununu engellemek için global tekil başlatma kilidi
@@ -28,6 +29,9 @@ if (window.__STUDIO_EDITOR_INITIALIZED) {
             console.log('Studio Editor zaten başlatılmış, DOMContentLoaded olayı atlanıyor');
             return;
         }
+        
+        // Global başlatma bayrağını hemen ayarla, diğer kodların müdahale etmesini engelle
+        window.__STUDIO_EDITOR_INITIALIZED = true;
         
         // Konfigürasyon oluştur
         const config = {
@@ -49,13 +53,15 @@ if (window.__STUDIO_EDITOR_INITIALIZED) {
         // Editor başlat
         if (typeof window.StudioCore !== 'undefined' && typeof window.StudioCore.initStudioEditor === 'function') {
             try {
-                // StudioCore başlatma
-                window.StudioCore.initStudioEditor(config);
+                // StudioCore başlatma - Global kilitleme mekanizmasıyla
+                window.__STUDIO_EDITOR_INSTANCE = window.StudioCore.initStudioEditor(config);
             } catch (error) {
                 console.error('Studio Editor başlatılırken hata:', error);
+                window.__STUDIO_EDITOR_INITIALIZED = false;
             }
         } else {
             console.error('Studio Editor başlatılamıyor: StudioCore modülü bulunamadı!');
+            window.__STUDIO_EDITOR_INITIALIZED = false;
         }
     });
 }

@@ -3,11 +3,8 @@
  * Editor yapılandırması ve kurulumu
  */
 
-// Global olarak tek bir studio editör oluşturulmasını sağlamak için
-if (typeof window.__STUDIO_EDITOR_INSTANCE === 'undefined') {
-    window.__STUDIO_EDITOR_INSTANCE = null;
-    window.__STUDIO_EDITOR_INITIALIZED = false;
-}
+// Bu dosya StudioEditorSetup modülünü sağlar
+// Global değişkenler app.js'de zaten tanımlanmıştır, burada tekrar tanımlamaya gerek yok
 
 window.StudioEditorSetup = (function() {
     /**
@@ -17,7 +14,7 @@ window.StudioEditorSetup = (function() {
      */
     function initEditor(config) {
         // Editör zaten başlatılmışsa mevcut örneği döndür
-        if (window.__STUDIO_EDITOR_INITIALIZED && window.__STUDIO_EDITOR_INSTANCE) {
+        if (window.__STUDIO_EDITOR_INSTANCE) {
             console.log('Editor zaten başlatılmış, mevcut örnek döndürülüyor.');
             return window.__STUDIO_EDITOR_INSTANCE;
         }
@@ -28,9 +25,6 @@ window.StudioEditorSetup = (function() {
             console.error('Geçersiz konfigürasyon veya modül ID:', config);
             return null;
         }
-        
-        // Başlatma kilidini hemen ayarla
-        window.__STUDIO_EDITOR_INITIALIZED = true;
         
         // Yükleme göstergesini başlat
         if (window.StudioLoader && typeof window.StudioLoader.show === 'function') {
@@ -68,9 +62,6 @@ window.StudioEditorSetup = (function() {
                 },
                 protectedCss: '' // Koruma altındaki CSS'i devre dışı bırak
             });
-            
-            // Global referansı kaydet
-            window.__STUDIO_EDITOR_INSTANCE = editor;
             
             // Widget bileşeni tipini kaydet
             setupComponentTypes(editor);

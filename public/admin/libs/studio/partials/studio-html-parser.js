@@ -205,6 +205,168 @@ ${js}
         return html;
     }
     
+    /**
+     * HTML çıktısını parse et ve widget embed referanslarını dönüştür
+     * Bu fonksiyon, GrapesJS'den sayfalara kaydedilmek üzere gelen HTML içeriğini işler
+     * ve karmaşık widget yapılarını basitleştirir
+     * 
+     * @param {string} html HTML içeriği
+     * @return {string} İşlenmiş HTML
+     */
+    function parseOutput(html) {
+        if (!html || typeof html !== 'string') return html;
+        
+        // Widget embed divlerini işleyen regex
+        // GrapesJS'den gelen karmaşık widget embed yapısını basit referans divlerine dönüştür
+        const widgetEmbedRegex = /<div[^>]*class="([^"]*widget-embed[^"]*)"[^>]*data-tenant-widget-id="(\d+)"[^>]*>[\s\S]*?<div[^>]*class="([^"]*)widget-content-placeholder[^"]*"[^>]*>[\s\S]*?<\/div>[\s\S]*?<\/div>/gi;
+        
+        // Widget embed divlerini daha basit bir formata dönüştür
+        html = html.replace(widgetEmbedRegex, (match, embedClass, widgetId) => {
+            return `<div class="widget-embed" data-tenant-widget-id="${widgetId}"></div>`;
+        });
+        
+        // Alternatif olarak, eksik veya farklı yapıda olan widget embed divlerini de yakala
+        const altWidgetEmbedRegex = /<div[^>]*data-tenant-widget-id="(\d+)"[^>]*class="([^"]*widget-embed[^"]*)"[^>]*>[\s\S]*?<\/div>/gi;
+        
+        html = html.replace(altWidgetEmbedRegex, (match, widgetId, embedClass) => {
+            return `<div class="widget-embed" data-tenant-widget-id="${widgetId}"></div>`;
+        });
+        
+        // Widget etiketlerini de işle
+        html = processWidgetTags(html);
+        
+        return html;
+    }
+    
+    /**
+     * HTML girişini parse et ve widget embed referanslarını dönüştür
+     * Bu fonksiyon, veritabanından yüklenip GrapesJS'e gönderilen HTML içeriğini işler
+     * ve basit widget referanslarını genişletilmiş yapıya dönüştürür
+     * 
+     * @param {string} html HTML içeriği
+     * @return {string} İşlenmiş HTML
+     */
+    function parseInput(html) {
+        if (!html || typeof html !== 'string') return html;
+        
+        // Widget embed referanslarını daha karmaşık yapıya çevir
+        const simpleWidgetEmbedRegex = /<div[^>]*class="([^"]*widget-embed[^"]*)"[^>]*data-tenant-widget-id="(\d+)"[^>]*><\/div>/gi;
+        
+        html = html.replace(simpleWidgetEmbedRegex, (match, embedClass, widgetId) => {
+            return `<div class="widget-embed" data-tenant-widget-id="${widgetId}" id="widget-embed-${widgetId}">
+                <div class="widget-content-placeholder" id="widget-content-${widgetId}">
+                    <div class="widget-loading" style="text-align:center; padding:20px;">
+                        <i class="fa fa-spin fa-spinner"></i> Widget içeriği yükleniyor...
+                    </div>
+                </div>
+            </div>`;
+        });
+        
+        // Alternatif formları da kontrol et
+        const altSimpleWidgetEmbedRegex = /<div[^>]*data-tenant-widget-id="(\d+)"[^>]*class="([^"]*widget-embed[^"]*)"[^>]*><\/div>/gi;
+        
+        html = html.replace(altSimpleWidgetEmbedRegex, (match, widgetId, embedClass) => {
+            return `<div class="widget-embed" data-tenant-widget-id="${widgetId}" id="widget-embed-${widgetId}">
+                <div class="widget-content-placeholder" id="widget-content-${widgetId}">
+                    <div class="widget-loading" style="text-align:center; padding:20px;">
+                        <i class="fa fa-spin fa-spinner"></i> Widget içeriği yükleniyor...
+                    </div>
+                </div>
+            </div>`;
+        });
+        
+        return html;
+    }
+    
+    /**
+     * HTML içindeki widget embed referanslarını sayfa görüntüleme sırasında işle
+     * Bu fonksiyon, sayfa render edilirken çalıştırılacak PHP koduna dönüştürür
+     * 
+     * @param {string} html HTML içeriği
+     * @return {string} İşlenmiş HTML, PHP kod parçaları içerebilir
+     */
+    function processWidgetEmbedsInContent(html) {
+        if (!html || typeof html !== 'string') return html;
+        
+        // Widget embed referanslarını dönüştür - her formatta
+        const widgetEmbedRegex = /<div[^>]*(?:class="[^"]*widget-embed[^"]*"|data-tenant-widget-id="(\d+)")(?:[^>]*(?:class="[^"]*widget-embed[^"]*"|data-tenant-widget-id="(\d+)"))?[^>]*>(?:[\s\S]*?<\/div>)?/gi;
+        
+        return html.replace(widgetEmbedRegex, (match) => {
+            // Widget ID'sini bul
+            const idMatch = match.match(/data-tenant-widget-id="(\d+)"/i);
+            if (!idMatch || !idMatch[1]) return match; // ID bulunamazsa orijinal içeriği döndür
+            
+            const widgetId = idMatch[1];
+            
+            // PHP render kodu
+            return `<?php echo app('widget.service')->renderSingleWidget($tenantWidget = \\Modules\\WidgetManagement\\app\\Models\\TenantWidget::find(${widgetId})); ?>`;
+        });
+    }
+    
+    /**
+     * HTML içeriğindeki tüm widget referanslarını dinamik referans yapısına dönüştür
+     * 
+     * @param {string} html HTML içeriği
+     * @return {string} İşlenmiş HTML
+     */
+    function convertAllWidgetReferencesToEmbeds(html) {
+        if (!html || typeof html !== 'string') return html;
+        
+        // Eski widget wrapper formatı
+        let processed = html.replace(/<div[^>]*data-widget-id="(\d+)"[^>]*data-type="widget"[^>]*>[\s\S]*?<\/div>/gi, (match, widgetId) => {
+            return `<div class="widget-embed" data-tenant-widget-id="${widgetId}"></div>`;
+        });
+        
+        // Ters formatı da kontrol et
+        processed = processed.replace(/<div[^>]*data-type="widget"[^>]*data-widget-id="(\d+)"[^>]*>[\s\S]*?<\/div>/gi, (match, widgetId) => {
+            return `<div class="widget-embed" data-tenant-widget-id="${widgetId}"></div>`;
+        });
+        
+        // widget tag formatı
+        processed = processed.replace(/<widget\s+id="(\d+)"[^>]*><\/widget>/gi, (match, widgetId) => {
+            return `<div class="widget-embed" data-tenant-widget-id="${widgetId}"></div>`;
+        });
+        
+        // Saf widget ID referansı
+        processed = processed.replace(/\{\{widget:(\d+)\}\}/gi, (match, widgetId) => {
+            return `<div class="widget-embed" data-tenant-widget-id="${widgetId}"></div>`;
+        });
+        
+        return processed;
+    }
+    
+    /**
+     * Widget embed yapısını arar ve varsa ID'yi döndürür
+     * 
+     * @param {string} html HTML içeriği  
+     * @return {Array} Bulunan tenant widget ID'leri
+     */
+    function findWidgetEmbeds(html) {
+        if (!html || typeof html !== 'string') return [];
+        
+        const widgetIds = [];
+        let match;
+        
+        // Her türlü widget referans formatını ara
+        const regexFormats = [
+            /<div[^>]*class="[^"]*widget-embed[^"]*"[^>]*data-tenant-widget-id="(\d+)"[^>]*>/gi,
+            /<div[^>]*data-tenant-widget-id="(\d+)"[^>]*class="[^"]*widget-embed[^"]*"[^>]*>/gi,
+            /<div[^>]*data-widget-id="(\d+)"[^>]*data-type="widget"[^>]*>/gi,
+            /<div[^>]*data-type="widget"[^>]*data-widget-id="(\d+)"[^>]*>/gi,
+            /<widget\s+id="(\d+)"[^>]*><\/widget>/gi,
+            /\{\{widget:(\d+)\}\}/gi
+        ];
+        
+        regexFormats.forEach(regex => {
+            while ((match = regex.exec(html)) !== null) {
+                widgetIds.push(match[1]);
+            }
+        });
+        
+        // Tekrar edenleri temizle
+        return [...new Set(widgetIds)];
+    }
+    
     return {
         parseAndFixHtml: parseAndFixHtml,
         extractCss: extractCss,
@@ -212,6 +374,11 @@ ${js}
         sanitizeHtml: sanitizeHtml,
         getDefaultContent: getDefaultContent,
         buildFullHtml: buildFullHtml,
-        processWidgetTags: processWidgetTags
+        processWidgetTags: processWidgetTags,
+        parseOutput: parseOutput,
+        parseInput: parseInput,
+        processWidgetEmbedsInContent: processWidgetEmbedsInContent,
+        convertAllWidgetReferencesToEmbeds: convertAllWidgetReferencesToEmbeds,
+        findWidgetEmbeds: findWidgetEmbeds
     };
 })();

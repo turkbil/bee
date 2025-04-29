@@ -12,6 +12,10 @@ Route::middleware(['auth:sanctum'])
         Route::get('/widgets', [StudioApiController::class, 'getWidgets'])
             ->name('widgets');
         
+        // Widget içeriği getir
+        Route::get('/widgets/{tenantWidgetId}', [StudioApiController::class, 'getWidgetContent'])
+            ->name('widgets.content');
+        
         // Temalar
         Route::get('/themes', [StudioApiController::class, 'getThemes'])
             ->name('themes');
@@ -20,11 +24,17 @@ Route::middleware(['auth:sanctum'])
         Route::post('/widgets/add', [StudioApiController::class, 'addWidget'])
             ->name('widgets.add');
         
-        // Widget içeriği getir
-        Route::get('/widgets/{id}', [StudioApiController::class, 'getWidgetContent'])
-            ->name('widgets.get');
-        
         // İçerik kaydetme
         Route::post('/save-content', [StudioApiController::class, 'saveContent'])
             ->name('save-content');
+    });
+
+// Public API rotaları
+Route::middleware(['web', 'tenant'])
+    ->prefix('api/studio')
+    ->name('api.studio.public.')
+    ->group(function () {
+        // Widget içeriği getir (public)
+        Route::get('/widget/{tenantWidgetId}', [StudioApiController::class, 'getWidgetContent'])
+            ->name('widget.content');
     });

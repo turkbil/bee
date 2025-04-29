@@ -3,11 +3,8 @@
  * Tüm modülleri birleştiren ve başlatan ana dosya
  */
 
-// Editör Global kilit kontrolü (daha önce tanımlanmadıysa oluştur)
-if (typeof window.__STUDIO_EDITOR_INSTANCE === 'undefined') {
-    window.__STUDIO_EDITOR_INSTANCE = null;
-    window.__STUDIO_EDITOR_INITIALIZED = false;
-}
+// StudioCore ana modülü
+// Global değişkenler app.js'de zaten tanımlanmıştır
 
 window.StudioCore = (function() {
     /**
@@ -17,17 +14,14 @@ window.StudioCore = (function() {
      */
     function initStudioEditor(config) {
         // Editör zaten başlatılmışsa mevcut örneği döndür
-        if (window.__STUDIO_EDITOR_INITIALIZED && window.__STUDIO_EDITOR_INSTANCE) {
+        if (window.__STUDIO_EDITOR_INSTANCE) {
             console.log('Studio Editor zaten başlatılmış, mevcut örnek döndürülüyor.');
             return window.__STUDIO_EDITOR_INSTANCE;
         }
         
         console.log('Studio Editor başlatılıyor:', config);
         
-        // Global başlatma kilidini ayarla
-        window.__STUDIO_EDITOR_INITIALIZED = true;
-        
-        // Editor örneğini oluştur
+        // Editor örneğini oluştur - burada _INITIALIZED bayrağı zaten app.js tarafından ayarlandı
         let editorInstance = window.StudioEditorSetup.initEditor(config);
         
         if (!editorInstance) {
@@ -35,6 +29,9 @@ window.StudioCore = (function() {
             window.__STUDIO_EDITOR_INITIALIZED = false;
             return null;
         }
+        
+        // Global erişim için örneği sakla
+        window.__STUDIO_EDITOR_INSTANCE = editorInstance;
         
         // İçeriği yükle
         window.StudioEditorSetup.loadContent(editorInstance, config);
@@ -77,7 +74,7 @@ window.StudioCore = (function() {
             }
         });
         
-        // Global erişim için editörü kaydet
+        // Global erişim için editörü kaydet (geriye dönük uyumluluk)
         window.studioEditor = editorInstance;
         
         return editorInstance;
@@ -97,12 +94,13 @@ window.StudioCore = (function() {
     };
 })();
 
-// Legacy uyumluluk için global fonksiyon
+// Legacy uyumluluk için global fonksiyon - güvenli hale getirildi
 window.initStudioEditor = function(config) {
     // Global kilit kontrolü
     if (window.__STUDIO_EDITOR_INITIALIZED) {
         console.log('Studio Editor zaten başlatılmış, ikinci başlatma engellendi');
         return window.__STUDIO_EDITOR_INSTANCE;
     }
+    window.__STUDIO_EDITOR_INITIALIZED = true;
     return window.StudioCore.initStudioEditor(config);
 };

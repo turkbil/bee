@@ -5,6 +5,7 @@
 window.StudioWidgetManager = (function() {
     // Widget verilerini sakla
     let widgetData = {};
+    let tenantWidgetData = {};
     let loadedWidgets = false;
     
     /**
@@ -12,7 +13,7 @@ window.StudioWidgetManager = (function() {
      * @returns {Promise} Widget verileri ile çözülen promise
      */
     function loadWidgetData() {
-        if (loadedWidgets) return Promise.resolve(widgetData);
+        if (loadedWidgets) return Promise.resolve({widgets: widgetData, tenant_widgets: tenantWidgetData});
         
         return fetch('/admin/studio/api/widgets')
             .then(response => response.json())
@@ -22,15 +23,21 @@ window.StudioWidgetManager = (function() {
                         obj[widget.id] = widget;
                         return obj;
                     }, {});
-                    
-                    loadedWidgets = true;
-                    return widgetData;
                 }
-                return {};
+                
+                if (data.tenant_widgets && Array.isArray(data.tenant_widgets)) {
+                    tenantWidgetData = data.tenant_widgets.reduce((obj, widget) => {
+                        obj[widget.id] = widget;
+                        return obj;
+                    }, {});
+                }
+                
+                loadedWidgets = true;
+                return {widgets: widgetData, tenant_widgets: tenantWidgetData};
             })
             .catch(error => {
                 console.error('Widget verileri yüklenirken hata:', error);
-                return {};
+                return {widgets: {}, tenant_widgets: {}};
             });
     }
     
@@ -40,7 +47,20 @@ window.StudioWidgetManager = (function() {
      * @returns {Object|null} Widget verisi
      */
     function getWidgetData(widgetId) {
+        if (widgetId.toString().startsWith('tenant-widget-')) {
+            const id = widgetId.toString().replace('tenant-widget-', '');
+            return tenantWidgetData[id] || null;
+        }
         return widgetData[widgetId] || null;
+    }
+    
+    /**
+     * Tenant Widget verilerini getir
+     * @param {number|string} tenantWidgetId - Tenant Widget ID
+     * @returns {Object|null} Tenant Widget verisi
+     */
+    function getTenantWidgetData(tenantWidgetId) {
+        return tenantWidgetData[tenantWidgetId] || null;
     }
     
     /**
@@ -48,7 +68,7 @@ window.StudioWidgetManager = (function() {
      * @param {number|string} widgetId - Widget ID
      */
     function showWidgetModal(widgetId) {
-        const widget = widgetData[widgetId];
+        const widget = getWidgetData(widgetId);
         if (!widget) return;
         
         // Mevcut modal varsa kaldır
@@ -85,7 +105,8 @@ window.StudioWidgetManager = (function() {
         let modalHeaderColor = '#10b981'; // Varsayılan yeşil (static)
         let widgetTypeText = 'Statik';
         
-        switch(widget.type) {
+        const widgetType = widget.type || 'static';
+        switch(widgetType) {
             case 'dynamic':
                 modalHeaderColor = '#3b82f6'; // Mavi
                 widgetTypeText = 'Dinamik';
@@ -98,6 +119,13 @@ window.StudioWidgetManager = (function() {
                 modalHeaderColor = '#f59e0b'; // Turuncu
                 widgetTypeText = 'Dosya';
                 break;
+        }
+        
+        let targetId = widgetId;
+        if (widget.tenant_widget_id) {
+            targetId = widget.tenant_widget_id;
+        } else if (widget.is_tenant_widget) {
+            targetId = widget.id.replace('tenant-widget-', '');
         }
         
         modalContent.innerHTML = `
@@ -117,7 +145,7 @@ window.StudioWidgetManager = (function() {
                 ${widget.file_path ? `<p style="font-size: 13px; padding: 5px 10px; background-color: #f8fafc; border-radius: 4px;"><i class="fa fa-link me-1"></i> <strong>Dosya Yolu:</strong> ${widget.file_path}</p>` : ''}
             </div>
             <div style="text-align: center; margin-top: 20px;">
-                <a href="/admin/widgetmanagement/items/${widgetId}" target="_blank" style="
+                <a href="/admin/widgetmanagement/items/${targetId}" target="_blank" style="
                     display: inline-block;
                     background-color: ${modalHeaderColor};
                     color: white;
@@ -384,58 +412,30 @@ window.StudioWidgetManager = (function() {
         // Bileşen ekleme olayı
         editor.on('component:add', (component) => {
             const type = component.get('type');
-            if (type === 'widget' || component.getAttributes()['data-type'] === 'widget') {
-                component.set('type', 'widget');
-                
-                const attrs = component.getAttributes();
-                const widgetId = attrs['data-widget-id'];
-                const widgetType = attrs['data-widget-type'] || 'static';
-                const filePath = attrs['data-file-path'] || '';
-                
-                // Özellikleri ayarla
-                component.set('widget_id', widgetId);
-                component.set('widget_type', widgetType);
-                
-                if (filePath) {
-                    component.set('file_path', filePath);
-                }
-                
-                // Widget tipine göre kısıtla
-                if (widgetType === 'dynamic' || widgetType === 'module') {
-                    component.set('draggable', false);
-                    component.set('droppable', false);
-                    component.set('selectable', true);
-                    component.set('highlightable', false);
-                    component.set('editable', false);
-                    component.set('locked', true);
-                    
-                    component.setStyle({
-                        'pointer-events': 'none',
-                        'cursor': 'not-allowed'
-                    });
-                } else {
-                    component.set('draggable', true);
-                    component.set('selectable', true);
-                    component.set('highlightable', true);
-                    component.set('editable', true);
-                    component.set('locked', false);
-                }
-                
-                // Görünümü güncelle
-                const view = component.view;
-                if (view && typeof view.onRender === 'function') {
-                    view.onRender();
-                }
-            }
             
-            // Widget-embed tipini işle
-            if (component.getClasses().includes('widget-embed') || component.getAttributes()['data-type'] === 'widget-embed') {
+            if (type === 'widget-embed' || component.getAttributes()['data-tenant-widget-id']) {
                 component.set('type', 'widget-embed');
                 
                 // Görünümü güncelle
                 const view = component.view;
                 if (view && typeof view.onRender === 'function') {
-                    setTimeout(() => view.onRender(), 50); // Biraz gecikme ekleyerek DOM'un hazır olmasını sağla
+                    setTimeout(() => view.onRender(), 50);
+                }
+                
+                // Widget ID'sini al
+                const tenantWidgetId = component.getAttributes()['data-tenant-widget-id'] || 
+                                      component.getAttributes()['data-widget-id'];
+                                      
+                if (tenantWidgetId) {
+                    // Widget ID'sini komponent özelliği olarak ayarla
+                    component.set('tenant_widget_id', tenantWidgetId);
+                    
+                    // Widget içeriğini yükle
+                    setTimeout(() => {
+                        if (window.studioLoadWidget) {
+                            window.studioLoadWidget(tenantWidgetId);
+                        }
+                    }, 100);
                 }
             }
         });
@@ -443,47 +443,34 @@ window.StudioWidgetManager = (function() {
         // Canvas drop olayını izle
         editor.on('canvas:drop', (droppedModel) => {
             setTimeout(() => {
-                // Tüm widget ve widget-embed bileşenlerini yeniden işle
-                let componentsToProcess = editor.DomComponents.getWrapper().find('[data-widget-id]');
-                componentsToProcess = componentsToProcess.concat(editor.DomComponents.getWrapper().find('.widget-embed'));
+                // Tüm widget-embed bileşenlerini yeniden işle
+                let embedComponents = editor.DomComponents.getWrapper().find('.widget-embed');
+                embedComponents = embedComponents.concat(
+                    editor.DomComponents.getWrapper().find('[data-tenant-widget-id]')
+                );
                 
-                componentsToProcess.forEach(component => {
-                    const attrs = component.getAttributes();
+                embedComponents.forEach(component => {
+                    component.set('type', 'widget-embed');
                     
-                    // Widget tipini belirle
-                    if (component.getClasses().includes('widget-embed') || 
-                        attrs['data-type'] === 'widget-embed') {
-                        // Widget-embed bileşeni
-                        component.set('type', 'widget-embed');
+                    // Görünümü güncelle
+                    const view = component.view;
+                    if (view && typeof view.onRender === 'function') {
+                        setTimeout(() => view.onRender(), 100);
+                    }
+                    
+                    // Widget ID'sini al ve widget içeriğini yükle
+                    const tenantWidgetId = component.getAttributes()['data-tenant-widget-id'] || 
+                                          component.getAttributes()['data-widget-id'];
+                                          
+                    if (tenantWidgetId) {
+                        // Widget ID'sini komponent özelliği olarak ayarla
+                        component.set('tenant_widget_id', tenantWidgetId);
                         
-                        // Görünümü güncelle
-                        const view = component.view;
-                        if (view && typeof view.onRender === 'function') {
-                            setTimeout(() => view.onRender(), 100);
-                        }
-                    } else {
-                        // Normal widget bileşeni
-                        const widgetType = attrs['data-widget-type'];
-                        
-                        if (widgetType === 'dynamic' || widgetType === 'module') {
-                            component.set('type', 'widget');
-                            component.set('draggable', false);
-                            component.set('droppable', false);
-                            component.set('selectable', true);
-                            component.set('highlightable', false);
-                            component.set('editable', false);
-                            component.set('locked', true);
-                            
-                            component.setStyle({
-                                'pointer-events': 'none',
-                                'cursor': 'not-allowed'
-                            });
-                            
-                            const view = component.view;
-                            if (view && typeof view.onRender === 'function') {
-                                view.onRender();
+                        setTimeout(() => {
+                            if (window.studioLoadWidget) {
+                                window.studioLoadWidget(tenantWidgetId);
                             }
-                        }
+                        }, 200);
                     }
                 });
                 
@@ -493,88 +480,12 @@ window.StudioWidgetManager = (function() {
                 }
             }, 100);
         });
-        
-        // Aktif Widget bileşenleri blokları
-        editor.BlockManager.add('tenant-widget-embed', {
-            label: 'Aktif Widget',
-            category: 'active-widgets',
-            content: {
-                type: 'widget-embed',
-                classes: ['widget-embed'],
-                attributes: { 'data-type': 'widget-embed', 'data-widget-id': '1' }
-            },
-            attributes: { class: 'fa fa-star' },
-            render: ({ model, className }) => {
-                return `
-                    <div class="${className}">
-                        <i class="fa fa-star"></i>
-                        <div class="gjs-block-label">Aktif Widget</div>
-                        <div class="gjs-block-type-badge dynamic">Dinamik</div>
-                    </div>
-                `;
-            }
-        });
-        
-        // Global widget yükleme fonksiyonu
-        window.loadTenantWidget = function(widgetId) {
-            const containerId = "widget-content-" + widgetId;
-            const container = document.getElementById(containerId);
-            
-            if (!container) {
-                console.error("Widget container bulunamadı: #" + containerId);
-                
-                // Alternatif seçiciyi dene
-                const altContainer = document.querySelector(`.widget-embed[data-tenant-widget-id='${widgetId}'] .widget-content-placeholder`);
-                if (altContainer) {
-                    console.log("Alternatif container bulundu");
-                    loadWidgetContent(altContainer, widgetId);
-                }
-                return;
-            }
-            
-            console.log("Widget yükleniyor:", widgetId, "container:", containerId);
-            loadWidgetContent(container, widgetId);
-            
-            // Widget içeriğini yükle
-            function loadWidgetContent(targetContainer, wId) {
-                fetch(`/admin/widgetmanagement/preview/embed/${wId}`)
-                    .then(response => {
-                        console.log("Widget yanıtı alındı:", response.status);
-                        return response.text();
-                    })
-                    .then(html => {
-                        console.log("Widget HTML içeriği alındı, uzunluk:", html.length);
-                        targetContainer.innerHTML = html;
-                        
-                        // Handlebars scriptlerini çalıştır
-                        setTimeout(() => {
-                            const scripts = targetContainer.querySelectorAll('script');
-                            console.log("Widget scriptleri:", scripts.length);
-                            
-                            scripts.forEach(script => {
-                                const newScript = document.createElement('script');
-                                if (script.src) {
-                                    newScript.src = script.src;
-                                } else {
-                                    newScript.textContent = script.textContent;
-                                }
-                                document.body.appendChild(newScript);
-                            });
-                            
-                            console.log("Widget scriptleri yüklendi");
-                        }, 100);
-                    })
-                    .catch(error => {
-                        console.error("Widget yükleme hatası:", error);
-                        targetContainer.innerHTML = `<div class="alert alert-danger">Widget yüklenirken hata: ${error.message}</div>`;
-                    });
-            }
-        };
     }
     
     return {
         loadWidgetData: loadWidgetData,
         getWidgetData: getWidgetData,
+        getTenantWidgetData: getTenantWidgetData,
         showWidgetModal: showWidgetModal,
         setup: setup
     };

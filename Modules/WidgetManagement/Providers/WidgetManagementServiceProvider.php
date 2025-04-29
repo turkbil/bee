@@ -16,6 +16,7 @@ use Modules\WidgetManagement\app\Http\Livewire\FileWidgetListComponent;
 use Modules\WidgetManagement\app\Services\WidgetService;
 use Modules\WidgetManagement\app\Services\WidgetItemService;
 use Nwidart\Modules\Traits\PathNamespace;
+use Illuminate\Support\Facades\Blade;
 
 class WidgetManagementServiceProvider extends ServiceProvider
 {
@@ -62,6 +63,11 @@ class WidgetManagementServiceProvider extends ServiceProvider
         Livewire::component('widget-category-component', WidgetCategoryComponent::class);
         Livewire::component('widget-category-manage-component', WidgetCategoryManageComponent::class);
         Livewire::component('file-widget-list-component', FileWidgetListComponent::class);
+        
+        // Widget blade direktifi
+        Blade::directive('widget', function ($expression) {
+            return "<?php echo app('widget.service')->renderSingleWidget(\$tenantWidget = \Modules\WidgetManagement\app\Models\TenantWidget::find($expression)); ?>";
+        });
     }
 
     public function register()

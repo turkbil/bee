@@ -106,7 +106,7 @@ window.StudioFix = (function() {
     function fixNumberInputs() {
         try {
             // Number input butonlarını düzeltmek için periyodik kontrol
-            const checkNumberInputs = setInterval(() => {
+            const checkNumberInputsInterval = setInterval(() => {
                 const allNumberInputs = document.querySelectorAll('.gjs-field-integer');
                 let inputsFixed = 0;
                 
@@ -171,7 +171,7 @@ window.StudioFix = (function() {
             }, 2000);
             
             // 30 saniye sonra periyodik kontrolü durdur
-            setTimeout(() => clearInterval(checkNumberInputs), 30000);
+            setTimeout(() => clearInterval(checkNumberInputsInterval), 30000);
         } catch (error) {
             console.error('Sayı giriş alanları düzeltme hatası:', error);
         }
@@ -183,7 +183,7 @@ window.StudioFix = (function() {
     function fixLayerPanel() {
         try {
             // Katmanlar paneli için periyodik kontrol
-            const checkLayerPanel = setInterval(() => {
+            const checkLayerPanelInterval = setInterval(() => {
                 const layerContainer = document.getElementById('layers-container');
                 if (!layerContainer) return;
                 
@@ -226,7 +226,7 @@ window.StudioFix = (function() {
             }, 2000);
             
             // 30 saniye sonra periyodik kontrolü durdur
-            setTimeout(() => clearInterval(checkLayerPanel), 30000);
+            setTimeout(() => clearInterval(checkLayerPanelInterval), 30000);
         } catch (error) {
             console.error('Katmanlar paneli düzeltme hatası:', error);
         }

@@ -203,7 +203,7 @@ class BlockService
         $uniqueId = 'widget-content-' . $tenantWidget->id;
         
         // Widget container oluştur
-        $content = '<div class="widget-embed" data-widget-id="' . $tenantWidget->id . '" data-tenant-widget-id="' . $tenantWidget->id . '">';
+        $content = '<div class="widget-embed" data-widget-id="' . $tenantWidget->id . '" data-tenant-widget-id="' . $tenantWidget->id . '" id="widget-embed-' . $tenantWidget->id . '">';
         
         // İçerik alanı oluştur (ID'li)
         $content .= '<div class="widget-content-placeholder" id="' . $uniqueId . '">';
@@ -220,36 +220,77 @@ class BlockService
             (function() {
                 var widgetId = ' . $tenantWidget->id . ';
                 var containerId = "' . $uniqueId . '";
-                var container = document.getElementById(containerId);
                 
-                if (!container) {
-                    console.error("Widget container bulunamadı: #" + containerId);
-                    return;
+                function loadWidget() {
+                    console.log("Widget " + widgetId + " için yükleme başlatılıyor...");
+                    var container = document.getElementById(containerId);
+                    
+                    if (!container) {
+                        console.log("Container bulunamadı, alternatif arama yapılıyor...");
+                        container = document.querySelector("#" + containerId);
+                        
+                        if (!container) {
+                            container = document.querySelector("[id=\'" + containerId + "\']");
+                        }
+                        
+                        if (!container) {
+                            var parentElement = document.getElementById("widget-embed-" + widgetId);
+                            if (parentElement) {
+                                container = parentElement.querySelector(".widget-content-placeholder");
+                                if (container) {
+                                    container.id = containerId;
+                                }
+                            }
+                        }
+                        
+                        if (!container) {
+                            console.error("Widget container bulunamadı: #" + containerId);
+                            return;
+                        }
+                    }
+                    
+                    if (typeof window.studioLoadWidget === "function") {
+                        console.log("Global yükleyici kullanılıyor: " + widgetId);
+                        window.studioLoadWidget(widgetId);
+                    } else {
+                        console.log("Doğrudan fetch ile yükleme yapılıyor: " + widgetId);
+                        fetch("/admin/widgetmanagement/preview/embed/" + widgetId)
+                            .then(function(response) { return response.text(); })
+                            .then(function(html) {
+                                container.innerHTML = html;
+                                
+                                // Script etiketlerini çalıştır
+                                var scripts = container.querySelectorAll("script");
+                                scripts.forEach(function(script) {
+                                    var newScript = document.createElement("script");
+                                    if (script.src) {
+                                        newScript.src = script.src;
+                                    } else {
+                                        newScript.textContent = script.textContent;
+                                    }
+                                    document.body.appendChild(newScript);
+                                });
+                                
+                                console.log("Widget " + widgetId + " başarıyla yüklendi");
+                            })
+                            .catch(function(error) {
+                                console.error("Widget yükleme hatası:", error);
+                                container.innerHTML = "<div class=\"alert alert-danger\">Widget yüklenirken hata: " + error.message + "</div>";
+                            });
+                    }
                 }
                 
-                console.log("Widget yükleme başladı: ID=" + widgetId + ", Container=" + containerId);
+                // Yükleme için 100ms bekle (DOM hazırlığı için)
+                setTimeout(loadWidget, 500);
                 
-                fetch("/admin/widgetmanagement/preview/embed/" + widgetId)
-                    .then(function(response) { return response.text(); })
-                    .then(function(html) {
-                        container.innerHTML = html;
-                        
-                        // Script etiketlerini çalıştır
-                        var scripts = container.querySelectorAll("script");
-                        scripts.forEach(function(script) {
-                            var newScript = document.createElement("script");
-                            if (script.src) {
-                                newScript.src = script.src;
-                            } else {
-                                newScript.textContent = script.textContent;
-                            }
-                            document.body.appendChild(newScript);
-                        });
-                    })
-                    .catch(function(error) {
-                        console.error("Widget yükleme hatası:", error);
-                        container.innerHTML = "<div class=\"alert alert-danger\">Widget yüklenirken hata: " + error.message + "</div>";
-                    });
+                // Backup - 3 saniye sonra tekrar dene
+                setTimeout(function() {
+                    var container = document.getElementById(containerId);
+                    if (container && container.querySelector(".widget-loading")) {
+                        console.log("Widget " + widgetId + " için yükleme tekrar deneniyor...");
+                        loadWidget();
+                    }
+                }, 3000);
             })();
         });
         </script>';

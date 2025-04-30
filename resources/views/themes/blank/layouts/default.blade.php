@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $title ?? 'Sayfa Başlığı' }} - {{ config('app.name') }}</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+
     <style>
         body { font-family: Arial, sans-serif; margin: 0; padding: 20px; line-height: 1.6; }
         .container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
@@ -33,5 +36,9 @@
             <p>&copy; {{ date('Y') }} {{ config('app.name') }}</p>
         </div>
     </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ asset('admin/libs/handlebars/handlebars.min.js') }}"></script>
+
 </body>
 </html>

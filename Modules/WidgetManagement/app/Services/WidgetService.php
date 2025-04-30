@@ -107,7 +107,9 @@ class WidgetService
     
     public function renderWidgetsInPosition(string $position): string
     {
-        $cacheKey = $this->cachePrefix . tenant()->id . "_pos_{$position}";
+        // tenant()->id null durumunu önlemek için optional ile id al
+        $tenantId = optional(tenant())->id ?? 0;
+        $cacheKey = $this->cachePrefix . $tenantId . "_pos_{$position}";
         
         if ($this->useCache) {
             return Cache::remember($cacheKey, $this->cacheDuration, function () use ($position) {
@@ -132,7 +134,9 @@ class WidgetService
         
     public function renderSingleWidget(TenantWidget $tenantWidget): string
     {
-        $cacheKey = $this->cachePrefix . tenant()->id . "_widget_{$tenantWidget->id}";
+        // tenant()->id null durumunu önlemek için optional ile id al
+        $tenantId = optional(tenant())->id ?? 0;
+        $cacheKey = $this->cachePrefix . $tenantId . "_widget_{$tenantWidget->id}";
         
         if ($this->useCache) {
             return Cache::remember($cacheKey, $this->cacheDuration, function () use ($tenantWidget) {

@@ -222,7 +222,13 @@ window.StudioWidgetLoader = (function() {
                     // Kritik - HTML içeriğini güncellemeden önce içerik alanını düzenle
                     setTimeout(() => {
                         try {
-                            const el = component.view ? component.view.el : null;
+                            // Komponent view'ının güncel olduğundan emin ol
+                            if (!component.view) {
+                                console.error(`Widget ${widgetId} için view bulunamadı`);
+                                return;
+                            }
+                            
+                            const el = component.view.el;
                             if (!el) {
                                 console.error(`Widget ${widgetId} için view elementi bulunamadı`);
                                 return;
@@ -238,27 +244,7 @@ window.StudioWidgetLoader = (function() {
                             
                             // İçerik alanını bul veya oluştur
                             const uniqueId = 'widget-content-' + widgetId;
-                            let container = document.getElementById(uniqueId);
-                            
-                            // DOM'da direkt arama
-                            if (!container) {
-                                container = el.querySelector(`#${uniqueId}`);
-                            }
-                            
-                            // querySelector ile ID arama
-                            if (!container) {
-                                container = el.querySelector(`[id="${uniqueId}"]`);
-                            }
-                            
-                            // Placeholder sınıfıyla arama
-                            if (!container) {
-                                container = el.querySelector(`.widget-content-placeholder`);
-                                
-                                // ID ekle
-                                if (container && !container.id) {
-                                    container.id = uniqueId;
-                                }
-                            }
+                            let container = el.querySelector(`#${uniqueId}`) || el.querySelector(`.widget-content-placeholder`);
                             
                             // Hiç yoksa yeni oluştur
                             if (!container) {
@@ -270,7 +256,7 @@ window.StudioWidgetLoader = (function() {
                             }
                             
                             if (container) {
-                                // Widget içeriğini yükle
+                                // Widget içeriğini yükle - iframe içinde çalışacak şekilde düzenlenmiş olan yükleme fonksiyonunu çağır
                                 if (typeof window.studioLoadWidget === "function") {
                                     setTimeout(() => {
                                         window.studioLoadWidget(widgetId);
@@ -351,7 +337,7 @@ window.StudioWidgetLoader = (function() {
                                 
                                 labelEl.innerHTML = '<i class="fa fa-star me-1"></i> Aktif Widget #' + widgetId;
                                 
-                                // Yükleme fonksiyonunu çağır
+                                // Yükleme fonksiyonunu çağır - iframe içine yükleme için güncellenmiş fonksiyon
                                 if (typeof window.studioLoadWidget === 'function') {
                                     setTimeout(() => window.studioLoadWidget(widgetId), 100);
                                 }
@@ -459,7 +445,7 @@ window.StudioWidgetLoader = (function() {
                     if (component.view && typeof component.view.onRender === 'function') {
                         setTimeout(() => component.view.onRender(), 100);
                         
-                        // Widget içeriğini yükle
+                        // Widget içeriğini yükle - iframe içine widget içeriğini yükleyecek şekilde güncellenmiş fonksiyonu çağır
                         setTimeout(() => {
                             if (typeof window.studioLoadWidget === 'function') {
                                 window.studioLoadWidget(widgetId);

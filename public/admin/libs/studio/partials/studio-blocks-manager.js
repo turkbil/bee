@@ -96,24 +96,32 @@ window.StudioBlockManager = (function() {
                     // Drag-drop işlevini ekle
                     blockEl.setAttribute('draggable', 'true');
                     blockEl.addEventListener('dragstart', (e) => {
+                        // Canvas iframe'ini bul
+                        const editorFrame = document.querySelector('.gjs-frame');
+                        const iframDocument = editorFrame ? editorFrame.contentDocument || editorFrame.contentWindow.document : null;
+                        
+                        // Widget mi kontrol et
+                        const isActiveWidget = block.id.startsWith('tenant-widget-');
+                        const isWidget = block.id.startsWith('widget-') || isActiveWidget;
+                        
                         // Blok içeriğini doğrudan aktarma
                         const blockContent = block.get('content');
                         let contentToAdd;
                         
-                        // Widget bloğu mu kontrol et
-                        const isWidget = block.id.startsWith('widget-');
-                        
                         if (isWidget && typeof blockContent === 'object') {
                             // Özel widget içeriğini doğru şekilde ekle
-                            contentToAdd = blockContent.html;
+                            contentToAdd = blockContent.html || blockContent;
                             
                             // Widget bilgisini data attribute olarak kaydet
-                            if (blockContent.widget_id) {
+                            if (blockContent.widget_id || isActiveWidget) {
+                                const widgetId = blockContent.widget_id || block.id.replace('tenant-widget-', '');
                                 const tempDiv = document.createElement('div');
-                                tempDiv.innerHTML = contentToAdd;
-                                const wrapperEl = tempDiv.querySelector('.gjs-widget-wrapper');
+                                tempDiv.innerHTML = typeof contentToAdd === 'string' ? contentToAdd : '';
+                                const wrapperEl = tempDiv.querySelector('.gjs-widget-wrapper') || tempDiv;
+                                
                                 if (wrapperEl) {
-                                    wrapperEl.setAttribute('data-widget-id', blockContent.widget_id);
+                                    const widgetAttr = isActiveWidget ? 'data-tenant-widget-id' : 'data-widget-id';
+                                    wrapperEl.setAttribute(widgetAttr, widgetId);
                                     wrapperEl.setAttribute('data-type', 'widget');
                                 }
                                 contentToAdd = tempDiv.innerHTML;
@@ -126,12 +134,28 @@ window.StudioBlockManager = (function() {
                             contentToAdd = blockContent;
                         }
                         
+                        // Özel widget kontrolü - aktif widget'lar için HTML olarak widget embed kullanımı
+                        if (isActiveWidget) {
+                            const widgetId = block.id.replace('tenant-widget-', '');
+                            contentToAdd = `<div class="widget-embed" data-type="widget-embed" data-tenant-widget-id="${widgetId}" id="widget-embed-${widgetId}">
+                                <div class="widget-content-placeholder" id="widget-content-${widgetId}">
+                                    <div class="widget-loading" style="text-align:center; padding:20px;">
+                                        <i class="fa fa-spin fa-spinner"></i> Widget içeriği yükleniyor...
+                                    </div>
+                                </div>
+                            </div>`;
+                            
+                            // Canvas hazırlama eventi 
+                            window._needsWidgetRefresh = true;
+                            window._lastDroppedWidgetId = widgetId;
+                        }
+                        
                         // DataTransfer nesnesine içeriği aktar
                         e.dataTransfer.setData('text/html', contentToAdd);
                         e.dataTransfer.setData('text/plain', block.id);
                         blockEl.classList.add('dragging');
                         
-                        // Widget için ekstra bilgileri canvas'a aktar
+                        // Widget için ekstra bilgileri sakla
                         if (isWidget && typeof blockContent === 'object') {
                             // Widget CSS ve JS verilerini kaydet
                             if (blockContent.css) {
@@ -143,10 +167,11 @@ window.StudioBlockManager = (function() {
                             
                             // Widget bilgilerini geçici olarak sakla
                             window._lastDraggedWidget = {
-                                id: blockContent.widget_id,
+                                id: blockContent.widget_id || block.id.replace('tenant-widget-', ''),
                                 html: blockContent.html,
                                 css: blockContent.css,
-                                js: blockContent.js
+                                js: blockContent.js,
+                                isActiveWidget: isActiveWidget
                             };
                         }
                     });
@@ -158,8 +183,17 @@ window.StudioBlockManager = (function() {
                         const widgetStyles = document.querySelectorAll('style[data-widget-css="true"]');
                         widgetStyles.forEach(el => el.remove());
                         
-                        // Widget bilgilerini temizle
+                        // İçeriği iframe'e yerleştirildiyse widget içeriğini yükle
                         setTimeout(() => {
+                            if (window._needsWidgetRefresh && window._lastDroppedWidgetId) {
+                                if (window.studioLoadWidget) {
+                                    window.studioLoadWidget(window._lastDroppedWidgetId);
+                                }
+                                window._needsWidgetRefresh = false;
+                                window._lastDroppedWidgetId = null;
+                            }
+                            
+                            // Widget bilgilerini temizle
                             window._lastDraggedWidget = null;
                         }, 300);
                     });

@@ -187,6 +187,15 @@ window.StudioWidgetManager = (function() {
         window.studioLoadWidget = function(widgetId) {
             console.log("studioLoadWidget başlatıldı: widget_id=" + widgetId);
             
+            // Editor iframe'ini bul
+            const editorFrame = document.querySelector('.gjs-frame');
+            const editorDocument = editorFrame ? editorFrame.contentDocument || editorFrame.contentWindow.document : null;
+            
+            if (!editorDocument) {
+                console.error("Editor iframe belge nesnesi bulunamadı!");
+                return;
+            }
+            
             // Olası tüm container ID'lerini dene
             const containerIds = [
                 `widget-content-${widgetId}`,
@@ -195,44 +204,42 @@ window.StudioWidgetManager = (function() {
             
             let container = null;
             
-            // Tüm olası ID'leri dene
+            // İlk olarak iframe içinde ara
             for (const id of containerIds) {
-                container = document.getElementById(id);
+                container = editorDocument.getElementById(id);
                 if (container) {
-                    console.log(`Widget container bulundu: #${id}`);
+                    console.log(`Widget container iframe içinde bulundu: #${id}`);
                     break;
                 }
             }
             
-            // ID ile bulunamadıysa diğer yöntemlerle dene
+            // iframe içinde querySelector ile dene
             if (!container) {
-                console.log("ID ile container bulunamadı, alternatif yöntemler deneniyor...");
-                
-                // querySelector ile dene
                 for (const id of containerIds) {
-                    container = document.querySelector(`#${id}`);
+                    container = editorDocument.querySelector(`#${id}`);
                     if (container) {
-                        console.log(`querySelector ile container bulundu: #${id}`);
+                        console.log(`Widget container iframe içinde querySelector ile bulundu: #${id}`);
                         break;
                     }
                 }
             }
             
-            // Attribute selector ile dene
+            // iframe içinde attribute selector ile dene
             if (!container) {
-                container = document.querySelector(`[id="widget-content-${widgetId}"]`);
+                container = editorDocument.querySelector(`[id="widget-content-${widgetId}"]`);
                 if (container) {
-                    console.log(`Attribute selector ile container bulundu`);
+                    console.log(`Widget container iframe içinde attribute selector ile bulundu`);
                 }
             }
             
-            // Widget embed içinde ara
+            // iframe içinde widget embed içinde ara
             if (!container) {
-                const widgetEmbed = document.getElementById(`widget-embed-${widgetId}`);
+                const widgetEmbed = editorDocument.getElementById(`widget-embed-${widgetId}`) || 
+                                  editorDocument.querySelector(`.widget-embed[data-tenant-widget-id="${widgetId}"]`);
                 if (widgetEmbed) {
                     container = widgetEmbed.querySelector('.widget-content-placeholder');
                     if (container) {
-                        console.log(`Widget embed içinde placeholder bulundu`);
+                        console.log(`Widget container iframe içinde widget embed içinde bulundu`);
                         // ID'si yoksa ekle
                         if (!container.id) {
                             container.id = `widget-content-${widgetId}`;
@@ -241,55 +248,86 @@ window.StudioWidgetManager = (function() {
                 }
             }
             
-            // Sınıf ve attribute ile dene
+            // Son çare - iframe içindeki tüm placeholder'ları kontrol et
             if (!container) {
-                container = document.querySelector(`.widget-embed[data-tenant-widget-id="${widgetId}"] .widget-content-placeholder`);
-                if (container) {
-                    console.log(`Sınıf ve attribute ile container bulundu`);
-                    // ID yoksa ekle
-                    if (!container.id) {
-                        container.id = `widget-content-${widgetId}`;
+                const allPlaceholders = editorDocument.querySelectorAll('.widget-content-placeholder');
+                if (allPlaceholders && allPlaceholders.length > 0) {
+                    console.log(`iframe içinde ${allPlaceholders.length} adet placeholder bulundu, kontrol ediliyor...`);
+                    
+                    for (const placeholder of allPlaceholders) {
+                        const parent = placeholder.closest('.widget-embed');
+                        if (parent && (parent.getAttribute('data-widget-id') == widgetId || 
+                                      parent.getAttribute('data-tenant-widget-id') == widgetId)) {
+                            container = placeholder;
+                            console.log(`iframe içinde eşleşen placeholder bulundu`);
+                            break;
+                        }
                     }
                 }
             }
             
-            // Son çare - tüm placeholder'ları kontrol et
+            // iframe içinde hiçbir eşleşme bulunamadıysa ana sayfada dene
             if (!container) {
-                const allPlaceholders = document.querySelectorAll('.widget-content-placeholder');
-                console.log(`${allPlaceholders.length} adet placeholder bulundu, kontrol ediliyor...`);
+                console.log("iframe içinde container bulunamadı, ana sayfada aranıyor...");
                 
-                for (const placeholder of allPlaceholders) {
-                    const parent = placeholder.closest('.widget-embed');
-                    if (parent && (parent.getAttribute('data-widget-id') == widgetId || 
-                                  parent.getAttribute('data-tenant-widget-id') == widgetId)) {
-                        container = placeholder;
-                        console.log(`Eşleşen placeholder bulundu`);
+                // Ana sayfada ID ile ara
+                for (const id of containerIds) {
+                    container = document.getElementById(id);
+                    if (container) {
+                        console.log(`Widget container ana sayfada bulundu: #${id}`);
                         break;
                     }
                 }
                 
-                if (!container && allPlaceholders.length > 0) {
-                    container = allPlaceholders[0];
-                    console.log(`Eşleşen placeholder bulunamadı, ilk placeholder kullanılıyor`);
-                    
-                    // ID ekle
-                    if (!container.id) {
-                        container.id = `widget-content-${widgetId}`;
+                // Ana sayfada widget embed içinde ara
+                if (!container) {
+                    const widgetEmbed = document.querySelector(`.widget-embed[data-tenant-widget-id="${widgetId}"]`);
+                    if (widgetEmbed) {
+                        container = widgetEmbed.querySelector('.widget-content-placeholder');
+                        if (container) {
+                            console.log(`Widget container ana sayfada widget embed içinde bulundu`);
+                        }
                     }
                 }
             }
             
-            // Hala bulunamadıysa, yeni bir element oluştur
+            // Hala bulunamadıysa, iframe içine yeni bir element oluştur
             if (!container) {
-                console.log("Hiçbir container bulunamadı, document.body içinde yeni bir element oluşturuluyor");
-                container = document.createElement('div');
-                container.id = `widget-content-${widgetId}`;
-                container.className = 'widget-content-placeholder';
-                container.innerHTML = '<div class="widget-loading"><i class="fa fa-spin fa-spinner"></i> Widget içeriği yükleniyor...</div>';
+                console.log("Hiçbir container bulunamadı, iframe içinde yeni bir element oluşturuluyor");
                 
-                // Editör canvas içine ekle
-                const canvas = document.querySelector('.gjs-cv-canvas__frames') || document.body;
-                canvas.appendChild(container);
+                // iframe içinde widget-embed ara
+                const widgetEmbed = editorDocument.querySelector(`.widget-embed[data-tenant-widget-id="${widgetId}"]`);
+                
+                if (widgetEmbed) {
+                    // Widget embed içine placeholder ekle
+                    container = document.createElement('div');
+                    container.id = `widget-content-${widgetId}`;
+                    container.className = 'widget-content-placeholder';
+                    container.innerHTML = '<div class="widget-loading"><i class="fa fa-spin fa-spinner"></i> Widget içeriği yükleniyor...</div>';
+                    widgetEmbed.appendChild(container);
+                    console.log("Widget embed içine yeni container eklendi");
+                } else {
+                    // iframe body'sine ekle
+                    container = document.createElement('div');
+                    container.id = `widget-content-${widgetId}`;
+                    container.className = 'widget-content-placeholder widget-content-floating';
+                    container.innerHTML = '<div class="widget-loading"><i class="fa fa-spin fa-spinner"></i> Widget içeriği yükleniyor...</div>';
+                    container.style.position = 'relative';
+                    container.style.margin = '10px auto';
+                    container.style.padding = '10px';
+                    container.style.border = '2px dashed #e11d48';
+                    container.style.borderRadius = '5px';
+                    
+                    if (editorDocument.body) {
+                        editorDocument.body.appendChild(container);
+                        console.log("Yeni container iframe body'sine eklendi");
+                    } else {
+                        console.error("iframe body bulunamadı!");
+                        // Son çare - ana sayfaya ekle
+                        document.body.appendChild(container);
+                        console.log("Yeni container ana sayfaya eklendi (son çare)");
+                    }
+                }
             }
             
             // Widget içeriğini yükle
@@ -314,10 +352,14 @@ window.StudioWidgetManager = (function() {
                         if (scripts.length > 0) {
                             Array.from(scripts).forEach((script, index) => {
                                 try {
+                                    // İframe içinde mi yoksa ana sayfada mı olduğumuzu kontrol et
+                                    const targetDocument = container.ownerDocument;
+                                    const isInIframe = targetDocument !== document;
+                                    
                                     // Script içeriğini kontrol et
                                     if (script.src) {
                                         // Harici script - src özelliği var
-                                        const newScript = document.createElement('script');
+                                        const newScript = targetDocument.createElement('script');
                                         newScript.src = script.src;
                                         
                                         // Diğer özellikleri kopyala
@@ -327,20 +369,27 @@ window.StudioWidgetManager = (function() {
                                             }
                                         }
                                         
-                                        document.body.appendChild(newScript);
+                                        // İframe içindeyse iframe head'e, değilse document head'e ekle
+                                        if (isInIframe) {
+                                            targetDocument.head.appendChild(newScript);
+                                        } else {
+                                            document.head.appendChild(newScript);
+                                        }
+                                        
                                         console.log(`Script ${index + 1}/${scripts.length} başarıyla işlendi (harici)`);
                                     } 
                                     else {
-                                        // İç script - eval kullanmadan işleyelim
+                                        // İç script
                                         const scriptContent = script.textContent;
+                                        const safeScript = targetDocument.createElement('script');
+                                        safeScript.type = 'text/javascript';
                                         
-                                        // HTML veya JSON karakterleri içeriyor mu kontrol et
-                                        if (scriptContent.includes('<') || scriptContent.includes('>') || 
-                                            scriptContent.includes('{') || scriptContent.includes('}')) {
-                                            
-                                            // İç içe etiket veya JSON varsa, IIFE ile çalıştır
-                                            const safeScript = document.createElement('script');
-                                            safeScript.type = 'text/javascript';
+                                        // İframe içindeyse, iframe context'inde çalıştır
+                                        if (isInIframe) {
+                                            safeScript.text = scriptContent;
+                                            targetDocument.body.appendChild(safeScript);
+                                        } else {
+                                            // Ana sayfa için IIFE ile çalıştır
                                             safeScript.text = `
                                                 try {
                                                     (function() {
@@ -351,12 +400,6 @@ window.StudioWidgetManager = (function() {
                                                 }
                                             `;
                                             document.body.appendChild(safeScript);
-                                        } 
-                                        else {
-                                            // Normal script - doğrudan ekle
-                                            const newScript = document.createElement('script');
-                                            newScript.textContent = scriptContent;
-                                            document.body.appendChild(newScript);
                                         }
                                         
                                         console.log(`Script ${index + 1}/${scripts.length} başarıyla işlendi (iç script)`);

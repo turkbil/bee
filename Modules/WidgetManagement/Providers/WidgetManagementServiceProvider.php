@@ -15,6 +15,8 @@ use Modules\WidgetManagement\app\Http\Livewire\WidgetCategoryManageComponent;
 use Modules\WidgetManagement\app\Http\Livewire\FileWidgetListComponent;
 use Modules\WidgetManagement\app\Services\WidgetService;
 use Modules\WidgetManagement\app\Services\WidgetItemService;
+use Modules\WidgetManagement\app\Support\ShortcodeParser;
+use Modules\WidgetManagement\app\Support\HandlebarsRenderer;
 use Nwidart\Modules\Traits\PathNamespace;
 use Illuminate\Support\Facades\Blade;
 
@@ -64,10 +66,11 @@ class WidgetManagementServiceProvider extends ServiceProvider
         Livewire::component('widget-category-manage-component', WidgetCategoryManageComponent::class);
         Livewire::component('file-widget-list-component', FileWidgetListComponent::class);
         
-        // Widget blade direktifi
-        Blade::directive('widget', function ($expression) {
-            return "<?php echo app('widget.service')->renderSingleWidget(\$tenantWidget = \Modules\WidgetManagement\app\Models\TenantWidget::find($expression)); ?>";
-        });
+        // Widget blade direktifleri
+        $this->registerBladeDirectives();
+        
+        // Helper Dosyasını Yükle
+        $this->loadHelperFile();
     }
 
     public function register()
@@ -82,6 +85,54 @@ class WidgetManagementServiceProvider extends ServiceProvider
         $this->app->singleton('widget.item.service', function ($app) {
             return new WidgetItemService($app['widget.service']);
         });
+        
+        // ShortcodeParser singleton kaydı
+        $this->app->singleton('shortcode.parser', function ($app) {
+            return new ShortcodeParser();
+        });
+        
+        // Handlebars Renderer
+        $this->app->singleton('handlebars.renderer', function ($app) {
+            return new HandlebarsRenderer();
+        });
+    }
+    
+    /**
+     * Blade direktiflerini kaydet
+     */
+    protected function registerBladeDirectives(): void
+    {
+        // Widget blade direktifi - ID ile render
+        Blade::directive('widget', function ($expression) {
+            return "<?php echo widget_by_id($expression); ?>";
+        });
+        
+        // Widget block direktifi - Slug ile render
+        Blade::directive('widgetblock', function ($expression) {
+            return "<?php echo widget_by_slug($expression); ?>";
+        });
+        
+        // Widgets direktifi - Pozisyona göre render
+        Blade::directive('widgets', function ($expression) {
+            return "<?php echo widgets_by_position($expression); ?>";
+        });
+        
+        // Shortcode parse direktifi
+        Blade::directive('parsewidgets', function ($expression) {
+            return "<?php echo parse_widget_shortcodes($expression); ?>";
+        });
+    }
+    
+    /**
+     * Helper dosyasını yükle
+     */
+    protected function loadHelperFile(): void
+    {
+        $helperPath = module_path($this->name, 'app/Helpers/WidgetHelper.php');
+        
+        if (file_exists($helperPath)) {
+            require_once $helperPath;
+        }
     }
 
     /**
@@ -153,7 +204,12 @@ class WidgetManagementServiceProvider extends ServiceProvider
      */
     public function provides(): array
     {
-        return [];
+        return [
+            'widget.service',
+            'widget.item.service',
+            'shortcode.parser',
+            'handlebars.renderer'
+        ];
     }
 
     private function getPublishableViewPaths(): array

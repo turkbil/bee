@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\InitializeTenancy;
-use App\Services\ModuleAccessService;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -24,11 +23,11 @@ class RouteServiceProvider extends ServiceProvider
     {
         // Global olarak tüm route'lara tenant middleware'ini ekle
         Route::middlewareGroup('web', [
-            \App\Http\Middleware\EncryptCookies::class,
+            \Illuminate\Cookie\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-            \App\Http\Middleware\VerifyCsrfToken::class,
+            \Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             InitializeTenancy::class, // Tenant middleware'ini web grubuna ekledik
         ]);

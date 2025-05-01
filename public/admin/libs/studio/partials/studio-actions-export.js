@@ -23,7 +23,13 @@ window.StudioExport = (function() {
             // Butonu geçici olarak devre dışı bırak
             this.disabled = true;
             const originalText = this.innerHTML;
-            this.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Yükleniyor...';
+            // Spinner ve metin
+            this.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> <span>Yükleniyor...</span>';
+            // Progress bar ekle
+            const progressContainer = document.createElement('div');
+            progressContainer.className = 'progress mt-2';
+            progressContainer.innerHTML = '<div id="preview-progress-bar" class="progress-bar" role="progressbar" style="width:0%">0%</div>';
+            this.insertAdjacentElement('afterend', progressContainer);
             
             try {
                 // İçeriği al
@@ -49,6 +55,13 @@ window.StudioExport = (function() {
                     widgetIds = window.StudioHtmlParser.findWidgetEmbeds(contentHtml);
                 }
                 console.log('Preview widgetIds:', widgetIds);
+                // Progress takibi
+                const totalWidgets = widgetIds.length;
+                let loadedWidgets = 0;
+                if (totalWidgets === 0) {
+                    const bar = document.getElementById('preview-progress-bar');
+                    if (bar) { bar.style.width = '100%'; bar.textContent = '100%'; }
+                }
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(contentHtml, 'text/html');
                 for (const widgetId of widgetIds) {
@@ -68,10 +81,20 @@ window.StudioExport = (function() {
                     } catch (err) {
                         console.error('Widget preview embed yüklenirken hata:', err);
                     }
+                    // Progress güncelle
+                    loadedWidgets++;
+                    const percent = totalWidgets ? Math.round((loadedWidgets / totalWidgets) * 100) : 100;
+                    const bar = document.getElementById('preview-progress-bar');
+                    if (bar) { bar.style.width = percent + '%'; bar.textContent = percent + '%'; }
                 }
                 console.log('Final parsed contentHtml:', doc.body.innerHTML);
                 contentHtml = doc.body.innerHTML;
-
+                // %100 olunca preview açmadan önce güncelle ve küçük gecikme
+                {
+                    const bar = document.getElementById('preview-progress-bar');
+                    if (bar) { bar.style.width = '100%'; bar.textContent = '100%'; }
+                }
+                await new Promise(r => setTimeout(r, 200));
                 // Önizleme penceresi oluştur
                 const previewWindow = window.open('', '_blank');
                 
@@ -92,6 +115,9 @@ window.StudioExport = (function() {
                 console.error("Preview operation error:", error);
                 window.StudioNotification.error('Önizleme oluşturulurken bir sorun oluştu: ' + error.message);
             } finally {
+                // Progress bar kaldır
+                const barContainer = this.nextElementSibling;
+                if (barContainer && barContainer.classList.contains('progress')) barContainer.remove();
                 // Butonu normal haline getir
                 this.disabled = false;
                 this.innerHTML = originalText;

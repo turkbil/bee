@@ -14,6 +14,8 @@ window.StudioConfig = (function() {
             ],
             scripts: [
                 "https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js",
+                "/admin/libs/studio/partials/studio-widget-manager.js",
+                "/admin/libs/studio/partials/studio-widget-loader.js"
             ]
         },
         

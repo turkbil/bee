@@ -77,6 +77,11 @@ window.StudioWidgetLoader = (function() {
             return `<span class="widget-variable">${content.trim()}</span>`;
         });
         
+        // Widget shortcoder ({{widget:id}}) embed'e dönüştür
+        html = html.replace(/\{\{widget:(\d+)\}\}/gi, function(match, widgetId) {
+            return `<div class="widget-embed" data-tenant-widget-id="${widgetId}"></div>`;
+        });
+
         // Blade direktiflerini temizle
         html = html.replace(/@(if|foreach|for|while|php|switch|case|break|continue|endforeach|endif|endfor|endwhile|endswitch|yield|section|endsection|include|extends)(\s*\([^)]*\)|\s+[^{]*)/g, '');
         

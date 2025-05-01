@@ -17,7 +17,7 @@ window.StudioExport = (function() {
         }
         
         // Önizleme işlemini yapacak fonksiyon 
-        previewBtn.addEventListener("click", function(e) {
+        previewBtn.addEventListener("click", async function(e) {
             e.preventDefault();
             
             // Butonu geçici olarak devre dışı bırak
@@ -38,6 +38,40 @@ window.StudioExport = (function() {
                     jsLength: js.length
                 });
                 
+                // Preview için widget embed içeriklerini yükle
+                let contentHtml = html;
+                if (window.StudioHtmlParser && typeof window.StudioHtmlParser.convertAllWidgetReferencesToEmbeds === 'function') {
+                    contentHtml = window.StudioHtmlParser.convertAllWidgetReferencesToEmbeds(contentHtml);
+                }
+                // Widget embed öğelerini DOMParser ile değiştir
+                let widgetIds = [];
+                if (window.StudioHtmlParser && typeof window.StudioHtmlParser.findWidgetEmbeds === 'function') {
+                    widgetIds = window.StudioHtmlParser.findWidgetEmbeds(contentHtml);
+                }
+                console.log('Preview widgetIds:', widgetIds);
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(contentHtml, 'text/html');
+                for (const widgetId of widgetIds) {
+                    try {
+                        const res = await fetch(`/admin/widgetmanagement/preview/embed/${widgetId}`, { credentials: 'same-origin' });
+                        console.log(`Fetch status for widget ${widgetId}:`, res.status);
+                        if (res.ok) {
+                            const widgetHtml = await res.text();
+                            console.log(`Widget HTML for preview ${widgetId}:`, widgetHtml);
+                            const tempDiv = document.createElement('div');
+                            tempDiv.innerHTML = widgetHtml;
+                            doc.querySelectorAll(`.widget-embed[data-tenant-widget-id="${widgetId}"]`).forEach(el => {
+                                el.replaceWith(tempDiv.cloneNode(true));
+                                console.log(`Replaced embed for widget ${widgetId}`);
+                            });
+                        }
+                    } catch (err) {
+                        console.error('Widget preview embed yüklenirken hata:', err);
+                    }
+                }
+                console.log('Final parsed contentHtml:', doc.body.innerHTML);
+                contentHtml = doc.body.innerHTML;
+
                 // Önizleme penceresi oluştur
                 const previewWindow = window.open('', '_blank');
                 
@@ -48,7 +82,7 @@ window.StudioExport = (function() {
                 }
                 
                 // HTML içeriğini oluştur
-                const previewContent = window.StudioConfig.getFullHtmlTemplate(html, css, js);
+                const previewContent = window.StudioConfig.getFullHtmlTemplate(contentHtml, css, js);
                 
                 // İçeriği yaz ve pencereyi kapat
                 previewWindow.document.open();

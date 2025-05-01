@@ -464,6 +464,61 @@ window.StudioWidgetLoader = (function() {
         }
     }
     
+    // Widget içeriğini yükle
+    window.studioLoadWidget = function(widgetId) {
+        console.log(`Widget ${widgetId} içeriği yükleniyor...`);
+        fetch(`/admin/widgetmanagement/preview/embed/${widgetId}`, { credentials: 'same-origin' })
+            .then(response => {
+                console.log(`Widget ${widgetId} yanıtı alındı:`, response.status);
+                if (!response.ok) throw new Error(`Widget yanıtı başarısız: ${response.status}`);
+                return response.text();
+            })
+            .then(async html => {
+                console.log(`Widget ${widgetId} içeriği alındı, uzunluk:`, html.length);
+                const container = document.getElementById(`widget-content-${widgetId}`);
+                container.innerHTML = html;
+                
+                // Tüm script etiketlerini al
+                const allScripts = Array.from(container.querySelectorAll('script'));
+                const externalScripts = allScripts.filter(s => s.src);
+                const inlineScripts = allScripts.filter(s => !s.src && (!s.type || s.type === 'text/javascript'));
+                const targetDocument = container.ownerDocument;
+                const head = targetDocument !== document ? targetDocument.head : document.head;
+                
+                // Harici scriptleri sıralı yükle
+                for (const scriptTag of externalScripts) {
+                    await new Promise(resolve => {
+                        const newScript = targetDocument.createElement('script');
+                        newScript.src = scriptTag.src;
+                        newScript.async = false;
+                        for (const attr of scriptTag.attributes) if (attr.name !== 'src') newScript.setAttribute(attr.name, attr.value);
+                        newScript.onload = resolve;
+                        newScript.onerror = resolve;
+                        head.appendChild(newScript);
+                    });
+                }
+                
+                // Inline scriptleri çalıştır
+                for (const scriptTag of inlineScripts) {
+                    try {
+                        const newScript = targetDocument.createElement('script');
+                        newScript.type = 'text/javascript';
+                        newScript.textContent = scriptTag.textContent;
+                        (targetDocument !== document ? targetDocument.body : document.body).appendChild(newScript);
+                    } catch (err) {
+                        console.error(`Inline script işlenirken hata:`, err);
+                    }
+                }
+                
+                console.log(`Widget ${widgetId} başarıyla yüklendi`);
+            })
+            .catch(error => {
+                console.error(`Widget ${widgetId} yükleme hatası:`, error);
+                const container = document.getElementById(`widget-content-${widgetId}`);
+                container.innerHTML = `<div class="alert alert-danger">Widget yüklenirken hata: ${error.message}</div>`;
+            });
+    };
+    
     return {
         loadWidgetBlocks: loadWidgetBlocks,
         processExistingWidgets: processExistingWidgets,

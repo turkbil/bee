@@ -128,7 +128,17 @@ window.StudioEditorSetup = (function() {
                     console.warn('Geçerli içerik bulunamadı. Varsayılan içerik yükleniyor...');
                     content = window.StudioConfig.getConfig('defaultHtml');
                 }
-                
+
+                // Shortcode ve widget embed referanslarını dönüştür
+                if (window.StudioHtmlParser) {
+                    if (typeof window.StudioHtmlParser.convertAllWidgetReferencesToEmbeds === 'function') {
+                        content = window.StudioHtmlParser.convertAllWidgetReferencesToEmbeds(content);
+                    }
+                    if (typeof window.StudioHtmlParser.parseInput === 'function') {
+                        content = window.StudioHtmlParser.parseInput(content);
+                    }
+                }
+
                 // İçeriği editöre yükle
                 editor.setComponents(content);
                 console.log('İçerik editöre başarıyla yüklendi');

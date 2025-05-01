@@ -48,14 +48,11 @@ class RouteServiceProvider extends ServiceProvider
                     if (file_exists($webRoute)) {
                         // TenantManagement modülü sadece root için
                         if ($moduleName === 'tenantmanagement') {
-                            Route::middleware(['web', 'auth', function ($request, $next) {
-                                if (!auth()->user() || !auth()->user()->isRoot()) {
-                                    abort(403, 'Bu alana sadece Root kullanıcılar erişebilir.');
-                                }
-                                return $next($request);
-                            }, 'tenant'])->group($webRoute);
+                            // Middleware'i isim ile kullanıyoruz, closure yerine
+                            Route::middleware(['web', 'auth', 'root.access', 'tenant'])
+                                ->group($webRoute);
                         } else {
-                            // Diğer modüller için izin kontrolü yap - ÖNEMLİ: module.permission middleware'ini ekledik
+                            // Diğer modüller için izin kontrolü yap
                             Route::middleware(['web', 'auth', 'tenant', "module.permission:{$moduleName},view"])
                                 ->group($webRoute);
                         }
@@ -70,14 +67,17 @@ class RouteServiceProvider extends ServiceProvider
             }
         
             // Web route'larını yükle
-            Route::middleware('web')
-                ->group(base_path('routes/web.php'));
+            if (file_exists(base_path('routes/web.php'))) {
+                Route::middleware('web')
+                    ->group(base_path('routes/web.php'));
+            }
         
-            // API route'larını yükle
-            Route::prefix('api')
-                ->middleware(['api', 'tenant'])
-                ->group(base_path('routes/api.php'));
+            // API route'larını yükle - dosyanın varlığını kontrol ediyoruz
+            if (file_exists(base_path('routes/api.php'))) {
+                Route::prefix('api')
+                    ->middleware(['api', 'tenant'])
+                    ->group(base_path('routes/api.php'));
+            }
         });
-        
     }
 }

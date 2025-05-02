@@ -163,6 +163,15 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tema</label>
+                            <select class="form-select" wire:model="theme">
+                                @foreach($themes as $key => $label)
+                                <option value="{{ $key }}">{{ $label }}</option>
+                                @endforeach
+                            </select>
+                            @error('theme') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
                         
                         @if($tenantId && $editingTenant)
                         <div class="card bg-light">
@@ -251,6 +260,15 @@
                                     <label>Aktif Değil / Offline</label>
                                 </div>
                             </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tema</label>
+                            <select class="form-select" wire:model="theme">
+                                @foreach($themes as $key => $label)
+                                <option value="{{ $key }}">{{ $label }}</option>
+                                @endforeach
+                            </select>
+                            @error('theme') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                     </div>
                     <div class="modal-footer">

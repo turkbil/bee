@@ -95,6 +95,11 @@ class ShortcodeParser
      */
     protected function renderWidget(string $slug, array $params = []): string
     {
+        // Eğer slug sayısal ise ID üzerinden widget render et
+        if (ctype_digit($slug)) {
+            return widget_by_id((int)$slug, $params);
+        }
+        
         try {
             // Önbelleğe alınmış widget'ı kontrol et
             $cacheKey = 'widget_shortcode_' . md5($slug . json_encode($params));

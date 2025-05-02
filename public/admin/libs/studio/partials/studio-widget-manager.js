@@ -180,62 +180,7 @@ window.StudioWidgetManager = (function() {
         });
     }
         
-    /**
-     * Global widget yükleme fonksiyonu - hem canvas hem preview için
-     */
-    window.studioLoadWidget = async function(widgetId) {
-        console.log(`Widget yükleniyor: ${widgetId}`);
-        // Önce top-level'de container ara
-        let container = document.getElementById(`widget-content-${widgetId}`);
-        let targetDocument = document;
-        // Bulunamazsa editor iframe içinde ara
-        if (!container) {
-            const iframe = document.querySelector('.gjs-frame');
-            if (iframe) {
-                targetDocument = iframe.contentDocument || iframe.contentWindow.document;
-                container = targetDocument.getElementById(`widget-content-${widgetId}`);
-            }
-        }
-        if (!container) {
-            console.error(`Widget container bulunamadı: ${widgetId}`);
-            return;
-        }
-        try {
-            const res = await fetch(`/admin/widgetmanagement/preview/embed/${widgetId}`, { credentials: 'same-origin' });
-            if (!res.ok) throw new Error(`Fetch hatası: ${res.status}`);
-            const html = await res.text();
-            container.innerHTML = html;
-            // Script etiketlerini sırayla yükle ve çalıştır
-            const allScripts = Array.from(container.querySelectorAll('script'));
-            const externalScripts = allScripts.filter(s => s.src);
-            const inlineScripts = allScripts.filter(s => !s.src && (!s.type || s.type === 'text/javascript'));
-            const head = targetDocument === document ? document.head : targetDocument.head;
-            for (const scriptTag of externalScripts) {
-                await new Promise(resolve => {
-                    const ns = targetDocument.createElement('script');
-                    ns.src = scriptTag.src;
-                    ns.async = false;
-                    for (const attr of scriptTag.attributes) if (attr.name !== 'src') ns.setAttribute(attr.name, attr.value);
-                    ns.onload = resolve; ns.onerror = resolve;
-                    head.appendChild(ns);
-                });
-            }
-            for (const scriptTag of inlineScripts) {
-                try {
-                    const ns = targetDocument.createElement('script');
-                    ns.type = 'text/javascript';
-                    ns.textContent = scriptTag.textContent;
-                    (targetDocument === document ? document.body : targetDocument.body).appendChild(ns);
-                } catch (e) {
-                    console.error(`Inline script hata:`, e);
-                }
-            }
-            console.log(`Widget ${widgetId} başarıyla yüklendi`);
-        } catch (e) {
-            console.error(`Widget yüklenirken hata:`, e);
-            container.innerHTML = `<div class="alert alert-danger">Widget yüklenirken hata: ${e.message}</div>`;
-        }
-    };
+    // Custom studioLoadWidget removed; use loader module implementation
     
     /**
      * Widget bloklarını yükle
@@ -251,13 +196,10 @@ window.StudioWidgetManager = (function() {
                 tenantWidgets.forEach(widget => {
                     if (!widget || !widget.id) return;
                     
-                    const blockId = widget.id;
-                    let tenantWidgetId = blockId;
-                    
-                    // ID prefix'ini temizle
-                    if (typeof tenantWidgetId === 'string' && tenantWidgetId.startsWith('tenant-widget-')) {
-                        tenantWidgetId = tenantWidgetId.replace('tenant-widget-', '');
-                    }
+                    // Blok ID’sini prefix formatta ayarla
+                    const widgetId = widget.id.toString();
+                    const blockId = `tenant-widget-${widgetId}`;
+                    const tenantWidgetId = widgetId;
                     
                     // Widget referans bloku oluştur
                     editor.BlockManager.add(blockId, {
@@ -304,6 +246,11 @@ window.StudioWidgetManager = (function() {
             if (window.StudioWidgetLoader && typeof window.StudioWidgetLoader.addWidgetStyles === 'function') {
                 window.StudioWidgetLoader.addWidgetStyles();
             }
+            
+            // Dinamik widget blokları eklendikten sonra blok durumlarını güncelle
+            if (window.StudioBlockManager && typeof window.StudioBlockManager.updateBlocksInCategories === 'function') {
+                window.StudioBlockManager.updateBlocksInCategories(editor);
+            }
         });
     }
     
@@ -333,11 +280,45 @@ window.StudioWidgetManager = (function() {
         // Widget bloklarını yükle
         loadWidgetBlocks(editor);
         
+        // İlk yüklemede mevcut widget embed’ler için blok butonlarını pasifleştir
+        if (window.StudioWidgetLoader && typeof window.StudioWidgetLoader.processExistingWidgets === 'function') {
+            window.StudioWidgetLoader.processExistingWidgets(editor);
+        }
+        editor.DomComponents.getWrapper().find('[data-tenant-widget-id]').forEach(comp => {
+            const widgetId = comp.getAttributes()['data-tenant-widget-id'];
+            if (!widgetId) return;
+            const blockEl = document.querySelector(`.block-item[data-block-id="tenant-widget-${widgetId}"]`);
+            if (blockEl && blockEl.closest('.block-category[data-category="active-widgets"]')) {
+                blockEl.classList.add('disabled');
+                blockEl.setAttribute('draggable', 'false');
+                const badge = blockEl.querySelector('.gjs-block-type-badge');
+                if (badge) {
+                    badge.classList.replace('active', 'inactive');
+                    badge.textContent = 'Pasif';
+                }
+            }
+        });
+        
         // Editor yüklendiğinde mevcut widget'ları işle
         editor.on('load', () => {
             if (window.StudioWidgetLoader && typeof window.StudioWidgetLoader.processExistingWidgets === 'function') {
                 window.StudioWidgetLoader.processExistingWidgets(editor);
             }
+            
+            // Sayfa yüklendiğinde mevcut widget embed’ler için blok butonlarını pasifleştir
+            editor.DomComponents.getWrapper().find('[data-tenant-widget-id]').forEach(comp => {
+                const widgetId = comp.getAttributes()['data-tenant-widget-id'];
+                const blockEl = document.querySelector(`.block-item[data-block-id="tenant-widget-${widgetId}"]`);
+                if (blockEl && blockEl.closest('.block-category[data-category="active-widgets"]')) {
+                    blockEl.classList.add('disabled');
+                    blockEl.setAttribute('draggable', 'false');
+                    const badge = blockEl.querySelector('.gjs-block-type-badge');
+                    if (badge) {
+                        badge.classList.replace('active', 'inactive');
+                        badge.textContent = 'Pasif';
+                    }
+                }
+            });
         });
         
         // Bileşen ekleme olayı
@@ -358,6 +339,19 @@ window.StudioWidgetManager = (function() {
                                       component.getAttributes()['data-widget-id'];
                                       
                 if (tenantWidgetId) {
+                    // Sadece Aktif Bileşenler kategorisindeki blokları pasif yap
+                    const blockId = `tenant-widget-${tenantWidgetId}`;
+                    const blockEl = document.querySelector(`.block-item[data-block-id="${blockId}"]`);
+                    if (blockEl && blockEl.closest('.block-category[data-category="active-widgets"]')) {
+                        blockEl.classList.add('disabled');
+                        blockEl.setAttribute('draggable', 'false');
+                        const badge = blockEl.querySelector('.gjs-block-type-badge');
+                        if (badge) {
+                            badge.classList.replace('active', 'inactive');
+                            badge.textContent = 'Pasif';
+                        }
+                    }
+                    
                     // Widget ID'sini komponent özelliği olarak ayarla
                     component.set('tenant_widget_id', tenantWidgetId);
                     
@@ -367,6 +361,31 @@ window.StudioWidgetManager = (function() {
                             window.studioLoadWidget(tenantWidgetId);
                         }
                     }, 100);
+                }
+            }
+        });
+        
+        // Widget silindiğinde loadedWidgets ve blok durumu resetle
+        editor.on('component:remove', (component) => {
+            const attrs = component.getAttributes();
+            const widgetId = attrs['data-tenant-widget-id'] || attrs['data-widget-id'];
+            if (widgetId) {
+                // loadedWidgets setinden sil
+                if (window._loadedWidgets) {
+                    window._loadedWidgets.delete(widgetId);
+                }
+                
+                // Sadece Aktif Bileşenler kategorisindeki blokları aktif yap
+                const blockId = `tenant-widget-${widgetId}`;
+                const blockEl = document.querySelector(`.block-item[data-block-id="${blockId}"]`);
+                if (blockEl && blockEl.closest('.block-category[data-category="active-widgets"]')) {
+                    blockEl.classList.remove('disabled');
+                    blockEl.setAttribute('draggable', 'true');
+                    const badge = blockEl.querySelector('.gjs-block-type-badge');
+                    if (badge) {
+                        badge.classList.replace('inactive', 'active');
+                        badge.textContent = 'Aktif';
+                    }
                 }
             }
         });

@@ -39,6 +39,17 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ asset('admin/libs/handlebars/handlebars.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/studio/partials/studio-widget-loader.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('[data-tenant-widget-id]').forEach(function(el) {
+                var id = el.getAttribute('data-tenant-widget-id');
+                if (window.studioLoadWidget) {
+                    window.studioLoadWidget(id);
+                }
+            });
+        });
+    </script>
 
 </body>
 </html>

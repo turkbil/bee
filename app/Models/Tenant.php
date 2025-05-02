@@ -23,6 +23,7 @@ class Tenant extends BaseTenant implements TenantWithDatabase
         'is_active' => 'boolean',
         'central' => 'boolean',
         'data' => 'array',
+        'theme' => 'string',
     ];
     
     public function getActivitylogOptions(): LogOptions

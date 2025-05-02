@@ -295,7 +295,7 @@ ${js}
      * HTML içindeki widget embed referanslarını sayfa görüntüleme sırasında işle
      * Bu fonksiyon, sayfa render edilirken çalıştırılacak PHP koduna dönüştürür
      * 
-     * @param {string} html HTML içeriği
+     * @param {string} html HTML içeriği  
      * @return {string} İşlenmiş HTML, PHP kod parçaları içerebilir
      */
     function processWidgetEmbedsInContent(html) {
@@ -325,8 +325,13 @@ ${js}
     function convertAllWidgetReferencesToEmbeds(html) {
         if (!html || typeof html !== 'string') return html;
         
-        // Eski widget wrapper formatı
-        let processed = html.replace(/<div[^>]*data-widget-id="(\d+)"[^>]*data-type="widget"[^>]*>[\s\S]*?<\/div>/gi, (match, widgetId) => {
+        // data-tenant-widget-id içeren eski placeholder embedları temizle
+        let processed = html.replace(/<div[^>]*data-tenant-widget-id="(\d+)"[^>]*>[\s\S]*?<\/div>/gi, (match, widgetId) => {
+            return `<div class="widget-embed" data-tenant-widget-id="${widgetId}"></div>`;
+        });
+        
+        // Eski widget wrapper formatı (data-widget-id)
+        processed = processed.replace(/<div[^>]*data-widget-id="(\d+)"[^>]*data-type="widget"[^>]*>[\s\S]*?<\/div>/gi, (match, widgetId) => {
             return `<div class="widget-embed" data-tenant-widget-id="${widgetId}"></div>`;
         });
         

@@ -18,6 +18,11 @@ Bu proje, Laravel 11 kullanılarak geliştirilmiş, modüler ve çok kiracılı 
 
 ## Versiyon Geçmişi
 
+*   **v0.5.0 (2025-05-02):**
+    *   `studio-widget-loader.js` içinde widget embed overlay özelliği eklendi; görsel overlay olarak `pointer-events: none` ile tıklamalar modele iletildi.
+    *   `registerWidgetEmbedComponent` fonksiyonu ile embed component tipi tanımlandı ve editöre kaydedildi.
+    *   `studio-editor-setup.js` içindeki `component:remove` handler geliştirildi: `_loadedWidgets` set güncellemesi, iframe ve model DOM temizleme, `col-md-*` wrapper ve `section.container` öğelerinin kaldırılması ve `html-content` input’unun senkronizasyonu.
+
 *   **v0.4.0 (2025-04-05):**
     *   SettingManagement modülünde dosya yükleme bileşeni (file-upload) sorunu çözüldü.
     *   ValuesComponent sınıfına removeImage metodu eklenerek geçici dosyaların silinmesi sağlandı.

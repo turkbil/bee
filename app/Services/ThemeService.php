@@ -4,6 +4,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Log;
 use Modules\ThemeManagement\App\Models\Theme;
 
 class ThemeService
@@ -17,17 +18,23 @@ class ThemeService
 
     protected function setActiveTheme()
     {
-        // Aktif temayı veritabanından al, yoksa blank'i kullan
+        // Tenant-specific theme if available
+        if (function_exists('tenant') && $t = tenant()) {
+            $theme = Theme::where('name', $t->theme)
+                          ->where('is_active', true)
+                          ->first();
+            if ($theme) {
+                $this->activeTheme = $theme;
+                return;
+            }
+        }
+        // Global default theme
         $this->activeTheme = Theme::where('is_default', true)
             ->where('is_active', true)
-            ->first();
-
-        if (!$this->activeTheme) {
-            $this->activeTheme = new Theme([
+            ->first() ?? new Theme([
                 'name' => 'blank',
                 'folder_name' => 'blank'
             ]);
-        }
     }
 
     public function getActiveTheme()
@@ -43,7 +50,7 @@ class ThemeService
         if ($module) {
             $moduleThemeView = "{$module}-themes.{$themeName}.{$view}";
             if (View::exists($moduleThemeView)) {
-                \Log::debug("Using module theme view: {$moduleThemeView}");
+                Log::debug("Using module theme view: {$moduleThemeView}");
                 return $moduleThemeView;
             }
         }
@@ -51,7 +58,7 @@ class ThemeService
         // 2. Ana tema içerisindeki view - YENİ YAPI
         $mainThemeView = "themes.{$themeName}.{$view}";
         if (View::exists($mainThemeView)) {
-            \Log::debug("Using main theme view: {$mainThemeView}");
+            Log::debug("Using main theme view: {$mainThemeView}");
             return $mainThemeView;
         }
         
@@ -59,13 +66,13 @@ class ThemeService
         if ($module) {
             $defaultModuleView = "{$module}::front.{$view}";
             if (View::exists($defaultModuleView)) {
-                \Log::debug("Using default module view: {$defaultModuleView}");
+                Log::debug("Using default module view: {$defaultModuleView}");
                 return $defaultModuleView;
             }
         }
         
         // Tüm alternatifleri kontrol et ve logla
-        \Log::error("View not found for any path. Module: {$module}, View: {$view}, Theme: {$themeName}");
+        Log::error("View not found for any path. Module: {$module}, View: {$view}, Theme: {$themeName}");
         throw new \Exception("View [{$view}] not found in any location.");
     }
 }

@@ -4,20 +4,15 @@
  */
 
 window.StudioBlockManager = (function() {
-    // Blokların kategorilere eklenip eklenmediğini takip et
-    let blocksUpdatedInCategories = false;
+    // Guard kaldırıldı: güncellemelerin widget blokları yüklendikten sonra da çalışabilmesi için
+    // let blocksUpdatedInCategories = false;
     
     /**
      * Editördeki blokları kategori elementlerine ekler
      * @param {Object} editor - GrapesJS editor örneği
      */
     function updateBlocksInCategories(editor) {
-        // Bu metod yalnızca bir kez çalışmalı
-        if (blocksUpdatedInCategories) {
-            return;
-        }
-        blocksUpdatedInCategories = true;
-        
+        // Guard kaldırıldı: her çağrıda blokları yeniden işleyecek
         console.log("Editor blokları güncelleniyor. Toplam " + editor.BlockManager.getAll().length + " blok var.");
         
         // Her bir kategori için blokları işle
@@ -93,9 +88,34 @@ window.StudioBlockManager = (function() {
                         <div class="block-item-label">${block.get('label')}</div>
                     `;
                     
-                    // Drag-drop işlevini ekle
-                    blockEl.setAttribute('draggable', 'true');
+                    // Tenant widget bloklarını, içerikte bağlı embed varsa pasifleştir
+                    if (block.id.startsWith('tenant-widget-')) {
+                        const widgetId = block.id.replace('tenant-widget-', '');
+                        const comps = editor.DomComponents.getWrapper().find(`[data-tenant-widget-id="${widgetId}"]`);
+                        if (comps && comps.length > 0) {
+                            blockEl.classList.add('disabled');
+                            blockEl.setAttribute('draggable', 'false');
+                            blockEl.draggable = false;
+                            blockEl.style.cursor = 'not-allowed';
+                        } else {
+                            blockEl.classList.remove('disabled');
+                            blockEl.setAttribute('draggable', 'true');
+                            blockEl.draggable = true;
+                            blockEl.style.cursor = 'grab';
+                        }
+                    } else {
+                        blockEl.classList.remove('disabled');
+                        blockEl.setAttribute('draggable', 'true');
+                        blockEl.draggable = true;
+                        blockEl.style.cursor = 'grab';
+                    }
+                    
                     blockEl.addEventListener('dragstart', (e) => {
+                        // Pasif blok ise sürüklemeyi engelle
+                        if (blockEl.classList.contains('disabled')) {
+                            e.preventDefault();
+                            return;
+                        }
                         // Canvas iframe'ini bul
                         const editorFrame = document.querySelector('.gjs-frame');
                         const iframDocument = editorFrame ? editorFrame.contentDocument || editorFrame.contentWindow.document : null;
@@ -303,6 +323,23 @@ window.StudioBlockManager = (function() {
             }
         });
     }
+    
+    // Stil: Pasif blok öğeleri soluk ve tıklanamaz yap
+    (function() {
+        const styleId = 'block-disabled-style';
+        if (!document.getElementById(styleId)) {
+            const styleEl = document.createElement('style');
+            styleEl.id = styleId;
+            styleEl.textContent = `
+                .block-item.disabled {
+                    opacity: 0.5;
+                    pointer-events: none;
+                    cursor: not-allowed;
+                }
+            `;
+            document.head.appendChild(styleEl);
+        }
+    })();
     
     return {
         updateBlocksInCategories: updateBlocksInCategories,

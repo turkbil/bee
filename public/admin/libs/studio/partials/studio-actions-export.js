@@ -44,10 +44,16 @@ window.StudioExport = (function() {
                     jsLength: js.length
                 });
                 
-                // Preview için widget embed içeriklerini yükle
+                // Önizleme için widget embed içeriklerini yükle
                 let contentHtml = html;
-                if (window.StudioHtmlParser && typeof window.StudioHtmlParser.convertAllWidgetReferencesToEmbeds === 'function') {
-                    contentHtml = window.StudioHtmlParser.convertAllWidgetReferencesToEmbeds(contentHtml);
+                // Gömülü widget yapısını temizle: önce parseOutput ile nested yapı kaldır, sonra convertAllWidgetReferencesToEmbeds
+                if (window.StudioHtmlParser) {
+                    if (typeof window.StudioHtmlParser.parseOutput === 'function') {
+                        contentHtml = window.StudioHtmlParser.parseOutput(contentHtml);
+                    }
+                    if (typeof window.StudioHtmlParser.convertAllWidgetReferencesToEmbeds === 'function') {
+                        contentHtml = window.StudioHtmlParser.convertAllWidgetReferencesToEmbeds(contentHtml);
+                    }
                 }
                 // Widget embed öğelerini DOMParser ile değiştir
                 let widgetIds = [];

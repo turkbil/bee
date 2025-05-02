@@ -66,6 +66,12 @@ Route::middleware(['web', 'auth', 'tenant'])
                     ->where('tenantWidgetId', '[0-9]+')
                     ->name('preview.embed');
                 
+                // JSON embed endpoint for Studio loader
+                Route::get('/preview/embed/json/{tenantWidgetId}', [WidgetPreviewController::class, 'embedJson'])
+                    ->middleware('module.permission:widgetmanagement,view')
+                    ->where('tenantWidgetId', '[0-9]+')
+                    ->name('preview.embed.json');
+                
                 // Kategori Yönetimi Rotaları
                 Route::get('/category', WidgetCategoryComponent::class)
                     ->middleware('module.permission:widgetmanagement,view')

@@ -325,32 +325,40 @@ ${js}
     function convertAllWidgetReferencesToEmbeds(html) {
         if (!html || typeof html !== 'string') return html;
         
-        // data-tenant-widget-id içeren eski placeholder embedları temizle
-        let processed = html.replace(/<div[^>]*data-tenant-widget-id="(\d+)"[^>]*>[\s\S]*?<\/div>/gi, (match, widgetId) => {
-            return `<div class="widget-embed" data-tenant-widget-id="${widgetId}"></div>`;
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        
+        // Replace <widget> tags
+        doc.querySelectorAll('widget[id]').forEach(el => {
+            const id = el.getAttribute('id');
+            const placeholder = doc.createElement('div');
+            placeholder.className = 'widget-embed';
+            placeholder.setAttribute('data-tenant-widget-id', id);
+            el.replaceWith(placeholder);
         });
         
-        // Eski widget wrapper formatı (data-widget-id)
-        processed = processed.replace(/<div[^>]*data-widget-id="(\d+)"[^>]*data-type="widget"[^>]*>[\s\S]*?<\/div>/gi, (match, widgetId) => {
-            return `<div class="widget-embed" data-tenant-widget-id="${widgetId}"></div>`;
+        // Replace <div data-widget-id data-type="widget">
+        doc.querySelectorAll('div[data-widget-id][data-type="widget"]').forEach(el => {
+            const id = el.getAttribute('data-widget-id');
+            const placeholder = doc.createElement('div');
+            placeholder.className = 'widget-embed';
+            placeholder.setAttribute('data-tenant-widget-id', id);
+            el.replaceWith(placeholder);
         });
         
-        // Ters formatı da kontrol et
-        processed = processed.replace(/<div[^>]*data-type="widget"[^>]*data-widget-id="(\d+)"[^>]*>[\s\S]*?<\/div>/gi, (match, widgetId) => {
-            return `<div class="widget-embed" data-tenant-widget-id="${widgetId}"></div>`;
+        // Replace <div data-tenant-widget-id>
+        doc.querySelectorAll('div[data-tenant-widget-id]').forEach(el => {
+            const id = el.getAttribute('data-tenant-widget-id');
+            const placeholder = doc.createElement('div');
+            placeholder.className = 'widget-embed';
+            placeholder.setAttribute('data-tenant-widget-id', id);
+            el.replaceWith(placeholder);
         });
         
-        // widget tag formatı
-        processed = processed.replace(/<widget\s+id="(\d+)"[^>]*><\/widget>/gi, (match, widgetId) => {
-            return `<div class="widget-embed" data-tenant-widget-id="${widgetId}"></div>`;
-        });
+        // Handle moustache placeholders
+        const result = doc.body.innerHTML.replace(/\{\{widget:(\d+)\}\}/g, (match, widgetId) => `<div class="widget-embed" data-tenant-widget-id="${widgetId}"></div>`);
         
-        // Saf widget ID referansı
-        processed = processed.replace(/\{\{widget:(\d+)\}\}/gi, (match, widgetId) => {
-            return `<div class="widget-embed" data-tenant-widget-id="${widgetId}"></div>`;
-        });
-        
-        return processed;
+        return result;
     }
     
     /**

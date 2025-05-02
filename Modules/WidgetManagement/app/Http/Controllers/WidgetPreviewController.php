@@ -201,6 +201,69 @@ class WidgetPreviewController extends Controller
         }
     }
 
+    /**
+     * JSON embed endpoint for Studio loader
+     */
+    public function embedJson($tenantWidgetId)
+    {
+        try {
+            $tw = TenantWidget::with('items')->findOrFail($tenantWidgetId);
+            $widget = $tw->widget;
+            $itemsData = $widget->has_items ? $tw->items->pluck('content')->toArray() : [];
+            if ($widget->has_items && empty($itemsData)) {
+                $defaultItem = [];
+                foreach ($widget->getItemSchema() as $schema) {
+                    $key = $schema['name'];
+                    if (isset($schema['default']) && $schema['default'] !== '') {
+                        $value = $schema['default'];
+                    } else {
+                        if ($key === 'image') {
+                            $value = 'https://via.placeholder.com/800x400?text=Placeholder';
+                        } else {
+                            $value = $schema['label'] ?? ucfirst(str_replace('_', ' ', $key));
+                        }
+                    }
+                    $defaultItem[$key] = $value;
+                }
+                $itemsData = [$defaultItem];
+            }
+            foreach ($itemsData as &$item) {
+                if (isset($item['image']) && !preg_match('/^https?:\/\//', $item['image'])) {
+                    $item['image'] = cdn($item['image']);
+                }
+            }
+            unset($item);
+            $tenantSettings = $tw->settings ?? [];
+            $context = [];
+            if (!empty($widget->settings_schema) && is_array($widget->settings_schema)) {
+                foreach ($widget->settings_schema as $schema) {
+                    $key = $schema['name'];
+                    if (array_key_exists($key, $tenantSettings)) {
+                        $context[$key] = $tenantSettings[$key];
+                    } elseif (array_key_exists('default', $schema)) {
+                        $context[$key] = $schema['default'];
+                    }
+                }
+            }
+            if (!isset($context['title'])) {
+                $context['title'] = $widget->name;
+            }
+            if (!isset($context['unique_id'])) {
+                $context['unique_id'] = Str::random();
+            }
+            $context['items'] = $itemsData;
+            return response()->json([
+                'content_html' => $widget->content_html,
+                'context'      => $context,
+                'content_css'  => $widget->content_css ?? '',
+                'content_js'   => $widget->content_js ?? '',
+                'useHandlebars'=> true
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
     public function showFile($id)
     {
         try {

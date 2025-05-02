@@ -17,12 +17,12 @@ class ThemeManagementDatabaseSeeder extends Seeder
         }
         $faker = Faker::create('tr_TR');
 
-        // Varsayılan Tema
+        // Varsayılan Tema (blank)
         Theme::create([
-            'name' => 'default',
-            'title' => 'Varsayılan Tema',
-            'folder_name' => 'default',
-            'description' => 'Sistem varsayılan teması. Temel tasarım ve renkler içerir.',
+            'name' => 'blank',
+            'title' => 'Blank Tema',
+            'folder_name' => 'blank',
+            'description' => 'Boş tema (blank), temel dizayn için test.',
             'is_active' => true,
             'is_default' => true,
         ]);

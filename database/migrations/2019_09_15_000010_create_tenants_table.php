@@ -22,6 +22,7 @@ class CreateTenantsTable extends Migration
             $table->boolean('is_active')->default(true)->index();
             $table->boolean('central')->default(false);
             $table->json('data')->nullable();
+            $table->string('theme')->default('blank');
             $table->timestamps();
             
             // İlave indeksler eklendi

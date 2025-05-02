@@ -7,6 +7,7 @@ use Livewire\WithPagination;
 use App\Models\Tenant;
 use Stancl\Tenancy\Database\Models\Domain;
 use Illuminate\Support\Facades\DB;
+use Modules\ThemeManagement\App\Models\Theme;
 
 #[Layout('admin.layout')]
 class TenantComponent extends Component
@@ -25,6 +26,8 @@ class TenantComponent extends Component
     public $domains = [];
     public $editingTenant = null;
     public $refreshModuleKey = 0;
+    public $theme;
+    public $themes = [];
 
     protected $listeners = ['modulesSaved' => '$refresh', 'itemDeleted' => '$refresh'];
 
@@ -35,11 +38,15 @@ class TenantComponent extends Component
         'phone'     => 'nullable|string|max:20',
         'is_active' => 'boolean',
         'newDomain' => 'nullable|string|max:255|unique:domains,domain',
+        'theme'     => 'required|string',
     ];
 
     public function mount()
     {
         $this->is_active = true;
+        // Tema listesi ve başlangıç teması
+        $this->themes = Theme::where('is_active', true)->pluck('title','name')->toArray();
+        $this->theme = $this->themes ? array_key_first($this->themes) : 'blank';
     }
 
     public function getTenantsProperty()
@@ -105,6 +112,9 @@ class TenantComponent extends Component
             $this->email = $data['email'] ?? '';
             $this->phone = $data['phone'] ?? '';
             $this->is_active = (bool)$tenantData->is_active;
+            // Tema listesi ve mevcut tenant teması
+            $this->themes = Theme::where('is_active', true)->pluck('title','name')->toArray();
+            $this->theme = $tenantData->theme ?? (array_key_first($this->themes) ?? 'blank');
         } catch (\Exception $e) {
             $this->dispatch('toast', [
                 'title' => 'Hata',
@@ -141,9 +151,10 @@ class TenantComponent extends Component
                     DB::table('tenants')
                         ->where('id', $tenant->id)
                         ->update([
-                            'title' => $this->name,
-                            'is_active' => $this->is_active ? 1 : 0,
-                            'data' => empty($data) ? null : json_encode($data),
+                            'title'      => $this->name,
+                            'is_active'  => $this->is_active ? 1 : 0,
+                            'data'      => empty($data) ? null : json_encode($data),
+                            'theme'     => $this->theme,
                             'updated_at' => now()
                         ]);
                     
@@ -182,10 +193,11 @@ class TenantComponent extends Component
                 
                 // Tenant oluştur
                 $tenant = Tenant::create([
-                    'title' => $this->name,
+                    'title'           => $this->name,
                     'tenancy_db_name' => $dbName,
-                    'is_active' => $this->is_active ? 1 : 0,
-                    'data' => empty($data) ? null : $data,
+                    'is_active'       => $this->is_active ? 1 : 0,
+                    'data'            => empty($data) ? null : $data,
+                    'theme'           => $this->theme,
                 ]);
                 
                 // Tenant dizinlerini hazırla

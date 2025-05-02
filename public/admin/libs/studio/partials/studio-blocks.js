@@ -84,6 +84,10 @@ window.StudioBlocks = (function() {
                         // Kategorilere blokları ekle ve işlemi tamamla
                         setTimeout(() => {
                             window.StudioBlockManager.updateBlocksInCategories(editor);
+                            // Mevcut widget embed'leri işleyip blok butonlarını pasifleştir
+                            if (window.StudioWidgetLoader && typeof window.StudioWidgetLoader.processExistingWidgets === 'function') {
+                                window.StudioWidgetLoader.processExistingWidgets(editor);
+                            }
                             // İşaretleyelim ki tekrar yüklenmesin
                             blocksLoaded = true;
                             

@@ -46,15 +46,13 @@ window.StudioExport = (function() {
                 
                 // Önizleme için widget embed içeriklerini yükle
                 let contentHtml = html;
-                // Gömülü widget yapısını temizle: önce parseOutput ile nested yapı kaldır, sonra convertAllWidgetReferencesToEmbeds
-                if (window.StudioHtmlParser) {
-                    if (typeof window.StudioHtmlParser.parseOutput === 'function') {
-                        contentHtml = window.StudioHtmlParser.parseOutput(contentHtml);
-                    }
-                    if (typeof window.StudioHtmlParser.convertAllWidgetReferencesToEmbeds === 'function') {
-                        contentHtml = window.StudioHtmlParser.convertAllWidgetReferencesToEmbeds(contentHtml);
-                    }
+                // Gömülü widget referanslarını placeholder divlerine dönüştür
+                if (window.StudioHtmlParser && typeof window.StudioHtmlParser.convertAllWidgetReferencesToEmbeds === 'function') {
+                    contentHtml = window.StudioHtmlParser.convertAllWidgetReferencesToEmbeds(contentHtml);
                 }
+                // Remove any leftover script tags (templates, helpers)
+                contentHtml = contentHtml.replace(/<script\b[\s\S]*?<\/script>/gi, '');
+                
                 // Widget embed öğelerini DOMParser ile değiştir
                 let widgetIds = [];
                 if (window.StudioHtmlParser && typeof window.StudioHtmlParser.findWidgetEmbeds === 'function') {
@@ -72,15 +70,27 @@ window.StudioExport = (function() {
                 const doc = parser.parseFromString(contentHtml, 'text/html');
                 for (const widgetId of widgetIds) {
                     try {
-                        const res = await fetch(`/admin/widgetmanagement/preview/embed/${widgetId}`, { credentials: 'same-origin' });
-                        console.log(`Fetch status for widget ${widgetId}:`, res.status);
+                        const res = await fetch(`/admin/widgetmanagement/preview/embed/json/${widgetId}`, { credentials: 'same-origin' });
+                        console.log(`Fetch JSON status for widget ${widgetId}:`, res.status);
                         if (res.ok) {
-                            const widgetHtml = await res.text();
-                            console.log(`Widget HTML for preview ${widgetId}:`, widgetHtml);
+                            const data = await res.json();
+                            let widgetHtml = data.content_html;
+                            if (data.useHandlebars && window.Handlebars) {
+                                const template = Handlebars.compile(widgetHtml);
+                                widgetHtml = template(data.context);
+                            }
                             const tempDiv = document.createElement('div');
                             tempDiv.innerHTML = widgetHtml;
+                            // Strip any script tags to prevent markup break
+                            tempDiv.querySelectorAll('script').forEach(s => s.remove());
                             doc.querySelectorAll(`.widget-embed[data-tenant-widget-id="${widgetId}"]`).forEach(el => {
-                                el.replaceWith(tempDiv.cloneNode(true));
+                                const clone = tempDiv.cloneNode(true);
+                                const nodes = Array.from(clone.childNodes);
+                                if (nodes.length) {
+                                    el.replaceWith(...nodes);
+                                } else {
+                                    el.replaceWith(clone);
+                                }
                                 console.log(`Replaced embed for widget ${widgetId}`);
                             });
                         }

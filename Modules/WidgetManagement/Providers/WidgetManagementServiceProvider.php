@@ -121,6 +121,16 @@ class WidgetManagementServiceProvider extends ServiceProvider
         Blade::directive('parsewidgets', function ($expression) {
             return "<?php echo parse_widget_shortcodes($expression); ?>";
         });
+
+        // Module widget blade directive - ID ile render
+        Blade::directive('modulewidget', function ($expression) {
+            return "<?php echo module_widget_by_id($expression); ?>";
+        });
+
+        // Module widgets blade directive - Module ID ile render
+        Blade::directive('modulewidgets', function ($expression) {
+            return "<?php echo module_widgets_by_module($expression); ?>";
+        });
     }
     
     /**

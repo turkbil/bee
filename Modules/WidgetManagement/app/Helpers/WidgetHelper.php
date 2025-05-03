@@ -112,3 +112,52 @@ if (!function_exists('widget_cached')) {
         return widget_by_id($id, $params, $ttl);
     }
 }
+
+// Module widget ID ile render et
+if (!function_exists('module_widget_by_id')) {
+    /**
+     * ID'ye göre module widget render et
+     *
+     * @param int $id Widget ID
+     * @param array $params Ekstra parametreler
+     * @param int|null $cacheTtl Önbellek süresi (saniye)
+     * @return string Render edilmiş widget HTML'i
+     */
+    function module_widget_by_id(int $id, array $params = [], ?int $cacheTtl = null): string
+    {
+        $widget = Widget::where('id', $id)->where('type', 'module')->where('is_active', true)->first();
+        if (!$widget) {
+            return "<!-- Module Widget '{$id}' bulunamadı -->";
+        }
+        $viewPath = 'widgetmanagement::blocks.' . $widget->file_path;
+        try {
+            return \View::make($viewPath, ['widget' => $widget, 'params' => $params])->render();
+        } catch (\Throwable $e) {
+            \Log::error("Module widget render hatası: " . $e->getMessage());
+            return '';
+        }
+    }
+}
+
+// Module ID ile ilişkili module widgetları render et
+if (!function_exists('module_widgets_by_module')) {
+    /**
+     * Belirli bir module_id'deki module widget'ları render et
+     *
+     * @param int $moduleId Module ID
+     * @param array $params Ekstra parametreler
+     * @return string Render edilmiş widgetlar
+     */
+    function module_widgets_by_module(int $moduleId, array $params = []): string
+    {
+        $widgets = Widget::where('type', 'module')->where('is_active', true)
+            ->whereHas('modules', function ($q) use ($moduleId) {
+                $q->where('module_id', $moduleId);
+            })->get();
+        $html = '';
+        foreach ($widgets as $widget) {
+            $html .= module_widget_by_id($widget->id, $params);
+        }
+        return $html;
+    }
+}

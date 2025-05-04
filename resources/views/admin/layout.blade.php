@@ -181,8 +181,8 @@
 <script src="{{ asset('admin/libs/tom-select/dist/js/tom-select.complete.min.js') }}" defer></script>
 <script src="{{ asset('admin/libs/tom-select/dist/js/plugins/restore_on_backspace.js') }}"></script>
 <script src="{{ asset('admin/js/main.js') }}?v={{ filemtime(public_path('admin/js/main.js')) }}"></script>
-<script src="{{ asset('admin/js/toast.js') }}?v={{ filemtime(public_path('admin/js/toast.js')) }}"></script>
 <script src="{{ asset('admin/js/theme.js') }}?v={{ filemtime(public_path('admin/js/theme.js')) }}"></script>
+<script src="{{ asset('admin/js/toast.js') }}?v={{ filemtime(public_path('admin/js/toast.js')) }}" defer></script>
 @livewireScripts
 @stack('scripts') @stack('js')
 

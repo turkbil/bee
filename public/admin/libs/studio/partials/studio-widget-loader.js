@@ -331,6 +331,18 @@ window.StudioWidgetLoader = (function() {
                         'id': `module-widget-${moduleId}`
                     });
                     
+                    // Module widget block butonunu pasifleştir
+                    const blockEl = document.querySelector(`.block-item[data-block-id="widget-${moduleId}"]`);
+                    if (blockEl) {
+                        blockEl.classList.add('disabled');
+                        blockEl.setAttribute('draggable', 'false');
+                        const badge = blockEl.querySelector('.gjs-block-type-badge');
+                        if (badge) {
+                            badge.classList.replace('active', 'inactive');
+                            badge.textContent = 'Pasif';
+                        }
+                    }
+                    
                     // Module içeriğini yükle
                     setTimeout(() => {
                         if (typeof window.studioLoadModuleWidget === "function") {
@@ -433,6 +445,18 @@ window.StudioWidgetLoader = (function() {
                     // Görünümü güncelle  
                     if (component.view && typeof component.view.onRender === 'function') {
                         setTimeout(() => component.view.onRender(), 100);
+                    }
+                    
+                    // Module widget block butonunu pasifleştir
+                    const blockEl = document.querySelector(`.block-item[data-block-id="widget-${moduleId}"]`);
+                    if (blockEl) {
+                        blockEl.classList.add('disabled');
+                        blockEl.setAttribute('draggable', 'false');
+                        const badge = blockEl.querySelector('.gjs-block-type-badge');
+                        if (badge) {
+                            badge.classList.replace('active', 'inactive');
+                            badge.textContent = 'Pasif';
+                        }
                     }
                     
                     // Module içeriğini yükle

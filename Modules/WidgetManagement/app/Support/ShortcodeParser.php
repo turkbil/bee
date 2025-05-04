@@ -18,6 +18,16 @@ class ShortcodeParser
     protected $simplePattern = '/\[\[widget:([\w\-]+)(?:\s+([^\]]+))?\]\]/';
     
     /**
+     * Module widget pattern
+     */
+    protected $modulePattern = '/\[\[module:([\d]+)(?:\s+([^\]]+))?\]\]/';
+    
+    /**
+     * File widget pattern
+     */
+    protected $filePattern = '/\[\[file:([\d]+)(?:\s+([^\]]+))?\]\]/';
+    
+    /**
      * İçerikteki tüm widget kısa kodlarını işle
      *
      * @param string $content İçerik metni
@@ -49,6 +59,22 @@ class ShortcodeParser
             $params = isset($matches[2]) ? $this->parseParams($matches[2]) : [];
             
             return $this->renderWidget($slug, $params);
+        }, $content);
+        
+        // Module pattern
+        $content = preg_replace_callback($this->modulePattern, function ($matches) {
+            $id = (int)$matches[1];
+            $params = isset($matches[2]) ? $this->parseParams($matches[2]) : [];
+            
+            return $this->renderModuleWidget($id, $params);
+        }, $content);
+        
+        // File pattern
+        $content = preg_replace_callback($this->filePattern, function ($matches) {
+            $id = (int)$matches[1];
+            $params = isset($matches[2]) ? $this->parseParams($matches[2]) : [];
+            
+            return $this->renderFileWidget($id, $params);
         }, $content);
         
         return $content;
@@ -138,6 +164,50 @@ class ShortcodeParser
             ]);
             
             return "<!-- Widget işleme hatası: {$slug} -->";
+        }
+    }
+    
+    /**
+     * Module widget'ı render et
+     *
+     * @param int $id Module widget ID
+     * @param array $params Parametreler
+     * @return string Render edilmiş HTML
+     */
+    protected function renderModuleWidget(int $id, array $params = []): string
+    {
+        try {
+            return module_widget_by_id($id, $params);
+        } catch (\Exception $e) {
+            Log::error("Module widget kısa kodu işlenirken hata: " . $e->getMessage(), [
+                'id' => $id,
+                'params' => $params,
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return "<!-- Module widget işleme hatası: {$id} -->";
+        }
+    }
+    
+    /**
+     * File widget'ı render et
+     *
+     * @param int $id File widget ID
+     * @param array $params Parametreler
+     * @return string Render edilmiş HTML
+     */
+    protected function renderFileWidget(int $id, array $params = []): string
+    {
+        try {
+            return widget_file_by_id($id, $params);
+        } catch (\Exception $e) {
+            Log::error("File widget kısa kodu işlenirken hata: " . $e->getMessage(), [
+                'id' => $id,
+                'params' => $params,
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return "<!-- File widget işleme hatası: {$id} -->";
         }
     }
     

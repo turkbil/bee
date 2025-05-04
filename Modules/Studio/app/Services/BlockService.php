@@ -152,9 +152,15 @@ class BlockService
     {
         $content = '';
         
-        // Module tipli widget'lar için sadece data-widget-id formatında output ver
+        // Module tipli widget'lar için HTML yapısı oluştur
         if ($type === 'module') {
-            return '[[module:' . $widget->id . ']]';
+            return '<div data-widget-module-id="' . $widget->id . '" id="module-widget-' . $widget->id . '" class="module-widget-container">
+                <div id="module-content-' . $widget->id . '" class="module-widget-content-placeholder">
+                    <div class="widget-loading">
+                        <i class="fa fa-spin fa-spinner"></i>
+                    </div>
+                </div>
+            </div>';
         }
         
         switch ($type) {
@@ -195,9 +201,15 @@ class BlockService
 
     private function prepareTenantWidgetContent($widget, $tenantWidget, $type): string
     {
-        // Module tipli tenant widget'lar için de sadece shortcode formatında output ver
+        // Module tipli tenant widget'lar için HTML yapısı oluştur
         if ($type === 'module') {
-            return '[[module:' . $widget->id . ']]';
+            return '<div data-widget-module-id="' . $widget->id . '" id="module-widget-' . $widget->id . '" class="module-widget-container">
+                <div id="module-content-' . $widget->id . '" class="module-widget-content-placeholder">
+                    <div class="widget-loading">
+                        <i class="fa fa-spin fa-spinner"></i>
+                    </div>
+                </div>
+            </div>';
         }
         
         // Widget ID'sini içeren benzersiz bir ID oluştur

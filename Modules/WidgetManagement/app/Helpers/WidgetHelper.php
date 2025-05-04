@@ -15,8 +15,14 @@ if (!function_exists('widget_by_id')) {
      */
     function widget_by_id(int $id, array $params = [], ?int $cacheTtl = null): string
     {
-        // Embed placeholder kullanımı: front ile studio’da tutarlı yükleme sağlar
-        return '<div data-tenant-widget-id="' . $id . '" class="widget-embed"><div id="widget-content-' . $id . '" class="widget-content-placeholder" style="text-align:center; padding:20px;"><i class="fa fa-spin fa-spinner"></i> Yükleniyor...</div></div>';
+        try {
+            $tenantWidget = TenantWidget::with('widget', 'items')->findOrFail($id);
+            $widgetService = app('widget.service');
+            return $widgetService->renderSingleWidget($tenantWidget);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error("Widget render hatası: " . $e->getMessage());
+            return "<!-- Widget #$id yüklenemedi -->";
+        }
     }
 }
 
@@ -31,7 +37,6 @@ if (!function_exists('widget_by_slug')) {
      */
     function widget_by_slug(string $slug, array $params = [], ?int $cacheTtl = null): string
     {
-        // Slug üzerinden yeni TenantWidget kaydı oluştur, placeholder embed döndür
         $widget = Widget::where('slug', $slug)->where('is_active', true)->first();
         if (!$widget) {
             return "<!-- Widget '{$slug}' bulunamadı -->";
@@ -65,8 +70,7 @@ if (!function_exists('widgets_by_position')) {
      */
     function widgets_by_position(string $position): string
     {
-        // Tenant bazlı position widget placeholder embed
-        $query = TenantWidget::query();
+        $query = TenantWidget::with('widget', 'items');
         if ($position) {
             $query->where('position', $position);
         }
@@ -159,5 +163,31 @@ if (!function_exists('module_widgets_by_module')) {
             $html .= module_widget_by_id($widget->id, $params);
         }
         return $html;
+    }
+}
+
+// File widget ID ile render et  
+if (!function_exists('widget_file_by_id')) {
+    /**
+     * ID'ye göre file widget render et
+     *
+     * @param int $id Widget ID
+     * @param array $params Ekstra parametreler
+     * @param int|null $cacheTtl Önbellek süresi (saniye)
+     * @return string Render edilmiş widget HTML'i
+     */
+    function widget_file_by_id(int $id, array $params = [], ?int $cacheTtl = null): string
+    {
+        $widget = Widget::where('id', $id)->where('type', 'file')->where('is_active', true)->first();
+        if (!$widget) {
+            return "<!-- File Widget '{$id}' bulunamadı -->";
+        }
+        $viewPath = 'widgetmanagement::blocks.' . $widget->file_path;
+        try {
+            return \View::make($viewPath, ['widget' => $widget, 'params' => $params])->render();
+        } catch (\Throwable $e) {
+            \Log::error("File widget render hatası: " . $e->getMessage());
+            return '';
+        }
     }
 }

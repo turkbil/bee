@@ -189,7 +189,7 @@ window.StudioBlocks = (function() {
                 }
             };
             
-            // Komponenti kontrol et
+            // Komponeti kontrol et
             checkComponents(component);
         });
 

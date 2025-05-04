@@ -196,7 +196,6 @@ window.StudioEditorSetup = (function() {
                         const modulePattern = new RegExp(`\\[\\[module:${moduleId}\\]\\]`, 'g');
                         content = content.replace(modulePattern, `
                             <div class="module-widget-container" data-widget-module-id="${moduleId}" id="module-widget-${moduleId}">
-                                <div class="module-widget-label"><i class="fa fa-cube me-1"></i> Module #${moduleId}</div>
                                 <div class="module-widget-content-placeholder" id="module-content-${moduleId}">
                                     <div class="widget-loading" style="text-align:center; padding:20px;">
                                         <i class="fa fa-spin fa-spinner"></i> Modül içeriği yükleniyor...
@@ -430,21 +429,12 @@ window.StudioEditorSetup = (function() {
                     const el = this.el;
                     el.style.position = 'relative';
                     
-                    // Module etiketi
-                    if (!el.querySelector('.module-widget-label')) {
-                        const label = document.createElement('div');
-                        label.className = 'module-widget-label';
-                        label.innerHTML = `<i class="fa fa-cube me-1"></i> Module #${moduleId}`;
-                        el.appendChild(label);
-                    }
-                    
-                    // İçerik alanı
-                    if (!el.querySelector('.module-widget-content-placeholder')) {
-                        const content = document.createElement('div');
-                        content.className = 'module-widget-content-placeholder';
-                        content.id = `module-content-${moduleId}`;
-                        content.innerHTML = '<div class="widget-loading" style="text-align:center; padding:20px;"><i class="fa fa-spin fa-spinner"></i> Module yükleniyor...</div>';
-                        el.appendChild(content);
+                    // Overlay (UI geri bildirimi)
+                    if (!el.querySelector('.widget-overlay')) {
+                        const overlay = document.createElement('div');
+                        overlay.className = 'widget-overlay';
+                        overlay.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(139,92,246,0.05);pointer-events:none;z-index:10;';
+                        el.appendChild(overlay);
                     }
                 },
                 

@@ -322,24 +322,43 @@ window.StudioWidgetManager = (function() {
         });
         
         // Bileşen ekleme olayı
-        editor.on('component:add', (component) => {
-            const type = component.get('type');
+        editor.on('component:add', component => {
+            // Module widget kontrolü
+            if (component.get('type') === 'module-widget' || 
+                (component.getAttributes && component.getAttributes()['data-widget-module-id'])) {
+                
+                const moduleId = component.get('widget_module_id') || 
+                                component.getAttributes()['data-widget-module-id'];
+                
+                if (moduleId) {
+                    console.log(`Module widget #${moduleId} eklendi, hemen yükleniyor...`);
+                    
+                    // Module widget bileşeni tipini ayarla
+                    component.set('type', 'module-widget');
+                    component.set('widget_module_id', moduleId);
+                    
+                    // Module içeriğini hemen yükle
+                    setTimeout(() => {
+                        if (window.studioLoadModuleWidget) {
+                            window.studioLoadModuleWidget(moduleId);
+                        }
+                    }, 50);
+                }
+            }
             
-            if (type === 'widget-embed' || component.getAttributes()['data-tenant-widget-id']) {
+            // Widget embed kontrolü
+            if (component.get('type') === 'widget-embed' || component.getAttributes()['data-tenant-widget-id']) {
                 component.set('type', 'widget-embed');
                 
-                // Görünümü güncelle
                 const view = component.view;
                 if (view && typeof view.onRender === 'function') {
                     setTimeout(() => view.onRender(), 50);
                 }
                 
-                // Widget ID'sini al
                 const tenantWidgetId = component.getAttributes()['data-tenant-widget-id'] || 
-                                      component.getAttributes()['data-widget-id'];
-                                      
+                                    component.getAttributes()['data-widget-id'];
+                                    
                 if (tenantWidgetId) {
-                    // Sadece Aktif Bileşenler kategorisindeki blokları pasif yap
                     const blockId = `tenant-widget-${tenantWidgetId}`;
                     const blockEl = document.querySelector(`.block-item[data-block-id="${blockId}"]`);
                     if (blockEl && blockEl.closest('.block-category[data-category="active-widgets"]')) {
@@ -352,10 +371,8 @@ window.StudioWidgetManager = (function() {
                         }
                     }
                     
-                    // Widget ID'sini komponent özelliği olarak ayarla
                     component.set('tenant_widget_id', tenantWidgetId);
                     
-                    // Widget içeriğini yükle
                     setTimeout(() => {
                         if (window.studioLoadWidget) {
                             window.studioLoadWidget(tenantWidgetId);

@@ -204,47 +204,7 @@ ${js}
         
         return html;
     }
-    
-    /**
-     * HTML çıktısını parse et ve widget embed referanslarını dönüştür
-     * Bu fonksiyon, GrapesJS'den sayfalara kaydedilmek üzere gelen HTML içeriğini işler
-     * ve karmaşık widget yapılarını basitleştirir
-     * 
-     * @param {string} html HTML içeriği
-     * @return {string} İşlenmiş HTML
-     */
-    function parseOutput(html) {
-        if (!html || typeof html !== 'string') return html;
-        
-        // Widget embed divlerini işleyen regex (widget-embed tipinde olanlar)
-        // Bu widget-embed'ler görsel önizleme için kullanılan yapılar
-        const widgetEmbedRegex = /<div[^>]*class="([^"]*widget-embed[^"]*)"[^>]*data-tenant-widget-id="(\d+)"[^>]*>[\s\S]*?<div[^>]*class="([^"]*)widget-content-placeholder[^"]*"[^>]*>[\s\S]*?<\/div>[\s\S]*?<\/div>/gi;
-        
-        // Widget embed divlerini daha basit bir formata dönüştür
-        html = html.replace(widgetEmbedRegex, (match, embedClass, widgetId) => {
-            return `<div class="widget-embed" data-tenant-widget-id="${widgetId}"></div>`;
-        });
-        
-        // Module widget'ları için (data-type="widget" olanlar)
-        const moduleWidgetRegex = /<div[^>]*class="([^"]*module-widget[^"]*)"[^>]*data-widget-id="(\d+)"[^>]*data-type="module"[^>]*>[\s\S]*?<\/div>/gi;
-        
-        html = html.replace(moduleWidgetRegex, (match, wrapperClass, widgetId) => {
-            return `[[module:${widgetId}]]`;
-        });
-        
-        // Alternatif olarak, eksik veya farklı yapıda olan widget embed divlerini de yakala
-        const altWidgetEmbedRegex = /<div[^>]*data-tenant-widget-id="(\d+)"[^>]*class="([^"]*widget-embed[^"]*)"[^>]*>[\s\S]*?<\/div>/gi;
-        
-        html = html.replace(altWidgetEmbedRegex, (match, widgetId, embedClass) => {
-            return `<div class="widget-embed" data-tenant-widget-id="${widgetId}"></div>`;
-        });
-        
-        // Widget etiketlerini de işle
-        html = processWidgetTags(html);
-        
-        return html;
-    }
-    
+                
     /**
      * HTML girişini parse et ve widget embed referanslarını dönüştür
      * Bu fonksiyon, veritabanından yüklenip GrapesJS'e gönderilen HTML içeriğini işler
@@ -256,14 +216,34 @@ ${js}
     function parseInput(html) {
         if (!html || typeof html !== 'string') return html;
         
-        // Module shortcode'ları görsel önizleme için widget-embed yapısına dönüştür
-        html = html.replace(/\[\[module:(\d+)\]\]/gi, (match, widgetId) => {
-            return `<div class="module-widget" data-widget-id="${widgetId}" data-type="module">
-                <div class="widget-content-placeholder" id="widget-content-module-${widgetId}">
-                    <div class="widget-loading" style="text-align:center; padding:20px;">
+        // Module shortcode'ları doğrudan içeriğin yükleneceği yapıya dönüştür
+        html = html.replace(/\[\[module:(\d+)\]\]/gi, (match, moduleId) => {
+            // HTML çıktısı olarak daha basit bir div yapısı oluştur 
+            // İçine otomatik yükleme scripti ekle
+            return `<div class="module-widget-container" data-widget-module-id="${moduleId}" id="module-widget-${moduleId}">
+                <div class="module-widget-label"><i class="fa fa-cube me-1"></i> Module #${moduleId}</div>
+                <div class="module-widget-content-placeholder" id="module-content-${moduleId}">
+                    <div class="widget-loading" style="display:none;text-align:center; padding:20px;">
                         <i class="fa fa-spin fa-spinner"></i> Modül içeriği yükleniyor...
                     </div>
                 </div>
+                <script>
+                    (function() {
+                        // Sayfa yüklenir yüklenmez modül içeriğini yükle
+                        if (typeof window.studioLoadModuleWidget === 'function') {
+                            window.studioLoadModuleWidget('${moduleId}');
+                        } else {
+                            // studioLoadModuleWidget fonksiyonu henüz yüklenmediyse, 
+                            // yükleme fonksiyonu gelene kadar bekle
+                            var checkInterval = setInterval(function() {
+                                if (typeof window.studioLoadModuleWidget === 'function') {
+                                    window.studioLoadModuleWidget('${moduleId}');
+                                    clearInterval(checkInterval);
+                                }
+                            }, 50);
+                        }
+                    })();
+                </script>
             </div>`;
         });
         
@@ -305,6 +285,61 @@ ${js}
                 </div>
             </div>`;
         });
+        
+        return html;
+    }
+
+    /**
+     * HTML çıktısını parse et ve widget referanslarını kısa kodlara dönüştür
+     * Bu fonksiyon, GrapesJS'den kaydetme için çıkan HTML içeriğini işler
+     * ve widget bileşenlerini kısa kodlara dönüştürür
+     * 
+     * @param {string} html HTML içeriği
+     * @return {string} İşlenmiş HTML
+     */
+    function parseOutput(html) {
+        if (!html || typeof html !== 'string') return html;
+        
+        // Widget embed divlerini işleyen regex (widget-embed tipinde olanlar)
+        // Bu widget-embed'ler görsel önizleme için kullanılan yapılar
+        const widgetEmbedRegex = /<div[^>]*class="([^"]*widget-embed[^"]*)"[^>]*data-tenant-widget-id="(\d+)"[^>]*>[\s\S]*?<div[^>]*class="([^"]*)widget-content-placeholder[^"]*"[^>]*>[\s\S]*?<\/div>[\s\S]*?<\/div>/gi;
+        
+        // Widget embed divlerini daha basit bir formata dönüştür
+        html = html.replace(widgetEmbedRegex, (match, embedClass, widgetId) => {
+            return `<div class="widget-embed" data-tenant-widget-id="${widgetId}"></div>`;
+        });
+        
+        // Module widget'ları için regex
+        const moduleWidgetRegex = /<div[^>]*class="([^"]*module-widget-container[^"]*)"[^>]*data-widget-module-id="(\d+)"[^>]*>[\s\S]*?<\/div>/gi;
+        
+        // Module widget divlerini module kısa koduna dönüştür
+        html = html.replace(moduleWidgetRegex, (match, containerClass, moduleId) => {
+            return `[[module:${moduleId}]]`;
+        });
+        
+        // Alternatif module formları için
+        const altModuleWidgetRegex = /<div[^>]*data-widget-module-id="(\d+)"[^>]*class="([^"]*module-widget-container[^"]*)"[^>]*>[\s\S]*?<\/div>/gi;
+        
+        html = html.replace(altModuleWidgetRegex, (match, moduleId, containerClass) => {
+            return `[[module:${moduleId}]]`;
+        });
+        
+        // Basit module widget elementi için
+        const simpleModuleWidgetRegex = /<div[^>]*data-widget-module-id="(\d+)"[^>]*>[\s\S]*?<\/div>/gi;
+        
+        html = html.replace(simpleModuleWidgetRegex, (match, moduleId) => {
+            return `[[module:${moduleId}]]`;
+        });
+        
+        // Alternatif olarak, eksik veya farklı yapıda olan widget embed divlerini de yakala
+        const altWidgetEmbedRegex = /<div[^>]*data-tenant-widget-id="(\d+)"[^>]*class="([^"]*widget-embed[^"]*)"[^>]*>[\s\S]*?<\/div>/gi;
+        
+        html = html.replace(altWidgetEmbedRegex, (match, widgetId, embedClass) => {
+            return `<div class="widget-embed" data-tenant-widget-id="${widgetId}"></div>`;
+        });
+        
+        // Widget etiketlerini de işle
+        html = processWidgetTags(html);
         
         return html;
     }

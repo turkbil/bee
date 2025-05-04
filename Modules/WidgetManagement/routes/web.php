@@ -72,6 +72,12 @@ Route::middleware(['web', 'auth', 'tenant'])
                     ->where('tenantWidgetId', '[0-9]+')
                     ->name('preview.embed.json');
                 
+                // Module widget için JSON API - YENİ EKLENEN ENDPOINT
+                Route::get('/api/module/{moduleId}', [WidgetPreviewController::class, 'moduleJson'])
+                    ->middleware('module.permission:widgetmanagement,view')
+                    ->where('moduleId', '[0-9]+')
+                    ->name('api.module');
+                
                 // Kategori Yönetimi Rotaları
                 Route::get('/category', WidgetCategoryComponent::class)
                     ->middleware('module.permission:widgetmanagement,view')
@@ -96,5 +102,11 @@ Route::middleware(['web', 'auth', 'tenant'])
                 Route::get('/modules', ModuleWidgetListComponent::class)
                     ->middleware(['role:root'])
                     ->name('modules');
+                
+                // YENİ EKLENEN ROUTE - Module Widget Önizleme
+                Route::get('/modules/preview/{id}', [WidgetPreviewController::class, 'showModule'])
+                    ->middleware(['role:root'])
+                    ->where('id', '[0-9]+')
+                    ->name('modules.preview');
             });
     });

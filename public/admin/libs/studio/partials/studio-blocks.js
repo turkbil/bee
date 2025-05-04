@@ -129,6 +129,29 @@ window.StudioBlocks = (function() {
             // Yeni eklenen komponenti kontrol et
             if (!component) return;
             
+            // Module widget kontrolü
+            if (component.get('type') === 'module-widget' || 
+                (component.getAttributes && component.getAttributes()['data-widget-module-id'])) {
+                
+                const moduleId = component.get('widget_module_id') || 
+                                component.getAttributes()['data-widget-module-id'];
+                
+                if (moduleId) {
+                    console.log(`Module widget #${moduleId} eklendi, hemen yükleniyor...`);
+                    
+                    // Module widget bileşeni tipini ayarla
+                    component.set('type', 'module-widget');
+                    component.set('widget_module_id', moduleId);
+                    
+                    // Module içeriğini hemen yükle
+                    setTimeout(() => {
+                        if (window.studioLoadModuleWidget) {
+                            window.studioLoadModuleWidget(moduleId);
+                        }
+                    }, 50);
+                }
+            }
+            
             // Block widget mi kontrol et
             const blockId = block.get('id');
             if (!blockId || !blockId.startsWith('widget-')) return;
@@ -168,6 +191,26 @@ window.StudioBlocks = (function() {
             
             // Komponenti kontrol et
             checkComponents(component);
+        });
+
+        // Canvas'a module widget eklendiğinde hemen yükle
+        editor.on('component:add', component => {
+            // Module widget kontrolü
+            if (component.get('type') === 'module-widget' || 
+                (component.getAttributes && component.getAttributes()['data-widget-module-id'])) {
+                
+                const moduleId = component.get('widget_module_id') || 
+                                component.getAttributes()['data-widget-module-id'];
+                
+                if (moduleId) {
+                    // Module içeriğini hemen yükle
+                    setTimeout(() => {
+                        if (window.studioLoadModuleWidget) {
+                            window.studioLoadModuleWidget(moduleId);
+                        }
+                    }, 50);
+                }
+            }
         });
     }
 

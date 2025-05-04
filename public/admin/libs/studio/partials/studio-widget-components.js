@@ -91,12 +91,22 @@ window.StudioWidgetComponents = (function() {
                     }
                 },
                 
+                // Widget değerlendirme fonksiyonu
                 isComponent(el) {
-                    if (el.getAttribute && 
-                        (el.getAttribute('data-type') === 'widget' || 
-                         el.getAttribute('data-widget-id'))) {
+                    if (el.classList && el.classList.contains('gjs-widget-wrapper') || 
+                        (el.getAttribute && (
+                            el.getAttribute('data-type') === 'widget' ||
+                            el.getAttribute('data-widget-id')
+                        ))) {
                         return { type: 'widget' };
                     }
+                    
+                    // Module widget tanıma - YENİ
+                    if (el.classList && el.classList.contains('module-widget-container') || 
+                        (el.getAttribute && el.getAttribute('data-widget-module-id'))) {
+                        return { type: 'module-widget' };
+                    }
+                    
                     return false;
                 }
             },

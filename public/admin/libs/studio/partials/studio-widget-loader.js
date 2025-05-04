@@ -264,6 +264,7 @@ window.StudioWidgetLoader = (function() {
                     if (blockEl && blockEl.closest('.block-category[data-category="active-widgets"]')) {
                         blockEl.classList.add('disabled');
                         blockEl.setAttribute('draggable', 'false');
+                        blockEl.style.cursor = 'not-allowed';
                         const badge = blockEl.querySelector('.gjs-block-type-badge');
                         if (badge) {
                             badge.classList.replace('active', 'inactive');
@@ -375,6 +376,7 @@ window.StudioWidgetLoader = (function() {
                     if (blockEl) {
                         blockEl.classList.add('disabled');
                         blockEl.setAttribute('draggable', 'false');
+                        blockEl.style.cursor = 'not-allowed';
                         const badge = blockEl.querySelector('.gjs-block-type-badge');
                         if (badge) {
                             badge.classList.replace('active', 'inactive');
@@ -447,6 +449,19 @@ window.StudioWidgetLoader = (function() {
                         content: `<div class="widget-content-placeholder" id="module-content-${moduleId}"><div class="widget-loading"><i class="fa fa-spin fa-spinner"></i> Module yükleniyor...</div></div>`
                     });
                     
+                    // Module widget block butonunu pasifleştir
+                    const blockEl = document.querySelector(`.block-item[data-block-id="widget-${moduleId}"]`);
+                    if (blockEl) {
+                        blockEl.classList.add('disabled');
+                        blockEl.setAttribute('draggable', 'false');
+                        blockEl.style.cursor = 'not-allowed';
+                        const badge = blockEl.querySelector('.gjs-block-type-badge');
+                        if (badge) {
+                            badge.classList.replace('active', 'inactive');
+                            badge.textContent = 'Pasif';
+                        }
+                    }
+                    
                     // Module içeriğini yükle
                     setTimeout(() => {
                         if (typeof window.studioLoadModuleWidget === "function") {
@@ -459,7 +474,7 @@ window.StudioWidgetLoader = (function() {
             console.error("Widget embed işleme genel hatası:", err);
         }
     }
-    
+
     // Widget embed elementlerini işle
     function processWidgetEmbeds(editor) {
         try {
@@ -493,6 +508,7 @@ window.StudioWidgetLoader = (function() {
                     if (blockEl && blockEl.closest('.block-category[data-category="active-widgets"]')) {
                         blockEl.classList.add('disabled');
                         blockEl.setAttribute('draggable', 'false');
+                        blockEl.style.cursor = 'not-allowed';
                         const badge = blockEl.querySelector('.gjs-block-type-badge');
                         if (badge) {
                             badge.classList.replace('active', 'inactive');
@@ -564,6 +580,7 @@ window.StudioWidgetLoader = (function() {
                     if (blockEl) {
                         blockEl.classList.add('disabled');
                         blockEl.setAttribute('draggable', 'false');
+                        blockEl.style.cursor = 'not-allowed';
                         const badge = blockEl.querySelector('.gjs-block-type-badge');
                         if (badge) {
                             badge.classList.replace('active', 'inactive');

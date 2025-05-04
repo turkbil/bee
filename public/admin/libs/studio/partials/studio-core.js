@@ -73,7 +73,7 @@ window.StudioCore = (function() {
                 window.StudioUI.setupUI(editorInstance);
             }
             
-            // İçerik yüklendikten sonra module widget'ları hemen yükle
+            // İçerik yüklendikten sonra module widget'ları hemen yükle ve butonları devre dışı bırak
             setTimeout(() => {
                 const moduleComponents = editorInstance.DomComponents.getWrapper().find('[data-widget-module-id]');
                 if (moduleComponents && moduleComponents.length > 0) {
@@ -83,6 +83,19 @@ window.StudioCore = (function() {
                         const moduleId = component.getAttributes()['data-widget-module-id'];
                         if (moduleId && window.studioLoadModuleWidget) {
                             window.studioLoadModuleWidget(moduleId);
+                            
+                            // Module widget butonunu devre dışı bırak
+                            const blockEl = document.querySelector(`.block-item[data-block-id="widget-${moduleId}"]`);
+                            if (blockEl) {
+                                blockEl.classList.add('disabled');
+                                blockEl.setAttribute('draggable', 'false');
+                                blockEl.style.cursor = 'not-allowed';
+                                const badge = blockEl.querySelector('.gjs-block-type-badge');
+                                if (badge) {
+                                    badge.classList.replace('active', 'inactive');
+                                    badge.textContent = 'Pasif';
+                                }
+                            }
                         }
                     });
                 }
@@ -111,6 +124,19 @@ window.StudioCore = (function() {
                         // Module içeriğini yükle
                         if (window.studioLoadModuleWidget) {
                             window.studioLoadModuleWidget(moduleId);
+                        }
+                        
+                        // Module widget butonunu devre dışı bırak
+                        const blockEl = document.querySelector(`.block-item[data-block-id="widget-${moduleId}"]`);
+                        if (blockEl) {
+                            blockEl.classList.add('disabled');
+                            blockEl.setAttribute('draggable', 'false');
+                            blockEl.style.cursor = 'not-allowed';
+                            const badge = blockEl.querySelector('.gjs-block-type-badge');
+                            if (badge) {
+                                badge.classList.replace('active', 'inactive');
+                                badge.textContent = 'Pasif';
+                            }
                         }
                     }
                 }

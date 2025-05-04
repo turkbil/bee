@@ -319,6 +319,24 @@ window.StudioWidgetManager = (function() {
                     }
                 }
             });
+            
+            // Module widget'ları için aynı işlemi yap
+            editor.DomComponents.getWrapper().find('[data-widget-module-id]').forEach(comp => {
+                const moduleId = comp.getAttributes()['data-widget-module-id'];
+                if (!moduleId) return;
+                
+                // Module widget block butonunu pasifleştir
+                const blockEl = document.querySelector(`.block-item[data-block-id="widget-${moduleId}"]`);
+                if (blockEl) {
+                    blockEl.classList.add('disabled');
+                    blockEl.setAttribute('draggable', 'false');
+                    const badge = blockEl.querySelector('.gjs-block-type-badge');
+                    if (badge) {
+                        badge.classList.replace('active', 'inactive');
+                        badge.textContent = 'Pasif';
+                    }
+                }
+            });
         });
         
         // Bileşen ekleme olayı
@@ -411,6 +429,7 @@ window.StudioWidgetManager = (function() {
                 if (blockEl) {
                     blockEl.classList.remove('disabled');
                     blockEl.setAttribute('draggable', 'true');
+                    blockEl.style.cursor = 'grab';
                     const badge = blockEl.querySelector('.gjs-block-type-badge');
                     if (badge) {
                         badge.classList.replace('inactive', 'active');
@@ -433,6 +452,7 @@ window.StudioWidgetManager = (function() {
                 if (blockEl && blockEl.closest('.block-category[data-category="active-widgets"]')) {
                     blockEl.classList.remove('disabled');
                     blockEl.setAttribute('draggable', 'true');
+                    blockEl.style.cursor = 'grab';
                     const badge = blockEl.querySelector('.gjs-block-type-badge');
                     if (badge) {
                         badge.classList.replace('inactive', 'active');

@@ -58,6 +58,16 @@ class WidgetServiceProvider extends ServiceProvider
         Blade::directive('parsewidgets', function ($expression) {
             return "<?php echo parse_widget_shortcodes($expression); ?>";
         });
+        
+        // @module(id) direktifi - Module widget render etme
+        Blade::directive('module', function ($expression) {
+            return "<?php echo module_widget_by_id($expression); ?>";
+        });
+        
+        // @file(id) direktifi - File widget render etme  
+        Blade::directive('file', function ($expression) {
+            return "<?php echo widget_file_by_id($expression); ?>";
+        });
     }
     
     /**

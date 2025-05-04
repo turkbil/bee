@@ -17,7 +17,7 @@ class WidgetService
     protected $cachePrefix = 'widget_';
     protected $cacheDuration = 1440;
     protected $useCache = false; // Önbellek kullanımını varsayılan olarak kapalı yap
-    protected $useHandlebars = true; // Handlebars kullanımını açık olarak ayarla
+    protected $useHandlebars = false; // Handlebars kullanımını kapalı olarak ayarla
     
     public function __construct(
         WidgetRenderService $renderService = null,
@@ -29,6 +29,8 @@ class WidgetService
         // Handlebars kullanımı için renderService'i ayarla
         if ($this->useHandlebars) {
             $this->renderService->setUseHandlebars(true);
+        } else {
+            $this->renderService->setUseHandlebars(false);
         }
     }
     
@@ -156,26 +158,7 @@ class WidgetService
             $cssFiles = [];
             $jsFiles = [];
             
-            if ($this->useHandlebars) {
-                // Handlebars için template olarak bırakıyoruz
-                $contextData = $tenantWidget->settings ?? [];
-                
-                // JavaScript ile Handlebars işleme
-                $handlebarsScript = '
-<script>
-(function() {
-    var source = `' . str_replace('`', '\`', $html) . '`;
-    var template = Handlebars.compile(source);
-    var context = ' . json_encode($contextData) . ';
-    var html = template(context);
-    document.getElementById("widget-' . $tenantWidget->id . '").innerHTML = html;
-})();
-</script>';
-                
-                $html = '<div id="widget-' . $tenantWidget->id . '"></div>' . $handlebarsScript;
-            } else {
-                $html = $this->renderService->processVariables($html, $tenantWidget->settings ?? []);
-            }
+            $html = $this->renderService->processVariables($html, $tenantWidget->settings ?? []);
         } else {
             $widget = $tenantWidget->widget;
             
@@ -197,6 +180,20 @@ class WidgetService
                 }
             }
             
+            if ($widget->type === 'module' && !empty($widget->file_path)) {
+                try {
+                    $viewPath = 'widgetmanagement::blocks.' . $widget->file_path;
+                    if (view()->exists($viewPath)) {
+                        $settings = $tenantWidget->settings ?? [];
+                        return view($viewPath, ['settings' => $settings, 'widget' => $widget])->render();
+                    } else {
+                        return '<div class="alert alert-danger">Belirtilen modül dosyası bulunamadı: ' . $viewPath . '</div>';
+                    }
+                } catch (\Exception $e) {
+                    return '<div class="alert alert-danger">Modül render hatası: ' . $e->getMessage() . '</div>';
+                }
+            }
+            
             $html = $widget->content_html;
             $css = $widget->content_css;
             $js = $widget->content_js;
@@ -213,55 +210,19 @@ class WidgetService
                         return $item->content;
                     })->toArray();
                 
-                if ($this->useHandlebars) {
-                    // items verisi context'e eklenir, Handlebars tarafında işlenir
-                    $settings['items'] = $items;
-                } else {
-                    $html = $this->renderService->processItems($html, $items);
-                }
+                $html = $this->renderService->processItems($html, $items);
             }
             
             if ($widget->type === 'module') {
                 $moduleItems = $this->getModuleData($widget->data_source, $settings);
-                
-                if ($this->useHandlebars) {
-                    // Module verileri context'e eklenir
-                    $settings = array_merge($settings, $moduleItems);
-                } else {
-                    $html = $this->renderService->processModuleData($html, $moduleItems);
-                }
+                $html = $this->renderService->processModuleData($html, $moduleItems);
             }
             
-            if ($this->useHandlebars) {
-                // Handlebars template işleme
-                $widgetId = 'widget-' . $tenantWidget->id;
-                $contextData = $settings;
-                
-                // JavaScript ile Handlebars işleme
-                $handlebarsScript = '
-<script>
-(function() {
-    var source = `' . str_replace('`', '\`', $html) . '`;
-    var template = Handlebars.compile(source);
-    var context = ' . json_encode($contextData) . ';
-    var html = template(context);
-    document.getElementById("' . $widgetId . '").innerHTML = html;
-})();
-</script>';
-                
-                $html = '<div id="' . $widgetId . '"></div>' . $handlebarsScript;
-            } else {
-                $html = $this->renderService->processVariables($html, $settings);
-                $html = $this->renderService->processConditionalBlocks($html, $settings);
-            }
+            $html = $this->renderService->processVariables($html, $settings);
+            $html = $this->renderService->processConditionalBlocks($html, $settings);
         }
         
         $result = '';
-        
-        // Handlebars CDN ekle
-        if ($this->useHandlebars) {
-            $result .= '<script src="' . asset('admin/libs/handlebars/handlebars.min.js') . '"></script>' . "\n";
-        }
         
         if (!empty($cssFiles)) {
             foreach ($cssFiles as $cssFile) {

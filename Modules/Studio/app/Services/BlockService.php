@@ -152,8 +152,12 @@ class BlockService
     {
         $content = '';
         
+        // Module tipli widget'lar için sadece data-widget-id formatında output ver
+        if ($type === 'module') {
+            return '[[module:' . $widget->id . ']]';
+        }
+        
         switch ($type) {
-            case 'module':
             case 'file':
                 if (!empty($widget->file_path)) {
                     try {
@@ -186,19 +190,16 @@ class BlockService
                 break;
         }
         
-        // Studio editörde kilitli container wrapper ekle
-        if ($type === 'module' && Request::is('admin/studio*')) {
-            $content = '<div class="widget-container widget-type-' . $type . '" data-widget-type="' . $type . '" contenteditable="false" style="pointer-events:none;">'
-                     . '<div class="widget-content" style="filter:grayscale(20%) blur(0.3px); opacity:0.9;">'
-                     . $content
-                     . '</div></div>';
-        }
-        
         return $content;
     }
 
     private function prepareTenantWidgetContent($widget, $tenantWidget, $type): string
     {
+        // Module tipli tenant widget'lar için de sadece shortcode formatında output ver
+        if ($type === 'module') {
+            return '[[module:' . $widget->id . ']]';
+        }
+        
         // Widget ID'sini içeren benzersiz bir ID oluştur
         $uniqueId = 'widget-content-' . $tenantWidget->id;
         

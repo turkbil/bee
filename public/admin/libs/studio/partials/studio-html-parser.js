@@ -216,13 +216,20 @@ ${js}
     function parseOutput(html) {
         if (!html || typeof html !== 'string') return html;
         
-        // Widget embed divlerini işleyen regex
-        // GrapesJS'den gelen karmaşık widget embed yapısını basit referans divlerine dönüştür
+        // Widget embed divlerini işleyen regex (widget-embed tipinde olanlar)
+        // Bu widget-embed'ler görsel önizleme için kullanılan yapılar
         const widgetEmbedRegex = /<div[^>]*class="([^"]*widget-embed[^"]*)"[^>]*data-tenant-widget-id="(\d+)"[^>]*>[\s\S]*?<div[^>]*class="([^"]*)widget-content-placeholder[^"]*"[^>]*>[\s\S]*?<\/div>[\s\S]*?<\/div>/gi;
         
         // Widget embed divlerini daha basit bir formata dönüştür
         html = html.replace(widgetEmbedRegex, (match, embedClass, widgetId) => {
             return `<div class="widget-embed" data-tenant-widget-id="${widgetId}"></div>`;
+        });
+        
+        // Module widget'ları için (data-type="widget" olanlar)
+        const moduleWidgetRegex = /<div[^>]*class="([^"]*module-widget[^"]*)"[^>]*data-widget-id="(\d+)"[^>]*data-type="module"[^>]*>[\s\S]*?<\/div>/gi;
+        
+        html = html.replace(moduleWidgetRegex, (match, wrapperClass, widgetId) => {
+            return `[[module:${widgetId}]]`;
         });
         
         // Alternatif olarak, eksik veya farklı yapıda olan widget embed divlerini de yakala
@@ -248,6 +255,17 @@ ${js}
      */
     function parseInput(html) {
         if (!html || typeof html !== 'string') return html;
+        
+        // Module shortcode'ları görsel önizleme için widget-embed yapısına dönüştür
+        html = html.replace(/\[\[module:(\d+)\]\]/gi, (match, widgetId) => {
+            return `<div class="module-widget" data-widget-id="${widgetId}" data-type="module">
+                <div class="widget-content-placeholder" id="widget-content-module-${widgetId}">
+                    <div class="widget-loading" style="text-align:center; padding:20px;">
+                        <i class="fa fa-spin fa-spinner"></i> Modül içeriği yükleniyor...
+                    </div>
+                </div>
+            </div>`;
+        });
         
         // Widget embed referanslarını daha karmaşık yapıya çevir
         const simpleWidgetEmbedRegex = /<div[^>]*class="([^"]*widget-embed[^"]*)"[^>]*data-tenant-widget-id="(\d+)"[^>]*><\/div>/gi;
@@ -380,7 +398,8 @@ ${js}
             /<div[^>]*data-widget-id="(\d+)"[^>]*data-type="widget"[^>]*>/gi,
             /<div[^>]*data-type="widget"[^>]*data-widget-id="(\d+)"[^>]*>/gi,
             /<widget\s+id="(\d+)"[^>]*><\/widget>/gi,
-            /\{\{widget:(\d+)\}\}/gi
+            /\{\{widget:(\d+)\}\}/gi,
+            /\[\[module:(\d+)\]\]/gi
         ];
         
         regexFormats.forEach(regex => {

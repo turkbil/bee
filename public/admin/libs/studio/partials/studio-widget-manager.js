@@ -196,7 +196,7 @@ window.StudioWidgetManager = (function() {
                 tenantWidgets.forEach(widget => {
                     if (!widget || !widget.id) return;
                     
-                    // Blok ID’sini prefix formatta ayarla
+                    // Blok ID'sini prefix formatta ayarla
                     const widgetId = widget.id.toString();
                     const blockId = `tenant-widget-${widgetId}`;
                     const tenantWidgetId = widgetId;
@@ -280,7 +280,7 @@ window.StudioWidgetManager = (function() {
         // Widget bloklarını yükle
         loadWidgetBlocks(editor);
         
-        // İlk yüklemede mevcut widget embed’ler için blok butonlarını pasifleştir
+        // İlk yüklemede mevcut widget embed'ler için blok butonlarını pasifleştir
         if (window.StudioWidgetLoader && typeof window.StudioWidgetLoader.processExistingWidgets === 'function') {
             window.StudioWidgetLoader.processExistingWidgets(editor);
         }
@@ -305,7 +305,7 @@ window.StudioWidgetManager = (function() {
                 window.StudioWidgetLoader.processExistingWidgets(editor);
             }
             
-            // Sayfa yüklendiğinde mevcut widget embed’ler için blok butonlarını pasifleştir
+            // Sayfa yüklendiğinde mevcut widget embed'ler için blok butonlarını pasifleştir
             editor.DomComponents.getWrapper().find('[data-tenant-widget-id]').forEach(comp => {
                 const widgetId = comp.getAttributes()['data-tenant-widget-id'];
                 const blockEl = document.querySelector(`.block-item[data-block-id="tenant-widget-${widgetId}"]`);
@@ -336,6 +336,18 @@ window.StudioWidgetManager = (function() {
                     // Module widget bileşeni tipini ayarla
                     component.set('type', 'module-widget');
                     component.set('widget_module_id', moduleId);
+                    
+                    // Module widget block butonunu disable et
+                    const blockEl = document.querySelector(`.block-item[data-block-id="widget-${moduleId}"]`);
+                    if (blockEl) {
+                        blockEl.classList.add('disabled');
+                        blockEl.setAttribute('draggable', 'false');
+                        const badge = blockEl.querySelector('.gjs-block-type-badge');
+                        if (badge) {
+                            badge.classList.replace('active', 'inactive');
+                            badge.textContent = 'Pasif';
+                        }
+                    }
                     
                     // Module içeriğini hemen yükle
                     setTimeout(() => {
@@ -385,6 +397,29 @@ window.StudioWidgetManager = (function() {
         // Widget silindiğinde loadedWidgets ve blok durumu resetle
         editor.on('component:remove', (component) => {
             const attrs = component.getAttributes();
+            
+            // Module widget silindiğinde
+            const moduleId = attrs['data-widget-module-id'];
+            if (moduleId) {
+                // Module widget için loadedModules setinden sil
+                if (window._loadedModules) {
+                    window._loadedModules.delete(moduleId);
+                }
+                
+                // Module widget block butonunu aktif yap
+                const blockEl = document.querySelector(`.block-item[data-block-id="widget-${moduleId}"]`);
+                if (blockEl) {
+                    blockEl.classList.remove('disabled');
+                    blockEl.setAttribute('draggable', 'true');
+                    const badge = blockEl.querySelector('.gjs-block-type-badge');
+                    if (badge) {
+                        badge.classList.replace('inactive', 'active');
+                        badge.textContent = 'Aktif';
+                    }
+                }
+            }
+            
+            // Widget embed silindiğinde
             const widgetId = attrs['data-tenant-widget-id'] || attrs['data-widget-id'];
             if (widgetId) {
                 // loadedWidgets setinden sil

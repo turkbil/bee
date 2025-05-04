@@ -72,6 +72,64 @@ window.StudioCore = (function() {
             if (window.StudioUI && typeof window.StudioUI.setupUI === 'function') {
                 window.StudioUI.setupUI(editorInstance);
             }
+            
+            // İçerik yüklendikten sonra module widget'ları hemen yükle
+            setTimeout(() => {
+                const moduleComponents = editorInstance.DomComponents.getWrapper().find('[data-widget-module-id]');
+                if (moduleComponents && moduleComponents.length > 0) {
+                    console.log(`${moduleComponents.length} adet module widget otomatik yükleniyor...`);
+                    
+                    moduleComponents.forEach(component => {
+                        const moduleId = component.getAttributes()['data-widget-module-id'];
+                        if (moduleId && window.studioLoadModuleWidget) {
+                            window.studioLoadModuleWidget(moduleId);
+                        }
+                    });
+                }
+                
+                // HTML içindeki [[module:XX]] formatındaki kodları da ara ve işle
+                const htmlContent = editorInstance.getHtml();
+                if (typeof htmlContent === 'string') {
+                    const moduleRegex = /\[\[module:(\d+)\]\]/g;
+                    let moduleMatch;
+                    
+                    while ((moduleMatch = moduleRegex.exec(htmlContent)) !== null) {
+                        const moduleId = moduleMatch[1];
+                        
+                        // Module widget bileşeni oluştur
+                        const moduleWidget = editorInstance.DomComponents.addComponent({
+                            type: 'module-widget',
+                            widget_module_id: moduleId,
+                            attributes: {
+                                'data-widget-module-id': moduleId,
+                                'id': `module-widget-${moduleId}`,
+                                'class': 'module-widget-container'
+                            },
+                            content: `<div class="module-widget-label"><i class="fa fa-cube me-1"></i> Module #${moduleId}</div><div class="module-widget-content-placeholder" id="module-content-${moduleId}"><div class="widget-loading" style="text-align:center; padding:20px;"><i class="fa fa-spin fa-spinner"></i> Module yükleniyor...</div></div>`
+                        });
+                        
+                        // Module içeriğini yükle
+                        if (window.studioLoadModuleWidget) {
+                            window.studioLoadModuleWidget(moduleId);
+                        }
+                    }
+                }
+                
+                // Module widget'larının HTML dönüştürmesini ayarla
+                if (!editorInstance.DomComponents.getType('module-widget')) {
+                    editorInstance.DomComponents.addType('module-widget', {
+                        model: {
+                            toHTML() {
+                                const moduleId = this.get('widget_module_id') || this.getAttributes()['data-widget-module-id'];
+                                if (moduleId) {
+                                    return `[[module:${moduleId}]]`;
+                                }
+                                return this.view.el.outerHTML;
+                            }
+                        }
+                    });
+                }
+            }, 500);
         });
         
         // Global erişim için editörü kaydet (geriye dönük uyumluluk)

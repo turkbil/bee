@@ -264,6 +264,122 @@ class WidgetPreviewController extends Controller
         }
     }
 
+    /**
+     * JSON API endpoint for module widgets
+     */
+    public function moduleJson($moduleId)
+    {
+        try {
+            $widget = Widget::findOrFail($moduleId);
+            
+            if ($widget->type !== 'module') {
+                return response()->json(['error' => 'Bu widget bir module tipi değil.'], 400);
+            }
+            
+            // Modül widget'ı için view yolunu doğrudan oluştur
+            $viewPath = 'widgetmanagement::blocks.' . $widget->file_path;
+            
+            // View'un varlığını kontrol et
+            if (!View::exists($viewPath)) {
+                return response()->json([
+                    'error' => 'Belirtilen modül dosyası bulunamadı: ' . $viewPath,
+                    'html' => '<div class="alert alert-danger">Modül dosyası bulunamadı: ' . $viewPath . '</div>'
+                ], 404);
+            }
+            
+            // Varsayılan ayarları oluştur
+            $settings = [
+                'title' => $widget->name,
+                'unique_id' => Str::random(),
+                'show_description' => true
+            ];
+            
+            // Widget ayarlarını ekle
+            if (!empty($widget->settings_schema) && is_array($widget->settings_schema)) {
+                $settings = array_merge($settings, $widget->settings_schema);
+            }
+            
+            try {
+                // View içeriğini al
+                $html = view($viewPath, ['settings' => $settings])->render();
+                
+                // Modül için meta verileri döndür
+                return response()->json([
+                    'success' => true, 
+                    'html' => $html,
+                    'content_html' => $html,
+                    'css' => $widget->content_css ?? '',
+                    'js' => $widget->content_js ?? '',
+                    'context' => $settings,
+                    'useHandlebars' => false,
+                    'widget_id' => $widget->id,
+                    'widget_name' => $widget->name,
+                    'widget_type' => 'module',
+                    'file_path' => $widget->file_path
+                ]);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'error' => 'Modül render hatası: ' . $e->getMessage(),
+                    'html' => '<div class="alert alert-danger">Modül render hatası: ' . $e->getMessage() . '</div>'
+                ], 500);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Modül widget yüklenirken bir hata oluştu: ' . $e->getMessage(),
+                'html' => '<div class="alert alert-danger">Modül widget yüklenemedi: ' . $e->getMessage() . '</div>'
+            ], 500);
+        }
+    }
+
+    /**
+     * Module widget preview page
+     */
+    public function showModule($id)
+    {
+        try {
+            $widget = Widget::findOrFail($id);
+            
+            if ($widget->type !== 'module') {
+                return response()->view('widgetmanagement::widget.error', [
+                    'message' => 'Bu widget bir modül tipinde değil.'
+                ], 404);
+            }
+            
+            // Modül widget'ı için view yolunu doğrudan oluştur
+            $viewPath = 'widgetmanagement::blocks.' . $widget->file_path;
+            
+            // View'un varlığını kontrol et
+            if (!View::exists($viewPath)) {
+                return response()->view('widgetmanagement::widget.error', [
+                    'message' => 'Belirtilen modül dosyası bulunamadı: ' . $viewPath
+                ], 404);
+            }
+            
+            // Varsayılan ayarları oluştur
+            $settings = [
+                'title' => $widget->name,
+                'unique_id' => Str::random(),
+                'show_description' => true
+            ];
+            
+            // Widget ayarlarını ekle
+            if (!empty($widget->settings_schema) && is_array($widget->settings_schema)) {
+                $settings = array_merge($settings, $widget->settings_schema);
+            }
+            
+            // Modül widget'ını file-preview şablonu ile görüntüle
+            return view('widgetmanagement::widget.file-preview', [
+                'widget' => $widget,
+                'viewPath' => $viewPath,
+                'settings' => $settings
+            ]);
+        } catch (\Exception $e) {
+            return response()->view('widgetmanagement::widget.error', [
+                'message' => 'Modül widget yüklenirken bir hata oluştu: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function showFile($id)
     {
         try {

@@ -1,5 +1,3 @@
-// public/admin/libs/studio/partials/studio-widget-loader.js
-
 /**
  * Studio Editor - Widget Yükleme Modülü
  * Widget verilerini yükleme ve dönüştürme
@@ -33,7 +31,7 @@ window.StudioWidgetLoader = (function() {
                             type: 'widget-embed',
                             tenant_widget_id: tenantWidgetId,
                             attributes: {
-                                'class': 'widget-embed',
+                                'class': 'studio-widget-container widget-embed',
                                 'data-type': 'widget-embed',
                                 'data-tenant-widget-id': tenantWidgetId,
                                 'id': 'widget-embed-' + tenantWidgetId
@@ -45,7 +43,7 @@ window.StudioWidgetLoader = (function() {
                                         'class': 'widget-content-placeholder',
                                         'id': 'widget-content-' + tenantWidgetId
                                     },
-                                    content: '<div class="widget-loading" style="text-align:center; padding:20px;"><i class="fa fa-spin fa-spinner"></i></div>'
+                                    content: '<div class="widget-loading" style="text-align:center; padding:20px;"><i class="fa fa-spin fa-spinner"></i> Widget içeriği yükleniyor...</div>'
                                 }
                             ]
                         },
@@ -81,7 +79,7 @@ window.StudioWidgetLoader = (function() {
         
         // Widget shortcoder ({{widget:id}}) embed'e dönüştür
         html = html.replace(/\{\{widget:(\d+)\}\}/gi, function(match, widgetId) {
-            return `<div class="widget-embed" data-tenant-widget-id="${widgetId}"></div>`;
+            return `<div class="studio-widget-container widget-embed" data-tenant-widget-id="${widgetId}"></div>`;
         });
 
         // Blade direktiflerini temizle
@@ -156,59 +154,68 @@ window.StudioWidgetLoader = (function() {
                 font-style: italic;
                 position: relative;
             }
-            .widget-embed-placeholder:before {
-                content: "Dinamik Widget";
-                position: absolute;
-                top: -10px;
-                left: 10px;
-                background-color: #3b82f6;
-                color: white;
-                font-size: 10px;
-                padding: 2px 6px;
-                border-radius: 3px;
-                font-style: normal;
-            }
-            .widget-embed {
+            
+            /* Ortak widget stili */
+            .studio-widget-container {
                 position: relative;
                 display: block;
                 min-height: 50px;
-                border: 2px solid #e11d48;
                 border-radius: 6px;
                 padding: 8px;
                 margin: 10px 0;
+            }
+            
+            /* Widget tiplerine özgü stilleri */
+            .widget-embed {
+                border: 2px solid #e11d48;
                 background-color: rgba(225, 29, 72, 0.05);
             }
-            .widget-embed-label {
-                position: absolute;
-                top: -10px;
-                left: 10px;
-                background-color: #e11d48;
-                color: white;
-                padding: 2px 6px;
-                font-size: 10px;
-                border-radius: 3px;
-                font-weight: bold;
-            }
+            
             .module-widget-container {
-                position: relative;
-                display: block;
-                min-height: 50px;
                 border: 2px solid #8b5cf6;
-                border-radius: 6px;
-                padding: 8px;
-                margin: 10px 0;
                 background-color: rgba(139, 92, 246, 0.05);
             }
-            .module-widget-label {
+            
+            /* İçerik alanları için ortak stil */
+            .widget-content-placeholder {
+                width: 100%;
+                padding: 5px;
+            }
+            
+            /* Yükleme göstergesi */
+            .widget-loading {
+                text-align: center;
+                padding: 20px;
+            }
+            
+            /* Overlay */
+            .widget-overlay {
                 position: absolute;
-                top: -10px;
-                left: 10px;
-                background-color: #8b5cf6;
-                color: white;
-                padding: 2px 6px;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 10;
+                background: rgba(0,0,0,0.05);
+                cursor: pointer;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            
+            .widget-type-badge {
+                display: inline-block;
+                padding: 3px 8px;
                 font-size: 10px;
-                border-radius: 3px;
                 font-weight: bold;
+                border-radius: 4px;
+                color: white;
+                background-color: #3b82f6;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            }
+            
+            .module-widget-container .widget-type-badge {
+                background-color: #8b5cf6;
             }
         `;
         document.head.appendChild(styleEl);
@@ -233,6 +240,11 @@ window.StudioWidgetLoader = (function() {
                     
                     // Widget-embed tipini ekle
                     component.set('type', 'widget-embed');
+                    
+                    // Sınıf adını güncelle
+                    if (!component.getAttributes().class.includes('studio-widget-container')) {
+                        component.addClass('studio-widget-container');
+                    }
                     
                     // Özellikleri ayarla
                     component.set('tenant_widget_id', widgetId);
@@ -274,6 +286,28 @@ window.StudioWidgetLoader = (function() {
                                 return;
                             }
                             
+                            // Etiketleri temizle
+                            const labels = el.querySelectorAll('.widget-label');
+                            labels.forEach(label => label.remove());
+                            
+                            // Overlay ekle
+                            if (!el.querySelector('.widget-overlay')) {
+                                const overlay = document.createElement('div');
+                                overlay.className = 'widget-overlay';
+                                
+                                const badge = document.createElement('span');
+                                badge.className = 'badge widget-type-badge';
+                                badge.innerHTML = '<i class="fa fa-puzzle-piece me-1"></i> Tenant Widget';
+                                
+                                overlay.appendChild(badge);
+                                el.appendChild(overlay);
+                                
+                                // Tıklama olayı ekle
+                                overlay.addEventListener('click', () => {
+                                    window.open(`/admin/widgetmanagement/items/${widgetId}`, '_blank');
+                                });
+                            }
+                            
                             // İçerik alanını bul veya oluştur
                             const uniqueId = 'widget-content-' + widgetId;
                             let container = el.querySelector(`#${uniqueId}`) || el.querySelector(`.widget-content-placeholder`);
@@ -283,7 +317,7 @@ window.StudioWidgetLoader = (function() {
                                 container = document.createElement('div');
                                 container.id = uniqueId;
                                 container.className = 'widget-content-placeholder';
-                                container.innerHTML = '<div class="widget-loading" style="text-align:center; padding:20px;"><i class="fa fa-spin fa-spinner"></i></div>';
+                                container.innerHTML = '<div class="widget-loading"><i class="fa fa-spin fa-spinner"></i> Widget içeriği yükleniyor...</div>';
                                 el.appendChild(container);
                             }
                             
@@ -319,6 +353,11 @@ window.StudioWidgetLoader = (function() {
                     component.set('type', 'module-widget');
                     component.set('widget_module_id', moduleId);
                     
+                    // Sınıf adını güncelle
+                    if (!component.getAttributes().class.includes('studio-widget-container')) {
+                        component.addClass('studio-widget-container');
+                    }
+                    
                     // Özellikleri ayarla
                     component.set('editable', false);
                     component.set('droppable', false);
@@ -342,6 +381,37 @@ window.StudioWidgetLoader = (function() {
                             badge.textContent = 'Pasif';
                         }
                     }
+                    
+                    // Etiketleri temizle ve overlay ekle
+                    setTimeout(() => {
+                        try {
+                            const el = component.view.el;
+                            
+                            // Etiketleri temizle
+                            const labels = el.querySelectorAll('.widget-label');
+                            labels.forEach(label => label.remove());
+                            
+                            // Overlay ekle
+                            if (!el.querySelector('.widget-overlay')) {
+                                const overlay = document.createElement('div');
+                                overlay.className = 'widget-overlay';
+                                
+                                const badge = document.createElement('span');
+                                badge.className = 'badge widget-type-badge';
+                                badge.innerHTML = '<i class="fa fa-cube me-1"></i> Module Widget';
+                                
+                                overlay.appendChild(badge);
+                                el.appendChild(overlay);
+                                
+                                // Tıklama olayı ekle
+                                overlay.addEventListener('click', () => {
+                                    window.open(`/admin/widgetmanagement/modules/preview/${moduleId}`, '_blank');
+                                });
+                            }
+                        } catch (err) {
+                            console.error(`Module widget ${moduleId} etiket hatası:`, err);
+                        }
+                    }, 100);
                     
                     // Module içeriğini yükle
                     setTimeout(() => {
@@ -372,9 +442,9 @@ window.StudioWidgetLoader = (function() {
                         attributes: {
                             'data-widget-module-id': moduleId,
                             'id': `module-widget-${moduleId}`,
-                            'class': 'module-widget-container'
+                            'class': 'studio-widget-container module-widget-container'
                         },
-                        content: `<div class="module-widget-label">Module #${moduleId}</div><div class="module-widget-content-placeholder" id="module-content-${moduleId}"><div class="widget-loading" style="text-align:center; padding:20px;"><i class="fa fa-spin fa-spinner"></i> Module yükleniyor...</div></div>`
+                        content: `<div class="widget-content-placeholder" id="module-content-${moduleId}"><div class="widget-loading"><i class="fa fa-spin fa-spinner"></i> Module yükleniyor...</div></div>`
                     });
                     
                     // Module içeriğini yükle
@@ -408,12 +478,17 @@ window.StudioWidgetLoader = (function() {
                     component.set('type', 'widget-embed');
                     component.set('tenant_widget_id', widgetId);
                     
+                    // Sınıf adını güncelle
+                    if (!component.getAttributes().class.includes('studio-widget-container')) {
+                        component.addClass('studio-widget-container');
+                    }
+                    
                     // Görünümü güncelle
                     if (component.view && typeof component.view.onRender === 'function') {
                         setTimeout(() => component.view.onRender(), 100);
                     }
                     
-                    // Başlangıçta blok botonesini pasifleştir
+                    // Başlangıçta blok butonesini pasifleştir
                     const blockEl = document.querySelector(`.block-item[data-block-id="tenant-widget-${widgetId}"]`);
                     if (blockEl && blockEl.closest('.block-category[data-category="active-widgets"]')) {
                         blockEl.classList.add('disabled');
@@ -424,6 +499,38 @@ window.StudioWidgetLoader = (function() {
                             badge.textContent = 'Pasif';
                         }
                     }
+                    
+                    // Etiketleri temizle
+                    setTimeout(() => {
+                        try {
+                            const el = component.view.el;
+                            if (!el) return;
+                            
+                            // Etiketleri temizle
+                            const labels = el.querySelectorAll('.widget-label');
+                            labels.forEach(label => label.remove());
+                            
+                            // Overlay ekle
+                            if (!el.querySelector('.widget-overlay')) {
+                                const overlay = document.createElement('div');
+                                overlay.className = 'widget-overlay';
+                                
+                                const badge = document.createElement('span');
+                                badge.className = 'badge widget-type-badge';
+                                badge.innerHTML = '<i class="fa fa-puzzle-piece me-1"></i> Tenant Widget';
+                                
+                                overlay.appendChild(badge);
+                                el.appendChild(overlay);
+                                
+                                // Tıklama olayı ekle
+                                overlay.addEventListener('click', () => {
+                                    window.open(`/admin/widgetmanagement/items/${widgetId}`, '_blank');
+                                });
+                            }
+                        } catch (err) {
+                            console.error(`Widget overlay hatası:`, err);
+                        }
+                    }, 100);
                 });
             }
             
@@ -442,6 +549,11 @@ window.StudioWidgetLoader = (function() {
                     component.set('type', 'module-widget');
                     component.set('widget_module_id', moduleId);
                     
+                    // Sınıf adını güncelle
+                    if (!component.getAttributes().class.includes('studio-widget-container')) {
+                        component.addClass('studio-widget-container');
+                    }
+                    
                     // Görünümü güncelle  
                     if (component.view && typeof component.view.onRender === 'function') {
                         setTimeout(() => component.view.onRender(), 100);
@@ -458,6 +570,38 @@ window.StudioWidgetLoader = (function() {
                             badge.textContent = 'Pasif';
                         }
                     }
+                    
+                    // Etiketleri temizle
+                    setTimeout(() => {
+                        try {
+                            const el = component.view.el;
+                            if (!el) return;
+                            
+                            // Etiketleri temizle
+                            const labels = el.querySelectorAll('.widget-label');
+                            labels.forEach(label => label.remove());
+                            
+                            // Overlay ekle
+                            if (!el.querySelector('.widget-overlay')) {
+                                const overlay = document.createElement('div');
+                                overlay.className = 'widget-overlay';
+                                
+                                const badge = document.createElement('span');
+                                badge.className = 'badge widget-type-badge';
+                                badge.innerHTML = '<i class="fa fa-cube me-1"></i> Module Widget';
+                                
+                                overlay.appendChild(badge);
+                                el.appendChild(overlay);
+                                
+                                // Tıklama olayı ekle
+                                overlay.addEventListener('click', () => {
+                                    window.open(`/admin/widgetmanagement/modules/preview/${moduleId}`, '_blank');
+                                });
+                            }
+                        } catch (err) {
+                            console.error(`Module widget overlay hatası:`, err);
+                        }
+                    }, 100);
                     
                     // Module içeriğini yükle
                     setTimeout(() => {
@@ -588,7 +732,7 @@ window.StudioWidgetLoader = (function() {
             });
     };
             
-    // Module widget içeriğini yükle - Yeni Fonksiyon
+    // Module widget içeriğini yükle
     window.studioLoadModuleWidget = function(moduleId) {
         // Küresel yükleme durumu takibi
         window._loadedModules = window._loadedModules || new Set();
@@ -664,7 +808,7 @@ window.StudioWidgetLoader = (function() {
                 
                 // HTML'i placeholder container'a yaz, yoksa moduleEl'e
                 const placeholder = targetDocument.getElementById(`module-content-${moduleId}`) || 
-                                moduleEl.querySelector('.module-widget-content-placeholder');
+                                moduleEl.querySelector('.widget-content-placeholder');
                 
                 if (placeholder) {
                     placeholder.innerHTML = html;
@@ -766,7 +910,7 @@ window.StudioWidgetLoader = (function() {
             model: {
                 defaults: {
                     tagName: 'div',
-                    classes: ['widget-embed'],
+                    classes: ['studio-widget-container', 'widget-embed'],
                     attributes: {
                         'data-type': 'widget-embed'
                     },
@@ -806,6 +950,19 @@ window.StudioWidgetLoader = (function() {
                                 }
                             }
                         }
+                    },
+                    
+                    // Widget-embed toHTML metodu - tamamen boş bir div döndürür
+                    toHTML() {
+                        const widgetId = this.get('tenant_widget_id') || 
+                                    this.getAttributes()['data-tenant-widget-id'] || 
+                                    this.getAttributes()['data-widget-id'];
+                                    
+                        if (widgetId) {
+                            return `<div class="widget-embed" data-tenant-widget-id="${widgetId}"></div>`;
+                        }
+                        
+                        return '<div class="widget-embed"></div>';
                     }
                 },
                 
@@ -833,12 +990,27 @@ window.StudioWidgetLoader = (function() {
                     }
                     const el = this.el;
                     el.style.position = 'relative';
+                    
+                    // Etiketleri temizle
+                    const labels = el.querySelectorAll('.widget-label');
+                    labels.forEach(label => label.remove());
+                    
+                    // Overlay ekle
                     if (!el.querySelector('.widget-overlay')) {
                         const overlay = document.createElement('div');
                         overlay.className = 'widget-overlay';
-                        // Sadece görsel overlay, tıklamalar arka plana iletilecek
-                        overlay.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.05);pointer-events:none;z-index:10;';
+                        
+                        const badge = document.createElement('span');
+                        badge.className = 'badge widget-type-badge';
+                        badge.innerHTML = '<i class="fa fa-puzzle-piece me-1"></i> Tenant Widget';
+                        
+                        overlay.appendChild(badge);
                         el.appendChild(overlay);
+                        
+                        // Tıklama olayı ekle
+                        overlay.addEventListener('click', () => {
+                            window.open(`/admin/widgetmanagement/items/${widgetId}`, '_blank');
+                        });
                     }
                 },
                 
@@ -855,13 +1027,13 @@ window.StudioWidgetLoader = (function() {
             }
         });
         
-        // Module widget komponenti tanımla - YENİ
+        // Module widget komponenti tanımla
         if (!editor.DomComponents.getType('module-widget')) {
             editor.DomComponents.addType('module-widget', {
                 model: {
                     defaults: {
                         tagName: 'div',
-                        classes: ['module-widget-container'],
+                        classes: ['studio-widget-container', 'module-widget-container'],
                         attributes: {
                             'data-type': 'module-widget'
                         },
@@ -892,13 +1064,13 @@ window.StudioWidgetLoader = (function() {
                             }
                         },
                         
-                        // Module widget'ı [[module:XX]] formatında kaydet
+                        // Module widget'ı [[module:XX]] formatında kaydet - Basitçe düzelt
                         toHTML() {
                             const moduleId = this.get('widget_module_id') || this.getAttributes()['data-widget-module-id'];
                             if (moduleId) {
                                 return `[[module:${moduleId}]]`;
                             }
-                            return this.view.el.outerHTML;
+                            return '';
                         }
                     },
                     
@@ -927,20 +1099,34 @@ window.StudioWidgetLoader = (function() {
                         const el = this.el;
                         el.style.position = 'relative';
                         
-                        // Overlay (UI geri bildirimi)
+                        // Etiketleri temizle
+                        const labels = el.querySelectorAll('.widget-label');
+                        labels.forEach(label => label.remove());
+                        
+                        // Overlay ekle
                         if (!el.querySelector('.widget-overlay')) {
                             const overlay = document.createElement('div');
                             overlay.className = 'widget-overlay';
-                            overlay.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(139,92,246,0.05);pointer-events:none;z-index:10;';
+                            
+                            const badge = document.createElement('span');
+                            badge.className = 'badge widget-type-badge';
+                            badge.innerHTML = '<i class="fa fa-cube me-1"></i> Module Widget';
+                            
+                            overlay.appendChild(badge);
                             el.appendChild(overlay);
+                            
+                            // Tıklama olayı ekle
+                            overlay.addEventListener('click', () => {
+                                window.open(`/admin/widgetmanagement/modules/preview/${moduleId}`, '_blank');
+                            });
                         }
                         
                         // İçerik alanı
-                        if (!el.querySelector('.module-widget-content-placeholder')) {
+                        if (!el.querySelector('.widget-content-placeholder')) {
                             const content = document.createElement('div');
-                            content.className = 'module-widget-content-placeholder';
+                            content.className = 'widget-content-placeholder';
                             content.id = `module-content-${moduleId}`;
-                            content.innerHTML = '<div class="widget-loading" style="text-align:center; padding:20px;"><i class="fa fa-spin fa-spinner"></i> Module yükleniyor...</div>';
+                            content.innerHTML = '<div class="widget-loading"><i class="fa fa-spin fa-spinner"></i> Module yükleniyor...</div>';
                             el.appendChild(content);
                         }
                     },

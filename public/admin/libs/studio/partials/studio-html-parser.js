@@ -204,7 +204,7 @@ ${js}
         
         return html;
     }
-                
+                    
     /**
      * HTML girişini parse et ve widget embed referanslarını dönüştür
      * Bu fonksiyon, veritabanından yüklenip GrapesJS'e gönderilen HTML içeriğini işler
@@ -220,8 +220,8 @@ ${js}
         html = html.replace(/\[\[module:(\d+)\]\]/gi, (match, moduleId) => {
             // HTML çıktısı olarak daha basit bir div yapısı oluştur 
             // İçine otomatik yükleme scripti ekle
-            return `<div class="module-widget-container" data-widget-module-id="${moduleId}" id="module-widget-${moduleId}">
-                <div class="module-widget-content-placeholder" id="module-content-${moduleId}">
+            return `<div class="studio-widget-container module-widget-container" data-widget-module-id="${moduleId}" id="module-widget-${moduleId}">
+                <div class="widget-content-placeholder" id="module-content-${moduleId}">
                     <div class="widget-loading" style="display:none;text-align:center; padding:20px;">
                         <i class="fa fa-spin fa-spinner"></i> Modül içeriği yükleniyor...
                     </div>
@@ -250,7 +250,7 @@ ${js}
         const simpleWidgetEmbedRegex = /<div[^>]*class="([^"]*widget-embed[^"]*)"[^>]*data-tenant-widget-id="(\d+)"[^>]*><\/div>/gi;
         
         html = html.replace(simpleWidgetEmbedRegex, (match, embedClass, widgetId) => {
-            return `<div class="widget-embed" data-tenant-widget-id="${widgetId}" id="widget-embed-${widgetId}">
+            return `<div class="studio-widget-container widget-embed" data-tenant-widget-id="${widgetId}" id="widget-embed-${widgetId}">
                 <div class="widget-content-placeholder" id="widget-content-${widgetId}">
                     <div class="widget-loading" style="text-align:center; padding:20px;">
                         <i class="fa fa-spin fa-spinner"></i> Widget içeriği yükleniyor...
@@ -263,7 +263,7 @@ ${js}
         const altSimpleWidgetEmbedRegex = /<div[^>]*data-tenant-widget-id="(\d+)"[^>]*class="([^"]*widget-embed[^"]*)"[^>]*><\/div>/gi;
         
         html = html.replace(altSimpleWidgetEmbedRegex, (match, widgetId, embedClass) => {
-            return `<div class="widget-embed" data-tenant-widget-id="${widgetId}" id="widget-embed-${widgetId}">
+            return `<div class="studio-widget-container widget-embed" data-tenant-widget-id="${widgetId}" id="widget-embed-${widgetId}">
                 <div class="widget-content-placeholder" id="widget-content-${widgetId}">
                     <div class="widget-loading" style="text-align:center; padding:20px;">
                         <i class="fa fa-spin fa-spinner"></i> Widget içeriği yükleniyor...
@@ -276,7 +276,7 @@ ${js}
         const emptyWidgetEmbedRegex = /<div[^>]*data-tenant-widget-id="(\d+)"[^>]*><\/div>/gi;
         
         html = html.replace(emptyWidgetEmbedRegex, (match, widgetId) => {
-            return `<div class="widget-embed" data-tenant-widget-id="${widgetId}" id="widget-embed-${widgetId}">
+            return `<div class="studio-widget-container widget-embed" data-tenant-widget-id="${widgetId}" id="widget-embed-${widgetId}">
                 <div class="widget-content-placeholder" id="widget-content-${widgetId}">
                     <div class="widget-loading" style="text-align:center; padding:20px;">
                         <i class="fa fa-spin fa-spinner"></i> Widget içeriği yükleniyor...

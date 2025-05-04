@@ -28,6 +28,11 @@ class ShortcodeParser
     protected $filePattern = '/\[\[file:([\d]+)(?:\s+([^\]]+))?\]\]/';
     
     /**
+     * Module widget HTML pattern
+     */
+    protected $moduleHtmlPattern = '/<div[^>]*data-widget-module-id="(\d+)"[^>]*>.*?<\/div>/s';
+    
+    /**
      * İçerikteki tüm widget kısa kodlarını işle
      *
      * @param string $content İçerik metni
@@ -38,6 +43,12 @@ class ShortcodeParser
         if (empty($content)) {
             return $content;
         }
+        
+        // İlk olarak HTML formatındaki module widget'ları işle
+        $content = preg_replace_callback($this->moduleHtmlPattern, function ($matches) {
+            $id = (int)$matches[1];
+            return $this->renderModuleWidget($id, []);
+        }, $content);
         
         // İlk olarak iç içe format için işlem yap
         $content = preg_replace_callback($this->pattern, function ($matches) {
@@ -177,7 +188,26 @@ class ShortcodeParser
     protected function renderModuleWidget(int $id, array $params = []): string
     {
         try {
-            return module_widget_by_id($id, $params);
+            $widget = Widget::where('id', $id)->where('type', 'module')->where('is_active', true)->first();
+            
+            if (!$widget) {
+                return "<!-- Module Widget '{$id}' bulunamadı -->";
+            }
+            
+            $viewPath = 'widgetmanagement::blocks.' . $widget->file_path;
+            try {
+                // Module widget'ı direkt render et
+                $settings = [
+                    'title' => $widget->name,
+                    'unique_id' => Str::random(),
+                    'show_description' => true
+                ];
+                
+                return \View::make($viewPath, array_merge($settings, $params))->render();
+            } catch (\Throwable $e) {
+                \Log::error("Module widget render hatası: " . $e->getMessage());
+                return "<!-- Module widget render hatası: {$id} -->";
+            }
         } catch (\Exception $e) {
             Log::error("Module widget kısa kodu işlenirken hata: " . $e->getMessage(), [
                 'id' => $id,

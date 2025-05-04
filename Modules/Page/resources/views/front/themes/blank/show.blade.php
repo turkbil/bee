@@ -1,4 +1,4 @@
-@extends('page-themes.blank.layouts.default')
+@extends('page::front.themes.blank.layouts.default')
 
 @section('page_content')
     <div>
@@ -10,7 +10,7 @@
         </div>
         
         <div class="page-content">
-            {!! $page->body !!}
+            @parsewidgets($page->body)
         </div>
         
         <div class="page-actions">

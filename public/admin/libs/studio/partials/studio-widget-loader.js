@@ -645,17 +645,7 @@ window.StudioWidgetLoader = (function() {
                 if (placeholder) {
                     placeholder.innerHTML = html;
                 } else {
-                    // Etiket koruyarak içeriği değiştir
-                    const label = moduleEl.querySelector('.module-widget-label');
-                    moduleEl.innerHTML = '';
-                    if (label) moduleEl.appendChild(label);
-                    
-                    // Yeni içerik container
-                    const contentDiv = targetDocument.createElement('div');
-                    contentDiv.className = 'module-widget-content-placeholder';
-                    contentDiv.id = `module-content-${moduleId}`;
-                    contentDiv.innerHTML = html;
-                    moduleEl.appendChild(contentDiv);
+                    moduleEl.innerHTML = html;
                 }
                 
                 // CSS enjeksiyon
@@ -735,16 +725,7 @@ window.StudioWidgetLoader = (function() {
                 }
                 
                 if (moduleEl) {
-                    // Etiket koruyarak içeriği değiştir
-                    const label = moduleEl.querySelector('.module-widget-label');
-                    moduleEl.innerHTML = '';
-                    if (label) moduleEl.appendChild(label);
-                    
-                    // Hata mesajı
-                    const errorDiv = targetDocument.createElement('div');
-                    errorDiv.className = 'alert alert-danger';
-                    errorDiv.innerHTML = `Module yüklenirken hata: ${error.message}`;
-                    moduleEl.appendChild(errorDiv);
+                    moduleEl.innerHTML = `<div class="alert alert-danger">Module yüklenirken hata: ${error.message}</div>`;
                 }
             });
     };
@@ -921,14 +902,6 @@ window.StudioWidgetLoader = (function() {
                         
                         const el = this.el;
                         el.style.position = 'relative';
-                        
-                        // Module etiketi
-                        if (!el.querySelector('.module-widget-label')) {
-                            const label = document.createElement('div');
-                            label.className = 'module-widget-label';
-                            label.innerHTML = `<i class="fa fa-cube me-1"></i> Module #${moduleId}`;
-                            el.appendChild(label);
-                        }
                         
                         // Overlay (UI geri bildirimi)
                         if (!el.querySelector('.widget-overlay')) {

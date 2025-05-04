@@ -221,7 +221,6 @@ ${js}
             // HTML çıktısı olarak daha basit bir div yapısı oluştur 
             // İçine otomatik yükleme scripti ekle
             return `<div class="module-widget-container" data-widget-module-id="${moduleId}" id="module-widget-${moduleId}">
-                <div class="module-widget-label"><i class="fa fa-cube me-1"></i> Module #${moduleId}</div>
                 <div class="module-widget-content-placeholder" id="module-content-${moduleId}">
                     <div class="widget-loading" style="display:none;text-align:center; padding:20px;">
                         <i class="fa fa-spin fa-spinner"></i> Modül içeriği yükleniyor...

@@ -103,40 +103,61 @@ window.StudioEditorSetup = (function() {
                 editor.on('component:remove', component => {
                     // Widget embed modelini bul
                     let curr = component;
-                    while (curr && curr.get('type') !== 'widget-embed') curr = curr.parent();
+                    while (curr && curr.get('type') !== 'widget-embed' && curr.get('type') !== 'module-widget') curr = curr.parent();
                     if (!curr) return;
+                    
                     const widgetModel = curr;
-                    const widgetId = widgetModel.get('tenant_widget_id') || widgetModel.getAttributes()['data-tenant-widget-id'] || widgetModel.getAttributes()['data-widget-id'];
-                    if (window._loadedWidgets) window._loadedWidgets.delete(widgetId);
-                    // Canvas DOM'dan embed elemanını sil
-                    const frameEl = editor.Canvas.getFrameEl();
-                    const doc = frameEl.contentDocument || frameEl.contentWindow.document;
-                    const embedEl = doc.querySelector(`[data-tenant-widget-id="${widgetId}"]`);
-                    if (embedEl) embedEl.remove();
-                    // Model'deki wrapper veya embed'i kaldır
-                    const wrapperModel = widgetModel.parent();
-                    if (wrapperModel && /\bcol-md-\d+\b/.test(wrapperModel.getAttributes().class || '')) {
-                        wrapperModel.destroy();
-                    } else {
-                        widgetModel.destroy();
+                    
+                    // Widget tipi ve ID'yi al
+                    const widgetType = widgetModel.get('type');
+                    
+                    if (widgetType === 'widget-embed') {
+                        const widgetId = widgetModel.get('tenant_widget_id') || widgetModel.getAttributes()['data-tenant-widget-id'] || widgetModel.getAttributes()['data-widget-id'];
+                        if (window._loadedWidgets) window._loadedWidgets.delete(widgetId);
+                        
+                        // Canvas DOM'dan embed elemanını sil
+                        const frameEl = editor.Canvas.getFrameEl();
+                        const doc = frameEl.contentDocument || frameEl.contentWindow.document;
+                        const embedEl = doc.querySelector(`[data-tenant-widget-id="${widgetId}"]`);
+                        if (embedEl) embedEl.remove();
+                        
+                        // Model'deki wrapper veya embed'i kaldır
+                        const wrapperModel = widgetModel.parent();
+                        if (wrapperModel && /\bcol-md-\d+\b/.test(wrapperModel.getAttributes().class || '')) {
+                            wrapperModel.destroy();
+                        } else {
+                            widgetModel.destroy();
+                        }
+                        
+                        // Blok butonlarını aktifleştir
+                        window.StudioBlockManager.updateBlocksInCategories(editor);
+                    } 
+                    else if (widgetType === 'module-widget') {
+                        const moduleId = widgetModel.get('widget_module_id') || widgetModel.getAttributes()['data-widget-module-id'];
+                        if (window._loadedModules) window._loadedModules.delete(moduleId);
+                        
+                        // Canvas DOM'dan module elemanını sil
+                        const frameEl = editor.Canvas.getFrameEl();
+                        const doc = frameEl.contentDocument || frameEl.contentWindow.document;
+                        const moduleEl = doc.querySelector(`[data-widget-module-id="${moduleId}"]`);
+                        if (moduleEl) moduleEl.remove();
+                        
+                        // Model'deki wrapper veya module'ü kaldır
+                        const wrapperModel = widgetModel.parent();
+                        if (wrapperModel && /\bcol-md-\d+\b/.test(wrapperModel.getAttributes().class || '')) {
+                            wrapperModel.destroy();
+                        } else {
+                            widgetModel.destroy();
+                        }
+                        
+                        // Blok butonlarını aktifleştir
+                        window.StudioBlockManager.updateBlocksInCategories(editor);
                     }
-                    // Kalan embed yoksa section.container öğelerini sil
-                    const embeds = editor.DomComponents.getWrapper().find('[data-tenant-widget-id]');
-                    if (!embeds || embeds.length === 0) {
-                        editor.DomComponents.getWrapper().find('section.container').forEach(sec => sec.destroy());
-                    }
-                    window.StudioBlockManager.updateBlocksInCategories(editor);
+                    
                     // HTML içeriğini sanitize ve güncelle
                     const htmlEl = document.getElementById('html-content');
                     if (htmlEl) {
-                        try {
-                            const parser = new DOMParser();
-                            const doc2 = parser.parseFromString(htmlEl.value, 'text/html');
-                            doc2.querySelectorAll('[data-tenant-widget-id]').forEach(el => el.remove());
-                            htmlEl.value = '<body>' + doc2.body.innerHTML + '</body>';
-                        } catch (err) {
-                            htmlEl.value = `<body>${editor.getHtml()}</body>`;
-                        }
+                        htmlEl.value = `<body>${editor.getHtml()}</body>`;
                     }
                 });
             });

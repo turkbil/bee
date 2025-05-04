@@ -28,7 +28,7 @@ window.StudioWidgetComponents = (function() {
                     stylable: true,
                     selectable: true,
                     attributes: {
-                        class: 'gjs-widget-wrapper',
+                        class: 'studio-widget-container gjs-widget-wrapper',
                         'data-type': 'widget'
                     },
                     traits: [
@@ -228,14 +228,35 @@ window.StudioWidgetComponents = (function() {
                     const isEditable = widgetType === 'static' || widgetType === 'file';
                     
                     // Tüm önceki stilleri temizle
-                    el.className = 'gjs-widget-wrapper';
-                    el.style = '';
+                    el.className = 'studio-widget-container gjs-widget-wrapper';
+                    
+                    // Widget tipine göre ek sınıf ekle 
+                    switch(widgetType) {
+                        case 'dynamic':
+                            el.classList.add('dynamic-widget');
+                            break;
+                        case 'module':
+                            el.classList.add('module-widget');
+                            break;
+                        case 'file':
+                            el.classList.add('file-widget');
+                            break;
+                        case 'static':
+                        default:
+                            el.classList.add('static-widget');
+                            break;
+                    }
+                    
+                    // Stil özellikleri ayarla
+                    el.style.position = 'relative';
+                    el.style.padding = '12px';
+                    el.style.margin = '10px 0';
+                    el.style.borderRadius = '6px';
                     
                     // Widget tipine göre stil uygula
                     switch(widgetType) {
                         case 'dynamic':
                             // Dinamik widget - mavi ton
-                            el.classList.add('dynamic-widget');
                             el.style.border = '2px solid #3b82f6';
                             el.style.backgroundColor = 'rgba(59, 130, 246, 0.05)';
                             el.style.boxShadow = '0 0 0 1px rgba(59, 130, 246, 0.5)';
@@ -244,8 +265,7 @@ window.StudioWidgetComponents = (function() {
                             break;
                             
                         case 'module':
-                            // Module widget - mor ton
-                            el.classList.add('module-widget');
+                            // Module widget - mor ton  
                             el.style.border = '2px solid #8b5cf6';
                             el.style.backgroundColor = 'rgba(139, 92, 246, 0.05)';
                             el.style.boxShadow = '0 0 0 1px rgba(139, 92, 246, 0.5)';
@@ -255,7 +275,6 @@ window.StudioWidgetComponents = (function() {
                             
                         case 'file':
                             // File widget - turuncu ton
-                            el.classList.add('file-widget');
                             el.style.border = '2px solid #f59e0b';
                             el.style.backgroundColor = 'rgba(245, 158, 11, 0.05)';
                             el.style.boxShadow = '0 0 0 1px rgba(245, 158, 11, 0.5)';
@@ -264,18 +283,11 @@ window.StudioWidgetComponents = (function() {
                         case 'static':
                         default:
                             // Static widget - yeşil ton
-                            el.classList.add('static-widget');
                             el.style.border = '2px solid #10b981';
                             el.style.backgroundColor = 'rgba(16, 185, 129, 0.05)';
                             el.style.boxShadow = '0 0 0 1px rgba(16, 185, 129, 0.5)';
                             break;
                     }
-                    
-                    // Ortak stiller
-                    el.style.padding = '12px';
-                    el.style.margin = '10px 0';
-                    el.style.borderRadius = '6px';
-                    el.style.position = 'relative';
                     
                     // Dynamic ve Module tipinde özel koruma katmanı ekle
                     if (widgetType === 'dynamic' || widgetType === 'module') {
@@ -298,7 +310,7 @@ window.StudioWidgetComponents = (function() {
                         
                         // Tip etiketi ekle
                         const badge = document.createElement('span');
-                        badge.className = 'widget-type-badge';
+                        badge.className = 'badge widget-type-badge';
                         badge.style.position = 'absolute';
                         badge.style.top = '50%';
                         badge.style.left = '50%';
@@ -327,7 +339,7 @@ window.StudioWidgetComponents = (function() {
                         el.appendChild(overlay);
                         
                         // İçerikteki tüm elementleri devre dışı bırak
-                        const allChildren = el.querySelectorAll('*:not(.widget-overlay):not(.widget-type-badge)');
+                        const allChildren = el.querySelectorAll('*:not(.widget-overlay):not(.badge.widget-type-badge)');
                         allChildren.forEach(child => {
                             if (child !== overlay && !overlay.contains(child)) {
                                 child.style.pointerEvents = 'none';
@@ -353,39 +365,27 @@ window.StudioWidgetComponents = (function() {
                     
                     const labelElement = document.createElement('div');
                     labelElement.className = 'widget-label';
-                    labelElement.style.position = 'absolute';
-                    labelElement.style.top = '-10px';
-                    labelElement.style.left = '10px';
-                    labelElement.style.fontSize = '11px';
-                    labelElement.style.fontWeight = 'bold';
-                    labelElement.style.padding = '2px 8px';
-                    labelElement.style.borderRadius = '3px';
-                    labelElement.style.zIndex = '10';
                     
                     // Widget tipine göre farklı stil
                     switch(widgetType) {
                         case 'dynamic':
                             labelElement.style.backgroundColor = '#3b82f6';
-                            labelElement.style.color = 'white';
                             labelElement.innerHTML = '<i class="fa fa-puzzle-piece me-1"></i> Dinamik Widget';
                             break;
                             
                         case 'module':
                             labelElement.style.backgroundColor = '#8b5cf6';
-                            labelElement.style.color = 'white';
                             labelElement.innerHTML = '<i class="fa fa-cube me-1"></i> Modül Widget';
                             break;
                             
                         case 'file':
                             labelElement.style.backgroundColor = '#f59e0b';
-                            labelElement.style.color = 'white';
                             labelElement.innerHTML = '<i class="fa fa-file-code me-1"></i> Dosya Widget';
                             break;
                             
                         case 'static':
                         default:
                             labelElement.style.backgroundColor = '#10b981';
-                            labelElement.style.color = 'white';
                             labelElement.innerHTML = '<i class="fa fa-code me-1"></i> Statik Widget';
                             break;
                     }

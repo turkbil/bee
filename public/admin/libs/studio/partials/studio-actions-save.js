@@ -41,8 +41,9 @@ window.StudioSave = (function() {
             try {
                 let htmlContent, cssContent, jsContent;
                 
-                // HTML içeriğini al
+                // HTML içeriğini al ve body etiketlerini temizle
                 htmlContent = editor.getHtml() || '';
+                htmlContent = htmlContent.replace(/^<body[^>]*>|<\/body>$/g, '');
                 
                 // CSS içeriğini al
                 cssContent = editor.getCss() || '';

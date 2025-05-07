@@ -11,6 +11,7 @@ use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Modules\AI\App\Services\AIService;
+use Modules\AI\App\Services\DeepSeekService;
 
 class AIServiceProvider extends ServiceProvider
 {
@@ -56,8 +57,17 @@ class AIServiceProvider extends ServiceProvider
         
         // AI Service singleton kaydı
         $this->app->singleton(AIService::class, function ($app) {
-            return new AIService();
+            $tenantId = tenant_id();
+            $deepSeekService = DeepSeekService::forTenant($tenantId);
+            return new AIService($deepSeekService);
         });
+        
+        // DeepSeek kütüphanesi varsa kullan
+        if (class_exists('DeepSeekClient')) {
+            $this->app->singleton('DeepSeekClient', function ($app) {
+                return new \DeepSeekClient();
+            });
+        }
     }
 
     /**
@@ -144,7 +154,7 @@ class AIServiceProvider extends ServiceProvider
      */
     public function provides(): array
     {
-        return [AIService::class];
+        return [AIService::class, 'DeepSeekClient'];
     }
 
     private function getPublishableViewPaths(): array

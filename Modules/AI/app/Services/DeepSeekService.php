@@ -44,6 +44,59 @@ class DeepSeekService
     public function ask(array $messages): ?string
     {
         try {
+            // Önce DeepSeek PHP kütüphanesini kullanmayı dene
+            if (class_exists('DeepSeekClient')) {
+                return $this->askWithDeepSeekClient($messages);
+            }
+            
+            // Eğer kütüphane yoksa HTTP ile istek yap
+            return $this->askWithHttp($messages);
+        } catch (\Exception $e) {
+            Log::error('DeepSeek API istek hatası: ' . $e->getMessage());
+            return null;
+        }
+    }
+    
+    /**
+     * DeepSeek PHP kütüphanesi ile istek
+     * 
+     * @param array $messages
+     * @return string|null
+     */
+    protected function askWithDeepSeekClient(array $messages): ?string
+    {
+        try {
+            $deepseek = app('DeepSeekClient');
+            
+            // Önce modeli ve ayarları yapılandır
+            $deepseek->withModel($this->model)
+                ->setMaxTokens($this->maxTokens)
+                ->setTemperature($this->temperature);
+            
+            // Mesajları ekle
+            foreach ($messages as $message) {
+                $deepseek->query($message['content'], $message['role']);
+            }
+            
+            // İsteği gönder
+            $response = $deepseek->run();
+            
+            return $response;
+        } catch (\Exception $e) {
+            Log::error('DeepSeekClient hatası: ' . $e->getMessage());
+            return null;
+        }
+    }
+    
+    /**
+     * HTTP ile istek
+     * 
+     * @param array $messages
+     * @return string|null
+     */
+    protected function askWithHttp(array $messages): ?string
+    {
+        try {
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $this->apiKey,
                 'Content-Type' => 'application/json',
@@ -62,7 +115,7 @@ class DeepSeekService
                 return null;
             }
         } catch (\Exception $e) {
-            Log::error('DeepSeek API istek hatası: ' . $e->getMessage());
+            Log::error('DeepSeek HTTP istek hatası: ' . $e->getMessage());
             return null;
         }
     }

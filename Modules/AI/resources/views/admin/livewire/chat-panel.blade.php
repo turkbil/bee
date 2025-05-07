@@ -142,9 +142,16 @@
                                         placeholder="Mesajınızı yazın..."
                                         rows="2"
                                         {{ $loading ? 'disabled' : '' }}
+                                        id="message-input"
+                                        wire:keydown.enter.prevent="$event.shiftKey || sendMessage()"
                                     ></textarea>
                                     <button type="submit" class="btn btn-primary" {{ $loading ? 'disabled' : '' }}>
-                                        <i class="fas fa-paper-plane me-2"></i> Gönder
+                                        @if($loading)
+                                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                            Yanıt alınıyor...
+                                        @else
+                                            <i class="fas fa-paper-plane me-2"></i> Gönder
+                                        @endif
                                     </button>
                                 </div>
                             </form>

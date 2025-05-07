@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Log;
 use Modules\AI\App\Models\Setting;
 use Illuminate\Support\Facades\Cache;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\ConnectException;
 use Exception;
 
 class DeepSeekService
@@ -46,6 +48,10 @@ class DeepSeekService
                 Log::debug('Mesaj #' . $index . ': role=' . $message['role'] . ', içerik (ilk 30 karakter): ' . substr($message['content'], 0, 30) . '...');
             }
             
+            if (!$this->apiKey) {
+                throw new Exception('API anahtarı ayarlanmamış! Lütfen AI ayarlarını kontrol edin.');
+            }
+            
             if ($stream) {
                 Log::info('Stream modunda istek yapılıyor');
                 return $this->askWithStream($messages);
@@ -56,8 +62,35 @@ class DeepSeekService
         } catch (Exception $e) {
             Log::error('DeepSeek API istek hatası: ' . $e->getMessage());
             Log::error('Hata yığını: ' . $e->getTraceAsString());
-            return null;
+            
+            if ($stream) {
+                return function ($callback) use ($e) {
+                    $errorMessage = $this->formatErrorMessage($e);
+                    $callback($errorMessage);
+                };
+            }
+            
+            return $this->formatErrorMessage($e);
         }
+    }
+    
+    protected function formatErrorMessage(Exception $e): string
+    {
+        $message = 'Yanıt alınamadı: ';
+        
+        if ($e instanceof ConnectException) {
+            return $message . 'DeepSeek AI sunucusuna bağlanılamadı. İnternet bağlantınızı kontrol edin.';
+        } elseif ($e instanceof RequestException) {
+            if ($e->getCode() == 401) {
+                return $message . 'API anahtarı geçersiz. Lütfen API anahtarınızı kontrol edin.';
+            } elseif ($e->getCode() == 429) {
+                return $message . 'DeepSeek API hız limiti aşıldı. Lütfen daha sonra tekrar deneyin.';
+            } elseif ($e->getCode() >= 500) {
+                return $message . 'DeepSeek AI sunucusunda bir hata oluştu. Lütfen daha sonra tekrar deneyin.';
+            }
+        }
+        
+        return $message . 'Bir hata oluştu. Lütfen daha sonra tekrar deneyin.';
     }
     
     protected function askWithStream(array $messages): \Closure
@@ -101,13 +134,16 @@ class DeepSeekService
                         'max_tokens' => $this->maxTokens,
                         'stream' => true
                     ],
-                    'stream' => true
+                    'stream' => true,
+                    'timeout' => 60,
+                    'connect_timeout' => 10
                 ]);
                 
                 Log::info('API stream yanıtı alındı, işleniyor...');
                 
                 $body = $response->getBody();
                 $buffer = '';
+                $contentReceived = false;
                 
                 while (!$body->eof()) {
                     // Tek karakter okunarak doğal gecikme sağlanıyor
@@ -139,6 +175,7 @@ class DeepSeekService
                                         $content = $json['choices'][0]['delta']['content'];
                                         Log::debug('Stream parçası: ' . $content);
                                         $callback($content);
+                                        $contentReceived = true;
                                         
                                         // Gerçekçi yazma efekti için
                                         usleep(rand(5000, 20000)); // 5-20ms
@@ -154,10 +191,32 @@ class DeepSeekService
                 }
                 
                 Log::info('Stream işleme tamamlandı');
+                
+                // İçerik alınamadıysa hata mesajı gönder
+                if (!$contentReceived) {
+                    $errorMessage = 'AI yanıtı alınamadı. Lütfen yeniden deneyin veya farklı bir soru sorun.';
+                    Log::warning('Stream işlemi tamamlandı fakat içerik alınamadı!');
+                    $callback($errorMessage);
+                }
+            } catch (ConnectException $e) {
+                Log::error('Stream bağlantı hatası: ' . $e->getMessage());
+                $callback('DeepSeek AI sunucusuna bağlanılamadı. Lütfen internet bağlantınızı kontrol edin.');
+            } catch (RequestException $e) {
+                Log::error('Stream istek hatası: ' . $e->getMessage() . ', HTTP kodu: ' . $e->getCode());
+                
+                if ($e->getCode() == 401) {
+                    $callback('API anahtarı geçersiz. Lütfen API anahtarınızı kontrol edin.');
+                } elseif ($e->getCode() == 429) {
+                    $callback('DeepSeek API hız limiti aşıldı. Lütfen daha sonra tekrar deneyin.');
+                } elseif ($e->getCode() >= 500) {
+                    $callback('DeepSeek AI sunucusunda bir hata oluştu. Lütfen daha sonra tekrar deneyin.');
+                } else {
+                    $callback('AI yanıtı alınırken bir hata oluştu: ' . $e->getMessage());
+                }
             } catch (Exception $e) {
                 Log::error('Stream işleme hatası: ' . $e->getMessage());
                 Log::error('Hata yığını: ' . $e->getTraceAsString());
-                throw $e;
+                $callback('AI yanıtı alınırken bir hata oluştu: ' . $e->getMessage());
             }
         };
     }
@@ -171,31 +230,46 @@ class DeepSeekService
                 throw new Exception('API anahtarı ayarlanmamış! Lütfen AI ayarlarını kontrol edin.');
             }
             
-            $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $this->apiKey,
-                'Content-Type' => 'application/json',
-            ])->post($this->apiBaseUrl . '/chat/completions', [
-                'model' => $this->model,
-                'messages' => $messages,
-                'temperature' => $this->temperature,
-                'max_tokens' => $this->maxTokens,
-            ]);
+            $response = Http::timeout(60)
+                ->withHeaders([
+                    'Authorization' => 'Bearer ' . $this->apiKey,
+                    'Content-Type' => 'application/json',
+                ])->post($this->apiBaseUrl . '/chat/completions', [
+                    'model' => $this->model,
+                    'messages' => $messages,
+                    'temperature' => $this->temperature,
+                    'max_tokens' => $this->maxTokens,
+                ]);
 
             if ($response->successful()) {
                 $data = $response->json();
                 $content = $data['choices'][0]['message']['content'] ?? null;
+                
+                if (empty($content)) {
+                    Log::warning('API yanıtı başarılı fakat içerik boş!');
+                    return 'AI yanıtı alınamadı. Lütfen yeniden deneyin veya farklı bir soru sorun.';
+                }
                 
                 Log::info('API yanıtı başarılı, içerik: ' . substr($content ?? '', 0, 30) . '...');
                 return $content;
             } else {
                 Log::error('DeepSeek API hatası: ' . $response->status());
                 Log::error('Hata içeriği: ' . $response->body());
-                return null;
+                
+                if ($response->status() == 401) {
+                    return 'API anahtarı geçersiz. Lütfen API anahtarınızı kontrol edin.';
+                } elseif ($response->status() == 429) {
+                    return 'DeepSeek API hız limiti aşıldı. Lütfen daha sonra tekrar deneyin.';
+                } elseif ($response->status() >= 500) {
+                    return 'DeepSeek AI sunucusunda bir hata oluştu. Lütfen daha sonra tekrar deneyin.';
+                }
+                
+                return 'AI yanıtı alınamadı. Hata kodu: ' . $response->status();
             }
         } catch (Exception $e) {
             Log::error('HTTP istek hatası: ' . $e->getMessage());
             Log::error('Hata yığını: ' . $e->getTraceAsString());
-            return null;
+            return $this->formatErrorMessage($e);
         }
     }
 

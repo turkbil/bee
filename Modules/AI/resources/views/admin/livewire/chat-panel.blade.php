@@ -81,7 +81,7 @@
                         <div class="chat-messages overflow-auto mb-3 flex-grow-1" id="chat-container">
                             @if (count($messages) > 0)
                                 @foreach ($messages as $chatMessage)
-                                    <div class="message {{ $chatMessage['role'] == 'assistant' ? 'message-assistant' : 'message-user' }} mb-3">
+                                    <div class="message {{ $chatMessage['role'] == 'assistant' ? 'message-assistant' : 'message-user' }} mb-3" data-message-id="{{ $chatMessage['id'] }}">
                                         <div class="message-avatar">
                                             @if ($chatMessage['role'] == 'assistant')
                                                 <span class="avatar bg-primary-lt">AI</span>
@@ -198,6 +198,198 @@
     </div>
 </div>
 
+@push('scripts')
+<script>
+    document.addEventListener('livewire:initialized', function () {
+        const scrollToBottom = () => {
+            const container = document.getElementById('chat-container');
+            if (container) {
+                container.scrollTop = container.scrollHeight;
+            }
+        };
+        
+        // Sayfa yüklendiğinde aşağı kaydır
+        scrollToBottom();
+        
+        // Kullanıcı adı kısaltması için değişken
+        const userInitials = '{{ substr(auth()->user()->name, 0, 2) }}';
+        
+        // DOM güncellemelerini izle ve aşağı kaydır
+        const observer = new MutationObserver(scrollToBottom);
+        const container = document.getElementById('chat-container');
+        
+        if (container) {
+            observer.observe(container, { childList: true, subtree: true });
+        }
+        
+        // Enter tuşu ile mesaj gönderme
+        const messageInput = document.getElementById('message-input');
+        const messageForm = document.getElementById('message-form');
+        
+        if (messageInput && messageForm) {
+            messageInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    
+                    const message = this.value.trim();
+                    if (message !== '') {
+                        // Anında mesajı göster (yanıt beklemeden)
+                        addTemporaryUserMessage(message);
+                        
+                        // Mesaj kutusunu temizle
+                        this.value = '';
+                        
+                        // Livewire modeline boş değer gönder
+                        @this.set('message', '');
+                        
+                        // Formu gönder
+                        messageForm.dispatchEvent(new Event('submit'));
+                    }
+                }
+            });
+        }
+        
+        // Geçici kullanıcı mesajı ekle
+        function addTemporaryUserMessage(content) {
+            const container = document.getElementById('chat-container');
+            if (!container) return;
+            
+            // Boş durumu kontrol et
+            const emptyDiv = container.querySelector('.empty');
+            if (emptyDiv) {
+                emptyDiv.remove();
+            }
+            
+            // Geçici kullanıcı mesajı oluştur
+            const tempUserMessage = document.createElement('div');
+            tempUserMessage.className = 'message message-user mb-3 temp-message';
+            tempUserMessage.innerHTML = `
+                <div class="message-avatar">
+                    <span class="avatar bg-secondary-lt">${userInitials}</span>
+                </div>
+                <div class="message-content">
+                    <div class="message-bubble">${content.replace(/\n/g, '<br>')}</div>
+                    <div class="message-footer text-muted">
+                        ${getCurrentTime()}
+                        <span class="ms-2">0 token</span>
+                    </div>
+                </div>
+            `;
+            
+            // Yükleniyor mesajı oluştur
+            const tempLoadingMessage = document.createElement('div');
+            tempLoadingMessage.className = 'message message-assistant mb-3 temp-loading';
+            tempLoadingMessage.innerHTML = `
+                <div class="message-avatar">
+                    <span class="avatar bg-primary-lt">AI</span>
+                </div>
+                <div class="message-content">
+                    <div class="message-bubble">
+                        <div class="typing-indicator">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Mesajları ekle
+            container.appendChild(tempUserMessage);
+            container.appendChild(tempLoadingMessage);
+            
+            // Aşağı kaydır
+            scrollToBottom();
+        }
+        
+        // Geçici mesajları temizle
+        function clearTemporaryMessages() {
+            document.querySelectorAll('.temp-message, .temp-loading').forEach(el => {
+                el.remove();
+            });
+        }
+        
+        // Güncel zamanı döndür
+        function getCurrentTime() {
+            const now = new Date();
+            return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        }
+        
+        // Stream olaylarını dinle
+        Livewire.on('streamStarted', function({ messageId }) {
+            // Geçici mesajları kaldır
+            clearTemporaryMessages();
+            
+            // Mesaj elementini bul
+            const messageElement = document.querySelector(`[data-message-id="${messageId}"]`);
+            if (messageElement) {
+                const messageBubble = messageElement.querySelector('.message-bubble');
+                if (messageBubble) {
+                    // Cursor ekle
+                    messageBubble.innerHTML = '<span class="ai-cursor"></span>';
+                }
+            }
+            
+            scrollToBottom();
+        });
+        
+        // Stream içeriği gelince
+        Livewire.on('receiveContent', function({ messageId, content }) {
+            // Boş içeriği atla
+            if (!content || content === '') return;
+            
+            // Mesaj elementini bul
+            const messageElement = document.querySelector(`[data-message-id="${messageId}"]`);
+            if (messageElement) {
+                const messageBubble = messageElement.querySelector('.message-bubble');
+                if (messageBubble) {
+                    // İçeriği ekle ve cursor'u koru
+                    const currentContent = messageBubble.innerHTML.replace('<span class="ai-cursor"></span>', '');
+                    messageBubble.innerHTML = currentContent + escapeHtml(content) + '<span class="ai-cursor"></span>';
+                    
+                    // Aşağı kaydır
+                    scrollToBottom();
+                }
+            }
+        });
+        
+        // Stream tamamlandı
+        Livewire.on('streamComplete', function({ messageId }) {
+            // Mesaj elementini bul
+            const messageElement = document.querySelector(`[data-message-id="${messageId}"]`);
+            if (messageElement) {
+                const messageBubble = messageElement.querySelector('.message-bubble');
+                if (messageBubble) {
+                    // Cursor'u kaldır
+                    messageBubble.innerHTML = messageBubble.innerHTML.replace('<span class="ai-cursor"></span>', '');
+                }
+            }
+            
+            scrollToBottom();
+        });
+        
+        // Stream hatası
+        Livewire.on('streamError', function({ error }) {
+            console.error('Stream hatası:', error);
+            clearTemporaryMessages();
+            alert('Yanıt alınamadı: ' + error);
+        });
+        
+        // HTML karakterleri escape et
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML.replace(/\n/g, '<br>');
+        }
+        
+        // Livewire isteklerini dinle
+        Livewire.hook('message.processed', (message, component) => {
+            scrollToBottom();
+        });
+    });
+</script>
+@endpush
+
 @push('styles')
 <style>
     .chat-messages {
@@ -237,6 +429,7 @@
         border-radius: 10px;
         background-color: var(--tblr-bg-surface);
         white-space: pre-wrap;
+        word-break: break-word;
     }
     
     .message-user .message-bubble {
@@ -286,6 +479,21 @@
         }
     }
     
+    .ai-cursor {
+        display: inline-block;
+        width: 3px;
+        height: 18px;
+        background-color: var(--tblr-primary);
+        margin-left: 2px;
+        animation: blink 0.8s infinite;
+        vertical-align: middle;
+    }
+    
+    @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0; }
+    }
+    
     html[data-bs-theme="dark"] .message-bubble {
         background-color: var(--tblr-bg-surface-secondary);
     }
@@ -295,194 +503,4 @@
         color: var(--tblr-white);
     }
 </style>
-@endpush
-
-@push('scripts')
-<script>
-    document.addEventListener('livewire:initialized', function () {
-        const scrollToBottom = () => {
-            const container = document.getElementById('chat-container');
-            if (container) {
-                container.scrollTop = container.scrollHeight;
-            }
-        };
-        
-        // Sayfa yüklendiğinde aşağı kaydır
-        scrollToBottom();
-        
-        // Livewire mesaj güncellemelerinden sonra aşağı kaydır
-        Livewire.on('messagesUpdated', () => {
-            setTimeout(scrollToBottom, 100);
-        });
-        
-        // DOM güncellemelerini izle
-        const observer = new MutationObserver(scrollToBottom);
-        const container = document.getElementById('chat-container');
-        
-        if (container) {
-            observer.observe(container, { childList: true, subtree: true });
-        }
-        
-        // Kullanıcı adının ilk iki harfini JS değişkeni olarak tanımla
-        const auth_user_name_first_2_chars = '{{ substr(auth()->user()->name, 0, 2) }}';
-        
-        // Geçici mesaj ve loader için değişkenler
-        let messageSubmitted = false;
-        let tempMessageElement = null;
-        let tempBotLoadingElement = null;
-        
-        // Enter ve Shift+Enter olaylarını yönet
-        const messageInput = document.getElementById('message-input');
-        if (messageInput) {
-            messageInput.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
-                    if (e.shiftKey) {
-                        // Shift+Enter: Alt satıra geç (varsayılan davranış)
-                        return true;
-                    } else {
-                        // Enter: Mesajı gönder
-                        e.preventDefault();
-                        
-                        // Boş mesaj kontrolü
-                        if (messageInput.value.trim() !== '' && !messageSubmitted) {
-                            // Çift gönderimi önle
-                            messageSubmitted = true;
-                            
-                            // Mesaj gönderme formunu manuel olarak tetikle
-                            document.getElementById('message-form').dispatchEvent(
-                                new Event('submit', { cancelable: true, bubbles: true })
-                            );
-                            
-                            // Kullanıcı mesajını ekle ve bot yanıtı için yükleniyor göster
-                            const content = messageInput.value;
-                            addUserMessageAndBotLoading(content);
-                            
-                            // Input alanını temizle (UI'da hemen temizlenir)
-                            messageInput.value = '';
-                            
-                            // Livewire modelini güncellemek için dispatch (gerçek veri güncellemesi)
-                            Livewire.dispatch('input', { target: { name: 'message', value: '' }});
-                        }
-                    }
-                }
-            });
-        }
-        
-        // Kullanıcı mesajını ve bot yükleniyor göstergesini ekle
-        function addUserMessageAndBotLoading(content) {
-            const container = document.getElementById('chat-container');
-            if (!container) return;
-            
-            // Boş durumu kaldır
-            const emptyDiv = container.querySelector('.empty');
-            if (emptyDiv) {
-                emptyDiv.remove();
-            }
-            
-            // Önceki geçici öğeleri temizle
-            clearTemporaryElements();
-            
-            // 1. Geçici kullanıcı mesajı oluştur
-            tempMessageElement = document.createElement('div');
-            tempMessageElement.className = 'message message-user mb-3 temp-message';
-            tempMessageElement.innerHTML = `
-                <div class="message-avatar">
-                    <span class="avatar bg-secondary-lt">
-                        ${auth_user_name_first_2_chars}
-                    </span>
-                </div>
-                <div class="message-content">
-                    <div class="message-bubble">
-                        ${content.replace(/\n/g, '<br>')}
-                    </div>
-                    <div class="message-footer text-muted">
-                        ${getCurrentTime()}
-                    </div>
-                </div>
-            `;
-            
-            // 2. Geçici bot yükleniyor mesajı oluştur
-            tempBotLoadingElement = document.createElement('div');
-            tempBotLoadingElement.className = 'message message-assistant mb-3 temp-bot-loading';
-            tempBotLoadingElement.innerHTML = `
-                <div class="message-avatar">
-                    <span class="avatar bg-primary-lt">AI</span>
-                </div>
-                <div class="message-content">
-                    <div class="message-bubble">
-                        <div class="typing-indicator">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            // Mesajları ekle
-            container.appendChild(tempMessageElement);
-            container.appendChild(tempBotLoadingElement);
-            
-            // Aşağı kaydır
-            scrollToBottom();
-        }
-        
-        // Geçici öğeleri temizle
-        function clearTemporaryElements() {
-            const tempMessages = document.querySelectorAll('.temp-message');
-            const tempBotLoading = document.querySelectorAll('.temp-bot-loading');
-            
-            tempMessages.forEach(msg => msg.remove());
-            tempBotLoading.forEach(bot => bot.remove());
-            
-            tempMessageElement = null;
-            tempBotLoadingElement = null;
-        }
-        
-        // Geçerli zamanı biçimlendir
-        function getCurrentTime() {
-            const now = new Date();
-            return now.getHours().toString().padStart(2, '0') + ':' + 
-                   now.getMinutes().toString().padStart(2, '0');
-        }
-        
-        // Mesaj gönderimi başlamadan önce
-        Livewire.hook('message.sent', (message, component) => {
-            if (message.updateQueue && message.updateQueue.some(update => update.payload.method === 'sendMessage')) {
-                // Form gönderildi, geçici mesajları ekle (eğer henüz eklenmemişse)
-                if (!tempMessageElement && !tempBotLoadingElement && messageInput.value.trim() !== '') {
-                    addUserMessageAndBotLoading(messageInput.value);
-                    messageInput.value = '';
-                }
-            }
-        });
-        
-        // Livewire yanıtı işlendikten sonra
-        Livewire.hook('message.processed', (message, component) => {
-            // Mesaj işlendi, geçici öğeleri temizle
-            clearTemporaryElements();
-            
-            // Mesaj gönderimini tekrar etkinleştir
-            messageSubmitted = false;
-        });
-        
-        // Livewire bağlantısı kesilirse veya hata oluşursa
-        Livewire.hook('message.failed', (message, component) => {
-            // Hata durumunda da geçici öğeleri temizle ve gönderimi etkinleştir
-            clearTemporaryElements();
-            messageSubmitted = false;
-            
-            // Hata mesajı göster
-            alert('Mesaj gönderilirken bir hata oluştu. Lütfen tekrar deneyin.');
-        });
-        
-        // Submit butonu ile mesaj gönderme
-        document.getElementById('message-form').addEventListener('submit', function(e) {
-            if (!messageSubmitted && messageInput.value.trim() !== '') {
-                messageSubmitted = true;
-                addUserMessageAndBotLoading(messageInput.value);
-            }
-        });
-    });
-</script>
 @endpush

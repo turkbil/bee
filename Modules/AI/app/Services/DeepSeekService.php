@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Modules\AI\App\Models\Setting;
 use Illuminate\Support\Facades\Cache;
+use GuzzleHttp\Client;
 
 class DeepSeekService
 {
@@ -42,17 +43,18 @@ class DeepSeekService
      * Modele soru sor
      *
      * @param array $messages
-     * @return string|null
+     * @param bool $stream
+     * @return string|null|\Closure
      */
-    public function ask(array $messages): ?string
+    public function ask(array $messages, bool $stream = false)
     {
         try {
-            // Önce DeepSeek PHP kütüphanesini kullanmayı dene
-            if (class_exists('DeepSeekClient')) {
-                return $this->askWithDeepSeekClient($messages);
+            // Stream talebi ise HTTP yöntemini kullan
+            if ($stream) {
+                return $this->askWithStream($messages);
             }
             
-            // Eğer kütüphane yoksa HTTP ile istek yap
+            // Normal yanıt talebi ise
             return $this->askWithHttp($messages);
         } catch (\Exception $e) {
             Log::error('DeepSeek API istek hatası: ' . $e->getMessage());
@@ -61,64 +63,110 @@ class DeepSeekService
     }
     
     /**
-     * DeepSeek PHP kütüphanesi ile istek
+     * Stream destekli istek
      * 
      * @param array $messages
-     * @return string|null
+     * @return \Closure
      */
-    protected function askWithDeepSeekClient(array $messages): ?string
+    protected function askWithStream(array $messages): \Closure
     {
-        try {
-            $deepseek = app('DeepSeekClient');
-            
-            // Önce modeli ve ayarları yapılandır
-            $deepseek->withModel($this->model)
-                ->setMaxTokens($this->maxTokens)
-                ->setTemperature($this->temperature);
-            
-            // Mesajları ekle
-            foreach ($messages as $message) {
-                $deepseek->query($message['content'], $message['role']);
+        return function ($callback) use ($messages) {
+            try {
+                $client = new Client();
+                
+                $response = $client->post($this->apiBaseUrl . '/chat/completions', [
+                    'headers' => [
+                        'Authorization' => 'Bearer ' . $this->apiKey,
+                        'Content-Type' => 'application/json',
+                        'Accept' => 'text/event-stream'
+                    ],
+                    'json' => [
+                        'model' => $this->model,
+                        'messages' => $messages,
+                        'temperature' => $this->temperature,
+                        'max_tokens' => $this->maxTokens,
+                        'stream' => true
+                    ],
+                    'stream' => true
+                ]);
+                
+                $body = $response->getBody();
+                $buffer = '';
+                
+                while (!$body->eof()) {
+                    $chunk = $body->read(1024);
+                    if (empty($chunk)) continue;
+                    
+                    $buffer .= $chunk;
+                    
+                    // SSE formatındaki veriyi parçala
+                    $lines = explode("\n\n", $buffer);
+                    $bufferRemains = '';
+                    
+                    foreach ($lines as $i => $line) {
+                        // Son satırı bufferda tut (tamamlanmamış olabilir)
+                        if ($i === count($lines) - 1 && substr($buffer, -2) !== "\n\n") {
+                            $bufferRemains = $line;
+                            continue;
+                        }
+                        
+                        // "data:" ile başlayan satırları işle
+                        if (strpos($line, 'data:') === 0) {
+                            $data = substr($line, 5);
+                            
+                            // DONE mesajını atla
+                            if (trim($data) === '[DONE]') {
+                                continue;
+                            }
+                            
+                            try {
+                                $json = json_decode(trim($data), true);
+                                
+                                // İçerik varsa callback ile döndür
+                                if (isset($json['choices'][0]['delta']['content'])) {
+                                    $content = $json['choices'][0]['delta']['content'];
+                                    $callback($content);
+                                }
+                            } catch (\Exception $e) {
+                                Log::error('Stream JSON parse hatası: ' . $e->getMessage());
+                                continue;
+                            }
+                        }
+                    }
+                    
+                    // Kalan buffer'ı güncelle
+                    $buffer = $bufferRemains;
+                }
+            } catch (\Exception $e) {
+                Log::error('Stream işleme hatası: ' . $e->getMessage());
+                throw $e;
             }
-            
-            // İsteği gönder
-            $response = $deepseek->run();
-            
-            return $response;
-        } catch (\Exception $e) {
-            Log::error('DeepSeekClient hatası: ' . $e->getMessage());
-            return null;
-        }
+        };
     }
-    
+
     /**
-     * HTTP ile istek
+     * Standart HTTP isteği
      * 
      * @param array $messages
      * @return string|null
      */
     protected function askWithHttp(array $messages): ?string
     {
-        try {
-            $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $this->apiKey,
-                'Content-Type' => 'application/json',
-            ])->post($this->apiBaseUrl . '/chat/completions', [
-                'model' => $this->model,
-                'messages' => $messages,
-                'temperature' => $this->temperature,
-                'max_tokens' => $this->maxTokens,
-            ]);
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $this->apiKey,
+            'Content-Type' => 'application/json',
+        ])->post($this->apiBaseUrl . '/chat/completions', [
+            'model' => $this->model,
+            'messages' => $messages,
+            'temperature' => $this->temperature,
+            'max_tokens' => $this->maxTokens,
+        ]);
 
-            if ($response->successful()) {
-                $data = $response->json();
-                return $data['choices'][0]['message']['content'] ?? null;
-            } else {
-                Log::error('DeepSeek API hatası: ' . $response->body());
-                return null;
-            }
-        } catch (\Exception $e) {
-            Log::error('DeepSeek HTTP istek hatası: ' . $e->getMessage());
+        if ($response->successful()) {
+            $data = $response->json();
+            return $data['choices'][0]['message']['content'] ?? null;
+        } else {
+            Log::error('DeepSeek API hatası: ' . $response->body());
             return null;
         }
     }
@@ -137,7 +185,7 @@ class DeepSeekService
         }
         
         // Kaba bir tahmin: her 4 karakter için 1 token
-        return (int) ($totalChars / 4);
+        return ceil($totalChars / 4);
     }
 
     /**

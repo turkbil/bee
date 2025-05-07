@@ -32,6 +32,10 @@ Route::middleware(['web', 'auth', 'tenant'])
                     ->middleware('module.permission:ai,view')
                     ->name('conversations.show');
                 
+                Route::delete('/conversations/{id}', [ConversationController::class, 'delete'])
+                    ->middleware('module.permission:ai,delete')
+                    ->name('conversations.delete');
+                
                 // API Endpoints
                 Route::post('/generate', [AIController::class, 'generate'])
                     ->middleware('module.permission:ai,view')

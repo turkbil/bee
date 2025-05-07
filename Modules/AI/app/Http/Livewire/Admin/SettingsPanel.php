@@ -8,7 +8,7 @@ use Modules\AI\App\Models\Setting;
 use Modules\AI\App\Models\Limit;
 use Modules\AI\App\Models\Prompt;
 use Illuminate\Support\Facades\Validator;
-use App\Helpers\TenantHelpers;
+use Illuminate\Support\Facades\Log;
 
 #[Layout('admin.layout')]
 class SettingsPanel extends Component
@@ -73,6 +73,10 @@ class SettingsPanel extends Component
     public function loadLimits()
     {
         $tenantId = tenant_id();
+        if (!$tenantId) {
+            return;
+        }
+        
         $limits = app('App\Helpers\TenantHelpers')->central(function () use ($tenantId) {
             return Limit::where('tenant_id', $tenantId)->first();
         });
@@ -87,7 +91,13 @@ class SettingsPanel extends Component
     
     public function loadPrompts()
     {
-        $this->prompts = app(AIService::class)->prompts()->getAllPrompts();
+        try {
+            $aiService = app(AIService::class);
+            $this->prompts = $aiService->prompts()->getAllPrompts();
+        } catch (\Exception $e) {
+            Log::error('Promptları yüklerken hata: ' . $e->getMessage());
+            $this->prompts = [];
+        }
     }
     
     public function saveSettings()
@@ -132,22 +142,36 @@ class SettingsPanel extends Component
         ]);
         
         $tenantId = tenant_id();
+        if (!$tenantId) {
+            $this->dispatch('toast', [
+                'title' => 'Hata!',
+                'message' => 'Tenant ID bulunamadı',
+                'type' => 'error'
+            ]);
+            return;
+        }
+        
         $success = false;
         
-        TenantHelpers::central(function () use ($tenantId, &$success) {
-            $limit = Limit::where('tenant_id', $tenantId)->first();
-            
-            if (!$limit) {
-                $limit = new Limit();
-                $limit->tenant_id = $tenantId;
-            }
-            
-            $limit->daily_limit = $this->limits['daily_limit'];
-            $limit->monthly_limit = $this->limits['monthly_limit'];
-            $success = $limit->save();
-            
-            return $success;
-        });
+        try {
+            $success = app('App\Helpers\TenantHelpers')->central(function () use ($tenantId) {
+                $limit = Limit::where('tenant_id', $tenantId)->first();
+                
+                if (!$limit) {
+                    $limit = new Limit();
+                    $limit->tenant_id = $tenantId;
+                }
+                
+                $limit->daily_limit = $this->limits['daily_limit'];
+                $limit->monthly_limit = $this->limits['monthly_limit'];
+                $success = $limit->save();
+                
+                return $success;
+            });
+        } catch (\Exception $e) {
+            Log::error('Limit kaydederken hata: ' . $e->getMessage());
+            $success = false;
+        }
         
         if ($success) {
             $this->dispatch('toast', [
@@ -173,45 +197,65 @@ class SettingsPanel extends Component
         ]);
         
         $success = false;
+        $tenantId = tenant_id();
         
-        if ($this->editingPromptId) {
-            $prompt = TenantHelpers::central(function () {
-                return Prompt::find($this->editingPromptId);
-            });
-            
-            if ($prompt) {
-                $success = app(AIService::class)->prompts()->updatePrompt($prompt, $this->prompt);
+        if (!$tenantId) {
+            $this->dispatch('toast', [
+                'title' => 'Hata!',
+                'message' => 'Tenant ID bulunamadı',
+                'type' => 'error'
+            ]);
+            return;
+        }
+        
+        try {
+            if ($this->editingPromptId) {
+                $prompt = app('App\Helpers\TenantHelpers')->central(function () {
+                    return Prompt::find($this->editingPromptId);
+                });
+                
+                if ($prompt) {
+                    $success = app(AIService::class)->prompts()->updatePrompt($prompt, $this->prompt);
+                    
+                    if ($success) {
+                        $this->dispatch('toast', [
+                            'title' => 'Başarılı!',
+                            'message' => 'Prompt güncellendi',
+                            'type' => 'success'
+                        ]);
+                    } else {
+                        $this->dispatch('toast', [
+                            'title' => 'Hata!',
+                            'message' => 'Prompt güncellenirken bir sorun oluştu',
+                            'type' => 'error'
+                        ]);
+                    }
+                }
+            } else {
+                $success = app(AIService::class)->prompts()->createPrompt($this->prompt);
                 
                 if ($success) {
                     $this->dispatch('toast', [
                         'title' => 'Başarılı!',
-                        'message' => 'Prompt güncellendi',
+                        'message' => 'Yeni prompt eklendi',
                         'type' => 'success'
                     ]);
                 } else {
                     $this->dispatch('toast', [
                         'title' => 'Hata!',
-                        'message' => 'Prompt güncellenirken bir sorun oluştu',
+                        'message' => 'Prompt eklenirken bir sorun oluştu',
                         'type' => 'error'
                     ]);
                 }
             }
-        } else {
-            $success = app(AIService::class)->prompts()->createPrompt($this->prompt);
-            
-            if ($success) {
-                $this->dispatch('toast', [
-                    'title' => 'Başarılı!',
-                    'message' => 'Yeni prompt eklendi',
-                    'type' => 'success'
-                ]);
-            } else {
-                $this->dispatch('toast', [
-                    'title' => 'Hata!',
-                    'message' => 'Prompt eklenirken bir sorun oluştu',
-                    'type' => 'error'
-                ]);
-            }
+        } catch (\Exception $e) {
+            Log::error('Prompt kaydederken hata: ' . $e->getMessage());
+            $success = false;
+            $this->dispatch('toast', [
+                'title' => 'Hata!',
+                'message' => 'İşlem sırasında bir hata oluştu: ' . $e->getMessage(),
+                'type' => 'error'
+            ]);
         }
         
         if ($success) {
@@ -222,17 +266,26 @@ class SettingsPanel extends Component
     
     public function editPrompt($id)
     {
-        $prompt = TenantHelpers::central(function () use ($id) {
-            return Prompt::find($id);
-        });
-        
-        if ($prompt) {
-            $this->editingPromptId = $prompt->id;
-            $this->prompt = [
-                'name' => $prompt->name,
-                'content' => $prompt->content,
-                'is_default' => $prompt->is_default,
-            ];
+        try {
+            $prompt = app('App\Helpers\TenantHelpers')->central(function () use ($id) {
+                return Prompt::find($id);
+            });
+            
+            if ($prompt) {
+                $this->editingPromptId = $prompt->id;
+                $this->prompt = [
+                    'name' => $prompt->name,
+                    'content' => $prompt->content,
+                    'is_default' => $prompt->is_default,
+                ];
+            }
+        } catch (\Exception $e) {
+            Log::error('Prompt editlerken hata: ' . $e->getMessage());
+            $this->dispatch('toast', [
+                'title' => 'Hata!',
+                'message' => 'Prompt bilgileri yüklenirken bir sorun oluştu',
+                'type' => 'error'
+            ]);
         }
     }
     
@@ -240,19 +293,24 @@ class SettingsPanel extends Component
     {
         $success = false;
         
-        TenantHelpers::central(function () use ($id, &$success) {
-            $prompt = Prompt::find($id);
-            
-            if ($prompt) {
-                if ($prompt->is_default) {
-                    return false;
+        try {
+            $success = app('App\Helpers\TenantHelpers')->central(function () use ($id) {
+                $prompt = Prompt::find($id);
+                
+                if ($prompt) {
+                    if ($prompt->is_default) {
+                        return false;
+                    }
+                    
+                    $success = $prompt->delete();
                 }
                 
-                $success = $prompt->delete();
-            }
-            
-            return $success;
-        });
+                return $success;
+            });
+        } catch (\Exception $e) {
+            Log::error('Prompt silerken hata: ' . $e->getMessage());
+            $success = false;
+        }
         
         if ($success) {
             $this->dispatch('toast', [

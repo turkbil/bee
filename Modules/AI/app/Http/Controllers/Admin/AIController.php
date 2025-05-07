@@ -14,6 +14,11 @@ class AIController extends Controller
         $this->aiService = $aiService;
     }
 
+    public function index()
+    {
+        return view('ai::admin.index');
+    }
+
     public function generate(Request $request)
     {
         $request->validate([

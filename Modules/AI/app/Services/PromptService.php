@@ -34,14 +34,19 @@ class PromptService
         
         $cacheKey = "ai_prompts_tenant_{$this->tenantId}";
         
-        return Cache::remember($cacheKey, now()->addMinutes(30), function () {
-            return TenantHelpers::central(function () {
-                return Prompt::where('tenant_id', $this->tenantId)
-                    ->orderBy('is_default', 'desc')
-                    ->orderBy('name')
-                    ->get();
+        try {
+            return Cache::remember($cacheKey, now()->addMinutes(30), function () {
+                return TenantHelpers::central(function () {
+                    return Prompt::where('tenant_id', $this->tenantId)
+                        ->orderBy('is_default', 'desc')
+                        ->orderBy('name')
+                        ->get();
+                });
             });
-        });
+        } catch (\Exception $e) {
+            Log::error('Promptları getirirken hata: ' . $e->getMessage());
+            return collect();
+        }
     }
 
     /**
@@ -58,13 +63,18 @@ class PromptService
         
         $cacheKey = "ai_default_prompt_tenant_{$this->tenantId}";
         
-        return Cache::remember($cacheKey, now()->addMinutes(30), function () {
-            return TenantHelpers::central(function () {
-                return Prompt::where('tenant_id', $this->tenantId)
-                    ->where('is_default', true)
-                    ->first();
+        try {
+            return Cache::remember($cacheKey, now()->addMinutes(30), function () {
+                return TenantHelpers::central(function () {
+                    return Prompt::where('tenant_id', $this->tenantId)
+                        ->where('is_default', true)
+                        ->first();
+                });
             });
-        });
+        } catch (\Exception $e) {
+            Log::error('Varsayılan promptu getirirken hata: ' . $e->getMessage());
+            return null;
+        }
     }
 
     /**
@@ -83,7 +93,7 @@ class PromptService
         $success = false;
         
         try {
-            TenantHelpers::central(function () use ($data, &$success) {
+            $success = TenantHelpers::central(function () use ($data) {
                 // Eğer yeni prompt varsayılan olarak işaretlendiyse, diğer varsayılanları kaldır
                 if (isset($data['is_default']) && $data['is_default']) {
                     Prompt::where('tenant_id', $this->tenantId)
@@ -129,7 +139,7 @@ class PromptService
         $success = false;
         
         try {
-            TenantHelpers::central(function () use ($prompt, $data, &$success) {
+            $success = TenantHelpers::central(function () use ($prompt, $data) {
                 // Eğer güncellenecek prompt varsayılan olarak işaretlendiyse, diğer varsayılanları kaldır
                 if (isset($data['is_default']) && $data['is_default'] && !$prompt->is_default) {
                     Prompt::where('tenant_id', $this->tenantId)
@@ -173,7 +183,7 @@ class PromptService
         $success = false;
         
         try {
-            TenantHelpers::central(function () use ($prompt, &$success) {
+            $success = TenantHelpers::central(function () use ($prompt) {
                 // Varsayılan prompt siliniyorsa, işlemi engelle
                 if ($prompt->is_default) {
                     return false;

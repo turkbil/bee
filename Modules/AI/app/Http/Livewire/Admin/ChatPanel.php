@@ -37,12 +37,24 @@ class ChatPanel extends Component
     
     public function loadConversations()
     {
-        $this->conversations = app(AIService::class)->conversations()->getConversations(20);
+        try {
+            $aiService = app(AIService::class);
+            $this->conversations = $aiService->conversations()->getConversations(20);
+        } catch (\Exception $e) {
+            $this->conversations = [];
+            $this->addError('error', 'Konuşmalar yüklenirken bir sorun oluştu: ' . $e->getMessage());
+        }
     }
     
     public function loadPrompts()
     {
-        $this->prompts = app(AIService::class)->prompts()->getAllPrompts();
+        try {
+            $aiService = app(AIService::class);
+            $this->prompts = $aiService->prompts()->getAllPrompts();
+        } catch (\Exception $e) {
+            $this->prompts = [];
+            $this->addError('error', 'Promptlar yüklenirken bir sorun oluştu: ' . $e->getMessage());
+        }
     }
     
     public function selectConversation($id)
@@ -76,21 +88,26 @@ class ChatPanel extends Component
             'title' => 'required|string|max:255',
         ]);
         
-        $conversation = app(AIService::class)->conversations()->createConversation(
-            $this->title,
-            $this->promptId
-        );
-        
-        $this->conversationId = $conversation->id;
-        $this->loadConversations();
-        $this->loadMessages();
-        $this->title = '';
-        
-        $this->dispatch('toast', [
-            'title' => 'Başarılı!',
-            'message' => 'Yeni konuşma başlatıldı',
-            'type' => 'success'
-        ]);
+        try {
+            $aiService = app(AIService::class);
+            $conversation = $aiService->conversations()->createConversation(
+                $this->title,
+                $this->promptId
+            );
+            
+            $this->conversationId = $conversation->id;
+            $this->loadConversations();
+            $this->loadMessages();
+            $this->title = '';
+            
+            $this->dispatch('toast', [
+                'title' => 'Başarılı!',
+                'message' => 'Yeni konuşma başlatıldı',
+                'type' => 'success'
+            ]);
+        } catch (\Exception $e) {
+            $this->addError('error', 'Konuşma oluşturulurken bir sorun oluştu: ' . $e->getMessage());
+        }
     }
     
     public function deleteConversation($id)
@@ -100,20 +117,25 @@ class ChatPanel extends Component
             ->first();
             
         if ($conversation) {
-            app(AIService::class)->conversations()->deleteConversation($conversation);
-            
-            if ($this->conversationId == $id) {
-                $this->conversationId = null;
-                $this->messages = [];
+            try {
+                $aiService = app(AIService::class);
+                $aiService->conversations()->deleteConversation($conversation);
+                
+                if ($this->conversationId == $id) {
+                    $this->conversationId = null;
+                    $this->messages = [];
+                }
+                
+                $this->loadConversations();
+                
+                $this->dispatch('toast', [
+                    'title' => 'Başarılı!',
+                    'message' => 'Konuşma silindi',
+                    'type' => 'success'
+                ]);
+            } catch (\Exception $e) {
+                $this->addError('error', 'Konuşma silinirken bir sorun oluştu: ' . $e->getMessage());
             }
-            
-            $this->loadConversations();
-            
-            $this->dispatch('toast', [
-                'title' => 'Başarılı!',
-                'message' => 'Konuşma silindi',
-                'type' => 'success'
-            ]);
         }
     }
     
@@ -125,37 +147,51 @@ class ChatPanel extends Component
         
         $this->loading = true;
         
-        // Eğer konuşma ID yoksa, yeni bir konuşma oluştur
-        if (!$this->conversationId) {
-            $title = substr($this->message, 0, 30) . '...';
-            $conversation = app(AIService::class)->conversations()->createConversation($title, $this->promptId);
-            $this->conversationId = $conversation->id;
-            $this->loadConversations();
-        } else {
-            $conversation = Conversation::find($this->conversationId);
-        }
-        
-        // Kullanıcı mesajını ekle ve AI yanıtını al
-        $aiService = app(AIService::class);
-        $response = $aiService->conversations()->getAIResponse($conversation, $this->message);
-        
-        $this->message = '';
-        $this->loading = false;
-        $this->loadMessages();
-        
-        if (!$response) {
-            $this->dispatch('toast', [
-                'title' => 'Hata!',
-                'message' => 'Yanıt alınamadı. Lütfen daha sonra tekrar deneyin.',
-                'type' => 'error'
-            ]);
+        try {
+            $aiService = app(AIService::class);
+            
+            // Eğer konuşma ID yoksa, yeni bir konuşma oluştur
+            if (!$this->conversationId) {
+                $title = substr($this->message, 0, 30) . '...';
+                $conversation = $aiService->conversations()->createConversation($title, $this->promptId);
+                $this->conversationId = $conversation->id;
+                $this->loadConversations();
+            } else {
+                $conversation = Conversation::find($this->conversationId);
+            }
+            
+            // Kullanıcı mesajını ekle ve AI yanıtını al
+            $response = $aiService->conversations()->getAIResponse($conversation, $this->message);
+            
+            $this->message = '';
+            $this->loading = false;
+            $this->loadMessages();
+            
+            if (!$response) {
+                $this->dispatch('toast', [
+                    'title' => 'Hata!',
+                    'message' => 'Yanıt alınamadı. Lütfen daha sonra tekrar deneyin.',
+                    'type' => 'error'
+                ]);
+            }
+        } catch (\Exception $e) {
+            $this->loading = false;
+            $this->addError('error', 'Mesaj gönderilirken bir sorun oluştu: ' . $e->getMessage());
         }
     }
     
     public function render()
     {
-        $remainingDaily = app(AIService::class)->limits()->getRemainingDailyLimit();
-        $remainingMonthly = app(AIService::class)->limits()->getRemainingMonthlyLimit();
+        $remainingDaily = 0;
+        $remainingMonthly = 0;
+        
+        try {
+            $aiService = app(AIService::class);
+            $remainingDaily = $aiService->limits()->getRemainingDailyLimit();
+            $remainingMonthly = $aiService->limits()->getRemainingMonthlyLimit();
+        } catch (\Exception $e) {
+            // Limitleri alırken hata oluştu, varsayılan değerleri kullan
+        }
         
         return view('ai::admin.livewire.chat-panel', [
             'remainingDaily' => $remainingDaily,

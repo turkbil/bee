@@ -11,7 +11,6 @@ use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Modules\AI\App\Services\AIService;
-use DeepSeek\DeepSeekClient;
 
 class AIServiceProvider extends ServiceProvider
 {
@@ -58,25 +57,6 @@ class AIServiceProvider extends ServiceProvider
         // AI Service singleton kaydı
         $this->app->singleton(AIService::class, function ($app) {
             return new AIService();
-        });
-        
-        // DeepSeek Laravel paketi yapılandırmasını uygula
-        $this->app->singleton(DeepSeekClient::class, function ($app) {
-            $settings = null;
-            
-            if ($this->app->has('stancl.tenancy')) {
-                $tenancy = $this->app->make('stancl.tenancy');
-                if ($tenancy->initialized) {
-                    $settings = \Modules\AI\App\Models\Setting::where('tenant_id', tenant_id())->first();
-                }
-            }
-            
-            return new DeepSeekClient([
-                'apiKey' => $settings->api_key ?? config('deepseek.api_key'),
-                'model' => $settings->model ?? config('deepseek.model', 'deepseek-chat'),
-                'temperature' => $settings->temperature ?? config('deepseek.temperature', 0.7),
-                'max_tokens' => $settings->max_tokens ?? config('deepseek.max_tokens', 4096)
-            ]);
         });
     }
 
@@ -164,7 +144,7 @@ class AIServiceProvider extends ServiceProvider
      */
     public function provides(): array
     {
-        return [AIService::class, DeepSeekClient::class];
+        return [AIService::class];
     }
 
     private function getPublishableViewPaths(): array

@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('ai_settings', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('tenant_id')->index();
-            $table->string('api_key')->nullable();
+            $table->text('api_key')->nullable();
             $table->string('model')->default('deepseek-chat');
             $table->integer('max_tokens')->default(4096);
             $table->float('temperature')->default(0.7);

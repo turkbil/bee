@@ -8,6 +8,7 @@ use Modules\AI\App\Models\Setting;
 use Modules\AI\App\Models\Limit;
 use Modules\AI\App\Models\Prompt;
 use Illuminate\Support\Facades\Validator;
+use App\Helpers\TenantHelpers;
 
 #[Layout('admin.layout')]
 class SettingsPanel extends Component
@@ -102,17 +103,25 @@ class SettingsPanel extends Component
         if (empty($this->settings['api_key'])) {
             $currentSettings = app(AIService::class)->getSettings();
             if ($currentSettings && $currentSettings->api_key) {
-                unset($this->settings['api_key']);
+                $this->settings['api_key'] = $currentSettings->api_key;
             }
         }
         
-        app(AIService::class)->updateSettings($this->settings);
+        $result = app(AIService::class)->updateSettings($this->settings);
         
-        $this->dispatch('toast', [
-            'title' => 'Başarılı!',
-            'message' => 'AI ayarları güncellendi',
-            'type' => 'success'
-        ]);
+        if ($result) {
+            $this->dispatch('toast', [
+                'title' => 'Başarılı!',
+                'message' => 'AI ayarları güncellendi',
+                'type' => 'success'
+            ]);
+        } else {
+            $this->dispatch('toast', [
+                'title' => 'Hata!',
+                'message' => 'Ayarlar kaydedilirken bir sorun oluştu',
+                'type' => 'error'
+            ]);
+        }
     }
     
     public function saveLimits()
@@ -123,7 +132,9 @@ class SettingsPanel extends Component
         ]);
         
         $tenantId = tenant_id();
-        app('App\Helpers\TenantHelpers')->central(function () use ($tenantId) {
+        $success = false;
+        
+        TenantHelpers::central(function () use ($tenantId, &$success) {
             $limit = Limit::where('tenant_id', $tenantId)->first();
             
             if (!$limit) {
@@ -133,14 +144,24 @@ class SettingsPanel extends Component
             
             $limit->daily_limit = $this->limits['daily_limit'];
             $limit->monthly_limit = $this->limits['monthly_limit'];
-            $limit->save();
+            $success = $limit->save();
+            
+            return $success;
         });
         
-        $this->dispatch('toast', [
-            'title' => 'Başarılı!',
-            'message' => 'Kullanım limitleri güncellendi',
-            'type' => 'success'
-        ]);
+        if ($success) {
+            $this->dispatch('toast', [
+                'title' => 'Başarılı!',
+                'message' => 'Kullanım limitleri güncellendi',
+                'type' => 'success'
+            ]);
+        } else {
+            $this->dispatch('toast', [
+                'title' => 'Hata!',
+                'message' => 'Limitler kaydedilirken bir sorun oluştu',
+                'type' => 'error'
+            ]);
+        }
     }
     
     public function savePrompt()
@@ -151,37 +172,57 @@ class SettingsPanel extends Component
             'prompt.is_default' => 'boolean',
         ]);
         
+        $success = false;
+        
         if ($this->editingPromptId) {
-            $prompt = app('App\Helpers\TenantHelpers')->central(function () {
+            $prompt = TenantHelpers::central(function () {
                 return Prompt::find($this->editingPromptId);
             });
             
             if ($prompt) {
-                app(AIService::class)->prompts()->updatePrompt($prompt, $this->prompt);
+                $success = app(AIService::class)->prompts()->updatePrompt($prompt, $this->prompt);
                 
-                $this->dispatch('toast', [
-                    'title' => 'Başarılı!',
-                    'message' => 'Prompt güncellendi',
-                    'type' => 'success'
-                ]);
+                if ($success) {
+                    $this->dispatch('toast', [
+                        'title' => 'Başarılı!',
+                        'message' => 'Prompt güncellendi',
+                        'type' => 'success'
+                    ]);
+                } else {
+                    $this->dispatch('toast', [
+                        'title' => 'Hata!',
+                        'message' => 'Prompt güncellenirken bir sorun oluştu',
+                        'type' => 'error'
+                    ]);
+                }
             }
         } else {
-            app(AIService::class)->prompts()->createPrompt($this->prompt);
+            $success = app(AIService::class)->prompts()->createPrompt($this->prompt);
             
-            $this->dispatch('toast', [
-                'title' => 'Başarılı!',
-                'message' => 'Yeni prompt eklendi',
-                'type' => 'success'
-            ]);
+            if ($success) {
+                $this->dispatch('toast', [
+                    'title' => 'Başarılı!',
+                    'message' => 'Yeni prompt eklendi',
+                    'type' => 'success'
+                ]);
+            } else {
+                $this->dispatch('toast', [
+                    'title' => 'Hata!',
+                    'message' => 'Prompt eklenirken bir sorun oluştu',
+                    'type' => 'error'
+                ]);
+            }
         }
         
-        $this->resetPromptForm();
-        $this->loadPrompts();
+        if ($success) {
+            $this->resetPromptForm();
+            $this->loadPrompts();
+        }
     }
     
     public function editPrompt($id)
     {
-        $prompt = app('App\Helpers\TenantHelpers')->central(function () use ($id) {
+        $prompt = TenantHelpers::central(function () use ($id) {
             return Prompt::find($id);
         });
         
@@ -197,29 +238,37 @@ class SettingsPanel extends Component
     
     public function deletePrompt($id)
     {
-        $prompt = app('App\Helpers\TenantHelpers')->central(function () use ($id) {
-            return Prompt::find($id);
-        });
+        $success = false;
         
-        if ($prompt) {
-            $result = app(AIService::class)->prompts()->deletePrompt($prompt);
+        TenantHelpers::central(function () use ($id, &$success) {
+            $prompt = Prompt::find($id);
             
-            if ($result) {
-                $this->dispatch('toast', [
-                    'title' => 'Başarılı!',
-                    'message' => 'Prompt silindi',
-                    'type' => 'success'
-                ]);
-            } else {
-                $this->dispatch('toast', [
-                    'title' => 'Hata!',
-                    'message' => 'Varsayılan prompt silinemez',
-                    'type' => 'error'
-                ]);
+            if ($prompt) {
+                if ($prompt->is_default) {
+                    return false;
+                }
+                
+                $success = $prompt->delete();
             }
             
-            $this->loadPrompts();
+            return $success;
+        });
+        
+        if ($success) {
+            $this->dispatch('toast', [
+                'title' => 'Başarılı!',
+                'message' => 'Prompt silindi',
+                'type' => 'success'
+            ]);
+        } else {
+            $this->dispatch('toast', [
+                'title' => 'Hata!',
+                'message' => 'Varsayılan prompt silinemez veya silme işlemi sırasında bir hata oluştu',
+                'type' => 'error'
+            ]);
         }
+        
+        $this->loadPrompts();
     }
     
     public function resetPromptForm()

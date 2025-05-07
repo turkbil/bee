@@ -2,6 +2,22 @@
 
 <div class="page-body">
     <div class="container-xl">
+        @if ($error)
+        <div class="alert alert-warning mb-3">
+            <div class="d-flex">
+                <div>
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                </div>
+                <div>
+                    {{ $error }}
+                    <button type="button" class="btn btn-sm btn-warning ms-3" wire:click="retryLastMessage">
+                        <i class="fas fa-redo-alt me-1"></i> Yeniden Dene
+                    </button>
+                </div>
+            </div>
+        </div>
+        @endif
+        
         <div class="row g-3">
             <!-- Konuşma Listesi - Sol Sütun -->
             <div class="col-12 col-lg-4 d-flex flex-column">
@@ -75,13 +91,30 @@
                                 AI Asistan
                             @endif
                         </h3>
+                        @if($conversationId)
+                        <div class="card-actions">
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <a href="#" class="dropdown-item" wire:click.prevent="retryLastMessage">
+                                        <i class="fas fa-redo-alt me-2"></i> Son mesajı yeniden dene
+                                    </a>
+                                    <a href="{{ route('admin.ai.conversations.show', $conversationId) }}" class="dropdown-item">
+                                        <i class="fas fa-external-link-alt me-2"></i> Yeni sayfada aç
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
                     </div>
                     <div class="card-body d-flex flex-column" style="height: 500px;">
                         <!-- Mesaj Listesi -->
                         <div class="chat-messages overflow-auto mb-3 flex-grow-1" id="chat-container">
                             @if (count($messages) > 0)
                                 @foreach ($messages as $chatMessage)
-                                    <div class="message {{ $chatMessage['role'] == 'assistant' ? 'message-assistant' : 'message-user' }} mb-3" data-message-id="{{ $chatMessage['id'] }}">
+                                    <div class="message {{ $chatMessage['role'] == 'assistant' ? 'message-assistant' : 'message-user' }} mb-3" id="message-{{ $chatMessage['id'] }}">
                                         <div class="message-avatar">
                                             @if ($chatMessage['role'] == 'assistant')
                                                 <span class="avatar bg-primary-lt">AI</span>
@@ -92,12 +125,20 @@
                                             @endif
                                         </div>
                                         <div class="message-content">
-                                            <div class="message-bubble">
-                                                {!! nl2br(e($chatMessage['content'])) !!}
+                                            <div class="message-bubble" id="bubble-{{ $chatMessage['id'] }}">
+                                                {!! nl2br(htmlspecialchars($chatMessage['content'])) !!}
                                             </div>
                                             <div class="message-footer text-muted">
                                                 {{ \Carbon\Carbon::parse($chatMessage['created_at'])->format('H:i') }}
                                                 <span class="ms-2">{{ $chatMessage['tokens'] }} token</span>
+                                                
+                                                @if ($chatMessage['role'] == 'assistant')
+                                                <div class="float-end">
+                                                    <a href="#" class="text-muted copy-message" data-message-id="{{ $chatMessage['id'] }}" title="Metni kopyala">
+                                                        <i class="fas fa-copy"></i>
+                                                    </a>
+                                                </div>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
@@ -113,36 +154,18 @@
                                     </p>
                                 </div>
                             @endif
-
-                            @if ($loading)
-                                <div class="message message-assistant mb-3">
-                                    <div class="message-avatar">
-                                        <span class="avatar bg-primary-lt">AI</span>
-                                    </div>
-                                    <div class="message-content">
-                                        <div class="message-bubble">
-                                            <div class="typing-indicator">
-                                                <span></span>
-                                                <span></span>
-                                                <span></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endif
                         </div>
 
                         <!-- Mesaj Gönderme Formu -->
                         <div class="message-form">
-                            <form wire:submit.prevent="sendMessage" id="message-form">
+                            <form id="chat-form">
                                 <div class="input-group">
                                     <textarea
-                                        wire:model="message"
+                                        id="message-input"
                                         class="form-control"
                                         placeholder="Mesajınızı yazın..."
                                         rows="2"
                                         {{ $loading ? 'disabled' : '' }}
-                                        id="message-input"
                                     ></textarea>
                                     <button type="submit" class="btn btn-primary" {{ $loading ? 'disabled' : '' }}>
                                         @if($loading)
@@ -171,12 +194,12 @@
                     <div class="modal-body">
                         <div class="mb-3">
                             <label class="form-label">Konuşma Başlığı</label>
-                            <input type="text" class="form-control" wire:model="title" placeholder="Örn: Proje Planlaması">
+                            <input type="text" class="form-control" wire:model.defer="title" placeholder="Örn: Proje Planlaması">
                             @error('title') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Prompt Şablonu (İsteğe Bağlı)</label>
-                            <select class="form-select" wire:model="promptId">
+                            <select class="form-select" wire:model.defer="promptId">
                                 <option value="">Şablon Seçin</option>
                                 @foreach ($prompts as $prompt)
                                     <option value="{{ $prompt->id }}">{{ $prompt->name }}</option>
@@ -200,7 +223,7 @@
 
 @push('scripts')
 <script>
-    document.addEventListener('livewire:initialized', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         const scrollToBottom = () => {
             const container = document.getElementById('chat-container');
             if (container) {
@@ -208,67 +231,89 @@
             }
         };
         
-        // Sayfa yüklendiğinde aşağı kaydır
         scrollToBottom();
         
-        // Kullanıcı adı kısaltması için değişken
         const userInitials = '{{ substr(auth()->user()->name, 0, 2) }}';
         
-        // DOM güncellemelerini izle ve aşağı kaydır
-        const observer = new MutationObserver(scrollToBottom);
-        const container = document.getElementById('chat-container');
-        
-        if (container) {
-            observer.observe(container, { childList: true, subtree: true });
-        }
-        
-        // Enter tuşu ile mesaj gönderme
+        const chatForm = document.getElementById('chat-form');
         const messageInput = document.getElementById('message-input');
-        const messageForm = document.getElementById('message-form');
         
-        if (messageInput && messageForm) {
+        if (chatForm && messageInput) {
+            chatForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const message = messageInput.value.trim();
+                if (message !== '') {
+                    addUserMessage(message);
+                    
+                    @this.call('sendMessageAction', message);
+                    
+                    messageInput.value = '';
+                }
+            });
+            
             messageInput.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
                     
                     const message = this.value.trim();
                     if (message !== '') {
-                        // Anında mesajı göster (yanıt beklemeden)
-                        addTemporaryUserMessage(message);
+                        addUserMessage(message);
                         
-                        // Mesaj kutusunu temizle
+                        @this.call('sendMessageAction', message);
+                        
                         this.value = '';
-                        
-                        // Livewire modeline boş değer gönder
-                        @this.set('message', '');
-                        
-                        // Formu gönder
-                        messageForm.dispatchEvent(new Event('submit'));
                     }
                 }
             });
         }
         
-        // Geçici kullanıcı mesajı ekle
-        function addTemporaryUserMessage(content) {
+        // Kopyalama işlevi
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.copy-message')) {
+                e.preventDefault();
+                const messageId = e.target.closest('.copy-message').getAttribute('data-message-id');
+                const messageBubble = document.getElementById('bubble-' + messageId);
+                
+                if (messageBubble) {
+                    const textToCopy = messageBubble.innerText;
+                    
+                    navigator.clipboard.writeText(textToCopy).then(() => {
+                        const copyIcon = e.target.closest('.copy-message').querySelector('i');
+                        copyIcon.classList.remove('fa-copy');
+                        copyIcon.classList.add('fa-check');
+                        
+                        setTimeout(() => {
+                            copyIcon.classList.remove('fa-check');
+                            copyIcon.classList.add('fa-copy');
+                        }, 2000);
+                    });
+                }
+            }
+        });
+        
+        function addUserMessage(content) {
             const container = document.getElementById('chat-container');
             if (!container) return;
             
-            // Boş durumu kontrol et
             const emptyDiv = container.querySelector('.empty');
             if (emptyDiv) {
                 emptyDiv.remove();
             }
             
-            // Geçici kullanıcı mesajı oluştur
+            const tempId = 'temp-' + Date.now();
+            
             const tempUserMessage = document.createElement('div');
-            tempUserMessage.className = 'message message-user mb-3 temp-message';
+            tempUserMessage.className = 'message message-user mb-3';
+            tempUserMessage.id = tempId;
             tempUserMessage.innerHTML = `
                 <div class="message-avatar">
                     <span class="avatar bg-secondary-lt">${userInitials}</span>
                 </div>
                 <div class="message-content">
-                    <div class="message-bubble">${content.replace(/\n/g, '<br>')}</div>
+                    <div class="message-bubble">
+                        ${escapeHtml(content).replace(/\n/g, '<br>')}
+                    </div>
                     <div class="message-footer text-muted">
                         ${getCurrentTime()}
                         <span class="ms-2">0 token</span>
@@ -276,115 +321,133 @@
                 </div>
             `;
             
-            // Yükleniyor mesajı oluştur
-            const tempLoadingMessage = document.createElement('div');
-            tempLoadingMessage.className = 'message message-assistant mb-3 temp-loading';
-            tempLoadingMessage.innerHTML = `
+            // Yükleniyor mesajını ekle
+            const loadingMessage = document.createElement('div');
+            loadingMessage.className = 'message message-assistant mb-3';
+            loadingMessage.id = 'loading-message';
+            loadingMessage.innerHTML = `
                 <div class="message-avatar">
                     <span class="avatar bg-primary-lt">AI</span>
                 </div>
                 <div class="message-content">
                     <div class="message-bubble">
+                        <div class="ai-response" id="stream-response"></div>
                         <div class="typing-indicator">
                             <span></span>
                             <span></span>
                             <span></span>
                         </div>
                     </div>
+                    <div class="message-footer text-muted">
+                        ${getCurrentTime()}
+                    </div>
                 </div>
             `;
             
-            // Mesajları ekle
             container.appendChild(tempUserMessage);
-            container.appendChild(tempLoadingMessage);
-            
-            // Aşağı kaydır
+            container.appendChild(loadingMessage);
             scrollToBottom();
         }
         
-        // Geçici mesajları temizle
-        function clearTemporaryMessages() {
-            document.querySelectorAll('.temp-message, .temp-loading').forEach(el => {
-                el.remove();
-            });
-        }
-        
-        // Güncel zamanı döndür
         function getCurrentTime() {
             const now = new Date();
             return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
         }
         
-        // Stream olaylarını dinle
-        Livewire.on('streamStarted', function({ messageId }) {
-            // Geçici mesajları kaldır
-            clearTemporaryMessages();
-            
-            // Mesaj elementini bul
-            const messageElement = document.querySelector(`[data-message-id="${messageId}"]`);
-            if (messageElement) {
-                const messageBubble = messageElement.querySelector('.message-bubble');
-                if (messageBubble) {
-                    // Cursor ekle
-                    messageBubble.innerHTML = '<span class="ai-cursor"></span>';
-                }
-            }
-            
-            scrollToBottom();
-        });
-        
-        // Stream içeriği gelince
-        Livewire.on('receiveContent', function({ messageId, content }) {
-            // Boş içeriği atla
-            if (!content || content === '') return;
-            
-            // Mesaj elementini bul
-            const messageElement = document.querySelector(`[data-message-id="${messageId}"]`);
-            if (messageElement) {
-                const messageBubble = messageElement.querySelector('.message-bubble');
-                if (messageBubble) {
-                    // İçeriği ekle ve cursor'u koru
-                    const currentContent = messageBubble.innerHTML.replace('<span class="ai-cursor"></span>', '');
-                    messageBubble.innerHTML = currentContent + escapeHtml(content) + '<span class="ai-cursor"></span>';
-                    
-                    // Aşağı kaydır
-                    scrollToBottom();
-                }
-            }
-        });
-        
-        // Stream tamamlandı
-        Livewire.on('streamComplete', function({ messageId }) {
-            // Mesaj elementini bul
-            const messageElement = document.querySelector(`[data-message-id="${messageId}"]`);
-            if (messageElement) {
-                const messageBubble = messageElement.querySelector('.message-bubble');
-                if (messageBubble) {
-                    // Cursor'u kaldır
-                    messageBubble.innerHTML = messageBubble.innerHTML.replace('<span class="ai-cursor"></span>', '');
-                }
-            }
-            
-            scrollToBottom();
-        });
-        
-        // Stream hatası
-        Livewire.on('streamError', function({ error }) {
-            console.error('Stream hatası:', error);
-            clearTemporaryMessages();
-            alert('Yanıt alınamadı: ' + error);
-        });
-        
-        // HTML karakterleri escape et
         function escapeHtml(text) {
             const div = document.createElement('div');
             div.textContent = text;
-            return div.innerHTML.replace(/\n/g, '<br>');
+            return div.innerHTML;
         }
         
-        // Livewire isteklerini dinle
-        Livewire.hook('message.processed', (message, component) => {
-            scrollToBottom();
+        // Livewire olaylarını dinle
+        document.addEventListener('livewire:initialized', () => {
+            // DOM güncellemeleri için observer
+            const observer = new MutationObserver(scrollToBottom);
+            const container = document.getElementById('chat-container');
+            if (container) {
+                observer.observe(container, { childList: true, subtree: true });
+            }
+            
+            // Stream başladığında (AI yanıt vermeye başladığında)
+            Livewire.on('streamStart', ({ messageId }) => {
+                console.log('Stream başladı, messageId:', messageId);
+                
+                // Yükleniyor mesajını kaldır
+                const loadingMessage = document.getElementById('loading-message');
+                if (loadingMessage) {
+                    loadingMessage.remove();
+                }
+                
+                // Yeni mesaj elementini oluştur
+                const container = document.getElementById('chat-container');
+                const messageElement = document.createElement('div');
+                messageElement.className = 'message message-assistant mb-3';
+                messageElement.id = 'message-' + messageId;
+                messageElement.innerHTML = `
+                    <div class="message-avatar">
+                        <span class="avatar bg-primary-lt">AI</span>
+                    </div>
+                    <div class="message-content">
+                        <div class="message-bubble" id="bubble-${messageId}">
+                            <span class="ai-cursor"></span>
+                        </div>
+                        <div class="message-footer text-muted">
+                            ${getCurrentTime()}
+                            <span class="ms-2">0 token</span>
+                            <div class="float-end">
+                                <a href="#" class="text-muted copy-message" data-message-id="${messageId}" title="Metni kopyala">
+                                    <i class="fas fa-copy"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(messageElement);
+                scrollToBottom();
+            });
+            
+            // Her yeni parça geldiğinde
+            Livewire.on('streamChunk', ({ messageId, content }) => {
+                console.log('Stream parçası alındı, messageId:', messageId, 'içerik:', content);
+                
+                const messageBubble = document.getElementById('bubble-' + messageId);
+                if (messageBubble) {
+                    // İmleç olup olmadığını kontrol et
+                    const hasAiCursor = messageBubble.querySelector('.ai-cursor');
+                    
+                    // İmleç varsa, içeriği yanına ekleyip imleç yeniden ekle
+                    if (hasAiCursor) {
+                        const currentText = messageBubble.innerHTML.replace(/<span class="ai-cursor"><\/span>/, '');
+                        messageBubble.innerHTML = currentText + escapeHtml(content).replace(/\n/g, '<br>') + '<span class="ai-cursor"></span>';
+                    } else {
+                        // İmleç yoksa, içeriği ekle ve sonuna imleç ekle
+                        messageBubble.innerHTML = (messageBubble.innerHTML || '') + escapeHtml(content).replace(/\n/g, '<br>') + '<span class="ai-cursor"></span>';
+                    }
+                    
+                    scrollToBottom();
+                }
+            });
+            
+            // Stream bittiğinde
+            Livewire.on('streamEnd', ({ messageId }) => {
+                console.log('Stream tamamlandı, messageId:', messageId);
+                
+                const messageBubble = document.getElementById('bubble-' + messageId);
+                if (messageBubble) {
+                    // İmleci kaldır
+                    messageBubble.innerHTML = messageBubble.innerHTML.replace(/<span class="ai-cursor"><\/span>/, '');
+                }
+                
+                Livewire.dispatch('streamComplete');
+                scrollToBottom();
+            });
+            
+            // Diğer Livewire işlemleri tamamlandığında
+            Livewire.hook('message.processed', () => {
+                scrollToBottom();
+            });
         });
     });
 </script>
@@ -501,6 +564,27 @@
     html[data-bs-theme="dark"] .message-user .message-bubble {
         background-color: var(--tblr-primary);
         color: var(--tblr-white);
+    }
+    
+    #chat-container pre {
+        white-space: pre-wrap;
+    }
+    
+    #chat-container .ai-response {
+        min-height: 1.5em;
+    }
+    
+    .copy-message {
+        opacity: 0.6;
+        transition: opacity 0.2s;
+    }
+    
+    .copy-message:hover {
+        opacity: 1;
+    }
+    
+    .message:hover .copy-message {
+        opacity: 1;
     }
 </style>
 @endpush

@@ -46,18 +46,18 @@ class ConversationService
     public function getAIResponse(Conversation $conversation, string $userMessage, bool $stream = false)
     {
         if (!$this->limitService->checkLimits()) {
-            return null;
+            return "Üzgünüm, kullanım limitinize ulaştınız.";
         }
-
+    
         $this->addMessage($conversation, $userMessage, 'user');
-
+    
         $messages = $this->deepSeekService->formatConversationMessages($conversation);
-
+    
         if ($stream) {
             return $this->deepSeekService->ask($messages, true);
         } else {
             $aiResponse = $this->deepSeekService->ask($messages);
-
+    
             if ($aiResponse) {
                 $tokens = $this->deepSeekService->estimateTokens([['role' => 'assistant', 'content' => $aiResponse]]);
                 
@@ -65,7 +65,7 @@ class ConversationService
                 
                 $this->limitService->incrementUsage($tokens);
             }
-
+    
             return $aiResponse;
         }
     }

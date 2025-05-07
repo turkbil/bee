@@ -146,8 +146,8 @@ class DeepSeekService
                 $contentReceived = false;
                 
                 while (!$body->eof()) {
-                    // Tek karakter okunarak doğal gecikme sağlanıyor
-                    $chunk = $body->read(1);
+                    // Tek seferde daha fazla veri okuyalım
+                    $chunk = $body->read(1024);
                     if (empty($chunk)) {
                         usleep(10000); // 10ms bekle
                         continue;
@@ -155,11 +155,12 @@ class DeepSeekService
                     
                     $buffer .= $chunk;
                     
-                    if (substr($buffer, -2) === "\n\n") {
-                        $lines = explode("\n\n", $buffer);
-                        $buffer = '';
+                    // SSE formatında "data:" satırlarını işleyelim
+                    while (($pos = strpos($buffer, "\n\n")) !== false) {
+                        $lines = substr($buffer, 0, $pos + 2);
+                        $buffer = substr($buffer, $pos + 2);
                         
-                        foreach ($lines as $line) {
+                        foreach (explode("\n", $lines) as $line) {
                             if (strpos($line, 'data:') === 0) {
                                 $data = substr($line, 5);
                                 
@@ -176,9 +177,6 @@ class DeepSeekService
                                         Log::debug('Stream parçası: ' . $content);
                                         $callback($content);
                                         $contentReceived = true;
-                                        
-                                        // Gerçekçi yazma efekti için
-                                        usleep(rand(5000, 20000)); // 5-20ms
                                     }
                                 } catch (Exception $e) {
                                     Log::error('Stream JSON parse hatası: ' . $e->getMessage());

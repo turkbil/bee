@@ -81,9 +81,9 @@
                         <div class="chat-messages overflow-auto mb-3 flex-grow-1" id="chat-container">
                             @if (count($messages) > 0)
                                 @foreach ($messages as $chatMessage)
-                                    <div class="message {{ $chatMessage->role == 'assistant' ? 'message-assistant' : 'message-user' }} mb-3">
+                                    <div class="message {{ $chatMessage['role'] == 'assistant' ? 'message-assistant' : 'message-user' }} mb-3">
                                         <div class="message-avatar">
-                                            @if ($chatMessage->role == 'assistant')
+                                            @if ($chatMessage['role'] == 'assistant')
                                                 <span class="avatar bg-primary-lt">AI</span>
                                             @else
                                                 <span class="avatar bg-secondary-lt">
@@ -93,11 +93,11 @@
                                         </div>
                                         <div class="message-content">
                                             <div class="message-bubble">
-                                                {!! nl2br(e($chatMessage->content)) !!}
+                                                {!! nl2br(e($chatMessage['content'])) !!}
                                             </div>
                                             <div class="message-footer text-muted">
-                                                {{ $chatMessage->created_at->format('H:i') }}
-                                                <span class="ms-2">{{ $chatMessage->tokens }} token</span>
+                                                {{ \Carbon\Carbon::parse($chatMessage['created_at'])->format('H:i') }}
+                                                <span class="ms-2">{{ $chatMessage['tokens'] }} token</span>
                                             </div>
                                         </div>
                                     </div>

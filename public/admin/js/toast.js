@@ -98,10 +98,46 @@ function showToast(title, message, type = 'success') {
         });
     }, 50);
 
-    const toastInstance = new bootstrap.Toast($toast[0]);
-    toastInstance.show();
+    // Bootstrap Toast kontrolü - bu kısmı düzelteceğiz
+    if (typeof bootstrap !== 'undefined' && bootstrap.Toast) {
+        // Bootstrap mevcut ise Toast API'sini kullan
+        const toastInstance = new bootstrap.Toast($toast[0]);
+        toastInstance.show();
+    } else {
+        // Bootstrap mevcut değilse manuel olarak toast'ı göster ve gizle
+        setTimeout(() => {
+            $toast.addClass('show');
+            
+            // 5 saniye sonra toast'ı kaldır
+            setTimeout(() => {
+                $toast.css({
+                    'transform': 'translateY(100px)',
+                    'opacity': '0'
+                });
+                
+                // Animasyon tamamlandıktan sonra toast'ı kaldır
+                setTimeout(() => {
+                    $toast.remove();
+                }, 300);
+            }, 5000);
+        }, 100);
+    }
 
+    // Toast kapanma olayı
     $toast.on('hidden.bs.toast', function() {
         $(this).remove();
+    });
+    
+    // Toast kapatma butonuna tıklama işlemi
+    $toast.find('.btn-close').on('click', function() {
+        $toast.css({
+            'transform': 'translateY(100px)',
+            'opacity': '0'
+        });
+        
+        // Animasyon tamamlandıktan sonra toast'ı kaldır
+        setTimeout(() => {
+            $toast.remove();
+        }, 300);
     });
 }

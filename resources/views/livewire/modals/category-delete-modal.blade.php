@@ -64,7 +64,7 @@
                                         <p class="text-muted mb-3">Bu seçenek ile kategorideki tüm içerikler başka bir
                                             kategoriye taşınacak ve bu kategori kaldırılacaktır.</p>
                                         <div class="mb-3">
-                                            <select class="form-select tomselect" wire:model="selectedCategory">
+                                            <select class="form-select" wire:model.live="selectedCategory">
                                                 <option value="">Bir kategori seçin</option>
                                                 @foreach($categories as $category)
                                                 <option value="{{ $category->{$module.'_category_id'} }}">{{
@@ -111,15 +111,6 @@
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape' && $('#category-delete-modal').is(':visible')) {
                     Livewire.dispatch('closeModal');
-                }
-            });
-
-            // TomSelect'ı başlat
-            new TomSelect('.tomselect', {
-                create: false,
-                sortField: {
-                    field: "text",
-                    direction: "asc"
                 }
             });
         });

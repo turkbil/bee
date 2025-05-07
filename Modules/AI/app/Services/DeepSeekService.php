@@ -5,15 +5,15 @@ namespace Modules\AI\App\Services;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Modules\AI\App\Models\Setting;
-use Modules\AI\App\Models\Message;
+use App\Helpers\TenantHelpers;
 
 class DeepSeekService
 {
-    protected string $apiKey;
-    protected string $model;
-    protected float $temperature;
-    protected int $maxTokens;
-    protected string $apiBaseUrl = 'https://api.deepseek.com/v1';
+    protected $apiKey;
+    protected $model;
+    protected $temperature;
+    protected $maxTokens;
+    protected $apiBaseUrl = 'https://api.deepseek.com/v1';
 
     /**
      * Constructor
@@ -102,7 +102,9 @@ class DeepSeekService
             );
         }
 
-        $settings = Setting::where('tenant_id', $tenantId)->first();
+        $settings = TenantHelpers::central(function () use ($tenantId) {
+            return Setting::where('tenant_id', $tenantId)->first();
+        });
 
         if (!$settings) {
             return new self();

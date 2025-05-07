@@ -160,7 +160,16 @@ class ChatPanel extends Component
                 $conversation = Conversation::find($this->conversationId);
             }
             
-            // Kullanıcı mesajını ekle ve AI yanıtını al
+            // Kullanıcı mesajını ekle
+            $message = new Message([
+                'conversation_id' => $this->conversationId,
+                'role' => 'user',
+                'content' => $this->message,
+                'tokens' => strlen($this->message) / 4,
+            ]);
+            $message->save();
+            
+            // AI yanıtını al
             $response = $aiService->conversations()->getAIResponse($conversation, $this->message);
             
             $this->message = '';
@@ -178,6 +187,9 @@ class ChatPanel extends Component
             $this->loading = false;
             $this->addError('error', 'Mesaj gönderilirken bir sorun oluştu: ' . $e->getMessage());
         }
+        
+        // Mesajlar güncellendiğinde scroll down yapmak için event fırlat
+        $this->dispatch('messagesUpdated');
     }
     
     public function render()

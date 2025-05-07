@@ -344,36 +344,40 @@ class ChatPanel extends Component
             try {
                 Log::info('AI yanıtı almaya başlanıyor...');
                 
-                $aiService->conversations()->getStreamingAIResponse(
-                    $conversation, 
-                    $userMessage, 
-                    function($content) use ($aiMessage, &$fullContent) {
-                        try {
-                            $fullContent .= $content;
-                            
-                            // İçeriği frontend'e gönder
-                            $this->dispatch('streamChunk', [
-                                'messageId' => $aiMessage->id,
-                                'content' => $content
-                            ]);
-                            
-                            Log::debug('Stream parçası alındı: ' . substr($content, 0, 30) . '... (toplam: ' . strlen($fullContent) . ' karakter)');
-                            
-                            // Veritabanını güncelle (her 5 karakterde bir)
-                            if (strlen($content) >= 5) {
-                                $aiMessage->content = $fullContent;
-                                $aiMessage->tokens = strlen($fullContent) / 4;
-                                $aiMessage->save();
-                            }
-                        } catch (Exception $e) {
-                            Log::error('Stream callback içinde hata: ' . $e->getMessage());
-                        }
+                // Bu metodu değiştiriyoruz - doğrudan yanıtı alıyoruz
+                $responseContent = $aiService->conversations()->getAIResponse($conversation, $userMessage, false);
+                
+                // Yanıtı aldıktan sonra, cümle cümle bölüp stream simülasyonu yapıyoruz
+                if ($responseContent) {
+                    Log::info('AI yanıtı alındı, toplam karakter: ' . strlen($responseContent));
+                    
+                    // Cümlelere ayırma
+                    $sentences = preg_split('/(?<=[.!?])\s+/', $responseContent, -1, PREG_SPLIT_NO_EMPTY);
+                    
+                    // Her bir cümleyi ekrana yaz
+                    foreach ($sentences as $sentence) {
+                        // Her cümleyi bir parça olarak gönder
+                        $this->dispatch('streamChunk', [
+                            'messageId' => $aiMessage->id,
+                            'content' => $sentence . ' '
+                        ]);
+                        
+                        $fullContent .= $sentence . ' ';
+                        
+                        // Database'i güncelle
+                        $aiMessage->content = $fullContent;
+                        $aiMessage->tokens = strlen($fullContent) / 4;
+                        $aiMessage->save();
+                        
+                        // Simüle edilmiş gecikme (50-150ms)
+                        usleep(rand(50000, 150000));
                     }
-                );
-                
-                Log::info('AI yanıtı alındı, toplam karakter: ' . strlen($fullContent));
-                
-                if (empty($fullContent)) {
+                    
+                    // Son güncellemeden emin ol
+                    $aiMessage->content = $fullContent;
+                    $aiMessage->tokens = strlen($fullContent) / 4;
+                    $aiMessage->save();
+                } else {
                     Log::warning('AI yanıtı boş döndü!');
                     $this->error = 'AI yanıtı alınamadı. Lütfen tekrar deneyin.';
                     
@@ -391,6 +395,10 @@ class ChatPanel extends Component
             
             // Stream tamamlandı sinyali gönder
             $this->dispatch('streamEnd', ['messageId' => $aiMessage->id]);
+            
+            // Yükleme durumunu kapat
+            $this->loading = false;
+            $this->isStreaming = false;
             
             Log::info('sendMessage tamamlandı');
             

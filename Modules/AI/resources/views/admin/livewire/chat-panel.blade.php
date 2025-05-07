@@ -370,8 +370,8 @@
             }
             
             // Stream başladığında (AI yanıt vermeye başladığında)
-            Livewire.on('streamStart', ({ messageId }) => {
-                console.log('Stream başladı, messageId:', messageId);
+            Livewire.on('streamStart', (data) => {
+                console.log('Stream başladı, messageId:', data.messageId);
                 
                 // Yükleniyor mesajını kaldır
                 const loadingMessage = document.getElementById('loading-message');
@@ -383,20 +383,20 @@
                 const container = document.getElementById('chat-container');
                 const messageElement = document.createElement('div');
                 messageElement.className = 'message message-assistant mb-3';
-                messageElement.id = 'message-' + messageId;
+                messageElement.id = 'message-' + data.messageId;
                 messageElement.innerHTML = `
                     <div class="message-avatar">
                         <span class="avatar bg-primary-lt">AI</span>
                     </div>
                     <div class="message-content">
-                        <div class="message-bubble" id="bubble-${messageId}">
+                        <div class="message-bubble" id="bubble-${data.messageId}">
                             <span class="ai-cursor"></span>
                         </div>
                         <div class="message-footer text-muted">
                             ${getCurrentTime()}
                             <span class="ms-2">0 token</span>
                             <div class="float-end">
-                                <a href="#" class="text-muted copy-message" data-message-id="${messageId}" title="Metni kopyala">
+                                <a href="#" class="text-muted copy-message" data-message-id="${data.messageId}" title="Metni kopyala">
                                     <i class="fas fa-copy"></i>
                                 </a>
                             </div>
@@ -409,13 +409,14 @@
             });
             
             // Her yeni parça geldiğinde
-            Livewire.on('streamChunk', ({ messageId, content }) => {
-                console.log('Stream parçası alındı, messageId:', messageId, 'içerik:', content);
+            Livewire.on('streamChunk', (data) => {
+                console.log('Stream parçası alındı, messageId:', data.messageId);
                 
-                const messageBubble = document.getElementById('bubble-' + messageId);
+                const messageBubble = document.getElementById('bubble-' + data.messageId);
                 if (messageBubble) {
                     // İmleç olup olmadığını kontrol et
                     const hasAiCursor = messageBubble.querySelector('.ai-cursor');
+                    const content = data.content || "";
                     
                     // İmleç varsa, içeriği yanına ekleyip imleç yeniden ekle
                     if (hasAiCursor) {
@@ -427,20 +428,23 @@
                     }
                     
                     scrollToBottom();
+                } else {
+                    console.error('Mesaj kabarcığı bulunamadı! ID:', data.messageId);
                 }
             });
             
             // Stream bittiğinde
-            Livewire.on('streamEnd', ({ messageId }) => {
-                console.log('Stream tamamlandı, messageId:', messageId);
+            Livewire.on('streamEnd', (data) => {
+                console.log('Stream tamamlandı, messageId:', data.messageId);
                 
-                const messageBubble = document.getElementById('bubble-' + messageId);
+                const messageBubble = document.getElementById('bubble-' + data.messageId);
                 if (messageBubble) {
                     // İmleci kaldır
                     messageBubble.innerHTML = messageBubble.innerHTML.replace(/<span class="ai-cursor"><\/span>/, '');
                 }
                 
-                Livewire.dispatch('streamComplete');
+                // Tamamlandı sinyali gönder
+                @this.call('streamComplete');
                 scrollToBottom();
             });
             
@@ -455,136 +459,259 @@
 
 @push('styles')
 <style>
-    .chat-messages {
-        display: flex;
-        flex-direction: column;
+.chat-messages {
+    display: flex;
+    flex-direction: column;
+}
+
+.message {
+    display: flex;
+    margin-bottom: 15px;
+    animation: fadeIn 0.3s ease-out forwards;
+}
+
+.message-user {
+    justify-content: flex-end;
+}
+
+.message-assistant {
+    justify-content: flex-start;
+}
+
+.message-avatar {
+    margin-right: 10px;
+}
+
+.message-user .message-avatar {
+    order: 1;
+    margin-left: 10px;
+    margin-right: 0;
+}
+
+.message-content {
+    max-width: 70%;
+}
+
+.message-bubble {
+    padding: 10px 15px;
+    border-radius: 10px;
+    background-color: var(--tblr-bg-surface);
+    white-space: pre-wrap;
+    word-break: break-word;
+    position: relative;
+    overflow: hidden;
+}
+
+.message-user .message-bubble {
+    background-color: var(--tblr-primary);
+    color: var(--tblr-white);
+}
+
+.message-footer {
+    font-size: 0.75rem;
+    margin-top: 5px;
+    color: var(--tblr-secondary);
+}
+
+.typing-indicator {
+    display: flex;
+    align-items: center;
+    padding: 0 5px;
+}
+
+.typing-indicator span {
+    height: 8px;
+    width: 8px;
+    background-color: var(--tblr-secondary);
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
+    animation: typing-bounce 1.4s infinite ease-in-out both;
+}
+
+.typing-indicator span:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.typing-indicator span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-indicator span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typing-bounce {
+    0%, 80%, 100% {
+        transform: scale(0);
     }
-    
-    .message {
-        display: flex;
-        margin-bottom: 15px;
+    40% {
+        transform: scale(1);
     }
-    
-    .message-user {
-        justify-content: flex-end;
-    }
-    
-    .message-assistant {
-        justify-content: flex-start;
-    }
-    
-    .message-avatar {
-        margin-right: 10px;
-    }
-    
-    .message-user .message-avatar {
-        order: 1;
-        margin-left: 10px;
-        margin-right: 0;
-    }
-    
-    .message-content {
-        max-width: 70%;
-    }
-    
-    .message-bubble {
-        padding: 10px 15px;
-        border-radius: 10px;
-        background-color: var(--tblr-bg-surface);
-        white-space: pre-wrap;
-        word-break: break-word;
-    }
-    
-    .message-user .message-bubble {
-        background-color: var(--tblr-primary);
-        color: var(--tblr-white);
-    }
-    
-    .message-footer {
-        font-size: 0.75rem;
-        margin-top: 5px;
-        color: var(--tblr-secondary);
-    }
-    
-    .typing-indicator {
-        display: flex;
-        align-items: center;
-    }
-    
-    .typing-indicator span {
-        height: 8px;
-        width: 8px;
-        background-color: var(--tblr-secondary);
-        border-radius: 50%;
-        display: inline-block;
-        margin-right: 5px;
-        animation: typing-bounce 1.4s infinite ease-in-out both;
-    }
-    
-    .typing-indicator span:nth-child(1) {
-        animation-delay: 0s;
-    }
-    
-    .typing-indicator span:nth-child(2) {
-        animation-delay: 0.2s;
-    }
-    
-    .typing-indicator span:nth-child(3) {
-        animation-delay: 0.4s;
-    }
-    
-    @keyframes typing-bounce {
-        0%, 80%, 100% {
-            transform: scale(0);
-        }
-        40% {
-            transform: scale(1);
-        }
-    }
-    
-    .ai-cursor {
-        display: inline-block;
-        width: 3px;
-        height: 18px;
-        background-color: var(--tblr-primary);
-        margin-left: 2px;
-        animation: blink 0.8s infinite;
-        vertical-align: middle;
-    }
-    
-    @keyframes blink {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0; }
-    }
-    
-    html[data-bs-theme="dark"] .message-bubble {
-        background-color: var(--tblr-bg-surface-secondary);
-    }
-    
-    html[data-bs-theme="dark"] .message-user .message-bubble {
-        background-color: var(--tblr-primary);
-        color: var(--tblr-white);
-    }
-    
-    #chat-container pre {
-        white-space: pre-wrap;
-    }
-    
-    #chat-container .ai-response {
-        min-height: 1.5em;
-    }
-    
-    .copy-message {
-        opacity: 0.6;
-        transition: opacity 0.2s;
-    }
-    
-    .copy-message:hover {
-        opacity: 1;
-    }
-    
-    .message:hover .copy-message {
-        opacity: 1;
-    }
+}
+
+.ai-cursor {
+    display: inline-block;
+    width: 3px;
+    height: 18px;
+    background-color: var(--tblr-primary);
+    margin-left: 2px;
+    animation: blink 0.8s infinite;
+    vertical-align: middle;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+html[data-bs-theme="dark"] .message-bubble {
+    background-color: var(--tblr-bg-surface-secondary);
+}
+
+html[data-bs-theme="dark"] .message-user .message-bubble {
+    background-color: var(--tblr-primary);
+    color: var(--tblr-white);
+}
+
+html[data-bs-theme="dark"] .ai-cursor {
+    background-color: var(--tblr-white);
+}
+
+#chat-container pre {
+    white-space: pre-wrap;
+}
+
+#chat-container .ai-response {
+    min-height: 1.5em;
+}
+
+.copy-message {
+    opacity: 0.6;
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.copy-message:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.message:hover .copy-message {
+    opacity: 1;
+}
+
+/* Boş mesaj alanı stilleri */
+.empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+}
+
+.empty-img {
+    margin-bottom: 1rem;
+    opacity: 0.6;
+}
+
+.empty-title {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.empty-subtitle {
+    margin-bottom: 1.5rem;
+}
+
+/* Konuşma listesi stilleri */
+.list-group-item {
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.list-group-item.active {
+    background-color: var(--tblr-primary-lt);
+    border-color: var(--tblr-primary);
+    color: var(--tblr-primary);
+}
+
+.list-group-item .btn-ghost-danger {
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.list-group-item:hover .btn-ghost-danger {
+    opacity: 1;
+}
+
+.conversation-title {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.conversation-title span {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Form stilleri */
+.message-form {
+    margin-top: auto;
+}
+
+.message-form textarea {
+    resize: none;
+}
+
+.message-form .input-group {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+/* Yükleniyor animasyonu */
+.spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* Hata mesajı stilleri */
+.alert {
+    border-radius: 0.5rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.alert .fas {
+    margin-right: 0.5rem;
+}
+
+/* Modal stilleri */
+.modal-content {
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--tblr-border-color);
+    padding: 1rem;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-footer {
+    border-top: 1px solid var(--tblr-border-color);
+    padding: 1rem;
+}
 </style>
 @endpush

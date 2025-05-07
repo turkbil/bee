@@ -148,30 +148,40 @@ class AIService
      */
     public function updateSettings(array $data): ?Setting
     {
-        // Tenant ID yoksa null döndür
-        if ($this->tenantId === null) {
-            return null;
+        // Tenant ID'yi her zaman 1 (root) olarak ayarla
+        $tenantId = 1;
+        
+        $settings = Setting::where('tenant_id', $tenantId)->first();
+        
+        if (!$settings) {
+            $settings = new Setting();
+            $settings->tenant_id = $tenantId;
         }
         
-        $settings = TenantHelpers::central(function () use ($data) {
-            $settings = Setting::where('tenant_id', $this->tenantId)->first();
-            
-            if (!$settings) {
-                $settings = new Setting();
-                $settings->tenant_id = $this->tenantId;
-            }
-            
-            foreach ($data as $key => $value) {
-                $settings->$key = $value;
-            }
-            
-            $settings->save();
-            
-            return $settings;
-        });
+        if (isset($data['api_key'])) {
+            $settings->api_key = $data['api_key'];
+        }
+        
+        if (isset($data['model'])) {
+            $settings->model = $data['model'];
+        }
+        
+        if (isset($data['max_tokens'])) {
+            $settings->max_tokens = $data['max_tokens'];
+        }
+        
+        if (isset($data['temperature'])) {
+            $settings->temperature = $data['temperature'];
+        }
+        
+        if (isset($data['enabled'])) {
+            $settings->enabled = $data['enabled'];
+        }
+        
+        $settings->save();
         
         // Önbelleği temizle
-        Cache::forget("ai_settings_tenant_{$this->tenantId}");
+        Cache::forget("ai_settings_tenant_{$tenantId}");
         
         return $settings;
     }

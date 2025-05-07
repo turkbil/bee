@@ -9,7 +9,7 @@ use Modules\AI\App\Http\Controllers\Admin\SettingsController;
 use Modules\AI\App\Http\Controllers\Admin\ConversationController;
 
 // Admin rotaları
-Route::middleware(['web', 'auth', 'tenant'])
+Route::middleware(['web', 'auth'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {

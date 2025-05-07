@@ -5,7 +5,7 @@ namespace Modules\AI\App\Services;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Modules\AI\App\Models\Setting;
-use App\Helpers\TenantHelpers;
+use Illuminate\Support\Facades\Cache;
 
 class DeepSeekService
 {
@@ -29,10 +29,13 @@ class DeepSeekService
         ?float $temperature = null,
         ?int $maxTokens = null
     ) {
-        $this->apiKey = $apiKey ?? config('ai.api_key');
-        $this->model = $model ?? config('ai.model', 'deepseek-chat');
-        $this->temperature = $temperature ?? config('ai.temperature', 0.7);
-        $this->maxTokens = $maxTokens ?? config('ai.max_tokens', 4096);
+        // Veritabanından ayarları al
+        $settings = $this->getSettings();
+        
+        $this->apiKey = $apiKey ?? $settings->api_key ?? null;
+        $this->model = $model ?? $settings->model ?? 'deepseek-chat';
+        $this->temperature = $temperature ?? $settings->temperature ?? 0.7;
+        $this->maxTokens = $maxTokens ?? $settings->max_tokens ?? 4096;
     }
 
     /**
@@ -145,18 +148,9 @@ class DeepSeekService
      */
     public static function forTenant(?int $tenantId = null): self
     {
-        // Eğer tenantId null ise, varsayılan ayarlarla servisi döndür
-        if ($tenantId === null) {
-            return new self(
-                config('ai.api_key'),
-                config('ai.model', 'deepseek-chat'),
-                config('ai.temperature', 0.7),
-                config('ai.max_tokens', 4096)
-            );
-        }
-
-        $settings = TenantHelpers::central(function () use ($tenantId) {
-            return Setting::where('tenant_id', $tenantId)->first();
+        // Root tenant için ayarları kullan (tenant_id = 1)
+        $settings = Cache::remember('ai_settings', now()->addMinutes(30), function () {
+            return Setting::where('tenant_id', 1)->first();
         });
 
         if (!$settings) {
@@ -169,6 +163,18 @@ class DeepSeekService
             $settings->temperature,
             $settings->max_tokens
         );
+    }
+    
+    /**
+     * Ayarları veritabanından al
+     * 
+     * @return object|null
+     */
+    protected function getSettings()
+    {
+        return Cache::remember('ai_settings', now()->addMinutes(30), function () {
+            return Setting::where('tenant_id', 1)->first() ?? new \stdClass();
+        });
     }
 
     /**

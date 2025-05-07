@@ -229,18 +229,19 @@
     .message-bubble {
         padding: 10px 15px;
         border-radius: 10px;
-        background-color: #f1f5f9;
+        background-color: var(--tblr-bg-surface);
         white-space: pre-wrap;
     }
     
     .message-user .message-bubble {
-        background-color: #206bc4;
-        color: white;
+        background-color: var(--tblr-primary);
+        color: var(--tblr-white);
     }
     
     .message-footer {
         font-size: 0.75rem;
         margin-top: 5px;
+        color: var(--tblr-secondary);
     }
     
     .typing-indicator {
@@ -251,7 +252,7 @@
     .typing-indicator span {
         height: 8px;
         width: 8px;
-        background-color: #6c757d;
+        background-color: var(--tblr-secondary);
         border-radius: 50%;
         display: inline-block;
         margin-right: 5px;
@@ -277,6 +278,15 @@
         40% {
             transform: scale(1);
         }
+    }
+    
+    html[data-bs-theme="dark"] .message-bubble {
+        background-color: var(--tblr-bg-surface-secondary);
+    }
+    
+    html[data-bs-theme="dark"] .message-user .message-bubble {
+        background-color: var(--tblr-primary);
+        color: var(--tblr-white);
     }
 </style>
 @endpush

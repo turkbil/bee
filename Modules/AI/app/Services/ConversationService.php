@@ -72,9 +72,10 @@ class ConversationService
      *
      * @param Conversation $conversation
      * @param string $userMessage
-     * @return string|null
+     * @param bool $stream
+     * @return string|null|\Closure
      */
-    public function getAIResponse(Conversation $conversation, string $userMessage): ?string
+    public function getAIResponse(Conversation $conversation, string $userMessage, bool $stream = false)
     {
         // Limit kontrolü yap
         if (!$this->limitService->checkLimits()) {
@@ -88,20 +89,87 @@ class ConversationService
         $messages = $this->deepSeekService->formatConversationMessages($conversation);
 
         // AI'dan yanıt al
-        $aiResponse = $this->deepSeekService->ask($messages);
+        if ($stream) {
+            // Stream modunda çalıştığımızda, içeriği anlık olarak işlemek için closure döndürüyoruz
+            return $this->deepSeekService->ask($messages, true);
+        } else {
+            // Normal mod
+            $aiResponse = $this->deepSeekService->ask($messages);
 
-        if ($aiResponse) {
-            // Token sayısını tahmin et
-            $tokens = $this->deepSeekService->estimateTokens([['role' => 'assistant', 'content' => $aiResponse]]);
-            
-            // AI yanıtını kaydet
-            $this->addMessage($conversation, $aiResponse, 'assistant', $tokens);
-            
-            // Kullanım limitini güncelle
-            $this->limitService->incrementUsage($tokens);
+            if ($aiResponse) {
+                // Token sayısını tahmin et
+                $tokens = $this->deepSeekService->estimateTokens([['role' => 'assistant', 'content' => $aiResponse]]);
+                
+                // AI yanıtını kaydet
+                $this->addMessage($conversation, $aiResponse, 'assistant', $tokens);
+                
+                // Kullanım limitini güncelle
+                $this->limitService->incrementUsage($tokens);
+            }
+
+            return $aiResponse;
+        }
+    }
+
+    /**
+     * Stream edilebilir AI yanıtı için
+     *
+     * @param Conversation $conversation
+     * @param string $userMessage
+     * @param callable $callback İçerik parçalarını almak için callback fonksiyonu
+     * @return Message Oluşturulan mesaj
+     */
+    public function getStreamingAIResponse(Conversation $conversation, string $userMessage, callable $callback): Message
+    {
+        // Limit kontrolü yap
+        if (!$this->limitService->checkLimits()) {
+            $callback("Üzgünüm, kullanım limitinize ulaştınız.");
+            return $this->addMessage($conversation, "Üzgünüm, kullanım limitinize ulaştınız.", 'assistant');
         }
 
-        return $aiResponse;
+        // Kullanıcı mesajını ekle
+        $this->addMessage($conversation, $userMessage, 'user');
+
+        // Konuşma mesajlarını formatla
+        $messages = $this->deepSeekService->formatConversationMessages($conversation);
+
+        // Boş AI mesajı oluştur
+        $aiMessage = $this->addMessage($conversation, "", 'assistant', 0);
+        
+        // İçeriği toplayacak değişken
+        $fullContent = '';
+        
+        // Stream modunda AI yanıtını al
+        $streamFunction = $this->deepSeekService->ask($messages, true);
+        
+        if (is_callable($streamFunction)) {
+            $streamFunction(function ($content) use (&$fullContent, $callback, $aiMessage) {
+                // İçeriği topla ve güncelle
+                $fullContent .= $content;
+                
+                // Callback ile UI'ı güncelle
+                $callback($content);
+                
+                // Mesajı veritabanında güncelle
+                $aiMessage->content = $fullContent;
+                $aiMessage->tokens = (int) (strlen($fullContent) / 4); // Basit token tahmini
+                $aiMessage->save();
+            });
+        }
+        
+        // Eğer callback tamamlandığında içerik boşsa, hata mesajı ekle
+        if (empty($fullContent)) {
+            $errorMsg = "Yanıt üretilirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.";
+            $callback($errorMsg);
+            
+            $aiMessage->content = $errorMsg;
+            $aiMessage->save();
+        }
+        
+        // Kullanım limitini güncelle
+        $this->limitService->incrementUsage($aiMessage->tokens);
+        
+        return $aiMessage;
     }
 
     /**

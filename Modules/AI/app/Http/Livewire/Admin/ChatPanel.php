@@ -23,9 +23,17 @@ class ChatPanel extends Component
     public $title = '';
     public $promptId = null;
     public $prompts = [];
+    public $streamResponse = true;
+    public $streamResult = null;
+    public $currentMessageId = null;
+    
+    protected $listeners = [
+        'streamProcess' => 'processStream',
+        'endStream' => 'finishStream'
+    ];
     
     protected $rules = [
-        'message' => 'required|string',
+        'message' => 'nullable|string', 
         'title' => 'nullable|string|max:255',
         'promptId' => 'nullable|exists:ai_prompts,id'
     ];
@@ -153,13 +161,15 @@ class ChatPanel extends Component
     public function sendMessage()
     {
         try {
-            // Doğrulama kurallarının kontrolü
-            $validatedData = $this->validate([
-                'message' => 'required|string',
-            ]);
+            // Kullanıcı mesajını al (boş ise null olacak)
+            $userMessage = trim($this->message ?? '');
             
-            // Mesaj içeriğini kaydet ve temizle
-            $userMessage = $validatedData['message'];
+            // Eğer mesaj boşsa işlem yapma
+            if (empty($userMessage)) {
+                return;
+            }
+            
+            // Mesajı temizle ve devam et
             $this->message = '';
             
             // İstek başladı, yükleniyor durumunu aktif et
@@ -183,33 +193,79 @@ class ChatPanel extends Component
             }
             
             // Kullanıcı mesajını ekle
-            $message = new Message([
+            $userMessageModel = new Message([
                 'conversation_id' => $this->conversationId,
                 'role' => 'user',
                 'content' => $userMessage,
                 'tokens' => strlen($userMessage) / 4,
             ]);
-            $message->save();
+            $userMessageModel->save();
             
-            // AI yanıtını al
-            $response = $aiService->conversations()->getAIResponse($conversation, $userMessage);
+            // Boş AI mesajı oluştur
+            $aiMessage = new Message([
+                'conversation_id' => $this->conversationId,
+                'role' => 'assistant',
+                'content' => '',
+                'tokens' => 0,
+            ]);
+            $aiMessage->save();
+            $messageId = $aiMessage->id;
             
-            if (!$response) {
-                $this->dispatch('toast', [
-                    'title' => 'Uyarı!',
-                    'message' => 'AI servisinden yanıt alınamadı. Lütfen daha sonra tekrar deneyin.',
-                    'type' => 'warning'
-                ]);
-            }
-            
-            // Mesajları yenile (dizi olarak)
+            // Mesajları yenile
             $this->loadMessages();
+            
+            // Stream başlangıç sinyali gönder
+            $this->dispatch('streamStarted', ['messageId' => $messageId]);
+            
+            // Stream yanıtını hazırla
+            $streamResult = $aiService->conversations()->getAIResponse($conversation, $userMessage, true);
+            
+            if (is_callable($streamResult)) {
+                $fullContent = '';
+                
+                // Stream fonksiyonunu çalıştır
+                $streamResult(function($content) use ($messageId, &$fullContent) {
+                    $fullContent .= $content;
+                    
+                    // İçeriği frontend'e gönder
+                    $this->dispatch('streamContent', [
+                        'messageId' => $messageId,
+                        'content' => $content
+                    ]);
+                    
+                    // Veritabanını güncelle (her 50 karakterde bir)
+                    if (strlen($content) >= 50) {
+                        Message::where('id', $messageId)->update([
+                            'content' => $fullContent,
+                            'tokens' => (int)(strlen($fullContent) / 4)
+                        ]);
+                    }
+                });
+                
+                // Son veritabanı güncellemesini yap
+                Message::where('id', $messageId)->update([
+                    'content' => $fullContent,
+                    'tokens' => (int)(strlen($fullContent) / 4)
+                ]);
+                
+                // Stream tamamlandı sinyali gönder
+                $this->dispatch('streamComplete', ['messageId' => $messageId]);
+                
+                // Limiti güncelle
+                $tokens = (int)(strlen($fullContent) / 4);
+                $aiService->limits()->incrementUsage($tokens);
+            } else {
+                // Stream başlatılamadı, hata mesajı ekle
+                Message::where('id', $messageId)->update([
+                    'content' => 'AI yanıtı alınamadı. Lütfen daha sonra tekrar deneyin.',
+                    'tokens' => 0
+                ]);
+                
+                $this->dispatch('streamError', ['error' => 'AI yanıtı alınamadı.']);
+            }
             
             // Yükleniyor durumunu kapat
             $this->loading = false;
-            
-            // Mesajlar güncellendiğinde scroll down yapmak için event fırlat
-            $this->dispatch('messagesUpdated');
             
         } catch (\Exception $e) {
             $this->loading = false;
@@ -221,9 +277,6 @@ class ChatPanel extends Component
                 'message' => 'Mesaj işlenirken bir hata oluştu: ' . $e->getMessage(),
                 'type' => 'error'
             ]);
-            
-            // Yine de UI'ı güncelleyelim
-            $this->dispatch('messagesUpdated');
         }
     }
     

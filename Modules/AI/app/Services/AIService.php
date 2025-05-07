@@ -53,9 +53,10 @@ class AIService
      *
      * @param string $prompt
      * @param array $options
-     * @return string|null
+     * @param bool $stream
+     * @return string|null|\Closure
      */
-    public function ask(string $prompt, array $options = []): ?string
+    public function ask(string $prompt, array $options = [], bool $stream = false)
     {
         // Limit kontrolü yap
         if (!$this->limitService->checkLimits()) {
@@ -104,9 +105,9 @@ class AIService
         ];
 
         // AI'dan yanıt al
-        $response = $this->deepSeekService->ask($messages);
+        $response = $this->deepSeekService->ask($messages, $stream);
         
-        if ($response) {
+        if ($response && !$stream) {
             // Token sayısını tahmin et ve kullanım limitini güncelle
             $tokens = $this->deepSeekService->estimateTokens([
                 ['role' => 'user', 'content' => $prompt],

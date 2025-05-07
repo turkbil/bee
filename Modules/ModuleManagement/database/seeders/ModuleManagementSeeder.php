@@ -50,6 +50,15 @@ class ModuleManagementSeeder extends Seeder
                     'is_active' => true
                 ],
                 [
+                    'name' => 'ai',
+                    'display_name' => 'AI - Yapay Zeka',
+                    'description' => 'Yapay Zeka modülü',
+                    'version' => '1.0.0',
+                    'settings' => null,
+                    'type' => 'system',
+                    'is_active' => true
+                ],
+                [
                     'name' => 'usermanagement',
                     'display_name' => 'Kullanıcılar',
                     'description' => 'Kullanıcı yönetim sistemi',

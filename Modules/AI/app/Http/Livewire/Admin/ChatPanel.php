@@ -8,6 +8,7 @@ use Modules\AI\App\Services\AIService;
 use Modules\AI\App\Models\Conversation;
 use Modules\AI\App\Models\Message;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 #[Layout('admin.layout')]
 class ChatPanel extends Component
@@ -43,6 +44,7 @@ class ChatPanel extends Component
         } catch (\Exception $e) {
             $this->conversations = [];
             $this->addError('error', 'Konuşmalar yüklenirken bir sorun oluştu: ' . $e->getMessage());
+            Log::error('Konuşmalar yüklenirken hata: ' . $e->getMessage());
         }
     }
     
@@ -54,6 +56,7 @@ class ChatPanel extends Component
         } catch (\Exception $e) {
             $this->prompts = [];
             $this->addError('error', 'Promptlar yüklenirken bir sorun oluştu: ' . $e->getMessage());
+            Log::error('Promptlar yüklenirken hata: ' . $e->getMessage());
         }
     }
     
@@ -70,16 +73,22 @@ class ChatPanel extends Component
             return;
         }
         
-        $conversation = Conversation::where('id', $this->conversationId)
-            ->where('user_id', Auth::id())
-            ->first();
+        try {
+            $conversation = Conversation::where('id', $this->conversationId)
+                ->where('user_id', Auth::id())
+                ->first();
+                
+            if (!$conversation) {
+                $this->messages = [];
+                return;
+            }
             
-        if (!$conversation) {
+            $this->messages = $conversation->messages()->orderBy('created_at')->get()->toArray();
+        } catch (\Exception $e) {
             $this->messages = [];
-            return;
+            $this->addError('error', 'Mesajlar yüklenirken bir sorun oluştu: ' . $e->getMessage());
+            Log::error('Mesajlar yüklenirken hata: ' . $e->getMessage());
         }
-        
-        $this->messages = $conversation->messages()->orderBy('created_at')->get();
     }
     
     public function createConversation()
@@ -107,6 +116,7 @@ class ChatPanel extends Component
             ]);
         } catch (\Exception $e) {
             $this->addError('error', 'Konuşma oluşturulurken bir sorun oluştu: ' . $e->getMessage());
+            Log::error('Konuşma oluşturulurken hata: ' . $e->getMessage());
         }
     }
     
@@ -135,61 +145,86 @@ class ChatPanel extends Component
                 ]);
             } catch (\Exception $e) {
                 $this->addError('error', 'Konuşma silinirken bir sorun oluştu: ' . $e->getMessage());
+                Log::error('Konuşma silinirken hata: ' . $e->getMessage());
             }
         }
     }
     
     public function sendMessage()
     {
-        $this->validate([
-            'message' => 'required|string',
-        ]);
-        
-        $this->loading = true;
-        
         try {
+            // Doğrulama kurallarının kontrolü
+            $validatedData = $this->validate([
+                'message' => 'required|string',
+            ]);
+            
+            // Mesaj içeriğini kaydet ve temizle
+            $userMessage = $validatedData['message'];
+            $this->message = '';
+            
+            // İstek başladı, yükleniyor durumunu aktif et
+            $this->loading = true;
+            
+            // Servis örneğini al
             $aiService = app(AIService::class);
             
             // Eğer konuşma ID yoksa, yeni bir konuşma oluştur
             if (!$this->conversationId) {
-                $title = substr($this->message, 0, 30) . '...';
+                $title = substr($userMessage, 0, 30) . '...';
                 $conversation = $aiService->conversations()->createConversation($title, $this->promptId);
                 $this->conversationId = $conversation->id;
                 $this->loadConversations();
             } else {
                 $conversation = Conversation::find($this->conversationId);
+                
+                if (!$conversation || $conversation->user_id != Auth::id()) {
+                    throw new \Exception('Konuşma bulunamadı veya erişim izniniz yok.');
+                }
             }
             
             // Kullanıcı mesajını ekle
             $message = new Message([
                 'conversation_id' => $this->conversationId,
                 'role' => 'user',
-                'content' => $this->message,
-                'tokens' => strlen($this->message) / 4,
+                'content' => $userMessage,
+                'tokens' => strlen($userMessage) / 4,
             ]);
             $message->save();
             
             // AI yanıtını al
-            $response = $aiService->conversations()->getAIResponse($conversation, $this->message);
-            
-            $this->message = '';
-            $this->loading = false;
-            $this->loadMessages();
+            $response = $aiService->conversations()->getAIResponse($conversation, $userMessage);
             
             if (!$response) {
                 $this->dispatch('toast', [
-                    'title' => 'Hata!',
-                    'message' => 'Yanıt alınamadı. Lütfen daha sonra tekrar deneyin.',
-                    'type' => 'error'
+                    'title' => 'Uyarı!',
+                    'message' => 'AI servisinden yanıt alınamadı. Lütfen daha sonra tekrar deneyin.',
+                    'type' => 'warning'
                 ]);
             }
+            
+            // Mesajları yenile (dizi olarak)
+            $this->loadMessages();
+            
+            // Yükleniyor durumunu kapat
+            $this->loading = false;
+            
+            // Mesajlar güncellendiğinde scroll down yapmak için event fırlat
+            $this->dispatch('messagesUpdated');
+            
         } catch (\Exception $e) {
             $this->loading = false;
+            Log::error('Mesaj gönderilirken hata: ' . $e->getMessage());
             $this->addError('error', 'Mesaj gönderilirken bir sorun oluştu: ' . $e->getMessage());
+            
+            $this->dispatch('toast', [
+                'title' => 'Hata!',
+                'message' => 'Mesaj işlenirken bir hata oluştu: ' . $e->getMessage(),
+                'type' => 'error'
+            ]);
+            
+            // Yine de UI'ı güncelleyelim
+            $this->dispatch('messagesUpdated');
         }
-        
-        // Mesajlar güncellendiğinde scroll down yapmak için event fırlat
-        $this->dispatch('messagesUpdated');
     }
     
     public function render()
@@ -203,6 +238,7 @@ class ChatPanel extends Component
             $remainingMonthly = $aiService->limits()->getRemainingMonthlyLimit();
         } catch (\Exception $e) {
             // Limitleri alırken hata oluştu, varsayılan değerleri kullan
+            Log::error('Limit bilgileri alınırken hata: ' . $e->getMessage());
         }
         
         return view('ai::admin.livewire.chat-panel', [

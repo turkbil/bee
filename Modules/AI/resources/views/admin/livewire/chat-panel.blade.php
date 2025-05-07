@@ -134,7 +134,7 @@
 
                         <!-- Mesaj Gönderme Formu -->
                         <div class="message-form">
-                            <form wire:submit.prevent="sendMessage">
+                            <form wire:submit.prevent="sendMessage" id="message-form">
                                 <div class="input-group">
                                     <textarea
                                         wire:model="message"
@@ -143,7 +143,6 @@
                                         rows="2"
                                         {{ $loading ? 'disabled' : '' }}
                                         id="message-input"
-                                        wire:keydown.enter.prevent="$event.shiftKey || sendMessage()"
                                     ></textarea>
                                     <button type="submit" class="btn btn-primary" {{ $loading ? 'disabled' : '' }}>
                                         @if($loading)
@@ -323,6 +322,167 @@
         if (container) {
             observer.observe(container, { childList: true, subtree: true });
         }
+        
+        // Kullanıcı adının ilk iki harfini JS değişkeni olarak tanımla
+        const auth_user_name_first_2_chars = '{{ substr(auth()->user()->name, 0, 2) }}';
+        
+        // Geçici mesaj ve loader için değişkenler
+        let messageSubmitted = false;
+        let tempMessageElement = null;
+        let tempBotLoadingElement = null;
+        
+        // Enter ve Shift+Enter olaylarını yönet
+        const messageInput = document.getElementById('message-input');
+        if (messageInput) {
+            messageInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    if (e.shiftKey) {
+                        // Shift+Enter: Alt satıra geç (varsayılan davranış)
+                        return true;
+                    } else {
+                        // Enter: Mesajı gönder
+                        e.preventDefault();
+                        
+                        // Boş mesaj kontrolü
+                        if (messageInput.value.trim() !== '' && !messageSubmitted) {
+                            // Çift gönderimi önle
+                            messageSubmitted = true;
+                            
+                            // Mesaj gönderme formunu manuel olarak tetikle
+                            document.getElementById('message-form').dispatchEvent(
+                                new Event('submit', { cancelable: true, bubbles: true })
+                            );
+                            
+                            // Kullanıcı mesajını ekle ve bot yanıtı için yükleniyor göster
+                            const content = messageInput.value;
+                            addUserMessageAndBotLoading(content);
+                            
+                            // Input alanını temizle (UI'da hemen temizlenir)
+                            messageInput.value = '';
+                            
+                            // Livewire modelini güncellemek için dispatch (gerçek veri güncellemesi)
+                            Livewire.dispatch('input', { target: { name: 'message', value: '' }});
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Kullanıcı mesajını ve bot yükleniyor göstergesini ekle
+        function addUserMessageAndBotLoading(content) {
+            const container = document.getElementById('chat-container');
+            if (!container) return;
+            
+            // Boş durumu kaldır
+            const emptyDiv = container.querySelector('.empty');
+            if (emptyDiv) {
+                emptyDiv.remove();
+            }
+            
+            // Önceki geçici öğeleri temizle
+            clearTemporaryElements();
+            
+            // 1. Geçici kullanıcı mesajı oluştur
+            tempMessageElement = document.createElement('div');
+            tempMessageElement.className = 'message message-user mb-3 temp-message';
+            tempMessageElement.innerHTML = `
+                <div class="message-avatar">
+                    <span class="avatar bg-secondary-lt">
+                        ${auth_user_name_first_2_chars}
+                    </span>
+                </div>
+                <div class="message-content">
+                    <div class="message-bubble">
+                        ${content.replace(/\n/g, '<br>')}
+                    </div>
+                    <div class="message-footer text-muted">
+                        ${getCurrentTime()}
+                    </div>
+                </div>
+            `;
+            
+            // 2. Geçici bot yükleniyor mesajı oluştur
+            tempBotLoadingElement = document.createElement('div');
+            tempBotLoadingElement.className = 'message message-assistant mb-3 temp-bot-loading';
+            tempBotLoadingElement.innerHTML = `
+                <div class="message-avatar">
+                    <span class="avatar bg-primary-lt">AI</span>
+                </div>
+                <div class="message-content">
+                    <div class="message-bubble">
+                        <div class="typing-indicator">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Mesajları ekle
+            container.appendChild(tempMessageElement);
+            container.appendChild(tempBotLoadingElement);
+            
+            // Aşağı kaydır
+            scrollToBottom();
+        }
+        
+        // Geçici öğeleri temizle
+        function clearTemporaryElements() {
+            const tempMessages = document.querySelectorAll('.temp-message');
+            const tempBotLoading = document.querySelectorAll('.temp-bot-loading');
+            
+            tempMessages.forEach(msg => msg.remove());
+            tempBotLoading.forEach(bot => bot.remove());
+            
+            tempMessageElement = null;
+            tempBotLoadingElement = null;
+        }
+        
+        // Geçerli zamanı biçimlendir
+        function getCurrentTime() {
+            const now = new Date();
+            return now.getHours().toString().padStart(2, '0') + ':' + 
+                   now.getMinutes().toString().padStart(2, '0');
+        }
+        
+        // Mesaj gönderimi başlamadan önce
+        Livewire.hook('message.sent', (message, component) => {
+            if (message.updateQueue && message.updateQueue.some(update => update.payload.method === 'sendMessage')) {
+                // Form gönderildi, geçici mesajları ekle (eğer henüz eklenmemişse)
+                if (!tempMessageElement && !tempBotLoadingElement && messageInput.value.trim() !== '') {
+                    addUserMessageAndBotLoading(messageInput.value);
+                    messageInput.value = '';
+                }
+            }
+        });
+        
+        // Livewire yanıtı işlendikten sonra
+        Livewire.hook('message.processed', (message, component) => {
+            // Mesaj işlendi, geçici öğeleri temizle
+            clearTemporaryElements();
+            
+            // Mesaj gönderimini tekrar etkinleştir
+            messageSubmitted = false;
+        });
+        
+        // Livewire bağlantısı kesilirse veya hata oluşursa
+        Livewire.hook('message.failed', (message, component) => {
+            // Hata durumunda da geçici öğeleri temizle ve gönderimi etkinleştir
+            clearTemporaryElements();
+            messageSubmitted = false;
+            
+            // Hata mesajı göster
+            alert('Mesaj gönderilirken bir hata oluştu. Lütfen tekrar deneyin.');
+        });
+        
+        // Submit butonu ile mesaj gönderme
+        document.getElementById('message-form').addEventListener('submit', function(e) {
+            if (!messageSubmitted && messageInput.value.trim() !== '') {
+                messageSubmitted = true;
+                addUserMessageAndBotLoading(messageInput.value);
+            }
+        });
     });
 </script>
 @endpush

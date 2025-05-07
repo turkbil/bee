@@ -12,6 +12,7 @@
         "php": "^8.2",
         "cviebrock/eloquent-sluggable": "^11.0",
         "cyrildewit/eloquent-viewable": "^7.0",
+        "deepseek-php/deepseek-laravel": "^2.0",
         "intervention/image": "^3.11",
         "laravel/breeze": "^2.3",
         "laravel/framework": "^11.31",
@@ -52,7 +53,8 @@
             "Modules\\TenantManagement\\App\\": "Modules/TenantManagement/app/",
             "Modules\\WidgetManagement\\App\\": "Modules/WidgetManagement/app/",
             "Modules\\ThemeManagement\\App\\": "Modules/ThemeManagement/app/",
-            "Modules\\Announcement\\App\\": "Modules/Announcement/app/"
+            "Modules\\Announcement\\App\\": "Modules/Announcement/app/",
+            "Modules\\AI\\App\\": "Modules/AI/app/"
         },
         "files": [
             "app/Helpers/Functions.php",

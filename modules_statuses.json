@@ -8,5 +8,6 @@
     "WidgetManagement": true,
     "ThemeManagement": true,
     "Studio": true,
-    "Announcement": true
+    "Announcement": true,
+    "AI": true
 }

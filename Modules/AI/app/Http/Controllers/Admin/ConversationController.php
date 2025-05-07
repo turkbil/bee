@@ -3,6 +3,7 @@ namespace Modules\AI\App\Http\Controllers\Admin;
 
 use Illuminate\Routing\Controller;
 use Modules\AI\App\Models\Conversation;
+use Modules\AI\App\Models\Message;
 use Modules\AI\App\Services\AIService;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,7 +18,10 @@ class ConversationController extends Controller
 
     public function index()
     {
-        $conversations = $this->aiService->conversations()->getConversations();
+        $conversations = Conversation::where('user_id', Auth::id())
+            ->orderBy('created_at', 'desc')
+            ->paginate(20);
+            
         return view('ai::admin.conversations.index', compact('conversations'));
     }
 
@@ -27,7 +31,9 @@ class ConversationController extends Controller
             ->where('user_id', Auth::id())
             ->firstOrFail();
             
-        $messages = $conversation->messages()->orderBy('created_at')->get();
+        $messages = Message::where('conversation_id', $conversation->id)
+            ->orderBy('created_at')
+            ->get();
         
         return view('ai::admin.conversations.show', compact('conversation', 'messages'));
     }
@@ -38,7 +44,11 @@ class ConversationController extends Controller
             ->where('user_id', Auth::id())
             ->firstOrFail();
             
-        $this->aiService->conversations()->deleteConversation($conversation);
+        // İlişkili mesajları sil
+        Message::where('conversation_id', $conversation->id)->delete();
+        
+        // Konuşmayı sil
+        $conversation->delete();
         
         return redirect()->route('admin.ai.conversations.index')
             ->with('success', 'Konuşma başarıyla silindi.');

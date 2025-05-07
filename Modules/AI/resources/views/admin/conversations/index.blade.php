@@ -34,9 +34,14 @@
                                                     </a>
                                                 </td>
                                                 <td>
-                                                    @if($conversation->getLastMessage())
+                                                    @php
+                                                        $lastMessage = \Modules\AI\App\Models\Message::where('conversation_id', $conversation->id)
+                                                            ->orderBy('created_at', 'desc')
+                                                            ->first();
+                                                    @endphp
+                                                    @if($lastMessage)
                                                         <span class="text-muted">
-                                                            {{ Str::limit($conversation->getLastMessage()->content, 50) }}
+                                                            {{ Str::limit($lastMessage->content, 50) }}
                                                         </span>
                                                     @else
                                                         <span class="text-muted">-</span>

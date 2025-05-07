@@ -157,10 +157,16 @@ class AIService
             $settings = Setting::where('tenant_id', $this->tenantId)->first();
             
             if (!$settings) {
-                return Setting::create(array_merge($data, ['tenant_id' => $this->tenantId]));
+                $settings = new Setting();
+                $settings->tenant_id = $this->tenantId;
             }
             
-            $settings->update($data);
+            foreach ($data as $key => $value) {
+                $settings->$key = $value;
+            }
+            
+            $settings->save();
+            
             return $settings;
         });
         

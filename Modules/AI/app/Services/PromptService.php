@@ -1,10 +1,10 @@
 <?php
-
 namespace Modules\AI\App\Services;
 
 use Modules\AI\App\Models\Prompt;
 use App\Helpers\TenantHelpers;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class PromptService
 {
@@ -71,30 +71,46 @@ class PromptService
      * Prompt oluştur
      *
      * @param array $data
-     * @return Prompt|null
+     * @return bool
      */
-    public function createPrompt(array $data): ?Prompt
+    public function createPrompt(array $data): bool
     {
-        // Tenant ID yoksa null döndür
+        // Tenant ID yoksa false döndür
         if ($this->tenantId === null) {
-            return null;
+            return false;
         }
         
-        $prompt = TenantHelpers::central(function () use ($data) {
-            // Eğer yeni prompt varsayılan olarak işaretlendiyse, diğer varsayılanları kaldır
-            if (isset($data['is_default']) && $data['is_default']) {
-                Prompt::where('tenant_id', $this->tenantId)
-                    ->where('is_default', true)
-                    ->update(['is_default' => false]);
+        $success = false;
+        
+        try {
+            TenantHelpers::central(function () use ($data, &$success) {
+                // Eğer yeni prompt varsayılan olarak işaretlendiyse, diğer varsayılanları kaldır
+                if (isset($data['is_default']) && $data['is_default']) {
+                    Prompt::where('tenant_id', $this->tenantId)
+                        ->where('is_default', true)
+                        ->update(['is_default' => false]);
+                }
+                
+                $prompt = new Prompt();
+                $prompt->tenant_id = $this->tenantId;
+                $prompt->name = $data['name'];
+                $prompt->content = $data['content'];
+                $prompt->is_default = $data['is_default'] ?? false;
+                $success = $prompt->save();
+                
+                return $success;
+            });
+            
+            // Önbelleği temizle
+            if ($success) {
+                $this->clearCache();
             }
             
-            return Prompt::create(array_merge($data, ['tenant_id' => $this->tenantId]));
-        });
-        
-        // Önbelleği temizle
-        $this->clearCache();
-        
-        return $prompt;
+            return $success;
+        } catch (\Exception $e) {
+            Log::error('Prompt eklenirken hata oluştu: ' . $e->getMessage());
+            return false;
+        }
     }
 
     /**
@@ -102,25 +118,43 @@ class PromptService
      *
      * @param Prompt $prompt
      * @param array $data
-     * @return Prompt
+     * @return bool
      */
-    public function updatePrompt(Prompt $prompt, array $data): Prompt
+    public function updatePrompt(Prompt $prompt, array $data): bool
     {
-        TenantHelpers::central(function () use ($prompt, $data) {
-            // Eğer güncellenecek prompt varsayılan olarak işaretlendiyse, diğer varsayılanları kaldır
-            if (isset($data['is_default']) && $data['is_default'] && !$prompt->is_default) {
-                Prompt::where('tenant_id', $this->tenantId)
-                    ->where('is_default', true)
-                    ->update(['is_default' => false]);
+        if ($this->tenantId === null || $prompt->tenant_id != $this->tenantId) {
+            return false;
+        }
+        
+        $success = false;
+        
+        try {
+            TenantHelpers::central(function () use ($prompt, $data, &$success) {
+                // Eğer güncellenecek prompt varsayılan olarak işaretlendiyse, diğer varsayılanları kaldır
+                if (isset($data['is_default']) && $data['is_default'] && !$prompt->is_default) {
+                    Prompt::where('tenant_id', $this->tenantId)
+                        ->where('is_default', true)
+                        ->update(['is_default' => false]);
+                }
+                
+                $prompt->name = $data['name'];
+                $prompt->content = $data['content'];
+                $prompt->is_default = $data['is_default'] ?? false;
+                $success = $prompt->save();
+                
+                return $success;
+            });
+            
+            // Önbelleği temizle
+            if ($success) {
+                $this->clearCache();
             }
             
-            $prompt->update($data);
-        });
-        
-        // Önbelleği temizle
-        $this->clearCache();
-        
-        return $prompt;
+            return $success;
+        } catch (\Exception $e) {
+            Log::error('Prompt güncellenirken hata oluştu: ' . $e->getMessage());
+            return false;
+        }
     }
 
     /**
@@ -131,24 +165,34 @@ class PromptService
      */
     public function deletePrompt(Prompt $prompt): bool
     {
-        // Tenant ID yoksa false döndür
-        if ($this->tenantId === null) {
+        // Tenant ID yoksa veya prompt bu tenant'a ait değilse false döndür
+        if ($this->tenantId === null || $prompt->tenant_id != $this->tenantId) {
             return false;
         }
         
-        $result = TenantHelpers::central(function () use ($prompt) {
-            // Varsayılan prompt siliniyorsa, işlemi engelle
-            if ($prompt->is_default) {
-                return false;
+        $success = false;
+        
+        try {
+            TenantHelpers::central(function () use ($prompt, &$success) {
+                // Varsayılan prompt siliniyorsa, işlemi engelle
+                if ($prompt->is_default) {
+                    return false;
+                }
+                
+                $success = $prompt->delete();
+                return $success;
+            });
+            
+            // Önbelleği temizle
+            if ($success) {
+                $this->clearCache();
             }
             
-            return $prompt->delete();
-        });
-        
-        // Önbelleği temizle
-        $this->clearCache();
-        
-        return $result;
+            return $success;
+        } catch (\Exception $e) {
+            Log::error('Prompt silinirken hata oluştu: ' . $e->getMessage());
+            return false;
+        }
     }
 
     /**

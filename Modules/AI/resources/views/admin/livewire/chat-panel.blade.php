@@ -1,3 +1,5 @@
+@extends('admin.layout')
+
 @include('ai::admin.helper')
 
 <div class="page-body">
@@ -17,203 +19,62 @@
             </div>
         </div>
         @endif
-        
+
         <div class="row g-3">
-            <!-- Konuşma Listesi - Sol Sütun -->
-            <div class="col-12 col-lg-4 d-flex flex-column">
-                <div class="card flex-grow-1 d-flex flex-column">
+            <div class="col-12">
+                <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Konuşmalarım</h3>
-                        <div class="card-actions">
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#new-conversation-modal">
-                                <i class="fas fa-plus me-2"></i> Yeni Konuşma
-                            </button>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h3 class="card-title">AI Asistan</h3>
+                            <div class="dropdown">
+                                <button class="btn btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    <i class="fa-thin fa-ellipsis-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item reset-conversation" href="javascript:void(0)"><i
+                                                class="fa-thin fa-rotate me-2"></i>Konuşmayı Sıfırla</a></li>
+                                    <li><a class="dropdown-item copy-conversation" href="javascript:void(0)"><i
+                                                class="fa-thin fa-copy me-2"></i>Tüm Konuşmayı Kopyala</a></li>
+                                    <li><a class="dropdown-item new-window" href="{{ route('admin.chat') }}"
+                                            target="_blank"><i class="fa-thin fa-external-link me-2"></i>Yeni Pencerede
+                                            Aç</a></li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                    <div class="card-body p-0 overflow-auto flex-grow-1">
-                        @if (count($conversations) > 0)
-                        <div class="list-group list-group-flush">
-                            @foreach ($conversations as $conversation)
-                            <a href="#" wire:click.prevent="selectConversation({{ $conversation->id }})" 
-                                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {{ $conversationId == $conversation->id ? 'active' : '' }}">
-                                <div class="conversation-title">
-                                    <div class="d-flex align-items-center">
-                                        <i class="fas fa-comment me-2"></i>
-                                        <span>{{ \Illuminate\Support\Str::limit($conversation->title, 25) }}</span>
+                    <div class="card-body p-0">
+                        <div class="chat-container" id="chat-container">
+                            <div class="chat-messages p-3" id="chat-messages">
+                                <div class="message ai-message">
+                                    <div class="message-content">
+                                        <p>Merhaba! Size nasıl yardımcı olabilirim?</p>
                                     </div>
-                                    <div class="text-muted small">
-                                        {{ $conversation->created_at->format('d.m.Y H:i') }}
+                                    <div class="message-actions">
+                                        <button class="btn btn-sm btn-ghost-secondary copy-message"
+                                            data-bs-toggle="tooltip" title="Mesajı Kopyala">
+                                            <i class="fa-thin fa-copy"></i>
+                                        </button>
                                     </div>
                                 </div>
-                                <button class="btn btn-sm btn-ghost-danger" wire:click.stop="deleteConversation({{ $conversation->id }})">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </a>
-                            @endforeach
-                        </div>
-                        @else
-                        <div class="empty">
-                            <div class="empty-img">
-                                <i class="fas fa-comments fa-3x text-muted"></i>
                             </div>
-                            <p class="empty-title">Henüz konuşma yok</p>
-                            <p class="empty-subtitle text-muted">
-                                Yeni bir konuşma başlatmak için yukarıdaki butona tıklayın.
-                            </p>
                         </div>
-                        @endif
                     </div>
                     <div class="card-footer">
-                        <div class="d-flex justify-content-between">
-                            <div class="text-muted small">
-                                <span data-bs-toggle="tooltip" title="Günlük kalan limit">
-                                    <i class="fas fa-bolt text-primary"></i> {{ number_format($remainingDaily) }}
-                                </span>
-                            </div>
-                            <div class="text-muted small">
-                                <span data-bs-toggle="tooltip" title="Aylık kalan limit">
-                                    <i class="fas fa-calendar-alt text-info"></i> {{ number_format($remainingMonthly) }}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Konuşma İçeriği - Sağ Sütun -->
-            <div class="col-12 col-lg-8 d-flex flex-column">
-                <div class="card flex-grow-1 d-flex flex-column">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h3 class="card-title">
-                            @if ($conversationId)
-                                {{ optional($conversations->firstWhere('id', $conversationId))->title }}
-                            @else
-                                AI Asistan
-                            @endif
-                        </h3>
-                        @if($conversationId)
-                        <div class="card-actions">
-                            <div class="dropdown">
-                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                    <i class="fas fa-ellipsis-h"></i>
-                                </button>
-                                <div class="dropdown-menu dropdown-menu-end">
-                                    <a href="#" class="dropdown-item" wire:click.prevent="retryLastMessage">
-                                        <i class="fas fa-redo-alt me-2"></i> Son mesajı yeniden dene
-                                    </a>
-                                    <a href="{{ route('admin.ai.conversations.show', $conversationId) }}" class="dropdown-item">
-                                        <i class="fas fa-external-link-alt me-2"></i> Yeni sayfada aç
-                                    </a>
+                        <form id="message-form" class="d-flex align-items-start gap-2">
+                            <input type="hidden" id="conversation-id" value="{{ md5(time() . rand(1000, 9999)) }}">
+                            <div class="w-100 position-relative">
+                                <textarea id="user-message" class="form-control" rows="1"
+                                    placeholder="Mesajınızı yazın..." required></textarea>
+                                <div id="loading-indicator" class="position-absolute"
+                                    style="display: none; right: 10px; bottom: 10px;">
+                                    <div class="spinner-border spinner-border-sm text-muted" role="status"></div>
                                 </div>
                             </div>
-                        </div>
-                        @endif
-                    </div>
-                    <div class="card-body d-flex flex-column" style="height: 500px;">
-                        <!-- Mesaj Listesi -->
-                        <div class="chat-messages overflow-auto mb-3 flex-grow-1" id="chat-container">
-                            @if (count($messages) > 0)
-                                @foreach ($messages as $chatMessage)
-                                    <div class="message {{ $chatMessage['role'] == 'assistant' ? 'message-assistant' : 'message-user' }} mb-3" id="message-{{ $chatMessage['id'] }}">
-                                        <div class="message-avatar">
-                                            @if ($chatMessage['role'] == 'assistant')
-                                                <span class="avatar bg-primary-lt">AI</span>
-                                            @else
-                                                <span class="avatar bg-secondary-lt">
-                                                    {{ substr(auth()->user()->name, 0, 2) }}
-                                                </span>
-                                            @endif
-                                        </div>
-                                        <div class="message-content">
-                                            <div class="message-bubble" id="bubble-{{ $chatMessage['id'] }}">
-                                                {!! nl2br(htmlspecialchars($chatMessage['content'])) !!}
-                                            </div>
-                                            <div class="message-footer text-muted">
-                                                {{ \Carbon\Carbon::parse($chatMessage['created_at'])->format('H:i') }}
-                                                <span class="ms-2">{{ $chatMessage['tokens'] }} token</span>
-                                                
-                                                @if ($chatMessage['role'] == 'assistant')
-                                                <div class="float-end">
-                                                    <a href="#" class="text-muted copy-message" data-message-id="{{ $chatMessage['id'] }}" title="Metni kopyala">
-                                                        <i class="fas fa-copy"></i>
-                                                    </a>
-                                                </div>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            @else
-                                <div class="empty">
-                                    <div class="empty-img">
-                                        <i class="fas fa-robot fa-3x text-muted"></i>
-                                    </div>
-                                    <p class="empty-title">AI Asistanla Sohbet</p>
-                                    <p class="empty-subtitle text-muted">
-                                        Merhaba! Ben AI asistanım. Size nasıl yardımcı olabilirim?
-                                    </p>
-                                </div>
-                            @endif
-                        </div>
-
-                        <!-- Mesaj Gönderme Formu -->
-                        <div class="message-form">
-                            <form id="chat-form">
-                                <div class="input-group">
-                                    <textarea
-                                        id="message-input"
-                                        class="form-control"
-                                        placeholder="Mesajınızı yazın..."
-                                        rows="2"
-                                        {{ $loading ? 'disabled' : '' }}
-                                    ></textarea>
-                                    <button type="submit" class="btn btn-primary" {{ $loading ? 'disabled' : '' }}>
-                                        @if($loading)
-                                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                                            Yanıt alınıyor...
-                                        @else
-                                            <i class="fas fa-paper-plane me-2"></i> Gönder
-                                        @endif
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Yeni Konuşma Modal -->
-        <div wire:ignore.self class="modal modal-blur fade" id="new-conversation-modal" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Yeni Konuşma</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Konuşma Başlığı</label>
-                            <input type="text" class="form-control" wire:model.defer="title" placeholder="Örn: Proje Planlaması">
-                            @error('title') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Prompt Şablonu (İsteğe Bağlı)</label>
-                            <select class="form-select" wire:model.defer="promptId">
-                                <option value="">Şablon Seçin</option>
-                                @foreach ($prompts as $prompt)
-                                    <option value="{{ $prompt->id }}">{{ $prompt->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-link link-secondary" data-bs-dismiss="modal">
-                            İptal
-                        </button>
-                        <button type="button" class="btn btn-primary ms-auto" wire:click="createConversation" data-bs-dismiss="modal">
-                            <i class="fas fa-plus me-2"></i> Konuşma Başlat
-                        </button>
+                            <button type="submit" class="btn btn-primary align-self-end">
+                                <i class="fa-thin fa-paper-plane"></i>
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -221,497 +82,569 @@
     </div>
 </div>
 
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="toast-notification" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <i class="fa-thin fa-circle-check text-success me-2"></i>
+            <strong class="me-auto" id="toast-title">Başarılı</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Kapat"></button>
+        </div>
+        <div class="toast-body" id="toast-message">
+            İşlem başarıyla tamamlandı.
+        </div>
+    </div>
+</div>
+@endsection
+
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const scrollToBottom = () => {
-            const container = document.getElementById('chat-container');
-            if (container) {
-                container.scrollTop = container.scrollHeight;
+    const messageForm = document.getElementById('message-form');
+    const userMessage = document.getElementById('user-message');
+    const chatMessages = document.getElementById('chat-messages');
+    const conversationId = document.getElementById('conversation-id');
+    const loadingIndicator = document.getElementById('loading-indicator');
+    const chatContainer = document.getElementById('chat-container');
+    const toastNotification = document.getElementById('toast-notification');
+    const toastTitle = document.getElementById('toast-title');
+    const toastMessage = document.getElementById('toast-message');
+    
+    // Toast öğesini initialize et
+    let toast;
+    
+    if (typeof Toasts !== 'undefined') {
+        // Tabler.io toast kullanımı
+        toast = {
+            show: function() {
+                Toasts.add({
+                    title: toastTitle.textContent,
+                    content: toastMessage.textContent,
+                    icon: toastNotification.querySelector('.toast-header i').className,
+                    timeout: 3000
+                });
+            }
+        };
+    } else {
+        // Fallback - varsayılan tarayıcı alert kullanımı
+        toast = {
+            show: function() {
+                alert(toastMessage.textContent);
+            }
+        };
+    }
+    
+    // Textarea otomatik yükseklik ayarı
+    userMessage.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = (this.scrollHeight) + 'px';
+    });
+    
+    // Enter tuşuna basıldığında form gönderimi
+    userMessage.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            if (userMessage.value.trim() !== '') {
+                messageForm.dispatchEvent(new Event('submit'));
+            }
+        }
+    });
+    
+    // Mesaj gönderimi
+    messageForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const message = userMessage.value.trim();
+        if (!message) {
+            showToast('Uyarı', 'Lütfen bir mesaj yazın.', 'warning');
+            return;
+        }
+        
+        // Kullanıcı mesajını ekle
+        addMessage(message, 'user');
+        
+        // Form alanını temizle
+        userMessage.value = '';
+        userMessage.style.height = 'auto';
+        
+        // Yükleniyor göstergesini etkinleştir
+        loadingIndicator.style.display = 'block';
+        
+        // AI yanıtını stream et
+        streamAIResponse(message, conversationId.value);
+    });
+    
+    // AI yanıtını stream et
+    function streamAIResponse(message, conversationId) {
+        const eventSource = new EventSource(`/ai/stream?message=${encodeURIComponent(message)}&conversation_id=${conversationId}`);
+        
+        let aiResponseElement = null;
+        let aiResponseContent = null;
+        let fullResponse = '';
+        
+        // Önce AI mesaj elementini oluştur
+        aiResponseElement = createMessageElement('', 'ai');
+        chatMessages.appendChild(aiResponseElement);
+        
+        aiResponseContent = aiResponseElement.querySelector('.message-content p');
+        
+        // Yazıyor animasyonu ekle
+        aiResponseContent.innerHTML = '<span class="typing-animation">Yazıyor<span>.</span><span>.</span><span>.</span></span>';
+        
+        // Stream veri alındığında
+        eventSource.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            
+            if (data.content) {
+                // Yazıyor animasyonunu kaldır
+                if (fullResponse === '') {
+                    aiResponseContent.innerHTML = '';
+                }
+                
+                // AI yanıtını ekle
+                fullResponse += data.content;
+                // innerText kullanarak formatlamayı önle
+                aiResponseContent.innerText = fullResponse;
+                
+                // Otomatik kaydırma
+                scrollToBottom();
             }
         };
         
+        // Stream tamamlandığında
+        eventSource.addEventListener('complete', function(event) {
+            const data = JSON.parse(event.data);
+            
+            // Butonları etkinleştir
+            const copyButton = aiResponseElement.querySelector('.copy-message');
+            copyButton.addEventListener('click', function() {
+                copyToClipboard(fullResponse);
+                showToast('Kopyalandı', 'Mesaj panoya kopyalandı.');
+            });
+            
+            // Yükleniyor göstergesini kapat
+            loadingIndicator.style.display = 'none';
+            
+            // EventSource'ı kapat
+            eventSource.close();
+            
+            // Konuşma ID'sini güncelle
+            if (data.conversation_id) {
+                conversationId.value = data.conversation_id;
+            }
+        });
+        
+        // Hata durumunda
+        eventSource.addEventListener('error', function(event) {
+            const data = event.data ? JSON.parse(event.data) : { message: 'Bağlantı hatası oluştu.' };
+            
+            // Hata mesajını göster
+            aiResponseContent.innerHTML = `<span class="text-danger">Hata: ${data.message}</span>`;
+            
+            // Yeniden deneme butonu ekle
+            const retryButton = document.createElement('button');
+            retryButton.className = 'btn btn-sm btn-outline-danger mt-2';
+            retryButton.innerHTML = 'Yeniden Dene';
+            retryButton.addEventListener('click', function() {
+                // AI mesaj elementini kaldır
+                chatMessages.removeChild(aiResponseElement);
+                
+                // Yeni istek gönder
+                streamAIResponse(message, conversationId.value);
+            });
+            
+            aiResponseElement.querySelector('.message-content').appendChild(retryButton);
+            
+            // Yükleniyor göstergesini kapat
+            loadingIndicator.style.display = 'none';
+            
+            // EventSource'ı kapat
+            eventSource.close();
+        });
+    }
+
+    // Kelime kelime metni ekrana yazan fonksiyon
+    function writeWordsOneByOne(text, container, cursorElement, isLast = false) {
+        // Metin içindeki kelimeleri ve boşlukları diziye çevir
+        const words = text.split(/(\s+)/g);
+        
+        // Mevcut içeriği alalım
+        let currentContent = container.innerHTML;
+        
+        // İmleç varsa kaldır
+        if (container.contains(cursorElement)) {
+            container.removeChild(cursorElement);
+        }
+        
+        // Kelimeleri sırayla ekle
+        words.forEach((word, index) => {
+            setTimeout(() => {
+                // Önceki içerik (imleç olmadan)
+                currentContent = container.innerHTML;
+                
+                // Kelimeyi ekleyelim
+                const formattedWord = word.replace(/\n/g, '<br>');
+                container.innerHTML = currentContent + formattedWord;
+                
+                // İmleç ekle
+                container.appendChild(cursorElement);
+                
+                // Otomatik kaydırma
+                scrollToBottom();
+            }, index * 50); // Her kelime için 50ms gecikme
+        });
+    }
+    // Mesaj ekle
+    function addMessage(content, role) {
+        const messageElement = createMessageElement(content, role);
+        chatMessages.appendChild(messageElement);
+        
         scrollToBottom();
         
-        const userInitials = '{{ substr(auth()->user()->name, 0, 2) }}';
-        
-        const chatForm = document.getElementById('chat-form');
-        const messageInput = document.getElementById('message-input');
-        
-        if (chatForm && messageInput) {
-            chatForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const message = messageInput.value.trim();
-                if (message !== '') {
-                    addUserMessage(message);
-                    
-                    @this.call('sendMessageAction', message);
-                    
-                    messageInput.value = '';
-                }
-            });
-            
-            messageInput.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    
-                    const message = this.value.trim();
-                    if (message !== '') {
-                        addUserMessage(message);
-                        
-                        @this.call('sendMessageAction', message);
-                        
-                        this.value = '';
-                    }
-                }
-            });
+        if (role === 'user') {
+            return messageElement;
         }
         
-        // Kopyalama işlevi
-        document.addEventListener('click', function(e) {
-            if (e.target.closest('.copy-message')) {
-                e.preventDefault();
-                const messageId = e.target.closest('.copy-message').getAttribute('data-message-id');
-                const messageBubble = document.getElementById('bubble-' + messageId);
-                
-                if (messageBubble) {
-                    const textToCopy = messageBubble.innerText;
-                    
-                    navigator.clipboard.writeText(textToCopy).then(() => {
-                        const copyIcon = e.target.closest('.copy-message').querySelector('i');
-                        copyIcon.classList.remove('fa-copy');
-                        copyIcon.classList.add('fa-check');
-                        
-                        setTimeout(() => {
-                            copyIcon.classList.remove('fa-check');
-                            copyIcon.classList.add('fa-copy');
-                        }, 2000);
-                    });
-                }
-            }
+        // Sadece AI mesajları için kopyalama butonu ekle
+        const copyButton = messageElement.querySelector('.copy-message');
+        copyButton.addEventListener('click', function() {
+            copyToClipboard(content);
+            showToast('Kopyalandı', 'Mesaj panoya kopyalandı.');
         });
         
-        function addUserMessage(content) {
-            const container = document.getElementById('chat-container');
-            if (!container) return;
+        return messageElement;
+    }
+    
+    // Mesaj elementi oluştur
+    function createMessageElement(content, role) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${role}-message`;
+        
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'message-content';
+        
+        const paragraph = document.createElement('p');
+        paragraph.innerHTML = role === 'user' ? escapeHtml(content) : (content ? formatMessage(content) : '');
+        
+        contentDiv.appendChild(paragraph);
+        messageDiv.appendChild(contentDiv);
+        
+        // AI mesajı için kopyalama butonu ekle
+        if (role === 'ai') {
+            const actionsDiv = document.createElement('div');
+            actionsDiv.className = 'message-actions';
             
-            const emptyDiv = container.querySelector('.empty');
-            if (emptyDiv) {
-                emptyDiv.remove();
-            }
+            const copyButton = document.createElement('button');
+            copyButton.className = 'btn btn-sm btn-ghost-secondary copy-message';
+            copyButton.setAttribute('data-bs-toggle', 'tooltip');
+            copyButton.setAttribute('title', 'Mesajı Kopyala');
+            copyButton.innerHTML = '<i class="fa-thin fa-copy"></i>';
             
-            const tempId = 'temp-' + Date.now();
-            
-            const tempUserMessage = document.createElement('div');
-            tempUserMessage.className = 'message message-user mb-3';
-            tempUserMessage.id = tempId;
-            tempUserMessage.innerHTML = `
-                <div class="message-avatar">
-                    <span class="avatar bg-secondary-lt">${userInitials}</span>
-                </div>
-                <div class="message-content">
-                    <div class="message-bubble">
-                        ${escapeHtml(content).replace(/\n/g, '<br>')}
-                    </div>
-                    <div class="message-footer text-muted">
-                        ${getCurrentTime()}
-                        <span class="ms-2">0 token</span>
-                    </div>
-                </div>
-            `;
-            
-            // Yükleniyor mesajını ekle
-            const loadingMessage = document.createElement('div');
-            loadingMessage.className = 'message message-assistant mb-3';
-            loadingMessage.id = 'loading-message';
-            loadingMessage.innerHTML = `
-                <div class="message-avatar">
-                    <span class="avatar bg-primary-lt">AI</span>
-                </div>
-                <div class="message-content">
-                    <div class="message-bubble">
-                        <div class="ai-response" id="stream-response"></div>
-                        <div class="typing-indicator">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </div>
-                    </div>
-                    <div class="message-footer text-muted">
-                        ${getCurrentTime()}
-                    </div>
-                </div>
-            `;
-            
-            container.appendChild(tempUserMessage);
-            container.appendChild(loadingMessage);
-            scrollToBottom();
+            actionsDiv.appendChild(copyButton);
+            messageDiv.appendChild(actionsDiv);
         }
         
-        function getCurrentTime() {
-            const now = new Date();
-            return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        return messageDiv;
+    }
+    
+    // Metni formatla
+    function formatMessage(text) {
+        // HTML karakterlerini escape et ama markdown işaretlemelerini koru
+        const div = document.createElement('div');
+        div.textContent = text;
+        let formattedText = div.innerHTML;
+        
+        // Yeni satırları koru
+        formattedText = formattedText.replace(/\n/g, '<br>');
+        
+        return formattedText;
+    }
+    
+    // HTML karakterlerini escape et
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    // Panoya kopyala
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).catch(err => {
+            console.error('Kopyalama hatası:', err);
+        });
+    }
+    
+    // En alta kaydır
+    function scrollToBottom() {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+    
+    // Bildirim göster
+    function showToast(title, message, type = 'success') {
+        toastTitle.textContent = title;
+        toastMessage.textContent = message;
+        
+        // Toast başlık rengini ayarla
+        toastTitle.className = 'me-auto';
+        const icon = toastNotification.querySelector('.toast-header i');
+        
+        switch (type) {
+            case 'success':
+                icon.className = 'fa-thin fa-circle-check text-success me-2';
+                break;
+            case 'warning':
+                icon.className = 'fa-thin fa-triangle-exclamation text-warning me-2';
+                break;
+            case 'error':
+                icon.className = 'fa-thin fa-circle-exclamation text-danger me-2';
+                break;
+            default:
+                icon.className = 'fa-thin fa-circle-info text-info me-2';
         }
         
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-        
-        // Livewire olaylarını dinle
-        document.addEventListener('livewire:initialized', () => {
-            // DOM güncellemeleri için observer
-            const observer = new MutationObserver(scrollToBottom);
-            const container = document.getElementById('chat-container');
-            if (container) {
-                observer.observe(container, { childList: true, subtree: true });
-            }
-            
-            // Stream başladığında (AI yanıt vermeye başladığında)
-            Livewire.on('streamStart', (data) => {
-                console.log('Stream başladı, messageId:', data.messageId);
-                
-                // Yükleniyor mesajını kaldır
-                const loadingMessage = document.getElementById('loading-message');
-                if (loadingMessage) {
-                    loadingMessage.remove();
+        toast.show();
+    }
+    
+    // Konuşmayı sıfırla
+    document.querySelector('.reset-conversation').addEventListener('click', function() {
+        if (confirm('Konuşma geçmişi sıfırlanacak. Emin misiniz?')) {
+            fetch(`/ai/reset?conversation_id=${conversationId.value}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                 }
-                
-                // Yeni mesaj elementini oluştur
-                const container = document.getElementById('chat-container');
-                const messageElement = document.createElement('div');
-                messageElement.className = 'message message-assistant mb-3';
-                messageElement.id = 'message-' + data.messageId;
-                messageElement.innerHTML = `
-                    <div class="message-avatar">
-                        <span class="avatar bg-primary-lt">AI</span>
-                    </div>
-                    <div class="message-content">
-                        <div class="message-bubble" id="bubble-${data.messageId}">
-                            <span class="ai-cursor"></span>
-                        </div>
-                        <div class="message-footer text-muted">
-                            ${getCurrentTime()}
-                            <span class="ms-2">0 token</span>
-                            <div class="float-end">
-                                <a href="#" class="text-muted copy-message" data-message-id="${data.messageId}" title="Metni kopyala">
-                                    <i class="fas fa-copy"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                
-                container.appendChild(messageElement);
-                scrollToBottom();
-            });
-            
-            // Her yeni parça geldiğinde
-            Livewire.on('streamChunk', (data) => {
-                console.log('Stream parçası alındı, messageId:', data.messageId);
-                
-                const messageBubble = document.getElementById('bubble-' + data.messageId);
-                if (messageBubble) {
-                    // İmleç olup olmadığını kontrol et
-                    const hasAiCursor = messageBubble.querySelector('.ai-cursor');
-                    const content = data.content || "";
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Mesajları temizle
+                    chatMessages.innerHTML = '';
                     
-                    // İmleç varsa, içeriği yanına ekleyip imleç yeniden ekle
-                    if (hasAiCursor) {
-                        const currentText = messageBubble.innerHTML.replace(/<span class="ai-cursor"><\/span>/, '');
-                        messageBubble.innerHTML = currentText + escapeHtml(content).replace(/\n/g, '<br>') + '<span class="ai-cursor"></span>';
-                    } else {
-                        // İmleç yoksa, içeriği ekle ve sonuna imleç ekle
-                        messageBubble.innerHTML = (messageBubble.innerHTML || '') + escapeHtml(content).replace(/\n/g, '<br>') + '<span class="ai-cursor"></span>';
-                    }
+                    // Yeni konuşma ID'si oluştur
+                    conversationId.value = md5(Date.now() + Math.random().toString());
                     
-                    scrollToBottom();
+                    // Hoş geldin mesajını ekle
+                    addMessage('Merhaba! Size nasıl yardımcı olabilirim?', 'ai');
+                    
+                    showToast('Başarılı', 'Konuşma sıfırlandı.');
                 } else {
-                    console.error('Mesaj kabarcığı bulunamadı! ID:', data.messageId);
+                    showToast('Hata', data.message, 'error');
                 }
+            })
+            .catch(error => {
+                showToast('Hata', 'Bir hata oluştu.', 'error');
+                console.error('Konuşma sıfırlama hatası:', error);
             });
-            
-            // Stream bittiğinde
-            Livewire.on('streamEnd', (data) => {
-                console.log('Stream tamamlandı, messageId:', data.messageId);
-                
-                const messageBubble = document.getElementById('bubble-' + data.messageId);
-                if (messageBubble) {
-                    // İmleci kaldır
-                    messageBubble.innerHTML = messageBubble.innerHTML.replace(/<span class="ai-cursor"><\/span>/, '');
-                }
-                
-                // Tamamlandı sinyali gönder
-                @this.call('streamComplete');
-                scrollToBottom();
-            });
-            
-            // Diğer Livewire işlemleri tamamlandığında
-            Livewire.hook('message.processed', () => {
-                scrollToBottom();
-            });
-        });
+        }
     });
+    
+    // Tüm konuşmayı kopyala
+    document.querySelector('.copy-conversation').addEventListener('click', function() {
+        let conversation = '';
+        
+        document.querySelectorAll('.message').forEach(function(message) {
+            const role = message.classList.contains('user-message') ? 'Siz' : 'AI';
+            const content = message.querySelector('.message-content p').textContent;
+            
+            conversation += `${role}: ${content}\n\n`;
+        });
+        
+        copyToClipboard(conversation);
+        showToast('Kopyalandı', 'Tüm konuşma panoya kopyalandı.');
+    });
+    
+    // MD5
+    function md5(input) {
+        return Array.from(
+            new Uint8Array(
+                new TextEncoder().encode(input + Date.now().toString() + Math.random().toString())
+            )
+        )
+        .map(b => b.toString(16).padStart(2, "0"))
+        .join("")
+        .substring(0, 32);
+    }
+    
+    // Sayfa yüklendiğinde otomatik kaydır
+    scrollToBottom();
+    
+    // Tooltips'i etkinleştir - Tabler.io kullanıldığında
+    if (typeof Tooltip !== 'undefined') {
+        document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(element) {
+            new Tooltip(element);
+        });
+    }
+});
 </script>
 @endpush
 
 @push('styles')
 <style>
-.chat-messages {
-    display: flex;
-    flex-direction: column;
-}
-
-.message {
-    display: flex;
-    margin-bottom: 15px;
-    animation: fadeIn 0.3s ease-out forwards;
-}
-
-.message-user {
-    justify-content: flex-end;
-}
-
-.message-assistant {
-    justify-content: flex-start;
-}
-
-.message-avatar {
-    margin-right: 10px;
-}
-
-.message-user .message-avatar {
-    order: 1;
-    margin-left: 10px;
-    margin-right: 0;
-}
-
-.message-content {
-    max-width: 70%;
-}
-
-.message-bubble {
-    padding: 10px 15px;
-    border-radius: 10px;
-    background-color: var(--tblr-bg-surface);
-    white-space: pre-wrap;
-    word-break: break-word;
-    position: relative;
-    overflow: hidden;
-}
-
-.message-user .message-bubble {
-    background-color: var(--tblr-primary);
-    color: var(--tblr-white);
-}
-
-.message-footer {
-    font-size: 0.75rem;
-    margin-top: 5px;
-    color: var(--tblr-secondary);
-}
-
-.typing-indicator {
-    display: flex;
-    align-items: center;
-    padding: 0 5px;
-}
-
-.typing-indicator span {
-    height: 8px;
-    width: 8px;
-    background-color: var(--tblr-secondary);
-    border-radius: 50%;
-    display: inline-block;
-    margin-right: 5px;
-    animation: typing-bounce 1.4s infinite ease-in-out both;
-}
-
-.typing-indicator span:nth-child(1) {
-    animation-delay: 0s;
-}
-
-.typing-indicator span:nth-child(2) {
-    animation-delay: 0.2s;
-}
-
-.typing-indicator span:nth-child(3) {
-    animation-delay: 0.4s;
-}
-
-@keyframes typing-bounce {
-    0%, 80%, 100% {
-        transform: scale(0);
+    .chat-container {
+        height: calc(100vh - 350px);
+        min-height: 300px;
+        overflow-y: auto;
     }
-    40% {
-        transform: scale(1);
+
+    .chat-messages {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
     }
-}
 
-.ai-cursor {
-    display: inline-block;
-    width: 3px;
-    height: 18px;
-    background-color: var(--tblr-primary);
-    margin-left: 2px;
-    animation: blink 0.8s infinite;
-    vertical-align: middle;
-}
+    .message {
+        display: flex;
+        max-width: 80%;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
 
-@keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-}
+    .user-message {
+        align-self: flex-end;
+        background-color: var(--primary-color, #206bc4);
+        color: #fff;
+        border-radius: 0.5rem 0.5rem 0 0.5rem;
+    }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+    .ai-message {
+        align-self: flex-start;
+        background-color: var(--tblr-bg-surface, #f0f0f0);
+        color: var(--tblr-body-color, #000);
+        border-radius: 0.5rem 0.5rem 0.5rem 0;
+    }
 
-html[data-bs-theme="dark"] .message-bubble {
-    background-color: var(--tblr-bg-surface-secondary);
-}
+    .dark .ai-message {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: #fff;
+    }
 
-html[data-bs-theme="dark"] .message-user .message-bubble {
-    background-color: var(--tblr-primary);
-    color: var(--tblr-white);
-}
+    .message-content {
+        flex: 1;
+    }
 
-html[data-bs-theme="dark"] .ai-cursor {
-    background-color: var(--tblr-white);
-}
+    .message-content p {
+        margin-bottom: 0;
+        word-wrap: break-word;
+    }
 
-#chat-container pre {
-    white-space: pre-wrap;
-}
+    .message-actions {
+        display: flex;
+        align-items: flex-start;
+        margin-left: 0.5rem;
+        visibility: hidden;
+    }
 
-#chat-container .ai-response {
-    min-height: 1.5em;
-}
+    .ai-message:hover .message-actions {
+        visibility: visible;
+    }
 
-.copy-message {
-    opacity: 0.6;
-    transition: opacity 0.2s, transform 0.2s;
-}
+    /* Cursor yanıp sönme animasyonu */
+    .cursor {
+        display: inline-block;
+        width: 0.5rem;
+        height: 1rem;
+        background-color: var(--tblr-body-color, #000);
+        animation: blink 1s step-end infinite;
+        margin-left: 2px;
+        vertical-align: middle;
+    }
 
-.copy-message:hover {
-    opacity: 1;
-    transform: scale(1.1);
-}
+    .dark .cursor {
+        background-color: #fff;
+    }
 
-.message:hover .copy-message {
-    opacity: 1;
-}
+    @keyframes blink {
 
-/* Boş mesaj alanı stilleri */
-.empty {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-    text-align: center;
-}
+        from,
+        to {
+            opacity: 1;
+        }
 
-.empty-img {
-    margin-bottom: 1rem;
-    opacity: 0.6;
-}
+        50% {
+            opacity: 0;
+        }
+    }
 
-.empty-title {
-    font-size: 1.2rem;
-    font-weight: 500;
-    margin-bottom: 0.5rem;
-}
+    /* Form stil ayarları */
+    textarea.form-control {
+        resize: none;
+        overflow: hidden;
+        min-height: 38px;
+        max-height: 200px;
+    }
 
-.empty-subtitle {
-    margin-bottom: 1.5rem;
-}
+    /* Kod bloğu formatı için */
+    code {
+        background-color: rgba(0, 0, 0, 0.05);
+        border-radius: 3px;
+        padding: 2px 4px;
+        font-family: monospace;
+        font-size: 0.9em;
+    }
 
-/* Konuşma listesi stilleri */
-.list-group-item {
-    transition: background-color 0.2s, border-color 0.2s;
-}
+    .dark code {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
 
-.list-group-item.active {
-    background-color: var(--tblr-primary-lt);
-    border-color: var(--tblr-primary);
-    color: var(--tblr-primary);
-}
+    /* Yanıp sönen imleç */
+    .typing-indicator {
+        display: inline-block;
+        width: 2px;
+        height: 15px;
+        background-color: var(--tblr-body-color, #000);
+        margin-left: 2px;
+        animation: blink 0.7s infinite;
+    }
 
-.list-group-item .btn-ghost-danger {
-    opacity: 0;
-    transition: opacity 0.2s;
-}
+    .dark .typing-indicator {
+        background-color: #fff;
+    }
 
-.list-group-item:hover .btn-ghost-danger {
-    opacity: 1;
-}
+    @media (max-width: 768px) {
+        .message {
+            max-width: 90%;
+        }
 
-.conversation-title {
-    flex: 1;
-    min-width: 0;
-    overflow: hidden;
-}
+        .chat-container {
+            height: calc(100vh - 300px);
+        }
+    }
 
-.conversation-title span {
-    display: block;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
+    .typing-animation {
+        display: inline-block;
+    }
 
-/* Form stilleri */
-.message-form {
-    margin-top: auto;
-}
+    .typing-animation span {
+        opacity: 0;
+        animation: typing-dot 1.4s infinite;
+        animation-fill-mode: forwards;
+    }
 
-.message-form textarea {
-    resize: none;
-}
+    .typing-animation span:nth-child(1) {
+        animation-delay: 0s;
+    }
 
-.message-form .input-group {
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-    border-radius: 0.5rem;
-    overflow: hidden;
-}
+    .typing-animation span:nth-child(2) {
+        animation-delay: 0.2s;
+    }
 
-/* Yükleniyor animasyonu */
-.spinner-border-sm {
-    width: 1rem;
-    height: 1rem;
-}
+    .typing-animation span:nth-child(3) {
+        animation-delay: 0.4s;
+    }
 
-/* Hata mesajı stilleri */
-.alert {
-    border-radius: 0.5rem;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-}
+    @keyframes typing-dot {
+        0% {
+            opacity: 0;
+        }
 
-.alert .fas {
-    margin-right: 0.5rem;
-}
+        50% {
+            opacity: 1;
+        }
 
-/* Modal stilleri */
-.modal-content {
-    border-radius: 0.5rem;
-    overflow: hidden;
-}
-
-.modal-header {
-    border-bottom: 1px solid var(--tblr-border-color);
-    padding: 1rem;
-}
-
-.modal-body {
-    padding: 1.5rem;
-}
-
-.modal-footer {
-    border-top: 1px solid var(--tblr-border-color);
-    padding: 1rem;
-}
+        100% {
+            opacity: 0;
+        }
+    }
 </style>
 @endpush

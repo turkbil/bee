@@ -44,5 +44,9 @@ Route::middleware(['web', 'auth'])
                 Route::post('/settings/update', [SettingsController::class, 'update'])
                     ->middleware('module.permission:ai,update')
                     ->name('settings.update');
+                
+                Route::post('/settings/test-connection', [SettingsController::class, 'testConnection'])
+                    ->middleware('module.permission:ai,update')
+                    ->name('settings.test-connection');
             });
     });

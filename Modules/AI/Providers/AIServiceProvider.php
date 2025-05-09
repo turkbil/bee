@@ -6,7 +6,6 @@ use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Modules\AI\App\Http\Livewire\Admin\ChatPanel;
 use Modules\AI\App\Http\Livewire\Admin\SettingsPanel;
-use Modules\AI\App\Http\Livewire\Admin\ModalChat;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -44,7 +43,6 @@ class AIServiceProvider extends ServiceProvider
         // Livewire bileşenlerini kaydet
         Livewire::component('chat-panel', ChatPanel::class);
         Livewire::component('settings-panel', SettingsPanel::class);
-        Livewire::component('modal-chat', ModalChat::class);
     }
 
     /**
@@ -57,17 +55,14 @@ class AIServiceProvider extends ServiceProvider
         
         // AI Service singleton kaydı
         $this->app->singleton(AIService::class, function ($app) {
-            $tenantId = tenant_id();
-            $deepSeekService = DeepSeekService::forTenant($tenantId);
+            $deepSeekService = $app->make(DeepSeekService::class);
             return new AIService($deepSeekService);
         });
         
-        // DeepSeek kütüphanesi varsa kullan
-        if (class_exists('DeepSeekClient')) {
-            $this->app->singleton('DeepSeekClient', function ($app) {
-                return new \DeepSeekClient();
-            });
-        }
+        // DeepSeek Service singleton kaydı
+        $this->app->singleton(DeepSeekService::class, function ($app) {
+            return new DeepSeekService();
+        });
     }
 
     /**
@@ -154,7 +149,7 @@ class AIServiceProvider extends ServiceProvider
      */
     public function provides(): array
     {
-        return [AIService::class, 'DeepSeekClient'];
+        return [AIService::class, DeepSeekService::class];
     }
 
     private function getPublishableViewPaths(): array

@@ -6,6 +6,7 @@ use Livewire\Attributes\Layout;
 use Modules\AI\App\Models\Setting;
 use Modules\AI\App\Models\Limit;
 use Modules\AI\App\Models\Prompt;
+use Modules\AI\App\Services\DeepSeekService;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 
@@ -33,6 +34,8 @@ class SettingsPanel extends Component
     
     public $prompts = [];
     public $editingPromptId = null;
+    public $isTestingConnection = false;
+    public $connectionTestResult = null;
     
     protected $rules = [
         'settings.api_key' => 'nullable|string',
@@ -95,6 +98,58 @@ class SettingsPanel extends Component
             Log::error('Promptları yüklerken hata: ' . $e->getMessage());
             $this->prompts = [];
         }
+    }
+    
+    public function testApiConnection()
+    {
+        $this->isTestingConnection = true;
+        $this->connectionTestResult = null;
+        
+        try {
+            // API anahtarını doğrula
+            if (empty($this->settings['api_key'])) {
+                $this->connectionTestResult = [
+                    'success' => false,
+                    'message' => 'API anahtarı boş olamaz!'
+                ];
+                $this->isTestingConnection = false;
+                return;
+            }
+            
+            // DeepSeek servisi oluştur ve bağlantıyı test et
+            $deepSeekService = new DeepSeekService();
+            $deepSeekService->setApiKey($this->settings['api_key']);
+            
+            $result = $deepSeekService->testConnection();
+            
+            $this->connectionTestResult = [
+                'success' => $result,
+                'message' => $result 
+                    ? 'API bağlantısı başarılı!' 
+                    : 'API bağlantısı başarısız. Lütfen API anahtarınızı kontrol edin.'
+            ];
+            
+            $this->dispatch('toast', [
+                'title' => $result ? 'Başarılı!' : 'Hata!',
+                'message' => $this->connectionTestResult['message'],
+                'type' => $result ? 'success' : 'error'
+            ]);
+        } catch (\Exception $e) {
+            $this->connectionTestResult = [
+                'success' => false,
+                'message' => 'Bağlantı testi sırasında hata oluştu: ' . $e->getMessage()
+            ];
+            
+            $this->dispatch('toast', [
+                'title' => 'Hata!',
+                'message' => $this->connectionTestResult['message'],
+                'type' => 'error'
+            ]);
+            
+            Log::error('API bağlantı testi hatası: ' . $e->getMessage());
+        }
+        
+        $this->isTestingConnection = false;
     }
     
     public function saveSettings()

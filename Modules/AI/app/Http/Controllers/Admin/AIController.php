@@ -4,6 +4,7 @@ namespace Modules\AI\App\Http\Controllers\Admin;
 use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
 use Modules\AI\App\Services\AIService;
+use Illuminate\Support\Facades\Auth;
 
 class AIController extends Controller
 {

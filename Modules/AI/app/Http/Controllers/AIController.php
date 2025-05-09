@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Modules\AI\App\Services\AIService;
 use Modules\AI\App\Services\DeepSeekService;
+use Illuminate\Support\Facades\Auth;
 
 class AIController extends Controller
 {
@@ -81,7 +82,7 @@ class AIController extends Controller
             
             // İşlemi kaydet
             activity()
-                ->causedBy(auth()->user())
+                ->causedBy(Auth::user())
                 ->withProperties([
                     'conversation_id' => $conversationId,
                     'tenant_id' => $currentTenant?->id,
@@ -98,7 +99,7 @@ class AIController extends Controller
         } catch (\Exception $e) {
             Log::error('AI mesaj gönderme hatası: ' . $e->getMessage(), [
                 'exception' => $e,
-                'user_id' => auth()->id(),
+                'user_id' => Auth::id(),
                 'request' => $request->all(),
             ]);
             
@@ -129,6 +130,12 @@ class AIController extends Controller
                     $currentTenant = tenant();
                     $cachePrefix = "tenant:{$currentTenant->id}:ai_conversation:";
                 }
+                
+                Log::info('Stream API isteği başlatılıyor', [
+                    'tenant_id' => $currentTenant?->id, 
+                    'message_length' => strlen($message),
+                    'has_api_key' => !empty($this->deepSeekService->getApiKey())
+                ]);
                 
                 // Önceki konuşma geçmişini al
                 $conversationHistory = Cache::store('redis')->get($cachePrefix . $conversationId, []);
@@ -162,7 +169,7 @@ class AIController extends Controller
                 
                 // İşlemi kaydet
                 activity()
-                    ->causedBy(auth()->user())
+                    ->causedBy(Auth::user())
                     ->withProperties([
                         'conversation_id' => $conversationId,
                         'tenant_id' => $currentTenant?->id,
@@ -176,7 +183,7 @@ class AIController extends Controller
             } catch (\Exception $e) {
                 Log::error('AI stream hatası: ' . $e->getMessage(), [
                     'exception' => $e,
-                    'user_id' => auth()->id(),
+                    'user_id' => Auth::id(),
                     'request' => $request->all(),
                 ]);
                 
@@ -218,7 +225,7 @@ class AIController extends Controller
         } catch (\Exception $e) {
             Log::error('AI konuşma sıfırlama hatası: ' . $e->getMessage(), [
                 'exception' => $e,
-                'user_id' => auth()->id(),
+                'user_id' => Auth::id(),
                 'conversation_id' => $request->conversation_id,
             ]);
             

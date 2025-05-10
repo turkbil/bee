@@ -16,7 +16,6 @@ class AIService
     protected $conversationService;
     protected $limitService;
     protected $promptService;
-    protected $tenantId;
 
     /**
      * Constructor
@@ -32,16 +31,12 @@ class AIService
         ?LimitService $limitService = null,
         ?PromptService $promptService = null
     ) {
-        $this->tenantId = tenant_id();
-        
-        // Tenant'a özgü DeepSeek servisini yükle
-        // tenantId null olabileceği için doğrudan gönderiyoruz
-        $this->deepSeekService = $deepSeekService ?? DeepSeekService::forTenant($this->tenantId);
+        // DeepSeek servisini yükle
+        $this->deepSeekService = $deepSeekService ?? new DeepSeekService();
         
         // Diğer servisleri oluştur
-        // tenantId null olabileceğini hesaba katıyoruz
-        $this->limitService = $limitService ?? new LimitService($this->tenantId);
-        $this->promptService = $promptService ?? new PromptService($this->tenantId);
+        $this->limitService = $limitService ?? new LimitService();
+        $this->promptService = $promptService ?? new PromptService();
         
         // ConversationService en son oluşturulmalı çünkü diğer servislere bağımlı
         $this->conversationService = $conversationService ?? 
@@ -68,9 +63,7 @@ class AIService
         $systemPrompt = null;
         
         if (isset($options['prompt_id'])) {
-            $prompt = TenantHelpers::central(function () use ($options) {
-                return \Modules\AI\App\Models\Prompt::find($options['prompt_id']);
-            });
+            $prompt = \Modules\AI\App\Models\Prompt::find($options['prompt_id']);
             
             if ($prompt) {
                 $systemPrompt = $prompt->content;
@@ -121,42 +114,31 @@ class AIService
     }
 
     /**
-     * Tenant ayarlarını getir
+     * Ayarları getir
      *
      * @return Setting|null
      */
     public function getSettings(): ?Setting
     {
-        // Tenant ID yoksa null döndür
-        if ($this->tenantId === null) {
-            return null;
-        }
-        
-        $cacheKey = "ai_settings_tenant_{$this->tenantId}";
+        $cacheKey = "ai_settings";
         
         return Cache::remember($cacheKey, now()->addMinutes(30), function () {
-            return TenantHelpers::central(function () {
-                return Setting::where('tenant_id', $this->tenantId)->first();
-            });
+            return Setting::first();
         });
     }
 
     /**
-     * Tenant ayarlarını güncelle
+     * Ayarları güncelle
      *
      * @param array $data
      * @return Setting|null
      */
     public function updateSettings(array $data): ?Setting
     {
-        // Tenant ID'yi her zaman 1 (root) olarak ayarla
-        $tenantId = 1;
-        
-        $settings = Setting::where('tenant_id', $tenantId)->first();
+        $settings = Setting::first();
         
         if (!$settings) {
             $settings = new Setting();
-            $settings->tenant_id = $tenantId;
         }
         
         if (isset($data['api_key'])) {
@@ -182,7 +164,7 @@ class AIService
         $settings->save();
         
         // Önbelleği temizle
-        Cache::forget("ai_settings_tenant_{$tenantId}");
+        Cache::forget("ai_settings");
         
         return $settings;
     }

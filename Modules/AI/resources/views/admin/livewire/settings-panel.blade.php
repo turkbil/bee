@@ -236,6 +236,7 @@
                                 <tr>
                                     <th>Adı</th>
                                     <th>Varsayılan</th>
+                                    <th>Tip</th>
                                     <th class="w-1"></th>
                                 </tr>
                             </thead>
@@ -251,14 +252,23 @@
                                         @endif
                                     </td>
                                     <td>
+                                        @if($promptItem->is_system)
+                                        <span class="badge bg-primary">Sistem</span>
+                                        @else
+                                        <span class="badge bg-info">Özel</span>
+                                        @endif
+                                    </td>
+                                    <td>
                                         <div class="btn-list flex-nowrap">
                                             <button class="btn btn-icon btn-ghost-secondary"
-                                                wire:click="editPrompt({{ $promptItem->id }})">
+                                                wire:click="editPrompt({{ $promptItem->id }})"
+                                                @if($promptItem->is_system) disabled title="Sistem promptları
+                                                düzenlenemez" @endif>
                                                 <i class="fas fa-edit"></i>
                                             </button>
                                             <button class="btn btn-icon btn-ghost-danger"
                                                 wire:click="deletePrompt({{ $promptItem->id }})"
-                                                @if($promptItem->is_default) disabled @endif>
+                                                @if($promptItem->is_default || $promptItem->is_system) disabled @endif>
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </div>
@@ -266,7 +276,7 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="3" class="text-center py-3">
+                                    <td colspan="4" class="text-center py-3">
                                         <div class="empty">
                                             <p class="empty-title">Henüz prompt şablonu yok</p>
                                             <p class="empty-subtitle text-muted">

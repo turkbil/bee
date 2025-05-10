@@ -10,7 +10,6 @@ return new class extends Migration
     {
         Schema::create('ai_limits', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('tenant_id')->index();
             $table->integer('daily_limit')->default(100);
             $table->integer('monthly_limit')->default(3000);
             $table->integer('used_today')->default(0);
@@ -20,7 +19,6 @@ return new class extends Migration
             
             $table->index('created_at');
             $table->index('updated_at');
-            $table->foreign('tenant_id')->references('id')->on('tenants')->onDelete('cascade');
         });
     }
 

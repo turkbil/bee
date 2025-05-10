@@ -6,12 +6,12 @@ use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Modules\AI\App\Http\Livewire\Admin\ChatPanel;
 use Modules\AI\App\Http\Livewire\Admin\SettingsPanel;
+use Modules\AI\App\Http\Livewire\Admin\Modals\PromptEditModal;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Modules\AI\App\Services\AIService;
 use Modules\AI\App\Services\DeepSeekService;
-use Modules\AI\App\Services\MarkdownService;
 
 class AIServiceProvider extends ServiceProvider
 {
@@ -44,6 +44,7 @@ class AIServiceProvider extends ServiceProvider
         // Livewire bileşenlerini kaydet
         Livewire::component('chat-panel', ChatPanel::class);
         Livewire::component('settings-panel', SettingsPanel::class);
+        Livewire::component('modals.prompt-edit-modal', PromptEditModal::class);
     }
 
     /**
@@ -63,11 +64,6 @@ class AIServiceProvider extends ServiceProvider
         // DeepSeek Service singleton kaydı
         $this->app->singleton(DeepSeekService::class, function ($app) {
             return new DeepSeekService();
-        });
-        
-        // MarkdownService singleton kaydı
-        $this->app->singleton(MarkdownService::class, function ($app) {
-            return new MarkdownService();
         });
     }
 
@@ -155,7 +151,7 @@ class AIServiceProvider extends ServiceProvider
      */
     public function provides(): array
     {
-        return [AIService::class, DeepSeekService::class, MarkdownService::class];
+        return [AIService::class, DeepSeekService::class];
     }
 
     private function getPublishableViewPaths(): array

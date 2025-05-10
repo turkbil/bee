@@ -357,20 +357,82 @@ class DeepSeekService
         }
     }
 
+    /**
+     * Mesajları API formatına dönüştür
+     */
     public function formatMessagesForAPI(array $messages): array
     {
-        return array_map(function ($message) {
-            return [
-                'role' => $message['role'],
-                'content' => $message['content'],
+        // Ortak özellikler promptunu al
+        $commonPrompt = \Modules\AI\App\Models\Prompt::where('is_common', true)->first();
+        
+        // İlk mesaj system role'e ait mi kontrol et
+        $hasSystemMessage = false;
+        foreach ($messages as $message) {
+            if ($message['role'] === 'system') {
+                $hasSystemMessage = true;
+                break;
+            }
+        }
+        
+        $formattedMessages = [];
+        
+        // Eğer zaten bir sistem mesajı varsa ve ortak özellikler promptu da varsa,
+        // ikisini birleştirerek ekle
+        if ($hasSystemMessage && $commonPrompt) {
+            $systemContent = $messages[0]['content'];
+            $commonContent = $commonPrompt->content;
+            
+            $formattedMessages[] = [
+                'role' => 'system',
+                'content' => $commonContent . "\n\n" . $systemContent
             ];
-        }, $messages);
+            
+            // Diğer mesajları ekle (sistem mesajı hariç)
+            for ($i = 1; $i < count($messages); $i++) {
+                $formattedMessages[] = [
+                    'role' => $messages[$i]['role'],
+                    'content' => $messages[$i]['content'],
+                ];
+            }
+        } 
+        // Eğer sistem mesajı yoksa ama ortak özellikler promptu varsa,
+        // ortak özellikleri sistem mesajı olarak ekle
+        else if (!$hasSystemMessage && $commonPrompt) {
+            $formattedMessages[] = [
+                'role' => 'system',
+                'content' => $commonPrompt->content,
+            ];
+            
+            // Tüm mesajları ekle
+            foreach ($messages as $message) {
+                $formattedMessages[] = [
+                    'role' => $message['role'],
+                    'content' => $message['content'],
+                ];
+            }
+        } 
+        // Diğer durumlarda orijinal mesajları olduğu gibi döndür
+        else {
+            foreach ($messages as $message) {
+                $formattedMessages[] = [
+                    'role' => $message['role'],
+                    'content' => $message['content'],
+                ];
+            }
+        }
+        
+        return $formattedMessages;
     }
 
     public function formatConversationMessages($conversation): array
     {
         $messages = [];
         
+        // Önce ortak özellikler promptunu al
+        $commonPrompt = \Modules\AI\App\Models\Prompt::where('is_common', true)->first();
+        $commonContent = $commonPrompt ? $commonPrompt->content : null;
+        
+        // Konuşmaya özel prompt içeriğini al
         $systemMessage = 'Sen yardımcı bir asistansın. Türkçe olarak cevap ver.';
         
         if ($conversation->prompt_id) {
@@ -379,6 +441,11 @@ class DeepSeekService
             if ($prompt) {
                 $systemMessage = $prompt->content;
             }
+        }
+        
+        // Eğer ortak özellikler promptu varsa, konuşmaya özel prompt ile birleştir
+        if ($commonContent) {
+            $systemMessage = $commonContent . "\n\n" . $systemMessage;
         }
         
         $messages[] = [

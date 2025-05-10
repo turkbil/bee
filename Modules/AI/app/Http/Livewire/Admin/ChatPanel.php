@@ -7,6 +7,7 @@ use Livewire\WithPagination;
 use Modules\AI\App\Services\AIService;
 use Modules\AI\App\Models\Conversation;
 use Modules\AI\App\Models\Message;
+use Modules\AI\App\Models\Prompt;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Exception;
@@ -31,7 +32,8 @@ class ChatPanel extends Component
     protected $listeners = [
         'sendMessageAction',
         'streamComplete',
-        'retryLastMessage'
+        'retryLastMessage',
+        'promptSelected'
     ];
     
     protected $rules = [
@@ -88,14 +90,28 @@ class ChatPanel extends Component
         try {
             Log::info('loadPrompts başladı');
             
-            $aiService = app(AIService::class);
-            $this->prompts = $aiService->prompts()->getAllPrompts();
+            // Sadece is_common olmayan promptları getir
+            $this->prompts = Prompt::where('is_common', false)
+                ->orderBy('is_default', 'desc')
+                ->orderBy('name')
+                ->get();
+            
+            // Varsayılan promptu seç
+            $defaultPrompt = Prompt::where('is_default', true)->first();
+            if ($defaultPrompt) {
+                $this->promptId = $defaultPrompt->id;
+            }
             
             Log::info('loadPrompts tamamlandı, prompt sayısı: ' . count($this->prompts));
         } catch (Exception $e) {
             $this->prompts = [];
             Log::error('Promptlar yüklenirken hata: ' . $e->getMessage());
         }
+    }
+    
+    public function promptSelected($promptId)
+    {
+        $this->promptId = $promptId;
     }
     
     public function selectConversation($id)

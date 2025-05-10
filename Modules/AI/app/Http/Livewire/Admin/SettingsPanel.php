@@ -9,6 +9,7 @@ use Modules\AI\App\Models\Prompt;
 use Modules\AI\App\Services\DeepSeekService;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 use App\Helpers\TenantHelpers;
 
 #[Layout('admin.layout')]
@@ -31,6 +32,11 @@ class SettingsPanel extends Component
         'name' => '',
         'content' => '',
         'is_default' => false,
+        'is_common' => false,
+    ];
+    
+    public $commonPrompt = [
+        'content' => '',
     ];
     
     public $prompts = [];
@@ -49,6 +55,8 @@ class SettingsPanel extends Component
         'prompt.name' => 'required|string|max:255',
         'prompt.content' => 'required|string',
         'prompt.is_default' => 'boolean',
+        'prompt.is_common' => 'boolean',
+        'commonPrompt.content' => 'required|string',
     ];
     
     public function mount()
@@ -56,6 +64,7 @@ class SettingsPanel extends Component
         $this->loadSettings();
         $this->loadLimits();
         $this->loadPrompts();
+        $this->loadCommonPrompt();
     }
     
     public function loadSettings()
@@ -89,11 +98,34 @@ class SettingsPanel extends Component
     {
         try {
             $this->prompts = Prompt::orderBy('is_default', 'desc')
+                ->orderBy('is_common', 'desc')
                 ->orderBy('name')
                 ->get();
         } catch (\Exception $e) {
             Log::error('Promptları yüklerken hata: ' . $e->getMessage());
             $this->prompts = [];
+        }
+    }
+    
+    public function loadCommonPrompt()
+    {
+        try {
+            $commonPrompt = Prompt::where('is_common', true)->first();
+            
+            if ($commonPrompt) {
+                $this->commonPrompt = [
+                    'content' => $commonPrompt->content,
+                ];
+            } else {
+                $this->commonPrompt = [
+                    'content' => 'Adın WindsurfAI ve sen yazılım geliştirme ekibimizin yapay zeka asistanısın. Türkçe yanıt verirsin ve Laravel, JavaScript, PHP konularında uzmansın. Acele etmez, düşünerek yanıt verirsin. Belgelere bağlı kalarak dogmatik değil pratik çözümler üretirsin. Şirketimizin adı Windsurf Teknoloji ve 2023 yılında kurulmuştur.',
+                ];
+            }
+        } catch (\Exception $e) {
+            Log::error('Ortak özellikler promptunu yüklerken hata: ' . $e->getMessage());
+            $this->commonPrompt = [
+                'content' => 'Adın WindsurfAI ve sen yazılım geliştirme ekibimizin yapay zeka asistanısın. Türkçe yanıt verirsin.',
+            ];
         }
     }
     
@@ -195,6 +227,45 @@ class SettingsPanel extends Component
         }
     }
     
+    public function saveCommonPrompt()
+    {
+        $this->validate([
+            'commonPrompt.content' => 'required|string',
+        ]);
+        
+        try {
+            $commonPrompt = Prompt::where('is_common', true)->first();
+            
+            if (!$commonPrompt) {
+                $commonPrompt = new Prompt();
+                $commonPrompt->name = 'Ortak Özellikler';
+                $commonPrompt->is_default = false;
+                $commonPrompt->is_system = true;
+                $commonPrompt->is_common = true;
+            }
+            
+            $commonPrompt->content = $this->commonPrompt['content'];
+            $commonPrompt->save();
+            
+            // Önbelleği temizle
+            Cache::forget("ai_common_prompt");
+            Cache::forget("ai_prompts");
+            
+            $this->dispatch('toast', [
+                'title' => 'Başarılı!',
+                'message' => 'Ortak özellikler güncellendi',
+                'type' => 'success'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Ortak özellikler kaydedilirken hata: ' . $e->getMessage());
+            $this->dispatch('toast', [
+                'title' => 'Hata!',
+                'message' => 'Ortak özellikler kaydedilirken bir sorun oluştu: ' . $e->getMessage(),
+                'type' => 'error'
+            ]);
+        }
+    }
+    
     public function saveLimits()
     {
         $this->validate([
@@ -237,6 +308,7 @@ class SettingsPanel extends Component
             'prompt.name' => 'required|string|max:255',
             'prompt.content' => 'required|string',
             'prompt.is_default' => 'boolean',
+            'prompt.is_common' => 'boolean',
         ]);
         
         try {
@@ -245,7 +317,7 @@ class SettingsPanel extends Component
                 
                 if ($prompt) {
                     // Sistem promptu kontrolü
-                    if ($prompt->is_system) {
+                    if ($prompt->is_system && !$prompt->is_common) {
                         $this->dispatch('toast', [
                             'title' => 'Uyarı!',
                             'message' => 'Sistem promptları düzenlenemez',
@@ -260,10 +332,22 @@ class SettingsPanel extends Component
                             ->update(['is_default' => false]);
                     }
                     
+                    // Eğer yeni prompt ortak özellikler olarak işaretlendiyse, diğer ortak özellikleri kaldır
+                    if ($this->prompt['is_common'] && !$prompt->is_common) {
+                        Prompt::where('is_common', true)
+                            ->update(['is_common' => false]);
+                    }
+                    
                     $prompt->name = $this->prompt['name'];
                     $prompt->content = $this->prompt['content'];
                     $prompt->is_default = $this->prompt['is_default'];
+                    $prompt->is_common = $this->prompt['is_common'];
                     $prompt->save();
+                    
+                    // Önbelleği temizle
+                    Cache::forget("ai_prompts");
+                    Cache::forget("ai_default_prompt");
+                    Cache::forget("ai_common_prompt");
                     
                     $this->dispatch('toast', [
                         'title' => 'Başarılı!',
@@ -278,12 +362,24 @@ class SettingsPanel extends Component
                         ->update(['is_default' => false]);
                 }
                 
+                // Eğer yeni prompt ortak özellikler olarak işaretlendiyse, diğer ortak özellikleri kaldır
+                if ($this->prompt['is_common']) {
+                    Prompt::where('is_common', true)
+                        ->update(['is_common' => false]);
+                }
+                
                 $prompt = new Prompt();
                 $prompt->name = $this->prompt['name'];
                 $prompt->content = $this->prompt['content'];
                 $prompt->is_default = $this->prompt['is_default'];
+                $prompt->is_common = $this->prompt['is_common'];
                 $prompt->is_system = false; // Yeni eklenen promptlar her zaman özel (sistem değil)
                 $prompt->save();
+                
+                // Önbelleği temizle
+                Cache::forget("ai_prompts");
+                Cache::forget("ai_default_prompt");
+                Cache::forget("ai_common_prompt");
                 
                 $this->dispatch('toast', [
                     'title' => 'Başarılı!',
@@ -310,8 +406,8 @@ class SettingsPanel extends Component
             $prompt = Prompt::find($id);
             
             if ($prompt) {
-                // Sistem promptları düzenlenemez
-                if ($prompt->is_system) {
+                // Sistem promptları düzenlenemez (ortak özellikler hariç)
+                if ($prompt->is_system && !$prompt->is_common) {
                     $this->dispatch('toast', [
                         'title' => 'Uyarı!',
                         'message' => 'Sistem promptları düzenlenemez',
@@ -325,6 +421,7 @@ class SettingsPanel extends Component
                     'name' => $prompt->name,
                     'content' => $prompt->content,
                     'is_default' => $prompt->is_default,
+                    'is_common' => $prompt->is_common,
                 ];
             }
         } catch (\Exception $e) {
@@ -361,6 +458,15 @@ class SettingsPanel extends Component
                     return;
                 }
                 
+                if ($prompt->is_common) {
+                    $this->dispatch('toast', [
+                        'title' => 'Uyarı!',
+                        'message' => 'Ortak özellikler promptu silinemez',
+                        'type' => 'warning'
+                    ]);
+                    return;
+                }
+                
                 $prompt->delete();
                 
                 $this->dispatch('toast', [
@@ -388,6 +494,7 @@ class SettingsPanel extends Component
             'name' => '',
             'content' => '',
             'is_default' => false,
+            'is_common' => false,
         ];
     }
     

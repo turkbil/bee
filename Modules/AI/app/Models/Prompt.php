@@ -16,11 +16,13 @@ class Prompt extends Model
         'content',
         'is_default',
         'is_system',
+        'is_common',
     ];
 
     protected $casts = [
         'is_default' => 'boolean',
         'is_system' => 'boolean',
+        'is_common' => 'boolean',
     ];
 
     /**
@@ -31,6 +33,16 @@ class Prompt extends Model
     public static function getDefault()
     {
         return self::where('is_default', true)->first();
+    }
+
+    /**
+     * Ortak özellikler promptunu getir
+     *
+     * @return self|null
+     */
+    public static function getCommon()
+    {
+        return self::where('is_common', true)->first();
     }
 
     /**

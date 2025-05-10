@@ -17,12 +17,14 @@ class Prompt extends Model
         'is_default',
         'is_system',
         'is_common',
+        'is_active',
     ];
 
     protected $casts = [
         'is_default' => 'boolean',
         'is_system' => 'boolean',
         'is_common' => 'boolean',
+        'is_active' => 'boolean',
     ];
 
     /**
@@ -32,7 +34,7 @@ class Prompt extends Model
      */
     public static function getDefault()
     {
-        return self::where('is_default', true)->first();
+        return self::where('is_default', true)->where('is_active', true)->first();
     }
 
     /**
@@ -42,7 +44,7 @@ class Prompt extends Model
      */
     public static function getCommon()
     {
-        return self::where('is_common', true)->first();
+        return self::where('is_common', true)->where('is_active', true)->first();
     }
 
     /**
@@ -52,7 +54,7 @@ class Prompt extends Model
      */
     public static function getSystemPrompts()
     {
-        return self::where('is_system', true)->get();
+        return self::where('is_system', true)->where('is_active', true)->get();
     }
 
     /**

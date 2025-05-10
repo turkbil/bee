@@ -35,7 +35,7 @@ class DeepSeekService
         $this->apiKey = config('deepseek.api_key');
         
         if (empty($this->apiKey)) {
-            Log::warning('DeepSeek API anahtarı bulunamadı. Lütfen .env dosyasına DEEPSEEK_API_KEY ekleyin veya veritabanı ayarlarını yapılandırın.');
+            Log::warning('API anahtarı bulunamadı. Lütfen .env dosyasına DEEPSEEK_API_KEY ekleyin veya veritabanı ayarlarını yapılandırın.');
         }
     }
 
@@ -80,7 +80,7 @@ class DeepSeekService
             
             return $response->successful();
         } catch (\Exception $e) {
-            Log::error('DeepSeek API bağlantı hatası: ' . $e->getMessage());
+            Log::error('API bağlantı hatası: ' . $e->getMessage());
             return false;
         }
     }
@@ -91,7 +91,7 @@ class DeepSeekService
 
         try {
             if (empty($this->apiKey)) {
-                Log::error('DeepSeek API anahtarı bulunamadı');
+                Log::error('API anahtarı bulunamadı');
                 return [
                     'content' => 'API anahtarı bulunamadı. Lütfen yöneticinizle iletişime geçin.',
                     'error' => 'API anahtarı bulunamadı',
@@ -120,7 +120,7 @@ class DeepSeekService
                 }
             }
             
-            Log::error('DeepSeek API hatası', [
+            Log::error('API hatası', [
                 'status' => $response->status(),
                 'response' => $response->json(),
             ]);
@@ -130,7 +130,7 @@ class DeepSeekService
                 'error' => $response->json(),
             ];
         } catch (\Exception $e) {
-            Log::error('DeepSeek API istek hatası: ' . $e->getMessage(), ['exception' => $e]);
+            Log::error('API istek hatası: ' . $e->getMessage(), ['exception' => $e]);
             
             return [
                 'content' => 'Üzgünüm, bir hata oluştu: ' . $e->getMessage(),
@@ -146,7 +146,7 @@ class DeepSeekService
 
         try {
             if (empty($this->apiKey)) {
-                Log::error('DeepSeek API anahtarı bulunamadı');
+                Log::error('API anahtarı bulunamadı');
                 if ($callback) {
                     $callback('API anahtarı bulunamadı. Lütfen yöneticinizle iletişime geçin.');
                 }
@@ -203,7 +203,7 @@ class DeepSeekService
                     }
                 }
             } else {
-                Log::error('DeepSeek Stream API hatası', [
+                Log::error('Stream API hatası', [
                     'status' => $response->status(),
                     'response' => $response->body(),
                 ]);
@@ -213,7 +213,7 @@ class DeepSeekService
                 }
             }
         } catch (\Exception $e) {
-            Log::error('DeepSeek Stream API istek hatası: ' . $e->getMessage(), ['exception' => $e]);
+            Log::error('Stream API istek hatası: ' . $e->getMessage(), ['exception' => $e]);
             
             if ($callback) {
                 $callback('Üzgünüm, bir hata oluştu: ' . $e->getMessage());
@@ -230,9 +230,13 @@ class DeepSeekService
     {
         $messages = [];
         
+        // Ortak özellikler promptunu al (ZORUNLU)
+        $commonPrompt = \Modules\AI\App\Models\Prompt::where('is_common', true)->first();
+        $commonContent = $commonPrompt ? $commonPrompt->content : config('deepseek.system_message', 'Sen bir asistansın.');
+        
         $messages[] = [
             'role' => 'system',
-            'content' => config('deepseek.system_message', 'Sen yardımcı bir asistansın. Türkçe olarak cevap ver. Yanıtlarında markdown formatlaması yapma, ** işaretleri ve ## gibi sembolleri olduğu gibi metinde göster. Yanıtlarında hiçbir şekilde formatlamaları (kalın, italik, başlık) uygulama.'),
+            'content' => $commonContent,
         ];
         
         foreach ($conversationHistory as $item) {
@@ -262,7 +266,7 @@ class DeepSeekService
     {
         try {
             if (empty($this->apiKey)) {
-                Log::error('DeepSeek API anahtarı bulunamadı');
+                Log::error('API anahtarı bulunamadı');
                 return 'API anahtarı bulunamadı. Lütfen yöneticinizle iletişime geçin.';
             }
             
@@ -312,7 +316,7 @@ class DeepSeekService
                             }
                         }
                     } else {
-                        Log::error('DeepSeek API stream hatası', [
+                        Log::error('API stream hatası', [
                             'status' => $response->status(),
                             'response' => $response->body(),
                         ]);
@@ -344,7 +348,7 @@ class DeepSeekService
                     }
                 }
                 
-                Log::error('DeepSeek API hatası', [
+                Log::error('API hatası', [
                     'status' => $response->status(),
                     'response' => $response->json(),
                 ]);
@@ -352,7 +356,7 @@ class DeepSeekService
                 return 'Üzgünüm, şu anda cevap üretemiyorum. Lütfen daha sonra tekrar deneyin.';
             }
         } catch (\Exception $e) {
-            Log::error('DeepSeek API istek hatası: ' . $e->getMessage(), ['exception' => $e]);
+            Log::error('API istek hatası: ' . $e->getMessage(), ['exception' => $e]);
             return 'Üzgünüm, bir hata oluştu: ' . $e->getMessage();
         }
     }
@@ -362,8 +366,11 @@ class DeepSeekService
      */
     public function formatMessagesForAPI(array $messages): array
     {
-        // Ortak özellikler promptunu al
+        // Ortak özellikler promptunu al (ZORUNLU)
         $commonPrompt = \Modules\AI\App\Models\Prompt::where('is_common', true)->first();
+        $commonContent = $commonPrompt ? $commonPrompt->content : '';
+        
+        $formattedMessages = [];
         
         // İlk mesaj system role'e ait mi kontrol et
         $hasSystemMessage = false;
@@ -374,13 +381,10 @@ class DeepSeekService
             }
         }
         
-        $formattedMessages = [];
-        
-        // Eğer zaten bir sistem mesajı varsa ve ortak özellikler promptu da varsa,
-        // ikisini birleştirerek ekle
-        if ($hasSystemMessage && $commonPrompt) {
+        // Ortak özellikleri her durumda ekle
+        if ($hasSystemMessage) {
+            // Sistem mesajı varsa birleştir
             $systemContent = $messages[0]['content'];
-            $commonContent = $commonPrompt->content;
             
             $formattedMessages[] = [
                 'role' => 'system',
@@ -394,25 +398,14 @@ class DeepSeekService
                     'content' => $messages[$i]['content'],
                 ];
             }
-        } 
-        // Eğer sistem mesajı yoksa ama ortak özellikler promptu varsa,
-        // ortak özellikleri sistem mesajı olarak ekle
-        else if (!$hasSystemMessage && $commonPrompt) {
+        } else {
+            // Sistem mesajı yoksa, ortak özellikleri sistem mesajı olarak ekle
             $formattedMessages[] = [
                 'role' => 'system',
-                'content' => $commonPrompt->content,
+                'content' => $commonContent,
             ];
             
             // Tüm mesajları ekle
-            foreach ($messages as $message) {
-                $formattedMessages[] = [
-                    'role' => $message['role'],
-                    'content' => $message['content'],
-                ];
-            }
-        } 
-        // Diğer durumlarda orijinal mesajları olduğu gibi döndür
-        else {
             foreach ($messages as $message) {
                 $formattedMessages[] = [
                     'role' => $message['role'],
@@ -428,12 +421,12 @@ class DeepSeekService
     {
         $messages = [];
         
-        // Önce ortak özellikler promptunu al
+        // Önce ortak özellikler promptunu al - ZORUNLU
         $commonPrompt = \Modules\AI\App\Models\Prompt::where('is_common', true)->first();
-        $commonContent = $commonPrompt ? $commonPrompt->content : null;
+        $commonContent = $commonPrompt ? $commonPrompt->content : '';
         
         // Konuşmaya özel prompt içeriğini al
-        $systemMessage = 'Sen yardımcı bir asistansın. Türkçe olarak cevap ver.';
+        $systemMessage = '';
         
         if ($conversation->prompt_id) {
             $prompt = \Modules\AI\App\Models\Prompt::find($conversation->prompt_id);
@@ -443,14 +436,12 @@ class DeepSeekService
             }
         }
         
-        // Eğer ortak özellikler promptu varsa, konuşmaya özel prompt ile birleştir
-        if ($commonContent) {
-            $systemMessage = $commonContent . "\n\n" . $systemMessage;
-        }
+        // Ortak özellikler promptu ZORUNLU olarak konuşmaya özel prompt ile birleştir
+        $finalSystemMessage = empty($systemMessage) ? $commonContent : $commonContent . "\n\n" . $systemMessage;
         
         $messages[] = [
             'role' => 'system',
-            'content' => $systemMessage,
+            'content' => $finalSystemMessage,
         ];
         
         $conversationMessages = $conversation->messages()->orderBy('created_at')->get();

@@ -14,7 +14,7 @@ return [
         'model' => env('DEEPSEEK_MODEL', 'deepseek-chat'),
 
         // Sistem Mesajı
-        'system_message' => env('DEEPSEEK_SYSTEM_MESSAGE', 'Sen yardımcı bir asistansın. Sorulara kapsamlı ve doğru cevaplar verirsin. Türkçe olarak cevap ver.'),
+        'system_message' => env('DEEPSEEK_SYSTEM_MESSAGE', 'Sen bir asistansın. Sorulara kapsamlı ve doğru cevaplar verirsin. Türkçe olarak cevap ver.'),
 
         // Sıcaklık parametresi (0.0 - 1.0 arası)
         'temperature' => env('DEEPSEEK_TEMPERATURE', 0.7),

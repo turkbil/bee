@@ -55,11 +55,7 @@
         href="{{ asset('admin/libs/studio/css/responsive.css') }}?v={{ filemtime(public_path('admin/libs/studio/css/responsive.css')) }}">
     <link rel="stylesheet"
         href="{{ asset('admin/libs/studio/css/utils.css') }}?v={{ filemtime(public_path('admin/libs/studio/css/utils.css')) }}">
-    <style type="text/css">
-        [data-gjs-type="wrapper"] {
-            padding-bottom: 100px;
-        }
-    </style>
+
     @livewireStyles
 </head>
 

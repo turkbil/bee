@@ -3,18 +3,15 @@
 use Illuminate\Support\Facades\Route;
 use Modules\AI\App\Http\Livewire\Admin\ChatPanel;
 use Modules\AI\App\Http\Livewire\Admin\SettingsPanel;
-use Modules\AI\App\Http\Livewire\Admin\ModalChat;
 use Modules\AI\App\Http\Controllers\Admin\AIController;
 use Modules\AI\App\Http\Controllers\Admin\SettingsController;
 use Modules\AI\App\Http\Controllers\Admin\ConversationController;
 
 // Admin rotaları
 Route::middleware(['web', 'auth'])
-    ->prefix('admin')
-    ->name('admin.')
     ->group(function () {
-        Route::prefix('ai')
-            ->name('ai.')
+        Route::prefix('admin/ai')
+            ->name('admin.ai.')
             ->group(function () {
                 Route::get('/', ChatPanel::class)
                     ->middleware('module.permission:ai,view')

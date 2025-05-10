@@ -108,10 +108,75 @@ class ChatPanel extends Component
             Log::error('Promptlar yüklenirken hata: ' . $e->getMessage());
         }
     }
-    
+                
     public function promptSelected($promptId)
     {
-        $this->promptId = $promptId;
+        try {
+            Log::info('promptSelected metodu çağrıldı', [
+                'selected_prompt_id' => $promptId,
+                'old_prompt_id' => $this->promptId,
+                'conversation_id' => $this->conversationId
+            ]);
+            
+            // Önceki ve yeni aynıysa işlem yapma, gereksiz sayfa güncellemesi önlenecek
+            if ($this->promptId == $promptId) {
+                Log::info('Aynı prompt zaten seçili, işlem yapılmadı');
+                return;
+            }
+            
+            $this->promptId = $promptId;
+            
+            // Promptu doğrula
+            $prompt = Prompt::find($promptId);
+            
+            if (!$prompt) {
+                Log::warning('Seçilen prompt bulunamadı', ['prompt_id' => $promptId]);
+                return;
+            }
+            
+            Log::info('Seçilen prompt bilgileri', [
+                'prompt_id' => $prompt->id,
+                'prompt_name' => $prompt->name,
+                'is_active' => $prompt->is_active,
+                'is_default' => $prompt->is_default,
+                'is_common' => $prompt->is_common,
+            ]);
+            
+            // Eğer mevcut bir konuşma varsa, prompt_id'yi güncelle
+            if ($this->conversationId) {
+                $conversation = Conversation::where('id', $this->conversationId)
+                    ->where('user_id', Auth::id())
+                    ->first();
+                    
+                if ($conversation) {
+                    $oldPromptId = $conversation->prompt_id;
+                    $conversation->prompt_id = $promptId;
+                    $saved = $conversation->save();
+                    
+                    Log::info('Konuşma promptu güncellendi', [
+                        'conversation_id' => $conversation->id,
+                        'old_prompt_id' => $oldPromptId,
+                        'new_prompt_id' => $promptId,
+                        'save_successful' => $saved
+                    ]);
+                } else {
+                    Log::warning('Konuşma bulunamadı veya kullanıcıya ait değil', [
+                        'conversation_id' => $this->conversationId,
+                        'user_id' => Auth::id()
+                    ]);
+                }
+            } else {
+                Log::info('Konuşma ID olmadığı için prompt sadece $this->promptId olarak ayarlandı');
+            }
+            
+            // Sayfayı yenileme, sadece değişkenleri güncelle
+            $this->skipRender();
+        } catch (Exception $e) {
+            Log::error('Prompt seçimi güncellenirken hata oluştu', [
+                'exception' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+        }
     }
     
     public function selectConversation($id)

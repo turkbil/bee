@@ -1,41 +1,41 @@
 @php
-    // Tenant ID'yi al
-    $tenantId = null;
-    $isCentral = false;
-    
-    // Helper fonksiyonları kontrol et ve kullan
-    if (function_exists('tenant_id')) {
-        $tenantId = tenant_id();
-    } elseif (app()->has('tenancy') && app('tenancy')->initialized) {
-        $tenantId = tenant()->getTenantKey();
-    }
-    
-    if (function_exists('is_central')) {
-        $isCentral = is_central();
-    } elseif (app()->has('tenancy')) {
-        $isCentral = !app('tenancy')->initialized;
-    }
-    
-    // Tenant domainde mysql bağlantısı kullanması için
-    if (!$isCentral && app()->has('tenancy') && app('tenancy')->initialized) {
-        config(['database.connections.tenant.driver' => 'mysql']);
-        DB::purge('tenant');
-    }
-    
-    // Modül servisini çağır
-    $moduleService = app(App\Services\ModuleService::class);
-    
-    // Modülleri her zaman taze şekilde al (önbellek yok)
-    $modules = $moduleService->getModulesByTenant($tenantId);
-    
-    // Modülleri tipine göre grupla
-    $groupedModules = $moduleService->groupModulesByType($modules);
-    
-    // Aktif segment/tip bilgisini al
-    $activeType = request()->segment(2);
-    
-    // Settings helper ile site başlığı ve logo bilgilerini al
-    $siteTitle = settings('site_title', config('app.name'));
+// Tenant ID'yi al
+$tenantId = null;
+$isCentral = false;
+
+// Helper fonksiyonları kontrol et ve kullan
+if (function_exists('tenant_id')) {
+$tenantId = tenant_id();
+} elseif (app()->has('tenancy') && app('tenancy')->initialized) {
+$tenantId = tenant()->getTenantKey();
+}
+
+if (function_exists('is_central')) {
+$isCentral = is_central();
+} elseif (app()->has('tenancy')) {
+$isCentral = !app('tenancy')->initialized;
+}
+
+// Tenant domainde mysql bağlantısı kullanması için
+if (!$isCentral && app()->has('tenancy') && app('tenancy')->initialized) {
+config(['database.connections.tenant.driver' => 'mysql']);
+DB::purge('tenant');
+}
+
+// Modül servisini çağır
+$moduleService = app(App\Services\ModuleService::class);
+
+// Modülleri her zaman taze şekilde al (önbellek yok)
+$modules = $moduleService->getModulesByTenant($tenantId);
+
+// Modülleri tipine göre grupla
+$groupedModules = $moduleService->groupModulesByType($modules);
+
+// Aktif segment/tip bilgisini al
+$activeType = request()->segment(2);
+
+// Settings helper ile site başlığı ve logo bilgilerini al
+$siteTitle = settings('site_title', config('app.name'));
 @endphp
 
 <header class="navbar navbar-expand-md d-print-none">
@@ -47,11 +47,11 @@
             <a href="{{ route('admin.dashboard') }}">
                 {{ $siteTitle }}
                 @if(!$isCentral && $tenantId)
-                    @php
-                        $tenant = \App\Models\Tenant::find($tenantId);
-                        $tenantName = $tenant ? $tenant->name ?? $tenant->id : '';
-                    @endphp
-                    <span class="small text-muted ms-2">({{ $tenantName }})</span>
+                @php
+                $tenant = \App\Models\Tenant::find($tenantId);
+                $tenantName = $tenant ? $tenant->name ?? $tenant->id : '';
+                @endphp
+                <span class="small text-muted ms-2">({{ $tenantName }})</span>
                 @endif
             </a>
         </h1>
@@ -59,13 +59,14 @@
         <div class="navbar-nav flex-row order-md-last">
             <!-- Tema Ayarları Butonu -->
             <div class="nav-item me-2">
-                <a href="#" class="d-flex lh-1 text-reset p-0" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTheme">
+                <a href="#" class="d-flex lh-1 text-reset p-0" data-bs-toggle="offcanvas"
+                    data-bs-target="#offcanvasTheme">
                     <span class="me-2">
                         <i class="fa-solid fa-brush" style="font-size: 18px"></i>
                     </span>
                 </a>
             </div>
-            
+
             <div class="d-none d-md-flex">
                 <!-- Karanlık mod switch'i -->
                 <!-- Karanlık mod switch'i - orijinal tasarım korundu -->
@@ -93,24 +94,26 @@
                         <div>{{ Auth::user()->name }}</div>
                         <div class="mt-1 small text-secondary">
                             @php
-                                $user = Auth::user();
-                                $roleName = 'Kullanıcı';
-                                
-                                if ($user->hasRole('root')) {
-                                    $roleName = 'Root';
-                                } elseif ($user->hasRole('admin')) {
-                                    $roleName = 'Admin';
-                                } elseif ($user->hasRole('editor')) {
-                                    $roleName = 'Editör';
-                                }
+                            $user = Auth::user();
+                            $roleName = 'Kullanıcı';
+
+                            if ($user->hasRole('root')) {
+                            $roleName = 'Root';
+                            } elseif ($user->hasRole('admin')) {
+                            $roleName = 'Admin';
+                            } elseif ($user->hasRole('editor')) {
+                            $roleName = 'Editör';
+                            }
                             @endphp
                             {{ $roleName }}
                         </div>
                     </div>
                 </a>
                 <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <a href="{{ route('admin.usermanagement.user.activity.logs', ['id' => auth()->id()]) }}" class="dropdown-item">Aktivitelerim</a>
-                    <a href="{{ route('admin.usermanagement.manage', ['id' => auth()->id()]) }}" class="dropdown-item">Profilim</a>
+                    <a href="{{ route('admin.usermanagement.user.activity.logs', ['id' => auth()->id()]) }}"
+                        class="dropdown-item">Aktivitelerim</a>
+                    <a href="{{ route('admin.usermanagement.manage', ['id' => auth()->id()]) }}"
+                        class="dropdown-item">Profilim</a>
                     <div class="dropdown-divider"></div>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
@@ -136,7 +139,8 @@
                             <div class="dropdown-menu-columns">
                                 <div class="dropdown-menu-column">
                                     @foreach($groupedModules['content'] as $module)
-                                    <a class="dropdown-item" href="{{ route('admin.' . strtolower($module->name) . '.index') }}">
+                                    <a class="dropdown-item"
+                                        href="{{ route('admin.' . strtolower($module->name) . '.index') }}">
                                         {{ $module->display_name }}
                                     </a>
                                     @endforeach
@@ -153,11 +157,12 @@
                             <span class="nav-link-icon d-md-none d-lg-inline-block">
                                 <i class="fa-solid fa-user-chef"></i>
                             </span>
-                            <span class="nav-link-title">Bileşenler</span>
+                            <span class="nav-link-title">Bileşen</span>
                         </a>
                         <div class="dropdown-menu">
                             @foreach($groupedModules['widget'] as $module)
-                            <a class="dropdown-item" href="{{ route('admin.' . strtolower($module->name) . '.index') }}">
+                            <a class="dropdown-item"
+                                href="{{ route('admin.' . strtolower($module->name) . '.index') }}">
                                 {{ $module->display_name }}
                             </a>
                             @endforeach
@@ -176,7 +181,8 @@
                         </a>
                         <div class="dropdown-menu">
                             @foreach($groupedModules['management'] as $module)
-                            <a class="dropdown-item" href="{{ route('admin.' . strtolower($module->name) . '.index') }}">
+                            <a class="dropdown-item"
+                                href="{{ route('admin.' . strtolower($module->name) . '.index') }}">
                                 {{ $module->display_name }}
                             </a>
                             @endforeach
@@ -186,8 +192,8 @@
 
                     @if($groupedModules->has('system') && $groupedModules['system']->count() > 0)
                     <li class="nav-item {{ $activeType == 'system' ? 'active' : '' }} dropdown">
-                        <a class="nav-link dropdown-toggle" href="#navbar-system" data-bs-toggle="dropdown" data-bs-auto-close="outside"
-                            role="button" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="#navbar-system" data-bs-toggle="dropdown"
+                            data-bs-auto-close="outside" role="button" aria-expanded="false">
                             <span class="nav-link-icon d-md-none d-lg-inline-block">
                                 <i class="fa-solid fa-user-doctor"></i>
                             </span>
@@ -195,7 +201,8 @@
                         </a>
                         <div class="dropdown-menu">
                             @foreach($groupedModules['system'] as $module)
-                            <a class="dropdown-item" href="{{ route('admin.' . strtolower($module->name) . '.index') }}">
+                            <a class="dropdown-item"
+                                href="{{ route('admin.' . strtolower($module->name) . '.index') }}">
                                 {{ $module->display_name }}
                             </a>
                             @endforeach

@@ -118,18 +118,20 @@ class AIController extends Controller
             ], 500);
         }
     }
-    
+        
     public function streamResponse(Request $request)
     {
         $request->validate([
             'message' => 'required|string',
             'conversation_id' => 'nullable|string',
+            'prompt_id' => 'nullable|integer', // Prompt ID'yi ekle
         ]);
 
         return response()->stream(function () use ($request) {
             try {
                 $message = trim($request->message);
                 $conversationId = $request->conversation_id ?? md5(time() . rand(1000, 9999));
+                $promptId = $request->prompt_id; // Prompt ID'yi al
                 
                 // Tenant bazlı önbellekleme anahtarı oluştur
                 $currentTenant = null;
@@ -143,7 +145,8 @@ class AIController extends Controller
                 Log::info('Stream API isteği başlatılıyor', [
                     'tenant_id' => $currentTenant?->id, 
                     'message_length' => strlen($message),
-                    'has_api_key' => !empty($this->deepSeekService->getApiKey())
+                    'has_api_key' => !empty($this->deepSeekService->getApiKey()),
+                    'prompt_id' => $promptId, // Prompt ID'yi logla
                 ]);
                 
                 // Önceki konuşma geçmişini al
@@ -161,7 +164,7 @@ class AIController extends Controller
                     echo "data: " . json_encode(['content' => $chunk]) . "\n\n";
                     ob_flush();
                     flush();
-                });
+                }, $promptId); // Prompt ID'yi DeepSeekService'e gönder
                 
                 // Son AI yanıtını konuşma geçmişine ekleyebilmek için tüm yanıtı toplama
                 $fullResponse = $this->deepSeekService->getLastFullResponse();
@@ -184,6 +187,7 @@ class AIController extends Controller
                         'tenant_id' => $currentTenant?->id,
                         'message_length' => strlen($message),
                         'response_length' => strlen($fullResponse),
+                        'prompt_id' => $promptId, // Prompt ID'yi aktivite loguna ekle
                     ])
                     ->log('ai_message_streamed');
                 
@@ -195,7 +199,8 @@ class AIController extends Controller
                 echo "data: " . json_encode([
                     'conversation_id' => $conversationId,
                     'has_markdown' => $hasMarkdown,
-                    'html_content' => $htmlContent
+                    'html_content' => $htmlContent,
+                    'prompt_id' => $promptId, // Prompt ID'yi yanıta ekle
                 ]) . "\n\n";
             } catch (\Exception $e) {
                 Log::error('AI stream hatası: ' . $e->getMessage(), [

@@ -48,5 +48,10 @@ Route::middleware(['web', 'auth'])
                 Route::post('/settings/test-connection', [SettingsController::class, 'testConnection'])
                     ->middleware('module.permission:ai,update')
                     ->name('settings.test-connection');
+                
+                // Prompt güncelleme için özel API endpoint
+                Route::post('/update-conversation-prompt', [AIController::class, 'updateConversationPrompt'])
+                    ->middleware('module.permission:ai,view')
+                    ->name('update-conversation-prompt');
             });
     });

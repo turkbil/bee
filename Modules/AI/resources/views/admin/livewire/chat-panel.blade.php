@@ -110,377 +110,433 @@
     @push('scripts')
     <script>
         function promptSelected(promptId) {
-            // Livewire metodu çağır
-            @this.call('promptSelected', promptId);
+        // Mevcut seçili prompt ile yeni seçilen aynıysa, işlemi pas geç
+        const currentPromptId = document.querySelector('#prompt-selector').value;
+        if (currentPromptId === promptId) {
+            return;
         }
         
-        document.addEventListener('DOMContentLoaded', function() {
-            const messageForm = document.getElementById('message-form');
-            const userMessage = document.getElementById('user-message');
-            const chatMessages = document.getElementById('chat-messages');
-            const conversationId = document.getElementById('conversation-id');
-            const loadingIndicator = document.getElementById('loading-indicator');
-            const chatContainer = document.getElementById('chat-container');
-            const toastNotification = document.getElementById('toast-notification');
-            const toastTitle = document.getElementById('toast-title');
-            const toastMessage = document.getElementById('toast-message');
+        // Livewire metodu çağır
+        @this.call('promptSelected', promptId);
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const messageForm = document.getElementById('message-form');
+        const userMessage = document.getElementById('user-message');
+        const chatMessages = document.getElementById('chat-messages');
+        const conversationId = document.getElementById('conversation-id');
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const chatContainer = document.getElementById('chat-container');
+        const toastNotification = document.getElementById('toast-notification');
+        const toastTitle = document.getElementById('toast-title');
+        const toastMessage = document.getElementById('toast-message');
+        const promptSelector = document.getElementById('prompt-selector');
+        
+        // Toast öğesini initialize et
+        let toast;
+        
+        if (typeof Toasts !== 'undefined') {
+            // Tabler.io toast kullanımı
+            toast = {
+                show: function() {
+                    Toasts.add({
+                        title: toastTitle.textContent,
+                        content: toastMessage.textContent,
+                        icon: toastNotification.querySelector('.toast-header i').className,
+                        timeout: 3000
+                    });
+                }
+            };
+        } else {
+            // Fallback - varsayılan tarayıcı alert kullanımı
+            toast = {
+                show: function() {
+                    alert(toastMessage.textContent);
+                }
+            };
+        }
+        
+        // Textarea otomatik yükseklik ayarı
+        userMessage.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+        
+        // Enter tuşuna basıldığında form gönderimi
+        userMessage.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                if (userMessage.value.trim() !== '') {
+                    messageForm.dispatchEvent(new Event('submit'));
+                }
+            }
+        });
+        
+        // Mesaj gönderimi
+        messageForm.addEventListener('submit', function(e) {
+            e.preventDefault();
             
-            // Toast öğesini initialize et
-            let toast;
-            
-            if (typeof Toasts !== 'undefined') {
-                // Tabler.io toast kullanımı
-                toast = {
-                    show: function() {
-                        Toasts.add({
-                            title: toastTitle.textContent,
-                            content: toastMessage.textContent,
-                            icon: toastNotification.querySelector('.toast-header i').className,
-                            timeout: 3000
-                        });
-                    }
-                };
-            } else {
-                // Fallback - varsayılan tarayıcı alert kullanımı
-                toast = {
-                    show: function() {
-                        alert(toastMessage.textContent);
-                    }
-                };
+            const message = userMessage.value.trim();
+            if (!message) {
+                showToast('Uyarı', 'Lütfen bir mesaj yazın.', 'warning');
+                return;
             }
             
-            // Textarea otomatik yükseklik ayarı
-            userMessage.addEventListener('input', function() {
-                this.style.height = 'auto';
-                this.style.height = (this.scrollHeight) + 'px';
-            });
+            // Kullanıcı mesajını ekle
+            addMessage(message, 'user');
             
-            // Enter tuşuna basıldığında form gönderimi
-            userMessage.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    if (userMessage.value.trim() !== '') {
-                        messageForm.dispatchEvent(new Event('submit'));
-                    }
-                }
-            });
+            // Form alanını temizle
+            userMessage.value = '';
+            userMessage.style.height = 'auto';
             
-            // Mesaj gönderimi
-            messageForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const message = userMessage.value.trim();
-                if (!message) {
-                    showToast('Uyarı', 'Lütfen bir mesaj yazın.', 'warning');
-                    return;
-                }
-                
-                // Kullanıcı mesajını ekle
-                addMessage(message, 'user');
-                
-                // Form alanını temizle
-                userMessage.value = '';
-                userMessage.style.height = 'auto';
-                
-                // Yükleniyor göstergesini etkinleştir
-                loadingIndicator.style.display = 'block';
-                
-                // AI yanıtını stream et
-                streamAIResponse(message, conversationId.value);
-            });
+            // Yükleniyor göstergesini etkinleştir
+            loadingIndicator.style.display = 'block';
+            
+            // Seçili prompt ID'sini al
+            const selectedPromptId = promptSelector ? promptSelector.value : null;
             
             // AI yanıtını stream et
-            function streamAIResponse(message, conversationId) {
-                const eventSource = new EventSource(`/ai/stream?message=${encodeURIComponent(message)}&conversation_id=${conversationId}`);
-                
-                let aiResponseElement = null;
-                let aiResponseContent = null;
-                let fullResponse = '';
-                
-                // Önce AI mesaj elementini oluştur
-                aiResponseElement = createMessageElement('', 'ai');
-                chatMessages.appendChild(aiResponseElement);
-                
-                aiResponseContent = aiResponseElement.querySelector('.message-content p');
-                
-                // Yazıyor animasyonu ekle
-                aiResponseContent.innerHTML = '<span class="typing-animation">Yazıyor<span>.</span><span>.</span><span>.</span></span>';
-                
-                // Stream veri alındığında
-                eventSource.onmessage = function(event) {
-                    const data = JSON.parse(event.data);
-                    
-                    if (data.content) {
-                        // Yazıyor animasyonunu kaldır
-                        if (fullResponse === '') {
-                            aiResponseContent.innerHTML = '';
-                        }
-                        
-                        // AI yanıtını ekle
-                        fullResponse += data.content;
-                        
-                        // HTML güvenliği için
-                        aiResponseContent.innerText = fullResponse;
-                        
-                        // Otomatik kaydırma
-                        scrollToBottom();
-                    }
-                };
-                
-                // Stream tamamlandığında
-                eventSource.addEventListener('complete', function(event) {
-                    const data = JSON.parse(event.data);
-                    
-                    // Markdown kontrolü
-                    if (data.has_markdown && data.html_content) {
-                        // HTML içeriği markdown olarak işaretlenmiş, doğrudan göster
-                        aiResponseContent.innerHTML = data.html_content;
-                    }
-                    
-                    // Butonları etkinleştir
-                    const copyButton = aiResponseElement.querySelector('.copy-message');
-                    copyButton.addEventListener('click', function() {
-                        copyToClipboard(fullResponse);
-                        showToast('Kopyalandı', 'Mesaj panoya kopyalandı.');
-                    });
-                    
-                    // Yükleniyor göstergesini kapat
-                    loadingIndicator.style.display = 'none';
-                    
-                    // EventSource'ı kapat
-                    eventSource.close();
-                    
-                    // Konuşma ID'sini güncelle
-                    if (data.conversation_id) {
-                        conversationId.value = data.conversation_id;
-                    }
-                });
-                
-                // Hata durumunda
-                eventSource.addEventListener('error', function(event) {
-                    const data = event.data ? JSON.parse(event.data) : { message: 'Bağlantı hatası oluştu.' };
-                    
-                    // Hata mesajını göster
-                    aiResponseContent.innerHTML = `<span class="text-danger">Hata: ${data.message}</span>`;
-                    
-                    // Yeniden deneme butonu ekle
-                    const retryButton = document.createElement('button');
-                    retryButton.className = 'btn btn-sm btn-outline-danger mt-2';
-                    retryButton.innerHTML = 'Yeniden Dene';
-                    retryButton.addEventListener('click', function() {
-                        // AI mesaj elementini kaldır
-                        chatMessages.removeChild(aiResponseElement);
-                        
-                        // Yeni istek gönder
-                        streamAIResponse(message, conversationId.value);
-                    });
-                    
-                    aiResponseElement.querySelector('.message-content').appendChild(retryButton);
-                    
-                    // Yükleniyor göstergesini kapat
-                    loadingIndicator.style.display = 'none';
-                    
-                    // EventSource'ı kapat
-                    eventSource.close();
-                });
-            }
-
-            // Metni formatla
-            function formatMessage(text) {
-                // Markdown algıla ve işle
-                if (typeof text !== 'string') {
-                    return '';
-                }
-                
-                // Eğer markdown içeren bir yanıt ise, HTML'i döndür
-                if (text.includes('<markdown>') && text.includes('</markdown>')) {
-                    // Markdown etiketlerini çıkar ve içeriği al
-                    const markdownContent = text.replace(/<markdown>/g, '').replace(/<\/markdown>/g, '');
-                    
-                    // Bu noktada, markdownContent sunucu tarafından HTML'e dönüştürülmüş olmalı
-                    return markdownContent;
-                }
-                
-                // Markdown işaretleri yoksa, standart metin işleme
-                const div = document.createElement('div');
-                div.textContent = text;
-                let formattedText = div.innerHTML;
-                
-                // Yeni satırları koru
-                formattedText = formattedText.replace(/\n/g, '<br>');
-                
-                return formattedText;
+            streamAIResponse(message, conversationId.value, selectedPromptId);
+        });
+        
+        // AI yanıtını stream et
+        function streamAIResponse(message, conversationId, promptId) {
+            // URL'i oluştur ve prompt ID'sini ekle
+            let url = `/ai/stream?message=${encodeURIComponent(message)}&conversation_id=${conversationId}`;
+            if (promptId) {
+                url += `&prompt_id=${promptId}`;
             }
             
-            // Mesaj ekle
-            function addMessage(content, role) {
-                const messageElement = createMessageElement(content, role);
-                chatMessages.appendChild(messageElement);
+            // EventSource ile bağlantı kur (cache parametresi ile önbelleği devre dışı bırak)
+            const eventSource = new EventSource(url + `&_cache=${new Date().getTime()}`);
+            
+            let aiResponseElement = null;
+            let aiResponseContent = null;
+            let fullResponse = '';
+            
+            // Önce AI mesaj elementini oluştur
+            aiResponseElement = createMessageElement('', 'ai');
+            chatMessages.appendChild(aiResponseElement);
+            
+            aiResponseContent = aiResponseElement.querySelector('.message-content p');
+            
+            // Yazıyor animasyonu ekle
+            aiResponseContent.innerHTML = '<span class="typing-animation">Yazıyor<span>.</span><span>.</span><span>.</span></span>';
+            
+            // Stream veri alındığında
+            eventSource.onmessage = function(event) {
+                const data = JSON.parse(event.data);
                 
-                scrollToBottom();
+                if (data.content) {
+                    // Yazıyor animasyonunu kaldır
+                    if (fullResponse === '') {
+                        aiResponseContent.innerHTML = '';
+                    }
+                    
+                    // AI yanıtını ekle
+                    fullResponse += data.content;
+                    
+                    // HTML güvenliği için
+                    aiResponseContent.innerText = fullResponse;
+                    
+                    // Otomatik kaydırma
+                    scrollToBottom();
+                }
+            };
+                        
+            // Stream tamamlandığında
+            eventSource.addEventListener('complete', function(event) {
+                const data = JSON.parse(event.data);
                 
-                if (role === 'user') {
-                    return messageElement;
+                // Markdown kontrolü
+                if (data.has_markdown && data.html_content) {
+                    // HTML içeriği markdown olarak işaretlenmiş, doğrudan göster
+                    aiResponseContent.innerHTML = data.html_content;
                 }
                 
-                // Sadece AI mesajları için kopyalama butonu ekle
-                const copyButton = messageElement.querySelector('.copy-message');
+                // Butonları etkinleştir
+                const copyButton = aiResponseElement.querySelector('.copy-message');
                 copyButton.addEventListener('click', function() {
-                    copyToClipboard(content);
+                    copyToClipboard(fullResponse);
                     showToast('Kopyalandı', 'Mesaj panoya kopyalandı.');
                 });
                 
+                // Yükleniyor göstergesini kapat
+                loadingIndicator.style.display = 'none';
+                
+                // EventSource'ı kapat
+                eventSource.close();
+                
+                // Konuşma ID'sini güncelle
+                if (data.conversation_id) {
+                    conversationId.value = data.conversation_id;
+                    
+                    // Yeni prompt seçimini konuşmaya kaydetmek gerekirse
+                    if (promptId && data.conversation_id) {
+                        // CSRF token'ı al
+                        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                        
+                        // Veri oluştur
+                        const requestData = {
+                            conversation_id: data.conversation_id,
+                            prompt_id: promptId
+                        };
+                        
+                        // Livewire'ın tam sayfa yenilemesini önlemek için doğrudan bir API çağrısı yapalım
+                        fetch('/admin/ai/update-conversation-prompt', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': csrfToken,
+                                'Accept': 'application/json'
+                            },
+                            body: JSON.stringify(requestData)
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Sunucu yanıtı başarısız: ' + response.status);
+                            }
+                            return response.json();
+                        })
+                        .then(responseData => {
+                            if (responseData.success) {
+                                console.log('Konuşma promptu güncellendi:', responseData.message);
+                            } else {
+                                console.warn('Konuşma promptu güncellenemedi:', responseData.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Konuşma promptu güncellenirken hata:', error);
+                        });
+                    }
+                }
+            });
+            
+            // Hata durumunda
+            eventSource.addEventListener('error', function(event) {
+                const data = event.data ? JSON.parse(event.data) : { message: 'Bağlantı hatası oluştu.' };
+                
+                // Hata mesajını göster
+                aiResponseContent.innerHTML = `<span class="text-danger">Hata: ${data.message}</span>`;
+                
+                // Yeniden deneme butonu ekle
+                const retryButton = document.createElement('button');
+                retryButton.className = 'btn btn-sm btn-outline-danger mt-2';
+                retryButton.innerHTML = 'Yeniden Dene';
+                retryButton.addEventListener('click', function() {
+                    // AI mesaj elementini kaldır
+                    chatMessages.removeChild(aiResponseElement);
+                    
+                    // Yeni istek gönder
+                    streamAIResponse(message, conversationId, promptId);
+                });
+                
+                aiResponseElement.querySelector('.message-content').appendChild(retryButton);
+                
+                // Yükleniyor göstergesini kapat
+                loadingIndicator.style.display = 'none';
+                
+                // EventSource'ı kapat
+                eventSource.close();
+            });
+        }
+
+        // Metni formatla
+        function formatMessage(text) {
+            // Markdown algıla ve işle
+            if (typeof text !== 'string') {
+                return '';
+            }
+            
+            // Eğer markdown içeren bir yanıt ise, HTML'i döndür
+            if (text.includes('<markdown>') && text.includes('</markdown>')) {
+                // Markdown etiketlerini çıkar ve içeriği al
+                const markdownContent = text.replace(/<markdown>/g, '').replace(/<\/markdown>/g, '');
+                
+                // Bu noktada, markdownContent sunucu tarafından HTML'e dönüştürülmüş olmalı
+                return markdownContent;
+            }
+            
+            // Markdown işaretleri yoksa, standart metin işleme
+            const div = document.createElement('div');
+            div.textContent = text;
+            let formattedText = div.innerHTML;
+            
+            // Yeni satırları koru
+            formattedText = formattedText.replace(/\n/g, '<br>');
+            
+            return formattedText;
+        }
+        
+        // Mesaj ekle
+        function addMessage(content, role) {
+            const messageElement = createMessageElement(content, role);
+            chatMessages.appendChild(messageElement);
+            
+            scrollToBottom();
+            
+            if (role === 'user') {
                 return messageElement;
             }
             
-            // Mesaj elementi oluştur
-            function createMessageElement(content, role) {
-                const messageDiv = document.createElement('div');
-                messageDiv.className = `message ${role}-message`;
-                
-                const contentDiv = document.createElement('div');
-                contentDiv.className = 'message-content';
-                
-                const paragraph = document.createElement('p');
-                paragraph.innerHTML = role === 'user' ? escapeHtml(content) : (content ? formatMessage(content) : '');
-                
-                contentDiv.appendChild(paragraph);
-                messageDiv.appendChild(contentDiv);
-                
-                // AI mesajı için kopyalama butonu ekle
-                if (role === 'ai') {
-                    const actionsDiv = document.createElement('div');
-                    actionsDiv.className = 'message-actions';
-                    
-                    const copyButton = document.createElement('button');
-                    copyButton.className = 'btn btn-sm btn-ghost-secondary copy-message';
-                    copyButton.setAttribute('data-bs-toggle', 'tooltip');
-                    copyButton.setAttribute('title', 'Mesajı Kopyala');
-                    copyButton.innerHTML = '<i class="fa-thin fa-copy"></i>';
-                    
-                    actionsDiv.appendChild(copyButton);
-                    messageDiv.appendChild(actionsDiv);
-                }
-                
-                return messageDiv;
-            }
-            
-            // HTML karakterlerini escape et
-            function escapeHtml(text) {
-                const div = document.createElement('div');
-                div.textContent = text;
-                return div.innerHTML;
-            }
-            
-            // Panoya kopyala
-            function copyToClipboard(text) {
-                navigator.clipboard.writeText(text).catch(err => {
-                    console.error('Kopyalama hatası:', err);
-                });
-            }
-            
-            // En alta kaydır
-            function scrollToBottom() {
-                chatContainer.scrollTop = chatContainer.scrollHeight;
-            }
-            
-            // Bildirim göster
-            function showToast(title, message, type = 'success') {
-                toastTitle.textContent = title;
-                toastMessage.textContent = message;
-                
-                // Toast başlık rengini ayarla
-                toastTitle.className = 'me-auto';
-                const icon = toastNotification.querySelector('.toast-header i');
-                
-                switch (type) {
-                    case 'success':
-                        icon.className = 'fa-thin fa-circle-check text-success me-2';
-                        break;
-                    case 'warning':
-                        icon.className = 'fa-thin fa-triangle-exclamation text-warning me-2';
-                        break;
-                    case 'error':
-                        icon.className = 'fa-thin fa-circle-exclamation text-danger me-2';
-                        break;
-                    default:
-                        icon.className = 'fa-thin fa-circle-info text-info me-2';
-                }
-                
-                toast.show();
-            }
-            
-            // Konuşmayı sıfırla
-            document.querySelector('.reset-conversation').addEventListener('click', function() {
-                if (confirm('Konuşma geçmişi sıfırlanacak. Emin misiniz?')) {
-                    fetch(`/ai/reset?conversation_id=${conversationId.value}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.status === 'success') {
-                            // Mesajları temizle
-                            chatMessages.innerHTML = '';
-                            
-                            // Yeni konuşma ID'si oluştur
-                            conversationId.value = md5(Date.now() + Math.random().toString());
-                            
-                            // Hoş geldin mesajını ekle
-                            addMessage('Merhaba! Size nasıl yardımcı olabilirim?', 'ai');
-                            
-                            showToast('Başarılı', 'Konuşma sıfırlandı.');
-                        } else {
-                            showToast('Hata', data.message, 'error');
-                        }
-                    })
-                    .catch(error => {
-                        showToast('Hata', 'Bir hata oluştu.', 'error');
-                        console.error('Konuşma sıfırlama hatası:', error);
-                    });
-                }
+            // Sadece AI mesajları için kopyalama butonu ekle
+            const copyButton = messageElement.querySelector('.copy-message');
+            copyButton.addEventListener('click', function() {
+                copyToClipboard(content);
+                showToast('Kopyalandı', 'Mesaj panoya kopyalandı.');
             });
             
-            // Tüm konuşmayı kopyala
-            document.querySelector('.copy-conversation').addEventListener('click', function() {
-                let conversation = '';
-                
-                document.querySelectorAll('.message').forEach(function(message) {
-                    const role = message.classList.contains('user-message') ? 'Siz' : 'AI';
-                    const content = message.querySelector('.message-content p').textContent;
-                    
-                    conversation += `${role}: ${content}\n\n`;
-                });
-                
-                copyToClipboard(conversation);
-                showToast('Kopyalandı', 'Tüm konuşma panoya kopyalandı.');
-            });
+            return messageElement;
+        }
+        
+        // Mesaj elementi oluştur
+        function createMessageElement(content, role) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}-message`;
             
-            // MD5
-            function md5(input) {
-                return Array.from(
-                    new Uint8Array(
-                        new TextEncoder().encode(input + Date.now().toString() + Math.random().toString())
-                    )
-                )
-                .map(b => b.toString(16).padStart(2, "0"))
-                .join("")
-                .substring(0, 32);
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            
+            const paragraph = document.createElement('p');
+            paragraph.innerHTML = role === 'user' ? escapeHtml(content) : (content ? formatMessage(content) : '');
+            
+            contentDiv.appendChild(paragraph);
+            messageDiv.appendChild(contentDiv);
+            
+            // AI mesajı için kopyalama butonu ekle
+            if (role === 'ai') {
+                const actionsDiv = document.createElement('div');
+                actionsDiv.className = 'message-actions';
+                
+                const copyButton = document.createElement('button');
+                copyButton.className = 'btn btn-sm btn-ghost-secondary copy-message';
+                copyButton.setAttribute('data-bs-toggle', 'tooltip');
+                copyButton.setAttribute('title', 'Mesajı Kopyala');
+                copyButton.innerHTML = '<i class="fa-thin fa-copy"></i>';
+                
+                actionsDiv.appendChild(copyButton);
+                messageDiv.appendChild(actionsDiv);
             }
             
-            // Sayfa yüklendiğinde otomatik kaydır
-            scrollToBottom();
+            return messageDiv;
+        }
+        
+        // HTML karakterlerini escape et
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Panoya kopyala
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).catch(err => {
+                console.error('Kopyalama hatası:', err);
+            });
+        }
+        
+        // En alta kaydır
+        function scrollToBottom() {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+        
+        // Bildirim göster
+        function showToast(title, message, type = 'success') {
+            toastTitle.textContent = title;
+            toastMessage.textContent = message;
             
-            // Tooltips'i etkinleştir - Tabler.io kullanıldığında
-            if (typeof Tooltip !== 'undefined') {
-                document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(element) {
-                    new Tooltip(element);
+            // Toast başlık rengini ayarla
+            toastTitle.className = 'me-auto';
+            const icon = toastNotification.querySelector('.toast-header i');
+            
+            switch (type) {
+                case 'success':
+                    icon.className = 'fa-thin fa-circle-check text-success me-2';
+                    break;
+                case 'warning':
+                    icon.className = 'fa-thin fa-triangle-exclamation text-warning me-2';
+                    break;
+                case 'error':
+                    icon.className = 'fa-thin fa-circle-exclamation text-danger me-2';
+                    break;
+                default:
+                    icon.className = 'fa-thin fa-circle-info text-info me-2';
+            }
+            
+            toast.show();
+        }
+        
+        // Konuşmayı sıfırla
+        document.querySelector('.reset-conversation').addEventListener('click', function() {
+            if (confirm('Konuşma geçmişi sıfırlanacak. Emin misiniz?')) {
+                fetch(`/ai/reset?conversation_id=${conversationId.value}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Mesajları temizle
+                        chatMessages.innerHTML = '';
+                        
+                        // Yeni konuşma ID'si oluştur
+                        conversationId.value = md5(Date.now() + Math.random().toString());
+                        
+                        // Hoş geldin mesajını ekle
+                        addMessage('Merhaba! Size nasıl yardımcı olabilirim?', 'ai');
+                        
+                        showToast('Başarılı', 'Konuşma sıfırlandı.');
+                    } else {
+                        showToast('Hata', data.message, 'error');
+                    }
+                })
+                .catch(error => {
+                    showToast('Hata', 'Bir hata oluştu.', 'error');
+                    console.error('Konuşma sıfırlama hatası:', error);
                 });
             }
         });
+        
+        // Tüm konuşmayı kopyala
+        document.querySelector('.copy-conversation').addEventListener('click', function() {
+            let conversation = '';
+            
+            document.querySelectorAll('.message').forEach(function(message) {
+                const role = message.classList.contains('user-message') ? 'Siz' : 'AI';
+                const content = message.querySelector('.message-content p').textContent;
+                
+                conversation += `${role}: ${content}\n\n`;
+            });
+            
+            copyToClipboard(conversation);
+            showToast('Kopyalandı', 'Tüm konuşma panoya kopyalandı.');
+        });
+        
+        // MD5
+        function md5(input) {
+            return Array.from(
+                new Uint8Array(
+                    new TextEncoder().encode(input + Date.now().toString() + Math.random().toString())
+                )
+            )
+            .map(b => b.toString(16).padStart(2, "0"))
+            .join("")
+            .substring(0, 32);
+        }
+        
+        // Sayfa yüklendiğinde otomatik kaydır
+        scrollToBottom();
+        
+        // Tooltips'i etkinleştir - Tabler.io kullanıldığında
+        if (typeof Tooltip !== 'undefined') {
+            document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(element) {
+                new Tooltip(element);
+            });
+        }
+    });
     </script>
     @endpush
 

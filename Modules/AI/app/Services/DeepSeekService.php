@@ -138,10 +138,10 @@ class DeepSeekService
             ];
         }
     }
-    
-    public function streamCompletion($message, $conversationHistory = [], ?callable $callback = null)
+        
+    public function streamCompletion($message, $conversationHistory = [], ?callable $callback = null, $promptId = null)
     {
-        $messages = $this->formatMessages($conversationHistory);
+        $messages = $this->formatMessages($conversationHistory, $promptId); // Prompt ID'yi formatMessages metoduna gönder
         $this->lastFullResponse = '';
 
         try {
@@ -220,24 +220,65 @@ class DeepSeekService
             }
         }
     }
-    
-    public function getLastFullResponse()
-    {
-        return $this->lastFullResponse;
-    }
-    
-    protected function formatMessages($conversationHistory)
+
+    protected function formatMessages($conversationHistory, $promptId = null)
     {
         $messages = [];
         
+        Log::info('Mesajlar formatlanıyor', [
+            'message_count' => count($conversationHistory),
+            'prompt_id' => $promptId
+        ]);
+        
         // Ortak özellikler promptunu al (ZORUNLU)
-        $commonPrompt = \Modules\AI\App\Models\Prompt::where('is_common', true)->first();
+        $commonPrompt = \Modules\AI\App\Models\Prompt::where('is_common', true)->where('is_active', true)->first();
         $commonContent = $commonPrompt ? $commonPrompt->content : config('deepseek.system_message', 'Sen bir asistansın.');
+        
+        Log::info('Ortak özellikler promptu', [
+            'common_prompt_id' => $commonPrompt ? $commonPrompt->id : null,
+            'common_prompt_name' => $commonPrompt ? $commonPrompt->name : 'Bulunamadı'
+        ]);
+        
+        // Prompt ID verilmişse, ilgili promptu al
+        $selectedPrompt = null;
+        if ($promptId) {
+            $selectedPrompt = \Modules\AI\App\Models\Prompt::where('id', $promptId)
+                ->where('is_active', true)
+                ->first();
+            
+            Log::info('Seçilen prompt bilgileri', [
+                'prompt_id' => $promptId,
+                'prompt_found' => $selectedPrompt ? true : false,
+                'prompt_name' => $selectedPrompt ? $selectedPrompt->name : 'Bulunamadı'
+            ]);
+        } else {
+            // Varsayılan promptu al
+            $selectedPrompt = \Modules\AI\App\Models\Prompt::where('is_default', true)
+                ->where('is_active', true)
+                ->first();
+            
+            Log::info('Varsayılan prompt kullanılıyor', [
+                'default_prompt_found' => $selectedPrompt ? true : false,
+                'default_prompt_name' => $selectedPrompt ? $selectedPrompt->name : 'Bulunamadı'
+            ]);
+        }
+        
+        // Promptları birleştir
+        $systemContent = $commonContent;
+        if ($selectedPrompt) {
+            $systemContent .= "\n\n" . $selectedPrompt->content;
+        }
         
         $messages[] = [
             'role' => 'system',
-            'content' => $commonContent,
+            'content' => $systemContent,
         ];
+        
+        Log::info('Final sistem mesajı oluşturuldu', [
+            'has_common_content' => !empty($commonContent),
+            'has_selected_prompt' => $selectedPrompt ? true : false,
+            'final_message_length' => strlen($systemContent)
+        ]);
         
         foreach ($conversationHistory as $item) {
             $messages[] = [
@@ -247,6 +288,11 @@ class DeepSeekService
         }
         
         return $messages;
+    }
+    
+    public function getLastFullResponse()
+    {
+        return $this->lastFullResponse;
     }
     
     protected function readLine($stream)
@@ -423,28 +469,75 @@ class DeepSeekService
         return $formattedMessages;
     }
 
-
     public function formatConversationMessages($conversation): array
     {
         $messages = [];
         
+        Log::info('Konuşma mesajları formatlanıyor', [
+            'conversation_id' => $conversation->id,
+            'prompt_id' => $conversation->prompt_id,
+        ]);
+        
         // Önce ortak özellikler promptunu al - ZORUNLU
-        $commonPrompt = \Modules\AI\App\Models\Prompt::where('is_common', true)->first();
+        $commonPrompt = \Modules\AI\App\Models\Prompt::where('is_common', true)->where('is_active', true)->first();
         $commonContent = $commonPrompt ? $commonPrompt->content : '';
+        
+        Log::info('Ortak özellikler promptu', [
+            'common_prompt_id' => $commonPrompt ? $commonPrompt->id : null,
+            'common_prompt_name' => $commonPrompt ? $commonPrompt->name : 'Bulunamadı',
+            'content_length' => strlen($commonContent),
+        ]);
         
         // Konuşmaya özel prompt içeriğini al
         $systemMessage = '';
         
         if ($conversation->prompt_id) {
-            $prompt = \Modules\AI\App\Models\Prompt::find($conversation->prompt_id);
+            $prompt = \Modules\AI\App\Models\Prompt::where('id', $conversation->prompt_id)
+                ->where('is_active', true)
+                ->first();
+            
+            Log::info('Konuşmaya özel prompt', [
+                'requested_prompt_id' => $conversation->prompt_id,
+                'prompt_found' => $prompt ? true : false,
+                'prompt_name' => $prompt ? $prompt->name : 'Bulunamadı',
+                'prompt_active' => $prompt ? $prompt->is_active : false,
+            ]);
             
             if ($prompt) {
                 $systemMessage = $prompt->content;
+            } else {
+                Log::warning('Seçilen prompt bulunamadı veya aktif değil', [
+                    'conversation_id' => $conversation->id,
+                    'prompt_id' => $conversation->prompt_id,
+                ]);
+            }
+        } else {
+            // Varsayılan promptu kullan
+            $defaultPrompt = \Modules\AI\App\Models\Prompt::where('is_default', true)
+                ->where('is_active', true)
+                ->first();
+                
+            Log::info('Varsayılan prompt kullanılıyor', [
+                'default_prompt_id' => $defaultPrompt ? $defaultPrompt->id : null,
+                'default_prompt_name' => $defaultPrompt ? $defaultPrompt->name : 'Bulunamadı',
+                'default_prompt_active' => $defaultPrompt ? $defaultPrompt->is_active : false,
+            ]);
+            
+            if ($defaultPrompt) {
+                $systemMessage = $defaultPrompt->content;
+            } else {
+                Log::warning('Varsayılan prompt bulunamadı veya aktif değil');
             }
         }
         
         // Ortak özellikler promptu ZORUNLU olarak konuşmaya özel prompt ile birleştir
         $finalSystemMessage = empty($systemMessage) ? $commonContent : $commonContent . "\n\n" . $systemMessage;
+        
+        Log::info('Final sistem mesajı oluşturuldu', [
+            'has_common_content' => !empty($commonContent),
+            'has_system_message' => !empty($systemMessage),
+            'final_message_length' => strlen($finalSystemMessage),
+        ]);
         
         $messages[] = [
             'role' => 'system',
@@ -452,6 +545,10 @@ class DeepSeekService
         ];
         
         $conversationMessages = $conversation->messages()->orderBy('created_at')->get();
+        
+        Log::info('Konuşma mesajları yüklendi', [
+            'message_count' => $conversationMessages->count(),
+        ]);
         
         foreach ($conversationMessages as $message) {
             $messages[] = [

@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\AI\App\Http\Livewire\Modals;
+namespace Modules\AI\App\Http\Livewire\Admin\Modals;
 
 use Livewire\Component;
 use Modules\AI\App\Models\Prompt;

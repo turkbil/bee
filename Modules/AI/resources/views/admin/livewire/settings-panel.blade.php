@@ -8,6 +8,9 @@
                     <a href="#tabs-settings" class="nav-link active" data-bs-toggle="tab">Temel Ayarlar</a>
                 </li>
                 <li class="nav-item">
+                    <a href="#tabs-common-prompt" class="nav-link" data-bs-toggle="tab">Ortak Özellikler</a>
+                </li>
+                <li class="nav-item">
                     <a href="#tabs-limits" class="nav-link" data-bs-toggle="tab">Kullanım Limitleri</a>
                 </li>
                 <li class="nav-item">
@@ -120,6 +123,48 @@
                         <div class="form-footer">
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-save me-2"></i> Ayarları Kaydet
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Ortak Özellikler Promptu -->
+                <div class="tab-pane" id="tabs-common-prompt">
+                    <form wire:submit="saveCommonPrompt">
+                        <div class="mb-3">
+                            <div class="alert alert-info">
+                                <h4 class="alert-title"><i class="fas fa-info-circle me-2"></i> Ortak Özellikler Promptu
+                                    Nedir?</h4>
+                                <p>Bu prompt, AI asistanın kimliğini, kişiliğini ve davranışlarını tanımlar. Her
+                                    konuşmada, konuşmaya özel prompttan önce eklenerek AI'ın tutarlı bir kişiliğe sahip
+                                    olmasını sağlar.</p>
+                                <p>Bu bölümde şunları tanımlayabilirsiniz:</p>
+                                <ul>
+                                    <li>AI asistanın adı</li>
+                                    <li>Şirket veya kuruluş bilgileri</li>
+                                    <li>Yanıt verme tarzı ve tonu</li>
+                                    <li>Uzmanlık alanları</li>
+                                    <li>Diğer kişilik özellikleri</li>
+                                </ul>
+                            </div>
+
+                            <label class="form-label">Ortak Özellikler İçeriği</label>
+                            <textarea wire:model="commonPrompt.content"
+                                class="form-control @error('commonPrompt.content') is-invalid @enderror" rows="10"
+                                placeholder="Ortak özellikler promptunu girin"></textarea>
+                            <div class="form-text">
+                                <i class="fa-thin fa-circle-info me-2"></i>
+                                Bu içerik, AI'ın her yanıtında tutarlı bir kimlik ve kişilik sergilemesi için
+                                kullanılır.
+                            </div>
+                            @error('commonPrompt.content')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="form-footer">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i> Ortak Özellikleri Kaydet
                             </button>
                         </div>
                     </form>
@@ -252,7 +297,9 @@
                                         @endif
                                     </td>
                                     <td>
-                                        @if($promptItem->is_system)
+                                        @if($promptItem->is_common)
+                                        <span class="badge bg-warning">Ortak Özellikler</span>
+                                        @elseif($promptItem->is_system)
                                         <span class="badge bg-primary">Sistem</span>
                                         @else
                                         <span class="badge bg-info">Özel</span>
@@ -262,13 +309,15 @@
                                         <div class="btn-list flex-nowrap">
                                             <button class="btn btn-icon btn-ghost-secondary"
                                                 wire:click="editPrompt({{ $promptItem->id }})"
-                                                @if($promptItem->is_system) disabled title="Sistem promptları
+                                                @if($promptItem->is_system && !$promptItem->is_common) disabled
+                                                title="Sistem promptları
                                                 düzenlenemez" @endif>
                                                 <i class="fas fa-edit"></i>
                                             </button>
                                             <button class="btn btn-icon btn-ghost-danger"
                                                 wire:click="deletePrompt({{ $promptItem->id }})"
-                                                @if($promptItem->is_default || $promptItem->is_system) disabled @endif>
+                                                @if($promptItem->is_default || $promptItem->is_system ||
+                                                $promptItem->is_common) disabled @endif>
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </div>

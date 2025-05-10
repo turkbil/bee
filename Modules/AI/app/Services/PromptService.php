@@ -27,6 +27,7 @@ class PromptService
         try {
             return Cache::remember($cacheKey, now()->addMinutes(30), function () {
                 return Prompt::orderBy('is_default', 'desc')
+                    ->orderBy('is_common', 'desc')
                     ->orderBy('name')
                     ->get();
             });
@@ -56,6 +57,25 @@ class PromptService
     }
 
     /**
+     * Ortak özellikler promptunu getir
+     *
+     * @return Prompt|null
+     */
+    public function getCommonPrompt(): ?Prompt
+    {
+        $cacheKey = "ai_common_prompt";
+        
+        try {
+            return Cache::remember($cacheKey, now()->addMinutes(30), function () {
+                return Prompt::where('is_common', true)->first();
+            });
+        } catch (\Exception $e) {
+            Log::error('Ortak özellikler promptunu getirirken hata: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
      * Prompt oluştur
      *
      * @param array $data
@@ -72,11 +92,18 @@ class PromptService
                     ->update(['is_default' => false]);
             }
             
+            // Eğer yeni prompt ortak özellikler olarak işaretlendiyse, diğer ortak özellikleri kaldır
+            if (isset($data['is_common']) && $data['is_common']) {
+                Prompt::where('is_common', true)
+                    ->update(['is_common' => false]);
+            }
+            
             $prompt = new Prompt();
             $prompt->name = $data['name'];
             $prompt->content = $data['content'];
             $prompt->is_default = $data['is_default'] ?? false;
             $prompt->is_system = $data['is_system'] ?? false;
+            $prompt->is_common = $data['is_common'] ?? false;
             $success = $prompt->save();
             
             // Önbelleği temizle
@@ -101,7 +128,7 @@ class PromptService
     public function updatePrompt(Prompt $prompt, array $data): bool
     {
         // Sistem promptu kontrolü
-        if ($prompt->is_system) {
+        if ($prompt->is_system && !$prompt->is_common) {
             return false;
         }
         
@@ -114,9 +141,16 @@ class PromptService
                     ->update(['is_default' => false]);
             }
             
+            // Eğer güncellenecek prompt ortak özellikler olarak işaretlendiyse, diğer ortak özellikleri kaldır
+            if (isset($data['is_common']) && $data['is_common'] && !$prompt->is_common) {
+                Prompt::where('is_common', true)
+                    ->update(['is_common' => false]);
+            }
+            
             $prompt->name = $data['name'];
             $prompt->content = $data['content'];
             $prompt->is_default = $data['is_default'] ?? false;
+            $prompt->is_common = $data['is_common'] ?? false;
             $success = $prompt->save();
             
             // Önbelleği temizle
@@ -139,8 +173,8 @@ class PromptService
      */
     public function deletePrompt(Prompt $prompt): bool
     {
-        // Sistem promptu veya varsayılan prompt kontrolü
-        if ($prompt->is_system || $prompt->is_default) {
+        // Sistem promptu, varsayılan prompt veya ortak özellikler kontrolü
+        if ($prompt->is_system || $prompt->is_default || $prompt->is_common) {
             return false;
         }
         
@@ -170,5 +204,6 @@ class PromptService
     {
         Cache::forget("ai_prompts");
         Cache::forget("ai_default_prompt");
+        Cache::forget("ai_common_prompt");
     }
 }

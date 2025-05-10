@@ -24,21 +24,35 @@
                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-center">
                             <h3 class="card-title">AI Asistan</h3>
-                            <div class="dropdown">
-                                <button class="btn btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                                    aria-expanded="false">
-                                    <i class="fa-thin fa-ellipsis-vertical"></i>
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item reset-conversation" href="javascript:void(0)"><i
-                                                class="fa-thin fa-rotate me-2"></i>Konuşmayı Sıfırla</a></li>
-                                    <li><a class="dropdown-item copy-conversation" href="javascript:void(0)"><i
-                                                class="fa-thin fa-copy me-2"></i>Tüm Konuşmayı Kopyala</a></li>
-                                    <li><a class="dropdown-item new-window" href="{{ route('admin.ai.index') }}"
-                                            target="_blank"><i class="fa-thin fa-external-link me-2"></i>Yeni
-                                            Pencerede
-                                            Aç</a></li>
-                                </ul>
+                            <div class="d-flex align-items-center">
+                                <!-- Prompt Seçimi -->
+                                <div class="me-3">
+                                    <select id="prompt-selector" class="form-select"
+                                        onchange="promptSelected(this.value)">
+                                        @foreach($prompts as $prompt)
+                                        <option value="{{ $prompt->id }}" {{ $promptId==$prompt->id ? 'selected' : ''
+                                            }}>
+                                            {{ $prompt->name }}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                        <i class="fa-thin fa-ellipsis-vertical"></i>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item reset-conversation" href="javascript:void(0)"><i
+                                                    class="fa-thin fa-rotate me-2"></i>Konuşmayı Sıfırla</a></li>
+                                        <li><a class="dropdown-item copy-conversation" href="javascript:void(0)"><i
+                                                    class="fa-thin fa-copy me-2"></i>Tüm Konuşmayı Kopyala</a></li>
+                                        <li><a class="dropdown-item new-window" href="{{ route('admin.ai.index') }}"
+                                                target="_blank"><i class="fa-thin fa-external-link me-2"></i>Yeni
+                                                Pencerede
+                                                Aç</a></li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -95,6 +109,11 @@
 
     @push('scripts')
     <script>
+        function promptSelected(promptId) {
+            // Livewire metodu çağır
+            @this.call('promptSelected', promptId);
+        }
+        
         document.addEventListener('DOMContentLoaded', function() {
             const messageForm = document.getElementById('message-form');
             const userMessage = document.getElementById('user-message');

@@ -370,6 +370,12 @@ class DeepSeekService
         $commonPrompt = \Modules\AI\App\Models\Prompt::where('is_common', true)->first();
         $commonContent = $commonPrompt ? $commonPrompt->content : '';
         
+        // Markdown desteği için ek talimat
+        $markdownInstruction = "Yanıtlarınızı gerektiğinde Markdown biçiminde verebilirsiniz. Kod blokları için ``` işaretlerini, başlıklar için # işaretini, listeler için * veya 1. işaretlerini kullanabilirsiniz. Yanıtlarınızda tablo, bağlantı ve kod vurgulaması da kullanabilirsiniz.";
+        
+        // Ortak içeriğe markdown talimatını ekle
+        $commonContent .= "\n\n" . $markdownInstruction;
+        
         $formattedMessages = [];
         
         // İlk mesaj system role'e ait mi kontrol et
@@ -416,6 +422,7 @@ class DeepSeekService
         
         return $formattedMessages;
     }
+
 
     public function formatConversationMessages($conversation): array
     {

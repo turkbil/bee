@@ -11,6 +11,7 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Modules\AI\App\Services\AIService;
 use Modules\AI\App\Services\DeepSeekService;
+use Modules\AI\App\Services\MarkdownService;
 
 class AIServiceProvider extends ServiceProvider
 {
@@ -43,9 +44,6 @@ class AIServiceProvider extends ServiceProvider
         // Livewire bileşenlerini kaydet
         Livewire::component('chat-panel', ChatPanel::class);
         Livewire::component('settings-panel', SettingsPanel::class);
-        
-        // Diğer Livewire bileşenleri
-        $this->registerLivewireComponents();
     }
 
     /**
@@ -66,16 +64,11 @@ class AIServiceProvider extends ServiceProvider
         $this->app->singleton(DeepSeekService::class, function ($app) {
             return new DeepSeekService();
         });
-    }
-    
-    /**
-     * Livewire bileşenlerini kaydet
-     */
-    protected function registerLivewireComponents(): void
-    {
-        // Prompt modal bileşenleri
-        Livewire::component('modals.prompt-edit-modal', \Modules\AI\App\Http\Livewire\Modals\PromptEditModal::class);
-        Livewire::component('modals.prompt-delete-modal', \Modules\AI\App\Http\Livewire\Modals\PromptDeleteModal::class);
+        
+        // MarkdownService singleton kaydı
+        $this->app->singleton(MarkdownService::class, function ($app) {
+            return new MarkdownService();
+        });
     }
 
     /**
@@ -162,7 +155,7 @@ class AIServiceProvider extends ServiceProvider
      */
     public function provides(): array
     {
-        return [AIService::class, DeepSeekService::class];
+        return [AIService::class, DeepSeekService::class, MarkdownService::class];
     }
 
     private function getPublishableViewPaths(): array

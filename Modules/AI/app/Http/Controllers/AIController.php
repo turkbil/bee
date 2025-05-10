@@ -9,15 +9,18 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Modules\AI\App\Services\AIService;
 use Modules\AI\App\Services\DeepSeekService;
+use Modules\AI\App\Services\MarkdownService;
 use Illuminate\Support\Facades\Auth;
 
 class AIController extends Controller
 {
     protected $deepSeekService;
+    protected $markdownService;
 
-    public function __construct(DeepSeekService $deepSeekService)
+    public function __construct(DeepSeekService $deepSeekService, MarkdownService $markdownService)
     {
         $this->deepSeekService = $deepSeekService;
+        $this->markdownService = $markdownService;
     }
 
     public function index()
@@ -91,9 +94,15 @@ class AIController extends Controller
                 ])
                 ->log('ai_message_sent');
             
+            // Markdown kontrolü ve dönüşüm
+            $content = $response['content'];
+            $hasMarkdown = $this->markdownService->hasMarkdown($content);
+            
             return response()->json([
                 'status' => 'success',
-                'content' => $response['content'],
+                'content' => $content,
+                'has_markdown' => $hasMarkdown,
+                'html_content' => $hasMarkdown ? $this->markdownService->convertToHtml($content) : null,
                 'conversation_id' => $conversationId,
             ]);
         } catch (\Exception $e) {
@@ -178,8 +187,16 @@ class AIController extends Controller
                     ])
                     ->log('ai_message_streamed');
                 
+                // Markdown kontrolü
+                $hasMarkdown = $this->markdownService->hasMarkdown($fullResponse);
+                $htmlContent = $hasMarkdown ? $this->markdownService->convertToHtml($fullResponse) : null;
+                
                 echo "event: complete\n";
-                echo "data: " . json_encode(['conversation_id' => $conversationId]) . "\n\n";
+                echo "data: " . json_encode([
+                    'conversation_id' => $conversationId,
+                    'has_markdown' => $hasMarkdown,
+                    'html_content' => $htmlContent
+                ]) . "\n\n";
             } catch (\Exception $e) {
                 Log::error('AI stream hatası: ' . $e->getMessage(), [
                     'exception' => $e,

@@ -15,6 +15,9 @@
             }
         }
     },
+    "require": {
+        "league/commonmark": "^2.3"
+    },
     "autoload": {
         "psr-4": {
             "Modules\\AI\\": "app/",

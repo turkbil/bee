@@ -10,7 +10,6 @@ return new class extends Migration
     {
         Schema::create('ai_settings', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('tenant_id')->index();
             $table->text('api_key')->nullable();
             $table->string('model')->default('deepseek-chat');
             $table->integer('max_tokens')->default(4096);
@@ -20,7 +19,6 @@ return new class extends Migration
             
             $table->index('created_at');
             $table->index('updated_at');
-            $table->foreign('tenant_id')->references('id')->on('tenants')->onDelete('cascade');
         });
     }
 

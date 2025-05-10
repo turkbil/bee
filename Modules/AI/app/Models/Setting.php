@@ -13,7 +13,6 @@ class Setting extends Model
     protected $table = 'ai_settings';
 
     protected $fillable = [
-        'tenant_id',
         'api_key',
         'model',
         'max_tokens',
@@ -56,13 +55,5 @@ class Setting extends Model
             }
         }
         return null;
-    }
-
-    /**
-     * Tenant ilişkisi
-     */
-    public function tenant()
-    {
-        return $this->belongsTo(\App\Models\Tenant::class);
     }
 }

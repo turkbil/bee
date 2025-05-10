@@ -12,35 +12,35 @@ class Prompt extends Model
     protected $table = 'ai_prompts';
 
     protected $fillable = [
-        'tenant_id',
         'name',
         'content',
         'is_default',
+        'is_system',
     ];
 
     protected $casts = [
         'is_default' => 'boolean',
+        'is_system' => 'boolean',
     ];
 
     /**
      * Varsayılan prompt'u getir
      *
-     * @param int $tenantId
      * @return self|null
      */
-    public static function getDefault(int $tenantId)
+    public static function getDefault()
     {
-        return self::where('tenant_id', $tenantId)
-            ->where('is_default', true)
-            ->first();
+        return self::where('is_default', true)->first();
     }
 
     /**
-     * Tenant ilişkisi
+     * Sistem promptlarını getir
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function tenant()
+    public static function getSystemPrompts()
     {
-        return $this->belongsTo(\App\Models\Tenant::class);
+        return self::where('is_system', true)->get();
     }
 
     /**

@@ -4,20 +4,15 @@ namespace Modules\AI\App\Services;
 
 use Modules\AI\App\Models\Limit;
 use Illuminate\Support\Facades\Cache;
-use App\Helpers\TenantHelpers;
 
 class LimitService
 {
-    protected $tenantId;
-
     /**
      * Constructor
-     *
-     * @param int|null $tenantId
      */
-    public function __construct(?int $tenantId = null)
+    public function __construct()
     {
-        $this->tenantId = $tenantId;
+        // Yapılandırma
     }
 
     /**
@@ -27,11 +22,6 @@ class LimitService
      */
     public function checkLimits(): bool
     {
-        // Tenant ID yoksa, limitsiz olarak çalış
-        if ($this->tenantId === null) {
-            return true;
-        }
-        
         $limit = $this->getLimitRecord();
         
         if (!$limit) {
@@ -49,11 +39,6 @@ class LimitService
      */
     public function incrementUsage(int $tokens = 1): void
     {
-        // Tenant ID yoksa, sayacı artırma
-        if ($this->tenantId === null) {
-            return;
-        }
-        
         $limit = $this->getLimitRecord();
         
         if ($limit) {
@@ -68,11 +53,6 @@ class LimitService
      */
     public function getRemainingDailyLimit(): int
     {
-        // Tenant ID yoksa, sınırsız limit döndür
-        if ($this->tenantId === null) {
-            return PHP_INT_MAX;
-        }
-        
         $limit = $this->getLimitRecord();
         
         if (!$limit) {
@@ -89,11 +69,6 @@ class LimitService
      */
     public function getRemainingMonthlyLimit(): int
     {
-        // Tenant ID yoksa, sınırsız limit döndür
-        if ($this->tenantId === null) {
-            return PHP_INT_MAX;
-        }
-        
         $limit = $this->getLimitRecord();
         
         if (!$limit) {
@@ -110,29 +85,22 @@ class LimitService
      */
     protected function getLimitRecord(): ?Limit
     {
-        if ($this->tenantId === null) {
-            return null;
-        }
-        
-        $cacheKey = "ai_limit_tenant_{$this->tenantId}";
+        $cacheKey = "ai_limit";
         
         return Cache::remember($cacheKey, now()->addMinutes(5), function () {
-            return TenantHelpers::central(function () {
-                $limit = Limit::where('tenant_id', $this->tenantId)->first();
-                
-                if (!$limit) {
-                    $limit = Limit::create([
-                        'tenant_id' => $this->tenantId,
-                        'daily_limit' => 100,
-                        'monthly_limit' => 3000,
-                        'used_today' => 0,
-                        'used_month' => 0,
-                        'reset_at' => now(),
-                    ]);
-                }
-                
-                return $limit;
-            });
+            $limit = Limit::first();
+            
+            if (!$limit) {
+                $limit = Limit::create([
+                    'daily_limit' => 100,
+                    'monthly_limit' => 3000,
+                    'used_today' => 0,
+                    'used_month' => 0,
+                    'reset_at' => now(),
+                ]);
+            }
+            
+            return $limit;
         });
     }
 }

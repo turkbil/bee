@@ -218,7 +218,8 @@
                         
                         // AI yanıtını ekle
                         fullResponse += data.content;
-                        // innerText kullanarak formatlamayı önle
+                        
+                        // HTML güvenliği için
                         aiResponseContent.innerText = fullResponse;
                         
                         // Otomatik kaydırma
@@ -229,6 +230,12 @@
                 // Stream tamamlandığında
                 eventSource.addEventListener('complete', function(event) {
                     const data = JSON.parse(event.data);
+                    
+                    // Markdown kontrolü
+                    if (data.has_markdown && data.html_content) {
+                        // HTML içeriği markdown olarak işaretlenmiş, doğrudan göster
+                        aiResponseContent.innerHTML = data.html_content;
+                    }
                     
                     // Butonları etkinleştir
                     const copyButton = aiResponseElement.querySelector('.copy-message');
@@ -278,37 +285,33 @@
                 });
             }
 
-            // Kelime kelime metni ekrana yazan fonksiyon
-            function writeWordsOneByOne(text, container, cursorElement, isLast = false) {
-                // Metin içindeki kelimeleri ve boşlukları diziye çevir
-                const words = text.split(/(\s+)/g);
-                
-                // Mevcut içeriği alalım
-                let currentContent = container.innerHTML;
-                
-                // İmleç varsa kaldır
-                if (container.contains(cursorElement)) {
-                    container.removeChild(cursorElement);
+            // Metni formatla
+            function formatMessage(text) {
+                // Markdown algıla ve işle
+                if (typeof text !== 'string') {
+                    return '';
                 }
                 
-                // Kelimeleri sırayla ekle
-                words.forEach((word, index) => {
-                    setTimeout(() => {
-                        // Önceki içerik (imleç olmadan)
-                        currentContent = container.innerHTML;
-                        
-                        // Kelimeyi ekleyelim
-                        const formattedWord = word.replace(/\n/g, '<br>');
-                        container.innerHTML = currentContent + formattedWord;
-                        
-                        // İmleç ekle
-                        container.appendChild(cursorElement);
-                        
-                        // Otomatik kaydırma
-                        scrollToBottom();
-                    }, index * 50); // Her kelime için 50ms gecikme
-                });
+                // Eğer markdown içeren bir yanıt ise, HTML'i döndür
+                if (text.includes('<markdown>') && text.includes('</markdown>')) {
+                    // Markdown etiketlerini çıkar ve içeriği al
+                    const markdownContent = text.replace(/<markdown>/g, '').replace(/<\/markdown>/g, '');
+                    
+                    // Bu noktada, markdownContent sunucu tarafından HTML'e dönüştürülmüş olmalı
+                    return markdownContent;
+                }
+                
+                // Markdown işaretleri yoksa, standart metin işleme
+                const div = document.createElement('div');
+                div.textContent = text;
+                let formattedText = div.innerHTML;
+                
+                // Yeni satırları koru
+                formattedText = formattedText.replace(/\n/g, '<br>');
+                
+                return formattedText;
             }
+            
             // Mesaj ekle
             function addMessage(content, role) {
                 const messageElement = createMessageElement(content, role);
@@ -360,19 +363,6 @@
                 }
                 
                 return messageDiv;
-            }
-            
-            // Metni formatla
-            function formatMessage(text) {
-                // HTML karakterlerini escape et ama markdown işaretlemelerini koru
-                const div = document.createElement('div');
-                div.textContent = text;
-                let formattedText = div.innerHTML;
-                
-                // Yeni satırları koru
-                formattedText = formattedText.replace(/\n/g, '<br>');
-                
-                return formattedText;
             }
             
             // HTML karakterlerini escape et
@@ -661,6 +651,111 @@
             100% {
                 opacity: 0;
             }
+        }
+
+        /* Markdown stilleri */
+        .message-content h1 {
+            font-size: 1.5rem;
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .message-content h2 {
+            font-size: 1.3rem;
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .message-content h3 {
+            font-size: 1.1rem;
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .message-content pre {
+            background-color: rgba(0, 0, 0, 0.05);
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            overflow-x: auto;
+            margin-bottom: 0.5rem;
+        }
+
+        .dark .message-content pre {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .message-content code {
+            background-color: rgba(0, 0, 0, 0.05);
+            border-radius: 3px;
+            padding: 2px 4px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+
+        .dark .message-content code {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .message-content ul,
+        .message-content ol {
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+        }
+
+        .message-content blockquote {
+            border-left: 3px solid #aaa;
+            padding-left: 1rem;
+            margin-left: 0;
+            color: #666;
+        }
+
+        .dark .message-content blockquote {
+            color: #ccc;
+        }
+
+        .message-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 0.5rem 0;
+        }
+
+        .message-content table th,
+        .message-content table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        .message-content table tr:nth-child(even) {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
+        .dark .message-content table tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .message-content table th {
+            padding-top: 10px;
+            padding-bottom: 10px;
+            text-align: left;
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .dark .message-content table th {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Yanıtlarda kod blokları için syntax highlighting */
+        .message-content .hljs {
+            display: block;
+            overflow-x: auto;
+            padding: 0.5em;
+            background: #f0f0f0;
+            border-radius: 0.25rem;
+        }
+
+        .dark .message-content .hljs {
+            background: #1e1e1e;
         }
     </style>
     @endpush

@@ -8,6 +8,9 @@ use Modules\AI\App\Models\Message;
 use Modules\AI\App\Models\Prompt;
 use Modules\AI\App\Services\DeepSeekService;
 use Modules\AI\App\Services\LimitService;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class ConversationService
 {
@@ -132,5 +135,138 @@ class ConversationService
     public function deleteConversation(Conversation $conversation): bool
     {
         return $conversation->delete();
+    }
+    
+    /**
+     * Veritabanından konuşma geçmişini alır
+     * 
+     * @param int $conversationId
+     * @return array
+     */
+    public function getConversationHistory(int $conversationId): array
+    {
+        $messages = Message::where('conversation_id', $conversationId)
+            ->orderBy('created_at')
+            ->get();
+            
+        $history = [];
+        
+        foreach ($messages as $message) {
+            $history[] = [
+                'role' => $message->role,
+                'content' => $message->content,
+                'timestamp' => $message->created_at->toIso8601String(),
+            ];
+        }
+        
+        return $history;
+    }
+    
+    /**
+     * Redis önbelleğindeki konuşma geçmişini veritabanına aktarır
+     * 
+     * @param string $cacheKey
+     * @param string $conversationId
+     * @return bool
+     */
+    public function migrateRedisConversationToDatabase(string $cacheKey, string $conversationId): bool
+    {
+        try {
+            $conversationHistory = Cache::store('redis')->get($cacheKey, []);
+            
+            if (empty($conversationHistory)) {
+                return false;
+            }
+            
+            // Konuşma nesnesini bul veya oluştur
+            $conversation = Conversation::find($conversationId);
+            
+            if (!$conversation) {
+                // Yeni konuşma oluştur
+                $conversationTitle = "Konuşma";
+                if (!empty($conversationHistory)) {
+                    $firstMessage = $conversationHistory[0]['content'] ?? '';
+                    $conversationTitle = substr($firstMessage, 0, 30) . '...';
+                }
+                
+                $conversation = $this->createConversation($conversationTitle);
+            }
+            
+            // Mesajları veritabanına aktar
+            DB::beginTransaction();
+            
+            foreach ($conversationHistory as $message) {
+                $this->addMessage(
+                    $conversation,
+                    $message['content'],
+                    $message['role'],
+                    strlen($message['content']) / 4
+                );
+            }
+            
+            DB::commit();
+            
+            // Redis önbelleğini temizle
+            Cache::store('redis')->forget($cacheKey);
+            
+            return true;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Redis konuşması aktarılırken hata: ' . $e->getMessage());
+            return false;
+        }
+    }
+    
+    /**
+     * Tüm Redis konuşmalarını veritabanına aktarır
+     * 
+     * @return array
+     */
+    public function migrateAllRedisConversationsToDatabase(): array
+    {
+        $report = [
+            'success' => 0,
+            'failed' => 0,
+            'total' => 0,
+        ];
+        
+        // Redis anahtarlarını al (ai_conversation:* ile başlayanlar)
+        $keys = Cache::store('redis')->getRedis()->keys('ai_conversation:*');
+        
+        $report['total'] = count($keys);
+        
+        foreach ($keys as $key) {
+            // Anahtar formatı: ai_conversation:{conversation_id}
+            $conversationId = str_replace('ai_conversation:', '', $key);
+            
+            $success = $this->migrateRedisConversationToDatabase($key, $conversationId);
+            
+            if ($success) {
+                $report['success']++;
+            } else {
+                $report['failed']++;
+            }
+        }
+        
+        // Tenant konuşmalarını da kontrol et
+        $tenantKeys = Cache::store('redis')->getRedis()->keys('tenant:*:ai_conversation:*');
+        
+        $report['total'] += count($tenantKeys);
+        
+        foreach ($tenantKeys as $key) {
+            // Anahtar formatı: tenant:{tenant_id}:ai_conversation:{conversation_id}
+            $parts = explode(':', $key);
+            $conversationId = end($parts);
+            
+            $success = $this->migrateRedisConversationToDatabase($key, $conversationId);
+            
+            if ($success) {
+                $report['success']++;
+            } else {
+                $report['failed']++;
+            }
+        }
+        
+        return $report;
     }
 }

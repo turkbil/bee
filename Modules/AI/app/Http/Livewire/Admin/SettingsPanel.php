@@ -309,6 +309,83 @@ class SettingsPanel extends Component
             ]);
         }
     }
+
+    public function togglePromptActive($id)
+    {
+        try {
+            $prompt = Prompt::find($id);
+            
+            if (!$prompt) {
+                throw new \Exception('Prompt bulunamadı');
+            }
+            
+            if ($prompt->is_system && !$prompt->is_common) {
+                throw new \Exception('Sistem promptlarının durumu değiştirilemez');
+            }
+            
+            $prompt->is_active = !$prompt->is_active;
+            $prompt->save();
+            
+            // Önbelleği temizle
+            Cache::forget("ai_prompts");
+            
+            $this->dispatch('toast', [
+                'title' => 'Başarılı!',
+                'message' => 'Prompt durumu ' . ($prompt->is_active ? 'aktif' : 'pasif') . ' olarak güncellendi',
+                'type' => 'success'
+            ]);
+            
+            $this->loadPrompts();
+        } catch (\Exception $e) {
+            Log::error('Prompt durumu değiştirilirken hata: ' . $e->getMessage());
+            $this->dispatch('toast', [
+                'title' => 'Hata!',
+                'message' => $e->getMessage(),
+                'type' => 'error'
+            ]);
+        }
+    }
+
+    public function makeDefault($id)
+    {
+        try {
+            $prompt = Prompt::find($id);
+            
+            if (!$prompt) {
+                throw new \Exception('Prompt bulunamadı');
+            }
+            
+            if ($prompt->is_default) {
+                return;
+            }
+            
+            // Önceki varsayılan promptu devre dışı bırak
+            Prompt::where('is_default', true)->update(['is_default' => false]);
+            
+            // Yeni promptu varsayılan yap
+            $prompt->is_default = true;
+            $prompt->save();
+            
+            // Önbelleği temizle
+            Cache::forget("ai_default_prompt");
+            Cache::forget("ai_prompts");
+            
+            $this->dispatch('toast', [
+                'title' => 'Başarılı!',
+                'message' => '"' . $prompt->name . '" varsayılan prompt olarak ayarlandı',
+                'type' => 'success'
+            ]);
+            
+            $this->loadPrompts();
+        } catch (\Exception $e) {
+            Log::error('Varsayılan prompt ayarlanırken hata: ' . $e->getMessage());
+            $this->dispatch('toast', [
+                'title' => 'Hata!',
+                'message' => $e->getMessage(),
+                'type' => 'error'
+            ]);
+        }
+    }    
     
     public function editPrompt($id)
     {

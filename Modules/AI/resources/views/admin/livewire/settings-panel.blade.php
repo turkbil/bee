@@ -130,16 +130,29 @@
 
                 <!-- Ortak Özellikler Promptu -->
                 <div class="tab-pane" id="tabs-common-prompt">
-                    <form wire:submit="saveCommonPrompt">
-                        <div class="mb-3">
-                            <div class="alert alert-info">
-                                <h4 class="alert-title"><i class="fas fa-info-circle me-2"></i> Ortak Özellikler Promptu
-                                    Nedir?</h4>
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="me-3">
+                            <i class="fas fa-cog fa-2x text-muted"></i>
+                        </div>
+                        <div>
+                            <h3 class="mb-0">Ortak Özellikler Promptu</h3>
+                            <p class="text-muted mb-0">AI asistanınızın kimliğini, kişiliğini ve davranışlarını
+                                tanımlayan temel özellikleri belirleyin.</p>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info mb-4">
+                        <div class="d-flex">
+                            <div class="me-3">
+                                <i class="fas fa-info-circle fa-2x"></i>
+                            </div>
+                            <div>
+                                <h4 class="alert-title">Bu prompt nedir?</h4>
                                 <p>Bu prompt, AI asistanın kimliğini, kişiliğini ve davranışlarını tanımlar. Her
                                     konuşmada, konuşmaya özel prompttan önce eklenerek AI'ın tutarlı bir kişiliğe sahip
                                     olmasını sağlar.</p>
-                                <p>Bu bölümde şunları tanımlayabilirsiniz:</p>
-                                <ul>
+                                <p class="mb-0">Bu bölümde şunları tanımlayabilirsiniz:</p>
+                                <ul class="mb-0 mt-2">
                                     <li>AI asistanın adı</li>
                                     <li>Şirket veya kuruluş bilgileri</li>
                                     <li>Yanıt verme tarzı ve tonu</li>
@@ -147,8 +160,10 @@
                                     <li>Diğer kişilik özellikleri</li>
                                 </ul>
                             </div>
-
-                            <label class="form-label">Ortak Özellikler İçeriği</label>
+                        </div>
+                    </div>
+                    <form wire:submit="saveCommonPrompt">
+                        <div class="mb-3">
                             <textarea wire:model="commonPrompt.content"
                                 class="form-control @error('commonPrompt.content') is-invalid @enderror" rows="10"
                                 placeholder="Ortak özellikler promptunu girin"></textarea>
@@ -161,11 +176,13 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-
                         <div class="form-footer">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save me-2"></i> Ortak Özellikleri Kaydet
-                            </button>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-muted">Bu prompt, sistem tarafından korunmaktadır ve silinemez.</span>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i> Ortak Özellikleri Kaydet
+                                </button>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -213,130 +230,95 @@
                 <div class="tab-pane" id="tabs-prompts">
                     <div class="d-flex justify-content-between mb-3">
                         <h4>Prompt Şablonları</h4>
-                        <button class="btn btn-primary" wire:click="resetPromptForm">
+                        <button class="btn btn-primary" wire:click="$dispatch('openPromptModal')">
                             <i class="fas fa-plus me-2"></i> Yeni Prompt
                         </button>
                     </div>
 
-                    <form wire:submit="savePrompt" class="card mb-4">
-                        <div class="card-body">
-                            <div class="form-floating mb-3">
-                                <input type="text" wire:model="prompt.name"
-                                    class="form-control @error('prompt.name') is-invalid @enderror"
-                                    placeholder="Prompt şablonu adı" id="prompt_name_input">
-                                <label for="prompt_name_input">Prompt Adı</label>
-                                @error('prompt.name')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Prompt İçeriği</label>
-                                <textarea wire:model="prompt.content"
-                                    class="form-control @error('prompt.content') is-invalid @enderror" rows="5"
-                                    placeholder="Sistem prompt içeriği"></textarea>
-                                @error('prompt.content')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="mb-3">
-                                <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
-                                    <input type="checkbox" id="is_default" name="is_default"
-                                        wire:model="prompt.is_default" value="1">
-                                    <div class="state p-success p-on ms-2">
-                                        <label>Varsayılan Prompt</label>
+                    <div class="row g-3">
+                        @forelse($prompts as $promptItem)
+                        @if(!$promptItem->is_common)
+                        <!-- Ortak özellikleri burada gösterme -->
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card">
+                                <div class="card-status-top"></div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h3 class="card-title mb-0">{{ $promptItem->name }}</h3>
+                                        <div>
+                                            @if($promptItem->is_default)
+                                            <span class="badge bg-secondary">Varsayılan</span>
+                                            @endif
+                                            @if($promptItem->is_system && !$promptItem->is_common)
+                                            <span class="badge bg-secondary">Sistem</span>
+                                            @endif
+                                        </div>
                                     </div>
-                                    <div class="state p-danger p-off ms-2">
-                                        <label>Varsayılan Değil</label>
-                                    </div>
+                                    <p class="text-muted"
+                                        style="height: 4.5rem; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;">
+                                        {{ $promptItem->content }}
+                                    </p>
                                 </div>
-                                <div class="form-text mt-2">
-                                    <i class="fa-thin fa-circle-info me-2"></i>
-                                    Varsayılan prompt, özel bir prompt seçilmediğinde kullanılır
-                                </div>
-                            </div>
+                                <div class="card-footer">
+                                    <div class="d-flex justify-content-between">
+                                        <div class="d-flex gap-2 align-items-center">
+                                            <!-- Aktif/Pasif toggle'ı card footer'a taşındı -->
+                                            <div class="pretty p-default p-curve p-toggle p-smooth">
+                                                <input type="checkbox" id="is_active_{{ $promptItem->id }}"
+                                                    name="is_active"
+                                                    wire:click="togglePromptActive({{ $promptItem->id }})" {{
+                                                    $promptItem->is_active ? 'checked' : '' }}
+                                                {{ $promptItem->is_system ? 'disabled' : '' }}>
+                                                <div class="state p-success p-on ms-2">
+                                                    <label>Aktif</label>
+                                                </div>
+                                                <div class="state p-danger p-off ms-2">
+                                                    <label>Pasif</label>
+                                                </div>
+                                            </div>
 
-                            <div class="d-flex justify-content-between">
-                                @if($editingPromptId)
-                                <button type="button" class="btn btn-ghost-danger" wire:click="resetPromptForm">
-                                    <i class="fas fa-times me-2"></i> İptal
-                                </button>
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-save me-2"></i> Güncelle
-                                </button>
-                                @else
-                                <div></div>
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-save me-2"></i> Ekle
-                                </button>
-                                @endif
-                            </div>
-                        </div>
-                    </form>
-
-                    <div class="table-responsive">
-                        <table class="table table-vcenter card-table">
-                            <thead>
-                                <tr>
-                                    <th>Adı</th>
-                                    <th>Varsayılan</th>
-                                    <th>Tip</th>
-                                    <th class="w-1"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($prompts as $promptItem)
-                                <tr>
-                                    <td>{{ $promptItem->name }}</td>
-                                    <td>
-                                        @if($promptItem->is_default)
-                                        <span class="badge bg-success">Varsayılan</span>
-                                        @else
-                                        <span class="badge bg-muted">-</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if($promptItem->is_common)
-                                        <span class="badge bg-warning">Ortak Özellikler</span>
-                                        @elseif($promptItem->is_system)
-                                        <span class="badge bg-primary">Sistem</span>
-                                        @else
-                                        <span class="badge bg-info">Özel</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        <div class="btn-list flex-nowrap">
-                                            <button class="btn btn-icon btn-ghost-secondary"
+                                            @if(!$promptItem->is_default)
+                                            <div class="pretty p-default p-curve p-smooth ms-3">
+                                                <input type="checkbox" id="is_default_{{ $promptItem->id }}"
+                                                    name="is_default" wire:click="makeDefault({{ $promptItem->id }})" {{
+                                                    $promptItem->is_default ? 'checked' : '' }}
+                                                {{ $promptItem->is_system && !$promptItem->is_common ? 'disabled' : ''
+                                                }}>
+                                                <div class="state p-primary ms-2">
+                                                    <label>Varsayılan</label>
+                                                </div>
+                                            </div>
+                                            @endif
+                                        </div>
+                                        <div class="btn-list">
+                                            <button class="btn btn-sm btn-ghost-secondary"
                                                 wire:click="editPrompt({{ $promptItem->id }})"
                                                 @if($promptItem->is_system && !$promptItem->is_common) disabled
-                                                title="Sistem promptları
-                                                düzenlenemez" @endif>
+                                                title="Sistem promptları düzenlenemez" @endif>
                                                 <i class="fas fa-edit"></i>
                                             </button>
-                                            <button class="btn btn-icon btn-ghost-danger"
-                                                wire:click="deletePrompt({{ $promptItem->id }})"
-                                                @if($promptItem->is_default || $promptItem->is_system ||
-                                                $promptItem->is_common) disabled @endif>
+                                            <button class="btn btn-sm btn-ghost-danger"
+                                                wire:click="$dispatch('showPromptDeleteModal', {id: {{$promptItem->id}}, name: '{{$promptItem->name}}'})"
+                                                @if($promptItem->is_default || $promptItem->is_system) disabled
+                                                title="Bu prompt silinemez" @endif>
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </div>
-                                    </td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="4" class="text-center py-3">
-                                        <div class="empty">
-                                            <p class="empty-title">Henüz prompt şablonu yok</p>
-                                            <p class="empty-subtitle text-muted">
-                                                Yukarıdaki formu kullanarak yeni bir prompt şablonu ekleyebilirsiniz.
-                                            </p>
-                                        </div>
-                                    </td>
-                                </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+                        @empty
+                        <div class="col-12">
+                            <div class="empty">
+                                <p class="empty-title">Henüz prompt şablonu yok</p>
+                                <p class="empty-subtitle text-muted">
+                                    Yeni prompt şablonları eklemek için "Yeni Prompt" butonunu kullanabilirsiniz.
+                                </p>
+                            </div>
+                        </div>
+                        @endforelse
                     </div>
                 </div>
             </div>
@@ -363,4 +345,7 @@
 
     <!-- Prompt düzenleme modali -->
     <livewire:modals.prompt-edit-modal />
+
+    <!-- Prompt silme modali -->
+    <livewire:modals.prompt-delete-modal />
 </div>

@@ -7,6 +7,7 @@ use Livewire\Livewire;
 use Modules\AI\App\Http\Livewire\Admin\ChatPanel;
 use Modules\AI\App\Http\Livewire\Admin\SettingsPanel;
 use Modules\AI\App\Http\Livewire\Admin\Modals\PromptEditModal;
+use Modules\AI\App\Http\Livewire\Admin\Modals\PromptDeleteModal;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -45,6 +46,7 @@ class AIServiceProvider extends ServiceProvider
         Livewire::component('chat-panel', ChatPanel::class);
         Livewire::component('settings-panel', SettingsPanel::class);
         Livewire::component('modals.prompt-edit-modal', PromptEditModal::class);
+        Livewire::component('modals.prompt-delete-modal', PromptDeleteModal::class);
     }
 
     /**

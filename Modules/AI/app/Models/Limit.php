@@ -12,7 +12,6 @@ class Limit extends Model
     protected $table = 'ai_limits';
 
     protected $fillable = [
-        'tenant_id',
         'daily_limit',
         'monthly_limit',
         'used_today',
@@ -72,13 +71,5 @@ class Limit extends Model
         $this->used_today += $tokens;
         $this->used_month += $tokens;
         $this->save();
-    }
-
-    /**
-     * Tenant ilişkisi
-     */
-    public function tenant()
-    {
-        return $this->belongsTo(\App\Models\Tenant::class);
     }
 }

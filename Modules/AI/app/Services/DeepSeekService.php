@@ -38,13 +38,13 @@ class DeepSeekService
             Log::warning('DeepSeek API anahtarı bulunamadı. Lütfen .env dosyasına DEEPSEEK_API_KEY ekleyin veya veritabanı ayarlarını yapılandırın.');
         }
     }
-    
+
     protected function getGlobalSettings()
     {
         $cacheKey = "ai_settings_global";
         
         return Cache::remember($cacheKey, now()->addMinutes(30), function () {
-            return Setting::where('tenant_id', 1)->first();
+            return Setting::first();
         });
     }
 

@@ -9,6 +9,7 @@ use Modules\AI\App\Models\Prompt;
 use Modules\AI\App\Services\DeepSeekService;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use App\Helpers\TenantHelpers;
 
 #[Layout('admin.layout')]
 class SettingsPanel extends Component
@@ -59,8 +60,7 @@ class SettingsPanel extends Component
     
     public function loadSettings()
     {
-        // Root tenant için ayarları yükle (tenant_id = 1)
-        $settings = Setting::where('tenant_id', 1)->first();
+        $settings = Setting::first();
         
         if ($settings) {
             $this->settings = [
@@ -75,8 +75,7 @@ class SettingsPanel extends Component
     
     public function loadLimits()
     {
-        // Root tenant için limitleri yükle (tenant_id = 1)
-        $limits = Limit::where('tenant_id', 1)->first();
+        $limits = Limit::first();
         
         if ($limits) {
             $this->limits = [
@@ -89,9 +88,7 @@ class SettingsPanel extends Component
     public function loadPrompts()
     {
         try {
-            // Root tenant için promptları yükle (tenant_id = 1)
-            $this->prompts = Prompt::where('tenant_id', 1)
-                ->orderBy('is_default', 'desc')
+            $this->prompts = Prompt::orderBy('is_default', 'desc')
                 ->orderBy('name')
                 ->get();
         } catch (\Exception $e) {
@@ -164,18 +161,16 @@ class SettingsPanel extends Component
         try {
             // Eğer API anahtarı boşsa, mevcut değeri koru
             if (empty($this->settings['api_key'])) {
-                $currentSettings = Setting::where('tenant_id', 1)->first();
+                $currentSettings = Setting::first();
                 if ($currentSettings && $currentSettings->api_key) {
                     $this->settings['api_key'] = $currentSettings->api_key;
                 }
             }
             
-            // Root tenant için ayarları kaydet (tenant_id = 1)
-            $settings = Setting::where('tenant_id', 1)->first();
+            $settings = Setting::first();
             
             if (!$settings) {
                 $settings = new Setting();
-                $settings->tenant_id = 1;
             }
             
             $settings->api_key = $this->settings['api_key'];
@@ -208,12 +203,10 @@ class SettingsPanel extends Component
         ]);
         
         try {
-            // Root tenant için limitleri kaydet (tenant_id = 1)
-            $limit = Limit::where('tenant_id', 1)->first();
+            $limit = Limit::first();
             
             if (!$limit) {
                 $limit = new Limit();
-                $limit->tenant_id = 1;
                 $limit->reset_at = now();
                 $limit->used_today = 0;
                 $limit->used_month = 0;
@@ -251,10 +244,19 @@ class SettingsPanel extends Component
                 $prompt = Prompt::find($this->editingPromptId);
                 
                 if ($prompt) {
+                    // Sistem promptu kontrolü
+                    if ($prompt->is_system) {
+                        $this->dispatch('toast', [
+                            'title' => 'Uyarı!',
+                            'message' => 'Sistem promptları düzenlenemez',
+                            'type' => 'warning'
+                        ]);
+                        return;
+                    }
+                    
                     // Eğer yeni prompt varsayılan olarak işaretlendiyse, diğer varsayılanları kaldır
                     if ($this->prompt['is_default'] && !$prompt->is_default) {
-                        Prompt::where('tenant_id', 1)
-                            ->where('is_default', true)
+                        Prompt::where('is_default', true)
                             ->update(['is_default' => false]);
                     }
                     
@@ -272,16 +274,15 @@ class SettingsPanel extends Component
             } else {
                 // Eğer yeni prompt varsayılan olarak işaretlendiyse, diğer varsayılanları kaldır
                 if ($this->prompt['is_default']) {
-                    Prompt::where('tenant_id', 1)
-                        ->where('is_default', true)
+                    Prompt::where('is_default', true)
                         ->update(['is_default' => false]);
                 }
                 
                 $prompt = new Prompt();
-                $prompt->tenant_id = 1;
                 $prompt->name = $this->prompt['name'];
                 $prompt->content = $this->prompt['content'];
                 $prompt->is_default = $this->prompt['is_default'];
+                $prompt->is_system = false; // Yeni eklenen promptlar her zaman özel (sistem değil)
                 $prompt->save();
                 
                 $this->dispatch('toast', [
@@ -309,6 +310,16 @@ class SettingsPanel extends Component
             $prompt = Prompt::find($id);
             
             if ($prompt) {
+                // Sistem promptları düzenlenemez
+                if ($prompt->is_system) {
+                    $this->dispatch('toast', [
+                        'title' => 'Uyarı!',
+                        'message' => 'Sistem promptları düzenlenemez',
+                        'type' => 'warning'
+                    ]);
+                    return;
+                }
+                
                 $this->editingPromptId = $prompt->id;
                 $this->prompt = [
                     'name' => $prompt->name,
@@ -336,6 +347,15 @@ class SettingsPanel extends Component
                     $this->dispatch('toast', [
                         'title' => 'Uyarı!',
                         'message' => 'Varsayılan prompt silinemez',
+                        'type' => 'warning'
+                    ]);
+                    return;
+                }
+                
+                if ($prompt->is_system) {
+                    $this->dispatch('toast', [
+                        'title' => 'Uyarı!',
+                        'message' => 'Sistem promptları silinemez',
                         'type' => 'warning'
                     ]);
                     return;

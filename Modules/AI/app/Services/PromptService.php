@@ -2,22 +2,17 @@
 namespace Modules\AI\App\Services;
 
 use Modules\AI\App\Models\Prompt;
-use App\Helpers\TenantHelpers;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class PromptService
 {
-    protected $tenantId;
-
     /**
      * Constructor
-     *
-     * @param int|null $tenantId
      */
-    public function __construct(?int $tenantId = null)
+    public function __construct()
     {
-        $this->tenantId = $tenantId;
+        // Yapılandırma
     }
 
     /**
@@ -27,21 +22,13 @@ class PromptService
      */
     public function getAllPrompts()
     {
-        // Tenant ID yoksa boş koleksiyon döndür
-        if ($this->tenantId === null) {
-            return collect();
-        }
-        
-        $cacheKey = "ai_prompts_tenant_{$this->tenantId}";
+        $cacheKey = "ai_prompts";
         
         try {
             return Cache::remember($cacheKey, now()->addMinutes(30), function () {
-                return TenantHelpers::central(function () {
-                    return Prompt::where('tenant_id', $this->tenantId)
-                        ->orderBy('is_default', 'desc')
-                        ->orderBy('name')
-                        ->get();
-                });
+                return Prompt::orderBy('is_default', 'desc')
+                    ->orderBy('name')
+                    ->get();
             });
         } catch (\Exception $e) {
             Log::error('Promptları getirirken hata: ' . $e->getMessage());
@@ -56,20 +43,11 @@ class PromptService
      */
     public function getDefaultPrompt(): ?Prompt
     {
-        // Tenant ID yoksa null döndür
-        if ($this->tenantId === null) {
-            return null;
-        }
-        
-        $cacheKey = "ai_default_prompt_tenant_{$this->tenantId}";
+        $cacheKey = "ai_default_prompt";
         
         try {
             return Cache::remember($cacheKey, now()->addMinutes(30), function () {
-                return TenantHelpers::central(function () {
-                    return Prompt::where('tenant_id', $this->tenantId)
-                        ->where('is_default', true)
-                        ->first();
-                });
+                return Prompt::where('is_default', true)->first();
             });
         } catch (\Exception $e) {
             Log::error('Varsayılan promptu getirirken hata: ' . $e->getMessage());
@@ -85,31 +63,21 @@ class PromptService
      */
     public function createPrompt(array $data): bool
     {
-        // Tenant ID yoksa false döndür
-        if ($this->tenantId === null) {
-            return false;
-        }
-        
         $success = false;
         
         try {
-            $success = TenantHelpers::central(function () use ($data) {
-                // Eğer yeni prompt varsayılan olarak işaretlendiyse, diğer varsayılanları kaldır
-                if (isset($data['is_default']) && $data['is_default']) {
-                    Prompt::where('tenant_id', $this->tenantId)
-                        ->where('is_default', true)
-                        ->update(['is_default' => false]);
-                }
-                
-                $prompt = new Prompt();
-                $prompt->tenant_id = $this->tenantId;
-                $prompt->name = $data['name'];
-                $prompt->content = $data['content'];
-                $prompt->is_default = $data['is_default'] ?? false;
-                $success = $prompt->save();
-                
-                return $success;
-            });
+            // Eğer yeni prompt varsayılan olarak işaretlendiyse, diğer varsayılanları kaldır
+            if (isset($data['is_default']) && $data['is_default']) {
+                Prompt::where('is_default', true)
+                    ->update(['is_default' => false]);
+            }
+            
+            $prompt = new Prompt();
+            $prompt->name = $data['name'];
+            $prompt->content = $data['content'];
+            $prompt->is_default = $data['is_default'] ?? false;
+            $prompt->is_system = $data['is_system'] ?? false;
+            $success = $prompt->save();
             
             // Önbelleği temizle
             if ($success) {
@@ -132,28 +100,24 @@ class PromptService
      */
     public function updatePrompt(Prompt $prompt, array $data): bool
     {
-        if ($this->tenantId === null || $prompt->tenant_id != $this->tenantId) {
+        // Sistem promptu kontrolü
+        if ($prompt->is_system) {
             return false;
         }
         
         $success = false;
         
         try {
-            $success = TenantHelpers::central(function () use ($prompt, $data) {
-                // Eğer güncellenecek prompt varsayılan olarak işaretlendiyse, diğer varsayılanları kaldır
-                if (isset($data['is_default']) && $data['is_default'] && !$prompt->is_default) {
-                    Prompt::where('tenant_id', $this->tenantId)
-                        ->where('is_default', true)
-                        ->update(['is_default' => false]);
-                }
-                
-                $prompt->name = $data['name'];
-                $prompt->content = $data['content'];
-                $prompt->is_default = $data['is_default'] ?? false;
-                $success = $prompt->save();
-                
-                return $success;
-            });
+            // Eğer güncellenecek prompt varsayılan olarak işaretlendiyse, diğer varsayılanları kaldır
+            if (isset($data['is_default']) && $data['is_default'] && !$prompt->is_default) {
+                Prompt::where('is_default', true)
+                    ->update(['is_default' => false]);
+            }
+            
+            $prompt->name = $data['name'];
+            $prompt->content = $data['content'];
+            $prompt->is_default = $data['is_default'] ?? false;
+            $success = $prompt->save();
             
             // Önbelleği temizle
             if ($success) {
@@ -175,23 +139,15 @@ class PromptService
      */
     public function deletePrompt(Prompt $prompt): bool
     {
-        // Tenant ID yoksa veya prompt bu tenant'a ait değilse false döndür
-        if ($this->tenantId === null || $prompt->tenant_id != $this->tenantId) {
+        // Sistem promptu veya varsayılan prompt kontrolü
+        if ($prompt->is_system || $prompt->is_default) {
             return false;
         }
         
         $success = false;
         
         try {
-            $success = TenantHelpers::central(function () use ($prompt) {
-                // Varsayılan prompt siliniyorsa, işlemi engelle
-                if ($prompt->is_default) {
-                    return false;
-                }
-                
-                $success = $prompt->delete();
-                return $success;
-            });
+            $success = $prompt->delete();
             
             // Önbelleği temizle
             if ($success) {
@@ -212,11 +168,7 @@ class PromptService
      */
     protected function clearCache(): void
     {
-        if ($this->tenantId === null) {
-            return;
-        }
-        
-        Cache::forget("ai_prompts_tenant_{$this->tenantId}");
-        Cache::forget("ai_default_prompt_tenant_{$this->tenantId}");
+        Cache::forget("ai_prompts");
+        Cache::forget("ai_default_prompt");
     }
 }

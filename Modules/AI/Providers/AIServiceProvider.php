@@ -74,7 +74,9 @@ class AIServiceProvider extends ServiceProvider
      */
     protected function registerCommands(): void
     {
-        // $this->commands([]);
+        $this->commands([
+            \Modules\AI\App\Console\Commands\MigrateRedisConversationsToDatabase::class,
+        ]);
     }
 
     /**

@@ -4,14 +4,13 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StorageController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\InitializeTenancy;
+use Modules\Page\App\Http\Controllers\Front\PageController;
 
 // Admin routes
 require __DIR__.'/admin/web.php';
 
 // Ana web routes - hem central hem tenant için çalışacak
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+Route::middleware([InitializeTenancy::class])->get('/', [PageController::class, 'homepage'])->name('home');
 
 // Normal üyelerin dashboard'a erişimi
 Route::get('/dashboard', function () {

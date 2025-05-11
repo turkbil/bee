@@ -42,6 +42,7 @@ class TenantSeeder extends Seeder
             'tenancy_db_name' => 'laravel',
             'is_active' => true,
             'central' => true,
+            'theme_id' => 1,
             'data' => json_encode([]),
             'created_at' => now(),
             'updated_at' => now(),
@@ -126,6 +127,7 @@ class TenantSeeder extends Seeder
                 'tenancy_db_name' => $config['db_name'],
                 'is_active' => true,
                 'central' => false,
+                'theme_id' => 1,
                 'data' => [],
             ]);
 

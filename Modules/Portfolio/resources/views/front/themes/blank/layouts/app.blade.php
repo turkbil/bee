@@ -1,5 +1,5 @@
 @extends('themes.blank.layouts.app')
 
 @section('content')
-@yield('page_content')
+@yield('portfolio_content')
 @endsection

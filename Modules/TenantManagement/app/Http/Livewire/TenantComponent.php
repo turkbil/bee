@@ -26,7 +26,7 @@ class TenantComponent extends Component
     public $domains = [];
     public $editingTenant = null;
     public $refreshModuleKey = 0;
-    public $theme;
+    public $theme_id;
     public $themes = [];
 
     protected $listeners = ['modulesSaved' => '$refresh', 'itemDeleted' => '$refresh'];
@@ -38,15 +38,15 @@ class TenantComponent extends Component
         'phone'     => 'nullable|string|max:20',
         'is_active' => 'boolean',
         'newDomain' => 'nullable|string|max:255|unique:domains,domain',
-        'theme'     => 'required|string',
+        'theme_id'  => 'required|integer',
     ];
 
     public function mount()
     {
         $this->is_active = true;
         // Tema listesi ve başlangıç teması
-        $this->themes = Theme::where('is_active', true)->pluck('title','name')->toArray();
-        $this->theme = $this->themes ? array_key_first($this->themes) : 'blank';
+        $this->themes = Theme::where('is_active', true)->pluck('title','theme_id')->toArray();
+        $this->theme_id = $this->themes ? array_key_first($this->themes) : 1;
     }
 
     public function getTenantsProperty()
@@ -113,8 +113,8 @@ class TenantComponent extends Component
             $this->phone = $data['phone'] ?? '';
             $this->is_active = (bool)$tenantData->is_active;
             // Tema listesi ve mevcut tenant teması
-            $this->themes = Theme::where('is_active', true)->pluck('title','name')->toArray();
-            $this->theme = $tenantData->theme ?? (array_key_first($this->themes) ?? 'blank');
+            $this->themes = Theme::where('is_active', true)->pluck('title','theme_id')->toArray();
+            $this->theme_id = $tenantData->theme_id ?? (array_key_first($this->themes) ?? 1);
         } catch (\Exception $e) {
             $this->dispatch('toast', [
                 'title' => 'Hata',
@@ -154,7 +154,7 @@ class TenantComponent extends Component
                             'title'      => $this->name,
                             'is_active'  => $this->is_active ? 1 : 0,
                             'data'      => empty($data) ? null : json_encode($data),
-                            'theme'     => $this->theme,
+                            'theme_id'     => $this->theme_id,
                             'updated_at' => now()
                         ]);
                     
@@ -197,7 +197,7 @@ class TenantComponent extends Component
                     'tenancy_db_name' => $dbName,
                     'is_active'       => $this->is_active ? 1 : 0,
                     'data'            => empty($data) ? null : $data,
-                    'theme'           => $this->theme,
+                    'theme_id'        => $this->theme_id,
                 ]);
                 
                 // Tenant dizinlerini hazırla

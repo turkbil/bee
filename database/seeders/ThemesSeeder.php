@@ -1,13 +1,13 @@
 <?php
 
-namespace Modules\ThemeManagement\database\seeders;
+namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\ThemeManagement\App\Models\Theme;
 use Faker\Factory as Faker;
 use Illuminate\Support\Facades\Schema;
 
-class ThemeManagementDatabaseSeeder extends Seeder
+class ThemesSeeder extends Seeder
 {
     public function run(): void
     {

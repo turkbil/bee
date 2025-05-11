@@ -5,6 +5,7 @@ use Illuminate\Routing\Controller;
 use Modules\Page\App\Models\Page;
 use App\Services\ThemeService;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Log;
 
 class PageController extends Controller
 {
@@ -13,6 +14,20 @@ class PageController extends Controller
     public function __construct(ThemeService $themeService)
     {
         $this->themeService = $themeService;
+    }
+
+    /**
+     * Ana sayfa için is_homepage = 1 olan sayfayı getirir
+     */
+    public function homepage()
+    {
+        // Aktif ve ana sayfa olarak işaretli sayfayı al
+        $page = Page::where('is_homepage', true)
+            ->where('is_active', true)
+            ->firstOrFail();
+
+        // Standard gösterim mantığını kullan
+        return $this->show($page->slug);
     }
 
     public function index()
@@ -27,7 +42,7 @@ class PageController extends Controller
             return view($viewPath, compact('pages'));
         } catch (\Exception $e) {
             // Hatayı logla
-            \Log::error("Theme Error: " . $e->getMessage());
+            Log::error("Theme Error: " . $e->getMessage());
             
             // Fallback view'a yönlendir
             return view('page::front.index', compact('pages'));
@@ -49,7 +64,7 @@ class PageController extends Controller
             return view($viewPath, compact('page'));
         } catch (\Exception $e) {
             // Hatayı logla
-            \Log::error("Theme Error: " . $e->getMessage());
+            Log::error("Theme Error: " . $e->getMessage());
             
             // Fallback view'a yönlendir
             return view('page::front.show', compact('page'));

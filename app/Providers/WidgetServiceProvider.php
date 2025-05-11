@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
 use Modules\WidgetManagement\App\Support\ShortcodeParser;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\View;
 
 class WidgetServiceProvider extends ServiceProvider
 {
@@ -16,6 +17,11 @@ class WidgetServiceProvider extends ServiceProvider
     {
         $this->app->singleton('shortcode.parser', function ($app) {
             return new ShortcodeParser();
+        });
+        
+        // Widget çözümleyici servisini singleton olarak kaydet
+        $this->app->singleton('widget.resolver', function ($app) {
+            return $this;
         });
     }
 
@@ -68,6 +74,11 @@ class WidgetServiceProvider extends ServiceProvider
         Blade::directive('file', function ($expression) {
             return "<?php echo widget_file_by_id($expression); ?>";
         });
+        
+        // Özel direktif: Widget içeriğini render etme
+        Blade::directive('renderwidgets', function ($expression) {
+            return '<?php echo app("widget.resolver")->resolveWidgetContent(' . $expression . '); ?>';
+        });
     }
     
     /**
@@ -98,5 +109,33 @@ class WidgetServiceProvider extends ServiceProvider
                 $view->with('content', $parsedContent);
             }
         });
+        
+        // Widget render işlemi için global bir yardımcı görünüm verisi ekleyelim
+        View::composer('themes.blank.layouts.app', function ($view) {
+            $view->with('widgetResolver', $this);
+        });
+    }
+    
+    /**
+     * Frontend widget çözümleyicisi - widget placeholder'larını doğrudan HTML içerikle değiştirir
+     * 
+     * @param string $content HTML içerik
+     * @return string İşlenmiş HTML içerik
+     */
+    public function resolveWidgetContent($content)
+    {
+        // Widget embed pattern - data-tenant-widget-id'yi bul ve widget içeriğini ekle
+        $pattern = '/<div[^>]*data-tenant-widget-id="(\d+)"[^>]*>.*?<div[^>]*id="widget-content-\d+"[^>]*>.*?<\/div><\/div>/s';
+        
+        return preg_replace_callback($pattern, function($matches) {
+            $widgetId = $matches[1];
+            
+            // Widget içeriğini direkt olarak render et
+            if (function_exists('widget_by_id')) {
+                return widget_by_id($widgetId);
+            }
+            
+            return "<!-- Widget ID: $widgetId (Widget helper fonksiyonu bulunamadı) -->";
+        }, $content);
     }
 }

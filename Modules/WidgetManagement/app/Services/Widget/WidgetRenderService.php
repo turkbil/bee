@@ -10,7 +10,8 @@ class WidgetRenderService
 {
     protected $_contextStack = [];
     const MAX_STACK_DEPTH = 10;
-    protected $debugMode = true;
+    // Log mesajlarını kapatmak için debugMode'u false yap
+    protected $debugMode = false;
     protected $useHandlebars = true; // Handlebars kullanımı için bayrak
 
     private function debug($message, $data = [])

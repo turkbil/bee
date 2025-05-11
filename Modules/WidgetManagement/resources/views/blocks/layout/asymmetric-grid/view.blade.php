@@ -1,24 +1,20 @@
-<section class="container py-5">
-    <div class="row g-4">
-        <div class="col-md-8">
-            <div class="row">
-                <div class="col-12 mb-4">
-                    <h3>Büyük Üst Alan</h3>
-                    <p>Bu alanda ana içerik bulunacaktır.</p>
-                </div>
-                <div class="col-md-6">
-                    <h3>Alt Sol</h3>
-                    <p>İçerik buraya gelecek.</p>
-                </div>
-                <div class="col-md-6">
-                    <h3>Alt Sağ</h3>
-                    <p>İçerik buraya gelecek.</p>
-                </div>
-            </div>
+<section class="container mx-auto px-4 py-10">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        <div>
+            <h3 class="text-xl font-medium mb-2">Sütun 1</h3>
+            <p class="text-gray-700">İçerik buraya gelecek.</p>
         </div>
-        <div class="col-md-4">
-            <h3>Yan Alan</h3>
-            <p>Bu alanda yan içerik veya widget'lar bulunabilir.</p>
+        <div>
+            <h3 class="text-xl font-medium mb-2">Sütun 2</h3>
+            <p class="text-gray-700">İçerik buraya gelecek.</p>
+        </div>
+        <div>
+            <h3 class="text-xl font-medium mb-2">Sütun 3</h3>
+            <p class="text-gray-700">İçerik buraya gelecek.</p>
+        </div>
+        <div>
+            <h3 class="text-xl font-medium mb-2">Sütun 4</h3>
+            <p class="text-gray-700">İçerik buraya gelecek.</p>
         </div>
     </div>
 </section>

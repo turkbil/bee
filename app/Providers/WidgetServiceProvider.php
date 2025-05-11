@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Blade;
 use Modules\WidgetManagement\App\Support\ShortcodeParser;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\View;
+use Modules\WidgetManagement\app\Services\WidgetService;
 
 class WidgetServiceProvider extends ServiceProvider
 {
@@ -73,6 +74,15 @@ class WidgetServiceProvider extends ServiceProvider
         // @file(id) direktifi - File widget render etme  
         Blade::directive('file', function ($expression) {
             return "<?php echo widget_file_by_id($expression); ?>";
+        });
+        
+        // Widget CSS ve JS içeriğini render etme direktifleri
+        Blade::directive('widgetstyles', function () {
+            return "<?php echo \\Modules\\WidgetManagement\\app\\Services\\WidgetService::getStylesOutput(); ?>";
+        });
+        
+        Blade::directive('widgetscripts', function () {
+            return "<?php echo \\Modules\\WidgetManagement\\app\\Services\\WidgetService::getScriptsOutput(); ?>";
         });
         
         // Özel direktif: Widget içeriğini render etme

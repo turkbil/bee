@@ -30,6 +30,7 @@
         }
     </script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    @widgetstyles
 </head>
 <body class="font-sans antialiased min-h-screen bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-200 transition-colors duration-300">
     <header class="bg-white shadow dark:bg-gray-800 transition-colors duration-300">
@@ -135,5 +136,7 @@
             </div>
         </div>
     </footer>
+    
+    @widgetscripts
 </body>
 </html>

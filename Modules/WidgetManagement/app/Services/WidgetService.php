@@ -19,6 +19,12 @@ class WidgetService
     protected $useCache = false; // Önbellek kullanımını varsayılan olarak kapalı yap
     protected $useHandlebars = false; // Handlebars kullanımını kapalı olarak ayarla
     
+    // Yüklenen dosyaları ve içeriği takip etmek için statik değişkenler
+    protected static $loadedCssFiles = [];
+    protected static $loadedJsFiles = [];
+    protected static $cssStyles = [];
+    protected static $jsScripts = [];
+    
     public function __construct(
         WidgetRenderService $renderService = null,
         WidgetCacheService $cacheService = null
@@ -47,6 +53,50 @@ class WidgetService
         $this->useHandlebars = $useHandlebars;
         $this->renderService->setUseHandlebars($useHandlebars);
         return $this;
+    }
+    
+    /**
+     * Sayfa render edildiğinde eklenecek CSS dosyalarını döndürür
+     * 
+     * @return array CSS dosya ve stil listesi
+     */
+    public static function getStylesOutput(): string
+    {
+        $output = '';
+        
+        // CSS dosyalarını ekle
+        foreach (self::$loadedCssFiles as $file) {
+            $output .= '<link rel="stylesheet" href="' . $file . '">' . "\n";
+        }
+        
+        // CSS içeriklerini ekle
+        foreach (self::$cssStyles as $id => $style) {
+            $output .= '<style id="' . $id . '">' . $style . '</style>' . "\n";
+        }
+        
+        return $output;
+    }
+    
+    /**
+     * Sayfa render edildiğinde eklenecek JS dosyalarını döndürür
+     * 
+     * @return array JS dosya ve script listesi
+     */
+    public static function getScriptsOutput(): string
+    {
+        $output = '';
+        
+        // JS dosyalarını ekle
+        foreach (self::$loadedJsFiles as $file) {
+            $output .= '<script src="' . $file . '"></script>' . "\n";
+        }
+        
+        // JS içeriklerini ekle
+        foreach (self::$jsScripts as $id => $script) {
+            $output .= '<script id="' . $id . '">' . $script . '</script>' . "\n";
+        }
+        
+        return $output;
     }
     
     public function getAllWidgets(): Collection
@@ -222,35 +272,117 @@ class WidgetService
             $html = $this->renderService->processConditionalBlocks($html, $settings);
         }
         
-        $result = '';
-        
+        // CSS dosyalarını global listeye ekle
         if (!empty($cssFiles)) {
             foreach ($cssFiles as $cssFile) {
                 if (!empty($cssFile)) {
-                    $result .= "<link rel=\"stylesheet\" href=\"{$cssFile}\">\n";
+                    $this->addCssFile($cssFile);
                 }
             }
         }
         
+        // CSS içeriğini global listeye ekle
         if (!empty($css)) {
-            $result .= "<style>{$css}</style>\n";
+            $styleId = 'widget-style-' . $tenantWidget->id;
+            $this->addCssStyle($css, $styleId);
         }
         
-        $result .= $html;
-        
+        // JS dosyalarını global listeye ekle
         if (!empty($jsFiles)) {
             foreach ($jsFiles as $jsFile) {
                 if (!empty($jsFile)) {
-                    $result .= "<script src=\"{$jsFile}\"></script>\n";
+                    $this->addJsFile($jsFile);
                 }
             }
         }
         
+        // JS içeriğini global listeye ekle
         if (!empty($js)) {
-            $result .= "<script>{$js}</script>\n";
+            $scriptId = 'widget-script-' . $tenantWidget->id;
+            $this->addJsScript($js, $scriptId);
         }
         
-        return $result;
+        return $html;
+    }
+    
+    /**
+     * CSS dosyasını global listeye ekler
+     * 
+     * @param string $file Dosya yolu
+     * @return void
+     */
+    protected function addCssFile(string $file): void
+    {
+        // CSS dosyası daha önce yüklendi mi kontrol et
+        if (in_array($file, self::$loadedCssFiles)) {
+            return; // Zaten yüklenmiş, tekrar ekleme
+        }
+        
+        // Dosya yolunu tam URL'ye dönüştür
+        if (!preg_match('/^https?:\/\//', $file)) {
+            $file = cdn($file);
+        }
+        
+        // Yüklenen dosyalar listesine ekle
+        self::$loadedCssFiles[] = $file;
+    }
+    
+    /**
+     * CSS içeriğini global listeye ekler
+     * 
+     * @param string $css CSS içeriği
+     * @param string $id Benzersiz ID
+     * @return void
+     */
+    protected function addCssStyle(string $css, string $id): void
+    {
+        // Boş CSS kontrolü
+        if (empty(trim($css))) {
+            return;
+        }
+        
+        // CSS içeriğini global listeye ekle
+        self::$cssStyles[$id] = $css;
+    }
+    
+    /**
+     * JS dosyasını global listeye ekler
+     * 
+     * @param string $file Dosya yolu
+     * @return void
+     */
+    protected function addJsFile(string $file): void
+    {
+        // JS dosyası daha önce yüklendi mi kontrol et
+        if (in_array($file, self::$loadedJsFiles)) {
+            return; // Zaten yüklenmiş, tekrar ekleme
+        }
+        
+        // Dosya yolunu tam URL'ye dönüştür
+        if (!preg_match('/^https?:\/\//', $file)) {
+            $file = cdn($file);
+        }
+        
+        // Yüklenen dosyalar listesine ekle
+        self::$loadedJsFiles[] = $file;
+    }
+    
+    /**
+     * JS içeriğini global listeye ekler
+     * 
+     * @param string $js JS içeriği
+     * @param string $id Benzersiz ID
+     * @return void
+     */
+    protected function addJsScript(string $js, string $id): void
+    {
+        // Boş JS kontrolü
+        if (empty(trim($js))) {
+            return;
+        }
+        
+        // JS içeriğini global listeye ekle
+        self::$jsScripts[$id] = $js;
     }
     
     public function clearWidgetCache($tenantId = null, $widgetId = null): void

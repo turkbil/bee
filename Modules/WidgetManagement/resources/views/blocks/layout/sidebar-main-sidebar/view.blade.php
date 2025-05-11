@@ -1,16 +1,16 @@
-<section class="container py-5">
-    <div class="row">
-        <div class="col-lg-3 col-md-4">
-            <h3>Sol Kenar</h3>
-            <p>Sol yan menü veya içerik buraya gelecek.</p>
+<section class="container mx-auto px-4 py-10">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+        <div class="md:col-span-3">
+            <h3 class="text-xl font-medium mb-2">Sol Kenar</h3>
+            <p class="text-gray-700">Sol yan menü veya içerik buraya gelecek.</p>
         </div>
-        <div class="col-lg-6 col-md-4">
-            <h3>Ana İçerik</h3>
-            <p>Ana içerik buraya gelecek.</p>
+        <div class="md:col-span-6">
+            <h3 class="text-xl font-medium mb-2">Ana İçerik</h3>
+            <p class="text-gray-700">Ana içerik buraya gelecek.</p>
         </div>
-        <div class="col-lg-3 col-md-4">
-            <h3>Sağ Kenar</h3>
-            <p>Sağ yan menü veya içerik buraya gelecek.</p>
+        <div class="md:col-span-3">
+            <h3 class="text-xl font-medium mb-2">Sağ Kenar</h3>
+            <p class="text-gray-700">Sağ yan menü veya içerik buraya gelecek.</p>
         </div>
     </div>
 </section>

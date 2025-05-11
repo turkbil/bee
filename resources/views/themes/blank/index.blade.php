@@ -1,4 +1,4 @@
-@extends('themes.blank.layouts.default')
+@extends('themes.blank.layouts.app')
 
 @section('content')
     <div>

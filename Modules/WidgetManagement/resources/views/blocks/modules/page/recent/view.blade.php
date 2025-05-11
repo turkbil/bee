@@ -16,7 +16,7 @@ $pages = Page::where('is_active', true)
     <h3>{{ $settings['title'] ?? 'Son Eklenen Sayfalar' }}</h3>
     <div class="list-group">
         @forelse($pages as $page)
-            <a href="/sayfa/{{ $page->slug }}" class="list-group-item list-group-item-action">
+            <a href="/page/{{ $page->slug }}" class="list-group-item list-group-item-action">
                 <div class="d-flex w-100 justify-content-between">
                     <h5 class="mb-1">{{ $page->title }}</h5>
                     @if(!empty($settings['show_dates']) && $settings['show_dates'])

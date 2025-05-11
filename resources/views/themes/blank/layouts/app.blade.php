@@ -89,7 +89,20 @@
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div class="bg-white dark:bg-gray-800 shadow sm:rounded-lg p-6 transition-colors duration-300">
+            @php
+            // İçeriği yakalamak için output buffer başlat
+            ob_start();
+            @endphp
+            
             @yield('content')
+            
+            @php
+            // İçeriği buffer'dan al
+            $content = ob_get_clean();
+            
+            // Widget işleme fonksiyonunu doğrudan çağır (Provider erişimi garantili)
+            echo app('widget.resolver')->resolveWidgetContent($content);
+            @endphp
         </div>
     </main>
 
@@ -122,18 +135,5 @@
             </div>
         </div>
     </footer>
-
-    <script src="{{ asset('admin/libs/handlebars/handlebars.min.js') }}"></script>
-    <script src="{{ asset('admin/libs/studio/partials/studio-widget-loader.js') }}"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('[data-tenant-widget-id]').forEach(function(el) {
-                var id = el.getAttribute('data-tenant-widget-id');
-                if (window.studioLoadWidget) {
-                    window.studioLoadWidget(id);
-                }
-            });
-        });
-    </script>
 </body>
 </html>

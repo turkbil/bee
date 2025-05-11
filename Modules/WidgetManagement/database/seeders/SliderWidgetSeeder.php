@@ -302,64 +302,71 @@ class SliderWidgetSeeder extends Seeder
                 'description' => 'Dinamik slaytlar ekleyebileceğiniz carousel slider',
                 'type' => 'dynamic',
                 'content_html' => '
-                <div id="slider-{{unique_id}}" class="carousel slide" data-bs-ride="carousel">
-                    {{#if show_indicators}}
-                    <div class="carousel-indicators">
-                        {{#each items}}
-                        <button type="button" data-bs-target="#slider-{{../unique_id}}" data-bs-slide-to="{{@index}}" {{#if @first}}class="active"{{/if}}></button>
-                        {{/each}}
-                    </div>
-                    {{/if}}
-                    <div class="carousel-inner">
-                        {{#each items}}
-                        <div class="carousel-item {{#if @first}}active{{/if}}">
-                            <img src="{{image}}" class="d-block w-100" alt="{{title}}">
-                            <div class="carousel-caption d-none d-md-block">
-                                <h5>{{title}}</h5>
-                                <p>{{description}}</p>
-                                {{#if button_text}}
-                                <a href="{{button_url}}" class="btn btn-primary">{{button_text}}</a>
-                                {{/if}}
-                            </div>
-                        </div>
-                        {{/each}}
-                    </div>
-                    {{#if show_controls}}
-                    <button class="carousel-control-prev" type="button" data-bs-target="#slider-{{unique_id}}" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Önceki</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#slider-{{unique_id}}" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Sonraki</span>
-                    </button>
-                    {{/if}}
+                <div id="slider-{{unique_id}}" x-data="{ activeSlide: 0, totalSlides: {{items.length}}, autoplay: true, interval: {{interval}} }" 
+                    x-init="$nextTick(() => {
+                       if (autoplay) {
+                           setInterval(() => {
+                               activeSlide = (activeSlide + 1) % totalSlides;
+                           }, interval);
+                       }
+                   })" class="relative w-full">
+                   <div class="overflow-hidden relative">
+                       {{#each items}}
+                       <div x-show="activeSlide === {{@index}}" 
+                          x-transition:enter="transition ease-out duration-300"
+                          x-transition:enter-start="opacity-0 transform translate-x-full"
+                          x-transition:enter-end="opacity-100 transform translate-x-0"
+                          x-transition:leave="transition ease-in duration-300"
+                          x-transition:leave-start="opacity-100 transform translate-x-0"
+                          x-transition:leave-end="opacity-0 transform -translate-x-full" 
+                          class="relative">
+                           <img src="{{image}}" class="w-full h-auto" alt="{{title}}">
+                           <div class="absolute bottom-0 left-0 right-0 p-4 md:p-6" style="background-color: {{../caption_bg_color}}; color: {{../caption_text_color}};">
+                               <h5 class="text-xl font-medium mb-2">{{title}}</h5>
+                               <p class="mb-4">{{description}}</p>
+                               {{#if button_text}}
+                               <a href="{{button_url}}" class="inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">{{button_text}}</a>
+                               {{/if}}
+                           </div>
+                       </div>
+                       {{/each}}
+                   </div>
+                   
+                   {{#if show_indicators}}
+                   <div class="absolute bottom-4 left-0 right-0 flex justify-center space-x-2">
+                       {{#each items}}
+                       <button @click="activeSlide = {{@index}}" :class="{\'bg-white\': activeSlide === {{@index}}, \'bg-white/50 hover:bg-white/80\': activeSlide !== {{@index}}}" class="h-2 w-6 rounded transition-colors duration-300"></button>
+                       {{/each}}
+                   </div>
+                   {{/if}}
+                   
+                   {{#if show_controls}}
+                   <button @click="activeSlide = (activeSlide - 1 + totalSlides) % totalSlides" class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full">
+                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
+                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                       </svg>
+                       <span class="sr-only">Önceki</span>
+                   </button>
+                   <button @click="activeSlide = (activeSlide + 1) % totalSlides" class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full">
+                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
+                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                       </svg>
+                       <span class="sr-only">Sonraki</span>
+                   </button>
+                   {{/if}}
                 </div>
                 ',
                 'content_css' => '
-                .carousel-item {
+                #slider-{{unique_id}} {
                     height: {{height}}px;
                 }
-                .carousel-item img {
+                #slider-{{unique_id}} img {
                     object-fit: cover;
                     height: 100%;
                     width: 100%;
                 }
-                .carousel-caption {
-                    background-color: {{caption_bg_color}};
-                    padding: 20px;
-                    border-radius: 5px;
-                    color: {{caption_text_color}};
-                }
                 ',
-                'content_js' => '
-                document.addEventListener("DOMContentLoaded", function() {
-                    new bootstrap.Carousel(document.getElementById("slider-{{unique_id}}"), {
-            interval: {{#if interval}}{{interval}}{{else}}5000{{/if}},
-            wrap: true
-                    });
-                });
-                ',
+                'content_js' => '',
                 'has_items' => true,
                 'is_active' => true,
                 'is_core' => true,

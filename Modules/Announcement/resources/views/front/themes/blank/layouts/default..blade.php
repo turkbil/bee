@@ -1,5 +1,5 @@
-@extends('themes.blank.layouts.default')
+@extends('themes.blank.layouts.app')
 
 @section('content')
-    @yield('announcement_content')
+@yield('announcement_content')
 @endsection

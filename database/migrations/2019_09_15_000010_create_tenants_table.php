@@ -21,8 +21,9 @@ class CreateTenantsTable extends Migration
             $table->string('tenancy_db_name')->unique();
             $table->boolean('is_active')->default(true)->index();
             $table->boolean('central')->default(false);
+            $table->unsignedBigInteger('theme_id')->default(1)->index();
+            $table->foreign('theme_id')->references('theme_id')->on('themes');
             $table->json('data')->nullable();
-            $table->string('theme')->default('blank');
             $table->timestamps();
             
             // İlave indeksler eklendi

@@ -8,6 +8,8 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        $this->call(ThemesSeeder::class);
+        
         // Önce tenant'ları oluştur
         $this->call(TenantSeeder::class);
         

@@ -23,7 +23,7 @@ class Tenant extends BaseTenant implements TenantWithDatabase
         'is_active' => 'boolean',
         'central' => 'boolean',
         'data' => 'array',
-        'theme' => 'string',
+        'theme_id' => 'integer',
     ];
     
     public function getActivitylogOptions(): LogOptions
@@ -52,6 +52,7 @@ class Tenant extends BaseTenant implements TenantWithDatabase
             'tenancy_db_name',
             'is_active',
             'central',
+            'theme_id',
             'data',
         ];
     }

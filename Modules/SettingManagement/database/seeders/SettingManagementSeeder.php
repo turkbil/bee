@@ -25,7 +25,8 @@ class SettingManagementSeeder extends Seeder
         // Sadece central veritabanında çalıştır
         $this->call([
             SettingsGroupsTableSeeder::class,
-            SettingsTableSeeder::class
+            SettingsTableSeeder::class,
+            ThemeSettingsSeeder::class
         ]);
     }
 }

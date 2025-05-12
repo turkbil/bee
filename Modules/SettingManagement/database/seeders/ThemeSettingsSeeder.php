@@ -116,43 +116,6 @@ class ThemeSettingsSeeder extends Seeder
                 'type' => 'color',
                 'default_value' => '#e5e7eb',
                 'sort_order' => 12
-            ],
-            [
-                'group_id' => $themeSettingsGroupId,
-                'label' => 'Tema Kimliği',
-                'key' => 'theme_id',
-                'type' => 'select',
-                'options' => json_encode([
-                    'options' => [
-                        ['value' => '1', 'label' => 'Blank Tema'],
-                    ]
-                ]),
-                'default_value' => '1',
-                'sort_order' => 13
-            ],
-            [
-                'group_id' => $themeSettingsGroupId,
-                'label' => 'Koyu Mod Aktif',
-                'key' => 'theme_dark_mode_enabled',
-                'type' => 'boolean',
-                'default_value' => 'false',
-                'sort_order' => 14
-            ],
-            [
-                'group_id' => $themeSettingsGroupId,
-                'label' => 'Köşe Yuvarlaklığı',
-                'key' => 'theme_border_radius',
-                'type' => 'text',
-                'default_value' => '0.375rem',
-                'sort_order' => 15
-            ],
-            [
-                'group_id' => $themeSettingsGroupId,
-                'label' => 'Font Ailesi',
-                'key' => 'theme_font_family',
-                'type' => 'text',
-                'default_value' => 'Inter, system-ui, sans-serif',
-                'sort_order' => 16
             ]
         ];
 

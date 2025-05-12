@@ -103,7 +103,7 @@
                                         <select wire:model="values.{{ $setting->id }}" class="form-select">
                                             <option value="">Seçiniz</option>
                                             @foreach($setting->options as $key => $label)
-                                                <option value="{{ $key }}">{{ $label }}</option>
+                                                <option value="{{ $key }}">{{ is_string($label) ? $label : json_encode($label) }}</option>
                                             @endforeach
                                         </select>
                                     @endif

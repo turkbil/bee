@@ -20,7 +20,6 @@ class SliderWidgetSeeder extends Seeder
     
     public function run()
     {
-
         // Cache kontrolü
         $cacheKey = self::$runKey . '_' . config('database.default');
         if (Cache::has($cacheKey)) {
@@ -69,7 +68,6 @@ class SliderWidgetSeeder extends Seeder
                 } catch (\Exception $e) {
                     Log::error("Moduller kategorisi oluşturulamadı. Hata: " . $e->getMessage());
                 }
-            } else {
             }
             
             // Önce central veritabanındaki fazla slider kayıtlarını temizleyelim
@@ -99,7 +97,7 @@ class SliderWidgetSeeder extends Seeder
     private function cleanupExtraSliders()
     {
         // Slider widget'ını al
-        $widget = Widget::where('slug', 'dinamik-slider')->first();
+        $widget = Widget::where('slug', 'swiper-slider')->first();
         
         if (!$widget) {
             return;
@@ -149,7 +147,7 @@ class SliderWidgetSeeder extends Seeder
             $connection = config('database.default');
             config(['database.default' => config('tenancy.database.central_connection')]);
             
-            $centralWidget = Widget::where('slug', 'dinamik-slider')->first();
+            $centralWidget = Widget::where('slug', 'swiper-slider')->first();
             
             // Bağlantıyı geri al
             config(['database.default' => $connection]);
@@ -196,9 +194,10 @@ class SliderWidgetSeeder extends Seeder
                 'unique_id' => (string) Str::uuid(),
                 'title' => 'Ana Sayfa Slider',
                 'height' => 500,
-                'interval' => 5000,
-                'show_indicators' => true,
-                'show_controls' => true,
+                'autoplay' => true,
+                'autoplay_delay' => 5000,
+                'show_pagination' => true,
+                'show_navigation' => true,
                 'caption_bg_color' => 'rgba(0,0,0,0.5)',
                 'caption_text_color' => '#ffffff'
             ],
@@ -291,82 +290,109 @@ class SliderWidgetSeeder extends Seeder
         }
         
         // Slider widget'ı zaten var mı kontrolü
-        $existingWidget = Widget::where('slug', 'dinamik-slider')->first();
+        $existingWidget = Widget::where('slug', 'swiper-slider')->first();
         
         if (!$existingWidget) {
             // Slider widget'ı oluştur
             $widget = Widget::create([
                 'widget_category_id' => $sliderCategory->widget_category_id,
-                'name' => 'Dinamik Slider',
-                'slug' => 'dinamik-slider',
-                'description' => 'Dinamik slaytlar ekleyebileceğiniz carousel slider',
+                'name' => 'Swiper Slider',
+                'slug' => 'swiper-slider',
+                'description' => 'Dinamik slaytlar ekleyebileceğiniz Swiper slider',
                 'type' => 'dynamic',
                 'content_html' => '
-                <div id="slider-{{unique_id}}" x-data="{ activeSlide: 0, totalSlides: {{items.length}}, autoplay: true, interval: {{interval}} }" 
-                    x-init="$nextTick(() => {
-                       if (autoplay) {
-                           setInterval(() => {
-                               activeSlide = (activeSlide + 1) % totalSlides;
-                           }, interval);
-                       }
-                   })" class="relative w-full">
-                   <div class="overflow-hidden relative">
-                       {{#each items}}
-                       <div x-show="activeSlide === {{@index}}" 
-                          x-transition:enter="transition ease-out duration-300"
-                          x-transition:enter-start="opacity-0 transform translate-x-full"
-                          x-transition:enter-end="opacity-100 transform translate-x-0"
-                          x-transition:leave="transition ease-in duration-300"
-                          x-transition:leave-start="opacity-100 transform translate-x-0"
-                          x-transition:leave-end="opacity-0 transform -translate-x-full" 
-                          class="relative">
-                           <img src="{{image}}" class="w-full h-auto" alt="{{title}}">
-                           <div class="absolute bottom-0 left-0 right-0 p-4 md:p-6" style="background-color: {{../caption_bg_color}}; color: {{../caption_text_color}};">
-                               <h5 class="text-xl font-medium mb-2">{{title}}</h5>
-                               <p class="mb-4">{{description}}</p>
-                               {{#if button_text}}
-                               <a href="{{button_url}}" class="inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">{{button_text}}</a>
-                               {{/if}}
-                           </div>
-                       </div>
-                       {{/each}}
-                   </div>
-                   
-                   {{#if show_indicators}}
-                   <div class="absolute bottom-4 left-0 right-0 flex justify-center space-x-2">
-                       {{#each items}}
-                       <button @click="activeSlide = {{@index}}" :class="{\'bg-white\': activeSlide === {{@index}}, \'bg-white/50 hover:bg-white/80\': activeSlide !== {{@index}}}" class="h-2 w-6 rounded transition-colors duration-300"></button>
-                       {{/each}}
-                   </div>
-                   {{/if}}
-                   
-                   {{#if show_controls}}
-                   <button @click="activeSlide = (activeSlide - 1 + totalSlides) % totalSlides" class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full">
-                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
-                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                       </svg>
-                       <span class="sr-only">Önceki</span>
-                   </button>
-                   <button @click="activeSlide = (activeSlide + 1) % totalSlides" class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full">
-                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
-                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                       </svg>
-                       <span class="sr-only">Sonraki</span>
-                   </button>
-                   {{/if}}
+                <link rel="stylesheet" href="/assets/libs/swiper/css/swiper-bundle.min.css">
+
+                <div class="swiper-container" id="swiper-{{unique_id}}">
+                    <div class="swiper-wrapper">
+                        {{#each items}}
+                        <div class="swiper-slide">
+                            <img src="{{image}}" alt="{{title}}">
+                            <div class="swiper-caption">
+                                <h3>{{title}}</h3>
+                                <p>{{description}}</p>
+                                {{#if button_text}}
+                                <a href="{{button_url}}" class="swiper-button">{{button_text}}</a>
+                                {{/if}}
+                            </div>
+                        </div>
+                        {{/each}}
+                    </div>
+
+                    {{#if show_pagination}}
+                    <div class="swiper-pagination"></div>
+                    {{/if}}
+
+                    {{#if show_navigation}}
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
+                    {{/if}}
                 </div>
+
+                <script src="/assets/libs/swiper/js/swiper-bundle.min.js"></script>
                 ',
                 'content_css' => '
-                #slider-{{unique_id}} {
+                #swiper-{{unique_id}} {
+                    width: 100%;
                     height: {{height}}px;
                 }
-                #slider-{{unique_id}} img {
-                    object-fit: cover;
-                    height: 100%;
+
+                .swiper-slide {
+                    position: relative;
+                }
+
+                .swiper-slide img {
                     width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
+
+                .swiper-caption {
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    background-color: {{caption_bg_color}};
+                    color: {{caption_text_color}};
+                    padding: 20px;
+                    text-align: center;
+                }
+
+                .swiper-button {
+                    display: inline-block;
+                    padding: 10px 20px;
+                    background-color: #007bff;
+                    color: white;
+                    text-decoration: none;
+                    border-radius: 5px;
+                    margin-top: 10px;
+                }
+
+                .swiper-button:hover {
+                    background-color: #0056b3;
                 }
                 ',
-                'content_js' => '',
+                'content_js' => '
+                document.addEventListener("DOMContentLoaded", function() {
+                    new Swiper("#swiper-{{unique_id}}", {
+                        loop: true,
+                        autoplay: {{#if autoplay}}{ 
+                            delay: {{autoplay_delay}}, 
+                            disableOnInteraction: false 
+                        }{{else}}false{{/if}},
+                        pagination: {{#if show_pagination}}{ 
+                            el: ".swiper-pagination", 
+                            clickable: true 
+                        }{{else}}false{{/if}},
+                        navigation: {{#if show_navigation}}{ 
+                            nextEl: ".swiper-button-next", 
+                            prevEl: ".swiper-button-prev" 
+                        }{{else}}false{{/if}},
+                        effect: "slide",
+                        speed: 800
+                    });
+                });
+                ',
                 'has_items' => true,
                 'is_active' => true,
                 'is_core' => true,
@@ -426,22 +452,29 @@ class SliderWidgetSeeder extends Seeder
                         'default' => 500
                     ],
                     [
-                        'name' => 'interval',
-                        'label' => 'Slayt Değişim Süresi (ms)',
-                        'type' => 'number',
-                        'required' => false,
-                        'default' => 5000
-                    ],
-                    [
-                        'name' => 'show_indicators',
-                        'label' => 'Göstergeleri Göster',
+                        'name' => 'autoplay',
+                        'label' => 'Otomatik Oynatma',
                         'type' => 'checkbox',
                         'required' => false,
                         'default' => true
                     ],
                     [
-                        'name' => 'show_controls',
-                        'label' => 'Kontrolleri Göster',
+                        'name' => 'autoplay_delay',
+                        'label' => 'Otomatik Oynatma Gecikmesi (ms)',
+                        'type' => 'number',
+                        'required' => false,
+                        'default' => 5000
+                    ],
+                    [
+                        'name' => 'show_pagination',
+                        'label' => 'Sayfalama Göster',
+                        'type' => 'checkbox',
+                        'required' => false,
+                        'default' => true
+                    ],
+                    [
+                        'name' => 'show_navigation',
+                        'label' => 'Navigasyon Göster',
                         'type' => 'checkbox',
                         'required' => false,
                         'default' => true
@@ -465,7 +498,7 @@ class SliderWidgetSeeder extends Seeder
             
             return $widget;
         } else {
-            Log::info('Dinamik Slider bileşeni zaten mevcut, atlanıyor...');
+            Log::info('Swiper Slider bileşeni zaten mevcut, atlanıyor...');
             return $existingWidget;
         }
     }
@@ -488,9 +521,10 @@ class SliderWidgetSeeder extends Seeder
                 'unique_id' => (string) Str::uuid(),
                 'title' => 'Ana Sayfa Slider',
                 'height' => 500,
-                'interval' => 5000,
-                'show_indicators' => true,
-                'show_controls' => true,
+                'autoplay' => true,
+                'autoplay_delay' => 5000,
+                'show_pagination' => true,
+                'show_navigation' => true,
                 'caption_bg_color' => 'rgba(0,0,0,0.5)',
                 'caption_text_color' => '#ffffff'
             ],
@@ -583,9 +617,10 @@ class SliderWidgetSeeder extends Seeder
                             'unique_id' => (string) Str::uuid(),
                             'title' => $tenant->title . ' Slider',
                             'height' => 500,
-                            'interval' => 5000,
-                            'show_indicators' => true,
-                            'show_controls' => true,
+                            'autoplay' => true,
+                            'autoplay_delay' => 5000,
+                            'show_pagination' => true,
+                            'show_navigation' => true,
                             'caption_bg_color' => 'rgba(0,0,0,0.5)',
                             'caption_text_color' => '#ffffff'
                         ],

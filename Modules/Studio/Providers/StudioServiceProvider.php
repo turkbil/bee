@@ -35,7 +35,9 @@ class StudioServiceProvider extends ServiceProvider
         $this->registerCommands();
         $this->registerTranslations();
         $this->loadMigrationsFrom(module_path($this->moduleName, 'database/migrations'));
-        $this->publishAssets();
+        
+        // Varlıkları otomatik yayınlama işlemi kaldırıldı
+        // $this->publishAssets();
 
         // Rotaları yükle
         $this->loadRoutesFrom(module_path('Studio', 'routes/web.php'));
@@ -130,54 +132,13 @@ class StudioServiceProvider extends ServiceProvider
     }
 
     /**
-     * Varlıkları yayınla
+     * Varlıkları yayınla - Otomatik yayınlama devre dışı
+     * Manuel olarak başka bir yere dosyaları yüklendiği için bu fonksiyon pasif hale getirildi
      */
     protected function publishAssets(): void
     {
-        $sourcePath = module_path('Studio', 'resources/assets');
-        $destinationPath = public_path('modules/studio');
-
-        $this->publishes([
-            $sourcePath . '/css' => $destinationPath . '/css',
-            $sourcePath . '/js' => $destinationPath . '/js',
-        ], 'studio-assets');
-
-        // Uygulamanın üretim ortamında olup olmadığını kontrol et
-        if (!$this->app->isProduction() && config('studio.dev.auto_publish_assets', true)) {
-            $this->publishResourcesForDevMode($sourcePath, $destinationPath);
-        }
-    }
-
-    private function publishResourcesForDevMode($sourcePath, $destinationPath): void
-    {
-        try {
-            if (!is_dir($destinationPath)) {
-                mkdir($destinationPath, 0755, true);
-            }
-
-            // CSS dosyalarını kopyala
-            if (is_dir($sourcePath . '/css')) {
-                if (!is_dir($destinationPath . '/css')) {
-                    mkdir($destinationPath . '/css', 0755, true);
-                }
-                foreach (glob($sourcePath . '/css/*.css') as $file) {
-                    copy($file, $destinationPath . '/css/' . basename($file));
-                }
-            }
-
-            // JS dosyalarını kopyala
-            if (is_dir($sourcePath . '/js')) {
-                if (!is_dir($destinationPath . '/js')) {
-                    mkdir($destinationPath . '/js', 0755, true);
-                }
-                foreach (glob($sourcePath . '/js/*.js') as $file) {
-                    copy($file, $destinationPath . '/js/' . basename($file));
-                }
-            }
-        } catch (\Exception $e) {
-            // Hata durumunda loglama yap
-            \Illuminate\Support\Facades\Log::error('Studio Modülü: Varlıkları yayınlarken hata: ' . $e->getMessage());
-        }
+        // Varlıkları otomatik olarak kopyalamayı devre dışı bıraktık
+        // Kullanıcı manuel olarak başka bir yere yüklemiş
     }
 
     /**

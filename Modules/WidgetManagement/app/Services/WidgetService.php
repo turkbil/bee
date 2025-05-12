@@ -16,10 +16,9 @@ class WidgetService
     
     protected $cachePrefix = 'widget_';
     protected $cacheDuration = 1440;
-    protected $useCache = false; // Önbellek kullanımını varsayılan olarak kapalı yap
-    protected $useHandlebars = false; // Handlebars kullanımını kapalı olarak ayarla
+    protected $useCache = false;
+    protected $useHandlebars = false;
     
-    // Yüklenen dosyaları ve içeriği takip etmek için statik değişkenler
     protected static $loadedCssFiles = [];
     protected static $loadedJsFiles = [];
     protected static $cssStyles = [];
@@ -32,7 +31,6 @@ class WidgetService
         $this->renderService = $renderService ?? new WidgetRenderService();
         $this->cacheService = $cacheService ?? new WidgetCacheService($this->cachePrefix);
         
-        // Handlebars kullanımı için renderService'i ayarla
         if ($this->useHandlebars) {
             $this->renderService->setUseHandlebars(true);
         } else {
@@ -40,14 +38,12 @@ class WidgetService
         }
     }
     
-    // Önbellek kullanımını ayarla
     public function setCacheUsage($useCache)
     {
         $this->useCache = $useCache;
         return $this;
     }
 
-    // Handlebars kullanımını ayarla
     public function setHandlebarsUsage($useHandlebars)
     {
         $this->useHandlebars = $useHandlebars;
@@ -56,9 +52,7 @@ class WidgetService
     }
     
     /**
-     * Sayfa render edildiğinde eklenecek CSS dosyalarını döndürür
-     * 
-     * @return array CSS dosya ve stil listesi
+     * Sayfa render edildiğinde eklenecek CSS stillerini döndürür
      */
     public static function getStylesOutput(): string
     {
@@ -79,8 +73,6 @@ class WidgetService
     
     /**
      * Sayfa render edildiğinde eklenecek JS dosyalarını döndürür
-     * 
-     * @return array JS dosya ve script listesi
      */
     public static function getScriptsOutput(): string
     {
@@ -159,7 +151,6 @@ class WidgetService
     
     public function renderWidgetsInPosition(string $position): string
     {
-        // tenant()->id null durumunu önlemek için optional ile id al
         $tenantId = optional(tenant())->id ?? 0;
         $cacheKey = $this->cachePrefix . $tenantId . "_pos_{$position}";
         
@@ -186,7 +177,6 @@ class WidgetService
         
     public function renderSingleWidget(TenantWidget $tenantWidget): string
     {
-        // tenant()->id null durumunu önlemek için optional ile id al
         $tenantId = optional(tenant())->id ?? 0;
         $cacheKey = $this->cachePrefix . $tenantId . "_widget_{$tenantWidget->id}";
         
@@ -207,8 +197,49 @@ class WidgetService
             $js = $tenantWidget->custom_js;
             $cssFiles = [];
             $jsFiles = [];
+            $settings = $tenantWidget->settings ?? [];
             
-            $html = $this->renderService->processVariables($html, $tenantWidget->settings ?? []);
+            // HTML içindeki link etiketlerini topla ve kaldır
+            $html = preg_replace_callback('/<link\s+[^>]*href=(["\'])([^"\']+)\\1[^>]*>/i', function($matches) {
+                $url = $matches[2];
+                // HTTP/HTTPS kontrolü
+                if (!preg_match('/^https?:\/\//', $url)) {
+                    $url = cdn($url);
+                }
+                $this->addCssFile($url);
+                return ''; // Etiketi kaldır
+            }, $html);
+            
+            // HTML içindeki script etiketlerini topla ve kaldır (src özelliği olanlar)
+            $html = preg_replace_callback('/<script\s+[^>]*src=(["\'])([^"\']+)\\1[^>]*><\/script>/i', function($matches) {
+                $url = $matches[2];
+                // HTTP/HTTPS kontrolü
+                if (!preg_match('/^https?:\/\//', $url)) {
+                    $url = cdn($url);
+                }
+                $this->addJsFile($url);
+                return ''; // Etiketi kaldır
+            }, $html);
+            
+            $html = preg_replace_callback('/<img\s+[^>]*src=(["\'])([^"\']+)\\1/i', function($matches) {
+                $url = $matches[2];
+                if (!preg_match('/^https?:\/\//', $url)) {
+                    $url = cdn($url);
+                }
+                return str_replace($matches[2], $url, $matches[0]);
+            }, $html);
+            
+            $html = $this->renderService->processVariables($html, $settings);
+            
+            // CSS değişkenlerini işle
+            if (!empty($css)) {
+                $css = $this->renderService->processVariables($css, $settings);
+            }
+            
+            // JS değişkenlerini işle
+            if (!empty($js)) {
+                $js = $this->renderService->processVariables($js, $settings);
+            }
         } else {
             $widget = $tenantWidget->widget;
             
@@ -257,19 +288,82 @@ class WidgetService
                 $items = $tenantWidget->items
                     ->where('content.is_active', true)
                     ->map(function ($item) {
-                        return $item->content;
+                        $content = $item->content;
+                        if (isset($content['image']) && !preg_match('/^https?:\/\//', $content['image'])) {
+                            $content['image'] = cdn($content['image']);
+                        }
+                        return $content;
                     })->toArray();
                 
                 $html = $this->renderService->processItems($html, $items);
+                
+                // Eğer CSS ve JS içerikleri varsa, onlar için de items işleme
+                if (!empty($css)) {
+                    $css = $this->renderService->processItems($css, $items);
+                }
+                
+                if (!empty($js)) {
+                    $js = $this->renderService->processItems($js, $items);
+                }
             }
             
             if ($widget->type === 'module') {
                 $moduleItems = $this->getModuleData($widget->data_source, $settings);
                 $html = $this->renderService->processModuleData($html, $moduleItems);
+                
+                // Eğer CSS ve JS içerikleri varsa, onları da moduleItems için işle
+                if (!empty($css)) {
+                    $css = $this->renderService->processModuleData($css, $moduleItems);
+                }
+                
+                if (!empty($js)) {
+                    $js = $this->renderService->processModuleData($js, $moduleItems);
+                }
             }
+            
+            // HTML içindeki link etiketlerini topla ve kaldır
+            $html = preg_replace_callback('/<link\s+[^>]*href=(["\'])([^"\']+)\\1[^>]*>/i', function($matches) {
+                $url = $matches[2];
+                // HTTP/HTTPS kontrolü
+                if (!preg_match('/^https?:\/\//', $url)) {
+                    $url = cdn($url);
+                }
+                $this->addCssFile($url);
+                return ''; // Etiketi kaldır
+            }, $html);
+            
+            // HTML içindeki script etiketlerini topla ve kaldır (src özelliği olanlar)
+            $html = preg_replace_callback('/<script\s+[^>]*src=(["\'])([^"\']+)\\1[^>]*><\/script>/i', function($matches) {
+                $url = $matches[2];
+                // HTTP/HTTPS kontrolü
+                if (!preg_match('/^https?:\/\//', $url)) {
+                    $url = cdn($url);
+                }
+                $this->addJsFile($url);
+                return ''; // Etiketi kaldır
+            }, $html);
+            
+            $html = preg_replace_callback('/<img\s+[^>]*src=(["\'])([^"\']+)\\1/i', function($matches) {
+                $url = $matches[2];
+                if (!preg_match('/^https?:\/\//', $url)) {
+                    $url = cdn($url);
+                }
+                return str_replace($matches[2], $url, $matches[0]);
+            }, $html);
             
             $html = $this->renderService->processVariables($html, $settings);
             $html = $this->renderService->processConditionalBlocks($html, $settings);
+            
+            // CSS ve JS değişkenlerini işle
+            if (!empty($css)) {
+                $css = $this->renderService->processVariables($css, $settings);
+                $css = $this->renderService->processConditionalBlocks($css, $settings);
+            }
+            
+            if (!empty($js)) {
+                $js = $this->renderService->processVariables($js, $settings);
+                $js = $this->renderService->processConditionalBlocks($js, $settings);
+            }
         }
         
         // CSS dosyalarını global listeye ekle
@@ -307,81 +401,57 @@ class WidgetService
     
     /**
      * CSS dosyasını global listeye ekler
-     * 
-     * @param string $file Dosya yolu
-     * @return void
      */
     protected function addCssFile(string $file): void
     {
-        // CSS dosyası daha önce yüklendi mi kontrol et
         if (in_array($file, self::$loadedCssFiles)) {
-            return; // Zaten yüklenmiş, tekrar ekleme
+            return;
         }
         
-        // Dosya yolunu tam URL'ye dönüştür
         if (!preg_match('/^https?:\/\//', $file)) {
             $file = cdn($file);
         }
         
-        // Yüklenen dosyalar listesine ekle
         self::$loadedCssFiles[] = $file;
     }
     
     /**
      * CSS içeriğini global listeye ekler
-     * 
-     * @param string $css CSS içeriği
-     * @param string $id Benzersiz ID
-     * @return void
      */
     protected function addCssStyle(string $css, string $id): void
     {
-        // Boş CSS kontrolü
         if (empty(trim($css))) {
             return;
         }
         
-        // CSS içeriğini global listeye ekle
         self::$cssStyles[$id] = $css;
     }
     
     /**
      * JS dosyasını global listeye ekler
-     * 
-     * @param string $file Dosya yolu
-     * @return void
      */
     protected function addJsFile(string $file): void
     {
-        // JS dosyası daha önce yüklendi mi kontrol et
         if (in_array($file, self::$loadedJsFiles)) {
-            return; // Zaten yüklenmiş, tekrar ekleme
+            return;
         }
         
-        // Dosya yolunu tam URL'ye dönüştür
         if (!preg_match('/^https?:\/\//', $file)) {
             $file = cdn($file);
         }
         
-        // Yüklenen dosyalar listesine ekle
         self::$loadedJsFiles[] = $file;
     }
     
     /**
      * JS içeriğini global listeye ekler
-     * 
-     * @param string $js JS içeriği
-     * @param string $id Benzersiz ID
-     * @return void
      */
     protected function addJsScript(string $js, string $id): void
     {
-        // Boş JS kontrolü
         if (empty(trim($js))) {
             return;
         }
         
-        // JS içeriğini global listeye ekle
         self::$jsScripts[$id] = $js;
     }
     
@@ -392,10 +462,6 @@ class WidgetService
     
     /**
      * Modül verilerini al (önbelleksiz)
-     * 
-     * @param string|null $dataSource Veri kaynağı sınıfı yolu
-     * @param array $settings Ayarlar
-     * @return array Modül verileri
      */
     public function getModuleData($dataSource = null, array $settings = []): array
     {
@@ -403,7 +469,6 @@ class WidgetService
             return [];
         }
         
-        // İlk olarak tam sınıf yolu verilmişse direk kullan
         if (class_exists($dataSource)) {
             $module = new $dataSource();
             if (method_exists($module, 'getData')) {
@@ -412,14 +477,11 @@ class WidgetService
             return [];
         }
         
-        // Modules/ öneki yoksa, resources/views/blocks/modules/ altında arama yap
         if (strpos($dataSource, 'Modules\\') !== 0) {
-            // Dosya yolunu çıkar (page/recent)
             $parts = explode('/', $dataSource);
             if (count($parts) >= 2) {
-                $moduleName = $parts[0]; // page, portfolio, vb.
+                $moduleName = $parts[0];
                 
-                // Sınıf dosyasını kontrol et
                 $moduleClassName = 'Modules\\WidgetManagement\\resources\\views\\blocks\\modules\\' . $moduleName . '\\' . ucfirst($moduleName) . 'Modules';
                 
                 if (class_exists($moduleClassName)) {

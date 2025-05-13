@@ -459,7 +459,9 @@ class WidgetService
             $items = [];
             if ($widget->has_items) {
                 $items = $tenantWidget->items
-                    ->where('content.is_active', true)
+                    ->filter(function ($item) {
+                        return !isset($item->content['is_active']) || $item->content['is_active'] === true;
+                    })
                     ->map(function ($item) {
                         $content = $item->content;
                         if (isset($content['image']) && !preg_match('/^https?:\/\//', $content['image'])) {

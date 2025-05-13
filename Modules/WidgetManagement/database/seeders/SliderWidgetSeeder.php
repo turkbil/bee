@@ -323,37 +323,18 @@ class SliderWidgetSeeder extends Seeder
                         {{/each}}
                     </div>
                     
-                    {{#if show_pagination}}
                     <div class="swiper-pagination"></div>
-                    {{/if}}
-                    
-                    {{#if show_navigation}}
                     <div class="swiper-button-next"></div>
                     <div class="swiper-button-prev"></div>
-                    {{/if}}
                 </div>
 
                 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
                 ',
                 'content_css' => '
-                html,
-                body {
-                    position: relative;
-                    height: 100%;
-                }
-
-                body {
-                    background: #eee;
-                    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
-                    font-size: 14px;
-                    color: #000;
-                    margin: 0;
-                    padding: 0;
-                }
-
                 .swiper {
                     width: 100%;
                     height: {{height}}px;
+                    margin-bottom: 30px;
                 }
 
                 .swiper-slide {
@@ -397,27 +378,48 @@ class SliderWidgetSeeder extends Seeder
                 .swiper-button:hover {
                     background-color: #0056b3;
                 }
+
+                .swiper-button-next, 
+                .swiper-button-prev {
+                    color: #fff !important;
+                    background-color: rgba(0,0,0,0.5);
+                    padding: 20px;
+                    border-radius: 50%;
+                    width: 30px !important;
+                    height: 30px !important;
+                }
+
+                .swiper-pagination-bullet {
+                    width: 12px;
+                    height: 12px;
+                    background: #fff;
+                    opacity: 0.7;
+                }
+
+                .swiper-pagination-bullet-active {
+                    opacity: 1;
+                    background: #007bff;
+                }
                 ',
                 'content_js' => '
-                document.addEventListener("DOMContentLoaded", function() {
-                    var swiper = new Swiper(".mySwiper-{{unique_id}}", {
-                        pagination: {
-                            el: ".swiper-pagination",
-                            dynamicBullets: {{#if dynamic_bullets}}true{{else}}false{{/if}},
-                            clickable: true
-                        },
-                        loop: {{#if loop}}true{{else}}false{{/if}},
-                        autoplay: {{#if autoplay}}{ 
-                            delay: {{autoplay_delay}}, 
-                            disableOnInteraction: false 
-                        }{{else}}false{{/if}},
-                        navigation: {{#if show_navigation}}{ 
-                            nextEl: ".swiper-button-next", 
-                            prevEl: ".swiper-button-prev" 
-                        }{{else}}false{{/if}},
-                        effect: "{{effect}}",
-                        speed: {{speed}}
-                    });
+                var mySwiper = new Swiper(".mySwiper-{{unique_id}}", {
+                    slidesPerView: 1,
+                    spaceBetween: 0,
+                    loop: true,
+                    autoplay: {
+                        delay: 5000,
+                        disableOnInteraction: false,
+                    },
+                    pagination: {
+                        el: ".swiper-pagination",
+                        clickable: true,
+                    },
+                    navigation: {
+                        nextEl: ".swiper-button-next",
+                        prevEl: ".swiper-button-prev",
+                    },
+                    effect: "slide",
+                    speed: 800,
                 });
                 ',
                 'has_items' => true,

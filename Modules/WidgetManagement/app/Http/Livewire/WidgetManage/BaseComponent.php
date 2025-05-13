@@ -258,8 +258,8 @@ class BaseComponent extends Component
             
             if (is_array($this->widget['settings_schema'])) {
                 foreach ($this->widget['settings_schema'] as $field) {
-                    if ($field['name'] === 'title') $hasTitle = true;
-                    if ($field['name'] === 'unique_id') $hasUniqueId = true;
+                    if ($field['name'] === 'widget.title') $hasTitle = true;
+                    if ($field['name'] === 'widget.unique_id') $hasUniqueId = true;
                 }
             } else {
                 $this->widget['settings_schema'] = [];
@@ -267,7 +267,7 @@ class BaseComponent extends Component
             
             if (!$hasTitle) {
                 $this->widget['settings_schema'] = array_merge([[
-                    'name' => 'title',
+                    'name' => 'widget.title',
                     'label' => 'Başlık',
                     'type' => 'text',
                     'required' => true,
@@ -277,7 +277,7 @@ class BaseComponent extends Component
             
             if (!$hasUniqueId) {
                 $this->widget['settings_schema'][] = [
-                    'name' => 'unique_id',
+                    'name' => 'widget.unique_id',
                     'label' => 'Benzersiz ID',
                     'type' => 'text',
                     'required' => false,

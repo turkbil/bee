@@ -47,8 +47,8 @@ class WidgetPreviewController extends Controller
                 
                 // Varsayılan ayarları oluştur
                 $settings = [
-                    'title' => $widget->name,
-                    'unique_id' => Str::random(),
+                    'widget.title' => $widget->name,
+                    'widget.unique_id' => Str::random(),
                     'show_description' => true
                 ];
                 
@@ -113,11 +113,11 @@ class WidgetPreviewController extends Controller
                 }
             }
             // Statik için title, unique_id özelliği ekle
-            if (!isset($context['title'])) {
-                $context['title'] = $widget->name;
+            if (!isset($context['widget.title'])) {
+                $context['widget.title'] = $widget->name;
             }
-            if (!isset($context['unique_id'])) {
-                $context['unique_id'] = Str::random();
+            if (!isset($context['widget.unique_id'])) {
+                $context['widget.unique_id'] = Str::random();
             }
             // Öğeler context'e ekle
             $context['items'] = $itemsData;

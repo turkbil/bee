@@ -199,7 +199,11 @@ class SliderWidgetSeeder extends Seeder
                 'show_pagination' => true,
                 'show_navigation' => true,
                 'caption_bg_color' => 'rgba(0,0,0,0.5)',
-                'caption_text_color' => '#ffffff'
+                'caption_text_color' => '#ffffff',
+                'effect' => 'slide',
+                'speed' => 800,
+                'dynamic_bullets' => true,
+                'loop' => true
             ],
             'order' => 0,
             'is_active' => true
@@ -301,9 +305,9 @@ class SliderWidgetSeeder extends Seeder
                 'description' => 'Dinamik slaytlar ekleyebileceğiniz Swiper slider',
                 'type' => 'dynamic',
                 'content_html' => '
-                <link rel="stylesheet" href="/assets/libs/swiper/css/swiper-bundle.min.css">
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
 
-                <div class="swiper-container" id="swiper-{{unique_id}}">
+                <div class="swiper mySwiper-{{unique_id}}">
                     <div class="swiper-wrapper">
                         {{#each items}}
                         <div class="swiper-slide">
@@ -318,30 +322,52 @@ class SliderWidgetSeeder extends Seeder
                         </div>
                         {{/each}}
                     </div>
-
+                    
                     {{#if show_pagination}}
                     <div class="swiper-pagination"></div>
                     {{/if}}
-
+                    
                     {{#if show_navigation}}
                     <div class="swiper-button-next"></div>
                     <div class="swiper-button-prev"></div>
                     {{/if}}
                 </div>
 
-                <script src="/assets/libs/swiper/js/swiper-bundle.min.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
                 ',
                 'content_css' => '
-                #swiper-{{unique_id}} {
+                html,
+                body {
+                    position: relative;
+                    height: 100%;
+                }
+
+                body {
+                    background: #eee;
+                    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+                    font-size: 14px;
+                    color: #000;
+                    margin: 0;
+                    padding: 0;
+                }
+
+                .swiper {
                     width: 100%;
                     height: {{height}}px;
                 }
 
                 .swiper-slide {
+                    text-align: center;
+                    font-size: 18px;
+                    background: #fff;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
                     position: relative;
                 }
 
                 .swiper-slide img {
+                    display: block;
                     width: 100%;
                     height: 100%;
                     object-fit: cover;
@@ -374,22 +400,23 @@ class SliderWidgetSeeder extends Seeder
                 ',
                 'content_js' => '
                 document.addEventListener("DOMContentLoaded", function() {
-                    new Swiper("#swiper-{{unique_id}}", {
-                        loop: true,
+                    var swiper = new Swiper(".mySwiper-{{unique_id}}", {
+                        pagination: {
+                            el: ".swiper-pagination",
+                            dynamicBullets: {{#if dynamic_bullets}}true{{else}}false{{/if}},
+                            clickable: true
+                        },
+                        loop: {{#if loop}}true{{else}}false{{/if}},
                         autoplay: {{#if autoplay}}{ 
                             delay: {{autoplay_delay}}, 
                             disableOnInteraction: false 
-                        }{{else}}false{{/if}},
-                        pagination: {{#if show_pagination}}{ 
-                            el: ".swiper-pagination", 
-                            clickable: true 
                         }{{else}}false{{/if}},
                         navigation: {{#if show_navigation}}{ 
                             nextEl: ".swiper-button-next", 
                             prevEl: ".swiper-button-prev" 
                         }{{else}}false{{/if}},
-                        effect: "slide",
-                        speed: 800
+                        effect: "{{effect}}",
+                        speed: {{speed}}
                     });
                 });
                 ',
@@ -492,6 +519,41 @@ class SliderWidgetSeeder extends Seeder
                         'type' => 'color',
                         'required' => false,
                         'default' => '#ffffff'
+                    ],
+                    [
+                        'name' => 'effect',
+                        'label' => 'Geçiş Efekti',
+                        'type' => 'select',
+                        'options' => [
+                            ['value' => 'slide', 'label' => 'Kaydırma'],
+                            ['value' => 'fade', 'label' => 'Solma'],
+                            ['value' => 'cube', 'label' => 'Küp'],
+                            ['value' => 'coverflow', 'label' => 'Örtü Akışı'],
+                            ['value' => 'flip', 'label' => 'Çevirme']
+                        ],
+                        'required' => false,
+                        'default' => 'slide'
+                    ],
+                    [
+                        'name' => 'speed',
+                        'label' => 'Geçiş Hızı (ms)',
+                        'type' => 'number',
+                        'required' => false,
+                        'default' => 800
+                    ],
+                    [
+                        'name' => 'dynamic_bullets',
+                        'label' => 'Dinamik Noktalar',
+                        'type' => 'checkbox',
+                        'required' => false,
+                        'default' => true
+                    ],
+                    [
+                        'name' => 'loop',
+                        'label' => 'Döngü',
+                        'type' => 'checkbox',
+                        'required' => false,
+                        'default' => true
                     ]
                 ]
             ]);
@@ -526,7 +588,11 @@ class SliderWidgetSeeder extends Seeder
                 'show_pagination' => true,
                 'show_navigation' => true,
                 'caption_bg_color' => 'rgba(0,0,0,0.5)',
-                'caption_text_color' => '#ffffff'
+                'caption_text_color' => '#ffffff',
+                'effect' => 'slide',
+                'speed' => 800,
+                'dynamic_bullets' => true,
+                'loop' => true
             ],
             'order' => 0,
             'is_active' => true
@@ -622,7 +688,11 @@ class SliderWidgetSeeder extends Seeder
                             'show_pagination' => true,
                             'show_navigation' => true,
                             'caption_bg_color' => 'rgba(0,0,0,0.5)',
-                            'caption_text_color' => '#ffffff'
+                            'caption_text_color' => '#ffffff',
+                            'effect' => 'slide',
+                            'speed' => 800,
+                            'dynamic_bullets' => true,
+                            'loop' => true
                         ],
                         'order' => 0,
                         'is_active' => true

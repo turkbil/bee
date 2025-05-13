@@ -30,6 +30,64 @@ $widgetService = app('widget.service');
 
 // Widget HTML içeriğini render et
 $renderedHtml = $widgetService->renderWidgetHtml($widget, $context, false);
+
+// Widget CSS içeriğini de işle
+$processedCss = $widget->content_css ?? '';
+
+if (!empty($processedCss)) {
+    // CSS içindeki değişkenleri işle
+    $processedCss = preg_replace_callback('/\{\{([^{}]+?)\}\}/m', function($matches) use ($context) {
+        $key = trim($matches[1]);
+        
+        // {{widget.var}} formatında mı?
+        if (strpos($key, 'widget.') === 0) {
+            $widgetKey = str_replace('widget.', '', $key);
+            if (isset($context['widget'][$widgetKey])) {
+                return $context['widget'][$widgetKey];
+            } elseif (isset($context[$widgetKey])) {
+                return $context[$widgetKey];
+            }
+        }
+        
+        // Normal değişken mi?
+        if (isset($context[$key])) {
+            if (is_scalar($context[$key])) {
+                return $context[$key];
+            }
+        }
+        
+        return '';
+    }, $processedCss);
+}
+
+// Widget JS içeriğini de işle
+$processedJs = $widget->content_js ?? '';
+
+if (!empty($processedJs)) {
+    // JS içindeki değişkenleri işle
+    $processedJs = preg_replace_callback('/\{\{([^{}]+?)\}\}/m', function($matches) use ($context) {
+        $key = trim($matches[1]);
+        
+        // {{widget.var}} formatında mı?
+        if (strpos($key, 'widget.') === 0) {
+            $widgetKey = str_replace('widget.', '', $key);
+            if (isset($context['widget'][$widgetKey])) {
+                return $context['widget'][$widgetKey];
+            } elseif (isset($context[$widgetKey])) {
+                return $context[$widgetKey];
+            }
+        }
+        
+        // Normal değişken mi?
+        if (isset($context[$key])) {
+            if (is_scalar($context[$key])) {
+                return $context[$key];
+            }
+        }
+        
+        return '';
+    }, $processedJs);
+}
 @endphp
 
 @include("themes.{$themeFolder}.layouts.header")
@@ -39,7 +97,10 @@ $renderedHtml = $widgetService->renderWidgetHtml($widget, $context, false);
         <h1 class="text-lg font-semibold m-0">{{ $widget->name }} Önizleme</h1>
         <div>
             <button class="px-3 py-1 text-sm border border-white text-white rounded hover:bg-white hover:text-blue-600 transition-colors" onclick="window.close()">
-                <i class="fas fa-times me-1"></i> Kapat
+                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg> Kapat
             </button>
         </div>
     </div>
@@ -47,21 +108,55 @@ $renderedHtml = $widgetService->renderWidgetHtml($widget, $context, false);
 
 <div class="preview-container">
     <div class="device-switcher">
-        <button class="px-3 py-2 bg-white border border-blue-500 text-blue-600 rounded-md hover:bg-blue-50 active" onclick="setPreviewSize('desktop')">
-            <i class="fas fa-desktop me-1"></i> Masaüstü
+        <button class="device-btn px-3 py-2 bg-white border border-blue-500 text-blue-600 rounded-md hover:bg-blue-50 active" data-device="desktop" onclick="setPreviewSize('desktop')">
+            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+            </svg> Masaüstü
         </button>
-        <button class="px-3 py-2 bg-white border border-gray-300 text-gray-600 rounded-md hover:bg-gray-50" onclick="setPreviewSize('tablet')">
-            <i class="fas fa-tablet-alt me-1"></i> Tablet
+        <button class="device-btn px-3 py-2 bg-white border border-gray-300 text-gray-600 rounded-md hover:bg-gray-50" data-device="tablet" onclick="setPreviewSize('tablet')">
+            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
+                <line x1="12" y1="18" x2="12" y2="18"></line>
+            </svg> Tablet
         </button>
-        <button class="px-3 py-2 bg-white border border-gray-300 text-gray-600 rounded-md hover:bg-gray-50" onclick="setPreviewSize('mobile')">
-            <i class="fas fa-mobile-alt me-1"></i> Mobil
+        <button class="device-btn px-3 py-2 bg-white border border-gray-300 text-gray-600 rounded-md hover:bg-gray-50" data-device="mobile" onclick="setPreviewSize('mobile')">
+            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                <line x1="12" y1="18" x2="12" y2="18"></line>
+            </svg> Mobil
         </button>
+        <div class="ml-auto flex items-center">
+            <button class="theme-btn p-2 bg-white border border-gray-300 text-gray-600 rounded-md hover:bg-gray-50 mr-2" data-theme="light" onclick="setThemeMode('light')" id="light-mode-btn" title="Gündüz Modu">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+            </button>
+            <button class="theme-btn p-2 bg-white border border-gray-300 text-gray-600 rounded-md hover:bg-gray-50" data-theme="dark" onclick="setThemeMode('dark')" id="dark-mode-btn" title="Gece Modu">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+            </button>
+        </div>
     </div>
     
-    <div class="bg-blue-50 border border-blue-200 p-4 rounded-md mb-4 text-blue-800">
+    <div class="bg-blue-50 border border-blue-200 p-4 rounded-md mb-4 text-blue-800 dark:bg-blue-900 dark:border-blue-700 dark:text-blue-200">
         <div class="flex">
             <div class="mr-2">
-                <i class="fas fa-info-circle me-2"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
             </div>
             <div>
                 <strong>Önizleme Bilgileri:</strong><br>
@@ -72,10 +167,14 @@ $renderedHtml = $widgetService->renderWidgetHtml($widget, $context, false);
     </div>
     
     <div class="preview-frame" id="preview-frame">
-        <div class="preview-content">
+        <div class="preview-content dark:bg-gray-800 dark:text-white dark:border-gray-700">
             @if($widget->type == 'module' && empty($widget->file_path))
-                <div class="bg-yellow-100 border border-yellow-400 p-4 rounded-md text-yellow-800">
-                    <i class="fas fa-exclamation-triangle me-2"></i>
+                <div class="bg-yellow-100 border border-yellow-400 p-4 rounded-md text-yellow-800 dark:bg-yellow-800 dark:border-yellow-600 dark:text-yellow-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
                     Bu modül bileşeni için HTML şablonu tanımlanmamış. Lütfen widget'ı düzenleyin ve bir HTML şablonu ekleyin.
                 </div>
             @elseif($widget->type == 'file')
@@ -99,11 +198,17 @@ $renderedHtml = $widgetService->renderWidgetHtml($widget, $context, false);
         
         @if($widget->type == 'module')
         <a href="{{ route('admin.widgetmanagement.modules') }}" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-            <i class="fas fa-arrow-left me-1"></i> Listeye Dön
+            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg> Listeye Dön
         </a>
         @elseif(auth()->user()->hasRole('root'))
         <a href="{{ route('admin.widgetmanagement.manage', $widget->id) }}" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-            <i class="fas fa-edit me-1"></i> Widget'ı Düzenle
+            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg> Widget'ı Düzenle
         </a>
         @endif
     </div>
@@ -113,13 +218,18 @@ $renderedHtml = $widgetService->renderWidgetHtml($widget, $context, false);
 <script>
     function setPreviewSize(device) {
         const frame = document.getElementById('preview-frame');
-        const buttons = document.querySelectorAll('.device-switcher button');
+        const buttons = document.querySelectorAll('.device-btn');
         
         // Aktif butonları temizle
-        buttons.forEach(btn => btn.classList.remove('active'));
+        buttons.forEach(btn => {
+            btn.classList.remove('active', 'border-blue-500', 'text-blue-600');
+            btn.classList.add('border-gray-300', 'text-gray-600');
+        });
         
         // Aktif butonu işaretle
-        event.target.closest('button').classList.add('active');
+        const activeBtn = document.querySelector(`.device-btn[data-device="${device}"]`);
+        activeBtn.classList.add('active', 'border-blue-500', 'text-blue-600');
+        activeBtn.classList.remove('border-gray-300', 'text-gray-600');
         
         // Frame boyutunu ayarla
         frame.className = 'preview-frame';
@@ -127,6 +237,49 @@ $renderedHtml = $widgetService->renderWidgetHtml($widget, $context, false);
             frame.classList.add(device);
         }
     }
+    
+    function setThemeMode(mode) {
+        const html = document.documentElement;
+        const lightBtn = document.getElementById('light-mode-btn');
+        const darkBtn = document.getElementById('dark-mode-btn');
+        
+        // Tüm tema butonlarının stillerini sıfırla
+        document.querySelectorAll('.theme-btn').forEach(btn => {
+            btn.classList.remove('border-blue-500', 'text-blue-600');
+            btn.classList.add('border-gray-300', 'text-gray-600');
+        });
+        
+        if (mode === 'dark') {
+            html.classList.add('dark');
+            localStorage.setItem('darkMode', 'dark');
+            
+            // Aktif buton stillerini güncelle
+            darkBtn.classList.add('border-blue-500', 'text-blue-600');
+            darkBtn.classList.remove('border-gray-300', 'text-gray-600');
+        } else {
+            html.classList.remove('dark');
+            localStorage.setItem('darkMode', 'light');
+            
+            // Aktif buton stillerini güncelle
+            lightBtn.classList.add('border-blue-500', 'text-blue-600');
+            lightBtn.classList.remove('border-gray-300', 'text-gray-600');
+        }
+    }
+    
+    // Sayfa yüklendiğinde tema modunu ayarla
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentMode = localStorage.getItem('darkMode') || 'light';
+        setThemeMode(currentMode);
+        
+        // Aktif device butonunu ayarla
+        const buttons = document.querySelectorAll('.device-btn');
+        buttons.forEach(btn => {
+            if (btn.classList.contains('active')) {
+                const device = btn.getAttribute('data-device');
+                setPreviewSize(device);
+            }
+        });
+    });
 </script>
 
 <style>
@@ -147,6 +300,12 @@ $renderedHtml = $widgetService->renderWidgetHtml($widget, $context, false);
         background-color: #fff;
         border-radius: 8px;
         box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    .dark .preview-container {
+        background-color: #1f2937;
+        color: #f3f4f6;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.3);
     }
     
     .preview-content {
@@ -176,39 +335,31 @@ $renderedHtml = $widgetService->renderWidgetHtml($widget, $context, false);
     .preview-frame.tablet {
         max-width: 768px;
     }
+    
+    .dark .device-btn.active,
+    .dark .theme-btn.border-blue-500 {
+        background-color: #374151;
+        border-color: #60a5fa;
+        color: #93c5fd;
+    }
+    
+    .device-btn.active,
+    .theme-btn.border-blue-500 {
+        background-color: #f0f9ff;
+    }
+    
+    .device-btn:hover,
+    .theme-btn:hover {
+        background-color: #f0f9ff;
+    }
+    
+    .dark .device-btn:hover,
+    .dark .theme-btn:hover {
+        background-color: #374151;
+        color: #93c5fd;
+    }
 
     /* Widget CSS */
-    @php
-    // Widget CSS içeriğini de işle
-    $processedCss = $widget->content_css ?? '';
-    
-    if (!empty($processedCss)) {
-        // CSS içindeki değişkenleri işle
-        $processedCss = preg_replace_callback('/\{\{([^{}]+?)\}\}/m', function($matches) use ($context) {
-            $key = trim($matches[1]);
-            
-            // {{widget.var}} formatında mı?
-            if (strpos($key, 'widget.') === 0) {
-                $widgetKey = str_replace('widget.', '', $key);
-                if (isset($context['widget'][$widgetKey])) {
-                    return $context['widget'][$widgetKey];
-                } elseif (isset($context[$widgetKey])) {
-                    return $context[$widgetKey];
-                }
-            }
-            
-            // Normal değişken mi?
-            if (isset($context[$key])) {
-                if (is_scalar($context[$key])) {
-                    return $context[$key];
-                }
-            }
-            
-            return '';
-        }, $processedCss);
-    }
-    @endphp
-    
     {!! $processedCss !!}
 </style>
 
@@ -228,37 +379,6 @@ $renderedHtml = $widgetService->renderWidgetHtml($widget, $context, false);
 
 <!-- Widget JavaScript -->
 <script>
-    @php
-    // Widget JS içeriğini de işle
-    $processedJs = $widget->content_js ?? '';
-    
-    if (!empty($processedJs)) {
-        // JS içindeki değişkenleri işle
-        $processedJs = preg_replace_callback('/\{\{([^{}]+?)\}\}/m', function($matches) use ($context) {
-            $key = trim($matches[1]);
-            
-            // {{widget.var}} formatında mı?
-            if (strpos($key, 'widget.') === 0) {
-                $widgetKey = str_replace('widget.', '', $key);
-                if (isset($context['widget'][$widgetKey])) {
-                    return $context['widget'][$widgetKey];
-                } elseif (isset($context[$widgetKey])) {
-                    return $context[$widgetKey];
-                }
-            }
-            
-            // Normal değişken mi?
-            if (isset($context[$key])) {
-                if (is_scalar($context[$key])) {
-                    return $context[$key];
-                }
-            }
-            
-            return '';
-        }, $processedJs);
-    }
-    @endphp
-    
     {!! $processedJs !!}
 </script>
 

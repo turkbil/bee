@@ -21,9 +21,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    
-    // Test erişim rotası
-    Route::get('/admin/test-access', [\App\Http\Controllers\TestAccessController::class, 'testAccess'])->name('test.access');
 });
 
 // Tenant medya dosyalarına erişim
@@ -40,5 +37,10 @@ Route::get('/storage/{path}', [StorageController::class, 'publicStorage'])
 Route::get('/403', function () {
     return response()->view('errors.403', [], 403);
 })->name('errors.403');
+
+// CSRF token yenileme rotası
+Route::get('/csrf-refresh', function () {
+    return csrf_token();
+})->name('csrf.refresh')->middleware('web');
 
 require __DIR__.'/auth.php';

@@ -35,7 +35,6 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapWebRoutes(): void
     {
         Route::middleware(['web'])
-            ->prefix('admin')
             ->group(module_path('TenantManagement', 'routes/web.php'));
     }
 

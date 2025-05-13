@@ -34,7 +34,7 @@ return [
 
     'lifetime' => (int) env('SESSION_LIFETIME', 120),
 
-    'expire_on_close' => env('SESSION_EXPIRE_ON_CLOSE', false),
+    'expire_on_close' => false, // Tarayıcı kapandığında oturumun sonlanmasını engeller
 
     /*
     |--------------------------------------------------------------------------
@@ -96,8 +96,6 @@ return [
     | When using one of the framework's cache driven session backends, you may
     | define the cache store which should be used to store the session data
     | between requests. This must match one of your defined cache stores.
-    |
-    | Affects: "apc", "dynamodb", "memcached", "redis"
     |
     */
 
@@ -199,7 +197,7 @@ return [
     |
     */
 
-    'same_site' => env('SESSION_SAME_SITE', 'lax'),
+    'same_site' => 'lax', // SameSite çerez politikası
 
     /*
     |--------------------------------------------------------------------------

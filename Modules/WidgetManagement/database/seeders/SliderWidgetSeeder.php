@@ -15,24 +15,20 @@ use Illuminate\Support\Facades\Cache;
 
 class SliderWidgetSeeder extends Seeder
 {
-    // Çalıştırma izleme anahtarı
     private static $runKey = 'slider_widget_seeder_executed';
     
     public function run()
     {
-        // Cache kontrolü
         $cacheKey = self::$runKey . '_' . config('database.default');
         if (Cache::has($cacheKey)) {
             Log::info('SliderWidgetSeeder zaten çalıştırılmış, atlanıyor...');
             return;
         }
 
-        // Tenant kontrolü
         if (function_exists('tenant') && tenant()) {
             try {
                 $this->createTenantSlider();
                 
-                // Bu tenant için çalıştırıldığını işaretle
                 $tenantId = tenant('id');
                 Cache::put(self::$runKey . '_tenant_' . $tenantId, true, 600);
                 return;
@@ -42,9 +38,7 @@ class SliderWidgetSeeder extends Seeder
             }
         }
 
-        // Central işlemleri
         try {
-            // Moduller kategorisini kontrol et
             $moduleCategory = WidgetCategory::where('slug', 'moduller')->orWhere('slug', 'moduller')->first();
             
             if (!$moduleCategory) {
@@ -70,23 +64,17 @@ class SliderWidgetSeeder extends Seeder
                 }
             }
             
-            // Önce central veritabanındaki fazla slider kayıtlarını temizleyelim
             $this->cleanupExtraSliders();
             
-            // Slider bileşeni oluştur
             $widget = $this->createSliderWidget();
 
             if ($widget) {
-                // Central veritabanı için sadece bir tane slider oluşturalım
                 $this->createDemoTenantSlider($widget);
-                
-                // Tüm mevcut tenant'lar için slider'ları oluştur
                 $this->createSliderForAllTenants($widget);
             }
 
             Log::info('Slider bileşeni başarıyla oluşturuldu.');
             
-            // Seeder'ın çalıştırıldığını işaretle (10 dakika süreyle cache'de tut)
             Cache::put($cacheKey, true, 600);
         } catch (\Exception $e) {
             Log::error('SliderWidgetSeeder central hatası: ' . $e->getMessage());
@@ -96,31 +84,24 @@ class SliderWidgetSeeder extends Seeder
 
     private function cleanupExtraSliders()
     {
-        // Slider widget'ını al
         $widget = Widget::where('slug', 'swiper-slider')->first();
         
         if (!$widget) {
             return;
         }
         
-        // Bu widget'a ait tüm tenant_widgets kayıtlarını kontrol et
         $tenantWidgets = TenantWidget::where('widget_id', $widget->id)->get();
         
         if ($tenantWidgets->count() <= 1) {
-            return; // Zaten sadece bir tane varsa işlem yapmaya gerek yok
+            return;
         }
         
-        // İlk kaydı koru, diğerlerini sil
         $firstWidgetId = $tenantWidgets->first()->id;
         
         foreach ($tenantWidgets as $tenantWidget) {
             if ($tenantWidget->id != $firstWidgetId) {
-                // Widget item'larını da silelim
                 WidgetItem::where('tenant_widget_id', $tenantWidget->id)->delete();
-                
-                // Widget'ı silelim
                 $tenantWidget->delete();
-                
                 Log::info("Fazla slider widget silindi: ID {$tenantWidget->id}");
             }
         }
@@ -130,7 +111,6 @@ class SliderWidgetSeeder extends Seeder
 
     private function createTenantSlider()
     {
-        // Tenant için daha önce çalıştırılmış mı kontrol et
         $tenantId = tenant('id');
         $tenantCacheKey = self::$runKey . '_tenant_' . $tenantId;
         
@@ -139,17 +119,14 @@ class SliderWidgetSeeder extends Seeder
             return;
         }
         
-        // Merkezi veritabanından slider widget'ı al
         $centralWidget = null;
         
         try {
-            // Geçici olarak central bağlantısına geç
             $connection = config('database.default');
             config(['database.default' => config('tenancy.database.central_connection')]);
             
             $centralWidget = Widget::where('slug', 'swiper-slider')->first();
             
-            // Bağlantıyı geri al
             config(['database.default' => $connection]);
         } catch (\Exception $e) {
             Log::error('Merkezi widget erişim hatası: ' . $e->getMessage());
@@ -161,33 +138,25 @@ class SliderWidgetSeeder extends Seeder
             return;
         }
         
-        // Önce tenant'ta fazla widget'ları temizleyelim
         $existingWidgets = TenantWidget::where('widget_id', $centralWidget->id)->get();
         
         if ($existingWidgets->count() >= 1) {
-            // İlk kaydı koru, diğerlerini sil
             $firstWidgetId = $existingWidgets->first()->id;
             
             foreach ($existingWidgets as $existingWidget) {
                 if ($existingWidget->id != $firstWidgetId) {
-                    // Widget item'larını da silelim
                     WidgetItem::where('tenant_widget_id', $existingWidget->id)->delete();
-                    
-                    // Widget'ı silelim
                     $existingWidget->delete();
-                    
                     Log::info("Tenant'ta fazla slider widget silindi: ID {$existingWidget->id}");
                 }
             }
             
-            // Zaten bir tane var, yenisini oluşturmaya gerek yok
             if ($existingWidgets->count() >= 1) {
                 Log::info('Tenant içinde slider widget zaten var, atlanıyor...');
                 return;
             }
         }
         
-        // Tenant için widget oluştur
         $tenantWidget = TenantWidget::create([
             'widget_id' => $centralWidget->id,
             'settings' => [
@@ -195,21 +164,12 @@ class SliderWidgetSeeder extends Seeder
                 'title' => 'Ana Sayfa Slider',
                 'height' => 500,
                 'autoplay' => true,
-                'autoplay_delay' => 5000,
-                'show_pagination' => true,
-                'show_navigation' => true,
-                'caption_bg_color' => 'rgba(0,0,0,0.5)',
-                'caption_text_color' => '#ffffff',
-                'effect' => 'slide',
-                'speed' => 800,
-                'dynamic_bullets' => true,
-                'loop' => true
+                'autoplay_delay' => 5000
             ],
             'order' => 0,
             'is_active' => true
         ]);
         
-        // Slider için 2 adet örnek item oluştur
         $items = [
             [
                 'title' => 'Web Sitesi Çözümleri',
@@ -227,7 +187,6 @@ class SliderWidgetSeeder extends Seeder
             ]
         ];
         
-        // Widget item'larını oluştur
         foreach ($items as $index => $item) {
             WidgetItem::create([
                 'tenant_widget_id' => $tenantWidget->id,
@@ -241,17 +200,14 @@ class SliderWidgetSeeder extends Seeder
 
     private function createSliderWidget()
     {
-        // Slider kategorisini bul, yoksa oluştur
         $sliderCategory = WidgetCategory::where('slug', 'sliderlar')->first();
         
-        // Eğer slider kategorisi yoksa, önce 'Media' kategorisini kontrol et
         if (!$sliderCategory) {
             $mediaCategory = WidgetCategory::where('slug', 'media')->first();
             
             if ($mediaCategory) {
                 Log::info('Media kategorisi bulundu, slider bu kategori altına eklenecek.');
                 
-                // Slider alt kategorisini oluştur
                 $sliderCategory = WidgetCategory::create([
                     'title' => 'Sliderlar',
                     'slug' => 'sliderlar',
@@ -265,7 +221,6 @@ class SliderWidgetSeeder extends Seeder
                 
                 Log::info("Slider alt kategorisi oluşturuldu: Sliderlar (slug: sliderlar)");
             } else {
-                // Media kategorisi yoksa, ana kategori olarak oluştur
                 Log::warning('Slider kategorisi bulunamadı, oluşturuluyor...');
                 
                 try {
@@ -293,11 +248,9 @@ class SliderWidgetSeeder extends Seeder
             }
         }
         
-        // Slider widget'ı zaten var mı kontrolü
         $existingWidget = Widget::where('slug', 'swiper-slider')->first();
         
         if (!$existingWidget) {
-            // Slider widget'ı oluştur
             $widget = Widget::create([
                 'widget_category_id' => $sliderCategory->widget_category_id,
                 'name' => 'Swiper Slider',
@@ -359,8 +312,8 @@ class SliderWidgetSeeder extends Seeder
                     bottom: 0;
                     left: 0;
                     right: 0;
-                    background-color: {{caption_bg_color}};
-                    color: {{caption_text_color}};
+                    background-color: rgba(0,0,0,0.5);
+                    color: #ffffff;
                     padding: 20px;
                     text-align: center;
                 }
@@ -407,7 +360,7 @@ class SliderWidgetSeeder extends Seeder
                     spaceBetween: 0,
                     loop: true,
                     autoplay: {
-                        delay: 5000,
+                        delay: {{autoplay_delay}},
                         disableOnInteraction: false,
                     },
                     pagination: {
@@ -493,69 +446,6 @@ class SliderWidgetSeeder extends Seeder
                         'type' => 'number',
                         'required' => false,
                         'default' => 5000
-                    ],
-                    [
-                        'name' => 'show_pagination',
-                        'label' => 'Sayfalama Göster',
-                        'type' => 'checkbox',
-                        'required' => false,
-                        'default' => true
-                    ],
-                    [
-                        'name' => 'show_navigation',
-                        'label' => 'Navigasyon Göster',
-                        'type' => 'checkbox',
-                        'required' => false,
-                        'default' => true
-                    ],
-                    [
-                        'name' => 'caption_bg_color',
-                        'label' => 'Başlık Arkaplan Rengi',
-                        'type' => 'color',
-                        'required' => false,
-                        'default' => 'rgba(0,0,0,0.5)'
-                    ],
-                    [
-                        'name' => 'caption_text_color',
-                        'label' => 'Başlık Metin Rengi',
-                        'type' => 'color',
-                        'required' => false,
-                        'default' => '#ffffff'
-                    ],
-                    [
-                        'name' => 'effect',
-                        'label' => 'Geçiş Efekti',
-                        'type' => 'select',
-                        'options' => [
-                            ['value' => 'slide', 'label' => 'Kaydırma'],
-                            ['value' => 'fade', 'label' => 'Solma'],
-                            ['value' => 'cube', 'label' => 'Küp'],
-                            ['value' => 'coverflow', 'label' => 'Örtü Akışı'],
-                            ['value' => 'flip', 'label' => 'Çevirme']
-                        ],
-                        'required' => false,
-                        'default' => 'slide'
-                    ],
-                    [
-                        'name' => 'speed',
-                        'label' => 'Geçiş Hızı (ms)',
-                        'type' => 'number',
-                        'required' => false,
-                        'default' => 800
-                    ],
-                    [
-                        'name' => 'dynamic_bullets',
-                        'label' => 'Dinamik Noktalar',
-                        'type' => 'checkbox',
-                        'required' => false,
-                        'default' => true
-                    ],
-                    [
-                        'name' => 'loop',
-                        'label' => 'Döngü',
-                        'type' => 'checkbox',
-                        'required' => false,
-                        'default' => true
                     ]
                 ]
             ]);
@@ -569,16 +459,13 @@ class SliderWidgetSeeder extends Seeder
     
     private function createDemoTenantSlider($widget)
     {
-        // Önce mevcut widget'ları kontrol edelim ve temizleyelim
         $existingWidgets = TenantWidget::where('widget_id', $widget->id)->get();
         
         if ($existingWidgets->count() >= 1) {
-            // Zaten bir tane var, yenisini oluşturmaya gerek yok
             Log::info('Central veritabanında Demo Slider widget zaten var, atlanıyor...');
             return;
         }
         
-        // Central veritabanındaki tenant_widgets tablosuna ekleme yapılıyor
         $tenantWidget = TenantWidget::create([
             'widget_id' => $widget->id,
             'settings' => [
@@ -586,21 +473,12 @@ class SliderWidgetSeeder extends Seeder
                 'title' => 'Ana Sayfa Slider',
                 'height' => 500,
                 'autoplay' => true,
-                'autoplay_delay' => 5000,
-                'show_pagination' => true,
-                'show_navigation' => true,
-                'caption_bg_color' => 'rgba(0,0,0,0.5)',
-                'caption_text_color' => '#ffffff',
-                'effect' => 'slide',
-                'speed' => 800,
-                'dynamic_bullets' => true,
-                'loop' => true
+                'autoplay_delay' => 5000
             ],
             'order' => 0,
             'is_active' => true
         ]);
         
-        // Slider için 2 adet örnek item oluştur
         $items = [
             [
                 'title' => 'Web Sitesi Çözümleri',
@@ -618,7 +496,6 @@ class SliderWidgetSeeder extends Seeder
             ]
         ];
         
-        // Widget item'larını oluştur
         foreach ($items as $index => $item) {
             WidgetItem::create([
                 'tenant_widget_id' => $tenantWidget->id,
@@ -632,7 +509,6 @@ class SliderWidgetSeeder extends Seeder
     
     private function createSliderForAllTenants($widget)
     {
-        // Tüm tenant'ları al
         $tenants = Tenant::where('central', false)->get();
         
         if ($tenants->isEmpty()) {
@@ -641,7 +517,6 @@ class SliderWidgetSeeder extends Seeder
         }
         
         foreach ($tenants as $tenant) {
-            // Tenant için daha önce çalıştırılmış mı kontrol et
             $tenantCacheKey = self::$runKey . '_tenant_' . $tenant->id;
             
             if (Cache::has($tenantCacheKey)) {
@@ -652,33 +527,25 @@ class SliderWidgetSeeder extends Seeder
             try {
                 $tenant->run(function () use ($widget, $tenant) {
                     
-                    // Önce tenant'ta fazla widget'ları temizleyelim
                     $existingWidgets = TenantWidget::where('widget_id', $widget->id)->get();
                     
                     if ($existingWidgets->count() > 1) {
-                        // İlk kaydı koru, diğerlerini sil
                         $firstWidgetId = $existingWidgets->first()->id;
                         
                         foreach ($existingWidgets as $existingWidget) {
                             if ($existingWidget->id != $firstWidgetId) {
-                                // Widget item'larını da silelim
                                 WidgetItem::where('tenant_widget_id', $existingWidget->id)->delete();
-                                
-                                // Widget'ı silelim
                                 $existingWidget->delete();
-                                
                                 Log::info("Tenant {$tenant->id} için fazla slider widget silindi: ID {$existingWidget->id}");
                             }
                         }
                     }
                     
-                    // Zaten bir tane var, yenisini oluşturmaya gerek yok
                     if ($existingWidgets->count() >= 1) {
                         Log::info("Tenant {$tenant->id} için slider widget zaten var, atlanıyor...");
                         return;
                     }
                     
-                    // Tenant için widget oluştur
                     $tenantWidget = TenantWidget::create([
                         'widget_id' => $widget->id,
                         'settings' => [
@@ -686,21 +553,12 @@ class SliderWidgetSeeder extends Seeder
                             'title' => $tenant->title . ' Slider',
                             'height' => 500,
                             'autoplay' => true,
-                            'autoplay_delay' => 5000,
-                            'show_pagination' => true,
-                            'show_navigation' => true,
-                            'caption_bg_color' => 'rgba(0,0,0,0.5)',
-                            'caption_text_color' => '#ffffff',
-                            'effect' => 'slide',
-                            'speed' => 800,
-                            'dynamic_bullets' => true,
-                            'loop' => true
+                            'autoplay_delay' => 5000
                         ],
                         'order' => 0,
                         'is_active' => true
                     ]);
                     
-                    // Slider için 2 adet örnek item oluştur
                     $items = [
                         [
                             'title' => $tenant->title . ' Web Sitesi',
@@ -718,7 +576,6 @@ class SliderWidgetSeeder extends Seeder
                         ]
                     ];
                     
-                    // Widget item'larını oluştur
                     foreach ($items as $index => $item) {
                         WidgetItem::create([
                             'tenant_widget_id' => $tenantWidget->id,
@@ -729,7 +586,6 @@ class SliderWidgetSeeder extends Seeder
                     
                     Log::info("Tenant {$tenant->id} için slider başarıyla oluşturuldu.");
                     
-                    // Bu tenant için çalıştırıldığını işaretle
                     Cache::put($tenantCacheKey, true, 600);
                 });
             } catch (\Exception $e) {

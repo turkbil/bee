@@ -1,141 +1,141 @@
-<script src="{{ asset('admin/libs/handlebars/handlebars.min.js') }}?v={{ filemtime(public_path('admin/libs/handlebars/handlebars.min.js')) }}"></script>
+@php
+// CSS ve JS dosyalarını ayıkla
+$cssFiles = [];
+$jsFiles = [];
 
-<div id="widget-embed-content-{{ $tenantWidgetId }}">
-    <script id="widget-template-{{ $tenantWidgetId }}" type="text/x-handlebars-template">
-        {!! $widget->content_html !!}
-    </script>
+if (!empty($widget->content_html)) {
+    preg_match_all('/<link[^>]+href=[\'"]([^\'"]+)[\'"][^>]*>/i', $widget->content_html, $cssMatches);
+    if (!empty($cssMatches[1])) {
+        $cssFiles = $cssMatches[1];
+    }
 
-    <!-- Handlebars Helper fonksiyonları -->
-    <script>
-        // Handlebars helper fonksiyonları tanımlama
-        if (typeof Handlebars !== 'undefined') {
-            // Helper'lar zaten tanımlanmış mı kontrol et
-            if (!Handlebars.helpers.eq) {
-                Handlebars.registerHelper('eq', function(v1, v2, options) {
-                    if (arguments.length < 3)
-                        throw new Error("Handlebars Helper 'eq' ihtiyaç duyduğu parametreleri almadı");
-                    return v1 === v2 ? options.fn(this) : options.inverse(this);
-                });
-            }
-            
-            if (!Handlebars.helpers.ne) {
-                Handlebars.registerHelper('ne', function(v1, v2, options) {
-                    if (arguments.length < 3)
-                        throw new Error("Handlebars Helper 'ne' ihtiyaç duyduğu parametreleri almadı");
-                    return v1 !== v2 ? options.fn(this) : options.inverse(this);
-                });
-            }
-            
-            if (!Handlebars.helpers.lt) {
-                Handlebars.registerHelper('lt', function(v1, v2, options) {
-                    if (arguments.length < 3)
-                        throw new Error("Handlebars Helper 'lt' ihtiyaç duyduğu parametreleri almadı");
-                    return v1 < v2 ? options.fn(this) : options.inverse(this);
-                });
-            }
-            
-            if (!Handlebars.helpers.gt) {
-                Handlebars.registerHelper('gt', function(v1, v2, options) {
-                    if (arguments.length < 3)
-                        throw new Error("Handlebars Helper 'gt' ihtiyaç duyduğu parametreleri almadı");
-                    return v1 > v2 ? options.fn(this) : options.inverse(this);
-                });
-            }
-            
-            if (!Handlebars.helpers.lte) {
-                Handlebars.registerHelper('lte', function(v1, v2, options) {
-                    if (arguments.length < 3)
-                        throw new Error("Handlebars Helper 'lte' ihtiyaç duyduğu parametreleri almadı");
-                    return v1 <= v2 ? options.fn(this) : options.inverse(this);
-                });
-            }
-            
-            if (!Handlebars.helpers.gte) {
-                Handlebars.registerHelper('gte', function(v1, v2, options) {
-                    if (arguments.length < 3)
-                        throw new Error("Handlebars Helper 'gte' ihtiyaç duyduğu parametreleri almadı");
-                    return v1 >= v2 ? options.fn(this) : options.inverse(this);
-                });
-            }
-            
-            if (!Handlebars.helpers.json) {
-                Handlebars.registerHelper('json', function(context) {
-                    return JSON.stringify(context);
-                });
-            }
-            
-            if (!Handlebars.helpers.truncate) {
-                Handlebars.registerHelper('truncate', function(str, len) {
-                    if (!str || !len) {
-                        return str;
-                    }
-                    if (str.length > len) {
-                        return str.substring(0, len) + '...';
-                    }
-                    return str;
-                });
-            }
-            
-            if (!Handlebars.helpers.formatDate) {
-                Handlebars.registerHelper('formatDate', function(date, format) {
-                    // Basit tarih biçimlendirme
-                    if (!date) return '';
-                    var d = new Date(date);
-                    if (isNaN(d.getTime())) return date;
-                    
-                    var day = d.getDate().toString().padStart(2, '0');
-                    var month = (d.getMonth() + 1).toString().padStart(2, '0');
-                    var year = d.getFullYear();
-                    
-                    return day + '.' + month + '.' + year;
-                });
+    preg_match_all('/<script[^>]+src=[\'"]([^\'"]+)[\'"][^>]*><\/script>/i', $widget->content_html, $jsMatches);
+    if (!empty($jsMatches[1])) {
+        $jsFiles = $jsMatches[1];
+    }
+}
+
+// Widget Service
+$widgetService = app('widget.service');
+
+// Widget HTML içeriğini render et
+$renderedHtml = $widgetService->renderWidgetHtml($widget, $context, false);
+
+// Widget CSS içeriğini de işle
+$processedCss = $widget->content_css ?? '';
+
+if (!empty($processedCss)) {
+    // CSS içindeki değişkenleri işle
+    $processedCss = preg_replace_callback('/\{\{([^{}]+?)\}\}/m', function($matches) use ($context) {
+        $key = trim($matches[1]);
+        
+        // {{widget.var}} formatında mı?
+        if (strpos($key, 'widget.') === 0) {
+            $widgetKey = str_replace('widget.', '', $key);
+            if (isset($context['widget'][$widgetKey])) {
+                return $context['widget'][$widgetKey];
+            } elseif (isset($context[$widgetKey])) {
+                return $context[$widgetKey];
             }
         }
-    </script>
-
-    <div id="widget-content-{{ $tenantWidgetId }}"></div>
-
-    <script>
-        (function() {
-            // Handlebars'ın yüklenip yüklenmediğini kontrol et
-            if (typeof Handlebars === 'undefined') {
-                console.error("Handlebars yüklenmemiş! Widget render edilemeyecek.");
-                document.getElementById('widget-content-{{ $tenantWidgetId }}').innerHTML = '<div class="alert alert-danger">Handlebars kütüphanesi bulunamadı!</div>';
-                return;
+        
+        // Normal değişken mi?
+        if (isset($context[$key])) {
+            if (is_scalar($context[$key])) {
+                return $context[$key];
             }
-            
-            try {
-                const templateElement = document.getElementById('widget-template-{{ $tenantWidgetId }}');
-                const contentElement = document.getElementById('widget-content-{{ $tenantWidgetId }}');
-                
-                if (templateElement && contentElement) {
-                    const data = {!! json_encode($context) !!};
-                    const template = Handlebars.compile(templateElement.innerHTML);
-                    const html = template(data);
-                    contentElement.innerHTML = html;
-                    console.log('Widget #{{ $tenantWidgetId }} içeriği başarıyla yüklendi');
-                } else {
-                    console.error('Widget #{{ $tenantWidgetId }} template veya content elementi bulunamadı');
-                }
-            } catch (error) {
-                console.error('Widget render hatası:', error);
-                document.getElementById('widget-content-{{ $tenantWidgetId }}').innerHTML = '<div class="alert alert-danger">Widget render hatası: ' + error.message + '</div>';
+        }
+        
+        return '';
+    }, $processedCss);
+}
+
+// Widget JS içeriğini de işle
+$processedJs = $widget->content_js ?? '';
+
+if (!empty($processedJs)) {
+    // JS içindeki değişkenleri işle
+    $processedJs = preg_replace_callback('/\{\{([^{}]+?)\}\}/m', function($matches) use ($context) {
+        $key = trim($matches[1]);
+        
+        // {{widget.var}} formatında mı?
+        if (strpos($key, 'widget.') === 0) {
+            $widgetKey = str_replace('widget.', '', $key);
+            if (isset($context['widget'][$widgetKey])) {
+                return $context['widget'][$widgetKey];
+            } elseif (isset($context[$widgetKey])) {
+                return $context[$widgetKey];
             }
-        })();
-    </script>
+        }
+        
+        // Normal değişken mi?
+        if (isset($context[$key])) {
+            if (is_scalar($context[$key])) {
+                return $context[$key];
+            }
+        }
+        
+        return '';
+    }, $processedJs);
+}
+@endphp
+
+<div id="widget-embed-content-{{ $tenantWidgetId }}" class="dark:bg-gray-800 dark:text-white">
+    <div id="widget-content-{{ $tenantWidgetId }}">
+        @if($widget->type == 'file')
+            @include('widgetmanagement::blocks.' . $widget->file_path, ['settings' => $context])
+        @else
+            {!! $renderedHtml !!}
+        @endif
+    </div>
 </div>
 
-@if(!empty($widget->content_css))
+@if(!empty($processedCss))
 <style>
-    {!! $widget->content_css !!}
+    {!! $processedCss !!}
+    
+    /* Gece modu için ek stiller */
+    .dark #widget-embed-content-{{ $tenantWidgetId }} {
+        background-color: #1f2937;
+        color: #f3f4f6;
+    }
+    
+    .dark #widget-content-{{ $tenantWidgetId }} {
+        background-color: #1f2937;
+        color: #f3f4f6;
+    }
 </style>
 @endif
 
-@if(!empty($widget->content_js))
+<!-- CSS Dosyaları -->
+@foreach($cssFiles as $cssFile)
+    @if(!empty($cssFile))
+        <link rel="stylesheet" href="{{ $cssFile }}">
+    @endif
+@endforeach
+
+<!-- JS Dosyaları -->
+@foreach($jsFiles as $jsFile)
+    @if(!empty($jsFile))
+        <script src="{{ $jsFile }}"></script>
+    @endif
+@endforeach
+
+@if(!empty($processedJs))
 <script>
     (function() {
         try {
-            {!! $widget->content_js !!}
+            // Tema moduyla ilgili Event Listener ekle
+            document.addEventListener('themeChanged', function(e) {
+                const widgetContainer = document.getElementById('widget-embed-content-{{ $tenantWidgetId }}');
+                if (e.detail.mode === 'dark') {
+                    widgetContainer.classList.add('dark-mode');
+                } else {
+                    widgetContainer.classList.remove('dark-mode');
+                }
+            });
+            
+            {!! $processedJs !!}
         } catch (error) {
             console.error('Widget JS hatası:', error);
         }

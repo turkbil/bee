@@ -28,11 +28,21 @@ class WidgetRenderService
             // şablon browser tarafında Handlebars.js ile yorumlanacak
             return $content;
         }
-
+    
         $this->debug('processVariables - Başlangıç', ['settings' => $settings]);
         
         $result = preg_replace_callback('/\{\{(.*?)\}\}/', function ($matches) use ($settings) {
             $key = trim($matches[1]);
+            
+            // Widget öneki baştan kaldırılıyor (widget.* formatında gelen değişkenler çalışsın)
+            if (strpos($key, 'widget.') === 0) {
+                $keyWithoutPrefix = substr($key, 7); // "widget." önekini çıkarır
+                if (isset($settings[$key])) {
+                    return $settings[$key];
+                } elseif (isset($settings[$keyWithoutPrefix])) {
+                    return $settings[$keyWithoutPrefix];
+                }
+            }
             
             if (strpos($key, '#') === 0 || strpos($key, '/') === 0) {
                 $this->debug('processVariables - Kontrol bloğu atlanıyor', ['key' => $key]);

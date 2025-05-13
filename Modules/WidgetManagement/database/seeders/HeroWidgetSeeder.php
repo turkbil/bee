@@ -146,17 +146,17 @@ class HeroWidgetSeeder extends Seeder
         $tenantWidget = TenantWidget::create([
             'widget_id' => $centralWidget->id,
             'settings' => [
-                'unique_id' => (string) Str::uuid(),
-                'title' => 'Full Width Hero',
-                'subtitle' => 'Modern ve Etkileyici',
-                'description' => 'Etkileyici bir hero bileşeni ile sayfanızın üst kısmını tasarlayın.',
-                'button_text' => 'Daha Fazla',
-                'button_url' => '#',
-                'show_secondary_button' => true,
-                'secondary_button_text' => 'İletişim',
-                'secondary_button_url' => '/iletisim',
-                'bg_color' => '#f8f9fa',
-                'text_color' => '#212529'
+                'widget.unique_id' => (string) Str::uuid(),
+                'widget.title' => 'Full Width Hero',
+                'widget.subtitle' => 'Modern ve Etkileyici',
+                'widget.description' => 'Etkileyici bir hero bileşeni ile sayfanızın üst kısmını tasarlayın.',
+                'widget.button_text' => 'Daha Fazla',
+                'widget.button_url' => '#',
+                'widget.show_secondary_button' => true,
+                'widget.secondary_button_text' => 'İletişim',
+                'widget.secondary_button_url' => '/iletisim',
+                'widget.bg_color' => '#f8f9fa',
+                'widget.text_color' => '#212529'
             ],
             'order' => 0,
             'is_active' => true
@@ -220,19 +220,19 @@ class HeroWidgetSeeder extends Seeder
                 'slug' => 'full-width-hero',
                 'description' => 'Sayfanın üst kısmında kullanılabilecek tam genişlikte hero bileşeni',
                 'type' => 'static',
-                'content_html' => '<div class="py-5 text-center" style="background-color: {{bg_color}}; color: {{text_color}};">
+                'content_html' => '<div class="py-5 text-center" style="background-color: {{widget.bg_color}}; color: {{widget.text_color}};">
     <div class="container mx-auto px-4">
         <div class="py-8 lg:py-12">
             <div class="max-w-3xl mx-auto">
-                <h1 class="text-3xl font-light mb-4">{{title}}</h1>
-                <h3 class="text-xl font-light mb-3">{{subtitle}}</h3>
-                <p class="text-lg mb-6">{{description}}</p>
+                <h1 class="text-3xl font-light mb-4">{{widget.title}}</h1>
+                <h3 class="text-xl font-light mb-3">{{widget.subtitle}}</h3>
+                <p class="text-lg mb-6">{{widget.description}}</p>
                 <div>
-                    {{#if button_text}}
-                    <a href="{{button_url}}" class="inline-block px-4 py-2 mr-2 mb-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">{{button_text}}</a>
+                    {{#if widget.button_text}}
+                    <a href="{{widget.button_url}}" class="inline-block px-4 py-2 mr-2 mb-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">{{widget.button_text}}</a>
                     {{/if}}
-                    {{#if show_secondary_button}}
-                    <a href="{{secondary_button_url}}" class="inline-block px-4 py-2 mb-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition">{{secondary_button_text}}</a>
+                    {{#if widget.show_secondary_button}}
+                    <a href="{{widget.secondary_button_url}}" class="inline-block px-4 py-2 mb-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition">{{widget.secondary_button_text}}</a>
                     {{/if}}
                 </div>
             </div>
@@ -246,77 +246,77 @@ class HeroWidgetSeeder extends Seeder
                 'is_core' => true,
                 'settings_schema' => [
                     [
-                        'name' => 'title',
+                        'name' => 'widget.title',
                         'label' => 'Başlık',
                         'type' => 'text',
                         'required' => true,
                         'default' => 'Full Width Hero'
                     ],
                     [
-                        'name' => 'subtitle',
+                        'name' => 'widget.subtitle',
                         'label' => 'Alt Başlık',
                         'type' => 'text',
                         'required' => false,
                         'default' => 'Modern ve Etkileyici'
                     ],
                     [
-                        'name' => 'description',
+                        'name' => 'widget.description',
                         'label' => 'Açıklama',
                         'type' => 'textarea',
                         'required' => false,
                         'default' => 'Etkileyici bir hero bileşeni ile sayfanızın üst kısmını tasarlayın. İsterseniz arka plan rengini değiştirerek modern bir görünüm kazandırabilirsiniz.'
                     ],
                     [
-                        'name' => 'button_text',
+                        'name' => 'widget.button_text',
                         'label' => 'Buton Metni',
                         'type' => 'text',
                         'required' => false,
                         'default' => 'Daha Fazla'
                     ],
                     [
-                        'name' => 'button_url',
+                        'name' => 'widget.button_url',
                         'label' => 'Buton URL',
                         'type' => 'text',
                         'required' => false,
                         'default' => '#'
                     ],
                     [
-                        'name' => 'show_secondary_button',
+                        'name' => 'widget.show_secondary_button',
                         'label' => 'İkinci Butonu Göster',
                         'type' => 'checkbox',
                         'required' => false,
                         'default' => true
                     ],
                     [
-                        'name' => 'secondary_button_text',
+                        'name' => 'widget.secondary_button_text',
                         'label' => 'İkinci Buton Metni',
                         'type' => 'text',
                         'required' => false,
                         'default' => 'İletişim'
                     ],
                     [
-                        'name' => 'secondary_button_url',
+                        'name' => 'widget.secondary_button_url',
                         'label' => 'İkinci Buton URL',
                         'type' => 'text',
                         'required' => false,
                         'default' => '/iletisim'
                     ],
                     [
-                        'name' => 'bg_color',
+                        'name' => 'widget.bg_color',
                         'label' => 'Arkaplan Rengi',
                         'type' => 'color',
                         'required' => false,
                         'default' => '#f8f9fa'
                     ],
                     [
-                        'name' => 'text_color',
+                        'name' => 'widget.text_color',
                         'label' => 'Metin Rengi',
                         'type' => 'color',
                         'required' => false,
                         'default' => '#212529'
                     ],
                     [
-                        'name' => 'unique_id',
+                        'name' => 'widget.unique_id',
                         'label' => 'Benzersiz ID',
                         'type' => 'text',
                         'required' => false,
@@ -333,19 +333,19 @@ class HeroWidgetSeeder extends Seeder
                 $existingWidget->update([
                     'type' => 'static',
                     'file_path' => null,
-                    'content_html' => '<div class="py-5 text-center" style="background-color: {{bg_color}}; color: {{text_color}};">
+                    'content_html' => '<div class="py-5 text-center" style="background-color: {{widget.bg_color}}; color: {{widget.text_color}};">
     <div class="container mx-auto px-4">
         <div class="py-8 lg:py-12">
             <div class="max-w-3xl mx-auto">
-                <h1 class="text-3xl font-light mb-4">{{title}}</h1>
-                <h3 class="text-xl font-light mb-3">{{subtitle}}</h3>
-                <p class="text-lg mb-6">{{description}}</p>
+                <h1 class="text-3xl font-light mb-4">{{widget.title}}</h1>
+                <h3 class="text-xl font-light mb-3">{{widget.subtitle}}</h3>
+                <p class="text-lg mb-6">{{widget.description}}</p>
                 <div>
-                    {{#if button_text}}
-                    <a href="{{button_url}}" class="inline-block px-4 py-2 mr-2 mb-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">{{button_text}}</a>
+                    {{#if widget.button_text}}
+                    <a href="{{widget.button_url}}" class="inline-block px-4 py-2 mr-2 mb-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">{{widget.button_text}}</a>
                     {{/if}}
-                    {{#if show_secondary_button}}
-                    <a href="{{secondary_button_url}}" class="inline-block px-4 py-2 mb-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition">{{secondary_button_text}}</a>
+                    {{#if widget.show_secondary_button}}
+                    <a href="{{widget.secondary_button_url}}" class="inline-block px-4 py-2 mb-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition">{{widget.secondary_button_text}}</a>
                     {{/if}}
                 </div>
             </div>
@@ -354,77 +354,77 @@ class HeroWidgetSeeder extends Seeder
 </div>',
                     'settings_schema' => [
                         [
-                            'name' => 'title',
+                            'name' => 'widget.title',
                             'label' => 'Başlık',
                             'type' => 'text',
                             'required' => true,
                             'default' => 'Full Width Hero'
                         ],
                         [
-                            'name' => 'subtitle',
+                            'name' => 'widget.subtitle',
                             'label' => 'Alt Başlık',
                             'type' => 'text',
                             'required' => false,
                             'default' => 'Modern ve Etkileyici'
                         ],
                         [
-                            'name' => 'description',
+                            'name' => 'widget.description',
                             'label' => 'Açıklama',
                             'type' => 'textarea',
                             'required' => false,
                             'default' => 'Etkileyici bir hero bileşeni ile sayfanızın üst kısmını tasarlayın. İsterseniz arka plan rengini değiştirerek modern bir görünüm kazandırabilirsiniz.'
                         ],
                         [
-                            'name' => 'button_text',
+                            'name' => 'widget.button_text',
                             'label' => 'Buton Metni',
                             'type' => 'text',
                             'required' => false,
                             'default' => 'Daha Fazla'
                         ],
                         [
-                            'name' => 'button_url',
+                            'name' => 'widget.button_url',
                             'label' => 'Buton URL',
                             'type' => 'text',
                             'required' => false,
                             'default' => '#'
                         ],
                         [
-                            'name' => 'show_secondary_button',
+                            'name' => 'widget.show_secondary_button',
                             'label' => 'İkinci Butonu Göster',
                             'type' => 'checkbox',
                             'required' => false,
                             'default' => true
                         ],
                         [
-                            'name' => 'secondary_button_text',
+                            'name' => 'widget.secondary_button_text',
                             'label' => 'İkinci Buton Metni',
                             'type' => 'text',
                             'required' => false,
                             'default' => 'İletişim'
                         ],
                         [
-                            'name' => 'secondary_button_url',
+                            'name' => 'widget.secondary_button_url',
                             'label' => 'İkinci Buton URL',
                             'type' => 'text',
                             'required' => false,
                             'default' => '/iletisim'
                         ],
                         [
-                            'name' => 'bg_color',
+                            'name' => 'widget.bg_color',
                             'label' => 'Arkaplan Rengi',
                             'type' => 'color',
                             'required' => false,
                             'default' => '#f8f9fa'
                         ],
                         [
-                            'name' => 'text_color',
+                            'name' => 'widget.text_color',
                             'label' => 'Metin Rengi',
                             'type' => 'color',
                             'required' => false,
                             'default' => '#212529'
                         ],
                         [
-                            'name' => 'unique_id',
+                            'name' => 'widget.unique_id',
                             'label' => 'Benzersiz ID',
                             'type' => 'text',
                             'required' => false,
@@ -454,17 +454,17 @@ class HeroWidgetSeeder extends Seeder
         TenantWidget::create([
             'widget_id' => $widget->id,
             'settings' => [
-                'unique_id' => (string) Str::uuid(),
-                'title' => 'Central Hero Demo',
-                'subtitle' => 'Demo Amaçlı',
-                'description' => 'Bu hero widget sadece central veritabanı için örnektir.',
-                'button_text' => 'Demo',
-                'button_url' => '#',
-                'show_secondary_button' => true,
-                'secondary_button_text' => 'Örnek',
-                'secondary_button_url' => '#',
-                'bg_color' => '#f8f9fa',
-                'text_color' => '#212529'
+                'widget.unique_id' => (string) Str::uuid(),
+                'widget.title' => 'Central Hero Demo',
+                'widget.subtitle' => 'Demo Amaçlı',
+                'widget.description' => 'Bu hero widget sadece central veritabanı için örnektir.',
+                'widget.button_text' => 'Demo',
+                'widget.button_url' => '#',
+                'widget.show_secondary_button' => true,
+                'widget.secondary_button_text' => 'Örnek',
+                'widget.secondary_button_url' => '#',
+                'widget.bg_color' => '#f8f9fa',
+                'widget.text_color' => '#212529'
             ],
             'order' => 0,
             'is_active' => true
@@ -511,17 +511,17 @@ class HeroWidgetSeeder extends Seeder
                     TenantWidget::create([
                         'widget_id' => $widget->id,
                         'settings' => [
-                            'unique_id' => (string) Str::uuid(),
-                            'title' => $tenant->title . ' Hero',
-                            'subtitle' => 'Hoş Geldiniz',
-                            'description' => $tenant->title . ' web sitesine hoş geldiniz. Modern ve özelleştirilebilir tasarımımızla hizmetinizdeyiz.',
-                            'button_text' => 'Keşfet',
-                            'button_url' => '/hakkimizda',
-                            'show_secondary_button' => true,
-                            'secondary_button_text' => 'İletişim',
-                            'secondary_button_url' => '/iletisim',
-                            'bg_color' => '#f8f9fa',
-                            'text_color' => '#212529'
+                            'widget.unique_id' => (string) Str::uuid(),
+                            'widget.title' => $tenant->title . ' Hero',
+                            'widget.subtitle' => 'Hoş Geldiniz',
+                            'widget.description' => $tenant->title . ' web sitesine hoş geldiniz. Modern ve özelleştirilebilir tasarımımızla hizmetinizdeyiz.',
+                            'widget.button_text' => 'Keşfet',
+                            'widget.button_url' => '/hakkimizda',
+                            'widget.show_secondary_button' => true,
+                            'widget.secondary_button_text' => 'İletişim',
+                            'widget.secondary_button_url' => '/iletisim',
+                            'widget.bg_color' => '#f8f9fa',
+                            'widget.text_color' => '#212529'
                         ],
                         'order' => 0,
                         'is_active' => true

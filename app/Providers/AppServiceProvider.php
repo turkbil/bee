@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Cache;
 use App\Helpers\TenantHelpers;
 use App\Services\ModuleTenantPermissionService;
 use App\Services\SettingsService;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,6 +25,11 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        // HTTPS kullanıyorsanız bu ayarı aktif edin
+        if(env('APP_ENV') !== 'local') {
+            URL::forceScheme('https');
+        }
+        
         // Tenant için Redis önbellek yapılandırması
         if (TenantHelpers::isTenant()) {
             $tenantId = tenant_id();

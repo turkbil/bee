@@ -25,8 +25,14 @@ trait SettingsTrait
             return;
         }
         
+        // Önek ekleme (widget.) - "title" ve "unique_id" dışındaki tüm alanlar için
+        $fieldName = $this->newField['name'];
+        if (!in_array($fieldName, ['title', 'unique_id'])) {
+            $fieldName = 'widget.' . $fieldName;
+        }
+        
         $field = [
-            'name' => $this->newField['name'],
+            'name' => $fieldName,
             'label' => $this->newField['label'],
             'type' => $this->newField['type'],
             'required' => $this->newField['required'] ?? false

@@ -82,17 +82,17 @@
                                                     <i class="fas fa-font"></i>
                                                 </span>
                                                 <input type="text" 
-                                                    wire:model="settings.{{ $field['name'] }}" 
+                                                    wire:model="settings.{{ str_replace('widget.', '', $field['name']) }}" 
                                                     id="field-{{ $field['name'] }}" 
-                                                    class="form-control @error('settings.' . $field['name']) is-invalid @enderror"
+                                                    class="form-control @error('settings.' . str_replace('widget.', '', $field['name'])) is-invalid @enderror"
                                                     placeholder="{{ $field['label'] }}">
                                             </div>
                                         
                                         @elseif($field['type'] === 'textarea')
                                             <textarea 
-                                                wire:model="settings.{{ $field['name'] }}" 
+                                                wire:model="settings.{{ str_replace('widget.', '', $field['name']) }}" 
                                                 id="field-{{ $field['name'] }}" 
-                                                class="form-control @error('settings.' . $field['name']) is-invalid @enderror"
+                                                class="form-control @error('settings.' . str_replace('widget.', '', $field['name'])) is-invalid @enderror"
                                                 rows="4"
                                                 placeholder="{{ $field['label'] }}"></textarea>
                                         
@@ -100,17 +100,17 @@
                                             <div class="form-control p-3" style="height: auto;"
                                                 onclick="document.getElementById('field-{{ $field['name'] }}').click()">
                                                 <input type="file" 
-                                                    wire:model="temporaryUpload.{{ $field['name'] }}" 
+                                                    wire:model="temporaryUpload.{{ str_replace('widget.', '', $field['name']) }}" 
                                                     id="field-{{ $field['name'] }}" 
                                                     class="d-none"
                                                     accept="image/*">
                                                 
-                                                @if(isset($settings[$field['name']]) && is_string($settings[$field['name']]))
-                                                    <img src="{{ $settings[$field['name']] }}" 
+                                                @if(isset($settings[str_replace('widget.', '', $field['name'])]) && is_string($settings[str_replace('widget.', '', $field['name'])]))
+                                                    <img src="{{ $settings[str_replace('widget.', '', $field['name'])] }}" 
                                                         class="img-fluid rounded mx-auto d-block mb-2" 
                                                         style="max-height: 120px;">
-                                                @elseif(isset($temporaryUpload[$field['name']]))
-                                                    <img src="{{ $temporaryUpload[$field['name']]->temporaryUrl() }}" 
+                                                @elseif(isset($temporaryUpload[str_replace('widget.', '', $field['name'])]))
+                                                    <img src="{{ $temporaryUpload[str_replace('widget.', '', $field['name'])]->temporaryUrl() }}" 
                                                         class="img-fluid rounded mx-auto d-block mb-2" 
                                                         style="max-height: 120px;">
                                                 @endif
@@ -125,20 +125,29 @@
                                         @elseif($field['type'] === 'checkbox')
                                             <label class="form-check form-switch">
                                                 <input type="checkbox" 
-                                                    wire:model="settings.{{ $field['name'] }}" 
+                                                    wire:model="settings.{{ str_replace('widget.', '', $field['name']) }}" 
                                                     id="field-{{ $field['name'] }}" 
-                                                    class="form-check-input @error('settings.' . $field['name']) is-invalid @enderror">
-                                                <span class="form-check-label">{{ isset($settings[$field['name']]) && $settings[$field['name']] ? 'Evet' : 'Hayır' }}</span>
+                                                    class="form-check-input @error('settings.' . str_replace('widget.', '', $field['name'])) is-invalid @enderror">
+                                                <span class="form-check-label">
+                                                    @php
+                                                        $settingKey = str_replace('widget.', '', $field['name']);
+                                                        $checkValue = isset($settings[$settingKey]) ? $settings[$settingKey] : false;
+                                                        $checkValueDisplay = is_bool($checkValue) || is_numeric($checkValue) ? 
+                                                            ($checkValue ? 'Evet' : 'Hayır') : 
+                                                            (is_string($checkValue) ? $checkValue : 'Hayır');
+                                                    @endphp
+                                                    {{ $checkValueDisplay }}
+                                                </span>
                                             </label>
                                         
                                         @elseif($field['type'] === 'select')
                                             <select 
-                                                wire:model="settings.{{ $field['name'] }}" 
+                                                wire:model="settings.{{ str_replace('widget.', '', $field['name']) }}" 
                                                 id="field-{{ $field['name'] }}" 
-                                                class="form-select @error('settings.' . $field['name']) is-invalid @enderror">
+                                                class="form-select @error('settings.' . str_replace('widget.', '', $field['name'])) is-invalid @enderror">
                                                 <option value="">Seçiniz</option>
-                                                @foreach($field['options'] ?? [] as $key => $value)
-                                                    <option value="{{ $key }}">{{ $value }}</option>
+                                                @foreach($field['options'] ?? [] as $option)
+                                                    <option value="{{ $option['value'] }}">{{ $option['label'] }}</option>
                                                 @endforeach
                                             </select>
                                         
@@ -146,16 +155,26 @@
                                             <div class="row g-2 align-items-center">
                                                 <div class="col-auto">
                                                     <input type="color" 
-                                                        wire:model="settings.{{ $field['name'] }}" 
+                                                        wire:model="settings.{{ str_replace('widget.', '', $field['name']) }}" 
                                                         id="field-{{ $field['name'] }}" 
-                                                        class="form-control form-control-color @error('settings.' . $field['name']) is-invalid @enderror"
+                                                        class="form-control form-control-color @error('settings.' . str_replace('widget.', '', $field['name'])) is-invalid @enderror"
                                                         title="Renk seçin">
                                                 </div>
                                                 <div class="col-auto">
-                                                    <span class="form-color-swatch" style="background-color: {{ $settings[$field['name']] ?? '#ffffff' }}; width: 30px; height: 30px; display: inline-block; border-radius: 4px; border: 1px solid #dee2e6;"></span>
+                                                    @php
+                                                        $settingKey = str_replace('widget.', '', $field['name']);
+                                                        $colorValue = isset($settings[$settingKey]) ? $settings[$settingKey] : '#ffffff';
+                                                        $colorBg = is_string($colorValue) ? $colorValue : '#ffffff';
+                                                    @endphp
+                                                    <span class="form-color-swatch" style="background-color: {{ $colorBg }}; width: 30px; height: 30px; display: inline-block; border-radius: 4px; border: 1px solid #dee2e6;"></span>
                                                 </div>
                                                 <div class="col">
-                                                    <span class="text-muted">{{ $settings[$field['name']] ?? '#ffffff' }}</span>
+                                                    @php
+                                                        $settingKey = str_replace('widget.', '', $field['name']);
+                                                        $colorTextValue = isset($settings[$settingKey]) ? $settings[$settingKey] : '#ffffff';
+                                                        $colorText = is_string($colorTextValue) ? $colorTextValue : (is_array($colorTextValue) ? json_encode($colorTextValue) : '#ffffff');
+                                                    @endphp
+                                                    <span class="text-muted">{{ $colorText }}</span>
                                                 </div>
                                             </div>
                                         
@@ -165,13 +184,13 @@
                                                     <i class="fas fa-hashtag"></i>
                                                 </span>
                                                 <input type="number" 
-                                                    wire:model="settings.{{ $field['name'] }}" 
+                                                    wire:model="settings.{{ str_replace('widget.', '', $field['name']) }}" 
                                                     id="field-{{ $field['name'] }}" 
-                                                    class="form-control @error('settings.' . $field['name']) is-invalid @enderror">
+                                                    class="form-control @error('settings.' . str_replace('widget.', '', $field['name'])) is-invalid @enderror">
                                             </div>
                                         @endif
                                         
-                                        @error('settings.' . $field['name'])
+                                        @error('settings.' . str_replace('widget.', '', $field['name']))
                                             <div class="invalid-feedback d-block">{{ $message }}</div>
                                         @enderror
                                         

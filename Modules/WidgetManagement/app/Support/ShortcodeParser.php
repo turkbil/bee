@@ -255,7 +255,7 @@ class ShortcodeParser
         
         if ($uniqueId) {
             // ID parametresi varsa, bu ID'ye sahip tenant widget'ı ara
-            $existingWidget = TenantWidget::where('settings->unique_id', $uniqueId)
+            $existingWidget = TenantWidget::where('settings->widget.unique_id', $uniqueId)
                 ->where('widget_id', $widget->id)
                 ->first();
                 
@@ -266,8 +266,8 @@ class ShortcodeParser
         
         // Yeni tenant widget oluştur
         $settings = array_merge([
-            'title' => $widget->name,
-            'unique_id' => $uniqueId ?? Str::uuid()->toString(),
+            'widget.title' => $widget->name,
+            'widget.unique_id' => $uniqueId ?? Str::uuid()->toString(),
         ], $params);
         
         $tenantWidget = new TenantWidget();

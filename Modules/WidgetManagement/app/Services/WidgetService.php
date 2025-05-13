@@ -188,7 +188,180 @@ class WidgetService
         
         return $this->processWidget($tenantWidget);
     }
-    
+            
+    /**
+     * Widget HTML içeriğini render et
+     * 
+     * @param Widget $widget Widget modeli
+     * @param array $context Context değişkenleri
+     * @param bool $useHandlebars Handlebars kullanılsın mı
+     * @return string Render edilmiş HTML içerik
+     */
+    public function renderWidgetHtml(Widget $widget, array $context = [], bool $useHandlebars = false): string
+    {
+        // Handlebars kullanımını ayarla
+        $this->setHandlebarsUsage($useHandlebars);
+        
+        $html = $widget->content_html ?? '';
+        
+        // Önce HTML içinde bulunan bağlantı ve script etiketlerini çıkar
+        $html = preg_replace('/<link[^>]+href=[\'"]([^\'"]+)[\'"][^>]*>/i', '', $html);
+        $html = preg_replace('/<script[^>]+src=[\'"]([^\'"]+)[\'"][^>]*><\/script>/i', '', $html);
+        
+        // Widget tipi ve içeriğine göre render işlemini gerçekleştir
+        if ($widget->has_items && isset($context['items']) && !empty($context['items']) && is_array($context['items'])) {
+            // Dinamik widget için items işleme
+            $html = $this->renderService->processItems($html, $context['items']);
+        }
+        
+        // Context içinde widget. önekli değişkenleri çıkar ve düzenle
+        $widgetSettings = [];
+        
+        if (isset($context['widget']) && is_array($context['widget'])) {
+            $widgetSettings = $context['widget'];
+        } else {
+            foreach ($context as $key => $value) {
+                if (strpos($key, 'widget.') === 0) {
+                    $newKey = str_replace('widget.', '', $key);
+                    $widgetSettings[$newKey] = $value;
+                }
+            }
+        }
+        
+        // Handlebars template değişkenlerini işle
+        $html = $this->renderHandlebarsTemplate($html, array_merge($context, ['widget' => $widgetSettings]));
+        
+        return $html;
+    }
+
+    /**
+     * Handlebars template değişkenlerini işle
+     * 
+     * @param string $template Handlebars template
+     * @param array $context Template değişkenleri
+     * @return string İşlenmiş içerik
+     */
+    protected function renderHandlebarsTemplate(string $template, array $context = []): string
+    {
+        // {{variable}} formatındaki değişkenleri değiştir
+        $template = preg_replace_callback('/\{\{([^#\/][^\}]*?)\}\}/m', function($matches) use ($context) {
+            $key = trim($matches[1]);
+            
+            // {{widget.var}} formatında mı?
+            if (strpos($key, 'widget.') === 0) {
+                $widgetKey = str_replace('widget.', '', $key);
+                if (isset($context['widget'][$widgetKey])) {
+                    return $context['widget'][$widgetKey];
+                }
+            }
+            
+            // Normal değişken mi?
+            if (isset($context[$key])) {
+                if (is_scalar($context[$key])) {
+                    return $context[$key];
+                }
+                return json_encode($context[$key]);
+            }
+            
+            // Değişken hiyerarşisinde mi? (object.property)
+            if (strpos($key, '.') !== false) {
+                $parts = explode('.', $key);
+                $value = $context;
+                
+                foreach ($parts as $part) {
+                    if (isset($value[$part])) {
+                        $value = $value[$part];
+                    } else {
+                        return ''; // Değişken bulunamadı
+                    }
+                }
+                
+                if (is_scalar($value)) {
+                    return $value;
+                } elseif (is_array($value)) {
+                    return json_encode($value);
+                }
+            }
+            
+            return ''; // Değişken bulunamadı
+        }, $template);
+        
+        // {{#if variable}} Koşullu blokları işle
+        $template = preg_replace_callback('/\{\{#if\s+([^\}]+)\}\}(.*?)(?:\{\{else\}\}(.*?))?\{\{\/if\}\}/s', function($matches) use ($context) {
+            $condition = trim($matches[1]);
+            $ifContent = $matches[2];
+            $elseContent = isset($matches[3]) ? $matches[3] : '';
+            
+            // Koşul widget. önekli mi?
+            if (strpos($condition, 'widget.') === 0) {
+                $widgetKey = str_replace('widget.', '', $condition);
+                if (isset($context['widget'][$widgetKey]) && $context['widget'][$widgetKey]) {
+                    return $ifContent;
+                }
+            } else {
+                // Normal koşul değişkeni
+                if (isset($context[$condition]) && $context[$condition]) {
+                    return $ifContent;
+                }
+                
+                // Koşul hiyerarşisinde mi? (object.property)
+                if (strpos($condition, '.') !== false) {
+                    $parts = explode('.', $condition);
+                    $value = $context;
+                    
+                    foreach ($parts as $part) {
+                        if (isset($value[$part])) {
+                            $value = $value[$part];
+                        } else {
+                            return $elseContent; // Değişken bulunamadı, else içeriğini döndür
+                        }
+                    }
+                    
+                    // Değer bulundu mu?
+                    if ($value) {
+                        return $ifContent;
+                    }
+                }
+            }
+            
+            return $elseContent; // Koşul sağlanmadı, else içeriğini döndür
+        }, $template);
+        
+        // {{#each}} döngülerini işle (basit düzeyde)
+        $template = preg_replace_callback('/\{\{#each\s+items\}\}(.*?)\{\{\/each\}\}/s', function($matches) use ($context) {
+            $itemTemplate = $matches[1];
+            $result = '';
+            
+            if (isset($context['items']) && is_array($context['items'])) {
+                foreach ($context['items'] as $item) {
+                    // Her öğe için template'i kopyala ve değişkenleri değiştir
+                    $itemHtml = $itemTemplate;
+                    
+                    // {{title}}, {{description}} gibi değişkenleri değiştir
+                    $itemHtml = preg_replace_callback('/\{\{([^#\/][^\}]*?)\}\}/m', function($varMatches) use ($item) {
+                        $key = trim($varMatches[1]);
+                        
+                        if (isset($item[$key])) {
+                            if (is_scalar($item[$key])) {
+                                return $item[$key];
+                            }
+                            return json_encode($item[$key]);
+                        }
+                        
+                        return '';
+                    }, $itemHtml);
+                    
+                    // İçeriğe ekle
+                    $result .= $itemHtml;
+                }
+            }
+            
+            return $result;
+        }, $template);
+        
+        return $template;
+    }
+
     private function processWidget(TenantWidget $tenantWidget): string
     {
         if ($tenantWidget->is_custom) {

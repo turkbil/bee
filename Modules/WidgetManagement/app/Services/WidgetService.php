@@ -188,7 +188,7 @@ class WidgetService
         
         return $this->processWidget($tenantWidget);
     }
-            
+                
     /**
      * Widget HTML içeriğini render et
      * 
@@ -197,7 +197,7 @@ class WidgetService
      * @param bool $useHandlebars Handlebars kullanılsın mı
      * @return string Render edilmiş HTML içerik
      */
-    public function renderWidgetHtml(Widget $widget, array $context = [], bool $useHandlebars = false): string
+    public function renderWidgetHtml($widget, array $context = [], bool $useHandlebars = false): string
     {
         // Handlebars kullanımını ayarla
         $this->setHandlebarsUsage($useHandlebars);

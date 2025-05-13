@@ -1,4 +1,4 @@
-@widgetstyles
+    @widgetstyles
     @widgetscripts
 </body>
 </html>

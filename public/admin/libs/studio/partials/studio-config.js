@@ -9,11 +9,11 @@ window.StudioConfig = (function() {
         // Canvas ayarları
         canvas: {
             styles: [
-                "https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css",
+                "https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css",
                 "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
             ],
             scripts: [
-                "https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js",
+                "https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js",
                 "/admin/libs/handlebars/handlebars.min.js",
                 "/admin/libs/studio/partials/studio-widget-manager.js",
                 "/admin/libs/studio/partials/studio-widget-loader.js"
@@ -88,13 +88,13 @@ window.StudioConfig = (function() {
         
         // Varsayılan HTML içeriği
         defaultHtml: `
-        <div class="container py-4">
-            <div class="row">
-                <div class="col-12">
-                    <h1 class="mb-4">Yeni Sayfa</h1>
-                    <p class="lead">Bu sayfayı düzenlemek için sol taraftaki bileşenleri kullanabilirsiniz.</p>
-                    <div class="alert alert-info mt-4">
-                        <i class="fas fa-info-circle me-2"></i> Studio Editor ile görsel düzenleme yapabilirsiniz.
+        <div class="container mx-auto py-4 px-4">
+            <div class="grid grid-cols-1 gap-4">
+                <div class="w-full">
+                    <h1 class="text-3xl font-bold mb-4">Yeni Sayfa</h1>
+                    <p class="text-xl text-gray-600">Bu sayfayı düzenlemek için sol taraftaki bileşenleri kullanabilirsiniz.</p>
+                    <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mt-4" role="alert">
+                        <i class="fas fa-info-circle mr-2"></i> Studio Editor ile görsel düzenleme yapabilirsiniz.
                         Düzenlemelerinizi kaydetmek için sağ üstteki Kaydet butonunu kullanın.
                     </div>
                 </div>
@@ -129,7 +129,7 @@ window.StudioConfig = (function() {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Studio İçeriği</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
 ${css}
@@ -139,7 +139,7 @@ ${css}
 </head>
 <body>
 ${html}
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <script>
 ${js}
     </script>

@@ -18,20 +18,21 @@ if (!$theme) {
 
 $themeFolder = $theme->folder_name ?? 'blank';
 
-// HTML içindeki CSS ve JS'leri çıkar
-$contentHtml = $widget->content_html ?? '';
-preg_match_all('/<link[^>]+href=[\'"]([^\'"]+)[\'"][^>]*>/i', $contentHtml, $cssMatches);
+// CSS ve JS dosyalarını ayıkla
+preg_match_all('/<link[^>]+href=[\'"]([^\'"]+)[\'"][^>]*>/i', $widget->content_html, $cssMatches);
 $cssFiles = !empty($cssMatches[1]) ? $cssMatches[1] : [];
 
-preg_match_all('/<script[^>]+src=[\'"]([^\'"]+)[\'"][^>]*>/i', $contentHtml, $jsMatches);
+preg_match_all('/<script[^>]+src=[\'"]([^\'"]+)[\'"][^>]*><\/script>/i', $widget->content_html, $jsMatches);
 $jsFiles = !empty($jsMatches[1]) ? $jsMatches[1] : [];
+
+// Widget Service
+$widgetService = app('widget.service');
+
+// Widget HTML içeriğini render et
+$renderedHtml = $widgetService->renderWidgetHtml($widget, $context, false);
 @endphp
 
 @include("themes.{$themeFolder}.layouts.header")
-
-@php
-ob_start();
-@endphp
 
 <div class="preview-header">
     <div class="container-fluid flex justify-between items-center">
@@ -72,110 +73,15 @@ ob_start();
     
     <div class="preview-frame" id="preview-frame">
         <div class="preview-content">
-            @if($widget->type == 'module')
+            @if($widget->type == 'module' && empty($widget->file_path))
                 <div class="bg-yellow-100 border border-yellow-400 p-4 rounded-md text-yellow-800">
                     <i class="fas fa-exclamation-triangle me-2"></i>
                     Bu modül bileşeni için HTML şablonu tanımlanmamış. Lütfen widget'ı düzenleyin ve bir HTML şablonu ekleyin.
                 </div>
+            @elseif($widget->type == 'file')
+                @include('widgetmanagement::blocks.' . $widget->file_path, ['settings' => $context])
             @else
-                <script id="widget-template" type="text/x-handlebars-template">
-                    {!! $widget->content_html !!}
-                </script>
-                <div id="widget-rendered"></div>
-                <script src="{{ asset('admin/libs/handlebars/handlebars.min.js') }}?v={{ filemtime(public_path('admin/libs/handlebars/handlebars.min.js')) }}"></script>
-                <script>
-                    (function() {
-                        // Handlebars helper fonksiyonları tanımlama
-                        Handlebars.registerHelper('eq', function(v1, v2, options) {
-                            if (arguments.length < 3)
-                                throw new Error("Handlebars Helper 'eq' ihtiyaç duyduğu parametreleri almadı");
-                            return v1 === v2 ? options.fn(this) : options.inverse(this);
-                        });
-                        
-                        Handlebars.registerHelper('ne', function(v1, v2, options) {
-                            if (arguments.length < 3)
-                                throw new Error("Handlebars Helper 'ne' ihtiyaç duyduğu parametreleri almadı");
-                            return v1 !== v2 ? options.fn(this) : options.inverse(this);
-                        });
-                        
-                        Handlebars.registerHelper('lt', function(v1, v2, options) {
-                            if (arguments.length < 3)
-                                throw new Error("Handlebars Helper 'lt' ihtiyaç duyduğu parametreleri almadı");
-                            return v1 < v2 ? options.fn(this) : options.inverse(this);
-                        });
-                        
-                        Handlebars.registerHelper('gt', function(v1, v2, options) {
-                            if (arguments.length < 3)
-                                throw new Error("Handlebars Helper 'gt' ihtiyaç duyduğu parametreleri almadı");
-                            return v1 > v2 ? options.fn(this) : options.inverse(this);
-                        });
-                        
-                        Handlebars.registerHelper('lte', function(v1, v2, options) {
-                            if (arguments.length < 3)
-                                throw new Error("Handlebars Helper 'lte' ihtiyaç duyduğu parametreleri almadı");
-                            return v1 <= v2 ? options.fn(this) : options.inverse(this);
-                        });
-                        
-                        Handlebars.registerHelper('gte', function(v1, v2, options) {
-                            if (arguments.length < 3)
-                                throw new Error("Handlebars Helper 'gte' ihtiyaç duyduğu parametreleri almadı");
-                            return v1 >= v2 ? options.fn(this) : options.inverse(this);
-                        });
-                        
-                        Handlebars.registerHelper('and', function() {
-                            var options = arguments[arguments.length - 1];
-                            for (var i = 0; i < arguments.length - 1; i++) {
-                                if (!arguments[i]) {
-                                    return options.inverse(this);
-                                }
-                            }
-                            return options.fn(this);
-                        });
-                        
-                        Handlebars.registerHelper('or', function() {
-                            var options = arguments[arguments.length - 1];
-                            for (var i = 0; i < arguments.length - 1; i++) {
-                                if (arguments[i]) {
-                                    return options.fn(this);
-                                }
-                            }
-                            return options.inverse(this);
-                        });
-                        
-                        Handlebars.registerHelper('truncate', function(str, len) {
-                            if (!str || !len) {
-                                return str;
-                            }
-                            if (str.length > len) {
-                                return str.substring(0, len) + '...';
-                            }
-                            return str;
-                        });
-                        
-                        Handlebars.registerHelper('formatDate', function(date, format) {
-                            // Basit tarih biçimlendirme
-                            if (!date) return '';
-                            var d = new Date(date);
-                            if (isNaN(d.getTime())) return date;
-                            
-                            var day = d.getDate().toString().padStart(2, '0');
-                            var month = (d.getMonth() + 1).toString().padStart(2, '0');
-                            var year = d.getFullYear();
-                            
-                            return day + '.' + month + '.' + year;
-                        });
-                        
-                        Handlebars.registerHelper('json', function(context) {
-                            return JSON.stringify(context);
-                        });
-
-                        const data = @json($context);
-                        const template = Handlebars.compile(
-                            document.getElementById('widget-template').innerHTML
-                        );
-                        document.getElementById('widget-rendered').innerHTML = template(data);
-                    })();
-                </script>
+                {!! $renderedHtml !!}
             @endif
         </div>
     </div>
@@ -202,11 +108,6 @@ ob_start();
         @endif
     </div>
 </div>
-
-@php
-$content = ob_get_clean();
-echo app('widget.resolver')->resolveWidgetContent($content);
-@endphp
 
 <!-- Önizleme Frame Boyutlandırma -->
 <script>
@@ -277,7 +178,38 @@ echo app('widget.resolver')->resolveWidgetContent($content);
     }
 
     /* Widget CSS */
-    {!! $widget->content_css ?? '' !!}
+    @php
+    // Widget CSS içeriğini de işle
+    $processedCss = $widget->content_css ?? '';
+    
+    if (!empty($processedCss)) {
+        // CSS içindeki değişkenleri işle
+        $processedCss = preg_replace_callback('/\{\{([^{}]+?)\}\}/m', function($matches) use ($context) {
+            $key = trim($matches[1]);
+            
+            // {{widget.var}} formatında mı?
+            if (strpos($key, 'widget.') === 0) {
+                $widgetKey = str_replace('widget.', '', $key);
+                if (isset($context['widget'][$widgetKey])) {
+                    return $context['widget'][$widgetKey];
+                } elseif (isset($context[$widgetKey])) {
+                    return $context[$widgetKey];
+                }
+            }
+            
+            // Normal değişken mi?
+            if (isset($context[$key])) {
+                if (is_scalar($context[$key])) {
+                    return $context[$key];
+                }
+            }
+            
+            return '';
+        }, $processedCss);
+    }
+    @endphp
+    
+    {!! $processedCss !!}
 </style>
 
 <!-- CSS Dosyaları -->
@@ -295,8 +227,39 @@ echo app('widget.resolver')->resolveWidgetContent($content);
 @endforeach
 
 <!-- Widget JavaScript -->
-<script type="module">
-    {!! $widget->content_js ?? '' !!}
+<script>
+    @php
+    // Widget JS içeriğini de işle
+    $processedJs = $widget->content_js ?? '';
+    
+    if (!empty($processedJs)) {
+        // JS içindeki değişkenleri işle
+        $processedJs = preg_replace_callback('/\{\{([^{}]+?)\}\}/m', function($matches) use ($context) {
+            $key = trim($matches[1]);
+            
+            // {{widget.var}} formatında mı?
+            if (strpos($key, 'widget.') === 0) {
+                $widgetKey = str_replace('widget.', '', $key);
+                if (isset($context['widget'][$widgetKey])) {
+                    return $context['widget'][$widgetKey];
+                } elseif (isset($context[$widgetKey])) {
+                    return $context[$widgetKey];
+                }
+            }
+            
+            // Normal değişken mi?
+            if (isset($context[$key])) {
+                if (is_scalar($context[$key])) {
+                    return $context[$key];
+                }
+            }
+            
+            return '';
+        }, $processedJs);
+    }
+    @endphp
+    
+    {!! $processedJs !!}
 </script>
 
 @include("themes.{$themeFolder}.layouts.footer")

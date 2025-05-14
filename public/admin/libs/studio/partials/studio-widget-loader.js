@@ -163,7 +163,7 @@ window.StudioWidgetLoader = (function() {
                 align-items: center !important;
                 justify-content: center !important;
                 transition: opacity 0.3s ease !important;
-                z-index: 5 !important;
+                z-index: 9999 !important;
                 margin: 0 !important;
                 padding: 0 !important;
                 border-radius: inherit !important;
@@ -171,7 +171,7 @@ window.StudioWidgetLoader = (function() {
             
             .studio-widget-container:hover > .widget-overlay {
                 opacity: 1 !important;
-                pointer-events: auto !important;
+                pointer-events: none !important;
             }
             
             .widget-action-btn {
@@ -182,10 +182,11 @@ window.StudioWidgetLoader = (function() {
                 text-decoration: none !important; 
                 font-size: 14px !important; 
                 transition: background-color 0.2s ease !important;
-                z-index: 6 !important;
+                z-index: 10000 !important;
                 position: relative !important;
                 border: none !important;
                 box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2) !important;
+                pointer-events: auto !important;
             }
             
             .widget-action-btn:hover {
@@ -266,11 +267,16 @@ window.StudioWidgetLoader = (function() {
         const overlay = document.createElement('div');
         overlay.className = 'widget-overlay';
         overlay.setAttribute('data-widget-id', widgetId);
-        overlay.style.pointerEvents = 'none';
+        
+        // Stillemeleri doğrudan içine ekle
+        overlay.style.cssText = 'position:absolute !important;top:0 !important;left:0 !important;width:100% !important;height:100% !important;background:rgba(0,0,0,0.4) !important;opacity:0 !important;display:flex !important;align-items:center !important;justify-content:center !important;transition:opacity 0.3s ease !important;z-index:9999 !important;pointer-events:none !important;';
         
         // Buton oluştur
         const actionBtn = document.createElement('a');
         actionBtn.className = 'widget-action-btn';
+        
+        // Buton stillerini doğrudan içine ekle
+        actionBtn.style.cssText = 'background-color:#3b82f6 !important;color:#fff !important;padding:6px 12px !important;border-radius:4px !important;text-decoration:none !important;font-size:14px !important;transition:background-color 0.2s ease !important;z-index:10000 !important;position:relative !important;pointer-events:auto !important;';
         
         // Dinamik URL oluştur - window.location.origin kullanarak
         const origin = window.location.origin;
@@ -283,6 +289,8 @@ window.StudioWidgetLoader = (function() {
         
         actionBtn.target = '_blank';
         actionBtn.innerHTML = '<i class="fa fa-pencil-alt me-1"></i> Düzenle';
+        
+        // Buton tıklanabilir olmalı
         actionBtn.style.pointerEvents = 'auto';
         
         // Badge oluştur - görünmez yapılıyor
@@ -293,9 +301,27 @@ window.StudioWidgetLoader = (function() {
         // Overlay'e buton ekle
         overlay.appendChild(actionBtn);
         
+        // Hover efektlerini JavaScript ile yönet
+        el.addEventListener('mouseenter', function() {
+            overlay.style.opacity = '1';
+        });
+        
+        el.addEventListener('mouseleave', function() {
+            overlay.style.opacity = '0';
+        });
+        
         // Overlay'i widget container'a ekle
         el.appendChild(overlay);
         el.appendChild(badge);
+        
+        // MutationObserver kullanarak overlay'in her zaman korunmasını sağla
+        const observer = new MutationObserver(function(mutations) {
+            if (!el.querySelector('.widget-overlay')) {
+                el.appendChild(overlay);
+            }
+        });
+        
+        observer.observe(el, { childList: true });
     }
     
     // Mevcut widget'ları işle
@@ -368,63 +394,11 @@ window.StudioWidgetLoader = (function() {
                                 el.classList.add('studio-widget-container');
                             }
                             
-                            // Etiketleri temizle
-                            const labels = el.querySelectorAll('.widget-label');
-                            labels.forEach(label => label.remove());
-                            
-                            // Mevcut overlay'leri temizle
-                            const existingOverlays = el.querySelectorAll('.widget-overlay');
-                            existingOverlays.forEach(overlay => overlay.remove());
+                            // Element pozisyonunu kesinlikle relative yap
+                            el.style.position = 'relative';
                             
                             // Overlay ekle
-                            const overlay = document.createElement('div');
-                            overlay.className = 'widget-overlay';
-                            overlay.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);opacity:0;display:flex;align-items:center;justify-content:center;transition:opacity 0.3s ease;z-index:999;pointer-events:none;';
-                            
-                            // Buton oluştur
-                            const actionBtn = document.createElement('a');
-                            actionBtn.className = 'widget-action-btn';
-                            actionBtn.style.cssText = 'background-color:#3b82f6;color:#fff;padding:6px 12px;border-radius:4px;text-decoration:none;font-size:14px;transition:background-color 0.2s ease;pointer-events:auto;';
-                            
-                            // Dinamik URL oluştur
-                            const origin = window.location.origin;
-                            const isStatic = component.getAttributes()['data-widget-id'] && !component.getAttributes()['data-tenant-widget-id'];
-                            
-                            if (isStatic) {
-                                actionBtn.href = `${origin}/admin/widgetmanagement/manage/item/${widgetId}/1`;
-                            } else {
-                                actionBtn.href = `${origin}/admin/widgetmanagement/items/${widgetId}`;
-                            }
-                            
-                            actionBtn.target = '_blank';
-                            actionBtn.innerHTML = '<i class="fa fa-pencil-alt me-1"></i> Düzenle';
-                            actionBtn.addEventListener('mouseenter', () => actionBtn.style.backgroundColor = '#2563eb');
-                            actionBtn.addEventListener('mouseleave', () => actionBtn.style.backgroundColor = '#3b82f6');
-                            
-                            // Badge'i gizle
-                            const badge = document.createElement('span');
-                            badge.className = 'widget-type-badge';
-                            badge.style.cssText = 'display:none;';
-                            
-                            overlay.appendChild(actionBtn);
-                            el.appendChild(overlay);
-                            el.appendChild(badge);
-                            
-                            // Tıklama olayı devre dışı bırak, yalnızca butonla etkileşime izin ver
-                            overlay.style.pointerEvents = 'none';
-                            actionBtn.style.pointerEvents = 'auto';
-                            
-                            // Olay dinleyicilerini ekle - her bir overlay için bağımsız çalışacak şekilde
-                            el.addEventListener('mouseenter', function() {
-                                overlay.style.opacity = '1';
-                                overlay.style.pointerEvents = 'none';
-                                actionBtn.style.pointerEvents = 'auto';
-                            });
-                            
-                            el.addEventListener('mouseleave', function() {
-                                overlay.style.opacity = '0';
-                                overlay.style.pointerEvents = 'none';
-                            });
+                            createWidgetOverlay(el, widgetId, false);
                             
                             // İçerik alanını bul veya oluştur
                             const uniqueId = 'widget-content-' + widgetId;
@@ -444,7 +418,7 @@ window.StudioWidgetLoader = (function() {
                                 if (typeof window.studioLoadWidget === "function") {
                                     setTimeout(() => {
                                         window.studioLoadWidget(widgetId);
-                                    }, 500);
+                                    }, 300);
                                 }
                             }
                         } catch (err) {
@@ -504,6 +478,10 @@ window.StudioWidgetLoader = (function() {
                     setTimeout(() => {
                         try {
                             const el = component.view.el;
+                            if (!el) return;
+                            
+                            // Element pozisyonunu relative yap
+                            el.style.position = 'relative';
                             
                             // Etiketleri temizle
                             const labels = el.querySelectorAll('.widget-label');
@@ -513,48 +491,52 @@ window.StudioWidgetLoader = (function() {
                             const existingOverlays = el.querySelectorAll('.widget-overlay');
                             existingOverlays.forEach(overlay => overlay.remove());
                             
-                            // Overlay ekle
+                            // Overlay oluştur
                             const overlay = document.createElement('div');
                             overlay.className = 'widget-overlay';
-                            overlay.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);opacity:0;display:flex;align-items:center;justify-content:center;transition:opacity 0.3s ease;z-index:999;pointer-events:none;';
+                            
+                            // Stili doğrudan içine ekle
+                            overlay.style.cssText = 'position:absolute !important;top:0 !important;left:0 !important;width:100% !important;height:100% !important;background:rgba(139,92,246,0.4) !important;opacity:0 !important;display:flex !important;align-items:center !important;justify-content:center !important;transition:opacity 0.3s ease !important;z-index:9999 !important;pointer-events:none !important;';
                             
                             // Buton oluştur
                             const actionBtn = document.createElement('a');
                             actionBtn.className = 'widget-action-btn';
-                            actionBtn.style.cssText = 'background-color:#8b5cf6;color:#fff;padding:6px 12px;border-radius:4px;text-decoration:none;font-size:14px;transition:background-color 0.2s ease;pointer-events:auto;';
+                            
+                            // Buton stilini doğrudan içine ekle
+                            actionBtn.style.cssText = 'background-color:#8b5cf6 !important;color:#fff !important;padding:6px 12px !important;border-radius:4px !important;text-decoration:none !important;font-size:14px !important;transition:background-color 0.2s ease !important;z-index:10000 !important;position:relative !important;pointer-events:auto !important;';
                             
                             // Dinamik URL oluştur
                             const origin = window.location.origin;
                             actionBtn.href = `${origin}/admin/widgetmanagement/modules/preview/${moduleId}`;
                             actionBtn.target = '_blank';
                             actionBtn.innerHTML = '<i class="fa fa-eye me-1"></i> Önizle';
-                            actionBtn.addEventListener('mouseenter', () => actionBtn.style.backgroundColor = '#7c3aed');
-                            actionBtn.addEventListener('mouseleave', () => actionBtn.style.backgroundColor = '#8b5cf6');
                             
-                            // Badge'i gizle
-                            const badge = document.createElement('span');
-                            badge.className = 'widget-type-badge';
-                            badge.style.cssText = 'display:none;';
-                            
-                            overlay.appendChild(actionBtn);
-                            el.appendChild(overlay);
-                            el.appendChild(badge);
-                            
-                            // Tıklama olayı devre dışı bırak, yalnızca butonla etkileşime izin ver
-                            overlay.style.pointerEvents = 'none';
+                            // Buton tıklanabilir olmalı
                             actionBtn.style.pointerEvents = 'auto';
                             
-                            // Her modül widget için bağımsız olay dinleyicileri ekle
+                            // Hover efektlerini JavaScript ile yönet
                             el.addEventListener('mouseenter', function() {
                                 overlay.style.opacity = '1';
-                                overlay.style.pointerEvents = 'none';
-                                actionBtn.style.pointerEvents = 'auto';
                             });
                             
                             el.addEventListener('mouseleave', function() {
                                 overlay.style.opacity = '0';
-                                overlay.style.pointerEvents = 'none';
                             });
+                            
+                            // Overlay'e buton ekle
+                            overlay.appendChild(actionBtn);
+                            
+                            // Overlay'i widget container'a ekle
+                            el.appendChild(overlay);
+                            
+                            // MutationObserver kullanarak overlay'in her zaman korunmasını sağla
+                            const observer = new MutationObserver(function(mutations) {
+                                if (!el.querySelector('.widget-overlay')) {
+                                    el.appendChild(overlay);
+                                }
+                            });
+                            
+                            observer.observe(el, { childList: true });
                         } catch (err) {
                             console.error(`Module widget ${moduleId} etiket hatası:`, err);
                         }
@@ -565,7 +547,7 @@ window.StudioWidgetLoader = (function() {
                         if (typeof window.studioLoadModuleWidget === "function") {
                             window.studioLoadModuleWidget(moduleId);
                         }
-                    }, 500);
+                    }, 300);
                 });
             }
             
@@ -612,7 +594,7 @@ window.StudioWidgetLoader = (function() {
                         if (window.studioLoadModuleWidget) {
                             window.studioLoadModuleWidget(moduleId);
                         }
-                    }, 500);
+                    }, 300);
                 }
             }
         } catch (err) {
@@ -643,9 +625,86 @@ window.StudioWidgetLoader = (function() {
                         component.addClass('studio-widget-container');
                     }
                     
-                    // Görünümü güncelle
-                    if (component.view && typeof component.view.onRender === 'function') {
-                        setTimeout(() => component.view.onRender(), 100);
+                    // Önemli: DOM elemanı üzerinde doğrudan işlem yap
+                    try {
+                        // Elementlere erişmeye çalış
+                        const el = component.view.el;
+                        if (!el) {
+                            console.warn("Widget element bulunamadı:", widgetId);
+                            return;
+                        }
+                        
+                        // Elementin pozisyonunu kesinlikle RELATIVE yap (zorunlu)
+                        el.style.position = 'relative';
+                        
+                        // Tüm sınıfları ekle
+                        el.classList.add('studio-widget-container', 'widget-embed');
+                        
+                        // Tüm mevcut overlay ve etiketleri temizle
+                        const labels = el.querySelectorAll('.widget-label, .widget-type-badge');
+                        labels.forEach(label => label.remove());
+                        
+                        const existingOverlays = el.querySelectorAll('.widget-overlay');
+                        existingOverlays.forEach(overlay => overlay.remove());
+                        
+                        // Yeni overlay oluştur
+                        const overlay = document.createElement('div');
+                        overlay.className = 'widget-overlay';
+                        overlay.setAttribute('data-widget-id', widgetId);
+                        
+                        // Z-index ve stillemeleri doğrudan ekle
+                        overlay.style.cssText = 'position:absolute !important;top:0 !important;left:0 !important;width:100% !important;height:100% !important;background:rgba(0,0,0,0.4) !important;opacity:0 !important;display:flex !important;align-items:center !important;justify-content:center !important;transition:opacity 0.3s ease !important;z-index:9999 !important;pointer-events:none !important;';
+                        
+                        // Buton oluştur
+                        const actionBtn = document.createElement('a');
+                        actionBtn.className = 'widget-action-btn';
+                        
+                        // Buton stillerini direkt içine ekle
+                        actionBtn.style.cssText = 'background-color:#3b82f6 !important;color:#fff !important;padding:6px 12px !important;border-radius:4px !important;text-decoration:none !important;font-size:14px !important;transition:background-color 0.2s ease !important;z-index:10000 !important;position:relative !important;pointer-events:auto !important;';
+                        
+                        // Dinamik URL oluştur
+                        const origin = window.location.origin;
+                        const isStatic = component.getAttributes()['data-widget-id'] && !component.getAttributes()['data-tenant-widget-id'];
+                        
+                        if (isStatic) {
+                            actionBtn.href = `${origin}/admin/widgetmanagement/manage/item/${widgetId}/1`;
+                        } else {
+                            actionBtn.href = `${origin}/admin/widgetmanagement/items/${widgetId}`;
+                        }
+                        
+                        actionBtn.target = '_blank';
+                        actionBtn.innerHTML = '<i class="fa fa-pencil-alt me-1"></i> Düzenle';
+                        
+                        // Buton her zaman tıklanabilir olmalı
+                        actionBtn.style.pointerEvents = 'auto';
+                        
+                        // Tıklama ve hover olaylarını JavaScript ile yönet
+                        el.addEventListener('mouseenter', function() {
+                            overlay.style.opacity = '1';
+                        });
+                        
+                        el.addEventListener('mouseleave', function() {
+                            overlay.style.opacity = '0';
+                        });
+                        
+                        // Overlay'e buton ekle
+                        overlay.appendChild(actionBtn);
+                        
+                        // Overlay'i widget container'a ekle
+                        el.appendChild(overlay);
+                        
+                        // Önemli: MutationObserver kullanarak DOM değişikliklerini izle ve overlay'i koru
+                        const observer = new MutationObserver(function(mutations) {
+                            // Eğer overlay kaldırıldıysa, tekrar ekle
+                            if (!el.querySelector('.widget-overlay')) {
+                                el.appendChild(overlay);
+                            }
+                        });
+                        
+                        // DOM değişikliklerini izle
+                        observer.observe(el, { childList: true });
+                    } catch (err) {
+                        console.error(`Widget ${widgetId} overlay işleme hatası:`, err);
                     }
                     
                     // Blok butonunu pasifleştir
@@ -656,43 +715,21 @@ window.StudioWidgetLoader = (function() {
                         blockEl.style.cursor = 'not-allowed';
                         const badge = blockEl.querySelector('.gjs-block-type-badge');
                         if (badge) {
-                            badge.classList.replace('inactive', 'active');
+                            badge.classList.replace('active', 'inactive');
                             badge.textContent = 'Pasif';
                         }
                     }
                     
-                    // Her widget için overlay ekle
+                    // Widget içeriğini yükle
                     setTimeout(() => {
-                        try {
-                            const el = component.view.el;
-                            if (!el) return;
-                            
-                            // Elementin pozisyonunu kesinlikle relative yap
-                            el.style.position = 'relative';
-                            
-                            // Tenant widget container'a sınıf ekle
-                            if (!el.classList.contains('studio-widget-container')) {
-                                el.classList.add('studio-widget-container');
-                            }
-                            
-                            // Overlay oluştur
-                            const isStatic = component.getAttributes()['data-widget-id'] && !component.getAttributes()['data-tenant-widget-id'];
-                            createWidgetOverlay(el, widgetId, isStatic);
-                            
-                            // Widget içeriğini yükle
-                            if (typeof window.studioLoadWidget === "function") {
-                                setTimeout(() => {
-                                    window.studioLoadWidget(widgetId);
-                                }, 500);
-                            }
-                        } catch (err) {
-                            console.error(`Widget overlay hatası:`, err);
+                        if (window.studioLoadWidget) {
+                            window.studioLoadWidget(widgetId);
                         }
                     }, 100);
                 });
             }
             
-            // Module widget elementlerini bul ve işle
+            // Module widget'ları için benzer işlemler
             const moduleComponents = editor.DomComponents.getWrapper().find('[data-widget-module-id]');
             
             if (moduleComponents && moduleComponents.length > 0) {
@@ -712,9 +749,86 @@ window.StudioWidgetLoader = (function() {
                         component.addClass('studio-widget-container');
                     }
                     
-                    // Görünümü güncelle  
-                    if (component.view && typeof component.view.onRender === 'function') {
-                        setTimeout(() => component.view.onRender(), 100);
+                    // Önemli: DOM elemanı üzerinde doğrudan işlem yap
+                    try {
+                        const el = component.view.el;
+                        if (!el) {
+                            console.warn("Module widget element bulunamadı:", moduleId);
+                            return;
+                        }
+                        
+                        // Elementin pozisyonunu kesinlikle RELATIVE yap (zorunlu)
+                        el.style.position = 'relative';
+                        
+                        // Tüm sınıfları ekle
+                        el.classList.add('studio-widget-container', 'module-widget-container');
+                        
+                        // Tüm mevcut overlay ve etiketleri temizle
+                        const labels = el.querySelectorAll('.widget-label, .widget-type-badge');
+                        labels.forEach(label => label.remove());
+                        
+                        const existingOverlays = el.querySelectorAll('.widget-overlay');
+                        existingOverlays.forEach(overlay => overlay.remove());
+                        
+                        // Yeni overlay oluştur
+                        const overlay = document.createElement('div');
+                        overlay.className = 'widget-overlay';
+                        overlay.setAttribute('data-module-id', moduleId);
+                        
+                        // Z-index ve stillemeleri doğrudan ekle (modül widget için farklı arka plan)
+                        overlay.style.cssText = 'position:absolute !important;top:0 !important;left:0 !important;width:100% !important;height:100% !important;background:rgba(139,92,246,0.4) !important;opacity:0 !important;display:flex !important;align-items:center !important;justify-content:center !important;transition:opacity 0.3s ease !important;z-index:9999 !important;pointer-events:none !important;';
+                        
+                        // Buton oluştur
+                        const actionBtn = document.createElement('a');
+                        actionBtn.className = 'widget-action-btn';
+                        
+                        // Buton stillerini direkt içine ekle (modül widget için farklı renkler)
+                        actionBtn.style.cssText = 'background-color:#8b5cf6 !important;color:#fff !important;padding:6px 12px !important;border-radius:4px !important;text-decoration:none !important;font-size:14px !important;transition:background-color 0.2s ease !important;z-index:10000 !important;position:relative !important;pointer-events:auto !important;';
+                        
+                        // Dinamik URL oluştur
+                        const origin = window.location.origin;
+                        const isStatic = component.getAttributes()['data-widget-static'] === 'true';
+                        
+                        if (isStatic) {
+                            actionBtn.href = `${origin}/admin/widgetmanagement/manage/module/${moduleId}/1`;
+                            actionBtn.innerHTML = '<i class="fa fa-pencil-alt me-1"></i> Düzenle';
+                        } else {
+                            actionBtn.href = `${origin}/admin/widgetmanagement/modules/preview/${moduleId}`;
+                            actionBtn.innerHTML = '<i class="fa fa-eye me-1"></i> Önizle';
+                        }
+                        
+                        actionBtn.target = '_blank';
+                        
+                        // Buton her zaman tıklanabilir olmalı
+                        actionBtn.style.pointerEvents = 'auto';
+                        
+                        // Tıklama ve hover olaylarını JavaScript ile yönet
+                        el.addEventListener('mouseenter', function() {
+                            overlay.style.opacity = '1';
+                        });
+                        
+                        el.addEventListener('mouseleave', function() {
+                            overlay.style.opacity = '0';
+                        });
+                        
+                        // Overlay'e buton ekle
+                        overlay.appendChild(actionBtn);
+                        
+                        // Overlay'i widget container'a ekle
+                        el.appendChild(overlay);
+                        
+                        // Önemli: MutationObserver kullanarak DOM değişikliklerini izle ve overlay'i koru
+                        const observer = new MutationObserver(function(mutations) {
+                            // Eğer overlay kaldırıldıysa, tekrar ekle
+                            if (!el.querySelector('.widget-overlay')) {
+                                el.appendChild(overlay);
+                            }
+                        });
+                        
+                        // DOM değişikliklerini izle
+                        observer.observe(el, { childList: true });
+                    } catch (err) {
+                        console.error(`Module widget ${moduleId} overlay işleme hatası:`, err);
                     }
                     
                     // Module widget block butonunu pasifleştir
@@ -730,63 +844,10 @@ window.StudioWidgetLoader = (function() {
                         }
                     }
                     
-                    // Module için overlay ekle
+                    // Module içeriğini yükle
                     setTimeout(() => {
-                        try {
-                            const el = component.view.el;
-                            if (!el) return;
-                            
-                            // Elementin pozisyonunu kesinlikle relative yap
-                            el.style.position = 'relative';
-                            
-                            // Etiketleri temizle
-                            const labels = el.querySelectorAll('.widget-label');
-                            labels.forEach(label => label.remove());
-                            
-                            // Mevcut overlay'leri temizle
-                            const existingOverlays = el.querySelectorAll('.widget-overlay');
-                            existingOverlays.forEach(overlay => overlay.remove());
-                            
-                            // Overlay oluştur
-                            const overlay = document.createElement('div');
-                            overlay.className = 'widget-overlay';
-                            overlay.setAttribute('data-module-id', moduleId);
-                            overlay.style.pointerEvents = 'none';
-                            
-                            // Buton oluştur
-                            const actionBtn = document.createElement('a');
-                            actionBtn.className = 'widget-action-btn';
-                            actionBtn.style.pointerEvents = 'auto';
-                            
-                            // Dinamik URL oluştur
-                            const origin = window.location.origin;
-                            const isStatic = component.getAttributes()['data-widget-static'] === 'true';
-                            
-                            if (isStatic) {
-                                actionBtn.href = `${origin}/admin/widgetmanagement/manage/module/${moduleId}/1`;
-                                actionBtn.innerHTML = '<i class="fa fa-pencil-alt me-1"></i> Düzenle';
-                            } else {
-                                actionBtn.href = `${origin}/admin/widgetmanagement/modules/preview/${moduleId}`;
-                                actionBtn.innerHTML = '<i class="fa fa-eye me-1"></i> Önizle';
-                            }
-                            
-                            actionBtn.target = '_blank';
-                            
-                            // Badge'i gizle
-                            const badge = document.createElement('span');
-                            badge.className = 'widget-type-badge';
-                            badge.style.display = 'none';
-                            
-                            overlay.appendChild(actionBtn);
-                            el.appendChild(overlay);
-                            el.appendChild(badge);
-                            
-                            // Module içeriğini yükle
-                            if (window.studioLoadModuleWidget) {
-                                window.studioLoadModuleWidget(moduleId);
-                            }
-                        } catch (err) {
-                            console.error(`Module widget overlay hatası:`, err);
+                        if (window.studioLoadModuleWidget) {
+                            window.studioLoadModuleWidget(moduleId);
                         }
                     }, 100);
                 });
@@ -1175,6 +1236,85 @@ window.StudioWidgetLoader = (function() {
                     if (widgetId) {
                         const origin = window.location.origin;
                         window.open(`${origin}/admin/widgetmanagement/items/${widgetId}`, '_blank');
+                    }
+                },
+                
+                onRender() {
+                    const model = this.model;
+                    const widgetId = model.get('tenant_widget_id') || 
+                                   model.getAttributes()['data-tenant-widget-id'] || 
+                                   model.getAttributes()['data-widget-id'];
+                                   
+                    if (!widgetId) return;
+                    
+                    // Element pozisyonunu RELATIVE yap (kesinlikle gerekli)
+                    const el = this.el;
+                    if (el) {
+                        el.style.position = 'relative';
+                        
+                        // Sınıfları ekle
+                        el.classList.add('studio-widget-container', 'widget-embed');
+                        
+                        // Mevcut overlay ve etiketleri temizle
+                        const labels = el.querySelectorAll('.widget-label, .widget-type-badge');
+                        labels.forEach(label => label.remove());
+                        
+                        const existingOverlays = el.querySelectorAll('.widget-overlay');
+                        existingOverlays.forEach(overlay => overlay.remove());
+                        
+                        // Overlay oluştur
+                        const overlay = document.createElement('div');
+                        overlay.className = 'widget-overlay';
+                        overlay.setAttribute('data-widget-id', widgetId);
+                        
+                        // Overlay stilini düzelt - en üstte olması için yüksek z-index ve absolute
+                        overlay.style.cssText = 'position:absolute !important;top:0 !important;left:0 !important;width:100% !important;height:100% !important;background:rgba(0,0,0,0.4) !important;opacity:0 !important;display:flex !important;align-items:center !important;justify-content:center !important;transition:opacity 0.3s ease !important;z-index:9999 !important;pointer-events:none !important;';
+                        
+                        // Buton oluştur
+                        const actionBtn = document.createElement('a');
+                        actionBtn.className = 'widget-action-btn';
+                        
+                        // Buton stilini düzelt
+                        actionBtn.style.cssText = 'background-color:#3b82f6 !important;color:#fff !important;padding:6px 12px !important;border-radius:4px !important;text-decoration:none !important;font-size:14px !important;transition:background-color 0.2s ease !important;z-index:10000 !important;position:relative !important;pointer-events:auto !important;';
+                        
+                        // Dinamik URL oluştur
+                        const origin = window.location.origin;
+                        actionBtn.href = `${origin}/admin/widgetmanagement/items/${widgetId}`;
+                        actionBtn.target = '_blank';
+                        actionBtn.innerHTML = '<i class="fa fa-pencil-alt me-1"></i> Düzenle';
+                        
+                        // Buton mutlaka tıklanabilir olmalı
+                        actionBtn.style.pointerEvents = 'auto';
+                        
+                        // Hover olaylarını doğrudan JavaScript ile kontrol et
+                        el.addEventListener('mouseenter', function() {
+                            overlay.style.opacity = '1';
+                        });
+                        
+                        el.addEventListener('mouseleave', function() {
+                            overlay.style.opacity = '0';
+                        });
+                        
+                        // Overlay'e buton ekle ve container'a ekle
+                        overlay.appendChild(actionBtn);
+                        el.appendChild(overlay);
+                        
+                        // İçerik kontrol et ve yükle
+                        const uniqueId = 'widget-content-' + widgetId;
+                        let container = el.querySelector(`#${uniqueId}`) || el.querySelector('.widget-content-placeholder');
+                        
+                        if (!container) {
+                            container = document.createElement('div');
+                            container.id = uniqueId;
+                            container.className = 'widget-content-placeholder';
+                            container.innerHTML = '<div class="widget-loading"><i class="fa fa-spin fa-spinner"></i> Widget içeriği yükleniyor...</div>';
+                            el.appendChild(container);
+                        }
+                        
+                        // Widget içeriğini yükle
+                        if (window.studioLoadWidget) {
+                            setTimeout(() => window.studioLoadWidget(widgetId), 100);
+                        }
                     }
                 }
             }

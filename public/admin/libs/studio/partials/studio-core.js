@@ -75,85 +75,32 @@ window.StudioCore = (function() {
             
             // İçerik yüklendikten sonra module widget'ları hemen yükle ve butonları devre dışı bırak
             setTimeout(() => {
-                const moduleComponents = editorInstance.DomComponents.getWrapper().find('[data-widget-module-id]');
-                if (moduleComponents && moduleComponents.length > 0) {
-                    console.log(`${moduleComponents.length} adet module widget otomatik yükleniyor...`);
-                    
-                    moduleComponents.forEach(component => {
-                        const moduleId = component.getAttributes()['data-widget-module-id'];
-                        if (moduleId && window.studioLoadModuleWidget) {
-                            window.studioLoadModuleWidget(moduleId);
-                            
-                            // Module widget butonunu devre dışı bırak
-                            const blockEl = document.querySelector(`.block-item[data-block-id="widget-${moduleId}"]`);
-                            if (blockEl) {
-                                blockEl.classList.add('disabled');
-                                blockEl.setAttribute('draggable', 'false');
-                                blockEl.style.cursor = 'not-allowed';
-                                const badge = blockEl.querySelector('.gjs-block-type-badge');
-                                if (badge) {
-                                    badge.classList.replace('active', 'inactive');
-                                    badge.textContent = 'Pasif';
-                                }
+                const frameEl = editor.Canvas.getFrameEl();
+                if (frameEl) {
+                    const doc = frameEl.contentDocument || frameEl.contentWindow.document;
+                    if (doc) {
+                        // Tailwind.config.js ve Alpine entegrasyonu için gerekli script'leri ekle
+                        const script = doc.createElement('script');
+                        script.innerHTML = `
+                            if (!window.tailwind) {
+                                document.documentElement.setAttribute('x-data', '{ darkMode: localStorage.getItem("darkMode") || "light" }');
+                                document.documentElement.setAttribute('x-init', '$watch("darkMode", val => localStorage.setItem("darkMode", val))');
+                                document.documentElement.setAttribute(':class', '{ "dark": darkMode === "dark" }');
                             }
-                        }
-                    });
-                }
-                
-                // HTML içindeki [[module:XX]] formatındaki kodları da ara ve işle
-                const htmlContent = editorInstance.getHtml();
-                if (typeof htmlContent === 'string') {
-                    const moduleRegex = /\[\[module:(\d+)\]\]/g;
-                    let moduleMatch;
-                    
-                    while ((moduleMatch = moduleRegex.exec(htmlContent)) !== null) {
-                        const moduleId = moduleMatch[1];
+                        `;
+                        doc.head.appendChild(script);
                         
-                        // Module widget bileşeni oluştur
-                        const moduleWidget = editorInstance.DomComponents.addComponent({
-                            type: 'module-widget',
-                            widget_module_id: moduleId,
-                            attributes: {
-                                'data-widget-module-id': moduleId,
-                                'id': `module-widget-${moduleId}`,
-                                'class': 'module-widget-container'
-                            },
-                            content: `<div class="module-widget-label"><i class="fa fa-cube me-1"></i> Module #${moduleId}</div><div class="module-widget-content-placeholder" id="module-content-${moduleId}"><div class="widget-loading" style="text-align:center; padding:20px;"><i class="fa fa-spin fa-spinner"></i> Module yükleniyor...</div></div>`
+                        // Dark mode kontrolü
+                        const isDarkMode = Cookies.get('studio_dark_mode') === 'true';
+                        doc.documentElement.classList.toggle('dark', isDarkMode);
+                        
+                        // Tema değişikliği olayını dinle
+                        document.addEventListener('themeChanged', (e) => {
+                            if (e.detail && e.detail.mode) {
+                                doc.documentElement.classList.toggle('dark', e.detail.mode === 'dark');
+                            }
                         });
-                        
-                        // Module içeriğini yükle
-                        if (window.studioLoadModuleWidget) {
-                            window.studioLoadModuleWidget(moduleId);
-                        }
-                        
-                        // Module widget butonunu devre dışı bırak
-                        const blockEl = document.querySelector(`.block-item[data-block-id="widget-${moduleId}"]`);
-                        if (blockEl) {
-                            blockEl.classList.add('disabled');
-                            blockEl.setAttribute('draggable', 'false');
-                            blockEl.style.cursor = 'not-allowed';
-                            const badge = blockEl.querySelector('.gjs-block-type-badge');
-                            if (badge) {
-                                badge.classList.replace('active', 'inactive');
-                                badge.textContent = 'Pasif';
-                            }
-                        }
                     }
-                }
-                
-                // Module widget'larının HTML dönüştürmesini ayarla
-                if (!editorInstance.DomComponents.getType('module-widget')) {
-                    editorInstance.DomComponents.addType('module-widget', {
-                        model: {
-                            toHTML() {
-                                const moduleId = this.get('widget_module_id') || this.getAttributes()['data-widget-module-id'];
-                                if (moduleId) {
-                                    return `[[module:${moduleId}]]`;
-                                }
-                                return this.view.el.outerHTML;
-                            }
-                        }
-                    });
                 }
             }, 500);
         });

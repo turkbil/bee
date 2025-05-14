@@ -193,16 +193,7 @@ window.StudioWidgetLoader = (function() {
             }
             
             .widget-type-badge {
-                position: absolute !important;
-                top: 8px !important;
-                right: 8px !important;
-                background-color: #fff !important;
-                color: #3b82f6 !important;
-                padding: 4px !important;
-                border-radius: 50% !important;
-                font-size: 12px !important;
-                opacity: 0.8 !important;
-                z-index: 5 !important;
+                display: none !important;
             }
             
             .studio-widget-container:hover > .widget-type-badge {
@@ -275,24 +266,29 @@ window.StudioWidgetLoader = (function() {
         const overlay = document.createElement('div');
         overlay.className = 'widget-overlay';
         overlay.setAttribute('data-widget-id', widgetId);
+        overlay.style.pointerEvents = 'none';
         
         // Buton oluştur
         const actionBtn = document.createElement('a');
         actionBtn.className = 'widget-action-btn';
         
+        // Dinamik URL oluştur - window.location.origin kullanarak
+        const origin = window.location.origin;
+        
         if (isStatic) {
-            actionBtn.href = `http://laravel.test/admin/widgetmanagement/manage/item/${widgetId}/1`;
+            actionBtn.href = `${origin}/admin/widgetmanagement/manage/item/${widgetId}/1`;
         } else {
-            actionBtn.href = `/admin/widgetmanagement/items/${widgetId}`;
+            actionBtn.href = `${origin}/admin/widgetmanagement/items/${widgetId}`;
         }
         
         actionBtn.target = '_blank';
         actionBtn.innerHTML = '<i class="fa fa-pencil-alt me-1"></i> Düzenle';
+        actionBtn.style.pointerEvents = 'auto';
         
-        // Badge oluştur
+        // Badge oluştur - görünmez yapılıyor
         const badge = document.createElement('span');
         badge.className = 'widget-type-badge';
-        badge.innerHTML = '<i class="fa fa-puzzle-piece"></i>';
+        badge.style.display = 'none';
         
         // Overlay'e buton ekle
         overlay.appendChild(actionBtn);
@@ -300,7 +296,6 @@ window.StudioWidgetLoader = (function() {
         // Overlay'i widget container'a ekle
         el.appendChild(overlay);
         el.appendChild(badge);
-        // Artık overlay'e tıklama olayı eklenmeyecek
     }
     
     // Mevcut widget'ları işle
@@ -384,49 +379,46 @@ window.StudioWidgetLoader = (function() {
                             // Overlay ekle
                             const overlay = document.createElement('div');
                             overlay.className = 'widget-overlay';
-                            overlay.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);opacity:0;display:flex;align-items:center;justify-content:center;transition:opacity 0.3s ease;z-index:999;';
+                            overlay.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);opacity:0;display:flex;align-items:center;justify-content:center;transition:opacity 0.3s ease;z-index:999;pointer-events:none;';
                             
                             // Buton oluştur
                             const actionBtn = document.createElement('a');
                             actionBtn.className = 'widget-action-btn';
-                            actionBtn.style.cssText = 'background-color:#3b82f6;color:#fff;padding:6px 12px;border-radius:4px;text-decoration:none;font-size:14px;transition:background-color 0.2s ease;';
+                            actionBtn.style.cssText = 'background-color:#3b82f6;color:#fff;padding:6px 12px;border-radius:4px;text-decoration:none;font-size:14px;transition:background-color 0.2s ease;pointer-events:auto;';
+                            
+                            // Dinamik URL oluştur
+                            const origin = window.location.origin;
                             const isStatic = component.getAttributes()['data-widget-id'] && !component.getAttributes()['data-tenant-widget-id'];
+                            
                             if (isStatic) {
-                                actionBtn.href = `http://laravel.test/admin/widgetmanagement/manage/item/${widgetId}/1`;
+                                actionBtn.href = `${origin}/admin/widgetmanagement/manage/item/${widgetId}/1`;
                             } else {
-                                actionBtn.href = `/admin/widgetmanagement/items/${widgetId}`;
+                                actionBtn.href = `${origin}/admin/widgetmanagement/items/${widgetId}`;
                             }
+                            
                             actionBtn.target = '_blank';
                             actionBtn.innerHTML = '<i class="fa fa-pencil-alt me-1"></i> Düzenle';
                             actionBtn.addEventListener('mouseenter', () => actionBtn.style.backgroundColor = '#2563eb');
                             actionBtn.addEventListener('mouseleave', () => actionBtn.style.backgroundColor = '#3b82f6');
                             
-                            // Badge (ikon) oluştur
+                            // Badge'i gizle
                             const badge = document.createElement('span');
                             badge.className = 'widget-type-badge';
-                            badge.style.cssText = 'position:absolute;top:8px;right:8px;background:#fff;color:#3b82f6;padding:4px;border-radius:50%;font-size:12px;opacity:0.8;z-index:1000;';
-                            badge.innerHTML = '<i class="fa fa-puzzle-piece"></i>';
+                            badge.style.cssText = 'display:none;';
                             
                             overlay.appendChild(actionBtn);
                             el.appendChild(overlay);
                             el.appendChild(badge);
                             
-                            // Tıklama olayı ekle
-                            overlay.addEventListener('click', (e) => {
-                                // Tıklama butondan gelmiyorsa, overlay tıklaması
-                                if (e.target === overlay) {
-                                    if (isStatic) {
-                                        window.open(`http://laravel.test/admin/widgetmanagement/manage/item/${widgetId}/1`, '_blank');
-                                    } else {
-                                        window.open(`/admin/widgetmanagement/items/${widgetId}`, '_blank');
-                                    }
-                                }
-                            });
+                            // Tıklama olayı devre dışı bırak, yalnızca butonla etkileşime izin ver
+                            overlay.style.pointerEvents = 'none';
+                            actionBtn.style.pointerEvents = 'auto';
                             
                             // Olay dinleyicilerini ekle - her bir overlay için bağımsız çalışacak şekilde
                             el.addEventListener('mouseenter', function() {
                                 overlay.style.opacity = '1';
-                                overlay.style.pointerEvents = 'auto';
+                                overlay.style.pointerEvents = 'none';
+                                actionBtn.style.pointerEvents = 'auto';
                             });
                             
                             el.addEventListener('mouseleave', function() {
@@ -524,40 +516,39 @@ window.StudioWidgetLoader = (function() {
                             // Overlay ekle
                             const overlay = document.createElement('div');
                             overlay.className = 'widget-overlay';
-                            overlay.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);opacity:0;display:flex;align-items:center;justify-content:center;transition:opacity 0.3s ease;z-index:999;';
+                            overlay.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);opacity:0;display:flex;align-items:center;justify-content:center;transition:opacity 0.3s ease;z-index:999;pointer-events:none;';
                             
                             // Buton oluştur
                             const actionBtn = document.createElement('a');
                             actionBtn.className = 'widget-action-btn';
-                            actionBtn.style.cssText = 'background-color:#3b82f6;color:#fff;padding:6px 12px;border-radius:4px;text-decoration:none;font-size:14px;transition:background-color 0.2s ease;';
-                            actionBtn.href = `/admin/widgetmanagement/modules/preview/${moduleId}`;
+                            actionBtn.style.cssText = 'background-color:#8b5cf6;color:#fff;padding:6px 12px;border-radius:4px;text-decoration:none;font-size:14px;transition:background-color 0.2s ease;pointer-events:auto;';
+                            
+                            // Dinamik URL oluştur
+                            const origin = window.location.origin;
+                            actionBtn.href = `${origin}/admin/widgetmanagement/modules/preview/${moduleId}`;
                             actionBtn.target = '_blank';
                             actionBtn.innerHTML = '<i class="fa fa-eye me-1"></i> Önizle';
-                            actionBtn.addEventListener('mouseenter', () => actionBtn.style.backgroundColor = '#2563eb');
-                            actionBtn.addEventListener('mouseleave', () => actionBtn.style.backgroundColor = '#3b82f6');
+                            actionBtn.addEventListener('mouseenter', () => actionBtn.style.backgroundColor = '#7c3aed');
+                            actionBtn.addEventListener('mouseleave', () => actionBtn.style.backgroundColor = '#8b5cf6');
                             
-                            // Badge (ikon) oluştur
+                            // Badge'i gizle
                             const badge = document.createElement('span');
                             badge.className = 'widget-type-badge';
-                            badge.style.cssText = 'position:absolute;top:8px;right:8px;background:#fff;color:#3b82f6;padding:4px;border-radius:50%;font-size:12px;opacity:0.8;z-index:1000;';
-                            badge.innerHTML = '<i class="fa fa-cube"></i>';
+                            badge.style.cssText = 'display:none;';
                             
                             overlay.appendChild(actionBtn);
                             el.appendChild(overlay);
                             el.appendChild(badge);
                             
-                            // Tıklama olayı ekle
-                            overlay.addEventListener('click', (e) => {
-                                // Tıklama butondan gelmiyorsa, overlay tıklaması
-                                if (e.target === overlay) {
-                                    window.open(`/admin/widgetmanagement/modules/preview/${moduleId}`, '_blank');
-                                }
-                            });
+                            // Tıklama olayı devre dışı bırak, yalnızca butonla etkileşime izin ver
+                            overlay.style.pointerEvents = 'none';
+                            actionBtn.style.pointerEvents = 'auto';
                             
                             // Her modül widget için bağımsız olay dinleyicileri ekle
                             el.addEventListener('mouseenter', function() {
                                 overlay.style.opacity = '1';
-                                overlay.style.pointerEvents = 'auto';
+                                overlay.style.pointerEvents = 'none';
+                                actionBtn.style.pointerEvents = 'auto';
                             });
                             
                             el.addEventListener('mouseleave', function() {
@@ -665,7 +656,7 @@ window.StudioWidgetLoader = (function() {
                         blockEl.style.cursor = 'not-allowed';
                         const badge = blockEl.querySelector('.gjs-block-type-badge');
                         if (badge) {
-                            badge.classList.replace('active', 'inactive');
+                            badge.classList.replace('inactive', 'active');
                             badge.textContent = 'Pasif';
                         }
                     }
@@ -760,41 +751,35 @@ window.StudioWidgetLoader = (function() {
                             const overlay = document.createElement('div');
                             overlay.className = 'widget-overlay';
                             overlay.setAttribute('data-module-id', moduleId);
+                            overlay.style.pointerEvents = 'none';
                             
                             // Buton oluştur
                             const actionBtn = document.createElement('a');
                             actionBtn.className = 'widget-action-btn';
+                            actionBtn.style.pointerEvents = 'auto';
+                            
+                            // Dinamik URL oluştur
+                            const origin = window.location.origin;
                             const isStatic = component.getAttributes()['data-widget-static'] === 'true';
                             
                             if (isStatic) {
-                                actionBtn.href = `http://laravel.test/admin/widgetmanagement/manage/module/${moduleId}/1`;
+                                actionBtn.href = `${origin}/admin/widgetmanagement/manage/module/${moduleId}/1`;
                                 actionBtn.innerHTML = '<i class="fa fa-pencil-alt me-1"></i> Düzenle';
                             } else {
-                                actionBtn.href = `/admin/widgetmanagement/modules/preview/${moduleId}`;
+                                actionBtn.href = `${origin}/admin/widgetmanagement/modules/preview/${moduleId}`;
                                 actionBtn.innerHTML = '<i class="fa fa-eye me-1"></i> Önizle';
                             }
                             
                             actionBtn.target = '_blank';
                             
-                            // Badge oluştur
+                            // Badge'i gizle
                             const badge = document.createElement('span');
                             badge.className = 'widget-type-badge';
-                            badge.innerHTML = '<i class="fa fa-cube"></i>';
+                            badge.style.display = 'none';
                             
                             overlay.appendChild(actionBtn);
                             el.appendChild(overlay);
                             el.appendChild(badge);
-                            
-                            // Tıklama olayı ekle
-                            overlay.addEventListener('click', (e) => {
-                                if (e.target === overlay) {
-                                    if (isStatic) {
-                                        window.open(`http://laravel.test/admin/widgetmanagement/manage/module/${moduleId}/1`, '_blank');
-                                    } else {
-                                        window.open(`/admin/widgetmanagement/modules/preview/${moduleId}`, '_blank');
-                                    }
-                                }
-                            });
                             
                             // Module içeriğini yükle
                             if (window.studioLoadModuleWidget) {
@@ -1188,7 +1173,8 @@ window.StudioWidgetLoader = (function() {
                                     model.getAttributes()['data-widget-id'];
                     
                     if (widgetId) {
-                        window.open(`/admin/widgetmanagement/items/${widgetId}`, '_blank');
+                        const origin = window.location.origin;
+                        window.open(`${origin}/admin/widgetmanagement/items/${widgetId}`, '_blank');
                     }
                 }
             }

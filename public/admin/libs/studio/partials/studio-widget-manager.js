@@ -615,10 +615,10 @@ window.StudioWidgetManager = (function() {
                         component.set('tenant_widget_id', tenantWidgetId);
                         
                         setTimeout(() => {
-                            if (window.studioLoadWidget) {
-                                window.studioLoadWidget(tenantWidgetId);
+                            if (window.StudioWidgetLoader && typeof window.StudioWidgetLoader.processWidgetEmbeds === 'function') {
+                                window.StudioWidgetLoader.processWidgetEmbeds(editor);
                             }
-                        }, 200);
+                        }, 100);
                     }
                 });
                 

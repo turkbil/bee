@@ -69,6 +69,78 @@ window.StudioEditorSetup = (function() {
             // Editor komutlarını ekle
             setupCommands(editor);
             
+            // Component:add olaylarına dinleyici ekle
+            editor.on('component:add', component => {
+                // Module widget kontrolü
+                if (component.get('type') === 'module-widget' || 
+                    (component.getAttributes && component.getAttributes()['data-widget-module-id'])) {
+                    
+                    const moduleId = component.get('widget_module_id') || 
+                                    component.getAttributes()['data-widget-module-id'];
+                    
+                    if (moduleId) {
+                        console.log(`Module widget #${moduleId} eklendi, hemen işleniyor...`);
+                        
+                        // Module widget bileşeni tipini ayarla
+                        component.set('type', 'module-widget');
+                        component.set('widget_module_id', moduleId);
+                        
+                        // ÖNEMLİ: Widget stil ve işlevlerini hemen uygula
+                        setTimeout(() => {
+                            if (window.StudioWidgetLoader && typeof window.StudioWidgetLoader.processWidgetEmbeds === 'function') {
+                                window.StudioWidgetLoader.processWidgetEmbeds(editor);
+                            }
+                            
+                            // Module içeriğini hemen yükle
+                            if (window.studioLoadModuleWidget) {
+                                window.studioLoadModuleWidget(moduleId);
+                            }
+                        }, 0);
+                    }
+                }
+                
+                // Widget embed kontrolü
+                else if (component.get('type') === 'widget-embed' || 
+                        (component.getAttributes && component.getAttributes()['data-tenant-widget-id'])) {
+                    
+                    const widgetId = component.get('tenant_widget_id') || 
+                                    component.getAttributes()['data-tenant-widget-id'];
+                    
+                    if (widgetId) {
+                        console.log(`Widget #${widgetId} eklendi, hemen işleniyor...`);
+                        
+                        // Widget-embed tipini ayarla
+                        component.set('type', 'widget-embed');
+                        component.set('tenant_widget_id', widgetId);
+                        
+                        // ÖNEMLİ: Widget stil ve işlevlerini hemen uygula
+                        setTimeout(() => {
+                            if (window.StudioWidgetLoader && typeof window.StudioWidgetLoader.processWidgetEmbeds === 'function') {
+                                window.StudioWidgetLoader.processWidgetEmbeds(editor);
+                            }
+                            
+                            // Widget içeriğini hemen yükle
+                            if (window.studioLoadWidget) {
+                                window.studioLoadWidget(widgetId);
+                            }
+                        }, 0);
+                    }
+                }
+            });
+
+            // Canvas Drop olayı için özel bir dinleyici ekle
+            editor.on('canvas:drop', (droppedModel) => {
+                console.log('Canvas Drop olayı tetiklendi, widget işlemleri yapılıyor...');
+                
+                // Kritik: Önce bekleyelim (GrapesJS iç işlemlerinin tamamlanması için)
+                setTimeout(() => {
+                    // Tüm widget'lar için overlay ve işlevleri uygula
+                    if (window.StudioWidgetLoader && typeof window.StudioWidgetLoader.processWidgetEmbeds === 'function') {
+                        window.StudioWidgetLoader.processWidgetEmbeds(editor);
+                    }
+                }, 50);
+            });
+            
             // Editor yükleme olayını dinle
             editor.on('load', function() {
                 console.log('Editor yüklendi');

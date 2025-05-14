@@ -3,9 +3,9 @@
   position: relative;
   overflow: hidden;
   background-image: linear-gradient(45deg, #f0f0f0 25%, transparent 25%),
-                    linear-gradient(-45deg, #f0f0f0 25%, transparent 25%),
-                    linear-gradient(45deg, transparent 75%, #f0f0f0 75%),
-                    linear-gradient(-45deg, transparent 75%, #f0f0f0 75%);
+    linear-gradient(-45deg, #f0f0f0 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #f0f0f0 75%),
+    linear-gradient(-45deg, transparent 75%, #f0f0f0 75%);
   background-size: 20px 20px;
   background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
   background-color: #ffffff;
@@ -46,12 +46,18 @@
   transition: all 0.3s ease !important;
 }
 
+/* Editör içindeki body elementine padding ekle */
+.gjs-frame body {
+  padding: 20px !important;
+  padding-bottom: 100px !important;
+}
+
 .gjs-selected {
   outline: 2px solid #3b82f6 !important;
   outline-offset: 2px !important;
 }
 
-.gjs-highlighter, 
+.gjs-highlighter,
 .gjs-highlighter-sel {
   outline: 1px solid #3b82f6 !important;
   outline-offset: 2px !important;
@@ -96,27 +102,52 @@
 }
 
 /* Widget overlay styles */
-.studio-widget-container { position: relative; }
+.studio-widget-container {
+  position: relative;
+}
 .studio-widget-container .widget-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.4);
-    opacity: 0;
-    pointer-events: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: opacity 0.3s ease;
-    z-index: 999;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.3s ease;
+  z-index: 999;
 }
 .studio-widget-container:hover .widget-overlay {
-    opacity: 1;
-    pointer-events: auto;
+  opacity: 1;
+  pointer-events: auto;
 }
-.widget-action-btn { background-color: #3b82f6 !important; color: #fff !important; padding: 6px 12px !important; border-radius: 4px !important; text-decoration: none !important; font-size: 14px !important; transition: background-color 0.2s ease !important; }
-.widget-action-btn:hover { background-color: #2563eb !important; }
-.widget-type-badge { position: absolute; top: 8px; right: 8px; background-color: #fff !important; color: #3b82f6 !important; padding: 4px !important; border-radius: 50% !important; font-size: 12px !important; opacity: 0.8 !important; z-index: 3; }
-.studio-widget-container:hover .widget-type-badge { opacity: 1 !important; }
+.widget-action-btn {
+  background-color: #3b82f6 !important;
+  color: #fff !important;
+  padding: 6px 12px !important;
+  border-radius: 4px !important;
+  text-decoration: none !important;
+  font-size: 14px !important;
+  transition: background-color 0.2s ease !important;
+}
+.widget-action-btn:hover {
+  background-color: #2563eb !important;
+}
+.widget-type-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background-color: #fff !important;
+  color: #3b82f6 !important;
+  padding: 4px !important;
+  border-radius: 50% !important;
+  font-size: 12px !important;
+  opacity: 0.8 !important;
+  z-index: 3;
+}
+.studio-widget-container:hover .widget-type-badge {
+  opacity: 1 !important;
+}

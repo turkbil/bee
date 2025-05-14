@@ -141,26 +141,39 @@ window.StudioWidgetLoader = (function() {
             }
             
             /* Her widget için ayrı overlay */
-            .studio-widget-container { position: relative; }
+            .studio-widget-container {
+                position: relative !important;
+                display: block !important;
+                min-height: 50px;
+            }
+            
+            /* Widget overlay temel stilleri */
             .widget-overlay {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.4);
-                opacity: 0;
-                pointer-events: none;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                transition: opacity 0.3s ease;
-                z-index: 999;
+                position: absolute !important;
+                top: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                bottom: 0 !important;
+                width: auto !important;
+                height: auto !important;
+                background: rgba(0, 0, 0, 0.4) !important;
+                opacity: 0 !important;
+                pointer-events: none !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                transition: opacity 0.3s ease !important;
+                z-index: 5 !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                border-radius: inherit !important;
             }
-            .studio-widget-container:hover .widget-overlay {
-                opacity: 1;
-                pointer-events: auto;
+            
+            .studio-widget-container:hover > .widget-overlay {
+                opacity: 1 !important;
+                pointer-events: auto !important;
             }
+            
             .widget-action-btn {
                 background-color: #3b82f6 !important; 
                 color: #fff !important; 
@@ -169,23 +182,30 @@ window.StudioWidgetLoader = (function() {
                 text-decoration: none !important; 
                 font-size: 14px !important; 
                 transition: background-color 0.2s ease !important;
+                z-index: 6 !important;
+                position: relative !important;
+                border: none !important;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2) !important;
             }
+            
             .widget-action-btn:hover {
                 background-color: #2563eb !important;
             }
+            
             .widget-type-badge {
-                position: absolute;
-                top: 8px;
-                right: 8px;
+                position: absolute !important;
+                top: 8px !important;
+                right: 8px !important;
                 background-color: #fff !important;
                 color: #3b82f6 !important;
                 padding: 4px !important;
                 border-radius: 50% !important;
                 font-size: 12px !important;
                 opacity: 0.8 !important;
-                z-index: 1000;
+                z-index: 5 !important;
             }
-            .studio-widget-container:hover .widget-type-badge {
+            
+            .studio-widget-container:hover > .widget-type-badge {
                 opacity: 1 !important;
             }
             
@@ -203,16 +223,6 @@ window.StudioWidgetLoader = (function() {
                 position: relative;
             }
             
-            /* Ortak widget stili */
-            .studio-widget-container {
-                position: relative;
-                display: block;
-                min-height: 50px;
-                border-radius: 6px;
-                padding: 0;
-                margin: 0;
-            }
-            
             /* Widget tiplerine özgü stilleri */
             .widget-embed {
                 border: 2px solid #e11d48;
@@ -226,14 +236,13 @@ window.StudioWidgetLoader = (function() {
             
             /* Module widget için özel buton renkleri */
             .module-widget-container .widget-action-btn {
-                color: #8b5cf6;
-                border-color: #8b5cf6;
+                background-color: #8b5cf6 !important;
+                color: #fff !important;
             }
             
             .module-widget-container .widget-action-btn:hover {
-                background-color: #8b5cf6;
-                color: #ffffff;
-                box-shadow: 0 4px 8px rgba(139, 92, 246, 0.3);
+                background-color: #7c3aed !important;
+                box-shadow: 0 4px 8px rgba(139, 92, 246, 0.3) !important;
             }
             
             /* İçerik alanları için ortak stil */
@@ -248,12 +257,50 @@ window.StudioWidgetLoader = (function() {
                 text-align: center;
                 padding: 20px;
             }
-            
-            .module-widget-container .widget-type-badge {
-                background-color: #8b5cf6;
-            }
         `;
         document.head.appendChild(styleEl);
+    }
+    
+    // Widget embed overlay'i oluşturan fonksiyon
+    function createWidgetOverlay(el, widgetId, isStatic = false) {
+        // Etiketleri temizle
+        const labels = el.querySelectorAll('.widget-label');
+        labels.forEach(label => label.remove());
+        
+        // Mevcut overlay'leri temizle
+        const existingOverlays = el.querySelectorAll('.widget-overlay');
+        existingOverlays.forEach(overlay => overlay.remove());
+        
+        // Overlay oluştur
+        const overlay = document.createElement('div');
+        overlay.className = 'widget-overlay';
+        overlay.setAttribute('data-widget-id', widgetId);
+        
+        // Buton oluştur
+        const actionBtn = document.createElement('a');
+        actionBtn.className = 'widget-action-btn';
+        
+        if (isStatic) {
+            actionBtn.href = `http://laravel.test/admin/widgetmanagement/manage/item/${widgetId}/1`;
+        } else {
+            actionBtn.href = `/admin/widgetmanagement/items/${widgetId}`;
+        }
+        
+        actionBtn.target = '_blank';
+        actionBtn.innerHTML = '<i class="fa fa-pencil-alt me-1"></i> Düzenle';
+        
+        // Badge oluştur
+        const badge = document.createElement('span');
+        badge.className = 'widget-type-badge';
+        badge.innerHTML = '<i class="fa fa-puzzle-piece"></i>';
+        
+        // Overlay'e buton ekle
+        overlay.appendChild(actionBtn);
+        
+        // Overlay'i widget container'a ekle
+        el.appendChild(overlay);
+        el.appendChild(badge);
+        // Artık overlay'e tıklama olayı eklenmeyecek
     }
     
     // Mevcut widget'ları işle
@@ -375,8 +422,17 @@ window.StudioWidgetLoader = (function() {
                                     }
                                 }
                             });
-                            el.addEventListener('mouseenter', () => overlay.style.opacity = '1');
-                            el.addEventListener('mouseleave', () => overlay.style.opacity = '0');
+                            
+                            // Olay dinleyicilerini ekle - her bir overlay için bağımsız çalışacak şekilde
+                            el.addEventListener('mouseenter', function() {
+                                overlay.style.opacity = '1';
+                                overlay.style.pointerEvents = 'auto';
+                            });
+                            
+                            el.addEventListener('mouseleave', function() {
+                                overlay.style.opacity = '0';
+                                overlay.style.pointerEvents = 'none';
+                            });
                             
                             // İçerik alanını bul veya oluştur
                             const uniqueId = 'widget-content-' + widgetId;
@@ -497,8 +553,17 @@ window.StudioWidgetLoader = (function() {
                                     window.open(`/admin/widgetmanagement/modules/preview/${moduleId}`, '_blank');
                                 }
                             });
-                            el.addEventListener('mouseenter', () => overlay.style.opacity = '1');
-                            el.addEventListener('mouseleave', () => overlay.style.opacity = '0');
+                            
+                            // Her modül widget için bağımsız olay dinleyicileri ekle
+                            el.addEventListener('mouseenter', function() {
+                                overlay.style.opacity = '1';
+                                overlay.style.pointerEvents = 'auto';
+                            });
+                            
+                            el.addEventListener('mouseleave', function() {
+                                overlay.style.opacity = '0';
+                                overlay.style.pointerEvents = 'none';
+                            });
                         } catch (err) {
                             console.error(`Module widget ${moduleId} etiket hatası:`, err);
                         }
@@ -592,7 +657,7 @@ window.StudioWidgetLoader = (function() {
                         setTimeout(() => component.view.onRender(), 100);
                     }
                     
-                    // Başlangıçta blok butonesini pasifleştir
+                    // Blok butonunu pasifleştir
                     const blockEl = document.querySelector(`.block-item[data-block-id="tenant-widget-${widgetId}"]`);
                     if (blockEl && blockEl.closest('.block-category[data-category="active-widgets"]')) {
                         blockEl.classList.add('disabled');
@@ -605,68 +670,30 @@ window.StudioWidgetLoader = (function() {
                         }
                     }
                     
-                    // Etiketleri temizle
+                    // Her widget için overlay ekle
                     setTimeout(() => {
                         try {
                             const el = component.view.el;
                             if (!el) return;
                             
-                            // Tenant widget container'a sınıf ekleyerek CSS overlay için hazırlık
+                            // Elementin pozisyonunu kesinlikle relative yap
+                            el.style.position = 'relative';
+                            
+                            // Tenant widget container'a sınıf ekle
                             if (!el.classList.contains('studio-widget-container')) {
                                 el.classList.add('studio-widget-container');
                             }
                             
-                            // Etiketleri temizle
-                            const labels = el.querySelectorAll('.widget-label');
-                            labels.forEach(label => label.remove());
-                            
-                            // Mevcut overlay'leri temizle
-                            const existingOverlays = el.querySelectorAll('.widget-overlay');
-                            existingOverlays.forEach(overlay => overlay.remove());
-                            
-                            // Overlay ekle
-                            const overlay = document.createElement('div');
-                            overlay.className = 'widget-overlay';
-                            overlay.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);opacity:0;display:flex;align-items:center;justify-content:center;transition:opacity 0.3s ease;z-index:999;';
-                            
-                            // Buton oluştur
-                            const actionBtn = document.createElement('a');
-                            actionBtn.className = 'widget-action-btn';
-                            actionBtn.style.cssText = 'background-color:#3b82f6;color:#fff;padding:6px 12px;border-radius:4px;text-decoration:none;font-size:14px;transition:background-color 0.2s ease;';
+                            // Overlay oluştur
                             const isStatic = component.getAttributes()['data-widget-id'] && !component.getAttributes()['data-tenant-widget-id'];
-                            if (isStatic) {
-                                actionBtn.href = `http://laravel.test/admin/widgetmanagement/manage/item/${widgetId}/1`;
-                            } else {
-                                actionBtn.href = `/admin/widgetmanagement/items/${widgetId}`;
+                            createWidgetOverlay(el, widgetId, isStatic);
+                            
+                            // Widget içeriğini yükle
+                            if (typeof window.studioLoadWidget === "function") {
+                                setTimeout(() => {
+                                    window.studioLoadWidget(widgetId);
+                                }, 500);
                             }
-                            actionBtn.target = '_blank';
-                            actionBtn.innerHTML = '<i class="fa fa-pencil-alt me-1"></i> Düzenle';
-                            actionBtn.addEventListener('mouseenter', () => actionBtn.style.backgroundColor = '#2563eb');
-                            actionBtn.addEventListener('mouseleave', () => actionBtn.style.backgroundColor = '#3b82f6');
-                            
-                            // Badge (ikon) oluştur
-                            const badge = document.createElement('span');
-                            badge.className = 'widget-type-badge';
-                            badge.style.cssText = 'position:absolute;top:8px;right:8px;background:#fff;color:#3b82f6;padding:4px;border-radius:50%;font-size:12px;opacity:0.8;z-index:1000;';
-                            badge.innerHTML = '<i class="fa fa-puzzle-piece"></i>';
-                            
-                            overlay.appendChild(actionBtn);
-                            el.appendChild(overlay);
-                            el.appendChild(badge);
-                            
-                            // Tıklama olayı ekle
-                            overlay.addEventListener('click', (e) => {
-                                // Tıklama butondan gelmiyorsa, overlay tıklaması
-                                if (e.target === overlay) {
-                                    if (isStatic) {
-                                        window.open(`http://laravel.test/admin/widgetmanagement/manage/item/${widgetId}/1`, '_blank');
-                                    } else {
-                                        window.open(`/admin/widgetmanagement/items/${widgetId}`, '_blank');
-                                    }
-                                }
-                            });
-                            el.addEventListener('mouseenter', () => overlay.style.opacity = '1');
-                            el.addEventListener('mouseleave', () => overlay.style.opacity = '0');
                         } catch (err) {
                             console.error(`Widget overlay hatası:`, err);
                         }
@@ -712,11 +739,14 @@ window.StudioWidgetLoader = (function() {
                         }
                     }
                     
-                    // Etiketleri temizle
+                    // Module için overlay ekle
                     setTimeout(() => {
                         try {
                             const el = component.view.el;
                             if (!el) return;
+                            
+                            // Elementin pozisyonunu kesinlikle relative yap
+                            el.style.position = 'relative';
                             
                             // Etiketleri temizle
                             const labels = el.querySelectorAll('.widget-label');
@@ -726,16 +756,16 @@ window.StudioWidgetLoader = (function() {
                             const existingOverlays = el.querySelectorAll('.widget-overlay');
                             existingOverlays.forEach(overlay => overlay.remove());
                             
-                            // Overlay ekle
+                            // Overlay oluştur
                             const overlay = document.createElement('div');
                             overlay.className = 'widget-overlay';
-                            overlay.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);opacity:0;display:flex;align-items:center;justify-content:center;transition:opacity 0.3s ease;z-index:999;';
+                            overlay.setAttribute('data-module-id', moduleId);
                             
                             // Buton oluştur
                             const actionBtn = document.createElement('a');
                             actionBtn.className = 'widget-action-btn';
-                            actionBtn.style.cssText = 'background-color:#3b82f6;color:#fff;padding:6px 12px;border-radius:4px;text-decoration:none;font-size:14px;transition:background-color 0.2s ease;';
                             const isStatic = component.getAttributes()['data-widget-static'] === 'true';
+                            
                             if (isStatic) {
                                 actionBtn.href = `http://laravel.test/admin/widgetmanagement/manage/module/${moduleId}/1`;
                                 actionBtn.innerHTML = '<i class="fa fa-pencil-alt me-1"></i> Düzenle';
@@ -743,14 +773,12 @@ window.StudioWidgetLoader = (function() {
                                 actionBtn.href = `/admin/widgetmanagement/modules/preview/${moduleId}`;
                                 actionBtn.innerHTML = '<i class="fa fa-eye me-1"></i> Önizle';
                             }
-                            actionBtn.target = '_blank';
-                            actionBtn.addEventListener('mouseenter', () => actionBtn.style.backgroundColor = '#2563eb');
-                            actionBtn.addEventListener('mouseleave', () => actionBtn.style.backgroundColor = '#3b82f6');
                             
-                            // Badge (ikon) oluştur
+                            actionBtn.target = '_blank';
+                            
+                            // Badge oluştur
                             const badge = document.createElement('span');
                             badge.className = 'widget-type-badge';
-                            badge.style.cssText = 'position:absolute;top:8px;right:8px;background:#fff;color:#3b82f6;padding:4px;border-radius:50%;font-size:12px;opacity:0.8;z-index:1000;';
                             badge.innerHTML = '<i class="fa fa-cube"></i>';
                             
                             overlay.appendChild(actionBtn);
@@ -759,7 +787,6 @@ window.StudioWidgetLoader = (function() {
                             
                             // Tıklama olayı ekle
                             overlay.addEventListener('click', (e) => {
-                                // Tıklama butondan gelmiyorsa, overlay tıklaması
                                 if (e.target === overlay) {
                                     if (isStatic) {
                                         window.open(`http://laravel.test/admin/widgetmanagement/manage/module/${moduleId}/1`, '_blank');
@@ -768,25 +795,22 @@ window.StudioWidgetLoader = (function() {
                                     }
                                 }
                             });
-                            el.addEventListener('mouseenter', () => overlay.style.opacity = '1');
-                            el.addEventListener('mouseleave', () => overlay.style.opacity = '0');
+                            
+                            // Module içeriğini yükle
+                            if (window.studioLoadModuleWidget) {
+                                window.studioLoadModuleWidget(moduleId);
+                            }
                         } catch (err) {
                             console.error(`Module widget overlay hatası:`, err);
                         }
                     }, 100);
-                    
-                    // Module içeriğini yükle
-                    setTimeout(() => {
-                        if (window.studioLoadModuleWidget) {
-                            window.studioLoadModuleWidget(moduleId);
-                        }
-                    }, 300);
                 });
             }
         } catch (err) {
             console.error("Widget embed işleme genel hatası:", err);
         }
     }
+    
     
     // Widget içeriğini yükle
     window.studioLoadWidget = function(widgetId) {

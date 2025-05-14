@@ -151,3 +151,25 @@
 .studio-widget-container:hover .widget-type-badge {
   opacity: 1 !important;
 }
+
+/* Widget'lar arasındaki boşlukları kaldır */
+.studio-widget-container,
+.widget-embed,
+.module-widget-container {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+/* Widget içeriği için padding kontrolü */
+.widget-content-placeholder,
+.module-widget-content-placeholder {
+    padding: 0 !important;
+}
+
+/* Widget embeds için seçildiğinde görünürlük artır */
+.gjs-selected .studio-widget-container,
+.gjs-selected .widget-embed,
+.gjs-selected .module-widget-container {
+    outline: 2px solid #3b82f6 !important;
+    outline-offset: 2px !important;
+}

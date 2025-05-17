@@ -58,6 +58,12 @@ Ayar Yönetimi
                         Tenant Ayarları
                     </a>
                     @endhasmoduleaccess
+
+                    @hasmoduleaccess('settingmanagement', 'view')
+                    <a class="dropdown-item" href="{{ route('admin.settingmanagement.form-builder.index') }}">
+                        Form Builder
+                    </a>
+                    @endhasmoduleaccess
                 </div>
             </div>
             @hasmoduleaccess('settingmanagement', 'update')

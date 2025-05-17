@@ -13,6 +13,7 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Modules\AI\App\Services\AIService;
 use Modules\AI\App\Services\DeepSeekService;
+use Illuminate\Support\Facades\Schema;
 
 class AIServiceProvider extends ServiceProvider
 {
@@ -57,15 +58,24 @@ class AIServiceProvider extends ServiceProvider
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
         
+        // Veritabanı tablosu var mı kontrol et
+        $tableExists = Schema::hasTable('ai_settings');
+        
         // AI Service singleton kaydı
-        $this->app->singleton(AIService::class, function ($app) {
-            $deepSeekService = $app->make(DeepSeekService::class);
-            return new AIService($deepSeekService);
+        $this->app->singleton(AIService::class, function ($app) use ($tableExists) {
+            if ($tableExists) {
+                $deepSeekService = $app->make(DeepSeekService::class);
+                return new AIService($deepSeekService);
+            }
+            
+            // Tablo yoksa, servisi boş başlat
+            return new AIService(new DeepSeekService(true));
         });
         
         // DeepSeek Service singleton kaydı
-        $this->app->singleton(DeepSeekService::class, function ($app) {
-            return new DeepSeekService();
+        $this->app->singleton(DeepSeekService::class, function ($app) use ($tableExists) {
+            // Tablo yoksa, safe mode'da başlat
+            return new DeepSeekService($tableExists ? false : true);
         });
     }
 

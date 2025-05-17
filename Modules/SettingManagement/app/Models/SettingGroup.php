@@ -24,11 +24,13 @@ class SettingGroup extends Model
         'slug',
         'description',
         'icon',
+        'meta_data',
         'is_active'
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'meta_data' => 'array',
     ];
 
     /**
@@ -54,7 +56,6 @@ class SettingGroup extends Model
             ->dontSubmitEmptyLogs();
     }
 
-    // Artık burada slug manuel oluşturma yok, Sluggable trait bu işi yapıyor
     protected static function boot()
     {
         parent::boot();

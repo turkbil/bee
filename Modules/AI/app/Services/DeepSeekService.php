@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Modules\AI\App\Models\Setting;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Schema;
 
 class DeepSeekService
 {
@@ -13,39 +14,73 @@ class DeepSeekService
     protected $baseUrl;
     protected $model;
     protected $lastFullResponse = '';
+    protected $safeMode = false;
 
-    public function __construct()
+    public function __construct($safeMode = false)
     {
-        $this->loadApiSettings();
+        $this->safeMode = $safeMode;
+        
+        if (!$this->safeMode) {
+            $this->loadApiSettings();
+        } else {
+            // Safe Mode - .env'den varsayılan ayarları kullan
+            $this->apiKey = config('deepseek.api_key', '');
+            $this->model = config('deepseek.model', 'deepseek-chat');
+        }
+        
         $this->baseUrl = config('deepseek.api_url', 'https://api.deepseek.com/v1');
-        $this->model = config('deepseek.model', 'deepseek-chat');
     }
 
     protected function loadApiSettings()
     {
-        // 1. Veritabanından ayarları yüklemeyi dene
-        $settings = $this->getGlobalSettings();
-        if ($settings && !empty($settings->api_key)) {
-            $this->apiKey = $settings->api_key;
-            $this->model = $settings->model;
-            return;
-        }
-        
-        // 2. Veritabanı ayarları yoksa, .env'den yükle
-        $this->apiKey = config('deepseek.api_key');
-        
-        if (empty($this->apiKey)) {
-            Log::warning('API anahtarı bulunamadı. Lütfen .env dosyasına DEEPSEEK_API_KEY ekleyin veya veritabanı ayarlarını yapılandırın.');
+        try {
+            // Tablo var mı kontrol et
+            if (!Schema::hasTable('ai_settings')) {
+                // Tablo yoksa, .env'den varsayılan ayarları kullan
+                $this->apiKey = config('deepseek.api_key', '');
+                $this->model = config('deepseek.model', 'deepseek-chat');
+                return;
+            }
+            
+            // 1. Veritabanından ayarları yüklemeyi dene
+            $settings = $this->getGlobalSettings();
+            if ($settings && !empty($settings->api_key)) {
+                $this->apiKey = $settings->api_key;
+                $this->model = $settings->model;
+                return;
+            }
+            
+            // 2. Veritabanı ayarları yoksa, .env'den yükle
+            $this->apiKey = config('deepseek.api_key');
+            
+            if (empty($this->apiKey)) {
+                Log::warning('API anahtarı bulunamadı. Lütfen .env dosyasına DEEPSEEK_API_KEY ekleyin veya veritabanı ayarlarını yapılandırın.');
+            }
+        } catch (\Exception $e) {
+            // Hata durumunda varsayılan değerleri kullan
+            Log::error('DeepSeekService ayarları yüklenirken hata: ' . $e->getMessage());
+            $this->apiKey = config('deepseek.api_key', '');
+            $this->model = config('deepseek.model', 'deepseek-chat');
         }
     }
 
     protected function getGlobalSettings()
     {
-        $cacheKey = "ai_settings_global";
-        
-        return Cache::remember($cacheKey, now()->addMinutes(30), function () {
-            return Setting::first();
-        });
+        try {
+            // Tablo var mı kontrol et
+            if (!Schema::hasTable('ai_settings')) {
+                return null;
+            }
+            
+            $cacheKey = "ai_settings_global";
+            
+            return Cache::remember($cacheKey, now()->addMinutes(30), function () {
+                return Setting::first();
+            });
+        } catch (\Exception $e) {
+            Log::error('Ayarlar alınırken hata: ' . $e->getMessage());
+            return null;
+        }
     }
 
     public static function forTenant(?int $tenantId = null): self

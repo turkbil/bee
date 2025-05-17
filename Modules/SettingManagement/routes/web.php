@@ -8,7 +8,7 @@ use Modules\SettingManagement\App\Http\Livewire\TenantValueComponent;
 use Modules\SettingManagement\App\Http\Livewire\GroupManageComponent;
 use Modules\SettingManagement\App\Http\Livewire\ValuesComponent;
 use Modules\SettingManagement\App\Http\Livewire\TenantSettingsComponent;
-use Modules\SettingManagement\App\Http\Controllers\FormBuilderController;
+use Modules\SettingManagement\App\Http\Livewire\FormBuilderComponent;
 
 Route::middleware(['web', 'auth', 'tenant'])
     ->prefix('admin')
@@ -52,20 +52,17 @@ Route::middleware(['web', 'auth', 'tenant'])
                 Route::get('/tenant/settings', TenantSettingsComponent::class)
                     ->middleware('module.permission:settingmanagement,update')
                     ->name('tenant.settings');
-                
-                // Form Builder routes
-                Route::get('/form-builder', [FormBuilderController::class, 'index'])
+
+                // Form Builder routes - Livewire yaklaşımıyla
+                Route::get('/form-builder', FormBuilderComponent::class)
                     ->middleware('module.permission:settingmanagement,view')
                     ->name('form-builder.index');
-                
-                Route::get('/form-builder/{groupId}/edit', [FormBuilderController::class, 'edit'])
-                ->middleware('module.permission:settingmanagement,update')
-                ->name('form-builder.edit');
-                
-                Route::post('/form-builder/{groupId}/save', [FormBuilderController::class, 'save'])
+
+                Route::get('/form-builder/{groupId}', FormBuilderComponent::class)
                     ->middleware('module.permission:settingmanagement,update')
-                    ->name('form-builder.save');
-                
+                    ->name('form-builder.edit');
+
+                // API endpoint for loading form data
                 Route::get('/form-builder/{groupId}/load', [FormBuilderController::class, 'load'])
                     ->middleware('module.permission:settingmanagement,view')
                     ->name('form-builder.load');

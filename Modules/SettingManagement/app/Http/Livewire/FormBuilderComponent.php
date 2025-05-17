@@ -1,49 +1,27 @@
 <?php
 
-namespace Modules\SettingManagement\App\Http\Controllers;
+namespace Modules\SettingManagement\App\Http\Livewire;
 
-use Illuminate\Contracts\Support\Renderable;
-use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
+use Livewire\Component;
 use Modules\SettingManagement\App\Models\SettingGroup;
-use Illuminate\Support\Facades\Log;
 
-class FormBuilderController extends Controller
+class FormBuilderComponent extends Component
 {
-    /**
-     * Form Builder ana sayfasını göster
-     * @return Renderable
-     */
-    public function index()
+    public $groupId;
+    public $group;
+    
+    public function mount($groupId = null)
     {
-        $groups = SettingGroup::all();
-        return view('settingmanagement::form-builder.index', compact('groups'));
-    }
-
-    /**
-     * Belirli bir grup için Form Builder'ı göster
-     * @param int $groupId
-     * @return Renderable
-     */
-    public function edit($groupId)
-    {
-        $group = SettingGroup::findOrFail($groupId);
-        return view('settingmanagement::form-builder.edit', compact('group'));
-    }
-
-    /**
-     * Form Builder konfigürasyonunu kaydet
-     * @param Request $request
-     * @param int $groupId
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function save(Request $request, $groupId)
-    {
-        $group = SettingGroup::findOrFail($groupId);
+        $this->groupId = $groupId;
         
-        $formData = $request->json('formData');
-        
-        // JSON formatında layout alanına kaydet
+        if ($groupId) {
+            $this->group = SettingGroup::findOrFail($groupId);
+        }
+    }
+    
+    public function saveLayout($formData)
+    {
+        $group = SettingGroup::findOrFail($this->groupId);
         $group->layout = $formData;
         $group->save();
         
@@ -52,24 +30,24 @@ class FormBuilderController extends Controller
             'form layout güncellendi'
         );
         
-        return response()->json([
-            'success' => true,
-            'message' => 'Form yapısı başarıyla kaydedildi'
+        $this->dispatch('toast', [
+            'title' => 'Başarılı!',
+            'message' => 'Form yapısı başarıyla kaydedildi',
+            'type' => 'success'
         ]);
     }
-
-    /**
-     * Form layout yükle
-     * @param int $groupId
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function load($groupId)
+    
+    public function render()
     {
-        $group = SettingGroup::findOrFail($groupId);
-        
-        return response()->json([
-            'success' => true,
-            'layout' => $group->layout
-        ]);
+        if (!$this->groupId) {
+            // Index sayfası
+            $groups = SettingGroup::whereNotNull('parent_id')->get();
+            return view('settingmanagement::form-builder.index', [
+                'groups' => $groups
+            ])->layout('settingmanagement::layouts.form-builder');
+        } else {
+            // Edit sayfası
+            return view('settingmanagement::form-builder.edit')->layout('settingmanagement::layouts.form-builder');
+        }
     }
 }

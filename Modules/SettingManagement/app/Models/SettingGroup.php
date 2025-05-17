@@ -25,12 +25,14 @@ class SettingGroup extends Model
         'description',
         'icon',
         'meta_data',
-        'is_active'
+        'is_active',
+        'layout'
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
         'meta_data' => 'array',
+        'layout' => 'json',
     ];
 
     /**

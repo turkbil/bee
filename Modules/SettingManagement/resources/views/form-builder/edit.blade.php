@@ -75,6 +75,7 @@
             </div>
             
             <div id="element-palette">
+                <!-- Düzen Elemanları -->
                 <div class="block-category">
                     <div class="block-category-header">
                         <i class="fas fa-grip-lines-vertical"></i>
@@ -86,9 +87,34 @@
                             <i class="fas fa-grip-lines-vertical"></i>
                             <span>Satır</span>
                         </div>
+                        <div class="element-palette-item" data-type="heading">
+                            <i class="fas fa-heading"></i>
+                            <span>Başlık</span>
+                        </div>
+                        <div class="element-palette-item" data-type="paragraph">
+                            <i class="fas fa-paragraph"></i>
+                            <span>Paragraf</span>
+                        </div>
+                        <div class="element-palette-item" data-type="divider">
+                            <i class="fas fa-minus"></i>
+                            <span>Ayırıcı</span>
+                        </div>
+                        <div class="element-palette-item" data-type="spacer">
+                            <i class="fas fa-arrows-alt-v"></i>
+                            <span>Boşluk</span>
+                        </div>
+                        <div class="element-palette-item" data-type="card">
+                            <i class="fas fa-credit-card"></i>
+                            <span>Kart</span>
+                        </div>
+                        <div class="element-palette-item" data-type="tab_group">
+                            <i class="fas fa-folder"></i>
+                            <span>Sekmeler</span>
+                        </div>
                     </div>
                 </div>
                 
+                <!-- Metin Elemanları -->
                 <div class="block-category">
                     <div class="block-category-header">
                         <i class="fas fa-font"></i>
@@ -115,6 +141,7 @@
                     </div>
                 </div>
                 
+                <!-- Seçim Elemanları -->
                 <div class="block-category">
                     <div class="block-category-header">
                         <i class="fas fa-check-square"></i>
@@ -140,6 +167,48 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- Veri Tipi Elemanları -->
+                <div class="block-category">
+                    <div class="block-category-header">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Veri Elemanları</span>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="block-items">
+                        <div class="element-palette-item" data-type="date">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Tarih</span>
+                        </div>
+                        <div class="element-palette-item" data-type="time">
+                            <i class="fas fa-clock"></i>
+                            <span>Saat</span>
+                        </div>
+                        <div class="element-palette-item" data-type="color">
+                            <i class="fas fa-palette"></i>
+                            <span>Renk</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Dosya Elemanları -->
+                <div class="block-category">
+                    <div class="block-category-header">
+                        <i class="fas fa-file-upload"></i>
+                        <span>Dosya Elemanları</span>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="block-items">
+                        <div class="element-palette-item" data-type="file">
+                            <i class="fas fa-file"></i>
+                            <span>Dosya</span>
+                        </div>
+                        <div class="element-palette-item" data-type="image">
+                            <i class="fas fa-image"></i>
+                            <span>Resim</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         
@@ -152,7 +221,10 @@
     <div class="form-canvas">
         <div class="card shadow-sm w-100" style="max-width: 800px;">
             <div class="card-header">
-                <h3 class="card-title">Form Düzenleme</h3>
+                <h3 class="card-title">
+                    <i class="fas fa-edit me-2"></i>
+                    Form Düzenleme
+                </h3>
             </div>
             <div class="card-body p-0">
                 <div id="form-canvas" class="p-3">
@@ -278,28 +350,7 @@
             const formData = getFormJSON(); // form-builder.js'den geliyor
             
             // Livewire bileşenine gönder
-            @this.saveLayout(formData);
-            
-            // Başarılı bildirim göster
-            const toast = document.createElement("div");
-            toast.className = "toast position-fixed bottom-0 end-0 m-3 bg-success text-white show";
-            toast.setAttribute("role", "alert");
-            toast.innerHTML = `
-                <div class="toast-header bg-success text-white">
-                    <i class="fas fa-check-circle me-2"></i>
-                    <strong class="me-auto">Başarılı</strong>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
-                </div>
-                <div class="toast-body">
-                    Form yapısı başarıyla kaydedildi
-                </div>
-            `;
-            document.body.appendChild(toast);
-            
-            // 3 saniye sonra toast'ı kaldır
-            setTimeout(() => {
-                toast.remove();
-            }, 3000);
+            window.livewire.emit('saveFormLayout', groupId, JSON.stringify(formData));
         });
         
         // Kayıtlı form yapısını yükle
@@ -318,6 +369,63 @@
         })
         .catch(error => {
             console.error('Form yükleme hatası:', error);
+        });
+        
+        // Form eleman arama işlevi
+        const searchInput = document.getElementById('elements-search');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const searchText = this.value.toLowerCase();
+                const elements = document.querySelectorAll('.element-palette-item');
+                
+                elements.forEach(element => {
+                    const elementText = element.textContent.toLowerCase();
+                    if (elementText.includes(searchText) || searchText === '') {
+                        element.style.display = 'flex';
+                    } else {
+                        element.style.display = 'none';
+                    }
+                });
+                
+                // Eğer bir kategori tüm elemanları gizlenmişse, kategoriyi de gizle
+                const categories = document.querySelectorAll('.block-category');
+                categories.forEach(category => {
+                    const visibleElements = category.querySelectorAll('.element-palette-item[style="display: flex;"]');
+                    if (visibleElements.length === 0) {
+                        category.style.display = 'none';
+                    } else {
+                        category.style.display = 'block';
+                    }
+                });
+            });
+        }
+        
+        // Kategori header tıklama olayı
+        const categoryHeaders = document.querySelectorAll('.block-category-header');
+        categoryHeaders.forEach(header => {
+            header.addEventListener('click', function() {
+                const category = this.closest('.block-category');
+                category.classList.toggle('collapsed');
+                
+                // Kategori durumunu localStorage'a kaydet
+                const categoryName = this.querySelector('span').textContent.trim();
+                const categories = JSON.parse(localStorage.getItem('form_builder_categories') || '{}');
+                categories[categoryName] = category.classList.contains('collapsed');
+                localStorage.setItem('form_builder_categories', JSON.stringify(categories));
+            });
+        });
+        
+        // Panel toggle butonları için olay dinleyiciler
+        const toggleButtons = document.querySelectorAll('.panel-toggle');
+        toggleButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const panel = this.closest('.panel__left, .panel__right');
+                panel.classList.toggle('collapsed');
+                
+                // Panel durumunu localStorage'a kaydet
+                const panelSide = panel.classList.contains('panel__left') ? 'left' : 'right';
+                localStorage.setItem(`form_builder_${panelSide}_collapsed`, panel.classList.contains('collapsed'));
+            });
         });
     });
 </script>

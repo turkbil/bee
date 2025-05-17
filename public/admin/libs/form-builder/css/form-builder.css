@@ -508,6 +508,43 @@ body {
     color: var(--primary-color);
 }
 
+/* Form Builder Element arama sonuçları stil iyileştirmeleri için */
+.blocks-search {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: var(--panel-bg);
+    padding: 12px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.blocks-search input {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+    background-color: var(--light-bg);
+    color: var(--secondary-color);
+    font-size: 13px;
+}
+
+.blocks-search input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(32, 107, 196, 0.25);
+}
+
+/* Eleman gizleme/gösterme stili */
+.hide-borders .form-element {
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+
+.form-element.no-border {
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+
 /* Duyarlı tasarım */
 @media (max-width: 1200px) {
 

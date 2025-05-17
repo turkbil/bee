@@ -1,36 +1,35 @@
 @echo off
 chcp 65001 > nul
 title GIT ZORLA YÜKLEME ARACI
-
 :: Renkli çıktı için
 color 0A
-
 echo === GIT ZORLA YÜKLEME ARACI (turkbil/bee) ===
 echo Bu araç yerel dosyaları turkbil/bee GitHub reposuna zorla yükler.
 echo Dikkat: Uzak depodaki değişiklikler kaybedilecektir!
 echo İşlem başlatılıyor...
 echo.
-
 cd /d %~dp0
 echo Proje dizini: %CD%
-
 :: Git repo kontrolü
 if not exist ".git" (
   color 0C
   echo HATA: Bu dizin bir git deposu değil. Lütfen geçerli bir git repo dizininde çalıştırın.
   goto :sonlandir
 )
-
 :: Git durumunu kontrol et
 echo.
 echo --- GIT DURUMU ---
-git status
-
-:: Değişiklikleri ekle
+git status -u
+:: Tüm dosyaları ekle (yeni, değiştirilmiş ve silinen)
 echo.
-echo --- DEĞİŞİKLİKLERİ EKLE ---
-git add .
-
+echo --- TÜM DOSYALARI EKLE ---
+git add -A
+:: Yeni dosyaların eklendiğinden emin ol
+git ls-files --others --exclude-standard | findstr "." > nul
+if %ERRORLEVEL% EQU 0 (
+  echo Yeni dosyalar ekleniyor...
+  git add -f .
+)
 :: Değişiklikleri kontrol et
 git diff --cached --quiet
 if %ERRORLEVEL% EQU 0 (
@@ -38,7 +37,6 @@ if %ERRORLEVEL% EQU 0 (
   echo Yüklenecek değişiklik yok. İşlem tamamlandı.
   goto :sonlandir
 )
-
 :: turkbil/bee reposunu ayarla
 echo.
 echo --- UZAK REPO KONTROLÜ ---
@@ -51,23 +49,19 @@ if %ERRORLEVEL% NEQ 0 (
   git remote set-url origin https://github.com/turkbil/bee.git
   echo Uzak repo turkbil/bee olarak güncellendi.
 )
-
 :: Commit
 echo.
 echo --- COMMIT ---
 for /F "tokens=2,3,4 delims=/ " %%a in ('date /t') do set tarih=%%c-%%a-%%b
 for /F "tokens=1,2 delims=: " %%a in ('time /t') do set saat=%%a:%%b
 git commit -m "Otomatik yükleme - %tarih% %saat%"
-
 :: Branch ismini al
 for /f "tokens=*" %%a in ('git rev-parse --abbrev-ref HEAD') do set branch=%%a
-
 :: Force push
 echo.
 echo --- GITHUB'A ZORLA GÖNDER (%branch%) ---
 echo Yerel değişiklikler uzak depodaki değişiklikleri ezecek...
 git push -f origin %branch%
-
 if %ERRORLEVEL% EQU 0 (
   color 0A
   echo.
@@ -85,9 +79,20 @@ if %ERRORLEVEL% EQU 0 (
   ) else (
     color 0C
     echo İkinci denemede de başarısız oldu!
+    echo.
+    echo --- GİZLİ DOSYALARI KONTROL ET ---
+    echo Gizli dosyalar listeleniyor:
+    dir /a:h
+    echo.
+    echo --- GIT IGNORE KONTROLÜ ---
+    if exist ".gitignore" (
+      echo .gitignore dosyası bulundu. İçeriği:
+      type .gitignore
+    ) else (
+      echo .gitignore dosyası bulunamadı.
+    )
   )
 )
-
 :sonlandir
 echo.
 echo Çıkmak için bir tuşa basın...

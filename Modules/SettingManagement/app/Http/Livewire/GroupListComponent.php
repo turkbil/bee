@@ -15,6 +15,8 @@ class GroupListComponent extends Component
     public $editingGroup = null;
     public $expandedGroups = [];
     public $search = '';
+    public $formBuilderOpen = false;
+    public $selectedGroup = null;
     
     public $inputs = [
         'name' => '',
@@ -162,6 +164,39 @@ class GroupListComponent extends Component
             'message' => 'Grup başarıyla silindi',
             'type' => 'success'
         ]);
+    }
+    
+    public function openFormBuilder($groupId)
+    {
+        $this->selectedGroup = SettingGroup::findOrFail($groupId);
+        $this->formBuilderOpen = true;
+    }
+
+    public function closeFormBuilder()
+    {
+        $this->formBuilderOpen = false;
+        $this->selectedGroup = null;
+    }
+
+    #[On('saveFormLayout')]
+    public function saveFormLayout($groupId, $formData)
+    {
+        $group = SettingGroup::findOrFail($groupId);
+        $group->layout = json_decode($formData, true);
+        $group->save();
+        
+        log_activity(
+            $group,
+            'form layout güncellendi'
+        );
+        
+        $this->dispatch('toast', [
+            'title' => 'Başarılı!',
+            'message' => 'Form yapısı kaydedildi',
+            'type' => 'success'
+        ]);
+        
+        $this->closeFormBuilder();
     }
     
     #[On('refreshGroups')]

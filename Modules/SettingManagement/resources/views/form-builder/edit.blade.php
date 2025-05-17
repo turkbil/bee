@@ -227,6 +227,7 @@
                 </h3>
             </div>
             <div class="card-body p-0">
+                <div id="form-container"></div>
                 <div id="form-canvas" class="p-3">
                     <div class="empty-canvas" id="empty-canvas">
                         <div class="text-center">
@@ -277,156 +278,98 @@
 @push('scripts')
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        // Grup ID'sini al
-        const groupId = document.getElementById('group-id').value;
-        
-        // Form JSON'ını yükleyerek canvasa render eder
-        function loadFormFromJSON(formData) {
-            if (!formData || !formData.elements || !formData.elements.length) {
-                return;
-            }
+        // Form Builder JS'nin yüklenmesini bekle
+        setTimeout(function() {
+            // Grup ID'sini al
+            const groupId = document.getElementById('group-id').value;
             
-            // Canvas'ı temizle
-            formCanvas.innerHTML = '';
-            emptyCanvas.style.display = 'none';
+            // Kaydet butonu için olay dinleyici ekle
+            document.getElementById('save-btn').addEventListener('click', function() {
+                const formData = window.getFormJSON(); // Form builder JS'deki global fonksiyon
+                
+                // Livewire bileşenine gönder
+                window.livewire.emit('saveFormLayout', groupId, JSON.stringify(formData));
+            });
             
-            // Form elemanlarını oluştur ve canvas'a ekle
-            formData.elements.forEach(element => {
-                if (element.type === 'row') {
-                    // Row tipinde eleman
-                    const rowElement = createFormElement('row', element.properties);
-                    formCanvas.appendChild(rowElement);
-                    
-                    // Row içindeki sütunları doldur
-                    if (element.columns && element.columns.length) {
-                        const rowContent = rowElement.querySelector('.row-element');
-                        const columnElements = rowElement.querySelectorAll('.column-element');
-                        
-                        element.columns.forEach((column, columnIndex) => {
-                            if (columnIndex < columnElements.length) {
-                                // Sütun genişliğini ayarla
-                                columnElements[columnIndex].dataset.width = column.width;
-                                columnElements[columnIndex].className = columnElements[columnIndex].className.replace(/col-md-\d+/, `col-md-${column.width}`);
-                                
-                                // Placeholder'ı kaldır
-                                const placeholder = columnElements[columnIndex].querySelector('.column-placeholder');
-                                if (placeholder) {
-                                    placeholder.remove();
-                                }
-                                
-                                // Sütun içindeki elementleri oluştur
-                                if (column.elements && column.elements.length) {
-                                    column.elements.forEach(item => {
-                                        const columnItem = createFormElement(item.type, item.properties);
-                                        if (columnItem) {
-                                            columnElements[columnIndex].appendChild(columnItem);
-                                        }
-                                    });
-                                }
-                            }
-                        });
-                    }
-                } else {
-                    // Normal eleman
-                    const formElement = createFormElement(element.type, element.properties);
-                    if (formElement) {
-                        formCanvas.appendChild(formElement);
+            // Kayıtlı form yapısını yükle
+            fetch(`/admin/settingmanagement/form-builder/${groupId}/load`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.layout) {
+                    if (typeof window.loadFormFromJSON === 'function') {
+                        window.loadFormFromJSON(data.layout);
+                    } else {
+                        console.error('loadFormFromJSON fonksiyonu bulunamadı');
                     }
                 }
+            })
+            .catch(error => {
+                console.error('Form yükleme hatası:', error);
             });
             
-            // Eğer form boşsa, boş canvas göster
-            checkEmptyCanvas();
-            
-            // SortableJS'yi yeniden başlat
-            initializeSortable();
-            
-            // İlk durumu kaydet
-            saveState();
-        }
-        
-        // Kaydet butonu için olay dinleyici ekle
-        document.getElementById('save-btn').addEventListener('click', function() {
-            const formData = getFormJSON(); // form-builder.js'den geliyor
-            
-            // Livewire bileşenine gönder
-            window.livewire.emit('saveFormLayout', groupId, JSON.stringify(formData));
-        });
-        
-        // Kayıtlı form yapısını yükle
-        fetch(`/admin/settingmanagement/form-builder/${groupId}/load`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success && data.layout) {
-                loadFormFromJSON(data.layout);
-            }
-        })
-        .catch(error => {
-            console.error('Form yükleme hatası:', error);
-        });
-        
-        // Form eleman arama işlevi
-        const searchInput = document.getElementById('elements-search');
-        if (searchInput) {
-            searchInput.addEventListener('input', function() {
-                const searchText = this.value.toLowerCase();
-                const elements = document.querySelectorAll('.element-palette-item');
-                
-                elements.forEach(element => {
-                    const elementText = element.textContent.toLowerCase();
-                    if (elementText.includes(searchText) || searchText === '') {
-                        element.style.display = 'flex';
-                    } else {
-                        element.style.display = 'none';
-                    }
+            // Form eleman arama işlevi
+            const searchInput = document.getElementById('elements-search');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const searchText = this.value.toLowerCase();
+                    const elements = document.querySelectorAll('.element-palette-item');
+                    
+                    elements.forEach(element => {
+                        const elementText = element.textContent.toLowerCase();
+                        if (elementText.includes(searchText) || searchText === '') {
+                            element.style.display = 'flex';
+                        } else {
+                            element.style.display = 'none';
+                        }
+                    });
+                    
+                    // Eğer bir kategori tüm elemanları gizlenmişse, kategoriyi de gizle
+                    const categories = document.querySelectorAll('.block-category');
+                    categories.forEach(category => {
+                        const visibleElements = category.querySelectorAll('.element-palette-item[style="display: flex;"]');
+                        if (visibleElements.length === 0) {
+                            category.style.display = 'none';
+                        } else {
+                            category.style.display = 'block';
+                        }
+                    });
                 });
-                
-                // Eğer bir kategori tüm elemanları gizlenmişse, kategoriyi de gizle
-                const categories = document.querySelectorAll('.block-category');
-                categories.forEach(category => {
-                    const visibleElements = category.querySelectorAll('.element-palette-item[style="display: flex;"]');
-                    if (visibleElements.length === 0) {
-                        category.style.display = 'none';
-                    } else {
-                        category.style.display = 'block';
-                    }
+            }
+            
+            // Kategori header tıklama olayı
+            const categoryHeaders = document.querySelectorAll('.block-category-header');
+            categoryHeaders.forEach(header => {
+                header.addEventListener('click', function() {
+                    const category = this.closest('.block-category');
+                    category.classList.toggle('collapsed');
+                    
+                    // Kategori durumunu localStorage'a kaydet
+                    const categoryName = this.querySelector('span').textContent.trim();
+                    const categories = JSON.parse(localStorage.getItem('form_builder_categories') || '{}');
+                    categories[categoryName] = category.classList.contains('collapsed');
+                    localStorage.setItem('form_builder_categories', JSON.stringify(categories));
                 });
             });
-        }
-        
-        // Kategori header tıklama olayı
-        const categoryHeaders = document.querySelectorAll('.block-category-header');
-        categoryHeaders.forEach(header => {
-            header.addEventListener('click', function() {
-                const category = this.closest('.block-category');
-                category.classList.toggle('collapsed');
-                
-                // Kategori durumunu localStorage'a kaydet
-                const categoryName = this.querySelector('span').textContent.trim();
-                const categories = JSON.parse(localStorage.getItem('form_builder_categories') || '{}');
-                categories[categoryName] = category.classList.contains('collapsed');
-                localStorage.setItem('form_builder_categories', JSON.stringify(categories));
+            
+            // Panel toggle butonları için olay dinleyiciler
+            const toggleButtons = document.querySelectorAll('.panel-toggle');
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const panel = this.closest('.panel__left, .panel__right');
+                    panel.classList.toggle('collapsed');
+                    
+                    // Panel durumunu localStorage'a kaydet
+                    const panelSide = panel.classList.contains('panel__left') ? 'left' : 'right';
+                    localStorage.setItem(`form_builder_${panelSide}_collapsed`, panel.classList.contains('collapsed'));
+                });
             });
-        });
-        
-        // Panel toggle butonları için olay dinleyiciler
-        const toggleButtons = document.querySelectorAll('.panel-toggle');
-        toggleButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const panel = this.closest('.panel__left, .panel__right');
-                panel.classList.toggle('collapsed');
-                
-                // Panel durumunu localStorage'a kaydet
-                const panelSide = panel.classList.contains('panel__left') ? 'left' : 'right';
-                localStorage.setItem(`form_builder_${panelSide}_collapsed`, panel.classList.contains('collapsed'));
-            });
-        });
+        }, 500); // Form Builder JS'nin yüklenmesi için 500ms bekle
     });
 </script>
 @endpush

@@ -896,81 +896,17 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
         `,
     file: `
-            <h4 class="fw-bold p-3 border-bottom">Dosya Yükleme Elementini Düzenle</h4>
-            <div class="p-3">
-                <div class="mb-3">
-                    <label class="form-label">Etiket</label>
-                    <input type="text" class="form-control" name="label" value="{label}">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Alan Adı</label>
-                    <input type="text" class="form-control" name="name" value="{name}">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Yardım Metni</label>
-                    <input type="text" class="form-control" name="help_text" value="{help_text}">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Genişlik</label>
-                    <select class="form-select" name="width">
-                        <option value="12" {width12}>Tam Genişlik (12/12)</option>
-                        <option value="6" {width6}>Yarım Genişlik (6/12)</option>
-                        <option value="4" {width4}>Üçte Bir (4/12)</option>
-                        <option value="3" {width3}>Çeyrek (3/12)</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" name="required" {required}>
-                        <span class="form-check-label">Zorunlu Alan</span>
-                    </label>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Ayar ID</label>
-                    <select class="form-select" name="setting_id">
-                        <option value="">Ayar Seçiniz</option>
-                        <!-- Ayarlar AJAX ile yüklenecek -->
-                    </select>
-                </div>
+            <div class="mb-3">
+                <label class="form-label">{label}</label>
+                <input type="file" class="form-control">
+                <div class="form-text text-muted">{help_text}</div>
             </div>
         `,
     image: `
-            <h4 class="fw-bold p-3 border-bottom">Resim Yükleme Elementini Düzenle</h4>
-            <div class="p-3">
-                <div class="mb-3">
-                    <label class="form-label">Etiket</label>
-                    <input type="text" class="form-control" name="label" value="{label}">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Alan Adı</label>
-                    <input type="text" class="form-control" name="name" value="{name}">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Yardım Metni</label>
-                    <input type="text" class="form-control" name="help_text" value="{help_text}">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Genişlik</label>
-                    <select class="form-select" name="width">
-                        <option value="12" {width12}>Tam Genişlik (12/12)</option>
-                        <option value="6" {width6}>Yarım Genişlik (6/12)</option>
-                        <option value="4" {width4}>Üçte Bir (4/12)</option>
-                        <option value="3" {width3}>Çeyrek (3/12)</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" name="required" {required}>
-                        <span class="form-check-label">Zorunlu Alan</span>
-                    </label>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Ayar ID</label>
-                    <select class="form-select" name="setting_id">
-                        <option value="">Ayar Seçiniz</option>
-                        <!-- Ayarlar AJAX ile yüklenecek -->
-                    </select>
-                </div>
+            <div class="mb-3">
+                <label class="form-label">{label}</label>
+                <input type="file" class="form-control" accept="image/*">
+                <div class="form-text text-muted">{help_text}</div>
             </div>
         `,
     row: `
@@ -1264,6 +1200,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Form elementlerini oluştur
   function createFormElement(type, properties) {
+    console.log('createFormElement çağrıldı. Element tipi:', type);
     if (!type || typeof type !== "string") {
       console.error("Geçersiz element tipi:", type);
       return null;
@@ -1449,7 +1386,7 @@ document.addEventListener("DOMContentLoaded", function () {
     selectedElement = element;
     selectedElement.classList.add("selected");
 
-    // Özellik panelini güncelle
+    // Özellik panelini günculle
     updatePropertiesPanel();
   }
 
@@ -1508,7 +1445,7 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
-  // Özellik panelini güncelle
+  // Özellik panelini günculle
   function updatePropertiesPanel() {
     if (!selectedElement) return;
 
@@ -1661,7 +1598,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     
     // Tab Group için özel yönetim
-    if (type === "tab_group") {
+    if (type === "tab_group" && properties.tabs) {
       // Tab'ları ekle
       const tabsContainer = document.getElementById("tabs-container");
       if (tabsContainer) {
@@ -1669,54 +1606,36 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (properties.tabs && properties.tabs.length) {
           properties.tabs.forEach((tab, index) => {
-            const tabRow = document.createElement("div");
-            tabRow.className = "card mb-2";
-            tabRow.innerHTML = `
-              <div class="card-header d-flex justify-content-between align-items-center">
-                <span>Sekme ${index + 1}</span>
-                <button type="button" class="btn btn-sm btn-outline-danger remove-tab" data-index="${index}">
-                  <i class="fas fa-times"></i>
-                </button>
-              </div>
-              <div class="card-body">
-                <div class="mb-2">
-                  <label class="form-label">Başlık</label>
-                  <input type="text" class="form-control" name="tab-title-${index}" value="${tab.title || ''}">
-                </div>
-                <div>
-                  <label class="form-label">İçerik</label>
-                  <textarea class="form-control" name="tab-content-${index}" rows="3">${tab.content || ''}</textarea>
-                </div>
-              </div>
+            // Tab başlığı ekleme
+            const tabItem = document.createElement("li");
+            tabItem.className = "nav-item";
+            tabItem.innerHTML = `
+              <a href="#tab-${elementId}-${index}" class="nav-link ${index === 0 ? 'active' : ''}" data-bs-toggle="tab">
+                ${tab.title}
+              </a>
             `;
-
-            tabsContainer.appendChild(tabRow);
-
-            // Değer değişikliklerini dinle
-            const inputs = tabRow.querySelectorAll("input, textarea");
-            inputs.forEach((input) => {
-              input.addEventListener("change", function () {
-                updateTabValue(index, input);
-              });
-
-              input.addEventListener("keyup", function () {
-                updateTabValue(index, input);
-              });
-            });
+            tabList.appendChild(tabItem);
+            
+            // Tab içeriği ekleme
+            const tabPane = document.createElement("div");
+            tabPane.className = `tab-pane ${index === 0 ? 'active' : ''}`;
+            tabPane.id = `tab-${elementId}-${index}`;
+            tabPane.innerHTML = `<p>${tab.content}</p>`;
+            tabContent.appendChild(tabPane);
           });
         }
-
-        // Sekme silme butonlarını etkinleştir
-        const removeTabBtns = tabsContainer.querySelectorAll(".remove-tab");
-        removeTabBtns.forEach((btn) => {
-          btn.addEventListener("click", function () {
-            const index = parseInt(this.dataset.index);
-            properties.tabs.splice(index, 1);
-            updateElementContent();
-            updatePropertiesPanel();
-          });
-        });
       }
+
+      // Sekme silme butonlarını etkinleştir
+      const removeTabBtns = tabsContainer.querySelectorAll(".remove-tab");
+      removeTabBtns.forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const index = parseInt(this.dataset.index);
+          properties.tabs.splice(index, 1);
+          updateElementContent();
+          updatePropertiesPanel();
+        });
+      });
 
       // Sekme Ekle butonu
       const addTabBtn = document.getElementById("add-tab");
@@ -1803,7 +1722,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Seçenek değerini güncelle
+  // Seçenek değerini günculle
   function updateOptionValue(index, input) {
     if (
       !selectedElement ||
@@ -1830,7 +1749,7 @@ document.addEventListener("DOMContentLoaded", function () {
     updateElementContent();
   }
   
-  // Sekme değerini güncelle
+  // Sekme değerini günculle
   function updateTabValue(index, input) {
     if (!selectedElement || selectedElement.dataset.type !== "tab_group") {
       return;
@@ -1854,7 +1773,7 @@ document.addEventListener("DOMContentLoaded", function () {
     updateElementContent();
   }
 
-  // Element özelliklerini güncelle
+  // Element özelliklerini günculle
   function updateElementProperty(input) {
     if (!selectedElement) return;
 
@@ -1866,7 +1785,7 @@ document.addEventListener("DOMContentLoaded", function () {
       selectedElement.querySelector(".element-title").textContent = value;
       selectedElement.properties.label = value;
 
-      // Form içindeki etiketi güncelle
+      // Form içindeki etiketi günculle
       const labelElement = selectedElement.querySelector(".form-label");
       if (labelElement) {
         labelElement.textContent = value;
@@ -1879,7 +1798,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const width = parseInt(value);
       selectedElement.style.width = `${(width * 100) / 12}%`;
 
-      // Element sütun içinde ise sütun genişliğini güncelle
+      // Element sütun içinde ise sütun genişliğini günculle
       const columnElement = selectedElement.closest(".column-element");
       if (columnElement) {
         columnElement.className = columnElement.className.replace(
@@ -1892,7 +1811,7 @@ document.addEventListener("DOMContentLoaded", function () {
       selectedElement.querySelector(".element-title").textContent = "Başlık: " + value;
       selectedElement.properties.content = value;
       
-      // Başlık içeriğini güncelle
+      // Başlık içeriğini günculle
       const headingElement = selectedElement.querySelector(selectedElement.properties.size);
       if (headingElement) {
         headingElement.textContent = value;
@@ -1901,7 +1820,7 @@ document.addEventListener("DOMContentLoaded", function () {
       selectedElement.querySelector(".element-title").textContent = "Kart: " + value;
       selectedElement.properties.title = value;
       
-      // Kart başlığını güncelle
+      // Kart başlığını günculle
       const titleElement = selectedElement.querySelector(".card-title");
       if (titleElement) {
         titleElement.textContent = value;
@@ -1913,11 +1832,11 @@ document.addEventListener("DOMContentLoaded", function () {
       selectedElement.properties[name] = value;
     }
 
-    // Element içeriğini güncelle
+    // Element içeriğini günculle
     updateElementContent();
   }
 
-  // Row sütunlarını güncelle
+  // Row sütunlarını günculle
   function updateRowColumns(columnCount) {
     if (!selectedElement || selectedElement.dataset.type !== "row") return;
 
@@ -1972,10 +1891,10 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
 
-    // Row properties'i güncelle
+    // Row properties'i günculle
     selectedElement.properties.columns = newColumns;
 
-    // Sütun genişliklerini kontrol et ve güncelle
+    // Sütun genişliklerini kontrol et ve günculle
     const rowWidth = newColumns.reduce(
       (sum, col) => sum + parseInt(col.width || 0),
       0
@@ -1988,103 +1907,14 @@ document.addEventListener("DOMContentLoaded", function () {
       });
 }
 
-      // Element içeriğini güncelle - mevcut içeriği koru
+      // Element içeriğini günculle - mevcut içeriği koru
       updateRowContent(columnElements);
 
-      // Özellik panelini güncelle (sütun genişlikleri için)
+      // Özellik panelini günculle (sütun genişlikleri için)
       updatePropertiesPanel();
     }
 
-    // Row içeriğini güncelle - mevcut içeriği koru
-    function updateRowContent(oldColumns) {
-      if (!selectedElement || selectedElement.dataset.type !== "row") return;
-
-      const properties = selectedElement.properties;
-      const content = selectedElement.querySelector(".element-content");
-
-      // Yeni row şablonunu oluştur
-      content.innerHTML = `<div class="row row-element d-flex flex-row"></div>`;
-
-      const rowElement = content.querySelector(".row-element");
-      if (!rowElement) return;
-
-      // Yeni sütunları oluştur
-      properties.columns.forEach((column, index) => {
-        const columnElement = document.createElement("div");
-        columnElement.className = `col-md-${column.width} column-element`;
-        columnElement.dataset.width = column.width;
-        columnElement.style.display = "block";
-        columnElement.style.minHeight = "80px";
-
-        // Eğer eski bir sütun varsa içeriğini taşı
-        if (oldColumns && index < oldColumns.length) {
-          const formerColumn = oldColumns[index];
-          const formerElements = formerColumn
-            ? formerColumn.querySelectorAll(".form-element")
-            : [];
-
-          if (formerElements.length > 0) {
-            // Mevcut elemanları kopyala
-            formerElements.forEach((elem) => {
-              columnElement.appendChild(elem.cloneNode(true));
-            });
-          } else {
-            // Placeholder göster
-            columnElement.innerHTML = `
-                          <div class="column-placeholder">
-                              <i class="fas fa-plus me-2"></i> Buraya element sürükleyin
-                          </div>
-                      `;
-          }
-        } else {
-          // Yeni sütun, placeholder göster
-          columnElement.innerHTML = `
-                      <div class="column-placeholder">
-                          <i class="fas fa-plus me-2"></i> Buraya element sürükleyin
-                      </div>
-                  `;
-        }
-
-        rowElement.appendChild(columnElement);
-      });
-
-      // Event listener'ları yeniden ekle
-      const newElements = rowElement.querySelectorAll(".form-element");
-      newElements.forEach((elem) => {
-        elem.addEventListener("click", function (e) {
-          e.stopPropagation();
-          selectElement(elem);
-        });
-
-        // Butonlara event listener ekle
-        const buttons = elem.querySelectorAll("[data-action]");
-        buttons.forEach((button) => {
-          button.addEventListener("click", function (e) {
-            e.stopPropagation();
-            const action = this.dataset.action;
-
-            if (action === "remove") {
-              elem.remove();
-              if (selectedElement === elem) {
-                clearSelectedElement();
-              }
-            } else if (action === "duplicate") {
-              const type = elem.dataset.type;
-              const properties = JSON.parse(
-                JSON.stringify(elem.properties || {})
-              );
-              const duplicate = createFormElement(type, properties);
-              elem.parentNode.insertBefore(duplicate, elem.nextSibling);
-            }
-          });
-        });
-      });
-
-      // Sütunları sürüklenebilir yap
-      initializeColumnSortables();
-    }
-
-    // Sütun genişliğini güncelle
+    // Sütun genişliğini günculle
     function updateColumnWidth(columnIndex, width) {
       if (!selectedElement || selectedElement.dataset.type !== "row") return;
 
@@ -2113,12 +1943,12 @@ document.addEventListener("DOMContentLoaded", function () {
           12 - (totalWidth - width);
       }
 
-      // Row içeriğini güncelle
+      // Row içeriğini günculle
       const columnElements = selectedElement.querySelectorAll(".column-element");
       updateRowContent(columnElements);
     }
 
-    // Element içeriğini güncelle
+    // Element içeriğini günculle
     function updateElementContent() {
       if (!selectedElement) return;
 
@@ -2136,7 +1966,7 @@ document.addEventListener("DOMContentLoaded", function () {
           selectedElement.querySelectorAll(".column-element");
         updateRowContent(columnElements);
       } else {
-        // Normal elementler için içeriği güncelle
+        // Normal elementler için içeriği günculle
         const content = selectedElement.querySelector(".element-content");
         content.innerHTML = renderTemplate(elementTemplates[type], properties);
 
@@ -2634,7 +2464,7 @@ document.addEventListener("DOMContentLoaded", function () {
         deviceBtns.forEach(b => b.classList.remove("active"));
         this.classList.add("active");
         
-        // Canvas genişliğini güncelle
+        // Canvas genişliğini günculle
         const deviceType = this.id.replace("device-", "");
         
         if (deviceType === "desktop") {
@@ -2721,3 +2551,148 @@ document.addEventListener("DOMContentLoaded", function () {
     // Kaydedilmiş durumları yükle
     loadSavedStates();
 });
+
+// Yeni fonksiyonlar eklendi.
+function createFormElement(elementData) {
+    console.log('createFormElement çağrıldı. Element tipi:', elementData.type);
+    let el;
+    switch (elementData.type) {
+        case 'text':
+            el = document.createElement('input');
+            el.setAttribute('type', 'text');
+            break;
+        case 'button':
+            el = document.createElement('button');
+            el.textContent = elementData.label || 'Button';
+            break;
+        default:
+            el = document.createElement('div');
+            el.textContent = 'Unsupported element type: ' + elementData.type;
+    }
+    return el;
+}
+
+function loadFormFromJSON(json) {
+    console.log('loadFormFromJSON çağrıldı. Gelen JSON:', json);
+    if (!json || !Array.isArray(json.elements)) return;
+    const container = document.getElementById('form-container');
+    if (!container) {
+        console.error('Form container not found');
+        return;
+    }
+    container.innerHTML = '';
+    console.log('Container temizlendi. Form elemanları yükleniyor...');
+    json.elements.forEach(elementData => {
+         const element = createFormElement(elementData);
+         container.appendChild(element);
+    });
+    console.log('Form elemanları başarıyla yüklendi.');
+}
+
+// Fonksiyonları global hale getiriyoruz.
+window.createFormElement = createFormElement;
+window.loadFormFromJSON = loadFormFromJSON;
+
+// LoadFormFromJSON fonksiyonunda, JSON nesnesinde 'layout' özelliğinin olup olmadığını kontrol edip, varsa loadLayout fonksiyonunu çağıracak şekilde güncelliyoruz. Ayrıca, settings tablosundan gelen elementler için createFormElement çağrısını gerçekleştiriyoruz. Ayrıca, loadLayout fonksiyonunun basit bir iskeletini ekliyoruz.
+function loadFormFromJSON(json) {
+    console.log('loadFormFromJSON çağrıldı. Gelen JSON:', json);
+    // Container temizlendi. Form elemanları yükleniyor...
+    clearContainer();
+
+    // Layout bilgisi kontrolü
+    if (json.layout) {
+        console.log('Layout bilgisi bulundu, yükleniyor...');
+        loadLayout(json.layout);
+    } else {
+        console.log('Layout bilgisi bulunamadı, default yapı kullanılacak...');
+    }
+
+    // Setting tablosundan gelen elemanlar yükleniyor
+    if (json.elements && json.elements.length > 0) {
+        json.elements.forEach(function(element) {
+            console.log('createFormElement çağrıldı. Element tipi:', element.type);
+            createFormElement(element);
+        });
+    } else {
+        console.log('Eleman bulunamadı.');
+    }
+
+    console.log('Form elemanları başarıyla yüklendi.');
+}
+
+// Yeni eklenen: Layout yükleyici fonksiyon
+function loadLayout(layoutJSON) {
+    console.log('Form düzeni yükleniyor:', layoutJSON);
+    // layoutJSON içeriğine göre dinamik düzen oluşturma kodlarınızı buraya ekleyin.
+    // Örneğin, düzen içindeki satır/sütun ve elemantaların yerlerini container'a yerleştirin.
+}
+
+// Yeni: Form container'ı temizlemek için kullanılacak fonksiyon
+function clearContainer() {
+    var container = document.getElementById('form-container');
+    if (container) {
+        container.innerHTML = '';
+        loadLayout();
+        loadSettings();
+    }
+}
+
+function loadLayout() {
+    fetch('/admin/settingmanagement/layout')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('HTTP error: ' + response.status);
+            }
+            const contentType = response.headers.get('content-type') || '';
+            if (!contentType.includes('application/json')) {
+                throw new Error('Expected JSON, got ' + contentType);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Layout yüklendi:', data);
+            renderLayout(data);
+        })
+        .catch(error => {
+            console.error('Layout yüklenirken hata oluştu:', error);
+            // Fallback: default layout verisi
+            renderLayout({ default: 'default yapı kullanıldı' });
+        });
+}
+
+function loadSettings() {
+    fetch('/admin/settingmanagement/item/manage')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('HTTP error: ' + response.status);
+            }
+            const contentType = response.headers.get('content-type') || '';
+            if (!contentType.includes('application/json')) {
+                throw new Error('Expected JSON, got ' + contentType);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Settings elemanları yüklendi:', data);
+            renderSettings(data);
+        })
+        .catch(error => {
+            console.error('Settings elemanları yüklenirken hata oluştu:', error);
+            // Fallback: default settings verisi
+            renderSettings({ default: 'default ayar kullanılacak' });
+        });
+}
+
+function renderLayout(layoutData) {
+    var layoutContainer = document.getElementById('layoutContainer');
+    if (layoutContainer) {
+        layoutContainer.innerHTML = JSON.stringify(layoutData, null, 2);
+    }
+}
+
+function renderSettings(settingsData) {
+    var settingsContainer = document.getElementById('settingsContainer');
+    if (settingsContainer) {
+        settingsContainer.innerHTML = JSON.stringify(settingsData, null, 2);
+    }
+}

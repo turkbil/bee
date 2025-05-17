@@ -9,6 +9,7 @@ use Modules\SettingManagement\App\Http\Livewire\GroupManageComponent;
 use Modules\SettingManagement\App\Http\Livewire\ValuesComponent;
 use Modules\SettingManagement\App\Http\Livewire\TenantSettingsComponent;
 use Modules\SettingManagement\App\Http\Livewire\FormBuilderComponent;
+use Modules\SettingManagement\App\Http\Controllers\FormBuilderController;
 
 Route::middleware(['web', 'auth', 'tenant'])
     ->prefix('admin')
@@ -62,9 +63,13 @@ Route::middleware(['web', 'auth', 'tenant'])
                     ->middleware('module.permission:settingmanagement,update')
                     ->name('form-builder.edit');
 
-                // API endpoint for loading form data
+                // Form Builder API endpoints
                 Route::get('/form-builder/{groupId}/load', [FormBuilderController::class, 'load'])
                     ->middleware('module.permission:settingmanagement,view')
                     ->name('form-builder.load');
+                    
+                Route::get('/api/settings', [FormBuilderController::class, 'getSettings'])
+                    ->middleware('module.permission:settingmanagement,view')
+                    ->name('api.settings');
             });
     });

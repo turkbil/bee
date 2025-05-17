@@ -1,1144 +1,2013 @@
 // Form Builder JavaScript Kodu
 document.addEventListener("DOMContentLoaded", function () {
-    // Değişkenler
-    let elementCounter = 0;
-    let selectedElement = null;
-    const formCanvas = document.getElementById("form-canvas");
-    const emptyCanvas = document.getElementById("empty-canvas");
-    const elementPalette = document.getElementById("element-palette");
-    const propertiesPanel = document.getElementById("properties-panel");
-  
-    // Panel sekmeleri için olay dinleyiciler
-    const tabs = document.querySelectorAll(".panel-tab");
-    tabs.forEach((tab) => {
-      tab.addEventListener("click", function () {
-        const tabName = this.getAttribute("data-tab");
-        const tabContainer = this.closest(".panel-tabs");
-        const panelSide = this.closest(".panel__left") ? "left" : "right";
-  
-        // Tüm sekmeleri pasif yap
-        tabContainer.querySelectorAll(".panel-tab").forEach((t) => {
-          t.classList.remove("active");
-        });
-  
-        // Seçilen sekmeyi aktif yap
-        this.classList.add("active");
-  
-        // İçerikleri gizle
-        const panelContent = this.closest(".panel__left, .panel__right");
-        panelContent.querySelectorAll(".panel-tab-content").forEach((content) => {
-          content.classList.remove("active");
-        });
-  
-        // İlgili içeriği göster
-        const contentSelector = `.panel-tab-content[data-tab-content="${tabName}"]`;
-        const content = panelContent.querySelector(contentSelector);
-        if (content) {
-          content.classList.add("active");
-        }
-  
-        // LocalStorage'e kaydet
-        localStorage.setItem(`form_builder_${panelSide}_tab`, tabName);
+  // Değişkenler
+  let elementCounter = 0;
+  let selectedElement = null;
+  const formCanvas = document.getElementById("form-canvas");
+  const emptyCanvas = document.getElementById("empty-canvas");
+  const elementPalette = document.getElementById("element-palette");
+  const propertiesPanel = document.getElementById("properties-panel");
+
+  // Panel sekmeleri için olay dinleyiciler
+  const tabs = document.querySelectorAll(".panel-tab");
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", function () {
+      const tabName = this.getAttribute("data-tab");
+      const tabContainer = this.closest(".panel-tabs");
+      const panelSide = this.closest(".panel__left") ? "left" : "right";
+
+      // Tüm sekmeleri pasif yap
+      tabContainer.querySelectorAll(".panel-tab").forEach((t) => {
+        t.classList.remove("active");
       });
-    });
-  
-    // Panel açma/kapama butonları için olay dinleyiciler
-    const toggleButtons = document.querySelectorAll(".panel-toggle");
-    toggleButtons.forEach((button) => {
-      button.addEventListener("click", function () {
-        const panel = this.closest(".panel__left, .panel__right");
-        panel.classList.toggle("collapsed");
-  
-        // Panel durumunu localStorage'a kaydet
-        const panelSide = panel.classList.contains("panel__left")
-          ? "left"
-          : "right";
-        localStorage.setItem(
-          `form_builder_${panelSide}_collapsed`,
-          panel.classList.contains("collapsed")
-        );
+
+      // Seçilen sekmeyi aktif yap
+      this.classList.add("active");
+
+      // İçerikleri gizle
+      const panelContent = this.closest(".panel__left, .panel__right");
+      panelContent.querySelectorAll(".panel-tab-content").forEach((content) => {
+        content.classList.remove("active");
       });
-    });
-  
-    // Kategori açma/kapama için olay dinleyiciler
-    const categoryHeaders = document.querySelectorAll(".block-category-header");
-    categoryHeaders.forEach((header) => {
-      header.addEventListener("click", function () {
-        const category = this.closest(".block-category");
-        category.classList.toggle("collapsed");
-  
-        // Kategori durumunu localStorage'a kaydet
-        const categoryName = this.querySelector("span").textContent.trim();
-        const categories = JSON.parse(
-          localStorage.getItem("form_builder_categories") || "{}"
-        );
-        categories[categoryName] = category.classList.contains("collapsed");
-        localStorage.setItem(
-          "form_builder_categories",
-          JSON.stringify(categories)
-        );
-      });
-    });
-  
-    // Form elementlerinin varsayılan özellikleri
-    const defaultProperties = {
-      text: {
-        label: "Metin Alanı",
-        name: "text_field",
-        placeholder: "Metin giriniz",
-        help_text: "",
-        width: 12,
-        required: false,
-        default_value: "",
-      },
-      textarea: {
-        label: "Uzun Metin",
-        name: "textarea_field",
-        placeholder: "Uzun metin giriniz",
-        help_text: "",
-        width: 12,
-        required: false,
-        default_value: "",
-      },
-      number: {
-        label: "Sayı Alanı",
-        name: "number_field",
-        placeholder: "Sayı giriniz",
-        help_text: "",
-        width: 12,
-        required: false,
-        default_value: "",
-      },
-      email: {
-        label: "E-posta Adresi",
-        name: "email_field",
-        placeholder: "E-posta adresinizi giriniz",
-        help_text: "",
-        width: 12,
-        required: false,
-        default_value: "",
-      },
-      select: {
-        label: "Açılır Liste",
-        name: "select_field",
-        placeholder: "Seçiniz",
-        help_text: "",
-        width: 12,
-        required: false,
-        options: [
-          { value: "option1", label: "Seçenek 1" },
-          { value: "option2", label: "Seçenek 2" },
-          { value: "option3", label: "Seçenek 3" },
-        ],
-      },
-      checkbox: {
-        label: "Onay Kutusu",
-        name: "checkbox_field",
-        help_text: "",
-        width: 12,
-        required: false,
-        default_checked: false,
-      },
-      radio: {
-        label: "Seçim Düğmeleri",
-        name: "radio_field",
-        help_text: "",
-        width: 12,
-        required: false,
-        options: [
-          { value: "option1", label: "Seçenek 1" },
-          { value: "option2", label: "Seçenek 2" },
-          { value: "option3", label: "Seçenek 3" },
-        ],
-      },
-      switch: {
-        label: "Anahtar",
-        name: "switch_field",
-        help_text: "",
-        width: 12,
-        required: false,
-        default_checked: false,
-      },
-      row: {
-        columns: [
-          { index: 1, width: 6 },
-          { index: 2, width: 6 },
-        ],
-      },
-    };
-  
-    // Element şablonları
-    const elementTemplates = {
-      text: `
-              <div class="mb-3">
-                  <label class="form-label">{label}</label>
-                  <input type="text" class="form-control" placeholder="{placeholder}">
-                  <div class="form-text text-muted">{help_text}</div>
-              </div>
-          `,
-      textarea: `
-              <div class="mb-3">
-                  <label class="form-label">{label}</label>
-                  <textarea class="form-control" rows="4" placeholder="{placeholder}"></textarea>
-                  <div class="form-text text-muted">{help_text}</div>
-              </div>
-          `,
-      number: `
-              <div class="mb-3">
-                  <label class="form-label">{label}</label>
-                  <input type="number" class="form-control" placeholder="{placeholder}">
-                  <div class="form-text text-muted">{help_text}</div>
-              </div>
-          `,
-      email: `
-              <div class="mb-3">
-                  <label class="form-label">{label}</label>
-                  <input type="email" class="form-control" placeholder="{placeholder}">
-                  <div class="form-text text-muted">{help_text}</div>
-              </div>
-          `,
-      select: `
-              <div class="mb-3">
-                  <label class="form-label">{label}</label>
-                  <select class="form-select">
-                      <option value="" selected disabled>{placeholder}</option>
-                      <!-- Seçenekler JavaScript tarafından eklenecek -->
-                  </select>
-                  <div class="form-text text-muted">{help_text}</div>
-              </div>
-          `,
-      checkbox: `
-              <div class="mb-3">
-                  <label class="form-check">
-                      <input class="form-check-input" type="checkbox">
-                      <span class="form-check-label">{label}</span>
-                  </label>
-                  <div class="form-text text-muted">{help_text}</div>
-              </div>
-          `,
-      radio: `
-              <div class="mb-3">
-                  <label class="form-label">{label}</label>
-                  <div class="radio-options">
-                      <!-- Seçenekler JavaScript tarafından eklenecek -->
-                  </div>
-                  <div class="form-text text-muted">{help_text}</div>
-              </div>
-          `,
-      switch: `
-              <div class="mb-3">
-                  <label class="form-check form-switch">
-                      <input class="form-check-input" type="checkbox">
-                      <span class="form-check-label">{label}</span>
-                  </label>
-                  <div class="form-text text-muted">{help_text}</div>
-              </div>
-          `,
-      row: `
-              <div class="row row-element d-flex">
-                  <div class="col-md-6 column-element" data-width="6">
-                      <div class="column-placeholder">
-                          <i class="fas fa-plus me-2"></i> Buraya element sürükleyin
-                      </div>
-                  </div>
-                  <div class="col-md-6 column-element" data-width="6">
-                      <div class="column-placeholder">
-                          <i class="fas fa-plus me-2"></i> Buraya element sürükleyin
-                      </div>
-                  </div>
-              </div>
-          `,
-    };
-  
-    // Özellik paneli şablonları
-    const propertyTemplates = {
-      text: `
-              <h4 class="fw-bold p-3 border-bottom">Metin Elementini Düzenle</h4>
-              <div class="p-3">
-                  <div class="mb-3">
-                      <label class="form-label">Etiket</label>
-                      <input type="text" class="form-control" name="label" value="{label}">
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-label">Alan Adı</label>
-                      <input type="text" class="form-control" name="name" value="{name}">
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-label">Placeholder</label>
-                      <input type="text" class="form-control" name="placeholder" value="{placeholder}">
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-label">Yardım Metni</label>
-                      <input type="text" class="form-control" name="help_text" value="{help_text}">
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-label">Genişlik</label>
-                      <select class="form-select" name="width">
-                          <option value="12" {width12}>Tam Genişlik (12/12)</option>
-                          <option value="6" {width6}>Yarım Genişlik (6/12)</option>
-                          <option value="4" {width4}>Üçte Bir (4/12)</option>
-                          <option value="3" {width3}>Çeyrek (3/12)</option>
-                      </select>
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-check form-switch">
-                          <input class="form-check-input" type="checkbox" name="required" {required}>
-                          <span class="form-check-label">Zorunlu Alan</span>
-                      </label>
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-label">Varsayılan Değer</label>
-                      <input type="text" class="form-control" name="default_value" value="{default_value}">
-                  </div>
-              </div>
-          `,
-      textarea: `
-              <h4 class="fw-bold p-3 border-bottom">Uzun Metin Elementini Düzenle</h4>
-              <div class="p-3">
-                  <div class="mb-3">
-                      <label class="form-label">Etiket</label>
-                      <input type="text" class="form-control" name="label" value="{label}">
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-label">Alan Adı</label>
-                      <input type="text" class="form-control" name="name" value="{name}">
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-label">Placeholder</label>
-                      <input type="text" class="form-control" name="placeholder" value="{placeholder}">
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-label">Yardım Metni</label>
-                      <input type="text" class="form-control" name="help_text" value="{help_text}">
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-label">Genişlik</label>
-                      <select class="form-select" name="width">
-                          <option value="12" {width12}>Tam Genişlik (12/12)</option>
-                          <option value="6" {width6}>Yarım Genişlik (6/12)</option>
-                          <option value="4" {width4}>Üçte Bir (4/12)</option>
-                          <option value="3" {width3}>Çeyrek (3/12)</option>
-                      </select>
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-check form-switch">
-                          <input class="form-check-input" type="checkbox" name="required" {required}>
-                          <span class="form-check-label">Zorunlu Alan</span>
-                      </label>
-                  </div>
-              </div>
-          `,
-      select: `
-              <h4 class="fw-bold p-3 border-bottom">Açılır Liste Elementini Düzenle</h4>
-              <div class="p-3">
-                  <div class="mb-3">
-                      <label class="form-label">Etiket</label>
-                      <input type="text" class="form-control" name="label" value="{label}">
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-label">Alan Adı</label>
-                      <input type="text" class="form-control" name="name" value="{name}">
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-label">Placeholder</label>
-                      <input type="text" class="form-control" name="placeholder" value="{placeholder}">
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-label">Genişlik</label>
-                      <select class="form-select" name="width">
-                          <option value="12" {width12}>Tam Genişlik (12/12)</option>
-                          <option value="6" {width6}>Yarım Genişlik (6/12)</option>
-                          <option value="4" {width4}>Üçte Bir (4/12)</option>
-                          <option value="3" {width3}>Çeyrek (3/12)</option>
-                      </select>
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-check form-switch">
-                          <input class="form-check-input" type="checkbox" name="required" {required}>
-                          <span class="form-check-label">Zorunlu Alan</span>
-                      </label>
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-label">Seçenekler</label>
-                      <div id="options-container">
-                          <!-- Seçenekler JavaScript ile doldurulacak -->
-                      </div>
-                      <button type="button" class="btn btn-sm btn-outline-primary mt-2" id="add-option">
-                          <i class="fas fa-plus me-1"></i> Seçenek Ekle
-                      </button>
-                  </div>
-              </div>
-          `,
-      number: `
-              <h4 class="fw-bold p-3 border-bottom">Sayı Elementini Düzenle</h4>
-              <div class="p-3">
-                  <div class="mb-3">
-                      <label class="form-label">Etiket</label>
-                      <input type="text" class="form-control" name="label" value="{label}">
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-label">Alan Adı</label>
-                      <input type="text" class="form-control" name="name" value="{name}">
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-label">Placeholder</label>
-                      <input type="text" class="form-control" name="placeholder" value="{placeholder}">
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-label">Yardım Metni</label>
-                      <input type="text" class="form-control" name="help_text" value="{help_text}">
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-label">Genişlik</label>
-                      <select class="form-select" name="width">
-                          <option value="12" {width12}>Tam Genişlik (12/12)</option>
-                          <option value="6" {width6}>Yarım Genişlik (6/12)</option>
-                          <option value="4" {width4}>Üçte Bir (4/12)</option>
-                          <option value="3" {width3}>Çeyrek (3/12)</option>
-                      </select>
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-check form-switch">
-                          <input class="form-check-input" type="checkbox" name="required" {required}>
-                          <span class="form-check-label">Zorunlu Alan</span>
-                      </label>
-                  </div>
-              </div>
-          `,
-      email: `
-              <h4 class="fw-bold p-3 border-bottom">E-posta Elementini Düzenle</h4>
-              <div class="p-3">
-                  <div class="mb-3">
-                      <label class="form-label">Etiket</label>
-                      <input type="text" class="form-control" name="label" value="{label}">
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-label">Alan Adı</label>
-                      <input type="text" class="form-control" name="name" value="{name}">
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-label">Placeholder</label>
-                      <input type="text" class="form-control" name="placeholder" value="{placeholder}">
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-label">Yardım Metni</label>
-                      <input type="text" class="form-control" name="help_text" value="{help_text}">
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-label">Genişlik</label>
-                      <select class="form-select" name="width">
-                          <option value="12" {width12}>Tam Genişlik (12/12)</option>
-                          <option value="6" {width6}>Yarım Genişlik (6/12)</option>
-                          <option value="4" {width4}>Üçte Bir (4/12)</option>
-                          <option value="3" {width3}>Çeyrek (3/12)</option>
-                      </select>
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-check form-switch">
-                          <input class="form-check-input" type="checkbox" name="required" {required}>
-                          <span class="form-check-label">Zorunlu Alan</span>
-                      </label>
-                  </div>
-              </div>
-          `,
-      checkbox: `
-              <h4 class="fw-bold p-3 border-bottom">Onay Kutusu Elementini Düzenle</h4>
-              <div class="p-3">
-                  <div class="mb-3">
-                      <label class="form-label">Etiket</label>
-                      <input type="text" class="form-control" name="label" value="{label}">
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-label">Alan Adı</label>
-                      <input type="text" class="form-control" name="name" value="{name}">
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-label">Yardım Metni</label>
-                      <input type="text" class="form-control" name="help_text" value="{help_text}">
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-label">Genişlik</label>
-                      <select class="form-select" name="width">
-                          <option value="12" {width12}>Tam Genişlik (12/12)</option>
-                          <option value="6" {width6}>Yarım Genişlik (6/12)</option>
-                          <option value="4" {width4}>Üçte Bir (4/12)</option>
-                          <option value="3" {width3}>Çeyrek (3/12)</option>
-                      </select>
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-check form-switch">
-                          <input class="form-check-input" type="checkbox" name="required" {required}>
-                          <span class="form-check-label">Zorunlu Alan</span>
-                      </label>
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-check form-switch">
-                          <input class="form-check-input" type="checkbox" name="default_checked" {default_checked}>
-                          <span class="form-check-label">Varsayılan İşaretli</span>
-                      </label>
-                  </div>
-              </div>
-          `,
-      radio: `
-              <h4 class="fw-bold p-3 border-bottom">Seçim Düğmesi Elementini Düzenle</h4>
-              <div class="p-3">
-                  <div class="mb-3">
-                      <label class="form-label">Etiket</label>
-                      <input type="text" class="form-control" name="label" value="{label}">
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-label">Alan Adı</label>
-                      <input type="text" class="form-control" name="name" value="{name}">
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-label">Yardım Metni</label>
-                      <input type="text" class="form-control" name="help_text" value="{help_text}">
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-label">Genişlik</label>
-                      <select class="form-select" name="width">
-                          <option value="12" {width12}>Tam Genişlik (12/12)</option>
-                          <option value="6" {width6}>Yarım Genişlik (6/12)</option>
-                          <option value="4" {width4}>Üçte Bir (4/12)</option>
-                          <option value="3" {width3}>Çeyrek (3/12)</option>
-                      </select>
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-check form-switch">
-                          <input class="form-check-input" type="checkbox" name="required" {required}>
-                          <span class="form-check-label">Zorunlu Alan</span>
-                      </label>
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-label">Seçenekler</label>
-                      <div id="options-container">
-                          <!-- Seçenekler JavaScript ile doldurulacak -->
-                      </div>
-                      <button type="button" class="btn btn-sm btn-outline-primary mt-2" id="add-option">
-                          <i class="fas fa-plus me-1"></i> Seçenek Ekle
-                      </button>
-                  </div>
-              </div>
-          `,
-      switch: `
-              <h4 class="fw-bold p-3 border-bottom">Anahtar Elementini Düzenle</h4>
-              <div class="p-3">
-                  <div class="mb-3">
-                      <label class="form-label">Etiket</label>
-                      <input type="text" class="form-control" name="label" value="{label}">
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-label">Alan Adı</label>
-                      <input type="text" class="form-control" name="name" value="{name}">
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-label">Yardım Metni</label>
-                      <input type="text" class="form-control" name="help_text" value="{help_text}">
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-label">Genişlik</label>
-                      <select class="form-select" name="width">
-                          <option value="12" {width12}>Tam Genişlik (12/12)</option>
-                          <option value="6" {width6}>Yarım Genişlik (6/12)</option>
-                          <option value="4" {width4}>Üçte Bir (4/12)</option>
-                          <option value="3" {width3}>Çeyrek (3/12)</option>
-                      </select>
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-check form-switch">
-                          <input class="form-check-input" type="checkbox" name="required" {required}>
-                          <span class="form-check-label">Zorunlu Alan</span>
-                      </label>
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-check form-switch">
-                          <input class="form-check-input" type="checkbox" name="default_checked" {default_checked}>
-                          <span class="form-check-label">Varsayılan İşaretli</span>
-                      </label>
-                  </div>
-              </div>
-          `,
-      row: `
-              <h4 class="fw-bold p-3 border-bottom">Satır Elementini Düzenle</h4>
-              <div class="p-3">
-                  <div class="mb-3">
-                      <label class="form-label">Sütun Sayısı</label>
-                      <select class="form-select" name="column-count">
-                          <option value="2" {columns2}>2 Sütun</option>
-                          <option value="3" {columns3}>3 Sütun</option>
-                          <option value="4" {columns4}>4 Sütun</option>
-                      </select>
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-label">Sütun Genişlikleri</label>
-                      <div id="column-widths-container">
-                          <!-- Sütun genişlikleri JavaScript ile doldurulacak -->
-                      </div>
-                  </div>
-              </div>
-          `,
-    };
-  
-    // Şablon işleme (Mustache benzeri basit bir işleyici)
-    function renderTemplate(template, data) {
-      let result = template;
-  
-      // Değişken yerleştirme {variable}
-      Object.keys(data).forEach((key) => {
-        const value = data[key];
-        if (typeof value === "string" || typeof value === "number") {
-          const regex = new RegExp("{" + key + "}", "g");
-          result = result.replace(regex, value);
-        }
-      });
-  
-      // Koşullu özellikler {selected}, {checked}, vb.
-      Object.keys(data).forEach((key) => {
-        const value = data[key];
-        if (typeof value === "boolean" && value === true) {
-          const regex = new RegExp("{" + key + "}", "g");
-          result = result.replace(regex, "checked");
-        } else if (typeof value === "boolean") {
-          const regex = new RegExp("{" + key + "}", "g");
-          result = result.replace(regex, "");
-        }
-      });
-  
-      // Width değerleri için özel koşullar
-      if (data.width) {
-        for (let i = 1; i <= 12; i++) {
-          const regex = new RegExp("{width" + i + "}", "g");
-          result = result.replace(regex, data.width == i ? "selected" : "");
-        }
+
+      // İlgili içeriği göster
+      const contentSelector = `.panel-tab-content[data-tab-content="${tabName}"]`;
+      const content = panelContent.querySelector(contentSelector);
+      if (content) {
+        content.classList.add("active");
       }
-  
-      // Row sütun sayısı için özel koşullar
-      if (data.columns) {
-        for (let i = 2; i <= 4; i++) {
-          const regex = new RegExp("{columns" + i + "}", "g");
-          result = result.replace(
-            regex,
-            data.columns.length == i ? "selected" : ""
-          );
-        }
+
+      // LocalStorage'e kaydet
+      localStorage.setItem(`form_builder_${panelSide}_tab`, tabName);
+    });
+  });
+
+  // Panel açma/kapama butonları için olay dinleyiciler
+  const toggleButtons = document.querySelectorAll(".panel-toggle");
+  toggleButtons.forEach((button) => {
+    button.addEventListener("click", function () {
+      const panel = this.closest(".panel__left, .panel__right");
+      panel.classList.toggle("collapsed");
+
+      // Panel durumunu localStorage'a kaydet
+      const panelSide = panel.classList.contains("panel__left")
+        ? "left"
+        : "right";
+      localStorage.setItem(
+        `form_builder_${panelSide}_collapsed`,
+        panel.classList.contains("collapsed")
+      );
+    });
+  });
+
+  // Kategori açma/kapama için olay dinleyiciler
+  const categoryHeaders = document.querySelectorAll(".block-category-header");
+  categoryHeaders.forEach((header) => {
+    header.addEventListener("click", function () {
+      const category = this.closest(".block-category");
+      category.classList.toggle("collapsed");
+
+      // Kategori durumunu localStorage'a kaydet
+      const categoryName = this.querySelector("span").textContent.trim();
+      const categories = JSON.parse(
+        localStorage.getItem("form_builder_categories") || "{}"
+      );
+      categories[categoryName] = category.classList.contains("collapsed");
+      localStorage.setItem(
+        "form_builder_categories",
+        JSON.stringify(categories)
+      );
+    });
+  });
+
+  // Form elementlerinin varsayılan özellikleri
+  const defaultProperties = {
+    text: {
+      label: "Metin Alanı",
+      name: "text_field",
+      placeholder: "Metin giriniz",
+      help_text: "",
+      width: 12,
+      required: false,
+      default_value: "",
+    },
+    textarea: {
+      label: "Uzun Metin",
+      name: "textarea_field",
+      placeholder: "Uzun metin giriniz",
+      help_text: "",
+      width: 12,
+      required: false,
+      default_value: "",
+    },
+    number: {
+      label: "Sayı Alanı",
+      name: "number_field",
+      placeholder: "Sayı giriniz",
+      help_text: "",
+      width: 12,
+      required: false,
+      default_value: "",
+    },
+    email: {
+      label: "E-posta Adresi",
+      name: "email_field",
+      placeholder: "E-posta adresinizi giriniz",
+      help_text: "",
+      width: 12,
+      required: false,
+      default_value: "",
+    },
+    select: {
+      label: "Açılır Liste",
+      name: "select_field",
+      placeholder: "Seçiniz",
+      help_text: "",
+      width: 12,
+      required: false,
+      options: [
+        { value: "option1", label: "Seçenek 1" },
+        { value: "option2", label: "Seçenek 2" },
+        { value: "option3", label: "Seçenek 3" },
+      ],
+    },
+    checkbox: {
+      label: "Onay Kutusu",
+      name: "checkbox_field",
+      help_text: "",
+      width: 12,
+      required: false,
+      default_checked: false,
+    },
+    radio: {
+      label: "Seçim Düğmeleri",
+      name: "radio_field",
+      help_text: "",
+      width: 12,
+      required: false,
+      options: [
+        { value: "option1", label: "Seçenek 1" },
+        { value: "option2", label: "Seçenek 2" },
+        { value: "option3", label: "Seçenek 3" },
+      ],
+    },
+    switch: {
+      label: "Anahtar",
+      name: "switch_field",
+      help_text: "",
+      width: 12,
+      required: false,
+      default_checked: false,
+    },
+    color: {
+      label: "Renk Seçici",
+      name: "color_field",
+      help_text: "",
+      width: 12,
+      required: false,
+      default_value: "#ffffff",
+    },
+    date: {
+      label: "Tarih",
+      name: "date_field",
+      help_text: "",
+      width: 12,
+      required: false,
+      default_value: "",
+    },
+    time: {
+      label: "Saat",
+      name: "time_field",
+      help_text: "",
+      width: 12,
+      required: false,
+      default_value: "",
+    },
+    file: {
+      label: "Dosya Yükleme",
+      name: "file_field",
+      help_text: "",
+      width: 12,
+      required: false,
+      default_value: "",
+    },
+    image: {
+      label: "Resim Yükleme",
+      name: "image_field",
+      help_text: "",
+      width: 12,
+      required: false,
+      default_value: "",
+    },
+    row: {
+      columns: [
+        { index: 1, width: 6 },
+        { index: 2, width: 6 },
+      ],
+    },
+    // Yeni düzen elemanları
+    heading: {
+      label: "Başlık",
+      content: "Başlık Metni",
+      size: "h3",
+      width: 12,
+      align: "left",
+    },
+    paragraph: {
+      label: "Paragraf",
+      content: "Paragraf metni burada yer alacak.",
+      width: 12,
+      align: "left",
+    },
+    divider: {
+      label: "Ayırıcı",
+      style: "solid",
+      width: 12,
+      color: "#e5e7eb",
+    },
+    spacer: {
+      label: "Boşluk",
+      height: "2rem",
+      width: 12,
+    },
+    card: {
+      label: "Kart",
+      title: "Kart Başlığı",
+      content: "Kart içeriği burada yer alacak.",
+      width: 12,
+      has_header: true,
+      has_footer: false,
+    },
+    tab_group: {
+      label: "Sekme Grubu",
+      tabs: [
+        { title: "Sekme 1", content: "İçerik 1" },
+        { title: "Sekme 2", content: "İçerik 2" },
+      ],
+      width: 12,
+    },
+  };
+
+  // Element şablonları
+  const elementTemplates = {
+    text: `
+            <div class="mb-3">
+                <label class="form-label">{label}</label>
+                <input type="text" class="form-control" placeholder="{placeholder}">
+                <div class="form-text text-muted">{help_text}</div>
+            </div>
+        `,
+    textarea: `
+            <div class="mb-3">
+                <label class="form-label">{label}</label>
+                <textarea class="form-control" rows="4" placeholder="{placeholder}"></textarea>
+                <div class="form-text text-muted">{help_text}</div>
+            </div>
+        `,
+    number: `
+            <div class="mb-3">
+                <label class="form-label">{label}</label>
+                <input type="number" class="form-control" placeholder="{placeholder}">
+                <div class="form-text text-muted">{help_text}</div>
+            </div>
+        `,
+    email: `
+            <div class="mb-3">
+                <label class="form-label">{label}</label>
+                <input type="email" class="form-control" placeholder="{placeholder}">
+                <div class="form-text text-muted">{help_text}</div>
+            </div>
+        `,
+    select: `
+            <div class="mb-3">
+                <label class="form-label">{label}</label>
+                <select class="form-select">
+                    <option value="" selected disabled>{placeholder}</option>
+                    <!-- Seçenekler JavaScript tarafından eklenecek -->
+                </select>
+                <div class="form-text text-muted">{help_text}</div>
+            </div>
+        `,
+    checkbox: `
+            <div class="mb-3">
+                <label class="form-check">
+                    <input class="form-check-input" type="checkbox">
+                    <span class="form-check-label">{label}</span>
+                </label>
+                <div class="form-text text-muted">{help_text}</div>
+            </div>
+        `,
+    radio: `
+            <div class="mb-3">
+                <label class="form-label">{label}</label>
+                <div class="radio-options">
+                    <!-- Seçenekler JavaScript tarafından eklenecek -->
+                </div>
+                <div class="form-text text-muted">{help_text}</div>
+            </div>
+        `,
+    switch: `
+            <div class="mb-3">
+                <label class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox">
+                    <span class="form-check-label">{label}</span>
+                </label>
+                <div class="form-text text-muted">{help_text}</div>
+            </div>
+        `,
+    color: `
+            <div class="mb-3">
+                <label class="form-label">{label}</label>
+                <input type="color" class="form-control form-control-color" value="{default_value}">
+                <div class="form-text text-muted">{help_text}</div>
+            </div>
+        `,
+    date: `
+            <div class="mb-3">
+                <label class="form-label">{label}</label>
+                <input type="date" class="form-control">
+                <div class="form-text text-muted">{help_text}</div>
+            </div>
+        `,
+    time: `
+            <div class="mb-3">
+                <label class="form-label">{label}</label>
+                <input type="time" class="form-control">
+                <div class="form-text text-muted">{help_text}</div>
+            </div>
+        `,
+    file: `
+            <div class="mb-3">
+                <label class="form-label">{label}</label>
+                <input type="file" class="form-control">
+                <div class="form-text text-muted">{help_text}</div>
+            </div>
+        `,
+    image: `
+            <div class="mb-3">
+                <label class="form-label">{label}</label>
+                <input type="file" class="form-control" accept="image/*">
+                <div class="form-text text-muted">{help_text}</div>
+            </div>
+        `,
+    row: `
+            <div class="row row-element d-flex">
+                <div class="col-md-6 column-element" data-width="6">
+                    <div class="column-placeholder">
+                        <i class="fas fa-plus me-2"></i> Buraya element sürükleyin
+                    </div>
+                </div>
+                <div class="col-md-6 column-element" data-width="6">
+                    <div class="column-placeholder">
+                        <i class="fas fa-plus me-2"></i> Buraya element sürükleyin
+                    </div>
+                </div>
+            </div>
+        `,
+    // Yeni düzen elemanları için şablonlar
+    heading: `
+            <div class="mb-3">
+                <{size} class="text-{align}">{content}</{size}>
+            </div>
+        `,
+    paragraph: `
+            <div class="mb-3">
+                <p class="text-{align}">{content}</p>
+            </div>
+        `,
+    divider: `
+            <div class="mb-3">
+                <hr style="border-top: 1px {style} {color};">
+            </div>
+        `,
+    spacer: `
+            <div style="height: {height};" class="mb-3"></div>
+        `,
+    card: `
+            <div class="card mb-3">
+                <div class="card-header" style="display: {header_display};">
+                    <h3 class="card-title">{title}</h3>
+                </div>
+                <div class="card-body">
+                    <p>{content}</p>
+                </div>
+                <div class="card-footer" style="display: {footer_display};">
+                    <div class="d-flex justify-content-end">
+                        <button class="btn btn-primary">Tamam</button>
+                    </div>
+                </div>
+            </div>
+        `,
+    tab_group: `
+            <div class="mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        <ul class="nav nav-tabs card-header-tabs">
+                            <!-- Sekme başlıkları JavaScript tarafından eklenecek -->
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content">
+                            <!-- Sekme içerikleri JavaScript tarafından eklenecek -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `,
+  };
+
+  // Özellik paneli şablonları
+  const propertyTemplates = {
+    text: `
+            <h4 class="fw-bold p-3 border-bottom">Metin Elementini Düzenle</h4>
+            <div class="p-3">
+                <div class="mb-3">
+                    <label class="form-label">Etiket</label>
+                    <input type="text" class="form-control" name="label" value="{label}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Alan Adı</label>
+                    <input type="text" class="form-control" name="name" value="{name}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Placeholder</label>
+                    <input type="text" class="form-control" name="placeholder" value="{placeholder}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Yardım Metni</label>
+                    <input type="text" class="form-control" name="help_text" value="{help_text}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Genişlik</label>
+                    <select class="form-select" name="width">
+                        <option value="12" {width12}>Tam Genişlik (12/12)</option>
+                        <option value="6" {width6}>Yarım Genişlik (6/12)</option>
+                        <option value="4" {width4}>Üçte Bir (4/12)</option>
+                        <option value="3" {width3}>Çeyrek (3/12)</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" name="required" {required}>
+                        <span class="form-check-label">Zorunlu Alan</span>
+                    </label>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Varsayılan Değer</label>
+                    <input type="text" class="form-control" name="default_value" value="{default_value}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Ayar ID</label>
+                    <select class="form-select" name="setting_id">
+                        <option value="">Ayar Seçiniz</option>
+                        <!-- Ayarlar AJAX ile yüklenecek -->
+                    </select>
+                </div>
+            </div>
+        `,
+    textarea: `
+            <h4 class="fw-bold p-3 border-bottom">Uzun Metin Elementini Düzenle</h4>
+            <div class="p-3">
+                <div class="mb-3">
+                    <label class="form-label">Etiket</label>
+                    <input type="text" class="form-control" name="label" value="{label}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Alan Adı</label>
+                    <input type="text" class="form-control" name="name" value="{name}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Placeholder</label>
+                    <input type="text" class="form-control" name="placeholder" value="{placeholder}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Yardım Metni</label>
+                    <input type="text" class="form-control" name="help_text" value="{help_text}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Genişlik</label>
+                    <select class="form-select" name="width">
+                        <option value="12" {width12}>Tam Genişlik (12/12)</option>
+                        <option value="6" {width6}>Yarım Genişlik (6/12)</option>
+                        <option value="4" {width4}>Üçte Bir (4/12)</option>
+                        <option value="3" {width3}>Çeyrek (3/12)</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" name="required" {required}>
+                        <span class="form-check-label">Zorunlu Alan</span>
+                    </label>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Ayar ID</label>
+                    <select class="form-select" name="setting_id">
+                        <option value="">Ayar Seçiniz</option>
+                        <!-- Ayarlar AJAX ile yüklenecek -->
+                    </select>
+                </div>
+            </div>
+        `,
+    select: `
+            <h4 class="fw-bold p-3 border-bottom">Açılır Liste Elementini Düzenle</h4>
+            <div class="p-3">
+                <div class="mb-3">
+                    <label class="form-label">Etiket</label>
+                    <input type="text" class="form-control" name="label" value="{label}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Alan Adı</label>
+                    <input type="text" class="form-control" name="name" value="{name}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Placeholder</label>
+                    <input type="text" class="form-control" name="placeholder" value="{placeholder}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Genişlik</label>
+                    <select class="form-select" name="width">
+                        <option value="12" {width12}>Tam Genişlik (12/12)</option>
+                        <option value="6" {width6}>Yarım Genişlik (6/12)</option>
+                        <option value="4" {width4}>Üçte Bir (4/12)</option>
+                        <option value="3" {width3}>Çeyrek (3/12)</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" name="required" {required}>
+                        <span class="form-check-label">Zorunlu Alan</span>
+                    </label>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Seçenekler</label>
+                    <div id="options-container">
+                        <!-- Seçenekler JavaScript ile doldurulacak -->
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-primary mt-2" id="add-option">
+                        <i class="fas fa-plus me-1"></i> Seçenek Ekle
+                    </button>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Ayar ID</label>
+                    <select class="form-select" name="setting_id">
+                        <option value="">Ayar Seçiniz</option>
+                        <!-- Ayarlar AJAX ile yüklenecek -->
+                    </select>
+                </div>
+            </div>
+        `,
+    number: `
+            <h4 class="fw-bold p-3 border-bottom">Sayı Elementini Düzenle</h4>
+            <div class="p-3">
+                <div class="mb-3">
+                    <label class="form-label">Etiket</label>
+                    <input type="text" class="form-control" name="label" value="{label}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Alan Adı</label>
+                    <input type="text" class="form-control" name="name" value="{name}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Placeholder</label>
+                    <input type="text" class="form-control" name="placeholder" value="{placeholder}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Yardım Metni</label>
+                    <input type="text" class="form-control" name="help_text" value="{help_text}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Genişlik</label>
+                    <select class="form-select" name="width">
+                        <option value="12" {width12}>Tam Genişlik (12/12)</option>
+                        <option value="6" {width6}>Yarım Genişlik (6/12)</option>
+                        <option value="4" {width4}>Üçte Bir (4/12)</option>
+                        <option value="3" {width3}>Çeyrek (3/12)</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" name="required" {required}>
+                        <span class="form-check-label">Zorunlu Alan</span>
+                    </label>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Ayar ID</label>
+                    <select class="form-select" name="setting_id">
+                        <option value="">Ayar Seçiniz</option>
+                        <!-- Ayarlar AJAX ile yüklenecek -->
+                    </select>
+                </div>
+            </div>
+        `,
+    email: `
+            <h4 class="fw-bold p-3 border-bottom">E-posta Elementini Düzenle</h4>
+            <div class="p-3">
+                <div class="mb-3">
+                    <label class="form-label">Etiket</label>
+                    <input type="text" class="form-control" name="label" value="{label}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Alan Adı</label>
+                    <input type="text" class="form-control" name="name" value="{name}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Placeholder</label>
+                    <input type="text" class="form-control" name="placeholder" value="{placeholder}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Yardım Metni</label>
+                    <input type="text" class="form-control" name="help_text" value="{help_text}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Genişlik</label>
+                    <select class="form-select" name="width">
+                        <option value="12" {width12}>Tam Genişlik (12/12)</option>
+                        <option value="6" {width6}>Yarım Genişlik (6/12)</option>
+                        <option value="4" {width4}>Üçte Bir (4/12)</option>
+                        <option value="3" {width3}>Çeyrek (3/12)</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" name="required" {required}>
+                        <span class="form-check-label">Zorunlu Alan</span>
+                    </label>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Ayar ID</label>
+                    <select class="form-select" name="setting_id">
+                        <option value="">Ayar Seçiniz</option>
+                        <!-- Ayarlar AJAX ile yüklenecek -->
+                    </select>
+                </div>
+            </div>
+        `,
+    checkbox: `
+            <h4 class="fw-bold p-3 border-bottom">Onay Kutusu Elementini Düzenle</h4>
+            <div class="p-3">
+                <div class="mb-3">
+                    <label class="form-label">Etiket</label>
+                    <input type="text" class="form-control" name="label" value="{label}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Alan Adı</label>
+                    <input type="text" class="form-control" name="name" value="{name}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Yardım Metni</label>
+                    <input type="text" class="form-control" name="help_text" value="{help_text}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Genişlik</label>
+                    <select class="form-select" name="width">
+                        <option value="12" {width12}>Tam Genişlik (12/12)</option>
+                        <option value="6" {width6}>Yarım Genişlik (6/12)</option>
+                        <option value="4" {width4}>Üçte Bir (4/12)</option>
+                        <option value="3" {width3}>Çeyrek (3/12)</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" name="required" {required}>
+                        <span class="form-check-label">Zorunlu Alan</span>
+                    </label>
+                </div>
+                <div class="mb-3">
+                    <label class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" name="default_checked" {default_checked}>
+                        <span class="form-check-label">Varsayılan İşaretli</span>
+                    </label>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Ayar ID</label>
+                    <select class="form-select" name="setting_id">
+                        <option value="">Ayar Seçiniz</option>
+                        <!-- Ayarlar AJAX ile yüklenecek -->
+                    </select>
+                </div>
+            </div>
+        `,
+    radio: `
+            <h4 class="fw-bold p-3 border-bottom">Seçim Düğmesi Elementini Düzenle</h4>
+            <div class="p-3">
+                <div class="mb-3">
+                    <label class="form-label">Etiket</label>
+                    <input type="text" class="form-control" name="label" value="{label}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Alan Adı</label>
+                    <input type="text" class="form-control" name="name" value="{name}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Yardım Metni</label>
+                    <input type="text" class="form-control" name="help_text" value="{help_text}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Genişlik</label>
+                    <select class="form-select" name="width">
+                        <option value="12" {width12}>Tam Genişlik (12/12)</option>
+                        <option value="6" {width6}>Yarım Genişlik (6/12)</option>
+                        <option value="4" {width4}>Üçte Bir (4/12)</option>
+                        <option value="3" {width3}>Çeyrek (3/12)</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" name="required" {required}>
+                        <span class="form-check-label">Zorunlu Alan</span>
+                    </label>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Seçenekler</label>
+                    <div id="options-container">
+                        <!-- Seçenekler JavaScript ile doldurulacak -->
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-primary mt-2" id="add-option">
+                        <i class="fas fa-plus me-1"></i> Seçenek Ekle
+                    </button>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Ayar ID</label>
+                    <select class="form-select" name="setting_id">
+                        <option value="">Ayar Seçiniz</option>
+                        <!-- Ayarlar AJAX ile yüklenecek -->
+                    </select>
+                </div>
+            </div>
+        `,
+    switch: `
+            <h4 class="fw-bold p-3 border-bottom">Anahtar Elementini Düzenle</h4>
+            <div class="p-3">
+                <div class="mb-3">
+                    <label class="form-label">Etiket</label>
+                    <input type="text" class="form-control" name="label" value="{label}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Alan Adı</label>
+                    <input type="text" class="form-control" name="name" value="{name}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Yardım Metni</label>
+                    <input type="text" class="form-control" name="help_text" value="{help_text}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Genişlik</label>
+                    <select class="form-select" name="width">
+                        <option value="12" {width12}>Tam Genişlik (12/12)</option>
+                        <option value="6" {width6}>Yarım Genişlik (6/12)</option>
+                        <option value="4" {width4}>Üçte Bir (4/12)</option>
+                        <option value="3" {width3}>Çeyrek (3/12)</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" name="required" {required}>
+                        <span class="form-check-label">Zorunlu Alan</span>
+                    </label>
+                </div>
+                <div class="mb-3">
+                    <label class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" name="default_checked" {default_checked}>
+                        <span class="form-check-label">Varsayılan İşaretli</span>
+                    </label>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Ayar ID</label>
+                    <select class="form-select" name="setting_id">
+                        <option value="">Ayar Seçiniz</option>
+                        <!-- Ayarlar AJAX ile yüklenecek -->
+                    </select>
+                </div>
+            </div>
+        `,
+    color: `
+            <h4 class="fw-bold p-3 border-bottom">Renk Seçici Elementini Düzenle</h4>
+            <div class="p-3">
+                <div class="mb-3">
+                    <label class="form-label">Etiket</label>
+                    <input type="text" class="form-control" name="label" value="{label}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Alan Adı</label>
+                    <input type="text" class="form-control" name="name" value="{name}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Yardım Metni</label>
+                    <input type="text" class="form-control" name="help_text" value="{help_text}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Genişlik</label>
+                    <select class="form-select" name="width">
+                        <option value="12" {width12}>Tam Genişlik (12/12)</option>
+                        <option value="6" {width6}>Yarım Genişlik (6/12)</option>
+                        <option value="4" {width4}>Üçte Bir (4/12)</option>
+                        <option value="3" {width3}>Çeyrek (3/12)</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Varsayılan Değer</label>
+                    <input type="color" class="form-control form-control-color" name="default_value" value="{default_value}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Ayar ID</label>
+                    <select class="form-select" name="setting_id">
+                        <option value="">Ayar Seçiniz</option>
+                        <!-- Ayarlar AJAX ile yüklenecek -->
+                    </select>
+                </div>
+            </div>
+        `,
+    date: `
+            <h4 class="fw-bold p-3 border-bottom">Tarih Elementini Düzenle</h4>
+            <div class="p-3">
+                <div class="mb-3">
+                    <label class="form-label">Etiket</label>
+                    <input type="text" class="form-control" name="label" value="{label}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Alan Adı</label>
+                    <input type="text" class="form-control" name="name" value="{name}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Yardım Metni</label>
+                    <input type="text" class="form-control" name="help_text" value="{help_text}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Genişlik</label>
+                    <select class="form-select" name="width">
+                        <option value="12" {width12}>Tam Genişlik (12/12)</option>
+                        <option value="6" {width6}>Yarım Genişlik (6/12)</option>
+                        <option value="4" {width4}>Üçte Bir (4/12)</option>
+                        <option value="3" {width3}>Çeyrek (3/12)</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" name="required" {required}>
+                        <span class="form-check-label">Zorunlu Alan</span>
+                    </label>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Ayar ID</label>
+                    <select class="form-select" name="setting_id">
+                        <option value="">Ayar Seçiniz</option>
+                        <!-- Ayarlar AJAX ile yüklenecek -->
+                    </select>
+                </div>
+            </div>
+        `,
+    time: `
+            <h4 class="fw-bold p-3 border-bottom">Saat Elementini Düzenle</h4>
+            <div class="p-3">
+                <div class="mb-3">
+                    <label class="form-label">Etiket</label>
+                    <input type="text" class="form-control" name="label" value="{label}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Alan Adı</label>
+                    <input type="text" class="form-control" name="name" value="{name}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Yardım Metni</label>
+                    <input type="text" class="form-control" name="help_text" value="{help_text}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Genişlik</label>
+                    <select class="form-select" name="width">
+                        <option value="12" {width12}>Tam Genişlik (12/12)</option>
+                        <option value="6" {width6}>Yarım Genişlik (6/12)</option>
+                        <option value="4" {width4}>Üçte Bir (4/12)</option>
+                        <option value="3" {width3}>Çeyrek (3/12)</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" name="required" {required}>
+                        <span class="form-check-label">Zorunlu Alan</span>
+                    </label>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Ayar ID</label>
+                    <select class="form-select" name="setting_id">
+                        <option value="">Ayar Seçiniz</option>
+                        <!-- Ayarlar AJAX ile yüklenecek -->
+                    </select>
+                </div>
+            </div>
+        `,
+    file: `
+            <h4 class="fw-bold p-3 border-bottom">Dosya Yükleme Elementini Düzenle</h4>
+            <div class="p-3">
+                <div class="mb-3">
+                    <label class="form-label">Etiket</label>
+                    <input type="text" class="form-control" name="label" value="{label}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Alan Adı</label>
+                    <input type="text" class="form-control" name="name" value="{name}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Yardım Metni</label>
+                    <input type="text" class="form-control" name="help_text" value="{help_text}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Genişlik</label>
+                    <select class="form-select" name="width">
+                        <option value="12" {width12}>Tam Genişlik (12/12)</option>
+                        <option value="6" {width6}>Yarım Genişlik (6/12)</option>
+                        <option value="4" {width4}>Üçte Bir (4/12)</option>
+                        <option value="3" {width3}>Çeyrek (3/12)</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" name="required" {required}>
+                        <span class="form-check-label">Zorunlu Alan</span>
+                    </label>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Ayar ID</label>
+                    <select class="form-select" name="setting_id">
+                        <option value="">Ayar Seçiniz</option>
+                        <!-- Ayarlar AJAX ile yüklenecek -->
+                    </select>
+                </div>
+            </div>
+        `,
+    image: `
+            <h4 class="fw-bold p-3 border-bottom">Resim Yükleme Elementini Düzenle</h4>
+            <div class="p-3">
+                <div class="mb-3">
+                    <label class="form-label">Etiket</label>
+                    <input type="text" class="form-control" name="label" value="{label}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Alan Adı</label>
+                    <input type="text" class="form-control" name="name" value="{name}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Yardım Metni</label>
+                    <input type="text" class="form-control" name="help_text" value="{help_text}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Genişlik</label>
+                    <select class="form-select" name="width">
+                        <option value="12" {width12}>Tam Genişlik (12/12)</option>
+                        <option value="6" {width6}>Yarım Genişlik (6/12)</option>
+                        <option value="4" {width4}>Üçte Bir (4/12)</option>
+                        <option value="3" {width3}>Çeyrek (3/12)</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" name="required" {required}>
+                        <span class="form-check-label">Zorunlu Alan</span>
+                    </label>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Ayar ID</label>
+                    <select class="form-select" name="setting_id">
+                        <option value="">Ayar Seçiniz</option>
+                        <!-- Ayarlar AJAX ile yüklenecek -->
+                    </select>
+                </div>
+            </div>
+        `,
+    row: `
+            <h4 class="fw-bold p-3 border-bottom">Satır Elementini Düzenle</h4>
+            <div class="p-3">
+                <div class="mb-3">
+                    <label class="form-label">Sütun Sayısı</label>
+                    <select class="form-select" name="column-count">
+                        <option value="2" {columns2}>2 Sütun</option>
+                        <option value="3" {columns3}>3 Sütun</option>
+                        <option value="4" {columns4}>4 Sütun</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Sütun Genişlikleri</label>
+                    <div id="column-widths-container">
+                        <!-- Sütun genişlikleri JavaScript ile doldurulacak -->
+                    </div>
+                </div>
+            </div>
+        `,
+    // Yeni düzen elemanları için özellik paneli şablonları
+    heading: `
+            <h4 class="fw-bold p-3 border-bottom">Başlık Elementini Düzenle</h4>
+            <div class="p-3">
+                <div class="mb-3">
+                    <label class="form-label">İçerik</label>
+                    <input type="text" class="form-control" name="content" value="{content}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Boyut</label>
+                    <select class="form-select" name="size">
+                        <option value="h1" {sizeh1}>Başlık 1 (H1)</option>
+                        <option value="h2" {sizeh2}>Başlık 2 (H2)</option>
+                        <option value="h3" {sizeh3}>Başlık 3 (H3)</option>
+                        <option value="h4" {sizeh4}>Başlık 4 (H4)</option>
+                        <option value="h5" {sizeh5}>Başlık 5 (H5)</option>
+                        <option value="h6" {sizeh6}>Başlık 6 (H6)</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Hizalama</label>
+                    <select class="form-select" name="align">
+                        <option value="left" {alignleft}>Sola</option>
+                        <option value="center" {aligncenter}>Ortaya</option>
+                        <option value="right" {alignright}>Sağa</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Genişlik</label>
+                    <select class="form-select" name="width">
+                        <option value="12" {width12}>Tam Genişlik (12/12)</option>
+                        <option value="6" {width6}>Yarım Genişlik (6/12)</option>
+                        <option value="4" {width4}>Üçte Bir (4/12)</option>
+                        <option value="3" {width3}>Çeyrek (3/12)</option>
+                    </select>
+                </div>
+            </div>
+        `,
+    paragraph: `
+            <h4 class="fw-bold p-3 border-bottom">Paragraf Elementini Düzenle</h4>
+            <div class="p-3">
+                <div class="mb-3">
+                    <label class="form-label">İçerik</label>
+                    <textarea class="form-control" name="content" rows="4">{content}</textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Hizalama</label>
+                    <select class="form-select" name="align">
+                        <option value="left" {alignleft}>Sola</option>
+                        <option value="center" {aligncenter}>Ortaya</option>
+                        <option value="right" {alignright}>Sağa</option>
+                        <option value="justify" {alignjustify}>İki Yana</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Genişlik</label>
+                    <select class="form-select" name="width">
+                        <option value="12" {width12}>Tam Genişlik (12/12)</option>
+                        <option value="6" {width6}>Yarım Genişlik (6/12)</option>
+                        <option value="4" {width4}>Üçte Bir (4/12)</option>
+                        <option value="3" {width3}>Çeyrek (3/12)</option>
+                    </select>
+                </div>
+            </div>
+        `,
+    divider: `
+            <h4 class="fw-bold p-3 border-bottom">Ayırıcı Elementini Düzenle</h4>
+            <div class="p-3">
+                <div class="mb-3">
+                    <label class="form-label">Stil</label>
+                    <select class="form-select" name="style">
+                        <option value="solid" {stylesolid}>Düz Çizgi</option>
+                        <option value="dashed" {styledashed}>Kesik Çizgi</option>
+                        <option value="dotted" {styledotted}>Noktalı</option>
+                        <option value="double" {styledouble}>Çift Çizgi</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Renk</label>
+                    <input type="color" class="form-control form-control-color" name="color" value="{color}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Genişlik</label>
+                    <select class="form-select" name="width">
+                        <option value="12" {width12}>Tam Genişlik (12/12)</option>
+                        <option value="6" {width6}>Yarım Genişlik (6/12)</option>
+                        <option value="4" {width4}>Üçte Bir (4/12)</option>
+                        <option value="3" {width3}>Çeyrek (3/12)</option>
+                    </select>
+                </div>
+            </div>
+        `,
+    spacer: `
+            <h4 class="fw-bold p-3 border-bottom">Boşluk Elementini Düzenle</h4>
+            <div class="p-3">
+                <div class="mb-3">
+                    <label class="form-label">Yükseklik</label>
+                    <select class="form-select" name="height">
+                        <option value="0.5rem" {height0_5}>Çok Küçük (0.5rem)</option>
+                        <option value="1rem" {height1}>Küçük (1rem)</option>
+                        <option value="2rem" {height2}>Orta (2rem)</option>
+                        <option value="3rem" {height3}>Büyük (3rem)</option>
+                        <option value="4rem" {height4}>Çok Büyük (4rem)</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Genişlik</label>
+                    <select class="form-select" name="width">
+                        <option value="12" {width12}>Tam Genişlik (12/12)</option>
+                        <option value="6" {width6}>Yarım Genişlik (6/12)</option>
+                        <option value="4" {width4}>Üçte Bir (4/12)</option>
+                        <option value="3" {width3}>Çeyrek (3/12)</option>
+                    </select>
+                </div>
+            </div>
+        `,
+    card: `
+            <h4 class="fw-bold p-3 border-bottom">Kart Elementini Düzenle</h4>
+            <div class="p-3">
+                <div class="mb-3">
+                    <label class="form-label">Başlık</label>
+                    <input type="text" class="form-control" name="title" value="{title}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">İçerik</label>
+                    <textarea class="form-control" name="content" rows="4">{content}</textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" name="has_header" {has_header}>
+                        <span class="form-check-label">Başlık Göster</span>
+                    </label>
+                </div>
+                <div class="mb-3">
+                    <label class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" name="has_footer" {has_footer}>
+                        <span class="form-check-label">Alt Bilgi Göster</span>
+                    </label>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Genişlik</label>
+                    <select class="form-select" name="width">
+                        <option value="12" {width12}>Tam Genişlik (12/12)</option>
+                        <option value="6" {width6}>Yarım Genişlik (6/12)</option>
+                        <option value="4" {width4}>Üçte Bir (4/12)</option>
+                        <option value="3" {width3}>Çeyrek (3/12)</option>
+                    </select>
+                </div>
+            </div>
+        `,
+    tab_group: `
+            <h4 class="fw-bold p-3 border-bottom">Sekme Grubu Elementini Düzenle</h4>
+            <div class="p-3">
+                <div class="mb-3">
+                    <label class="form-label">Sekmeler</label>
+                    <div id="tabs-container">
+                        <!-- Sekmeler JavaScript ile doldurulacak -->
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-primary mt-2" id="add-tab">
+                        <i class="fas fa-plus me-1"></i> Sekme Ekle
+                    </button>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Genişlik</label>
+                    <select class="form-select" name="width">
+                        <option value="12" {width12}>Tam Genişlik (12/12)</option>
+                        <option value="6" {width6}>Yarım Genişlik (6/12)</option>
+                        <option value="4" {width4}>Üçte Bir (4/12)</option>
+                        <option value="3" {width3}>Çeyrek (3/12)</option>
+                    </select>
+                </div>
+            </div>
+        `,
+  };
+
+  // Şablon işleme (Mustache benzeri basit bir işleyici)
+  function renderTemplate(template, data) {
+    let result = template;
+
+    // Değişken yerleştirme {variable}
+    Object.keys(data).forEach((key) => {
+      const value = data[key];
+      if (typeof value === "string" || typeof value === "number") {
+        const regex = new RegExp("{" + key + "}", "g");
+        result = result.replace(regex, value);
       }
-  
-      // Kalan yer tutucuları temizle
-      result = result.replace(/{[^{}]+}/g, "");
-  
-      return result;
+    });
+
+    // Koşullu özellikler {selected}, {checked}, vb.
+    Object.keys(data).forEach((key) => {
+      const value = data[key];
+      if (typeof value === "boolean" && value === true) {
+        const regex = new RegExp("{" + key + "}", "g");
+        result = result.replace(regex, "checked");
+      } else if (typeof value === "boolean") {
+        const regex = new RegExp("{" + key + "}", "g");
+        result = result.replace(regex, "");
+      }
+    });
+
+    // Width değerleri için özel koşullar
+    if (data.width) {
+      for (let i = 1; i <= 12; i++) {
+        const regex = new RegExp("{width" + i + "}", "g");
+        result = result.replace(regex, data.width == i ? "selected" : "");
+      }
     }
-  
-    // Form elementlerini oluştur
-    function createFormElement(type, properties) {
-      if (!type || typeof type !== "string") {
-        console.error("Geçersiz element tipi:", type);
-        return null;
+
+    // Heading size için özel koşullar
+    if (data.size) {
+      const sizes = ["h1", "h2", "h3", "h4", "h5", "h6"];
+      sizes.forEach((size) => {
+        const regex = new RegExp("{size" + size + "}", "g");
+        result = result.replace(regex, data.size === size ? "selected" : "");
+      });
+    }
+    
+    // Hizalama için özel koşullar
+    if (data.align) {
+      const aligns = ["left", "center", "right", "justify"];
+      aligns.forEach((align) => {
+        const regex = new RegExp("{align" + align + "}", "g");
+        result = result.replace(regex, data.align === align ? "selected" : "");
+      });
+    }
+    
+    // Stil için özel koşullar
+    if (data.style) {
+      const styles = ["solid", "dashed", "dotted", "double"];
+      styles.forEach((style) => {
+        const regex = new RegExp("{style" + style + "}", "g");
+        result = result.replace(regex, data.style === style ? "selected" : "");
+      });
+    }
+    
+    // Yükseklik için özel koşullar
+    if (data.height) {
+      const heights = { "0.5rem": "0_5", "1rem": "1", "2rem": "2", "3rem": "3", "4rem": "4" };
+      Object.keys(heights).forEach((height) => {
+        const regex = new RegExp("{height" + heights[height] + "}", "g");
+        result = result.replace(regex, data.height === height ? "selected" : "");
+      });
+    }
+
+    // Card display özellikleri için koşullar
+    if (data.has_header !== undefined) {
+      result = result.replace(/{header_display}/g, data.has_header ? 'block' : 'none');
+    }
+    
+    if (data.has_footer !== undefined) {
+      result = result.replace(/{footer_display}/g, data.has_footer ? 'block' : 'none');
+    }
+
+    // Row sütun sayısı için özel koşullar
+    if (data.columns) {
+      for (let i = 2; i <= 4; i++) {
+        const regex = new RegExp("{columns" + i + "}", "g");
+        result = result.replace(
+          regex,
+          data.columns.length == i ? "selected" : ""
+        );
       }
-  
-      if (!properties) {
-        properties = defaultProperties[type]
-          ? JSON.parse(JSON.stringify(defaultProperties[type]))
-          : {};
-      }
-  
-      const elementId = "element-" + ++elementCounter;
-      const formElement = document.createElement("div");
-      formElement.className = "form-element";
-      formElement.dataset.id = elementId;
-      formElement.dataset.type = type;
-  
-      // Element header'ı oluştur
-      const header = document.createElement("div");
-      header.className = "element-header";
-  
-      const elementTitle =
-        properties.label || type.charAt(0).toUpperCase() + type.slice(1);
-  
-      header.innerHTML = `
-              <div class="element-handle">
-                  <i class="fas fa-grip-lines"></i>
-              </div>
-              <div class="element-title">
-                  ${elementTitle}
-              </div>
-              <div class="element-actions">
-                  <button type="button" class="btn btn-sm" data-action="duplicate">
-                      <i class="fas fa-clone"></i>
-                  </button>
-                  <button type="button" class="btn btn-sm text-danger" data-action="remove">
-                      <i class="fas fa-trash"></i>
-                  </button>
-              </div>
-          `;
-  
-      // Element içeriğini oluştur
-      const content = document.createElement("div");
-      content.className = "element-content";
-  
-      // Element şablonunu al ve işle
-      const template = elementTemplates[type];
-      if (template) {
-        content.innerHTML = renderTemplate(template, properties);
-  
-        // Select ve radio için seçenekleri ekle
-        if (type === "select" && properties.options) {
-          const selectElement = content.querySelector("select");
-          if (selectElement) {
-            properties.options.forEach((option) => {
-              const optionElement = document.createElement("option");
-              optionElement.value = option.value;
-              optionElement.textContent = option.label;
-              selectElement.appendChild(optionElement);
-            });
-          }
-        } else if (type === "radio" && properties.options) {
-          const radioContainer = content.querySelector(".radio-options");
-          if (radioContainer) {
-            properties.options.forEach((option) => {
-              const radioElement = document.createElement("div");
-              radioElement.className = "form-check";
-              radioElement.innerHTML = `
-                              <input class="form-check-input" type="radio" name="${properties.name}">
-                              <span class="form-check-label">${option.label}</span>
-                          `;
-              radioContainer.appendChild(radioElement);
-            });
-          }
+    }
+
+    // Kalan yer tutucuları temizle
+    result = result.replace(/{[^{}]+}/g, "");
+
+    return result;
+  }
+
+  // Form elementlerini oluştur
+  function createFormElement(type, properties) {
+    if (!type || typeof type !== "string") {
+      console.error("Geçersiz element tipi:", type);
+      return null;
+    }
+
+    if (!properties) {
+      properties = defaultProperties[type]
+        ? JSON.parse(JSON.stringify(defaultProperties[type]))
+        : {};
+    }
+
+    const elementId = "element-" + ++elementCounter;
+    const formElement = document.createElement("div");
+    formElement.className = "form-element";
+    formElement.dataset.id = elementId;
+    formElement.dataset.type = type;
+
+    // Element header'ı oluştur
+    const header = document.createElement("div");
+    header.className = "element-header";
+
+    // Element başlığını belirle
+    let elementTitle = '';
+    
+    if (type === 'row') {
+      elementTitle = 'Satır Düzeni';
+    } else if (type === 'heading') {
+      elementTitle = 'Başlık: ' + (properties.content || '');
+    } else if (type === 'paragraph') {
+      elementTitle = 'Paragraf';
+    } else if (type === 'divider') {
+      elementTitle = 'Ayırıcı';
+    } else if (type === 'spacer') {
+      elementTitle = 'Boşluk';
+    } else if (type === 'card') {
+      elementTitle = 'Kart: ' + (properties.title || '');
+    } else if (type === 'tab_group') {
+      elementTitle = 'Sekme Grubu';
+    } else {
+      elementTitle = properties.label || type.charAt(0).toUpperCase() + type.slice(1);
+    }
+
+    header.innerHTML = `
+            <div class="element-handle">
+                <i class="fas fa-grip-lines"></i>
+            </div>
+            <div class="element-title">
+                ${elementTitle}
+            </div>
+            <div class="element-actions">
+                <button type="button" class="btn btn-sm" data-action="duplicate">
+                    <i class="fas fa-clone"></i>
+                </button>
+                <button type="button" class="btn btn-sm text-danger" data-action="remove">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        `;
+
+    // Element içeriğini oluştur
+    const content = document.createElement("div");
+    content.className = "element-content";
+
+    // Element şablonunu al ve işle
+    const template = elementTemplates[type];
+    if (template) {
+      content.innerHTML = renderTemplate(template, properties);
+
+      // Select ve radio için seçenekleri ekle
+      if (type === "select" && properties.options) {
+        const selectElement = content.querySelector("select");
+        if (selectElement) {
+          properties.options.forEach((option) => {
+            const optionElement = document.createElement("option");
+            optionElement.value = option.value;
+            optionElement.textContent = option.label;
+            selectElement.appendChild(optionElement);
+          });
         }
-      } else {
-        content.innerHTML = `<div class="alert alert-warning">Şablon bulunamadı: ${type}</div>`;
+      } else if (type === "radio" && properties.options) {
+        const radioContainer = content.querySelector(".radio-options");
+        if (radioContainer) {
+          properties.options.forEach((option) => {
+            const radioElement = document.createElement("div");
+            radioElement.className = "form-check";
+            radioElement.innerHTML = `
+                            <input class="form-check-input" type="radio" name="${properties.name}">
+                            <span class="form-check-label">${option.label}</span>
+                        `;
+            radioContainer.appendChild(radioElement);
+          });
+        }
+      } else if (type === "tab_group" && properties.tabs) {
+        // Tab Group için sekmeler ekle
+        const tabList = content.querySelector(".nav-tabs");
+        const tabContent = content.querySelector(".tab-content");
+        
+        if (tabList && tabContent) {
+          properties.tabs.forEach((tab, index) => {
+            // Tab başlığı ekleme
+            const tabItem = document.createElement("li");
+            tabItem.className = "nav-item";
+            tabItem.innerHTML = `
+              <a href="#tab-${elementId}-${index}" class="nav-link ${index === 0 ? 'active' : ''}" data-bs-toggle="tab">
+                ${tab.title}
+              </a>
+            `;
+            tabList.appendChild(tabItem);
+            
+            // Tab içeriği ekleme
+            const tabPane = document.createElement("div");
+            tabPane.className = `tab-pane ${index === 0 ? 'active' : ''}`;
+            tabPane.id = `tab-${elementId}-${index}`;
+            tabPane.innerHTML = `<p>${tab.content}</p>`;
+            tabContent.appendChild(tabPane);
+          });
+        }
       }
-  
-      // Varsayılan genişlik ayarını ekle
-      if (type !== "row") {
-        formElement.dataset.width = properties.width || 12;
-        formElement.style.width = `${(properties.width * 100) / 12}%`;
-      }
-  
-      // Eleman özelliklerini sakla
-      formElement.properties = Object.assign({}, properties);
-  
-      // Elementi birleştir
-      formElement.appendChild(header);
-      formElement.appendChild(content);
-  
-      // Event listener'ları ekle
-      formElement.addEventListener("click", function (e) {
+    } else {
+      content.innerHTML = `<div class="alert alert-warning">Şablon bulunamadı: ${type}</div>`;
+    }
+
+    // Varsayılan genişlik ayarını ekle
+    if (type !== "row") {
+      formElement.dataset.width = properties.width || 12;
+      formElement.style.width = `${(properties.width * 100) / 12}%`;
+    }
+
+    // Eleman özelliklerini sakla
+    formElement.properties = Object.assign({}, properties);
+
+    // Elementi birleştir
+    formElement.appendChild(header);
+    formElement.appendChild(content);
+
+    // Event listener'ları ekle
+    formElement.addEventListener("click", function (e) {
+      e.stopPropagation();
+      selectElement(formElement);
+    });
+
+    // Element işlemlerini ekle (silme, kopyalama)
+    const buttons = formElement.querySelectorAll("[data-action]");
+    buttons.forEach((button) => {
+      button.addEventListener("click", function (e) {
         e.stopPropagation();
-        selectElement(formElement);
-      });
-  
-      // Element işlemlerini ekle (silme, kopyalama)
-      const buttons = formElement.querySelectorAll("[data-action]");
-      buttons.forEach((button) => {
-        button.addEventListener("click", function (e) {
-          e.stopPropagation();
-          const action = this.dataset.action;
-  
-          if (action === "remove") {
-            formElement.remove();
-            if (selectedElement === formElement) {
-              clearSelectedElement();
-            }
-            checkEmptyCanvas();
-          } else if (action === "duplicate") {
-            // Kopya oluştururken özellikleri derin kopyalama
-            const elementProps = formElement.properties
-              ? JSON.parse(JSON.stringify(formElement.properties))
-              : JSON.parse(JSON.stringify(defaultProperties[type] || {}));
-            const duplicate = createFormElement(type, elementProps);
-  
-            if (duplicate) {
-              formElement.parentNode.insertBefore(
-                duplicate,
-                formElement.nextSibling
-              );
-            }
+        const action = this.dataset.action;
+
+        if (action === "remove") {
+          formElement.remove();
+          if (selectedElement === formElement) {
+            clearSelectedElement();
           }
-        });
+          checkEmptyCanvas();
+        } else if (action === "duplicate") {
+          // Kopya oluştururken özellikleri derin kopyalama
+          const elementProps = formElement.properties
+            ? JSON.parse(JSON.stringify(formElement.properties))
+            : JSON.parse(JSON.stringify(defaultProperties[type] || {}));
+          const duplicate = createFormElement(type, elementProps);
+
+          if (duplicate) {
+            formElement.parentNode.insertBefore(
+              duplicate,
+              formElement.nextSibling
+            );
+          }
+        }
       });
-  
-      return formElement;
+    });
+
+    return formElement;
+  }
+
+  // Element seçimi
+  function selectElement(element) {
+    // Önceki seçimi temizle
+    if (selectedElement) {
+      selectedElement.classList.remove("selected");
     }
-  
-    // Element seçimi
-    function selectElement(element) {
-      // Önceki seçimi temizle
-      if (selectedElement) {
-        selectedElement.classList.remove("selected");
-      }
-  
-      // Yeni elementi seç
-      selectedElement = element;
-      selectedElement.classList.add("selected");
-  
-      // Özellik panelini güncelle
-      updatePropertiesPanel();
-    }
-  
-    // Seçili elementi temizle
-    function clearSelectedElement() {
-      if (selectedElement) {
-        selectedElement.classList.remove("selected");
-      }
-      selectedElement = null;
-  
-      // Özellik panelini sıfırla
-      propertiesPanel.innerHTML = `
-              <div class="text-center p-4">
-                  <div class="h1 text-muted mb-3">
-                      <i class="fas fa-mouse-pointer"></i>
-                  </div>
-                  <h3 class="text-muted">Element Seçilmedi</h3>
-                  <p class="text-muted">Özelliklerini düzenlemek için bir form elementi seçin.</p>
-              </div>
-          `;
-    }
-  
+
+    // Yeni elementi seç
+    selectedElement = element;
+    selectedElement.classList.add("selected");
+
     // Özellik panelini güncelle
-    function updatePropertiesPanel() {
-      if (!selectedElement) return;
-  
-      const type = selectedElement.dataset.type;
-  
-      // Özellik şablonunu al
-      const propTemplate = propertyTemplates[type];
-  
-      if (!propTemplate) {
-        propertiesPanel.innerHTML = `
-                  <div class="alert alert-warning">
-                      Bu element tipi için özellik paneli henüz eklenmemiş.
-                  </div>
-              `;
-        return;
-      }
-  
-      // Element özelliklerini al
-      let properties = selectedElement.properties;
-  
-      // Özellikler tanımlı değilse, varsayılan özellikleri kullan
-      if (!properties) {
-        properties = defaultProperties[type]
-          ? JSON.parse(JSON.stringify(defaultProperties[type]))
-          : {};
-        selectedElement.properties = properties;
-      }
-  
-      // Genişlik değerlerini kontrol et
-      let templateData = Object.assign({}, properties);
-      templateData["width" + properties.width] = true;
-  
-      // Row için sütun sayısını kontrol et
-      if (type === "row" && properties.columns) {
-        templateData["columns" + properties.columns.length] = true;
-      }
-  
-      // Şablonu işle
-      propertiesPanel.innerHTML = renderTemplate(propTemplate, templateData);
-  
-      // Özellik değişikliklerini dinle
-      const inputs = propertiesPanel.querySelectorAll("input, select");
-      inputs.forEach((input) => {
-        input.addEventListener("change", function () {
-          updateElementProperty(input);
+    updatePropertiesPanel();
+  }
+
+  // Seçili elementi temizle
+  function clearSelectedElement() {
+    if (selectedElement) {
+      selectedElement.classList.remove("selected");
+    }
+    selectedElement = null;
+
+    // Özellik panelini sıfırla
+    propertiesPanel.innerHTML = `
+            <div class="text-center p-4">
+                <div class="h1 text-muted mb-3">
+                    <i class="fas fa-mouse-pointer"></i>
+                </div>
+                <h3 class="text-muted">Element Seçilmedi</h3>
+                <p class="text-muted">Özelliklerini düzenlemek için bir form elementi seçin.</p>
+            </div>
+        `;
+  }
+
+  // Ayarları AJAX ile getir ve setting_id listesini doldur
+  function populateSettingDropdowns(groupId) {
+    fetch(`/admin/settingmanagement/api/settings?group=${groupId}`)
+      .then(response => response.json())
+      .then(settings => {
+        const settingDropdowns = document.querySelectorAll('select[name="setting_id"]');
+        
+        settingDropdowns.forEach(dropdown => {
+          // Mevcut seçili değeri al
+          const currentValue = dropdown.value;
+          
+          // Dropdown'ı temizle, sadece ilk opsiyonu koru
+          const firstOption = dropdown.querySelector('option:first-child');
+          dropdown.innerHTML = '';
+          dropdown.appendChild(firstOption);
+          
+          // Yeni seçenekleri ekle
+          settings.forEach(setting => {
+            const option = document.createElement('option');
+            option.value = setting.id;
+            option.textContent = `${setting.label} (${setting.key})`;
+            
+            // Eğer önceden seçili değer vardıysa, onu tekrar seç
+            if (currentValue && currentValue == setting.id) {
+              option.selected = true;
+            }
+            
+            dropdown.appendChild(option);
+          });
         });
-  
-        input.addEventListener("keyup", function () {
-          updateElementProperty(input);
-        });
+      })
+      .catch(error => {
+        console.error('Ayarlar alınırken hata oluştu:', error);
       });
-  
-      // Select için özel yönetim
-      if (type === "select" || type === "radio") {
-        // Seçenekleri ekle
-        const optionsContainer = document.getElementById("options-container");
-        if (optionsContainer) {
-          optionsContainer.innerHTML = "";
-  
-          if (properties.options && properties.options.length) {
-            properties.options.forEach((option, index) => {
-              const optionRow = document.createElement("div");
-              optionRow.className = "input-group mb-2 option-row";
-              optionRow.innerHTML = `
-                              <input type="text" class="form-control" name="option-value-${index}" placeholder="Değer" value="${
-                option.value || ""
-              }">
-                              <input type="text" class="form-control" name="option-label-${index}" placeholder="Etiket" value="${
-                option.label || ""
-              }">
-                              <button type="button" class="btn btn-outline-danger remove-option" data-index="${index}">
-                                  <i class="fas fa-times"></i>
-                              </button>
-                          `;
-  
-              optionsContainer.appendChild(optionRow);
-  
-              // Değer değişikliklerini dinle
-              const inputs = optionRow.querySelectorAll("input");
-              inputs.forEach((input) => {
-                input.addEventListener("change", function () {
-                  updateOptionValue(index, input);
-                });
-  
-                input.addEventListener("keyup", function () {
-                  updateOptionValue(index, input);
-                });
+  }
+
+  // Özellik panelini güncelle
+  function updatePropertiesPanel() {
+    if (!selectedElement) return;
+
+    const type = selectedElement.dataset.type;
+
+    // Özellik şablonunu al
+    const propTemplate = propertyTemplates[type];
+
+    if (!propTemplate) {
+      propertiesPanel.innerHTML = `
+                <div class="alert alert-warning">
+                    Bu element tipi için özellik paneli henüz eklenmemiş.
+                </div>
+            `;
+      return;
+    }
+
+    // Element özelliklerini al
+    let properties = selectedElement.properties;
+
+    // Özellikler tanımlı değilse, varsayılan özellikleri kullan
+    if (!properties) {
+      properties = defaultProperties[type]
+        ? JSON.parse(JSON.stringify(defaultProperties[type]))
+        : {};
+      selectedElement.properties = properties;
+    }
+
+    // Genişlik değerlerini kontrol et
+    let templateData = Object.assign({}, properties);
+    templateData["width" + properties.width] = true;
+
+    // Row için sütun sayısını kontrol et
+    if (type === "row" && properties.columns) {
+      templateData["columns" + properties.columns.length] = true;
+    }
+    
+    // Heading size için kontrol et
+    if (type === "heading" && properties.size) {
+      templateData["size" + properties.size] = true;
+    }
+    
+    // Hizalama için kontrol et
+    if (properties.align) {
+      templateData["align" + properties.align] = true;
+    }
+    
+    // Stil için kontrol et
+    if (properties.style) {
+      templateData["style" + properties.style] = true;
+    }
+    
+    // Yükseklik için kontrol et
+    if (properties.height) {
+      const heightMap = {
+        "0.5rem": "0_5",
+        "1rem": "1",
+        "2rem": "2",
+        "3rem": "3",
+        "4rem": "4"
+      };
+      
+      if (heightMap[properties.height]) {
+        templateData["height" + heightMap[properties.height]] = true;
+      }
+    }
+
+    // Şablonu işle
+    propertiesPanel.innerHTML = renderTemplate(propTemplate, templateData);
+
+    // Özellik değişikliklerini dinle
+    const inputs = propertiesPanel.querySelectorAll("input, select, textarea");
+    inputs.forEach((input) => {
+      input.addEventListener("change", function () {
+        updateElementProperty(input);
+      });
+
+      input.addEventListener("keyup", function () {
+        updateElementProperty(input);
+      });
+    });
+
+    // Select için özel yönetim
+    if (type === "select" || type === "radio") {
+      // Seçenekleri ekle
+      const optionsContainer = document.getElementById("options-container");
+      if (optionsContainer) {
+        optionsContainer.innerHTML = "";
+
+        if (properties.options && properties.options.length) {
+          properties.options.forEach((option, index) => {
+            const optionRow = document.createElement("div");
+            optionRow.className = "input-group mb-2 option-row";
+            optionRow.innerHTML = `
+                            <input type="text" class="form-control" name="option-value-${index}" placeholder="Değer" value="${
+              option.value || ""
+            }">
+                            <input type="text" class="form-control" name="option-label-${index}" placeholder="Etiket" value="${
+              option.label || ""
+            }">
+                            <button type="button" class="btn btn-outline-danger remove-option" data-index="${index}">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        `;
+
+            optionsContainer.appendChild(optionRow);
+
+            // Değer değişikliklerini dinle
+            const inputs = optionRow.querySelectorAll("input");
+            inputs.forEach((input) => {
+              input.addEventListener("change", function () {
+                updateOptionValue(index, input);
               });
-            });
-          }
-  
-          // Var olan seçenek silme butonlarını etkinleştir
-          const removeOptionBtns =
-            optionsContainer.querySelectorAll(".remove-option");
-          removeOptionBtns.forEach((btn) => {
-            btn.addEventListener("click", function () {
-              const index = parseInt(this.dataset.index);
-              properties.options.splice(index, 1);
-              updateElementContent();
-              updatePropertiesPanel();
+
+              input.addEventListener("keyup", function () {
+                updateOptionValue(index, input);
+              });
             });
           });
         }
-  
-        // Seçenek Ekle butonu
-        const addOptionBtn = document.getElementById("add-option");
-        if (addOptionBtn) {
-          addOptionBtn.addEventListener("click", function () {
-            if (!Array.isArray(properties.options)) {
-              properties.options = [];
-            }
-            properties.options.push({
-              value: "option" + (properties.options.length + 1),
-              label: "Seçenek " + (properties.options.length + 1),
-            });
+
+        // Var olan seçenek silme butonlarını etkinleştir
+        const removeOptionBtns =
+          optionsContainer.querySelectorAll(".remove-option");
+        removeOptionBtns.forEach((btn) => {
+          btn.addEventListener("click", function () {
+            const index = parseInt(this.dataset.index);
+            properties.options.splice(index, 1);
             updateElementContent();
             updatePropertiesPanel();
           });
-        }
+        });
       }
-  
-      // Row için özel yönetim
-      if (type === "row") {
-        // Sütun sayısını değiştirme
-        const columnCountSelect = propertiesPanel.querySelector(
-          '[name="column-count"]'
-        );
-        if (columnCountSelect) {
-          columnCountSelect.addEventListener("change", function () {
-            updateRowColumns(parseInt(this.value));
+
+      // Seçenek Ekle butonu
+      const addOptionBtn = document.getElementById("add-option");
+      if (addOptionBtn) {
+        addOptionBtn.addEventListener("click", function () {
+          if (!Array.isArray(properties.options)) {
+            properties.options = [];
+          }
+          properties.options.push({
+            value: "option" + (properties.options.length + 1),
+            label: "Seçenek " + (properties.options.length + 1),
           });
-        }
-  
-        // Sütun genişliklerini göster
-        const columnWidthsContainer = document.getElementById(
-          "column-widths-container"
-        );
-        if (columnWidthsContainer && properties.columns) {
-          columnWidthsContainer.innerHTML = "";
-  
-          properties.columns.forEach((column, index) => {
-            const rowElement = document.createElement("div");
-            rowElement.className = "input-group mb-2 column-width-row";
-            rowElement.innerHTML = `
-                          <span class="input-group-text">Sütun ${
-                            column.index
-                          }</span>
-                          <select class="form-select" name="column-width-${index}">
-                              <option value="2" ${
-                                column.width == 2 ? "selected" : ""
-                              }>2/12</option>
-                              <option value="3" ${
-                                column.width == 3 ? "selected" : ""
-                              }>3/12</option>
-                              <option value="4" ${
-                                column.width == 4 ? "selected" : ""
-                              }>4/12</option>
-                              <option value="6" ${
-                                column.width == 6 ? "selected" : ""
-                              }>6/12</option>
-                              <option value="8" ${
-                                column.width == 8 ? "selected" : ""
-                              }>8/12</option>
-                              <option value="10" ${
-                                column.width == 10 ? "selected" : ""
-                              }>10/12</option>
-                          </select>
-                      `;
-  
-            columnWidthsContainer.appendChild(rowElement);
-  
-            // Sütun genişliği değişikliğini dinle
-            const select = rowElement.querySelector("select");
-            select.addEventListener("change", function () {
-              updateColumnWidth(index, parseInt(this.value));
+          updateElementContent();
+          updatePropertiesPanel();
+        });
+      }
+    }
+    
+    // Tab Group için özel yönetim
+    if (type === "tab_group") {
+      // Tab'ları ekle
+      const tabsContainer = document.getElementById("tabs-container");
+      if (tabsContainer) {
+        tabsContainer.innerHTML = "";
+
+        if (properties.tabs && properties.tabs.length) {
+          properties.tabs.forEach((tab, index) => {
+            const tabRow = document.createElement("div");
+            tabRow.className = "card mb-2";
+            tabRow.innerHTML = `
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <span>Sekme ${index + 1}</span>
+                <button type="button" class="btn btn-sm btn-outline-danger remove-tab" data-index="${index}">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+              <div class="card-body">
+                <div class="mb-2">
+                  <label class="form-label">Başlık</label>
+                  <input type="text" class="form-control" name="tab-title-${index}" value="${tab.title || ''}">
+                </div>
+                <div>
+                  <label class="form-label">İçerik</label>
+                  <textarea class="form-control" name="tab-content-${index}" rows="3">${tab.content || ''}</textarea>
+                </div>
+              </div>
+            `;
+
+            tabsContainer.appendChild(tabRow);
+
+            // Değer değişikliklerini dinle
+            const inputs = tabRow.querySelectorAll("input, textarea");
+            inputs.forEach((input) => {
+              input.addEventListener("change", function () {
+                updateTabValue(index, input);
+              });
+
+              input.addEventListener("keyup", function () {
+                updateTabValue(index, input);
+              });
             });
           });
         }
-      }
-    }
-  
-    // Seçenek değerini güncelle
-    function updateOptionValue(index, input) {
-      if (
-        !selectedElement ||
-        (selectedElement.dataset.type !== "select" &&
-          selectedElement.dataset.type !== "radio")
-      )
-        return;
-  
-      const properties = selectedElement.properties;
-  
-      if (!properties || !Array.isArray(properties.options)) {
-        return;
-      }
-  
-      const option = properties.options[index];
-      if (!option) return;
-  
-      if (input.name.startsWith("option-value-")) {
-        option.value = input.value;
-      } else if (input.name.startsWith("option-label-")) {
-        option.label = input.value;
-      }
-  
-      updateElementContent();
-    }
-  
-    // Element özelliklerini güncelle
-    function updateElementProperty(input) {
-      if (!selectedElement) return;
-  
-      const name = input.name;
-      const value = input.type === "checkbox" ? input.checked : input.value;
-  
-      // Özel özellik güncellemeleri
-      if (name === "label") {
-        selectedElement.querySelector(".element-title").textContent = value;
-        selectedElement.properties.label = value;
-  
-        // Form içindeki etiketi güncelle
-        const labelElement = selectedElement.querySelector(".form-label");
-        if (labelElement) {
-          labelElement.textContent = value;
-        }
-      } else if (name === "width") {
-        selectedElement.dataset.width = value;
-        selectedElement.properties.width = parseInt(value);
-  
-        // Genişlik değişikliğini anında göster
-        const width = parseInt(value);
-        selectedElement.style.width = `${(width * 100) / 12}%`;
-  
-        // Element sütun içinde ise sütun genişliğini güncelle
-        const columnElement = selectedElement.closest(".column-element");
-        if (columnElement) {
-          columnElement.className = columnElement.className.replace(
-            /col-md-\d+/,
-            `col-md-${width}`
-          );
-          columnElement.dataset.width = width;
-        }
-      } else {
-        // Genel özellik güncelleme
-        selectedElement.properties[name] = value;
-      }
-  
-      // Element içeriğini güncelle
-      updateElementContent();
-    }
-  
-    // Row sütunlarını güncelle
-    function updateRowColumns(columnCount) {
-      if (!selectedElement || selectedElement.dataset.type !== "row") return;
-  
-      // Mevcut sütunları al
-      let currentColumns = selectedElement.properties.columns || [];
-      const rowElement = selectedElement.querySelector(".row-element");
-      const columnElements = rowElement
-        ? rowElement.querySelectorAll(".column-element")
-        : [];
-  
-      // Eğer sütun sayısı azalıyorsa ve dolu sütunlar varsa uyarı ver
-      if (columnCount < currentColumns.length) {
-        // Mevcut içerik olup olmadığını kontrol et
-        let hasContent = false;
-  
-        // Silinecek sütunları kontrol et
-        for (let i = columnCount; i < columnElements.length; i++) {
-          if (
-            columnElements[i] &&
-            columnElements[i].querySelectorAll(".form-element").length > 0
-          ) {
-            hasContent = true;
-            break;
-          }
-        }
-  
-        if (hasContent) {
-          const proceed = confirm(
-            "Sütun sayısını azaltırsanız, fazla olan sütunlardaki içerikler kaybolacak. Devam etmek istiyor musunuz?"
-          );
-          if (!proceed) return;
-        }
-      }
-  
-      // Yeni sütun dizisi oluştur, mevcut sütunların içeriğini koru
-      const newColumns = [];
-  
-      // Varsayılan genişlik
-      const defaultWidth = Math.floor(12 / columnCount);
-  
-      // Yeni sütun dizisi oluştur
-      for (let i = 0; i < columnCount; i++) {
-        if (i < currentColumns.length) {
-          // Mevcut sütunu koru
-          newColumns.push(currentColumns[i]);
-        } else {
-          // Yeni sütun ekle
-          newColumns.push({
-            index: i + 1,
-            width: defaultWidth,
+
+        // Sekme silme butonlarını etkinleştir
+        const removeTabBtns = tabsContainer.querySelectorAll(".remove-tab");
+        removeTabBtns.forEach((btn) => {
+          btn.addEventListener("click", function () {
+            const index = parseInt(this.dataset.index);
+            properties.tabs.splice(index, 1);
+            updateElementContent();
+            updatePropertiesPanel();
           });
-        }
-      }
-  
-      // Row properties'i güncelle
-      selectedElement.properties.columns = newColumns;
-  
-      // Sütun genişliklerini kontrol et ve güncelle
-      const rowWidth = newColumns.reduce(
-        (sum, col) => sum + parseInt(col.width || 0),
-        0
-      );
-      if (rowWidth > 12) {
-        // Genişlikleri orantılı olarak azalt
-        const ratio = 12 / rowWidth;
-        newColumns.forEach((col) => {
-          col.width = Math.max(1, Math.floor(col.width * ratio));
         });
       }
+
+      // Sekme Ekle butonu
+      const addTabBtn = document.getElementById("add-tab");
+      if (addTabBtn) {
+        addTabBtn.addEventListener("click", function () {
+          if (!Array.isArray(properties.tabs)) {
+            properties.tabs = [];
+          }
+          properties.tabs.push({
+            title: "Sekme " + (properties.tabs.length + 1),
+            content: "İçerik " + (properties.tabs.length + 1)
+          });
+          updateElementContent();
+          updatePropertiesPanel();
+        });
+      }
+    }
+
+    // Row için özel yönetim
+    if (type === "row") {
+      // Sütun sayısını değiştirme
+      const columnCountSelect = propertiesPanel.querySelector(
+        '[name="column-count"]'
+      );
+      if (columnCountSelect) {
+        columnCountSelect.addEventListener("change", function () {
+          updateRowColumns(parseInt(this.value));
+        });
+      }
+
+      // Sütun genişliklerini göster
+      const columnWidthsContainer = document.getElementById(
+        "column-widths-container"
+      );
+      if (columnWidthsContainer && properties.columns) {
+        columnWidthsContainer.innerHTML = "";
+
+        properties.columns.forEach((column, index) => {
+          const rowElement = document.createElement("div");
+          rowElement.className = "input-group mb-2 column-width-row";
+          rowElement.innerHTML = `
+                        <span class="input-group-text">Sütun ${
+                          column.index
+                        }</span>
+                        <select class="form-select" name="column-width-${index}">
+                            <option value="2" ${
+                              column.width == 2 ? "selected" : ""
+                            }>2/12</option>
+                            <option value="3" ${
+                              column.width == 3 ? "selected" : ""
+                            }>3/12</option>
+                            <option value="4" ${
+                              column.width == 4 ? "selected" : ""
+                            }>4/12</option>
+                            <option value="6" ${
+                              column.width == 6 ? "selected" : ""
+                            }>6/12</option>
+                            <option value="8" ${
+                              column.width == 8 ? "selected" : ""
+                            }>8/12</option>
+                            <option value="10" ${
+                              column.width == 10 ? "selected" : ""
+                            }>10/12</option>
+                        </select>
+                    `;
+
+          columnWidthsContainer.appendChild(rowElement);
+
+          // Sütun genişliği değişikliğini dinle
+          const select = rowElement.querySelector("select");
+          select.addEventListener("change", function () {
+            updateColumnWidth(index, parseInt(this.value));
+          });
+        });
+      }
+    }
+    
+    // Eğer grup ID'si belirtilmişse ve form element'i bir ayarla ilişkilendirilebilecek 
+    // türdeyse (düzen elementleri hariç), ayarları getir
+    const formGroupId = document.getElementById('group-id')?.value;
+    if (formGroupId && ['text', 'textarea', 'select', 'checkbox', 'radio', 'switch', 
+                        'number', 'email', 'date', 'time', 'color', 'file', 'image'].includes(type)) {
+      populateSettingDropdowns(formGroupId);
+    }
+  }
+
+  // Seçenek değerini güncelle
+  function updateOptionValue(index, input) {
+    if (
+      !selectedElement ||
+      (selectedElement.dataset.type !== "select" &&
+        selectedElement.dataset.type !== "radio")
+    )
+      return;
+
+    const properties = selectedElement.properties;
+
+    if (!properties || !Array.isArray(properties.options)) {
+      return;
+    }
+
+    const option = properties.options[index];
+    if (!option) return;
+
+    if (input.name.startsWith("option-value-")) {
+      option.value = input.value;
+    } else if (input.name.startsWith("option-label-")) {
+      option.label = input.value;
+    }
+
+    updateElementContent();
+  }
   
+  // Sekme değerini güncelle
+  function updateTabValue(index, input) {
+    if (!selectedElement || selectedElement.dataset.type !== "tab_group") {
+      return;
+    }
+
+    const properties = selectedElement.properties;
+
+    if (!properties || !Array.isArray(properties.tabs)) {
+      return;
+    }
+
+    const tab = properties.tabs[index];
+    if (!tab) return;
+
+    if (input.name.startsWith("tab-title-")) {
+      tab.title = input.value;
+    } else if (input.name.startsWith("tab-content-")) {
+      tab.content = input.value;
+    }
+
+    updateElementContent();
+  }
+
+  // Element özelliklerini güncelle
+  function updateElementProperty(input) {
+    if (!selectedElement) return;
+
+    const name = input.name;
+    const value = input.type === "checkbox" ? input.checked : input.value;
+
+    // Özel özellik güncellemeleri
+    if (name === "label") {
+      selectedElement.querySelector(".element-title").textContent = value;
+      selectedElement.properties.label = value;
+
+      // Form içindeki etiketi güncelle
+      const labelElement = selectedElement.querySelector(".form-label");
+      if (labelElement) {
+        labelElement.textContent = value;
+      }
+    } else if (name === "width") {
+      selectedElement.dataset.width = value;
+      selectedElement.properties.width = parseInt(value);
+
+      // Genişlik değişikliğini anında göster
+      const width = parseInt(value);
+      selectedElement.style.width = `${(width * 100) / 12}%`;
+
+      // Element sütun içinde ise sütun genişliğini güncelle
+      const columnElement = selectedElement.closest(".column-element");
+      if (columnElement) {
+        columnElement.className = columnElement.className.replace(
+          /col-md-\d+/,
+          `col-md-${width}`
+        );
+        columnElement.dataset.width = width;
+      }
+    } else if (name === "content" && selectedElement.dataset.type === "heading") {
+      selectedElement.querySelector(".element-title").textContent = "Başlık: " + value;
+      selectedElement.properties.content = value;
+      
+      // Başlık içeriğini güncelle
+      const headingElement = selectedElement.querySelector(selectedElement.properties.size);
+      if (headingElement) {
+        headingElement.textContent = value;
+      }
+    } else if (name === "title" && selectedElement.dataset.type === "card") {
+      selectedElement.querySelector(".element-title").textContent = "Kart: " + value;
+      selectedElement.properties.title = value;
+      
+      // Kart başlığını güncelle
+      const titleElement = selectedElement.querySelector(".card-title");
+      if (titleElement) {
+        titleElement.textContent = value;
+      }
+    } else if (name === "setting_id") {
+      selectedElement.properties.setting_id = value;
+    } else {
+      // Genel özellik güncelleme
+      selectedElement.properties[name] = value;
+    }
+
+    // Element içeriğini güncelle
+    updateElementContent();
+  }
+
+  // Row sütunlarını güncelle
+  function updateRowColumns(columnCount) {
+    if (!selectedElement || selectedElement.dataset.type !== "row") return;
+
+    // Mevcut sütunları al
+    let currentColumns = selectedElement.properties.columns || [];
+    const rowElement = selectedElement.querySelector(".row-element");
+    const columnElements = rowElement
+      ? rowElement.querySelectorAll(".column-element")
+      : [];
+
+    // Eğer sütun sayısı azalıyorsa ve dolu sütunlar varsa uyarı ver
+    if (columnCount < currentColumns.length) {
+      // Mevcut içerik olup olmadığını kontrol et
+      let hasContent = false;
+
+      // Silinecek sütunları kontrol et
+      for (let i = columnCount; i < columnElements.length; i++) {
+        if (
+          columnElements[i] &&
+          columnElements[i].querySelectorAll(".form-element").length > 0
+        ) {
+          hasContent = true;
+          break;
+        }
+      }
+
+      if (hasContent) {
+        const proceed = confirm(
+          "Sütun sayısını azaltırsanız, fazla olan sütunlardaki içerikler kaybolacak. Devam etmek istiyor musunuz?"
+        );
+        if (!proceed) return;
+      }
+    }
+
+    // Yeni sütun dizisi oluştur, mevcut sütunların içeriğini koru
+    const newColumns = [];
+
+    // Varsayılan genişlik
+    const defaultWidth = Math.floor(12 / columnCount);
+
+    // Yeni sütun dizisi oluştur
+    for (let i = 0; i < columnCount; i++) {
+      if (i < currentColumns.length) {
+        // Mevcut sütunu koru
+        newColumns.push(currentColumns[i]);
+      } else {
+        // Yeni sütun ekle
+        newColumns.push({
+          index: i + 1,
+          width: defaultWidth,
+        });
+      }
+    }
+
+    // Row properties'i güncelle
+    selectedElement.properties.columns = newColumns;
+
+    // Sütun genişliklerini kontrol et ve güncelle
+    const rowWidth = newColumns.reduce(
+      (sum, col) => sum + parseInt(col.width || 0),
+      0
+    );
+    if (rowWidth > 12) {
+      // Genişlikleri orantılı olarak azalt
+      const ratio = 12 / rowWidth;
+      newColumns.forEach((col) => {
+        col.width = Math.max(1, Math.floor(col.width * ratio));
+      });
+}
+
       // Element içeriğini güncelle - mevcut içeriği koru
       updateRowContent(columnElements);
-  
+
       // Özellik panelini güncelle (sütun genişlikleri için)
       updatePropertiesPanel();
     }
-  
+
     // Row içeriğini güncelle - mevcut içeriği koru
     function updateRowContent(oldColumns) {
       if (!selectedElement || selectedElement.dataset.type !== "row") return;
-  
+
       const properties = selectedElement.properties;
       const content = selectedElement.querySelector(".element-content");
-  
+
       // Yeni row şablonunu oluştur
       content.innerHTML = `<div class="row row-element d-flex flex-row"></div>`;
-  
+
       const rowElement = content.querySelector(".row-element");
       if (!rowElement) return;
-  
+
       // Yeni sütunları oluştur
       properties.columns.forEach((column, index) => {
         const columnElement = document.createElement("div");
@@ -1146,14 +2015,14 @@ document.addEventListener("DOMContentLoaded", function () {
         columnElement.dataset.width = column.width;
         columnElement.style.display = "block";
         columnElement.style.minHeight = "80px";
-  
+
         // Eğer eski bir sütun varsa içeriğini taşı
         if (oldColumns && index < oldColumns.length) {
           const formerColumn = oldColumns[index];
           const formerElements = formerColumn
             ? formerColumn.querySelectorAll(".form-element")
             : [];
-  
+
           if (formerElements.length > 0) {
             // Mevcut elemanları kopyala
             formerElements.forEach((elem) => {
@@ -1175,10 +2044,10 @@ document.addEventListener("DOMContentLoaded", function () {
                       </div>
                   `;
         }
-  
+
         rowElement.appendChild(columnElement);
       });
-  
+
       // Event listener'ları yeniden ekle
       const newElements = rowElement.querySelectorAll(".form-element");
       newElements.forEach((elem) => {
@@ -1186,14 +2055,14 @@ document.addEventListener("DOMContentLoaded", function () {
           e.stopPropagation();
           selectElement(elem);
         });
-  
+
         // Butonlara event listener ekle
         const buttons = elem.querySelectorAll("[data-action]");
         buttons.forEach((button) => {
           button.addEventListener("click", function (e) {
             e.stopPropagation();
             const action = this.dataset.action;
-  
+
             if (action === "remove") {
               elem.remove();
               if (selectedElement === elem) {
@@ -1210,30 +2079,30 @@ document.addEventListener("DOMContentLoaded", function () {
           });
         });
       });
-  
+
       // Sütunları sürüklenebilir yap
       initializeColumnSortables();
     }
-  
+
     // Sütun genişliğini güncelle
     function updateColumnWidth(columnIndex, width) {
       if (!selectedElement || selectedElement.dataset.type !== "row") return;
-  
+
       if (
         !selectedElement.properties ||
         !Array.isArray(selectedElement.properties.columns)
       ) {
         return;
       }
-  
+
       selectedElement.properties.columns[columnIndex].width = width;
-  
+
       // Sütun genişlikleri toplamını kontrol et
       const totalWidth = selectedElement.properties.columns.reduce(
         (sum, col) => sum + (parseInt(col.width) || 0),
         0
       );
-  
+
       // Toplam genişlik 12'yi aşıyorsa uyarı ver
       if (totalWidth > 12) {
         alert(
@@ -1243,24 +2112,24 @@ document.addEventListener("DOMContentLoaded", function () {
         selectedElement.properties.columns[columnIndex].width =
           12 - (totalWidth - width);
       }
-  
+
       // Row içeriğini güncelle
       const columnElements = selectedElement.querySelectorAll(".column-element");
       updateRowContent(columnElements);
     }
-  
+
     // Element içeriğini güncelle
     function updateElementContent() {
       if (!selectedElement) return;
-  
+
       const type = selectedElement.dataset.type;
       const properties = selectedElement.properties;
-  
+
       if (!properties) {
         console.error("Element özellikleri tanımlanmamış:", selectedElement);
         return;
       }
-  
+
       // Özel durum: Row
       if (type === "row") {
         const columnElements =
@@ -1270,7 +2139,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Normal elementler için içeriği güncelle
         const content = selectedElement.querySelector(".element-content");
         content.innerHTML = renderTemplate(elementTemplates[type], properties);
-  
+
         // Select ve radio için seçenekleri ekle
         if (type === "select" && properties.options) {
           const selectElement = content.querySelector("select");
@@ -1299,10 +2168,38 @@ document.addEventListener("DOMContentLoaded", function () {
               radioContainer.appendChild(radioElement);
             });
           }
+        } else if (type === "tab_group" && properties.tabs) {
+          // Tab Group için sekmeler ekle
+          const tabList = content.querySelector(".nav-tabs");
+          const tabContent = content.querySelector(".tab-content");
+          
+          if (tabList && tabContent) {
+            tabList.innerHTML = '';
+            tabContent.innerHTML = '';
+            
+            properties.tabs.forEach((tab, index) => {
+              // Tab başlığı ekleme
+              const tabItem = document.createElement("li");
+              tabItem.className = "nav-item";
+              tabItem.innerHTML = `
+                <a href="#tab-${selectedElement.dataset.id}-${index}" class="nav-link ${index === 0 ? 'active' : ''}" data-bs-toggle="tab">
+                  ${tab.title}
+                </a>
+              `;
+              tabList.appendChild(tabItem);
+              
+              // Tab içeriği ekleme
+              const tabPane = document.createElement("div");
+              tabPane.className = `tab-pane ${index === 0 ? 'active' : ''}`;
+              tabPane.id = `tab-${selectedElement.dataset.id}-${index}`;
+              tabPane.innerHTML = `<p>${tab.content}</p>`;
+              tabContent.appendChild(tabPane);
+            });
+          }
         }
       }
     }
-  
+
     // Boş canvas kontrolü
     function checkEmptyCanvas() {
       if (formCanvas.querySelectorAll(".form-element").length === 0) {
@@ -1311,7 +2208,7 @@ document.addEventListener("DOMContentLoaded", function () {
         emptyCanvas.style.display = "none";
       }
     }
-  
+
     // SortableJS Initialize
     function initializeSortable() {
       // Element Paleti için Sortable - her bir palette öğesi için ayrı ayrı Sortable tanımlıyoruz
@@ -1335,7 +2232,7 @@ document.addEventListener("DOMContentLoaded", function () {
           },
         });
       });
-  
+
       // Form canvas için Sortable
       new Sortable(formCanvas, {
         group: {
@@ -1347,29 +2244,29 @@ document.addEventListener("DOMContentLoaded", function () {
         onAdd: function (evt) {
           if (evt.item.classList.contains("element-palette-item")) {
             const type = evt.item.dataset.type;
-  
+
             if (type) {
               // Paletten gelen elemanı kalıcı bir form elemanına dönüştür
               const properties = defaultProperties[type]
                 ? JSON.parse(JSON.stringify(defaultProperties[type]))
                 : {};
               const newElement = createFormElement(type, properties);
-  
+
               if (newElement) {
                 // Placeholder öğeyi değiştir
                 evt.item.parentNode.replaceChild(newElement, evt.item);
-  
+
                 // Boş canvas uyarısını her zaman gizle
                 emptyCanvas.style.display = "none";
-  
+
                 // Yeni elementi seç
                 selectElement(newElement);
-  
+
                 // Row elementi ise sürüklenebilir sütunlar oluştur
                 if (type === "row") {
                   initializeColumnSortables();
                 }
-  
+
                 // Durum kaydetme
                 saveState();
               }
@@ -1378,30 +2275,30 @@ document.addEventListener("DOMContentLoaded", function () {
               evt.item.remove();
             }
           }
-  
+
           // Canvas boş mu kontrol et
           checkEmptyCanvas();
         },
         onChange: function () {
           // Boş canvas kontrolü
           checkEmptyCanvas();
-  
+
           // Durum kaydetme
           saveState();
         },
         onRemove: function () {
           // Boş canvas kontrolü
           checkEmptyCanvas();
-  
+
           // Durum kaydetme
           saveState();
         },
       });
-  
+
       // İlk çağrı
       initializeColumnSortables();
     }
-  
+
     // Sütunlar için SortableJS Initialize
     function initializeColumnSortables() {
       const columns = document.querySelectorAll(".column-element");
@@ -1425,25 +2322,25 @@ document.addEventListener("DOMContentLoaded", function () {
             if (placeholder) {
               placeholder.remove();
             }
-  
+
             // Element palette'den ekleniyorsa
             if (evt.item.classList.contains("element-palette-item")) {
               const type = evt.item.dataset.type;
-  
+
               if (type) {
                 // Paletten gelen elemanı kalıcı bir form elemanına dönüştür
                 const properties = defaultProperties[type]
                   ? JSON.parse(JSON.stringify(defaultProperties[type]))
                   : {};
                 const newElement = createFormElement(type, properties);
-  
+
                 if (newElement) {
                   // Placeholder öğeyi değiştir
                   evt.item.parentNode.replaceChild(newElement, evt.item);
-  
+
                   // Yeni elementi seç
                   selectElement(newElement);
-  
+
                   // Durum kaydetme
                   saveState();
                 }
@@ -1463,7 +2360,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 '<i class="fas fa-plus me-2"></i> Buraya element sürükleyin';
               evt.from.appendChild(placeholder);
             }
-  
+
             // Durum kaydetme
             saveState();
           },
@@ -1474,89 +2371,73 @@ document.addEventListener("DOMContentLoaded", function () {
         });
       });
     }
-  
+
     // Formu JSON olarak al
     function getFormJSON() {
       const formElements = [];
       const elements = formCanvas.querySelectorAll(":scope > .form-element"); // Sadece ilk seviye elementler
-  
+
       elements.forEach((element) => {
         const type = element.dataset.type;
         const properties = element.properties || {};
-  
+
         const elementData = {
           type: type,
           properties: JSON.parse(JSON.stringify(properties)),
         };
-  
+
         // Row elementi içindeki elementleri dahil et
         if (type === "row") {
           const columns = element.querySelectorAll(".column-element");
           elementData.columns = [];
-  
+
           columns.forEach((column) => {
             const columnElements = [];
             const columnItems = column.querySelectorAll(".form-element");
-  
+
             columnItems.forEach((item) => {
               const itemType = item.dataset.type;
               const itemProps = item.properties || {};
-  
+
               columnElements.push({
                 type: itemType,
                 properties: JSON.parse(JSON.stringify(itemProps)),
               });
             });
-  
+
             elementData.columns.push({
               width: parseInt(column.dataset.width || 6),
               elements: columnElements,
             });
           });
         }
-  
+
         formElements.push(elementData);
       });
-  
+
       return {
         title: "Form Builder",
         elements: formElements,
       };
     }
-  
+
     // Formu kaydet
     document.getElementById("save-btn").addEventListener("click", function () {
       const formData = getFormJSON();
       console.log("Form Verisi:", formData);
-      console.log("JSON:", JSON.stringify(formData, null, 2));
-  
-      // Basit bildirim göster
-      const toast = document.createElement("div");
-      toast.className =
-        "toast position-fixed bottom-0 end-0 m-3 bg-success text-white show";
-      toast.setAttribute("role", "alert");
-      toast.innerHTML = `
-              <div class="toast-header bg-success text-white">
-                  <i class="fas fa-check-circle me-2"></i>
-                  <strong class="me-auto">Başarılı</strong>
-                  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
-              </div>
-              <div class="toast-body">
-                  Form başarıyla kaydedildi.
-              </div>
-          `;
-      document.body.appendChild(toast);
-  
-      // 3 saniye sonra toast'ı otomatik kaldır
-      setTimeout(() => {
-        toast.remove();
-      }, 3000);
+      console.log("JSON:", JSON.stringify(formData));
+      
+      // Form verisi hazır, şimdi Livewire'a gönder
+      const groupId = document.getElementById('group-id').value;
+      if (groupId) {
+        window.livewire.emit('saveFormLayout', groupId, JSON.stringify(formData));
+      }
     });
-  
+
     // Formu önizle
     document.getElementById("preview-btn").addEventListener("click", function () {
       const formData = getFormJSON();
-  
+
       // Yeni pencerede göstermek için HTML oluştur
       let previewHtml = `
           <!DOCTYPE html>
@@ -1594,15 +2475,15 @@ document.addEventListener("DOMContentLoaded", function () {
                   </div>
                   <form>
           `;
-  
+
       // Öğelerin HTML içeriğini önizlemeye ekle
       formData.elements.forEach((element) => {
         if (element.type === "row") {
           previewHtml += '<div class="row">';
-  
+
           element.columns.forEach((column) => {
             previewHtml += `<div class="col-md-${column.width}">`;
-  
+
             column.elements.forEach((item) => {
               const properties = item.properties;
               previewHtml += renderTemplate(
@@ -1610,10 +2491,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 properties
               );
             });
-  
+
             previewHtml += "</div>";
           });
-  
+
           previewHtml += "</div>";
         } else {
           const properties = element.properties;
@@ -1623,7 +2504,7 @@ document.addEventListener("DOMContentLoaded", function () {
           );
         }
       });
-  
+
       previewHtml += `
                       <div class="mt-4">
                           <button type="submit" class="btn btn-primary">Gönder</button>
@@ -1635,13 +2516,13 @@ document.addEventListener("DOMContentLoaded", function () {
           </body>
           </html>
           `;
-  
+
       // Yeni pencerede aç
       const previewWindow = window.open("", "_blank");
       previewWindow.document.write(previewHtml);
       previewWindow.document.close();
     });
-  
+
     // Canvas boş alan tıklama
     formCanvas.addEventListener("click", function (e) {
       if (
@@ -1652,70 +2533,120 @@ document.addEventListener("DOMContentLoaded", function () {
         clearSelectedElement();
       }
     });
-  
+
     // Geri ve ileri butonları
     let undoStack = [];
     let redoStack = [];
-  
+
     function saveState() {
       // Formun mevcut içeriğini state olarak kaydet
       const state = formCanvas.innerHTML;
       undoStack.push(state);
       redoStack = []; // Yeni bir durum kaydedildiğinde redo stack'i temizle
-  
+
       // Butonların durumunu güncelle
       const undoBtn = document.getElementById("cmd-undo");
       const redoBtn = document.getElementById("cmd-redo");
-  
+
       if (undoBtn) undoBtn.disabled = undoStack.length <= 1;
       if (redoBtn) redoBtn.disabled = redoStack.length === 0;
     }
-  
+
     const undoBtn = document.getElementById("cmd-undo");
     if (undoBtn) {
       undoBtn.addEventListener("click", function () {
         if (undoStack.length > 1) {
           // Son durumu redoStack'e ekle
           redoStack.push(undoStack.pop());
-  
+
           // Önceki durumu yükle
           formCanvas.innerHTML = undoStack[undoStack.length - 1];
-  
+
           // Butonların durumunu güncelle
           this.disabled = undoStack.length <= 1;
           document.getElementById("cmd-redo").disabled = false;
-  
+
           // SortableJS'yi yeniden başlat ve diğer dinleyicileri ekle
           initializeSortable();
           checkEmptyCanvas();
         }
       });
     }
-  
+
     const redoBtn = document.getElementById("cmd-redo");
     if (redoBtn) {
       redoBtn.addEventListener("click", function () {
         if (redoStack.length > 0) {
           // Son redo durumunu al
           const state = redoStack.pop();
-  
+
           // Mevcut durumu undoStack'e ekle
           undoStack.push(state);
-  
+
           // Durumu yükle
           formCanvas.innerHTML = state;
-  
+
           // Butonların durumunu güncelle
           this.disabled = redoStack.length === 0;
           document.getElementById("cmd-undo").disabled = false;
-  
+
           // SortableJS'yi yeniden başlat ve diğer dinleyicileri ekle
           initializeSortable();
           checkEmptyCanvas();
         }
       });
     }
-  
+    
+    // Temizle butonu
+    const clearBtn = document.getElementById("cmd-clear");
+    if (clearBtn) {
+      clearBtn.addEventListener("click", function() {
+        if (formCanvas.querySelectorAll(".form-element").length > 0) {
+          if (confirm("Form içeriğini tamamen temizlemek istediğinize emin misiniz?")) {
+            formCanvas.innerHTML = "";
+            checkEmptyCanvas();
+            saveState();
+            clearSelectedElement();
+          }
+        }
+      });
+    }
+    
+    // Bileşen sınırları görünürlüğü
+    const visibilityBtn = document.getElementById("sw-visibility");
+    if (visibilityBtn) {
+      visibilityBtn.addEventListener("click", function() {
+        this.classList.toggle("active");
+        document.body.classList.toggle("hide-borders");
+        
+        const elements = document.querySelectorAll(".form-element");
+        elements.forEach(el => {
+          el.classList.toggle("no-border");
+        });
+      });
+    }
+    
+    // Cihaz görünümü butonları
+    const deviceBtns = document.querySelectorAll("[id^='device-']");
+    deviceBtns.forEach(btn => {
+      btn.addEventListener("click", function() {
+        // Aktif cihaz butonunu güncelle
+        deviceBtns.forEach(b => b.classList.remove("active"));
+        this.classList.add("active");
+        
+        // Canvas genişliğini güncelle
+        const deviceType = this.id.replace("device-", "");
+        
+        if (deviceType === "desktop") {
+          formCanvas.style.maxWidth = "100%";
+        } else if (deviceType === "tablet") {
+          formCanvas.style.maxWidth = "768px";
+        } else if (deviceType === "mobile") {
+          formCanvas.style.maxWidth = "375px";
+        }
+      });
+    });
+
     // Panel ve sekme durumlarını localStorage'dan yükle
     function loadSavedStates() {
       // Panel durumları
@@ -1723,22 +2654,22 @@ document.addEventListener("DOMContentLoaded", function () {
         localStorage.getItem("form_builder_left_collapsed") === "true";
       const rightPanelCollapsed =
         localStorage.getItem("form_builder_right_collapsed") === "true";
-  
+
       const leftPanel = document.querySelector(".panel__left");
       const rightPanel = document.querySelector(".panel__right");
-  
+
       if (leftPanelCollapsed && leftPanel) {
         leftPanel.classList.add("collapsed");
       }
-  
+
       if (rightPanelCollapsed && rightPanel) {
         rightPanel.classList.add("collapsed");
       }
-  
+
       // Sekme durumları
       const leftTab = localStorage.getItem("form_builder_left_tab");
       const rightTab = localStorage.getItem("form_builder_right_tab");
-  
+
       if (leftTab) {
         const tabEl = document.querySelector(
           `.panel__left .panel-tab[data-tab="${leftTab}"]`
@@ -1747,7 +2678,7 @@ document.addEventListener("DOMContentLoaded", function () {
           tabEl.click();
         }
       }
-  
+
       if (rightTab) {
         const tabEl = document.querySelector(
           `.panel__right .panel-tab[data-tab="${rightTab}"]`
@@ -1756,7 +2687,7 @@ document.addEventListener("DOMContentLoaded", function () {
           tabEl.click();
         }
       }
-  
+
       // Kategori durumları
       const categories = JSON.parse(
         localStorage.getItem("form_builder_categories") || "{}"
@@ -1764,7 +2695,7 @@ document.addEventListener("DOMContentLoaded", function () {
       Object.keys(categories).forEach((categoryName) => {
         const isCollapsed = categories[categoryName];
         const headers = document.querySelectorAll(".block-category-header");
-  
+
         headers.forEach((header) => {
           const headerText = header.querySelector("span")?.textContent.trim();
           if (headerText === categoryName && isCollapsed) {
@@ -1780,14 +2711,13 @@ document.addEventListener("DOMContentLoaded", function () {
         });
       });
     }
-  
+
     // İlk durumu kaydet
     saveState();
-  
+
     // SortableJS'yi başlat
     initializeSortable();
-  
+
     // Kaydedilmiş durumları yükle
     loadSavedStates();
-  });
-  
+});

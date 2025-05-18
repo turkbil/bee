@@ -283,14 +283,6 @@
             // Grup ID'sini al
             const groupId = document.getElementById('group-id').value;
             
-            // Kaydet butonu için olay dinleyici ekle
-            document.getElementById('save-btn').addEventListener('click', function() {
-                const formData = window.getFormJSON(); // Form builder JS'deki global fonksiyon
-                
-                // Livewire bileşenine gönder
-                window.livewire.emit('saveFormLayout', groupId, JSON.stringify(formData));
-            });
-            
             // Kayıtlı form yapısını yükle
             fetch(`/admin/settingmanagement/form-builder/${groupId}/load`, {
                 method: 'GET',
@@ -302,6 +294,7 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success && data.layout) {
+                    console.log('Form yapısı yükleniyor:', data.layout);
                     if (typeof window.loadFormFromJSON === 'function') {
                         window.loadFormFromJSON(data.layout);
                     } else {
@@ -313,62 +306,44 @@
                 console.error('Form yükleme hatası:', error);
             });
             
-            // Form eleman arama işlevi
-            const searchInput = document.getElementById('elements-search');
-            if (searchInput) {
-                searchInput.addEventListener('input', function() {
-                    const searchText = this.value.toLowerCase();
-                    const elements = document.querySelectorAll('.element-palette-item');
-                    
-                    elements.forEach(element => {
-                        const elementText = element.textContent.toLowerCase();
-                        if (elementText.includes(searchText) || searchText === '') {
-                            element.style.display = 'flex';
-                        } else {
-                            element.style.display = 'none';
-                        }
+            // Ayarları yükle
+            fetch(`/admin/settingmanagement/api/settings?group=${groupId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                }
+            })
+            .then(response => response.json())
+            .then(settings => {
+                console.log('Ayarlar yüklendi:', settings);
+                window.availableSettings = settings;
+                
+                // Setting dropdown'larını doldur
+                if (typeof window.populateSettingDropdowns === 'function') {
+                    window.populateSettingDropdowns(groupId);
+                }
+            })
+            .catch(error => {
+                console.error('Ayarlar yüklenirken hata:', error);
+            });
+            
+            // Livewire entegrasyonu
+            if (window.livewire) {
+                const saveBtn = document.getElementById('save-btn');
+                if (saveBtn) {
+                    saveBtn.addEventListener('click', function() {
+                        const formData = window.getFormJSON();
+                        console.log('Form verisi kaydediliyor:', formData);
+                        window.livewire.emit('saveFormLayout', groupId, JSON.stringify(formData));
                     });
-                    
-                    // Eğer bir kategori tüm elemanları gizlenmişse, kategoriyi de gizle
-                    const categories = document.querySelectorAll('.block-category');
-                    categories.forEach(category => {
-                        const visibleElements = category.querySelectorAll('.element-palette-item[style="display: flex;"]');
-                        if (visibleElements.length === 0) {
-                            category.style.display = 'none';
-                        } else {
-                            category.style.display = 'block';
-                        }
-                    });
+                }
+                
+                // Livewire olaylarını dinle
+                window.livewire.on('formSaved', function() {
+                    console.log('Form başarıyla kaydedildi!');
                 });
             }
-            
-            // Kategori header tıklama olayı
-            const categoryHeaders = document.querySelectorAll('.block-category-header');
-            categoryHeaders.forEach(header => {
-                header.addEventListener('click', function() {
-                    const category = this.closest('.block-category');
-                    category.classList.toggle('collapsed');
-                    
-                    // Kategori durumunu localStorage'a kaydet
-                    const categoryName = this.querySelector('span').textContent.trim();
-                    const categories = JSON.parse(localStorage.getItem('form_builder_categories') || '{}');
-                    categories[categoryName] = category.classList.contains('collapsed');
-                    localStorage.setItem('form_builder_categories', JSON.stringify(categories));
-                });
-            });
-            
-            // Panel toggle butonları için olay dinleyiciler
-            const toggleButtons = document.querySelectorAll('.panel-toggle');
-            toggleButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const panel = this.closest('.panel__left, .panel__right');
-                    panel.classList.toggle('collapsed');
-                    
-                    // Panel durumunu localStorage'a kaydet
-                    const panelSide = panel.classList.contains('panel__left') ? 'left' : 'right';
-                    localStorage.setItem(`form_builder_${panelSide}_collapsed`, panel.classList.contains('collapsed'));
-                });
-            });
         }, 500); // Form Builder JS'nin yüklenmesi için 500ms bekle
     });
 </script>

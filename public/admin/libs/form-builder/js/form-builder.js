@@ -1,12 +1,14 @@
 // Form Builder JavaScript Kodu
 document.addEventListener("DOMContentLoaded", function () {
-  // Değişkenler
-  let elementCounter = 0;
-  let selectedElement = null;
-  const formCanvas = document.getElementById("form-canvas");
-  const emptyCanvas = document.getElementById("empty-canvas");
-  const elementPalette = document.getElementById("element-palette");
-  const propertiesPanel = document.getElementById("properties-panel");
+  // Global değişkenler
+  window.elementCounter = 0;
+  window.selectedElement = null;
+  window.formCanvas = document.getElementById("form-canvas");
+  window.emptyCanvas = document.getElementById("empty-canvas");
+  window.elementPalette = document.getElementById("element-palette");
+  window.propertiesPanel = document.getElementById("properties-panel");
+  window.undoStack = [];
+  window.redoStack = [];
 
   // Panel sekmeleri için olay dinleyiciler
   const tabs = document.querySelectorAll(".panel-tab");
@@ -81,7 +83,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // Form elementlerinin varsayılan özellikleri
-  const defaultProperties = {
+  window.defaultProperties = {
     text: {
       label: "Metin Alanı",
       name: "text_field",
@@ -249,7 +251,7 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   // Element şablonları
-  const elementTemplates = {
+  window.elementTemplates = {
     text: `
             <div class="mb-3">
                 <label class="form-label">{label}</label>
@@ -417,7 +419,7 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   // Özellik paneli şablonları
-  const propertyTemplates = {
+  window.propertyTemplates = {
     text: `
             <h4 class="fw-bold p-3 border-bottom">Metin Elementini Düzenle</h4>
             <div class="p-3">
@@ -1104,7 +1106,7 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   // Şablon işleme (Mustache benzeri basit bir işleyici)
-  function renderTemplate(template, data) {
+  window.renderTemplate = function(template, data) {
     let result = template;
 
     // Değişken yerleştirme {variable}
@@ -1196,10 +1198,10 @@ document.addEventListener("DOMContentLoaded", function () {
     result = result.replace(/{[^{}]+}/g, "");
 
     return result;
-  }
-
-  // Form elementlerini oluştur
-  function createFormElement(type, properties) {
+  };
+  
+  // Element oluşturma fonksiyonu
+  window.createFormElement = function(type, properties) {
     console.log('createFormElement çağrıldı. Element tipi:', type);
     if (!type || typeof type !== "string") {
       console.error("Geçersiz element tipi:", type);
@@ -1207,12 +1209,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     if (!properties) {
-      properties = defaultProperties[type]
-        ? JSON.parse(JSON.stringify(defaultProperties[type]))
+      properties = window.defaultProperties[type]
+        ? JSON.parse(JSON.stringify(window.defaultProperties[type]))
         : {};
     }
 
-    const elementId = "element-" + ++elementCounter;
+    const elementId = "element-" + ++window.elementCounter;
     const formElement = document.createElement("div");
     formElement.className = "form-element";
     formElement.dataset.id = elementId;
@@ -1265,9 +1267,9 @@ document.addEventListener("DOMContentLoaded", function () {
     content.className = "element-content";
 
     // Element şablonunu al ve işle
-    const template = elementTemplates[type];
+    const template = window.elementTemplates[type];
     if (template) {
-      content.innerHTML = renderTemplate(template, properties);
+      content.innerHTML = window.renderTemplate(template, properties);
 
       // Select ve radio için seçenekleri ekle
       if (type === "select" && properties.options) {
@@ -1339,7 +1341,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Event listener'ları ekle
     formElement.addEventListener("click", function (e) {
       e.stopPropagation();
-      selectElement(formElement);
+      window.selectElement(formElement);
     });
 
     // Element işlemlerini ekle (silme, kopyalama)
@@ -1351,54 +1353,56 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (action === "remove") {
           formElement.remove();
-          if (selectedElement === formElement) {
-            clearSelectedElement();
+          if (window.selectedElement === formElement) {
+            window.clearSelectedElement();
           }
-          checkEmptyCanvas();
+          window.checkEmptyCanvas();
+          window.saveState();
         } else if (action === "duplicate") {
           // Kopya oluştururken özellikleri derin kopyalama
           const elementProps = formElement.properties
             ? JSON.parse(JSON.stringify(formElement.properties))
-            : JSON.parse(JSON.stringify(defaultProperties[type] || {}));
-          const duplicate = createFormElement(type, elementProps);
+            : JSON.parse(JSON.stringify(window.defaultProperties[type] || {}));
+          const duplicate = window.createFormElement(type, elementProps);
 
           if (duplicate) {
             formElement.parentNode.insertBefore(
               duplicate,
               formElement.nextSibling
             );
+            window.saveState();
           }
         }
       });
     });
 
     return formElement;
-  }
-
+  };
+  
   // Element seçimi
-  function selectElement(element) {
+  window.selectElement = function(element) {
     // Önceki seçimi temizle
-    if (selectedElement) {
-      selectedElement.classList.remove("selected");
+    if (window.selectedElement) {
+      window.selectedElement.classList.remove("selected");
     }
 
     // Yeni elementi seç
-    selectedElement = element;
-    selectedElement.classList.add("selected");
+    window.selectedElement = element;
+    window.selectedElement.classList.add("selected");
 
-    // Özellik panelini günculle
-    updatePropertiesPanel();
-  }
-
+    // Özellik panelini güncelle
+    window.updatePropertiesPanel();
+  };
+  
   // Seçili elementi temizle
-  function clearSelectedElement() {
-    if (selectedElement) {
-      selectedElement.classList.remove("selected");
+  window.clearSelectedElement = function() {
+    if (window.selectedElement) {
+      window.selectedElement.classList.remove("selected");
     }
-    selectedElement = null;
+    window.selectedElement = null;
 
     // Özellik panelini sıfırla
-    propertiesPanel.innerHTML = `
+    window.propertiesPanel.innerHTML = `
             <div class="text-center p-4">
                 <div class="h1 text-muted mb-3">
                     <i class="fas fa-mouse-pointer"></i>
@@ -1407,1292 +1411,192 @@ document.addEventListener("DOMContentLoaded", function () {
                 <p class="text-muted">Özelliklerini düzenlemek için bir form elementi seçin.</p>
             </div>
         `;
-  }
-
-  // Ayarları AJAX ile getir ve setting_id listesini doldur
-  function populateSettingDropdowns(groupId) {
-    fetch(`/admin/settingmanagement/api/settings?group=${groupId}`)
-      .then(response => response.json())
-      .then(settings => {
-        const settingDropdowns = document.querySelectorAll('select[name="setting_id"]');
-        
-        settingDropdowns.forEach(dropdown => {
-          // Mevcut seçili değeri al
-          const currentValue = dropdown.value;
-          
-          // Dropdown'ı temizle, sadece ilk opsiyonu koru
-          const firstOption = dropdown.querySelector('option:first-child');
-          dropdown.innerHTML = '';
-          dropdown.appendChild(firstOption);
-          
-          // Yeni seçenekleri ekle
-          settings.forEach(setting => {
-            const option = document.createElement('option');
-            option.value = setting.id;
-            option.textContent = `${setting.label} (${setting.key})`;
-            
-            // Eğer önceden seçili değer vardıysa, onu tekrar seç
-            if (currentValue && currentValue == setting.id) {
-              option.selected = true;
-            }
-            
-            dropdown.appendChild(option);
-          });
-        });
-      })
-      .catch(error => {
-        console.error('Ayarlar alınırken hata oluştu:', error);
-      });
-  }
-
-  // Özellik panelini günculle
-  function updatePropertiesPanel() {
-    if (!selectedElement) return;
-
-    const type = selectedElement.dataset.type;
-
-    // Özellik şablonunu al
-    const propTemplate = propertyTemplates[type];
-
-    if (!propTemplate) {
-      propertiesPanel.innerHTML = `
-                <div class="alert alert-warning">
-                    Bu element tipi için özellik paneli henüz eklenmemiş.
-                </div>
-            `;
-      return;
-    }
-
-    // Element özelliklerini al
-    let properties = selectedElement.properties;
-
-    // Özellikler tanımlı değilse, varsayılan özellikleri kullan
-    if (!properties) {
-      properties = defaultProperties[type]
-        ? JSON.parse(JSON.stringify(defaultProperties[type]))
-        : {};
-      selectedElement.properties = properties;
-    }
-
-    // Genişlik değerlerini kontrol et
-    let templateData = Object.assign({}, properties);
-    templateData["width" + properties.width] = true;
-
-    // Row için sütun sayısını kontrol et
-    if (type === "row" && properties.columns) {
-      templateData["columns" + properties.columns.length] = true;
-    }
-    
-    // Heading size için kontrol et
-    if (type === "heading" && properties.size) {
-      templateData["size" + properties.size] = true;
-    }
-    
-    // Hizalama için kontrol et
-    if (properties.align) {
-      templateData["align" + properties.align] = true;
-    }
-    
-    // Stil için kontrol et
-    if (properties.style) {
-      templateData["style" + properties.style] = true;
-    }
-    
-    // Yükseklik için kontrol et
-    if (properties.height) {
-      const heightMap = {
-        "0.5rem": "0_5",
-        "1rem": "1",
-        "2rem": "2",
-        "3rem": "3",
-        "4rem": "4"
-      };
-      
-      if (heightMap[properties.height]) {
-        templateData["height" + heightMap[properties.height]] = true;
-      }
-    }
-
-    // Şablonu işle
-    propertiesPanel.innerHTML = renderTemplate(propTemplate, templateData);
-
-    // Özellik değişikliklerini dinle
-    const inputs = propertiesPanel.querySelectorAll("input, select, textarea");
-    inputs.forEach((input) => {
-      input.addEventListener("change", function () {
-        updateElementProperty(input);
-      });
-
-      input.addEventListener("keyup", function () {
-        updateElementProperty(input);
-      });
-    });
-
-    // Select için özel yönetim
-    if (type === "select" || type === "radio") {
-      // Seçenekleri ekle
-      const optionsContainer = document.getElementById("options-container");
-      if (optionsContainer) {
-        optionsContainer.innerHTML = "";
-
-        if (properties.options && properties.options.length) {
-          properties.options.forEach((option, index) => {
-            const optionRow = document.createElement("div");
-            optionRow.className = "input-group mb-2 option-row";
-            optionRow.innerHTML = `
-                            <input type="text" class="form-control" name="option-value-${index}" placeholder="Değer" value="${
-              option.value || ""
-            }">
-                            <input type="text" class="form-control" name="option-label-${index}" placeholder="Etiket" value="${
-              option.label || ""
-            }">
-                            <button type="button" class="btn btn-outline-danger remove-option" data-index="${index}">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        `;
-
-            optionsContainer.appendChild(optionRow);
-
-            // Değer değişikliklerini dinle
-            const inputs = optionRow.querySelectorAll("input");
-            inputs.forEach((input) => {
-              input.addEventListener("change", function () {
-                updateOptionValue(index, input);
-              });
-
-              input.addEventListener("keyup", function () {
-                updateOptionValue(index, input);
-              });
-            });
-          });
-        }
-
-        // Var olan seçenek silme butonlarını etkinleştir
-        const removeOptionBtns =
-          optionsContainer.querySelectorAll(".remove-option");
-        removeOptionBtns.forEach((btn) => {
-          btn.addEventListener("click", function () {
-            const index = parseInt(this.dataset.index);
-            properties.options.splice(index, 1);
-            updateElementContent();
-            updatePropertiesPanel();
-          });
-        });
-      }
-
-      // Seçenek Ekle butonu
-      const addOptionBtn = document.getElementById("add-option");
-      if (addOptionBtn) {
-        addOptionBtn.addEventListener("click", function () {
-          if (!Array.isArray(properties.options)) {
-            properties.options = [];
-          }
-          properties.options.push({
-            value: "option" + (properties.options.length + 1),
-            label: "Seçenek " + (properties.options.length + 1),
-          });
-          updateElementContent();
-          updatePropertiesPanel();
-        });
-      }
-    }
-    
-    // Tab Group için özel yönetim
-    if (type === "tab_group" && properties.tabs) {
-      // Tab'ları ekle
-      const tabsContainer = document.getElementById("tabs-container");
-      if (tabsContainer) {
-        tabsContainer.innerHTML = "";
-
-        if (properties.tabs && properties.tabs.length) {
-          properties.tabs.forEach((tab, index) => {
-            // Tab başlığı ekleme
-            const tabItem = document.createElement("li");
-            tabItem.className = "nav-item";
-            tabItem.innerHTML = `
-              <a href="#tab-${elementId}-${index}" class="nav-link ${index === 0 ? 'active' : ''}" data-bs-toggle="tab">
-                ${tab.title}
-              </a>
-            `;
-            tabList.appendChild(tabItem);
-            
-            // Tab içeriği ekleme
-            const tabPane = document.createElement("div");
-            tabPane.className = `tab-pane ${index === 0 ? 'active' : ''}`;
-            tabPane.id = `tab-${elementId}-${index}`;
-            tabPane.innerHTML = `<p>${tab.content}</p>`;
-            tabContent.appendChild(tabPane);
-          });
-        }
-      }
-
-      // Sekme silme butonlarını etkinleştir
-      const removeTabBtns = tabsContainer.querySelectorAll(".remove-tab");
-      removeTabBtns.forEach((btn) => {
-        btn.addEventListener("click", function () {
-          const index = parseInt(this.dataset.index);
-          properties.tabs.splice(index, 1);
-          updateElementContent();
-          updatePropertiesPanel();
-        });
-      });
-
-      // Sekme Ekle butonu
-      const addTabBtn = document.getElementById("add-tab");
-      if (addTabBtn) {
-        addTabBtn.addEventListener("click", function () {
-          if (!Array.isArray(properties.tabs)) {
-            properties.tabs = [];
-          }
-          properties.tabs.push({
-            title: "Sekme " + (properties.tabs.length + 1),
-            content: "İçerik " + (properties.tabs.length + 1)
-          });
-          updateElementContent();
-          updatePropertiesPanel();
-        });
-      }
-    }
-
-    // Row için özel yönetim
-    if (type === "row") {
-      // Sütun sayısını değiştirme
-      const columnCountSelect = propertiesPanel.querySelector(
-        '[name="column-count"]'
-      );
-      if (columnCountSelect) {
-        columnCountSelect.addEventListener("change", function () {
-          updateRowColumns(parseInt(this.value));
-        });
-      }
-
-      // Sütun genişliklerini göster
-      const columnWidthsContainer = document.getElementById(
-        "column-widths-container"
-      );
-      if (columnWidthsContainer && properties.columns) {
-        columnWidthsContainer.innerHTML = "";
-
-        properties.columns.forEach((column, index) => {
-          const rowElement = document.createElement("div");
-          rowElement.className = "input-group mb-2 column-width-row";
-          rowElement.innerHTML = `
-                        <span class="input-group-text">Sütun ${
-                          column.index
-                        }</span>
-                        <select class="form-select" name="column-width-${index}">
-                            <option value="2" ${
-                              column.width == 2 ? "selected" : ""
-                            }>2/12</option>
-                            <option value="3" ${
-                              column.width == 3 ? "selected" : ""
-                            }>3/12</option>
-                            <option value="4" ${
-                              column.width == 4 ? "selected" : ""
-                            }>4/12</option>
-                            <option value="6" ${
-                              column.width == 6 ? "selected" : ""
-                            }>6/12</option>
-                            <option value="8" ${
-                              column.width == 8 ? "selected" : ""
-                            }>8/12</option>
-                            <option value="10" ${
-                              column.width == 10 ? "selected" : ""
-                            }>10/12</option>
-                        </select>
-                    `;
-
-          columnWidthsContainer.appendChild(rowElement);
-
-          // Sütun genişliği değişikliğini dinle
-          const select = rowElement.querySelector("select");
-          select.addEventListener("change", function () {
-            updateColumnWidth(index, parseInt(this.value));
-          });
-        });
-      }
-    }
-    
-    // Eğer grup ID'si belirtilmişse ve form element'i bir ayarla ilişkilendirilebilecek 
-    // türdeyse (düzen elementleri hariç), ayarları getir
-    const formGroupId = document.getElementById('group-id')?.value;
-    if (formGroupId && ['text', 'textarea', 'select', 'checkbox', 'radio', 'switch', 
-                        'number', 'email', 'date', 'time', 'color', 'file', 'image'].includes(type)) {
-      populateSettingDropdowns(formGroupId);
-    }
-  }
-
-  // Seçenek değerini günculle
-  function updateOptionValue(index, input) {
-    if (
-      !selectedElement ||
-      (selectedElement.dataset.type !== "select" &&
-        selectedElement.dataset.type !== "radio")
-    )
-      return;
-
-    const properties = selectedElement.properties;
-
-    if (!properties || !Array.isArray(properties.options)) {
-      return;
-    }
-
-    const option = properties.options[index];
-    if (!option) return;
-
-    if (input.name.startsWith("option-value-")) {
-      option.value = input.value;
-    } else if (input.name.startsWith("option-label-")) {
-      option.label = input.value;
-    }
-
-    updateElementContent();
-  }
+  };
   
-  // Sekme değerini günculle
-  function updateTabValue(index, input) {
-    if (!selectedElement || selectedElement.dataset.type !== "tab_group") {
-      return;
-    }
-
-    const properties = selectedElement.properties;
-
-    if (!properties || !Array.isArray(properties.tabs)) {
-      return;
-    }
-
-    const tab = properties.tabs[index];
-    if (!tab) return;
-
-    if (input.name.startsWith("tab-title-")) {
-      tab.title = input.value;
-    } else if (input.name.startsWith("tab-content-")) {
-      tab.content = input.value;
-    }
-
-    updateElementContent();
-  }
-
-  // Element özelliklerini günculle
-  function updateElementProperty(input) {
-    if (!selectedElement) return;
-
-    const name = input.name;
-    const value = input.type === "checkbox" ? input.checked : input.value;
-
-    // Özel özellik güncellemeleri
-    if (name === "label") {
-      selectedElement.querySelector(".element-title").textContent = value;
-      selectedElement.properties.label = value;
-
-      // Form içindeki etiketi günculle
-      const labelElement = selectedElement.querySelector(".form-label");
-      if (labelElement) {
-        labelElement.textContent = value;
-      }
-    } else if (name === "width") {
-      selectedElement.dataset.width = value;
-      selectedElement.properties.width = parseInt(value);
-
-      // Genişlik değişikliğini anında göster
-      const width = parseInt(value);
-      selectedElement.style.width = `${(width * 100) / 12}%`;
-
-      // Element sütun içinde ise sütun genişliğini günculle
-      const columnElement = selectedElement.closest(".column-element");
-      if (columnElement) {
-        columnElement.className = columnElement.className.replace(
-          /col-md-\d+/,
-          `col-md-${width}`
-        );
-        columnElement.dataset.width = width;
-      }
-    } else if (name === "content" && selectedElement.dataset.type === "heading") {
-      selectedElement.querySelector(".element-title").textContent = "Başlık: " + value;
-      selectedElement.properties.content = value;
-      
-      // Başlık içeriğini günculle
-      const headingElement = selectedElement.querySelector(selectedElement.properties.size);
-      if (headingElement) {
-        headingElement.textContent = value;
-      }
-    } else if (name === "title" && selectedElement.dataset.type === "card") {
-      selectedElement.querySelector(".element-title").textContent = "Kart: " + value;
-      selectedElement.properties.title = value;
-      
-      // Kart başlığını günculle
-      const titleElement = selectedElement.querySelector(".card-title");
-      if (titleElement) {
-        titleElement.textContent = value;
-      }
-    } else if (name === "setting_id") {
-      selectedElement.properties.setting_id = value;
+  // Boş canvas kontrolü
+  window.checkEmptyCanvas = function() {
+    if (window.formCanvas.querySelectorAll(".form-element").length === 0) {
+      window.emptyCanvas.style.display = "flex";
     } else {
-      // Genel özellik güncelleme
-      selectedElement.properties[name] = value;
+      window.emptyCanvas.style.display = "none";
     }
-
-    // Element içeriğini günculle
-    updateElementContent();
-  }
-
-  // Row sütunlarını günculle
-  function updateRowColumns(columnCount) {
-    if (!selectedElement || selectedElement.dataset.type !== "row") return;
-
-    // Mevcut sütunları al
-    let currentColumns = selectedElement.properties.columns || [];
-    const rowElement = selectedElement.querySelector(".row-element");
-    const columnElements = rowElement
-      ? rowElement.querySelectorAll(".column-element")
-      : [];
-
-    // Eğer sütun sayısı azalıyorsa ve dolu sütunlar varsa uyarı ver
-    if (columnCount < currentColumns.length) {
-      // Mevcut içerik olup olmadığını kontrol et
-      let hasContent = false;
-
-      // Silinecek sütunları kontrol et
-      for (let i = columnCount; i < columnElements.length; i++) {
-        if (
-          columnElements[i] &&
-          columnElements[i].querySelectorAll(".form-element").length > 0
-        ) {
-          hasContent = true;
-          break;
-        }
-      }
-
-      if (hasContent) {
-        const proceed = confirm(
-          "Sütun sayısını azaltırsanız, fazla olan sütunlardaki içerikler kaybolacak. Devam etmek istiyor musunuz?"
-        );
-        if (!proceed) return;
-      }
-    }
-
-    // Yeni sütun dizisi oluştur, mevcut sütunların içeriğini koru
-    const newColumns = [];
-
-    // Varsayılan genişlik
-    const defaultWidth = Math.floor(12 / columnCount);
-
-    // Yeni sütun dizisi oluştur
-    for (let i = 0; i < columnCount; i++) {
-      if (i < currentColumns.length) {
-        // Mevcut sütunu koru
-        newColumns.push(currentColumns[i]);
-      } else {
-        // Yeni sütun ekle
-        newColumns.push({
-          index: i + 1,
-          width: defaultWidth,
-        });
-      }
-    }
-
-    // Row properties'i günculle
-    selectedElement.properties.columns = newColumns;
-
-    // Sütun genişliklerini kontrol et ve günculle
-    const rowWidth = newColumns.reduce(
-      (sum, col) => sum + parseInt(col.width || 0),
-      0
-    );
-    if (rowWidth > 12) {
-      // Genişlikleri orantılı olarak azalt
-      const ratio = 12 / rowWidth;
-      newColumns.forEach((col) => {
-        col.width = Math.max(1, Math.floor(col.width * ratio));
-      });
-}
-
-      // Element içeriğini günculle - mevcut içeriği koru
-      updateRowContent(columnElements);
-
-      // Özellik panelini günculle (sütun genişlikleri için)
-      updatePropertiesPanel();
-    }
-
-    // Sütun genişliğini günculle
-    function updateColumnWidth(columnIndex, width) {
-      if (!selectedElement || selectedElement.dataset.type !== "row") return;
-
-      if (
-        !selectedElement.properties ||
-        !Array.isArray(selectedElement.properties.columns)
-      ) {
-        return;
-      }
-
-      selectedElement.properties.columns[columnIndex].width = width;
-
-      // Sütun genişlikleri toplamını kontrol et
-      const totalWidth = selectedElement.properties.columns.reduce(
-        (sum, col) => sum + (parseInt(col.width) || 0),
-        0
-      );
-
-      // Toplam genişlik 12'yi aşıyorsa uyarı ver
-      if (totalWidth > 12) {
-        alert(
-          "Toplam sütun genişliği 12 birimden fazla olamaz. Diğer sütunların genişliklerini düşürün."
-        );
-        // Önceki değeri geri yükle
-        selectedElement.properties.columns[columnIndex].width =
-          12 - (totalWidth - width);
-      }
-
-      // Row içeriğini günculle
-      const columnElements = selectedElement.querySelectorAll(".column-element");
-      updateRowContent(columnElements);
-    }
-
-    // Element içeriğini günculle
-    function updateElementContent() {
-      if (!selectedElement) return;
-
-      const type = selectedElement.dataset.type;
-      const properties = selectedElement.properties;
-
-      if (!properties) {
-        console.error("Element özellikleri tanımlanmamış:", selectedElement);
-        return;
-      }
-
-      // Özel durum: Row
-      if (type === "row") {
-        const columnElements =
-          selectedElement.querySelectorAll(".column-element");
-        updateRowContent(columnElements);
-      } else {
-        // Normal elementler için içeriği günculle
-        const content = selectedElement.querySelector(".element-content");
-        content.innerHTML = renderTemplate(elementTemplates[type], properties);
-
-        // Select ve radio için seçenekleri ekle
-        if (type === "select" && properties.options) {
-          const selectElement = content.querySelector("select");
-          if (selectElement) {
-            properties.options.forEach((option) => {
-              const optionElement = document.createElement("option");
-              optionElement.value = option.value || "";
-              optionElement.textContent = option.label || "";
-              selectElement.appendChild(optionElement);
-            });
-          }
-        } else if (type === "radio" && properties.options) {
-          const radioContainer = content.querySelector(".radio-options");
-          if (radioContainer) {
-            properties.options.forEach((option) => {
-              const radioElement = document.createElement("div");
-              radioElement.className = "form-check";
-              radioElement.innerHTML = `
-                              <input class="form-check-input" type="radio" name="${
-                                properties.name || ""
-                              }">
-                              <span class="form-check-label">${
-                                option.label || ""
-                              }</span>
-                          `;
-              radioContainer.appendChild(radioElement);
-            });
-          }
-        } else if (type === "tab_group" && properties.tabs) {
-          // Tab Group için sekmeler ekle
-          const tabList = content.querySelector(".nav-tabs");
-          const tabContent = content.querySelector(".tab-content");
-          
-          if (tabList && tabContent) {
-            tabList.innerHTML = '';
-            tabContent.innerHTML = '';
-            
-            properties.tabs.forEach((tab, index) => {
-              // Tab başlığı ekleme
-              const tabItem = document.createElement("li");
-              tabItem.className = "nav-item";
-              tabItem.innerHTML = `
-                <a href="#tab-${selectedElement.dataset.id}-${index}" class="nav-link ${index === 0 ? 'active' : ''}" data-bs-toggle="tab">
-                  ${tab.title}
-                </a>
-              `;
-              tabList.appendChild(tabItem);
-              
-              // Tab içeriği ekleme
-              const tabPane = document.createElement("div");
-              tabPane.className = `tab-pane ${index === 0 ? 'active' : ''}`;
-              tabPane.id = `tab-${selectedElement.dataset.id}-${index}`;
-              tabPane.innerHTML = `<p>${tab.content}</p>`;
-              tabContent.appendChild(tabPane);
-            });
-          }
-        }
-      }
-    }
-
-    // Boş canvas kontrolü
-    function checkEmptyCanvas() {
-      if (formCanvas.querySelectorAll(".form-element").length === 0) {
-        emptyCanvas.style.display = "flex";
-      } else {
-        emptyCanvas.style.display = "none";
-      }
-    }
-
-    // SortableJS Initialize
-    function initializeSortable() {
-      // Element Paleti için Sortable - her bir palette öğesi için ayrı ayrı Sortable tanımlıyoruz
-      document.querySelectorAll(".element-palette-item").forEach((item) => {
-        new Sortable(item.parentElement, {
-          group: {
-            name: "palette",
-            pull: "clone",
-            put: false,
-          },
-          sort: false,
-          animation: 150,
-          filter: ".element-category",
-          draggable: ".element-palette-item",
-          onStart: function (evt) {
-            // Sürükleme başladığında sadece bir öğenin sürüklenmesini sağla
-            evt.from.classList.add("dragging");
-          },
-          onEnd: function (evt) {
-            evt.from.classList.remove("dragging");
-          },
-        });
-      });
-
-      // Form canvas için Sortable
-      new Sortable(formCanvas, {
-        group: {
-          name: "form",
-          put: true,
-        },
-        animation: 150,
-        filter: ".empty-canvas",
-        onAdd: function (evt) {
-          if (evt.item.classList.contains("element-palette-item")) {
-            const type = evt.item.dataset.type;
-
-            if (type) {
-              // Paletten gelen elemanı kalıcı bir form elemanına dönüştür
-              const properties = defaultProperties[type]
-                ? JSON.parse(JSON.stringify(defaultProperties[type]))
-                : {};
-              const newElement = createFormElement(type, properties);
-
-              if (newElement) {
-                // Placeholder öğeyi değiştir
-                evt.item.parentNode.replaceChild(newElement, evt.item);
-
-                // Boş canvas uyarısını her zaman gizle
-                emptyCanvas.style.display = "none";
-
-                // Yeni elementi seç
-                selectElement(newElement);
-
-                // Row elementi ise sürüklenebilir sütunlar oluştur
-                if (type === "row") {
-                  initializeColumnSortables();
-                }
-
-                // Durum kaydetme
-                saveState();
-              }
-            } else {
-              // Geçersiz element, kaldırılır
-              evt.item.remove();
-            }
-          }
-
-          // Canvas boş mu kontrol et
-          checkEmptyCanvas();
-        },
-        onChange: function () {
-          // Boş canvas kontrolü
-          checkEmptyCanvas();
-
-          // Durum kaydetme
-          saveState();
-        },
-        onRemove: function () {
-          // Boş canvas kontrolü
-          checkEmptyCanvas();
-
-          // Durum kaydetme
-          saveState();
-        },
-      });
-
-      // İlk çağrı
-      initializeColumnSortables();
-    }
-
-    // Sütunlar için SortableJS Initialize
-    function initializeColumnSortables() {
-      const columns = document.querySelectorAll(".column-element");
-      columns.forEach((column) => {
-        new Sortable(column, {
-          group: {
-            name: "form",
-            put: function (to, from, dragEl) {
-              // Row elementi sütun içine eklenemez
-              if (dragEl.dataset && dragEl.dataset.type === "row") {
-                return false;
-              }
-              return true;
-            },
-          },
-          animation: 150,
-          filter: ".column-placeholder",
-          onAdd: function (evt) {
-            // Placeholder'ı kaldır
-            const placeholder = column.querySelector(".column-placeholder");
-            if (placeholder) {
-              placeholder.remove();
-            }
-
-            // Element palette'den ekleniyorsa
-            if (evt.item.classList.contains("element-palette-item")) {
-              const type = evt.item.dataset.type;
-
-              if (type) {
-                // Paletten gelen elemanı kalıcı bir form elemanına dönüştür
-                const properties = defaultProperties[type]
-                  ? JSON.parse(JSON.stringify(defaultProperties[type]))
-                  : {};
-                const newElement = createFormElement(type, properties);
-
-                if (newElement) {
-                  // Placeholder öğeyi değiştir
-                  evt.item.parentNode.replaceChild(newElement, evt.item);
-
-                  // Yeni elementi seç
-                  selectElement(newElement);
-
-                  // Durum kaydetme
-                  saveState();
-                }
-              } else {
-                // Geçersiz element, kaldırılır
-                evt.item.remove();
-              }
-            }
-          },
-          onRemove: function (evt) {
-            // Sütundan element çıkarıldığında
-            if (evt.from.children.length === 0) {
-              // Sütun boşsa placeholder ekle
-              const placeholder = document.createElement("div");
-              placeholder.className = "column-placeholder";
-              placeholder.innerHTML =
-                '<i class="fas fa-plus me-2"></i> Buraya element sürükleyin';
-              evt.from.appendChild(placeholder);
-            }
-
-            // Durum kaydetme
-            saveState();
-          },
-          onChange: function () {
-            // Durum kaydetme
-            saveState();
-          },
-        });
-      });
-    }
-
-    // Formu JSON olarak al
-    function getFormJSON() {
-      const formElements = [];
-      const elements = formCanvas.querySelectorAll(":scope > .form-element"); // Sadece ilk seviye elementler
-
-      elements.forEach((element) => {
-        const type = element.dataset.type;
-        const properties = element.properties || {};
-
-        const elementData = {
-          type: type,
-          properties: JSON.parse(JSON.stringify(properties)),
-        };
-
-        // Row elementi içindeki elementleri dahil et
-        if (type === "row") {
-          const columns = element.querySelectorAll(".column-element");
-          elementData.columns = [];
-
-          columns.forEach((column) => {
-            const columnElements = [];
-            const columnItems = column.querySelectorAll(".form-element");
-
-            columnItems.forEach((item) => {
-              const itemType = item.dataset.type;
-              const itemProps = item.properties || {};
-
-              columnElements.push({
-                type: itemType,
-                properties: JSON.parse(JSON.stringify(itemProps)),
-              });
-            });
-
-            elementData.columns.push({
-              width: parseInt(column.dataset.width || 6),
-              elements: columnElements,
-            });
-          });
-        }
-
-        formElements.push(elementData);
-      });
-
-      return {
-        title: "Form Builder",
-        elements: formElements,
-      };
-    }
-
-    // Formu kaydet
-    document.getElementById("save-btn").addEventListener("click", function () {
-      const formData = getFormJSON();
-      console.log("Form Verisi:", formData);
-      console.log("JSON:", JSON.stringify(formData));
-      
-      // Form verisi hazır, şimdi Livewire'a gönder
-      const groupId = document.getElementById('group-id').value;
-      if (groupId) {
-        window.livewire.emit('saveFormLayout', groupId, JSON.stringify(formData));
-      }
-    });
-
-    // Formu önizle
-    document.getElementById("preview-btn").addEventListener("click", function () {
-      const formData = getFormJSON();
-
-      // Yeni pencerede göstermek için HTML oluştur
-      let previewHtml = `
-          <!DOCTYPE html>
-          <html lang="tr">
-          <head>
-              <meta charset="UTF-8">
-              <meta name="viewport" content="width=device-width, initial-scale=1.0">
-              <title>Form Önizleme</title>
-              <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css">
-              <style>
-                  body {
-                      background-color: #f9fafb;
-                      padding: 20px;
-                  }
-                  .preview-container {
-                      max-width: 800px;
-                      margin: 0 auto;
-                      background-color: white;
-                      border-radius: 8px;
-                      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-                      padding: 20px;
-                  }
-                  .preview-header {
-                      margin-bottom: 20px;
-                      padding-bottom: 15px;
-                      border-bottom: 1px solid #e5e7eb;
-                  }
-              </style>
-          </head>
-          <body>
-              <div class="preview-container">
-                  <div class="preview-header">
-                      <h2>Form Önizleme</h2>
-                      <p class="text-muted">Bu bir form önizlemesidir.</p>
-                  </div>
-                  <form>
-          `;
-
-      // Öğelerin HTML içeriğini önizlemeye ekle
-      formData.elements.forEach((element) => {
-        if (element.type === "row") {
-          previewHtml += '<div class="row">';
-
-          element.columns.forEach((column) => {
-            previewHtml += `<div class="col-md-${column.width}">`;
-
-            column.elements.forEach((item) => {
-              const properties = item.properties;
-              previewHtml += renderTemplate(
-                elementTemplates[item.type],
-                properties
-              );
-            });
-
-            previewHtml += "</div>";
-          });
-
-          previewHtml += "</div>";
-        } else {
-          const properties = element.properties;
-          previewHtml += renderTemplate(
-            elementTemplates[element.type],
-            properties
-          );
-        }
-      });
-
-      previewHtml += `
-                      <div class="mt-4">
-                          <button type="submit" class="btn btn-primary">Gönder</button>
-                          <button type="reset" class="btn btn-outline-secondary ms-2">Sıfırla</button>
-                      </div>
-                  </form>
-              </div>
-              <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/js/tabler.min.js"></script>
-          </body>
-          </html>
-          `;
-
-      // Yeni pencerede aç
-      const previewWindow = window.open("", "_blank");
-      previewWindow.document.write(previewHtml);
-      previewWindow.document.close();
-    });
-
-    // Canvas boş alan tıklama
-    formCanvas.addEventListener("click", function (e) {
-      if (
-        e.target === formCanvas ||
-        e.target === emptyCanvas ||
-        e.target.closest(".empty-canvas")
-      ) {
-        clearSelectedElement();
-      }
-    });
-
-    // Geri ve ileri butonları
-    let undoStack = [];
-    let redoStack = [];
-
-    function saveState() {
-      // Formun mevcut içeriğini state olarak kaydet
-      const state = formCanvas.innerHTML;
-      undoStack.push(state);
-      redoStack = []; // Yeni bir durum kaydedildiğinde redo stack'i temizle
-
-      // Butonların durumunu güncelle
-      const undoBtn = document.getElementById("cmd-undo");
-      const redoBtn = document.getElementById("cmd-redo");
-
-      if (undoBtn) undoBtn.disabled = undoStack.length <= 1;
-      if (redoBtn) redoBtn.disabled = redoStack.length === 0;
-    }
-
+  };
+  
+  // Durum kaydetme
+  window.saveState = function() {
+    // Formun mevcut içeriğini state olarak kaydet
+    if (!window.formCanvas) return;
+    
+    const state = window.formCanvas.innerHTML;
+    window.undoStack.push(state);
+    window.redoStack = []; // Yeni bir durum kaydedildiğinde redo stack'i temizle
+
+    // Butonların durumunu güncelle
     const undoBtn = document.getElementById("cmd-undo");
-    if (undoBtn) {
-      undoBtn.addEventListener("click", function () {
-        if (undoStack.length > 1) {
-          // Son durumu redoStack'e ekle
-          redoStack.push(undoStack.pop());
-
-          // Önceki durumu yükle
-          formCanvas.innerHTML = undoStack[undoStack.length - 1];
-
-          // Butonların durumunu güncelle
-          this.disabled = undoStack.length <= 1;
-          document.getElementById("cmd-redo").disabled = false;
-
-          // SortableJS'yi yeniden başlat ve diğer dinleyicileri ekle
-          initializeSortable();
-          checkEmptyCanvas();
-        }
-      });
-    }
-
     const redoBtn = document.getElementById("cmd-redo");
-    if (redoBtn) {
-      redoBtn.addEventListener("click", function () {
-        if (redoStack.length > 0) {
-          // Son redo durumunu al
-          const state = redoStack.pop();
 
-          // Mevcut durumu undoStack'e ekle
-          undoStack.push(state);
+    if (undoBtn) undoBtn.disabled = window.undoStack.length <= 1;
+    if (redoBtn) redoBtn.disabled = window.redoStack.length === 0;
+  };
+  
+  // Formu JSON olarak al
+  window.getFormJSON = function() {
+    const formElements = [];
+    const elements = window.formCanvas.querySelectorAll(":scope > .form-element"); // Sadece ilk seviye elementler
 
-          // Durumu yükle
-          formCanvas.innerHTML = state;
+    elements.forEach((element) => {
+      const type = element.dataset.type;
+      const properties = element.properties || {};
 
-          // Butonların durumunu güncelle
-          this.disabled = redoStack.length === 0;
-          document.getElementById("cmd-undo").disabled = false;
+      const elementData = {
+        type: type,
+        properties: JSON.parse(JSON.stringify(properties)),
+      };
 
-          // SortableJS'yi yeniden başlat ve diğer dinleyicileri ekle
-          initializeSortable();
-          checkEmptyCanvas();
-        }
-      });
-    }
-    
-    // Temizle butonu
-    const clearBtn = document.getElementById("cmd-clear");
-    if (clearBtn) {
-      clearBtn.addEventListener("click", function() {
-        if (formCanvas.querySelectorAll(".form-element").length > 0) {
-          if (confirm("Form içeriğini tamamen temizlemek istediğinize emin misiniz?")) {
-            formCanvas.innerHTML = "";
-            checkEmptyCanvas();
-            saveState();
-            clearSelectedElement();
-          }
-        }
-      });
-    }
-    
-    // Bileşen sınırları görünürlüğü
-    const visibilityBtn = document.getElementById("sw-visibility");
-    if (visibilityBtn) {
-      visibilityBtn.addEventListener("click", function() {
-        this.classList.toggle("active");
-        document.body.classList.toggle("hide-borders");
-        
-        const elements = document.querySelectorAll(".form-element");
-        elements.forEach(el => {
-          el.classList.toggle("no-border");
+      // Row elementi içindeki elementleri dahil et
+      if (type === "row") {
+        const columns = element.querySelectorAll(".column-element");
+        elementData.columns = [];
+
+        columns.forEach((column) => {
+          const columnElements = [];
+          const columnItems = column.querySelectorAll(".form-element");
+
+          columnItems.forEach((item) => {
+            const itemType = item.dataset.type;
+            const itemProps = item.properties || {};
+
+            columnElements.push({
+              type: itemType,
+              properties: JSON.parse(JSON.stringify(itemProps)),
+            });
+          });
+
+          elementData.columns.push({
+            width: parseInt(column.dataset.width || 6),
+            elements: columnElements,
+          });
         });
-      });
-    }
-    
-    // Cihaz görünümü butonları
-    const deviceBtns = document.querySelectorAll("[id^='device-']");
-    deviceBtns.forEach(btn => {
-      btn.addEventListener("click", function() {
-        // Aktif cihaz butonunu güncelle
-        deviceBtns.forEach(b => b.classList.remove("active"));
-        this.classList.add("active");
-        
-        // Canvas genişliğini günculle
-        const deviceType = this.id.replace("device-", "");
-        
-        if (deviceType === "desktop") {
-          formCanvas.style.maxWidth = "100%";
-        } else if (deviceType === "tablet") {
-          formCanvas.style.maxWidth = "768px";
-        } else if (deviceType === "mobile") {
-          formCanvas.style.maxWidth = "375px";
-        }
-      });
+      }
+
+      formElements.push(elementData);
     });
 
-    // Panel ve sekme durumlarını localStorage'dan yükle
-    function loadSavedStates() {
-      // Panel durumları
-      const leftPanelCollapsed =
-        localStorage.getItem("form_builder_left_collapsed") === "true";
-      const rightPanelCollapsed =
-        localStorage.getItem("form_builder_right_collapsed") === "true";
-
-      const leftPanel = document.querySelector(".panel__left");
-      const rightPanel = document.querySelector(".panel__right");
-
-      if (leftPanelCollapsed && leftPanel) {
-        leftPanel.classList.add("collapsed");
-      }
-
-      if (rightPanelCollapsed && rightPanel) {
-        rightPanel.classList.add("collapsed");
-      }
-
-      // Sekme durumları
-      const leftTab = localStorage.getItem("form_builder_left_tab");
-      const rightTab = localStorage.getItem("form_builder_right_tab");
-
-      if (leftTab) {
-        const tabEl = document.querySelector(
-          `.panel__left .panel-tab[data-tab="${leftTab}"]`
-        );
-        if (tabEl) {
-          tabEl.click();
-        }
-      }
-
-      if (rightTab) {
-        const tabEl = document.querySelector(
-          `.panel__right .panel-tab[data-tab="${rightTab}"]`
-        );
-        if (tabEl) {
-          tabEl.click();
-        }
-      }
-
-      // Kategori durumları
-      const categories = JSON.parse(
-        localStorage.getItem("form_builder_categories") || "{}"
-      );
-      Object.keys(categories).forEach((categoryName) => {
-        const isCollapsed = categories[categoryName];
-        const headers = document.querySelectorAll(".block-category-header");
-
-        headers.forEach((header) => {
-          const headerText = header.querySelector("span")?.textContent.trim();
-          if (headerText === categoryName && isCollapsed) {
-            const category = header.closest(".block-category");
-            if (category) {
-              category.classList.add("collapsed");
-              const blockItems = category.querySelector(".block-items");
-              if (blockItems) {
-                blockItems.style.display = "none";
-              }
-            }
-          }
-        });
-      });
-    }
-
-    // İlk durumu kaydet
-    saveState();
-
-    // SortableJS'yi başlat
-    initializeSortable();
-
-    // Kaydedilmiş durumları yükle
-    loadSavedStates();
-});
-
-// Yeni fonksiyonlar eklendi.
-function createFormElement(elementData) {
-    console.log('createFormElement çağrıldı. Element tipi:', elementData.type);
-    let el;
-    switch (elementData.type) {
-        case 'text':
-            el = document.createElement('input');
-            el.setAttribute('type', 'text');
-            break;
-        case 'button':
-            el = document.createElement('button');
-            el.textContent = elementData.label || 'Button';
-            break;
-        default:
-            el = document.createElement('div');
-            el.textContent = 'Unsupported element type: ' + elementData.type;
-    }
-    return el;
-}
-
-function loadFormFromJSON(json) {
+    return {
+      title: "Form Builder",
+      elements: formElements,
+    };
+  };
+  
+  // JSON'dan form yükle
+  window.loadFormFromJSON = function(json) {
     console.log('loadFormFromJSON çağrıldı. Gelen JSON:', json);
-    if (!json || !Array.isArray(json.elements)) return;
-    const container = document.getElementById('form-container');
-    if (!container) {
-        console.error('Form container not found');
+    
+    if (!window.formCanvas) {
+      console.error('Form canvas bulunamadı');
+      return;
+    }
+
+    // Canvas'ı temizle ve önceki elemanları sil
+    const existingElements = window.formCanvas.querySelectorAll('.form-element');
+    existingElements.forEach(el => el.remove());
+    
+    // Boş canvas gösterimini kontrol et
+    window.checkEmptyCanvas();
+    
+    // JSON doğru formatta değilse çık
+    if (!json || !json.elements || !Array.isArray(json.elements)) {
+      console.error('Geçersiz JSON formatı veya elements dizisi bulunamadı');
+      window.emptyCanvas.style.display = 'flex';
+      return;
+    }
+    
+    // Form elemanlarını yükle
+    let elementCount = 0;
+    
+    json.elements.forEach(element => {
+      if (!element.type) {
+        console.error('Element tipi bulunamadı:', element);
         return;
-    }
-    container.innerHTML = '';
-    console.log('Container temizlendi. Form elemanları yükleniyor...');
-    json.elements.forEach(elementData => {
-         const element = createFormElement(elementData);
-         container.appendChild(element);
+      }
+      
+      // Element properties'lerini kopyala
+      const properties = element.properties 
+        ? JSON.parse(JSON.stringify(element.properties)) 
+        : {};
+        
+      // Element oluştur
+      const formElement = window.createFormElement(element.type, properties);
+      
+      if (!formElement) {
+        console.error('Element oluşturulamadı:', element.type);
+        return;
+      }
+      
+      // Row elementi ise sütunları ve içindeki elementleri ekle
+      if (element.type === 'row' && element.columns && Array.isArray(element.columns)) {
+        const rowElement = formElement.querySelector('.row-element');
+        
+        if (rowElement) {
+          // Eski sütunları temizle
+          rowElement.innerHTML = '';
+          
+          // Yeni sütunları ekle
+          element.columns.forEach(column => {
+            const columnWidth = column.width || 6;
+            const columnDiv = document.createElement('div');
+            columnDiv.className = `col-md-${columnWidth} column-element`;
+            columnDiv.dataset.width = columnWidth;
+            
+            // Sütun içindeki elementleri ekle
+            if (column.elements && Array.isArray(column.elements)) {
+              column.elements.forEach(colElement => {
+                if (!colElement.type) return;
+                
+                const colElementProps = colElement.properties 
+                  ? JSON.parse(JSON.stringify(colElement.properties)) 
+                  : {};
+                  
+                const colFormElement = window.createFormElement(colElement.type, colElementProps);
+                
+                if (colFormElement) {
+                  columnDiv.appendChild(colFormElement);
+                  elementCount++;
+                }
+              });
+            } 
+            
+            // Eğer sütun boşsa placeholder ekle
+            if (columnDiv.children.length === 0) {
+              const placeholder = document.createElement('div');
+              placeholder.className = 'column-placeholder';
+              placeholder.innerHTML = '<i class="fas fa-plus me-2"></i> Buraya element sürükleyin';
+              columnDiv.appendChild(placeholder);
+            }
+            
+            rowElement.appendChild(columnDiv);
+          });
+        }
+      }
+      
+      // Elementi canvas'a ekle
+      window.formCanvas.appendChild(formElement);
+      elementCount++;
     });
-    console.log('Form elemanları başarıyla yüklendi.');
-}
-
-// Fonksiyonları global hale getiriyoruz.
-window.createFormElement = createFormElement;
-window.loadFormFromJSON = loadFormFromJSON;
-
-// LoadFormFromJSON fonksiyonunda, JSON nesnesinde 'layout' özelliğinin olup olmadığını kontrol edip, varsa loadLayout fonksiyonunu çağıracak şekilde güncelliyoruz. Ayrıca, settings tablosundan gelen elementler için createFormElement çağrısını gerçekleştiriyoruz. Ayrıca, loadLayout fonksiyonunun basit bir iskeletini ekliyoruz.
-function loadFormFromJSON(json) {
-    console.log('loadFormFromJSON çağrıldı. Gelen JSON:', json);
-    // Container temizlendi. Form elemanları yükleniyor...
-    clearContainer();
-
-    // Layout bilgisi kontrolü
-    if (json.layout) {
-        console.log('Layout bilgisi bulundu, yükleniyor...');
-        loadLayout(json.layout);
+    
+    // Canvas'da element var mı kontrol et
+    if (elementCount > 0) {
+      window.emptyCanvas.style.display = 'none';
     } else {
-        console.log('Layout bilgisi bulunamadı, default yapı kullanılacak...');
+      window.emptyCanvas.style.display = 'flex';
     }
-
-    // Setting tablosundan gelen elemanlar yükleniyor
-    if (json.elements && json.elements.length > 0) {
-        json.elements.forEach(function(element) {
-            console.log('createFormElement çağrıldı. Element tipi:', element.type);
-            createFormElement(element);
-        });
-    } else {
-        console.log('Eleman bulunamadı.');
-    }
-
-    console.log('Form elemanları başarıyla yüklendi.');
-}
-
-// Yeni eklenen: Layout yükleyici fonksiyon
-function loadLayout(layoutJSON) {
-    console.log('Form düzeni yükleniyor:', layoutJSON);
-    // layoutJSON içeriğine göre dinamik düzen oluşturma kodlarınızı buraya ekleyin.
-    // Örneğin, düzen içindeki satır/sütun ve elemantaların yerlerini container'a yerleştirin.
-}
-
-// Yeni: Form container'ı temizlemek için kullanılacak fonksiyon
-function clearContainer() {
-    var container = document.getElementById('form-container');
-    if (container) {
-        container.innerHTML = '';
-        loadLayout();
-        loadSettings();
-    }
-}
-
-function loadLayout() {
-    fetch('/admin/settingmanagement/layout')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('HTTP error: ' + response.status);
-            }
-            const contentType = response.headers.get('content-type') || '';
-            if (!contentType.includes('application/json')) {
-                throw new Error('Expected JSON, got ' + contentType);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Layout yüklendi:', data);
-            renderLayout(data);
-        })
-        .catch(error => {
-            console.error('Layout yüklenirken hata oluştu:', error);
-            // Fallback: default layout verisi
-            renderLayout({ default: 'default yapı kullanıldı' });
-        });
-}
-
-function loadSettings() {
-    fetch('/admin/settingmanagement/item/manage')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('HTTP error: ' + response.status);
-            }
-            const contentType = response.headers.get('content-type') || '';
-            if (!contentType.includes('application/json')) {
-                throw new Error('Expected JSON, got ' + contentType);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Settings elemanları yüklendi:', data);
-            renderSettings(data);
-        })
-        .catch(error => {
-            console.error('Settings elemanları yüklenirken hata oluştu:', error);
-            // Fallback: default settings verisi
-            renderSettings({ default: 'default ayar kullanılacak' });
-        });
-}
-
-function renderLayout(layoutData) {
-    var layoutContainer = document.getElementById('layoutContainer');
-    if (layoutContainer) {
-        layoutContainer.innerHTML = JSON.stringify(layoutData, null, 2);
-    }
-}
-
-function renderSettings(settingsData) {
-    var settingsContainer = document.getElementById('settingsContainer');
-    if (settingsContainer) {
-        settingsContainer.innerHTML = JSON.stringify(settingsData, null, 2);
-    }
-}
+    
+    // Sütunlar için sortable'ı yeniden başlat
+    window.initializeColumnSortables();
+    
+    // Durum kaydet (undo/redo için başlangıç durumu)
+    window.saveState();
+    
+    console.log('Form başarıyla yüklendi. Toplam element sayısı:', elementCount);
+  };
+});

@@ -19,10 +19,10 @@ class FormBuilderComponent extends Component
         }
     }
     
-    public function saveLayout($formData)
+    public function saveFormLayout($groupId, $formData)
     {
         try {
-            $group = SettingGroup::findOrFail($this->groupId);
+            $group = SettingGroup::findOrFail($groupId);
             
             // JSON string olarak gelmesi durumunda
             if (is_string($formData)) {

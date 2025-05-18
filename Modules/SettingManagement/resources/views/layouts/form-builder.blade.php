@@ -27,8 +27,10 @@
     
     <!-- JavaScript -->
     <script src="{{ asset('admin/js/tabler.min.js') }}"></script>
-    <script src="{{ asset('admin/libs/form-builder/js/form-builder.js') }}"></script>
     <script src="{{ asset('admin/libs/sortable/sortable.min.js') }}"></script>
+    <script src="{{ asset('admin/libs/form-builder/js/form-builder.js') }}"></script>
+    <script src="{{ asset('admin/libs/form-builder/js/form-builder-operations.js') }}"></script>
+    <script src="{{ asset('admin/libs/form-builder/js/form-builder-ui.js') }}"></script>
     
     @stack('scripts')
     @livewireScripts

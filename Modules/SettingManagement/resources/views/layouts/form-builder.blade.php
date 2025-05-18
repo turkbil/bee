@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Form Builder CSS -->
-    <link rel="stylesheet" href="{{ asset('admin/libs/form-builder/css/form-builder.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin/libs/form-builder/settingmanagement/css/form-builder.css') }}">
     
     <!-- Özel Stiller -->
     @stack('styles')
@@ -28,9 +28,9 @@
     <!-- JavaScript -->
     <script src="{{ asset('admin/js/tabler.min.js') }}"></script>
     <script src="{{ asset('admin/libs/sortable/sortable.min.js') }}"></script>
-    <script src="{{ asset('admin/libs/form-builder/js/form-builder.js') }}"></script>
-    <script src="{{ asset('admin/libs/form-builder/js/form-builder-operations.js') }}"></script>
-    <script src="{{ asset('admin/libs/form-builder/js/form-builder-ui.js') }}"></script>
+    <script src="{{ asset('admin/libs/form-builder/settingmanagement/js/form-builder.js') }}"></script>
+    <script src="{{ asset('admin/libs/form-builder/settingmanagement/js/form-builder-operations.js') }}"></script>
+    <script src="{{ asset('admin/libs/form-builder/settingmanagement/js/form-builder-ui.js') }}"></script>
     
     @stack('scripts')
     @livewireScripts

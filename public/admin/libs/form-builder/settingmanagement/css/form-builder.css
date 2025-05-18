@@ -290,18 +290,21 @@ body {
 /* Satır ve sütun elemanları */
 .row-element {
     display: flex;
-    flex-wrap: wrap;
-    margin: -8px;
+    flex-wrap: nowrap;
+    margin: 0;
     width: 100%;
+    box-sizing: border-box;
 }
 
 .column-element {
-    padding: 8px;
+    padding: 2px;
     min-height: 80px;
     border: 1px dashed var(--border-color);
     background-color: var(--panel-bg);
     border-radius: var(--radius-sm);
-    margin: 8px;
+    margin: 2px;
+    box-sizing: border-box;
+    flex-shrink: 0;
 }
 
 /* SortableJS stilleri */
@@ -373,4 +376,33 @@ body {
 
 .card.shadow-sm.w-100 {
     margin-top: 20px;
+}
+
+/* Taşma sorununu düzeltmek için eklenen fix */
+.row-element .col-md-6 {
+    width: 49% !important;
+}
+
+.row-element .col-md-4 {
+    width: 32% !important;
+}
+
+.row-element .col-md-3 {
+    width: 24% !important;
+}
+
+.row-element .col-md-2 {
+    width: 16% !important;
+}
+
+.row-element .col-md-8 {
+    width: 65.5% !important;
+}
+
+.row-element .col-md-9 {
+    width: 74% !important;
+}
+
+.row-element .col-md-10 {
+    width: 82.5% !important;
 }

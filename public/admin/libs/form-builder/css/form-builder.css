@@ -30,7 +30,7 @@ body {
     margin: 0;
     padding: 0;
     background-color: var(--light-bg);
-    overflow: hidden;
+    overflow: auto;
 }
 
 /* Başlık çubuğu */
@@ -44,6 +44,11 @@ body {
     padding: 0 var(--spacing-xl);
     box-shadow: var(--shadow-sm);
     z-index: 100;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
 }
 
 .header-left,
@@ -80,8 +85,10 @@ body {
 .editor-main {
     display: flex;
     height: calc(100vh - 56px);
-    overflow: hidden;
+    margin-top: 56px;
+    overflow: auto;
     background-color: var(--light-bg);
+    position: relative;
 }
 
 /* Paneller */
@@ -95,16 +102,21 @@ body {
     box-shadow: var(--shadow-panel);
     z-index: 10;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
+    position: fixed;
+    height: calc(100vh - 56px);
+    overflow-y: auto;
 }
 
 .panel__left {
     border-right: 1px solid var(--border-color);
+    left: 0;
+    top: 56px;
 }
 
 .panel__right {
     border-left: 1px solid var(--border-color);
+    right: 0;
+    top: 56px;
 }
 
 /* Panel toggle butonları */
@@ -169,6 +181,9 @@ body {
     padding: 0;
     margin: 0;
     border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 5;
 }
 
 .panel-tab {
@@ -376,8 +391,11 @@ body {
     background-size: 20px 20px;
     background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
+    margin-left: 280px;
+    margin-right: 280px;
+    min-height: calc(100vh - 56px);
 }
 
 .form-canvas .empty-canvas {
@@ -547,10 +565,14 @@ body {
 
 /* Duyarlı tasarım */
 @media (max-width: 1200px) {
-
     .panel__left,
     .panel__right {
         width: 260px;
+    }
+    
+    .form-canvas {
+        margin-left: 260px;
+        margin-right: 260px;
     }
 }
 
@@ -558,12 +580,22 @@ body {
     .panel__left {
         width: 240px;
     }
+    
+    .form-canvas {
+        margin-left: 240px;
+        margin-right: 0;
+    }
 
     .panel__right {
-        position: absolute;
+        position: fixed;
         right: 0;
-        height: 100%;
+        height: calc(100vh - 56px);
         z-index: 100;
+        transform: translateX(100%);
+    }
+    
+    .panel__right:not(.collapsed) {
+        transform: translateX(0);
     }
 
     .block-items {
@@ -573,10 +605,19 @@ body {
 
 @media (max-width: 768px) {
     .panel__left {
-        position: absolute;
+        position: fixed;
         left: 0;
-        height: 100%;
+        height: calc(100vh - 56px);
         z-index: 100;
+        transform: translateX(-100%);
+    }
+    
+    .panel__left:not(.collapsed) {
+        transform: translateX(0);
+    }
+    
+    .form-canvas {
+        margin-left: 0;
     }
 
     .panel-tab .tab-text {
@@ -594,4 +635,14 @@ body {
     .header-center {
         display: none;
     }
+}
+
+/* Scroll sorununu çözmek için eklenen ek stiller */
+#form-canvas {
+    min-height: 500px;
+    width: 100%;
+}
+
+.card.shadow-sm.w-100 {
+    margin-top: 20px;
 }

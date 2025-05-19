@@ -63,6 +63,11 @@ Route::middleware(['web', 'auth', 'tenant'])
                     ->middleware('module.permission:settingmanagement,update')
                     ->name('form-builder.edit');
 
+                // Form Builder form kayıt işlemi için POST route
+                Route::post('/form-builder/{groupId}/save', [FormBuilderController::class, 'save'])
+                    ->middleware('module.permission:settingmanagement,update')
+                    ->name('form-builder.save');
+
                 // Form Builder API endpoints
                 Route::get('/form-builder/{groupId}/load', [FormBuilderController::class, 'load'])
                     ->middleware('module.permission:settingmanagement,view')

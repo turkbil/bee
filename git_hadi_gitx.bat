@@ -1,16 +1,15 @@
 @echo off
 chcp 65001 > nul
 title GIT ZORLA YÜKLEME ARACI
-
 :: Renkli çıktı için
 color 0A
-
 echo === GIT ZORLA YÜKLEME ARACI (turkbil/bee) ===
 echo Bu araç yerel dosyaları turkbil/bee GitHub reposuna zorla yükler.
 echo Dikkat: Uzak depodaki değişiklikler kaybedilecektir!
 echo İşlem başlatılıyor...
 echo.
 
+:: Proje dizinine git
 cd /d %~dp0
 echo Proje dizini: %CD%
 
@@ -24,20 +23,18 @@ if not exist ".git" (
 :: Git durumunu kontrol et
 echo.
 echo --- GIT DURUMU ---
-git status
+git status -u
 
-:: Değişiklikleri ekle
+:: İzlenmeyen tüm dosyaları listele
 echo.
-echo --- DEĞİŞİKLİKLERİ EKLE ---
-git add .
+echo --- İZLENMEYEN DOSYALAR ---
+git ls-files --others --exclude-standard
 
-:: Değişiklikleri kontrol et
-git diff --cached --quiet
-if %ERRORLEVEL% EQU 0 (
-  echo.
-  echo Yüklenecek değişiklik yok. İşlem tamamlandı.
-  goto :sonlandir
-)
+:: Tüm dosyaları zorla ekle
+echo.
+echo --- TÜM DOSYALARI ZORLA EKLE ---
+git add -A -f
+git status -u
 
 :: turkbil/bee reposunu ayarla
 echo.
@@ -57,7 +54,7 @@ echo.
 echo --- COMMIT ---
 for /F "tokens=2,3,4 delims=/ " %%a in ('date /t') do set tarih=%%c-%%a-%%b
 for /F "tokens=1,2 delims=: " %%a in ('time /t') do set saat=%%a:%%b
-git commit -m "Otomatik yükleme - %tarih% %saat%"
+git commit -m "Otomatik yükleme - %tarih% %saat%" --allow-empty
 
 :: Branch ismini al
 for /f "tokens=*" %%a in ('git rev-parse --abbrev-ref HEAD') do set branch=%%a
@@ -85,6 +82,22 @@ if %ERRORLEVEL% EQU 0 (
   ) else (
     color 0C
     echo İkinci denemede de başarısız oldu!
+    echo.
+    echo --- OLASI SORUNLAR ---
+    
+    echo 1. Gizli dosyalar listeleniyor:
+    dir /a:h
+    
+    echo 2. Git ignore içeriği:
+    if exist ".gitignore" (
+      type .gitignore
+    ) else (
+      echo .gitignore dosyası bulunamadı.
+    )
+    
+    echo 3. Git Kimlik Bilgileri kontrolü:
+    git config user.name
+    git config user.email
   )
 )
 

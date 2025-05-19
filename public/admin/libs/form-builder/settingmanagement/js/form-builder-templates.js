@@ -244,8 +244,8 @@ document.addEventListener("DOMContentLoaded", function() {
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Alan Adı (System Key)</label>
-                      <input type="text" class="form-control" name="name" value="{name}">
-                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda düzenleyebilirsiniz.</div>
+                      <input type="text" class="form-control" name="name" value="{name}" disabled title="Düzenlemek için çift tıklayın">
+                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda çift tıklayarak düzenleyebilirsiniz.</div>
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Placeholder</label>
@@ -297,8 +297,8 @@ document.addEventListener("DOMContentLoaded", function() {
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Alan Adı (System Key)</label>
-                      <input type="text" class="form-control" name="name" value="{name}">
-                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda düzenleyebilirsiniz.</div>
+                      <input type="text" class="form-control" name="name" value="{name}" disabled title="Düzenlemek için çift tıklayın">
+                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda çift tıklayarak düzenleyebilirsiniz.</div>
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Placeholder</label>
@@ -350,8 +350,8 @@ document.addEventListener("DOMContentLoaded", function() {
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Alan Adı (System Key)</label>
-                      <input type="text" class="form-control" name="name" value="{name}">
-                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda düzenleyebilirsiniz.</div>
+                      <input type="text" class="form-control" name="name" value="{name}" disabled title="Düzenlemek için çift tıklayın">
+                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda çift tıklayarak düzenleyebilirsiniz.</div>
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Placeholder</label>
@@ -415,8 +415,8 @@ document.addEventListener("DOMContentLoaded", function() {
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Alan Adı (System Key)</label>
-                      <input type="text" class="form-control" name="name" value="{name}">
-                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda düzenleyebilirsiniz.</div>
+                      <input type="text" class="form-control" name="name" value="{name}" disabled title="Düzenlemek için çift tıklayın">
+                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda çift tıklayarak düzenleyebilirsiniz.</div>
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Placeholder</label>
@@ -468,8 +468,8 @@ document.addEventListener("DOMContentLoaded", function() {
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Alan Adı (System Key)</label>
-                      <input type="text" class="form-control" name="name" value="{name}">
-                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda düzenleyebilirsiniz.</div>
+                      <input type="text" class="form-control" name="name" value="{name}" disabled title="Düzenlemek için çift tıklayın">
+                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda çift tıklayarak düzenleyebilirsiniz.</div>
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Placeholder</label>
@@ -521,8 +521,8 @@ document.addEventListener("DOMContentLoaded", function() {
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Alan Adı (System Key)</label>
-                      <input type="text" class="form-control" name="name" value="{name}">
-                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda düzenleyebilirsiniz.</div>
+                      <input type="text" class="form-control" name="name" value="{name}" disabled title="Düzenlemek için çift tıklayın">
+                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda çift tıklayarak düzenleyebilirsiniz.</div>
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Yardım Metni</label>
@@ -572,8 +572,8 @@ document.addEventListener("DOMContentLoaded", function() {
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Alan Adı (System Key)</label>
-                      <input type="text" class="form-control" name="name" value="{name}">
-                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda düzenleyebilirsiniz.</div>
+                      <input type="text" class="form-control" name="name" value="{name}" disabled title="Düzenlemek için çift tıklayın">
+                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda çift tıklayarak düzenleyebilirsiniz.</div>
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Yardım Metni</label>
@@ -633,8 +633,8 @@ document.addEventListener("DOMContentLoaded", function() {
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Alan Adı (System Key)</label>
-                      <input type="text" class="form-control" name="name" value="{name}">
-                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda düzenleyebilirsiniz.</div>
+                      <input type="text" class="form-control" name="name" value="{name}" disabled title="Düzenlemek için çift tıklayın">
+                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda çift tıklayarak düzenleyebilirsiniz.</div>
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Yardım Metni</label>
@@ -684,8 +684,8 @@ document.addEventListener("DOMContentLoaded", function() {
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Alan Adı (System Key)</label>
-                      <input type="text" class="form-control" name="name" value="{name}">
-                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda düzenleyebilirsiniz.</div>
+                      <input type="text" class="form-control" name="name" value="{name}" disabled title="Düzenlemek için çift tıklayın">
+                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda çift tıklayarak düzenleyebilirsiniz.</div>
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Yardım Metni</label>
@@ -740,8 +740,8 @@ document.addEventListener("DOMContentLoaded", function() {
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Alan Adı (System Key)</label>
-                      <input type="text" class="form-control" name="name" value="{name}">
-                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda düzenleyebilirsiniz.</div>
+                      <input type="text" class="form-control" name="name" value="{name}" disabled title="Düzenlemek için çift tıklayın">
+                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda çift tıklayarak düzenleyebilirsiniz.</div>
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Yardım Metni</label>
@@ -789,8 +789,8 @@ document.addEventListener("DOMContentLoaded", function() {
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Alan Adı (System Key)</label>
-                      <input type="text" class="form-control" name="name" value="{name}">
-                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda düzenleyebilirsiniz.</div>
+                      <input type="text" class="form-control" name="name" value="{name}" disabled title="Düzenlemek için çift tıklayın">
+                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda çift tıklayarak düzenleyebilirsiniz.</div>
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Yardım Metni</label>
@@ -838,8 +838,8 @@ document.addEventListener("DOMContentLoaded", function() {
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Alan Adı (System Key)</label>
-                      <input type="text" class="form-control" name="name" value="{name}">
-                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda düzenleyebilirsiniz.</div>
+                      <input type="text" class="form-control" name="name" value="{name}" disabled title="Düzenlemek için çift tıklayın">
+                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda çift tıklayarak düzenleyebilirsiniz.</div>
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Yardım Metni</label>
@@ -883,8 +883,8 @@ document.addEventListener("DOMContentLoaded", function() {
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Alan Adı (System Key)</label>
-                      <input type="text" class="form-control" name="name" value="{name}">
-                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda düzenleyebilirsiniz.</div>
+                      <input type="text" class="form-control" name="name" value="{name}" disabled title="Düzenlemek için çift tıklayın">
+                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda çift tıklayarak düzenleyebilirsiniz.</div>
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Yardım Metni</label>
@@ -928,8 +928,8 @@ document.addEventListener("DOMContentLoaded", function() {
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Alan Adı (System Key)</label>
-                      <input type="text" class="form-control" name="name" value="{name}">
-                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda düzenleyebilirsiniz.</div>
+                      <input type="text" class="form-control" name="name" value="{name}" disabled title="Düzenlemek için çift tıklayın">
+                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda çift tıklayarak düzenleyebilirsiniz.</div>
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Yardım Metni</label>

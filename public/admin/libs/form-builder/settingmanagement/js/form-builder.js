@@ -9,6 +9,33 @@ document.addEventListener("DOMContentLoaded", function() {
   window.propertiesPanel = document.getElementById("properties-panel");
   window.undoStack = [];
   window.redoStack = [];
+  
+  // Türkçe karakterleri İngilizce karakterlere dönüştürme fonksiyonu
+  window.slugifyTurkish = function(text) {
+    if (!text) return '';
+    
+    // Türkçe karakter çevrimi
+    const turkishChars = { 'ç': 'c', 'ğ': 'g', 'ı': 'i', 'i': 'i', 'ö': 'o', 'ş': 's', 'ü': 'u', 
+                          'Ç': 'C', 'Ğ': 'G', 'I': 'I', 'İ': 'I', 'Ö': 'O', 'Ş': 'S', 'Ü': 'U' };
+    
+    // Türkçe karakterleri değiştir
+    let slug = text.replace(/[çğıiöşüÇĞIİÖŞÜ]/g, function(char) {
+      return turkishChars[char] || char;
+    });
+    
+    // Diğer özel karakterleri ve boşlukları alt çizgi ile değiştir
+    slug = slug.toLowerCase()
+              .replace(/[^a-z0-9_]+/g, '_')  // Harfler, rakamlar ve alt çizgi hariç tüm karakterleri alt çizgiye çevir
+              .replace(/^_+|_+$/g, '')       // Baştaki ve sondaki alt çizgileri temizle
+              .replace(/_+/g, '_');          // Ardışık alt çizgileri tek alt çizgiye indir
+    
+    // Rakamla başlayamaz, kontrolü
+    if (/^[0-9]/.test(slug)) {
+      slug = 'a_' + slug;  // Rakamla başlıyorsa başına 'a_' ekle
+    }
+    
+    return slug;
+  };
 
   console.log("Form Builder başlatılıyor...");
   

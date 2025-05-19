@@ -226,10 +226,7 @@
     </div>
 </div>
 
-<form id="save-form" action="{{ route('admin.settingmanagement.form-builder.save', $group->id) }}" method="POST" style="display: none;">
-    @csrf
-    <input type="hidden" name="layout" id="layout-data">
-</form>
+<div id="toast-container" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1050;"></div>
 
 <input type="hidden" id="group-id" value="{{ $group->id }}">
 
@@ -288,21 +285,94 @@
             
             // Kaydet butonuna tıklama olayı
             const saveBtn = document.getElementById('save-btn');
-            const saveForm = document.getElementById('save-form');
-            const layoutData = document.getElementById('layout-data');
             
-            if (saveBtn && saveForm && layoutData) {
+            if (saveBtn) {
                 saveBtn.addEventListener('click', function() {
+                    // Buton durumunu güncelle
+                    const originalContent = saveBtn.innerHTML;
+                    saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Kaydediliyor...';
+                    saveBtn.disabled = true;
+                    
                     const formData = window.getFormJSON();
                     console.log('Form verisi kaydediliyor:', formData);
                     
-                    // Form verisini hidden input'a ekle
-                    layoutData.value = JSON.stringify(formData);
-                    
-                    // Formu gönder
-                    saveForm.submit();
+                    // FormControllerComponent'a değeri kaydet
+                    fetch(`/admin/settingmanagement/form-builder/${groupId}/save`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        },
+                        body: JSON.stringify({
+                            layout: formData
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Buton durumunu geri yükle
+                        saveBtn.innerHTML = originalContent;
+                        saveBtn.disabled = false;
+                        
+                        // Toast mesajı göster
+                        showToast(data.success ? 'success' : 'error', 
+                                 data.success ? 'Başarılı!' : 'Hata!', 
+                                 data.success ? 'Form yapısı başarıyla kaydedildi.' : data.error);
+                    })
+                    .catch(error => {
+                        console.error('Kayıt hatası:', error);
+                        
+                        // Buton durumunu geri yükle
+                        saveBtn.innerHTML = originalContent;
+                        saveBtn.disabled = false;
+                        
+                        // Hata mesajını göster
+                        showToast('error', 'Hata!', 'Form yapısı kaydedilirken bir hata oluştu.');
+                    });
                 });
             }
+            
+            // Toast mesajı gösterme fonksiyonu
+            window.showToast = function(type, title, message) {
+                const toastContainer = document.getElementById('toast-container');
+                if (!toastContainer) return;
+                
+                const toast = document.createElement('div');
+                toast.className = `toast show bg-${type === 'success' ? 'success' : 'danger'} text-white`;
+                toast.setAttribute('role', 'alert');
+                toast.setAttribute('aria-live', 'assertive');
+                toast.setAttribute('aria-atomic', 'true');
+                
+                toast.innerHTML = `
+                    <div class="toast-header bg-${type === 'success' ? 'success' : 'danger'} text-white">
+                        <strong class="me-auto">${title}</strong>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Kapat"></button>
+                    </div>
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+                `;
+                
+                toastContainer.appendChild(toast);
+                
+                // 3 saniye sonra otomatik kapat
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => {
+                        toast.remove();
+                    }, 300);
+                }, 3000);
+                
+                // Kapatma düğmesi
+                const closeBtn = toast.querySelector('.btn-close');
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', function() {
+                        toast.classList.remove('show');
+                        setTimeout(() => {
+                            toast.remove();
+                        }, 300);
+                    });
+                }
+            };
         }, 500); // Form Builder JS'nin yüklenmesi için 500ms bekle
     });
 </script>

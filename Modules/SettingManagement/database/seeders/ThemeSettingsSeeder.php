@@ -28,7 +28,11 @@ class ThemeSettingsSeeder extends Seeder
                 'key' => 'theme_primary_color',
                 'type' => 'color',
                 'default_value' => '#0ea5e9',
-                'sort_order' => 1
+                'sort_order' => 1,
+                'is_active' => true,
+                'is_system' => true,
+                'is_required' => true,
+                'help_text' => 'Sitenin ana rengi, düğmeler ve vurgu elementleri için kullanılır.'
             ],
             [
                 'group_id' => $themeSettingsGroupId,
@@ -36,7 +40,11 @@ class ThemeSettingsSeeder extends Seeder
                 'key' => 'theme_secondary_color',
                 'type' => 'color',
                 'default_value' => '#64748b',
-                'sort_order' => 2
+                'sort_order' => 2,
+                'is_active' => true,
+                'is_system' => true,
+                'is_required' => true,
+                'help_text' => 'İkincil renk, ikinci derecede önemli elementler için kullanılır.'
             ],
             [
                 'group_id' => $themeSettingsGroupId,
@@ -44,7 +52,11 @@ class ThemeSettingsSeeder extends Seeder
                 'key' => 'theme_accent_color',
                 'type' => 'color',
                 'default_value' => '#8b5cf6',
-                'sort_order' => 3
+                'sort_order' => 3,
+                'is_active' => true,
+                'is_system' => true,
+                'is_required' => true,
+                'help_text' => 'Vurgu rengi, dikkat çekilmesi gereken öğelerde kullanılır.'
             ],
             [
                 'group_id' => $themeSettingsGroupId,
@@ -52,7 +64,11 @@ class ThemeSettingsSeeder extends Seeder
                 'key' => 'theme_background_color',
                 'type' => 'color',
                 'default_value' => '#ffffff',
-                'sort_order' => 4
+                'sort_order' => 4,
+                'is_active' => true,
+                'is_system' => true,
+                'is_required' => true,
+                'help_text' => 'Sayfanın genel arkaplan rengi.'
             ],
             [
                 'group_id' => $themeSettingsGroupId,
@@ -60,7 +76,11 @@ class ThemeSettingsSeeder extends Seeder
                 'key' => 'theme_text_color',
                 'type' => 'color',
                 'default_value' => '#333333',
-                'sort_order' => 5
+                'sort_order' => 5,
+                'is_active' => true,
+                'is_system' => true,
+                'is_required' => true,
+                'help_text' => 'Genel metin rengi.'
             ],
             [
                 'group_id' => $themeSettingsGroupId,
@@ -68,7 +88,11 @@ class ThemeSettingsSeeder extends Seeder
                 'key' => 'theme_success_color',
                 'type' => 'color',
                 'default_value' => '#10b981',
-                'sort_order' => 6
+                'sort_order' => 6,
+                'is_active' => true,
+                'is_system' => true,
+                'is_required' => true,
+                'help_text' => 'Başarılı işlemleri belirtmek için kullanılan renk.'
             ],
             [
                 'group_id' => $themeSettingsGroupId,
@@ -76,7 +100,11 @@ class ThemeSettingsSeeder extends Seeder
                 'key' => 'theme_warning_color',
                 'type' => 'color',
                 'default_value' => '#f59e0b',
-                'sort_order' => 7
+                'sort_order' => 7,
+                'is_active' => true,
+                'is_system' => true,
+                'is_required' => true,
+                'help_text' => 'Uyarıları belirtmek için kullanılan renk.'
             ],
             [
                 'group_id' => $themeSettingsGroupId,
@@ -84,7 +112,11 @@ class ThemeSettingsSeeder extends Seeder
                 'key' => 'theme_danger_color',
                 'type' => 'color',
                 'default_value' => '#ef4444',
-                'sort_order' => 8
+                'sort_order' => 8,
+                'is_active' => true,
+                'is_system' => true,
+                'is_required' => true,
+                'help_text' => 'Hataları ve tehlikeli durumları belirtmek için kullanılan renk.'
             ],
             [
                 'group_id' => $themeSettingsGroupId,
@@ -92,7 +124,11 @@ class ThemeSettingsSeeder extends Seeder
                 'key' => 'theme_info_color',
                 'type' => 'color',
                 'default_value' => '#3b82f6',
-                'sort_order' => 9
+                'sort_order' => 9,
+                'is_active' => true,
+                'is_system' => true,
+                'is_required' => true,
+                'help_text' => 'Bilgi mesajları için kullanılan renk.'
             ],
             [
                 'group_id' => $themeSettingsGroupId,
@@ -100,7 +136,11 @@ class ThemeSettingsSeeder extends Seeder
                 'key' => 'theme_card_background_color',
                 'type' => 'color',
                 'default_value' => '#ffffff',
-                'sort_order' => 10
+                'sort_order' => 10,
+                'is_active' => true,
+                'is_system' => true,
+                'is_required' => true,
+                'help_text' => 'Kart elementlerinin arkaplan rengi.'
             ],
             [
                 'group_id' => $themeSettingsGroupId,
@@ -108,7 +148,11 @@ class ThemeSettingsSeeder extends Seeder
                 'key' => 'theme_shadow_color',
                 'type' => 'color',
                 'default_value' => 'rgba(0, 0, 0, 0.1)',
-                'sort_order' => 11
+                'sort_order' => 11,
+                'is_active' => true,
+                'is_system' => true,
+                'is_required' => true,
+                'help_text' => 'Element gölgeleri için kullanılan renk.'
             ],
             [
                 'group_id' => $themeSettingsGroupId,
@@ -116,7 +160,11 @@ class ThemeSettingsSeeder extends Seeder
                 'key' => 'theme_border_color',
                 'type' => 'color',
                 'default_value' => '#e5e7eb',
-                'sort_order' => 12
+                'sort_order' => 12,
+                'is_active' => true,
+                'is_system' => true,
+                'is_required' => true,
+                'help_text' => 'Kenarlıklar ve ayırıcılar için kullanılan renk.'
             ]
         ];
 
@@ -129,7 +177,10 @@ class ThemeSettingsSeeder extends Seeder
                 'options' => $setting['options'] ?? null,
                 'default_value' => $setting['default_value'],
                 'sort_order' => $setting['sort_order'],
-                'is_active' => true,
+                'is_active' => $setting['is_active'],
+                'is_system' => $setting['is_system'],
+                'is_required' => $setting['is_required'],
+                'help_text' => $setting['help_text'],
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

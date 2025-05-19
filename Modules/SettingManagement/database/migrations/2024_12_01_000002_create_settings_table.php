@@ -19,6 +19,8 @@ return new class extends Migration
             $table->integer('sort_order')->default(0)->index();
             $table->boolean('is_active')->default(true)->index();
             $table->boolean('is_system')->default(false)->index();
+            $table->boolean('is_required')->default(false)->index(); 
+            $table->text('help_text')->nullable(); 
             $table->timestamps();
 
             $table->foreign('group_id')->references('id')->on('settings_groups')->onDelete('cascade');

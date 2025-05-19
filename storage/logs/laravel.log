@@ -1280,3 +1280,186 @@
 [2025-05-19 16:42:28] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
 [2025-05-19 16:42:29] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
 [2025-05-19 16:42:30] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:44:38] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: studio, Permission: view, Roles: root  
+[2025-05-19 16:44:39] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: studio, Permission: view, Roles: root  
+[2025-05-19 16:44:40] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: studio, Permission: view, Roles: root  
+[2025-05-19 16:44:40] local.INFO: BlockService::getAllBlocks - Bloklar yükleniyor  
+[2025-05-19 16:44:40] local.INFO: BlockService - Toplam 35 adet blok yüklendi  
+[2025-05-19 16:44:40] local.DEBUG: getBlocks HTTP yanıtı {"blocks_count":35} 
+[2025-05-19 16:44:40] local.DEBUG: Blok #0: tenant-widget-1 - Central Hero Demo - Kategori: active-widgets  
+[2025-05-19 16:44:40] local.DEBUG: Blok #1: tenant-widget-2 - Ana Sayfa Slider - Kategori: active-widgets  
+[2025-05-19 16:44:40] local.DEBUG: Blok #2: widget-1 - Basic - Kategori: cards  
+[2025-05-19 16:44:40] local.DEBUG: Blok #3: widget-2 - Grid - Kategori: cards  
+[2025-05-19 16:44:40] local.DEBUG: Blok #4: widget-3 - Hero - Kategori: content  
+[2025-05-19 16:44:40] local.DEBUG: Blok #5: widget-4 - Text - Kategori: content  
+[2025-05-19 16:44:40] local.DEBUG: Blok #6: widget-5 - Basic - Kategori: features  
+[2025-05-19 16:44:40] local.DEBUG: Blok #7: widget-6 - Contact form - Kategori: form  
+[2025-05-19 16:44:40] local.DEBUG: Blok #8: widget-7 - Hero 1 - Kategori: hero  
+[2025-05-19 16:44:40] local.DEBUG: Blok #9: widget-8 - Simple - Kategori: hero  
+[2025-05-19 16:44:40] local.DEBUG: Blok #10: widget-9 - Asymmetric grid - Kategori: layout  
+[2025-05-19 16:44:40] local.DEBUG: Blok #11: widget-10 - Five columns - Kategori: layout  
+[2025-05-19 16:44:40] local.DEBUG: Blok #12: widget-11 - Four columns - Kategori: layout  
+[2025-05-19 16:44:40] local.DEBUG: Blok #13: widget-12 - Masonry grid - Kategori: layout  
+[2025-05-19 16:44:40] local.DEBUG: Blok #14: widget-13 - One column - Kategori: layout  
+[2025-05-19 16:44:40] local.DEBUG: Blok #15: widget-14 - Sidebar main sidebar - Kategori: layout  
+[2025-05-19 16:44:40] local.DEBUG: Blok #16: widget-15 - Stacked columns - Kategori: layout  
+[2025-05-19 16:44:40] local.DEBUG: Blok #17: widget-16 - Three columns - Kategori: layout  
+[2025-05-19 16:44:40] local.DEBUG: Blok #18: widget-17 - Two columns - Kategori: layout  
+[2025-05-19 16:44:40] local.DEBUG: Blok #19: widget-18 - Two columns 10 2 - Kategori: layout  
+[2025-05-19 16:44:40] local.DEBUG: Blok #20: widget-19 - Two columns 2 10 - Kategori: layout  
+[2025-05-19 16:44:40] local.DEBUG: Blok #21: widget-20 - Two columns 3 9 - Kategori: layout  
+[2025-05-19 16:44:40] local.DEBUG: Blok #22: widget-21 - Two columns 4 8 - Kategori: layout  
+[2025-05-19 16:44:40] local.DEBUG: Blok #23: widget-22 - Two columns 5 7 - Kategori: layout  
+[2025-05-19 16:44:40] local.DEBUG: Blok #24: widget-23 - Two columns 7 5 - Kategori: layout  
+[2025-05-19 16:44:40] local.DEBUG: Blok #25: widget-24 - Two columns 8 4 - Kategori: layout  
+[2025-05-19 16:44:40] local.DEBUG: Blok #26: widget-25 - Two columns 9 3 - Kategori: layout  
+[2025-05-19 16:44:40] local.DEBUG: Blok #27: widget-26 - Image - Kategori: media  
+[2025-05-19 16:44:40] local.DEBUG: Blok #28: widget-27 - Basic - Kategori: testimonials  
+[2025-05-19 16:44:40] local.DEBUG: Blok #29: widget-28 - Full Width Hero - Kategori: content-herolar  
+[2025-05-19 16:44:40] local.DEBUG: Blok #30: widget-29 - Home - Kategori: moduller-page-moduelue  
+[2025-05-19 16:44:40] local.DEBUG: Blok #31: widget-30 - Recent - Kategori: moduller-page-moduelue  
+[2025-05-19 16:44:40] local.DEBUG: Blok #32: widget-31 - Detail - Kategori: moduller-portfolio-moduelue  
+[2025-05-19 16:44:40] local.DEBUG: Blok #33: widget-32 - List - Kategori: moduller-portfolio-moduelue  
+[2025-05-19 16:44:40] local.DEBUG: Blok #34: widget-33 - Swiper Slider - Kategori: media-sliderlar  
+[2025-05-19 16:44:40] local.DEBUG: Yanıt kategorileri {"active-widgets":"Aktif Bileşenler","moduller":"Moduller","moduller-page-moduelue":"Page Modülü","moduller-portfolio-moduelue":"Portfolio Modülü","cards":"Cards","content":"Content","content-herolar":"Herolar","features":"Features","form":"Form","hero":"Hero","layout":"Layout","media":"Media","media-sliderlar":"Sliderlar","testimonials":"Testimonials"} 
+[2025-05-19 16:44:40] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: studio, Permission: view, Roles: root  
+[2025-05-19 16:44:41] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: studio, Permission: view, Roles: root  
+[2025-05-19 16:44:43] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: studio, Permission: view, Roles: root  
+[2025-05-19 16:45:31] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-19 16:45:31] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-19 16:45:50] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-19 16:45:50] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-19 16:45:57] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: studio, Permission: view, Roles: root  
+[2025-05-19 16:48:13] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-19 16:48:13] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-19 16:48:14] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:48:14] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:48:15] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-19 16:48:15] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-19 16:48:15] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:48:15] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:48:17] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:48:17] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:48:18] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:48:18] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:48:19] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:48:20] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:48:22] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-19 16:48:22] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-19 16:48:23] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:48:23] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:48:24] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:48:24] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:48:25] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:48:26] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:50:51] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-19 16:50:51] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-19 16:50:53] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:50:53] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:50:54] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:50:54] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:50:55] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:50:56] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: studio, Permission: view, Roles: root  
+[2025-05-19 16:50:56] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:51:01] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: studio, Permission: view, Roles: root  
+[2025-05-19 16:51:03] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: studio, Permission: view, Roles: root  
+[2025-05-19 16:51:03] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: studio, Permission: view, Roles: root  
+[2025-05-19 16:51:03] local.INFO: BlockService::getAllBlocks - Bloklar yükleniyor  
+[2025-05-19 16:51:03] local.INFO: BlockService - Toplam 35 adet blok yüklendi  
+[2025-05-19 16:51:03] local.DEBUG: getBlocks HTTP yanıtı {"blocks_count":35} 
+[2025-05-19 16:51:03] local.DEBUG: Blok #0: tenant-widget-1 - Central Hero Demo - Kategori: active-widgets  
+[2025-05-19 16:51:03] local.DEBUG: Blok #1: tenant-widget-2 - Ana Sayfa Slider - Kategori: active-widgets  
+[2025-05-19 16:51:03] local.DEBUG: Blok #2: widget-1 - Basic - Kategori: cards  
+[2025-05-19 16:51:03] local.DEBUG: Blok #3: widget-2 - Grid - Kategori: cards  
+[2025-05-19 16:51:03] local.DEBUG: Blok #4: widget-3 - Hero - Kategori: content  
+[2025-05-19 16:51:03] local.DEBUG: Blok #5: widget-4 - Text - Kategori: content  
+[2025-05-19 16:51:03] local.DEBUG: Blok #6: widget-5 - Basic - Kategori: features  
+[2025-05-19 16:51:03] local.DEBUG: Blok #7: widget-6 - Contact form - Kategori: form  
+[2025-05-19 16:51:03] local.DEBUG: Blok #8: widget-7 - Hero 1 - Kategori: hero  
+[2025-05-19 16:51:03] local.DEBUG: Blok #9: widget-8 - Simple - Kategori: hero  
+[2025-05-19 16:51:03] local.DEBUG: Blok #10: widget-9 - Asymmetric grid - Kategori: layout  
+[2025-05-19 16:51:03] local.DEBUG: Blok #11: widget-10 - Five columns - Kategori: layout  
+[2025-05-19 16:51:03] local.DEBUG: Blok #12: widget-11 - Four columns - Kategori: layout  
+[2025-05-19 16:51:03] local.DEBUG: Blok #13: widget-12 - Masonry grid - Kategori: layout  
+[2025-05-19 16:51:03] local.DEBUG: Blok #14: widget-13 - One column - Kategori: layout  
+[2025-05-19 16:51:03] local.DEBUG: Blok #15: widget-14 - Sidebar main sidebar - Kategori: layout  
+[2025-05-19 16:51:03] local.DEBUG: Blok #16: widget-15 - Stacked columns - Kategori: layout  
+[2025-05-19 16:51:03] local.DEBUG: Blok #17: widget-16 - Three columns - Kategori: layout  
+[2025-05-19 16:51:03] local.DEBUG: Blok #18: widget-17 - Two columns - Kategori: layout  
+[2025-05-19 16:51:03] local.DEBUG: Blok #19: widget-18 - Two columns 10 2 - Kategori: layout  
+[2025-05-19 16:51:03] local.DEBUG: Blok #20: widget-19 - Two columns 2 10 - Kategori: layout  
+[2025-05-19 16:51:03] local.DEBUG: Blok #21: widget-20 - Two columns 3 9 - Kategori: layout  
+[2025-05-19 16:51:03] local.DEBUG: Blok #22: widget-21 - Two columns 4 8 - Kategori: layout  
+[2025-05-19 16:51:03] local.DEBUG: Blok #23: widget-22 - Two columns 5 7 - Kategori: layout  
+[2025-05-19 16:51:03] local.DEBUG: Blok #24: widget-23 - Two columns 7 5 - Kategori: layout  
+[2025-05-19 16:51:03] local.DEBUG: Blok #25: widget-24 - Two columns 8 4 - Kategori: layout  
+[2025-05-19 16:51:03] local.DEBUG: Blok #26: widget-25 - Two columns 9 3 - Kategori: layout  
+[2025-05-19 16:51:03] local.DEBUG: Blok #27: widget-26 - Image - Kategori: media  
+[2025-05-19 16:51:03] local.DEBUG: Blok #28: widget-27 - Basic - Kategori: testimonials  
+[2025-05-19 16:51:03] local.DEBUG: Blok #29: widget-28 - Full Width Hero - Kategori: content-herolar  
+[2025-05-19 16:51:03] local.DEBUG: Blok #30: widget-29 - Home - Kategori: moduller-page-moduelue  
+[2025-05-19 16:51:03] local.DEBUG: Blok #31: widget-30 - Recent - Kategori: moduller-page-moduelue  
+[2025-05-19 16:51:03] local.DEBUG: Blok #32: widget-31 - Detail - Kategori: moduller-portfolio-moduelue  
+[2025-05-19 16:51:03] local.DEBUG: Blok #33: widget-32 - List - Kategori: moduller-portfolio-moduelue  
+[2025-05-19 16:51:03] local.DEBUG: Blok #34: widget-33 - Swiper Slider - Kategori: media-sliderlar  
+[2025-05-19 16:51:03] local.DEBUG: Yanıt kategorileri {"active-widgets":"Aktif Bileşenler","moduller":"Moduller","moduller-page-moduelue":"Page Modülü","moduller-portfolio-moduelue":"Portfolio Modülü","cards":"Cards","content":"Content","content-herolar":"Herolar","features":"Features","form":"Form","hero":"Hero","layout":"Layout","media":"Media","media-sliderlar":"Sliderlar","testimonials":"Testimonials"} 
+[2025-05-19 16:51:04] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: studio, Permission: view, Roles: root  
+[2025-05-19 16:51:05] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: studio, Permission: view, Roles: root  
+[2025-05-19 16:51:05] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-19 16:51:05] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-19 16:51:06] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: studio, Permission: view, Roles: root  
+[2025-05-19 16:51:08] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:51:08] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:51:09] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:51:09] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:51:10] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:51:11] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:55:31] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-19 16:55:31] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-19 16:55:33] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:55:33] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:55:34] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:55:34] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:55:35] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:55:36] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:57:59] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-19 16:57:59] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-19 16:58:01] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:58:01] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:58:02] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:58:02] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:58:03] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:58:04] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:59:40] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-19 16:59:40] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-19 16:59:42] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:59:42] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:59:43] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:59:43] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:59:44] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 16:59:45] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 17:00:13] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-19 17:00:13] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-19 17:00:15] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 17:00:15] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 17:00:16] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 17:00:16] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 17:00:17] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 17:00:18] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 17:00:26] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-19 17:00:26] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-19 17:00:28] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 17:00:28] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 17:00:29] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 17:00:29] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 17:00:30] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 17:00:31] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 17:00:33] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 17:01:23] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-19 17:01:23] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-19 17:01:24] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 17:01:24] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 17:01:25] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 17:01:25] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 17:01:26] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 17:01:27] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  

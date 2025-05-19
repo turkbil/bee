@@ -4,12 +4,12 @@
     --primary-hover: #1a569c;
     --secondary-color: #4a5568;
     --secondary-light: #9aa3b2;
-    --border-color: #dadfe5;
+    --border-color: #e5e7eb;
     --panel-bg: #ffffff;
     --panel-header: #f6f8fa;
     --light-bg: #f9fafb;
-    --hover-bg: #f1f5f9;
-    --active-bg: #e8f1fd;
+    --hover-bg: #f3f4f6;
+    --active-bg: #eff6ff;
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
     --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.08);
     --shadow-panel: 0 0 10px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.08);
@@ -406,3 +406,357 @@ body {
 .row-element .col-md-10 {
     width: 82.5% !important;
 }
+
+/* Tabler.io form builder çalışması için gerekli override stiller */
+.studio-header .btn-group-sm .btn {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    line-height: 1.5;
+    border-radius: 2px;
+}
+
+.editor-main {
+    background-color: #f5f7fb;
+}
+
+.panel__left, .panel__right {
+    background-color: #ffffff;
+    border-color: rgba(98, 105, 118, 0.16);
+}
+
+.form-canvas {
+    background-color: #f5f7fb;
+}
+
+.element-palette-item {
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.form-element {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+/* Editor toolbar stilleri */
+.editor-toolbar {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
+  height: 36px;
+}
+
+.editor-toolbar button {
+  height: 36px;
+  min-width: 36px;
+  border: none;
+  background: transparent;
+  color: #4b5563;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.editor-toolbar button:hover {
+  background-color: #f3f4f6;
+  color: #3b82f6;
+}
+
+.editor-toolbar button.active {
+  background-color: #eff6ff;
+  color: #3b82f6;
+  border-left: 2px solid #3b82f6;
+}
+
+.editor-toolbar button i {
+  font-size: 14px;
+  width: 16px;
+  text-align: center;
+}
+
+.editor-toolbar button span {
+  margin-left: 6px;
+}
+
+.editor-toolbar-divider {
+  width: 1px;
+  height: 24px;
+  background-color: #e5e7eb;
+  margin: 0 4px;
+}
+
+.btn-group {
+  display: inline-flex;
+  height: 36px;
+}
+
+.btn-group button {
+  height: 36px;
+  min-width: 36px;
+  border: 1px solid #e5e7eb;
+  background: white;
+  color: #4b5563;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.btn-group button:hover {
+  background-color: #f3f4f6;
+  color: #3b82f6;
+}
+
+.btn-group button.active {
+  background-color: #eff6ff;
+  color: #3b82f6;
+}
+
+.device-btns {
+  display: flex;
+  height: 36px;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.device-btns button {
+  height: 36px;
+  width: 36px;
+  border: none;
+  background: transparent;
+  color: #4b5563;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+  font-size: 14px;
+}
+
+.device-btns button:hover {
+  background-color: #f3f4f6;
+  color: #3b82f6;
+}
+
+.device-btns button.active {
+  background-color: #eff6ff;
+  color: #3b82f6;
+  border-bottom: 2px solid #3b82f6;
+}
+
+.btn-back,
+.btn-tool,
+.btn-view,
+.btn-save {
+  height: 36px;
+  border: none;
+  background: white;
+  color: #4b5563;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.btn-back:hover,
+.btn-tool:hover {
+  background-color: #f3f4f6;
+  color: #3b82f6;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-tool.active {
+  background-color: #eff6ff;
+  color: #3b82f6;
+  box-shadow: 0 1px 3px rgba(59, 130, 246, 0.3);
+}
+
+.btn-view {
+  background-color: #fef3c7;
+  color: #b45309;
+  box-shadow: 0 1px 3px rgba(180, 83, 9, 0.2);
+}
+
+.btn-view:hover {
+  background-color: #fde68a;
+  color: #92400e;
+  box-shadow: 0 2px 4px rgba(146, 64, 14, 0.2);
+}
+
+.btn-save {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+  box-shadow: 0 1px 3px rgba(29, 78, 216, 0.2);
+}
+
+.btn-save:hover {
+  background-color: #bfdbfe;
+  color: #1e40af;
+  box-shadow: 0 2px 4px rgba(30, 64, 175, 0.2);
+}
+
+
+/* Toolbar butonları için düzeltme */
+.editor-toolbar {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    overflow: hidden;
+    height: 36px;
+  }
+  
+  .editor-toolbar button {
+    height: 36px;
+    min-width: 36px;
+    border: none;
+    background: transparent;
+    color: #4b5563;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0 12px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  
+  .editor-toolbar button:hover {
+    background-color: #f3f4f6;
+    color: #3b82f6;
+  }
+  
+  .editor-toolbar button.active {
+    background-color: #eff6ff;
+    color: #3b82f6;
+    border-left: 2px solid #3b82f6;
+  }
+  
+  .editor-toolbar button i {
+    font-size: 14px;
+    width: 16px;
+    text-align: center;
+  }
+  
+  .editor-toolbar button span {
+    margin-left: 6px;
+  }
+  
+  .editor-toolbar-divider {
+    width: 1px;
+    height: 24px;
+    background-color: #e5e7eb;
+    margin: 0 4px;
+  }
+  
+  /* Buton grupları için düzeltme */
+  .btn-group {
+    display: inline-flex;
+    height: 36px;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+  
+  .btn-group button {
+    height: 36px;
+    min-width: 36px;
+    border: none;
+    background: white;
+    color: #4b5563;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0 12px;
+    font-size: 13px;
+    font-weight: 500;
+    position: relative;
+  }
+  
+  .btn-group button:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 8px;
+    bottom: 8px;
+    width: 1px;
+    background-color: #e5e7eb;
+  }
+  
+  .btn-group button:hover {
+    background-color: #f3f4f6;
+    color: #3b82f6;
+  }
+  
+  .btn-group button.active {
+    background-color: #eff6ff;
+    color: #3b82f6;
+  }
+  
+  /* Toolbar Butonları için Düzeltilmiş Stiller */
+  .toolbar-buttons {
+    display: flex;
+    align-items: center;
+    height: 36px;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+  }
+  
+  .toolbar-button {
+    height: 36px;
+    width: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: #4b5563;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+  }
+  
+  .toolbar-button:hover {
+    background-color: #f3f4f6;
+    color: #3b82f6;
+  }
+  
+  .toolbar-button.active {
+    background-color: #eff6ff;
+    color: #3b82f6;
+  }
+  
+  .toolbar-button:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 8px;
+    bottom: 8px;
+    width: 1px;
+    background-color: #e5e7eb;
+  }

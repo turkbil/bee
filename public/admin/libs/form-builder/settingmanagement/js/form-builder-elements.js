@@ -6,118 +6,170 @@ document.addEventListener("DOMContentLoaded", function() {
         label: "Metin Alanı",
         name: "text_field",
         placeholder: "Metin giriniz",
-        help_text: "",
+        help_text: "Buraya yardım metni yazabilirsiniz",
         width: 12,
         required: false,
+        is_active: true,
+        is_system: false,
         default_value: "",
+        setting_id: "",
       },
       textarea: {
         label: "Uzun Metin",
         name: "textarea_field",
         placeholder: "Uzun metin giriniz",
-        help_text: "",
+        help_text: "Buraya yardım metni yazabilirsiniz",
         width: 12,
         required: false,
+        is_active: true,
+        is_system: false,
         default_value: "",
+        setting_id: "",
       },
       number: {
         label: "Sayı Alanı",
         name: "number_field",
         placeholder: "Sayı giriniz",
-        help_text: "",
+        help_text: "Buraya yardım metni yazabilirsiniz",
         width: 12,
         required: false,
+        is_active: true,
+        is_system: false,
         default_value: "",
+        setting_id: "",
       },
       email: {
         label: "E-posta Adresi",
         name: "email_field",
         placeholder: "E-posta adresinizi giriniz",
-        help_text: "",
+        help_text: "Buraya yardım metni yazabilirsiniz",
         width: 12,
         required: false,
+        is_active: true,
+        is_system: false,
         default_value: "",
+        setting_id: "",
       },
       select: {
         label: "Açılır Liste",
         name: "select_field",
         placeholder: "Seçiniz",
-        help_text: "",
+        help_text: "Buraya yardım metni yazabilirsiniz",
         width: 12,
         required: false,
+        is_active: true,
+        is_system: false,
+        setting_id: "",
         options: [
-          { value: "option1", label: "Seçenek 1" },
-          { value: "option2", label: "Seçenek 2" },
-          { value: "option3", label: "Seçenek 3" },
+          { value: "option1", label: "Seçenek 1", is_default: true },
+          { value: "option2", label: "Seçenek 2", is_default: false },
+          { value: "option3", label: "Seçenek 3", is_default: false },
         ],
+        default_value: "option1"
       },
       checkbox: {
         label: "Onay Kutusu",
         name: "checkbox_field",
-        help_text: "",
+        help_text: "Buraya yardım metni yazabilirsiniz",
         width: 12,
         required: false,
-        default_checked: false,
+        is_active: true,
+        is_system: false,
+        default_value: false,
+        setting_id: "",
       },
       radio: {
         label: "Seçim Düğmeleri",
         name: "radio_field",
-        help_text: "",
+        help_text: "Buraya yardım metni yazabilirsiniz",
         width: 12,
         required: false,
+        is_active: true,
+        is_system: false,
+        setting_id: "",
         options: [
-          { value: "option1", label: "Seçenek 1" },
-          { value: "option2", label: "Seçenek 2" },
-          { value: "option3", label: "Seçenek 3" },
+          { value: "option1", label: "Seçenek 1", is_default: true },
+          { value: "option2", label: "Seçenek 2", is_default: false },
+          { value: "option3", label: "Seçenek 3", is_default: false },
         ],
+        default_value: "option1"
       },
       switch: {
         label: "Anahtar",
         name: "switch_field",
-        help_text: "",
+        help_text: "Buraya yardım metni yazabilirsiniz",
         width: 12,
         required: false,
-        default_checked: false,
+        is_active: true,
+        is_system: false,
+        default_value: false,
+        setting_id: "",
       },
       color: {
         label: "Renk Seçici",
         name: "color_field",
-        help_text: "",
+        help_text: "Buraya yardım metni yazabilirsiniz",
         width: 12,
         required: false,
-        default_value: "#ffffff",
+        is_active: true,
+        is_system: false,
+        default_value: "#206bc4",
+        setting_id: "",
       },
       date: {
         label: "Tarih",
         name: "date_field",
-        help_text: "",
+        help_text: "Buraya yardım metni yazabilirsiniz",
         width: 12,
         required: false,
-        default_value: "",
+        is_active: true,
+        is_system: false,
+        default_value: new Date().toISOString().split('T')[0],
+        setting_id: "",
       },
       time: {
         label: "Saat",
         name: "time_field",
-        help_text: "",
+        help_text: "Buraya yardım metni yazabilirsiniz",
         width: 12,
         required: false,
-        default_value: "",
+        is_active: true,
+        is_system: false,
+        default_value: new Date().toTimeString().split(' ')[0].slice(0, 5),
+        setting_id: "",
       },
       file: {
         label: "Dosya Yükleme",
         name: "file_field",
-        help_text: "",
+        help_text: "Buraya yardım metni yazabilirsiniz",
         width: 12,
         required: false,
+        is_active: true,
+        is_system: false,
         default_value: "",
+        setting_id: "",
       },
       image: {
         label: "Resim Yükleme",
         name: "image_field",
-        help_text: "",
+        help_text: "Buraya yardım metni yazabilirsiniz",
         width: 12,
         required: false,
+        is_active: true,
+        is_system: false,
         default_value: "",
+        setting_id: "",
+      },
+      image_multiple: {
+        label: "Çoklu Resim",
+        name: "image_multiple_field",
+        help_text: "Buraya yardım metni yazabilirsiniz",
+        width: 12,
+        required: false,
+        is_active: true,
+        is_system: false,
+        default_value: "",
+        setting_id: "",
       },
       row: {
         columns: [
@@ -125,7 +177,7 @@ document.addEventListener("DOMContentLoaded", function() {
           { index: 2, width: 6 },
         ],
       },
-      // Yeni düzen elemanları
+      // Düzen elemanları
       heading: {
         label: "Başlık",
         content: "Başlık Metni",
@@ -140,10 +192,11 @@ document.addEventListener("DOMContentLoaded", function() {
         align: "left",
       },
       divider: {
-        label: "Ayırıcı",
+        label: "Ayırıcı Çizgi",
         style: "solid",
         width: 12,
         color: "#e5e7eb",
+        thickness: "1px"
       },
       spacer: {
         label: "Boşluk",
@@ -194,10 +247,10 @@ document.addEventListener("DOMContentLoaded", function() {
             // Alfa değerini yok sayıyoruz (hex formatında alfa yok)
             properties.default_value = window.rgbToHex(r, g, b);
           } else {
-            properties.default_value = "#000000"; // Fallback
+            properties.default_value = "#206bc4"; // Fallback
           }
         } catch (e) {
-          properties.default_value = "#000000"; // Hata durumunda siyah
+          properties.default_value = "#206bc4"; // Hata durumunda mavi
         }
       }
   
@@ -221,13 +274,15 @@ document.addEventListener("DOMContentLoaded", function() {
       } else if (type === 'paragraph') {
         elementTitle = 'Paragraf';
       } else if (type === 'divider') {
-        elementTitle = 'Ayırıcı';
+        elementTitle = 'Ayırıcı Çizgi';
       } else if (type === 'spacer') {
         elementTitle = 'Boşluk';
       } else if (type === 'card') {
         elementTitle = 'Kart: ' + (properties.title || '');
       } else if (type === 'tab_group') {
         elementTitle = 'Sekme Grubu';
+      } else if (type === 'image_multiple') {
+        elementTitle = 'Çoklu Resim: ' + (properties.label || '');
       } else {
         elementTitle = properties.label || type.charAt(0).toUpperCase() + type.slice(1);
       }
@@ -266,6 +321,9 @@ document.addEventListener("DOMContentLoaded", function() {
               const optionElement = document.createElement("option");
               optionElement.value = option.value;
               optionElement.textContent = option.label;
+              if (option.is_default || properties.default_value === option.value) {
+                optionElement.selected = true;
+              }
               selectElement.appendChild(optionElement);
             });
           }
@@ -275,8 +333,9 @@ document.addEventListener("DOMContentLoaded", function() {
             properties.options.forEach((option) => {
               const radioElement = document.createElement("div");
               radioElement.className = "form-check";
+              const isDefault = option.is_default || properties.default_value === option.value;
               radioElement.innerHTML = `
-                              <input class="form-check-input" type="radio" name="${properties.name}">
+                              <input class="form-check-input" type="radio" name="${properties.name}" ${isDefault ? 'checked' : ''}>
                               <span class="form-check-label">${option.label}</span>
                           `;
               radioContainer.appendChild(radioElement);

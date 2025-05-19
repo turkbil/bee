@@ -756,7 +756,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Varsayılan Değer</label>
-                    <input type="color" class="form-control form-control-color" name="default_value" value="{default_value}">
+                    <input type="text" class="form-control" name="default_value" value="{default_value}" placeholder="#ffffff">
+                    <small class="text-muted">Hex formatında girin: #RRGGBB</small>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Ayar ID</label>
@@ -1160,6 +1161,25 @@ document.addEventListener("DOMContentLoaded", function () {
       properties = window.defaultProperties[type]
         ? JSON.parse(JSON.stringify(window.defaultProperties[type]))
         : {};
+    }
+
+    // Eğer renk değeri rgba formatında ise hex'e dönüştür
+    if (type === "color" && properties.default_value && properties.default_value.startsWith("rgba")) {
+      try {
+        // RGBA değerini parse et
+        const rgba = properties.default_value.match(/rgba\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*([\d.]+)\s*\)/);
+        if (rgba) {
+          const r = parseInt(rgba[1]);
+          const g = parseInt(rgba[2]);
+          const b = parseInt(rgba[3]);
+          // Alfa değerini yok sayıyoruz (hex formatında alfa yok)
+          properties.default_value = rgbToHex(r, g, b);
+        } else {
+          properties.default_value = "#000000"; // Fallback
+        }
+      } catch (e) {
+        properties.default_value = "#000000"; // Hata durumunda siyah
+      }
     }
 
     const elementId = "element-" + ++window.elementCounter;
@@ -1715,6 +1735,11 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     });
   };
+
+  // RGB'den HEX'e dönüştürme yardımcı fonksiyonu
+  function rgbToHex(r, g, b) {
+    return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+  }
 
   // Kategori durumları
   const categories = JSON.parse(localStorage.getItem("form_builder_categories") || "{}");

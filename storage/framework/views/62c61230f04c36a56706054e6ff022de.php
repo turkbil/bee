@@ -225,6 +225,11 @@
     </div>
 </div>
 
+<form id="save-form" action="<?php echo e(route('admin.settingmanagement.form-builder.save', $group->id)); ?>" method="POST" style="display: none;">
+    <?php echo csrf_field(); ?>
+    <input type="hidden" name="layout" id="layout-data">
+</form>
+
 <input type="hidden" id="group-id" value="<?php echo e($group->id); ?>">
 
 <?php $__env->startPush('scripts'); ?>
@@ -280,20 +285,21 @@
                 console.error('Ayarlar yüklenirken hata:', error);
             });
             
-            // Livewire entegrasyonu
-            if (window.livewire) {
-                const saveBtn = document.getElementById('save-btn');
-                if (saveBtn) {
-                    saveBtn.addEventListener('click', function() {
-                        const formData = window.getFormJSON();
-                        console.log('Form verisi kaydediliyor:', formData);
-                        window.livewire.emit('saveFormLayout', groupId, JSON.stringify(formData));
-                    });
-                }
-                
-                // Livewire olaylarını dinle
-                window.livewire.on('formSaved', function() {
-                    console.log('Form başarıyla kaydedildi!');
+            // Kaydet butonuna tıklama olayı
+            const saveBtn = document.getElementById('save-btn');
+            const saveForm = document.getElementById('save-form');
+            const layoutData = document.getElementById('layout-data');
+            
+            if (saveBtn && saveForm && layoutData) {
+                saveBtn.addEventListener('click', function() {
+                    const formData = window.getFormJSON();
+                    console.log('Form verisi kaydediliyor:', formData);
+                    
+                    // Form verisini hidden input'a ekle
+                    layoutData.value = JSON.stringify(formData);
+                    
+                    // Formu gönder
+                    saveForm.submit();
                 });
             }
         }, 500); // Form Builder JS'nin yüklenmesi için 500ms bekle

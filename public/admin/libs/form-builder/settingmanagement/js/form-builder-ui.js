@@ -123,8 +123,11 @@ document.addEventListener("DOMContentLoaded", function() {
       
       // Form verisi hazır, şimdi Livewire'a gönder
       const groupId = document.getElementById('group-id').value;
-      if (groupId && window.livewire) {
-        window.livewire.emit('saveFormLayout', groupId, JSON.stringify(formData));
+      if (groupId && typeof Livewire !== 'undefined') {
+        Livewire.dispatch('saveFormLayout', {
+          groupId: groupId, 
+          formData: JSON.stringify(formData)
+        });
       }
     });
   }

@@ -87,7 +87,7 @@ class FormBuilderController extends Controller
      * Form layout kaydet
      * @param Request $request
      * @param int $groupId
-     * @return \Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\JsonResponse
      */
     public function save(Request $request, $groupId)
     {
@@ -116,9 +116,15 @@ class FormBuilderController extends Controller
                 'form layout güncellendi'
             );
             
-            return redirect()->back()->with('success', 'Form yapısı başarıyla kaydedildi.');
+            return response()->json([
+                'success' => true,
+                'message' => 'Form yapısı başarıyla kaydedildi.'
+            ]);
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Form yapısı kaydedilirken bir hata oluştu: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'error' => 'Form yapısı kaydedilirken bir hata oluştu: ' . $e->getMessage()
+            ]);
         }
     }
 }

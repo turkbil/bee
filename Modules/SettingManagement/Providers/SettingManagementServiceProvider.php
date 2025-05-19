@@ -11,6 +11,7 @@ use Modules\SettingManagement\App\Http\Livewire\TenantValueComponent;
 use Modules\SettingManagement\App\Http\Livewire\GroupManageComponent;
 use Modules\SettingManagement\App\Http\Livewire\ValuesComponent;
 use Modules\SettingManagement\App\Http\Livewire\TenantSettingsComponent;
+use Modules\SettingManagement\App\Http\Livewire\FormBuilderComponent;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
@@ -68,6 +69,7 @@ class SettingManagementServiceProvider extends ServiceProvider
         Livewire::component('group-manage-component', GroupManageComponent::class);
         Livewire::component('values-component', ValuesComponent::class);
         Livewire::component('tenant-settings-component', TenantSettingsComponent::class);
+        Livewire::component('form-builder-component', FormBuilderComponent::class);
     }
 
     public function register()

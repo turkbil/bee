@@ -20,18 +20,28 @@ class GroupManageComponent extends Component
         'description' => '',
         'icon' => '',
         'is_active' => true,
-        'parent_id' => null
+        'parent_id' => null,
+        'prefix' => ''
     ];
+
+    public $isSubGroup = false;
 
     protected function rules()
     {
-        return [
+        $rules = [
             'inputs.name' => 'required|min:3|max:255',
             'inputs.description' => 'nullable|string',
             'inputs.icon' => 'nullable|string|max:50',
             'inputs.parent_id' => 'nullable|exists:settings_groups,id',
             'inputs.is_active' => 'boolean',
         ];
+        
+        // Alt gruplar için prefix alanı ekle
+        if ($this->isSubGroup) {
+            $rules['inputs.prefix'] = 'nullable|string|max:50';
+        }
+        
+        return $rules;
     }
 
     public function mount($id = null)
@@ -46,13 +56,23 @@ class GroupManageComponent extends Component
             
         if ($id) {
             $group = SettingGroup::findOrFail($id);
-            $this->inputs = $group->only(['name', 'description', 'icon', 'is_active', 'parent_id']);
+            $this->inputs = $group->only(['name', 'description', 'icon', 'is_active', 'parent_id', 'prefix']);
+            // Alt grup ise isSubGroup özelliğini true yap
+            $this->isSubGroup = !is_null($group->parent_id);
         } else {
             // parent_id parametresi varsa inputs'a ekle
             if (request()->has('parent_id')) {
                 $this->inputs['parent_id'] = request()->get('parent_id');
+                // Eğer parent_id varsa alt grup olarak işaretle
+                $this->isSubGroup = true;
             }
         }
+    }
+    
+    public function updatedInputsParentId($value)
+    {
+        // Parent ID değiştiğinde alt grup olup olmadığını güncelle
+        $this->isSubGroup = !is_null($value);
     }
 
     public function save($redirect = false)
@@ -64,16 +84,32 @@ class GroupManageComponent extends Component
         if (empty($this->inputs['icon'])) {
             $this->inputs['icon'] = 'fas fa-folder';
         }
+        
+        // Prefix sadece alt gruplar için kullanılabilir
+        if (!$this->isSubGroup) {
+            $this->inputs['prefix'] = null;
+        }
     
         if ($this->groupId) {
             $group = SettingGroup::findOrFail($this->groupId);
             $oldData = $group->toArray();
             $group->update($this->inputs);
             
+            // JSON/array veri tiplerinde karşılaştırma hatasını önlemek için
+            // sadece değişen temel alanları gönderelim
+            $changes = [];
+            $basicFields = ['name', 'description', 'icon', 'prefix', 'is_active', 'parent_id'];
+            
+            foreach ($basicFields as $field) {
+                if (isset($oldData[$field]) && isset($group->$field) && $oldData[$field] !== $group->$field) {
+                    $changes[$field] = $group->$field;
+                }
+            }
+            
             log_activity(
                 $group,
                 'güncellendi',
-                array_diff_assoc($group->toArray(), $oldData)
+                $changes
             );
             
             $message = 'Grup güncellendi';

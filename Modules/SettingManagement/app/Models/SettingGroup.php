@@ -26,7 +26,8 @@ class SettingGroup extends Model
         'icon',
         'meta_data',
         'is_active',
-        'layout'
+        'layout',
+        'prefix'
     ];
 
     protected $casts = [

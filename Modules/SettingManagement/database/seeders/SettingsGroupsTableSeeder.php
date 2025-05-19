@@ -16,7 +16,9 @@ class SettingsGroupsTableSeeder extends Seeder
             ['id' => 3, 'name' => 'Kullanıcı', 'parent_id' => null, 'icon' => 'fas fa-users'],
             ['id' => 4, 'name' => 'Modül', 'parent_id' => null, 'icon' => 'fas fa-puzzle-piece'],
             ['id' => 5, 'name' => 'Site', 'parent_id' => null, 'icon' => 'fas fa-globe'],
-            ['id' => 6, 'name' => 'Site Ayarları', 'parent_id' => 1, 'icon' => 'fas fa-sliders-h', 'layout' => $this->getSiteAyarlariLayout()],
+            ['id' => 6, 'name' => 'Site Ayarları', 'parent_id' => 1, 'icon' => 'fas fa-sliders-h', 'prefix' => 'site', 'layout' => $this->getSiteAyarlariLayout()],
+            ['id' => 7, 'name' => 'Tema', 'parent_id' => 5, 'icon' => 'fas fa-palette', 'prefix' => 'theme'],
+            // NOT: Daha önce 'Tema Ayarları' olarak eklenmiş grup kaldırıldı, bu tüm tema ayarları 'Tema' grubu altında olacak
         ];
         
         foreach ($groups as $group) {
@@ -29,6 +31,7 @@ class SettingsGroupsTableSeeder extends Seeder
                 'slug' => Str::slug($group['name']),
                 'parent_id' => $group['parent_id'],
                 'icon' => $group['icon'],
+                'prefix' => $group['prefix'] ?? null,
                 'is_active' => true,
                 'layout' => $layout,
                 'created_at' => now(),

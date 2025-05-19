@@ -82,4 +82,43 @@ class FormBuilderController extends Controller
             ], 200); // 500 yerine 200 döndürelim
         }
     }
+    
+    /**
+     * Form layout kaydet
+     * @param Request $request
+     * @param int $groupId
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function save(Request $request, $groupId)
+    {
+        try {
+            $group = SettingGroup::findOrFail($groupId);
+            
+            $formData = $request->input('layout');
+            
+            if (empty($formData)) {
+                throw new \Exception("Form verisi boş olamaz.");
+            }
+            
+            // JSON string olarak gelmesi durumunda
+            if (is_string($formData)) {
+                $formData = json_decode($formData, true);
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    throw new \Exception("Geçersiz JSON formatı");
+                }
+            }
+            
+            $group->layout = $formData;
+            $group->save();
+            
+            log_activity(
+                $group,
+                'form layout güncellendi'
+            );
+            
+            return redirect()->back()->with('success', 'Form yapısı başarıyla kaydedildi.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Form yapısı kaydedilirken bir hata oluştu: ' . $e->getMessage());
+        }
+    }
 }

@@ -3,6 +3,7 @@
 namespace Modules\SettingManagement\App\Http\Livewire;
 
 use Livewire\Component;
+use Livewire\Attributes\On;
 use Modules\SettingManagement\App\Models\SettingGroup;
 
 class FormBuilderComponent extends Component
@@ -19,9 +20,17 @@ class FormBuilderComponent extends Component
         }
     }
     
-    public function saveFormLayout($groupId, $formData)
+    #[On('save-form-layout')]
+    public function saveLayout($data)
     {
         try {
+            $groupId = $data['groupId'] ?? $this->groupId;
+            $formData = $data['formData'] ?? null;
+            
+            if (!$groupId || !$formData) {
+                throw new \Exception("Eksik parametreler: groupId veya formData");
+            }
+            
             $group = SettingGroup::findOrFail($groupId);
             
             // JSON string olarak gelmesi durumunda
@@ -45,12 +54,16 @@ class FormBuilderComponent extends Component
                 'message' => 'Form yapısı başarıyla kaydedildi',
                 'type' => 'success'
             ]);
+            
+            return ['success' => true];
         } catch (\Exception $e) {
             $this->dispatch('toast', [
                 'title' => 'Hata!',
                 'message' => 'Form yapısı kaydedilirken bir hata oluştu: ' . $e->getMessage(),
                 'type' => 'error'
             ]);
+            
+            return ['success' => false, 'error' => $e->getMessage()];
         }
     }
     

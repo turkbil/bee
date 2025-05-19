@@ -55,9 +55,7 @@ Route::middleware(['web', 'auth', 'tenant'])
                     ->name('tenant.settings');
 
                 // Form Builder routes - Livewire yaklaşımıyla
-                Route::get('/form-builder', FormBuilderComponent::class)
-                    ->middleware('module.permission:settingmanagement,view')
-                    ->name('form-builder.index');
+                // İndex rotası kaldırıldı
 
                 Route::get('/form-builder/{groupId}', FormBuilderComponent::class)
                     ->middleware('module.permission:settingmanagement,update')

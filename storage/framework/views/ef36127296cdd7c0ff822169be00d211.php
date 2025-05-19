@@ -58,12 +58,6 @@ Ayar Yönetimi
                         Tenant Ayarları
                     </a>
                     <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
-
-                    <!--[if BLOCK]><![endif]--><?php if (\Illuminate\Support\Facades\Blade::check('hasmoduleaccess', 'settingmanagement', 'view')): ?>
-                    <a class="dropdown-item" href="<?php echo e(route('admin.settingmanagement.form-builder.index')); ?>">
-                        Form Builder
-                    </a>
-                    <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                 </div>
             </div>
             <!--[if BLOCK]><![endif]--><?php if (\Illuminate\Support\Facades\Blade::check('hasmoduleaccess', 'settingmanagement', 'update')): ?>

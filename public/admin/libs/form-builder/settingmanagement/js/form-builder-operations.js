@@ -372,15 +372,6 @@ document.addEventListener("DOMContentLoaded", function() {
         });
       }
     }
-      
-    // Eğer grup ID'si belirtilmişse ve form element'i bir ayarla ilişkilendirilebilecek 
-    // türdeyse (düzen elementleri hariç), ayarları getir
-    const formGroupId = document.getElementById('group-id')?.value;
-    if (formGroupId && ['text', 'textarea', 'select', 'checkbox', 'radio', 'switch', 
-                        'number', 'email', 'date', 'time', 'color', 'file', 'image', 
-                        'image_multiple'].includes(type)) {
-      window.populateSettingDropdowns(formGroupId);
-    }
   };
   
   // Seçenek değerini güncelle
@@ -499,6 +490,50 @@ document.addEventListener("DOMContentLoaded", function() {
       if (labelElement) {
         labelElement.textContent = value;
       }
+      
+      // Alan adını otomatik güncelle (label değiştiğinde)
+      const groupId = document.getElementById('group-id')?.value;
+      if (groupId && value) {
+        fetch(`/admin/settingmanagement/form-builder/${groupId}/load`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success && data.layout) {
+            // Grup prefix'ini al
+            const groupPrefix = data.layout.title?.split(' ')[0].toLowerCase() || '';
+            
+            if (groupPrefix) {
+              // Slug formatına çevir
+              const slug = value.toLowerCase().replace(/ /g, '_').replace(/[^\w-]+/g, '');
+              
+              // Eğer alan adı yoksa veya prefix + _ ile başlamıyorsa, yeni alan adı oluştur
+              const currentName = window.selectedElement.properties.name || '';
+              
+              if (!currentName || !currentName.startsWith(groupPrefix + '_')) {
+                const newName = groupPrefix + '_' + slug;
+                window.selectedElement.properties.name = newName;
+                
+                // Name input varsa güncelle
+                const nameInput = window.propertiesPanel.querySelector('input[name="name"]');
+                if (nameInput) {
+                  nameInput.value = newName;
+                }
+              }
+            }
+          }
+        })
+        .catch(error => {
+          console.error('Grup verisi alınamadı:', error);
+        });
+      }
+    } else if (name === "name") {
+      // Alan adı manuel değiştirildiğinde
+      window.selectedElement.properties.name = value;
     } else if (name === "width") {
       window.selectedElement.dataset.width = value;
       window.selectedElement.properties.width = parseInt(value);
@@ -548,8 +583,6 @@ document.addEventListener("DOMContentLoaded", function() {
       if (colorPicker) {
         colorPicker.value = value;
       }
-    } else if (name === "setting_id") {
-      window.selectedElement.properties.setting_id = value;
     } else {
       // Genel özellik güncelleme
       window.selectedElement.properties[name] = value;

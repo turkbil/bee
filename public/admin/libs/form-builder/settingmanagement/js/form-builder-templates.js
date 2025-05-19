@@ -243,8 +243,9 @@ document.addEventListener("DOMContentLoaded", function() {
                       <input type="text" class="form-control" name="label" value="{label}">
                   </div>
                   <div class="mb-3">
-                      <label class="form-label">Alan Adı</label>
+                      <label class="form-label">Alan Adı (System Key)</label>
                       <input type="text" class="form-control" name="name" value="{name}">
+                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda düzenleyebilirsiniz.</div>
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Placeholder</label>
@@ -285,14 +286,6 @@ document.addEventListener("DOMContentLoaded", function() {
                       <label class="form-label">Varsayılan Değer</label>
                       <input type="text" class="form-control" name="default_value" value="{default_value}">
                   </div>
-                  <div class="mb-3">
-                      <label class="form-label">Ayar ID</label>
-                      <select class="form-select" name="setting_id">
-                          <option value="">Ayar Seçiniz</option>
-                          <!-- Ayarlar AJAX ile yüklenecek -->
-                      </select>
-                      <div class="form-text text-muted">Bu alan, bir ayarın değerini form elemanına bağlamak için kullanılır. Ayar ID seçildiğinde, form elemanı o ayarın değerini gösterir ve değişiklikler o ayara kaydedilir.</div>
-                  </div>
               </div>
           `,
       textarea: `
@@ -303,8 +296,9 @@ document.addEventListener("DOMContentLoaded", function() {
                       <input type="text" class="form-control" name="label" value="{label}">
                   </div>
                   <div class="mb-3">
-                      <label class="form-label">Alan Adı</label>
+                      <label class="form-label">Alan Adı (System Key)</label>
                       <input type="text" class="form-control" name="name" value="{name}">
+                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda düzenleyebilirsiniz.</div>
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Placeholder</label>
@@ -345,14 +339,6 @@ document.addEventListener("DOMContentLoaded", function() {
                       <label class="form-label">Varsayılan Değer</label>
                       <textarea class="form-control" name="default_value" rows="3">{default_value}</textarea>
                   </div>
-                  <div class="mb-3">
-                      <label class="form-label">Ayar ID</label>
-                      <select class="form-select" name="setting_id">
-                          <option value="">Ayar Seçiniz</option>
-                          <!-- Ayarlar AJAX ile yüklenecek -->
-                      </select>
-                      <div class="form-text text-muted">Bu alan, bir ayarın değerini form elemanına bağlamak için kullanılır. Ayar ID seçildiğinde, form elemanı o ayarın değerini gösterir ve değişiklikler o ayara kaydedilir.</div>
-                  </div>
               </div>
           `,
       select: `
@@ -363,8 +349,9 @@ document.addEventListener("DOMContentLoaded", function() {
                       <input type="text" class="form-control" name="label" value="{label}">
                   </div>
                   <div class="mb-3">
-                      <label class="form-label">Alan Adı</label>
+                      <label class="form-label">Alan Adı (System Key)</label>
                       <input type="text" class="form-control" name="name" value="{name}">
+                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda düzenleyebilirsiniz.</div>
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Placeholder</label>
@@ -417,14 +404,6 @@ document.addEventListener("DOMContentLoaded", function() {
                           <!-- Seçenekler JavaScript ile doldurulacak -->
                       </select>
                   </div>
-                  <div class="mb-3">
-                      <label class="form-label">Ayar ID</label>
-                      <select class="form-select" name="setting_id">
-                          <option value="">Ayar Seçiniz</option>
-                          <!-- Ayarlar AJAX ile yüklenecek -->
-                      </select>
-                      <div class="form-text text-muted">Bu alan, bir ayarın değerini form elemanına bağlamak için kullanılır. Ayar ID seçildiğinde, form elemanı o ayarın değerini gösterir ve değişiklikler o ayara kaydedilir.</div>
-                  </div>
               </div>
           `,
       number: `
@@ -435,8 +414,9 @@ document.addEventListener("DOMContentLoaded", function() {
                       <input type="text" class="form-control" name="label" value="{label}">
                   </div>
                   <div class="mb-3">
-                      <label class="form-label">Alan Adı</label>
+                      <label class="form-label">Alan Adı (System Key)</label>
                       <input type="text" class="form-control" name="name" value="{name}">
+                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda düzenleyebilirsiniz.</div>
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Placeholder</label>
@@ -477,14 +457,6 @@ document.addEventListener("DOMContentLoaded", function() {
                       <label class="form-label">Varsayılan Değer</label>
                       <input type="number" class="form-control" name="default_value" value="{default_value}">
                   </div>
-                  <div class="mb-3">
-                      <label class="form-label">Ayar ID</label>
-                      <select class="form-select" name="setting_id">
-                          <option value="">Ayar Seçiniz</option>
-                          <!-- Ayarlar AJAX ile yüklenecek -->
-                      </select>
-                      <div class="form-text text-muted">Bu alan, bir ayarın değerini form elemanına bağlamak için kullanılır. Ayar ID seçildiğinde, form elemanı o ayarın değerini gösterir ve değişiklikler o ayara kaydedilir.</div>
-                  </div>
               </div>
           `,
       email: `
@@ -495,8 +467,9 @@ document.addEventListener("DOMContentLoaded", function() {
                       <input type="text" class="form-control" name="label" value="{label}">
                   </div>
                   <div class="mb-3">
-                      <label class="form-label">Alan Adı</label>
+                      <label class="form-label">Alan Adı (System Key)</label>
                       <input type="text" class="form-control" name="name" value="{name}">
+                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda düzenleyebilirsiniz.</div>
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Placeholder</label>
@@ -537,14 +510,6 @@ document.addEventListener("DOMContentLoaded", function() {
                       <label class="form-label">Varsayılan Değer</label>
                       <input type="email" class="form-control" name="default_value" value="{default_value}">
                   </div>
-                  <div class="mb-3">
-                      <label class="form-label">Ayar ID</label>
-                      <select class="form-select" name="setting_id">
-                          <option value="">Ayar Seçiniz</option>
-                          <!-- Ayarlar AJAX ile yüklenecek -->
-                      </select>
-                      <div class="form-text text-muted">Bu alan, bir ayarın değerini form elemanına bağlamak için kullanılır. Ayar ID seçildiğinde, form elemanı o ayarın değerini gösterir ve değişiklikler o ayara kaydedilir.</div>
-                  </div>
               </div>
           `,
       checkbox: `
@@ -555,8 +520,9 @@ document.addEventListener("DOMContentLoaded", function() {
                       <input type="text" class="form-control" name="label" value="{label}">
                   </div>
                   <div class="mb-3">
-                      <label class="form-label">Alan Adı</label>
+                      <label class="form-label">Alan Adı (System Key)</label>
                       <input type="text" class="form-control" name="name" value="{name}">
+                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda düzenleyebilirsiniz.</div>
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Yardım Metni</label>
@@ -595,14 +561,6 @@ document.addEventListener("DOMContentLoaded", function() {
                           <span class="form-check-label">Varsayılan İşaretli</span>
                       </label>
                   </div>
-                  <div class="mb-3">
-                      <label class="form-label">Ayar ID</label>
-                      <select class="form-select" name="setting_id">
-                          <option value="">Ayar Seçiniz</option>
-                          <!-- Ayarlar AJAX ile yüklenecek -->
-                      </select>
-                      <div class="form-text text-muted">Bu alan, bir ayarın değerini form elemanına bağlamak için kullanılır. Ayar ID seçildiğinde, form elemanı o ayarın değerini gösterir ve değişiklikler o ayara kaydedilir.</div>
-                  </div>
               </div>
           `,
       radio: `
@@ -613,8 +571,9 @@ document.addEventListener("DOMContentLoaded", function() {
                       <input type="text" class="form-control" name="label" value="{label}">
                   </div>
                   <div class="mb-3">
-                      <label class="form-label">Alan Adı</label>
+                      <label class="form-label">Alan Adı (System Key)</label>
                       <input type="text" class="form-control" name="name" value="{name}">
+                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda düzenleyebilirsiniz.</div>
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Yardım Metni</label>
@@ -663,14 +622,6 @@ document.addEventListener("DOMContentLoaded", function() {
                           <!-- Seçenekler JavaScript ile doldurulacak -->
                       </select>
                   </div>
-                  <div class="mb-3">
-                      <label class="form-label">Ayar ID</label>
-                      <select class="form-select" name="setting_id">
-                          <option value="">Ayar Seçiniz</option>
-                          <!-- Ayarlar AJAX ile yüklenecek -->
-                      </select>
-                      <div class="form-text text-muted">Bu alan, bir ayarın değerini form elemanına bağlamak için kullanılır. Ayar ID seçildiğinde, form elemanı o ayarın değerini gösterir ve değişiklikler o ayara kaydedilir.</div>
-                  </div>
               </div>
           `,
       switch: `
@@ -681,8 +632,9 @@ document.addEventListener("DOMContentLoaded", function() {
                       <input type="text" class="form-control" name="label" value="{label}">
                   </div>
                   <div class="mb-3">
-                      <label class="form-label">Alan Adı</label>
+                      <label class="form-label">Alan Adı (System Key)</label>
                       <input type="text" class="form-control" name="name" value="{name}">
+                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda düzenleyebilirsiniz.</div>
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Yardım Metni</label>
@@ -721,14 +673,6 @@ document.addEventListener("DOMContentLoaded", function() {
                           <span class="form-check-label">Varsayılan İşaretli</span>
                       </label>
                   </div>
-                  <div class="mb-3">
-                      <label class="form-label">Ayar ID</label>
-                      <select class="form-select" name="setting_id">
-                          <option value="">Ayar Seçiniz</option>
-                          <!-- Ayarlar AJAX ile yüklenecek -->
-                      </select>
-                      <div class="form-text text-muted">Bu alan, bir ayarın değerini form elemanına bağlamak için kullanılır. Ayar ID seçildiğinde, form elemanı o ayarın değerini gösterir ve değişiklikler o ayara kaydedilir.</div>
-                  </div>
               </div>
           `,
       color: `
@@ -739,8 +683,9 @@ document.addEventListener("DOMContentLoaded", function() {
                       <input type="text" class="form-control" name="label" value="{label}">
                   </div>
                   <div class="mb-3">
-                      <label class="form-label">Alan Adı</label>
+                      <label class="form-label">Alan Adı (System Key)</label>
                       <input type="text" class="form-control" name="name" value="{name}">
+                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda düzenleyebilirsiniz.</div>
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Yardım Metni</label>
@@ -784,14 +729,6 @@ document.addEventListener("DOMContentLoaded", function() {
                           </div>
                       </div>
                   </div>
-                  <div class="mb-3">
-                      <label class="form-label">Ayar ID</label>
-                      <select class="form-select" name="setting_id">
-                          <option value="">Ayar Seçiniz</option>
-                          <!-- Ayarlar AJAX ile yüklenecek -->
-                      </select>
-                      <div class="form-text text-muted">Bu alan, bir ayarın değerini form elemanına bağlamak için kullanılır. Ayar ID seçildiğinde, form elemanı o ayarın değerini gösterir ve değişiklikler o ayara kaydedilir.</div>
-                  </div>
               </div>
           `,
       date: `
@@ -802,8 +739,9 @@ document.addEventListener("DOMContentLoaded", function() {
                       <input type="text" class="form-control" name="label" value="{label}">
                   </div>
                   <div class="mb-3">
-                      <label class="form-label">Alan Adı</label>
+                      <label class="form-label">Alan Adı (System Key)</label>
                       <input type="text" class="form-control" name="name" value="{name}">
+                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda düzenleyebilirsiniz.</div>
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Yardım Metni</label>
@@ -840,17 +778,9 @@ document.addEventListener("DOMContentLoaded", function() {
                       <label class="form-label">Varsayılan Değer</label>
                       <input type="date" class="form-control" name="default_value" value="{default_value}">
                   </div>
-                  <div class="mb-3">
-                      <label class="form-label">Ayar ID</label>
-                      <select class="form-select" name="setting_id">
-                          <option value="">Ayar Seçiniz</option>
-                          <!-- Ayarlar AJAX ile yüklenecek -->
-                      </select>
-                      <div class="form-text text-muted">Bu alan, bir ayarın değerini form elemanına bağlamak için kullanılır. Ayar ID seçildiğinde, form elemanı o ayarın değerini gösterir ve değişiklikler o ayara kaydedilir.</div>
-                  </div>
               </div>
           `,
-      time: `
+        time: `
               <h4 class="fw-bold p-3 border-bottom">Saat Elementini Düzenle</h4>
               <div class="p-3">
                   <div class="mb-3">
@@ -858,8 +788,9 @@ document.addEventListener("DOMContentLoaded", function() {
                       <input type="text" class="form-control" name="label" value="{label}">
                   </div>
                   <div class="mb-3">
-                      <label class="form-label">Alan Adı</label>
+                      <label class="form-label">Alan Adı (System Key)</label>
                       <input type="text" class="form-control" name="name" value="{name}">
+                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda düzenleyebilirsiniz.</div>
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Yardım Metni</label>
@@ -896,14 +827,6 @@ document.addEventListener("DOMContentLoaded", function() {
                       <label class="form-label">Varsayılan Değer</label>
                       <input type="time" class="form-control" name="default_value" value="{default_value}">
                   </div>
-                  <div class="mb-3">
-                      <label class="form-label">Ayar ID</label>
-                      <select class="form-select" name="setting_id">
-                          <option value="">Ayar Seçiniz</option>
-                          <!-- Ayarlar AJAX ile yüklenecek -->
-                      </select>
-                      <div class="form-text text-muted">Bu alan, bir ayarın değerini form elemanına bağlamak için kullanılır. Ayar ID seçildiğinde, form elemanı o ayarın değerini gösterir ve değişiklikler o ayara kaydedilir.</div>
-                  </div>
               </div>
           `,
       file: `
@@ -914,8 +837,9 @@ document.addEventListener("DOMContentLoaded", function() {
                       <input type="text" class="form-control" name="label" value="{label}">
                   </div>
                   <div class="mb-3">
-                      <label class="form-label">Alan Adı</label>
+                      <label class="form-label">Alan Adı (System Key)</label>
                       <input type="text" class="form-control" name="name" value="{name}">
+                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda düzenleyebilirsiniz.</div>
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Yardım Metni</label>
@@ -947,14 +871,6 @@ document.addEventListener("DOMContentLoaded", function() {
                           <input class="form-check-input" type="checkbox" name="is_system" {is_system}>
                           <span class="form-check-label">Sistem Ayarı</span>
                       </label>
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-label">Ayar ID</label>
-                      <select class="form-select" name="setting_id">
-                          <option value="">Ayar Seçiniz</option>
-                          <!-- Ayarlar AJAX ile yüklenecek -->
-                      </select>
-                      <div class="form-text text-muted">Bu alan, bir ayarın değerini form elemanına bağlamak için kullanılır. Ayar ID seçildiğinde, form elemanı o ayarın değerini gösterir ve değişiklikler o ayara kaydedilir.</div>
                   </div>
               </div>
           `,
@@ -966,8 +882,9 @@ document.addEventListener("DOMContentLoaded", function() {
                       <input type="text" class="form-control" name="label" value="{label}">
                   </div>
                   <div class="mb-3">
-                      <label class="form-label">Alan Adı</label>
+                      <label class="form-label">Alan Adı (System Key)</label>
                       <input type="text" class="form-control" name="name" value="{name}">
+                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda düzenleyebilirsiniz.</div>
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Yardım Metni</label>
@@ -999,14 +916,6 @@ document.addEventListener("DOMContentLoaded", function() {
                           <input class="form-check-input" type="checkbox" name="is_system" {is_system}>
                           <span class="form-check-label">Sistem Ayarı</span>
                       </label>
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-label">Ayar ID</label>
-                      <select class="form-select" name="setting_id">
-                          <option value="">Ayar Seçiniz</option>
-                          <!-- Ayarlar AJAX ile yüklenecek -->
-                      </select>
-                      <div class="form-text text-muted">Bu alan, bir ayarın değerini form elemanına bağlamak için kullanılır. Ayar ID seçildiğinde, form elemanı o ayarın değerini gösterir ve değişiklikler o ayara kaydedilir.</div>
                   </div>
               </div>
           `,
@@ -1018,8 +927,9 @@ document.addEventListener("DOMContentLoaded", function() {
                       <input type="text" class="form-control" name="label" value="{label}">
                   </div>
                   <div class="mb-3">
-                      <label class="form-label">Alan Adı</label>
+                      <label class="form-label">Alan Adı (System Key)</label>
                       <input type="text" class="form-control" name="name" value="{name}">
+                      <div class="form-text text-muted">Bu alan otomatik olarak oluşturulur. Grup prefix_başlık formatındadır. Özel durumlarda düzenleyebilirsiniz.</div>
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Yardım Metni</label>
@@ -1051,14 +961,6 @@ document.addEventListener("DOMContentLoaded", function() {
                           <input class="form-check-input" type="checkbox" name="is_system" {is_system}>
                           <span class="form-check-label">Sistem Ayarı</span>
                       </label>
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-label">Ayar ID</label>
-                      <select class="form-select" name="setting_id">
-                          <option value="">Ayar Seçiniz</option>
-                          <!-- Ayarlar AJAX ile yüklenecek -->
-                      </select>
-                      <div class="form-text text-muted">Bu alan, bir ayarın değerini form elemanına bağlamak için kullanılır. Ayar ID seçildiğinde, form elemanı o ayarın değerini gösterir ve değişiklikler o ayara kaydedilir.</div>
                   </div>
               </div>
           `,
@@ -1224,7 +1126,7 @@ document.addEventListener("DOMContentLoaded", function() {
                       <label class="form-label">İçerik</label>
                       <textarea class="form-control" name="content" rows="4">{content}</textarea>
                   </div>
-<div class="mb-3">
+                  <div class="mb-3">
                       <label class="form-check form-switch">
                           <input class="form-check-input" type="checkbox" name="has_header" {has_header}>
                           <span class="form-check-label">Başlık Göster</span>

@@ -124,10 +124,20 @@ document.addEventListener("DOMContentLoaded", function() {
       // Form verisi hazır, şimdi Livewire'a gönder
       const groupId = document.getElementById('group-id').value;
       if (groupId && typeof Livewire !== 'undefined') {
-        Livewire.dispatch('saveFormLayout', {
+        Livewire.dispatch('save-form-layout', {
           groupId: groupId, 
-          formData: JSON.stringify(formData)
+          formData: formData
         });
+      } else {
+        // Klasik form gönderimi için
+        const layoutDataInput = document.getElementById('layout-data');
+        if (layoutDataInput) {
+          layoutDataInput.value = JSON.stringify(formData);
+          const saveForm = document.getElementById('save-form');
+          if (saveForm) {
+            saveForm.submit();
+          }
+        }
       }
     });
   }
@@ -254,4 +264,43 @@ document.addEventListener("DOMContentLoaded", function() {
       });
     });
   }
+  
+  // Panel ve sekme durumlarını localStorage'dan yükle
+  const loadSavedStates = function() {
+    // Panel durumları
+    const leftPanelCollapsed = localStorage.getItem("form_builder_left_collapsed") === "true";
+    const rightPanelCollapsed = localStorage.getItem("form_builder_right_collapsed") === "true";
+
+    const leftPanel = document.querySelector(".panel__left");
+    const rightPanel = document.querySelector(".panel__right");
+
+    if (leftPanelCollapsed && leftPanel) {
+      leftPanel.classList.add("collapsed");
+    }
+
+    if (rightPanelCollapsed && rightPanel) {
+      rightPanel.classList.add("collapsed");
+    }
+
+    // Sekme durumları
+    const leftTab = localStorage.getItem("form_builder_left_tab");
+    const rightTab = localStorage.getItem("form_builder_right_tab");
+
+    if (leftTab) {
+      const tabEl = document.querySelector(`.panel__left .panel-tab[data-tab="${leftTab}"]`);
+      if (tabEl) {
+        tabEl.click();
+      }
+    }
+
+    if (rightTab) {
+      const tabEl = document.querySelector(`.panel__right .panel-tab[data-tab="${rightTab}"]`);
+      if (tabEl) {
+        tabEl.click();
+      }
+    }
+  };
+  
+  // Durumları yükle
+  loadSavedStates();
 });

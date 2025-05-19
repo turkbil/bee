@@ -852,3 +852,96 @@ body {
   border-color: #206bc4;
   background-color: #e0f0ff;
 }
+
+/* Özellik Paneli Stilleri */
+.property-panel {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background-color: var(--panel-bg);
+  height: 100%;
+}
+
+.property-header {
+  background-color: var(--panel-header);
+}
+
+.property-header h4 {
+  margin: 0;
+  font-size: 16px;
+  color: var(--primary-color);
+}
+
+.property-section {
+  border-top: 1px solid var(--border-color);
+}
+
+.property-section:first-child {
+  border-top: none;
+}
+
+.section-title {
+  padding: 10px 12px;
+  background-color: var(--panel-header);
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--secondary-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.section-content {
+  background-color: var(--panel-bg);
+}
+
+/* Seçenek Satırı Stilleri */
+.option-row {
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.option-row .input-group-text {
+  padding: 0 10px;
+}
+
+.option-row .form-check-input {
+  margin: 0;
+}
+
+.option-row .remove-option {
+  width: 38px;
+  padding: 6px;
+}
+
+/* Tab konteyner stilleri */
+#tabs-container .card {
+  position: relative;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow-sm);
+}
+
+#tabs-container .card .btn-sm {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Radio butonları için iyileştirme */
+.form-check-inline {
+  margin-right: 15px;
+}
+
+.form-check-inline .form-check-input {
+  margin-right: 5px;
+}
+
+/* Alan Adı (System Key) için stil */
+input[name="name"] {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 13px;
+  background-color: rgba(0, 0, 0, 0.02);
+}

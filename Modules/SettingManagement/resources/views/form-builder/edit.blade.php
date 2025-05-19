@@ -108,6 +108,18 @@
                         <i class="fas fa-at"></i>
                         <span>E-posta</span>
                     </div>
+                    <div class="element-palette-item" data-type="password">
+                        <i class="fas fa-key"></i>
+                        <span>Şifre</span>
+                    </div>
+                    <div class="element-palette-item" data-type="tel">
+                        <i class="fas fa-phone"></i>
+                        <span>Telefon</span>
+                    </div>
+                    <div class="element-palette-item" data-type="url">
+                        <i class="fas fa-globe"></i>
+                        <span>Web Adresi</span>
+                    </div>
                 </div>
             </div>
             
@@ -157,6 +169,10 @@
                     <div class="element-palette-item" data-type="color">
                         <i class="fas fa-palette"></i>
                         <span>Renk</span>
+                    </div>
+                    <div class="element-palette-item" data-type="range">
+                        <i class="fas fa-sliders-h"></i>
+                        <span>Değer Aralığı</span>
                     </div>
                 </div>
             </div>

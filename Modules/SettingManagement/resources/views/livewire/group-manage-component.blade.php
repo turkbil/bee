@@ -40,6 +40,20 @@
                                     @enderror
                                 </div>
 
+                                <!-- Prefix - Sadece alt gruplar için -->
+                                @if($isSubGroup)
+                                <div class="col-md-12">
+                                    <label class="form-label">Prefix</label>
+                                    <input type="text" wire:model="inputs.prefix"
+                                        class="form-control @error('inputs.prefix') is-invalid @enderror"
+                                        placeholder="Alt grup için prefix girin">
+                                    <small class="form-text text-muted">Bu prefix, alt grubun ayarlarını gruplandırmak için kullanılır</small>
+                                    @error('inputs.prefix')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                @endif
+
                                 <!-- Açıklama -->
                                 <div class="col-md-12">
                                     <label class="form-label">Açıklama</label>

@@ -1,26 +1,24 @@
-[2025-05-19 20:04:42] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
-[2025-05-19 20:04:42] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: create, Roles: root  
-[2025-05-19 20:04:44] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
-[2025-05-19 20:04:44] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
-[2025-05-19 20:04:45] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
-[2025-05-19 20:04:45] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
-[2025-05-19 20:04:46] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
-[2025-05-19 20:04:46] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
-[2025-05-19 20:04:47] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
-[2025-05-19 20:04:47] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: create, Roles: root  
-[2025-05-19 20:04:47] local.INFO: Log: Tema Ayarları - form layout güncellendi  
-[2025-05-19 20:04:51] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
-[2025-05-19 20:04:51] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: create, Roles: root  
-[2025-05-19 20:04:51] local.INFO: Log: Tema Ayarları - form layout güncellendi  
-[2025-05-19 20:11:07] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
-[2025-05-19 20:11:19] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
-[2025-05-19 20:11:19] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: create, Roles: root  
-[2025-05-19 20:11:21] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
-[2025-05-19 20:11:21] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
-[2025-05-19 20:11:22] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
-[2025-05-19 20:11:22] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
-[2025-05-19 20:11:23] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
-[2025-05-19 20:11:23] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
-[2025-05-19 20:11:23] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: create, Roles: root  
-[2025-05-19 20:11:23] local.INFO: Log: Tema Ayarları - form layout güncellendi  
-[2025-05-19 20:11:24] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 20:36:43] local.ERROR: Permission not found: settingmanagement.view  
+[2025-05-19 20:36:55] local.INFO: Central veritabanında demo hero oluşturuldu.  
+[2025-05-19 20:36:55] local.INFO: Tenant 2 için hero başarıyla oluşturuldu.  
+[2025-05-19 20:36:55] local.INFO: Tenant 3 için hero başarıyla oluşturuldu.  
+[2025-05-19 20:36:55] local.INFO: Tenant 4 için hero başarıyla oluşturuldu.  
+[2025-05-19 20:36:55] local.INFO: Media kategorisi bulundu, slider bu kategori altına eklenecek.  
+[2025-05-19 20:36:55] local.INFO: Slider alt kategorisi oluşturuldu: Sliderlar (slug: sliderlar)  
+[2025-05-19 20:36:55] local.INFO: Central veritabanında demo tenant slider oluşturuldu.  
+[2025-05-19 20:36:55] local.INFO: Tenant 2 için slider başarıyla oluşturuldu.  
+[2025-05-19 20:36:55] local.ERROR: Tenant 2 için slider oluşturma hatası: Undefined variable $tenantCacheKey  
+[2025-05-19 20:36:55] local.INFO: Tenant 3 için slider başarıyla oluşturuldu.  
+[2025-05-19 20:36:55] local.ERROR: Tenant 3 için slider oluşturma hatası: Undefined variable $tenantCacheKey  
+[2025-05-19 20:36:55] local.INFO: Tenant 4 için slider başarıyla oluşturuldu.  
+[2025-05-19 20:36:55] local.ERROR: Tenant 4 için slider oluşturma hatası: Undefined variable $tenantCacheKey  
+[2025-05-19 20:36:55] local.INFO: Slider bileşeni başarıyla oluşturuldu.  
+[2025-05-19 20:36:56] local.INFO: Tenant içinde hero widget zaten oluşturulmuş, atlanıyor...  
+[2025-05-19 20:36:56] local.INFO: Tenant içinde slider widget zaten var, atlanıyor...  
+[2025-05-19 20:36:56] local.INFO: Tenant içinde hero widget zaten oluşturulmuş, atlanıyor...  
+[2025-05-19 20:36:56] local.INFO: Tenant içinde slider widget zaten var, atlanıyor...  
+[2025-05-19 20:36:56] local.INFO: Tenant içinde hero widget zaten oluşturulmuş, atlanıyor...  
+[2025-05-19 20:36:56] local.INFO: Tenant içinde slider widget zaten var, atlanıyor...  
+[2025-05-19 20:37:36] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 20:37:42] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 20:37:48] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  

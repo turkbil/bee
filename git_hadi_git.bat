@@ -30,12 +30,19 @@ if %ERRORLEVEL% EQU 0 (
   echo Yeni dosyalar ekleniyor...
   git add -f .
 )
-:: Değişiklikleri kontrol et
+:: Değişiklikleri kontrol et - Bu kısımda değişiklik yaptım
 git diff --cached --quiet
 if %ERRORLEVEL% EQU 0 (
-  echo.
-  echo Yüklenecek değişiklik yok. İşlem tamamlandı.
-  goto :sonlandir
+  git status | findstr "working tree clean" > nul
+  if %ERRORLEVEL% EQU 0 (
+    echo.
+    echo Yüklenecek değişiklik yok. İşlem tamamlandı.
+    goto :sonlandir
+  ) else (
+    echo Değişiklikler tespit edildi, devam ediliyor...
+  )
+) else (
+  echo Değişiklikler bulundu, işleme devam ediliyor...
 )
 :: turkbil/bee reposunu ayarla
 echo.
@@ -54,7 +61,7 @@ echo.
 echo --- COMMIT ---
 for /F "tokens=2,3,4 delims=/ " %%a in ('date /t') do set tarih=%%c-%%a-%%b
 for /F "tokens=1,2 delims=: " %%a in ('time /t') do set saat=%%a:%%b
-git commit -m "Otomatik yükleme - %tarih% %saat%"
+git commit -m "Otomatik yükleme - %tarih% %saat%" --allow-empty
 :: Branch ismini al
 for /f "tokens=*" %%a in ('git rev-parse --abbrev-ref HEAD') do set branch=%%a
 :: Force push

@@ -242,18 +242,25 @@ class FormBuilderController extends Controller
         
         // Prefix kontrolü ve alan adı oluşturma
         $name = $properties['name'];
-        $groupPrefix = !empty($group->prefix) ? Str::slug($group->prefix, '_') : Str::slug($group->name, '_');
+        
+        // Grup prefix'i belirle
+        $groupPrefix = '';
+        if (!empty($group->prefix)) {
+            $groupPrefix = $this->slugifyTurkish($group->prefix);
+        } else {
+            $groupPrefix = $this->slugifyTurkish($group->name);
+        }
         
         // Eğer name zaten prefix ile başlıyorsa tekrar ekleme
         if (!Str::startsWith($name, $groupPrefix . '_')) {
-            $name = $groupPrefix . '_' . $name;
+            $name = $groupPrefix . '_' . $this->slugifyTurkish(basename($name));
         }
         
         // Label kontrolü
         $label = $properties['label'] ?? ucfirst($element['type']);
         
         // Key oluşturma
-        $key = Str::slug($name, '_');
+        $key = $name; // Artık name değeri özel slug fonksiyonu ile oluşturulduğu için doğrudan kullanabiliriz
         
         // Varsayılan değer
         $defaultValue = $properties['default_value'] ?? null;
@@ -284,5 +291,35 @@ class FormBuilderController extends Controller
         }
         
         $setting->save();
+    }
+    
+    /**
+     * Türkçe karakterleri İngilizce karakterlere dönüştürme
+     */
+    private function slugifyTurkish($text)
+    {
+        if (empty($text)) return '';
+        
+        // Türkçe karakter çevrimi
+        $turkishChars = [
+            'ç' => 'c', 'ğ' => 'g', 'ı' => 'i', 'i' => 'i', 'ö' => 'o', 'ş' => 's', 'ü' => 'u',
+            'Ç' => 'C', 'Ğ' => 'G', 'I' => 'I', 'İ' => 'I', 'Ö' => 'O', 'Ş' => 'S', 'Ü' => 'U'
+        ];
+        
+        // Türkçe karakterleri değiştir
+        $slug = str_replace(array_keys($turkishChars), array_values($turkishChars), $text);
+        
+        // Diğer özel karakterleri ve boşlukları alt çizgi ile değiştir
+        $slug = strtolower($slug);
+        $slug = preg_replace('/[^a-z0-9_]+/', '_', $slug);
+        $slug = preg_replace('/^_+|_+$/', '', $slug);
+        $slug = preg_replace('/_+/', '_', $slug);
+        
+        // Rakamla başlayamaz kontrolü
+        if (preg_match('/^[0-9]/', $slug)) {
+            $slug = 'a_' . $slug;
+        }
+        
+        return $slug;
     }
 }

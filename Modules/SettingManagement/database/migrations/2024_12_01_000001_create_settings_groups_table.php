@@ -11,6 +11,8 @@ return new class extends Migration
         Schema::create('settings_groups', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('parent_id')->nullable()->index();
+            $table->string('prefix')->nullable();
+            $table->unsignedInteger('order')->default(0);
             $table->string('name')->index();
             $table->string('slug');
             $table->text('description')->nullable();

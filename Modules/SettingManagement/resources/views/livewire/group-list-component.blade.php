@@ -87,10 +87,13 @@
                                                 <div class="font-weight-medium d-flex align-items-center"> 
                                                     <a href="{{ route('admin.settingmanagement.values', $child->id) }}"
                                                         class="text-reset">
-                                                        {{ $child->name }}
+                                                    {{ $child->name }}
                                                     </a>
                                                     @if(!$child->is_active)
                                                     <span class="badge bg-danger text-white ms-2">Pasif</span>
+                                                    @endif
+                                                    @if($child->prefix)
+                                                    <span class="badge bg-primary text-white ms-2" title="Prefix">{{ $child->prefix }}</span>
                                                     @endif
                                                 </div>
                                                 @if($child->description)

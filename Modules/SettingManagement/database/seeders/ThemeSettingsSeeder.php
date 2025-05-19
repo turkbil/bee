@@ -8,17 +8,27 @@ class ThemeSettingsSeeder extends Seeder
 {
     public function run(): void
     {
-        // Önce "Tema Ayarları" grubu oluşturalım
-        $themeSettingsGroupId = DB::table('settings_groups')->insertGetId([
-            'name' => 'Tema Ayarları',
-            'slug' => 'tema-ayarlari',
-            'parent_id' => 5, // Site grubunun altına ekleyelim
-            'icon' => 'fas fa-palette',
-            'is_active' => true,
-            'layout' => $this->getThemeSettingsLayout(),
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        // "Tema" grubunun ID'sini alalım
+        $themeGroupId = DB::table('settings_groups')
+            ->where('name', 'Tema')
+            ->where('parent_id', 5) // Site grubunun altındaki Tema
+            ->value('id');
+            
+        // Eğer grup yoksa, bu seederi çalıştırmadan önce SettingsGroupsTableSeeder çalıştırılmış olmalı
+        if (!$themeGroupId) {
+            $this->command->error('"Tema" grubu bulunamadı. Lütfen önce SettingsGroupsTableSeeder çalıştırın');
+            return;
+        }
+        
+        // Layout içeriğini mevcut Tema grubuna güncelleyelim
+        DB::table('settings_groups')
+            ->where('id', $themeGroupId)
+            ->update([
+                'layout' => $this->getThemeSettingsLayout(),
+                'updated_at' => now(),
+            ]);
+        
+        $themeSettingsGroupId = $themeGroupId; // Eski kod ile uyumluluk için değişkeni aynı adla kullanalım
 
         // Tema Ayarları - Temel Renkler
         $settings = [

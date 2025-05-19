@@ -1,0 +1,70 @@
+{
+    "name": "cviebrock/eloquent-sluggable",
+    "description": "Easy creation of slugs for your Eloquent models in Laravel",
+    "keywords": [
+        "eloquent-sluggable",
+        "eloquent",
+        "sluggable",
+        "laravel",
+        "lumen",
+        "slug"
+    ],
+    "homepage": "https://github.com/cviebrock/eloquent-sluggable",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Colin Viebrock",
+            "email": "colin@viebrock.ca"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "cocur/slugify": "^4.3",
+        "illuminate/config": "^11.0",
+        "illuminate/database": "^11.0",
+        "illuminate/support": "^11.0"
+    },
+    "require-dev": {
+        "mockery/mockery": "^1.4.4",
+        "orchestra/testbench": "^9.0",
+        "pestphp/pest": "^2.28"
+    },
+    "autoload": {
+        "psr-4": {
+            "Cviebrock\\EloquentSluggable\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Cviebrock\\EloquentSluggable\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "fresh": [
+            "rm -rf vendor composer.lock",
+            "composer install"
+        ],
+        "tests": [
+            "rm -rf build",
+            "XDEBUG_MODE=coverage php vendor/bin/pest"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Cviebrock\\EloquentSluggable\\ServiceProvider"
+            ]
+        },
+        "branch-alias": {
+            "dev-master": "11.0.x-dev"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    }
+}

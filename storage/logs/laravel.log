@@ -1,0 +1,371 @@
+[2025-05-17 22:28:34] local.DEBUG: Using default module view: page::front.show  
+[2025-05-17 22:28:47] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 22:28:51] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 22:28:51] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 22:28:52] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 22:28:57] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 22:28:57] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 22:28:58] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 22:32:41] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 22:32:41] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 22:32:42] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 22:32:58] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 22:32:58] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 22:32:59] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 22:33:00] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 22:33:00] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 22:33:01] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 22:35:30] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 22:35:30] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 22:35:32] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 22:35:33] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 22:35:33] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 22:35:34] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 22:39:20] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 22:39:20] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 22:39:22] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 22:39:23] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 22:39:23] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 22:39:25] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 22:45:22] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 22:45:22] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 22:45:23] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 22:45:35] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 22:45:35] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 22:45:37] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 22:48:49] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 22:48:49] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 22:48:51] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 22:48:56] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 22:48:56] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 22:48:57] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 22:51:41] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 22:51:41] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 22:51:43] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 22:54:52] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 22:54:52] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 22:54:54] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 22:55:16] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 22:55:18] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 22:55:20] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 22:55:22] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 22:55:25] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 22:55:28] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 22:55:28] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 22:55:30] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 22:55:33] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 22:55:36] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 22:55:38] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 22:58:43] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 22:58:43] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 22:58:46] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 22:58:59] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 22:58:59] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 22:59:01] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:00:27] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:00:27] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:00:29] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:03:04] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:03:04] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:03:06] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:03:26] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:03:26] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:03:28] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:04:15] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:04:15] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:10:06] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:10:06] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:10:06] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:10:06] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:10:08] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:10:28] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:10:28] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:10:30] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:13:46] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:13:46] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:13:47] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:13:49] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:13:51] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:16:23] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:16:23] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:16:25] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:16:36] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:16:36] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:16:37] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:18:38] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:18:38] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:18:39] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:18:47] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:18:47] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:18:48] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:18:52] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:18:53] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:18:54] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:20:02] local.DEBUG: Using default module view: page::front.show  
+[2025-05-17 23:21:04] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:21:04] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:21:06] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:21:30] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:21:30] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:21:31] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:25:26] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:25:26] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:25:28] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:25:32] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:25:32] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:25:33] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:25:40] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:25:43] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:25:45] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:25:49] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:25:49] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:25:50] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:25:59] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:25:59] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:26:00] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:26:07] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:26:10] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:28:22] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:28:22] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:28:24] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:28:26] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:28:28] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:28:30] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:28:30] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:28:31] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:32:07] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:32:07] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:32:09] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:32:09] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:32:09] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:32:12] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:32:15] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:32:15] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:32:17] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:32:19] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:32:19] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:32:20] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:32:23] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:32:23] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:32:24] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:39:32] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:39:32] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:39:34] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:39:35] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:39:35] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:39:38] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:39:51] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:39:51] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:39:53] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:40:52] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:40:52] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:40:54] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:40:54] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:40:54] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:40:55] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:40:56] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:40:56] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:40:56] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:40:56] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:40:57] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:40:57] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:40:58] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:40:58] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:40:59] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:41:00] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:41:00] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:41:04] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:41:04] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:41:06] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:41:07] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:41:15] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:41:15] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:41:17] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:41:18] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:42:53] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:42:53] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:42:54] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:42:55] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:43:03] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:43:03] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:43:05] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:43:06] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:45:37] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:59:30] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:59:32] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:59:32] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:59:34] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:59:35] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:59:36] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:59:36] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:59:37] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:59:38] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:59:56] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-17 23:59:56] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-17 23:59:57] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-17 23:59:58] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-18 00:10:32] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-18 00:10:32] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-18 00:10:39] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-18 00:10:39] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-18 00:10:51] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-18 00:10:51] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-18 00:11:22] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-18 00:11:22] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-18 00:18:40] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-18 00:18:40] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-18 00:18:41] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-18 00:18:41] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-18 00:18:43] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:18:43] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:18:44] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:21:51] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:21:52] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:21:53] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:21:54] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:21:55] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:21:56] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:21:57] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:21:59] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:22:00] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:22:01] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:22:20] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:22:26] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:22:27] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:22:36] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-18 00:22:36] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-18 00:22:38] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:22:38] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-18 00:22:38] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-18 00:22:38] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:22:38] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:22:40] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:22:40] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:22:40] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-18 00:22:40] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-18 00:22:41] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:22:42] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:22:42] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:22:43] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:22:44] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:27:38] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-18 00:27:38] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-18 00:27:39] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:27:40] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:27:40] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:27:53] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-18 00:27:53] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-18 00:41:17] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-18 00:41:17] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-18 00:41:17] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-18 00:41:17] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-18 00:41:17] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-18 00:41:17] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-18 00:41:22] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:41:22] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:41:23] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:41:36] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:41:38] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:41:41] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:41:51] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:41:52] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:41:54] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-18 00:41:54] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-18 00:41:55] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:41:55] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:41:56] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:42:35] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-18 00:42:35] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-18 00:42:36] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:42:36] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:42:37] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:42:38] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-18 00:42:38] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-18 00:42:40] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:42:40] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:42:41] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:42:44] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-18 00:42:44] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-18 00:42:46] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:42:46] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:42:47] local.INFO: ModulePermissionMiddleware: User ID: 2, Email: info@turkbilisim.com.tr, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 00:58:40] local.DEBUG: Using default module view: page::front.show  
+[2025-05-18 01:00:08] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 01:01:08] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-18 01:01:08] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-18 01:01:11] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 01:01:11] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 01:01:12] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 01:01:13] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-18 01:01:13] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-18 01:01:15] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 01:01:16] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 01:01:16] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 01:01:16] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-18 01:01:16] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-18 01:01:51] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-18 01:01:51] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-18 01:01:54] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 01:01:54] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 01:01:55] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 01:02:39] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-18 01:02:39] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-18 01:02:40] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 01:02:40] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 01:02:42] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 01:02:48] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-18 01:02:48] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-18 01:02:50] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 01:02:50] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 01:02:51] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 01:10:02] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-18 01:10:02] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-18 01:10:03] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 01:10:04] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 01:10:05] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 01:10:09] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 01:10:10] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 01:10:11] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 01:10:12] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 01:10:14] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 01:10:15] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 01:10:17] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 01:10:19] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 01:10:20] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 01:15:39] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-18 01:15:39] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-18 01:15:40] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 01:15:40] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 01:15:41] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 01:19:15] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-18 01:19:15] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-18 01:19:16] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 01:19:17] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 01:19:17] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 01:21:59] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-18 01:21:59] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-18 01:22:03] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 01:22:03] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-18 01:22:04] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 01:17:51] local.DEBUG: Using default module view: page::front.show  
+[2025-05-19 01:18:11] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 01:18:16] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-19 01:18:16] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-19 01:18:18] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 01:18:18] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 01:18:19] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 01:18:36] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-19 01:18:36] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-19 01:18:37] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 01:18:37] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 01:18:38] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 01:18:39] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-19 01:18:39] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-19 01:18:40] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 01:18:40] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 01:18:41] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 01:18:43] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-19 01:18:43] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: create, Roles: root  
+[2025-05-19 01:18:44] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 01:18:44] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  
+[2025-05-19 01:18:45] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: settingmanagement, Permission: view, Roles: root  

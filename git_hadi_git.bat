@@ -8,42 +8,34 @@ echo Bu araç yerel dosyaları turkbil/bee GitHub reposuna zorla yükler.
 echo Dikkat: Uzak depodaki değişiklikler kaybedilecektir!
 echo İşlem başlatılıyor...
 echo.
+
+:: Proje dizinine git
 cd /d %~dp0
 echo Proje dizini: %CD%
+
 :: Git repo kontrolü
 if not exist ".git" (
   color 0C
   echo HATA: Bu dizin bir git deposu değil. Lütfen geçerli bir git repo dizininde çalıştırın.
   goto :sonlandir
 )
+
 :: Git durumunu kontrol et
 echo.
 echo --- GIT DURUMU ---
 git status -u
-:: Tüm dosyaları ekle (yeni, değiştirilmiş ve silinen)
+
+:: İzlenmeyen tüm dosyaları listele
 echo.
-echo --- TÜM DOSYALARI EKLE ---
-git add -A
-:: Yeni dosyaların eklendiğinden emin ol
-git ls-files --others --exclude-standard | findstr "." > nul
-if %ERRORLEVEL% EQU 0 (
-  echo Yeni dosyalar ekleniyor...
-  git add -f .
-)
-:: Değişiklikleri kontrol et - Bu kısımda değişiklik yaptım
-git diff --cached --quiet
-if %ERRORLEVEL% EQU 0 (
-  git status | findstr "working tree clean" > nul
-  if %ERRORLEVEL% EQU 0 (
-    echo.
-    echo Yüklenecek değişiklik yok. İşlem tamamlandı.
-    goto :sonlandir
-  ) else (
-    echo Değişiklikler tespit edildi, devam ediliyor...
-  )
-) else (
-  echo Değişiklikler bulundu, işleme devam ediliyor...
-)
+echo --- İZLENMEYEN DOSYALAR ---
+git ls-files --others --exclude-standard
+
+:: Tüm dosyaları zorla ekle
+echo.
+echo --- TÜM DOSYALARI ZORLA EKLE ---
+git add -A -f
+git status -u
+
 :: turkbil/bee reposunu ayarla
 echo.
 echo --- UZAK REPO KONTROLÜ ---
@@ -56,19 +48,23 @@ if %ERRORLEVEL% NEQ 0 (
   git remote set-url origin https://github.com/turkbil/bee.git
   echo Uzak repo turkbil/bee olarak güncellendi.
 )
+
 :: Commit
 echo.
 echo --- COMMIT ---
 for /F "tokens=2,3,4 delims=/ " %%a in ('date /t') do set tarih=%%c-%%a-%%b
 for /F "tokens=1,2 delims=: " %%a in ('time /t') do set saat=%%a:%%b
 git commit -m "Otomatik yükleme - %tarih% %saat%" --allow-empty
+
 :: Branch ismini al
 for /f "tokens=*" %%a in ('git rev-parse --abbrev-ref HEAD') do set branch=%%a
+
 :: Force push
 echo.
 echo --- GITHUB'A ZORLA GÖNDER (%branch%) ---
 echo Yerel değişiklikler uzak depodaki değişiklikleri ezecek...
 git push -f origin %branch%
+
 if %ERRORLEVEL% EQU 0 (
   color 0A
   echo.
@@ -87,19 +83,24 @@ if %ERRORLEVEL% EQU 0 (
     color 0C
     echo İkinci denemede de başarısız oldu!
     echo.
-    echo --- GİZLİ DOSYALARI KONTROL ET ---
-    echo Gizli dosyalar listeleniyor:
+    echo --- OLASI SORUNLAR ---
+    
+    echo 1. Gizli dosyalar listeleniyor:
     dir /a:h
-    echo.
-    echo --- GIT IGNORE KONTROLÜ ---
+    
+    echo 2. Git ignore içeriği:
     if exist ".gitignore" (
-      echo .gitignore dosyası bulundu. İçeriği:
       type .gitignore
     ) else (
       echo .gitignore dosyası bulunamadı.
     )
+    
+    echo 3. Git Kimlik Bilgileri kontrolü:
+    git config user.name
+    git config user.email
   )
 )
+
 :sonlandir
 echo.
 echo Çıkmak için bir tuşa basın...

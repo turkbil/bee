@@ -67,7 +67,7 @@
                     </div>
                     <div class="element-palette-item" data-type="divider">
                         <i class="fas fa-minus"></i>
-                        <span>Ayırıcı</span>
+                        <span>Ayırıcı Çizgi</span>
                     </div>
                     <div class="element-palette-item" data-type="spacer">
                         <i class="fas fa-arrows-alt-v"></i>
@@ -176,6 +176,10 @@
                     <div class="element-palette-item" data-type="image">
                         <i class="fas fa-image"></i>
                         <span>Resim</span>
+                    </div>
+                    <div class="element-palette-item" data-type="image_multiple">
+                        <i class="fas fa-images"></i>
+                        <span>Çoklu Resim</span>
                     </div>
                 </div>
             </div>

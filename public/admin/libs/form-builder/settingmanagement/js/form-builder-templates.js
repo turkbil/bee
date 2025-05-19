@@ -5,28 +5,28 @@ document.addEventListener("DOMContentLoaded", function() {
       text: `
               <div class="mb-3">
                   <label class="form-label">{label}</label>
-                  <input type="text" class="form-control" placeholder="{placeholder}">
+                  <input type="text" class="form-control" placeholder="{placeholder}" value="{default_value}">
                   <div class="form-text text-muted">{help_text}</div>
               </div>
           `,
       textarea: `
               <div class="mb-3">
                   <label class="form-label">{label}</label>
-                  <textarea class="form-control" rows="4" placeholder="{placeholder}"></textarea>
+                  <textarea class="form-control" rows="4" placeholder="{placeholder}">{default_value}</textarea>
                   <div class="form-text text-muted">{help_text}</div>
               </div>
           `,
       number: `
               <div class="mb-3">
                   <label class="form-label">{label}</label>
-                  <input type="number" class="form-control" placeholder="{placeholder}">
+                  <input type="number" class="form-control" placeholder="{placeholder}" value="{default_value}">
                   <div class="form-text text-muted">{help_text}</div>
               </div>
           `,
       email: `
               <div class="mb-3">
                   <label class="form-label">{label}</label>
-                  <input type="email" class="form-control" placeholder="{placeholder}">
+                  <input type="email" class="form-control" placeholder="{placeholder}" value="{default_value}">
                   <div class="form-text text-muted">{help_text}</div>
               </div>
           `,
@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", function() {
               <div class="mb-3">
                   <label class="form-label">{label}</label>
                   <select class="form-select">
-                      <option value="" selected disabled>{placeholder}</option>
+                      <option value="" disabled>{placeholder}</option>
                       <!-- Seçenekler JavaScript tarafından eklenecek -->
                   </select>
                   <div class="form-text text-muted">{help_text}</div>
@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function() {
       checkbox: `
               <div class="mb-3">
                   <label class="form-check">
-                      <input class="form-check-input" type="checkbox">
+                      <input class="form-check-input" type="checkbox" {default_value}>
                       <span class="form-check-label">{label}</span>
                   </label>
                   <div class="form-text text-muted">{help_text}</div>
@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", function() {
       switch: `
               <div class="mb-3">
                   <label class="form-check form-switch">
-                      <input class="form-check-input" type="checkbox">
+                      <input class="form-check-input" type="checkbox" {default_value}>
                       <span class="form-check-label">{label}</span>
                   </label>
                   <div class="form-text text-muted">{help_text}</div>
@@ -70,35 +70,100 @@ document.addEventListener("DOMContentLoaded", function() {
       color: `
               <div class="mb-3">
                   <label class="form-label">{label}</label>
-                  <input type="color" class="form-control form-control-color" value="{default_value}">
+                  <div class="row g-2 align-items-center">
+                      <div class="col-auto">
+                          <input type="color" class="form-control form-control-color" value="{default_value}">
+                      </div>
+                      <div class="col-auto">
+                          <span class="form-colorinput" style="--tblr-badge-color: {default_value}">
+                              <span class="form-colorinput-color bg-{default_value}"></span>
+                          </span>
+                      </div>
+                      <div class="col">
+                          <span class="text-muted">{default_value}</span>
+                      </div>
+                  </div>
                   <div class="form-text text-muted">{help_text}</div>
               </div>
           `,
       date: `
               <div class="mb-3">
                   <label class="form-label">{label}</label>
-                  <input type="date" class="form-control">
+                  <div class="input-icon">
+                      <span class="input-icon-addon">
+                          <i class="fas fa-calendar"></i>
+                      </span>
+                      <input type="date" class="form-control" value="{default_value}">
+                  </div>
                   <div class="form-text text-muted">{help_text}</div>
               </div>
           `,
       time: `
               <div class="mb-3">
                   <label class="form-label">{label}</label>
-                  <input type="time" class="form-control">
+                  <div class="input-icon">
+                      <span class="input-icon-addon">
+                          <i class="fas fa-clock"></i>
+                      </span>
+                      <input type="time" class="form-control" value="{default_value}">
+                  </div>
                   <div class="form-text text-muted">{help_text}</div>
               </div>
           `,
       file: `
               <div class="mb-3">
                   <label class="form-label">{label}</label>
-                  <input type="file" class="form-control">
+                  <div class="form-file">
+                      <input type="file" class="form-control">
+                  </div>
                   <div class="form-text text-muted">{help_text}</div>
               </div>
           `,
       image: `
               <div class="mb-3">
                   <label class="form-label">{label}</label>
-                  <input type="file" class="form-control" accept="image/*">
+                  <div class="row align-items-center g-3">
+                      <div class="col-12 col-md-9">
+                          <div class="card">
+                              <div class="card-body">
+                                  <div class="dropzone">
+                                      <div class="d-flex flex-column align-items-center justify-content-center p-4">
+                                          <i class="fa-solid fa-cloud-arrow-up fa-2x mb-2 text-muted"></i>
+                                          <div class="text-muted">Görseli sürükleyip bırakın veya tıklayın</div>
+                                      </div>
+                                      <input type="file" class="d-none" accept="image/*" />
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="col-12 col-md-3">
+                          <div class="card">
+                              <div class="card-body p-3">
+                                  <div class="d-flex align-items-center justify-content-center text-muted" style="height: 156px;">
+                                      <i class="fa-solid fa-image-slash fa-2x"></i>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="form-text text-muted">{help_text}</div>
+              </div>
+          `,
+      image_multiple: `
+              <div class="mb-3">
+                  <label class="form-label">{label}</label>
+                  <div class="card">
+                      <div class="card-body p-3">
+                          <div class="dropzone p-4">
+                              <div class="text-center">
+                                  <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                                  <h4 class="text-muted">Görselleri sürükleyip bırakın veya tıklayın</h4>
+                                  <p class="text-muted small">PNG, JPG, WEBP, GIF - Maks 2MB - <strong>Toplu seçim yapabilirsiniz</strong></p>
+                              </div>
+                              <input type="file" class="d-none" accept="image/*" multiple />
+                          </div>
+                      </div>
+                  </div>
                   <div class="form-text text-muted">{help_text}</div>
               </div>
           `,
@@ -129,7 +194,7 @@ document.addEventListener("DOMContentLoaded", function() {
           `,
       divider: `
               <div class="mb-3">
-                  <hr style="border-top: 1px {style} {color};">
+                  <div class="dropdown-divider my-3" style="border-top: {thickness} {style} {color}; height: 0; opacity: 1;"></div>
               </div>
           `,
       spacer: `
@@ -205,6 +270,18 @@ document.addEventListener("DOMContentLoaded", function() {
                       </label>
                   </div>
                   <div class="mb-3">
+                      <label class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" name="is_active" {is_active}>
+                          <span class="form-check-label">Aktif</span>
+                      </label>
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" name="is_system" {is_system}>
+                          <span class="form-check-label">Sistem Ayarı</span>
+                      </label>
+                  </div>
+                  <div class="mb-3">
                       <label class="form-label">Varsayılan Değer</label>
                       <input type="text" class="form-control" name="default_value" value="{default_value}">
                   </div>
@@ -214,6 +291,7 @@ document.addEventListener("DOMContentLoaded", function() {
                           <option value="">Ayar Seçiniz</option>
                           <!-- Ayarlar AJAX ile yüklenecek -->
                       </select>
+                      <div class="form-text text-muted">Bu alan, bir ayarın değerini form elemanına bağlamak için kullanılır. Ayar ID seçildiğinde, form elemanı o ayarın değerini gösterir ve değişiklikler o ayara kaydedilir.</div>
                   </div>
               </div>
           `,
@@ -252,11 +330,28 @@ document.addEventListener("DOMContentLoaded", function() {
                       </label>
                   </div>
                   <div class="mb-3">
+                      <label class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" name="is_active" {is_active}>
+                          <span class="form-check-label">Aktif</span>
+                      </label>
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" name="is_system" {is_system}>
+                          <span class="form-check-label">Sistem Ayarı</span>
+                      </label>
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-label">Varsayılan Değer</label>
+                      <textarea class="form-control" name="default_value" rows="3">{default_value}</textarea>
+                  </div>
+                  <div class="mb-3">
                       <label class="form-label">Ayar ID</label>
                       <select class="form-select" name="setting_id">
                           <option value="">Ayar Seçiniz</option>
                           <!-- Ayarlar AJAX ile yüklenecek -->
                       </select>
+                      <div class="form-text text-muted">Bu alan, bir ayarın değerini form elemanına bağlamak için kullanılır. Ayar ID seçildiğinde, form elemanı o ayarın değerini gösterir ve değişiklikler o ayara kaydedilir.</div>
                   </div>
               </div>
           `,
@@ -276,6 +371,10 @@ document.addEventListener("DOMContentLoaded", function() {
                       <input type="text" class="form-control" name="placeholder" value="{placeholder}">
                   </div>
                   <div class="mb-3">
+                      <label class="form-label">Yardım Metni</label>
+                      <input type="text" class="form-control" name="help_text" value="{help_text}">
+                  </div>
+                  <div class="mb-3">
                       <label class="form-label">Genişlik</label>
                       <select class="form-select" name="width">
                           <option value="12" {width12}>Tam Genişlik (12/12)</option>
@@ -291,6 +390,18 @@ document.addEventListener("DOMContentLoaded", function() {
                       </label>
                   </div>
                   <div class="mb-3">
+                      <label class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" name="is_active" {is_active}>
+                          <span class="form-check-label">Aktif</span>
+                      </label>
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" name="is_system" {is_system}>
+                          <span class="form-check-label">Sistem Ayarı</span>
+                      </label>
+                  </div>
+                  <div class="mb-3">
                       <label class="form-label">Seçenekler</label>
                       <div id="options-container">
                           <!-- Seçenekler JavaScript ile doldurulacak -->
@@ -300,11 +411,19 @@ document.addEventListener("DOMContentLoaded", function() {
                       </button>
                   </div>
                   <div class="mb-3">
+                      <label class="form-label">Varsayılan Değer</label>
+                      <select class="form-select" name="default_value">
+                          <option value="">Varsayılan değer seçin</option>
+                          <!-- Seçenekler JavaScript ile doldurulacak -->
+                      </select>
+                  </div>
+                  <div class="mb-3">
                       <label class="form-label">Ayar ID</label>
                       <select class="form-select" name="setting_id">
                           <option value="">Ayar Seçiniz</option>
                           <!-- Ayarlar AJAX ile yüklenecek -->
                       </select>
+                      <div class="form-text text-muted">Bu alan, bir ayarın değerini form elemanına bağlamak için kullanılır. Ayar ID seçildiğinde, form elemanı o ayarın değerini gösterir ve değişiklikler o ayara kaydedilir.</div>
                   </div>
               </div>
           `,
@@ -343,11 +462,28 @@ document.addEventListener("DOMContentLoaded", function() {
                       </label>
                   </div>
                   <div class="mb-3">
+                      <label class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" name="is_active" {is_active}>
+                          <span class="form-check-label">Aktif</span>
+                      </label>
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" name="is_system" {is_system}>
+                          <span class="form-check-label">Sistem Ayarı</span>
+                      </label>
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-label">Varsayılan Değer</label>
+                      <input type="number" class="form-control" name="default_value" value="{default_value}">
+                  </div>
+                  <div class="mb-3">
                       <label class="form-label">Ayar ID</label>
                       <select class="form-select" name="setting_id">
                           <option value="">Ayar Seçiniz</option>
                           <!-- Ayarlar AJAX ile yüklenecek -->
                       </select>
+                      <div class="form-text text-muted">Bu alan, bir ayarın değerini form elemanına bağlamak için kullanılır. Ayar ID seçildiğinde, form elemanı o ayarın değerini gösterir ve değişiklikler o ayara kaydedilir.</div>
                   </div>
               </div>
           `,
@@ -386,11 +522,28 @@ document.addEventListener("DOMContentLoaded", function() {
                       </label>
                   </div>
                   <div class="mb-3">
+                      <label class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" name="is_active" {is_active}>
+                          <span class="form-check-label">Aktif</span>
+                      </label>
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" name="is_system" {is_system}>
+                          <span class="form-check-label">Sistem Ayarı</span>
+                      </label>
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-label">Varsayılan Değer</label>
+                      <input type="email" class="form-control" name="default_value" value="{default_value}">
+                  </div>
+                  <div class="mb-3">
                       <label class="form-label">Ayar ID</label>
                       <select class="form-select" name="setting_id">
                           <option value="">Ayar Seçiniz</option>
                           <!-- Ayarlar AJAX ile yüklenecek -->
                       </select>
+                      <div class="form-text text-muted">Bu alan, bir ayarın değerini form elemanına bağlamak için kullanılır. Ayar ID seçildiğinde, form elemanı o ayarın değerini gösterir ve değişiklikler o ayara kaydedilir.</div>
                   </div>
               </div>
           `,
@@ -426,7 +579,19 @@ document.addEventListener("DOMContentLoaded", function() {
                   </div>
                   <div class="mb-3">
                       <label class="form-check form-switch">
-                          <input class="form-check-input" type="checkbox" name="default_checked" {default_checked}>
+                          <input class="form-check-input" type="checkbox" name="is_active" {is_active}>
+                          <span class="form-check-label">Aktif</span>
+                      </label>
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" name="is_system" {is_system}>
+                          <span class="form-check-label">Sistem Ayarı</span>
+                      </label>
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" name="default_value" {default_value}>
                           <span class="form-check-label">Varsayılan İşaretli</span>
                       </label>
                   </div>
@@ -436,6 +601,7 @@ document.addEventListener("DOMContentLoaded", function() {
                           <option value="">Ayar Seçiniz</option>
                           <!-- Ayarlar AJAX ile yüklenecek -->
                       </select>
+                      <div class="form-text text-muted">Bu alan, bir ayarın değerini form elemanına bağlamak için kullanılır. Ayar ID seçildiğinde, form elemanı o ayarın değerini gösterir ve değişiklikler o ayara kaydedilir.</div>
                   </div>
               </div>
           `,
@@ -470,6 +636,18 @@ document.addEventListener("DOMContentLoaded", function() {
                       </label>
                   </div>
                   <div class="mb-3">
+                      <label class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" name="is_active" {is_active}>
+                          <span class="form-check-label">Aktif</span>
+                      </label>
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" name="is_system" {is_system}>
+                          <span class="form-check-label">Sistem Ayarı</span>
+                      </label>
+                  </div>
+                  <div class="mb-3">
                       <label class="form-label">Seçenekler</label>
                       <div id="options-container">
                           <!-- Seçenekler JavaScript ile doldurulacak -->
@@ -479,11 +657,19 @@ document.addEventListener("DOMContentLoaded", function() {
                       </button>
                   </div>
                   <div class="mb-3">
+                      <label class="form-label">Varsayılan Değer</label>
+                      <select class="form-select" name="default_value">
+                          <option value="">Varsayılan değer seçin</option>
+                          <!-- Seçenekler JavaScript ile doldurulacak -->
+                      </select>
+                  </div>
+                  <div class="mb-3">
                       <label class="form-label">Ayar ID</label>
                       <select class="form-select" name="setting_id">
                           <option value="">Ayar Seçiniz</option>
                           <!-- Ayarlar AJAX ile yüklenecek -->
                       </select>
+                      <div class="form-text text-muted">Bu alan, bir ayarın değerini form elemanına bağlamak için kullanılır. Ayar ID seçildiğinde, form elemanı o ayarın değerini gösterir ve değişiklikler o ayara kaydedilir.</div>
                   </div>
               </div>
           `,
@@ -519,7 +705,19 @@ document.addEventListener("DOMContentLoaded", function() {
                   </div>
                   <div class="mb-3">
                       <label class="form-check form-switch">
-                          <input class="form-check-input" type="checkbox" name="default_checked" {default_checked}>
+                          <input class="form-check-input" type="checkbox" name="is_active" {is_active}>
+                          <span class="form-check-label">Aktif</span>
+                      </label>
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" name="is_system" {is_system}>
+                          <span class="form-check-label">Sistem Ayarı</span>
+                      </label>
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" name="default_value" {default_value}>
                           <span class="form-check-label">Varsayılan İşaretli</span>
                       </label>
                   </div>
@@ -529,6 +727,7 @@ document.addEventListener("DOMContentLoaded", function() {
                           <option value="">Ayar Seçiniz</option>
                           <!-- Ayarlar AJAX ile yüklenecek -->
                       </select>
+                      <div class="form-text text-muted">Bu alan, bir ayarın değerini form elemanına bağlamak için kullanılır. Ayar ID seçildiğinde, form elemanı o ayarın değerini gösterir ve değişiklikler o ayara kaydedilir.</div>
                   </div>
               </div>
           `,
@@ -557,9 +756,33 @@ document.addEventListener("DOMContentLoaded", function() {
                       </select>
                   </div>
                   <div class="mb-3">
+                      <label class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" name="required" {required}>
+                          <span class="form-check-label">Zorunlu Alan</span>
+                      </label>
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" name="is_active" {is_active}>
+                          <span class="form-check-label">Aktif</span>
+                      </label>
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" name="is_system" {is_system}>
+                          <span class="form-check-label">Sistem Ayarı</span>
+                      </label>
+                  </div>
+                  <div class="mb-3">
                       <label class="form-label">Varsayılan Değer</label>
-                      <input type="text" class="form-control" name="default_value" value="{default_value}" placeholder="#ffffff">
-                      <small class="text-muted">Hex formatında girin: #RRGGBB</small>
+                      <div class="row g-2 align-items-center">
+                          <div class="col-auto">
+                              <input type="color" class="form-control form-control-color" name="default_value" value="{default_value}">
+                          </div>
+                          <div class="col">
+                              <input type="text" class="form-control" name="default_value_text" value="{default_value}" placeholder="#RRGGBB">
+                          </div>
+                      </div>
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Ayar ID</label>
@@ -567,6 +790,7 @@ document.addEventListener("DOMContentLoaded", function() {
                           <option value="">Ayar Seçiniz</option>
                           <!-- Ayarlar AJAX ile yüklenecek -->
                       </select>
+                      <div class="form-text text-muted">Bu alan, bir ayarın değerini form elemanına bağlamak için kullanılır. Ayar ID seçildiğinde, form elemanı o ayarın değerini gösterir ve değişiklikler o ayara kaydedilir.</div>
                   </div>
               </div>
           `,
@@ -601,11 +825,28 @@ document.addEventListener("DOMContentLoaded", function() {
                       </label>
                   </div>
                   <div class="mb-3">
+                      <label class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" name="is_active" {is_active}>
+                          <span class="form-check-label">Aktif</span>
+                      </label>
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" name="is_system" {is_system}>
+                          <span class="form-check-label">Sistem Ayarı</span>
+                      </label>
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-label">Varsayılan Değer</label>
+                      <input type="date" class="form-control" name="default_value" value="{default_value}">
+                  </div>
+                  <div class="mb-3">
                       <label class="form-label">Ayar ID</label>
                       <select class="form-select" name="setting_id">
                           <option value="">Ayar Seçiniz</option>
                           <!-- Ayarlar AJAX ile yüklenecek -->
                       </select>
+                      <div class="form-text text-muted">Bu alan, bir ayarın değerini form elemanına bağlamak için kullanılır. Ayar ID seçildiğinde, form elemanı o ayarın değerini gösterir ve değişiklikler o ayara kaydedilir.</div>
                   </div>
               </div>
           `,
@@ -640,26 +881,185 @@ document.addEventListener("DOMContentLoaded", function() {
                       </label>
                   </div>
                   <div class="mb-3">
+                      <label class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" name="is_active" {is_active}>
+                          <span class="form-check-label">Aktif</span>
+                      </label>
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" name="is_system" {is_system}>
+                          <span class="form-check-label">Sistem Ayarı</span>
+                      </label>
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-label">Varsayılan Değer</label>
+                      <input type="time" class="form-control" name="default_value" value="{default_value}">
+                  </div>
+                  <div class="mb-3">
                       <label class="form-label">Ayar ID</label>
                       <select class="form-select" name="setting_id">
                           <option value="">Ayar Seçiniz</option>
                           <!-- Ayarlar AJAX ile yüklenecek -->
                       </select>
+                      <div class="form-text text-muted">Bu alan, bir ayarın değerini form elemanına bağlamak için kullanılır. Ayar ID seçildiğinde, form elemanı o ayarın değerini gösterir ve değişiklikler o ayara kaydedilir.</div>
                   </div>
               </div>
           `,
       file: `
-              <div class="mb-3">
-                  <label class="form-label">{label}</label>
-                  <input type="file" class="form-control">
-                  <div class="form-text text-muted">{help_text}</div>
+              <h4 class="fw-bold p-3 border-bottom">Dosya Yükleme Elementini Düzenle</h4>
+              <div class="p-3">
+                  <div class="mb-3">
+                      <label class="form-label">Etiket</label>
+                      <input type="text" class="form-control" name="label" value="{label}">
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-label">Alan Adı</label>
+                      <input type="text" class="form-control" name="name" value="{name}">
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-label">Yardım Metni</label>
+                      <input type="text" class="form-control" name="help_text" value="{help_text}">
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-label">Genişlik</label>
+                      <select class="form-select" name="width">
+                          <option value="12" {width12}>Tam Genişlik (12/12)</option>
+                          <option value="6" {width6}>Yarım Genişlik (6/12)</option>
+                          <option value="4" {width4}>Üçte Bir (4/12)</option>
+                          <option value="3" {width3}>Çeyrek (3/12)</option>
+                      </select>
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" name="required" {required}>
+                          <span class="form-check-label">Zorunlu Alan</span>
+                      </label>
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" name="is_active" {is_active}>
+                          <span class="form-check-label">Aktif</span>
+                      </label>
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" name="is_system" {is_system}>
+                          <span class="form-check-label">Sistem Ayarı</span>
+                      </label>
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-label">Ayar ID</label>
+                      <select class="form-select" name="setting_id">
+                          <option value="">Ayar Seçiniz</option>
+                          <!-- Ayarlar AJAX ile yüklenecek -->
+                      </select>
+                      <div class="form-text text-muted">Bu alan, bir ayarın değerini form elemanına bağlamak için kullanılır. Ayar ID seçildiğinde, form elemanı o ayarın değerini gösterir ve değişiklikler o ayara kaydedilir.</div>
+                  </div>
               </div>
           `,
       image: `
-              <div class="mb-3">
-                  <label class="form-label">{label}</label>
-                  <input type="file" class="form-control" accept="image/*">
-                  <div class="form-text text-muted">{help_text}</div>
+              <h4 class="fw-bold p-3 border-bottom">Resim Yükleme Elementini Düzenle</h4>
+              <div class="p-3">
+                  <div class="mb-3">
+                      <label class="form-label">Etiket</label>
+                      <input type="text" class="form-control" name="label" value="{label}">
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-label">Alan Adı</label>
+                      <input type="text" class="form-control" name="name" value="{name}">
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-label">Yardım Metni</label>
+                      <input type="text" class="form-control" name="help_text" value="{help_text}">
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-label">Genişlik</label>
+                      <select class="form-select" name="width">
+                          <option value="12" {width12}>Tam Genişlik (12/12)</option>
+                          <option value="6" {width6}>Yarım Genişlik (6/12)</option>
+                          <option value="4" {width4}>Üçte Bir (4/12)</option>
+                          <option value="3" {width3}>Çeyrek (3/12)</option>
+                      </select>
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" name="required" {required}>
+                          <span class="form-check-label">Zorunlu Alan</span>
+                      </label>
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" name="is_active" {is_active}>
+                          <span class="form-check-label">Aktif</span>
+                      </label>
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" name="is_system" {is_system}>
+                          <span class="form-check-label">Sistem Ayarı</span>
+                      </label>
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-label">Ayar ID</label>
+                      <select class="form-select" name="setting_id">
+                          <option value="">Ayar Seçiniz</option>
+                          <!-- Ayarlar AJAX ile yüklenecek -->
+                      </select>
+                      <div class="form-text text-muted">Bu alan, bir ayarın değerini form elemanına bağlamak için kullanılır. Ayar ID seçildiğinde, form elemanı o ayarın değerini gösterir ve değişiklikler o ayara kaydedilir.</div>
+                  </div>
+              </div>
+          `,
+      image_multiple: `
+              <h4 class="fw-bold p-3 border-bottom">Çoklu Resim Elementini Düzenle</h4>
+              <div class="p-3">
+                  <div class="mb-3">
+                      <label class="form-label">Etiket</label>
+                      <input type="text" class="form-control" name="label" value="{label}">
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-label">Alan Adı</label>
+                      <input type="text" class="form-control" name="name" value="{name}">
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-label">Yardım Metni</label>
+                      <input type="text" class="form-control" name="help_text" value="{help_text}">
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-label">Genişlik</label>
+                      <select class="form-select" name="width">
+                          <option value="12" {width12}>Tam Genişlik (12/12)</option>
+                          <option value="6" {width6}>Yarım Genişlik (6/12)</option>
+                          <option value="4" {width4}>Üçte Bir (4/12)</option>
+                          <option value="3" {width3}>Çeyrek (3/12)</option>
+                      </select>
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" name="required" {required}>
+                          <span class="form-check-label">Zorunlu Alan</span>
+                      </label>
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" name="is_active" {is_active}>
+                          <span class="form-check-label">Aktif</span>
+                      </label>
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" name="is_system" {is_system}>
+                          <span class="form-check-label">Sistem Ayarı</span>
+                      </label>
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-label">Ayar ID</label>
+                      <select class="form-select" name="setting_id">
+                          <option value="">Ayar Seçiniz</option>
+                          <!-- Ayarlar AJAX ile yüklenecek -->
+                      </select>
+                      <div class="form-text text-muted">Bu alan, bir ayarın değerini form elemanına bağlamak için kullanılır. Ayar ID seçildiğinde, form elemanı o ayarın değerini gösterir ve değişiklikler o ayara kaydedilir.</div>
+                  </div>
               </div>
           `,
       row: `
@@ -747,7 +1147,7 @@ document.addEventListener("DOMContentLoaded", function() {
               </div>
           `,
       divider: `
-              <h4 class="fw-bold p-3 border-bottom">Ayırıcı Elementini Düzenle</h4>
+              <h4 class="fw-bold p-3 border-bottom">Ayırıcı Çizgi Elementini Düzenle</h4>
               <div class="p-3">
                   <div class="mb-3">
                       <label class="form-label">Stil</label>
@@ -759,8 +1159,24 @@ document.addEventListener("DOMContentLoaded", function() {
                       </select>
                   </div>
                   <div class="mb-3">
+                      <label class="form-label">Kalınlık</label>
+                      <select class="form-select" name="thickness">
+                          <option value="1px" {thickness1px}>İnce (1px)</option>
+                          <option value="2px" {thickness2px}>Orta (2px)</option>
+                          <option value="3px" {thickness3px}>Kalın (3px)</option>
+                          <option value="5px" {thickness5px}>Çok Kalın (5px)</option>
+                      </select>
+                  </div>
+                  <div class="mb-3">
                       <label class="form-label">Renk</label>
-                      <input type="color" class="form-control form-control-color" name="color" value="{color}">
+                      <div class="row g-2 align-items-center">
+                          <div class="col-auto">
+                              <input type="color" class="form-control form-control-color" name="color" value="{color}">
+                          </div>
+                          <div class="col">
+                              <input type="text" class="form-control" name="color_text" value="{color}" placeholder="#RRGGBB">
+                          </div>
+                      </div>
                   </div>
                   <div class="mb-3">
                       <label class="form-label">Genişlik</label>
@@ -808,7 +1224,7 @@ document.addEventListener("DOMContentLoaded", function() {
                       <label class="form-label">İçerik</label>
                       <textarea class="form-control" name="content" rows="4">{content}</textarea>
                   </div>
-                  <div class="mb-3">
+<div class="mb-3">
                       <label class="form-check form-switch">
                           <input class="form-check-input" type="checkbox" name="has_header" {has_header}>
                           <span class="form-check-label">Başlık Göster</span>

@@ -1,20 +1,17 @@
 <!-- Form Builder Header -->
 <div class="studio-header">
     <div class="header-left">
-        <div class="btn-group btn-group-sm me-4">
-            <button id="sw-visibility" class="btn btn-light btn-sm" title="Bileşen sınırlarını göster/gizle">
+        <div class="toolbar-buttons me-4">
+            <button id="sw-visibility" class="toolbar-button" title="Bileşen sınırlarını göster/gizle">
                 <i class="fas fa-border-all"></i>
             </button>
-
-            <button id="cmd-clear" class="btn btn-light btn-sm" title="İçeriği temizle">
+            <button id="cmd-clear" class="toolbar-button" title="İçeriği temizle">
                 <i class="fas fa-trash-alt"></i>
             </button>
-
-            <button id="cmd-undo" class="btn btn-light btn-sm" title="Geri al">
+            <button id="cmd-undo" class="toolbar-button" title="Geri al">
                 <i class="fas fa-undo"></i>
             </button>
-
-            <button id="cmd-redo" class="btn btn-light btn-sm" title="Yinele">
+            <button id="cmd-redo" class="toolbar-button" title="Yinele">
                 <i class="fas fa-redo"></i>
             </button>
         </div>
@@ -22,22 +19,22 @@
 
     <div class="header-center">
         <div class="studio-brand">
-            <?php echo e($group->name); ?> <i class="fa-solid fa-wand-magic-sparkles mx-2"></i> Form Düzenleyici
+            <?php echo e($group->name); ?> <i class="fa-solid fa-wand-magic-sparkles mx-2"></i> Studio Form
         </div>
     </div>
 
     <div class="header-right">
-        <a href="<?php echo e(route('admin.settingmanagement.index')); ?>" id="back-btn" class="btn btn-light btn-sm me-2" title="Geri">
+        <a href="<?php echo e(route('admin.settingmanagement.index')); ?>" id="back-btn" class="btn-back me-2" title="Geri">
             <i class="fa-solid fa-arrow-left me-1"></i>
             <span>Geri Dön</span>
         </a>
         
-        <button id="preview-btn" class="btn btn-light btn-sm me-2" title="Önizleme">
+        <button id="preview-btn" class="btn-view me-2" title="Önizleme">
             <i class="fa-solid fa-eye me-1"></i>
             <span>Önizleme</span>
         </button>
 
-        <button id="save-btn" class="btn btn-primary btn-sm" title="Kaydet">
+        <button id="save-btn" class="btn-save" title="Kaydet">
             <i class="fa-solid fa-save me-1"></i>
             <span>Kaydet</span>
         </button>

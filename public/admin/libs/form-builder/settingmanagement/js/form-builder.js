@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", function() {
   window.propertiesPanel = document.getElementById("properties-panel");
   window.undoStack = [];
   window.redoStack = [];
+  window.canvasLoading = document.getElementById("canvas-loading");
   
   // Türkçe karakterleri İngilizce karakterlere dönüştürme fonksiyonu
   window.slugifyTurkish = function(text) {
@@ -39,6 +40,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
   console.log("Form Builder başlatılıyor...");
   
+  // Loading gösterimini başlat
+  if (window.canvasLoading) {
+    window.canvasLoading.style.display = "flex";
+  }
+  
   // Form yükleme fonksiyonu
   const loadSavedForm = function() {
     // Grup ID'sini al
@@ -65,9 +71,24 @@ document.addEventListener("DOMContentLoaded", function() {
             console.error('loadFormFromJSON fonksiyonu bulunamadı');
           }
         }
+        
+        // Loading animasyonunu gizle
+        setTimeout(() => {
+          if (window.canvasLoading) {
+            window.canvasLoading.style.opacity = "0";
+            setTimeout(() => {
+              window.canvasLoading.style.display = "none";
+            }, 300);
+          }
+        }, 500);
       })
       .catch(error => {
         console.error('Form yükleme hatası:', error);
+        
+        // Hata durumunda da loading'i gizle
+        if (window.canvasLoading) {
+          window.canvasLoading.style.display = "none";
+        }
       });
       
       // Ayarları yükle
@@ -91,6 +112,11 @@ document.addEventListener("DOMContentLoaded", function() {
       .catch(error => {
         console.error('Ayarlar yüklenirken hata:', error);
       });
+    } else {
+      // Grup ID yoksa loading'i gizle
+      if (window.canvasLoading) {
+        window.canvasLoading.style.display = "none";
+      }
     }
   };
 

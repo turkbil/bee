@@ -201,9 +201,15 @@
             </div>
         </div>
     </div>
-    
+        
     <!-- Orta Panel: Form Canvas -->
     <div class="form-canvas">
+        <!-- Loading animasyonu -->
+        <div class="canvas-loading" id="canvas-loading">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Form yükleniyor...</div>
+        </div>
+        
         <div class="card shadow-sm w-100" style="max-width: 800px;">
             <div class="card-header">
                 <h3 class="card-title">

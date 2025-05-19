@@ -11,13 +11,14 @@ class FormBuilderComponent extends Component
     public $groupId;
     public $group;
     
-    public function mount($groupId = null)
+    public function mount($groupId)
     {
         $this->groupId = $groupId;
         
-        if ($groupId) {
-            $this->group = SettingGroup::findOrFail($groupId);
-        }
+        // Grup ID'si zorunlu ve grup bir alt grup olmalı
+        $this->group = SettingGroup::where('id', $groupId)
+            ->whereNotNull('parent_id')
+            ->firstOrFail();
     }
     
     #[On('save-form-layout')]
@@ -69,15 +70,6 @@ class FormBuilderComponent extends Component
     
     public function render()
     {
-        if (!$this->groupId) {
-            // Index sayfası
-            $groups = SettingGroup::whereNotNull('parent_id')->get();
-            return view('settingmanagement::form-builder.index', [
-                'groups' => $groups
-            ])->layout('settingmanagement::layouts.form-builder');
-        } else {
-            // Edit sayfası
-            return view('settingmanagement::form-builder.edit')->layout('settingmanagement::layouts.form-builder');
-        }
+        return view('settingmanagement::form-builder.edit')->layout('settingmanagement::layouts.form-builder');
     }
 }

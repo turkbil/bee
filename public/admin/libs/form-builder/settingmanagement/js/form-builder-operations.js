@@ -37,6 +37,32 @@ document.addEventListener("DOMContentLoaded", function() {
       });
   };
 
+  // Benzersiz alan adı oluşturmak için yardımcı fonksiyon
+  window.makeNameUnique = function(baseName) {
+    // Canvas'taki tüm elementleri al
+    const allElements = window.formCanvas.querySelectorAll('.form-element');
+    
+    // Şu anki seçili element dışındaki tüm elementleri filtrele
+    const otherElements = Array.from(allElements).filter(el => el !== window.selectedElement);
+    
+    // Aynı isimde başka bir element var mı kontrol et
+    let counter = 1;
+    let finalName = baseName;
+    
+    // Aynı isimde element varsa sonuna numara ekle
+    while (otherElements.some(el => el.properties && el.properties.name === finalName)) {
+      counter++;
+      // Son kısım zaten sayı içeriyorsa, o sayıyı güncelle
+      if (finalName.match(/-\d+$/)) {
+        finalName = finalName.replace(/-\d+$/, `-${counter}`);
+      } else {
+        finalName = `${baseName}-${counter}`;
+      }
+    }
+    
+    return finalName;
+  };
+
   // Özellik panelini güncelle
   window.updatePropertiesPanel = function() {
     if (!window.selectedElement) return;
@@ -428,9 +454,12 @@ document.addEventListener("DOMContentLoaded", function() {
                   }
                 }
                 
+                // Benzersiz bir isim oluştur
+                const uniqueName = window.makeNameUnique(newName);
+                
                 // Alan adını güncelle
-                window.selectedElement.properties.name = newName;
-                nameInput.value = newName;
+                window.selectedElement.properties.name = uniqueName;
+                nameInput.value = uniqueName;
               }
             }
           })
@@ -603,18 +632,26 @@ document.addEventListener("DOMContentLoaded", function() {
                 const isDefaultName = !currentName || currentName.endsWith('_field') || currentName.startsWith('form_');
                 
                 if (isDefaultName || !currentName.startsWith(groupPrefix + '_')) {
-                  const newName = groupPrefix + '_' + labelSlug;
-                  window.selectedElement.properties.name = newName;
-                  nameInput.value = newName;
+                  const newBaseName = groupPrefix + '_' + labelSlug;
+                  
+                  // Benzersiz bir isim oluştur
+                  const uniqueName = window.makeNameUnique(newBaseName);
+                  
+                  window.selectedElement.properties.name = uniqueName;
+                  nameInput.value = uniqueName;
                 } else {
                   // Eğer prefix mevcut ise sadece label kısmını değiştir
                   const nameParts = currentName.split('_');
                   if (nameParts.length > 1) {
                     nameParts.splice(1); // İlk parçayı (prefix) dışındakileri sil
                     nameParts.push(labelSlug); // Yeni label'i ekle
-                    const newName = nameParts.join('_');
-                    window.selectedElement.properties.name = newName;
-                    nameInput.value = newName;
+                    const newBaseName = nameParts.join('_');
+                    
+                    // Benzersiz bir isim oluştur
+                    const uniqueName = window.makeNameUnique(newBaseName);
+                    
+                    window.selectedElement.properties.name = uniqueName;
+                    nameInput.value = uniqueName;
                   }
                 }
               }

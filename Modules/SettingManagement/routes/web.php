@@ -74,5 +74,21 @@ Route::middleware(['web', 'auth', 'tenant'])
                 Route::get('/api/settings', [FormBuilderController::class, 'getSettings'])
                     ->middleware('module.permission:settingmanagement,view')
                     ->name('api.settings');
+                    
+                // Grup bilgisi endpoint'i
+                Route::get('/api/groups/{groupId}', function ($groupId) {
+                    $group = \Modules\SettingManagement\App\Models\SettingGroup::find($groupId);
+                    if (!$group) {
+                        return response()->json(['error' => 'Grup bulunamadı'], 404);
+                    }
+                    
+                    return response()->json([
+                        'id' => $group->id,
+                        'name' => $group->name,
+                        'prefix' => $group->prefix,
+                        'slug' => $group->slug
+                    ]);
+                })->middleware('module.permission:settingmanagement,view')
+                  ->name('api.groups.show');
             });
     });

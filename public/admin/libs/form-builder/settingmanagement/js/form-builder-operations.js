@@ -389,15 +389,15 @@ document.addEventListener("DOMContentLoaded", function() {
     
     // Otomatik Alan Adı (System Key) oluşturma
     const labelInput = window.propertiesPanel.querySelector('input[name="label"]');
-    if (labelInput && nameInput && !nameInput.value) {
+    if (labelInput && nameInput) {
       // Label değiştiğinde otomatik olarak name (System Key) üret
       labelInput.addEventListener('input', function() {
         // Grup ID'sini al
         const groupId = document.getElementById('group-id')?.value;
         
         if (groupId && this.value) {
-          // Grup bilgilerini getir
-          fetch(`/admin/settingmanagement/form-builder/${groupId}/load`, {
+          // Grup bilgilerini getir - prefix değeri için API'ye sor
+          fetch(`/admin/settingmanagement/api/groups/${groupId}`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
@@ -405,19 +405,13 @@ document.addEventListener("DOMContentLoaded", function() {
             }
           })
           .then(response => response.json())
-          .then(data => {
-            if (data.success && data.layout) {
+          .then(groupData => {
+            if (groupData && groupData.prefix) {
               // Grup prefix'ini al
-              let groupPrefix = '';
+              let groupPrefix = groupData.prefix;
               
-              if (data.layout.title) {
-                // İlk kelimeyi al (boşluklardan ayır)
-                const titleParts = data.layout.title.split(' ');
-                if (titleParts.length > 0) {
-                  // Prefix'i slug formatına çevir
-                  groupPrefix = window.slugifyTurkish(titleParts[0].toLowerCase());
-                }
-              }
+              // Prefix'i slug formatına çevir
+              groupPrefix = window.slugifyTurkish(groupPrefix.toLowerCase());
               
               if (groupPrefix) {
                 // Label'i slug formatına çevir
@@ -452,9 +446,15 @@ document.addEventListener("DOMContentLoaded", function() {
       
       // İlk yüklemede label değerine göre name alanını güncelle
       if (labelInput.value) {
-        // Yapay bir input event tetikle
-        const inputEvent = new Event('input', { bubbles: true });
-        labelInput.dispatchEvent(inputEvent);
+        // Eğer name değeri form_ ile başlıyorsa veya _field ile bitiyorsa
+        const nameValue = nameInput.value || '';
+        const isDefaultName = nameValue.endsWith('_field') || nameValue.startsWith('form_');
+        
+        if (isDefaultName) {
+          // Yapay bir input event tetikle
+          const inputEvent = new Event('input', { bubbles: true });
+          labelInput.dispatchEvent(inputEvent);
+        }
       }
     }
   };
@@ -581,7 +581,8 @@ document.addEventListener("DOMContentLoaded", function() {
       if (nameInput && nameInput.disabled) { // Sadece alan disabled ise otomatik güncelle
         const groupId = document.getElementById('group-id')?.value;
         if (groupId && value) {
-          fetch(`/admin/settingmanagement/form-builder/${groupId}/load`, {
+          // Grup bilgilerini getir - prefix değeri için API'ye sor
+          fetch(`/admin/settingmanagement/api/groups/${groupId}`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
@@ -589,28 +590,23 @@ document.addEventListener("DOMContentLoaded", function() {
             }
           })
           .then(response => response.json())
-          .then(data => {
-            if (data.success && data.layout) {
+          .then(groupData => {
+            if (groupData && groupData.prefix) {
               // Grup prefix'ini al
-              let groupPrefix = '';
+              let groupPrefix = groupData.prefix;
               
-              if (data.layout.title) {
-                // İlk kelimeyi al (boşluklardan ayır)
-                const titleParts = data.layout.title.split(' ');
-                if (titleParts.length > 0) {
-                  // Prefix'i slug formatına çevir
-                  groupPrefix = window.slugifyTurkish(titleParts[0].toLowerCase());
-                }
-              }
+              // Prefix'i slug formatına çevir
+              groupPrefix = window.slugifyTurkish(groupPrefix.toLowerCase());
               
               if (groupPrefix) {
                 // Label'i slug formatına çevir
                 const labelSlug = window.slugifyTurkish(value);
                 
-                // Eğer alan adı yoksa veya prefix + _ ile başlamıyorsa, yeni alan adı oluştur
+                // Eğer alan adı yoksa veya form_ ile başlıyorsa ya da _field ile bitiyorsa, yeni alan adı oluştur
                 const currentName = window.selectedElement.properties.name || '';
+                const isDefaultName = !currentName || currentName.endsWith('_field') || currentName.startsWith('form_');
                 
-                if (!currentName || !currentName.startsWith(groupPrefix + '_')) {
+                if (isDefaultName || !currentName.startsWith(groupPrefix + '_')) {
                   const newName = groupPrefix + '_' + labelSlug;
                   window.selectedElement.properties.name = newName;
                   nameInput.value = newName;

@@ -24,12 +24,14 @@ class Setting extends Model
         'sort_order',
         'is_active',
         'is_system',
+        'is_required',
     ];
     
     protected $casts = [
         'options' => 'array',
         'is_active' => 'boolean',
         'is_system' => 'boolean',
+        'is_required' => 'boolean',
     ];
     
     /**

@@ -459,6 +459,72 @@ document.addEventListener("DOMContentLoaded", function() {
       });
     });
 
+    // Element eklendikten sonra grup prefixini al ve ayarla
+    setTimeout(() => {
+      const groupId = document.getElementById('group-id')?.value;
+      if (groupId && formElement.properties && formElement.properties.name) {
+        // Varsayılan isimlendirmeyi kontrol et (_field ile bitenler)
+        const isDefaultName = formElement.properties.name.endsWith('_field');
+        if (isDefaultName) {
+          fetch(`/admin/settingmanagement/form-builder/${groupId}/load`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            }
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success && data.layout) {
+              // Grup prefix'ini doğrudan API'den al
+              fetch(`/admin/settingmanagement/api/groups/${groupId}`, {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                }
+              })
+              .then(response => response.json())
+              .then(groupData => {
+                if (groupData && groupData.prefix) {
+                  // Grup prefix'ini al
+                  let groupPrefix = groupData.prefix;
+                  
+                  // Prefix'i slug formatına çevir
+                  groupPrefix = window.slugifyTurkish(groupPrefix.toLowerCase());
+                  
+                  if (groupPrefix) {
+                    // Label'i slug formatına çevir
+                    const labelSlug = window.slugifyTurkish(formElement.properties.label || '');
+                    
+                    // Alan adını oluştur
+                    const newName = groupPrefix + '_' + labelSlug;
+                    
+                    // Özelliği güncelle
+                    formElement.properties.name = newName;
+                    
+                    // Eğer element şu anda seçili ise özellik panelini güncelle
+                    if (window.selectedElement === formElement) {
+                      const nameInput = window.propertiesPanel.querySelector('input[name="name"]');
+                      if (nameInput) {
+                        nameInput.value = newName;
+                      }
+                    }
+                  }
+                }
+              })
+              .catch(error => {
+                console.error('Grup verisi alınamadı:', error);
+              });
+            }
+          })
+          .catch(error => {
+            console.error('Grup verisi alınamadı:', error);
+          });
+        }
+      }
+    }, 100);
+
     return formElement;
   };
 });

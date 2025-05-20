@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // Şablon işleme (Mustache benzeri basit bir işleyici)
     window.renderTemplate = function(template, data) {
       let result = template;
-  
+
       // Değişken yerleştirme {variable}
       Object.keys(data).forEach((key) => {
         const value = data[key];
@@ -82,19 +82,19 @@ document.addEventListener("DOMContentLoaded", function() {
           result = result.replace(regex, value);
         }
       });
-  
+
       // Koşullu özellikler {selected}, {checked}, vb.
       Object.keys(data).forEach((key) => {
         const value = data[key];
         if (typeof value === "boolean" && value === true) {
           const regex = new RegExp("{" + key + "}", "g");
-          result = result.replace(regex, "checked");
+          result = result.replace(regex, "selected");
         } else if (typeof value === "boolean") {
           const regex = new RegExp("{" + key + "}", "g");
           result = result.replace(regex, "");
         }
       });
-  
+
       // Width değerleri için özel koşullar
       if (data.width) {
         for (let i = 1; i <= 12; i++) {
@@ -102,7 +102,7 @@ document.addEventListener("DOMContentLoaded", function() {
           result = result.replace(regex, data.width == i ? "selected" : "");
         }
       }
-  
+
       // Heading size için özel koşullar
       if (data.size) {
         const sizes = ["h1", "h2", "h3", "h4", "h5", "h6"];
@@ -138,7 +138,7 @@ document.addEventListener("DOMContentLoaded", function() {
           result = result.replace(regex, data.height === height ? "selected" : "");
         });
       }
-  
+
       // Card display özellikleri için koşullar
       if (data.has_header !== undefined) {
         result = result.replace(/{header_display}/g, data.has_header ? 'block' : 'none');
@@ -147,21 +147,26 @@ document.addEventListener("DOMContentLoaded", function() {
       if (data.has_footer !== undefined) {
         result = result.replace(/{footer_display}/g, data.has_footer ? 'block' : 'none');
       }
-  
-      // Row sütun sayısı için özel koşullar
-      if (data.columns) {
-        for (let i = 2; i <= 4; i++) {
-          const regex = new RegExp("{columns" + i + "}", "g");
-          result = result.replace(
-            regex,
-            data.columns.length == i ? "selected" : ""
-          );
-        }
+
+      // Row sütun sayısı için özel koşullar - BURADA DİKKAT EDİLMESİ GEREKEN KISIM
+      if (data.columns2 !== undefined) {
+        const regex = new RegExp("{columns2}", "g");
+        result = result.replace(regex, data.columns2 === true ? "selected" : "");
       }
-  
+      
+      if (data.columns3 !== undefined) {
+        const regex = new RegExp("{columns3}", "g");
+        result = result.replace(regex, data.columns3 === true ? "selected" : "");
+      }
+      
+      if (data.columns4 !== undefined) {
+        const regex = new RegExp("{columns4}", "g");
+        result = result.replace(regex, data.columns4 === true ? "selected" : "");
+      }
+
       // Kalan yer tutucuları temizle
       result = result.replace(/{[^{}]+}/g, "");
-  
+
       return result;
     };
     

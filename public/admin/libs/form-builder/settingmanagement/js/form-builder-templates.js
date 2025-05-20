@@ -1443,34 +1443,34 @@ document.addEventListener("DOMContentLoaded", function() {
               </div>
           `,
       row: `
-              <div class="property-panel">
-                  <div class="property-header">
-                      <h4 class="fw-bold p-3 border-bottom"><i class="fas fa-grip-lines-vertical me-2"></i>Satır Elementini Düzenle</h4>
-                  </div>
-                  
-                  <div class="p-0">
-                      <!-- Satır Ayarları -->
-                      <div class="property-section">
-                          <div class="section-title">Satır Ayarları</div>
-                          <div class="section-content p-3">
-                              <div class="mb-3 col-12 col-md-{width}">
-                                  <label class="form-label">Sütun Sayısı</label>
-                                  <select class="form-select" name="column-count">
-                                      <option value="2" {columns2}>2 Sütun</option>
-                                      <option value="3" {columns3}>3 Sütun</option>
-                                      <option value="4" {columns4}>4 Sütun</option>
-                                  </select>
-                              </div>
-                              <div class="mb-3 col-12 col-md-{width}">
-                                  <label class="form-label">Sütun Genişlikleri</label>
-                                  <div id="column-widths-container">
-                                      <!-- Sütun genişlikleri JavaScript ile doldurulacak -->
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              </div>
+            <div class="property-panel">
+                <div class="property-header">
+                    <h4 class="fw-bold p-3 border-bottom"><i class="fas fa-grip-lines-vertical me-2"></i>Satır Elementini Düzenle</h4>
+                </div>
+                
+                <div class="p-0">
+                    <!-- Satır Ayarları -->
+                    <div class="property-section">
+                        <div class="section-title">Satır Ayarları</div>
+                        <div class="section-content p-3">
+                            <div class="mb-3 col-12 col-md-{width}">
+                                <label class="form-label">Sütun Sayısı</label>
+                                <select class="form-select" name="column-count">
+                                    <option value="2" {columns2}>2 Sütun</option>
+                                    <option value="3" {columns3}>3 Sütun</option>
+                                    <option value="4" {columns4}>4 Sütun</option>
+                                </select>
+                            </div>
+                            <div class="mb-3 col-12 col-md-{width}">
+                                <label class="form-label">Sütun Genişlikleri</label>
+                                <div id="column-widths-container">
+                                    <!-- Sütun genişlikleri JavaScript ile doldurulacak -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
           `,
       heading: `
               <div class="property-panel">

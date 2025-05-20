@@ -335,7 +335,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 <button type="button" class="btn btn-sm" data-action="duplicate">
                     <i class="fas fa-clone"></i>
                 </button>
-                <button type="button" class="btn btn-sm text-danger" data-action="remove">
+<button type="button" class="btn btn-sm text-danger" data-action="remove">
                     <i class="fas fa-trash"></i>
                 </button>
             </div>
@@ -435,6 +435,12 @@ document.addEventListener("DOMContentLoaded", function() {
         const action = this.dataset.action;
 
         if (action === "remove") {
+          // Eğer is_system true ise ve veritabanında kaydedilmişse silmeye izin verme
+          if (formElement.properties.is_system === true) {
+            alert("Bu element bir sistem ayarıdır ve silinemez.");
+            return;
+          }
+          
           formElement.remove();
           if (window.selectedElement === formElement) {
             window.clearSelectedElement();

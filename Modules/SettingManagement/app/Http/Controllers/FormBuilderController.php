@@ -39,6 +39,31 @@ class FormBuilderController extends Controller
                 ];
             }
             
+            // Veritabanından ayarları al
+            $settings = Setting::where('group_id', $groupId)
+                ->select('id', 'key', 'is_active', 'is_system', 'is_required')
+                ->get()
+                ->keyBy('key')
+                ->toArray();
+                
+            // Layout'taki elementlerin ayarları ile eşleştir
+            if (!empty($layout['elements'])) {
+                foreach ($layout['elements'] as &$element) {
+                    $this->updateElementProperties($element, $settings);
+                    
+                    // Row elementleri için sütunları da kontrol et
+                    if ($element['type'] === 'row' && !empty($element['columns'])) {
+                        foreach ($element['columns'] as &$column) {
+                            if (!empty($column['elements'])) {
+                                foreach ($column['elements'] as &$columnElement) {
+                                    $this->updateElementProperties($columnElement, $settings);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
             return response()->json([
                 'success' => true,
                 'layout' => $layout
@@ -52,6 +77,21 @@ class FormBuilderController extends Controller
                     'elements' => []
                 ]
             ], 200); // 500 yerine 200 döndürelim ama hata bilgisiyle
+        }
+    }
+    
+    /**
+     * Element özelliklerini ayarlar ile güncelle
+     */
+    private function updateElementProperties(&$element, $settings)
+    {
+        if (isset($element['properties']['name'])) {
+            $key = $element['properties']['name'];
+            if (isset($settings[$key])) {
+                $element['properties']['is_active'] = (bool)$settings[$key]['is_active'];
+                $element['properties']['is_system'] = (bool)$settings[$key]['is_system'];
+                $element['properties']['required'] = (bool)$settings[$key]['is_required'];
+            }
         }
     }
     
@@ -72,7 +112,7 @@ class FormBuilderController extends Controller
             
             $settings = Setting::where('group_id', $groupId)
                 ->where('is_active', true)
-                ->select('id', 'label', 'key', 'type')
+                ->select('id', 'label', 'key', 'type', 'is_active', 'is_system', 'is_required')
                 ->orderBy('sort_order', 'asc')
                 ->get();
                 
@@ -284,6 +324,7 @@ class FormBuilderController extends Controller
         $setting->sort_order = $sortOrder;
         $setting->is_active = $properties['is_active'] ?? true;
         $setting->is_system = $properties['is_system'] ?? false;
+        $setting->is_required = $properties['required'] ?? false;
         
         // Select için options
         if ($element['type'] === 'select' && isset($properties['options'])) {

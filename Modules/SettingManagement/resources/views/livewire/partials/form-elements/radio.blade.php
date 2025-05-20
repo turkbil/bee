@@ -31,12 +31,23 @@
                 <div class="form-group w-100">
                     @if(is_array($setting->options))
                         <div class="form-selectgroup">
-                            @foreach($setting->options as $key => $label)
+                            @foreach($setting->options as $key => $option)
+                                @php
+                                    $optionLabel = '';
+                                    if (is_string($option)) {
+                                        $optionLabel = $option;
+                                    } elseif (is_array($option)) {
+                                        $optionLabel = $option['label'] ?? $key;
+                                    } elseif (is_object($option)) {
+                                        $optionData = json_decode(json_encode($option), true);
+                                        $optionLabel = $optionData['label'] ?? $key;
+                                    }
+                                @endphp
                                 <label class="form-selectgroup-item">
                                     <input type="radio" name="radio_{{ $settingId }}" value="{{ $key }}" 
                                            class="form-selectgroup-input" 
                                            wire:model="values.{{ $settingId }}">
-                                    <span class="form-selectgroup-label">{{ $label }}</span>
+                                    <span class="form-selectgroup-label">{{ $optionLabel }}</span>
                                 </label>
                             @endforeach
                         </div>

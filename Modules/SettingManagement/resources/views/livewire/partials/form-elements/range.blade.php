@@ -29,8 +29,8 @@
             </div>
             <div class="card-body">
                 <div class="form-group w-100">
-                    <div class="row g-2 align-items-center">
-                        <div class="col">
+                    <div class="mb-3">
+                        <div class="form-range mb-2 text-primary" id="range-{{ $settingId }}" wire:ignore>
                             <input 
                                 type="range" 
                                 wire:model="values.{{ $settingId }}" 
@@ -38,12 +38,13 @@
                                 @if(isset($element['properties']['min'])) min="{{ $element['properties']['min'] }}" @else min="0" @endif
                                 @if(isset($element['properties']['max'])) max="{{ $element['properties']['max'] }}" @else max="100" @endif
                                 @if(isset($element['properties']['step'])) step="{{ $element['properties']['step'] }}" @else step="1" @endif
+                                onInput="document.getElementById('rangeValue-{{ $settingId }}').innerHTML = this.value"
                             >
                         </div>
-                        <div class="col-auto">
-                            <span class="form-colorinput-color text-center" style="width: 3rem;">
-                                {{ $values[$settingId] ?? 0 }}
-                            </span>
+                        <div class="d-flex justify-content-between">
+                            <span class="small text-muted">{{ isset($element['properties']['min']) ? $element['properties']['min'] : '0' }}</span>
+                            <span class="badge bg-primary" id="rangeValue-{{ $settingId }}">{{ $values[$settingId] ?? 0 }}</span>
+                            <span class="small text-muted">{{ isset($element['properties']['max']) ? $element['properties']['max'] : '100' }}</span>
                         </div>
                     </div>
                     

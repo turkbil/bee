@@ -1,0 +1,176 @@
+.editor-toolbar {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
+  height: 36px;
+}
+
+.editor-toolbar button {
+  height: 36px;
+  min-width: 36px;
+  border: none;
+  background: transparent;
+  color: #4b5563;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.editor-toolbar button:hover {
+  background-color: #f3f4f6;
+  color: #3b82f6;
+}
+
+.editor-toolbar button.active {
+  background-color: #eff6ff;
+  color: #3b82f6;
+  border-left: 2px solid #3b82f6;
+}
+
+.editor-toolbar button i {
+  font-size: 14px;
+  width: 16px;
+  text-align: center;
+}
+
+.editor-toolbar button span {
+  margin-left: 6px;
+}
+
+.editor-toolbar-divider {
+  width: 1px;
+  height: 24px;
+  background-color: #e5e7eb;
+  margin: 0 4px;
+}
+
+.btn-group {
+  display: inline-flex;
+  height: 36px;
+}
+
+.btn-group button {
+  height: 36px;
+  min-width: 36px;
+  border: 1px solid #e5e7eb;
+  background: white;
+  color: #4b5563;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.btn-group button:hover {
+  background-color: #f3f4f6;
+  color: #3b82f6;
+}
+
+.btn-group button.active {
+  background-color: #eff6ff;
+  color: #3b82f6;
+}
+
+.device-btns {
+  display: flex;
+  height: 36px;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.device-btns button {
+  height: 36px;
+  width: 36px;
+  border: none;
+  background: transparent;
+  color: #4b5563;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+  font-size: 14px;
+}
+
+.device-btns button:hover {
+  background-color: #f3f4f6;
+  color: #3b82f6;
+}
+
+.device-btns button.active {
+  background-color: #eff6ff;
+  color: #3b82f6;
+  border-bottom: 2px solid #3b82f6;
+}
+
+.btn-back,
+.btn-tool,
+.btn-view,
+.btn-save {
+  height: 36px;
+  border: none;
+  background: white;
+  color: #4b5563;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.btn-back:hover,
+.btn-tool:hover {
+  background-color: #f3f4f6;
+  color: #3b82f6;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-tool.active {
+  background-color: #eff6ff;
+  color: #3b82f6;
+  box-shadow: 0 1px 3px rgba(59, 130, 246, 0.3);
+}
+
+.btn-view {
+  background-color: #fef3c7;
+  color: #b45309;
+  box-shadow: 0 1px 3px rgba(180, 83, 9, 0.2);
+}
+
+.btn-view:hover {
+  background-color: #fde68a;
+  color: #92400e;
+  box-shadow: 0 2px 4px rgba(146, 64, 14, 0.2);
+}
+
+.btn-save {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+  box-shadow: 0 1px 3px rgba(29, 78, 216, 0.2);
+}
+
+.btn-save:hover {
+  background-color: #bfdbfe;
+  color: #1e40af;
+  box-shadow: 0 2px 4px rgba(30, 64, 175, 0.2);
+}

@@ -1,0 +1,1403 @@
+[data-bs-theme=dark],body[data-bs-theme=dark] [data-bs-theme=light] {
+    --tblr-body-color: #dce1e7;
+    --tblr-body-color-rgb: 220,225,231;
+    --tblr-muted: #49566c;
+    --tblr-body-bg: #151f2c;
+    --tblr-body-bg-rgb: 21,31,44;
+    --tblr-emphasis-color: #ffffff;
+    --tblr-emphasis-color-rgb: 255,255,255;
+    --tblr-bg-forms: #151f2c;
+    --tblr-bg-surface: #182433;
+    --tblr-bg-surface-dark: #151f2c;
+    --tblr-bg-surface-secondary: #1b293a;
+    --tblr-bg-surface-tertiary: #151f2c;
+    --tblr-link-color: #0884f8;
+    --tblr-link-hover-color: #066fd1;
+    --tblr-active-bg: #1b293a;
+    --tblr-disabled-color: var(--tblr-gray-700);
+    --tblr-border-color: var(--tblr-dark-mode-border-color);
+    --tblr-border-color-translucent: var( --tblr-dark-mode-border-color-translucent );
+    --tblr-border-dark-color: var(--tblr-dark-mode-border-dark-color);
+    --tblr-border-active-color: var( --tblr-dark-mode-border-active-color );
+    --tblr-btn-color: #151f2c;
+    --tblr-code-color: var(--tblr-body-color);
+    --tblr-code-bg: #1f2e41;
+    --tblr-primary-lt: #162c43;
+    --tblr-primary-lt-rgb: 22,44,67;
+    --tblr-secondary-lt: #202d3c;
+    --tblr-secondary-lt-rgb: 32,45,60;
+    --tblr-success-lt: #1a3235;
+    --tblr-success-lt-rgb: 26,50,53;
+    --tblr-info-lt: #1c3044;
+    --tblr-info-lt-rgb: 28,48,68;
+    --tblr-warning-lt: #2e2b2f;
+    --tblr-warning-lt-rgb: 46,43,47;
+    --tblr-danger-lt: #2b2634;
+    --tblr-danger-lt-rgb: 43,38,52;
+    --tblr-light-lt: #2e3947;
+    --tblr-light-lt-rgb: 46,57,71;
+    --tblr-dark-lt: #182433;
+    --tblr-dark-lt-rgb: 24,36,51;
+    --tblr-muted-lt: #202d3c;
+    --tblr-muted-lt-rgb: 32,45,60;
+    --tblr-blue-lt: #162c43;
+    --tblr-blue-lt-rgb: 22,44,67;
+    --tblr-azure-lt: #1c3044;
+    --tblr-azure-lt-rgb: 28,48,68;
+    --tblr-indigo-lt: #1c2a45;
+    --tblr-indigo-lt-rgb: 28,42,69;
+    --tblr-purple-lt: #272742;
+    --tblr-purple-lt-rgb: 39,39,66;
+    --tblr-pink-lt: #2b2639;
+    --tblr-pink-lt-rgb: 43,38,57;
+    --tblr-red-lt: #2b2634;
+    --tblr-red-lt-rgb: 43,38,52;
+    --tblr-orange-lt: #2e2b2f;
+    --tblr-orange-lt-rgb: 46,43,47;
+    --tblr-yellow-lt: #2e302e;
+    --tblr-yellow-lt-rgb: 46,48,46;
+    --tblr-lime-lt: #213330;
+    --tblr-lime-lt-rgb: 33,51,48;
+    --tblr-green-lt: #1a3235;
+    --tblr-green-lt-rgb: 26,50,53;
+    --tblr-teal-lt: #17313a;
+    --tblr-teal-lt-rgb: 23,49,58;
+    --tblr-cyan-lt: #183140;
+    --tblr-cyan-lt-rgb: 24,49,64;
+    --tblr-tabler-lt: #162c43;
+    --tblr-tabler-lt-rgb: 22,44,67
+}
+
+/* Tema taban stilleri - Gri tonları */
+/* Tema taban stilleri - Gri tonları */
+.theme-base-slate {
+    --tblr-gray-50: #f8fafc;
+    --tblr-gray-100: #f1f5f9;
+    --tblr-gray-200: #e2e8f0;
+    --tblr-gray-300: #cbd5e1;
+    --tblr-gray-400: #94a3b8;
+    --tblr-gray-500: #64748b;
+    --tblr-gray-600: #475569;
+    --tblr-gray-700: #334155;
+    --tblr-gray-800: #1e293b;
+    --tblr-gray-900: #0f172a;
+}
+
+.theme-base-cool {
+    --tblr-gray-50: #f9fafb;
+    --tblr-gray-100: #f3f4f6;
+    --tblr-gray-200: #e5e7eb;
+    --tblr-gray-300: #d1d5db;
+    --tblr-gray-400: #9ca3af;
+    --tblr-gray-500: #6b7280;
+    --tblr-gray-600: #4b5563;
+    --tblr-gray-700: #374151;
+    --tblr-gray-800: #1f2937;
+    --tblr-gray-900: #111827;
+}
+
+.theme-base-neutral {
+    --tblr-gray-50: #fafafa;
+    --tblr-gray-100: #f5f5f5;
+    --tblr-gray-200: #e5e5e5;
+    --tblr-gray-300: #d4d4d4;
+    --tblr-gray-400: #a3a3a3;
+    --tblr-gray-500: #737373;
+    --tblr-gray-600: #525252;
+    --tblr-gray-700: #404040;
+    --tblr-gray-800: #262626;
+    --tblr-gray-900: #171717;
+}
+
+.theme-base-warm {
+    --tblr-gray-50: #fafaf9;
+    --tblr-gray-100: #f5f5f4;
+    --tblr-gray-200: #e7e5e4;
+    --tblr-gray-300: #d6d3d1;
+    --tblr-gray-400: #a8a29e;
+    --tblr-gray-500: #78716c;
+    --tblr-gray-600: #57534e;
+    --tblr-gray-700: #44403c;
+    --tblr-gray-800: #292524;
+    --tblr-gray-900: #1c1917;
+}
+
+.theme-base-indigo {
+    --tblr-gray-50: #eef2ff;
+    --tblr-gray-100: #e0e7ff;
+    --tblr-gray-200: #c7d2fe;
+    --tblr-gray-300: #a5b4fc;
+    --tblr-gray-400: #818cf8;
+    --tblr-gray-500: #6366f1;
+    --tblr-gray-600: #4f46e5;
+    --tblr-gray-700: #4338ca;
+    --tblr-gray-800: #3730a3;
+    --tblr-gray-900: #312e81;
+}
+
+.theme-base-azure {
+    --tblr-gray-50: #eff6ff;
+    --tblr-gray-100: #dbeafe;
+    --tblr-gray-200: #bfdbfe;
+    --tblr-gray-300: #93c5fd;
+    --tblr-gray-400: #60a5fa;
+    --tblr-gray-500: #3b82f6;
+    --tblr-gray-600: #2563eb;
+    --tblr-gray-700: #1d4ed8;
+    --tblr-gray-800: #1e40af;
+    --tblr-gray-900: #1e3a8a;
+}
+
+/* Tema Builder Ana Stiller */
+.theme-builder {
+    --tb-spacing: 0.75rem;
+    --tb-radius: 0.25rem;
+    --tb-border-color: var(--tblr-border-color);
+    --tb-bg-subtle: var(--tblr-gray-100);
+    width: 280px;
+    border-right: 1px solid var(--tb-border-color);
+    box-shadow: 5px 0 25px rgba(0, 0, 0, 0.05);
+}
+
+.theme-builder .offcanvas-header {
+    padding: 0.625rem 1rem;
+    border-bottom: 1px solid var(--tb-border-color);
+    background-color: rgba(var(--tblr-primary-rgb), 0.08);
+}
+
+.theme-builder .offcanvas-title {
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.theme-builder .offcanvas-title i {
+    color: var(--primary-color);
+    margin-right: 0.5rem;
+}
+
+.theme-builder .offcanvas-body {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+}
+
+/* Tema Bölümleri */
+.theme-sections {
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(var(--tblr-primary-rgb), 0.3) transparent;
+}
+
+.theme-sections::-webkit-scrollbar {
+    width: 3px;
+}
+
+.theme-sections::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.theme-sections::-webkit-scrollbar-thumb {
+    background-color: rgba(var(--tblr-primary-rgb), 0.3);
+    border-radius: 10px;
+}
+
+.theme-section {
+    border-bottom: 1px solid var(--tb-border-color);
+}
+
+.theme-section-header {
+    padding: 0.75rem 1rem;
+    font-weight: 700;
+    background-color: rgba(var(--tblr-primary-rgb), 0.08);
+    display: flex;
+    align-items: center;
+    border-left: 3px solid var(--primary-color);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    position: relative;
+}
+
+.theme-section-header::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background-color: var(--tb-border-color);
+}
+
+.theme-section-header i {
+    color: var(--primary-color);
+    margin-right: 0.5rem;
+    width: 16px;
+    text-align: center;
+}
+
+.theme-section-body {
+    padding: 0.75rem;
+    background-color: var(--tblr-body-bg);
+}
+
+/* Görünüm Modu */
+.appearance-options {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.appearance-option {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.appearance-option.invisible {
+    visibility: hidden;
+}
+
+.appearance-option input {
+    position: absolute;
+    opacity: 0;
+}
+
+.appearance-preview {
+    width: 70px;
+    height: 70px;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid var(--tb-border-color);
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+
+.appearance-option input:checked + .appearance-preview {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+}
+
+.appearance-option:hover .appearance-preview {
+    transform: translateY(-2px);
+}
+
+.light-preview {
+    background-color: #f8fafc;
+    position: relative;
+}
+
+.light-preview:after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    height: 10px;
+    background-color: #e2e8f0;
+    border-radius: 2px;
+}
+
+.light-preview:before {
+    content: "";
+    position: absolute;
+    top: 40px;
+    left: 15px;
+    right: 15px;
+    height: 10px;
+    background-color: #cbd5e1;
+    border-radius: 2px;
+}
+
+.dark-preview {
+    background-color: #1e293b;
+    position: relative;
+}
+
+.dark-preview:after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    height: 10px;
+    background-color: #0f172a;
+    border-radius: 2px;
+}
+
+.dark-preview:before {
+    content: "";
+    position: absolute;
+    top: 40px;
+    left: 15px;
+    right: 15px;
+    height: 10px;
+    background-color: #334155;
+    border-radius: 2px;
+}
+
+.auto-preview {
+    background: linear-gradient(to right, #f8fafc 50%, #1e293b 50%);
+    position: relative;
+}
+
+.auto-preview:after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    height: 10px;
+    background: linear-gradient(to right, #e2e8f0 50%, #0f172a 50%);
+    border-radius: 2px;
+}
+
+.auto-preview:before {
+    content: "";
+    position: absolute;
+    top: 40px;
+    left: 15px;
+    right: 15px;
+    height: 10px;
+    background: linear-gradient(to right, #cbd5e1 50%, #334155 50%);
+    border-radius: 2px;
+}
+
+/* Gri tonlar için önizleme stilleri - Belirgin farklar ile */
+.slate-preview {
+    background-color: #f8fafc;
+    position: relative;
+}
+
+.slate-preview:after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    height: 10px;
+    background-color: #64748b;
+    border-radius: 2px;
+}
+
+.slate-preview:before {
+    content: "";
+    position: absolute;
+    top: 40px;
+    left: 15px;
+    right: 15px;
+    height: 10px;
+    background-color: #0f172a;
+    border-radius: 2px;
+}
+
+.gray-preview {
+    background-color: #f9fafb;
+    position: relative;
+}
+
+.gray-preview:after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    height: 10px;
+    background-color: #6b7280;
+    border-radius: 2px;
+}
+
+.gray-preview:before {
+    content: "";
+    position: absolute;
+    top: 40px;
+    left: 15px;
+    right: 15px;
+    height: 10px;
+    background-color: #111827;
+    border-radius: 2px;
+}
+
+.zinc-preview {
+    background-color: #fafafa;
+    position: relative;
+}
+
+.zinc-preview:after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    height: 10px;
+    background-color: #71717a;
+    border-radius: 2px;
+}
+
+.zinc-preview:before {
+    content: "";
+    position: absolute;
+    top: 40px;
+    left: 15px;
+    right: 15px;
+    height: 10px;
+    background-color: #18181b;
+    border-radius: 2px;
+}
+
+.neutral-preview {
+    background-color: #fafafa;
+    position: relative;
+}
+
+.neutral-preview:after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    height: 10px;
+    background-color: #737373;
+    border-radius: 2px;
+}
+
+.neutral-preview:before {
+    content: "";
+    position: absolute;
+    top: 40px;
+    left: 15px;
+    right: 15px;
+    height: 10px;
+    background-color: #171717;
+    border-radius: 2px;
+}
+
+.stone-preview {
+    background-color: #fafaf9;
+    position: relative;
+}
+
+.stone-preview:after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    height: 10px;
+    background-color: #78716c;
+    border-radius: 2px;
+}
+
+.stone-preview:before {
+    content: "";
+    position: absolute;
+    top: 40px;
+    left: 15px;
+    right: 15px;
+    height: 10px;
+    background-color: #1c1917;
+    border-radius: 2px;
+}
+
+.blue-preview {
+    background-color: #eff6ff;
+    position: relative;
+}
+
+.blue-preview:after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    height: 10px;
+    background-color: #3b82f6;
+    border-radius: 2px;
+}
+
+.blue-preview:before {
+    content: "";
+    position: absolute;
+    top: 40px;
+    left: 15px;
+    right: 15px;
+    height: 10px;
+    background-color: #1e3a8a;
+    border-radius: 2px;
+}
+
+
+/* Gri tonlar için önizleme stilleri - Belirgin farklar ile */
+.slate-preview {
+    background-color: #f8fafc;
+    position: relative;
+}
+
+.slate-preview:after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    height: 10px;
+    background-color: #64748b;
+    border-radius: 2px;
+}
+
+.slate-preview:before {
+    content: "";
+    position: absolute;
+    top: 40px;
+    left: 15px;
+    right: 15px;
+    height: 10px;
+    background-color: #0f172a;
+    border-radius: 2px;
+}
+
+.cool-preview {
+    background-color: #f9fafb;
+    position: relative;
+}
+
+.cool-preview:after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    height: 10px;
+    background-color: #6b7280;
+    border-radius: 2px;
+}
+
+.cool-preview:before {
+    content: "";
+    position: absolute;
+    top: 40px;
+    left: 15px;
+    right: 15px;
+    height: 10px;
+    background-color: #111827;
+    border-radius: 2px;
+}
+
+.neutral-preview {
+    background-color: #fafafa;
+    position: relative;
+}
+
+.neutral-preview:after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    height: 10px;
+    background-color: #737373;
+    border-radius: 2px;
+}
+
+.neutral-preview:before {
+    content: "";
+    position: absolute;
+    top: 40px;
+    left: 15px;
+    right: 15px;
+    height: 10px;
+    background-color: #171717;
+    border-radius: 2px;
+}
+
+.warm-preview {
+    background-color: #fafaf9;
+    position: relative;
+}
+
+.warm-preview:after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    height: 10px;
+    background-color: #78716c;
+    border-radius: 2px;
+}
+
+.warm-preview:before {
+    content: "";
+    position: absolute;
+    top: 40px;
+    left: 15px;
+    right: 15px;
+    height: 10px;
+    background-color: #1c1917;
+    border-radius: 2px;
+}
+
+.indigo-preview {
+    background-color: #eef2ff;
+    position: relative;
+}
+
+.indigo-preview:after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    height: 10px;
+    background-color: #6366f1;
+    border-radius: 2px;
+}
+
+.indigo-preview:before {
+    content: "";
+    position: absolute;
+    top: 40px;
+    left: 15px;
+    right: 15px;
+    height: 10px;
+    background-color: #312e81;
+    border-radius: 2px;
+}
+
+.azure-preview {
+    background-color: #eff6ff;
+    position: relative;
+}
+
+.azure-preview:after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    height: 10px;
+    background-color: #3b82f6;
+    border-radius: 2px;
+}
+
+.azure-preview:before {
+    content: "";
+    position: absolute;
+    top: 40px;
+    left: 15px;
+    right: 15px;
+    height: 10px;
+    background-color: #1e3a8a;
+    border-radius: 2px;
+}
+
+/* Tablo görünümü önizlemeleri */
+.compact-preview {
+    background-color: var(--tblr-bg-surface);
+    position: relative;
+}
+
+.compact-preview:after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    height: 10px;
+    background-color: var(--tblr-gray-200);
+    border-radius: 2px;
+}
+
+.compact-preview:before {
+    content: "";
+    position: absolute;
+    top: 40px;
+    left: 15px;
+    right: 15px;
+    height: 10px;
+    background-color: var(--tblr-gray-100);
+    border-radius: 2px;
+}
+
+.normal-preview {
+    background-color: var(--tblr-bg-surface);
+    position: relative;
+}
+
+.normal-preview:after {
+    content: "";
+    position: absolute;
+    top: 10px;
+    left: 15px;
+    right: 15px;
+    height: 15px;
+    background-color: var(--tblr-gray-200);
+    border-radius: 2px;
+}
+
+.normal-preview:before {
+    content: "";
+    position: absolute;
+    top: 35px;
+    left: 15px;
+    right: 15px;
+    height: 15px;
+    background-color: var(--tblr-gray-100);
+    border-radius: 2px;
+}
+
+.appearance-option span {
+    font-weight: 500;
+    margin-top: 0.25rem;
+}
+
+/* Form color input stili */
+.form-colorinput {
+    position: relative;
+    display: inline-block;
+    margin: 0;
+    cursor: pointer;
+}
+
+.form-colorinput-input {
+    position: absolute;
+    z-index: -1;
+    opacity: 0;
+}
+
+.form-colorinput-color {
+    display: block;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 3px;
+    color: #fff;
+    border: 1px solid rgba(var(--tblr-body-color-rgb), 0.2);
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    transition: border-color 0.3s, transform 0.2s;
+}
+
+.form-colorinput-input:checked + .form-colorinput-color {
+    border-color: var(--primary-color);
+    transform: scale(1.15);
+    box-shadow: 0 0 0 2px var(--primary-color), 0 3px 6px 0 rgba(0, 0, 0, 0.1);
+}
+
+.form-colorinput-input:focus + .form-colorinput-color {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(var(--primary-color-rgb), 0.4);
+}
+
+.form-colorinput:hover .form-colorinput-color {
+    transform: scale(1.1);
+}
+
+/* Yazı Tipi */
+.font-menu {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--tb-border-color);
+    border-radius: 4px;
+    overflow: hidden;
+    background-color: var(--tblr-bg-surface);
+}
+
+.font-option {
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+    border-bottom: 1px solid var(--tb-border-color);
+    margin: 0;
+    transition: background-color 0.2s;
+    font-weight: normal;
+}
+
+.font-option:last-child {
+    border-bottom: none;
+}
+
+.font-option:hover {
+    background-color: rgba(var(--tblr-primary-rgb), 0.05);
+}
+
+.font-option input {
+    margin-right: 0.5rem !important;
+}
+
+.font-option input:checked + span {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+/* Köşe Yuvarlaklığı */
+.radius-slider-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.radius-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 4px;
+    background-color: var(--tblr-gray-200);
+    border-radius: 2px;
+    outline: none;
+}
+
+.radius-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+.radius-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+.radius-preview {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.25rem 0;
+}
+
+.radius-example {
+    width: 28px;
+    height: 28px;
+    background-color: var(--primary-color);
+    border: 1px solid transparent;
+    transition: transform 0.2s, border-color 0.2s;
+    cursor: pointer;
+}
+
+.radius-0 {
+    border-radius: 0;
+}
+
+.radius-1 {
+    border-radius: 0.25rem;
+}
+
+.radius-2 {
+    border-radius: 0.5rem;
+}
+
+.radius-3 {
+    border-radius: 0.75rem;
+}
+
+.radius-4 {
+    border-radius: 1rem;
+}
+
+.radius-example.active {
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: scale(1.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Alt Aksiyon Alanı */
+.theme-actions {
+    padding: 0.75rem;
+    border-top: 1px solid var(--tb-border-color);
+    background-color: var(--tblr-bg-surface);
+}
+
+.btn-reset {
+    width: 100%;
+    background-color: #f03e3e;
+    color: white;
+    border: none;
+    padding: 0.5rem;
+    border-radius: var(--tb-radius);
+    font-weight: 500;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.btn-reset:hover {
+    background-color: #e03131;
+    transform: translateY(-2px);
+}
+
+.btn-reset:active {
+    background-color: #c92a2a;
+    transform: translateY(0);
+}
+
+.btn-reset i {
+    margin-right: 0.5rem;
+}
+
+/* Koyu Tema Ayarlamaları */
+[data-bs-theme="dark"] .theme-builder {
+    --tb-bg-subtle: var(--tblr-gray-800);
+}
+
+[data-bs-theme="dark"] .theme-section-header {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Mobil Görünüm */
+@media (max-width: 768px) {
+    .theme-builder {
+        width: 260px;
+    }
+    
+    .appearance-preview {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .appearance-options {
+        flex-wrap: wrap;
+    }
+}
+
+
+/* Card öğeleri için radius ayarlaması */
+.card, .card-body, .card-header, .card-footer {
+    border-radius: var(--tblr-border-radius);
+}
+
+/* Font önizleme stilleri */
+.font-size-preview span {
+    display: inline-block;
+    margin-top: 18px;
+    font-weight: bold;
+}
+
+/* Font boyutu sınıfları */
+.font-size-small {
+    --tblr-font-size: 0.75rem !important;
+    --tblr-body-font-size: 0.75rem !important;
+    --tblr-dropdown-font-size: 0.75rem !important;
+    font-size: 0.75rem !important;
+}
+
+.font-size-normal {
+    --tblr-font-size: 0.875rem !important;
+    --tblr-body-font-size: 0.875rem !important;
+    --tblr-dropdown-font-size: 0.875rem !important;
+    font-size: 0.875rem !important;
+}
+
+.font-size-large {
+    --tblr-font-size: 1rem !important;
+    --tblr-body-font-size: 1rem !important;
+    --tblr-dropdown-font-size: 1rem !important;
+    font-size: 1rem !important;
+}
+
+/* Yeni Eklenen Tonal Paletler Kısmı */
+.gray-tones-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.tone-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+}
+
+.tone-option input {
+    position: absolute;
+    opacity: 0;
+}
+
+.tone-preview {
+    width: 70px;
+    height: 70px;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid var(--tb-border-color);
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    position: relative;
+}
+
+.tone-option input:checked + .tone-preview {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tone-option:hover .tone-preview {
+    transform: translateY(-2px);
+}
+
+.tone-option span {
+    margin-top: 8px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-align: center;
+}
+
+/* Tonal Paletler İçin Önizleme Stilleri */
+.primary-preview {
+    background-color: #f0ead2;
+    position: relative;
+}
+
+.primary-preview:after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 10px;
+    right: 10px;
+    height: 12px;
+    background-color: #946b2d;
+    border-radius: 2px;
+}
+
+.primary-preview:before {
+    content: "";
+    position: absolute;
+    top: 40px;
+    left: 10px;
+    right: 10px;
+    height: 12px;
+    background-color: #482307;
+    border-radius: 2px;
+}
+
+.secondary-preview {
+    background-color: #f6f6f6;
+    position: relative;
+}
+
+.secondary-preview:after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 10px;
+    right: 10px;
+    height: 12px;
+    background-color: #565e64;
+    border-radius: 2px;
+}
+
+.secondary-preview:before {
+    content: "";
+    position: absolute;
+    top: 40px;
+    left: 10px;
+    right: 10px;
+    height: 12px;
+    background-color: #2a2f33;
+    border-radius: 2px;
+}
+
+.tertiary-preview {
+    background-color: #e8f5e9;
+    position: relative;
+}
+
+.tertiary-preview:after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 10px;
+    right: 10px;
+    height: 12px;
+    background-color: #4caf50;
+    border-radius: 2px;
+}
+
+.tertiary-preview:before {
+    content: "";
+    position: absolute;
+    top: 40px;
+    left: 10px;
+    right: 10px;
+    height: 12px;
+    background-color: #1b5e20;
+    border-radius: 2px;
+}
+
+.error-preview {
+    background-color: #f8f9fa;
+    position: relative;
+}
+
+.error-preview:after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 10px;
+    right: 10px;
+    height: 12px;
+    background-color: #adb5bd;
+    border-radius: 2px;
+}
+
+.error-preview:before {
+    content: "";
+    position: absolute;
+    top: 40px;
+    left: 10px;
+    right: 10px;
+    height: 12px;
+    background-color: #212529;
+    border-radius: 2px;
+}
+
+.neutral-preview {
+    background-color: #f5f5f5;
+    position: relative;
+}
+
+.neutral-preview:after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 10px;
+    right: 10px;
+    height: 12px;
+    background-color: #757575;
+    border-radius: 2px;
+}
+
+.neutral-preview:before {
+    content: "";
+    position: absolute;
+    top: 40px;
+    left: 10px;
+    right: 10px;
+    height: 12px;
+    background-color: #212121;
+    border-radius: 2px;
+}
+
+.neutral-variant-preview {
+    background-color: #eceff1;
+    position: relative;
+}
+
+.neutral-variant-preview:after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 10px;
+    right: 10px;
+    height: 12px;
+    background-color: #607d8b;
+    border-radius: 2px;
+}
+
+.neutral-variant-preview:before {
+    content: "";
+    position: absolute;
+    top: 40px;
+    left: 10px;
+    right: 10px;
+    height: 12px;
+    background-color: #263238;
+    border-radius: 2px;
+}
+
+
+/* Tonal Paletler Tema Sınıfları */
+.theme-base-primary {
+    --tblr-gray-50: #fdf8ef;
+    --tblr-gray-100: #f0ead2;
+    --tblr-gray-200: #e6d9b8;
+    --tblr-gray-300: #d2b48c;
+    --tblr-gray-400: #c3a06c;
+    --tblr-gray-500: #b08d57;
+    --tblr-gray-600: #946b2d;
+    --tblr-gray-700: #7c5520;
+    --tblr-gray-800: #634212;
+    --tblr-gray-900: #482307;
+}
+
+.theme-base-secondary {
+    --tblr-gray-50: #f8f9fa;
+    --tblr-gray-100: #f1f3f5;
+    --tblr-gray-200: #e9ecef;
+    --tblr-gray-300: #dee2e6;
+    --tblr-gray-400: #ced4da;
+    --tblr-gray-500: #adb5bd;
+    --tblr-gray-600: #6c757d;
+    --tblr-gray-700: #495057;
+    --tblr-gray-800: #343a40;
+    --tblr-gray-900: #212529;
+}
+
+.theme-base-tertiary {
+    --tblr-gray-50: #f1f8e9;
+    --tblr-gray-100: #dcedc8;
+    --tblr-gray-200: #c5e1a5;
+    --tblr-gray-300: #aed581;
+    --tblr-gray-400: #9ccc65;
+    --tblr-gray-500: #8bc34a;
+    --tblr-gray-600: #7cb342;
+    --tblr-gray-700: #689f38;
+    --tblr-gray-800: #558b2f;
+    --tblr-gray-900: #33691e;
+}
+
+.theme-base-error {
+    --tblr-gray-50: #f8f9fa;
+    --tblr-gray-100: #f1f3f5;
+    --tblr-gray-200: #e9ecef;
+    --tblr-gray-300: #dee2e6;
+    --tblr-gray-400: #ced4da;
+    --tblr-gray-500: #adb5bd;
+    --tblr-gray-600: #6c757d;
+    --tblr-gray-700: #495057;
+    --tblr-gray-800: #343a40;
+    --tblr-gray-900: #212529;
+}
+
+.theme-base-neutral-variant {
+    --tblr-gray-50: #eceff1;
+    --tblr-gray-100: #cfd8dc;
+    --tblr-gray-200: #b0bec5;
+    --tblr-gray-300: #90a4ae;
+    --tblr-gray-400: #78909c;
+    --tblr-gray-500: #607d8b;
+    --tblr-gray-600: #546e7a;
+    --tblr-gray-700: #455a64;
+    --tblr-gray-800: #37474f;
+    --tblr-gray-900: #263238;
+}
+
+/* Tonal Paletler Tema Sınıfları */
+[data-bs-theme-base=slate], .theme-base-mavi-gri {
+    --tblr-gray-50: #f8fafc;
+    --tblr-gray-100: #f1f5f9;
+    --tblr-gray-200: #e2e8f0;
+    --tblr-gray-300: #cbd5e1;
+    --tblr-gray-400: #94a3b8;
+    --tblr-gray-500: #64748b;
+    --tblr-gray-600: #475569;
+    --tblr-gray-700: #334155;
+    --tblr-gray-800: #1e293b;
+    --tblr-gray-900: #0f172a;
+    --tblr-gray-950: #020617;
+}
+
+[data-bs-theme-base=zinc], .theme-base-cinko-gri {
+    --tblr-gray-50: #fafafa;
+    --tblr-gray-100: #f4f4f5;
+    --tblr-gray-200: #e4e4e7;
+    --tblr-gray-300: #d4d4d8;
+    --tblr-gray-400: #a1a1aa;
+    --tblr-gray-500: #71717a;
+    --tblr-gray-600: #52525b;
+    --tblr-gray-700: #3f3f46;
+    --tblr-gray-800: #27272a;
+    --tblr-gray-900: #18181b;
+    --tblr-gray-950: #09090b;
+}
+
+[data-bs-theme-base=stone], .theme-base-tas-rengi {
+    --tblr-gray-50: #fafaf9;
+    --tblr-gray-100: #f5f5f4;
+    --tblr-gray-200: #e7e5e4;
+    --tblr-gray-300: #d6d3d1;
+    --tblr-gray-400: #a8a29e;
+    --tblr-gray-500: #78716c;
+    --tblr-gray-600: #57534e;
+    --tblr-gray-700: #44403c;
+    --tblr-gray-800: #292524;
+    --tblr-gray-900: #1c1917;
+    --tblr-gray-950: #0c0a09;
+}
+
+/* Tonal Paletler Önizleme Stilleri */
+.mavi-gri-preview {
+    background-color: #f8fafc;
+    position: relative;
+}
+
+.mavi-gri-preview:after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 10px;
+    right: 10px;
+    height: 12px;
+    background-color: #475569;
+    border-radius: 2px;
+}
+
+.mavi-gri-preview:before {
+    content: "";
+    position: absolute;
+    top: 40px;
+    left: 10px;
+    right: 10px;
+    height: 12px;
+    background-color: #0f172a;
+    border-radius: 2px;
+}
+
+.cinko-gri-preview {
+    background-color: #fafafa;
+    position: relative;
+}
+
+.cinko-gri-preview:after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 10px;
+    right: 10px;
+    height: 12px;
+    background-color: #52525b;
+    border-radius: 2px;
+}
+
+.cinko-gri-preview:before {
+    content: "";
+    position: absolute;
+    top: 40px;
+    left: 10px;
+    right: 10px;
+    height: 12px;
+    background-color: #18181b;
+    border-radius: 2px;
+}
+
+.tas-rengi-preview {
+    background-color: #fafaf9;
+    position: relative;
+}
+
+.tas-rengi-preview:after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 10px;
+    right: 10px;
+    height: 12px;
+    background-color: #57534e;
+    border-radius: 2px;
+}
+
+.tas-rengi-preview:before {
+    content: "";
+    position: absolute;
+    top: 40px;
+    left: 10px;
+    right: 10px;
+    height: 12px;
+    background-color: #1c1917;
+    border-radius: 2px;
+}

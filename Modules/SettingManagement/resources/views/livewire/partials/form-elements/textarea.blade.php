@@ -31,9 +31,9 @@
                 <div class="form-group w-100">
                     <textarea 
                         wire:model="values.{{ $settingId }}" 
-                        class="form-control w-100" 
+                        class="form-control" 
+                        placeholder="{{ $element['properties']['placeholder'] ?? 'Uzun metin giriniz' }}"
                         rows="{{ $element['properties']['rows'] ?? 3 }}"
-                        placeholder="{{ $element['properties']['placeholder'] ?? 'Değeri buraya giriniz...' }}"
                     ></textarea>
                     
                     @if(isset($element['properties']['help_text']) && !empty($element['properties']['help_text']))

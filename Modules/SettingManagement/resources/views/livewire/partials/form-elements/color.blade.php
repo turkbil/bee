@@ -29,19 +29,13 @@
             </div>
             <div class="card-body">
                 <div class="form-group w-100">
-                    <div class="row g-2 align-items-center">
-                        <div class="col-auto">
-                            <input type="color" wire:model="values.{{ $settingId }}"
-                                class="form-control form-control-color" title="Renk seçin">
-                        </div>
-                        <div class="col-auto">
-                            <span class="form-colorinput" style="--tblr-badge-color: {{ $values[$settingId] ?? '#ffffff' }}">
-                                <span class="form-colorinput-color bg-{{ $values[$settingId] ?? '#ffffff' }}"></span>
-                            </span>
-                        </div>
-                        <div class="col">
-                            <span class="text-muted">{{ $values[$settingId] ?? '#ffffff' }}</span>
-                        </div>
+                    <div class="mb-2">
+                        <input type="color" 
+                            wire:model="values.{{ $settingId }}" 
+                            class="form-control form-control-color" 
+                            value="{{ $values[$settingId] ?? '#066fd1' }}" 
+                            title="Renginizi seçin"
+                        />                        
                     </div>
                     
                     @if(isset($element['properties']['help_text']) && !empty($element['properties']['help_text']))

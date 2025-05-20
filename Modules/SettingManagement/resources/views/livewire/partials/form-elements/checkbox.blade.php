@@ -29,12 +29,15 @@
             </div>
             <div class="card-body">
                 <div class="form-group w-100">
-                    <div class="form-check form-switch">
-                        <input type="checkbox" id="value-{{ $settingId }}" class="form-check-input" 
+                    <div class="form-check">
+                        <input type="checkbox" 
+                            id="value-{{ $settingId }}" 
+                            class="form-check-input" 
                             wire:model="values.{{ $settingId }}"
-                            @if(isset($values[$settingId]) && $values[$settingId] == 1) checked @endif>
+                            value="1"
+                        >
                         <label class="form-check-label" for="value-{{ $settingId }}">
-                            {{ isset($values[$settingId]) && $values[$settingId] == 1 ? 'Evet' : 'Hayır' }}
+                            {{ $element['properties']['checkbox_label'] ?? ($element['properties']['label'] ?? 'Onay') }}
                         </label>
                     </div>
                     

@@ -29,12 +29,18 @@
             </div>
             <div class="card-body">
                 <div class="form-group w-100">
-                    <div class="form-check form-switch">
-                        <input type="checkbox" id="switch-{{ $settingId }}" class="form-check-input" 
+                    <div class="form-check form-switch form-switch-lg">
+                        <input type="checkbox" 
+                            id="switch-{{ $settingId }}" 
+                            class="form-check-input" 
                             wire:model="values.{{ $settingId }}"
-                            @if(isset($values[$settingId]) && $values[$settingId] == 1) checked @endif>
+                            value="1"
+                        >
                         <label class="form-check-label" for="switch-{{ $settingId }}">
-                            {{ isset($values[$settingId]) && $values[$settingId] == 1 ? 'Açık' : 'Kapalı' }}
+                            <span x-data="{ isChecked: {{ isset($values[$settingId]) && $values[$settingId] == 1 ? 'true' : 'false' }} }" x-init="$watch('values.{{ $settingId }}', value => isChecked = value == 1)">
+                                <span x-show="isChecked" class="text-success">Açık</span>
+                                <span x-show="!isChecked" class="text-muted">Kapalı</span>
+                            </span>
                         </label>
                     </div>
                     

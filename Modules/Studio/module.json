@@ -1,9 +1,0 @@
-{
-    "name": "Studio",
-    "alias": "studio",
-    "description": "GrapesJS tabanlı görsel HTML düzenleyici",
-    "keywords": ["grapesjs", "editor", "studio", "html"],
-    "priority": 0,
-    "providers": ["Modules\\Studio\\Providers\\StudioServiceProvider"],
-    "files": []
-}

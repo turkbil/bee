@@ -1,4 +1,0 @@
-    @widgetstyles
-    @widgetscripts
-</body>
-</html>

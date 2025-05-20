@@ -32,8 +32,19 @@
                     <select wire:model="values.{{ $settingId }}" class="form-select w-100">
                         <option value="">Seçiniz</option>
                         @if(is_array($setting->options))
-                            @foreach($setting->options as $key => $label)
-                                <option value="{{ $key }}">{{ is_string($label) ? $label : json_encode($label) }}</option>
+                            @foreach($setting->options as $key => $option)
+                                @php
+                                    $optionLabel = '';
+                                    if (is_string($option)) {
+                                        $optionLabel = $option;
+                                    } elseif (is_array($option)) {
+                                        $optionLabel = $option['label'] ?? $key;
+                                    } elseif (is_object($option)) {
+                                        $optionData = json_decode(json_encode($option), true);
+                                        $optionLabel = $optionData['label'] ?? $key;
+                                    }
+                                @endphp
+                                <option value="{{ $key }}">{{ $optionLabel }}</option>
                             @endforeach
                         @endif
                     </select>

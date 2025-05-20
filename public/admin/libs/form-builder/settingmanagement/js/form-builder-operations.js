@@ -48,10 +48,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
     if (!propTemplate) {
       window.propertiesPanel.innerHTML = `
-                <div class="alert alert-warning">
-                    Bu element tipi için özellik paneli henüz eklenmemiş.
-                </div>
-            `;
+              <div class="alert alert-warning">
+                  Bu element tipi için özellik paneli henüz eklenmemiş.
+              </div>
+          `;
       return;
     }
 
@@ -72,7 +72,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Row için sütun sayısını kontrol et
     if (type === "row" && properties.columns) {
-      templateData["columns" + properties.columns.length] = true;
+      // Bu kısım değişecek
+      // Var olan sütun sayısına göre doğru seçeneği işaretleyelim
+      const columnsCount = properties.columns.length;
+      templateData["columns2"] = (columnsCount === 2);
+      templateData["columns3"] = (columnsCount === 3);
+      templateData["columns4"] = (columnsCount === 4);
     }
     
     // Heading size için kontrol et
@@ -112,7 +117,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Şablonu işle
     window.propertiesPanel.innerHTML = window.renderTemplate(propTemplate, templateData);
-  
+
     // Alan adı (System Key) alanını disabled olarak ayarla ve çift tıklama olayı ekle
     const nameInput = window.propertiesPanel.querySelector('input[name="name"]');
     if (nameInput) {
@@ -138,14 +143,64 @@ document.addEventListener("DOMContentLoaded", function() {
         window.updateElementProperty(input);
       });
     });
-  
+
+    // Row için özel yönetim - DROPDOWN SEÇİLİ GÖSTERİMİ İÇİN EK KOD
+    if (type === "row") {
+      // Sütun sayısını değiştirme
+      const columnCountSelect = window.propertiesPanel.querySelector('[name="column-count"]');
+      if (columnCountSelect) {
+        // Mevcut sütun sayısına göre dropdown'daki doğru değeri seç
+        if (properties.columns) {
+          const columnsCount = properties.columns.length;
+          // Dropdown'daki uygun seçeneği seç
+          Array.from(columnCountSelect.options).forEach(option => {
+            option.selected = parseInt(option.value) === columnsCount;
+          });
+        }
+        
+        columnCountSelect.addEventListener("change", function () {
+          window.updateRowColumns(parseInt(this.value));
+        });
+      }
+
+      // Sütun genişliklerini göster
+      const columnWidthsContainer = document.getElementById("column-widths-container");
+      if (columnWidthsContainer && properties.columns) {
+        columnWidthsContainer.innerHTML = "";
+
+        properties.columns.forEach((column, index) => {
+          const rowElement = document.createElement("div");
+          rowElement.className = "input-group mb-2 column-width-row";
+          rowElement.innerHTML = `
+                    <span class="input-group-text">Sütun ${index + 1}</span>
+                    <select class="form-select" name="column-width-${index}">
+                        <option value="2" ${column.width == 2 ? "selected" : ""}>2/12</option>
+                        <option value="3" ${column.width == 3 ? "selected" : ""}>3/12</option>
+                        <option value="4" ${column.width == 4 ? "selected" : ""}>4/12</option>
+                        <option value="6" ${column.width == 6 ? "selected" : ""}>6/12</option>
+                        <option value="8" ${column.width == 8 ? "selected" : ""}>8/12</option>
+                        <option value="10" ${column.width == 10 ? "selected" : ""}>10/12</option>
+                    </select>
+                `;
+
+          columnWidthsContainer.appendChild(rowElement);
+
+          // Sütun genişliği değişikliğini dinle
+          const select = rowElement.querySelector("select");
+          select.addEventListener("change", function () {
+            window.updateColumnWidth(index, parseInt(this.value));
+          });
+        });
+      }
+    }
+    
     // Select için özel yönetim
     if (type === "select" || type === "radio") {
       // Seçenekleri ekle
       const optionsContainer = document.getElementById("options-container");
       if (optionsContainer) {
         optionsContainer.innerHTML = "";
-  
+
         if (properties.options && properties.options.length) {
           properties.options.forEach((option, index) => {
             const optionRow = document.createElement("div");
@@ -162,23 +217,23 @@ document.addEventListener("DOMContentLoaded", function() {
                     <i class="fas fa-times"></i>
                 </button>
             `;
-  
+
             optionsContainer.appendChild(optionRow);
-  
+
             // Değer değişikliklerini dinle
             const inputs = optionRow.querySelectorAll("input");
             inputs.forEach((input) => {
               input.addEventListener("change", function () {
                 window.updateOptionValue(index, input);
               });
-  
+
               input.addEventListener("keyup", function () {
                 window.updateOptionValue(index, input);
               });
             });
           });
         }
-  
+
         // Var olan seçenek silme butonlarını etkinleştir
         const removeOptionBtns = optionsContainer.querySelectorAll(".remove-option");
         removeOptionBtns.forEach((btn) => {
@@ -190,7 +245,7 @@ document.addEventListener("DOMContentLoaded", function() {
           });
         });
       }
-  
+
       // Seçenek Ekle butonu
       const addOptionBtn = document.getElementById("add-option");
       if (addOptionBtn) {
@@ -262,7 +317,7 @@ document.addEventListener("DOMContentLoaded", function() {
       const tabsContainer = document.getElementById("tabs-container");
       if (tabsContainer) {
         tabsContainer.innerHTML = "";
-  
+
         if (properties.tabs && properties.tabs.length) {
           properties.tabs.forEach((tab, index) => {
             const tabRow = document.createElement("div");
@@ -299,7 +354,7 @@ document.addEventListener("DOMContentLoaded", function() {
           });
         }
       }
-  
+
       // Sekme silme butonlarını etkinleştir
       const removeTabBtns = document.querySelectorAll(".remove-tab");
       removeTabBtns.forEach((btn) => {
@@ -310,7 +365,7 @@ document.addEventListener("DOMContentLoaded", function() {
           window.updatePropertiesPanel();
         });
       });
-  
+
       // Sekme Ekle butonu
       const addTabBtn = document.getElementById("add-tab");
       if (addTabBtn) {
@@ -324,65 +379,6 @@ document.addEventListener("DOMContentLoaded", function() {
           });
           window.updateElementContent();
           window.updatePropertiesPanel();
-        });
-      }
-    }
-  
-    // Row için özel yönetim
-    if (type === "row") {
-      // Sütun sayısını değiştirme
-      const columnCountSelect = window.propertiesPanel.querySelector(
-        '[name="column-count"]'
-      );
-      if (columnCountSelect) {
-        columnCountSelect.addEventListener("change", function () {
-          window.updateRowColumns(parseInt(this.value));
-        });
-      }
-  
-      // Sütun genişliklerini göster
-      const columnWidthsContainer = document.getElementById(
-        "column-widths-container"
-      );
-      if (columnWidthsContainer && properties.columns) {
-        columnWidthsContainer.innerHTML = "";
-  
-        properties.columns.forEach((column, index) => {
-          const rowElement = document.createElement("div");
-          rowElement.className = "input-group mb-2 column-width-row";
-          rowElement.innerHTML = `
-                    <span class="input-group-text">Sütun ${
-                      column.index
-                    }</span>
-                    <select class="form-select" name="column-width-${index}">
-                        <option value="2" ${
-                          column.width == 2 ? "selected" : ""
-                        }>2/12</option>
-                        <option value="3" ${
-                          column.width == 3 ? "selected" : ""
-                        }>3/12</option>
-                        <option value="4" ${
-                          column.width == 4 ? "selected" : ""
-                        }>4/12</option>
-                        <option value="6" ${
-                          column.width == 6 ? "selected" : ""
-                        }>6/12</option>
-                        <option value="8" ${
-                          column.width == 8 ? "selected" : ""
-                        }>8/12</option>
-                        <option value="10" ${
-                          column.width == 10 ? "selected" : ""
-                        }>10/12</option>
-                    </select>
-                `;
-  
-          columnWidthsContainer.appendChild(rowElement);
-  
-          // Sütun genişliği değişikliğini dinle
-          const select = rowElement.querySelector("select");
-          select.addEventListener("change", function () {
-            window.updateColumnWidth(index, parseInt(this.value));
-          });
         });
       }
     }

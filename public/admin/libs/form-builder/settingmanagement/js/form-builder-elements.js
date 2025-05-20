@@ -498,16 +498,21 @@ document.addEventListener("DOMContentLoaded", function() {
                     const labelSlug = window.slugifyTurkish(formElement.properties.label || '');
                     
                     // Alan adını oluştur
-                    const newName = groupPrefix + '_' + labelSlug;
+                    const newBaseName = groupPrefix + '_' + labelSlug;
+                    
+                    // Benzersiz bir isim oluştur
+                    const uniqueName = typeof window.makeNameUnique === 'function' 
+                      ? window.makeNameUnique(newBaseName)
+                      : newBaseName;
                     
                     // Özelliği güncelle
-                    formElement.properties.name = newName;
+                    formElement.properties.name = uniqueName;
                     
                     // Eğer element şu anda seçili ise özellik panelini güncelle
                     if (window.selectedElement === formElement) {
                       const nameInput = window.propertiesPanel.querySelector('input[name="name"]');
                       if (nameInput) {
-                        nameInput.value = newName;
+                        nameInput.value = uniqueName;
                       }
                     }
                   }

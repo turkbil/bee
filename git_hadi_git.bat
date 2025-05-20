@@ -2,7 +2,7 @@
 chcp 65001 > nul
 title GIT ZORLA YÜKLEME ARACI
 
-:: Renkli çıktı için
+:: Renkli çıktı
 color 0A
 
 echo === GIT ZORLA YÜKLEME ARACI (turkbil/bee) ===
@@ -21,7 +21,12 @@ if not exist ".git" (
   goto :sonlandir
 )
 
-:: Git durumunu kontrol et
+:: Önceki commit'lerde yer almış ama artık .gitignore'da olan klasörleri kaldır
+echo.
+echo --- ESKİ COMMIT EDİLEN DOSYALAR TEMİZLENİYOR ---
+git rm -r --cached node_modules vendor storage/logs storage/pail storage/framework storage/app public/storage > nul 2>&1
+
+:: Git durumunu göster
 echo.
 echo --- GIT DURUMU ---
 git status
@@ -31,7 +36,7 @@ echo.
 echo --- DEĞİŞİKLİKLERİ EKLE ---
 git add .
 
-:: Değişiklikleri kontrol et
+:: Değişiklik var mı kontrol et
 git diff --cached --quiet
 if %ERRORLEVEL% EQU 0 (
   echo.
@@ -39,7 +44,7 @@ if %ERRORLEVEL% EQU 0 (
   goto :sonlandir
 )
 
-:: turkbil/bee reposunu ayarla
+:: Uzak repo kontrolü
 echo.
 echo --- UZAK REPO KONTROLÜ ---
 git remote -v | findstr "origin" > nul
@@ -52,14 +57,14 @@ if %ERRORLEVEL% NEQ 0 (
   echo Uzak repo turkbil/bee olarak güncellendi.
 )
 
-:: Commit
+:: Commit işlemi
 echo.
 echo --- COMMIT ---
 for /F "tokens=2,3,4 delims=/ " %%a in ('date /t') do set tarih=%%c-%%a-%%b
 for /F "tokens=1,2 delims=: " %%a in ('time /t') do set saat=%%a:%%b
-git commit -m "Otomatik yükleme - %tarih% %saat%"
+git commit -m "Otomatik temiz yükleme - %tarih% %saat%"
 
-:: Branch ismini al
+:: Aktif branch ismini al
 for /f "tokens=*" %%a in ('git rev-parse --abbrev-ref HEAD') do set branch=%%a
 
 :: Force push
@@ -78,7 +83,7 @@ if %ERRORLEVEL% EQU 0 (
   echo HATA: GitHub'a yükleme sırasında bir sorun oluştu.
   echo Tekrar deneniyor...
   git push -f origin %branch%
-  
+
   if %ERRORLEVEL% EQU 0 (
     color 0A
     echo GitHub'a yükleme başarıyla tamamlandı!

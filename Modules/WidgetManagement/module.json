@@ -1,0 +1,11 @@
+{
+    "name": "WidgetManagement",
+    "alias": "widgetmanagement",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\WidgetManagement\\Providers\\WidgetManagementServiceProvider"
+    ],
+    "files": []
+}

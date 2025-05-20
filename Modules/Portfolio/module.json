@@ -1,0 +1,10 @@
+{
+    "name": "Portfolio",
+    "alias": "portfolio",
+    "description": "A module for managing portfolios",
+    "keywords": [],
+    "priority": 0,
+    "active": true,
+    "providers": ["Modules\\Portfolio\\Providers\\PortfolioServiceProvider"],
+    "files": []
+}

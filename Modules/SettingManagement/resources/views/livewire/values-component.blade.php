@@ -14,49 +14,29 @@
     </div>
     
     <div class="card-body">
-        <div class="alert alert-info">
-            <div class="d-flex">
-                <div>
-                    <i class="fas fa-info-circle me-2" style="margin-top: 3px"></i>
-                </div>
-                <div>
-                    <h4 class="alert-title">Ayarları Toplu Düzenleme</h4>
-                    <div class="text-muted">
-                        Bu sayfa, <strong>{{ $group->name }}</strong> grubu için tüm ayarları tek bir sayfa üzerinden 
-                        değiştirmenizi sağlar. Değer değişikliklerini kaydetmek için sayfanın altındaki 
-                        "Kaydet" düğmesini kullanın.
-                    </div>
-                </div>
-            </div>
-        </div>
-        
         @if(isset($group->layout) && !empty($group->layout) && is_array($group->layout))
-            <div class="form-renderer">
-                <div class="form-container">
-                    @if(isset($group->layout['title']))
-                        <h3 class="form-title mb-4">{{ $group->layout['title'] }}</h3>
-                    @endif
+            @if(isset($group->layout['title']))
+                <h3 class="form-title mb-4">{{ $group->layout['title'] }}</h3>
+            @endif
 
-                    @if(isset($group->layout['elements']) && is_array($group->layout['elements']))
-                        @foreach($group->layout['elements'] as $element)
-                            @include('settingmanagement::livewire.partials.form-elements.' . $element['type'], [
-                                'element' => $element,
-                                'values' => $values,
-                                'settings' => $settings,
-                                'temporaryImages' => $temporaryImages ?? [],
-                                'temporaryMultipleImages' => $temporaryMultipleImages ?? [],
-                                'multipleImagesArrays' => $multipleImagesArrays ?? [],
-                                'originalValues' => $originalValues ?? []
-                            ])
-                        @endforeach
-                    @else
-                        <div class="alert alert-warning">
-                            <i class="fas fa-exclamation-triangle me-2"></i>
-                            Form yapısı bulunamadı veya geçersiz. Lütfen Form Builder'ı kullanarak form yapısını düzenleyin.
-                        </div>
-                    @endif
+            @if(isset($group->layout['elements']) && is_array($group->layout['elements']))
+                @foreach($group->layout['elements'] as $element)
+                    @include('settingmanagement::livewire.partials.form-elements.' . $element['type'], [
+                        'element' => $element,
+                        'values' => $values,
+                        'settings' => $settings,
+                        'temporaryImages' => $temporaryImages ?? [],
+                        'temporaryMultipleImages' => $temporaryMultipleImages ?? [],
+                        'multipleImagesArrays' => $multipleImagesArrays ?? [],
+                        'originalValues' => $originalValues ?? []
+                    ])
+                @endforeach
+            @else
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Form yapısı bulunamadı veya geçersiz. Lütfen Form Builder'ı kullanarak form yapısını düzenleyin.
                 </div>
-            </div>
+            @endif
         @else
             <div class="row g-3">
                 <!-- Responsive form elemanları - mobilde tam genişlik, PC'de yarım genişlik -->
@@ -66,55 +46,7 @@
                         <div class="card-header">
                             <div class="d-flex align-items-center justify-content-between">
                                 <h3 class="card-title d-flex align-items-center">
-                                    @switch($setting->type)
-                                        @case('text')
-                                            <i class="fas fa-font me-2 text-primary"></i>
-                                            @break
-                                        @case('textarea')
-                                            <i class="fas fa-align-left me-2 text-primary"></i>
-                                            @break
-                                        @case('number')
-                                            <i class="fas fa-hashtag me-2 text-primary"></i>
-                                            @break
-                                        @case('select')
-                                            <i class="fas fa-list me-2 text-primary"></i>
-                                            @break
-                                        @case('checkbox')
-                                            <i class="fas fa-check-square me-2 text-primary"></i>
-                                            @break
-                                        @case('file')
-                                            <i class="fas fa-file me-2 text-primary"></i>
-                                            @break
-                                        @case('image')
-                                            <i class="fas fa-image me-2 text-primary"></i>
-                                            @break
-                                        @case('image_multiple')
-                                            <i class="fas fa-images me-2 text-primary"></i>
-                                            @break
-                                        @case('color')
-                                            <i class="fas fa-palette me-2 text-primary"></i>
-                                            @break
-                                        @case('date')
-                                            <i class="fas fa-calendar me-2 text-primary"></i>
-                                            @break
-                                        @case('email')
-                                            <i class="fas fa-envelope me-2 text-primary"></i>
-                                            @break
-                                        @case('password')
-                                            <i class="fas fa-key me-2 text-primary"></i>
-                                            @break
-                                        @case('tel')
-                                            <i class="fas fa-phone me-2 text-primary"></i>
-                                            @break
-                                        @case('url')
-                                            <i class="fas fa-globe me-2 text-primary"></i>
-                                            @break
-                                        @case('time')
-                                            <i class="fas fa-clock me-2 text-primary"></i>
-                                            @break
-                                        @default
-                                            <i class="fas fa-cog me-2 text-primary"></i>
-                                    @endswitch
+                                    <i class="fa-regular fa-comment fa-flip-horizontal me-2 text-primary"></i>
                                     {{ $setting->label }}
                                 </h3>
                             </div>

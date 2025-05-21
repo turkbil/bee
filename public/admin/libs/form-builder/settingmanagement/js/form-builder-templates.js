@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function() {
       select: `
               <div class="mb-3 col-12 col-md-{width}">
                   <label class="form-label">{label}</label>
-                  <select class="form-select">
+                  <select class="form-select" onchange="window.updateSelectState(this)">
                       <option value="" disabled>{placeholder}</option>
                       <!-- Seçenekler JavaScript tarafından eklenecek -->
                   </select>
@@ -43,8 +43,8 @@ document.addEventListener("DOMContentLoaded", function() {
       checkbox: `
               <div class="mb-3 col-12 col-md-{width}">
                   <label class="form-check">
-                      <input class="form-check-input" type="checkbox" {default_value}>
-                      <span class="form-check-label">{label}</span>
+                      <input class="form-check-input" type="checkbox" {default_value} onchange="window.updateCheckboxState(this)">
+                      <span class="form-check-label">{checkbox_label}</span>
                   </label>
                   <div class="form-text text-muted">{help_text}</div>
               </div>
@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", function() {
       radio: `
               <div class="mb-3 col-12 col-md-{width}">
                   <label class="form-label">{label}</label>
-                  <div class="radio-options">
+                  <div class="radio-options" data-radio-group="{name}">
                       <!-- Seçenekler JavaScript tarafından eklenecek -->
                   </div>
                   <div class="form-text text-muted">{help_text}</div>
@@ -61,8 +61,8 @@ document.addEventListener("DOMContentLoaded", function() {
       switch: `
               <div class="mb-3 col-12 col-md-{width}">
                   <label class="form-check form-switch">
-                      <input class="form-check-input" type="checkbox" {default_value}>
-                      <span class="form-check-label">{label}</span>
+                      <input class="form-check-input" type="checkbox" {default_value} onchange="window.updateSwitchState(this)">
+                      <span class="form-check-label">{switch_label}</span>
                   </label>
                   <div class="form-text text-muted">{help_text}</div>
               </div>
@@ -735,6 +735,14 @@ document.addEventListener("DOMContentLoaded", function() {
                           <div class="section-title">Veri Özellikleri</div>
                           <div class="section-content p-3">
                               <div class="mb-3 col-12 col-md-{width}">
+                                  <label class="form-label">Onay Kutusu Etiketi</label>
+                                  <input type="text" class="form-control" name="checkbox_label" value="{checkbox_label}">
+                              </div>
+                              <div class="mb-3 col-12 col-md-{width}">
+                                  <label class="form-label">Metin Değeri</label>
+                                  <input type="text" class="form-control" name="default_value_text" value="{default_value_text}" placeholder="Seçildiğinde gösterilecek değer">
+                              </div>
+                              <div class="mb-3 col-12 col-md-{width}">
                                   <label class="form-label">Yardım Metni</label>
                                   <input type="text" class="form-control" name="help_text" value="{help_text}">
                               </div>
@@ -745,7 +753,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                       <label class="form-check-label" for="default_value_true">İşaretli</label>
                                   </div>
                                   <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="radio" name="default_value" id="default_value_false" value="false" {!default_value}>
+                                      <input class="form-check-input" type="radio" name="default_value" id="default_value_false" value="false" checked {!default_value}>
                                       <label class="form-check-label" for="default_value_false">İşaretsiz</label>
                                   </div>
                               </div>
@@ -834,13 +842,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                       <i class="fas fa-plus me-1"></i> Seçenek Ekle
                                   </button>
                               </div>
-                              <div class="mb-3 col-12 col-md-{width}">
-                                  <label class="form-label">Varsayılan Değer</label>
-                                  <select class="form-select" name="default_value">
-                                      <option value="">Varsayılan değer seçin</option>
-                                      <!-- Seçenekler JavaScript ile doldurulacak -->
-                                  </select>
-                              </div>
+                              <!-- Varsayılan değer seçimi seçeneklerin başındaki radio butonları ile yapılacak -->
                           </div>
                       </div>
                       
@@ -913,6 +915,16 @@ document.addEventListener("DOMContentLoaded", function() {
                       <div class="property-section">
                           <div class="section-title">Veri Özellikleri</div>
                           <div class="section-content p-3">
+
+                              <div class="mb-3 col-12 col-md-{width}">
+                                  <label class="form-label">Aktif Etiket</label>
+                                  <input type="text" class="form-control" name="active_label" value="{active_label}" placeholder="Aktif durumda gösterilecek etiket">
+                              </div>
+                              <div class="mb-3 col-12 col-md-{width}">
+                                  <label class="form-label">Pasif Etiket</label>
+                                  <input type="text" class="form-control" name="inactive_label" value="{inactive_label}" placeholder="Pasif durumda gösterilecek etiket">
+                              </div>
+
                               <div class="mb-3 col-12 col-md-{width}">
                                   <label class="form-label">Yardım Metni</label>
                                   <input type="text" class="form-control" name="help_text" value="{help_text}">
@@ -924,7 +936,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                       <label class="form-check-label" for="default_value_true">Açık</label>
                                   </div>
                                   <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="radio" name="default_value" id="default_value_false" value="false" {!default_value}>
+                                      <input class="form-check-input" type="radio" name="default_value" id="default_value_false" value="false" checked {!default_value}>
                                       <label class="form-check-label" for="default_value_false">Kapalı</label>
                                   </div>
                               </div>

@@ -376,7 +376,6 @@
                 
                 toastContainer.appendChild(toast);
                 
-                // 3 saniye sonra otomatik kapat
                 setTimeout(() => {
                     toast.classList.remove('show');
                     setTimeout(() => {
@@ -384,7 +383,6 @@
                     }, 300);
                 }, 3000);
                 
-                // Kapatma düğmesi
                 const closeBtn = toast.querySelector('.btn-close');
                 if (closeBtn) {
                     closeBtn.addEventListener('click', function() {
@@ -395,7 +393,7 @@
                     });
                 }
             };
-        }, 500); // Form Builder JS'nin yüklenmesi için 500ms bekle
+        }, 500); 
     });
 </script>
 @endpush

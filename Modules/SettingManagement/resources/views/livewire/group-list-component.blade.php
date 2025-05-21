@@ -10,9 +10,6 @@
                     <input type="text" wire:model.live.debounce.300ms="search" class="form-control"
                         placeholder="Grup ara...">
                 </div>
-                <a href="{{ route('admin.settingmanagement.group.manage') }}" class="btn btn-primary">
-                    <i class="fas fa-plus me-2"></i>Yeni Grup Ekle
-                </a>
             </div>
         </div>
 
@@ -44,20 +41,26 @@
                                                 <i class="fas fa-ellipsis-v"></i>
                                             </a>
                                             <div class="dropdown-menu dropdown-menu-end">
+                                                @if(auth()->user()->hasRole('root'))
                                                 <a href="{{ route('admin.settingmanagement.group.manage', $group->id) }}"
                                                     class="dropdown-item">
                                                     <i class="fas fa-edit me-2"></i> Düzenle
                                                 </a>
+                                                @endif
+                                                @if(auth()->user()->hasRole('root'))
                                                 <a href="{{ route('admin.settingmanagement.group.manage', ['parent_id' => $group->id]) }}"
                                                     class="dropdown-item">
                                                     <i class="fas fa-plus me-2"></i> Alt Grup Ekle
                                                 </a>
+                                                @endif
+                                                @if(auth()->user()->hasRole('root'))
                                                 <button wire:click="toggleActive({{ $group->id }})"
                                                     class="dropdown-item">
                                                     <i class="fas fa-{{ $group->is_active ? 'ban' : 'check' }} me-2"></i>
                                                     {{ $group->is_active ? 'Pasif Yap' : 'Aktif Yap' }}
                                                 </button>
-                                                @if($group->children->isEmpty())
+                                                @endif
+                                                @if($group->children->isEmpty() && auth()->user()->hasRole('root'))
                                                 <button wire:click="delete({{ $group->id }})"
                                                     wire:confirm="Bu grubu silmek istediğinize emin misiniz?"
                                                     class="dropdown-item text-danger">
@@ -92,9 +95,6 @@
                                                     @if(!$child->is_active)
                                                     <span class="badge bg-danger text-white ms-2">Pasif</span>
                                                     @endif
-                                                    @if($child->prefix)
-                                                    <span class="badge bg-primary text-white ms-2" title="Prefix">{{ $child->prefix }}</span>
-                                                    @endif
                                                 </div>
                                                 @if($child->description)
                                                 <div class="text-muted small">{{ Str::limit($child->description, 40) }}
@@ -110,20 +110,24 @@
                                                         <i class="fas fa-ellipsis-v"></i>
                                                     </a>
                                                     <div class="dropdown-menu dropdown-menu-end">
-                                                        <a href="{{ route('admin.settingmanagement.items', $child->id) }}" class="dropdown-item">
+                                                        <a href="{{ route('admin.settingmanagement.values', $child->id) }}" class="dropdown-item">
                                                             <i class="fas fa-edit me-2"></i> Ayarları Yapılandır
                                                         </a>
+                                                        @if(auth()->user()->hasRole('root'))
                                                         <a href="{{ route('admin.settingmanagement.group.manage', $child->id) }}" class="dropdown-item">
                                                             <i class="fas fa-edit me-2"></i> Düzenle
                                                         </a>
                                                         <a href="{{ route('admin.settingmanagement.form-builder.edit', $child->id) }}" class="dropdown-item">
                                                             <i class="fas fa-magic me-2"></i> Form Builder
                                                         </a>
+                                                        @endif
+                                                        @if(auth()->user()->hasRole('root'))
                                                         <button wire:click="toggleActive({{ $child->id }})" class="dropdown-item">
                                                             <i class="fas fa-{{ $child->is_active ? 'ban' : 'check' }} me-2"></i>
                                                             {{ $child->is_active ? 'Pasif Yap' : 'Aktif Yap' }}
                                                         </button>
-                                                        @if($child->children->isEmpty())
+                                                        @endif
+                                                        @if($child->children->isEmpty() && auth()->user()->hasRole('root'))
                                                         <button wire:click="delete({{ $child->id }})" wire:confirm="Bu alt grubu silmek istediğinize emin misiniz?" class="dropdown-item text-danger">
                                                             <i class="fas fa-trash me-2"></i> Sil
                                                         </button>
@@ -143,10 +147,12 @@
                                     <div class="text-muted">{{ $group->children->count() }} alt grup</div>
                                 </div>
                                 <div class="ms-auto">
+                                    @if(auth()->user()->hasRole('root'))
                                     <a href="{{ route('admin.settingmanagement.group.manage', ['parent_id' => $group->id]) }}"
                                         class="btn btn-link btn-sm">
                                         Alt Grup Ekle
                                     </a>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -163,12 +169,14 @@
                         <p class="empty-subtitle text-muted">
                             Yeni gruplar ekleyerek ayarlarınızı düzenlemeye başlayabilirsiniz.
                         </p>
+                        @if(auth()->user()->hasRole('root'))
                         <div class="empty-action">
                             <a href="{{ route('admin.settingmanagement.group.manage') }}" class="btn btn-primary">
                                 <i class="fas fa-plus me-2"></i>
                                 Yeni Grup Ekle
                             </a>
                         </div>
+                        @endif
                     </div>
                 </div>
                 @endforelse

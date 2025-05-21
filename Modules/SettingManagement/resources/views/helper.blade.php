@@ -23,46 +23,24 @@ Ayar Yönetimi
                 <div class="dropdown-menu">
                     @hasmoduleaccess('settingmanagement', 'view')
                     <a class="dropdown-item" href="{{ route('admin.settingmanagement.index') }}">
-                        Grup Listesi
+                        Ayar Listesi
                     </a>
                     @endhasmoduleaccess
                     
-                    @hasmoduleaccess('settingmanagement', 'update')
+                    @if(auth()->user()->hasRole('root'))
                     <a class="dropdown-item" href="{{ route('admin.settingmanagement.group.manage') }}">
-                        Yeni Grup Ekle
+                        Yeni Ayar Grubu Ekle
                     </a>
-                    @endhasmoduleaccess
                     
-                    @if(auth()->user()->hasModulePermission('settingmanagement', 'view') || 
-                        auth()->user()->hasModulePermission('settingmanagement', 'update'))
-                    <h6 class="dropdown-menu-header card-header-light">
-                        <span class="dropdown-header">Ayar İşlemleri</span>
-                    </h6>
-                    @endif
-                    
-                    @hasmoduleaccess('settingmanagement', 'update')
-                    <a class="dropdown-item" href="{{ route('admin.settingmanagement.manage') }}">
-                        Yeni Ayar Ekle
-                    </a>
-                    @endhasmoduleaccess
-                    
-                    @if(auth()->user()->hasModulePermission('settingmanagement', 'view') || 
-                        auth()->user()->hasModulePermission('settingmanagement', 'update'))
-                    <h6 class="dropdown-menu-header card-header-light">
-                        <span class="dropdown-header">Tenant İşlemleri</span>
-                    </h6>
-                    @endif
-                    
-                    @hasmoduleaccess('settingmanagement', 'view')
                     <a class="dropdown-item" href="{{ route('admin.settingmanagement.tenant.settings') }}">
                         Tenant Ayarları
                     </a>
-                    @endhasmoduleaccess
+                    @endif
                 </div>
             </div>
-            @hasmoduleaccess('settingmanagement', 'update')
-            <a href="{{ route('admin.settingmanagement.manage') }}" class="btn btn-primary">
-                Yeni Ayar Ekle
+            @hasmoduleaccess('settingmanagement', 'view')
+            <a href="{{ route('admin.settingmanagement.index') }}" class="btn btn-primary">
+                Ayar Listesi
             </a>
             @endhasmoduleaccess
         </div>

@@ -52,7 +52,12 @@ document.addEventListener("DOMContentLoaded", function() {
           'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
         }
       })
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
       .then(data => {
         if (data.success && data.layout) {
           console.log('Widget form yapısı yükleniyor:', data.layout);
@@ -98,7 +103,6 @@ document.addEventListener("DOMContentLoaded", function() {
       const schemaType = document.getElementById('schema-type').value;
       
       if (widgetId && schemaType) {
-        // Buton durumunu güncelle
         const originalContent = saveBtn.innerHTML;
         saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Kaydediliyor...';
         saveBtn.disabled = true;
@@ -113,7 +117,12 @@ document.addEventListener("DOMContentLoaded", function() {
             layout: formData
           })
         })
-        .then(response => response.json())
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
         .then(data => {
           saveBtn.innerHTML = originalContent;
           saveBtn.disabled = false;

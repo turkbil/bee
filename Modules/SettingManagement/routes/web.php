@@ -2,9 +2,7 @@
 // Modules/SettingManagement/routes/web.php
 use Illuminate\Support\Facades\Route;
 use Modules\SettingManagement\App\Http\Livewire\GroupListComponent;
-use Modules\SettingManagement\App\Http\Livewire\ItemListComponent;
 use Modules\SettingManagement\App\Http\Livewire\ManageComponent;
-use Modules\SettingManagement\App\Http\Livewire\TenantValueComponent;
 use Modules\SettingManagement\App\Http\Livewire\GroupManageComponent;
 use Modules\SettingManagement\App\Http\Livewire\ValuesComponent;
 use Modules\SettingManagement\App\Http\Livewire\TenantSettingsComponent;
@@ -23,35 +21,25 @@ Route::middleware(['web', 'auth', 'tenant'])
                     ->name('index');
                     
                 Route::get('/group/manage/{id?}', GroupManageComponent::class)
-                    ->middleware('module.permission:settingmanagement,update')
+                    ->middleware(['module.permission:settingmanagement,update', 'root.access'])
                     ->name('group.manage');
                     
                 Route::get('/group/list', GroupListComponent::class)
                     ->middleware('module.permission:settingmanagement,view')
                     ->name('group.list');
                     
-                Route::get('/items/{group}', ItemListComponent::class)
-                    ->middleware('module.permission:settingmanagement,view')
-                    ->name('items');
+                // items/{group} rotası kaldırıldı
                     
-                Route::get('/item/manage', ManageComponent::class)
-                    ->middleware('module.permission:settingmanagement,create')
-                    ->name('manage');
+                // item/manage rotaları kaldırıldı
                     
-                Route::get('/item/manage/{id}', ManageComponent::class)
-                    ->middleware('module.permission:settingmanagement,update')
-                    ->name('manage.edit');
-                    
-                Route::get('/value/{id}', TenantValueComponent::class)
-                    ->middleware('module.permission:settingmanagement,update')
-                    ->name('value');
+                // value/{id} rotası kaldırıldı
                     
                 Route::get('/values/{group}', ValuesComponent::class)
                     ->middleware('module.permission:settingmanagement,view')
                     ->name('values');
                     
                 Route::get('/tenant/settings', TenantSettingsComponent::class)
-                    ->middleware('module.permission:settingmanagement,update')
+                    ->middleware(['module.permission:settingmanagement,update', 'root.access'])
                     ->name('tenant.settings');
 
                 // Form Builder routes - Livewire yaklaşımıyla

@@ -28,7 +28,7 @@
                                 <!-- Üst Grup -->
                                 <div class="col-md-12">
                                     <label class="form-label">Üst Grup</label>
-                                    <select wire:model="inputs.parent_id"
+                                    <select wire:model.live="inputs.parent_id" id="parent-group-select"
                                         class="form-select @error('inputs.parent_id') is-invalid @enderror">
                                         <option value="">Ana Grup Olarak Ekle</option>
                                         @foreach($parentGroups as $group)
@@ -41,8 +41,7 @@
                                 </div>
 
                                 <!-- Prefix - Sadece alt gruplar için -->
-                                @if($isSubGroup)
-                                <div class="col-md-12">
+                                <div id="prefix-field" class="col-md-12" style="display: {{ !empty($inputs['parent_id']) ? 'block' : 'none' }}">
                                     <label class="form-label">Prefix</label>
                                     <input type="text" wire:model="inputs.prefix"
                                         class="form-control @error('inputs.prefix') is-invalid @enderror"
@@ -52,7 +51,6 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                @endif
 
                                 <!-- Açıklama -->
                                 <div class="col-md-12">
@@ -156,4 +154,36 @@
         color: red;
     }
 </style>
+@endpush
+
+@push('scripts')
+<script>
+    document.addEventListener('livewire:initialized', function () {
+        // Livewire'ın parent_id değiştiğinde prefix alanını göster/gizle
+        Livewire.on('parentIdChanged', function(value) {
+            const prefixField = document.getElementById('prefix-field');
+            if (prefixField) {
+                if (value) {
+                    prefixField.style.display = 'block';
+                } else {
+                    prefixField.style.display = 'none';
+                }
+            }
+        });
+        
+        // Sayfa yüklendiğinde manuel olarak kontrol et
+        const parentSelect = document.getElementById('parent-group-select');
+        const prefixField = document.getElementById('prefix-field');
+        
+        if (parentSelect && prefixField) {
+            parentSelect.addEventListener('change', function() {
+                if (this.value) {
+                    prefixField.style.display = 'block';
+                } else {
+                    prefixField.style.display = 'none';
+                }
+            });
+        }
+    });
+</script>
 @endpush

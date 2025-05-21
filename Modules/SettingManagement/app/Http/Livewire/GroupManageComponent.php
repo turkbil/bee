@@ -73,6 +73,9 @@ class GroupManageComponent extends Component
     {
         // Parent ID değiştiğinde alt grup olup olmadığını güncelle
         $this->isSubGroup = !is_null($value);
+        
+        // JavaScript'e olay gönder
+        $this->dispatch('parentIdChanged', $value);
     }
 
     public function save($redirect = false)

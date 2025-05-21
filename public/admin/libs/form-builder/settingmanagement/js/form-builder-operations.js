@@ -750,100 +750,74 @@ document.addEventListener("DOMContentLoaded", function() {
   window.updateRowColumns = function(columnCount) {
     if (!window.selectedElement || window.selectedElement.dataset.type !== "row") return;
     
-    // Satır elemanını seç
     const rowElement = window.selectedElement.querySelector('.row-element');
     if (!rowElement) return;
     
-    // Satır elemanına g-3 sınıfını ekle (responsive grid için)
     if (!rowElement.classList.contains('g-3')) {
       rowElement.classList.add('g-3');
     }
 
-    // Mevcut sütunları al
-    let currentColumns = window.selectedElement.properties.columns || [];
+    const currentColumns = window.selectedElement.properties.columns || [];
     const columnElements = rowElement.querySelectorAll(".column-element") || [];
 
-    // Eğer sütun sayısı azalıyorsa ve dolu sütunlar varsa uyarı ver
+    // Sütun sayısı azalıyorsa
     if (columnCount < currentColumns.length) {
-      // Mevcut içerik olup olmadığını kontrol et
       let hasContent = false;
+      let elementsToSave = [];
 
-      // Silinecek sütunları kontrol et
+      // Silinecek sütunlardaki içerikleri kontrol et
       for (let i = columnCount; i < columnElements.length; i++) {
-        if (
-          columnElements[i] &&
-          columnElements[i].querySelectorAll(".form-element").length > 0
-        ) {
+        const elements = columnElements[i].querySelectorAll(".form-element");
+        if (elements.length > 0) {
           hasContent = true;
-          break;
+          elements.forEach(el => {
+            // Element özelliklerini ve DOM yapısını kaydet
+            elementsToSave.push({
+              element: el,
+              properties: el.properties ? JSON.parse(JSON.stringify(el.properties)) : {},
+              type: el.dataset.type
+            });
+          });
         }
       }
 
       if (hasContent) {
         const proceed = confirm(
-          "Sütun sayısını azaltırsanız, fazla olan sütunlardaki içerikler kaybolacak. Devam etmek istiyor musunuz?"
+          "Sütun sayısını azaltırsanız, fazla olan sütunlardaki içerikler ilk sütuna taşınacak. Devam etmek istiyor musunuz?"
         );
         if (!proceed) return;
       }
     }
 
-    // Yeni sütun dizisi oluştur, mevcut sütunların içeriğini koru
+    // Yeni sütun dizisi oluştur
     const newColumns = [];
-
-    // Sütun sayısına göre standart genişlik hesapla
     let defaultWidth;
+    
     switch(columnCount) {
-      case 1:
-        defaultWidth = 12;
-        break;
-      case 2:
-        defaultWidth = 6;
-        break;
-      case 3:
-        defaultWidth = 4;
-        break;
-      case 4:
-        defaultWidth = 3;
-        break;
-      case 6:
-        defaultWidth = 2;
-        break;
-      case 12:
-        defaultWidth = 1;
-        break;
-      default:
-        defaultWidth = Math.floor(12 / columnCount);
+      case 1: defaultWidth = 12; break;
+      case 2: defaultWidth = 6; break;
+      case 3: defaultWidth = 4; break;
+      case 4: defaultWidth = 3; break;
+      case 6: defaultWidth = 2; break;
+      default: defaultWidth = Math.floor(12 / columnCount);
     }
     
-    // Toplam genişliğin 12 olduğundan emin ol
-    let extraWidth = 12 - (defaultWidth * columnCount); // Dağıtılacak ekstra genişlik
+    let extraWidth = 12 - (defaultWidth * columnCount);
 
     // Yeni sütun dizisi oluştur
     for (let i = 0; i < columnCount; i++) {
-      let columnWidth;
+      let columnWidth = defaultWidth;
+      if (extraWidth > 0) {
+        columnWidth++;
+        extraWidth--;
+      }
       
       if (i < currentColumns.length) {
-        // Mevcut sütunu koru ama genişliğini yeniden hesapla
-        columnWidth = defaultWidth;
-        // Ekstra genişliği ilk sütunlara dağıt
-        if (extraWidth > 0) {
-          columnWidth++;
-          extraWidth--;
-        }
-        
         newColumns.push({
           ...currentColumns[i],
           width: columnWidth
         });
       } else {
-        // Yeni sütun ekle
-        columnWidth = defaultWidth;
-        // Ekstra genişliği ilk sütunlara dağıt
-        if (extraWidth > 0) {
-          columnWidth++;
-          extraWidth--;
-        }
-        
         newColumns.push({
           index: i + 1,
           width: columnWidth
@@ -854,15 +828,14 @@ document.addEventListener("DOMContentLoaded", function() {
     // Row properties'i güncelle
     window.selectedElement.properties.columns = newColumns;
 
-    // Element içeriğini güncelle - mevcut içeriği koru
+    // Satır içeriğini güncelle
     window.updateRowContent();
 
-    // Özellik panelini güncelle (sütun genişlikleri için)
+    // Panel güncelle ve durumu kaydet
     window.updatePropertiesPanel();
-    
-    // Durum kaydet
     window.saveState();
   };
+
 
   // Sütun genişliğini güncelle
   window.updateColumnWidth = function(columnIndex, width) {
@@ -1129,68 +1102,55 @@ document.addEventListener("DOMContentLoaded", function() {
     const rowElement = window.selectedElement.querySelector(".row-element");
     if (!rowElement) return;
 
-    // Properties'deki sütun sayısını ve mevcut DOM'daki sütun sayısını kontrol et
     const columnsInProps = window.selectedElement.properties.columns || [];
-    const existingColumns = rowElement.querySelectorAll(".column-element");
-    
-    // Sütun sayısını kontrol et
     if (columnsInProps.length === 0) {
       console.warn("Satır için sütun tanımlanmamış");
       return;
     }
     
-    // Varolan sütunları kontrol et ve içeriği sakla
-    const savedContent = [];
-    for (let i = 0; i < Math.min(existingColumns.length, columnsInProps.length); i++) {
-      const columnElements = existingColumns[i].querySelectorAll(".form-element");
-      if (columnElements.length > 0) {
-        savedContent.push([...columnElements]);
-      } else {
-        savedContent.push([]);
-      }
+    // Mevcut sütunları al ve element içeriğini yedekle
+    const existingColumns = rowElement.querySelectorAll(".column-element");
+    const columnContents = [];
+    
+    // Her sütundaki elementleri yedekle
+    for (let i = 0; i < existingColumns.length; i++) {
+      const elements = existingColumns[i].querySelectorAll(".form-element");
+      const columnElements = [];
+      
+      elements.forEach(element => {
+        columnElements.push({
+          type: element.dataset.type,
+          properties: element.properties ? JSON.parse(JSON.stringify(element.properties)) : {}
+        });
+      });
+      
+      columnContents.push(columnElements);
     }
     
-    // DOM'u temizle
+    // Satırı temizle ve yeni sütunları oluştur
     rowElement.innerHTML = '';
     
     // Sütun genişliklerinin toplamını kontrol et
-    let totalWidth = columnsInProps.reduce((sum, col) => sum + parseInt(col.width || 0), 0);
-    
-    // Eğer toplam genişlik 12'den farklıysa, genişlikleri yeniden hesapla
+    const totalWidth = columnsInProps.reduce((sum, col) => sum + parseInt(col.width || 0), 0);
     if (totalWidth !== 12) {
       console.warn(`Sütun genişliklerinin toplamı 12 olmalı, şu an: ${totalWidth}`);
       
-      // Sütun sayısına göre standart genişlik hesapla
-      let defaultWidth;
+      // Genişlikleri yeniden hesapla
       const columnCount = columnsInProps.length;
+      let defaultWidth;
       
       switch(columnCount) {
-        case 1:
-          defaultWidth = 12;
-          break;
-        case 2:
-          defaultWidth = 6;
-          break;
-        case 3:
-          defaultWidth = 4;
-          break;
-        case 4:
-          defaultWidth = 3;
-          break;
-        case 6:
-          defaultWidth = 2;
-          break;
-        case 12:
-          defaultWidth = 1;
-          break;
-        default:
-          defaultWidth = Math.floor(12 / columnCount);
+        case 1: defaultWidth = 12; break;
+        case 2: defaultWidth = 6; break;
+        case 3: defaultWidth = 4; break;
+        case 4: defaultWidth = 3; break;
+        case 6: defaultWidth = 2; break;
+        default: defaultWidth = Math.floor(12 / columnCount);
       }
       
-      // Toplam genişliğin 12 olduğundan emin ol
       let extraWidth = 12 - (defaultWidth * columnCount);
       
-      // Genişlikleri yeniden ayarla
+      // Genişlikleri düzelt
       columnsInProps.forEach((col, i) => {
         col.width = defaultWidth + (i < extraWidth ? 1 : 0);
       });
@@ -1198,32 +1158,57 @@ document.addEventListener("DOMContentLoaded", function() {
     
     // Sütunları oluştur
     columnsInProps.forEach((column, index) => {
-      // Sütun elementi oluştur
       const columnDiv = document.createElement('div');
-      columnDiv.className = `col-12 col-md-${column.width} column-element`;
+      columnDiv.className = `col-md-${column.width} column-element`;
       columnDiv.dataset.width = column.width;
       columnDiv.dataset.index = index;
-      
-      // Eğer saklanmış içerik varsa, onu geri ekle
-      if (savedContent[index] && savedContent[index].length > 0) {
-        savedContent[index].forEach(element => {
-          columnDiv.appendChild(element);
-        });
-      } else {
-        // Boş sütuna placeholder ekle
-        const placeholder = document.createElement('div');
-        placeholder.className = 'column-placeholder';
-        placeholder.innerHTML = '<i class="fas fa-plus me-2"></i> Buraya element sürükleyin';
-        columnDiv.appendChild(placeholder);
-      }
       
       // Sütunu satıra ekle
       rowElement.appendChild(columnDiv);
     });
     
+    // Yeni oluşturulan sütunları al
+    const newColumns = rowElement.querySelectorAll(".column-element");
+    
+    // Yedeklenen içeriği yeni sütunlara ekle
+    for (let i = 0; i < Math.min(columnContents.length, newColumns.length); i++) {
+      const columnElements = columnContents[i];
+      
+      // Sütundaki her elementi yeni sütuna ekle
+      columnElements.forEach(elementData => {
+        const newElement = window.createFormElement(elementData.type, elementData.properties);
+        if (newElement) {
+          newColumns[i].appendChild(newElement);
+        }
+      });
+    }
+    
+    // Eğer eski sütun sayısı yeni sütun sayısından fazlaysa, fazla elementleri ilk sütuna ekle
+    if (columnContents.length > newColumns.length && newColumns.length > 0) {
+      for (let i = newColumns.length; i < columnContents.length; i++) {
+        columnContents[i].forEach(elementData => {
+          const newElement = window.createFormElement(elementData.type, elementData.properties);
+          if (newElement) {
+            newColumns[0].appendChild(newElement);
+          }
+        });
+      }
+    }
+    
+    // Boş sütunlara placeholder ekle
+    newColumns.forEach(column => {
+      if (column.children.length === 0) {
+        const placeholder = document.createElement('div');
+        placeholder.className = 'column-placeholder';
+        placeholder.innerHTML = '<i class="fas fa-plus me-2"></i> Buraya element sürükleyin';
+        column.appendChild(placeholder);
+      }
+    });
+    
     // SortableJS'yi yeniden başlat
     window.initializeColumnSortables();
   };
+
   
   // Canvas'taki onay kutusunun durumu değiştiğinde özellikler panelini güncelle
   window.updateCheckboxState = function(checkbox) {

@@ -20,173 +20,22 @@
                     </div>
                 </div>
             </div>
-            
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h3 class="card-title">Yeni İçerik Alanı Ekle</h3>
-                </div>
-                <div class="card-body">
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-3">
-                            <div class="form-floating">
-                                <input type="text" wire:model="newField.name" 
-                                    class="form-control @error('newField.name') is-invalid @enderror" 
-                                    placeholder="title"
-                                    id="field-name">
-                                <label for="field-name">Alan Adı <span class="text-danger">*</span></label>
-                                @error('newField.name') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                            </div>
-                            <div class="form-hint">
-                                <i class="fas fa-code me-1 text-blue"></i>
-                                Harfler, rakamlar ve alt çizgi (_)
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-floating">
-                                <input type="text" wire:model="newField.label" 
-                                    class="form-control @error('newField.label') is-invalid @enderror" 
-                                    placeholder="Başlık"
-                                    id="field-label">
-                                <label for="field-label">Etiket <span class="text-danger">*</span></label>
-                                @error('newField.label') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-floating">
-                                <select wire:model.live="newField.type" 
-                                    class="form-select @error('newField.type') is-invalid @enderror"
-                                    id="field-type">
-                                    @foreach($availableTypes as $value => $label)
-                                        <option value="{{ $value }}">{{ $label }}</option>
-                                    @endforeach
-                                </select>
-                                <label for="field-type">Alan Tipi <span class="text-danger">*</span></label>
-                                @error('newField.type') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="form-check form-switch pt-4">
-                                <input type="checkbox" id="required" class="form-check-input" wire:model.live="newField.required">
-                                <label class="form-check-label" for="required">
-                                    Zorunlu Alan
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-md-1">
-                            <button type="button" class="btn btn-primary w-100 h-100" wire:click="addItemSchemaField">
-                                <i class="fas fa-plus"></i>
-                                <span class="d-none d-lg-inline ms-1">Ekle</span>
-                            </button>
-                        </div>
-                    </div>
-                    
-                    @if($newField['type'] === 'select')
-                    <div class="row mb-3">
-                        <div class="col-12">
-                            <div class="card p-3">
-                                <h4 class="mb-3">Seçenekler</h4>
-                                
-                                <div class="d-flex mb-3">
-                                    <div class="btn-group w-100" role="group">
-                                        <button type="button" 
-                                            class="btn {{ $optionFormat === 'key-value' ? 'btn-primary' : 'btn-outline-primary' }}" 
-                                            wire:click="$set('optionFormat', 'key-value')">
-                                            <i class="fas fa-key me-1"></i> Anahtar-Değer Çiftleri
-                                        </button>
-                                        <button type="button" 
-                                            class="btn {{ $optionFormat === 'text' ? 'btn-primary' : 'btn-outline-primary' }}" 
-                                            wire:click="$set('optionFormat', 'text')">
-                                            <i class="fas fa-font me-1"></i> Metin Olarak Gir
-                                        </button>
-                                    </div>
-                                </div>
-                                
-                                <div x-data="{}">
-                                    <div x-show="$wire.optionFormat === 'key-value'">
-                                        <div class="row mb-3">
-                                            <div class="col-6">
-                                                <div class="fw-bold text-muted">Gözüken Seçenek</div>
-                                            </div>
-                                            <div class="col-6">
-                                                <div class="fw-bold text-muted">Anahtar (slug)</div>
-                                            </div>
-                                        </div>
-                                        
-                                        @if(isset($newField['options_array']) && is_array($newField['options_array']) && count($newField['options_array']) > 0)
-                                        @foreach($newField['options_array'] as $id => $option)
-                                        <div class="row g-2 mb-3">
-                                            <div class="col">
-                                                <div class="input-icon">
-                                                    <span class="input-icon-addon">
-                                                        <i class="fas fa-font"></i>
-                                                    </span>
-                                                    <input type="text" class="form-control"
-                                                        wire:model.live="newField.options_array.{{ $id }}.value"
-                                                        wire:change="slugifyOptionKey('{{ $id }}', $event.target.value)"
-                                                        placeholder="Gözüken Değer">
-                                                </div>
-                                            </div>
-                                            <div class="col">
-                                                <div class="input-icon">
-                                                    <span class="input-icon-addon">
-                                                        <i class="fas fa-key"></i>
-                                                    </span>
-                                                    <input type="text" class="form-control" 
-                                                        wire:model.live="newField.options_array.{{ $id }}.key" 
-                                                        placeholder="Anahtar"
-                                                        title="Değiştirmek isterseniz manuel düzenleyebilirsiniz">
-                                                </div>
-                                            </div>
-                                            <div class="col-auto">
-                                                <a href="javascript:void(0)" class="btn btn-outline-danger btn-icon" 
-                                                    wire:click="removeFieldOption('{{ $id }}')" 
-                                                    title="Sil">
-                                                    <i class="fas fa-trash"></i>
-                                                </a>
-                                            </div>
-                                        </div>
-                                        @endforeach
-                                        @else
-                                            <div class="text-muted text-center py-3">
-                                                <i class="fas fa-info-circle me-2"></i>
-                                                Henüz seçenek eklenmemiş
-                                            </div>
-                                        @endif
-                                        
-                                        <div class="mt-3">
-                                            <button type="button" class="btn btn-outline-primary btn-sm" wire:click="addFieldOption">
-                                                <i class="fas fa-plus me-1"></i> Seçenek Ekle
-                                            </button>
-                                        </div>
-                                    </div>
-                                    
-                                    <div x-show="$wire.optionFormat === 'text'" class="mt-3">
-                                        <label class="form-label mb-2">Her satıra bir seçenek yazın:</label>
-                                        <textarea wire:model.live.debounce.500ms="newField.options"
-                                            class="form-control @error('newField.options') is-invalid @enderror" rows="6"
-                                            placeholder="Her satıra bir seçenek yazın:
-erkek=Erkek
-kadin=Kadın
-diger=Diğer
 
-veya sadece:
-Erkek
-Kadın
-Diğer"></textarea>
-                                        <small class="form-hint">
-                                            Her satıra bir seçenek. Örnek: "erkek=Erkek" veya sadece "Erkek" yazabilirsiniz. Seçenek anahtarı otomatik olarak slug'a çevrilecektir.</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    @endif
-                </div>
-            </div>
-            
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Tanımlı İçerik Alanları</h3>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="card-title">
+                            <i class="fas fa-layer-group me-2"></i>
+                            İçerik Yapısı Yönetimi
+                        </h3>
+                        @if($widgetId)
+                        <a href="{{ route('admin.widgetmanagement.form-builder.edit', ['widgetId' => $widgetId, 'schemaType' => 'item_schema']) }}" 
+                           class="btn btn-primary">
+                            <i class="fas fa-magic me-2"></i>
+                            Form Builder ile Düzenle
+                        </a>
+                        @endif
+                    </div>
                 </div>
                 <div class="card-body">
                     @if(empty($widget['item_schema']))
@@ -196,8 +45,17 @@ Diğer"></textarea>
                         </div>
                         <p class="empty-title">Henüz içerik alanı tanımlanmadı</p>
                         <p class="empty-subtitle text-muted">
-                            Yukarıdaki formu kullanarak widget içerikleri için veri alanları tanımlayabilirsiniz.
+                            Form Builder kullanarak widget içerikleri için veri alanları tanımlayabilirsiniz.
                         </p>
+                        @if($widgetId)
+                        <div class="empty-action">
+                            <a href="{{ route('admin.widgetmanagement.form-builder.edit', ['widgetId' => $widgetId, 'schemaType' => 'item_schema']) }}" 
+                               class="btn btn-primary">
+                                <i class="fas fa-magic me-2"></i>
+                                Form Builder ile Başla
+                            </a>
+                        </div>
+                        @endif
                     </div>
                     @else
                     <div class="table-responsive">
@@ -208,7 +66,6 @@ Diğer"></textarea>
                                     <th>Etiket</th>
                                     <th>Tip</th>
                                     <th>Zorunlu</th>
-                                    <th width="100"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -278,13 +135,6 @@ Diğer"></textarea>
                                         <span class="badge bg-gray">
                                             <i class="fas fa-minus me-1"></i> Hayır
                                         </span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if(!isset($field['system']) || !$field['system'])
-                                        <button type="button" class="btn btn-sm btn-outline-danger" wire:click="removeItemSchemaField({{ $index }})">
-                                            <i class="fas fa-trash me-1"></i> Sil
-                                        </button>
                                         @endif
                                     </td>
                                 </tr>

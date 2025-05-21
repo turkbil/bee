@@ -21,7 +21,7 @@
         <div class="studio-brand">
             {{ $widget->name }} <i class="fa-solid fa-wand-magic-sparkles mx-2"></i> Widget Studio
             <span class="badge bg-primary ms-2">
-                {{ $schemaType === 'settings' ? 'Ayarlar' : 'İçerik Yapısı' }}
+                {{ $schemaType === 'settings_schema' ? 'Ayarlar' : 'İçerik Yapısı' }}
             </span>
         </div>
     </div>
@@ -270,7 +270,12 @@
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                 }
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data.success && data.layout) {
                     console.log('Widget form yapısı yükleniyor:', data.layout);
@@ -306,7 +311,12 @@
                             layout: formData
                         })
                     })
-                    .then(response => response.json())
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
                     .then(data => {
                         saveBtn.innerHTML = originalContent;
                         saveBtn.disabled = false;

@@ -19,30 +19,73 @@ class WidgetFormBuilderController extends Controller
     {
         try {
             $widget = Widget::findOrFail($widgetId);
-            $schemaType = $request->get('schema', 'item'); // item veya settings
+            $schemaType = $request->get('schema', 'item_schema');
             
-            $layout = null;
+            $schemaData = null;
             
-            if ($schemaType === 'settings') {
+            if ($schemaType === 'setting_schema' || $schemaType === 'settings_schema') {
                 $schemaData = $widget->settings_schema;
+                $title = $widget->name . ' Ayarları';
             } else {
                 $schemaData = $widget->item_schema;
+                $title = $widget->name . ' İçerik Yapısı';
             }
             
+            $elements = [];
+            
             if (!empty($schemaData)) {
-                $layout = is_array($schemaData) ? $schemaData : json_decode($schemaData, true);
+                $schema = is_array($schemaData) ? $schemaData : json_decode($schemaData, true);
                 
-                if (json_last_error() !== JSON_ERROR_NONE) {
-                    $layout = null;
+                if (json_last_error() === JSON_ERROR_NONE && is_array($schema)) {
+                    foreach ($schema as $field) {
+                        $element = [
+                            'type' => $field['type'] ?? 'text',
+                            'properties' => [
+                                'name' => $field['name'] ?? '',
+                                'label' => $field['label'] ?? '',
+                                'required' => $field['required'] ?? false,
+                                'is_active' => true,
+                                'is_system' => $field['system'] ?? false,
+                                'width' => 12
+                            ]
+                        ];
+                        
+                        if (isset($field['default'])) {
+                            $element['properties']['default_value'] = $field['default'];
+                        }
+                        
+                        if (isset($field['placeholder'])) {
+                            $element['properties']['placeholder'] = $field['placeholder'];
+                        }
+                        
+                        if (isset($field['help_text'])) {
+                            $element['properties']['help_text'] = $field['help_text'];
+                        }
+                        
+                        if (isset($field['options']) && is_array($field['options'])) {
+                            $element['properties']['options'] = [];
+                            foreach ($field['options'] as $key => $value) {
+                                $element['properties']['options'][] = [
+                                    'value' => $key,
+                                    'label' => $value,
+                                    'is_default' => false
+                                ];
+                            }
+                        }
+                        
+                        if (isset($field['hidden']) && $field['hidden']) {
+                            continue;
+                        }
+                        
+                        $elements[] = $element;
+                    }
                 }
             }
             
-            if (empty($layout)) {
-                $layout = [
-                    'title' => $widget->name . ' ' . ($schemaType === 'settings' ? 'Ayarları' : 'İçerik Yapısı'),
-                    'elements' => []
-                ];
-            }
+            $layout = [
+                'title' => $title,
+                'elements' => $elements
+            ];
                 
             return response()->json([
                 'success' => true,
@@ -70,7 +113,7 @@ class WidgetFormBuilderController extends Controller
     {
         try {
             $widget = Widget::findOrFail($widgetId);
-            $schemaType = $request->get('schema', 'item');
+            $schemaType = $request->get('schema', 'item_schema');
             
             $formData = $request->input('layout');
             
@@ -85,18 +128,134 @@ class WidgetFormBuilderController extends Controller
                 }
             }
             
-            // Schema tipine göre kaydet
-            if ($schemaType === 'settings') {
-                $widget->settings_schema = $formData;
+            $schema = [];
+            
+            if (isset($formData['elements']) && is_array($formData['elements'])) {
+                foreach ($formData['elements'] as $element) {
+                    if (!isset($element['type']) || !isset($element['properties'])) {
+                        continue;
+                    }
+                    
+                    $field = [
+                        'name' => $element['properties']['name'] ?? '',
+                        'label' => $element['properties']['label'] ?? '',
+                        'type' => $element['type'],
+                        'required' => $element['properties']['required'] ?? false
+                    ];
+                    
+                    if (isset($element['properties']['default_value'])) {
+                        $field['default'] = $element['properties']['default_value'];
+                    }
+                    
+                    if (isset($element['properties']['placeholder'])) {
+                        $field['placeholder'] = $element['properties']['placeholder'];
+                    }
+                    
+                    if (isset($element['properties']['help_text'])) {
+                        $field['help_text'] = $element['properties']['help_text'];
+                    }
+                    
+                    if (isset($element['properties']['options']) && is_array($element['properties']['options'])) {
+                        $options = [];
+                        foreach ($element['properties']['options'] as $option) {
+                            if (isset($option['value']) && isset($option['label'])) {
+                                $options[$option['value']] = $option['label'];
+                            }
+                        }
+                        if (!empty($options)) {
+                            $field['options'] = $options;
+                        }
+                    }
+                    
+                    if (isset($element['properties']['is_system']) && $element['properties']['is_system']) {
+                        $field['system'] = true;
+                    }
+                    
+                    $schema[] = $field;
+                }
+            }
+            
+            if ($schemaType === 'setting_schema' || $schemaType === 'settings_schema') {
+                $hasTitle = false;
+                $hasUniqueId = false;
+                
+                foreach ($schema as $field) {
+                    if ($field['name'] === 'title') $hasTitle = true;
+                    if ($field['name'] === 'unique_id') $hasUniqueId = true;
+                }
+                
+                if (!$hasTitle) {
+                    array_unshift($schema, [
+                        'name' => 'title',
+                        'label' => 'Başlık',
+                        'type' => 'text',
+                        'required' => true,
+                        'system' => true
+                    ]);
+                }
+                
+                if (!$hasUniqueId) {
+                    $schema[] = [
+                        'name' => 'unique_id',
+                        'label' => 'Benzersiz ID',
+                        'type' => 'text',
+                        'required' => false,
+                        'system' => true,
+                        'hidden' => true
+                    ];
+                }
+                
+                $widget->settings_schema = $schema;
             } else {
-                $widget->item_schema = $formData;
+                $hasTitle = false;
+                $hasActive = false;
+                $hasUniqueId = false;
+                
+                foreach ($schema as $field) {
+                    if ($field['name'] === 'title') $hasTitle = true;
+                    if ($field['name'] === 'is_active') $hasActive = true;
+                    if ($field['name'] === 'unique_id') $hasUniqueId = true;
+                }
+                
+                if (!$hasTitle) {
+                    array_unshift($schema, [
+                        'name' => 'title',
+                        'label' => 'Başlık',
+                        'type' => 'text',
+                        'required' => true,
+                        'system' => true
+                    ]);
+                }
+                
+                if (!$hasActive) {
+                    $schema[] = [
+                        'name' => 'is_active',
+                        'label' => 'Aktif',
+                        'type' => 'checkbox',
+                        'required' => false,
+                        'system' => true
+                    ];
+                }
+                
+                if (!$hasUniqueId) {
+                    $schema[] = [
+                        'name' => 'unique_id',
+                        'label' => 'Benzersiz ID',
+                        'type' => 'text',
+                        'required' => false,
+                        'system' => true,
+                        'hidden' => true
+                    ];
+                }
+                
+                $widget->item_schema = $schema;
             }
             
             $widget->save();
             
             log_activity(
                 $widget,
-                'widget ' . ($schemaType === 'settings' ? 'ayar' : 'içerik') . ' form yapısı güncellendi'
+                'widget ' . ($schemaType === 'setting_schema' || $schemaType === 'settings_schema' ? 'ayar' : 'içerik') . ' form yapısı güncellendi'
             );
             
             return response()->json([

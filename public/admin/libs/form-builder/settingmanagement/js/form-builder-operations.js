@@ -92,6 +92,16 @@ document.addEventListener("DOMContentLoaded", function() {
       window.selectedElement.properties = properties;
     }
 
+    // Boolean özelliklerini kontrol et - checkbox'ların doğru gösterilmesi için
+    if (properties.required === undefined) properties.required = false;
+    if (properties.is_active === undefined) properties.is_active = true;
+    if (properties.is_system === undefined) properties.is_system = false;
+    
+    // Checkbox özelliklerinin string'den boolean'a dönüşümünü kontrol et
+    if (typeof properties.required === 'string') properties.required = properties.required === 'true';
+    if (typeof properties.is_active === 'string') properties.is_active = properties.is_active === 'true';
+    if (typeof properties.is_system === 'string') properties.is_system = properties.is_system === 'true';
+
     // Genişlik değerlerini kontrol et
     let templateData = Object.assign({}, properties);
     templateData["width" + properties.width] = true;
@@ -235,7 +245,7 @@ document.addEventListener("DOMContentLoaded", function() {
             
             optionRow.innerHTML = `
                 <div class="input-group-text">
-                    <input class="form-check-input" type="checkbox" name="option-default-${index}" ${isChecked ? 'checked' : ''}>
+                    <input class="form-check-input" type="radio" name="option-default" value="${index}" ${isChecked ? 'checked' : ''}>
                 </div>
                 <input type="text" class="form-control" name="option-label-${index}" placeholder="Etiket" value="${option.label || ""}">
                 <input type="text" class="form-control" name="option-value-${index}" placeholder="Değer" value="${option.value || ""}">
@@ -299,41 +309,57 @@ document.addEventListener("DOMContentLoaded", function() {
         });
       }
       
-      // Varsayılan değer dropdown'ı
-      const defaultValueSelect = window.propertiesPanel.querySelector('select[name="default_value"]');
-      if (defaultValueSelect) {
-        // Seçenekleri ekle
-        defaultValueSelect.innerHTML = '<option value="">Varsayılan değer seçin</option>';
+      // Varsayılan değer radio butonları
+      const defaultValueContainer = window.propertiesPanel.querySelector('.default-value-radio-container');
+      if (defaultValueContainer) {
+        // Mevcut içeriği temizle
+        defaultValueContainer.innerHTML = '';
         
         if (properties.options && properties.options.length) {
-          properties.options.forEach((option) => {
-            const optionElement = document.createElement('option');
-            optionElement.value = option.value;
-            optionElement.textContent = option.label;
+          properties.options.forEach((option, index) => {
+            // Radio butonu oluştur
+            const radioDiv = document.createElement('div');
+            radioDiv.className = 'form-check';
+            
+            const radioInput = document.createElement('input');
+            radioInput.className = 'form-check-input';
+            radioInput.type = 'radio';
+            radioInput.name = 'default_value_radio';
+            radioInput.id = `default_value_${option.value}`;
+            radioInput.value = option.value;
             
             // Varsayılan değeri seç
             if (option.is_default || properties.default_value === option.value) {
-              optionElement.selected = true;
+              radioInput.checked = true;
             }
             
-            defaultValueSelect.appendChild(optionElement);
+            const radioLabel = document.createElement('label');
+            radioLabel.className = 'form-check-label';
+            radioLabel.htmlFor = `default_value_${option.value}`;
+            radioLabel.textContent = option.label;
+            
+            radioDiv.appendChild(radioInput);
+            radioDiv.appendChild(radioLabel);
+            defaultValueContainer.appendChild(radioDiv);
+            
+            // Değişikliği dinle
+            radioInput.addEventListener('change', function() {
+              if (this.checked) {
+                const selectedValue = this.value;
+                
+                // Tüm seçeneklerin varsayılan değerini sıfırla
+                properties.options.forEach(option => {
+                  option.is_default = option.value === selectedValue;
+                });
+                
+                // Varsayılan değeri güncelle
+                properties.default_value = selectedValue;
+                
+                window.updateElementContent();
+              }
+            });
           });
         }
-        
-        // Değişikliği dinle
-        defaultValueSelect.addEventListener('change', function() {
-          const selectedValue = this.value;
-          
-          // Tüm seçeneklerin varsayılan değerini sıfırla
-          properties.options.forEach(option => {
-            option.is_default = option.value === selectedValue;
-          });
-          
-          // Varsayılan değeri güncelle
-          properties.default_value = selectedValue;
-          
-          window.updateElementContent();
-        });
       }
     }
       
@@ -482,6 +508,18 @@ document.addEventListener("DOMContentLoaded", function() {
         }
       }
     }
+    
+    // Checkbox durumlarını manuel olarak ayarla (is_active, is_system, required)
+    const checkboxes = window.propertiesPanel.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach((checkbox) => {
+      const name = checkbox.name;
+      
+      if (name === 'is_active' || name === 'is_system' || name === 'required') {
+        // Özelliği kontrol et ve checkbox'ı doğru şekilde ayarla
+        const value = properties[name];
+        checkbox.checked = value === true;
+      }
+    });
   };
   
   // Seçenek değerini güncelle
@@ -506,57 +544,20 @@ document.addEventListener("DOMContentLoaded", function() {
       option.value = input.value;
     } else if (input.name.startsWith("option-label-")) {
       option.label = input.value;
-    } else if (input.name.startsWith("option-default-")) {
-      // Varsayılan seçimi güncelle
-      const isDefault = input.checked;
+    } else if (input.name === "option-default") {
+      // Radio butonları için varsayılan seçimi güncelle
+      const selectedIndex = parseInt(input.value);
       
-      if (isDefault) {
-        // Diğer tüm seçeneklerin varsayılan özelliğini kaldır
-        properties.options.forEach((opt, idx) => {
-          if (idx !== index) {
-            opt.is_default = false;
-          }
-        });
-        
-        option.is_default = true;
-        properties.default_value = option.value;
-      } else {
-        option.is_default = false;
-        
-        // En az bir varsayılan seçenek olduğundan emin ol
-        const hasDefault = properties.options.some(opt => opt.is_default);
-        if (!hasDefault && properties.options.length > 0) {
-          properties.options[0].is_default = true;
-          properties.default_value = properties.options[0].value;
-        }
-      }
+      // Tüm seçeneklerin varsayılan özelliğini sıfırla
+      properties.options.forEach((opt, idx) => {
+        opt.is_default = idx === selectedIndex;
+      });
+      
+      // Seçilen seçeneğin varsayılan değerini ayarla
+      properties.default_value = option.value;
     }
 
     window.updateElementContent();
-    
-    // Varsayılan değer dropdown'ını güncelle
-    const defaultValueSelect = window.propertiesPanel.querySelector('select[name="default_value"]');
-    if (defaultValueSelect) {
-      // Mevcut varsayılan değeri sakla
-      const currentValue = defaultValueSelect.value;
-      
-      // Dropdown'ı temizle
-      defaultValueSelect.innerHTML = '<option value="">Varsayılan değer seçin</option>';
-      
-      // Seçenekleri ekle
-      properties.options.forEach(option => {
-        const optionElement = document.createElement("option");
-        optionElement.value = option.value;
-        optionElement.textContent = option.label;
-        
-        // Mevcut seçili değer varsa veya option.is_default true ise seç
-        if (option.value === properties.default_value || option.is_default) {
-          optionElement.selected = true;
-        }
-        
-        defaultValueSelect.appendChild(optionElement);
-      });
-    }
   };
 
   // Sekme değerini güncelle
@@ -588,7 +589,14 @@ document.addEventListener("DOMContentLoaded", function() {
     if (!window.selectedElement) return;
 
     const name = input.name;
-    const value = input.type === "checkbox" ? input.checked : input.value;
+    let value;
+    
+    // Input tipine göre değer al
+    if (input.type === "checkbox") {
+      value = input.checked;
+    } else {
+      value = input.value;
+    }
 
     // Özel özellik güncellemeleri
     if (name === "label") {
@@ -662,6 +670,18 @@ document.addEventListener("DOMContentLoaded", function() {
           });
         }
       }
+    } else if (name === "checkbox_label" && window.selectedElement.dataset.type === "checkbox") {
+      window.selectedElement.properties.checkbox_label = value;
+      window.updateElementContent();
+    } else if (name === "default_value_text" && window.selectedElement.dataset.type === "checkbox") {
+      window.selectedElement.properties.default_value_text = value;
+      window.updateElementContent();
+    } else if (name === "switch_label" && window.selectedElement.dataset.type === "switch") {
+      window.selectedElement.properties.switch_label = value;
+      window.updateElementContent();
+    } else if (name === "default_value_text" && window.selectedElement.dataset.type === "switch") {
+      window.selectedElement.properties.default_value_text = value;
+      window.updateElementContent();
     } else if (name === "name") {
       // Alan adı manuel değiştirildiğinde
       window.selectedElement.properties.name = value;
@@ -714,6 +734,9 @@ document.addEventListener("DOMContentLoaded", function() {
       if (colorPicker) {
         colorPicker.value = value;
       }
+    } else if (name === "is_active" || name === "is_system" || name === "required") {
+      // Boolean özellikleri doğrudan güncelle
+      window.selectedElement.properties[name] = value;
     } else {
       // Genel özellik güncelleme
       window.selectedElement.properties[name] = value;
@@ -929,9 +952,108 @@ document.addEventListener("DOMContentLoaded", function() {
     if (type === "row") {
       window.updateRowContent();
     } else {
+      // Şablon özellikleri oluştur
+      const templateProps = {...properties};
+      
+      // Checkbox için özel özellikler
+      if (type === "checkbox") {
+        templateProps.checkbox_label = properties.checkbox_label || "Onay";
+        templateProps.default_value_text = properties.default_value_text || "";
+        
+        // Varsayılan durum için HTML özelliğini ayarla (düz mantık)
+        if (properties.default_value === true || properties.default_value === "true") {
+          templateProps.default_value = "checked";
+        } else {
+          templateProps.default_value = "";
+        }
+      }
+      
+      // Switch (anahtar) için özel özellikler
+      if (type === "switch") {
+        templateProps.switch_label = properties.switch_label || "Anahtar";
+        templateProps.default_value_text = properties.default_value_text || "";
+        
+        // Varsayılan durum için HTML özelliğini ayarla
+        if (properties.default_value === true || properties.default_value === "true") {
+          templateProps.default_value = "checked";
+        } else {
+          templateProps.default_value = "";
+        }
+      }
+      
+      // Select (açılır liste) için özel işlemler
+      if (type === "select" && properties.options && properties.options.length > 0) {
+        // Seçenek listesini oluştur
+        const content = window.selectedElement.querySelector(".element-content");
+        const select = content.querySelector("select");
+        
+        if (select) {
+          // İlk seçeneği koru (placeholder)
+          const placeholder = select.querySelector('option[disabled]');
+          select.innerHTML = '';
+          
+          if (placeholder) {
+            select.appendChild(placeholder);
+          }
+          
+          // Seçenekleri ekle
+          properties.options.forEach(option => {
+            const optionElement = document.createElement('option');
+            optionElement.value = option.value;
+            optionElement.textContent = option.label;
+            
+            // Varsayılan seçeneği seç
+            if (option.is_default || properties.default_value === option.value) {
+              optionElement.selected = true;
+            }
+            
+            select.appendChild(optionElement);
+          });
+        }
+      }
+      
+      // Radio (seçim düğmeleri) için özel işlemler
+      if (type === "radio" && properties.options && properties.options.length > 0) {
+        // Seçenek listesini oluştur
+        const content = window.selectedElement.querySelector(".element-content");
+        const radioOptions = content.querySelector(".radio-options");
+        
+        if (radioOptions) {
+          radioOptions.innerHTML = '';
+          
+          // Seçenekleri ekle
+          properties.options.forEach((option, index) => {
+            const radioDiv = document.createElement('div');
+            radioDiv.className = 'form-check';
+            
+            const radioInput = document.createElement('input');
+            radioInput.className = 'form-check-input';
+            radioInput.type = 'radio';
+            radioInput.name = properties.name;
+            radioInput.id = `${properties.name}_${index}`;
+            radioInput.value = option.value;
+            radioInput.setAttribute('onchange', 'window.updateRadioState(this)');
+            
+            // Varsayılan seçeneği seç
+            if (option.is_default || properties.default_value === option.value) {
+              radioInput.checked = true;
+            }
+            
+            const radioLabel = document.createElement('label');
+            radioLabel.className = 'form-check-label';
+            radioLabel.htmlFor = `${properties.name}_${index}`;
+            radioLabel.textContent = option.label;
+            
+            radioDiv.appendChild(radioInput);
+            radioDiv.appendChild(radioLabel);
+            radioOptions.appendChild(radioDiv);
+          });
+        }
+      }
+      
       // Normal elementler için içeriği güncelle
       const content = window.selectedElement.querySelector(".element-content");
-      content.innerHTML = window.renderTemplate(window.elementTemplates[type], properties);
+      content.innerHTML = window.renderTemplate(window.elementTemplates[type], templateProps);
 
       // Select ve radio için seçenekleri ekle
       if (type === "select" && properties.options) {
@@ -1101,6 +1223,214 @@ document.addEventListener("DOMContentLoaded", function() {
     
     // SortableJS'yi yeniden başlat
     window.initializeColumnSortables();
+  };
+  
+  // Canvas'taki onay kutusunun durumu değiştiğinde özellikler panelini güncelle
+  window.updateCheckboxState = function(checkbox) {
+    // Onay kutusunun bulunduğu form elementini bul
+    const formElement = checkbox.closest('.form-element');
+    if (!formElement) return;
+    
+    // Eğer bu element seçili değilse, önce seç
+    if (window.selectedElement !== formElement) {
+      // Mevcut seçili elementi temizle
+      if (window.selectedElement) {
+        window.selectedElement.classList.remove('selected');
+      }
+      
+      // Yeni elementi seç
+      window.selectedElement = formElement;
+      window.selectedElement.classList.add('selected');
+      
+      // Özellikler panelini güncelle
+      window.updatePropertiesPanel();
+    }
+    
+    // Onay kutusunun durumunu al
+    const isChecked = checkbox.checked;
+    
+    // Özellikler panelindeki radio butonlarını güncelle
+    const defaultValueTrue = window.propertiesPanel.querySelector('#default_value_true');
+    const defaultValueFalse = window.propertiesPanel.querySelector('#default_value_false');
+    
+    if (defaultValueTrue && defaultValueFalse) {
+      // Düz mantık: Onay kutusu işaretli ise, "İşaretli" seçeneği seçili olmalı
+      if (isChecked) {
+        defaultValueTrue.checked = true;
+        defaultValueFalse.checked = false;
+        window.selectedElement.properties.default_value = true;
+      } else {
+        defaultValueFalse.checked = true;
+        defaultValueTrue.checked = false;
+        window.selectedElement.properties.default_value = false;
+      }
+      
+      // Durum kaydet
+      window.saveState();
+    }
+    
+    // Olayın yayılmasını durdur (tıklama olayının form elementine ulaşmasını engelle)
+    event.stopPropagation();
+  };
+  
+  // Canvas'taki anahtarın durumu değiştiğinde özellikler panelini güncelle
+  window.updateSwitchState = function(switchElement) {
+    // Anahtarın bulunduğu form elementini bul
+    const formElement = switchElement.closest('.form-element');
+    if (!formElement) return;
+    
+    // Eğer bu element seçili değilse, önce seç
+    if (window.selectedElement !== formElement) {
+      // Mevcut seçili elementi temizle
+      if (window.selectedElement) {
+        window.selectedElement.classList.remove('selected');
+      }
+      
+      // Yeni elementi seç
+      window.selectedElement = formElement;
+      window.selectedElement.classList.add('selected');
+      
+      // Özellikler panelini güncelle
+      window.updatePropertiesPanel();
+    }
+    
+    // Anahtarın durumunu al
+    const isChecked = switchElement.checked;
+    
+    // Özellikler panelindeki radio butonlarını güncelle
+    const defaultValueTrue = window.propertiesPanel.querySelector('#default_value_true');
+    const defaultValueFalse = window.propertiesPanel.querySelector('#default_value_false');
+    
+    if (defaultValueTrue && defaultValueFalse) {
+      // Düz mantık: Anahtar açık ise, "Açık" seçeneği seçili olmalı
+      if (isChecked) {
+        defaultValueTrue.checked = true;
+        defaultValueFalse.checked = false;
+        window.selectedElement.properties.default_value = true;
+      } else {
+        defaultValueFalse.checked = true;
+        defaultValueTrue.checked = false;
+        window.selectedElement.properties.default_value = false;
+      }
+      
+      // Durum kaydet
+      window.saveState();
+    }
+    
+    // Olayın yayılmasını durdur (tıklama olayının form elementine ulaşmasını engelle)
+    event.stopPropagation();
+  };
+  
+  // Canvas'taki açılır listenin durumu değiştiğinde özellikler panelini güncelle
+  window.updateSelectState = function(selectElement) {
+    // Açılır listenin bulunduğu form elementini bul
+    const formElement = selectElement.closest('.form-element');
+    if (!formElement) return;
+    
+    // Eğer bu element seçili değilse, önce seç
+    if (window.selectedElement !== formElement) {
+      // Mevcut seçili elementi temizle
+      if (window.selectedElement) {
+        window.selectedElement.classList.remove('selected');
+      }
+      
+      // Yeni elementi seç
+      window.selectedElement = formElement;
+      window.selectedElement.classList.add('selected');
+      
+      // Özellikler panelini güncelle
+      window.updatePropertiesPanel();
+    }
+    
+    // Seçilen değeri al
+    const selectedValue = selectElement.value;
+    
+    // Özellikler panelindeki seçenekleri güncelle
+    if (window.selectedElement.properties.options && window.selectedElement.properties.options.length > 0) {
+      // Tüm seçeneklerin varsayılan değerini sıfırla
+      window.selectedElement.properties.options.forEach(option => {
+        option.is_default = option.value === selectedValue;
+      });
+      
+      // Varsayılan değeri güncelle
+      window.selectedElement.properties.default_value = selectedValue;
+      
+      // Özellikler panelindeki seçenekleri güncelle
+      const optionsContainer = window.propertiesPanel.querySelector('.options-container');
+      if (optionsContainer) {
+        const optionItems = optionsContainer.querySelectorAll('.option-item');
+        optionItems.forEach(item => {
+          const optionValue = item.querySelector('input[name="option_value"]').value;
+          const isDefaultCheckbox = item.querySelector('input[type="checkbox"]');
+          
+          if (isDefaultCheckbox) {
+            isDefaultCheckbox.checked = optionValue === selectedValue;
+          }
+        });
+      }
+      
+      // Durum kaydet
+      window.saveState();
+    }
+    
+    // Olayın yayılmasını durdur
+    event.stopPropagation();
+  };
+  
+  // Canvas'taki seçim düğmelerinin durumu değiştiğinde özellikler panelini güncelle
+  window.updateRadioState = function(radioElement) {
+    // Seçim düğmesinin bulunduğu form elementini bul
+    const formElement = radioElement.closest('.form-element');
+    if (!formElement) return;
+    
+    // Eğer bu element seçili değilse, önce seç
+    if (window.selectedElement !== formElement) {
+      // Mevcut seçili elementi temizle
+      if (window.selectedElement) {
+        window.selectedElement.classList.remove('selected');
+      }
+      
+      // Yeni elementi seç
+      window.selectedElement = formElement;
+      window.selectedElement.classList.add('selected');
+      
+      // Özellikler panelini güncelle
+      window.updatePropertiesPanel();
+    }
+    
+    // Seçilen değeri al
+    const selectedValue = radioElement.value;
+    
+    // Özellikler panelindeki seçenekleri güncelle
+    if (window.selectedElement.properties.options && window.selectedElement.properties.options.length > 0) {
+      // Tüm seçeneklerin varsayılan değerini sıfırla
+      window.selectedElement.properties.options.forEach(option => {
+        option.is_default = option.value === selectedValue;
+      });
+      
+      // Varsayılan değeri güncelle
+      window.selectedElement.properties.default_value = selectedValue;
+      
+      // Özellikler panelindeki seçenekleri güncelle
+      const optionsContainer = window.propertiesPanel.querySelector('.options-container');
+      if (optionsContainer) {
+        const optionItems = optionsContainer.querySelectorAll('.option-item');
+        optionItems.forEach(item => {
+          const optionValue = item.querySelector('input[name="option_value"]').value;
+          const isDefaultCheckbox = item.querySelector('input[type="checkbox"]');
+          
+          if (isDefaultCheckbox) {
+            isDefaultCheckbox.checked = optionValue === selectedValue;
+          }
+        });
+      }
+      
+      // Durum kaydet
+      window.saveState();
+    }
+    
+    // Olayın yayılmasını durdur
+    event.stopPropagation();
   };
   
   // Türkçe karakterleri İngilizce karakterlere dönüştürme

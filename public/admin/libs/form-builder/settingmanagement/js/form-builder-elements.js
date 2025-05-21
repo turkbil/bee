@@ -70,7 +70,9 @@ document.addEventListener("DOMContentLoaded", function() {
       required: false,
       is_active: true,
       is_system: false,
-      default_value: false,
+      default_value: false, // Varsayılan olarak işaretsiz
+      checkbox_label: "Onay",
+      default_value_text: "",
     },
     radio: {
       label: "Seçim Düğmeleri",
@@ -91,11 +93,13 @@ document.addEventListener("DOMContentLoaded", function() {
       label: "Anahtar",
       name: "switch_field",
       help_text: "",
+      active_label: "Evet",
+      inactive_label: "Hayır",
+      default_value: false, // Varsayılan olarak kapalı
       width: 12,
       required: false,
       is_active: true,
       is_system: false,
-      default_value: false,
     },
     color: {
       label: "Renk Seçici",
@@ -335,7 +339,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 <button type="button" class="btn btn-sm" data-action="duplicate">
                     <i class="fas fa-clone"></i>
                 </button>
-<button type="button" class="btn btn-sm text-danger" data-action="remove">
+                <button type="button" class="btn btn-sm text-danger" data-action="remove">
                     <i class="fas fa-trash"></i>
                 </button>
             </div>
@@ -448,10 +452,25 @@ document.addEventListener("DOMContentLoaded", function() {
           window.checkEmptyCanvas();
           window.saveState();
         } else if (action === "duplicate") {
+          // Sistem ayarı olan elementler kopyalanamaz
+          if (formElement.properties.is_system === true) {
+            alert("Sistem ayarları kopyalanamaz.");
+            return;
+          }
+          
           // Kopya oluştururken özellikleri derin kopyalama
           const elementProps = formElement.properties
             ? JSON.parse(JSON.stringify(formElement.properties))
             : JSON.parse(JSON.stringify(window.defaultProperties[type] || {}));
+          
+          // Kopyalanan elementin "is_system" özelliğini false yap
+          elementProps.is_system = false;
+          
+          // Kopyalanan elementin adını değiştir
+          if (elementProps.name) {
+            elementProps.name = elementProps.name + "_copy";
+          }
+          
           const duplicate = window.createFormElement(type, elementProps);
 
           if (duplicate) {

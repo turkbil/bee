@@ -30,15 +30,17 @@
     <script src="{{ asset('admin/libs/sortable/sortable.min.js') }}"></script>
     
     <!-- Form Builder Ana Modüller -->
-    <script src="{{ asset('admin/libs/form-builder/settingmanagement/js/form-builder-core.js') }}"></script>
-    <script src="{{ asset('admin/libs/form-builder/settingmanagement/js/form-builder-elements.js') }}"></script>
     <script src="{{ asset('admin/libs/form-builder/settingmanagement/js/form-builder-templates.js') }}"></script>
+    <script src="{{ asset('admin/libs/form-builder/settingmanagement/js/form-builder-ui.js') }}"></script>
     <script src="{{ asset('admin/libs/form-builder/settingmanagement/js/form-builder-drag-drop.js') }}"></script>
     <script src="{{ asset('admin/libs/form-builder/settingmanagement/js/form-builder-operations.js') }}"></script>
-    <script src="{{ asset('admin/libs/form-builder/settingmanagement/js/form-builder-ui.js') }}"></script>
+    <script src="{{ asset('admin/libs/form-builder/settingmanagement/js/form-builder-elements.js') }}"></script>
+    <script src="{{ asset('admin/libs/form-builder/settingmanagement/js/form-builder-core.js') }}"></script>
     <script src="{{ asset('admin/libs/form-builder/settingmanagement/js/form-builder.js') }}"></script>
     
+    <!-- Özel JavaScript -->
     @stack('scripts')
+    
     @livewireScripts
 </body>
 </html>

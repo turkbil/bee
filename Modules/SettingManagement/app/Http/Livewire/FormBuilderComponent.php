@@ -56,6 +56,6 @@ class FormBuilderComponent extends Component
     public function render()
     {
         return view('settingmanagement::form-builder.edit')
-            ->layout('settingmanagement::layouts.form-builder');
+            ->layout('settingmanagement::form-builder.layout');
     }
 }

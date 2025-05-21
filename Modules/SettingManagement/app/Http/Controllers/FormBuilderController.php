@@ -111,7 +111,6 @@ class FormBuilderController extends Controller
             }
             
             $settings = Setting::where('group_id', $groupId)
-                ->where('is_active', true)
                 ->select('id', 'label', 'key', 'type', 'is_active', 'is_system', 'is_required')
                 ->orderBy('sort_order', 'asc')
                 ->get();

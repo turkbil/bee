@@ -22,7 +22,7 @@
             <div class="card-header">
                 <div class="d-flex align-items-center justify-content-between">
                     <h3 class="card-title d-flex align-items-center">
-                        <i class="fas fa-align-left me-2 text-primary"></i>
+                        <i class="fa-regular fa-comment fa-flip-horizontal me-2 text-primary"></i>
                         {{ $element['properties']['label'] ?? 'Uzun Metin' }}
                     </h3>
                 </div>

@@ -104,21 +104,18 @@ Route::middleware(['web', 'auth', 'tenant'])
                     ->where('id', '[0-9]+')
                     ->name('modules.preview');
 
-                // Widget Form Builder routes - Livewire yaklaşımıyla
-                Route::get('/form-builder/{widgetId}/{schemaType?}', WidgetFormBuilderComponent::class)
-                    ->middleware('module.permission:widgetmanagement,update')
-                    ->name('form-builder.edit');
-
-                // Widget Form Builder form kayıt işlemi için POST route
-                Route::post('/form-builder/{widgetId}/save', [WidgetFormBuilderController::class, 'save'])
-                    ->middleware('module.permission:widgetmanagement,update')
-                    ->name('form-builder.save');
-
-                // Widget Form Builder API endpoints
+                // Widget Form Builder API endpoints - ÖNCELİKLİ ROUTE'LAR
                 Route::get('/form-builder/{widgetId}/load', [WidgetFormBuilderController::class, 'load'])
                     ->middleware('module.permission:widgetmanagement,view')
                     ->name('form-builder.load');
 
+                Route::post('/form-builder/{widgetId}/save', [WidgetFormBuilderController::class, 'save'])
+                    ->middleware('module.permission:widgetmanagement,update')
+                    ->name('form-builder.save');
 
+                // Widget Form Builder routes - Livewire yaklaşımıyla
+                Route::get('/form-builder/{widgetId}/{schemaType?}', WidgetFormBuilderComponent::class)
+                    ->middleware('module.permission:widgetmanagement,update')
+                    ->name('form-builder.edit');
             });
     });

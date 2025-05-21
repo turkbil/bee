@@ -12,6 +12,8 @@ use Modules\WidgetManagement\app\Http\Livewire\WidgetCategoryComponent;
 use Modules\WidgetManagement\app\Http\Controllers\WidgetPreviewController;
 use Modules\WidgetManagement\app\Http\Livewire\FileWidgetListComponent;
 use Modules\WidgetManagement\app\Http\Livewire\ModuleWidgetListComponent;
+use Modules\WidgetManagement\app\Http\Controllers\WidgetFormBuilderController;
+use Modules\WidgetManagement\app\Http\Livewire\WidgetFormBuilderComponent;
 
 Route::middleware(['web', 'auth', 'tenant'])
     ->prefix('admin')
@@ -82,11 +84,6 @@ Route::middleware(['web', 'auth', 'tenant'])
                 Route::get('/category', WidgetCategoryComponent::class)
                     ->middleware('module.permission:widgetmanagement,view')
                     ->name('category.index');
-                
-                // Artık ayrı bir düzenleme/ekleme sayfasına gerek yok, tek sayfada birleştirildi
-                // Route::get('/category/manage/{id?}', WidgetCategoryManageComponent::class)
-                //     ->middleware('module.permission:widgetmanagement,update')
-                //     ->name('category.manage');
 
                 // File Widget Routes (sadece root yetkileri)
                 Route::get('/file-widgets', FileWidgetListComponent::class)
@@ -98,15 +95,30 @@ Route::middleware(['web', 'auth', 'tenant'])
                     ->where('id', '[0-9]+')
                     ->name('file.preview');
                     
-                // Module Widget Routes (sadece root yetkileri)
                 Route::get('/modules', ModuleWidgetListComponent::class)
                     ->middleware(['role:root'])
                     ->name('modules');
                 
-                // YENİ EKLENEN ROUTE - Module Widget Önizleme
                 Route::get('/modules/preview/{id}', [WidgetPreviewController::class, 'showModule'])
                     ->middleware(['role:root'])
                     ->where('id', '[0-9]+')
                     ->name('modules.preview');
+
+                // Widget Form Builder routes - Livewire yaklaşımıyla
+                Route::get('/form-builder/{widgetId}/{schemaType?}', WidgetFormBuilderComponent::class)
+                    ->middleware('module.permission:widgetmanagement,update')
+                    ->name('form-builder.edit');
+
+                // Widget Form Builder form kayıt işlemi için POST route
+                Route::post('/form-builder/{widgetId}/save', [WidgetFormBuilderController::class, 'save'])
+                    ->middleware('module.permission:widgetmanagement,update')
+                    ->name('form-builder.save');
+
+                // Widget Form Builder API endpoints
+                Route::get('/form-builder/{widgetId}/load', [WidgetFormBuilderController::class, 'load'])
+                    ->middleware('module.permission:widgetmanagement,view')
+                    ->name('form-builder.load');
+
+
             });
     });

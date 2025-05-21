@@ -76,16 +76,12 @@
                                         <a href="{{ cdn($setting->current_value) }}" target="_blank" class="text-truncate">
                                             {{ basename($setting->current_value) }}
                                         </a>
-                                        <a href="{{ route('admin.settingmanagement.value', $setting->id) }}" class="btn btn-sm btn-link ms-2">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
+                                        <!-- Değer Düzenle bağlantısı kaldırıldı -->
                                     </div>
                                 @elseif($setting->type === 'image' && $setting->current_value)
                                     <div class="d-flex align-items-center">
                                         <img src="{{ cdn($setting->current_value) }}" class="img-thumbnail me-2" style="max-width: 40px; max-height: 40px;">
-                                        <a href="{{ route('admin.settingmanagement.value', $setting->id) }}" class="btn btn-sm btn-link">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
+                                        <!-- Değer Düzenle bağlantısı kaldırıldı -->
                                     </div>
                                 @elseif($setting->type === 'checkbox')
                                     {{ $setting->current_value == '1' ? 'Evet' : 'Hayır' }}
@@ -101,9 +97,7 @@
                                 <span class="badge bg-blue-lt">{{ $setting->type }}</span>
                             </td>
                             <td>
-                                <a href="{{ route('admin.settingmanagement.value', $setting->id) }}" class="btn btn-icon btn-sm">
-                                    <i class="fas fa-edit"></i>
-                                </a>
+                                <!-- Değer Düzenle bağlantısı kaldırıldı -->
                             </td>
                         </tr>
                         @endforeach

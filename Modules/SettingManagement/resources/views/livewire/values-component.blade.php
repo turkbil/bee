@@ -7,17 +7,11 @@
                 <i class="fas fa-cogs me-2"></i>
                 {{ $group->name }} - Ayar Değerleri
             </h3>
-            <a href="{{ route('admin.settingmanagement.items', $groupId) }}" class="btn btn-outline-primary">
-                <i class="fas fa-list me-2"></i> Ayarları Yönet
-            </a>
         </div>
     </div>
     
     <div class="card-body">
         @if(isset($group->layout) && !empty($group->layout) && is_array($group->layout))
-            @if(isset($group->layout['title']))
-                <h3 class="form-title mb-4">{{ $group->layout['title'] }}</h3>
-            @endif
 
             @if(isset($group->layout['elements']) && is_array($group->layout['elements']))
                 @foreach($group->layout['elements'] as $element)
@@ -276,9 +270,9 @@
         @endif
     </div>
     <div class="card-footer d-flex justify-content-between align-items-center">
-        <a href="{{ route('admin.settingmanagement.items', $groupId) }}" class="btn btn-link text-decoration-none">
+        <a href="{{ route('admin.settingmanagement.index') }}" class="btn btn-link text-decoration-none">
             <i class="fas fa-arrow-left me-2"></i>
-            Geri Dön
+            Grup Listesine Dön
         </a>
 
         <div class="d-flex gap-2">

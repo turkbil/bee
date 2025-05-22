@@ -1,90 +1,70 @@
 @php
     $fieldName = $element['name'] ?? '';
     $fieldType = $element['type'] ?? 'text';
-    $fieldLabel = $element['properties']['label'] ?? '';
-    $isRequired = isset($element['properties']['required']) && $element['properties']['required'];
-    $placeholder = $element['properties']['placeholder'] ?? '';
-    $helpText = $element['properties']['help_text'] ?? '';
-    $isSystem = isset($element['properties']['system']) && $element['properties']['system'];
+    $fieldLabel = $element['label'] ?? '';
+    $isRequired = isset($element['required']) && $element['required'];
+    $placeholder = $element['placeholder'] ?? '';
+    $helpText = $element['help_text'] ?? '';
+    $isSystem = isset($element['system']) && $element['system'];
     $width = isset($element['properties']['width']) ? $element['properties']['width'] : 12;
-    
-    $settingId = null;
-    $settingKey = null;
-    
-    if(isset($element['properties']['setting_id'])) {
-        $settingId = $element['properties']['setting_id'];
-    } elseif(isset($element['properties']['name'])) {
-        $settingName = $element['properties']['name'];
-        
-        // Ayarı adından bul
-        $setting = $settings->firstWhere('key', $settingName);
-        if($setting) {
-            $settingId = $setting->id;
-            $settingKey = $setting->key;
-        }
-    }
+    $defaultValue = isset($element['properties']['default_value']) ? $element['properties']['default_value'] : '';
     
     if(isset($formData)) {
-        $fieldValue = $formData[$fieldName] ?? '';
+        $fieldValue = $formData[$fieldName] ?? $defaultValue;
     } elseif(isset($settings)) {
         $cleanFieldName = str_replace('widget.', '', $fieldName);
-        $fieldValue = $settings[$cleanFieldName] ?? '';
+        $fieldValue = $settings[$cleanFieldName] ?? $defaultValue;
     } else {
-        $fieldValue = '';
+        $fieldValue = $defaultValue;
     }
 @endphp
 
-@if($settingId)
-    <div class="col-{{ $width }}">
-        <div class="card mb-3 w-100">
-            <div class="card-header">
-                <div class="d-flex align-items-center justify-content-between">
-                    <h3 class="card-title d-flex align-items-center">
-                        <i class="fas fa-font me-2 text-primary"></i>
-                        {{ $fieldLabel }}
-                        @if($isSystem)
-                            <span class="badge bg-orange ms-2">Sistem</span>
-                        @endif
-                    </h3>
-                </div>
+<div class="col-{{ $width }}">
+    <div class="card mb-3 w-100">
+        <div class="card-header">
+            <div class="d-flex align-items-center justify-content-between">
+                <h3 class="card-title d-flex align-items-center">
+                    <i class="fas fa-font me-2 text-primary"></i>
+                    {{ $fieldLabel }}
+                    @if($isSystem)
+                        <span class="badge bg-orange ms-2">Sistem</span>
+                    @endif
+                </h3>
             </div>
-            <div class="card-body">
-                <div class="form-group w-100">
-                    <div class="input-icon w-100">
-                        <span class="input-icon-addon">
-                            <i class="fas fa-font"></i>
-                        </span>
-                        <input 
-                            type="text" 
-                            wire:model="values.{{ $settingId }}" 
-                            class="form-control w-100" 
+        </div>
+        <div class="card-body">
+            <div class="form-group w-100">
+                @if(isset($formData))
+                    <div class="mb-2">
+                        <input type="{{ $fieldType }}" 
+                            wire:model="formData.{{ $fieldName }}" 
+                            class="form-control @error('formData.' . $fieldName) is-invalid @enderror" 
                             placeholder="{{ $placeholder }}"
                             @if($isRequired) required @endif>
+                        @error('formData.' . $fieldName)
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
-                    
-                    @if($helpText)
-                        <div class="form-text text-muted mt-2">
-                            <i class="fas fa-info-circle me-1"></i>
-                            {{ $helpText }}
-                        </div>
-                    @endif
-                    
-                    @if(isset($originalValues[$settingId]) && $originalValues[$settingId] != $values[$settingId])
-                        <div class="mt-2 text-end">
-                            <span class="badge bg-yellow cursor-pointer" wire:click="resetToDefault({{ $settingId }})">
-                                <i class="fas fa-undo me-1"></i> Varsayılana Döndür
-                            </span>
-                        </div>
-                    @endif
-                </div>
+                @else
+                    <div class="mb-2">
+                        <input type="{{ $fieldType }}" 
+                            wire:model="settings.{{ str_replace('widget.', '', $fieldName) }}" 
+                            class="form-control @error('settings.' . str_replace('widget.', '', $fieldName)) is-invalid @enderror" 
+                            placeholder="{{ $placeholder }}"
+                            @if($isRequired) required @endif>
+                        @error('settings.' . str_replace('widget.', '', $fieldName))
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                @endif
+                
+                @if($helpText)
+                    <div class="form-text text-muted mt-2">
+                        <i class="fas fa-info-circle me-1"></i>
+                        {{ $helpText }}
+                    </div>
+                @endif
             </div>
         </div>
     </div>
-@else
-    <div class="col-{{ $width }}">
-        <div class="alert alert-danger mb-3 w-100">
-            <i class="fas fa-exclamation-circle me-2"></i>
-            Bu metin alanı için ayar bulunamadı: {{ $element['properties']['name'] ?? 'Bilinmeyen' }}
-        </div>
-    </div>
-@endif
+</div>

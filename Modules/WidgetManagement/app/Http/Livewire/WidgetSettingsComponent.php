@@ -35,35 +35,75 @@ class WidgetSettingsComponent extends Component
         $this->schema = $this->tenantWidget->widget->getSettingsSchema();
         $this->settings = $this->tenantWidget->settings ?? [];
         
-        // Unique ID'yi gizle - otomatik olarak oluşturulacak, kullanıcının görüp düzenlemesine gerek yok
-        $this->schema = array_filter($this->schema ?? [], function($field) {
-            // Önce name anahtarının var olup olmadığını kontrol et
-            if (!isset($field['name'])) return true; // name yoksa filtreleme
-            
-            // name varsa unique_id ve id olmadığını kontrol et
-            return $field['name'] !== 'unique_id' && $field['name'] !== 'id';
-        });
+        $this->processSchema();
         
-        // Benzersiz ID yoksa otomatik ekle
         if (!isset($this->settings['unique_id'])) {
             $this->settings['unique_id'] = (string) Str::uuid();
         }
         
-        // Title yoksa, widget adını kullan
         if (!isset($this->settings['title'])) {
             $this->settings['title'] = $this->tenantWidget->widget->name;
         }
     }
     
+    protected function processSchema()
+    {
+        if (!is_array($this->schema)) {
+            $this->schema = [];
+        }
+        
+        $this->schema = array_filter($this->schema ?? [], function($field) {
+            if (!isset($field['name'])) return true;
+            return $field['name'] !== 'unique_id' && $field['name'] !== 'id';
+        });
+        
+        $hasTitle = false;
+        $hasUniqueId = false;
+        
+        foreach ($this->schema as $field) {
+            if (!isset($field['name'])) continue;
+            
+            if ($field['name'] === 'title') $hasTitle = true;
+            if ($field['name'] === 'unique_id') $hasUniqueId = true;
+        }
+        
+        if (!$hasTitle) {
+            array_unshift($this->schema, [
+                'name' => 'title',
+                'label' => 'Widget Başlığı',
+                'type' => 'text',
+                'required' => true,
+                'system' => true,
+                'properties' => [
+                    'width' => 12,
+                    'placeholder' => 'Widget başlığını giriniz',
+                    'default_value' => $this->tenantWidget->widget->name
+                ]
+            ]);
+        }
+        
+        if (!$hasUniqueId) {
+            $this->schema[] = [
+                'name' => 'unique_id',
+                'label' => 'Benzersiz ID',
+                'type' => 'text',
+                'required' => false,
+                'system' => true,
+                'hidden' => true,
+                'properties' => [
+                    'width' => 12
+                ]
+            ];
+        }
+    }
+    
     public function save()
     {
-        // Form alanlarını doğrula
         $rules = [];
         
         foreach ($this->schema as $field) {
-            // Satır tipi elementleri veya geçersiz alanları atla
             if (!isset($field['name']) || !isset($field['type'])) continue;
-            if ($field['type'] === 'row') continue; // Satır tipi elementleri atla
+            if ($field['type'] === 'row') continue;
             
             if (isset($field['required']) && $field['required'] && $field['name'] !== 'unique_id' && $field['name'] !== 'id') {
                 $rules['settings.' . $field['name']] = 'required';
@@ -72,7 +112,6 @@ class WidgetSettingsComponent extends Component
         
         $this->validate($rules);
 
-        // Dosya yüklemeleri
         foreach ($this->temporaryUpload as $fieldName => $upload) {
             if ($upload) {
                 $tenantId = tenant()->id ?? 'central';
@@ -82,7 +121,6 @@ class WidgetSettingsComponent extends Component
             }
         }
 
-        // Eğer benzersiz ID yoksa, yeni bir tane oluştur
         if (!isset($this->settings['unique_id'])) {
             $this->settings['unique_id'] = (string) Str::uuid();
         }
@@ -91,7 +129,6 @@ class WidgetSettingsComponent extends Component
             'settings' => $this->settings
         ]);
         
-        // Widget önbelleğini temizle
         $this->widgetService->clearWidgetCache(tenant()->id ?? null, $this->tenantWidgetId);
         
         $this->dispatch('toast', [

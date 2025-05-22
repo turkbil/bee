@@ -1,22 +1,22 @@
 @php
     $fieldName = $element['name'] ?? '';
-    $fieldType = $element['type'] ?? 'range';
     $fieldLabel = $element['label'] ?? '';
     $isRequired = isset($element['required']) && $element['required'];
     $helpText = $element['help_text'] ?? '';
     $isSystem = isset($element['system']) && $element['system'];
     $width = isset($element['properties']['width']) ? $element['properties']['width'] : 12;
+    $defaultValue = isset($element['properties']['default_value']) ? $element['properties']['default_value'] : 50;
     $min = isset($element['properties']['min']) ? $element['properties']['min'] : 0;
     $max = isset($element['properties']['max']) ? $element['properties']['max'] : 100;
     $step = isset($element['properties']['step']) ? $element['properties']['step'] : 1;
     
     if(isset($formData)) {
-        $fieldValue = $formData[$fieldName] ?? $min;
+        $fieldValue = $formData[$fieldName] ?? $defaultValue;
     } elseif(isset($settings)) {
         $cleanFieldName = str_replace('widget.', '', $fieldName);
-        $fieldValue = $settings[$cleanFieldName] ?? $min;
+        $fieldValue = $settings[$cleanFieldName] ?? $defaultValue;
     } else {
-        $fieldValue = $min;
+        $fieldValue = $defaultValue;
     }
 @endphp
 
@@ -36,46 +36,40 @@
         <div class="card-body">
             <div class="form-group w-100">
                 @if(isset($formData))
-                    <div class="mb-3 @error('formData.' . $fieldName) is-invalid @enderror">
-                        <div class="form-range mb-2 text-primary" id="range-{{ $fieldName }}" wire:ignore>
-                            <input 
-                                type="range" 
+                    <div class="mb-2">
+                        <div class="d-flex align-items-center">
+                            <span class="me-2">{{ $min }}</span>
+                            <input type="range" 
                                 wire:model="formData.{{ $fieldName }}" 
-                                class="form-range" 
-                                min="{{ $min }}"
-                                max="{{ $max }}"
+                                class="form-range flex-fill @error('formData.' . $fieldName) is-invalid @enderror"
+                                min="{{ $min }}" 
+                                max="{{ $max }}" 
                                 step="{{ $step }}"
-                                onInput="document.getElementById('rangeValue-{{ $fieldName }}').innerHTML = this.value"
-                                @if($isRequired) required @endif
-                            >
+                                @if($isRequired) required @endif>
+                            <span class="ms-2">{{ $max }}</span>
                         </div>
-                        <div class="d-flex justify-content-between">
-                            <span class="small text-muted">{{ $min }}</span>
-                            <span class="badge bg-primary" id="rangeValue-{{ $fieldName }}">{{ $fieldValue }}</span>
-                            <span class="small text-muted">{{ $max }}</span>
+                        <div class="text-center mt-2">
+                            <small class="text-muted">Seçilen değer: <strong>{{ $fieldValue }}</strong></small>
                         </div>
                         @error('formData.' . $fieldName)
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                 @else
-                    <div class="mb-3 @error('settings.' . str_replace('widget.', '', $fieldName)) is-invalid @enderror">
-                        <div class="form-range mb-2 text-primary" id="range-{{ str_replace('widget.', '', $fieldName) }}" wire:ignore>
-                            <input 
-                                type="range" 
+                    <div class="mb-2">
+                        <div class="d-flex align-items-center">
+                            <span class="me-2">{{ $min }}</span>
+                            <input type="range" 
                                 wire:model="settings.{{ str_replace('widget.', '', $fieldName) }}" 
-                                class="form-range" 
-                                min="{{ $min }}"
-                                max="{{ $max }}"
+                                class="form-range flex-fill @error('settings.' . str_replace('widget.', '', $fieldName)) is-invalid @enderror"
+                                min="{{ $min }}" 
+                                max="{{ $max }}" 
                                 step="{{ $step }}"
-                                onInput="document.getElementById('rangeValue-{{ str_replace('widget.', '', $fieldName) }}').innerHTML = this.value"
-                                @if($isRequired) required @endif
-                            >
+                                @if($isRequired) required @endif>
+                            <span class="ms-2">{{ $max }}</span>
                         </div>
-                        <div class="d-flex justify-content-between">
-                            <span class="small text-muted">{{ $min }}</span>
-                            <span class="badge bg-primary" id="rangeValue-{{ str_replace('widget.', '', $fieldName) }}">{{ $fieldValue }}</span>
-                            <span class="small text-muted">{{ $max }}</span>
+                        <div class="text-center mt-2">
+                            <small class="text-muted">Seçilen değer: <strong>{{ $fieldValue }}</strong></small>
                         </div>
                         @error('settings.' . str_replace('widget.', '', $fieldName))
                             <div class="invalid-feedback d-block">{{ $message }}</div>

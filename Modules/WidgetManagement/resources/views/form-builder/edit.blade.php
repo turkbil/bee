@@ -1,5 +1,4 @@
 <div id="widget-form-builder-app">
-    <!-- Widget Form Builder Header -->
     <div class="studio-header">
         <div class="header-left">
             <div class="toolbar-buttons me-4">
@@ -46,10 +45,8 @@
     </div>
 
     <div class="editor-main">
-        <!-- Sol Panel: Form Elemanları -->
         <div class="panel__left">
             <div id="element-palette">
-                <!-- Düzen Elemanları -->
                 <div class="block-category">
                     <div class="block-category-header">
                         <i class="fas fa-grip-lines-vertical"></i>
@@ -88,7 +85,6 @@
                     </div>
                 </div>
                 
-                <!-- Metin Elemanları -->
                 <div class="block-category">
                     <div class="block-category-header">
                         <i class="fas fa-font"></i>
@@ -127,7 +123,6 @@
                     </div>
                 </div>
                 
-                <!-- Seçim Elemanları -->
                 <div class="block-category">
                     <div class="block-category-header">
                         <i class="fas fa-check-square"></i>
@@ -154,7 +149,6 @@
                     </div>
                 </div>
                 
-                <!-- Veri Tipi Elemanları -->
                 <div class="block-category">
                     <div class="block-category-header">
                         <i class="fas fa-calendar-alt"></i>
@@ -181,7 +175,6 @@
                     </div>
                 </div>
                 
-                <!-- Dosya Elemanları -->
                 <div class="block-category">
                     <div class="block-category-header">
                         <i class="fas fa-file-upload"></i>
@@ -206,9 +199,7 @@
             </div>
         </div>
             
-        <!-- Orta Panel: Form Canvas -->
         <div class="form-canvas">
-            <!-- Loading animasyonu -->
             <div class="canvas-loading" id="canvas-loading">
                 <div class="loading-spinner"></div>
                 <div class="loading-text">Widget form yükleniyor...</div>
@@ -238,7 +229,6 @@
             </div>
         </div>
         
-        <!-- Sağ Panel: Element Özellikleri -->
         <div class="panel__right">
             <div id="properties-panel">
                 <div class="text-center p-4">
@@ -258,16 +248,12 @@
     <input type="hidden" id="schema-type" value="{{ $schemaType }}">
 </div>
 
-
 @push('scripts')
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        // Form yükleme işlemi form-builder.js dosyasında gerçekleştirilecek
-        // Bu nedenle burada form yükleme işlemini kaldırıyoruz
-        // window.formLoadedFromBlade değişkeni ile form-builder.js dosyasında kontrol sağlanacak
-        window.formLoadedFromBlade = true;
-        
         setTimeout(function() {
+            const widgetId = document.getElementById('widget-id').value;
+            const schemaType = document.getElementById('schema-type').value;
             
             window.widgetSaveBtn = window.widgetSaveBtn || document.getElementById('save-btn');
             
@@ -280,7 +266,7 @@
                     const formData = window.getFormJSON();
                     console.log('Widget form verisi kaydediliyor:', formData);
                     
-                    fetch(`/admin/widgetmanagement/form-builder/${widgetId}/save?schema=${schemaType}`, {
+                    fetch(`/admin/widgetmanagement/form-builder/${widgetId}/save/${schemaType}`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

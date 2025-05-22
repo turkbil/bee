@@ -1,14 +1,23 @@
 // Form Builder Temel Değişkenler ve Fonksiyonlar
+// Global değişkenler - sayfa yüklenmeden önce tanımla
+window.settingFormBuilderCoreInitialized = window.settingFormBuilderCoreInitialized || false;
+
 document.addEventListener("DOMContentLoaded", function() {
+    // Eğer zaten başlatıldıysa, tekrar başlatma
+    if (window.settingFormBuilderCoreInitialized) {
+        return;
+    }
+    window.settingFormBuilderCoreInitialized = true;
+    
     // Global değişkenler
-    window.elementCounter = 0;
-    window.selectedElement = null;
-    window.formCanvas = document.getElementById("form-canvas");
-    window.emptyCanvas = document.getElementById("empty-canvas");
-    window.elementPalette = document.getElementById("element-palette");
-    window.propertiesPanel = document.getElementById("properties-panel");
-    window.undoStack = [];
-    window.redoStack = [];
+    window.elementCounter = window.elementCounter || 0;
+    window.selectedElement = window.selectedElement || null;
+    window.formCanvas = window.formCanvas || document.getElementById("form-canvas");
+    window.emptyCanvas = window.emptyCanvas || document.getElementById("empty-canvas");
+    window.elementPalette = window.elementPalette || document.getElementById("element-palette");
+    window.propertiesPanel = window.propertiesPanel || document.getElementById("properties-panel");
+    window.undoStack = window.undoStack || [];
+    window.redoStack = window.redoStack || [];
     
     // Element seçimi
     window.selectElement = function(element) {

@@ -1,6 +1,22 @@
 // Widget Management Form Builder İşlemleri
 
 document.addEventListener("DOMContentLoaded", function() {
+  if (window.widgetFormBuilderOperationsInitialized) {
+    return;
+  }
+  window.widgetFormBuilderOperationsInitialized = true;
+  
+  // Row element için sütun genişliklerini yönetme
+  document.addEventListener('change', function(e) {
+    if (e.target.matches('select[name="column-count"]')) {
+      const columnCount = parseInt(e.target.value);
+      updateRowColumns(columnCount);
+    } else if (e.target.matches('.column-width-select')) {
+      const columnIndex = e.target.dataset.columnIndex;
+      const width = parseInt(e.target.value);
+      updateColumnWidth(columnIndex, width);
+    }
+  });
   // Benzersiz alan adı oluşturmak için yardımcı fonksiyon
   window.makeNameUnique = function(baseName) {
     const allElements = window.formCanvas.querySelectorAll('.form-element');
@@ -1137,5 +1153,178 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     
     return slug;
+  };
+  
+  // Row sütun sayısını güncelleme fonksiyonu
+  window.updateRowColumns = function(columnCount) {
+    if (!window.selectedElement || !window.selectedElement.classList.contains('row-element')) {
+      return;
+    }
+    
+    // Mevcut sütunları al
+    const columns = window.selectedElement.querySelectorAll('.column-element');
+    const currentColumnCount = columns.length;
+    
+    // Sütun genişliklerini al
+    const columnWidths = [];
+    columns.forEach(column => {
+      columnWidths.push(parseInt(column.dataset.width) || 6);
+    });
+    
+    // Sütun sayısı değişmediyse sadece genişlikleri güncelle
+    if (columnCount === currentColumnCount) {
+      updateColumnWidthsUI(columnWidths);
+      return;
+    }
+    
+    // Sütun ekle veya çıkar
+    if (columnCount > currentColumnCount) {
+      // Yeni sütunlar ekle
+      for (let i = currentColumnCount; i < columnCount; i++) {
+        const newColumn = document.createElement('div');
+        newColumn.className = 'col-12 col-md-6 column-element';
+        newColumn.dataset.width = '6';
+        
+        const placeholder = document.createElement('div');
+        placeholder.className = 'column-placeholder';
+        placeholder.innerHTML = '<i class="fas fa-plus me-2"></i> Buraya element sürükleyin';
+        
+        newColumn.appendChild(placeholder);
+        window.selectedElement.appendChild(newColumn);
+        columnWidths.push(6); // Varsayılan genişlik 6
+      }
+    } else {
+      // Sütunları kaldır
+      for (let i = currentColumnCount - 1; i >= columnCount; i--) {
+        const column = columns[i];
+        // Sütunda element varsa uyarı ver
+        if (column.querySelectorAll('.form-element').length > 0) {
+          if (!confirm('Bu sütunda elementler var. Silmek istediğinize emin misiniz?')) {
+            // İptal edildi, sütun sayısını geri al
+            const select = document.querySelector('select[name="column-count"]');
+            select.value = currentColumnCount;
+            return;
+          }
+        }
+        column.remove();
+        columnWidths.pop();
+      }
+    }
+    
+    // Sütun genişliklerini eşit dağıt
+    const equalWidth = Math.floor(12 / columnCount);
+    const remainder = 12 % columnCount;
+    
+    for (let i = 0; i < columnCount; i++) {
+      columnWidths[i] = equalWidth + (i < remainder ? 1 : 0);
+    }
+    
+    // Sütun genişliklerini güncelle
+    const updatedColumns = window.selectedElement.querySelectorAll('.column-element');
+    updatedColumns.forEach((column, index) => {
+      column.className = `col-12 col-md-${columnWidths[index]} column-element`;
+      column.dataset.width = columnWidths[index];
+    });
+    
+    // Arayüzü güncelle
+    updateColumnWidthsUI(columnWidths);
+    
+    // Değişiklikleri kaydet
+    window.saveFormState();
+  };
+  
+  // Sütun genişliğini güncelleme fonksiyonu
+  window.updateColumnWidth = function(columnIndex, width) {
+    if (!window.selectedElement || !window.selectedElement.classList.contains('row-element')) {
+      return;
+    }
+    
+    // Tüm sütunları al
+    const columns = window.selectedElement.querySelectorAll('.column-element');
+    if (columnIndex >= columns.length) {
+      return;
+    }
+    
+    // Mevcut genişlikleri al
+    const columnWidths = [];
+    columns.forEach(column => {
+      columnWidths.push(parseInt(column.dataset.width) || 6);
+    });
+    
+    // Toplam genişliği hesapla
+    const oldWidth = columnWidths[columnIndex];
+    const totalWidth = columnWidths.reduce((sum, width) => sum + width, 0);
+    const otherColumnsWidth = totalWidth - oldWidth;
+    
+    // Yeni genişlik toplamı 12'yi geçmemelidir
+    if (width + otherColumnsWidth > 12) {
+      width = 12 - otherColumnsWidth;
+    }
+    
+    // Genişlik en az 1 olmalıdır
+    if (width < 1) width = 1;
+    
+    // Genişliği güncelle
+    columnWidths[columnIndex] = width;
+    
+    // Sütun sınıflarını güncelle
+    columns[columnIndex].className = `col-12 col-md-${width} column-element`;
+    columns[columnIndex].dataset.width = width;
+    
+    // Arayüzü güncelle
+    updateColumnWidthsUI(columnWidths);
+    
+    // Değişiklikleri kaydet
+    window.saveFormState();
+  };
+  
+  // Sütun genişlikleri için arayüzü güncelleme
+  function updateColumnWidthsUI(columnWidths) {
+    const container = document.getElementById('column-widths-container');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    columnWidths.forEach((width, index) => {
+      const rowDiv = document.createElement('div');
+      rowDiv.className = 'mb-2 d-flex align-items-center';
+      
+      rowDiv.innerHTML = `
+        <label class="form-label me-2 mb-0" style="min-width: 80px;">Sütun ${index + 1}:</label>
+        <select class="form-select column-width-select" data-column-index="${index}">
+          ${[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(w => 
+            `<option value="${w}" ${w === width ? 'selected' : ''}>${w}/12</option>`
+          ).join('')}
+        </select>
+      `;
+      
+      container.appendChild(rowDiv);
+    });
+  }
+  
+  // Row element seçildiğinde sütun genişliklerini güncelle
+  const originalShowProperties = window.showProperties;
+  window.showProperties = function(element) {
+    originalShowProperties(element);
+    
+    if (element.classList.contains('row-element')) {
+      // Sütun sayısını ayarla
+      const columns = element.querySelectorAll('.column-element');
+      const columnCount = columns.length;
+      
+      const columnCountSelect = document.querySelector('select[name="column-count"]');
+      if (columnCountSelect) {
+        columnCountSelect.value = columnCount;
+      }
+      
+      // Sütun genişliklerini al
+      const columnWidths = [];
+      columns.forEach(column => {
+        columnWidths.push(parseInt(column.dataset.width) || 6);
+      });
+      
+      // Arayüzü güncelle
+      updateColumnWidthsUI(columnWidths);
+    }
   };
 });

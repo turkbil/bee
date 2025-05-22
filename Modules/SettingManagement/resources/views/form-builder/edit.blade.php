@@ -290,14 +290,14 @@
             });
             
             // Kaydet butonuna tıklama olayı
-            const saveBtn = document.getElementById('save-btn');
+            window.settingSaveBtn = window.settingSaveBtn || document.getElementById('save-btn');
             
-            if (saveBtn) {
-                saveBtn.addEventListener('click', function() {
+            if (window.settingSaveBtn) {
+                window.settingSaveBtn.addEventListener('click', function() {
                     // Buton durumunu güncelle
-                    const originalContent = saveBtn.innerHTML;
-                    saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Kaydediliyor...';
-                    saveBtn.disabled = true;
+                    const originalContent = window.settingSaveBtn.innerHTML;
+                    window.settingSaveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Kaydediliyor...';
+                    window.settingSaveBtn.disabled = true;
                     
                     const formData = window.getFormJSON();
                     console.log('Form verisi kaydediliyor:', formData);
@@ -316,8 +316,8 @@
                     .then(response => response.json())
                     .then(data => {
                         // Buton durumunu geri yükle
-                        saveBtn.innerHTML = originalContent;
-                        saveBtn.disabled = false;
+                        window.settingSaveBtn.innerHTML = originalContent;
+                        window.settingSaveBtn.disabled = false;
                         
                         // Toast mesajı göster
                         showToast(data.success ? 'success' : 'error', 
@@ -328,8 +328,8 @@
                         console.error('Kayıt hatası:', error);
                         
                         // Buton durumunu geri yükle
-                        saveBtn.innerHTML = originalContent;
-                        saveBtn.disabled = false;
+                        window.settingSaveBtn.innerHTML = originalContent;
+                        window.settingSaveBtn.disabled = false;
                         
                         // Hata mesajını göster
                         showToast('error', 'Hata!', 'Form yapısı kaydedilirken bir hata oluştu.');

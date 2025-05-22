@@ -292,7 +292,14 @@ document.addEventListener("DOMContentLoaded", function() {
       window.emptyCanvas.style.display = 'flex';
     }
     
-    window.initializeColumnSortables();
+    setTimeout(() => {
+      window.initializeColumnSortables();
+      
+      const rowElements = window.formCanvas.querySelectorAll('.row-element');
+      if (rowElements.length > 0) {
+        console.log('Toplam ' + rowElements.length + ' row elementi için sütunlar güncelleniyor');
+      }
+    }, 100);
     
     window.saveState();
     

@@ -95,10 +95,14 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   };
 
-  const saveBtn = document.getElementById("save-btn");
-  if (saveBtn && !saveBtn.hasAttribute('data-listener-added')) {
-    saveBtn.setAttribute('data-listener-added', 'true');
-    saveBtn.addEventListener("click", function() {
+  // Global saveBtn değişkenini kontrol et ve oluştur
+  if (!window.widgetSaveBtn) {
+    window.widgetSaveBtn = document.getElementById("save-btn");
+  }
+  
+  if (window.widgetSaveBtn && !window.widgetSaveBtn.hasAttribute('data-listener-added')) {
+    window.widgetSaveBtn.setAttribute('data-listener-added', 'true');
+    window.widgetSaveBtn.addEventListener("click", function() {
       if (!window.getFormJSON) return;
       
       const formData = window.getFormJSON();
@@ -108,9 +112,9 @@ document.addEventListener("DOMContentLoaded", function() {
       const schemaType = document.getElementById('schema-type').value;
       
       if (widgetId && schemaType) {
-        const originalContent = saveBtn.innerHTML;
-        saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Kaydediliyor...';
-        saveBtn.disabled = true;
+        const originalContent = window.widgetSaveBtn.innerHTML;
+        window.widgetSaveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Kaydediliyor...';
+        window.widgetSaveBtn.disabled = true;
         
         fetch(`/admin/widgetmanagement/form-builder/${widgetId}/save?schema=${schemaType}`, {
           method: 'POST',
@@ -129,8 +133,8 @@ document.addEventListener("DOMContentLoaded", function() {
           return response.json();
         })
         .then(data => {
-          saveBtn.innerHTML = originalContent;
-          saveBtn.disabled = false;
+          window.widgetSaveBtn.innerHTML = originalContent;
+          window.widgetSaveBtn.disabled = false;
           
           window.showToast(data.success ? 'success' : 'error', 
                          data.success ? 'Başarılı!' : 'Hata!', 
@@ -139,8 +143,8 @@ document.addEventListener("DOMContentLoaded", function() {
         .catch(error => {
           console.error('Widget kayıt hatası:', error);
           
-          saveBtn.innerHTML = originalContent;
-          saveBtn.disabled = false;
+          window.widgetSaveBtn.innerHTML = originalContent;
+          window.widgetSaveBtn.disabled = false;
           
           window.showToast('error', 'Hata!', 'Widget form yapısı kaydedilirken bir hata oluştu.');
         });

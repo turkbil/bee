@@ -1,5 +1,4 @@
 @php
-    $fieldType = $element['type'] ?? 'divider';
     $fieldLabel = $element['label'] ?? '';
     $width = isset($element['properties']['width']) ? $element['properties']['width'] : 12;
     $thickness = isset($element['properties']['thickness']) ? $element['properties']['thickness'] : 1;
@@ -7,10 +6,10 @@
     $color = isset($element['properties']['color']) ? $element['properties']['color'] : 'var(--tblr-border-color)';
 @endphp
 
-<div class="col-{{ $width }} mb-4">
+<div class="col-{{ $width }} mb-3">
     @if($fieldLabel)
         <div class="d-flex align-items-center mb-2">
-            <span class="text-muted fs-5">{{ $fieldLabel }}</span>
+            <span class="text-muted">{{ $fieldLabel }}</span>
             <hr class="flex-grow-1 ms-2" style="border-top: {{ $thickness }}px {{ $style }} {{ $color }};">
         </div>
     @else

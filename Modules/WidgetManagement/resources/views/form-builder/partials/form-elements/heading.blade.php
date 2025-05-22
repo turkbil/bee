@@ -1,16 +1,9 @@
-@php
-    $content = $element['properties']['content'] ?? $element['content'] ?? 'Başlık Metni';
-    $size = $element['properties']['size'] ?? $element['size'] ?? 'h3';
-    $align = $element['properties']['align'] ?? $element['align'] ?? 'left';
-    $width = isset($element['properties']['width']) ? $element['properties']['width'] : 12;
-@endphp
-
-<div class="col-{{ $width }}">
-    <div class="card mb-3 w-100">
-        <div class="card-body text-center">
-            <{{ $size }} class="text-{{ $align === 'center' ? 'center' : ($align === 'right' ? 'end' : 'start') }}">
-                {{ $content }}
-            </{{ $size }}>
-        </div>
-    </div>
+<div class="col-12 mb-4">
+    @php
+        $headingLevel = isset($element['properties']['size']) ? $element['properties']['size'] : 'h3';
+        $content = isset($element['properties']['content']) ? $element['properties']['content'] : 'Başlık';
+        $align = isset($element['properties']['align']) ? $element['properties']['align'] : 'left';
+    @endphp
+    
+    <{{ $headingLevel }} class="text-{{ $align }} fw-bold text-primary">{{ $content }}</{{ $headingLevel }}>
 </div>

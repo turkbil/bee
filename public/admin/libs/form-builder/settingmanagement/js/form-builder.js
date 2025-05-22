@@ -1,15 +1,24 @@
 // Form Builder Ana Başlatma Kodu
+// Global değişkenler - sayfa yüklenmeden önce tanımla
+window.settingFormBuilderInitialized = window.settingFormBuilderInitialized || false;
+
 document.addEventListener("DOMContentLoaded", function() {
+  // Eğer zaten başlatıldıysa, tekrar başlatma
+  if (window.settingFormBuilderInitialized) {
+    return;
+  }
+  window.settingFormBuilderInitialized = true;
+  
   // Global değişkenler
-  window.elementCounter = 0;
-  window.selectedElement = null;
-  window.formCanvas = document.getElementById("form-canvas");
-  window.emptyCanvas = document.getElementById("empty-canvas");
-  window.elementPalette = document.getElementById("element-palette");
-  window.propertiesPanel = document.getElementById("properties-panel");
-  window.undoStack = [];
-  window.redoStack = [];
-  window.canvasLoading = document.getElementById("canvas-loading");
+  window.elementCounter = window.elementCounter || 0;
+  window.selectedElement = window.selectedElement || null;
+  window.formCanvas = window.formCanvas || document.getElementById("form-canvas");
+  window.emptyCanvas = window.emptyCanvas || document.getElementById("empty-canvas");
+  window.elementPalette = window.elementPalette || document.getElementById("element-palette");
+  window.propertiesPanel = window.propertiesPanel || document.getElementById("properties-panel");
+  window.undoStack = window.undoStack || [];
+  window.redoStack = window.redoStack || [];
+  window.canvasLoading = window.canvasLoading || document.getElementById("canvas-loading");
   
   // Türkçe karakterleri İngilizce karakterlere dönüştürme fonksiyonu
   window.slugifyTurkish = function(text) {
@@ -137,10 +146,13 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   };
 
-  // Kaydet butonu
-  const saveBtn = document.getElementById("save-btn");
-  if (saveBtn) {
-    saveBtn.addEventListener("click", function() {
+  // Kaydet butonu - global değişken olarak tanımla
+  if (!window.settingSaveBtn) {
+    window.settingSaveBtn = document.getElementById("save-btn");
+  }
+  
+  if (window.settingSaveBtn) {
+    window.settingSaveBtn.addEventListener("click", function() {
       if (!window.getFormJSON) return;
       
       const formData = window.getFormJSON();

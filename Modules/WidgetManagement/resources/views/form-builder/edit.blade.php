@@ -269,13 +269,13 @@
         
         setTimeout(function() {
             
-            const saveBtn = document.getElementById('save-btn');
+            window.widgetSaveBtn = window.widgetSaveBtn || document.getElementById('save-btn');
             
-            if (saveBtn) {
-                saveBtn.addEventListener('click', function() {
-                    const originalContent = saveBtn.innerHTML;
-                    saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Kaydediliyor...';
-                    saveBtn.disabled = true;
+            if (window.widgetSaveBtn) {
+                window.widgetSaveBtn.addEventListener('click', function() {
+                    const originalContent = window.widgetSaveBtn.innerHTML;
+                    window.widgetSaveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Kaydediliyor...';
+                    window.widgetSaveBtn.disabled = true;
                     
                     const formData = window.getFormJSON();
                     console.log('Widget form verisi kaydediliyor:', formData);
@@ -297,8 +297,8 @@
                         return response.json();
                     })
                     .then(data => {
-                        saveBtn.innerHTML = originalContent;
-                        saveBtn.disabled = false;
+                        window.widgetSaveBtn.innerHTML = originalContent;
+                        window.widgetSaveBtn.disabled = false;
                         
                         window.showToast(data.success ? 'success' : 'error', 
                                        data.success ? 'Başarılı!' : 'Hata!', 
@@ -307,8 +307,8 @@
                     .catch(error => {
                         console.error('Widget kayıt hatası:', error);
                         
-                        saveBtn.innerHTML = originalContent;
-                        saveBtn.disabled = false;
+                        window.widgetSaveBtn.innerHTML = originalContent;
+                        window.widgetSaveBtn.disabled = false;
                         
                         window.showToast('error', 'Hata!', 'Widget form yapısı kaydedilirken bir hata oluştu.');
                     });

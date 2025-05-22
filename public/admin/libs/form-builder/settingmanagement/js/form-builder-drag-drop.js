@@ -1,5 +1,13 @@
 // Form Builder Drag-Drop İşlemleri
+// Global değişkenler - sayfa yüklenmeden önce tanımla
+window.settingFormBuilderDragDropInitialized = window.settingFormBuilderDragDropInitialized || false;
+
 window.initializeSortable = function() {
+  // Eğer zaten başlatıldıysa, tekrar başlatma
+  if (window.sortableInitialized) {
+    return;
+  }
+  window.sortableInitialized = true;
   if (!window.formCanvas) {
     console.error('Form canvas bulunamadı');
     return;
@@ -104,13 +112,35 @@ window.initializeSortable = function() {
 
 // Sütunlar için SortableJS Initialize
 window.initializeColumnSortables = function() {
-  const columns = document.querySelectorAll(".column-element");
-  console.log("Toplam " + columns.length + " sütun için Sortable başlatıldı");
+  // Önceki tüm Sortable örneklerini temizle
+  const previousColumns = document.querySelectorAll('.column-element[data-sortable-initialized="true"]');
+  previousColumns.forEach(column => {
+    if (column._sortable) {
+      column._sortable.destroy();
+      column.removeAttribute('data-sortable-initialized');
+    }
+  });
+  
+  // Yeni sütunlar için Sortable başlat
+  const columns = document.querySelectorAll(".column-element:not([data-sortable-initialized])");
+  
+  // Sadece sütun varsa log göster
+  if (columns.length > 0) {
+    console.log("Toplam " + columns.length + " yeni sütun için Sortable başlatılıyor");
+  }
+  
+  // Sütun yoksa işlem yapma
+  if (columns.length === 0) {
+    return;
+  }
   
   columns.forEach((column) => {
     if (column._sortable) {
       column._sortable.destroy();
     }
+    
+    // Sütunu başlatıldı olarak işaretle
+    column.setAttribute('data-sortable-initialized', 'true');
     
     column._sortable = new Sortable(column, {
       group: {

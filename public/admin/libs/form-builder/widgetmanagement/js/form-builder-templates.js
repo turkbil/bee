@@ -2105,49 +2105,31 @@ document.addEventListener("DOMContentLoaded", function() {
                   </div>
               </div>
           `,
-      button: `
+      row: `
               <div class="property-panel">
                   <div class="property-header">
-                      <h4 class="fw-bold p-3 border-bottom"><i class="fas fa-square me-2"></i>Buton Elementini Düzenle</h4>
+                      <h4 class="fw-bold p-3 border-bottom"><i class="fas fa-columns me-2"></i>Satır Düzenini Düzenle</h4>
                   </div>
                   
                   <div class="p-0">
-                      <!-- Temel Bilgiler -->
+                      <!-- Sütun Ayarları -->
                       <div class="property-section">
-                          <div class="section-title">Temel Bilgiler</div>
+                          <div class="section-title">Sütun Ayarları</div>
                           <div class="section-content p-3">
                               <div class="mb-3 col-12 col-md-{width}">
-                                  <label class="form-label">Etiket</label>
-                                  <input type="text" class="form-control" name="label" value="{label}">
-                              </div>
-                          </div>
-                      </div>
-                      
-                      <!-- Görünüm Ayarları -->
-                      <div class="property-section">
-                          <div class="section-title">Görünüm Ayarları</div>
-                          <div class="section-content p-3">
-                              <div class="mb-3 col-12 col-md-{width}">
-                                  <label class="form-label">Stil</label>
-                                  <select class="form-select" name="button_style">
-                                      <option value="primary" {button_styleprimary}>Primary</option>
-                                      <option value="secondary" {button_stylesecondary}>Secondary</option>
-                                      <option value="success" {button_stylesuccess}>Success</option>
-                                      <option value="danger" {button_styledanger}>Danger</option>
-                                      <option value="warning" {button_stylewarning}>Warning</option>
-                                      <option value="info" {button_styleinfo}>Info</option>
-                                      <option value="light" {button_stylelight}>Light</option>
-                                      <option value="dark" {button_styledark}>Dark</option>
+                                  <label class="form-label">Sütun Sayısı</label>
+                                  <select class="form-select" name="column-count">
+                                      <option value="2" {columns2}>2 Sütun</option>
+                                      <option value="3" {columns3}>3 Sütun</option>
+                                      <option value="4" {columns4}>4 Sütun</option>
                                   </select>
                               </div>
+                              
                               <div class="mb-3 col-12 col-md-{width}">
-                                  <label class="form-label">Genişlik</label>
-                                  <select class="form-select" name="width">
-                                      <option value="12" {width12}>Tam Genişlik (12/12)</option>
-                                      <option value="6" {width6}>Yarım Genişlik (6/12)</option>
-                                      <option value="4" {width4}>Üçte Bir (4/12)</option>
-                                      <option value="3" {width3}>Çeyrek (3/12)</option>
-                                  </select>
+                                  <label class="form-label">Sütun Genişlikleri</label>
+                                  <div id="column-widths-container">
+                                      <!-- Sütun genişlikleri JavaScript ile doldurulacak -->
+                                  </div>
                               </div>
                           </div>
                       </div>

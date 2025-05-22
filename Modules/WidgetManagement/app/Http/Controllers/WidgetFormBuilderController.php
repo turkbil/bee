@@ -190,13 +190,12 @@ class WidgetFormBuilderController extends Controller
             if (isset($field['type']) && $field['type'] === 'row' && isset($field['columns'])) {
                 $element = [
                     'type' => 'row',
-                    'properties' => [
-                        'columns' => []
-                    ]
+                    'properties' => []
                 ];
 
+                $columnData = [];
                 foreach ($field['columns'] as $column) {
-                    $columnData = [
+                    $columnItem = [
                         'width' => $column['width'] ?? 6,
                         'elements' => []
                     ];
@@ -205,14 +204,15 @@ class WidgetFormBuilderController extends Controller
                         foreach ($column['elements'] as $columnField) {
                             $columnElement = $this->createElementFromField($columnField);
                             if ($columnElement) {
-                                $columnData['elements'][] = $columnElement;
+                                $columnItem['elements'][] = $columnElement;
                             }
                         }
                     }
 
-                    $element['properties']['columns'][] = $columnData;
+                    $columnData[] = $columnItem;
                 }
-
+                
+                $element['columns'] = $columnData;
                 $elements[] = $element;
             } else {
                 $element = $this->createElementFromField($field);
@@ -227,8 +227,17 @@ class WidgetFormBuilderController extends Controller
 
     private function createElementFromField($field)
     {
+        // Temel alan kontrolleri
         if (!isset($field['type'])) {
             return null;
+        }
+        
+        // Satır tipi elementler için özel işlem
+        if ($field['type'] === 'row') {
+            return [
+                'type' => 'row',
+                'properties' => []
+            ];
         }
 
         $element = [

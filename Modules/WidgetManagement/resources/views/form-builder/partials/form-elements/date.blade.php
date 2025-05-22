@@ -1,69 +1,74 @@
 @php
-    $settingId = null;
-    $settingKey = null;
+    $fieldName = $element['name'] ?? '';
+    $fieldType = $element['type'] ?? 'date';
+    $fieldLabel = $element['label'] ?? '';
+    $isRequired = isset($element['required']) && $element['required'];
+    $placeholder = $element['placeholder'] ?? 'Tarih seçin';
+    $helpText = $element['help_text'] ?? '';
+    $isSystem = isset($element['system']) && $element['system'];
+    $width = isset($element['properties']['width']) ? $element['properties']['width'] : 12;
+    $minDate = isset($element['properties']['min_date']) ? $element['properties']['min_date'] : null;
+    $maxDate = isset($element['properties']['max_date']) ? $element['properties']['max_date'] : null;
     
-    if(isset($element['properties']['setting_id'])) {
-        $settingId = $element['properties']['setting_id'];
-    } elseif(isset($element['properties']['name'])) {
-        $settingName = $element['properties']['name'];
-        
-        // Ayarı adından bul
-        $setting = $settings->firstWhere('key', $settingName);
-        if($setting) {
-            $settingId = $setting->id;
-            $settingKey = $setting->key;
-        }
+    if(isset($formData)) {
+        $fieldValue = $formData[$fieldName] ?? '';
+    } elseif(isset($settings)) {
+        $cleanFieldName = str_replace('widget.', '', $fieldName);
+        $fieldValue = $settings[$cleanFieldName] ?? '';
+    } else {
+        $fieldValue = '';
     }
 @endphp
 
-@if($settingId)
-    <div class="col-12" wire:key="setting-{{ $settingId }}">
-        <div class="card mb-3 w-100">
-            <div class="card-header">
-                <div class="d-flex align-items-center justify-content-between">
-                    <h3 class="card-title d-flex align-items-center">
-                        <i class="fas fa-calendar me-2 text-primary"></i>
-                        {{ $element['properties']['label'] ?? 'Tarih' }}
-                    </h3>
-                </div>
+<div class="col-{{ $width }}">
+    <div class="card mb-3 w-100">
+        <div class="card-header">
+            <div class="d-flex align-items-center justify-content-between">
+                <h3 class="card-title d-flex align-items-center">
+                    <i class="fas fa-calendar me-2 text-primary"></i>
+                    {{ $fieldLabel }}
+                    @if($isSystem)
+                        <span class="badge bg-orange ms-2">Sistem</span>
+                    @endif
+                </h3>
             </div>
-            <div class="card-body">
-                <div class="form-group w-100">
-                    <div class="input-icon w-100">
-                        <span class="input-icon-addon">
-                            <i class="fas fa-calendar"></i>
-                        </span>
-                        <input 
-                            type="date" 
-                            wire:model="values.{{ $settingId }}" 
-                            class="form-control w-100" 
-                            placeholder="{{ $element['properties']['placeholder'] ?? 'Tarih seçin' }}"
-                        >
+        </div>
+        <div class="card-body">
+            <div class="form-group w-100">
+                <div class="input-icon w-100">
+                    <span class="input-icon-addon">
+                        <i class="fas fa-calendar"></i>
+                    </span>
+                    @if(isset($formData))
+                        <input type="date" 
+                            wire:model="formData.{{ $fieldName }}" 
+                            class="form-control w-100 @error('formData.' . $fieldName) is-invalid @enderror" 
+                            @if($minDate) min="{{ $minDate }}" @endif
+                            @if($maxDate) max="{{ $maxDate }}" @endif
+                            @if($isRequired) required @endif>
+                        @error('formData.' . $fieldName)
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    @else
+                        <input type="date" 
+                            wire:model="settings.{{ str_replace('widget.', '', $fieldName) }}" 
+                            class="form-control w-100 @error('settings.' . str_replace('widget.', '', $fieldName)) is-invalid @enderror" 
+                            @if($minDate) min="{{ $minDate }}" @endif
+                            @if($maxDate) max="{{ $maxDate }}" @endif
+                            @if($isRequired) required @endif>
+                        @error('settings.' . str_replace('widget.', '', $fieldName))
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    @endif
+                </div>
+                
+                @if($helpText)
+                    <div class="form-text text-muted mt-2">
+                        <i class="fas fa-info-circle me-1"></i>
+                        {{ $helpText }}
                     </div>
-                    
-                    @if(isset($element['properties']['help_text']) && !empty($element['properties']['help_text']))
-                        <div class="form-text text-muted mt-2">
-                            <i class="fas fa-info-circle me-1"></i>
-                            {{ $element['properties']['help_text'] }}
-                        </div>
-                    @endif
-                    
-                    @if(isset($originalValues[$settingId]) && $originalValues[$settingId] != $values[$settingId])
-                        <div class="mt-2 text-end">
-                            <span class="badge bg-yellow cursor-pointer" wire:click="resetToDefault({{ $settingId }})">
-                                <i class="fas fa-undo me-1"></i> Varsayılana Döndür
-                            </span>
-                        </div>
-                    @endif
-                </div>
+                @endif
             </div>
         </div>
     </div>
-@else
-    <div class="col-12">
-        <div class="alert alert-danger mb-3 w-100">
-            <i class="fas fa-exclamation-circle me-2"></i>
-            Bu tarih alanı için ayar bulunamadı: {{ $element['properties']['name'] ?? 'Bilinmeyen' }}
-        </div>
-    </div>
-@endif
+</div>

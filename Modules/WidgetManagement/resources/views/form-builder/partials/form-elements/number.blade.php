@@ -1,93 +1,70 @@
 @php
-    $settingId = null;
-    $settingKey = null;
+    $fieldName = $element['name'] ?? '';
+    $fieldType = $element['type'] ?? 'number';
+    $fieldLabel = $element['label'] ?? '';
+    $isRequired = isset($element['required']) && $element['required'];
+    $placeholder = $element['placeholder'] ?? '';
+    $helpText = $element['help_text'] ?? '';
+    $isSystem = isset($element['system']) && $element['system'];
+    $width = isset($element['properties']['width']) ? $element['properties']['width'] : 12;
     
-    if(isset($element['properties']['setting_id'])) {
-        $settingId = $element['properties']['setting_id'];
-    } elseif(isset($element['properties']['name'])) {
-        $settingName = $element['properties']['name'];
-        
-        // Ayarı adından bul
-        $setting = $settings->firstWhere('key', $settingName);
-        if($setting) {
-            $settingId = $setting->id;
-            $settingKey = $setting->key;
-        }
+    if(isset($formData)) {
+        $fieldValue = $formData[$fieldName] ?? '';
+    } elseif(isset($settings)) {
+        $cleanFieldName = str_replace('widget.', '', $fieldName);
+        $fieldValue = $settings[$cleanFieldName] ?? '';
+    } else {
+        $fieldValue = '';
     }
 @endphp
 
-@if($settingId)
-    <div class="col-12" wire:key="setting-{{ $settingId }}">
-        <div class="card mb-3 w-100">
-            <div class="card-header">
-                <div class="d-flex align-items-center justify-content-between">
-                    <h3 class="card-title d-flex align-items-center">
-                        <i class="fas fa-hashtag me-2 text-primary"></i>
-                        {{ $element['properties']['label'] ?? 'Sayı' }}
-                    </h3>
-                </div>
+<div class="col-{{ $width }}">
+    <div class="card mb-3 w-100">
+        <div class="card-header">
+            <div class="d-flex align-items-center justify-content-between">
+                <h3 class="card-title d-flex align-items-center">
+                    <i class="fas fa-hashtag me-2 text-primary"></i>
+                    {{ $fieldLabel }}
+                    @if($isSystem)
+                        <span class="badge bg-orange ms-2">Sistem</span>
+                    @endif
+                </h3>
             </div>
-            <div class="card-body">
-                <div class="form-group w-100">
-                    <div class="input-group mb-2">
-                        <span class="input-group-text">
-                            <i class="fas fa-hashtag"></i>
-                        </span>
-                        <input 
-                            type="number" 
-                            wire:model="values.{{ $settingId }}" 
-                            class="form-control" 
-                            placeholder="{{ $element['properties']['placeholder'] ?? 'Sayı girin' }}"
-                            @if(isset($element['properties']['min'])) min="{{ $element['properties']['min'] }}" @endif
-                            @if(isset($element['properties']['max'])) max="{{ $element['properties']['max'] }}" @endif
-                            @if(isset($element['properties']['step'])) step="{{ $element['properties']['step'] }}" @endif
-                        >
-                        @if(isset($element['properties']['step']) && $element['properties']['step'] > 0)
-                            <button class="btn btn-outline-secondary" type="button" wire:click="$set('values.{{ $settingId }}', {{ is_numeric($values[$settingId] ?? 0) ? (($values[$settingId] ?? 0) - ($element['properties']['step'] ?? 1)) : 0 }})">
-                                <i class="fas fa-minus"></i>
-                            </button>
-                            <button class="btn btn-outline-secondary" type="button" wire:click="$set('values.{{ $settingId }}', {{ is_numeric($values[$settingId] ?? 0) ? (($values[$settingId] ?? 0) + ($element['properties']['step'] ?? 1)) : ($element['properties']['step'] ?? 1) }})">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                        @endif
+        </div>
+        <div class="card-body">
+            <div class="form-group w-100">
+                <div class="input-icon">
+                    <span class="input-icon-addon">
+                        <i class="fas fa-hashtag"></i>
+                    </span>
+                    @if(isset($formData))
+                        <input type="number" 
+                            wire:model="formData.{{ $fieldName }}" 
+                            class="form-control @error('formData.' . $fieldName) is-invalid @enderror" 
+                            placeholder="{{ $placeholder }}"
+                            @if($isRequired) required @endif>
+                        @error('formData.' . $fieldName)
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    @else
+                        <input type="number" 
+                            wire:model="settings.{{ str_replace('widget.', '', $fieldName) }}" 
+                            class="form-control @error('settings.' . str_replace('widget.', '', $fieldName)) is-invalid @enderror" 
+                            placeholder="{{ $placeholder }}"
+                            @if($isRequired) required @endif>
+                        @error('settings.' . str_replace('widget.', '', $fieldName))
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    @endif
+                </div>
+                
+                @if($helpText)
+                    <div class="form-text text-muted mt-2">
+                        <i class="fas fa-info-circle me-1"></i>
+                        {{ $helpText }}
                     </div>
-                    @if(isset($element['properties']['min']) || isset($element['properties']['max']) || isset($element['properties']['step']))
-                        <div class="d-flex justify-content-between px-2 small text-muted mb-2">
-                            @if(isset($element['properties']['min']))
-                                <span>Min: {{ $element['properties']['min'] }}</span>
-                            @endif
-                            @if(isset($element['properties']['max']))
-                                <span>Max: {{ $element['properties']['max'] }}</span>
-                            @endif
-                            @if(isset($element['properties']['step']))
-                                <span>Adım: {{ $element['properties']['step'] }}</span>
-                            @endif
-                        </div>
-                    @endif
-                    
-                    @if(isset($element['properties']['help_text']) && !empty($element['properties']['help_text']))
-                        <div class="form-text text-muted mt-2">
-                            <i class="fas fa-info-circle me-1"></i>
-                            {{ $element['properties']['help_text'] }}
-                        </div>
-                    @endif
-                    
-                    @if(isset($originalValues[$settingId]) && $originalValues[$settingId] != $values[$settingId])
-                        <div class="mt-2 text-end">
-                            <span class="badge bg-yellow cursor-pointer" wire:click="resetToDefault({{ $settingId }})">
-                                <i class="fas fa-undo me-1"></i> Varsayılana Döndür
-                            </span>
-                        </div>
-                    @endif
-                </div>
+                @endif
             </div>
         </div>
     </div>
-@else
-    <div class="col-12">
-        <div class="alert alert-danger mb-3 w-100">
-            <i class="fas fa-exclamation-circle me-2"></i>
-            Bu sayı alanı için ayar bulunamadı: {{ $element['properties']['name'] ?? 'Bilinmeyen' }}
-        </div>
-    </div>
-@endif
+</div>

@@ -1,4 +1,13 @@
 @php
+    $fieldName = $element['name'] ?? '';
+    $fieldType = $element['type'] ?? 'text';
+    $fieldLabel = $element['properties']['label'] ?? '';
+    $isRequired = isset($element['properties']['required']) && $element['properties']['required'];
+    $placeholder = $element['properties']['placeholder'] ?? '';
+    $helpText = $element['properties']['help_text'] ?? '';
+    $isSystem = isset($element['properties']['system']) && $element['properties']['system'];
+    $width = isset($element['properties']['width']) ? $element['properties']['width'] : 12;
+    
     $settingId = null;
     $settingKey = null;
     
@@ -14,16 +23,28 @@
             $settingKey = $setting->key;
         }
     }
+    
+    if(isset($formData)) {
+        $fieldValue = $formData[$fieldName] ?? '';
+    } elseif(isset($settings)) {
+        $cleanFieldName = str_replace('widget.', '', $fieldName);
+        $fieldValue = $settings[$cleanFieldName] ?? '';
+    } else {
+        $fieldValue = '';
+    }
 @endphp
 
 @if($settingId)
-    <div class="col-12" wire:key="setting-{{ $settingId }}">
+    <div class="col-{{ $width }}">
         <div class="card mb-3 w-100">
             <div class="card-header">
                 <div class="d-flex align-items-center justify-content-between">
                     <h3 class="card-title d-flex align-items-center">
-                        <i class="fa-regular fa-comment fa-flip-horizontal me-2 text-primary"></i>
-                        {{ $element['properties']['label'] ?? 'Metin' }}
+                        <i class="fas fa-font me-2 text-primary"></i>
+                        {{ $fieldLabel }}
+                        @if($isSystem)
+                            <span class="badge bg-orange ms-2">Sistem</span>
+                        @endif
                     </h3>
                 </div>
             </div>
@@ -37,14 +58,14 @@
                             type="text" 
                             wire:model="values.{{ $settingId }}" 
                             class="form-control w-100" 
-                            placeholder="{{ $element['properties']['placeholder'] ?? 'Değer girin' }}"
-                        >
+                            placeholder="{{ $placeholder }}"
+                            @if($isRequired) required @endif>
                     </div>
                     
-                    @if(isset($element['properties']['help_text']) && !empty($element['properties']['help_text']))
+                    @if($helpText)
                         <div class="form-text text-muted mt-2">
                             <i class="fas fa-info-circle me-1"></i>
-                            {{ $element['properties']['help_text'] }}
+                            {{ $helpText }}
                         </div>
                     @endif
                     
@@ -60,7 +81,7 @@
         </div>
     </div>
 @else
-    <div class="col-12">
+    <div class="col-{{ $width }}">
         <div class="alert alert-danger mb-3 w-100">
             <i class="fas fa-exclamation-circle me-2"></i>
             Bu metin alanı için ayar bulunamadı: {{ $element['properties']['name'] ?? 'Bilinmeyen' }}

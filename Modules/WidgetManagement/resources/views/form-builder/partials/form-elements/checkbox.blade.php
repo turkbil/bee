@@ -1,68 +1,75 @@
 @php
-    $settingId = null;
-    $settingKey = null;
+    $fieldName = $element['name'] ?? '';
+    $fieldType = $element['type'] ?? 'checkbox';
+    $fieldLabel = $element['label'] ?? '';
+    $isRequired = isset($element['required']) && $element['required'];
+    $helpText = $element['help_text'] ?? '';
+    $isSystem = isset($element['system']) && $element['system'];
     $width = isset($element['properties']['width']) ? $element['properties']['width'] : 12;
-    $isRequired = isset($element['properties']['required']) && $element['properties']['required'] === true;
-    $defaultValue = isset($element['properties']['default_value']) ? $element['properties']['default_value'] : null;
+    $defaultValue = isset($element['properties']['default_value']) ? $element['properties']['default_value'] : false;
     $checkboxLabel = isset($element['properties']['checkbox_label']) ? $element['properties']['checkbox_label'] : null;
-    $helpText = isset($element['properties']['help_text']) ? $element['properties']['help_text'] : null;
     
-    if(isset($element['properties']['setting_id'])) {
-        $settingId = $element['properties']['setting_id'];
-    } elseif(isset($element['properties']['name'])) {
-        $settingName = $element['properties']['name'];
-        
-        // Ayarı adından bul
-        $setting = $settings->firstWhere('key', $settingName);
-        if($setting) {
-            $settingId = $setting->id;
-            $settingKey = $setting->key;
-        } else {
-            // Ayar yoksa oluştur
-            // Bu kısım gerçek uygulamada ayar oluşturma mantığına göre değişebilir
-            $settingId = $settingName;
-        }
+    if(isset($formData)) {
+        $fieldValue = $formData[$fieldName] ?? $defaultValue;
+    } elseif(isset($settings)) {
+        $cleanFieldName = str_replace('widget.', '', $fieldName);
+        $fieldValue = $settings[$cleanFieldName] ?? $defaultValue;
+    } else {
+        $fieldValue = $defaultValue;
     }
 @endphp
 
-<div class="col-{{ $width }}" wire:key="element-{{ $element['properties']['name'] ?? 'checkbox' }}">
+<div class="col-{{ $width }}">
     <div class="card mb-3 w-100">
         <div class="card-header">
             <div class="d-flex align-items-center justify-content-between">
                 <h3 class="card-title d-flex align-items-center">
-                    <i class="fa-regular fa-comment fa-flip-horizontal me-2 text-primary"></i>
-                    {{ $element['properties']['label'] ?? 'Onay Kutusu' }}
+                    <i class="fas fa-check-square me-2 text-primary"></i>
+                    {{ $fieldLabel }}
+                    @if($isSystem)
+                        <span class="badge bg-orange ms-2">Sistem</span>
+                    @endif
                 </h3>
             </div>
         </div>
         <div class="card-body">
             <div class="form-group w-100">
-                <div class="mb-3">
-                    <label class="form-check">
-                        <input class="form-check-input" type="checkbox" 
-                            id="value-{{ $element['properties']['name'] }}" 
-                            name="{{ $element['properties']['name'] }}" 
-                            wire:model="formData.{{ $element['properties']['name'] }}"
-                            value="1"
-                            @if($isRequired) required @endif
-                            @if($defaultValue === 'true') checked @endif
-                        >
-                        <span class="form-check-label">{{ $checkboxLabel ?? ($element['properties']['label'] ?? 'Onay') }}</span>
-                    </label>
-                </div>
+                @if(isset($formData))
+                    <div class="mb-3">
+                        <label class="form-check">
+                            <input class="form-check-input @error('formData.' . $fieldName) is-invalid @enderror" 
+                                type="checkbox" 
+                                id="{{ $fieldName }}" 
+                                wire:model="formData.{{ $fieldName }}"
+                                value="1"
+                                @if($isRequired) required @endif>
+                            <span class="form-check-label">{{ $checkboxLabel ?? $fieldLabel }}</span>
+                        </label>
+                        @error('formData.' . $fieldName)
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                @else
+                    <div class="mb-3">
+                        <label class="form-check">
+                            <input class="form-check-input @error('settings.' . str_replace('widget.', '', $fieldName)) is-invalid @enderror" 
+                                type="checkbox" 
+                                id="{{ str_replace('widget.', '', $fieldName) }}" 
+                                wire:model="settings.{{ str_replace('widget.', '', $fieldName) }}"
+                                value="1"
+                                @if($isRequired) required @endif>
+                            <span class="form-check-label">{{ $checkboxLabel ?? $fieldLabel }}</span>
+                        </label>
+                        @error('settings.' . str_replace('widget.', '', $fieldName))
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                @endif
                 
                 @if($helpText)
                     <div class="form-text text-muted mt-2">
                         <i class="fas fa-info-circle me-1"></i>
                         {{ $helpText }}
-                    </div>
-                @endif
-                
-                @if(isset($originalData[$element['properties']['name']]) && $originalData[$element['properties']['name']] != $formData[$element['properties']['name']])
-                    <div class="mt-2 text-end">
-                        <span class="badge bg-yellow cursor-pointer" wire:click="resetToDefault('{{ $element['properties']['name'] }}')">
-                            <i class="fas fa-undo me-1"></i> Varsayılana Döndür
-                        </span>
                     </div>
                 @endif
             </div>

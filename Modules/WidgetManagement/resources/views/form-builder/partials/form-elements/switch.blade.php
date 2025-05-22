@@ -1,79 +1,86 @@
 @php
-    $settingId = null;
-    $settingKey = null;
+    $fieldName = $element['name'] ?? '';
+    $fieldType = $element['type'] ?? 'switch';
+    $fieldLabel = $element['label'] ?? '';
+    $isRequired = isset($element['required']) && $element['required'];
+    $helpText = $element['help_text'] ?? '';
+    $isSystem = isset($element['system']) && $element['system'];
     $width = isset($element['properties']['width']) ? $element['properties']['width'] : 12;
-    $isRequired = isset($element['properties']['required']) && $element['properties']['required'] === true;
-    $defaultValue = isset($element['properties']['default_value']) ? $element['properties']['default_value'] : null;
-    // $switchLabel değişkeni kaldırıldı
+    $defaultValue = isset($element['properties']['default_value']) ? filter_var($element['properties']['default_value'], FILTER_VALIDATE_BOOLEAN) : false;
     $activeLabel = isset($element['properties']['active_label']) ? $element['properties']['active_label'] : 'Aktif';
     $inactiveLabel = isset($element['properties']['inactive_label']) ? $element['properties']['inactive_label'] : 'Aktif Değil';
-    // $defaultValueText değişkeni kaldırıldı
-    $helpText = isset($element['properties']['help_text']) ? $element['properties']['help_text'] : null;
     
-    if(isset($element['properties']['setting_id'])) {
-        $settingId = $element['properties']['setting_id'];
-    } elseif(isset($element['properties']['name'])) {
-        $settingName = $element['properties']['name'];
-        
-        // Ayarı adından bul
-        $setting = $settings->firstWhere('key', $settingName);
-        if($setting) {
-            $settingId = $setting->id;
-            $settingKey = $setting->key;
-        } else {
-            // Ayar yoksa oluştur
-            // Bu kısım gerçek uygulamada ayar oluşturma mantığına göre değişebilir
-            $settingId = $settingName;
-        }
+    if(isset($formData)) {
+        $fieldValue = $formData[$fieldName] ?? $defaultValue;
+    } elseif(isset($settings)) {
+        $cleanFieldName = str_replace('widget.', '', $fieldName);
+        $fieldValue = $settings[$cleanFieldName] ?? $defaultValue;
+    } else {
+        $fieldValue = $defaultValue;
     }
 @endphp
 
-<div class="col-{{ $width }}" wire:key="element-{{ $element['properties']['name'] ?? 'switch' }}">
+<div class="col-{{ $width }}">
     <div class="card mb-3 w-100">
         <div class="card-header">
             <div class="d-flex align-items-center justify-content-between">
                 <h3 class="card-title d-flex align-items-center">
-                    <i class="fa-regular fa-comment fa-flip-horizontal me-2 text-primary"></i>
-                    {{ $element['properties']['label'] ?? 'Anahtar' }}
+                    <i class="fas fa-toggle-on me-2 text-primary"></i>
+                    {{ $fieldLabel }}
+                    @if($isSystem)
+                        <span class="badge bg-orange ms-2">Sistem</span>
+                    @endif
                 </h3>
             </div>
         </div>
         <div class="card-body">
             <div class="form-group w-100">
-                <div class="mb-3">
-                    <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
-                        <input type="checkbox" 
-                            id="switch-{{ $element['properties']['name'] }}" 
-                            name="{{ $element['properties']['name'] }}" 
-                            wire:model="formData.{{ $element['properties']['name'] }}"
-                            value="1"
-                            @if($isRequired) required @endif
-                            @if($defaultValue === 'true') checked @endif
-                        >
-                        <div class="state p-success p-on ms-2">
-                            <label>{{ $activeLabel }}</label>
+                @if(isset($formData))
+                    <div class="mb-3 @error('formData.' . $fieldName) is-invalid @enderror">
+                        <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
+                            <input type="checkbox" 
+                                id="switch-{{ $fieldName }}" 
+                                name="{{ $fieldName }}" 
+                                wire:model="formData.{{ $fieldName }}"
+                                value="1"
+                                @if($isRequired) required @endif>
+                            <div class="state p-success p-on ms-2">
+                                <label>{{ $activeLabel }}</label>
+                            </div>
+                            <div class="state p-danger p-off ms-2">
+                                <label>{{ $inactiveLabel }}</label>
+                            </div>
                         </div>
-                        <div class="state p-danger p-off ms-2">
-                            <label>{{ $inactiveLabel }}</label>
-                        </div>
+                        @error('formData.' . $fieldName)
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
                     </div>
-                    {{-- switchLabel kısmı kaldırıldı --}}
-                </div>
-                
-                {{-- defaultValueText kısmı kaldırıldı --}}
+                @else
+                    <div class="mb-3 @error('settings.' . str_replace('widget.', '', $fieldName)) is-invalid @enderror">
+                        <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
+                            <input type="checkbox" 
+                                id="switch-{{ str_replace('widget.', '', $fieldName) }}" 
+                                name="{{ str_replace('widget.', '', $fieldName) }}" 
+                                wire:model="settings.{{ str_replace('widget.', '', $fieldName) }}"
+                                value="1"
+                                @if($isRequired) required @endif>
+                            <div class="state p-success p-on ms-2">
+                                <label>{{ $activeLabel }}</label>
+                            </div>
+                            <div class="state p-danger p-off ms-2">
+                                <label>{{ $inactiveLabel }}</label>
+                            </div>
+                        </div>
+                        @error('settings.' . str_replace('widget.', '', $fieldName))
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                @endif
                 
                 @if($helpText)
                     <div class="form-text text-muted mt-2">
                         <i class="fas fa-info-circle me-1"></i>
                         {{ $helpText }}
-                    </div>
-                @endif
-                
-                @if(isset($originalData[$element['properties']['name']]) && $originalData[$element['properties']['name']] != $formData[$element['properties']['name']])
-                    <div class="mt-2 text-end">
-                        <span class="badge bg-yellow cursor-pointer" wire:click="resetToDefault('{{ $element['properties']['name'] }}')">
-                            <i class="fas fa-undo me-1"></i> Varsayılana Döndür
-                        </span>
                     </div>
                 @endif
             </div>

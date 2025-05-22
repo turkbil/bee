@@ -37,6 +37,10 @@ class WidgetSettingsComponent extends Component
         
         // Unique ID'yi gizle - otomatik olarak oluşturulacak, kullanıcının görüp düzenlemesine gerek yok
         $this->schema = array_filter($this->schema ?? [], function($field) {
+            // Önce name anahtarının var olup olmadığını kontrol et
+            if (!isset($field['name'])) return true; // name yoksa filtreleme
+            
+            // name varsa unique_id ve id olmadığını kontrol et
             return $field['name'] !== 'unique_id' && $field['name'] !== 'id';
         });
         
@@ -57,6 +61,10 @@ class WidgetSettingsComponent extends Component
         $rules = [];
         
         foreach ($this->schema as $field) {
+            // Satır tipi elementleri veya geçersiz alanları atla
+            if (!isset($field['name']) || !isset($field['type'])) continue;
+            if ($field['type'] === 'row') continue; // Satır tipi elementleri atla
+            
             if (isset($field['required']) && $field['required'] && $field['name'] !== 'unique_id' && $field['name'] !== 'id') {
                 $rules['settings.' . $field['name']] = 'required';
             }

@@ -15,7 +15,7 @@
 
             @if(isset($group->layout['elements']) && is_array($group->layout['elements']))
                 @foreach($group->layout['elements'] as $element)
-                    @include('settingmanagement::livewire.partials.form-elements.' . $element['type'], [
+                    @include('settingmanagement::form-builder.partials.form-elements.' . $element['type'], [
                         'element' => $element,
                         'values' => $values,
                         'settings' => $settings,
@@ -77,7 +77,7 @@
                                     
                                     @case('file')
                                         <div class="form-group mb-3">
-                                            @include('settingmanagement::livewire.partials.file-upload', [
+                                            @include('settingmanagement::form-builder.partials.file-upload', [
                                                 'fileKey' => $setting->id,
                                                 'label' => 'Dosyayı sürükleyip bırakın veya tıklayın',
                                                 'values' => $values
@@ -87,7 +87,7 @@
                                     
                                     @case('image')
                                         <div class="form-group mb-3">
-                                            @include('settingmanagement::livewire.partials.image-upload', [
+                                            @include('settingmanagement::form-builder.partials.image-upload', [
                                                 'imageKey' => $setting->id,
                                                 'label' => 'Görseli sürükleyip bırakın veya tıklayın',
                                                 'values' => $values
@@ -102,7 +102,7 @@
                                                 $currentImages = isset($multipleImagesArrays[$setting->id]) ? $multipleImagesArrays[$setting->id] : [];
                                             @endphp
                                             
-                                            @include('settingmanagement::livewire.partials.existing-multiple-images', [
+                                            @include('settingmanagement::form-builder.partials.existing-multiple-images', [
                                                 'settingId' => $setting->id,
                                                 'images' => $currentImages
                                             ])

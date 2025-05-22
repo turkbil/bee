@@ -252,54 +252,8 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         setTimeout(function() {
-            const widgetId = document.getElementById('widget-id').value;
-            const schemaType = document.getElementById('schema-type').value;
-            
-            window.widgetSaveBtn = window.widgetSaveBtn || document.getElementById('save-btn');
-            
-            if (window.widgetSaveBtn) {
-                window.widgetSaveBtn.addEventListener('click', function() {
-                    const originalContent = window.widgetSaveBtn.innerHTML;
-                    window.widgetSaveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Kaydediliyor...';
-                    window.widgetSaveBtn.disabled = true;
-                    
-                    const formData = window.getFormJSON();
-                    console.log('Widget form verisi kaydediliyor:', formData);
-                    
-                    fetch(`/admin/widgetmanagement/form-builder/${widgetId}/save/${schemaType}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                        },
-                        body: JSON.stringify({
-                            layout: formData
-                        })
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! status: ${response.status}`);
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        window.widgetSaveBtn.innerHTML = originalContent;
-                        window.widgetSaveBtn.disabled = false;
-                        
-                        window.showToast(data.success ? 'success' : 'error', 
-                                       data.success ? 'Başarılı!' : 'Hata!', 
-                                       data.success ? 'Widget form yapısı başarıyla kaydedildi.' : data.error);
-                    })
-                    .catch(error => {
-                        console.error('Widget kayıt hatası:', error);
-                        
-                        window.widgetSaveBtn.innerHTML = originalContent;
-                        window.widgetSaveBtn.disabled = false;
-                        
-                        window.showToast('error', 'Hata!', 'Widget form yapısı kaydedilirken bir hata oluştu.');
-                    });
-                });
-            }
+            // Not: Kaydetme işlevi form-builder.js dosyasında tanımlandı
+            // Çift kayıt sorununu önlemek için buradaki kaydetme kodu kaldırıldı
             
             window.showToast = function(type, title, message) {
                 const toastContainer = document.getElementById('toast-container');

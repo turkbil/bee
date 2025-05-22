@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function() {
     return;
   }
   window.widgetFormBuilderInitialized = true;
-
+  
   window.elementCounter = 0;
   window.selectedElement = null;
   window.formCanvas = document.getElementById("form-canvas");
@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", function() {
     if (widgetId && schemaType) {
       console.log("Widget form yapısı yükleniyor, Widget ID:", widgetId, "Schema Type:", schemaType);
       
-      fetch(`/admin/widgetmanagement/form-builder/${widgetId}/load?schema=${schemaType}`, {
+      fetch(`/admin/widgetmanagement/form-builder/${widgetId}/load/${schemaType}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -95,7 +95,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   };
 
-  // Global saveBtn değişkenini kontrol et ve oluştur
   if (!window.widgetSaveBtn) {
     window.widgetSaveBtn = document.getElementById("save-btn");
   }
@@ -116,7 +115,7 @@ document.addEventListener("DOMContentLoaded", function() {
         window.widgetSaveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Kaydediliyor...';
         window.widgetSaveBtn.disabled = true;
         
-        fetch(`/admin/widgetmanagement/form-builder/${widgetId}/save?schema=${schemaType}`, {
+        fetch(`/admin/widgetmanagement/form-builder/${widgetId}/save/${schemaType}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -192,17 +191,15 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   };
   
-  // Form yükleme işlemini sadece bir kere gerçekleştirmek için kontrol
-  // Eğer form edit.blade.php'den yüklendiyse tekrar yükleme yapma
-  if (window.formLoadedFromBlade) {
-    console.log("Form zaten edit.blade.php'den yüklenmiş, tekrar yükleme yapılmayacak.");
-    return;
-  }
-  
-  // Yükleme işlemini gerçekleştir ve yüklendiğini işaretle
-  if (!window.formLoaded) {
-    window.formLoaded = true;
-    console.log("Form form-builder.js tarafından yükleniyor...");
+  setTimeout(() => {
     loadSavedForm();
-  }
+    
+    if (typeof window.Livewire !== 'undefined') {
+      document.addEventListener('livewire:initialized', () => {
+        Livewire.on('widgetFormSaved', (message) => {
+          alert(message || "Widget form yapısı başarıyla kaydedildi!");
+        });
+      });
+    }
+  }, 500);
 });

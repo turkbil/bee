@@ -9,9 +9,9 @@ class WidgetFormBuilderComponent extends Component
 {
     public $widgetId;
     public $widget;
-    public $schemaType = 'item'; // item veya settings
+    public $schemaType = 'item_schema';
     
-    public function mount($widgetId, $schemaType = 'item')
+    public function mount($widgetId, $schemaType = 'item_schema')
     {
         $this->widgetId = $widgetId;
         $this->schemaType = $schemaType;
@@ -39,7 +39,7 @@ class WidgetFormBuilderComponent extends Component
                 }
             }
             
-            if ($schemaType === 'settings') {
+            if ($schemaType === 'settings_schema') {
                 $widget->settings_schema = $formData;
             } else {
                 $widget->item_schema = $formData;
@@ -49,7 +49,7 @@ class WidgetFormBuilderComponent extends Component
             
             log_activity(
                 $widget,
-                'widget ' . ($schemaType === 'settings' ? 'ayar' : 'içerik') . ' form yapısı güncellendi'
+                'widget ' . ($schemaType === 'settings_schema' ? 'ayar' : 'içerik') . ' form yapısı güncellendi'
             );
             
             return ['success' => true, 'message' => 'Widget form yapısı başarıyla kaydedildi'];

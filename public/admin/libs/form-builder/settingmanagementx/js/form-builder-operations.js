@@ -1,6 +1,42 @@
-// Widget Management Form Builder İşlemleri
+// Form Builder İşlemleri
 
 document.addEventListener("DOMContentLoaded", function() {
+  // Ayarları yükle ve dropdown'ları doldur
+  window.populateSettingDropdowns = function(groupId) {
+    fetch(`/admin/settingmanagement/api/settings?group=${groupId}`)
+      .then(response => response.json())
+      .then(settings => {
+        const settingDropdowns = document.querySelectorAll('select[name="setting_id"]');
+        
+        settingDropdowns.forEach(dropdown => {
+          // Mevcut seçili değeri al
+          const currentValue = dropdown.value;
+          
+          // Dropdown'ı temizle, sadece ilk opsiyonu koru
+          const firstOption = dropdown.querySelector('option:first-child');
+          dropdown.innerHTML = '';
+          dropdown.appendChild(firstOption);
+          
+          // Yeni seçenekleri ekle
+          settings.forEach(setting => {
+            const option = document.createElement('option');
+            option.value = setting.id;
+            option.textContent = `${setting.label} (${setting.key})`;
+            
+            // Eğer önceden seçili değer vardıysa, onu tekrar seç
+            if (currentValue && currentValue == setting.id) {
+              option.selected = true;
+            }
+            
+            dropdown.appendChild(option);
+          });
+        });
+      })
+      .catch(error => {
+        console.error('Ayarlar alınırken hata oluştu:', error);
+      });
+  };
+
   // Benzersiz alan adı oluşturmak için yardımcı fonksiyon
   window.makeNameUnique = function(baseName) {
     // Canvas'taki tüm elementleri al
@@ -404,50 +440,66 @@ document.addEventListener("DOMContentLoaded", function() {
     if (labelInput && nameInput) {
       // Label değiştiğinde otomatik olarak name (System Key) üret
       labelInput.addEventListener('input', function() {
-        // Widget ID'sini al
-        const widgetId = document.getElementById('widget-id')?.value;
+        // Grup ID'sini al
+        const groupId = document.getElementById('group-id')?.value;
         
-        if (widgetId && this.value) {
-          // Widget prefix'ini al
-          let widgetPrefix = 'widget';
-          
-          // Prefix'i slug formatına çevir
-          widgetPrefix = window.slugifyTurkish(widgetPrefix.toLowerCase());
-          
-          if (widgetPrefix) {
-            // Label'i slug formatına çevir
-            const labelSlug = window.slugifyTurkish(this.value);
-            
-            // Alan adını oluştur
-            let newName = widgetPrefix + '_' + labelSlug;
-            
-            // Eğer properties.name zaten varsa ve prefix ile başlıyorsa
-            if (window.selectedElement.properties.name && 
-                window.selectedElement.properties.name.startsWith(widgetPrefix + '_')) {
-              // Sadece label kısmını değiştir
-              const nameParts = window.selectedElement.properties.name.split('_');
-              if (nameParts.length > 1) {
-                nameParts.splice(1); // İlk parçayı (prefix) dışındakileri sil
-                nameParts.push(labelSlug); // Yeni label'i ekle
-                newName = nameParts.join('_');
+        if (groupId && this.value) {
+          // Grup bilgilerini getir - prefix değeri için API'ye sor
+          fetch(`/admin/settingmanagement/api/groups/${groupId}`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            }
+          })
+          .then(response => response.json())
+          .then(groupData => {
+            if (groupData && groupData.prefix) {
+              // Grup prefix'ini al
+              let groupPrefix = groupData.prefix;
+              
+              // Prefix'i slug formatına çevir
+              groupPrefix = window.slugifyTurkish(groupPrefix.toLowerCase());
+              
+              if (groupPrefix) {
+                // Label'i slug formatına çevir
+                const labelSlug = window.slugifyTurkish(this.value);
+                
+                // Alan adını oluştur
+                let newName = groupPrefix + '_' + labelSlug;
+                
+                // Eğer properties.name zaten varsa ve prefix ile başlıyorsa
+                if (window.selectedElement.properties.name && 
+                    window.selectedElement.properties.name.startsWith(groupPrefix + '_')) {
+                  // Sadece label kısmını değiştir
+                  const nameParts = window.selectedElement.properties.name.split('_');
+                  if (nameParts.length > 1) {
+                    nameParts.splice(1); // İlk parçayı (prefix) dışındakileri sil
+                    nameParts.push(labelSlug); // Yeni label'i ekle
+                    newName = nameParts.join('_');
+                  }
+                }
+                
+                // Benzersiz bir isim oluştur
+                const uniqueName = window.makeNameUnique(newName);
+                
+                // Alan adını güncelle
+                window.selectedElement.properties.name = uniqueName;
+                nameInput.value = uniqueName;
               }
             }
-            
-            // Benzersiz bir isim oluştur
-            const uniqueName = window.makeNameUnique(newName);
-            
-            // Alan adını güncelle
-            window.selectedElement.properties.name = uniqueName;
-            nameInput.value = uniqueName;
-          }
+          })
+          .catch(error => {
+            console.error('Grup verisi alınamadı:', error);
+          });
         }
       });
       
       // İlk yüklemede label değerine göre name alanını güncelle
       if (labelInput.value) {
-        // Eğer name değeri widget_ ile başlıyorsa veya _field ile bitiyorsa
+        // Eğer name değeri form_ ile başlıyorsa veya _field ile bitiyorsa
         const nameValue = nameInput.value || '';
-        const isDefaultName = nameValue.endsWith('_field') || nameValue.startsWith('widget_');
+        const isDefaultName = nameValue.endsWith('_field') || nameValue.startsWith('form_');
         
         if (isDefaultName) {
           // Yapay bir input event tetikle
@@ -560,46 +612,62 @@ document.addEventListener("DOMContentLoaded", function() {
       // Alan adını otomatik güncelle (label değiştiğinde)
       const nameInput = window.propertiesPanel.querySelector('input[name="name"]');
       if (nameInput && nameInput.disabled) { // Sadece alan disabled ise otomatik güncelle
-        const widgetId = document.getElementById('widget-id')?.value;
-        if (widgetId && value) {
-          // Widget prefix'ini al
-          let widgetPrefix = 'widget';
-          
-          // Prefix'i slug formatına çevir
-          widgetPrefix = window.slugifyTurkish(widgetPrefix.toLowerCase());
-          
-          if (widgetPrefix) {
-            // Label'i slug formatına çevir
-            const labelSlug = window.slugifyTurkish(value);
-            
-            // Eğer alan adı yoksa veya widget_ ile başlıyorsa ya da _field ile bitiyorsa, yeni alan adı oluştur
-            const currentName = window.selectedElement.properties.name || '';
-            const isDefaultName = !currentName || currentName.endsWith('_field') || currentName.startsWith('widget_');
-            
-            if (isDefaultName || !currentName.startsWith(widgetPrefix + '_')) {
-              const newBaseName = widgetPrefix + '_' + labelSlug;
+        const groupId = document.getElementById('group-id')?.value;
+        if (groupId && value) {
+          // Grup bilgilerini getir - prefix değeri için API'ye sor
+          fetch(`/admin/settingmanagement/api/groups/${groupId}`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            }
+          })
+          .then(response => response.json())
+          .then(groupData => {
+            if (groupData && groupData.prefix) {
+              // Grup prefix'ini al
+              let groupPrefix = groupData.prefix;
               
-              // Benzersiz bir isim oluştur
-              const uniqueName = window.makeNameUnique(newBaseName);
+              // Prefix'i slug formatına çevir
+              groupPrefix = window.slugifyTurkish(groupPrefix.toLowerCase());
               
-              window.selectedElement.properties.name = uniqueName;
-              nameInput.value = uniqueName;
-            } else {
-              // Eğer prefix mevcut ise sadece label kısmını değiştir
-              const nameParts = currentName.split('_');
-              if (nameParts.length > 1) {
-                nameParts.splice(1); // İlk parçayı (prefix) dışındakileri sil
-                nameParts.push(labelSlug); // Yeni label'i ekle
-                const newBaseName = nameParts.join('_');
+              if (groupPrefix) {
+                // Label'i slug formatına çevir
+                const labelSlug = window.slugifyTurkish(value);
                 
-                // Benzersiz bir isim oluştur
-                const uniqueName = window.makeNameUnique(newBaseName);
+                // Eğer alan adı yoksa veya form_ ile başlıyorsa ya da _field ile bitiyorsa, yeni alan adı oluştur
+                const currentName = window.selectedElement.properties.name || '';
+                const isDefaultName = !currentName || currentName.endsWith('_field') || currentName.startsWith('form_');
                 
-                window.selectedElement.properties.name = uniqueName;
-                nameInput.value = uniqueName;
+                if (isDefaultName || !currentName.startsWith(groupPrefix + '_')) {
+                  const newBaseName = groupPrefix + '_' + labelSlug;
+                  
+                  // Benzersiz bir isim oluştur
+                  const uniqueName = window.makeNameUnique(newBaseName);
+                  
+                  window.selectedElement.properties.name = uniqueName;
+                  nameInput.value = uniqueName;
+                } else {
+                  // Eğer prefix mevcut ise sadece label kısmını değiştir
+                  const nameParts = currentName.split('_');
+                  if (nameParts.length > 1) {
+                    nameParts.splice(1); // İlk parçayı (prefix) dışındakileri sil
+                    nameParts.push(labelSlug); // Yeni label'i ekle
+                    const newBaseName = nameParts.join('_');
+                    
+                    // Benzersiz bir isim oluştur
+                    const uniqueName = window.makeNameUnique(newBaseName);
+                    
+                    window.selectedElement.properties.name = uniqueName;
+                    nameInput.value = uniqueName;
+                  }
+                }
               }
             }
-          }
+          })
+          .catch(error => {
+            console.error('Grup verisi alınamadı:', error);
+          });
         }
       }
     } else if (name === "checkbox_label" && window.selectedElement.dataset.type === "checkbox") {
@@ -1099,7 +1167,7 @@ document.addEventListener("DOMContentLoaded", function() {
       rowElement.appendChild(columnDiv);
     });
     
-// Yeni oluşturulan sütunları al
+    // Yeni oluşturulan sütunları al
     const newColumns = rowElement.querySelectorAll(".column-element");
     
     // Yedeklenen içeriği yeni sütunlara ekle

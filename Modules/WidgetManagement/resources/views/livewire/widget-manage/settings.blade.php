@@ -71,6 +71,7 @@
                             <tbody>
                                 @foreach($widget['settings_schema'] as $index => $field)
                                 @if(!isset($field['hidden']) || !$field['hidden'])
+                                @if(isset($field['name']) && !empty($field['name']) && (!isset($field['type']) || $field['type'] !== 'row'))
                                 <tr>
                                     <td>
                                         <code>{{ $field['name'] }}</code>
@@ -78,10 +79,10 @@
                                         <span class="badge bg-orange ms-1">Sistem</span>
                                         @endif
                                     </td>
-                                    <td>{{ $field['label'] }}</td>
+                                    <td>{{ $field['label'] ?? 'Tanımsız' }}</td>
                                     <td>
                                         <span class="badge bg-green-lt">
-                                            @switch($field['type'])
+                                            @switch($field['type'] ?? 'text')
                                                 @case('text')
                                                     <i class="fas fa-font me-1"></i> Metin
                                                     @break
@@ -122,7 +123,7 @@
                                                     <i class="fas fa-phone me-1"></i> Telefon
                                                     @break
                                                 @default
-                                                    {{ $field['type'] }}
+                                                    {{ $field['type'] ?? 'text' }}
                                             @endswitch
                                         </span>
                                     </td>
@@ -138,6 +139,7 @@
                                         @endif
                                     </td>
                                 </tr>
+                                @endif
                                 @endif
                                 @endforeach
                             </tbody>

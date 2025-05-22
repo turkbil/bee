@@ -176,7 +176,7 @@
                 </div>
             </div>
             
-            @if(!empty($widget['settings_schema']) || !empty($widget['item_schema']))
+            @if(!empty($widget['settings_schema']) || (!empty($widget['item_schema']) && $widget['has_items']))
             <div class="alert alert-success mb-4">
                 <div class="d-flex">
                     <div>
@@ -189,7 +189,9 @@
                             <strong>Özelleştirme Değişkenleri:</strong><br>
                             <ul class="mb-2">
                                 @foreach($widget['settings_schema'] as $field)
-                                <li><code>&#123;&#123; {{ $field['name'] }} &#125;&#125;</code> - {{ $field['label'] }}</li>
+                                    @if(isset($field['name']) && !empty($field['name']) && (!isset($field['type']) || $field['type'] !== 'row'))
+                                    <li><code>&#123;&#123; {{ $field['name'] }} &#125;&#125;</code> - {{ $field['label'] ?? 'Tanımsız' }}</li>
+                                    @endif
                                 @endforeach
                             </ul>
                             @endif
@@ -199,7 +201,9 @@
                             <code>&#123;&#123; #each items &#125;&#125;</code>
                             <ul class="mb-0">
                                 @foreach($widget['item_schema'] as $field)
-                                <li><code>&#123;&#123; {{ $field['name'] }} &#125;&#125;</code> - {{ $field['label'] }}</li>
+                                    @if(isset($field['name']) && !empty($field['name']) && (!isset($field['type']) || $field['type'] !== 'row'))
+                                    <li><code>&#123;&#123; {{ $field['name'] }} &#125;&#125;</code> - {{ $field['label'] ?? 'Tanımsız' }}</li>
+                                    @endif
                                 @endforeach
                             </ul>
                             <code>&#123;&#123; /each &#125;&#125;</code>

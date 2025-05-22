@@ -1,14 +1,13 @@
 @php
     $fieldName = $element['name'] ?? '';
-    $fieldType = $element['type'] ?? 'switch';
     $fieldLabel = $element['label'] ?? '';
     $isRequired = isset($element['required']) && $element['required'];
     $helpText = $element['help_text'] ?? '';
     $isSystem = isset($element['system']) && $element['system'];
     $width = isset($element['properties']['width']) ? $element['properties']['width'] : 12;
-    $defaultValue = isset($element['properties']['default_value']) ? filter_var($element['properties']['default_value'], FILTER_VALIDATE_BOOLEAN) : false;
-    $activeLabel = isset($element['properties']['active_label']) ? $element['properties']['active_label'] : 'Aktif';
-    $inactiveLabel = isset($element['properties']['inactive_label']) ? $element['properties']['inactive_label'] : 'Aktif Değil';
+    $defaultValue = isset($element['properties']['default_value']) ? $element['properties']['default_value'] : false;
+    $activeLabel = isset($element['properties']['active_label']) ? $element['properties']['active_label'] : 'Evet';
+    $inactiveLabel = isset($element['properties']['inactive_label']) ? $element['properties']['inactive_label'] : 'Hayır';
     
     if(isset($formData)) {
         $fieldValue = $formData[$fieldName] ?? $defaultValue;
@@ -36,41 +35,33 @@
         <div class="card-body">
             <div class="form-group w-100">
                 @if(isset($formData))
-                    <div class="mb-3 @error('formData.' . $fieldName) is-invalid @enderror">
-                        <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
-                            <input type="checkbox" 
-                                id="switch-{{ $fieldName }}" 
-                                name="{{ $fieldName }}" 
+                    <div class="mb-3">
+                        <label class="form-check form-switch">
+                            <input class="form-check-input @error('formData.' . $fieldName) is-invalid @enderror" 
+                                type="checkbox" 
                                 wire:model="formData.{{ $fieldName }}"
                                 value="1"
                                 @if($isRequired) required @endif>
-                            <div class="state p-success p-on ms-2">
-                                <label>{{ $activeLabel }}</label>
-                            </div>
-                            <div class="state p-danger p-off ms-2">
-                                <label>{{ $inactiveLabel }}</label>
-                            </div>
-                        </div>
+                            <span class="form-check-label">
+                                {{ $fieldValue ? $activeLabel : $inactiveLabel }}
+                            </span>
+                        </label>
                         @error('formData.' . $fieldName)
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                 @else
-                    <div class="mb-3 @error('settings.' . str_replace('widget.', '', $fieldName)) is-invalid @enderror">
-                        <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
-                            <input type="checkbox" 
-                                id="switch-{{ str_replace('widget.', '', $fieldName) }}" 
-                                name="{{ str_replace('widget.', '', $fieldName) }}" 
+                    <div class="mb-3">
+                        <label class="form-check form-switch">
+                            <input class="form-check-input @error('settings.' . str_replace('widget.', '', $fieldName)) is-invalid @enderror" 
+                                type="checkbox" 
                                 wire:model="settings.{{ str_replace('widget.', '', $fieldName) }}"
                                 value="1"
                                 @if($isRequired) required @endif>
-                            <div class="state p-success p-on ms-2">
-                                <label>{{ $activeLabel }}</label>
-                            </div>
-                            <div class="state p-danger p-off ms-2">
-                                <label>{{ $inactiveLabel }}</label>
-                            </div>
-                        </div>
+                            <span class="form-check-label">
+                                {{ $fieldValue ? $activeLabel : $inactiveLabel }}
+                            </span>
+                        </label>
                         @error('settings.' . str_replace('widget.', '', $fieldName))
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror

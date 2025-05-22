@@ -1,21 +1,20 @@
 @php
     $fieldName = $element['name'] ?? '';
-    $fieldType = $element['type'] ?? 'textarea';
     $fieldLabel = $element['label'] ?? '';
     $isRequired = isset($element['required']) && $element['required'];
     $placeholder = $element['placeholder'] ?? '';
     $helpText = $element['help_text'] ?? '';
     $isSystem = isset($element['system']) && $element['system'];
     $width = isset($element['properties']['width']) ? $element['properties']['width'] : 12;
-    $rows = isset($element['properties']['rows']) ? $element['properties']['rows'] : 4;
+    $defaultValue = isset($element['properties']['default_value']) ? $element['properties']['default_value'] : '';
     
     if(isset($formData)) {
-        $fieldValue = $formData[$fieldName] ?? '';
+        $fieldValue = $formData[$fieldName] ?? $defaultValue;
     } elseif(isset($settings)) {
         $cleanFieldName = str_replace('widget.', '', $fieldName);
-        $fieldValue = $settings[$cleanFieldName] ?? '';
+        $fieldValue = $settings[$cleanFieldName] ?? $defaultValue;
     } else {
-        $fieldValue = '';
+        $fieldValue = $defaultValue;
     }
 @endphp
 
@@ -35,25 +34,27 @@
         <div class="card-body">
             <div class="form-group w-100">
                 @if(isset($formData))
-                    <textarea
-                        wire:model="formData.{{ $fieldName }}"
-                        class="form-control @error('formData.' . $fieldName) is-invalid @enderror"
-                        placeholder="{{ $placeholder }}"
-                        rows="{{ $rows }}"
-                        @if($isRequired) required @endif></textarea>
-                    @error('formData.' . $fieldName)
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
+                    <div class="mb-2">
+                        <textarea wire:model="formData.{{ $fieldName }}" 
+                            class="form-control @error('formData.' . $fieldName) is-invalid @enderror" 
+                            rows="4"
+                            placeholder="{{ $placeholder }}"
+                            @if($isRequired) required @endif></textarea>
+                        @error('formData.' . $fieldName)
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
                 @else
-                    <textarea
-                        wire:model="settings.{{ str_replace('widget.', '', $fieldName) }}"
-                        class="form-control @error('settings.' . str_replace('widget.', '', $fieldName)) is-invalid @enderror"
-                        placeholder="{{ $placeholder }}"
-                        rows="{{ $rows }}"
-                        @if($isRequired) required @endif></textarea>
-                    @error('settings.' . str_replace('widget.', '', $fieldName))
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
+                    <div class="mb-2">
+                        <textarea wire:model="settings.{{ str_replace('widget.', '', $fieldName) }}" 
+                            class="form-control @error('settings.' . str_replace('widget.', '', $fieldName)) is-invalid @enderror" 
+                            rows="4"
+                            placeholder="{{ $placeholder }}"
+                            @if($isRequired) required @endif></textarea>
+                        @error('settings.' . str_replace('widget.', '', $fieldName))
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
                 @endif
                 
                 @if($helpText)

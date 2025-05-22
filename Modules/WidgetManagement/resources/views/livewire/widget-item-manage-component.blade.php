@@ -31,79 +31,48 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <form wire:submit.prevent="save(true)">
-        <div class="row g-3">
-            @foreach($schema as $element)
-                @if(isset($element['type']))
-                    @if($element['type'] === 'row' && isset($element['columns']))
-                        <div class="col-12">
-                            <div class="row g-3">
-                                @foreach($element['columns'] as $column)
-                                    <div class="col-md-{{ $column['width'] ?? 6 }}">
-                                        @if(isset($column['elements']) && is_array($column['elements']))
-                                            @foreach($column['elements'] as $columnElement)
-                                                @include('widgetmanagement::form-builder.partials.form-elements.' . $columnElement['type'], [
-                                                    'element' => $columnElement,
-                                                    'formData' => $formData,
-                                                    'temporaryImages' => $temporaryImages,
-                                                    'photos' => $photos
-                                                ])
-                                            @endforeach
-                                        @endif
-                                    </div>
-                                @endforeach
+        <form wire:submit.prevent="save(true)">
+            <div class="row g-3">
+                @foreach($schema as $element)
+                    @if(isset($element['type']))
+                        @if($element['type'] === 'row' && isset($element['columns']))
+                            <div class="col-12">
+                                <div class="row g-3">
+                                    @foreach($element['columns'] as $column)
+                                        <div class="col-md-{{ $column['width'] ?? 6 }}">
+                                            @if(isset($column['elements']) && is_array($column['elements']))
+                                                @foreach($column['elements'] as $columnElement)
+                                                    @include('widgetmanagement::form-builder.partials.form-elements.' . $columnElement['type'], [
+                                                        'element' => $columnElement,
+                                                        'formData' => $formData,
+                                                        'temporaryImages' => $temporaryImages,
+                                                        'photos' => $photos
+                                                    ])
+                                                @endforeach
+                                            @endif
+                                        </div>
+                                    @endforeach
+                                </div>
                             </div>
-                        </div>
-                    @elseif(!isset($element['hidden']) || !$element['hidden'])
-                        @include('widgetmanagement::form-builder.partials.form-elements.' . $element['type'], [
-                            'element' => $element,
-                            'formData' => $formData,
-                            'temporaryImages' => $temporaryImages,
-                            'photos' => $photos
-                        ])
+                        @elseif(!isset($element['hidden']) || !$element['hidden'])
+                            @include('widgetmanagement::form-builder.partials.form-elements.' . $element['type'], [
+                                'element' => $element,
+                                'formData' => $formData,
+                                'temporaryImages' => $temporaryImages,
+                                'photos' => $photos
+                            ])
+                        @endif
                     @endif
-                @endif
-            @endforeach
-        </div>
-
-        <div class="card mt-3">
-            <div class="card-footer d-flex justify-content-between">
-                <a href="{{ route('admin.widgetmanagement.items', $tenantWidgetId) }}" class="btn btn-outline-secondary">
-                    <i class="fas fa-times me-1"></i> İptal
-                </a>
-                <div>
-                    @if(!$itemId)
-                        <button type="submit" class="btn" wire:click="save(false, true)" wire:loading.attr="disabled" wire:target="save">
-                            <span wire:loading.remove wire:target="save(false, true)">
-                                <i class="fas fa-plus me-1"></i> Kaydet ve Yeni Ekle
-                            </span>
-                            <span wire:loading wire:target="save(false, true)">
-                                <i class="fas fa-spinner fa-spin me-1"></i> Kaydediliyor...
-                            </span>
-                        </button>
-                    @else
-                        <button type="submit" class="btn" wire:click="save(false, false)" wire:loading.attr="disabled" wire:target="save">
-                            <span wire:loading.remove wire:target="save(false, false)">
-                                <i class="fas fa-save me-1"></i> Kaydet ve Düzenlemeye Devam Et
-                            </span>
-                            <span wire:loading wire:target="save(false, false)">
-                                <i class="fas fa-spinner fa-spin me-1"></i> Kaydediliyor...
-                            </span>
-                        </button>
-                    @endif
-                    
-                    <button type="submit" class="btn btn-primary ms-2" wire:loading.attr="disabled" wire:target="save">
-                        <span wire:loading.remove wire:target="save">
-                            <i class="fas fa-save me-1"></i> Kaydet
-                        </span>
-                        <span wire:loading wire:target="save">
-                            <i class="fas fa-spinner fa-spin me-1"></i> Kaydediliyor...
-                        </span>
-                    </button>
-                </div>
+                @endforeach
             </div>
-        </div>
-    </form>
+
+            <div class="card mt-3">
+                @include('components.form-footer', [
+                    'route' => 'admin.widgetmanagement',
+                    'modelId' => $itemId
+                ])
+            </div>
+        </form>
+    </div>
 </div>

@@ -1,45 +1,63 @@
 @include('widgetmanagement::helper')
 <div>
     <div class="card">
-        <div class="card-header">
-            <div class="d-flex justify-content-between align-items-center">
-                <h3 class="card-title">
-                    <i class="fas fa-sliders-h me-2"></i>
-                    {{ $tenantWidget->widget->name }} - Özelleştirme
-                </h3>
-                <a href="{{ route('admin.widgetmanagement.index') }}" class="btn btn-outline-secondary">
-                    <i class="fas fa-arrow-left me-2"></i> Bölümlere Dön
-                </a>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <h3 class="card-title d-flex align-items-center mb-0">
+                        <i class="fas fa-sliders-h me-2"></i>
+                        {{ $tenantWidget->widget->name }} - Özelleştirme
+                    </h3>
+                </div>
+                <div class="col-md-3 position-relative d-flex justify-content-center align-items-center">
+                    <div wire:loading
+                        wire:target="render, save"
+                        class="position-absolute top-50 start-50 translate-middle text-center"
+                        style="width: 100%; max-width: 250px;">
+                        <div class="small text-muted mb-2">Güncelleniyor...</div>
+                        <div class="progress mb-1">
+                            <div class="progress-bar progress-bar-indeterminate"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 text-md-end">
+                    <a href="{{ route('admin.widgetmanagement.index') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i> Bölümlere Dön
+                    </a>
+                </div>
             </div>
         </div>
-        <div class="card-body">
-            @if(empty($schema))
-                <div class="empty">
-                    <div class="empty-img">
-                        <i class="fas fa-sliders-h fa-4x text-muted"></i>
-                    </div>
-                    <p class="empty-title">Özelleştirme seçeneği bulunamadı</p>
-                    <p class="empty-subtitle text-muted">
+
+    @if(empty($schema))
+        <div class="alert alert-info mx-3 mb-3">
+            <div class="d-flex">
+                <div>
+                    <i class="fas fa-info-circle fa-2x text-blue me-3"></i>
+                </div>
+                <div>
+                    <h4>Özelleştirme seçeneği bulunamadı</h4>
+                    <div class="text-muted">
                         Bu widget için tanımlanmış özelleştirme seçeneği bulunmuyor.
-                    </p>
+                    </div>
                 </div>
-            @else
-                <div class="alert alert-info mb-4">
-                    <div class="d-flex">
-                        <div>
-                            <i class="fas fa-info-circle text-blue me-2" style="margin-top: 3px"></i>
-                        </div>
-                        <div>
-                            <h4 class="alert-title">Widget Özelleştirme</h4>
-                            <div class="text-muted">
-                                Bu sayfadaki ayarları değiştirerek widget görünümünü ve davranışını özelleştirebilirsiniz. Değişiklikler kaydedildikten sonra widget bu ayarlara göre görüntülenecektir.
-                            </div>
+            </div>
+        </div>
+    @else
+        <form wire:submit.prevent="save">
+            <div class="alert alert-info mx-3 mb-3">
+                <div class="d-flex">
+                    <div>
+                        <i class="fas fa-info-circle text-blue me-2" style="margin-top: 3px"></i>
+                    </div>
+                    <div>
+                        <h4 class="alert-title">Widget Özelleştirme</h4>
+                        <div class="text-muted">
+                            Bu sayfadaki ayarları değiştirerek widget görünümünü ve davranışını özelleştirebilirsiniz. Değişiklikler kaydedildikten sonra widget bu ayarlara göre görüntülenecektir.
                         </div>
                     </div>
                 </div>
-            
-                <form wire:submit.prevent="save">
-                    <div class="row g-3">
+            </div>
+            <div class="row g-3 mx-2">
                         @foreach($schema as $element)
                             @if(isset($element['type']))
                                 @if($element['type'] === 'row' && isset($element['columns']))
@@ -71,21 +89,14 @@
                         @endforeach
                     </div>
                     
-                    <div class="card-footer d-flex justify-content-between mt-4">
-                        <a href="{{ route('admin.widgetmanagement.index') }}" class="btn btn-outline-secondary">
-                            <i class="fas fa-times me-1"></i> İptal
-                        </a>
-                        <button type="submit" class="btn btn-primary">
-                            <div wire:loading.remove wire:target="save">
-                                <i class="fas fa-save me-1"></i> Kaydet
-                            </div>
-                            <div wire:loading wire:target="save">
-                                <i class="fas fa-spinner fa-spin me-1"></i> Kaydediliyor...
-                            </div>
-                        </button>
+                    <div class="card mt-3">
+                        @include('components.form-footer', [
+                            'route' => 'admin.widgetmanagement',
+                            'modelId' => $tenantWidgetId
+                        ])
                     </div>
                 </form>
-            @endif
+            </div>
         </div>
-    </div>
+    @endif
 </div>

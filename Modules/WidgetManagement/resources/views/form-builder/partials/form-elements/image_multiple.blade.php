@@ -1,159 +1,112 @@
 @php
-    $fieldName = $element['name'] ?? '';
-    $fieldLabel = $element['label'] ?? '';
-    $isRequired = isset($element['required']) && $element['required'];
-    $helpText = $element['help_text'] ?? '';
-    $isSystem = isset($element['system']) && $element['system'];
-    $width = isset($element['properties']['width']) ? $element['properties']['width'] : 12;
+    $settingId = null;
+    $settingKey = null;
     
-    if(isset($formData)) {
-        $fieldValue = $formData[$fieldName] ?? [];
-        $model = 'formData';
-    } elseif(isset($settings)) {
-        $cleanFieldName = str_replace('widget.', '', $fieldName);
-        $fieldValue = $settings[$cleanFieldName] ?? [];
-        $model = 'settings';
-    } else {
-        $fieldValue = [];
-        $model = null;
+    if(isset($element['properties']['setting_id'])) {
+        $settingId = $element['properties']['setting_id'];
+    } elseif(isset($element['properties']['name'])) {
+        $settingName = $element['properties']['name'];
+        
+        // Ayarı adından bul
+        $setting = $settings->firstWhere('key', $settingName);
+        if($setting) {
+            $settingId = $setting->id;
+            $settingKey = $setting->key;
+        }
     }
-    
-    if (!is_array($fieldValue)) {
-        $fieldValue = [];
-    }
-
-    // Livewire için benzersiz bir ID oluştur
-    $settingId = isset($element['id']) ? $element['id'] : (isset($element['name']) ? md5($element['name']) : uniqid());
 @endphp
 
-<div class="col-{{ $width }}">
-    <div class="card mb-3 w-100">
-        <div class="card-header">
-            <div class="d-flex align-items-center justify-content-between">
-                <h3 class="card-title d-flex align-items-center">
-                    <i class="fas fa-images me-2 text-primary"></i>
-                    {{ $fieldLabel }}
-                    @if($isSystem)
-                        <span class="badge bg-orange ms-2">Sistem</span>
-                    @endif
-                </h3>
+@if($settingId)
+    <div class="col-12" wire:key="setting-{{ $settingId }}">
+        <div class="card mb-3 w-100">
+            <div class="card-header">
+                <div class="d-flex align-items-center justify-content-between">
+                    <h3 class="card-title d-flex align-items-center">
+                        <i class="fas fa-images me-2 text-primary"></i>
+                        {{ $element['properties']['label'] ?? 'Çoklu Resim' }}
+                    </h3>
+                </div>
             </div>
-        </div>
-        <div class="card-body">
-            <div class="form-group w-100">
-                @if(isset($formData))
-                    <div class="row">
-                        @if(!empty($fieldValue))
-                            <div class="col-12 mb-3">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h4 class="card-title">Mevcut Görseller</h4>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row g-2">
-                                            @foreach($fieldValue as $index => $image)
-                                                <div class="col-6 col-md-4 col-lg-3 mb-3">
-                                                    @include('widgetmanagement::form-builder.partials.multiple-image-upload', [
-                                                        'settingId' => $settingId,
-                                                        'index' => $index,
-                                                        'model' => $model,
-                                                        'label' => 'Görseli sürükleyip bırakın veya tıklayın',
-                                                        'values' => ['image' => cdn($image)],
-                                                        'isExisting' => true,
-                                                        'fieldName' => $fieldName
-                                                    ])
-                                                </div>
-                                            @endforeach
-                                        </div>
+            <div class="card-body">
+                <div class="form-group w-100">
+                    <!-- Mevcut Çoklu Resimler -->
+                    @php
+                        $currentImages = isset($multipleImagesArrays[$settingId]) ? $multipleImagesArrays[$settingId] : [];
+                    @endphp
+                    
+                    @include('widgetmanagement::form-builder.partials.existing-multiple-images', [
+                        'settingId' => $settingId,
+                        'images' => $currentImages
+                    ])
+                    
+                    <!-- Yükleme Alanı -->
+                    <div class="card mt-3">
+                        <div class="card-body p-3">
+                            <form wire:submit="updatedTempPhoto">
+                                <div class="dropzone p-4" onclick="document.getElementById('file-upload-{{ $settingId }}').click()">
+                                    <input type="file" id="file-upload-{{ $settingId }}" class="d-none" 
+                                        wire:model="tempPhoto" accept="image/*" multiple
+                                        wire:click="setPhotoField('{{ $settingId }}')">
+                                        
+                                    <div class="text-center">
+                                        <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                                        <h4 class="text-muted">Görselleri sürükleyip bırakın veya tıklayın</h4>
+                                        <p class="text-muted small">PNG, JPG, WEBP, GIF - Maks 2MB - <strong>Toplu seçim yapabilirsiniz</strong></p>
                                     </div>
                                 </div>
-                            </div>
-                        @endif
-
-                        <div class="col-12">
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="d-flex align-items-center justify-content-between">
-                                        <h4 class="card-title">Yeni Görsel Ekle</h4>
-                                        <button type="button" class="btn btn-primary btn-sm" 
-                                                wire:click="addMultipleImageField('{{ $fieldName }}')">
-                                            <i class="fas fa-plus me-1"></i> Yeni Görsel Ekle
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row g-2">
-                                        @if(isset($multipleImageFields[$fieldName]) && count($multipleImageFields[$fieldName]) > 0)
-                                            @foreach($multipleImageFields[$fieldName] as $index => $field)
-                                                <div class="col-12 col-md-6 col-lg-4 mb-3">
-                                                    @include('widgetmanagement::form-builder.partials.multiple-image-upload', [
-                                                        'settingId' => $settingId,
-                                                        'index' => $index,
-                                                        'model' => $model,
-                                                        'label' => 'Görseli sürükleyip bırakın veya tıklayın',
-                                                        'isRequired' => $isRequired
-                                                    ])
-                                                </div>
-                                            @endforeach
-                                        @else
-                                            <div class="col-12">
-                                                <div class="alert alert-info">
-                                                    <i class="fas fa-info-circle me-2"></i>
-                                                    Henüz yükleme alanı eklenmemiş. "Yeni Görsel Ekle" butonuna tıklayarak görsel yükleme alanı ekleyebilirsiniz.
-                                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Geçici yüklenen görseller -->
+                    @if(isset($temporaryMultipleImages[$settingId]) && is_array($temporaryMultipleImages[$settingId]) && count($temporaryMultipleImages[$settingId]) > 0)
+                        <div class="mt-3">
+                            <label class="form-label">Yeni Yüklenen Görseller</label>
+                            <div class="row g-2">
+                                @foreach($temporaryMultipleImages[$settingId] as $index => $photo)
+                                    @if($photo)
+                                    <div class="col-6 col-sm-4 col-md-3 col-xl-2">
+                                        <div class="position-relative">
+                                            <div class="position-absolute top-0 end-0 p-1">
+                                                <button type="button" class="btn btn-danger btn-icon btn-sm"
+                                                        wire:click="removeMultipleImageField({{ $settingId }}, {{ $index }})">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
                                             </div>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @else
-                    <div class="row">
-                        @if(!empty($fieldValue))
-                            <div class="col-12 mb-3">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h4 class="card-title">Mevcut Görseller</h4>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row g-2">
-                                            @foreach($fieldValue as $index => $image)
-                                                <div class="col-6 col-md-4 col-lg-3">
-                                                    <div class="position-relative" style="height: 150px;">
-                                                        <img src="{{ cdn($image) }}" 
-                                                            alt="Resim {{ $index + 1 }}" 
-                                                            class="img-fluid rounded h-100 w-100 object-fit-cover">
-                                                    </div>
-                                                </div>
-                                            @endforeach
+                                            <div class="img-responsive img-responsive-1x1 rounded border" 
+                                                style="background-image: url({{ $photo->temporaryUrl() }})">
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                    @endif
+                                @endforeach
                             </div>
-                        @endif
-
-                        <div class="col-12">
-                            <input type="file" 
-                                wire:model="temporaryUpload.{{ str_replace('widget.', '', $fieldName) }}" 
-                                class="form-control @error('temporaryUpload.' . str_replace('widget.', '', $fieldName)) is-invalid @enderror"
-                                accept="image/*"
-                                multiple
-                                @if($isRequired && empty($fieldValue)) required @endif>
-                            @error('temporaryUpload.' . str_replace('widget.', '', $fieldName))
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
                         </div>
-                    </div>
-                @endif
-                
-                @if($helpText)
-                    <div class="form-text text-muted mt-2">
-                        <i class="fas fa-info-circle me-1"></i>
-                        {{ $helpText }}
-                    </div>
-                @endif
+                    @endif
+                    
+                    @if(isset($element['properties']['help_text']) && !empty($element['properties']['help_text']))
+                        <div class="form-text text-muted mt-2">
+                            <i class="fas fa-info-circle me-1"></i>
+                            {{ $element['properties']['help_text'] }}
+                        </div>
+                    @endif
+                    
+                    @if(isset($originalValues[$settingId]) && $originalValues[$settingId] != $values[$settingId])
+                        <div class="mt-2 text-end">
+                            <span class="badge bg-yellow cursor-pointer" wire:click="resetToDefault({{ $settingId }})">
+                                <i class="fas fa-undo me-1"></i> Varsayılana Döndür
+                            </span>
+                        </div>
+                    @endif
+                </div>
             </div>
         </div>
     </div>
-</div>
+@else
+    <div class="col-12">
+        <div class="alert alert-danger mb-3 w-100">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            Bu çoklu resim alanı için ayar bulunamadı: {{ $element['properties']['name'] ?? 'Bilinmeyen' }}
+        </div>
+    </div>
+@endif

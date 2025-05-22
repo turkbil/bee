@@ -103,6 +103,10 @@ class WidgetItemManageComponent extends Component
 
             if (is_array($this->schema)) {
                 foreach ($this->schema as $field) {
+                    // Güvenli kontrol - name anahtarı yoksa atla
+                    if (!isset($field['name'])) continue;
+                    
+                    // Şimdi güvenli bir şekilde kontrol edebiliriz
                     if ($field['name'] === 'title') $hasTitle = true;
                     if ($field['name'] === 'is_active') $hasActive = true;
                     if ($field['name'] === 'unique_id') $hasUniqueId = true;
@@ -246,7 +250,10 @@ class WidgetItemManageComponent extends Component
         
         if (!empty($this->schema)) {
             foreach ($this->schema as $field) {
+                // Satır tipi elementleri atla veya özel işle
+                if (!isset($field['name']) || !isset($field['type'])) continue;
                 if ($field['name'] === 'unique_id') continue;
+                if ($field['type'] === 'row') continue; // Satır tipi elementleri atla
                 
                 if ($field['type'] === 'checkbox') {
                     $this->formData[$field['name']] = false;
@@ -270,6 +277,10 @@ class WidgetItemManageComponent extends Component
         $rules = [];
         
         foreach ($this->schema as $field) {
+            // Satır tipi elementleri veya geçersiz alanları atla
+            if (!isset($field['name']) || !isset($field['type'])) continue;
+            if ($field['type'] === 'row') continue; // Satır tipi elementleri atla
+            
             if (isset($field['required']) && $field['required'] && $field['name'] !== 'unique_id' && $field['type'] !== 'image') {
                 $rules['formData.' . $field['name']] = 'required';
             }
@@ -289,6 +300,10 @@ class WidgetItemManageComponent extends Component
             
             // Dosyaları ve görselleri yükle
             foreach ($this->schema as $field) {
+                // Satır tipi elementleri veya geçersiz alanları atla
+                if (!isset($field['name']) || !isset($field['type'])) continue;
+                if ($field['type'] === 'row') continue; // Satır tipi elementleri atla
+                
                 // Resim veya dosya tipi için
                 if (($field['type'] === 'image' || $field['type'] === 'file') && 
                     isset($this->temporaryImages[$field['name']]) && 
@@ -324,7 +339,7 @@ class WidgetItemManageComponent extends Component
                 }
                 
                 // Çoklu resim tipi için işlem
-                if ($field['type'] === 'image_multiple' && isset($this->photos[$field['name']]) && count($this->photos[$field['name']]) > 0) {
+                if (isset($field['type']) && $field['type'] === 'image_multiple' && isset($field['name']) && isset($this->photos[$field['name']]) && count($this->photos[$field['name']]) > 0) {
                     $fieldName = $field['name'];
                     
                     // Eğer mevcut fotoğraflar yoksa, boş array oluştur

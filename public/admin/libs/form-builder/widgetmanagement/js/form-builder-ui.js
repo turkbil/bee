@@ -120,40 +120,8 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   }
   
-  // Kaydet butonu - global değişken olarak tanımla
-  if (!window.widgetUiSaveBtn) {
-    window.widgetUiSaveBtn = document.getElementById("save-btn");
-  }
-  
-  if (window.widgetUiSaveBtn) {
-    window.widgetUiSaveBtn.addEventListener("click", function() {
-      if (!window.getFormJSON) return;
-      
-      const formData = window.getFormJSON();
-      console.log("Widget Form Verisi:", formData);
-      
-      // Form verisi hazır, şimdi kaydet
-      const widgetId = document.getElementById('widget-id').value;
-      const schemaType = document.getElementById('schema-type').value;
-      if (widgetId && schemaType && typeof Livewire !== 'undefined') {
-        Livewire.dispatch('save-widget-form-layout', {
-          widgetId: widgetId, 
-          schemaType: schemaType,
-          formData: formData
-        });
-      } else {
-        // Klasik form gönderimi için
-        const layoutDataInput = document.getElementById('layout-data');
-        if (layoutDataInput) {
-          layoutDataInput.value = JSON.stringify(formData);
-          const saveForm = document.getElementById('save-form');
-          if (saveForm) {
-            saveForm.submit();
-          }
-        }
-      }
-    });
-  }
+  // Not: Kaydetme kodu form-builder.js dosyasında tanımlandı
+  // Çift kayıt sorununu önlemek için buradaki kaydetme kodu kaldırıldı
   
   // Önizleme butonu
   const previewBtn = document.getElementById("preview-btn");

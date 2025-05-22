@@ -50,11 +50,8 @@ window.initializeSortable = function() {
     group: {
       name: "form",
       put: function(to, from, dragEl) {
-        // Palette'den veya form içinde sürükleme yapılmasına izin ver
-        return from.el.classList.contains('block-items') || 
-               from.el.classList.contains('column-element') || 
-               from.el.classList.contains('row-element') ||
-               from.el === window.formCanvas;
+        // Tüm elementlerin canvas içinde sürüklenmesine izin ver
+        return true;
       }
     },
     animation: 150,
@@ -135,8 +132,13 @@ window.initializeColumnSortables = function() {
   }
   
   columns.forEach((column) => {
-    if (column._sortable) {
-      column._sortable.destroy();
+    // Daha güvenli kontrol - _sortable özelliği var mı ve destroy metodu var mı kontrol et
+    if (column._sortable && typeof column._sortable.destroy === 'function') {
+      try {
+        column._sortable.destroy();
+      } catch (error) {
+        console.warn('Sortable destroy hatası:', error);
+      }
     }
     
     // Sütunu başlatıldı olarak işaretle
@@ -147,14 +149,12 @@ window.initializeColumnSortables = function() {
         name: "column",
         pull: true,
         put: function (to, from, dragEl) {
-          // Row elementi sütun içine eklenemez
-          if (dragEl.dataset && dragEl.dataset.type === "row") {
-            return false;
-          }
-          
-          // Palette'den veya diğer sütunlardan gelen elementleri kabul et
+          // Tüm elementlerin sütun içine sürüklenmesine izin ver
+          // Palette'den, diğer sütunlardan veya canvas'tan gelen elementleri kabul et
           return from.el.classList.contains('block-items') || 
-                 from.el.classList.contains('column-element');
+                 from.el.classList.contains('column-element') ||
+                 from.el.classList.contains('row-element') ||
+                 from.el === window.formCanvas;
         }
       },
       animation: 150,

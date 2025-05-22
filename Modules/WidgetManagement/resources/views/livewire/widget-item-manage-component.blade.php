@@ -44,7 +44,7 @@
                     <div class="card-body">
                         <div class="row g-3">
                             @foreach($schema as $field)
-                                @if($field['name'] !== 'unique_id' && ($field['type'] === 'text' || $field['type'] === 'textarea' || $field['type'] === 'select' || $field['type'] === 'number' || $field['type'] === 'email' || $field['type'] === 'tel' || $field['type'] === 'url' || $field['type'] === 'color' || $field['type'] === 'date' || $field['type'] === 'time'))
+                                @if(isset($field['name']) && isset($field['type']) && $field['name'] !== 'unique_id' && ($field['type'] === 'text' || $field['type'] === 'textarea' || $field['type'] === 'select' || $field['type'] === 'number' || $field['type'] === 'email' || $field['type'] === 'tel' || $field['type'] === 'url' || $field['type'] === 'color' || $field['type'] === 'date' || $field['type'] === 'time'))
                                     <div class="col-12 mb-3">
                                         <label for="field-{{ $field['name'] }}" class="form-label{{ isset($field['required']) && $field['required'] ? ' required' : '' }}">
                                             {{ $field['label'] }}

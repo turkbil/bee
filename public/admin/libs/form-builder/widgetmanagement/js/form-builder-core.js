@@ -211,10 +211,31 @@ document.addEventListener("DOMContentLoaded", function() {
               const itemType = item.dataset.type;
               const itemProps = item.properties || {};
   
-              columnElements.push({
+              // Satır içindeki elementlerin tüm özelliklerini doğru şekilde al
+              const itemData = {
                 type: itemType,
-                properties: JSON.parse(JSON.stringify(itemProps)),
-              });
+                properties: {}
+              };
+              
+              // Properties varsa ekle
+              if (itemProps && Object.keys(itemProps).length > 0) {
+                try {
+                  itemData.properties = JSON.parse(JSON.stringify(itemProps));
+                } catch (e) {
+                  console.error('Properties JSON dönüştürme hatası:', e);
+                  // Hata durumunda boş properties ile devam et
+                  itemData.properties = {};
+                }
+              }
+              
+              // Name, label, required gibi önemli özellikleri doğrudan ekle
+              if (itemProps && itemProps.name) itemData.name = itemProps.name;
+              if (itemProps && itemProps.label) itemData.label = itemProps.label;
+              if (itemProps && itemProps.required !== undefined) itemData.required = itemProps.required;
+              if (itemProps && itemProps.placeholder) itemData.placeholder = itemProps.placeholder;
+              if (itemProps && itemProps.is_system) itemData.system = true;
+              
+              columnElements.push(itemData);
             });
   
             elementData.columns.push({
@@ -298,10 +319,32 @@ document.addEventListener("DOMContentLoaded", function() {
                 column.elements.forEach(colElement => {
                   if (!colElement.type) return;
                   
-                  const colElementProps = colElement.properties 
-                    ? JSON.parse(JSON.stringify(colElement.properties)) 
-                    : {};
+                  // Özellikleri doğru şekilde al
+                  let colElementProps = {};
+                  
+                  try {
+                    // Doğrudan özellikleri ekle (güvenli şekilde)
+                    if (colElement.name) colElementProps.name = colElement.name;
+                    if (colElement.label) colElementProps.label = colElement.label;
+                    if (colElement.required !== undefined) colElementProps.required = colElement.required;
+                    if (colElement.placeholder) colElementProps.placeholder = colElement.placeholder;
+                    if (colElement.system) colElementProps.is_system = true;
                     
+                    // Properties varsa birleştir
+                    if (colElement.properties && typeof colElement.properties === 'object') {
+                      const propsCopy = JSON.parse(JSON.stringify(colElement.properties));
+                      colElementProps = {...colElementProps, ...propsCopy};
+                    }
+                  } catch (e) {
+                    console.error('Sütun elementi özellik işleme hatası:', e, colElement);
+                    // Hata durumunda temel özellikleri kullan
+                    colElementProps = {
+                      name: colElement.name || '',
+                      label: colElement.label || ''
+                    };
+                  }
+                  
+                  console.log('Sütun elementi yükleniyor:', colElement.type, colElementProps);
                   const colFormElement = window.createFormElement(colElement.type, colElementProps);
                   
                   if (colFormElement) {

@@ -1,5 +1,8 @@
+// Widget Form Builder Ana Başlatma Kodu
 document.addEventListener("DOMContentLoaded", function() {
+  // Eğer zaten başlatıldıysa, tekrar başlatma
   if (window.widgetFormBuilderInitialized) {
+    console.log("Widget Form Builder zaten başlatılmış, tekrar başlatılmıyor.");
     return;
   }
   window.widgetFormBuilderInitialized = true;
@@ -95,13 +98,15 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   };
 
-  if (!window.widgetSaveBtn) {
-    window.widgetSaveBtn = document.getElementById("save-btn");
-  }
-  
-  if (window.widgetSaveBtn && !window.widgetSaveBtn.hasAttribute('data-listener-added')) {
-    window.widgetSaveBtn.setAttribute('data-listener-added', 'true');
-    window.widgetSaveBtn.addEventListener("click", function() {
+  // Kaydet butonu - Global değişken kullanmadan doğrudan tanımla
+  const saveBtn = document.getElementById("save-btn");
+  if (saveBtn) {
+    // Önceki event listener'ları temizle
+    const newSaveBtn = saveBtn.cloneNode(true);
+    saveBtn.parentNode.replaceChild(newSaveBtn, saveBtn);
+    
+    // Yeni event listener ekle
+    newSaveBtn.addEventListener("click", function() {
       if (!window.getFormJSON) return;
       
       const formData = window.getFormJSON();
@@ -111,9 +116,9 @@ document.addEventListener("DOMContentLoaded", function() {
       const schemaType = document.getElementById('schema-type').value;
       
       if (widgetId && schemaType) {
-        const originalContent = window.widgetSaveBtn.innerHTML;
-        window.widgetSaveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Kaydediliyor...';
-        window.widgetSaveBtn.disabled = true;
+        const originalContent = this.innerHTML;
+        this.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Kaydediliyor...';
+        this.disabled = true;
         
         fetch(`/admin/widgetmanagement/form-builder/${widgetId}/save/${schemaType}`, {
           method: 'POST',
@@ -131,22 +136,22 @@ document.addEventListener("DOMContentLoaded", function() {
           }
           return response.json();
         })
-        .then(data => {
-          window.widgetSaveBtn.innerHTML = originalContent;
-          window.widgetSaveBtn.disabled = false;
+        .then(function(data) {
+          this.innerHTML = originalContent;
+          this.disabled = false;
           
           window.showToast(data.success ? 'success' : 'error', 
                          data.success ? 'Başarılı!' : 'Hata!', 
                          data.success ? 'Widget form yapısı başarıyla kaydedildi.' : data.error);
-        })
-        .catch(error => {
+        }.bind(this))
+        .catch(function(error) {
           console.error('Widget kayıt hatası:', error);
           
-          window.widgetSaveBtn.innerHTML = originalContent;
-          window.widgetSaveBtn.disabled = false;
+          this.innerHTML = originalContent;
+          this.disabled = false;
           
           window.showToast('error', 'Hata!', 'Widget form yapısı kaydedilirken bir hata oluştu.');
-        });
+        }.bind(this));
       }
     });
   }

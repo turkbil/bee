@@ -67,6 +67,7 @@
                     </div>
                     
                     @foreach($schema as $field)
+                        @if(isset($field['name']) && isset($field['type']))
                         <div class="col-md-6 mb-3">
                             <div class="card">
                                 <div class="card-status-start bg-green"></div>
@@ -204,6 +205,7 @@
                                 </div>
                             </div>
                         </div>
+                        @endif
                     @endforeach
                     
                     <div class="col-12">

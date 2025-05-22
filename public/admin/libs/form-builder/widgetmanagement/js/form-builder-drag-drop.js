@@ -1,5 +1,13 @@
 // Widget Management Form Builder Drag-Drop İşlemleri
+// Global değişkenler - sayfa yüklenmeden önce tanımla
+window.widgetFormBuilderDragDropInitialized = window.widgetFormBuilderDragDropInitialized || false;
+
 window.initializeSortable = function() {
+  // Eğer zaten başlatıldıysa, tekrar başlatma
+  if (window.widgetSortableInitialized) {
+    return;
+  }
+  window.widgetSortableInitialized = true;
   if (!window.formCanvas) {
     console.error('Form canvas bulunamadı');
     return;
@@ -72,7 +80,14 @@ window.initializeSortable = function() {
 
             if (type === "row") {
               setTimeout(function() {
-                window.initializeColumnSortables();
+                // Row içeriğini güncelle
+                if (typeof window.updateRowContent === 'function') {
+                  // Yeni updateRowContent fonksiyonu farklı bir mantıkla çalışıyor
+                  // Bu yüzden window.selectedElement = newElement yaparak çağırıyoruz
+                  window.selectedElement = newElement;
+                  window.updateRowContent();
+                }
+                // initializeColumnSortables zaten updateRowContent içinde çağrılıyor
               }, 50);
             }
 
@@ -101,6 +116,8 @@ window.initializeSortable = function() {
 
   window.initializeColumnSortables();
 };
+
+// Not: DOMNodeInserted kullanımı kaldırıldı, onAdd event'i içinde row içeriği güncelleniyor
 
 // Sütunlar için SortableJS Initialize
 window.initializeColumnSortables = function() {
@@ -187,9 +204,12 @@ window.initializeColumnSortables = function() {
           setTimeout(function() {
             const rowElement = column.closest(".form-element[data-type='row']");
             if (rowElement && typeof window.updateRowContent === 'function') {
-              window.updateRowContent.call(rowElement);
+              // Yeni updateRowContent fonksiyonu farklı bir mantıkla çalışıyor
+              // Bu yüzden window.selectedElement = rowElement yaparak çağırıyoruz
+              window.selectedElement = rowElement;
+              window.updateRowContent();
+              // initializeColumnSortables zaten updateRowContent içinde çağrılıyor
             }
-            window.initializeColumnSortables();
           }, 100);
         }
         

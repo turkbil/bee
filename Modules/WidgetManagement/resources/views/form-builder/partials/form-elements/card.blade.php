@@ -1,44 +1,33 @@
 @php
-    $fieldType = $element['type'] ?? 'card';
-    $width = isset($element['properties']['width']) ? $element['properties']['width'] : 12;
     $title = $element['properties']['title'] ?? 'Kart';
-    $icon = $element['properties']['icon'] ?? 'square';
-    $iconColor = $element['properties']['icon_color'] ?? 'primary';
     $content = $element['properties']['content'] ?? '';
-    $borderColor = isset($element['properties']['border_color']) ? 'border-' . $element['properties']['border_color'] : '';
-    $headerBg = isset($element['properties']['header_bg']) ? 'bg-' . $element['properties']['header_bg'] : '';
-    $cardBg = isset($element['properties']['card_bg']) ? 'bg-' . $element['properties']['card_bg'] : '';
-    $textColor = isset($element['properties']['text_color']) ? 'text-' . $element['properties']['text_color'] : '';
-    $isCollapsible = isset($element['properties']['collapsible']) && $element['properties']['collapsible'];
-    $isCollapsed = isset($element['properties']['collapsed']) && $element['properties']['collapsed'];
+    $width = $element['properties']['width'] ?? 12;
+    $showHeader = isset($element['properties']['show_header']) ? $element['properties']['show_header'] : true;
+    $showFooter = isset($element['properties']['show_footer']) ? $element['properties']['show_footer'] : false;
+    $collapsible = isset($element['properties']['collapsible']) && $element['properties']['collapsible'];
+    $cardId = 'card-' . Str::random(6);
     $elements = isset($element['elements']) && is_array($element['elements']) ? $element['elements'] : [];
-    $marginBottom = isset($element['properties']['margin_bottom']) ? $element['properties']['margin_bottom'] : 4;
-    $cardId = 'card_' . uniqid();
-    $shadow = isset($element['properties']['shadow']) ? 'shadow-' . $element['properties']['shadow'] : '';
-    $rounded = isset($element['properties']['rounded']) ? 'rounded-' . $element['properties']['rounded'] : 'rounded';
-    $showFooter = isset($element['properties']['show_footer']) && $element['properties']['show_footer'];
-    $footerContent = isset($element['properties']['footer_content']) ? $element['properties']['footer_content'] : '';
+    $footerContent = $element['properties']['footer_content'] ?? '';
 @endphp
 
 <div class="col-{{ $width }}">
-    <div class="card mb-{{ $marginBottom }} w-100 {{ $borderColor }} {{ $cardBg }} {{ $shadow }} {{ $rounded }}">
-        <div class="card-header {{ $headerBg }}">
-            <div class="d-flex align-items-center justify-content-between">
-                <h3 class="card-title d-flex align-items-center">
-                    <i class="fas fa-{{ $icon }} me-2 text-{{ $iconColor }}"></i>
-                    {{ $title }}
-                </h3>
-                @if($isCollapsible)
-                    <div>
-                        <a href="#{{ $cardId }}" class="btn btn-sm" data-bs-toggle="collapse" role="button" aria-expanded="{{ $isCollapsed ? 'false' : 'true' }}">
-                            <i class="fas fa-chevron-{{ $isCollapsed ? 'down' : 'up' }}"></i>
-                        </a>
-                    </div>
-                @endif
+    <div class="card mb-3">
+        @if($showHeader)
+            <div class="card-header">
+                <div class="d-flex align-items-center justify-content-between">
+                    <h3 class="card-title">{{ $title }}</h3>
+                    @if($collapsible)
+                        <div>
+                            <a href="#{{ $cardId }}" class="btn btn-sm" data-bs-toggle="collapse" role="button" aria-expanded="true">
+                                <i class="fas fa-chevron-up"></i>
+                            </a>
+                        </div>
+                    @endif
+                </div>
             </div>
-        </div>
+        @endif
         
-        <div class="card-body {{ $isCollapsible ? 'collapse '.($isCollapsed ? '' : 'show') : '' }} {{ $textColor }}" id="{{ $cardId }}">
+        <div class="card-body" id="{{ $cardId }}">
             @if($content)
                 <p>{{ $content }}</p>
             @endif
@@ -63,7 +52,7 @@
         </div>
         
         @if($showFooter)
-            <div class="card-footer text-muted">
+            <div class="card-footer">
                 {!! $footerContent !!}
             </div>
         @endif

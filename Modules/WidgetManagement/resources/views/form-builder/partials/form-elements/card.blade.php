@@ -1,60 +1,62 @@
 @php
-    $title = $element['properties']['title'] ?? 'Kart';
-    $content = $element['properties']['content'] ?? '';
-    $width = $element['properties']['width'] ?? 12;
-    $showHeader = isset($element['properties']['show_header']) ? $element['properties']['show_header'] : true;
-    $showFooter = isset($element['properties']['show_footer']) ? $element['properties']['show_footer'] : false;
-    $collapsible = isset($element['properties']['collapsible']) && $element['properties']['collapsible'];
-    $cardId = 'card-' . Str::random(6);
-    $elements = isset($element['elements']) && is_array($element['elements']) ? $element['elements'] : [];
-    $footerContent = $element['properties']['footer_content'] ?? '';
+    // Element ve properties dizilerinin var olduğunu kontrol edelim
+    if (!isset($element) || !is_array($element)) {
+        $element = [];
+    }
+    
+    if (!isset($element['properties']) || !is_array($element['properties'])) {
+        $element['properties'] = [];
+    }
+    
+    $cardTitle = isset($element['properties']['title']) ? $element['properties']['title'] : 'Kart';
+    $cardContent = isset($element['properties']['content']) ? $element['properties']['content'] : null;
 @endphp
 
-<div class="col-{{ $width }}">
-    <div class="card mb-3">
-        @if($showHeader)
-            <div class="card-header">
-                <div class="d-flex align-items-center justify-content-between">
-                    <h3 class="card-title">{{ $title }}</h3>
-                    @if($collapsible)
-                        <div>
-                            <a href="#{{ $cardId }}" class="btn btn-sm" data-bs-toggle="collapse" role="button" aria-expanded="true">
-                                <i class="fas fa-chevron-up"></i>
-                            </a>
-                        </div>
-                    @endif
-                </div>
+<div class="col-12">
+    <div class="card mb-3 w-100">
+        <div class="card-header">
+            <div class="d-flex align-items-center justify-content-between">
+                <h3 class="card-title d-flex align-items-center">
+                    <i class="fas fa-square me-2 text-primary"></i>
+                    {{ $cardTitle }}
+                </h3>
             </div>
-        @endif
+        </div>
         
-        <div class="card-body" id="{{ $cardId }}">
-            @if($content)
-                <p>{{ $content }}</p>
+        <div class="card-body">
+            @if($cardContent)
+                <p>{{ $cardContent }}</p>
             @endif
             
-            @if(count($elements) > 0)
+            @if(isset($element['elements']) && is_array($element['elements']))
                 <div class="row">
-                    @foreach($elements as $cardElement)
-                        @if(isset($formData))
-                            @include('widgetmanagement::form-builder.partials.form-elements.' . $cardElement['type'], [
+                    @foreach($element['elements'] as $cardElement)
+                        @php
+                            // Element tipini güvenli bir şekilde kontrol et
+                            $elementType = isset($cardElement['type']) ? $cardElement['type'] : 'text';
+                            // View'un var olup olmadığını kontrol et
+                            $viewPath = 'widgetmanagement::form-builder.partials.form-elements.' . $elementType;
+                        @endphp
+                        
+                        @if(view()->exists($viewPath))
+                            @include($viewPath, [
                                 'element' => $cardElement,
+                                'values' => isset($values) ? $values : [],
+                                'settings' => isset($settings) ? $settings : [],
+                                'originalValues' => $originalValues ?? [],
+                                'temporaryImages' => $temporaryImages ?? [],
+                                'temporaryMultipleImages' => $temporaryMultipleImages ?? [],
+                                'multipleImagesArrays' => $multipleImagesArrays ?? [],
                                 'formData' => $formData ?? []
                             ])
                         @else
-                            @include('widgetmanagement::form-builder.partials.form-elements.' . $cardElement['type'], [
-                                'element' => $cardElement,
-                                'settings' => $settings ?? []
-                            ])
+                            <div class="alert alert-warning">
+                                '{{ $elementType }}' türü için görünüm bulunamadı.
+                            </div>
                         @endif
                     @endforeach
                 </div>
             @endif
         </div>
-        
-        @if($showFooter)
-            <div class="card-footer">
-                {!! $footerContent !!}
-            </div>
-        @endif
     </div>
 </div>

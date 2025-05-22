@@ -1,18 +1,14 @@
 @php
-    $fieldLabel = $element['label'] ?? '';
+    $style = $element['properties']['style'] ?? $element['style'] ?? 'solid';
+    $color = $element['properties']['color'] ?? $element['color'] ?? '#e5e7eb';
+    $thickness = $element['properties']['thickness'] ?? $element['thickness'] ?? '1px';
     $width = isset($element['properties']['width']) ? $element['properties']['width'] : 12;
-    $thickness = isset($element['properties']['thickness']) ? $element['properties']['thickness'] : 1;
-    $style = isset($element['properties']['style']) ? $element['properties']['style'] : 'solid';
-    $color = isset($element['properties']['color']) ? $element['properties']['color'] : 'var(--tblr-border-color)';
 @endphp
 
-<div class="col-{{ $width }} mb-3">
-    @if($fieldLabel)
-        <div class="d-flex align-items-center mb-2">
-            <span class="text-muted">{{ $fieldLabel }}</span>
-            <hr class="flex-grow-1 ms-2" style="border-top: {{ $thickness }}px {{ $style }} {{ $color }};">
+<div class="col-{{ $width }}">
+    <div class="card mb-3 w-100">
+        <div class="card-body d-flex align-items-center">
+            <hr class="flex-fill" style="border: none; height: {{ $thickness }}; background-color: {{ $color }}; border-top: {{ $thickness }} {{ $style }} {{ $color }};">
         </div>
-    @else
-        <hr style="border-top: {{ $thickness }}px {{ $style }} {{ $color }};">
-    @endif
+    </div>
 </div>

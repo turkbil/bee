@@ -1,19 +1,16 @@
 @php
-    $content = isset($element['properties']['content']) ? $element['properties']['content'] : ($element['label'] ?? 'Başlık');
+    $content = $element['properties']['content'] ?? $element['content'] ?? 'Başlık Metni';
+    $size = $element['properties']['size'] ?? $element['size'] ?? 'h3';
+    $align = $element['properties']['align'] ?? $element['align'] ?? 'left';
     $width = isset($element['properties']['width']) ? $element['properties']['width'] : 12;
-    $headingLevel = isset($element['properties']['size']) ? $element['properties']['size'] : 'h3';
-    $align = isset($element['properties']['align']) ? $element['properties']['align'] : 'left';
-    $color = isset($element['properties']['color']) ? $element['properties']['color'] : 'primary';
-    $fontWeight = isset($element['properties']['font_weight']) ? $element['properties']['font_weight'] : 'bold';
-    $divider = isset($element['properties']['divider']) && $element['properties']['divider'];
 @endphp
 
-<div class="col-{{ $width }} mb-3">
-    <{{ $headingLevel }} class="text-{{ $align }} fw-{{ $fontWeight }} text-{{ $color }}">
-        {!! $content !!}
-    </{{ $headingLevel }}>
-    
-    @if($divider)
-        <div class="mt-2" style="width: 50px; border-top: 3px solid var(--tblr-{{ $color }});"></div>
-    @endif
+<div class="col-{{ $width }}">
+    <div class="card mb-3 w-100">
+        <div class="card-body text-center">
+            <{{ $size }} class="text-{{ $align === 'center' ? 'center' : ($align === 'right' ? 'end' : 'start') }}">
+                {{ $content }}
+            </{{ $size }}>
+        </div>
+    </div>
 </div>

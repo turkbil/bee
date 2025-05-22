@@ -1,5 +1,9 @@
-// Widget Management Form Builder Ana Başlatma Kodu
 document.addEventListener("DOMContentLoaded", function() {
+  if (window.widgetFormBuilderInitialized) {
+    return;
+  }
+  window.widgetFormBuilderInitialized = true;
+
   window.elementCounter = 0;
   window.selectedElement = null;
   window.formCanvas = document.getElementById("form-canvas");
@@ -92,7 +96,8 @@ document.addEventListener("DOMContentLoaded", function() {
   };
 
   const saveBtn = document.getElementById("save-btn");
-  if (saveBtn) {
+  if (saveBtn && !saveBtn.hasAttribute('data-listener-added')) {
+    saveBtn.setAttribute('data-listener-added', 'true');
     saveBtn.addEventListener("click", function() {
       if (!window.getFormJSON) return;
       
@@ -183,7 +188,17 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   };
   
-  setTimeout(() => {
+  // Form yükleme işlemini sadece bir kere gerçekleştirmek için kontrol
+  // Eğer form edit.blade.php'den yüklendiyse tekrar yükleme yapma
+  if (window.formLoadedFromBlade) {
+    console.log("Form zaten edit.blade.php'den yüklenmiş, tekrar yükleme yapılmayacak.");
+    return;
+  }
+  
+  // Yükleme işlemini gerçekleştir ve yüklendiğini işaretle
+  if (!window.formLoaded) {
+    window.formLoaded = true;
+    console.log("Form form-builder.js tarafından yükleniyor...");
     loadSavedForm();
-  }, 500);
+  }
 });

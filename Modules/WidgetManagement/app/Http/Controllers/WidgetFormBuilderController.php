@@ -9,12 +9,6 @@ use Illuminate\Support\Str;
 
 class WidgetFormBuilderController extends Controller
 {
-    /**
-     * Widget form layout yükle
-     * @param int $widgetId
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function load($widgetId, Request $request)
     {
         try {
@@ -37,48 +31,7 @@ class WidgetFormBuilderController extends Controller
                 $schema = is_array($schemaData) ? $schemaData : json_decode($schemaData, true);
                 
                 if (json_last_error() === JSON_ERROR_NONE && is_array($schema)) {
-                    foreach ($schema as $field) {
-                        $element = [
-                            'type' => $field['type'] ?? 'text',
-                            'properties' => [
-                                'name' => $field['name'] ?? '',
-                                'label' => $field['label'] ?? '',
-                                'required' => $field['required'] ?? false,
-                                'is_active' => true,
-                                'is_system' => $field['system'] ?? false,
-                                'width' => 12
-                            ]
-                        ];
-                        
-                        if (isset($field['default'])) {
-                            $element['properties']['default_value'] = $field['default'];
-                        }
-                        
-                        if (isset($field['placeholder'])) {
-                            $element['properties']['placeholder'] = $field['placeholder'];
-                        }
-                        
-                        if (isset($field['help_text'])) {
-                            $element['properties']['help_text'] = $field['help_text'];
-                        }
-                        
-                        if (isset($field['options']) && is_array($field['options'])) {
-                            $element['properties']['options'] = [];
-                            foreach ($field['options'] as $key => $value) {
-                                $element['properties']['options'][] = [
-                                    'value' => $key,
-                                    'label' => $value,
-                                    'is_default' => false
-                                ];
-                            }
-                        }
-                        
-                        if (isset($field['hidden']) && $field['hidden']) {
-                            continue;
-                        }
-                        
-                        $elements[] = $element;
-                    }
+                    $elements = $this->parseSchemaToElements($schema);
                 }
             }
             
@@ -103,12 +56,6 @@ class WidgetFormBuilderController extends Controller
         }
     }
     
-    /**
-     * Widget form layout kaydet
-     * @param Request $request
-     * @param int $widgetId
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function save(Request $request, $widgetId)
     {
         try {
@@ -131,48 +78,7 @@ class WidgetFormBuilderController extends Controller
             $schema = [];
             
             if (isset($formData['elements']) && is_array($formData['elements'])) {
-                foreach ($formData['elements'] as $element) {
-                    if (!isset($element['type']) || !isset($element['properties'])) {
-                        continue;
-                    }
-                    
-                    $field = [
-                        'name' => $element['properties']['name'] ?? '',
-                        'label' => $element['properties']['label'] ?? '',
-                        'type' => $element['type'],
-                        'required' => $element['properties']['required'] ?? false
-                    ];
-                    
-                    if (isset($element['properties']['default_value'])) {
-                        $field['default'] = $element['properties']['default_value'];
-                    }
-                    
-                    if (isset($element['properties']['placeholder'])) {
-                        $field['placeholder'] = $element['properties']['placeholder'];
-                    }
-                    
-                    if (isset($element['properties']['help_text'])) {
-                        $field['help_text'] = $element['properties']['help_text'];
-                    }
-                    
-                    if (isset($element['properties']['options']) && is_array($element['properties']['options'])) {
-                        $options = [];
-                        foreach ($element['properties']['options'] as $option) {
-                            if (isset($option['value']) && isset($option['label'])) {
-                                $options[$option['value']] = $option['label'];
-                            }
-                        }
-                        if (!empty($options)) {
-                            $field['options'] = $options;
-                        }
-                    }
-                    
-                    if (isset($element['properties']['is_system']) && $element['properties']['is_system']) {
-                        $field['system'] = true;
-                    }
-                    
-                    $schema[] = $field;
-                }
+                $schema = $this->parseElementsToSchema($formData['elements']);
             }
             
             if ($schemaType === 'setting_schema' || $schemaType === 'settings_schema') {
@@ -180,8 +86,10 @@ class WidgetFormBuilderController extends Controller
                 $hasUniqueId = false;
                 
                 foreach ($schema as $field) {
-                    if ($field['name'] === 'title') $hasTitle = true;
-                    if ($field['name'] === 'unique_id') $hasUniqueId = true;
+                    if (isset($field['name'])) {
+                        if ($field['name'] === 'title') $hasTitle = true;
+                        if ($field['name'] === 'unique_id') $hasUniqueId = true;
+                    }
                 }
                 
                 if (!$hasTitle) {
@@ -212,9 +120,11 @@ class WidgetFormBuilderController extends Controller
                 $hasUniqueId = false;
                 
                 foreach ($schema as $field) {
-                    if ($field['name'] === 'title') $hasTitle = true;
-                    if ($field['name'] === 'is_active') $hasActive = true;
-                    if ($field['name'] === 'unique_id') $hasUniqueId = true;
+                    if (isset($field['name'])) {
+                        if ($field['name'] === 'title') $hasTitle = true;
+                        if ($field['name'] === 'is_active') $hasActive = true;
+                        if ($field['name'] === 'unique_id') $hasUniqueId = true;
+                    }
                 }
                 
                 if (!$hasTitle) {
@@ -268,5 +178,187 @@ class WidgetFormBuilderController extends Controller
                 'error' => 'Widget form yapısı kaydedilirken bir hata oluştu: ' . $e->getMessage()
             ]);
         }
+    }
+
+    private function parseSchemaToElements($schema)
+    {
+        $elements = [];
+        
+        foreach ($schema as $field) {
+            if (isset($field['hidden']) && $field['hidden']) {
+                continue;
+            }
+
+            if (isset($field['type']) && $field['type'] === 'row' && isset($field['columns'])) {
+                $element = [
+                    'type' => 'row',
+                    'properties' => [
+                        'columns' => []
+                    ]
+                ];
+
+                foreach ($field['columns'] as $column) {
+                    $columnData = [
+                        'width' => $column['width'] ?? 6,
+                        'elements' => []
+                    ];
+
+                    if (isset($column['elements']) && is_array($column['elements'])) {
+                        foreach ($column['elements'] as $columnField) {
+                            $columnElement = $this->createElementFromField($columnField);
+                            if ($columnElement) {
+                                $columnData['elements'][] = $columnElement;
+                            }
+                        }
+                    }
+
+                    $element['properties']['columns'][] = $columnData;
+                }
+
+                $elements[] = $element;
+            } else {
+                $element = $this->createElementFromField($field);
+                if ($element) {
+                    $elements[] = $element;
+                }
+            }
+        }
+        
+        return $elements;
+    }
+
+    private function createElementFromField($field)
+    {
+        if (!isset($field['type'])) {
+            return null;
+        }
+
+        $element = [
+            'type' => $field['type'],
+            'properties' => [
+                'name' => $field['name'] ?? '',
+                'label' => $field['label'] ?? '',
+                'required' => $field['required'] ?? false,
+                'is_active' => true,
+                'is_system' => $field['system'] ?? false,
+                'width' => 12
+            ]
+        ];
+        
+        if (isset($field['default'])) {
+            $element['properties']['default_value'] = $field['default'];
+        }
+        
+        if (isset($field['placeholder'])) {
+            $element['properties']['placeholder'] = $field['placeholder'];
+        }
+        
+        if (isset($field['help_text'])) {
+            $element['properties']['help_text'] = $field['help_text'];
+        }
+        
+        if (isset($field['options']) && is_array($field['options'])) {
+            $element['properties']['options'] = [];
+            foreach ($field['options'] as $key => $value) {
+                $element['properties']['options'][] = [
+                    'value' => $key,
+                    'label' => $value,
+                    'is_default' => false
+                ];
+            }
+        }
+
+        return $element;
+    }
+
+    private function parseElementsToSchema($elements)
+    {
+        $schema = [];
+        
+        foreach ($elements as $element) {
+            if (!isset($element['type'])) {
+                continue;
+            }
+
+            if ($element['type'] === 'row' && isset($element['columns'])) {
+                $rowField = [
+                    'type' => 'row',
+                    'columns' => []
+                ];
+
+                foreach ($element['columns'] as $column) {
+                    $columnData = [
+                        'width' => $column['width'] ?? 6,
+                        'elements' => []
+                    ];
+
+                    if (isset($column['elements']) && is_array($column['elements'])) {
+                        foreach ($column['elements'] as $columnElement) {
+                            $columnField = $this->createFieldFromElement($columnElement);
+                            if ($columnField) {
+                                $columnData['elements'][] = $columnField;
+                            }
+                        }
+                    }
+
+                    $rowField['columns'][] = $columnData;
+                }
+
+                $schema[] = $rowField;
+            } else {
+                $field = $this->createFieldFromElement($element);
+                if ($field) {
+                    $schema[] = $field;
+                }
+            }
+        }
+        
+        return $schema;
+    }
+
+    private function createFieldFromElement($element)
+    {
+        if (!isset($element['type'])) {
+            return null;
+        }
+
+        $properties = $element['properties'] ?? [];
+        
+        $field = [
+            'name' => $properties['name'] ?? '',
+            'label' => $properties['label'] ?? '',
+            'type' => $element['type'],
+            'required' => $properties['required'] ?? false
+        ];
+        
+        if (isset($properties['default_value'])) {
+            $field['default'] = $properties['default_value'];
+        }
+        
+        if (isset($properties['placeholder'])) {
+            $field['placeholder'] = $properties['placeholder'];
+        }
+        
+        if (isset($properties['help_text'])) {
+            $field['help_text'] = $properties['help_text'];
+        }
+        
+        if (isset($properties['options']) && is_array($properties['options'])) {
+            $options = [];
+            foreach ($properties['options'] as $option) {
+                if (isset($option['value']) && isset($option['label'])) {
+                    $options[$option['value']] = $option['label'];
+                }
+            }
+            if (!empty($options)) {
+                $field['options'] = $options;
+            }
+        }
+        
+        if (isset($properties['is_system']) && $properties['is_system']) {
+            $field['system'] = true;
+        }
+
+        return $field;
     }
 }

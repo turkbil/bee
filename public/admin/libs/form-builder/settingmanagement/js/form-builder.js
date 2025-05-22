@@ -50,6 +50,23 @@ document.addEventListener("DOMContentLoaded", function() {
     // Grup ID'sini al
     const groupId = document.getElementById('group-id')?.value;
     
+    // Eğer form zaten blade dosyasından yüklendiyse tekrar yükleme
+    if (window.formLoadedFromBlade) {
+      console.log("Form zaten blade dosyasından yüklenmiş, tekrar yüklenmeyecek.");
+      
+      // Loading animasyonunu gizle
+      setTimeout(() => {
+        if (window.canvasLoading) {
+          window.canvasLoading.style.opacity = "0";
+          setTimeout(() => {
+            window.canvasLoading.style.display = "none";
+          }, 300);
+        }
+      }, 500);
+      
+      return;
+    }
+    
     if (groupId) {
       console.log("Form yapısı yükleniyor, Group ID:", groupId);
       

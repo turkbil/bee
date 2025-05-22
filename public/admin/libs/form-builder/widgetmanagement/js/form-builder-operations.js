@@ -17,6 +17,141 @@ document.addEventListener("DOMContentLoaded", function() {
       updateColumnWidth(columnIndex, width);
     }
   });
+  
+  // Row içeriğini güncelleme fonksiyonu - Satır elementine sürükleyip bırakma işlevini sağlar
+  window.updateRowContent = function() {
+    // this parametresi row elementi olabilir veya seçili element olabilir
+    let rowElement;
+    
+    if (this.dataset && this.dataset.type === 'row') {
+      // Doğrudan row elementi üzerinden çağrılmış
+      rowElement = this.querySelector('.row-element');
+    } else if (window.selectedElement && window.selectedElement.dataset.type === 'row') {
+      // Seçili element üzerinden çağrılmış
+      rowElement = window.selectedElement.querySelector('.row-element');
+    } else {
+      console.warn('Row elementi bulunamadı');
+      return;
+    }
+    
+    if (!rowElement) {
+      console.warn('Row içeriği bulunamadı');
+      return;
+    }
+    
+    // Hangi element üzerinde çalışıyoruz?
+    const parentElement = rowElement.closest('.form-element[data-type="row"]');
+    if (!parentElement || !parentElement.properties) {
+      console.warn('Row properties bulunamadı');
+      return;
+    }
+    
+    const columnsInProps = parentElement.properties.columns || [];
+    if (columnsInProps.length === 0) {
+      console.warn('Satır için sütun tanımlanmamış');
+      return;
+    }
+    
+    // Mevcut sütunları al ve element içeriğini yedekle
+    const existingColumns = rowElement.querySelectorAll('.column-element');
+    const columnContents = [];
+    
+    // Her sütundaki elementleri yedekle
+    for (let i = 0; i < existingColumns.length; i++) {
+      const elements = existingColumns[i].querySelectorAll('.form-element');
+      const columnElements = [];
+      
+      elements.forEach(element => {
+        columnElements.push({
+          type: element.dataset.type,
+          properties: element.properties ? JSON.parse(JSON.stringify(element.properties)) : {}
+        });
+      });
+      
+      columnContents.push(columnElements);
+    }
+    
+    // Satırı temizle ve yeni sütunları oluştur
+    rowElement.innerHTML = '';
+    
+    // Sütun genişliklerinin toplamını kontrol et
+    const totalWidth = columnsInProps.reduce((sum, col) => sum + parseInt(col.width || 0), 0);
+    if (totalWidth !== 12) {
+      console.warn(`Sütun genişliklerinin toplamı 12 olmalı, şu an: ${totalWidth}`);
+      
+      // Genişlikleri yeniden hesapla
+      const columnCount = columnsInProps.length;
+      let defaultWidth;
+      
+      switch(columnCount) {
+        case 1: defaultWidth = 12; break;
+        case 2: defaultWidth = 6; break;
+        case 3: defaultWidth = 4; break;
+        case 4: defaultWidth = 3; break;
+        case 6: defaultWidth = 2; break;
+        default: defaultWidth = Math.floor(12 / columnCount);
+      }
+      
+      let extraWidth = 12 - (defaultWidth * columnCount);
+      
+      // Genişlikleri düzelt
+      columnsInProps.forEach((col, i) => {
+        col.width = defaultWidth + (i < extraWidth ? 1 : 0);
+      });
+    }
+    
+    // Sütunları oluştur
+    columnsInProps.forEach((column, index) => {
+      const columnDiv = document.createElement('div');
+      columnDiv.className = `col-md-${column.width} column-element`;
+      columnDiv.dataset.width = column.width;
+      columnDiv.dataset.index = index;
+      
+      // Sütunu satıra ekle
+      rowElement.appendChild(columnDiv);
+    });
+    
+    // Yeni oluşturulan sütunları al
+    const newColumns = rowElement.querySelectorAll('.column-element');
+    
+    // Yedeklenen içeriği yeni sütunlara ekle
+    for (let i = 0; i < Math.min(columnContents.length, newColumns.length); i++) {
+      const columnElements = columnContents[i];
+      
+      // Sütundaki her elementi yeni sütuna ekle
+      columnElements.forEach(elementData => {
+        const newElement = window.createFormElement(elementData.type, elementData.properties);
+        if (newElement) {
+          newColumns[i].appendChild(newElement);
+        }
+      });
+    }
+    
+    // Eğer eski sütun sayısı yeni sütun sayısından fazlaysa, fazla elementleri ilk sütuna ekle
+    if (columnContents.length > newColumns.length && newColumns.length > 0) {
+      for (let i = newColumns.length; i < columnContents.length; i++) {
+        columnContents[i].forEach(elementData => {
+          const newElement = window.createFormElement(elementData.type, elementData.properties);
+          if (newElement) {
+            newColumns[0].appendChild(newElement);
+          }
+        });
+      }
+    }
+    
+    // Boş sütunlara placeholder ekle
+    newColumns.forEach(column => {
+      if (column.children.length === 0) {
+        const placeholder = document.createElement('div');
+        placeholder.className = 'column-placeholder';
+        placeholder.innerHTML = '<div class="text-center p-2 text-muted"><i class="fas fa-plus-circle"></i> Element eklemek için sürükleyin</div>';
+        column.appendChild(placeholder);
+      }
+    });
+    
+    // Sütunlar için sortable başlat
+    window.initializeColumnSortables();
+  };
   // Benzersiz alan adı oluşturmak için yardımcı fonksiyon
   window.makeNameUnique = function(baseName) {
     const allElements = window.formCanvas.querySelectorAll('.form-element');
@@ -873,105 +1008,7 @@ document.addEventListener("DOMContentLoaded", function() {
     window.saveState();
   };
 
-  // Row içeriğini güncelle
-  window.updateRowContent = function() {
-    if (!window.selectedElement || window.selectedElement.dataset.type !== "row") return;
-
-    const rowElement = window.selectedElement.querySelector(".row-element");
-    if (!rowElement) return;
-
-    const columnsInProps = window.selectedElement.properties.columns || [];
-    if (columnsInProps.length === 0) {
-      console.warn("Satır için sütun tanımlanmamış");
-      return;
-    }
-    
-    const existingColumns = rowElement.querySelectorAll(".column-element");
-    const columnContents = [];
-    
-    for (let i = 0; i < existingColumns.length; i++) {
-      const elements = existingColumns[i].querySelectorAll(".form-element");
-      const columnElements = [];
-      
-      elements.forEach(element => {
-        columnElements.push({
-          type: element.dataset.type,
-          properties: element.properties ? JSON.parse(JSON.stringify(element.properties)) : {}
-        });
-      });
-      
-      columnContents.push(columnElements);
-    }
-    
-    rowElement.innerHTML = '';
-    
-    const totalWidth = columnsInProps.reduce((sum, col) => sum + parseInt(col.width || 0), 0);
-    if (totalWidth !== 12) {
-      console.warn(`Sütun genişliklerinin toplamı 12 olmalı, şu an: ${totalWidth}`);
-      
-      const columnCount = columnsInProps.length;
-      let defaultWidth;
-      
-      switch(columnCount) {
-        case 1: defaultWidth = 12; break;
-        case 2: defaultWidth = 6; break;
-        case 3: defaultWidth = 4; break;
-        case 4: defaultWidth = 3; break;
-        case 6: defaultWidth = 2; break;
-        default: defaultWidth = Math.floor(12 / columnCount);
-      }
-      
-      let extraWidth = 12 - (defaultWidth * columnCount);
-      
-      columnsInProps.forEach((col, i) => {
-        col.width = defaultWidth + (i < extraWidth ? 1 : 0);
-      });
-    }
-    
-    columnsInProps.forEach((column, index) => {
-      const columnDiv = document.createElement('div');
-      columnDiv.className = `col-md-${column.width} column-element`;
-      columnDiv.dataset.width = column.width;
-      columnDiv.dataset.index = index;
-      
-      rowElement.appendChild(columnDiv);
-    });
-    
-    const newColumns = rowElement.querySelectorAll(".column-element");
-    
-    for (let i = 0; i < Math.min(columnContents.length, newColumns.length); i++) {
-      const columnElements = columnContents[i];
-      
-      columnElements.forEach(elementData => {
-        const newElement = window.createFormElement(elementData.type, elementData.properties);
-        if (newElement) {
-          newColumns[i].appendChild(newElement);
-        }
-      });
-    }
-    
-    if (columnContents.length > newColumns.length && newColumns.length > 0) {
-      for (let i = newColumns.length; i < columnContents.length; i++) {
-        columnContents[i].forEach(elementData => {
-          const newElement = window.createFormElement(elementData.type, elementData.properties);
-          if (newElement) {
-            newColumns[0].appendChild(newElement);
-          }
-        });
-      }
-    }
-    
-    newColumns.forEach(column => {
-      if (column.children.length === 0) {
-        const placeholder = document.createElement('div');
-        placeholder.className = 'column-placeholder';
-        placeholder.innerHTML = '<i class="fas fa-plus me-2"></i> Buraya element sürükleyin';
-        column.appendChild(placeholder);
-      }
-    });
-    
-    window.initializeColumnSortables();
-  };
+  // Not: İkinci updateRowContent fonksiyonu kaldırıldı, üst tarafta daha kapsamlı bir versiyonu bulunuyor.
 
   window.updateCheckboxState = function(checkbox) {
     const formElement = checkbox.closest('.form-element');

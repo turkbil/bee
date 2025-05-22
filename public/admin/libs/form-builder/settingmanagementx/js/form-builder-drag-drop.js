@@ -1,13 +1,13 @@
-// Widget Management Form Builder Drag-Drop İşlemleri
+// Form Builder Drag-Drop İşlemleri
 // Global değişkenler - sayfa yüklenmeden önce tanımla
-window.widgetFormBuilderDragDropInitialized = window.widgetFormBuilderDragDropInitialized || false;
+window.settingFormBuilderDragDropInitialized = window.settingFormBuilderDragDropInitialized || false;
 
 window.initializeSortable = function() {
   // Eğer zaten başlatıldıysa, tekrar başlatma
-  if (window.widgetSortableInitialized) {
+  if (window.sortableInitialized) {
     return;
   }
-  window.widgetSortableInitialized = true;
+  window.sortableInitialized = true;
   if (!window.formCanvas) {
     console.error('Form canvas bulunamadı');
     return;

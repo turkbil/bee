@@ -1,13 +1,5 @@
 // Form Builder Elementleri ve Varsayılan Özellikleri
-// Global değişkenler - sayfa yüklenmeden önce tanımla
-window.settingFormBuilderElementsInitialized = window.settingFormBuilderElementsInitialized || false;
-
 document.addEventListener("DOMContentLoaded", function() {
-  // Eğer zaten başlatıldıysa, tekrar başlatma
-  if (window.settingFormBuilderElementsInitialized) {
-    return;
-  }
-  window.settingFormBuilderElementsInitialized = true;
   // Form elementlerinin varsayılan özellikleri
   window.defaultProperties = {
     text: {

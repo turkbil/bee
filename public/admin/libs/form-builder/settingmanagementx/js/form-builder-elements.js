@@ -1,13 +1,13 @@
-// Widget Management Form Builder Elementleri ve Varsayılan Özellikleri
+// Form Builder Elementleri ve Varsayılan Özellikleri
 // Global değişkenler - sayfa yüklenmeden önce tanımla
-window.widgetFormBuilderElementsInitialized = window.widgetFormBuilderElementsInitialized || false;
+window.settingFormBuilderElementsInitialized = window.settingFormBuilderElementsInitialized || false;
 
 document.addEventListener("DOMContentLoaded", function() {
   // Eğer zaten başlatıldıysa, tekrar başlatma
-  if (window.widgetFormBuilderElementsInitialized) {
+  if (window.settingFormBuilderElementsInitialized) {
     return;
   }
-  window.widgetFormBuilderElementsInitialized = true;
+  window.settingFormBuilderElementsInitialized = true;
   // Form elementlerinin varsayılan özellikleri
   window.defaultProperties = {
     text: {
@@ -492,14 +492,14 @@ document.addEventListener("DOMContentLoaded", function() {
       });
     });
 
-    // Element eklendikten sonra widget prefix'ini al ve ayarla
+    // Element eklendikten sonra grup prefixini al ve ayarla
     setTimeout(() => {
-      const widgetId = document.getElementById('widget-id')?.value;
-      if (widgetId && formElement.properties && formElement.properties.name) {
+      const groupId = document.getElementById('group-id')?.value;
+      if (groupId && formElement.properties && formElement.properties.name) {
         // Varsayılan isimlendirmeyi kontrol et (_field ile bitenler)
         const isDefaultName = formElement.properties.name.endsWith('_field');
         if (isDefaultName) {
-          fetch(`/admin/widgetmanagement/form-builder/${widgetId}/load`, {
+          fetch(`/admin/settingmanagement/form-builder/${groupId}/load`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
@@ -509,39 +509,55 @@ document.addEventListener("DOMContentLoaded", function() {
           .then(response => response.json())
           .then(data => {
             if (data.success && data.layout) {
-              // Widget prefix'ini doğrudan al
-              let widgetPrefix = 'widget';
-              
-              // Prefix'i slug formatına çevir
-              widgetPrefix = window.slugifyTurkish(widgetPrefix.toLowerCase());
-              
-              if (widgetPrefix) {
-                // Label'i slug formatına çevir
-                const labelSlug = window.slugifyTurkish(formElement.properties.label || '');
-                
-                // Alan adını oluştur
-                const newBaseName = widgetPrefix + '_' + labelSlug;
-                
-                // Benzersiz bir isim oluştur
-                const uniqueName = typeof window.makeNameUnique === 'function' 
-                  ? window.makeNameUnique(newBaseName)
-                  : newBaseName;
-                
-                // Özelliği güncelle
-                formElement.properties.name = uniqueName;
-                
-                // Eğer element şu anda seçili ise özellik panelini güncelle
-                if (window.selectedElement === formElement) {
-                  const nameInput = window.propertiesPanel.querySelector('input[name="name"]');
-                  if (nameInput) {
-                    nameInput.value = uniqueName;
+              // Grup prefix'ini doğrudan API'den al
+              fetch(`/admin/settingmanagement/api/groups/${groupId}`, {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                }
+              })
+              .then(response => response.json())
+              .then(groupData => {
+                if (groupData && groupData.prefix) {
+                  // Grup prefix'ini al
+                  let groupPrefix = groupData.prefix;
+                  
+                  // Prefix'i slug formatına çevir
+                  groupPrefix = window.slugifyTurkish(groupPrefix.toLowerCase());
+                  
+                  if (groupPrefix) {
+                    // Label'i slug formatına çevir
+                    const labelSlug = window.slugifyTurkish(formElement.properties.label || '');
+                    
+                    // Alan adını oluştur
+                    const newBaseName = groupPrefix + '_' + labelSlug;
+                    
+                    // Benzersiz bir isim oluştur
+                    const uniqueName = typeof window.makeNameUnique === 'function' 
+                      ? window.makeNameUnique(newBaseName)
+                      : newBaseName;
+                    
+                    // Özelliği güncelle
+                    formElement.properties.name = uniqueName;
+                    
+                    // Eğer element şu anda seçili ise özellik panelini güncelle
+                    if (window.selectedElement === formElement) {
+                      const nameInput = window.propertiesPanel.querySelector('input[name="name"]');
+                      if (nameInput) {
+                        nameInput.value = uniqueName;
+                      }
+                    }
                   }
                 }
-              }
+              })
+              .catch(error => {
+                console.error('Grup verisi alınamadı:', error);
+              });
             }
           })
           .catch(error => {
-            console.error('Widget verisi alınamadı:', error);
+            console.error('Grup verisi alınamadı:', error);
           });
         }
       }

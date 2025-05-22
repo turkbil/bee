@@ -9,15 +9,14 @@ use Illuminate\Support\Str;
 
 class WidgetFormBuilderController extends Controller
 {
-    public function load($widgetId, Request $request)
+    public function load($widgetId, $schemaType, Request $request)
     {
         try {
             $widget = Widget::findOrFail($widgetId);
-            $schemaType = $request->get('schema', 'item_schema');
             
             $schemaData = null;
             
-            if ($schemaType === 'setting_schema' || $schemaType === 'settings_schema') {
+            if ($schemaType === 'settings_schema') {
                 $schemaData = $widget->settings_schema;
                 $title = $widget->name . ' Ayarları';
             } else {
@@ -56,11 +55,10 @@ class WidgetFormBuilderController extends Controller
         }
     }
     
-    public function save(Request $request, $widgetId)
+    public function save(Request $request, $widgetId, $schemaType)
     {
         try {
             $widget = Widget::findOrFail($widgetId);
-            $schemaType = $request->get('schema', 'item_schema');
             
             $formData = $request->input('layout');
             
@@ -81,7 +79,7 @@ class WidgetFormBuilderController extends Controller
                 $schema = $this->parseElementsToSchema($formData['elements']);
             }
             
-            if ($schemaType === 'setting_schema' || $schemaType === 'settings_schema') {
+            if ($schemaType === 'settings_schema') {
                 $hasTitle = false;
                 $hasUniqueId = false;
                 
@@ -165,7 +163,7 @@ class WidgetFormBuilderController extends Controller
             
             log_activity(
                 $widget,
-                'widget ' . ($schemaType === 'setting_schema' || $schemaType === 'settings_schema' ? 'ayar' : 'içerik') . ' form yapısı güncellendi'
+                'widget ' . ($schemaType === 'settings_schema' ? 'ayar' : 'içerik') . ' form yapısı güncellendi'
             );
             
             return response()->json([

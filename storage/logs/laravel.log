@@ -6806,3 +6806,9 @@
 #70 C:\\laragon\\www\\laravel\\public\\index.php(17): Illuminate\\Foundation\\Application->handleRequest(Object(Illuminate\\Http\\Request))
 #71 {main}
 "} 
+[2025-05-23 23:02:35] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-23 23:02:35] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
+[2025-05-23 23:02:36] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: widgetmanagement, Permission: create, Roles: root  
+[2025-05-23 23:02:36] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: widgetmanagement, Permission: create, Roles: root  
+[2025-05-23 23:02:38] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: widgetmanagement, Permission: view, Roles: root  
+[2025-05-23 23:02:39] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: widgetmanagement, Permission: view, Roles: root  

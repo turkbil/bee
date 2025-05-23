@@ -286,18 +286,15 @@
                             </a>
                             @endif
                             
-                            <a href="{{ route('admin.widgetmanagement.form-builder.edit', ['widgetId' => $widgetId, 'schemaType' => 'settings_schema']) }}" 
-                               class="btn btn-outline-primary" target="_blank">
+                            <a href="{{ route('admin.widgetmanagement.form-builder.edit', ['widgetId' => $widgetId, 'schemaType' => 'settings']) }}" 
+                               class="btn btn-sm btn-outline-secondary">
                                 <i class="fas fa-sliders-h me-2"></i>
                                 Özelleştirme Ayarları
                             </a>
                             
                             @if($widget['has_items'])
-                            <a href="{{ route('admin.widgetmanagement.form-builder.edit', ['widgetId' => $widgetId, 'schemaType' => 'item_schema']) }}" 
-                               class="btn btn-outline-success" target="_blank">
-                                <i class="fas fa-layer-group me-2"></i>
-                                İçerik Yapısı
-                            </a>
+                            <a href="{{ route('admin.widgetmanagement.form-builder.edit', ['widgetId' => $widgetId, 'schemaType' => 'items']) }}" 
+                               class="btn btn-sm btn-outline-primary">{{ __('widgetmanagement::widgets.manage.item_schema_button') }}</a>
                             @endif
                         </div>
                     </div>

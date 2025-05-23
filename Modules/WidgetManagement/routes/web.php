@@ -122,7 +122,7 @@ Route::middleware(['web', 'auth', 'tenant'])
                 // Widget Form Builder routes - Livewire yaklaşımıyla
                 Route::get('/form-builder/{widgetId}/{schemaType}', WidgetFormBuilderComponent::class)
                     ->middleware('module.permission:widgetmanagement,update')
-                    ->where('schemaType', 'item_schema|settings_schema')
+                    ->where('schemaType', 'items|settings')
                     ->name('form-builder.edit');
             });
     });

@@ -130,6 +130,8 @@ class WidgetCodeEditorComponent extends Component
                 'type' => 'success'
             ]);
 
+            $this->js('window.updateWidgetEditors(' . json_encode($this->widget) . ')');
+
             if (function_exists('log_activity')) {
                 log_activity($widget, 'widget kod editörü güncellendi');
             }

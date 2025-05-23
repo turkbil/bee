@@ -33,42 +33,42 @@
         </div>
     </div>
     
-    <form wire:submit.prevent="save">
+    <form wire:submit.prevent="save" id="widget-form">
         <div class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs">
-                            <li class="nav-item">
-                                <a href="#tabs-html" class="nav-link active" data-bs-toggle="tab">
+                        <ul class="nav nav-tabs card-header-tabs" id="code-editor-tabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="html-tab" data-bs-toggle="tab" data-bs-target="#html-pane" type="button" role="tab" aria-controls="html-pane" aria-selected="true">
                                     <i class="fab fa-html5 me-2"></i>
                                     HTML
-                                </a>
+                                </button>
                             </li>
-                            <li class="nav-item">
-                                <a href="#tabs-css" class="nav-link" data-bs-toggle="tab">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="css-tab" data-bs-toggle="tab" data-bs-target="#css-pane" type="button" role="tab" aria-controls="css-pane" aria-selected="false">
                                     <i class="fab fa-css3-alt me-2"></i>
                                     CSS
-                                </a>
+                                </button>
                             </li>
-                            <li class="nav-item">
-                                <a href="#tabs-js" class="nav-link" data-bs-toggle="tab">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="js-tab" data-bs-toggle="tab" data-bs-target="#js-pane" type="button" role="tab" aria-controls="js-pane" aria-selected="false">
                                     <i class="fab fa-js-square me-2"></i>
                                     JavaScript
-                                </a>
+                                </button>
                             </li>
-                            <li class="nav-item">
-                                <a href="#tabs-files" class="nav-link" data-bs-toggle="tab">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="files-tab" data-bs-toggle="tab" data-bs-target="#files-pane" type="button" role="tab" aria-controls="files-pane" aria-selected="false">
                                     <i class="fas fa-file-code me-2"></i>
                                     Harici Dosyalar
-                                </a>
+                                </button>
                             </li>
                         </ul>
                     </div>
                     <div class="card-body">
-                        <div class="tab-content">
-                            <div class="tab-pane active show" id="tabs-html">
-                                <div class="mb-3">
+                        <div class="tab-content" id="code-editor-content">
+                            <div class="tab-pane fade show active" id="html-pane" role="tabpanel" aria-labelledby="html-tab">
+                                <div class="mb-3" wire:ignore>
                                     <div id="html-editor" style="height: 400px; width: 100%;"></div>
                                     <textarea 
                                         wire:model.defer="widget.content_html" 
@@ -77,8 +77,8 @@
                                 </div>
                             </div>
                             
-                            <div class="tab-pane" id="tabs-css">
-                                <div class="mb-3">
+                            <div class="tab-pane fade" id="css-pane" role="tabpanel" aria-labelledby="css-tab">
+                                <div class="mb-3" wire:ignore>
                                     <div id="css-editor" style="height: 400px; width: 100%;"></div>
                                     <textarea 
                                         wire:model.defer="widget.content_css" 
@@ -87,8 +87,8 @@
                                 </div>
                             </div>
                             
-                            <div class="tab-pane" id="tabs-js">
-                                <div class="mb-3">
+                            <div class="tab-pane fade" id="js-pane" role="tabpanel" aria-labelledby="js-tab">
+                                <div class="mb-3" wire:ignore>
                                     <div id="js-editor" style="height: 400px; width: 100%;"></div>
                                     <textarea 
                                         wire:model.defer="widget.content_js" 
@@ -97,7 +97,7 @@
                                 </div>
                             </div>
                             
-                            <div class="tab-pane" id="tabs-files">
+                            <div class="tab-pane fade" id="files-pane" role="tabpanel" aria-labelledby="files-tab">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="card">
@@ -302,99 +302,264 @@
 @endpush
 
 @push('scripts')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
 <script>
 let htmlEditor, cssEditor, jsEditor;
+let editorsInitialized = false;
+let monacoLoaded = false;
+let widgetData = @json($widget);
 
-require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' } });
-
-require(['vs/editor/editor.main'], function () {
-    htmlEditor = monaco.editor.create(document.getElementById('html-editor'), {
-        value: @json($widget['content_html']),
-        language: 'html',
-        theme: 'vs-dark',
-        automaticLayout: true,
-        minimap: { enabled: false },
-        scrollBeyondLastLine: false,
-        formatOnPaste: true,
-        formatOnType: true,
-        fontSize: 14,
-        lineHeight: 20,
-        wordWrap: 'on'
-    });
-
-    cssEditor = monaco.editor.create(document.getElementById('css-editor'), {
-        value: @json($widget['content_css']),
-        language: 'css',
-        theme: 'vs-dark',
-        automaticLayout: true,
-        minimap: { enabled: false },
-        scrollBeyondLastLine: false,
-        formatOnPaste: true,
-        formatOnType: true,
-        fontSize: 14,
-        lineHeight: 20,
-        wordWrap: 'on'
-    });
-
-    jsEditor = monaco.editor.create(document.getElementById('js-editor'), {
-        value: @json($widget['content_js']),
-        language: 'javascript',
-        theme: 'vs-dark',
-        automaticLayout: true,
-        minimap: { enabled: false },
-        scrollBeyondLastLine: false,
-        formatOnPaste: true,
-        formatOnType: true,
-        fontSize: 14,
-        lineHeight: 20,
-        wordWrap: 'on'
-    });
-
-    window.formatAllCode = function() {
-        htmlEditor.getAction('editor.action.formatDocument').run();
-        cssEditor.getAction('editor.action.formatDocument').run();
-        jsEditor.getAction('editor.action.formatDocument').run();
-    };
-
-    function syncEditorToTextarea() {
-        document.getElementById('html-textarea').value = htmlEditor.getValue();
-        document.getElementById('css-textarea').value = cssEditor.getValue();
-        document.getElementById('js-textarea').value = jsEditor.getValue();
+const widgetCodeEditor = {
+    initialized: false,
+    editors: {},
+    
+    init: function() {
+        if (this.initialized) return;
         
-        @this.set('widget.content_html', htmlEditor.getValue());
-        @this.set('widget.content_css', cssEditor.getValue());  
-        @this.set('widget.content_js', jsEditor.getValue());
-    }
+        this.loadMonaco();
+        this.setupTabs();
+        this.setupFormSubmit();
+        this.initialized = true;
+    },
+    
+    loadMonaco: function() {
+        if (monacoLoaded) {
+            this.createEditors();
+            return;
+        }
+        
+        if (typeof require === 'undefined') {
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js';
+            script.onload = () => {
+                this.setupMonaco();
+            };
+            document.head.appendChild(script);
+        } else {
+            this.setupMonaco();
+        }
+    },
+    
+    setupMonaco: function() {
+        if (typeof require !== 'undefined') {
+            require.config({ 
+                paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' } 
+            });
 
-    htmlEditor.onDidChangeModelContent(function() {
-        syncEditorToTextarea();
-    });
+            require(['vs/editor/editor.main'], () => {
+                monacoLoaded = true;
+                this.createEditors();
+            });
+        }
+    },
+    
+    createEditors: function() {
+        if (editorsInitialized || typeof monaco === 'undefined') return;
+        
+        const htmlEl = document.getElementById('html-editor');
+        const cssEl = document.getElementById('css-editor');
+        const jsEl = document.getElementById('js-editor');
+        
+        if (!htmlEl || !cssEl || !jsEl) {
+            setTimeout(() => this.createEditors(), 100);
+            return;
+        }
+        
+        try {
+            htmlEditor = monaco.editor.create(htmlEl, {
+                value: widgetData.content_html || '',
+                language: 'html',
+                theme: 'vs-dark',
+                automaticLayout: true,
+                minimap: { enabled: false },
+                scrollBeyondLastLine: false,
+                formatOnPaste: true,
+                formatOnType: true,
+                fontSize: 14,
+                lineHeight: 20,
+                wordWrap: 'on'
+            });
 
-    cssEditor.onDidChangeModelContent(function() {
-        syncEditorToTextarea();
-    });
+            cssEditor = monaco.editor.create(cssEl, {
+                value: widgetData.content_css || '',
+                language: 'css',
+                theme: 'vs-dark',
+                automaticLayout: true,
+                minimap: { enabled: false },
+                scrollBeyondLastLine: false,
+                formatOnPaste: true,
+                formatOnType: true,
+                fontSize: 14,
+                lineHeight: 20,
+                wordWrap: 'on'
+            });
 
-    jsEditor.onDidChangeModelContent(function() {
-        syncEditorToTextarea();
-    });
+            jsEditor = monaco.editor.create(jsEl, {
+                value: widgetData.content_js || '',
+                language: 'javascript',
+                theme: 'vs-dark',
+                automaticLayout: true,
+                minimap: { enabled: false },
+                scrollBeyondLastLine: false,
+                formatOnPaste: true,
+                formatOnType: true,
+                fontSize: 14,
+                lineHeight: 20,
+                wordWrap: 'on'
+            });
 
-    document.addEventListener('livewire:initialized', function() {
-        Livewire.hook('element.updating', function(el, component) {
-            syncEditorToTextarea();
+            this.setupEditorEvents();
+            editorsInitialized = true;
+            
+        } catch (error) {
+            console.error('Monaco editor oluşturma hatası:', error);
+        }
+    },
+    
+    setupEditorEvents: function() {
+        if (!editorsInitialized) return;
+        
+        let updateTimeout;
+        
+        const debouncedUpdate = (type) => {
+            clearTimeout(updateTimeout);
+            updateTimeout = setTimeout(() => {
+                this.syncEditorToTextarea(type);
+                this.updateWidgetData(type);
+            }, 300);
+        };
+        
+        htmlEditor.onDidChangeModelContent(() => debouncedUpdate('html'));
+        cssEditor.onDidChangeModelContent(() => debouncedUpdate('css'));
+        jsEditor.onDidChangeModelContent(() => debouncedUpdate('js'));
+    },
+    
+    setupTabs: function() {
+        const tabButtons = document.querySelectorAll('#code-editor-tabs button[data-bs-toggle="tab"]');
+        
+        tabButtons.forEach(button => {
+            button.addEventListener('shown.bs.tab', () => {
+                setTimeout(() => {
+                    this.resizeEditors();
+                }, 100);
+            });
         });
-    });
-
-    const tabLinks = document.querySelectorAll('.nav-tabs .nav-link');
-    tabLinks.forEach(link => {
-        link.addEventListener('shown.bs.tab', function() {
-            setTimeout(() => {
+    },
+    
+    setupFormSubmit: function() {
+        const form = document.getElementById('widget-form');
+        if (form) {
+            form.addEventListener('submit', (e) => {
+                this.updateBeforeSubmit();
+            });
+        }
+    },
+    
+    syncEditorToTextarea: function(type) {
+        if (!editorsInitialized) return;
+        
+        try {
+            const editor = type === 'html' ? htmlEditor : type === 'css' ? cssEditor : jsEditor;
+            const textarea = document.getElementById(`${type}-textarea`);
+            const value = editor.getValue();
+            
+            if (textarea) {
+                textarea.value = value;
+                textarea.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+        } catch (error) {
+            console.error('Editor senkronizasyon hatası:', error);
+        }
+    },
+    
+    updateWidgetData: function(type) {
+        if (!editorsInitialized) return;
+        
+        try {
+            const editor = type === 'html' ? htmlEditor : type === 'css' ? cssEditor : jsEditor;
+            const fieldName = `content_${type}`;
+            widgetData[fieldName] = editor.getValue();
+        } catch (error) {
+            console.error('Widget verisi güncelleme hatası:', error);
+        }
+    },
+    
+    resizeEditors: function() {
+        if (!editorsInitialized) return;
+        
+        setTimeout(() => {
+            try {
                 if (htmlEditor) htmlEditor.layout();
                 if (cssEditor) cssEditor.layout();
                 if (jsEditor) jsEditor.layout();
-            }, 100);
-        });
-    });
+            } catch (error) {
+                console.error('Editor layout hatası:', error);
+            }
+        }, 50);
+    },
+    
+    formatAllCode: function() {
+        if (!editorsInitialized) return;
+        
+        try {
+            if (htmlEditor) htmlEditor.getAction('editor.action.formatDocument').run();
+            if (cssEditor) cssEditor.getAction('editor.action.formatDocument').run();
+            if (jsEditor) jsEditor.getAction('editor.action.formatDocument').run();
+        } catch (error) {
+            console.error('Kod formatlama hatası:', error);
+        }
+    },
+    
+    updateBeforeSubmit: function() {
+        if (!editorsInitialized) return;
+        
+        this.syncEditorToTextarea('html');
+        this.syncEditorToTextarea('css');
+        this.syncEditorToTextarea('js');
+    },
+    
+    updateEditorValues: function(newData) {
+        if (!editorsInitialized || !newData) return;
+        
+        try {
+            widgetData = newData;
+            
+            if (htmlEditor && htmlEditor.getValue() !== (newData.content_html || '')) {
+                htmlEditor.setValue(newData.content_html || '');
+            }
+            if (cssEditor && cssEditor.getValue() !== (newData.content_css || '')) {
+                cssEditor.setValue(newData.content_css || '');
+            }
+            if (jsEditor && jsEditor.getValue() !== (newData.content_js || '')) {
+                jsEditor.setValue(newData.content_js || '');
+            }
+        } catch (error) {
+            console.error('Editor değer güncelleme hatası:', error);
+        }
+    }
+};
+
+window.formatAllCode = function() {
+    widgetCodeEditor.formatAllCode();
+};
+
+window.updateWidgetEditors = function(newData) {
+    widgetCodeEditor.updateEditorValues(newData);
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => {
+        widgetCodeEditor.init();
+    }, 200);
+});
+
+window.addEventListener('resize', function() {
+    widgetCodeEditor.resizeEditors();
+});
+
+document.addEventListener('livewire:navigated', function() {
+    setTimeout(() => {
+        widgetCodeEditor.init();
+    }, 300);
 });
 </script>
 @endpush

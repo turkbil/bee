@@ -74,34 +74,69 @@ class WidgetCodeEditorComponent extends Component
         $variables = [];
         
         if (!empty($this->widget['settings_schema'])) {
-            foreach ($this->widget['settings_schema'] as $field) {
-                if (isset($field['name']) && !empty($field['name']) && 
-                    (!isset($field['hidden']) || !$field['hidden']) &&
-                    (!isset($field['type']) || $field['type'] !== 'row')) {
-                    $variables['settings'][] = [
-                        'name' => $field['name'],
-                        'label' => $field['label'] ?? 'Tanımsız',
-                        'type' => $field['type'] ?? 'text'
-                    ];
-                }
-            }
+            $variables['settings'] = $this->extractFieldsFromSchema($this->widget['settings_schema']);
         }
         
         if ($this->widget['has_items'] && !empty($this->widget['item_schema'])) {
-            foreach ($this->widget['item_schema'] as $field) {
-                if (isset($field['name']) && !empty($field['name']) && 
-                    (!isset($field['hidden']) || !$field['hidden']) &&
-                    (!isset($field['type']) || $field['type'] !== 'row')) {
-                    $variables['items'][] = [
-                        'name' => $field['name'],
-                        'label' => $field['label'] ?? 'Tanımsız',
-                        'type' => $field['type'] ?? 'text'
-                    ];
-                }
-            }
+            $variables['items'] = $this->extractFieldsFromSchema($this->widget['item_schema']);
         }
         
         return $variables;
+    }
+    
+    private function extractFieldsFromSchema($schema)
+    {
+        $fields = [];
+        
+        foreach ($schema as $field) {
+            if (!isset($field['type'])) {
+                continue;
+            }
+            
+            // Tasarım elementlerini hariç tut
+            $designElements = ['row', 'card', 'tab_group'];
+            if (in_array($field['type'], $designElements)) {
+                // İç elementleri kontrol et
+                if (isset($field['elements']) && is_array($field['elements'])) {
+                    $nestedFields = $this->extractFieldsFromSchema($field['elements']);
+                    $fields = array_merge($fields, $nestedFields);
+                }
+                
+                // Tab group için sekmelerdeki elementleri kontrol et
+                if ($field['type'] === 'tab_group' && isset($field['properties']['tabs'])) {
+                    foreach ($field['properties']['tabs'] as $tab) {
+                        if (isset($tab['elements']) && is_array($tab['elements'])) {
+                            $tabFields = $this->extractFieldsFromSchema($tab['elements']);
+                            $fields = array_merge($fields, $tabFields);
+                        }
+                    }
+                }
+                
+                // Row için kolonlardaki elementleri kontrol et
+                if ($field['type'] === 'row' && isset($field['columns'])) {
+                    foreach ($field['columns'] as $column) {
+                        if (isset($column['elements']) && is_array($column['elements'])) {
+                            $columnFields = $this->extractFieldsFromSchema($column['elements']);
+                            $fields = array_merge($fields, $columnFields);
+                        }
+                    }
+                }
+                
+                continue;
+            }
+            
+            // Name alanı olan ve gizli olmayan elementleri ekle
+            if (isset($field['name']) && !empty($field['name']) && 
+                (!isset($field['hidden']) || !$field['hidden'])) {
+                $fields[] = [
+                    'name' => $field['name'],
+                    'label' => $field['label'] ?? 'Tanımsız',
+                    'type' => $field['type'] ?? 'text'
+                ];
+            }
+        }
+        
+        return $fields;
     }
     
     public function save()

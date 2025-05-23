@@ -404,42 +404,43 @@ document.addEventListener("DOMContentLoaded", function() {
     if (labelInput && nameInput) {
       // Label değiştiğinde otomatik olarak name (System Key) üret
       labelInput.addEventListener('input', function() {
-        // Widget ID'sini al
+        // Schema type'ı kontrol et
+        const schemaType = document.getElementById('schema-type')?.value;
         const widgetId = document.getElementById('widget-id')?.value;
         
         if (widgetId && this.value) {
-          // Widget prefix'ini al
-          let widgetPrefix = 'widget';
+          let widgetPrefix = '';
           
-          // Prefix'i slug formatına çevir
-          widgetPrefix = window.slugifyTurkish(widgetPrefix.toLowerCase());
-          
-          if (widgetPrefix) {
-            // Label'i slug formatına çevir
-            const labelSlug = window.slugifyTurkish(this.value);
-            
-            // Alan adını oluştur
-            let newName = widgetPrefix + '_' + labelSlug;
-            
-            // Eğer properties.name zaten varsa ve prefix ile başlıyorsa
-            if (window.selectedElement.properties.name && 
-                window.selectedElement.properties.name.startsWith(widgetPrefix + '_')) {
-              // Sadece label kısmını değiştir
-              const nameParts = window.selectedElement.properties.name.split('_');
-              if (nameParts.length > 1) {
-                nameParts.splice(1); // İlk parçayı (prefix) dışındakileri sil
-                nameParts.push(labelSlug); // Yeni label'i ekle
-                newName = nameParts.join('_');
-              }
-            }
-            
-            // Benzersiz bir isim oluştur
-            const uniqueName = window.makeNameUnique(newName);
-            
-            // Alan adını güncelle
-            window.selectedElement.properties.name = uniqueName;
-            nameInput.value = uniqueName;
+          // Sadece settings sayfasında widget_ prefix'i ekle
+          if (schemaType === 'settings') {
+            widgetPrefix = 'widget';
+            widgetPrefix = window.slugifyTurkish(widgetPrefix.toLowerCase());
           }
+          
+          // Label'i slug formatına çevir
+          const labelSlug = window.slugifyTurkish(this.value);
+          
+          // Alan adını oluştur
+          let newName = widgetPrefix ? widgetPrefix + '_' + labelSlug : labelSlug;
+          
+          // Eğer properties.name zaten varsa ve prefix ile başlıyorsa
+          if (widgetPrefix && window.selectedElement.properties.name && 
+              window.selectedElement.properties.name.startsWith(widgetPrefix + '_')) {
+            // Sadece label kısmını değiştir
+            const nameParts = window.selectedElement.properties.name.split('_');
+            if (nameParts.length > 1) {
+              nameParts.splice(1); // İlk parçayı (prefix) dışındakileri sil
+              nameParts.push(labelSlug); // Yeni label'i ekle
+              newName = nameParts.join('_');
+            }
+          }
+          
+          // Benzersiz bir isim oluştur
+          const uniqueName = window.makeNameUnique(newName);
+          
+          // Alan adını güncelle
+          window.selectedElement.properties.name = uniqueName;
+          nameInput.value = uniqueName;
         }
       });
       
@@ -560,44 +561,47 @@ document.addEventListener("DOMContentLoaded", function() {
       // Alan adını otomatik güncelle (label değiştiğinde)
       const nameInput = window.propertiesPanel.querySelector('input[name="name"]');
       if (nameInput && nameInput.disabled) { // Sadece alan disabled ise otomatik güncelle
+        const schemaType = document.getElementById('schema-type')?.value;
         const widgetId = document.getElementById('widget-id')?.value;
+        
         if (widgetId && value) {
-          // Widget prefix'ini al
-          let widgetPrefix = 'widget';
+          let widgetPrefix = '';
           
-          // Prefix'i slug formatına çevir
-          widgetPrefix = window.slugifyTurkish(widgetPrefix.toLowerCase());
+          // Sadece settings sayfasında widget_ prefix'i ekle
+          if (schemaType === 'settings') {
+            widgetPrefix = 'widget';
+            widgetPrefix = window.slugifyTurkish(widgetPrefix.toLowerCase());
+          }
           
-          if (widgetPrefix) {
-            // Label'i slug formatına çevir
-            const labelSlug = window.slugifyTurkish(value);
-            
-            // Eğer alan adı yoksa veya widget_ ile başlıyorsa ya da _field ile bitiyorsa, yeni alan adı oluştur
-            const currentName = window.selectedElement.properties.name || '';
-            const isDefaultName = !currentName || currentName.endsWith('_field') || currentName.startsWith('widget_');
-            
-            if (isDefaultName || !currentName.startsWith(widgetPrefix + '_')) {
-              const newBaseName = widgetPrefix + '_' + labelSlug;
-              
-              // Benzersiz bir isim oluştur
+          // Label'i slug formatına çevir
+          const labelSlug = window.slugifyTurkish(value);
+          
+          // Eğer alan adı yoksa veya prefix ile başlıyorsa, yeni alan adı oluştur
+          const currentName = window.selectedElement.properties.name || '';
+          const isDefaultName = !currentName || currentName.endsWith('_field') || 
+                               (widgetPrefix && currentName.startsWith(widgetPrefix + '_'));
+          
+          if (!widgetPrefix) {
+            // Items sayfasında direkt label slug'ını kullan
+            const uniqueName = window.makeNameUnique(labelSlug);
+            window.selectedElement.properties.name = uniqueName;
+            nameInput.value = uniqueName;
+          } else if (isDefaultName || !currentName.startsWith(widgetPrefix + '_')) {
+            // Settings sayfasında prefix ekle
+            const newBaseName = widgetPrefix + '_' + labelSlug;
+            const uniqueName = window.makeNameUnique(newBaseName);
+            window.selectedElement.properties.name = uniqueName;
+            nameInput.value = uniqueName;
+          } else {
+            // Eğer prefix mevcut ise sadece label kısmını değiştir
+            const nameParts = currentName.split('_');
+            if (nameParts.length > 1) {
+              nameParts.splice(1); // İlk parçayı (prefix) dışındakileri sil
+              nameParts.push(labelSlug); // Yeni label'i ekle
+              const newBaseName = nameParts.join('_');
               const uniqueName = window.makeNameUnique(newBaseName);
-              
               window.selectedElement.properties.name = uniqueName;
               nameInput.value = uniqueName;
-            } else {
-              // Eğer prefix mevcut ise sadece label kısmını değiştir
-              const nameParts = currentName.split('_');
-              if (nameParts.length > 1) {
-                nameParts.splice(1); // İlk parçayı (prefix) dışındakileri sil
-                nameParts.push(labelSlug); // Yeni label'i ekle
-                const newBaseName = nameParts.join('_');
-                
-                // Benzersiz bir isim oluştur
-                const uniqueName = window.makeNameUnique(newBaseName);
-                
-                window.selectedElement.properties.name = uniqueName;
-                nameInput.value = uniqueName;
-              }
             }
           }
         }

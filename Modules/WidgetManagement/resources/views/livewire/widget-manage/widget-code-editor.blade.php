@@ -222,7 +222,7 @@
                                     <td class="variable-code" data-copy="&#123;&#123; {{ $var['name'] }} &#125;&#125;">
                                         <code class="copyable-code">&#123;&#123; {{ $var['name'] }} &#125;&#125;</code>
                                     </td>
-                                    <td class="text-muted">{{ $var['label'] }}</td>
+                                    <td class="text-muted" style="width: 40%">{{ $var['label'] }}</td>
                                 </tr>
                                 @endforeach
                             </table>
@@ -244,7 +244,7 @@
                                     <td class="variable-code" data-copy="&#123;&#123; {{ $var['name'] }} &#125;&#125;">
                                         <code class="copyable-code">&#123;&#123; {{ $var['name'] }} &#125;&#125;</code>
                                     </td>
-                                    <td class="text-muted">{{ $var['label'] }}</td>
+                                    <td class="text-muted" style="width: 40%">{{ $var['label'] }}</td>
                                 </tr>
                                 @endforeach
                             </table>
@@ -277,19 +277,19 @@
                                     <td class="variable-code" data-copy="&#123;&#123; #if koşul &#125;&#125;...&#123;&#123; /if &#125;&#125;">
                                         <code class="copyable-code">&#123;&#123; #if koşul &#125;&#125;</code>
                                     </td>
-                                    <td class="text-muted">Koşullu görüntüleme</td>
+                                    <td class="text-muted" style="width: 40%">Koşullu görüntüleme</td>
                                 </tr>
                                 <tr>
                                     <td class="variable-code" data-copy="&#123;&#123; #unless koşul &#125;&#125;...&#123;&#123; /unless &#125;&#125;">
                                         <code class="copyable-code">&#123;&#123; #unless koşul &#125;&#125;</code>
                                     </td>
-                                    <td class="text-muted">Tersi koşul</td>
+                                    <td class="text-muted" style="width: 40%">Tersi koşul</td>
                                 </tr>
                                 <tr>
                                     <td class="variable-code" data-copy="&#123;&#123; else &#125;&#125;">
                                         <code class="copyable-code">&#123;&#123; else &#125;&#125;</code>
                                     </td>
-                                    <td class="text-muted">Alternatif</td>
+                                    <td class="text-muted" style="width: 40%">Alternatif</td>
                                 </tr>
                             </table>
                         </div>
@@ -304,25 +304,25 @@
                                     <td class="variable-code" data-copy="&#123;&#123; #each liste &#125;&#125;...&#123;&#123; /each &#125;&#125;">
                                         <code class="copyable-code">&#123;&#123; #each liste &#125;&#125;</code>
                                     </td>
-                                    <td class="text-muted">Liste döngüsü</td>
+                                    <td class="text-muted" style="width: 40%">Liste döngüsü</td>
                                 </tr>
                                 <tr>
                                     <td class="variable-code" data-copy="&#123;&#123; @index &#125;&#125;">
                                         <code class="copyable-code">&#123;&#123; @index &#125;&#125;</code>
                                     </td>
-                                    <td class="text-muted">Döngü indeksi</td>
+                                    <td class="text-muted" style="width: 40%">Döngü indeksi</td>
                                 </tr>
                                 <tr>
                                     <td class="variable-code" data-copy="&#123;&#123; @first &#125;&#125;">
                                         <code class="copyable-code">&#123;&#123; @first &#125;&#125;</code>
                                     </td>
-                                    <td class="text-muted">İlk eleman</td>
+                                    <td class="text-muted" style="width: 40%">İlk eleman</td>
                                 </tr>
                                 <tr>
                                     <td class="variable-code" data-copy="&#123;&#123; @last &#125;&#125;">
                                         <code class="copyable-code">&#123;&#123; @last &#125;&#125;</code>
                                     </td>
-                                    <td class="text-muted">Son eleman</td>
+                                    <td class="text-muted" style="width: 40%">Son eleman</td>
                                 </tr>
                             </table>
                         </div>
@@ -337,13 +337,13 @@
                                     <td class="variable-code" data-copy="&#123;&#123; #with nesne &#125;&#125;...&#123;&#123; /with &#125;&#125;">
                                         <code class="copyable-code">&#123;&#123; #with nesne &#125;&#125;</code>
                                     </td>
-                                    <td class="text-muted">Nesne bağlamı</td>
+                                    <td class="text-muted" style="width: 40%">Nesne bağlamı</td>
                                 </tr>
                                 <tr>
                                     <td class="variable-code" data-copy="&#123;&#123;!-- yorum --&#125;&#125;">
                                         <code class="copyable-code">&#123;&#123;!-- yorum --&#125;&#125;</code>
                                     </td>
-                                    <td class="text-muted">Yorum satırı</td>
+                                    <td class="text-muted" style="width: 40%">Yorum satırı</td>
                                 </tr>
                             </table>
                         </div>

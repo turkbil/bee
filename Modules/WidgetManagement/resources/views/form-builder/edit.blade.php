@@ -23,7 +23,7 @@
             <div class="studio-brand">
                 {{ $widget->name }} <i class="fa-solid fa-wand-magic-sparkles mx-2"></i> Widget Studio
                 <span class="badge bg-primary ms-2">
-                    {{ $schemaType === 'settings_schema' ? 'Ayarlar' : 'İçerik Yapısı' }}
+                    {{ $schemaType === 'settings' ? 'Ayarlar' : 'İçerik Yapısı' }}
                 </span>
             </div>
         </div>

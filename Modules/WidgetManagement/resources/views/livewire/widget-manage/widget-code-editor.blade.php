@@ -13,6 +13,10 @@
                             <span class="badge fs-6 px-3 py-2">{{ ucfirst($widget['type']) }}</span>
                         </div>
                         <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-outline-dark" onclick="formatAllCode()">
+                                <i class="fas fa-magic me-2"></i>
+                                Kodu Düzenle
+                            </button>
                             <a href="{{ route('admin.widgetmanagement.manage', $widgetId) }}" class="btn btn-outline-secondary">
                                 <i class="fas fa-arrow-left me-2"></i>
                                 Geri Dön
@@ -28,8 +32,6 @@
             </div>
         </div>
     </div>
-    
-
     
     <form wire:submit.prevent="save">
         <div class="row">
@@ -67,37 +69,31 @@
                         <div class="tab-content">
                             <div class="tab-pane active show" id="tabs-html">
                                 <div class="mb-3">
+                                    <div id="html-editor" style="height: 400px; width: 100%;"></div>
                                     <textarea 
                                         wire:model.defer="widget.content_html" 
-                                        id="html-editor" 
-                                        rows="25" 
-                                        class="form-control font-monospace"
-                                        placeholder="HTML kodunuzu buraya yazın..."
-                                        style="font-size: 14px; line-height: 1.4;"></textarea>
+                                        id="html-textarea" 
+                                        style="display: none;"></textarea>
                                 </div>
                             </div>
                             
                             <div class="tab-pane" id="tabs-css">
                                 <div class="mb-3">
+                                    <div id="css-editor" style="height: 400px; width: 100%;"></div>
                                     <textarea 
                                         wire:model.defer="widget.content_css" 
-                                        id="css-editor" 
-                                        rows="25" 
-                                        class="form-control font-monospace"
-                                        placeholder="CSS kodunuzu buraya yazın..."
-                                        style="font-size: 14px; line-height: 1.4;"></textarea>
+                                        id="css-textarea" 
+                                        style="display: none;"></textarea>
                                 </div>
                             </div>
                             
                             <div class="tab-pane" id="tabs-js">
                                 <div class="mb-3">
+                                    <div id="js-editor" style="height: 400px; width: 100%;"></div>
                                     <textarea 
                                         wire:model.defer="widget.content_js" 
-                                        id="js-editor" 
-                                        rows="25" 
-                                        class="form-control font-monospace"
-                                        placeholder="JavaScript kodunuzu buraya yazın..."
-                                        style="font-size: 14px; line-height: 1.4;"></textarea>
+                                        id="js-textarea" 
+                                        style="display: none;"></textarea>
                                 </div>
                             </div>
                             
@@ -279,10 +275,6 @@
 
 @push('styles')
 <style>
-.font-monospace {
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace !important;
-}
-
 .container-fluid {
     max-width: none;
     padding: 1rem 2rem;
@@ -296,10 +288,113 @@
     padding-top: 1rem;
 }
 
+.monaco-editor-container {
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+}
+
 @media (max-width: 768px) {
     .container-fluid {
         padding: 1rem;
     }
 }
 </style>
+@endpush
+
+@push('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
+<script>
+let htmlEditor, cssEditor, jsEditor;
+
+require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' } });
+
+require(['vs/editor/editor.main'], function () {
+    htmlEditor = monaco.editor.create(document.getElementById('html-editor'), {
+        value: @json($widget['content_html']),
+        language: 'html',
+        theme: 'vs-dark',
+        automaticLayout: true,
+        minimap: { enabled: false },
+        scrollBeyondLastLine: false,
+        formatOnPaste: true,
+        formatOnType: true,
+        fontSize: 14,
+        lineHeight: 20,
+        wordWrap: 'on'
+    });
+
+    cssEditor = monaco.editor.create(document.getElementById('css-editor'), {
+        value: @json($widget['content_css']),
+        language: 'css',
+        theme: 'vs-dark',
+        automaticLayout: true,
+        minimap: { enabled: false },
+        scrollBeyondLastLine: false,
+        formatOnPaste: true,
+        formatOnType: true,
+        fontSize: 14,
+        lineHeight: 20,
+        wordWrap: 'on'
+    });
+
+    jsEditor = monaco.editor.create(document.getElementById('js-editor'), {
+        value: @json($widget['content_js']),
+        language: 'javascript',
+        theme: 'vs-dark',
+        automaticLayout: true,
+        minimap: { enabled: false },
+        scrollBeyondLastLine: false,
+        formatOnPaste: true,
+        formatOnType: true,
+        fontSize: 14,
+        lineHeight: 20,
+        wordWrap: 'on'
+    });
+
+    window.formatAllCode = function() {
+        htmlEditor.getAction('editor.action.formatDocument').run();
+        cssEditor.getAction('editor.action.formatDocument').run();
+        jsEditor.getAction('editor.action.formatDocument').run();
+    };
+
+    function syncEditorToTextarea() {
+        document.getElementById('html-textarea').value = htmlEditor.getValue();
+        document.getElementById('css-textarea').value = cssEditor.getValue();
+        document.getElementById('js-textarea').value = jsEditor.getValue();
+        
+        @this.set('widget.content_html', htmlEditor.getValue());
+        @this.set('widget.content_css', cssEditor.getValue());  
+        @this.set('widget.content_js', jsEditor.getValue());
+    }
+
+    htmlEditor.onDidChangeModelContent(function() {
+        syncEditorToTextarea();
+    });
+
+    cssEditor.onDidChangeModelContent(function() {
+        syncEditorToTextarea();
+    });
+
+    jsEditor.onDidChangeModelContent(function() {
+        syncEditorToTextarea();
+    });
+
+    document.addEventListener('livewire:initialized', function() {
+        Livewire.hook('element.updating', function(el, component) {
+            syncEditorToTextarea();
+        });
+    });
+
+    const tabLinks = document.querySelectorAll('.nav-tabs .nav-link');
+    tabLinks.forEach(link => {
+        link.addEventListener('shown.bs.tab', function() {
+            setTimeout(() => {
+                if (htmlEditor) htmlEditor.layout();
+                if (cssEditor) cssEditor.layout();
+                if (jsEditor) jsEditor.layout();
+            }, 100);
+        });
+    });
+});
+</script>
 @endpush

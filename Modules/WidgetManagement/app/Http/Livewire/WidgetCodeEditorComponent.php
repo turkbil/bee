@@ -1,12 +1,11 @@
 <?php
 
-namespace Modules\WidgetManagement\app\Http\Livewire;
+namespace Modules\WidgetManagement\App\Http\Livewire;
 
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Url;
-use Livewire\Attributes\Computed;
-use Modules\WidgetManagement\app\Models\Widget;
+use Modules\WidgetManagement\App\Models\Widget;
 use Illuminate\Support\Facades\Log;
 
 #[Layout('admin.layout')]
@@ -31,14 +30,14 @@ class WidgetCodeEditorComponent extends Component
         $this->widget = [
             'name' => $widget->name,
             'type' => $widget->type,
-            'content_html' => $widget->content_html,
-            'content_css' => $widget->content_css,
-            'content_js' => $widget->content_js,
+            'content_html' => $widget->content_html ?? '',
+            'content_css' => $widget->content_css ?? '',
+            'content_js' => $widget->content_js ?? '',
             'css_files' => $widget->css_files ?? [],
             'js_files' => $widget->js_files ?? [],
             'settings_schema' => $widget->settings_schema ?? [],
             'item_schema' => $widget->item_schema ?? [],
-            'has_items' => $widget->has_items
+            'has_items' => $widget->has_items ?? false
         ];
     }
     
@@ -107,6 +106,10 @@ class WidgetCodeEditorComponent extends Component
     
     public function save()
     {
+        if ($this->isSubmitting) {
+            return;
+        }
+        
         $this->isSubmitting = true;
         
         $this->validate();
@@ -126,10 +129,17 @@ class WidgetCodeEditorComponent extends Component
                 'message' => 'Widget kodu kaydedildi.',
                 'type' => 'success'
             ]);
+
+            if (function_exists('log_activity')) {
+                log_activity($widget, 'widget kod editörü güncellendi');
+            }
+            
         } catch (\Exception $e) {
+            Log::error('Widget kod kaydetme hatası: ' . $e->getMessage());
+            
             $this->dispatch('toast', [
                 'title' => 'Hata!',
-                'message' => 'Widget kodu kaydedilirken bir hata oluştu: ' . $e->getMessage(),
+                'message' => 'Widget kodu kaydedilirken bir hata oluştu.',
                 'type' => 'error'
             ]);
         }
@@ -139,7 +149,6 @@ class WidgetCodeEditorComponent extends Component
     
     public function render()
     {
-        // Widget yönetim şablonunu doğrudan belirtiyoruz
         return view('widgetmanagement::livewire.widget-manage.widget-code-editor', [
             'title' => 'Widget Kod Editörü'
         ]);

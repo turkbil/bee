@@ -13,10 +13,6 @@
                             <span class="badge fs-6 px-3 py-2">{{ ucfirst($widget['type']) }}</span>
                         </div>
                         <div class="d-flex gap-2">
-                            <button type="button" class="btn btn-outline-dark" onclick="formatAllCode()">
-                                <i class="fas fa-magic me-2"></i>
-                                Kodu Düzenle
-                            </button>
                             <a href="{{ route('admin.widgetmanagement.manage', $widgetId) }}" class="btn btn-outline-secondary">
                                 <i class="fas fa-arrow-left me-2"></i>
                                 Geri Dön
@@ -36,68 +32,80 @@
     <form wire:submit.prevent="save" id="widget-form">
         <div class="row">
             <div class="col-12">
-                <div class="card">
+                <div class="card" id="editor-card">
                     <div class="card-header">
-                        <ul class="nav nav-tabs card-header-tabs" id="code-editor-tabs" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="html-tab" data-bs-toggle="tab" data-bs-target="#html-pane" type="button" role="tab" aria-controls="html-pane" aria-selected="true">
-                                    <i class="fab fa-html5 me-2"></i>
-                                    HTML
-                                </button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="css-tab" data-bs-toggle="tab" data-bs-target="#css-pane" type="button" role="tab" aria-controls="css-pane" aria-selected="false">
-                                    <i class="fab fa-css3-alt me-2"></i>
-                                    CSS
-                                </button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="js-tab" data-bs-toggle="tab" data-bs-target="#js-pane" type="button" role="tab" aria-controls="js-pane" aria-selected="false">
-                                    <i class="fab fa-js-square me-2"></i>
-                                    JavaScript
-                                </button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="files-tab" data-bs-toggle="tab" data-bs-target="#files-pane" type="button" role="tab" aria-controls="files-pane" aria-selected="false">
-                                    <i class="fas fa-file-code me-2"></i>
-                                    Harici Dosyalar
-                                </button>
-                            </li>
-                        </ul>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <ul class="nav nav-tabs card-header-tabs" id="code-editor-tabs" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="html-tab" data-bs-toggle="tab" data-bs-target="#html-pane" type="button" role="tab">
+                                        <i class="fab fa-html5 me-2"></i>
+                                        HTML
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="css-tab" data-bs-toggle="tab" data-bs-target="#css-pane" type="button" role="tab">
+                                        <i class="fab fa-css3-alt me-2"></i>
+                                        CSS
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="js-tab" data-bs-toggle="tab" data-bs-target="#js-pane" type="button" role="tab">
+                                        <i class="fab fa-js-square me-2"></i>
+                                        JavaScript
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="files-tab" data-bs-toggle="tab" data-bs-target="#files-pane" type="button" role="tab">
+                                        <i class="fas fa-file-code me-2"></i>
+                                        Harici Dosyalar
+                                    </button>
+                                </li>
+                            </ul>
+                            <div class="ms-auto">
+                                <nav class="nav nav-segmented nav-sm" role="tablist">
+                                    <button type="button" class="nav-link" onclick="editorActions.formatCode()" title="Kodu Formatla" data-bs-toggle="tooltip" data-bs-placement="top">
+                                        <i class="fas fa-magic"></i>
+                                    </button>
+                                    <button type="button" class="nav-link" onclick="editorActions.toggleTheme()" title="Tema Değiştir" data-bs-toggle="tooltip" data-bs-placement="top">
+                                        <i class="fas fa-palette"></i>
+                                    </button>
+                                    <button type="button" class="nav-link" onclick="editorActions.decreaseFontSize()" title="Yazı Tipi Küçült" data-bs-toggle="tooltip" data-bs-placement="top">
+                                        <i class="fas fa-search-minus"></i>
+                                    </button>
+                                    <button type="button" class="nav-link" onclick="editorActions.increaseFontSize()" title="Yazı Tipi Büyüt" data-bs-toggle="tooltip" data-bs-placement="top">
+                                        <i class="fas fa-search-plus"></i>
+                                    </button>
+                                    <button type="button" class="nav-link" onclick="editorActions.toggleFullscreen()" title="Tam Ekran" data-bs-toggle="tooltip" data-bs-placement="top">
+                                        <i class="fas fa-expand" id="fullscreen-icon"></i>
+                                    </button>
+                                </nav>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-body">
                         <div class="tab-content" id="code-editor-content">
-                            <div class="tab-pane fade show active" id="html-pane" role="tabpanel" aria-labelledby="html-tab">
+                            <div class="tab-pane fade show active" id="html-pane" role="tabpanel">
                                 <div class="mb-3" wire:ignore>
                                     <div id="html-editor" style="height: 400px; width: 100%;"></div>
-                                    <textarea 
-                                        wire:model.defer="widget.content_html" 
-                                        id="html-textarea" 
-                                        style="display: none;"></textarea>
+                                    <textarea wire:model.defer="widget.content_html" id="html-textarea" style="display: none;"></textarea>
                                 </div>
                             </div>
                             
-                            <div class="tab-pane fade" id="css-pane" role="tabpanel" aria-labelledby="css-tab">
+                            <div class="tab-pane fade" id="css-pane" role="tabpanel">
                                 <div class="mb-3" wire:ignore>
                                     <div id="css-editor" style="height: 400px; width: 100%;"></div>
-                                    <textarea 
-                                        wire:model.defer="widget.content_css" 
-                                        id="css-textarea" 
-                                        style="display: none;"></textarea>
+                                    <textarea wire:model.defer="widget.content_css" id="css-textarea" style="display: none;"></textarea>
                                 </div>
                             </div>
                             
-                            <div class="tab-pane fade" id="js-pane" role="tabpanel" aria-labelledby="js-tab">
+                            <div class="tab-pane fade" id="js-pane" role="tabpanel">
                                 <div class="mb-3" wire:ignore>
                                     <div id="js-editor" style="height: 400px; width: 100%;"></div>
-                                    <textarea 
-                                        wire:model.defer="widget.content_js" 
-                                        id="js-textarea" 
-                                        style="display: none;"></textarea>
+                                    <textarea wire:model.defer="widget.content_js" id="js-textarea" style="display: none;"></textarea>
                                 </div>
                             </div>
                             
-                            <div class="tab-pane fade" id="files-pane" role="tabpanel" aria-labelledby="files-tab">
+                            <div class="tab-pane fade" id="files-pane" role="tabpanel">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="card">
@@ -179,13 +187,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-footer">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <a href="{{ route('admin.widgetmanagement.manage', $widgetId) }}" class="btn btn-link text-decoration-none">
-                                <i class="fas fa-arrow-left me-2"></i>
-                                Geri Dön
-                            </a>
-                            
+                    <div class="card-footer" id="editor-footer">
+                        <div class="d-flex justify-content-end align-items-center">
                             <button type="submit" class="btn btn-primary btn-lg" wire:loading.attr="disabled">
                                 <span wire:loading.remove>
                                     <i class="fas fa-save me-2"></i>
@@ -208,7 +211,7 @@
     @endphp
     
     @if(!empty($variables))
-    <div class="row my-4">
+    <div class="row my-4" id="variables-panel">
         @if(isset($variables['settings']))
         <div class="col-md-6">
             <div class="card">
@@ -293,6 +296,52 @@
     border-radius: 0.375rem;
 }
 
+.fullscreen-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #1e1e1e;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+}
+
+.fullscreen-overlay .card {
+    flex: 1;
+    margin: 0;
+    border: none;
+    background: #1e1e1e;
+    height: 100vh;
+}
+
+.fullscreen-overlay .card-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 120px);
+}
+
+.fullscreen-overlay .tab-content {
+    flex: 1;
+    height: 100%;
+}
+
+.fullscreen-overlay .tab-pane {
+    height: 100%;
+}
+
+.fullscreen-overlay .tab-pane > div {
+    height: 100%;
+}
+
+.fullscreen-overlay #html-editor,
+.fullscreen-overlay #css-editor,
+.fullscreen-overlay #js-editor {
+    height: 100% !important;
+}
+
 @media (max-width: 768px) {
     .container-fluid {
         padding: 1rem;
@@ -302,15 +351,148 @@
 @endpush
 
 @push('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/emmet/2.4.7/emmet.min.js"></script>
 <script>
 let htmlEditor, cssEditor, jsEditor;
 let editorsInitialized = false;
 let monacoLoaded = false;
 let widgetData = @json($widget);
+let currentTheme = 'vs-dark';
+let currentFontSize = 14;
+let fullscreenEnabled = false;
+
+const editorSettings = {
+    fontSize: currentFontSize,
+    lineHeight: currentFontSize + 8,
+    theme: currentTheme,
+    minimap: { enabled: false },
+    automaticLayout: true,
+    scrollBeyondLastLine: false,
+    formatOnPaste: true,
+    formatOnType: true,
+    wordWrap: 'on',
+    folding: true,
+    foldingStrategy: 'indentation',
+    showFoldingControls: 'always',
+    suggest: {
+        insertMode: 'replace',
+        filterGraceful: true
+    },
+    quickSuggestions: {
+        other: true,
+        comments: true,
+        strings: true
+    },
+    acceptSuggestionOnCommitCharacter: true,
+    acceptSuggestionOnEnter: 'on',
+    accessibilitySupport: 'auto',
+    autoIndent: 'advanced',
+    renderWhitespace: 'selection',
+    renderControlCharacters: true,
+    renderFinalNewline: true,
+    rulers: [80, 120],
+    cursorBlinking: 'blink',
+    cursorSmoothCaretAnimation: true,
+    find: {
+        seedSearchStringFromSelection: 'always',
+        autoFindInSelection: 'never'
+    }
+};
+
+const editorActions = {
+    formatCode: function() {
+        const activeEditor = this.getActiveEditor();
+        if (activeEditor) {
+            activeEditor.getAction('editor.action.formatDocument').run();
+        }
+    },
+    
+    toggleTheme: function() {
+        const themes = ['vs-dark', 'vs', 'hc-black'];
+        const currentIndex = themes.indexOf(currentTheme);
+        currentTheme = themes[(currentIndex + 1) % themes.length];
+        
+        if (monacoLoaded) {
+            monaco.editor.setTheme(currentTheme);
+        }
+    },
+    
+    increaseFontSize: function() {
+        currentFontSize = Math.min(currentFontSize + 2, 24);
+        const newLineHeight = currentFontSize + 12;
+        this.updateAllEditors({ 
+            fontSize: currentFontSize,
+            lineHeight: newLineHeight
+        });
+    },
+    
+    decreaseFontSize: function() {
+        currentFontSize = Math.max(currentFontSize - 2, 10);
+        const newLineHeight = currentFontSize + 8;
+        this.updateAllEditors({ 
+            fontSize: currentFontSize,
+            lineHeight: newLineHeight
+        });
+    },
+    
+    toggleFullscreen: function() {
+        const editorCard = document.getElementById('editor-card');
+        const body = document.body;
+        const fullscreenIcon = document.getElementById('fullscreen-icon');
+        
+        if (!fullscreenEnabled) {
+            editorCard.classList.add('fullscreen-overlay');
+            body.style.overflow = 'hidden';
+            fullscreenEnabled = true;
+            fullscreenIcon.className = 'fas fa-compress';
+        } else {
+            editorCard.classList.remove('fullscreen-overlay');
+            body.style.overflow = 'auto';
+            fullscreenEnabled = false;
+            fullscreenIcon.className = 'fas fa-expand';
+        }
+        
+        setTimeout(() => {
+            this.resizeAllEditors();
+        }, 100);
+    },
+    
+    getActiveEditor: function() {
+        const activeTab = document.querySelector('#code-editor-tabs button.nav-link.active');
+        if (!activeTab) return null;
+        
+        const tabId = activeTab.id;
+        if (tabId === 'html-tab') return htmlEditor;
+        if (tabId === 'css-tab') return cssEditor;
+        if (tabId === 'js-tab') return jsEditor;
+        return null;
+    },
+    
+    updateAllEditors: function(options) {
+        if (!editorsInitialized) return;
+        
+        [htmlEditor, cssEditor, jsEditor].forEach(editor => {
+            if (editor) {
+                editor.updateOptions(options);
+            }
+        });
+    },
+    
+    resizeAllEditors: function() {
+        if (!editorsInitialized) return;
+        
+        setTimeout(() => {
+            [htmlEditor, cssEditor, jsEditor].forEach(editor => {
+                if (editor) {
+                    editor.layout();
+                }
+            });
+        }, 50);
+    }
+};
 
 const widgetCodeEditor = {
     initialized: false,
-    editors: {},
     
     init: function() {
         if (this.initialized) return;
@@ -318,7 +500,16 @@ const widgetCodeEditor = {
         this.loadMonaco();
         this.setupTabs();
         this.setupFormSubmit();
+        this.setupKeyboardShortcuts();
+        this.setupTooltips();
         this.initialized = true;
+    },
+    
+    setupTooltips: function() {
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
     },
     
     loadMonaco: function() {
@@ -347,7 +538,53 @@ const widgetCodeEditor = {
 
             require(['vs/editor/editor.main'], () => {
                 monacoLoaded = true;
+                this.setupEmmet();
                 this.createEditors();
+            });
+        }
+    },
+    
+    setupEmmet: function() {
+        if (typeof emmet !== 'undefined' && typeof monaco !== 'undefined') {
+            monaco.languages.registerCompletionItemProvider('html', {
+                provideCompletionItems: function(model, position) {
+                    const textUntilPosition = model.getValueInRange({
+                        startLineNumber: 1,
+                        startColumn: 1,
+                        endLineNumber: position.lineNumber,
+                        endColumn: position.column
+                    });
+                    
+                    const match = textUntilPosition.match(/[\w:.#\[\]@-]*$/);
+                    if (!match) return { suggestions: [] };
+                    
+                    const word = match[0];
+                    if (word.length < 2) return { suggestions: [] };
+                    
+                    try {
+                        const expandedHtml = emmet.expand(word);
+                        if (expandedHtml && expandedHtml !== word) {
+                            return {
+                                suggestions: [{
+                                    label: word,
+                                    kind: monaco.languages.CompletionItemKind.Snippet,
+                                    insertText: expandedHtml,
+                                    documentation: 'Emmet abbreviation',
+                                    range: {
+                                        startLineNumber: position.lineNumber,
+                                        startColumn: position.column - word.length,
+                                        endLineNumber: position.lineNumber,
+                                        endColumn: position.column
+                                    }
+                                }]
+                            };
+                        }
+                    } catch (e) {
+                        return { suggestions: [] };
+                    }
+                    
+                    return { suggestions: [] };
+                }
             });
         }
     },
@@ -366,48 +603,25 @@ const widgetCodeEditor = {
         
         try {
             htmlEditor = monaco.editor.create(htmlEl, {
+                ...editorSettings,
                 value: widgetData.content_html || '',
-                language: 'html',
-                theme: 'vs-dark',
-                automaticLayout: true,
-                minimap: { enabled: false },
-                scrollBeyondLastLine: false,
-                formatOnPaste: true,
-                formatOnType: true,
-                fontSize: 14,
-                lineHeight: 20,
-                wordWrap: 'on'
+                language: 'html'
             });
 
             cssEditor = monaco.editor.create(cssEl, {
+                ...editorSettings,
                 value: widgetData.content_css || '',
-                language: 'css',
-                theme: 'vs-dark',
-                automaticLayout: true,
-                minimap: { enabled: false },
-                scrollBeyondLastLine: false,
-                formatOnPaste: true,
-                formatOnType: true,
-                fontSize: 14,
-                lineHeight: 20,
-                wordWrap: 'on'
+                language: 'css'
             });
 
             jsEditor = monaco.editor.create(jsEl, {
+                ...editorSettings,
                 value: widgetData.content_js || '',
-                language: 'javascript',
-                theme: 'vs-dark',
-                automaticLayout: true,
-                minimap: { enabled: false },
-                scrollBeyondLastLine: false,
-                formatOnPaste: true,
-                formatOnType: true,
-                fontSize: 14,
-                lineHeight: 20,
-                wordWrap: 'on'
+                language: 'javascript'
             });
 
             this.setupEditorEvents();
+            this.setupErrorMarkers();
             editorsInitialized = true;
             
         } catch (error) {
@@ -433,13 +647,102 @@ const widgetCodeEditor = {
         jsEditor.onDidChangeModelContent(() => debouncedUpdate('js'));
     },
     
+    setupErrorMarkers: function() {
+        if (!editorsInitialized) return;
+        
+        const validateCSS = (cssCode) => {
+            const errors = [];
+            const lines = cssCode.split('\n');
+            
+            lines.forEach((line, index) => {
+                if (line.trim() && !line.includes('{') && !line.includes('}') && line.includes(':')) {
+                    if (!line.trim().endsWith(';') && !line.trim().endsWith('{')) {
+                        errors.push({
+                            startLineNumber: index + 1,
+                            startColumn: 1,
+                            endLineNumber: index + 1,
+                            endColumn: line.length + 1,
+                            message: 'Noktalı virgül eksik olabilir',
+                            severity: monaco.MarkerSeverity.Warning
+                        });
+                    }
+                }
+            });
+            
+            return errors;
+        };
+        
+        const validateJS = (jsCode) => {
+            const errors = [];
+            try {
+                new Function(jsCode);
+            } catch (e) {
+                const match = e.message.match(/line (\d+)/);
+                const lineNumber = match ? parseInt(match[1]) : 1;
+                
+                errors.push({
+                    startLineNumber: lineNumber,
+                    startColumn: 1,
+                    endLineNumber: lineNumber,
+                    endColumn: 100,
+                    message: e.message,
+                    severity: monaco.MarkerSeverity.Error
+                });
+            }
+            
+            return errors;
+        };
+        
+        cssEditor.onDidChangeModelContent(() => {
+            const cssCode = cssEditor.getValue();
+            const errors = validateCSS(cssCode);
+            monaco.editor.setModelMarkers(cssEditor.getModel(), 'css-validator', errors);
+        });
+        
+        jsEditor.onDidChangeModelContent(() => {
+            const jsCode = jsEditor.getValue();
+            const errors = validateJS(jsCode);
+            monaco.editor.setModelMarkers(jsEditor.getModel(), 'js-validator', errors);
+        });
+    },
+    
+    setupKeyboardShortcuts: function() {
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                switch (e.key) {
+                    case 's':
+                        e.preventDefault();
+                        document.getElementById('widget-form').dispatchEvent(new Event('submit'));
+                        break;
+                    case 'f':
+                        e.preventDefault();
+                        if (e.shiftKey) {
+                            editorActions.formatCode();
+                        }
+                        break;
+                    case 'Enter':
+                        if (e.shiftKey) {
+                            e.preventDefault();
+                            editorActions.toggleFullscreen();
+                        }
+                        break;
+                }
+            }
+            
+            if (e.key === 'F11') {
+                e.preventDefault();
+                editorActions.toggleFullscreen();
+            }
+        });
+    },
+    
     setupTabs: function() {
         const tabButtons = document.querySelectorAll('#code-editor-tabs button[data-bs-toggle="tab"]');
         
         tabButtons.forEach(button => {
             button.addEventListener('shown.bs.tab', () => {
                 setTimeout(() => {
-                    this.resizeEditors();
+                    editorActions.resizeAllEditors();
                 }, 100);
             });
         });
@@ -483,32 +786,6 @@ const widgetCodeEditor = {
         }
     },
     
-    resizeEditors: function() {
-        if (!editorsInitialized) return;
-        
-        setTimeout(() => {
-            try {
-                if (htmlEditor) htmlEditor.layout();
-                if (cssEditor) cssEditor.layout();
-                if (jsEditor) jsEditor.layout();
-            } catch (error) {
-                console.error('Editor layout hatası:', error);
-            }
-        }, 50);
-    },
-    
-    formatAllCode: function() {
-        if (!editorsInitialized) return;
-        
-        try {
-            if (htmlEditor) htmlEditor.getAction('editor.action.formatDocument').run();
-            if (cssEditor) cssEditor.getAction('editor.action.formatDocument').run();
-            if (jsEditor) jsEditor.getAction('editor.action.formatDocument').run();
-        } catch (error) {
-            console.error('Kod formatlama hatası:', error);
-        }
-    },
-    
     updateBeforeSubmit: function() {
         if (!editorsInitialized) return;
         
@@ -538,10 +815,6 @@ const widgetCodeEditor = {
     }
 };
 
-window.formatAllCode = function() {
-    widgetCodeEditor.formatAllCode();
-};
-
 window.updateWidgetEditors = function(newData) {
     widgetCodeEditor.updateEditorValues(newData);
 };
@@ -553,7 +826,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 window.addEventListener('resize', function() {
-    widgetCodeEditor.resizeEditors();
+    editorActions.resizeAllEditors();
 });
 
 document.addEventListener('livewire:navigated', function() {

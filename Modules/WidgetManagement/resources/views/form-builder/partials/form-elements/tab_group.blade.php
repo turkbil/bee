@@ -1,47 +1,29 @@
 @php
-    // Element ve properties dizilerinin var olduğunu kontrol edelim
-    if (!isset($element) || !is_array($element)) {
-        $element = ['properties' => []];
-    }
+    // Temel değişkenler
+    $element = $element ?? [];
+    $formData = $formData ?? [];
+    $values = $values ?? [];
+    $settings = $settings ?? collect([]);
+    $originalValues = $originalValues ?? [];
+    $temporaryImages = $temporaryImages ?? [];
+    $temporaryMultipleImages = $temporaryMultipleImages ?? [];
+    $multipleImagesArrays = $multipleImagesArrays ?? [];
     
+    // Element adı ve ID'si
+    $tabGroupId = $element['id'] ?? ('tab_group_' . uniqid());
+    $tabGroupName = $element['name'] ?? '';
+    $tabGroupLabel = $element['label'] ?? 'Sekme Grubu';
+    
+    // Element özellikleri
     if (!isset($element['properties']) || !is_array($element['properties'])) {
         $element['properties'] = [];
     }
     
-    // Değişkenlerin var olduğunu kontrol edelim
-    if (!isset($values) || !is_array($values)) {
-        $values = [];
-    }
-    
-    if (!isset($settings) || !is_object($settings)) {
-        $settings = collect([]);
-    }
-    
-    if (!isset($originalValues) || !is_array($originalValues)) {
-        $originalValues = [];
-    }
-    
-    if (!isset($formData) || !is_array($formData)) {
-        $formData = [];
-    }
-    
-    if (!isset($temporaryImages) || !is_array($temporaryImages)) {
-        $temporaryImages = [];
-    }
-    
-    if (!isset($temporaryMultipleImages) || !is_array($temporaryMultipleImages)) {
-        $temporaryMultipleImages = [];
-    }
-    
-    if (!isset($multipleImagesArrays) || !is_array($multipleImagesArrays)) {
-        $multipleImagesArrays = [];
-    }
-    
     // Benzersiz sekme kimliği oluştur
     $tabId = 'tabs-' . Str::random(6);
-    $tabsData = [];
     
-    // JSON verilerini doğru şekilde çek
+    // Sekme verilerini al
+    $tabsData = [];
     if (isset($element['properties']['tabs']) && is_array($element['properties']['tabs'])) {
         $tabsData = $element['properties']['tabs'];
     } elseif (isset($element['properties']['tabs']) && is_string($element['properties']['tabs'])) {
@@ -51,13 +33,32 @@
             $tabsData = [];
         }
     }
+    
+    // Boş sekme verileri için varsayılan ekle
+    if (empty($tabsData)) {
+        $tabsData = [
+            [
+                'title' => 'Varsayılan Sekme',
+                'elements' => []
+            ]
+        ];
+    }
+    
+    // Sekme içerik kontrolü
+    $hasTabs = !empty($tabsData);
 @endphp
 
-<div class="card mb-4">
+<div class="card mb-4" id="{{ $tabGroupId }}_container">
+    <!-- Gizli form alanları -->
+    <input type="hidden" name="elements[{{ $loop->index ?? 0 }}][id]" value="{{ $tabGroupId }}">
+    <input type="hidden" name="elements[{{ $loop->index ?? 0 }}][type]" value="tab_group">
+    <input type="hidden" name="elements[{{ $loop->index ?? 0 }}][name]" value="{{ $tabGroupName }}">
+    <input type="hidden" name="elements[{{ $loop->index ?? 0 }}][label]" value="{{ $tabGroupLabel }}">
+    
     <div class="card-header">
-        <ul class="nav nav-tabs card-header-tabs">
-            @forelse($tabsData as $index => $tab)
-                <li class="nav-item">
+        <ul class="nav nav-tabs card-header-tabs" role="tablist">
+            @foreach($tabsData as $index => $tab)
+                <li class="nav-item" role="presentation">
                     <a href="#{{ $tabId }}-{{ $index }}" class="nav-link {{ $index === 0 ? 'active' : '' }}" 
                        data-bs-toggle="tab" id="{{ $tabId }}-tab-{{ $index }}" role="tab" 
                        aria-controls="{{ $tabId }}-{{ $index }}" aria-selected="{{ $index === 0 ? 'true' : 'false' }}">
@@ -69,61 +70,62 @@
                         </span>
                     </a>
                 </li>
-            @empty
-                <li class="nav-item">
-                    <a href="#{{ $tabId }}-empty" class="nav-link active" data-bs-toggle="tab" 
-                       id="{{ $tabId }}-tab-empty" role="tab" aria-controls="{{ $tabId }}-empty" aria-selected="true">
-                       Varsayılan Sekme
-                    </a>
-                </li>
-            @endforelse
+                <!-- Her sekme için gizli form alanı -->
+                <input type="hidden" name="elements[{{ $loop->index ?? 0 }}][properties][tabs][{{ $index }}][title]" value="{{ $tab['title'] ?? 'Sekme ' . ($index + 1) }}">
+                @if(isset($tab['icon']))
+                    <input type="hidden" name="elements[{{ $loop->index ?? 0 }}][properties][tabs][{{ $index }}][icon]" value="{{ $tab['icon'] }}">
+                @endif
+            @endforeach
         </ul>
     </div>
     
-    <div class="card-body">
+    <div class="card-body" style="border-radius: 0.25rem;">
         <div class="tab-content">
-            @forelse($tabsData as $index => $tab)
+            @foreach($tabsData as $index => $tab)
                 <div class="tab-pane {{ $index === 0 ? 'active show' : '' }}" id="{{ $tabId }}-{{ $index }}" 
                      role="tabpanel" aria-labelledby="{{ $tabId }}-tab-{{ $index }}">
-                    @if(isset($tab['content']))
+                    @php
+                        $hasTabContent = isset($tab['content']) && !empty($tab['content']);
+                        $hasTabElements = isset($tab['elements']) && is_array($tab['elements']) && count($tab['elements']) > 0;
+                    @endphp
+
+                    @if($hasTabContent)
+                        <input type="hidden" name="elements[{{ $loop->index ?? 0 }}][properties][tabs][{{ $index }}][content]" value="{{ $tab['content'] }}">
                         {!! $tab['content'] !!}
-                    @elseif(isset($tab['elements']) && is_array($tab['elements']))
-                        @foreach($tab['elements'] as $tabElement)
-                            @php
-                                // Element tipini güvenli bir şekilde kontrol et
-                                $elementType = isset($tabElement['type']) ? $tabElement['type'] : 'text';
-                                // View'un var olup olmadığını kontrol et
-                                $viewPath = 'widgetmanagement::form-builder.partials.form-elements.' . $elementType;
-                            @endphp
-                            
-                            @if(view()->exists($viewPath))
-                                @include($viewPath, [
-                                    'element' => $tabElement,
-                                    'values' => $values,
-                                    'settings' => $settings,
-                                    'originalValues' => $originalValues,
-                                    'temporaryImages' => $temporaryImages,
-                                    'temporaryMultipleImages' => $temporaryMultipleImages,
-                                    'multipleImagesArrays' => $multipleImagesArrays,
-                                    'formData' => $formData,
-                                    'originalData' => $originalValues
-                                ])
-                            @else
-                                <div class="alert alert-warning">
-                                    '{{ $elementType }}' türü için görünüm bulunamadı.
-                                </div>
-                            @endif
-                        @endforeach
-                    @else
+                    @endif
+                    
+                    @if($hasTabElements)
+                        <div class="row">
+                            @foreach($tab['elements'] as $elementIndex => $tabElement)
+                                @php
+                                    $elementType = $tabElement['type'] ?? 'text';
+                                    $viewPath = 'widgetmanagement::form-builder.partials.form-elements.' . $elementType;
+                                @endphp
+                                
+                                @if(view()->exists($viewPath))
+                                    @include($viewPath, [
+                                        'element' => $tabElement,
+                                        'values' => $values,
+                                        'settings' => $settings,
+                                        'originalValues' => $originalValues,
+                                        'temporaryImages' => $temporaryImages,
+                                        'temporaryMultipleImages' => $temporaryMultipleImages,
+                                        'multipleImagesArrays' => $multipleImagesArrays,
+                                        'formData' => $formData,
+                                        'loop' => (object)['index' => $elementIndex]
+                                    ])
+                                @else
+                                    <div class="alert alert-warning">
+                                        <strong>{{ $elementType }}</strong> türü için görünüm bulunamadı.
+                                    </div>
+                                @endif
+                            @endforeach
+                        </div>
+                    @elseif(!$hasTabContent)
                         <p class="text-muted">Bu sekmede içerik bulunmuyor.</p>
                     @endif
                 </div>
-            @empty
-                <div class="tab-pane active show" id="{{ $tabId }}-empty" 
-                     role="tabpanel" aria-labelledby="{{ $tabId }}-tab-empty">
-                    <p class="text-muted">Sekme yapılandırması bulunamadı.</p>
-                </div>
-            @endforelse
+            @endforeach
         </div>
     </div>
 </div>

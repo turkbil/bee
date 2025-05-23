@@ -1,44 +1,43 @@
 @php
-    // Element dizisinin var olduğunu kontrol edelim
-    if (!isset($element) || !is_array($element)) {
-        $element = [];
+    // Temel değişkenler
+    $element = $element ?? [];
+    $formData = $formData ?? [];
+    $values = $values ?? [];
+    $settings = $settings ?? collect([]);
+    
+    // Element adı ve ID'si
+    $cardId = $element['id'] ?? ('card_' . uniqid());
+    $cardName = $element['name'] ?? '';
+    
+    // Element özellikleri
+    if (!isset($element['properties']) || !is_array($element['properties'])) {
+        $element['properties'] = [];
     }
     
-    // Kart başlığını ve içeriğini doğrudan al (properties içinde olmayabilir)
-    $cardTitle = isset($element['title']) ? $element['title'] : (isset($element['label']) ? $element['label'] : 'Kart');
-    $cardContent = isset($element['content']) ? $element['content'] : null;
+    // Kart başlığı ve içeriği
+    $cardTitle = $element['label'] ?? ($element['properties']['title'] ?? 'Kart');
+    $cardContent = $element['properties']['content'] ?? null;
     
-    // Değişkenlerin var olduğunu kontrol edelim
-    if (!isset($values) || !is_array($values)) {
-        $values = [];
+    // Kart verilerini JSON'a kaydet
+    $element['properties']['title'] = $cardTitle;
+    $element['properties']['content'] = $cardContent;
+    
+    // Formdaki değerlerden güncellenebilir
+    if (isset($formData['title'])) {
+        $element['properties']['title'] = $formData['title'];
+        $cardTitle = $formData['title'];
     }
     
-    if (!isset($settings) || !is_object($settings) && !is_array($settings)) {
-        $settings = is_object($settings) ? $settings : collect([]);
+    if (isset($formData['content'])) {
+        $element['properties']['content'] = $formData['content'];
+        $cardContent = $formData['content'];
     }
     
-    if (!isset($originalValues) || !is_array($originalValues)) {
-        $originalValues = [];
-    }
-    
-    if (!isset($formData) || !is_array($formData)) {
-        $formData = [];
-    }
-    
-    if (!isset($temporaryImages) || !is_array($temporaryImages)) {
-        $temporaryImages = [];
-    }
-    
-    if (!isset($temporaryMultipleImages) || !is_array($temporaryMultipleImages)) {
-        $temporaryMultipleImages = [];
-    }
-    
-    if (!isset($multipleImagesArrays) || !is_array($multipleImagesArrays)) {
-        $multipleImagesArrays = [];
-    }
+    // Element dizisini kontrol et
+    $hasElements = isset($element['elements']) && is_array($element['elements']) && count($element['elements']) > 0;
 @endphp
 
-<div class="col-12">
+<div class="col-12" id="{{ $cardId }}_container">
     <div class="card mb-3 w-100">
         <div class="card-header">
             <div class="d-flex align-items-center justify-content-between">
@@ -54,13 +53,18 @@
                 <p>{{ $cardContent }}</p>
             @endif
             
-            @if(isset($element['elements']) && is_array($element['elements']))
+            <input type="hidden" name="elements[{{ $loop->index ?? 0 }}][id]" value="{{ $cardId }}">
+            <input type="hidden" name="elements[{{ $loop->index ?? 0 }}][type]" value="card">
+            <input type="hidden" name="elements[{{ $loop->index ?? 0 }}][name]" value="{{ $cardName }}">
+            <input type="hidden" name="elements[{{ $loop->index ?? 0 }}][label]" value="{{ $cardTitle }}">
+            <input type="hidden" name="elements[{{ $loop->index ?? 0 }}][properties][title]" value="{{ $cardTitle }}">
+            <input type="hidden" name="elements[{{ $loop->index ?? 0 }}][properties][content]" value="{{ $cardContent }}">
+            
+            @if($hasElements)
                 <div class="row">
-                    @foreach($element['elements'] as $cardElement)
+                    @foreach($element['elements'] as $index => $cardElement)
                         @php
-                            // Element tipini güvenli bir şekilde kontrol et
-                            $elementType = isset($cardElement['type']) ? $cardElement['type'] : 'text';
-                            // View'un var olup olmadığını kontrol et
+                            $elementType = $cardElement['type'] ?? 'text';
                             $viewPath = 'widgetmanagement::form-builder.partials.form-elements.' . $elementType;
                         @endphp
                         
@@ -69,19 +73,23 @@
                                 'element' => $cardElement,
                                 'values' => $values,
                                 'settings' => $settings,
-                                'originalValues' => $originalValues,
-                                'temporaryImages' => $temporaryImages,
-                                'temporaryMultipleImages' => $temporaryMultipleImages,
-                                'multipleImagesArrays' => $multipleImagesArrays,
+                                'originalValues' => $originalValues ?? [],
+                                'temporaryImages' => $temporaryImages ?? [],
+                                'temporaryMultipleImages' => $temporaryMultipleImages ?? [],
+                                'multipleImagesArrays' => $multipleImagesArrays ?? [],
                                 'formData' => $formData,
-                                'originalData' => $originalValues
+                                'loop' => (object)['index' => $index]
                             ])
                         @else
                             <div class="alert alert-warning">
-                                '{{ $elementType }}' türü için görünüm bulunamadı.
+                                <strong>{{ $elementType }}</strong> türü için görünüm bulunamadı.
                             </div>
                         @endif
                     @endforeach
+                </div>
+            @elseif(!$cardContent)
+                <div class="alert alert-info">
+                    Bu kart için içerik eklemek için "Kart İçeriği" alanını kullanabilirsiniz.
                 </div>
             @endif
         </div>

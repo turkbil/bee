@@ -134,9 +134,11 @@ class BaseComponent extends Component
                 
                 if (is_array($this->widget['item_schema'])) {
                     foreach ($this->widget['item_schema'] as $field) {
-                        if ($field['name'] === 'title') $hasTitle = true;
-                        if ($field['name'] === 'is_active') $hasActive = true;
-                        if ($field['name'] === 'unique_id') $hasUniqueId = true;
+                        if (isset($field['name'])) {
+                            if ($field['name'] === 'title') $hasTitle = true;
+                            if ($field['name'] === 'is_active') $hasActive = true;
+                            if ($field['name'] === 'unique_id') $hasUniqueId = true;
+                        }
                     }
                 }
                 
@@ -212,9 +214,11 @@ class BaseComponent extends Component
                 
                 if (is_array($this->widget['item_schema'])) {
                     foreach ($this->widget['item_schema'] as $field) {
-                        if ($field['name'] === 'title') $hasTitle = true;
-                        if ($field['name'] === 'is_active') $hasActive = true;
-                        if ($field['name'] === 'unique_id') $hasUniqueId = true;
+                        if (isset($field['name'])) {
+                            if ($field['name'] === 'title') $hasTitle = true;
+                            if ($field['name'] === 'is_active') $hasActive = true;
+                            if ($field['name'] === 'unique_id') $hasUniqueId = true;
+                        }
                     }
                 } else {
                     $this->widget['item_schema'] = [];
@@ -258,8 +262,10 @@ class BaseComponent extends Component
             
             if (is_array($this->widget['settings_schema'])) {
                 foreach ($this->widget['settings_schema'] as $field) {
-                    if ($field['name'] === 'widget.title') $hasTitle = true;
-                    if ($field['name'] === 'widget.unique_id') $hasUniqueId = true;
+                    if (isset($field['name'])) {
+                        if ($field['name'] === 'widget.title') $hasTitle = true;
+                        if ($field['name'] === 'widget.unique_id') $hasUniqueId = true;
+                    }
                 }
             } else {
                 $this->widget['settings_schema'] = [];

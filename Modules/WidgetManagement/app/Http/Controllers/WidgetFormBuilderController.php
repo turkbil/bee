@@ -166,15 +166,9 @@ class WidgetFormBuilderController extends Controller
                 'widget ' . ($schemaType === 'settings_schema' ? 'ayar' : 'içerik') . ' form yapısı güncellendi'
             );
             
-            return response()->json([
-                'success' => true,
-                'message' => 'Widget form yapısı başarıyla kaydedildi.'
-            ]);
+            return response()->json(['success' => true, 'message' => 'Form yapısı kaydedildi']);
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'error' => 'Widget form yapısı kaydedilirken bir hata oluştu: ' . $e->getMessage()
-            ]);
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
         }
     }
 
@@ -238,6 +232,78 @@ class WidgetFormBuilderController extends Controller
                 'type' => 'row',
                 'properties' => []
             ];
+        }
+        
+        // Card ve tab_group için özel işlem
+        if ($field['type'] === 'card') {
+            $element = [
+                'type' => 'card',
+                'label' => $field['label'] ?? 'Kart',
+                'properties' => [
+                    'title' => $field['label'] ?? ($field['properties']['title'] ?? 'Kart'),
+                    'content' => $field['properties']['content'] ?? null
+                ]
+            ];
+            
+            // Eğer iç elemanlar varsa ekle
+            if (isset($field['elements']) && is_array($field['elements'])) {
+                $element['elements'] = [];
+                foreach ($field['elements'] as $childField) {
+                    $childElement = $this->createElementFromField($childField);
+                    if ($childElement) {
+                        $element['elements'][] = $childElement;
+                    }
+                }
+            }
+            
+            return $element;
+        }
+        
+        if ($field['type'] === 'tab_group') {
+            $element = [
+                'type' => 'tab_group',
+                'label' => $field['label'] ?? 'Sekme Grubu',
+                'properties' => [
+                    'tabs' => []
+                ]
+            ];
+            
+            // Sekme verilerini işle
+            if (isset($field['properties']['tabs']) && is_array($field['properties']['tabs'])) {
+                foreach ($field['properties']['tabs'] as $tab) {
+                    $tabData = [
+                        'title' => $tab['title'] ?? 'Sekme',
+                        'elements' => []
+                    ];
+                    
+                    if (isset($tab['icon'])) {
+                        $tabData['icon'] = $tab['icon'];
+                    }
+                    
+                    if (isset($tab['content'])) {
+                        $tabData['content'] = $tab['content'];
+                    }
+                    
+                    if (isset($tab['elements']) && is_array($tab['elements'])) {
+                        foreach ($tab['elements'] as $childField) {
+                            $childElement = $this->createElementFromField($childField);
+                            if ($childElement) {
+                                $tabData['elements'][] = $childElement;
+                            }
+                        }
+                    }
+                    
+                    $element['properties']['tabs'][] = $tabData;
+                }
+            } else {
+                // Varsayılan sekme oluştur
+                $element['properties']['tabs'][] = [
+                    'title' => 'Varsayılan Sekme',
+                    'elements' => []
+                ];
+            }
+            
+            return $element;
         }
 
         $element = [
@@ -327,6 +393,72 @@ class WidgetFormBuilderController extends Controller
     {
         if (!isset($element['type'])) {
             return null;
+        }
+
+        // Card tipini işle
+        if ($element['type'] === 'card') {
+            $field = [
+                'type' => 'card',
+                'label' => $element['label'] ?? 'Kart',
+                'properties' => []
+            ];
+            
+            // Kart özelliklerini ekle
+            if (isset($element['properties']) && is_array($element['properties'])) {
+                // Başlık ve içerik bilgilerini özellikle işle
+                $field['properties'] = $element['properties'];
+                
+                // Başlık eğer varsa, field label'a da ata
+                if (isset($element['properties']['title']) && !empty($element['properties']['title'])) {
+                    $field['label'] = $element['properties']['title'];
+                }
+            }
+            
+            // İç elemanları işle
+            if (isset($element['elements']) && is_array($element['elements'])) {
+                $field['elements'] = [];
+                foreach ($element['elements'] as $childElement) {
+                    $childField = $this->createFieldFromElement($childElement);
+                    if ($childField) {
+                        $field['elements'][] = $childField;
+                    }
+                }
+            }
+            
+            return $field;
+        }
+        
+        // Tab group tipini işle
+        if ($element['type'] === 'tab_group') {
+            $field = [
+                'type' => 'tab_group',
+                'label' => $element['label'] ?? 'Sekme Grubu',
+                'properties' => []
+            ];
+            
+            // Sekme özelliklerini ekle
+            if (isset($element['properties']) && is_array($element['properties'])) {
+                $field['properties'] = $element['properties'];
+                
+                // Sekme içeriklerini işle
+                if (isset($field['properties']['tabs']) && is_array($field['properties']['tabs'])) {
+                    foreach ($field['properties']['tabs'] as $tabIndex => $tab) {
+                        // Sekme iç elemanlarını işle
+                        if (isset($tab['elements']) && is_array($tab['elements'])) {
+                            $tabElements = [];
+                            foreach ($tab['elements'] as $childElement) {
+                                $childField = $this->createFieldFromElement($childElement);
+                                if ($childField) {
+                                    $tabElements[] = $childField;
+                                }
+                            }
+                            $field['properties']['tabs'][$tabIndex]['elements'] = $tabElements;
+                        }
+                    }
+                }
+            }
+            
+            return $field;
         }
 
         $properties = $element['properties'] ?? [];

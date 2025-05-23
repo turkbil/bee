@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\WidgetManagement\app\Http\Livewire\WidgetComponent;
 use Modules\WidgetManagement\app\Http\Livewire\WidgetGalleryComponent;
 use Modules\WidgetManagement\app\Http\Livewire\WidgetManageComponent;
+use Modules\WidgetManagement\app\Http\Livewire\WidgetCodeEditorComponent;
 use Modules\WidgetManagement\app\Http\Livewire\WidgetItemComponent;
 use Modules\WidgetManagement\app\Http\Livewire\WidgetItemManageComponent;
 use Modules\WidgetManagement\app\Http\Livewire\WidgetSettingsComponent;
@@ -37,6 +38,11 @@ Route::middleware(['web', 'auth', 'tenant'])
                 Route::get('/manage/{id?}', WidgetManageComponent::class)
                     ->middleware(['role:root'])
                     ->name('manage');
+                
+                // Widget Kod Editörü - SADECE ROOT
+                Route::get('/code-editor/{id}', WidgetCodeEditorComponent::class)
+                    ->middleware(['role:root'])
+                    ->name('code-editor');
                 
                 // Widget İçerik Yönetimi (Görüntüleme)
                 Route::get('/items/{tenantWidgetId}', WidgetItemComponent::class)

@@ -60,6 +60,11 @@
                                 </a>
                             </li>
                             <li class="nav-item ms-auto">
+                                <a href="#" class="nav-link" title="Kodu Formatla" onclick="editorActions.formatCode(); return false;">
+                                    <i class="fas fa-indent"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
                                 <a href="#" class="nav-link" title="Bul/Değiştir" onclick="editorActions.openFind(); return false;">
                                     <i class="fas fa-search"></i>
                                 </a>
@@ -67,16 +72,6 @@
                             <li class="nav-item">
                                 <a href="#" class="nav-link" title="Tümünü Katla" onclick="editorActions.toggleFoldAll(); return false;">
                                     <i class="fas fa-compress-alt"></i>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="#" class="nav-link" title="Kod Önerileri" onclick="editorActions.toggleSuggestions(); return false;">
-                                    <i class="fas fa-lightbulb"></i>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="#" class="nav-link" title="Kodu Formatla" onclick="editorActions.formatCode(); return false;">
-                                    <i class="fas fa-magic"></i>
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -204,69 +199,158 @@
             $variables = $this->getAvailableVariables();
         @endphp
         
-        @if(!empty($variables))
         <div class="row my-4">
-            @if(isset($variables['settings']))
+            @if(isset($variables['settings']) || isset($variables['items']))
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title mb-0">
-                            <i class="fas fa-sliders-h me-2"></i>
-                            Özelleştirme Değişkenleri
+                            <i class="fas fa-code me-2"></i>
+                            Handlebars Değişkenleri
                         </h4>
                     </div>
                     <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-sm mb-0">
+                        @if(isset($variables['settings']))
+                        <h6 class="text-primary mb-2">
+                            <i class="fas fa-sliders-h me-1"></i>
+                            Özelleştirme Değişkenleri
+                        </h6>
+                        <div class="table-responsive mb-4">
+                            <table class="table table-sm mb-0 variable-table">
                                 @foreach($variables['settings'] as $var)
                                 <tr>
-                                    <td>
-                                        <code class="bg-dark text-light px-2 py-1 rounded">&#123;&#123; {{ $var['name'] }} &#125;&#125;</code>
+                                    <td class="variable-code" data-copy="&#123;&#123; {{ $var['name'] }} &#125;&#125;">
+                                        <code class="copyable-code">&#123;&#123; {{ $var['name'] }} &#125;&#125;</code>
                                     </td>
                                     <td class="text-muted">{{ $var['label'] }}</td>
                                 </tr>
                                 @endforeach
                             </table>
                         </div>
+                        @endif
+                        
+                        @if(isset($variables['items']))
+                        <h6 class="text-success mb-2">
+                            <i class="fas fa-layer-group me-1"></i>
+                            İçerik Değişkenleri
+                        </h6>
+                        <div class="mb-2">
+                            <code class="copyable-code" data-copy="&#123;&#123; #each items &#125;&#125;">&#123;&#123; #each items &#125;&#125;</code>
+                        </div>
+                        <div class="table-responsive mb-2">
+                            <table class="table table-sm mb-0 variable-table">
+                                @foreach($variables['items'] as $var)
+                                <tr>
+                                    <td class="variable-code" data-copy="&#123;&#123; {{ $var['name'] }} &#125;&#125;">
+                                        <code class="copyable-code">&#123;&#123; {{ $var['name'] }} &#125;&#125;</code>
+                                    </td>
+                                    <td class="text-muted">{{ $var['label'] }}</td>
+                                </tr>
+                                @endforeach
+                            </table>
+                        </div>
+                        <div class="mb-3">
+                            <code class="copyable-code" data-copy="&#123;&#123; /each &#125;&#125;">&#123;&#123; /each &#125;&#125;</code>
+                        </div>
+                        @endif
                     </div>
                 </div>
             </div>
             @endif
             
-            @if(isset($variables['items']))
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title mb-0">
-                            <i class="fas fa-layer-group me-2"></i>
-                            İçerik Değişkenleri
+                            <i class="fas fa-magic me-2"></i>
+                            Handlebars Yardımcıları
                         </h4>
                     </div>
                     <div class="card-body">
-                        <div class="mb-2">
-                            <code class="bg-dark text-light px-2 py-1 rounded">&#123;&#123; #each items &#125;&#125;</code>
-                        </div>
-                        <div class="table-responsive">
-                            <table class="table table-sm mb-0">
-                                @foreach($variables['items'] as $var)
+                        <h6 class="text-warning mb-2">
+                            <i class="fas fa-question-circle me-1"></i>
+                            Koşul Yapıları
+                        </h6>
+                        <div class="table-responsive mb-4">
+                            <table class="table table-sm mb-0 variable-table">
                                 <tr>
-                                    <td>
-                                        <code class="bg-dark text-light px-2 py-1 rounded">&#123;&#123; {{ $var['name'] }} &#125;&#125;</code>
+                                    <td class="variable-code" data-copy="&#123;&#123; #if koşul &#125;&#125;...&#123;&#123; /if &#125;&#125;">
+                                        <code class="copyable-code">&#123;&#123; #if koşul &#125;&#125;</code>
                                     </td>
-                                    <td class="text-muted">{{ $var['label'] }}</td>
+                                    <td class="text-muted">Koşullu görüntüleme</td>
                                 </tr>
-                                @endforeach
+                                <tr>
+                                    <td class="variable-code" data-copy="&#123;&#123; #unless koşul &#125;&#125;...&#123;&#123; /unless &#125;&#125;">
+                                        <code class="copyable-code">&#123;&#123; #unless koşul &#125;&#125;</code>
+                                    </td>
+                                    <td class="text-muted">Tersi koşul</td>
+                                </tr>
+                                <tr>
+                                    <td class="variable-code" data-copy="&#123;&#123; else &#125;&#125;">
+                                        <code class="copyable-code">&#123;&#123; else &#125;&#125;</code>
+                                    </td>
+                                    <td class="text-muted">Alternatif</td>
+                                </tr>
                             </table>
                         </div>
-                        <div class="mt-2">
-                            <code class="bg-dark text-light px-2 py-1 rounded">&#123;&#123; /each &#125;&#125;</code>
+                        
+                        <h6 class="text-info mb-2">
+                            <i class="fas fa-repeat me-1"></i>
+                            Döngü Yapıları
+                        </h6>
+                        <div class="table-responsive mb-4">
+                            <table class="table table-sm mb-0 variable-table">
+                                <tr>
+                                    <td class="variable-code" data-copy="&#123;&#123; #each liste &#125;&#125;...&#123;&#123; /each &#125;&#125;">
+                                        <code class="copyable-code">&#123;&#123; #each liste &#125;&#125;</code>
+                                    </td>
+                                    <td class="text-muted">Liste döngüsü</td>
+                                </tr>
+                                <tr>
+                                    <td class="variable-code" data-copy="&#123;&#123; @index &#125;&#125;">
+                                        <code class="copyable-code">&#123;&#123; @index &#125;&#125;</code>
+                                    </td>
+                                    <td class="text-muted">Döngü indeksi</td>
+                                </tr>
+                                <tr>
+                                    <td class="variable-code" data-copy="&#123;&#123; @first &#125;&#125;">
+                                        <code class="copyable-code">&#123;&#123; @first &#125;&#125;</code>
+                                    </td>
+                                    <td class="text-muted">İlk eleman</td>
+                                </tr>
+                                <tr>
+                                    <td class="variable-code" data-copy="&#123;&#123; @last &#125;&#125;">
+                                        <code class="copyable-code">&#123;&#123; @last &#125;&#125;</code>
+                                    </td>
+                                    <td class="text-muted">Son eleman</td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <h6 class="text-secondary mb-2">
+                            <i class="fas fa-object-group me-1"></i>
+                            Diğer Yardımcılar
+                        </h6>
+                        <div class="table-responsive">
+                            <table class="table table-sm mb-0 variable-table">
+                                <tr>
+                                    <td class="variable-code" data-copy="&#123;&#123; #with nesne &#125;&#125;...&#123;&#123; /with &#125;&#125;">
+                                        <code class="copyable-code">&#123;&#123; #with nesne &#125;&#125;</code>
+                                    </td>
+                                    <td class="text-muted">Nesne bağlamı</td>
+                                </tr>
+                                <tr>
+                                    <td class="variable-code" data-copy="&#123;&#123;!-- yorum --&#125;&#125;">
+                                        <code class="copyable-code">&#123;&#123;!-- yorum --&#125;&#125;</code>
+                                    </td>
+                                    <td class="text-muted">Yorum satırı</td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
-            @endif
         </div>
-        @endif
         
         <div class="card mt-4">
             <div class="card-footer">
@@ -290,6 +374,46 @@
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('admin/libs/monaco-custom/css/monaco-custom.css') }}">
+<style>
+.copyable-code {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: #2d2d30 !important;
+    color: #cccccc !important;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    position: relative;
+}
+
+.copyable-code:hover {
+    background-color: #094771 !important;
+    color: #ffffff !important;
+}
+
+.variable-table tr {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.variable-table tr:hover {
+    background-color: rgba(9, 71, 113, 0.1);
+}
+
+.copy-feedback {
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #28a745;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    z-index: 1000;
+    pointer-events: none;
+}
+</style>
 @endpush
 
 @push('scripts')
@@ -301,6 +425,73 @@ document.addEventListener('DOMContentLoaded', function() {
             MonacoCustomEditor.init(@json($widget), @json($this->getAvailableVariables()));
         }
     }, 200);
+
+    // Kopyalama işlevi
+    function copyToClipboard(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+            return navigator.clipboard.writeText(text);
+        } else {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-999999px";
+            textArea.style.top = "-999999px";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            return new Promise((resolve, reject) => {
+                if (document.execCommand('copy')) {
+                    textArea.remove();
+                    resolve();
+                } else {
+                    textArea.remove();
+                    reject();
+                }
+            });
+        }
+    }
+
+    function showCopyFeedback(element) {
+        const feedback = document.createElement('div');
+        feedback.className = 'copy-feedback';
+        feedback.textContent = 'Kopyalandı!';
+        element.style.position = 'relative';
+        element.appendChild(feedback);
+        
+        setTimeout(() => {
+            if (feedback.parentNode) {
+                feedback.parentNode.removeChild(feedback);
+            }
+        }, 1500);
+    }
+
+    // Tıklanabilir kod elemanları
+    document.addEventListener('click', function(e) {
+        const copyableCode = e.target.closest('.copyable-code');
+        const variableRow = e.target.closest('.variable-code');
+        
+        if (copyableCode) {
+            e.preventDefault();
+            const copyText = copyableCode.getAttribute('data-copy') || copyableCode.textContent;
+            const cleanText = copyText.replace(/&#123;/g, '{').replace(/&#125;/g, '}');
+            
+            copyToClipboard(cleanText).then(() => {
+                showCopyFeedback(copyableCode);
+            }).catch(() => {
+                console.error('Kopyalama başarısız');
+            });
+        } else if (variableRow) {
+            e.preventDefault();
+            const copyText = variableRow.getAttribute('data-copy');
+            const cleanText = copyText.replace(/&#123;/g, '{').replace(/&#125;/g, '}');
+            
+            copyToClipboard(cleanText).then(() => {
+                showCopyFeedback(variableRow);
+            }).catch(() => {
+                console.error('Kopyalama başarısız');
+            });
+        }
+    });
 });
 
 window.updateWidgetEditors = function(newData) {

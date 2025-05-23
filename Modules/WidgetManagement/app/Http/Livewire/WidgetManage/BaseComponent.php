@@ -7,24 +7,22 @@ use Livewire\WithFileUploads;
 use Livewire\Attributes\Layout;
 use Modules\WidgetManagement\app\Models\Widget;
 use Modules\WidgetManagement\app\Models\WidgetCategory;
-use Modules\WidgetManagement\app\Http\Livewire\Traits\WithImageUpload;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 
 #[Layout('admin.layout')]
 class BaseComponent extends Component
 {
-    use WithFileUploads, WithImageUpload;
-    use DesignTrait, ItemsTrait, SettingsTrait, ImageHandlerTrait;
+    use WithFileUploads;
     
     public $widgetId;
-    public $formMode = 'base'; // base, items, settings, design, preview
+    public $isNewWidget = true;
     public $thumbnail;
-    public $temporaryImages = [];
-    public $temporaryMultipleImages = [];
     public $imagePreview = null;
     public $isSubmitting = false;
     public $categories = [];
+    public $currentMode = 'basic';
+    public $isLoading = false;
     
     public $widget = [
         'name' => '',
@@ -32,7 +30,6 @@ class BaseComponent extends Component
         'description' => '',
         'widget_category_id' => null,
         'type' => 'static',
-        'module_ids' => [],
         'content_html' => '',
         'content_css' => '',
         'content_js' => '',
@@ -52,28 +49,16 @@ class BaseComponent extends Component
         'widget.description' => 'nullable|max:1000',
         'widget.widget_category_id' => 'nullable|exists:widget_categories,widget_category_id',
         'widget.type' => 'required|in:static,dynamic,module,file',
-        'widget.module_ids' => 'nullable|array',
         'widget.content_html' => 'nullable',
         'widget.content_css' => 'nullable',
         'widget.content_js' => 'nullable',
         'widget.has_items' => 'boolean',
-        'widget.item_schema' => 'nullable|array',
-        'widget.settings_schema' => 'nullable|array',
         'widget.is_active' => 'boolean',
         'widget.is_core' => 'boolean',
         'widget.file_path' => 'nullable|string|max:255',
-        'thumbnail' => 'nullable|image|max:3072', // 3MB = 3072KB
-        'temporaryImages.*' => 'nullable|image|max:3072',
-        'temporaryMultipleImages.*' => 'nullable|image|max:3072',
+        'thumbnail' => 'nullable|image|max:3072',
     ];
     
-    // Lint hatalarını düzeltmek için özel değişkenler
-    protected $casts = [
-        'widget.item_schema' => 'array',
-        'widget.settings_schema' => 'array',
-    ];
-
-    // Özel doğrulama mesajları
     protected $messages = [
         'widget.name.required' => 'Widget adı zorunludur.',
         'widget.name.min' => 'Widget adı en az 3 karakter olmalıdır.',
@@ -88,20 +73,16 @@ class BaseComponent extends Component
         'widget.file_path.max' => 'Dosya yolu en fazla 255 karakter olabilir.',
         'thumbnail.image' => 'Yüklenen dosya bir görsel olmalıdır.',
         'thumbnail.max' => 'Görsel boyutu en fazla 3MB olabilir.',
-        'temporaryImages.*.image' => 'Yüklenen dosya bir görsel olmalıdır.',
-        'temporaryImages.*.max' => 'Görsel boyutu en fazla 3MB olabilir.',
-        'temporaryMultipleImages.*.image' => 'Yüklenen dosya bir görsel olmalıdır.',
-        'temporaryMultipleImages.*.max' => 'Görsel boyutu en fazla 3MB olabilir.',
     ];
     
     public function mount($id = null)
     {
-        // Kategorileri yükle
         $this->categories = WidgetCategory::where('is_active', true)
             ->orderBy('title')
             ->get();
             
         $this->widgetId = $id;
+        $this->isNewWidget = !$id;
         
         if ($id) {
             $widget = Widget::findOrFail($id);
@@ -112,7 +93,6 @@ class BaseComponent extends Component
                 'description' => $widget->description,
                 'widget_category_id' => $widget->widget_category_id,
                 'type' => $widget->type,
-                'module_ids' => $widget->module_ids ?? [],
                 'content_html' => $widget->content_html,
                 'content_css' => $widget->content_css,
                 'content_js' => $widget->content_js,
@@ -126,55 +106,6 @@ class BaseComponent extends Component
                 'file_path' => $widget->file_path
             ];
             
-            // 'title' ve 'is_active' her zaman item_schema'da olmalı
-            if ($widget->has_items) {
-                $hasTitle = false;
-                $hasActive = false;
-                $hasUniqueId = false;
-                
-                if (is_array($this->widget['item_schema'])) {
-                    foreach ($this->widget['item_schema'] as $field) {
-                        if (isset($field['name'])) {
-                            if ($field['name'] === 'title') $hasTitle = true;
-                            if ($field['name'] === 'is_active') $hasActive = true;
-                            if ($field['name'] === 'unique_id') $hasUniqueId = true;
-                        }
-                    }
-                }
-                
-                if (!$hasTitle) {
-                    $this->widget['item_schema'] = array_merge([[
-                        'name' => 'title',
-                        'label' => 'Başlık',
-                        'type' => 'text',
-                        'required' => true,
-                        'system' => true
-                    ]], $this->widget['item_schema'] ?? []);
-                }
-                
-                if (!$hasActive) {
-                    $this->widget['item_schema'][] = [
-                        'name' => 'is_active',
-                        'label' => 'Aktif',
-                        'type' => 'checkbox',
-                        'required' => false,
-                        'system' => true
-                    ];
-                }
-                
-                if (!$hasUniqueId) {
-                    $this->widget['item_schema'][] = [
-                        'name' => 'unique_id',
-                        'label' => 'Benzersiz ID',
-                        'type' => 'text',
-                        'required' => false,
-                        'system' => true,
-                        'hidden' => true
-                    ];
-                }
-            }
-            
-            // Mevcut resim için önizleme ayarla
             if ($widget->thumbnail) {
                 $this->imagePreview = $widget->getThumbnailUrl();
             }
@@ -183,129 +114,158 @@ class BaseComponent extends Component
     
     public function updatedWidgetName()
     {
-        // Widget adı değiştiğinde otomatik olarak slug oluştur (zaten varsa değiştirme)
         if (empty($this->widget['slug'])) {
             $this->widget['slug'] = Str::slug($this->widget['name']);
         }
     }
     
-    public function setFormMode($mode)
+    public function updatedThumbnail()
     {
-        $this->formMode = $mode;
+        $this->validateOnly('thumbnail', [
+            'thumbnail' => 'image|max:3072'
+        ]);
+        
+        if ($this->thumbnail) {
+            $this->imagePreview = $this->thumbnail->temporaryUrl();
+        }
     }
     
-    public function save()
+    public function setMode($mode)
+    {
+        $this->isLoading = true;
+        $this->currentMode = $mode;
+        
+        $this->dispatch('$refresh');
+        
+        $this->js('setTimeout(() => { $wire.set("isLoading", false); }, 300);');
+    }
+    
+    public function addCssFile()
+    {
+        $cssFiles = $this->widget['css_files'] ?? [];
+        $cssFiles[] = '';
+        $this->widget['css_files'] = $cssFiles;
+    }
+
+    public function removeCssFile($index)
+    {
+        $cssFiles = $this->widget['css_files'];
+        unset($cssFiles[$index]);
+        $this->widget['css_files'] = array_values($cssFiles);
+    }
+
+    public function addJsFile()
+    {
+        $jsFiles = $this->widget['js_files'] ?? [];
+        $jsFiles[] = '';
+        $this->widget['js_files'] = $jsFiles;
+    }
+
+    public function removeJsFile($index)
+    {
+        $jsFiles = $this->widget['js_files'];
+        unset($jsFiles[$index]);
+        $this->widget['js_files'] = array_values($jsFiles);
+    }
+    
+    public function getAvailableVariables()
+    {
+        $variables = [];
+        
+        if (!empty($this->widget['settings_schema'])) {
+            foreach ($this->widget['settings_schema'] as $field) {
+                if (isset($field['name']) && !empty($field['name']) && 
+                    (!isset($field['hidden']) || !$field['hidden']) &&
+                    (!isset($field['type']) || $field['type'] !== 'row')) {
+                    $variables['settings'][] = [
+                        'name' => $field['name'],
+                        'label' => $field['label'] ?? 'Tanımsız',
+                        'type' => $field['type'] ?? 'text'
+                    ];
+                }
+            }
+        }
+        
+        if ($this->widget['has_items'] && !empty($this->widget['item_schema'])) {
+            foreach ($this->widget['item_schema'] as $field) {
+                if (isset($field['name']) && !empty($field['name']) && 
+                    (!isset($field['hidden']) || !$field['hidden']) &&
+                    (!isset($field['type']) || $field['type'] !== 'row')) {
+                    $variables['items'][] = [
+                        'name' => $field['name'],
+                        'label' => $field['label'] ?? 'Tanımsız',
+                        'type' => $field['type'] ?? 'text'
+                    ];
+                }
+            }
+        }
+        
+        return $variables;
+    }
+    
+    public function saveBasicInfo()
     {
         $this->isSubmitting = true;
         
-        // Widget adından slug oluştur (kaydetmeden önce)
         if (empty($this->widget['slug'])) {
             $this->widget['slug'] = Str::slug($this->widget['name']);
         }
         
-        $this->validate();
+        $this->validate([
+            'widget.name' => 'required|min:3|max:255',
+            'widget.slug' => 'required|regex:/^[a-z0-9\-_]+$/i|max:255',
+            'widget.description' => 'nullable|max:1000',
+            'widget.widget_category_id' => 'nullable|exists:widget_categories,widget_category_id',
+            'widget.type' => 'required|in:static,dynamic,module,file',
+            'widget.has_items' => 'boolean',
+            'widget.is_active' => 'boolean',
+            'widget.is_core' => 'boolean',
+            'widget.file_path' => 'nullable|string|max:255',
+            'thumbnail' => 'nullable|image|max:3072',
+        ]);
         
         try {
-            // Her zaman title ve is_active alanlarını ekleyin (itemSchema için)
-            if ($this->widget['has_items']) {
-                $hasTitle = false;
-                $hasActive = false;
-                $hasUniqueId = false;
-                
-                if (is_array($this->widget['item_schema'])) {
-                    foreach ($this->widget['item_schema'] as $field) {
-                        if (isset($field['name'])) {
-                            if ($field['name'] === 'title') $hasTitle = true;
-                            if ($field['name'] === 'is_active') $hasActive = true;
-                            if ($field['name'] === 'unique_id') $hasUniqueId = true;
-                        }
-                    }
-                } else {
-                    $this->widget['item_schema'] = [];
-                }
-                
-                if (!$hasTitle) {
-                    $this->widget['item_schema'] = array_merge([[
-                        'name' => 'title',
-                        'label' => 'Başlık',
-                        'type' => 'text',
-                        'required' => true,
-                        'system' => true
-                    ]], $this->widget['item_schema']);
-                }
-                
-                if (!$hasActive) {
-                    $this->widget['item_schema'][] = [
-                        'name' => 'is_active',
-                        'label' => 'Aktif',
-                        'type' => 'checkbox',
-                        'required' => false,
-                        'system' => true
-                    ];
-                }
-                
-                if (!$hasUniqueId) {
-                    $this->widget['item_schema'][] = [
-                        'name' => 'unique_id',
-                        'label' => 'Benzersiz ID',
-                        'type' => 'text',
-                        'required' => false,
-                        'system' => true,
-                        'hidden' => true
-                    ];
-                }
-            }
-            
-            // Settings Schema'ya title ekle
-            $hasTitle = false;
-            $hasUniqueId = false;
-            
-            if (is_array($this->widget['settings_schema'])) {
-                foreach ($this->widget['settings_schema'] as $field) {
-                    if (isset($field['name'])) {
-                        if ($field['name'] === 'widget.title') $hasTitle = true;
-                        if ($field['name'] === 'widget.unique_id') $hasUniqueId = true;
-                    }
-                }
-            } else {
-                $this->widget['settings_schema'] = [];
-            }
-            
-            if (!$hasTitle) {
-                $this->widget['settings_schema'] = array_merge([[
-                    'name' => 'widget.title',
-                    'label' => 'Başlık',
-                    'type' => 'text',
-                    'required' => true,
-                    'system' => true
-                ]], $this->widget['settings_schema']);
-            }
-            
-            if (!$hasUniqueId) {
-                $this->widget['settings_schema'][] = [
-                    'name' => 'widget.unique_id',
-                    'label' => 'Benzersiz ID',
-                    'type' => 'text',
-                    'required' => false,
-                    'system' => true,
-                    'hidden' => true
-                ];
-            }
-            
             if ($this->widgetId) {
                 $widget = Widget::findOrFail($this->widgetId);
-                $widget->update($this->widget);
+                $widget->update([
+                    'name' => $this->widget['name'],
+                    'slug' => $this->widget['slug'],
+                    'description' => $this->widget['description'],
+                    'widget_category_id' => $this->widget['widget_category_id'],
+                    'type' => $this->widget['type'],
+                    'has_items' => $this->widget['has_items'],
+                    'is_active' => $this->widget['is_active'],
+                    'is_core' => $this->widget['is_core'],
+                    'file_path' => $this->widget['file_path'],
+                ]);
             } else {
-                $widget = Widget::create($this->widget);
+                $widget = Widget::create([
+                    'name' => $this->widget['name'],
+                    'slug' => $this->widget['slug'],
+                    'description' => $this->widget['description'],
+                    'widget_category_id' => $this->widget['widget_category_id'],
+                    'type' => $this->widget['type'],
+                    'has_items' => $this->widget['has_items'],
+                    'is_active' => $this->widget['is_active'],
+                    'is_core' => $this->widget['is_core'],
+                    'file_path' => $this->widget['file_path'],
+                    'content_html' => '',
+                    'content_css' => '',
+                    'content_js' => '',
+                    'css_files' => [],
+                    'js_files' => [],
+                    'item_schema' => [],
+                    'settings_schema' => []
+                ]);
+                
                 $this->widgetId = $widget->id;
+                $this->isNewWidget = false;
             }
             
-            // Thumbnail yükleme - SettingManagement ile uyumlu şekilde
             if ($this->thumbnail) {
                 $tenantId = is_tenant() ? tenant_id() : 1;
                 $filename = 'image-' . $widget->slug . '-' . Str::random(6) . '.' . $this->thumbnail->extension();
                 
-                // SettingManagement'taki TenantStorageHelper ile yükleme yap
                 try {
                     $path = \Modules\SettingManagement\App\Helpers\TenantStorageHelper::storeTenantFile(
                         $this->thumbnail,
@@ -317,46 +277,22 @@ class BaseComponent extends Component
                     $widget->update([
                         'thumbnail' => $path
                     ]);
+                    
+                    $this->thumbnail = null;
                 } catch (\Exception $e) {
                     Log::error('Thumbnail yükleme hatası: ' . $e->getMessage());
                 }
             }
             
-            // Çoklu resim yükleme işlemi - SettingManagement ile uyumlu şekilde
-            if (!empty($this->temporaryMultipleImages)) {
-                try {
-                    foreach ($this->temporaryMultipleImages as $index => $image) {
-                        if ($image) {
-                            // Tenant id belirleme
-                            $tenantId = is_tenant() ? tenant_id() : 1;
-                            
-                            // Dosya adını oluştur
-                            $fileName = 'image-' . $widget->slug . '-' . time() . '-' . Str::random(6) . '.' . $image->getClientOriginalExtension();
-                            
-                            // SettingManagement'taki TenantStorageHelper ile yükleme yap
-                            $imagePath = \Modules\SettingManagement\App\Helpers\TenantStorageHelper::storeTenantFile(
-                                $image,
-                                "widgets/images",
-                                $fileName,
-                                $tenantId
-                            );
-                            
-                            // Burada çoklu resim bilgilerini widget'a ekleyebilirsiniz
-                            // Örneğin: $widget->images[] = $imagePath;
-                        }
-                    }
-                } catch (\Exception $e) {
-                    Log::error('Çoklu resim yükleme hatası: ' . $e->getMessage());
-                }
-            }
-            
             $this->dispatch('toast', [
                 'title' => 'Başarılı!',
-                'message' => 'Widget kaydedildi.',
+                'message' => 'Widget temel bilgileri kaydedildi.',
                 'type' => 'success'
             ]);
             
-            return redirect()->route('admin.widgetmanagement.index');
+            if ($this->isNewWidget) {
+                return redirect()->route('admin.widgetmanagement.manage', $widget->id);
+            }
         } catch (\Exception $e) {
             $this->dispatch('toast', [
                 'title' => 'Hata!',
@@ -368,21 +304,44 @@ class BaseComponent extends Component
         $this->isSubmitting = false;
     }
     
-    public function render()
+    public function saveDesign()
     {
+        $this->isSubmitting = true;
+        
+        $this->validate([
+            'widget.content_html' => 'nullable',
+            'widget.content_css' => 'nullable',
+            'widget.content_js' => 'nullable',
+        ]);
+        
         try {
-            // Module.manager servisini güvenli bir şekilde almaya çalış
-            $modules = collect();
-            if (app()->bound('module.manager')) {
-                $modules = app('module.manager')->all();
-            }
+            $widget = Widget::findOrFail($this->widgetId);
+            $widget->update([
+                'content_html' => $this->widget['content_html'],
+                'content_css' => $this->widget['content_css'],
+                'content_js' => $this->widget['content_js'],
+                'css_files' => $this->widget['css_files'],
+                'js_files' => $this->widget['js_files'],
+            ]);
+            
+            $this->dispatch('toast', [
+                'title' => 'Başarılı!',
+                'message' => 'Widget tasarımı kaydedildi.',
+                'type' => 'success'
+            ]);
         } catch (\Exception $e) {
-            // Hata oluşursa boş bir koleksiyon kullan
-            $modules = collect();
+            $this->dispatch('toast', [
+                'title' => 'Hata!',
+                'message' => 'Widget tasarımı kaydedilirken bir hata oluştu: ' . $e->getMessage(),
+                'type' => 'error'
+            ]);
         }
         
-        return view('widgetmanagement::livewire.widget-manage.index', [
-            'modules' => $modules
-        ]);
+        $this->isSubmitting = false;
+    }
+    
+    public function render()
+    {
+        return view('widgetmanagement::livewire.widget-manage.index');
     }
 }

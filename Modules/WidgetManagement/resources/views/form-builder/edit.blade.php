@@ -1,3 +1,5 @@
+@include('widgetmanagement::form-builder.styles')
+
 <div id="widget-form-builder-app">
     <div class="studio-header">
         <div class="header-left">

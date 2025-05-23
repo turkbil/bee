@@ -81,6 +81,47 @@
     background-color: #094771;
 }
 
+.copyable-code {
+    cursor: pointer;
+    transition: none;
+    padding: 4px 8px;
+    font-size: 12px;
+    position: relative;
+}
+
+.copyable-code:hover {
+    opacity: 0.8;
+}
+
+.variable-table tr {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.variable-table tr:hover {
+    opacity: 0.8;
+}
+
+.copy-feedback {
+    position: absolute;
+    top: 0;
+    left: -80px;
+    width: auto;
+    padding: 2px 6px;
+    font-size: 11px;
+    z-index: 1000;
+    pointer-events: none;
+    background-color: #066fd1;
+    color: #ffffff;
+    border: none;
+    transition: none !important;
+    animation: none !important;
+    text-align: left;
+    display: block;
+    opacity: 1 !important;
+}
+
+
 @media (max-width: 768px) {
     .nav-tabs .nav-link {
         padding: 0.5rem 0.25rem;

@@ -492,60 +492,66 @@ document.addEventListener("DOMContentLoaded", function() {
       });
     });
 
-    // Element eklendikten sonra widget prefix'ini al ve ayarla
-    setTimeout(() => {
-      const widgetId = document.getElementById('widget-id')?.value;
-      if (widgetId && formElement.properties && formElement.properties.name) {
-        // Varsayılan isimlendirmeyi kontrol et (_field ile bitenler)
-        const isDefaultName = formElement.properties.name.endsWith('_field');
-        if (isDefaultName) {
-          fetch(`/admin/widgetmanagement/form-builder/${widgetId}/load`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-            }
-          })
-          .then(response => response.json())
-          .then(data => {
-            if (data.success && data.layout) {
-              // Widget prefix'ini doğrudan al
-              let widgetPrefix = 'widget';
-              
-              // Prefix'i slug formatına çevir
-              widgetPrefix = window.slugifyTurkish(widgetPrefix.toLowerCase());
-              
-              if (widgetPrefix) {
-                // Label'i slug formatına çevir
-                const labelSlug = window.slugifyTurkish(formElement.properties.label || '');
-                
-                // Alan adını oluştur
-                const newBaseName = widgetPrefix + '_' + labelSlug;
-                
-                // Benzersiz bir isim oluştur
-                const uniqueName = typeof window.makeNameUnique === 'function' 
-                  ? window.makeNameUnique(newBaseName)
-                  : newBaseName;
-                
-                // Özelliği güncelle
-                formElement.properties.name = uniqueName;
-                
-                // Eğer element şu anda seçili ise özellik panelini güncelle
-                if (window.selectedElement === formElement) {
-                  const nameInput = window.propertiesPanel.querySelector('input[name="name"]');
-                  if (nameInput) {
-                    nameInput.value = uniqueName;
-                  }
-                }
+  // Element eklendikten sonra widget prefix'ini al ve ayarla
+  setTimeout(() => {
+    const schemaType = document.getElementById('schema-type')?.value;
+    const widgetId = document.getElementById('widget-id')?.value;
+    
+    if (widgetId && formElement.properties && formElement.properties.name) {
+      // Varsayılan isimlendirmeyi kontrol et (_field ile bitenler)
+      const isDefaultName = formElement.properties.name.endsWith('_field');
+      if (isDefaultName) {
+        // Sadece settings sayfasında widget_ prefix'i ekle
+        if (schemaType === 'settings') {
+          let widgetPrefix = 'widget';
+          widgetPrefix = window.slugifyTurkish(widgetPrefix.toLowerCase());
+          
+          if (widgetPrefix) {
+            // Label'i slug formatına çevir
+            const labelSlug = window.slugifyTurkish(formElement.properties.label || '');
+            
+            // Alan adını oluştur
+            const newBaseName = widgetPrefix + '_' + labelSlug;
+            
+            // Benzersiz bir isim oluştur
+            const uniqueName = typeof window.makeNameUnique === 'function' 
+              ? window.makeNameUnique(newBaseName)
+              : newBaseName;
+            
+            // Özelliği güncelle
+            formElement.properties.name = uniqueName;
+            
+            // Eğer element şu anda seçili ise özellik panelini güncelle
+            if (window.selectedElement === formElement) {
+              const nameInput = window.propertiesPanel.querySelector('input[name="name"]');
+              if (nameInput) {
+                nameInput.value = uniqueName;
               }
             }
-          })
-          .catch(error => {
-            console.error('Widget verisi alınamadı:', error);
-          });
+          }
+        } else {
+          // Items sayfasında sadece label slug'ını kullan
+          const labelSlug = window.slugifyTurkish(formElement.properties.label || '');
+          if (labelSlug) {
+            const uniqueName = typeof window.makeNameUnique === 'function' 
+              ? window.makeNameUnique(labelSlug)
+              : labelSlug;
+            
+            // Özelliği güncelle
+            formElement.properties.name = uniqueName;
+            
+            // Eğer element şu anda seçili ise özellik panelini güncelle
+            if (window.selectedElement === formElement) {
+              const nameInput = window.propertiesPanel.querySelector('input[name="name"]');
+              if (nameInput) {
+                nameInput.value = uniqueName;
+              }
+            }
+          }
         }
       }
-    }, 100);
+    }
+  }, 100);
 
     return formElement;
   };

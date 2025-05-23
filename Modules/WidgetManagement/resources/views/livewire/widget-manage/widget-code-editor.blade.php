@@ -1,6 +1,6 @@
 @include('widgetmanagement::helper')
 
-<div class="container-fluid">
+<div>
     @include('admin.partials.error_message')
     
     <div class="row mb-4">
@@ -34,78 +34,82 @@
             <div class="col-12">
                 <div class="card" id="editor-card">
                     <div class="card-header">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <ul class="nav nav-tabs card-header-tabs" id="code-editor-tabs" role="tablist">
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link active" id="html-tab" data-bs-toggle="tab" data-bs-target="#html-pane" type="button" role="tab">
-                                        <i class="fab fa-html5 me-2"></i>
-                                        HTML
-                                    </button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="css-tab" data-bs-toggle="tab" data-bs-target="#css-pane" type="button" role="tab">
-                                        <i class="fab fa-css3-alt me-2"></i>
-                                        CSS
-                                    </button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="js-tab" data-bs-toggle="tab" data-bs-target="#js-pane" type="button" role="tab">
-                                        <i class="fab fa-js-square me-2"></i>
-                                        JavaScript
-                                    </button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="files-tab" data-bs-toggle="tab" data-bs-target="#files-pane" type="button" role="tab">
-                                        <i class="fas fa-file-code me-2"></i>
-                                        Harici Dosyalar
-                                    </button>
-                                </li>
-                            </ul>
-                            <div class="ms-auto">
-                                <nav class="nav nav-segmented nav-sm" role="tablist">
-                                    <button type="button" class="nav-link" onclick="editorActions.formatCode()" title="Kodu Formatla" data-bs-toggle="tooltip" data-bs-placement="top">
-                                        <i class="fas fa-magic"></i>
-                                    </button>
-                                    <button type="button" class="nav-link" onclick="editorActions.toggleTheme()" title="Tema Değiştir" data-bs-toggle="tooltip" data-bs-placement="top">
-                                        <i class="fas fa-palette"></i>
-                                    </button>
-                                    <button type="button" class="nav-link" onclick="editorActions.decreaseFontSize()" title="Yazı Tipi Küçült" data-bs-toggle="tooltip" data-bs-placement="top">
-                                        <i class="fas fa-search-minus"></i>
-                                    </button>
-                                    <button type="button" class="nav-link" onclick="editorActions.increaseFontSize()" title="Yazı Tipi Büyüt" data-bs-toggle="tooltip" data-bs-placement="top">
-                                        <i class="fas fa-search-plus"></i>
-                                    </button>
-                                    <button type="button" class="nav-link" onclick="editorActions.toggleFullscreen()" title="Tam Ekran" data-bs-toggle="tooltip" data-bs-placement="top">
-                                        <i class="fas fa-expand" id="fullscreen-icon"></i>
-                                    </button>
-                                </nav>
-                            </div>
-                        </div>
+                        <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs">
+                            <li class="nav-item">
+                                <a href="#html-pane" class="nav-link active" data-bs-toggle="tab">
+                                    <i class="fab fa-html5 me-2"></i>
+                                    HTML
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#css-pane" class="nav-link" data-bs-toggle="tab">
+                                    <i class="fab fa-css3-alt me-2"></i>
+                                    CSS
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#js-pane" class="nav-link" data-bs-toggle="tab">
+                                    <i class="fab fa-js-square me-2"></i>
+                                    JavaScript
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#files-pane" class="nav-link" data-bs-toggle="tab">
+                                    <i class="fas fa-file-code me-2"></i>
+                                    Harici Dosyalar
+                                </a>
+                            </li>
+                            <li class="nav-item ms-auto">
+                                <a href="#" class="nav-link" title="Kodu Formatla" onclick="editorActions.formatCode(); return false;">
+                                    <i class="fas fa-indent"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link" title="Bul/Değiştir" onclick="editorActions.openFind(); return false;">
+                                    <i class="fas fa-search"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link" title="Tümünü Katla" onclick="editorActions.toggleFoldAll(); return false;">
+                                    <i class="fas fa-compress-alt"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link" title="Tema Değiştir" onclick="editorActions.toggleTheme(); return false;">
+                                    <i class="fas fa-palette"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link" title="Tam Ekran" onclick="editorActions.toggleFullscreen(); return false;">
+                                    <i class="fas fa-expand" id="fullscreen-icon"></i>
+                                </a>
+                            </li>
+                        </ul>
                     </div>
                     <div class="card-body">
-                        <div class="tab-content" id="code-editor-content">
-                            <div class="tab-pane fade show active" id="html-pane" role="tabpanel">
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="html-pane">
                                 <div class="mb-3" wire:ignore>
-                                    <div id="html-editor" style="height: 400px; width: 100%;"></div>
+                                    <div id="html-editor" style="height: 600px; width: 100%;"></div>
                                     <textarea wire:model.defer="widget.content_html" id="html-textarea" style="display: none;"></textarea>
                                 </div>
                             </div>
                             
-                            <div class="tab-pane fade" id="css-pane" role="tabpanel">
+                            <div class="tab-pane fade" id="css-pane">
                                 <div class="mb-3" wire:ignore>
-                                    <div id="css-editor" style="height: 400px; width: 100%;"></div>
+                                    <div id="css-editor" style="height: 600px; width: 100%;"></div>
                                     <textarea wire:model.defer="widget.content_css" id="css-textarea" style="display: none;"></textarea>
                                 </div>
                             </div>
                             
-                            <div class="tab-pane fade" id="js-pane" role="tabpanel">
+                            <div class="tab-pane fade" id="js-pane">
                                 <div class="mb-3" wire:ignore>
-                                    <div id="js-editor" style="height: 400px; width: 100%;"></div>
+                                    <div id="js-editor" style="height: 600px; width: 100%;"></div>
                                     <textarea wire:model.defer="widget.content_js" id="js-textarea" style="display: none;"></textarea>
                                 </div>
                             </div>
                             
-                            <div class="tab-pane fade" id="files-pane" role="tabpanel">
+                            <div class="tab-pane fade" id="files-pane">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="card">
@@ -187,651 +191,320 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-footer" id="editor-footer">
-                        <div class="d-flex justify-content-end align-items-center">
-                            <button type="submit" class="btn btn-primary btn-lg" wire:loading.attr="disabled">
-                                <span wire:loading.remove>
-                                    <i class="fas fa-save me-2"></i>
-                                    Kodu Kaydet
-                                </span>
-                                <span wire:loading>
-                                    <i class="fas fa-spinner fa-spin me-2"></i>
-                                    Kaydediliyor...
-                                </span>
-                            </button>
+                </div>
+            </div>
+        </div>
+        
+        @php
+            $variables = $this->getAvailableVariables();
+        @endphp
+        
+        <div class="row my-4">
+            @if(isset($variables['settings']) || isset($variables['items']))
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">
+                            <i class="fas fa-code me-2"></i>
+                            Handlebars Değişkenleri
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        @if(isset($variables['settings']))
+                        <h6 class="text-primary mb-2">
+                            <i class="fas fa-sliders-h me-1"></i>
+                            Özelleştirme Değişkenleri
+                        </h6>
+                        <div class="table-responsive mb-4">
+                            <table class="table table-sm mb-0 variable-table">
+                                @foreach($variables['settings'] as $var)
+                                <tr>
+                                    <td class="variable-code" data-copy="&#123;&#123; {{ $var['name'] }} &#125;&#125;">
+                                        <code class="copyable-code">&#123;&#123; {{ $var['name'] }} &#125;&#125;</code>
+                                    </td>
+                                    <td class="text-muted">{{ $var['label'] }}</td>
+                                </tr>
+                                @endforeach
+                            </table>
+                        </div>
+                        @endif
+                        
+                        @if(isset($variables['items']))
+                        <h6 class="text-success mb-2">
+                            <i class="fas fa-layer-group me-1"></i>
+                            İçerik Değişkenleri
+                        </h6>
+                        <div class="mb-2">
+                            <code class="copyable-code" data-copy="&#123;&#123; #each items &#125;&#125;">&#123;&#123; #each items &#125;&#125;</code>
+                        </div>
+                        <div class="table-responsive mb-2">
+                            <table class="table table-sm mb-0 variable-table">
+                                @foreach($variables['items'] as $var)
+                                <tr>
+                                    <td class="variable-code" data-copy="&#123;&#123; {{ $var['name'] }} &#125;&#125;">
+                                        <code class="copyable-code">&#123;&#123; {{ $var['name'] }} &#125;&#125;</code>
+                                    </td>
+                                    <td class="text-muted">{{ $var['label'] }}</td>
+                                </tr>
+                                @endforeach
+                            </table>
+                        </div>
+                        <div class="mb-3">
+                            <code class="copyable-code" data-copy="&#123;&#123; /each &#125;&#125;">&#123;&#123; /each &#125;&#125;</code>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+            @endif
+            
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">
+                            <i class="fas fa-magic me-2"></i>
+                            Handlebars Yardımcıları
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="text-warning mb-2">
+                            <i class="fas fa-question-circle me-1"></i>
+                            Koşul Yapıları
+                        </h6>
+                        <div class="table-responsive mb-4">
+                            <table class="table table-sm mb-0 variable-table">
+                                <tr>
+                                    <td class="variable-code" data-copy="&#123;&#123; #if koşul &#125;&#125;...&#123;&#123; /if &#125;&#125;">
+                                        <code class="copyable-code">&#123;&#123; #if koşul &#125;&#125;</code>
+                                    </td>
+                                    <td class="text-muted">Koşullu görüntüleme</td>
+                                </tr>
+                                <tr>
+                                    <td class="variable-code" data-copy="&#123;&#123; #unless koşul &#125;&#125;...&#123;&#123; /unless &#125;&#125;">
+                                        <code class="copyable-code">&#123;&#123; #unless koşul &#125;&#125;</code>
+                                    </td>
+                                    <td class="text-muted">Tersi koşul</td>
+                                </tr>
+                                <tr>
+                                    <td class="variable-code" data-copy="&#123;&#123; else &#125;&#125;">
+                                        <code class="copyable-code">&#123;&#123; else &#125;&#125;</code>
+                                    </td>
+                                    <td class="text-muted">Alternatif</td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <h6 class="text-info mb-2">
+                            <i class="fas fa-repeat me-1"></i>
+                            Döngü Yapıları
+                        </h6>
+                        <div class="table-responsive mb-4">
+                            <table class="table table-sm mb-0 variable-table">
+                                <tr>
+                                    <td class="variable-code" data-copy="&#123;&#123; #each liste &#125;&#125;...&#123;&#123; /each &#125;&#125;">
+                                        <code class="copyable-code">&#123;&#123; #each liste &#125;&#125;</code>
+                                    </td>
+                                    <td class="text-muted">Liste döngüsü</td>
+                                </tr>
+                                <tr>
+                                    <td class="variable-code" data-copy="&#123;&#123; @index &#125;&#125;">
+                                        <code class="copyable-code">&#123;&#123; @index &#125;&#125;</code>
+                                    </td>
+                                    <td class="text-muted">Döngü indeksi</td>
+                                </tr>
+                                <tr>
+                                    <td class="variable-code" data-copy="&#123;&#123; @first &#125;&#125;">
+                                        <code class="copyable-code">&#123;&#123; @first &#125;&#125;</code>
+                                    </td>
+                                    <td class="text-muted">İlk eleman</td>
+                                </tr>
+                                <tr>
+                                    <td class="variable-code" data-copy="&#123;&#123; @last &#125;&#125;">
+                                        <code class="copyable-code">&#123;&#123; @last &#125;&#125;</code>
+                                    </td>
+                                    <td class="text-muted">Son eleman</td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <h6 class="text-secondary mb-2">
+                            <i class="fas fa-object-group me-1"></i>
+                            Diğer Yardımcılar
+                        </h6>
+                        <div class="table-responsive">
+                            <table class="table table-sm mb-0 variable-table">
+                                <tr>
+                                    <td class="variable-code" data-copy="&#123;&#123; #with nesne &#125;&#125;...&#123;&#123; /with &#125;&#125;">
+                                        <code class="copyable-code">&#123;&#123; #with nesne &#125;&#125;</code>
+                                    </td>
+                                    <td class="text-muted">Nesne bağlamı</td>
+                                </tr>
+                                <tr>
+                                    <td class="variable-code" data-copy="&#123;&#123;!-- yorum --&#125;&#125;">
+                                        <code class="copyable-code">&#123;&#123;!-- yorum --&#125;&#125;</code>
+                                    </td>
+                                    <td class="text-muted">Yorum satırı</td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </form>
-
-    @php
-        $variables = $this->getAvailableVariables();
-    @endphp
-    
-    @if(!empty($variables))
-    <div class="row my-4" id="variables-panel">
-        @if(isset($variables['settings']))
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h4 class="card-title mb-0">
-                        <i class="fas fa-sliders-h me-2"></i>
-                        Özelleştirme Değişkenleri
-                    </h4>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-sm mb-0">
-                            @foreach($variables['settings'] as $var)
-                            <tr>
-                                <td>
-                                    <code class="bg-dark text-light px-2 py-1 rounded">&#123;&#123; {{ $var['name'] }} &#125;&#125;</code>
-                                </td>
-                                <td class="text-muted">{{ $var['label'] }}</td>
-                            </tr>
-                            @endforeach
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-        @endif
         
-        @if(isset($variables['items']))
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h4 class="card-title mb-0">
-                        <i class="fas fa-layer-group me-2"></i>
-                        İçerik Değişkenleri
-                    </h4>
-                </div>
-                <div class="card-body">
-                    <div class="mb-2">
-                        <code class="bg-dark text-light px-2 py-1 rounded">&#123;&#123; #each items &#125;&#125;</code>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table table-sm mb-0">
-                            @foreach($variables['items'] as $var)
-                            <tr>
-                                <td>
-                                    <code class="bg-dark text-light px-2 py-1 rounded">&#123;&#123; {{ $var['name'] }} &#125;&#125;</code>
-                                </td>
-                                <td class="text-muted">{{ $var['label'] }}</td>
-                            </tr>
-                            @endforeach
-                        </table>
-                    </div>
-                    <div class="mt-2">
-                        <code class="bg-dark text-light px-2 py-1 rounded">&#123;&#123; /each &#125;&#125;</code>
-                    </div>
+        <div class="card mt-4">
+            <div class="card-footer">
+                <div class="d-flex justify-content-end align-items-center">
+                    <button type="submit" class="btn btn-primary btn-lg" wire:loading.attr="disabled">
+                        <span wire:loading.remove>
+                            <i class="fas fa-save me-2"></i>
+                            Kodu Kaydet
+                        </span>
+                        <span wire:loading>
+                            <i class="fas fa-spinner fa-spin me-2"></i>
+                            Kaydediliyor...
+                        </span>
+                    </button>
                 </div>
             </div>
         </div>
-        @endif
-    </div>
-    @endif
+    </form>
 
 </div>
 
 @push('styles')
+<link rel="stylesheet" href="{{ asset('admin/libs/monaco-custom/css/monaco-custom.css') }}">
 <style>
-.container-fluid {
-    max-width: none;
-    padding: 1rem 2rem;
+.copyable-code {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: #2d2d30 !important;
+    color: #cccccc !important;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    position: relative;
 }
 
-.nav-tabs .nav-link.active {
-    font-weight: 600;
+.copyable-code:hover {
+    background-color: #094771 !important;
+    color: #ffffff !important;
 }
 
-.tab-content {
-    padding-top: 1rem;
+.variable-table tr {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
-.monaco-editor-container {
-    border: 1px solid #dee2e6;
-    border-radius: 0.375rem;
+.variable-table tr:hover {
+    background-color: rgba(9, 71, 113, 0.1);
 }
 
-.fullscreen-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: #1e1e1e;
-    z-index: 9999;
-    display: flex;
-    flex-direction: column;
-}
-
-.fullscreen-overlay .card {
-    flex: 1;
-    margin: 0;
-    border: none;
-    background: #1e1e1e;
-    height: 100vh;
-}
-
-.fullscreen-overlay .card-body {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    height: calc(100vh - 120px);
-}
-
-.fullscreen-overlay .tab-content {
-    flex: 1;
-    height: 100%;
-}
-
-.fullscreen-overlay .tab-pane {
-    height: 100%;
-}
-
-.fullscreen-overlay .tab-pane > div {
-    height: 100%;
-}
-
-.fullscreen-overlay #html-editor,
-.fullscreen-overlay #css-editor,
-.fullscreen-overlay #js-editor {
-    height: 100% !important;
-}
-
-@media (max-width: 768px) {
-    .container-fluid {
-        padding: 1rem;
-    }
+.copy-feedback {
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #28a745;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    z-index: 1000;
+    pointer-events: none;
 }
 </style>
 @endpush
 
 @push('scripts')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/emmet/2.4.7/emmet.min.js"></script>
+<script src="{{ asset('admin/libs/monaco-custom/js/monaco-custom.js') }}"></script>
 <script>
-let htmlEditor, cssEditor, jsEditor;
-let editorsInitialized = false;
-let monacoLoaded = false;
-let widgetData = @json($widget);
-let currentTheme = 'vs-dark';
-let currentFontSize = 14;
-let fullscreenEnabled = false;
-
-const editorSettings = {
-    fontSize: currentFontSize,
-    lineHeight: currentFontSize + 8,
-    theme: currentTheme,
-    minimap: { enabled: false },
-    automaticLayout: true,
-    scrollBeyondLastLine: false,
-    formatOnPaste: true,
-    formatOnType: true,
-    wordWrap: 'on',
-    folding: true,
-    foldingStrategy: 'indentation',
-    showFoldingControls: 'always',
-    suggest: {
-        insertMode: 'replace',
-        filterGraceful: true
-    },
-    quickSuggestions: {
-        other: true,
-        comments: true,
-        strings: true
-    },
-    acceptSuggestionOnCommitCharacter: true,
-    acceptSuggestionOnEnter: 'on',
-    accessibilitySupport: 'auto',
-    autoIndent: 'advanced',
-    renderWhitespace: 'selection',
-    renderControlCharacters: true,
-    renderFinalNewline: true,
-    rulers: [80, 120],
-    cursorBlinking: 'blink',
-    cursorSmoothCaretAnimation: true,
-    find: {
-        seedSearchStringFromSelection: 'always',
-        autoFindInSelection: 'never'
-    }
-};
-
-const editorActions = {
-    formatCode: function() {
-        const activeEditor = this.getActiveEditor();
-        if (activeEditor) {
-            activeEditor.getAction('editor.action.formatDocument').run();
-        }
-    },
-    
-    toggleTheme: function() {
-        const themes = ['vs-dark', 'vs', 'hc-black'];
-        const currentIndex = themes.indexOf(currentTheme);
-        currentTheme = themes[(currentIndex + 1) % themes.length];
-        
-        if (monacoLoaded) {
-            monaco.editor.setTheme(currentTheme);
-        }
-    },
-    
-    increaseFontSize: function() {
-        currentFontSize = Math.min(currentFontSize + 2, 24);
-        const newLineHeight = currentFontSize + 12;
-        this.updateAllEditors({ 
-            fontSize: currentFontSize,
-            lineHeight: newLineHeight
-        });
-    },
-    
-    decreaseFontSize: function() {
-        currentFontSize = Math.max(currentFontSize - 2, 10);
-        const newLineHeight = currentFontSize + 8;
-        this.updateAllEditors({ 
-            fontSize: currentFontSize,
-            lineHeight: newLineHeight
-        });
-    },
-    
-    toggleFullscreen: function() {
-        const editorCard = document.getElementById('editor-card');
-        const body = document.body;
-        const fullscreenIcon = document.getElementById('fullscreen-icon');
-        
-        if (!fullscreenEnabled) {
-            editorCard.classList.add('fullscreen-overlay');
-            body.style.overflow = 'hidden';
-            fullscreenEnabled = true;
-            fullscreenIcon.className = 'fas fa-compress';
-        } else {
-            editorCard.classList.remove('fullscreen-overlay');
-            body.style.overflow = 'auto';
-            fullscreenEnabled = false;
-            fullscreenIcon.className = 'fas fa-expand';
-        }
-        
-        setTimeout(() => {
-            this.resizeAllEditors();
-        }, 100);
-    },
-    
-    getActiveEditor: function() {
-        const activeTab = document.querySelector('#code-editor-tabs button.nav-link.active');
-        if (!activeTab) return null;
-        
-        const tabId = activeTab.id;
-        if (tabId === 'html-tab') return htmlEditor;
-        if (tabId === 'css-tab') return cssEditor;
-        if (tabId === 'js-tab') return jsEditor;
-        return null;
-    },
-    
-    updateAllEditors: function(options) {
-        if (!editorsInitialized) return;
-        
-        [htmlEditor, cssEditor, jsEditor].forEach(editor => {
-            if (editor) {
-                editor.updateOptions(options);
-            }
-        });
-    },
-    
-    resizeAllEditors: function() {
-        if (!editorsInitialized) return;
-        
-        setTimeout(() => {
-            [htmlEditor, cssEditor, jsEditor].forEach(editor => {
-                if (editor) {
-                    editor.layout();
-                }
-            });
-        }, 50);
-    }
-};
-
-const widgetCodeEditor = {
-    initialized: false,
-    
-    init: function() {
-        if (this.initialized) return;
-        
-        this.loadMonaco();
-        this.setupTabs();
-        this.setupFormSubmit();
-        this.setupKeyboardShortcuts();
-        this.setupTooltips();
-        this.initialized = true;
-    },
-    
-    setupTooltips: function() {
-        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl);
-        });
-    },
-    
-    loadMonaco: function() {
-        if (monacoLoaded) {
-            this.createEditors();
-            return;
-        }
-        
-        if (typeof require === 'undefined') {
-            const script = document.createElement('script');
-            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js';
-            script.onload = () => {
-                this.setupMonaco();
-            };
-            document.head.appendChild(script);
-        } else {
-            this.setupMonaco();
-        }
-    },
-    
-    setupMonaco: function() {
-        if (typeof require !== 'undefined') {
-            require.config({ 
-                paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' } 
-            });
-
-            require(['vs/editor/editor.main'], () => {
-                monacoLoaded = true;
-                this.setupEmmet();
-                this.createEditors();
-            });
-        }
-    },
-    
-    setupEmmet: function() {
-        if (typeof emmet !== 'undefined' && typeof monaco !== 'undefined') {
-            monaco.languages.registerCompletionItemProvider('html', {
-                provideCompletionItems: function(model, position) {
-                    const textUntilPosition = model.getValueInRange({
-                        startLineNumber: 1,
-                        startColumn: 1,
-                        endLineNumber: position.lineNumber,
-                        endColumn: position.column
-                    });
-                    
-                    const match = textUntilPosition.match(/[\w:.#\[\]@-]*$/);
-                    if (!match) return { suggestions: [] };
-                    
-                    const word = match[0];
-                    if (word.length < 2) return { suggestions: [] };
-                    
-                    try {
-                        const expandedHtml = emmet.expand(word);
-                        if (expandedHtml && expandedHtml !== word) {
-                            return {
-                                suggestions: [{
-                                    label: word,
-                                    kind: monaco.languages.CompletionItemKind.Snippet,
-                                    insertText: expandedHtml,
-                                    documentation: 'Emmet abbreviation',
-                                    range: {
-                                        startLineNumber: position.lineNumber,
-                                        startColumn: position.column - word.length,
-                                        endLineNumber: position.lineNumber,
-                                        endColumn: position.column
-                                    }
-                                }]
-                            };
-                        }
-                    } catch (e) {
-                        return { suggestions: [] };
-                    }
-                    
-                    return { suggestions: [] };
-                }
-            });
-        }
-    },
-    
-    createEditors: function() {
-        if (editorsInitialized || typeof monaco === 'undefined') return;
-        
-        const htmlEl = document.getElementById('html-editor');
-        const cssEl = document.getElementById('css-editor');
-        const jsEl = document.getElementById('js-editor');
-        
-        if (!htmlEl || !cssEl || !jsEl) {
-            setTimeout(() => this.createEditors(), 100);
-            return;
-        }
-        
-        try {
-            htmlEditor = monaco.editor.create(htmlEl, {
-                ...editorSettings,
-                value: widgetData.content_html || '',
-                language: 'html'
-            });
-
-            cssEditor = monaco.editor.create(cssEl, {
-                ...editorSettings,
-                value: widgetData.content_css || '',
-                language: 'css'
-            });
-
-            jsEditor = monaco.editor.create(jsEl, {
-                ...editorSettings,
-                value: widgetData.content_js || '',
-                language: 'javascript'
-            });
-
-            this.setupEditorEvents();
-            this.setupErrorMarkers();
-            editorsInitialized = true;
-            
-        } catch (error) {
-            console.error('Monaco editor oluşturma hatası:', error);
-        }
-    },
-    
-    setupEditorEvents: function() {
-        if (!editorsInitialized) return;
-        
-        let updateTimeout;
-        
-        const debouncedUpdate = (type) => {
-            clearTimeout(updateTimeout);
-            updateTimeout = setTimeout(() => {
-                this.syncEditorToTextarea(type);
-                this.updateWidgetData(type);
-            }, 300);
-        };
-        
-        htmlEditor.onDidChangeModelContent(() => debouncedUpdate('html'));
-        cssEditor.onDidChangeModelContent(() => debouncedUpdate('css'));
-        jsEditor.onDidChangeModelContent(() => debouncedUpdate('js'));
-    },
-    
-    setupErrorMarkers: function() {
-        if (!editorsInitialized) return;
-        
-        const validateCSS = (cssCode) => {
-            const errors = [];
-            const lines = cssCode.split('\n');
-            
-            lines.forEach((line, index) => {
-                if (line.trim() && !line.includes('{') && !line.includes('}') && line.includes(':')) {
-                    if (!line.trim().endsWith(';') && !line.trim().endsWith('{')) {
-                        errors.push({
-                            startLineNumber: index + 1,
-                            startColumn: 1,
-                            endLineNumber: index + 1,
-                            endColumn: line.length + 1,
-                            message: 'Noktalı virgül eksik olabilir',
-                            severity: monaco.MarkerSeverity.Warning
-                        });
-                    }
-                }
-            });
-            
-            return errors;
-        };
-        
-        const validateJS = (jsCode) => {
-            const errors = [];
-            try {
-                new Function(jsCode);
-            } catch (e) {
-                const match = e.message.match(/line (\d+)/);
-                const lineNumber = match ? parseInt(match[1]) : 1;
-                
-                errors.push({
-                    startLineNumber: lineNumber,
-                    startColumn: 1,
-                    endLineNumber: lineNumber,
-                    endColumn: 100,
-                    message: e.message,
-                    severity: monaco.MarkerSeverity.Error
-                });
-            }
-            
-            return errors;
-        };
-        
-        cssEditor.onDidChangeModelContent(() => {
-            const cssCode = cssEditor.getValue();
-            const errors = validateCSS(cssCode);
-            monaco.editor.setModelMarkers(cssEditor.getModel(), 'css-validator', errors);
-        });
-        
-        jsEditor.onDidChangeModelContent(() => {
-            const jsCode = jsEditor.getValue();
-            const errors = validateJS(jsCode);
-            monaco.editor.setModelMarkers(jsEditor.getModel(), 'js-validator', errors);
-        });
-    },
-    
-    setupKeyboardShortcuts: function() {
-        document.addEventListener('keydown', (e) => {
-            if (e.ctrlKey || e.metaKey) {
-                switch (e.key) {
-                    case 's':
-                        e.preventDefault();
-                        document.getElementById('widget-form').dispatchEvent(new Event('submit'));
-                        break;
-                    case 'f':
-                        e.preventDefault();
-                        if (e.shiftKey) {
-                            editorActions.formatCode();
-                        }
-                        break;
-                    case 'Enter':
-                        if (e.shiftKey) {
-                            e.preventDefault();
-                            editorActions.toggleFullscreen();
-                        }
-                        break;
-                }
-            }
-            
-            if (e.key === 'F11') {
-                e.preventDefault();
-                editorActions.toggleFullscreen();
-            }
-        });
-    },
-    
-    setupTabs: function() {
-        const tabButtons = document.querySelectorAll('#code-editor-tabs button[data-bs-toggle="tab"]');
-        
-        tabButtons.forEach(button => {
-            button.addEventListener('shown.bs.tab', () => {
-                setTimeout(() => {
-                    editorActions.resizeAllEditors();
-                }, 100);
-            });
-        });
-    },
-    
-    setupFormSubmit: function() {
-        const form = document.getElementById('widget-form');
-        if (form) {
-            form.addEventListener('submit', (e) => {
-                this.updateBeforeSubmit();
-            });
-        }
-    },
-    
-    syncEditorToTextarea: function(type) {
-        if (!editorsInitialized) return;
-        
-        try {
-            const editor = type === 'html' ? htmlEditor : type === 'css' ? cssEditor : jsEditor;
-            const textarea = document.getElementById(`${type}-textarea`);
-            const value = editor.getValue();
-            
-            if (textarea) {
-                textarea.value = value;
-                textarea.dispatchEvent(new Event('input', { bubbles: true }));
-            }
-        } catch (error) {
-            console.error('Editor senkronizasyon hatası:', error);
-        }
-    },
-    
-    updateWidgetData: function(type) {
-        if (!editorsInitialized) return;
-        
-        try {
-            const editor = type === 'html' ? htmlEditor : type === 'css' ? cssEditor : jsEditor;
-            const fieldName = `content_${type}`;
-            widgetData[fieldName] = editor.getValue();
-        } catch (error) {
-            console.error('Widget verisi güncelleme hatası:', error);
-        }
-    },
-    
-    updateBeforeSubmit: function() {
-        if (!editorsInitialized) return;
-        
-        this.syncEditorToTextarea('html');
-        this.syncEditorToTextarea('css');
-        this.syncEditorToTextarea('js');
-    },
-    
-    updateEditorValues: function(newData) {
-        if (!editorsInitialized || !newData) return;
-        
-        try {
-            widgetData = newData;
-            
-            if (htmlEditor && htmlEditor.getValue() !== (newData.content_html || '')) {
-                htmlEditor.setValue(newData.content_html || '');
-            }
-            if (cssEditor && cssEditor.getValue() !== (newData.content_css || '')) {
-                cssEditor.setValue(newData.content_css || '');
-            }
-            if (jsEditor && jsEditor.getValue() !== (newData.content_js || '')) {
-                jsEditor.setValue(newData.content_js || '');
-            }
-        } catch (error) {
-            console.error('Editor değer güncelleme hatası:', error);
-        }
-    }
-};
-
-window.updateWidgetEditors = function(newData) {
-    widgetCodeEditor.updateEditorValues(newData);
-};
-
 document.addEventListener('DOMContentLoaded', function() {
     setTimeout(() => {
-        widgetCodeEditor.init();
+        if (typeof MonacoCustomEditor !== 'undefined') {
+            MonacoCustomEditor.init(@json($widget), @json($this->getAvailableVariables()));
+        }
     }, 200);
+
+    // Kopyalama işlevi
+    function copyToClipboard(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+            return navigator.clipboard.writeText(text);
+        } else {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-999999px";
+            textArea.style.top = "-999999px";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            return new Promise((resolve, reject) => {
+                if (document.execCommand('copy')) {
+                    textArea.remove();
+                    resolve();
+                } else {
+                    textArea.remove();
+                    reject();
+                }
+            });
+        }
+    }
+
+    function showCopyFeedback(element) {
+        const feedback = document.createElement('div');
+        feedback.className = 'copy-feedback';
+        feedback.textContent = 'Kopyalandı!';
+        element.style.position = 'relative';
+        element.appendChild(feedback);
+        
+        setTimeout(() => {
+            if (feedback.parentNode) {
+                feedback.parentNode.removeChild(feedback);
+            }
+        }, 1500);
+    }
+
+    // Tıklanabilir kod elemanları
+    document.addEventListener('click', function(e) {
+        const copyableCode = e.target.closest('.copyable-code');
+        const variableRow = e.target.closest('.variable-code');
+        
+        if (copyableCode) {
+            e.preventDefault();
+            const copyText = copyableCode.getAttribute('data-copy') || copyableCode.textContent;
+            const cleanText = copyText.replace(/&#123;/g, '{').replace(/&#125;/g, '}');
+            
+            copyToClipboard(cleanText).then(() => {
+                showCopyFeedback(copyableCode);
+            }).catch(() => {
+                console.error('Kopyalama başarısız');
+            });
+        } else if (variableRow) {
+            e.preventDefault();
+            const copyText = variableRow.getAttribute('data-copy');
+            const cleanText = copyText.replace(/&#123;/g, '{').replace(/&#125;/g, '}');
+            
+            copyToClipboard(cleanText).then(() => {
+                showCopyFeedback(variableRow);
+            }).catch(() => {
+                console.error('Kopyalama başarısız');
+            });
+        }
+    });
 });
 
-window.addEventListener('resize', function() {
-    editorActions.resizeAllEditors();
-});
+window.updateWidgetEditors = function(newData) {
+    if (typeof MonacoCustomEditor !== 'undefined') {
+        MonacoCustomEditor.updateEditorValues(newData);
+    }
+};
 
 document.addEventListener('livewire:navigated', function() {
     setTimeout(() => {
-        widgetCodeEditor.init();
+        if (typeof MonacoCustomEditor !== 'undefined') {
+            MonacoCustomEditor.init(@json($widget), @json($this->getAvailableVariables()));
+        }
     }, 300);
 });
 </script>

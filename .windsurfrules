@@ -23,7 +23,8 @@ Ben yaptıkların bittikten sonra "aferin" yazarsam eğer proje başarıyla tama
 13. Cviebrock Eloquent Sluggable kullanilmalidir.
 14. Nesbot Carbon tarih işlemleri için kullanilmalidir.
 15. JSON API yanitlari PSR-4 standartlarina uygun olmalidir.
-
+16. Terminal asla kullanma. Tinker kullanma. 
+17. Color ve Background ben sana belirtmedikçe kullanma. Sistem dinamiklerinden vazgeçme. Kullanacağın yerde de primary kullan.
 ## Olmamalidir ❌
 1. Laravel Tinker kullanilmamalidir.
 

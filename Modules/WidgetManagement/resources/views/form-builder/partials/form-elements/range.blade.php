@@ -1,54 +1,48 @@
 @php
-    // Element ve properties dizilerinin var olduğunu kontrol edelim
+    // Element dizisinin var olduğunu kontrol edelim
     if (!isset($element) || !is_array($element)) {
-        $element = ['properties' => []];
+        $element = [];
     }
     
-    if (!isset($element['properties']) || !is_array($element['properties'])) {
-        $element['properties'] = [];
+    // Temel alan özelliklerini al
+    $elementName = isset($element['name']) ? $element['name'] : 'range_' . uniqid();
+    $elementLabel = isset($element['label']) ? $element['label'] : 'Değer Aralığı';
+    $isRequired = isset($element['required']) && $element['required'];
+    $helpText = isset($element['help_text']) ? $element['help_text'] : null;
+    
+    // Diğer özellikleri al
+    $width = isset($element['width']) ? $element['width'] : 12;
+    $defaultValue = isset($element['default']) ? (int)$element['default'] : 50;
+    $minValue = isset($element['min']) ? (int)$element['min'] : 0;
+    $maxValue = isset($element['max']) ? (int)$element['max'] : 100;
+    $step = isset($element['step']) ? (float)$element['step'] : 1;
+    
+    // formData ve originalData kontrolü
+    if (!isset($formData) || !is_array($formData)) {
+        $formData = [];
     }
     
-    // Güvenli bir şekilde özellikleri alabiliriz
-    $elementName = isset($element['properties']['name']) ? $element['properties']['name'] : 'range_' . uniqid();
-    $elementLabel = isset($element['properties']['label']) ? $element['properties']['label'] : 'Değer Aralığı';
-    $min = isset($element['properties']['min']) ? $element['properties']['min'] : 0;
-    $max = isset($element['properties']['max']) ? $element['properties']['max'] : 100;
-    $step = isset($element['properties']['step']) ? $element['properties']['step'] : 1;
-    $helpText = isset($element['properties']['help_text']) ? $element['properties']['help_text'] : null;
+    if (!isset($originalData) || !is_array($originalData)) {
+        $originalData = [];
+    }
     
-    $settingId = null;
-    $settingKey = null;
-    
-    if(isset($element['properties']['setting_id'])) {
-        $settingId = $element['properties']['setting_id'];
-    } elseif(isset($element['properties']['name'])) {
-        $settingName = $element['properties']['name'];
-        
-        // Ayarı adından bul
-        if (isset($settings) && is_object($settings)) {
-            $setting = $settings->firstWhere('key', $settingName);
-            if($setting) {
-                $settingId = $setting->id;
-                $settingKey = $setting->key;
-            } else {
-                $settingId = $settingName;
-            }
-        } else {
-            $settingId = $settingName;
-        }
+    // Mevcut değeri belirle
+    if(isset($formData[$elementName])) {
+        $fieldValue = $formData[$elementName];
+    } elseif(isset($settings) && is_object($settings)) {
+        $cleanFieldName = str_replace('widget.', '', $elementName);
+        $fieldValue = $settings[$cleanFieldName] ?? $defaultValue;
     } else {
-        $settingId = $elementName;
+        $fieldValue = $defaultValue;
     }
     
-    // Values kontrolü
-    if (!isset($values) || !is_array($values)) {
-        $values = [];
+    // formData için varsayılan değeri ayarla
+    if (!isset($formData[$elementName])) {
+        $formData[$elementName] = $fieldValue;
     }
-    
-    $currentValue = isset($values[$settingId]) ? $values[$settingId] : $min;
 @endphp
 
-<div class="col-12" wire:key="setting-{{ $settingId }}">
+<div class="col-{{ $width }}" wire:key="setting-{{ $elementName }}">
     <div class="card mb-3 w-100">
         <div class="card-header">
             <div class="d-flex align-items-center justify-content-between">
@@ -61,21 +55,21 @@
         <div class="card-body">
             <div class="form-group w-100">
                 <div class="mb-3">
-                    <div class="form-range mb-2 text-primary" id="range-{{ $settingId }}" wire:ignore>
+                    <div class="form-range mb-2 text-primary" id="range-{{ $elementName }}" wire:ignore>
                         <input 
                             type="range" 
-                            wire:model="values.{{ $settingId }}" 
+                            wire:model="formData.{{ $elementName }}" 
                             class="form-range" 
-                            min="{{ $min }}" 
-                            max="{{ $max }}" 
+                            min="{{ $minValue }}" 
+                            max="{{ $maxValue }}" 
                             step="{{ $step }}" 
-                            onInput="document.getElementById('rangeValue-{{ $settingId }}').innerHTML = this.value"
+                            onInput="document.getElementById('rangeValue-{{ $elementName }}').innerHTML = this.value"
                         >
                     </div>
                     <div class="d-flex justify-content-between">
-                        <span class="small text-muted">{{ $min }}</span>
-                        <span class="badge bg-primary" id="rangeValue-{{ $settingId }}">{{ $currentValue }}</span>
-                        <span class="small text-muted">{{ $max }}</span>
+                        <span class="small text-muted">{{ $minValue }}</span>
+                        <span class="badge bg-primary" id="rangeValue-{{ $elementName }}">{{ $fieldValue }}</span>
+                        <span class="small text-muted">{{ $maxValue }}</span>
                     </div>
                 </div>
                 
@@ -86,9 +80,9 @@
                     </div>
                 @endif
                 
-                @if(isset($originalValues) && isset($originalValues[$settingId]) && isset($values[$settingId]) && $originalValues[$settingId] != $values[$settingId])
+                @if(isset($originalData[$elementName]) && isset($formData[$elementName]) && $originalData[$elementName] != $formData[$elementName])
                     <div class="mt-2 text-end">
-                        <span class="badge bg-yellow cursor-pointer" wire:click="resetToDefault({{ $settingId }})">
+                        <span class="badge bg-yellow cursor-pointer" wire:click="resetToDefault('{{ $elementName }}')">
                             <i class="fas fa-undo me-1"></i> Varsayılana Döndür
                         </span>
                     </div>

@@ -1,29 +1,62 @@
 @php
+    // Element dizisinin var olduğunu kontrol edelim
+    if (!isset($element) || !is_array($element)) {
+        $element = [];
+    }
+    
+    // Temel alan özelliklerini al
+    $fieldName = isset($element['name']) ? $element['name'] : 'image_multiple_' . uniqid();
+    $fieldLabel = isset($element['label']) ? $element['label'] : 'Çoklu Resim';
+    $helpText = isset($element['help_text']) ? $element['help_text'] : null;
+    
+    // Diğer özellikleri al
+    $width = isset($element['width']) ? $element['width'] : 12;
+    
+    // formData ve originalData kontrolü
+    if (!isset($formData) || !is_array($formData)) {
+        $formData = [];
+    }
+    
+    if (!isset($originalData) || !is_array($originalData)) {
+        $originalData = [];
+    }
+    
+    // Setting kontrolleri
     $settingId = null;
     $settingKey = null;
     
-    if(isset($element['properties']['setting_id'])) {
-        $settingId = $element['properties']['setting_id'];
-    } elseif(isset($element['properties']['name'])) {
-        $settingName = $element['properties']['name'];
-        
-        // Ayarı adından bul
-        $setting = $settings->firstWhere('key', $settingName);
-        if($setting) {
-            $settingId = $setting->id;
-            $settingKey = $setting->key;
+    // Eğer setting id verilmişse doğrudan kullan
+    if (isset($element['setting_id'])) {
+        $settingId = $element['setting_id'];
+    } elseif (isset($element['name'])) {
+        // Eğer settings varsa ve obje ise
+        if (isset($settings) && is_object($settings)) {
+            $setting = $settings->firstWhere('key', $element['name']);
+            if ($setting) {
+                $settingId = $setting->id;
+                $settingKey = $setting->key;
+            } else {
+                // Setting bulunamadı, alan adını kullanalım
+                $settingId = $fieldName;
+            }
+        } else {
+            // Settings mevcut değilse, field name kullanalım
+            $settingId = $fieldName;
         }
+    } else {
+        // Hiçbir tanımlayıcı yoksa benzersiz bir ID oluştur
+        $settingId = 'img_multiple_' . uniqid();
     }
 @endphp
 
 @if($settingId)
-    <div class="col-12" wire:key="setting-{{ $settingId }}">
+    <div class="col-{{ $width }}" wire:key="setting-{{ $settingId }}">
         <div class="card mb-3 w-100">
             <div class="card-header">
                 <div class="d-flex align-items-center justify-content-between">
                     <h3 class="card-title d-flex align-items-center">
                         <i class="fas fa-images me-2 text-primary"></i>
-                        {{ $element['properties']['label'] ?? 'Çoklu Resim' }}
+                        {{ $fieldLabel }}
                     </h3>
                 </div>
             </div>
@@ -84,16 +117,16 @@
                         </div>
                     @endif
                     
-                    @if(isset($element['properties']['help_text']) && !empty($element['properties']['help_text']))
+                    @if(!empty($helpText))
                         <div class="form-text text-muted mt-2">
                             <i class="fas fa-info-circle me-1"></i>
-                            {{ $element['properties']['help_text'] }}
+                            {{ $helpText }}
                         </div>
                     @endif
                     
-                    @if(isset($originalValues[$settingId]) && $originalValues[$settingId] != $values[$settingId])
+                    @if(isset($originalData[$fieldName]) && isset($formData[$fieldName]) && $originalData[$fieldName] != $formData[$fieldName])
                         <div class="mt-2 text-end">
-                            <span class="badge bg-yellow cursor-pointer" wire:click="resetToDefault({{ $settingId }})">
+                            <span class="badge bg-yellow cursor-pointer" wire:click="resetToDefault('{{ $fieldName }}')">
                                 <i class="fas fa-undo me-1"></i> Varsayılana Döndür
                             </span>
                         </div>
@@ -103,10 +136,10 @@
         </div>
     </div>
 @else
-    <div class="col-12">
+    <div class="col-{{ $width }}">
         <div class="alert alert-danger mb-3 w-100">
             <i class="fas fa-exclamation-circle me-2"></i>
-            Bu çoklu resim alanı için ayar bulunamadı: {{ $element['properties']['name'] ?? 'Bilinmeyen' }}
+            Bu çoklu resim alanı için ayar bulunamadı: {{ $element['name'] ?? 'Bilinmeyen' }}
         </div>
     </div>
 @endif

@@ -1,4 +1,43 @@
 @php
+    // Element ve properties dizilerinin var olduğunu kontrol edelim
+    if (!isset($element) || !is_array($element)) {
+        $element = ['properties' => []];
+    }
+    
+    if (!isset($element['properties']) || !is_array($element['properties'])) {
+        $element['properties'] = [];
+    }
+    
+    // Değişkenlerin var olduğunu kontrol edelim
+    if (!isset($values) || !is_array($values)) {
+        $values = [];
+    }
+    
+    if (!isset($settings) || !is_object($settings)) {
+        $settings = collect([]);
+    }
+    
+    if (!isset($originalValues) || !is_array($originalValues)) {
+        $originalValues = [];
+    }
+    
+    if (!isset($formData) || !is_array($formData)) {
+        $formData = [];
+    }
+    
+    if (!isset($temporaryImages) || !is_array($temporaryImages)) {
+        $temporaryImages = [];
+    }
+    
+    if (!isset($temporaryMultipleImages) || !is_array($temporaryMultipleImages)) {
+        $temporaryMultipleImages = [];
+    }
+    
+    if (!isset($multipleImagesArrays) || !is_array($multipleImagesArrays)) {
+        $multipleImagesArrays = [];
+    }
+    
+    // Benzersiz sekme kimliği oluştur
     $tabId = 'tabs-' . Str::random(6);
     $tabsData = [];
     
@@ -51,19 +90,23 @@
                     @elseif(isset($tab['elements']) && is_array($tab['elements']))
                         @foreach($tab['elements'] as $tabElement)
                             @php
-                                $elementType = $tabElement['type'] ?? 'text';
+                                // Element tipini güvenli bir şekilde kontrol et
+                                $elementType = isset($tabElement['type']) ? $tabElement['type'] : 'text';
+                                // View'un var olup olmadığını kontrol et
                                 $viewPath = 'widgetmanagement::form-builder.partials.form-elements.' . $elementType;
                             @endphp
                             
                             @if(view()->exists($viewPath))
                                 @include($viewPath, [
                                     'element' => $tabElement,
-                                    'values' => $values ?? [],
-                                    'settings' => $settings ?? [],
-                                    'originalValues' => $originalValues ?? [],
-                                    'temporaryImages' => $temporaryImages ?? [],
-                                    'temporaryMultipleImages' => $temporaryMultipleImages ?? [],
-                                    'multipleImagesArrays' => $multipleImagesArrays ?? []
+                                    'values' => $values,
+                                    'settings' => $settings,
+                                    'originalValues' => $originalValues,
+                                    'temporaryImages' => $temporaryImages,
+                                    'temporaryMultipleImages' => $temporaryMultipleImages,
+                                    'multipleImagesArrays' => $multipleImagesArrays,
+                                    'formData' => $formData,
+                                    'originalData' => $originalValues
                                 ])
                             @else
                                 <div class="alert alert-warning">

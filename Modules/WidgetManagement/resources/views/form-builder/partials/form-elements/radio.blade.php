@@ -1,42 +1,27 @@
 @php
     // Element ve properties dizilerinin var olduğunu kontrol edelim
     if (!isset($element) || !is_array($element)) {
-        $element = ['properties' => []];
+        $element = [];
     }
     
-    if (!isset($element['properties']) || !is_array($element['properties'])) {
-        $element['properties'] = [];
-    }
+    // Name değerini doğrudan al, properties içinde olmayabilir
+    $elementName = isset($element['name']) ? $element['name'] : 'radio_' . uniqid();
+    $elementLabel = isset($element['label']) ? $element['label'] : 'Seçim Düğmeleri';
     
-    // Güvenli bir şekilde özellikleri alabiliriz
-    $elementName = isset($element['properties']['name']) ? $element['properties']['name'] : 'radio_' . uniqid();
-    $elementLabel = isset($element['properties']['label']) ? $element['properties']['label'] : 'Seçim Düğmeleri';
+    // Diğer özellikleri al
+    $width = isset($element['width']) ? $element['width'] : 12;
+    $isRequired = isset($element['required']) && $element['required'] === true;
+    $defaultValue = isset($element['default']) ? $element['default'] : null;
+    $helpText = isset($element['help_text']) ? $element['help_text'] : null;
     
-    $settingId = null;
-    $settingKey = null;
-    $width = isset($element['properties']['width']) ? $element['properties']['width'] : 12;
-    $isRequired = isset($element['properties']['required']) && $element['properties']['required'] === true;
-    $defaultValue = isset($element['properties']['default_value']) ? $element['properties']['default_value'] : null;
-    $helpText = isset($element['properties']['help_text']) ? $element['properties']['help_text'] : null;
-    $options = isset($element['properties']['options']) ? $element['properties']['options'] : [];
-    
-    if(isset($element['properties']['setting_id'])) {
-        $settingId = $element['properties']['setting_id'];
-    } elseif(isset($element['properties']['name'])) {
-        $settingName = $element['properties']['name'];
-        
-        // Ayarı adından bul
-        if (isset($settings) && is_object($settings)) {
-            $setting = $settings->firstWhere('key', $settingName);
-            if($setting) {
-                $settingId = $setting->id;
-                $settingKey = $setting->key;
-            } else {
-                // Ayar yoksa oluştur
-                $settingId = $settingName;
-            }
-        } else {
-            $settingId = $settingName;
+    // Yeni options formatı (JSON'daki gibi)
+    $optionsArray = [];
+    if (isset($element['options']) && is_array($element['options'])) {
+        $optionsArray = $element['options'];
+    } elseif (isset($element['options']) && is_object($element['options'])) {
+        // { "option1": "Seçenek 1", "option2": "Seçenek 2" } formatını dönüştür
+        foreach ($element['options'] as $value => $label) {
+            $optionsArray[] = ['value' => $value, 'label' => $label];
         }
     }
     
@@ -63,20 +48,31 @@
         <div class="card-body">
             <div class="form-group w-100">
                 <div class="form-selectgroup">
-                    @foreach($options as $option)
-                        <label class="form-selectgroup-item">
-                            <input 
-                                type="radio" 
-                                name="radio_{{ $elementName }}" 
-                                value="{{ isset($option['value']) ? $option['value'] : '' }}" 
-                                class="form-selectgroup-input" 
-                                wire:model="formData.{{ $elementName }}"
-                                @if($isRequired) required @endif
-                                @if($defaultValue === (isset($option['value']) ? $option['value'] : '') || (isset($option['is_default']) && $option['is_default'])) checked @endif
-                            >
-                            <span class="form-selectgroup-label">{{ isset($option['label']) ? $option['label'] : 'Seçenek' }}</span>
-                        </label>
-                    @endforeach
+                    @if(is_array($optionsArray))
+                        @foreach($optionsArray as $value => $label)
+                            @php
+                                // Değerin bir dizi veya obje olma durumuna karşı kontrol
+                                $optionValue = is_array($label) ? $value : $value;
+                                $optionLabel = is_array($label) ? $label : $label;
+                                if (is_object($label)) {
+                                    $optionValue = $value;
+                                    $optionLabel = (string)$label;
+                                }
+                            @endphp
+                            <label class="form-selectgroup-item">
+                                <input 
+                                    type="radio" 
+                                    name="radio_{{ $elementName }}" 
+                                    value="{{ $optionValue }}" 
+                                    class="form-selectgroup-input" 
+                                    wire:model="formData.{{ $elementName }}"
+                                    @if($isRequired) required @endif
+                                    @if($defaultValue === $optionValue) checked @endif
+                                >
+                                <span class="form-selectgroup-label">{{ $optionLabel }}</span>
+                            </label>
+                        @endforeach
+                    @endif
                 </div>
                 
                 @if($helpText)

@@ -1,21 +1,44 @@
 @php
-    $fieldName = $element['name'] ?? '';
+    // Element dizisinin var olduğunu kontrol edelim
+    if (!isset($element) || !is_array($element)) {
+        $element = [];
+    }
+    
+    // Temel alan özelliklerini al
+    $fieldName = $element['name'] ?? 'text_' . uniqid();
     $fieldType = $element['type'] ?? 'text';
-    $fieldLabel = $element['label'] ?? '';
+    $fieldLabel = $element['label'] ?? 'Metin Alanı';
     $isRequired = isset($element['required']) && $element['required'];
     $placeholder = $element['placeholder'] ?? '';
     $helpText = $element['help_text'] ?? '';
     $isSystem = isset($element['system']) && $element['system'];
-    $width = isset($element['properties']['width']) ? $element['properties']['width'] : 12;
-    $defaultValue = isset($element['properties']['default_value']) ? $element['properties']['default_value'] : '';
     
-    if(isset($formData)) {
-        $fieldValue = $formData[$fieldName] ?? $defaultValue;
-    } elseif(isset($settings)) {
+    // Diğer özellikleri al
+    $width = isset($element['width']) ? $element['width'] : 12;
+    $defaultValue = isset($element['default']) ? $element['default'] : '';
+    
+    // formData ve originalData kontrolü
+    if (!isset($formData) || !is_array($formData)) {
+        $formData = [];
+    }
+    
+    if (!isset($originalData) || !is_array($originalData)) {
+        $originalData = [];
+    }
+    
+    // Mevcut değeri belirle
+    if(isset($formData[$fieldName])) {
+        $fieldValue = $formData[$fieldName];
+    } elseif(isset($settings) && is_object($settings)) {
         $cleanFieldName = str_replace('widget.', '', $fieldName);
         $fieldValue = $settings[$cleanFieldName] ?? $defaultValue;
     } else {
         $fieldValue = $defaultValue;
+    }
+    
+    // formData için varsayılan değeri ayarla
+    if (!isset($formData[$fieldName])) {
+        $formData[$fieldName] = $fieldValue;
     }
 @endphp
 
@@ -62,6 +85,14 @@
                     <div class="form-text text-muted mt-2">
                         <i class="fas fa-info-circle me-1"></i>
                         {{ $helpText }}
+                    </div>
+                @endif
+                
+                @if(isset($originalData[$fieldName]) && isset($formData[$fieldName]) && $originalData[$fieldName] != $formData[$fieldName])
+                    <div class="mt-2 text-end">
+                        <span class="badge bg-yellow cursor-pointer" wire:click="resetToDefault('{{ $fieldName }}')">
+                            <i class="fas fa-undo me-1"></i> Varsayılana Döndür
+                        </span>
                     </div>
                 @endif
             </div>

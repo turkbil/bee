@@ -1,15 +1,41 @@
 @php
-    // Element ve properties dizilerinin var olduğunu kontrol edelim
+    // Element dizisinin var olduğunu kontrol edelim
     if (!isset($element) || !is_array($element)) {
         $element = [];
     }
     
-    if (!isset($element['properties']) || !is_array($element['properties'])) {
-        $element['properties'] = [];
+    // Kart başlığını ve içeriğini doğrudan al (properties içinde olmayabilir)
+    $cardTitle = isset($element['title']) ? $element['title'] : (isset($element['label']) ? $element['label'] : 'Kart');
+    $cardContent = isset($element['content']) ? $element['content'] : null;
+    
+    // Değişkenlerin var olduğunu kontrol edelim
+    if (!isset($values) || !is_array($values)) {
+        $values = [];
     }
     
-    $cardTitle = isset($element['properties']['title']) ? $element['properties']['title'] : 'Kart';
-    $cardContent = isset($element['properties']['content']) ? $element['properties']['content'] : null;
+    if (!isset($settings) || !is_object($settings) && !is_array($settings)) {
+        $settings = is_object($settings) ? $settings : collect([]);
+    }
+    
+    if (!isset($originalValues) || !is_array($originalValues)) {
+        $originalValues = [];
+    }
+    
+    if (!isset($formData) || !is_array($formData)) {
+        $formData = [];
+    }
+    
+    if (!isset($temporaryImages) || !is_array($temporaryImages)) {
+        $temporaryImages = [];
+    }
+    
+    if (!isset($temporaryMultipleImages) || !is_array($temporaryMultipleImages)) {
+        $temporaryMultipleImages = [];
+    }
+    
+    if (!isset($multipleImagesArrays) || !is_array($multipleImagesArrays)) {
+        $multipleImagesArrays = [];
+    }
 @endphp
 
 <div class="col-12">
@@ -41,13 +67,14 @@
                         @if(view()->exists($viewPath))
                             @include($viewPath, [
                                 'element' => $cardElement,
-                                'values' => isset($values) ? $values : [],
-                                'settings' => isset($settings) ? $settings : [],
-                                'originalValues' => $originalValues ?? [],
-                                'temporaryImages' => $temporaryImages ?? [],
-                                'temporaryMultipleImages' => $temporaryMultipleImages ?? [],
-                                'multipleImagesArrays' => $multipleImagesArrays ?? [],
-                                'formData' => $formData ?? []
+                                'values' => $values,
+                                'settings' => $settings,
+                                'originalValues' => $originalValues,
+                                'temporaryImages' => $temporaryImages,
+                                'temporaryMultipleImages' => $temporaryMultipleImages,
+                                'multipleImagesArrays' => $multipleImagesArrays,
+                                'formData' => $formData,
+                                'originalData' => $originalValues
                             ])
                         @else
                             <div class="alert alert-warning">

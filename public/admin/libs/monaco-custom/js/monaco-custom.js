@@ -5,7 +5,6 @@ const MonacoCustomEditor = (function() {
     let widgetData = {};
     let currentTheme = 'vs-dark';
     let fullscreenEnabled = false;
-    let suggestionsEnabled = true;
     let foldAllEnabled = false;
 
     const editorSettings = {
@@ -54,9 +53,32 @@ const MonacoCustomEditor = (function() {
     const editorActions = {
         formatCode: function() {
             const activeEditor = this.getActiveEditor();
-            if (activeEditor) {
-                activeEditor.getAction('editor.action.formatDocument').run();
+            if (!activeEditor) return;
+
+            try {
+                const activeTab = document.querySelector('.nav-tabs a.nav-link.active');
+                const href = activeTab ? activeTab.getAttribute('href') : '';
+                
+                if (href === '#html-pane') {
+                    activeEditor.getAction('editor.action.formatDocument').run();
+                }
+            } catch (error) {
+                console.warn('Format hatası:', error);
             }
+        },
+
+        autoFormat: function(editor, language) {
+            if (!editor) return;
+            
+            setTimeout(() => {
+                try {
+                    if (language === 'html') {
+                        editor.getAction('editor.action.formatDocument').run();
+                    }
+                } catch (error) {
+                    console.warn('Otomatik format hatası:', error);
+                }
+            }, 100);
         },
 
         openFind: function() {
@@ -77,21 +99,6 @@ const MonacoCustomEditor = (function() {
                 activeEditor.getAction('editor.foldAll').run();
                 foldAllEnabled = true;
             }
-        },
-
-        toggleSuggestions: function() {
-            suggestionsEnabled = !suggestionsEnabled;
-            this.updateAllEditors({
-                quickSuggestions: suggestionsEnabled ? {
-                    other: true,
-                    comments: true,
-                    strings: true
-                } : false,
-                suggest: suggestionsEnabled ? {
-                    insertMode: 'replace',
-                    filterGraceful: true
-                } : { insertMode: 'replace', filterGraceful: false }
-            });
         },
 
         toggleTheme: function() {
@@ -358,11 +365,20 @@ const MonacoCustomEditor = (function() {
 
                 this.setupEditorEvents();
                 this.setupErrorMarkers();
+                this.autoFormatHtmlEditor();
                 editorsInitialized = true;
                 
             } catch (error) {
                 console.error('Monaco editor oluşturma hatası:', error);
             }
+        },
+
+        autoFormatHtmlEditor: function() {
+            setTimeout(() => {
+                if (htmlEditor && widgetData.content_html) {
+                    editorActions.autoFormat(htmlEditor, 'html');
+                }
+            }, 500);
         },
         
         setupEditorEvents: function() {
@@ -392,7 +408,7 @@ const MonacoCustomEditor = (function() {
                 
                 lines.forEach((line, index) => {
                     if (line.trim() && !line.includes('{') && !line.includes('}') && line.includes(':')) {
-                        if (!line.trim().endsWith(';') && !line.trim().endsWith('{')) {
+                        if (!line.trim().endsWith(';') && !line.trim().endsWith('{') && !line.includes('{{')) {
                             errors.push({
                                 startLineNumber: index + 1,
                                 startColumn: 1,
@@ -411,7 +427,8 @@ const MonacoCustomEditor = (function() {
             const validateJS = (jsCode) => {
                 const errors = [];
                 try {
-                    new Function(jsCode);
+                    const cleanedCode = jsCode.replace(/\{\{[^}]*\}\}/g, '""');
+                    new Function(cleanedCode);
                 } catch (e) {
                     const match = e.message.match(/line (\d+)/);
                     const lineNumber = match ? parseInt(match[1]) : 1;
@@ -448,6 +465,7 @@ const MonacoCustomEditor = (function() {
                     switch (e.key) {
                         case 's':
                             e.preventDefault();
+                            this.formatBeforeSubmit();
                             const form = document.getElementById('widget-form');
                             if (form) form.dispatchEvent(new Event('submit'));
                             break;
@@ -489,8 +507,19 @@ const MonacoCustomEditor = (function() {
             const form = document.getElementById('widget-form');
             if (form) {
                 form.addEventListener('submit', (e) => {
+                    this.formatBeforeSubmit();
                     this.updateBeforeSubmit();
                 });
+            }
+        },
+
+        formatBeforeSubmit: function() {
+            if (!editorsInitialized) return;
+            
+            try {
+                if (htmlEditor) editorActions.autoFormat(htmlEditor, 'html');
+            } catch (error) {
+                console.warn('Format before submit hatası:', error);
             }
         },
         
@@ -539,6 +568,7 @@ const MonacoCustomEditor = (function() {
                 
                 if (htmlEditor && htmlEditor.getValue() !== (newData.content_html || '')) {
                     htmlEditor.setValue(newData.content_html || '');
+                    editorActions.autoFormat(htmlEditor, 'html');
                 }
                 if (cssEditor && cssEditor.getValue() !== (newData.content_css || '')) {
                     cssEditor.setValue(newData.content_css || '');

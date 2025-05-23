@@ -16,12 +16,23 @@ class WidgetFormBuilderController extends Controller
             
             $schemaData = null;
             
-            if ($schemaType === 'settings_schema') {
+            if ($schemaType === 'settings') {
                 $schemaData = $widget->settings_schema;
                 $title = $widget->name . ' Ayarları';
-            } else {
+            } elseif ($schemaType === 'items') {
                 $schemaData = $widget->item_schema;
                 $title = $widget->name . ' İçerik Yapısı';
+            }
+            
+            if (is_null($schemaData)) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Schema data not found',
+                    'layout' => [
+                        'title' => 'Widget Form Yapısı',
+                        'elements' => []
+                    ]
+                ], 200);
             }
             
             $elements = [];
@@ -79,7 +90,7 @@ class WidgetFormBuilderController extends Controller
                 $schema = $this->parseElementsToSchema($formData['elements']);
             }
             
-            if ($schemaType === 'settings_schema') {
+            if ($schemaType === 'settings') {
                 $hasTitle = false;
                 $hasUniqueId = false;
                 
@@ -112,7 +123,7 @@ class WidgetFormBuilderController extends Controller
                 }
                 
                 $widget->settings_schema = $schema;
-            } else {
+            } elseif ($schemaType === 'items') {
                 $hasTitle = false;
                 $hasActive = false;
                 $hasUniqueId = false;
@@ -163,7 +174,7 @@ class WidgetFormBuilderController extends Controller
             
             log_activity(
                 $widget,
-                'widget ' . ($schemaType === 'settings_schema' ? 'ayar' : 'içerik') . ' form yapısı güncellendi'
+                'widget ' . ($schemaType === 'settings' ? 'ayar' : 'içerik') . ' form yapısı güncellendi'
             );
             
             return response()->json(['success' => true, 'message' => 'Form yapısı kaydedildi']);

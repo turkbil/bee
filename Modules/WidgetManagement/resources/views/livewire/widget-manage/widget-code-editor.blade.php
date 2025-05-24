@@ -16,11 +16,38 @@
                                     <i class="fas fa-arrow-left me-2"></i>
                                     Geri Dön
                                 </a>
+                                <a href="{{ route('admin.widgetmanagement.form-builder.edit', ['widgetId' => $widgetId, 'schemaType' => 'settings']) }}" 
+                                   class="btn btn-outline-info" target="_blank">
+                                    <i class="fas fa-sliders-h me-2"></i>
+                                    Özelleştirme Ayarları
+                                </a>
+                                @if($widget['has_items'])
+                                <a href="{{ route('admin.widgetmanagement.form-builder.edit', ['widgetId' => $widgetId, 'schemaType' => 'items']) }}" 
+                                   class="btn btn-outline-info" target="_blank">
+                                    <i class="fas fa-list me-2"></i>
+                                    İçerik Ayarları
+                                </a>
+                                @endif
                                 <a href="{{ route('admin.widgetmanagement.preview', $widgetId) }}" 
                                    class="btn btn-outline-info" target="_blank">
                                     <i class="fas fa-eye me-2"></i>
                                     Önizleme
                                 </a>
+
+                                {{-- Kodu Kaydet Butonu Başlangıcı --}}
+                                        <div class="d-flex justify-content-end align-items-center ms-2"> {{-- ms-2 eklendi --}}
+                                            <button type="submit" class="btn btn-primary" wire:loading.attr="disabled" wire:target="save" form="widget-form">
+                                                <span wire:loading.remove wire:target="save">
+                                                    <i class="fas fa-save me-2"></i>
+                                                    Kodu Kaydet
+                                                </span>
+                                                <span wire:loading wire:target="save">
+                                                    <i class="fas fa-spinner fa-spin me-2"></i>
+                                                    Kaydediliyor...
+                                                </span>
+                                            </button>
+                                        </div>
+                                {{-- Kodu Kaydet Butonu Sonu --}}
                             </div>
                         </div>
                     </div>
@@ -50,12 +77,6 @@
                                     <a href="#js-pane" class="nav-link" data-bs-toggle="tab">
                                         <i class="fab fa-js-square me-2"></i>
                                         JavaScript
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="#files-pane" class="nav-link" data-bs-toggle="tab">
-                                        <i class="fas fa-file-code me-2"></i>
-                                        Harici Dosyalar
                                     </a>
                                 </li>
                                 <li class="nav-item ms-auto">
@@ -107,109 +128,101 @@
                                         <textarea wire:model.defer="widget.content_js" id="js-textarea" style="display: none;"></textarea>
                                     </div>
                                 </div>
-                                
-                                <div class="tab-pane fade" id="files-pane">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="card">
-                                                <div class="card-header">
-                                                    <div class="d-flex justify-content-between align-items-center">
-                                                        <h4 class="card-title mb-0">
-                                                            <i class="fab fa-css3-alt me-2"></i>
-                                                            CSS Dosyaları
-                                                        </h4>
-                                                        <button type="button" class="btn btn-sm btn-primary" wire:click="addCssFile">
-                                                            <i class="fas fa-plus"></i>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                                <div class="card-body">
-                                                    @if(empty($widget['css_files']) || count($widget['css_files']) === 0)
-                                                    <div class="text-center py-3 ">
-                                                        <i class="fab fa-css3-alt fa-2x mb-2"></i>
-                                                        <p class="mb-0">Henüz CSS dosyası eklenmedi.</p>
-                                                    </div>
-                                                    @else
-                                                    @foreach($widget['css_files'] as $index => $cssFile)
-                                                    <div class="input-group mb-2">
-                                                        <span class="input-group-text">
-                                                            <i class="fas fa-link"></i>
-                                                        </span>
-                                                        <input type="text" 
-                                                            class="form-control" 
-                                                            wire:model.defer="widget.css_files.{{ $index }}" 
-                                                            placeholder="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-                                                        <button type="button" class="btn btn-outline-danger" wire:click="removeCssFile({{ $index }})">
-                                                            <i class="fas fa-trash"></i>
-                                                        </button>
-                                                    </div>
-                                                    @endforeach
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="card">
-                                                <div class="card-header">
-                                                    <div class="d-flex justify-content-between align-items-center">
-                                                        <h4 class="card-title mb-0">
-                                                            <i class="fab fa-js-square me-2"></i>
-                                                            JavaScript Dosyaları
-                                                        </h4>
-                                                        <button type="button" class="btn btn-sm btn-primary" wire:click="addJsFile">
-                                                            <i class="fas fa-plus"></i>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                                <div class="card-body">
-                                                    @if(empty($widget['js_files']) || count($widget['js_files']) === 0)
-                                                    <div class="text-center py-3 ">
-                                                        <i class="fab fa-js-square fa-2x mb-2"></i>
-                                                        <p class="mb-0">Henüz JavaScript dosyası eklenmedi.</p>
-                                                    </div>
-                                                    @else
-                                                    @foreach($widget['js_files'] as $index => $jsFile)
-                                                    <div class="input-group mb-2">
-                                                        <span class="input-group-text">
-                                                            <i class="fas fa-link"></i>
-                                                        </span>
-                                                        <input type="text" 
-                                                            class="form-control" 
-                                                            wire:model.defer="widget.js_files.{{ $index }}" 
-                                                            placeholder="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js">
-                                                        <button type="button" class="btn btn-outline-danger" wire:click="removeJsFile({{ $index }})">
-                                                            <i class="fas fa-trash"></i>
-                                                        </button>
-                                                    </div>
-                                                    @endforeach
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
+                            </div>
+                        </div>
+                    </div> <!-- #editor-card kapanışı -->
+                </div> <!-- col-12 kapanışı -->
+            </div> <!-- row kapanışı -->
+            
+            <div class="card mt-3" id="external-files-section">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-file-code me-2"></i>
+                        Harici Dosyalar
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h4 class="card-title mb-0">
+                                            <i class="fab fa-css3-alt me-2"></i>
+                                            CSS Dosyaları
+                                        </h4>
+                                        <button type="button" class="btn btn-sm btn-primary" wire:click.prevent="addCssFile">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
                                     </div>
+                                </div>
+                                <div class="card-body">
+                                    @if(empty($widget['css_files']) || count($widget['css_files']) === 0)
+                                    <div class="text-center py-3 ">
+                                        <i class="fab fa-css3-alt fa-2x mb-2"></i>
+                                        <p class="mb-0">Henüz CSS dosyası eklenmedi.</p>
+                                    </div>
+                                    @else
+                                    @foreach($widget['css_files'] as $index => $cssFile)
+                                    <div class="input-group mb-2">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-link"></i>
+                                        </span>
+                                        <input type="text" 
+                                            class="form-control" 
+                                            wire:model.defer="widget.css_files.{{ $index }}" 
+                                            placeholder="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+                                        <button type="button" class="btn btn-outline-danger" wire:click="removeCssFile({{ $index }})">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                    @endforeach
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h4 class="card-title mb-0">
+                                            <i class="fab fa-js-square me-2"></i>
+                                            JavaScript Dosyaları
+                                        </h4>
+                                        <button type="button" class="btn btn-sm btn-primary" wire:click.prevent="addJsFile">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    @if(empty($widget['js_files']) || count($widget['js_files']) === 0)
+                                    <div class="text-center py-3 ">
+                                        <i class="fab fa-js-square fa-2x mb-2"></i>
+                                        <p class="mb-0">Henüz JavaScript dosyası eklenmedi.</p>
+                                    </div>
+                                    @else
+                                    @foreach($widget['js_files'] as $index => $jsFile)
+                                    <div class="input-group mb-2">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-link"></i>
+                                        </span>
+                                        <input type="text" 
+                                            class="form-control" 
+                                            wire:model.defer="widget.js_files.{{ $index }}" 
+                                            placeholder="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js">
+                                        <button type="button" class="btn btn-outline-danger" wire:click="removeJsFile({{ $index }})">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                    @endforeach
+                                    @endif
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <div class="card mt-4">
-                <div class="card-footer">
-                    <div class="d-flex justify-content-end align-items-center">
-                        <button type="submit" class="btn btn-primary btn-lg" wire:loading.attr="disabled">
-                            <span wire:loading.remove>
-                                <i class="fas fa-save me-2"></i>
-                                Kodu Kaydet
-                            </span>
-                            <span wire:loading>
-                                <i class="fas fa-spinner fa-spin me-2"></i>
-                                Kaydediliyor...
-                            </span>
-                        </button>
-                    </div>
-                </div>
-            </div>
+
         </form>
     
         @php

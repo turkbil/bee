@@ -133,7 +133,7 @@
                                     <div class="card-header d-flex align-items-center">
                                         <div class="me-auto">
                                             <h3 class="card-title mb-0">
-                                                <a href="{{ route('admin.widgetmanagement.items', $instance->id) }}">
+                                                <a href="{{ $instance->widget->has_items ? route('admin.widgetmanagement.items', $instance->id) : route('admin.widgetmanagement.settings', $instance->id) }}">
                                                     {{ $instance->settings['title'] ?? $instance->widget->name }}
                                                 </a>
                                             </h3>
@@ -154,21 +154,23 @@
                                             
                                             <div class="dropdown-menu dropdown-menu-end">
                                                 <a href="{{ route('admin.widgetmanagement.settings', $instance->id) }}" class="dropdown-item">
-                                                    <i class="fas fa-sliders-h me-2"></i> Ayarlar
+                                                    <i class="fas fa-sliders-h me-2"></i> {{ $instance->widget->has_items ? 'Ayarlar' : 'Özelleştir' }}
                                                 </a>
 
-                                                @if($instance->widget->type === 'static')
-                                                    @php
-                                                        $staticItem = $instance->items->first();
-                                                        $itemId = $staticItem ? $staticItem->id : 0;
-                                                    @endphp
-                                                    <a href="{{ route('admin.widgetmanagement.item.manage', [$instance->id, $itemId]) }}" class="dropdown-item">
-                                                        <i class="fas fa-layer-group me-2"></i> İçerik
-                                                    </a>
-                                                @else
-                                                    <a href="{{ route('admin.widgetmanagement.items', $instance->id) }}" class="dropdown-item">
-                                                        <i class="fas fa-layer-group me-2"></i> İçerik
-                                                    </a>
+                                                @if($instance->widget->has_items)
+                                                    @if($instance->widget->type === 'static')
+                                                        @php
+                                                            $staticItem = $instance->items->first();
+                                                            $itemId = $staticItem ? $staticItem->id : 0;
+                                                        @endphp
+                                                        <a href="{{ route('admin.widgetmanagement.item.manage', [$instance->id, $itemId]) }}" class="dropdown-item">
+                                                            <i class="fas fa-layer-group me-2"></i> İçerik
+                                                        </a>
+                                                    @else
+                                                        <a href="{{ route('admin.widgetmanagement.items', $instance->id) }}" class="dropdown-item">
+                                                            <i class="fas fa-layer-group me-2"></i> İçerik
+                                                        </a>
+                                                    @endif
                                                 @endif
                                                 
                                                 <!-- Önizleme Butonu (Dropdown İçinde) -->
@@ -195,24 +197,30 @@
                                         <div class="d-flex align-items-center justify-content-between mb-2">
                                             <div class="d-flex gap-2">
 
-                                            @if($instance->widget->type === 'static')
-                                                @php
-                                                    $staticItem = $instance->items->first();
-                                                    $itemId = $staticItem ? $staticItem->id : 0;
-                                                @endphp
-                                                <a href="{{ route('admin.widgetmanagement.item.manage', [$instance->id, $itemId]) }}" class="btn btn-sm btn-outline-primary">
-                                                    <i class="fas fa-layer-group me-1"></i>
-                                                    İçerik
-                                                </a>
+                                            @if($instance->widget->has_items)
+                                                @if($instance->widget->type === 'static')
+                                                    @php
+                                                        $staticItem = $instance->items->first();
+                                                        $itemId = $staticItem ? $staticItem->id : 0;
+                                                    @endphp
+                                                    <a href="{{ route('admin.widgetmanagement.item.manage', [$instance->id, $itemId]) }}" class="btn btn-sm btn-outline-primary">
+                                                        <i class="fas fa-layer-group me-1"></i>
+                                                        İçerikler
+                                                    </a>
+                                                @else
+                                                    <a href="{{ route('admin.widgetmanagement.items', $instance->id) }}" class="btn btn-sm btn-outline-primary">
+                                                        <i class="fas fa-layer-group me-1"></i>
+                                                        İçerikler
+                                                    </a>
+                                                @endif
                                             @else
-                                                <a href="{{ route('admin.widgetmanagement.items', $instance->id) }}" class="btn btn-sm btn-outline-primary">
-                                                    <i class="fas fa-layer-group me-1"></i>
-                                                    İçerikler
+                                                <a href="{{ route('admin.widgetmanagement.settings', $instance->id) }}" class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-cog me-1"></i>
+                                                    Özelleştir
                                                 </a>
                                             @endif
                                             
-                                            <!-- Kart altına önizleme butonu (buton olarak) -->
-                                            <a href="{{ route('admin.widgetmanagement.preview', $instance->widget->id) }}" class="btn btn-sm btn-outline-secondary" target="_blank">
+                                            <a href="{{ route('admin.widgetmanagement.preview', $instance->widget->id) }}" class="btn btn-sm btn-outline-primary" target="_blank">
                                                 <i class="fas fa-eye me-1"></i>
                                                 Önizle
                                             </a>

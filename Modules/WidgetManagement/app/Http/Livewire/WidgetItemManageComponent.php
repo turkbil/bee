@@ -23,12 +23,10 @@ class WidgetItemManageComponent extends Component
     public $schema = [];
     public $isStaticWidget = false;
     
-    // Tek dosya resim yüklemeleri için
     public $temporaryImages = [];
     
-    // Çoklu dosya yüklemeleri
     public $tempPhoto;
-    public $photoField; // Hangi alan için yüklüyoruz
+    public $photoField;
     public $photos = [];
     
     protected $itemService;
@@ -118,14 +116,12 @@ class WidgetItemManageComponent extends Component
         
         $hasTitle = false;
         $hasActive = false;
-        $hasUniqueId = false;
 
         foreach ($this->schema as $field) {
             if (!isset($field['name'])) continue;
             
             if ($field['name'] === 'title') $hasTitle = true;
             if ($field['name'] === 'is_active') $hasActive = true;
-            if ($field['name'] === 'unique_id') $hasUniqueId = true;
         }
         
         if (!$hasTitle) {
@@ -145,28 +141,15 @@ class WidgetItemManageComponent extends Component
         if (!$hasActive) {
             $this->schema[] = [
                 'name' => 'is_active',
-                'label' => 'Aktif',
-                'type' => 'checkbox',
+                'label' => 'Durum',
+                'type' => 'switch',
                 'required' => false,
                 'system' => true,
                 'properties' => [
                     'width' => 12,
-                    'checkbox_label' => 'Bu içerik aktif olsun',
+                    'active_label' => 'Aktif',
+                    'inactive_label' => 'Aktif Değil',
                     'default_value' => true
-                ]
-            ];
-        }
-        
-        if (!$hasUniqueId) {
-            $this->schema[] = [
-                'name' => 'unique_id',
-                'label' => 'Benzersiz ID',
-                'type' => 'text',
-                'required' => false,
-                'system' => true,
-                'hidden' => true,
-                'properties' => [
-                    'width' => 12
                 ]
             ];
         }
@@ -245,11 +228,11 @@ class WidgetItemManageComponent extends Component
         if (!empty($this->schema)) {
             foreach ($this->schema as $field) {
                 if (!isset($field['name']) || !isset($field['type'])) continue;
-                if ($field['name'] === 'unique_id') continue;
                 if ($field['type'] === 'row') continue;
                 
-                if ($field['type'] === 'checkbox') {
-                    $this->formData[$field['name']] = isset($field['properties']['default_value']) ? $field['properties']['default_value'] : false;
+                if ($field['type'] === 'checkbox' || $field['type'] === 'switch') {
+                    $defaultValue = isset($field['properties']['default_value']) ? $field['properties']['default_value'] : false;
+                    $this->formData[$field['name']] = $defaultValue;
                 } elseif ($field['type'] === 'image_multiple') {
                     $this->formData[$field['name']] = [];
                 } else {

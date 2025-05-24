@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", function() {
       required: false,
       is_active: true,
       is_system: false,
+      is_protected: false,
       default_value: "",
     },
     textarea: {
@@ -30,6 +31,7 @@ document.addEventListener("DOMContentLoaded", function() {
       required: false,
       is_active: true,
       is_system: false,
+      is_protected: false,
       default_value: "",
     },
     number: {
@@ -41,6 +43,7 @@ document.addEventListener("DOMContentLoaded", function() {
       required: false,
       is_active: true,
       is_system: false,
+      is_protected: false,
       default_value: "",
     },
     email: {
@@ -52,6 +55,7 @@ document.addEventListener("DOMContentLoaded", function() {
       required: false,
       is_active: true,
       is_system: false,
+      is_protected: false,
       default_value: "",
     },
     select: {
@@ -63,6 +67,7 @@ document.addEventListener("DOMContentLoaded", function() {
       required: false,
       is_active: true,
       is_system: false,
+      is_protected: false,
       options: [
         { value: "option1", label: "Seçenek 1", is_default: true },
         { value: "option2", label: "Seçenek 2", is_default: false },
@@ -78,6 +83,7 @@ document.addEventListener("DOMContentLoaded", function() {
       required: false,
       is_active: true,
       is_system: false,
+      is_protected: false,
       default_value: false, // Varsayılan olarak işaretsiz
       checkbox_label: "Onay",
       default_value_text: "",
@@ -90,6 +96,7 @@ document.addEventListener("DOMContentLoaded", function() {
       required: false,
       is_active: true,
       is_system: false,
+      is_protected: false,
       options: [
         { value: "option1", label: "Seçenek 1", is_default: true },
         { value: "option2", label: "Seçenek 2", is_default: false },
@@ -108,6 +115,7 @@ document.addEventListener("DOMContentLoaded", function() {
       required: false,
       is_active: true,
       is_system: false,
+      is_protected: false,
     },
     color: {
       label: "Renk Seçici",
@@ -117,6 +125,7 @@ document.addEventListener("DOMContentLoaded", function() {
       required: false,
       is_active: true,
       is_system: false,
+      is_protected: false,
       default_value: "#206bc4",
     },
     date: {
@@ -127,6 +136,7 @@ document.addEventListener("DOMContentLoaded", function() {
       required: false,
       is_active: true,
       is_system: false,
+      is_protected: false,
       default_value: new Date().toISOString().split('T')[0],
     },
     time: {
@@ -137,6 +147,7 @@ document.addEventListener("DOMContentLoaded", function() {
       required: false,
       is_active: true,
       is_system: false,
+      is_protected: false,
       default_value: new Date().toTimeString().split(' ')[0].slice(0, 5),
     },
     file: {
@@ -147,6 +158,7 @@ document.addEventListener("DOMContentLoaded", function() {
       required: false,
       is_active: true,
       is_system: false,
+      is_protected: false,
       default_value: "",
     },
     image: {
@@ -157,6 +169,7 @@ document.addEventListener("DOMContentLoaded", function() {
       required: false,
       is_active: true,
       is_system: false,
+      is_protected: false,
       default_value: "",
     },
     image_multiple: {
@@ -167,6 +180,7 @@ document.addEventListener("DOMContentLoaded", function() {
       required: false,
       is_active: true,
       is_system: false,
+      is_protected: false,
       default_value: "",
     },
     password: {
@@ -178,6 +192,7 @@ document.addEventListener("DOMContentLoaded", function() {
       required: false,
       is_active: true,
       is_system: false,
+      is_protected: false,
       default_value: "",
     },
     tel: {
@@ -189,6 +204,7 @@ document.addEventListener("DOMContentLoaded", function() {
       required: false,
       is_active: true,
       is_system: false,
+      is_protected: false,
       default_value: "",
     },
     url: {
@@ -200,6 +216,7 @@ document.addEventListener("DOMContentLoaded", function() {
       required: false,
       is_active: true,
       is_system: false,
+      is_protected: false,
       default_value: "",
     },
     range: {
@@ -210,6 +227,7 @@ document.addEventListener("DOMContentLoaded", function() {
       required: false,
       is_active: true,
       is_system: false,
+      is_protected: false,
       min: 0,
       max: 100,
       step: 1,
@@ -447,6 +465,12 @@ document.addEventListener("DOMContentLoaded", function() {
         const action = this.dataset.action;
 
         if (action === "remove") {
+          // Korumalı elementler silinemez
+          if (formElement.properties.is_protected === true) {
+            alert("Bu element korumalıdır ve silinemez.");
+            return;
+          }
+          
           // Eğer is_system true ise ve veritabanında kaydedilmişse silmeye izin verme
           if (formElement.properties.is_system === true) {
             alert("Bu element bir sistem ayarıdır ve silinemez.");
@@ -460,6 +484,12 @@ document.addEventListener("DOMContentLoaded", function() {
           window.checkEmptyCanvas();
           window.saveState();
         } else if (action === "duplicate") {
+          // Korumalı elementler kopyalanamaz
+          if (formElement.properties.is_protected === true) {
+            alert("Korumalı elementler kopyalanamaz.");
+            return;
+          }
+          
           // Sistem ayarı olan elementler kopyalanamaz
           if (formElement.properties.is_system === true) {
             alert("Sistem ayarları kopyalanamaz.");
@@ -473,6 +503,7 @@ document.addEventListener("DOMContentLoaded", function() {
           
           // Kopyalanan elementin "is_system" özelliğini false yap
           elementProps.is_system = false;
+          elementProps.is_protected = false;
           
           // Kopyalanan elementin adını değiştir
           if (elementProps.name) {

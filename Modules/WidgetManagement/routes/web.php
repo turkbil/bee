@@ -14,7 +14,7 @@ use Modules\WidgetManagement\app\Http\Controllers\WidgetPreviewController;
 use Modules\WidgetManagement\app\Http\Livewire\FileWidgetListComponent;
 use Modules\WidgetManagement\app\Http\Livewire\ModuleWidgetListComponent;
 use Modules\WidgetManagement\app\Http\Controllers\WidgetFormBuilderController;
-use Modules\WidgetManagement\app\Http\Livewire\WidgetFormBuilderComponent;
+use Modules\WidgetManagement\App\Http\Livewire\WidgetFormBuilderComponent;
 
 Route::middleware(['web', 'auth', 'tenant'])
     ->prefix('admin')

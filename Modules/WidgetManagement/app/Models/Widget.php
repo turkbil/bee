@@ -44,9 +44,6 @@ class Widget extends Model
         'is_core' => 'boolean',
     ];
 
-    /**
-     * Widget-Modül ilişkisi
-     */
     public function modules(): BelongsToMany
     {
         return $this->belongsToMany(
@@ -57,57 +54,160 @@ class Widget extends Model
         );
     }
 
-    /**
-     * Widget-Kategori ilişkisi
-     */
     public function category(): BelongsTo
     {
         return $this->belongsTo(WidgetCategory::class, 'widget_category_id', 'widget_category_id');
     }
     
-    /**
-     * Tenant Widget örnekleri
-     */
     public function tenantWidgets(): HasMany
     {
         return $this->hasMany(TenantWidget::class);
     }
     
-    /**
-     * Item şemasını döndür
-     */
     public function getItemSchema()
     {
         if (!$this->has_items) {
             return [];
         }
         
-        $schema = $this->item_schema;
+        $schema = $this->item_schema ?? [];
         
         if (empty($schema)) {
             return [];
         }
         
-        return $schema;
+        return $this->ensureRequiredItemFields($schema);
     }
     
-    /**
-     * Settings şemasını döndür
-     */
     public function getSettingsSchema()
     {
-        $schema = $this->settings_schema;
+        $schema = $this->settings_schema ?? [];
         
         if (empty($schema)) {
             return [];
         }
         
+        return $this->ensureRequiredSettingsFields($schema);
+    }
+    
+    private function ensureRequiredItemFields($schema)
+    {
+        $hasTitle = false;
+        $hasActive = false;
+        
+        foreach ($schema as $field) {
+            if (isset($field['name'])) {
+                if ($field['name'] === 'title') $hasTitle = true;
+                if ($field['name'] === 'is_active') $hasActive = true;
+            }
+        }
+        
+        if (!$hasTitle) {
+            array_unshift($schema, [
+                'name' => 'title',
+                'label' => 'Başlık',
+                'type' => 'text',
+                'required' => true,
+                'system' => true,
+                'protected' => true
+            ]);
+        } else {
+            foreach ($schema as &$field) {
+                if (isset($field['name']) && $field['name'] === 'title') {
+                    $field['system'] = true;
+                    $field['protected'] = true;
+                    $field['required'] = true;
+                }
+            }
+        }
+        
+        if (!$hasActive) {
+            $schema[] = [
+                'name' => 'is_active',
+                'label' => 'Durum',
+                'type' => 'switch',
+                'required' => false,
+                'system' => true,
+                'protected' => true,
+                'properties' => [
+                    'active_label' => 'Aktif',
+                    'inactive_label' => 'Aktif Değil',
+                    'default_value' => true
+                ]
+            ];
+        } else {
+            foreach ($schema as &$field) {
+                if (isset($field['name']) && $field['name'] === 'is_active') {
+                    $field['system'] = true;
+                    $field['protected'] = true;
+                    $field['type'] = 'switch';
+                    $field['label'] = 'Durum';
+                    $field['properties'] = [
+                        'active_label' => 'Aktif',
+                        'inactive_label' => 'Aktif Değil',
+                        'default_value' => true
+                    ];
+                }
+            }
+        }
+        
         return $schema;
     }
     
-    /**
-     * Thumbnail URL'ini döndür
-     */
+    private function ensureRequiredSettingsFields($schema)
+    {
+        $hasTitle = false;
+        $hasUniqueId = false;
+        
+        foreach ($schema as $field) {
+            if (isset($field['name'])) {
+                if ($field['name'] === 'title') $hasTitle = true;
+                if ($field['name'] === 'unique_id') $hasUniqueId = true;
+            }
+        }
+        
+        if (!$hasTitle) {
+            array_unshift($schema, [
+                'name' => 'title',
+                'label' => 'Widget Başlığı',
+                'type' => 'text',
+                'required' => true,
+                'system' => true,
+                'protected' => true
+            ]);
+        } else {
+            foreach ($schema as &$field) {
+                if (isset($field['name']) && $field['name'] === 'title') {
+                    $field['system'] = true;
+                    $field['protected'] = true;
+                    $field['required'] = true;
+                }
+            }
+        }
+        
+        if (!$hasUniqueId) {
+            $schema[] = [
+                'name' => 'unique_id',
+                'label' => 'Benzersiz ID',
+                'type' => 'text',
+                'required' => false,
+                'system' => true,
+                'hidden' => true,
+                'protected' => true
+            ];
+        } else {
+            foreach ($schema as &$field) {
+                if (isset($field['name']) && $field['name'] === 'unique_id') {
+                    $field['system'] = true;
+                    $field['protected'] = true;
+                    $field['hidden'] = true;
+                }
+            }
+        }
+        
+        return $schema;
+    }
+    
     public function getThumbnailUrl()
     {
         if (empty($this->thumbnail)) {

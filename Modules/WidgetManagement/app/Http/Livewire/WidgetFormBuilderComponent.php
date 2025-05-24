@@ -4,7 +4,9 @@ namespace Modules\WidgetManagement\App\Http\Livewire;
 
 use Livewire\Component;
 use Modules\WidgetManagement\App\Models\Widget;
+use Livewire\Attributes\Layout;
 
+#[Layout('widgetmanagement::form-builder.layout')]
 class WidgetFormBuilderComponent extends Component
 {
     public $widgetId;
@@ -17,6 +19,15 @@ class WidgetFormBuilderComponent extends Component
         $this->schemaType = $schemaType;
         
         $this->widget = Widget::findOrFail($widgetId);
+
+        // Güvenlik Kontrolü: has_items false ise 'items' şemasına erişimi engelle
+        if ($this->schemaType === 'items' && !$this->widget->has_items) {
+            session()->flash('error', 'Bu widget türü için içerik şeması düzenlenemez. Sadece ayarlarını düzenleyebilirsiniz.');
+            // Kullanıcıyı widget'ın ana yönetimine veya ayarlar sayfasına yönlendir
+            return redirect()->route('admin.widgetmanagement.manage', $this->widgetId);
+            // Alternatif olarak ayarlar sayfasına da yönlendirilebilir:
+            // return redirect()->route('admin.widgetmanagement.form-builder.edit', ['widgetId' => $this->widgetId, 'schemaType' => 'settings']);
+        }
     }
     
     public function saveLayout($data)
@@ -132,7 +143,6 @@ class WidgetFormBuilderComponent extends Component
     
     public function render()
     {
-        return view('widgetmanagement::form-builder.edit')
-            ->layout('widgetmanagement::form-builder.layout');
+        return view('widgetmanagement::form-builder.edit');
     }
 }

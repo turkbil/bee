@@ -17,10 +17,10 @@ class WidgetFormBuilderController extends Controller
             $schemaData = null;
             
             if ($schemaType === 'settings') {
-                $schemaData = $widget->settings_schema;
+                $schemaData = $widget->getSettingsSchema();
                 $title = $widget->name . ' Ayarları';
             } elseif ($schemaType === 'items') {
-                $schemaData = $widget->item_schema;
+                $schemaData = $widget->getItemSchema();
                 $title = $widget->name . ' İçerik Yapısı';
             }
             
@@ -38,11 +38,7 @@ class WidgetFormBuilderController extends Controller
             $elements = [];
             
             if (!empty($schemaData)) {
-                $schema = is_array($schemaData) ? $schemaData : json_decode($schemaData, true);
-                
-                if (json_last_error() === JSON_ERROR_NONE && is_array($schema)) {
-                    $elements = $this->parseSchemaToElements($schema);
-                }
+                $elements = $this->parseSchemaToElements($schemaData);
             }
             
             $layout = [
@@ -91,82 +87,10 @@ class WidgetFormBuilderController extends Controller
             }
             
             if ($schemaType === 'settings') {
-                $hasTitle = false;
-                $hasUniqueId = false;
-                
-                foreach ($schema as $field) {
-                    if (isset($field['name'])) {
-                        if ($field['name'] === 'title') $hasTitle = true;
-                        if ($field['name'] === 'unique_id') $hasUniqueId = true;
-                    }
-                }
-                
-                if (!$hasTitle) {
-                    array_unshift($schema, [
-                        'name' => 'title',
-                        'label' => 'Başlık',
-                        'type' => 'text',
-                        'required' => true,
-                        'system' => true
-                    ]);
-                }
-                
-                if (!$hasUniqueId) {
-                    $schema[] = [
-                        'name' => 'unique_id',
-                        'label' => 'Benzersiz ID',
-                        'type' => 'text',
-                        'required' => false,
-                        'system' => true,
-                        'hidden' => true
-                    ];
-                }
-                
+                $schema = $this->ensureRequiredSettingsFields($schema);
                 $widget->settings_schema = $schema;
             } elseif ($schemaType === 'items') {
-                $hasTitle = false;
-                $hasActive = false;
-                $hasUniqueId = false;
-                
-                foreach ($schema as $field) {
-                    if (isset($field['name'])) {
-                        if ($field['name'] === 'title') $hasTitle = true;
-                        if ($field['name'] === 'is_active') $hasActive = true;
-                        if ($field['name'] === 'unique_id') $hasUniqueId = true;
-                    }
-                }
-                
-                if (!$hasTitle) {
-                    array_unshift($schema, [
-                        'name' => 'title',
-                        'label' => 'Başlık',
-                        'type' => 'text',
-                        'required' => true,
-                        'system' => true
-                    ]);
-                }
-                
-                if (!$hasActive) {
-                    $schema[] = [
-                        'name' => 'is_active',
-                        'label' => 'Aktif',
-                        'type' => 'checkbox',
-                        'required' => false,
-                        'system' => true
-                    ];
-                }
-                
-                if (!$hasUniqueId) {
-                    $schema[] = [
-                        'name' => 'unique_id',
-                        'label' => 'Benzersiz ID',
-                        'type' => 'text',
-                        'required' => false,
-                        'system' => true,
-                        'hidden' => true
-                    ];
-                }
-                
+                $schema = $this->ensureRequiredItemFields($schema);
                 $widget->item_schema = $schema;
             }
             
@@ -181,6 +105,86 @@ class WidgetFormBuilderController extends Controller
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
         }
+    }
+    
+    private function ensureRequiredSettingsFields($schema)
+    {
+        $hasTitle = false;
+        $hasUniqueId = false;
+        
+        foreach ($schema as $field) {
+            if (isset($field['name'])) {
+                if ($field['name'] === 'title') $hasTitle = true;
+                if ($field['name'] === 'unique_id') $hasUniqueId = true;
+            }
+        }
+        
+        if (!$hasTitle) {
+            array_unshift($schema, [
+                'name' => 'title',
+                'label' => 'Widget Başlığı',
+                'type' => 'text',
+                'required' => true,
+                'system' => true,
+                'protected' => true
+            ]);
+        }
+        
+        if (!$hasUniqueId) {
+            $schema[] = [
+                'name' => 'unique_id',
+                'label' => 'Benzersiz ID',
+                'type' => 'text',
+                'required' => false,
+                'system' => true,
+                'hidden' => true,
+                'protected' => true
+            ];
+        }
+        
+        return $schema;
+    }
+    
+    private function ensureRequiredItemFields($schema)
+    {
+        $hasTitle = false;
+        $hasActive = false;
+        
+        foreach ($schema as $field) {
+            if (isset($field['name'])) {
+                if ($field['name'] === 'title') $hasTitle = true;
+                if ($field['name'] === 'is_active') $hasActive = true;
+            }
+        }
+        
+        if (!$hasTitle) {
+            array_unshift($schema, [
+                'name' => 'title',
+                'label' => 'Başlık',
+                'type' => 'text',
+                'required' => true,
+                'system' => true,
+                'protected' => true
+            ]);
+        }
+        
+        if (!$hasActive) {
+            $schema[] = [
+                'name' => 'is_active',
+                'label' => 'Durum',
+                'type' => 'switch',
+                'required' => false,
+                'system' => true,
+                'protected' => true,
+                'properties' => [
+                    'active_label' => 'Aktif',
+                    'inactive_label' => 'Aktif Değil',
+                    'default_value' => true
+                ]
+            ];
+        }
+        
+        return $schema;
     }
 
     private function parseSchemaToElements($schema)
@@ -232,12 +236,10 @@ class WidgetFormBuilderController extends Controller
 
     private function createElementFromField($field)
     {
-        // Temel alan kontrolleri
         if (!isset($field['type'])) {
             return null;
         }
         
-        // Satır tipi elementler için özel işlem
         if ($field['type'] === 'row') {
             return [
                 'type' => 'row',
@@ -245,7 +247,6 @@ class WidgetFormBuilderController extends Controller
             ];
         }
         
-        // Card ve tab_group için özel işlem
         if ($field['type'] === 'card') {
             $element = [
                 'type' => 'card',
@@ -256,7 +257,6 @@ class WidgetFormBuilderController extends Controller
                 ]
             ];
             
-            // Eğer iç elemanlar varsa ekle
             if (isset($field['elements']) && is_array($field['elements'])) {
                 $element['elements'] = [];
                 foreach ($field['elements'] as $childField) {
@@ -279,7 +279,6 @@ class WidgetFormBuilderController extends Controller
                 ]
             ];
             
-            // Sekme verilerini işle
             if (isset($field['properties']['tabs']) && is_array($field['properties']['tabs'])) {
                 foreach ($field['properties']['tabs'] as $tab) {
                     $tabData = [
@@ -307,7 +306,6 @@ class WidgetFormBuilderController extends Controller
                     $element['properties']['tabs'][] = $tabData;
                 }
             } else {
-                // Varsayılan sekme oluştur
                 $element['properties']['tabs'][] = [
                     'title' => 'Varsayılan Sekme',
                     'elements' => []
@@ -325,6 +323,7 @@ class WidgetFormBuilderController extends Controller
                 'required' => $field['required'] ?? false,
                 'is_active' => true,
                 'is_system' => $field['system'] ?? false,
+                'is_protected' => $field['protected'] ?? false,
                 'width' => 12
             ]
         ];
@@ -339,6 +338,12 @@ class WidgetFormBuilderController extends Controller
         
         if (isset($field['help_text'])) {
             $element['properties']['help_text'] = $field['help_text'];
+        }
+        
+        if (isset($field['properties']) && is_array($field['properties'])) {
+            foreach ($field['properties'] as $key => $value) {
+                $element['properties'][$key] = $value;
+            }
         }
         
         if (isset($field['options']) && is_array($field['options'])) {
@@ -406,7 +411,6 @@ class WidgetFormBuilderController extends Controller
             return null;
         }
 
-        // Card tipini işle
         if ($element['type'] === 'card') {
             $field = [
                 'type' => 'card',
@@ -414,18 +418,14 @@ class WidgetFormBuilderController extends Controller
                 'properties' => []
             ];
             
-            // Kart özelliklerini ekle
             if (isset($element['properties']) && is_array($element['properties'])) {
-                // Başlık ve içerik bilgilerini özellikle işle
                 $field['properties'] = $element['properties'];
                 
-                // Başlık eğer varsa, field label'a da ata
                 if (isset($element['properties']['title']) && !empty($element['properties']['title'])) {
                     $field['label'] = $element['properties']['title'];
                 }
             }
             
-            // İç elemanları işle
             if (isset($element['elements']) && is_array($element['elements'])) {
                 $field['elements'] = [];
                 foreach ($element['elements'] as $childElement) {
@@ -439,7 +439,6 @@ class WidgetFormBuilderController extends Controller
             return $field;
         }
         
-        // Tab group tipini işle
         if ($element['type'] === 'tab_group') {
             $field = [
                 'type' => 'tab_group',
@@ -447,14 +446,11 @@ class WidgetFormBuilderController extends Controller
                 'properties' => []
             ];
             
-            // Sekme özelliklerini ekle
             if (isset($element['properties']) && is_array($element['properties'])) {
                 $field['properties'] = $element['properties'];
                 
-                // Sekme içeriklerini işle
                 if (isset($field['properties']['tabs']) && is_array($field['properties']['tabs'])) {
                     foreach ($field['properties']['tabs'] as $tabIndex => $tab) {
-                        // Sekme iç elemanlarını işle
                         if (isset($tab['elements']) && is_array($tab['elements'])) {
                             $tabElements = [];
                             foreach ($tab['elements'] as $childElement) {
@@ -493,6 +489,16 @@ class WidgetFormBuilderController extends Controller
             $field['help_text'] = $properties['help_text'];
         }
         
+        if (isset($properties['active_label']) || isset($properties['inactive_label'])) {
+            $field['properties'] = [];
+            if (isset($properties['active_label'])) {
+                $field['properties']['active_label'] = $properties['active_label'];
+            }
+            if (isset($properties['inactive_label'])) {
+                $field['properties']['inactive_label'] = $properties['inactive_label'];
+            }
+        }
+        
         if (isset($properties['options']) && is_array($properties['options'])) {
             $options = [];
             foreach ($properties['options'] as $option) {
@@ -507,6 +513,10 @@ class WidgetFormBuilderController extends Controller
         
         if (isset($properties['is_system']) && $properties['is_system']) {
             $field['system'] = true;
+        }
+        
+        if (isset($properties['is_protected']) && $properties['is_protected']) {
+            $field['protected'] = true;
         }
 
         return $field;

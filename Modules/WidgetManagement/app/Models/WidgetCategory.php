@@ -21,6 +21,7 @@ class WidgetCategory extends Model
         'icon',
         'is_active',
         'parent_id',
+        'has_subcategories',
     ];
 
     protected $casts = [

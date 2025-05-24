@@ -18,6 +18,13 @@ Bu proje, Laravel 11 kullanılarak geliştirilmiş, modüler ve çok kiracılı 
 
 ## Versiyon Geçmişi
 
+*   **v0.6.0 (2025-05-24):**
+    *   **WidgetManagement Modülü İyileştirmeleri:**
+        *   **Hero Widget:** Yapılandırması güncellenerek `has_items` `false` yapıldı, `item_schema` kaldırıldı ve tüm alanlar `settings_schema`'ya taşındı. `content_html` ve seeder içindeki veri oluşturma mantığı bu değişikliğe uyarlandı.
+        *   **Kullanıcı Arayüzü (UI):** Widget listeleme (`widget-component.blade.php`) ve kod editörü (`widget-code-editor.blade.php`) sayfalarında, widget'ların `has_items` özelliğine göre "İçerik" ile ilgili buton/linkler dinamik olarak gösterildi/gizlendi. İçerik eklenemeyen widget'lar için "Ayarlar" linki "Özelleştir" olarak güncellendi.
+        *   **Güvenlik:** `WidgetFormBuilderComponent` içinde, `has_items` özelliği `false` olan widget'ların item şeması düzenleme sayfasına doğrudan URL ile erişimi engellendi.
+        *   **Kod Kalitesi:** `WidgetFormBuilderComponent`'ta layout tanımı, Livewire 3 `#[Layout]` attribute'u kullanılarak güncellendi ve olası bir linter uyarısı giderildi.
+
 *   **v0.5.0 (2025-05-02):**
     *   `studio-widget-loader.js` içinde widget embed overlay özelliği eklendi; görsel overlay olarak `pointer-events: none` ile tıklamalar modele iletildi.
     *   `registerWidgetEmbedComponent` fonksiyonu ile embed component tipi tanımlandı ve editöre kaydedildi.

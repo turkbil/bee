@@ -8,11 +8,6 @@ use Illuminate\Support\Facades\Log;
 
 class WidgetService
 {
-    /**
-     * Widget kategorilerini al
-     *
-     * @return array
-     */
     public function getCategories(): array
     {
         return config('studio.blocks.categories', [
@@ -44,14 +39,8 @@ class WidgetService
         ]);
     }
     
-    /**
-     * Tüm widget'ları al
-     *
-     * @return array
-     */
     public function getAllWidgets(): array
     {
-        // Önbellekten widget'ları al
         $cacheKey = 'studio_widgets_' . (function_exists('tenant_id') ? tenant_id() : 'default');
         $cacheTtl = config('studio.cache.ttl', 3600);
         
@@ -68,7 +57,7 @@ class WidgetService
                         'name' => $widget->name,
                         'slug' => $widget->slug,
                         'description' => $widget->description,
-                        'type' => $widget->type ?: ($widget->has_items ? 'dynamic' : 'static'), // has_items varsa dynamic yoksa static
+                        'type' => $widget->type ?: ($widget->has_items ? 'dynamic' : 'static'),
                         'thumbnail' => $widget->getThumbnailUrl(),
                         'content_html' => $widget->content_html,
                         'content_css' => $widget->content_css,
@@ -83,11 +72,6 @@ class WidgetService
         });
     }
     
-    /**
-     * Tenant widgetları GrapesJS blokları olarak al
-     *
-     * @return array
-     */
     public function getTenantWidgetsAsBlocks(): array
     {
         if (!class_exists('Modules\WidgetManagement\App\Models\TenantWidget')) {
@@ -109,7 +93,7 @@ class WidgetService
             
             $blocks[] = [
                 'id' => 'tenant-widget-' . $tenantWidget->id,
-                'name' => $tenantWidget->settings['title'] ?? $widget->name,
+                'name' => $tenantWidget->display_title ?? $widget->name,
                 'description' => $widget->description ?? '',
                 'type' => $type,
                 'category' => 'active-widgets',
@@ -124,12 +108,6 @@ class WidgetService
         return $blocks;
     }
     
-    /**
-     * Widget içeriğini al
-     *
-     * @param int $widgetId
-     * @return array|null
-     */
     public function getWidgetContent(int $widgetId): ?array
     {
         if (!class_exists('Modules\WidgetManagement\App\Models\Widget')) {
@@ -150,11 +128,6 @@ class WidgetService
         ];
     }
     
-    /**
-     * Widget'ları GrapesJS blokları olarak al
-     *
-     * @return array
-     */
     public function getWidgetsAsBlocks(): array
     {
         $widgets = $this->getAllWidgets();
@@ -181,15 +154,6 @@ class WidgetService
         return $blocks;
     }
     
-    /**
-     * Widget içeriğini güncelle
-     *
-     * @param int $widgetId
-     * @param string $content
-     * @param string $css
-     * @param string $js
-     * @return bool
-     */
     public function updateWidgetContent(int $widgetId, string $content, string $css = '', string $js = ''): bool
     {
         if (!class_exists('Modules\WidgetManagement\App\Models\Widget')) {
@@ -207,7 +171,6 @@ class WidgetService
             $widget->content_js = $js;
             $result = $widget->save();
             
-            // Önbelleği temizle
             $cacheKey = 'studio_widgets_' . (function_exists('tenant_id') ? tenant_id() : 'default');
             Cache::forget($cacheKey);
             
@@ -218,14 +181,6 @@ class WidgetService
         }
     }
     
-    /**
-     * Tenant widget oluştur
-     *
-     * @param int $widgetId
-     * @param array $settings
-     * @param array $items
-     * @return \Modules\WidgetManagement\App\Models\TenantWidget|null
-     */
     public function createTenantWidget(int $widgetId, array $settings = [], array $items = [])
     {
         if (!class_exists('Modules\WidgetManagement\App\Models\Widget') || 
@@ -244,6 +199,7 @@ class WidgetService
                 'unique_id' => (string) \Illuminate\Support\Str::uuid(),
                 'title' => $widget->name
             ], $settings);
+            $tenantWidget->display_title = $settings['title'] ?? $widget->name;
             $tenantWidget->save();
             
             if ($widget->has_items && !empty($items)) {
@@ -256,7 +212,6 @@ class WidgetService
                 }
             }
             
-            // Önbelleği temizle
             $cacheKey = 'studio_widgets_' . (function_exists('tenant_id') ? tenant_id() : 'default');
             Cache::forget($cacheKey);
             
@@ -267,12 +222,6 @@ class WidgetService
         }
     }
     
-    /**
-     * Tenant widget renderla
-     *
-     * @param int $tenantWidgetId
-     * @return string
-     */
     public function renderTenantWidget(int $tenantWidgetId): string
     {
         if (!class_exists('Modules\WidgetManagement\App\Models\TenantWidget')) {
@@ -288,7 +237,6 @@ class WidgetService
         
         $widget = $tenantWidget->widget;
         
-        // Widget tipine göre render et
         if ($widget->type === 'file' && !empty($widget->file_path)) {
             $viewPath = 'widgetmanagement::blocks.' . $widget->file_path;
             if (view()->exists($viewPath)) {
@@ -298,13 +246,11 @@ class WidgetService
             return '<div class="error">Widget dosyası bulunamadı: ' . $viewPath . '</div>';
         }
         
-        // Tenant widget service ile render et
         $widgetService = app('widget.service');
         if (method_exists($widgetService, 'renderSingleWidget')) {
             return $widgetService->renderSingleWidget($tenantWidget);
         }
         
-        // Handlebars şablonu oluştur
         return view('widgetmanagement::widget.embed', [
             'widget' => $widget,
             'tenantWidgetId' => $tenantWidgetId,
@@ -316,9 +262,6 @@ class WidgetService
         ])->render();
     }
     
-    /**
-     * Widget önbelleğini temizle
-     */
     public function clearWidgetCache(): void
     {
         $cacheKey = 'studio_widgets_' . (function_exists('tenant_id') ? tenant_id() : 'default');

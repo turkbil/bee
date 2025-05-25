@@ -59,3 +59,25 @@ Bu proje, Laravel 11 kullanılarak geliştirilmiş, modüler ve çok kiracılı 
 *   **v0.0.1 (YYYY-AA-GG):**
     *   Proje kurulumu ve temel yapılandırmalar.
     *   Gerekli paketlerin entegrasyonu.
+
+*   **Widget Önizleme İyileştirmeleri v0.2 (Portfolyo Listeleme Düzeltmesi)**
+
+Modül tipi portfolyo listeleme widget'ının (`Modules/WidgetManagement/Resources/views/blocks/modules/portfolio/list/view.blade.php`) önizlemesi önemli ölçüde iyileştirildi:
+
+- **Doğru Model ve Alan Adları:** Widget artık doğru portfolyo modellerini (`Portfolio`, `PortfolioCategory`) ve bu modellere ait doğru alan adlarını kullanıyor.
+- **Dinamik Listeleme:** Portfolyo öğeleri, widget ayarlarından (`$settings`) alınan parametrelere (örneğin, gösterilecek öğe sayısı, kategori slug'ı) göre dinamik olarak filtrelenip listeleniyor.
+- **Hata Giderimi:** Daha önce karşılaşılan "Class not found" ve ham HTML/Blade kodunun görüntülenmesi gibi sorunlar çözüldü.
+- **Gelişmiş Resim ve Kategori Gösterimi:** Resimler ve kategori bilgileri, modeldeki doğrudan alanlar ve Spatie Media Library fallback'leri ile daha esnek bir şekilde gösteriliyor.
+- **URL Yapısı:** Portfolyo detay sayfalarına yönlendiren linkler, `slug` kullanılarak doğru bir şekilde oluşturuluyor.
+
+Bu değişiklikler, portfolyo listeleme widget'ının önizlemesinin daha doğru, stabil ve kullanıcı dostu olmasını sağlamıştır.
+
+## Sunucu Taraflı Widget Önizleme Düzeltmeleri v0.3
+
+Widget önizleme sistemi, sunucu tarafında render edilen içeriğin doğru bir şekilde görüntülenmesini engelleyen bir dizi sorunu gidermek üzere önemli ölçüde iyileştirildi:
+
+- **`$context` Değişkeni Hataları Çözüldü:** Hem JavaScript kaynaklı sanılan hem de PHP `@include` direktiflerinde ortaya çıkan "Undefined variable $context" hataları giderildi. İstemci taraflı Handlebars render mantığı tamamen kaldırıldı ve PHP tarafında `null coalescing operatörü (??)` kullanılarak güvenlik artırıldı.
+- **Boş Widget İçeriği Sorunu Giderildi:** En kritik sorun olan, işlenmiş widget HTML'inin (`$renderedHtml`) önizlemede görünmemesi problemi çözüldü. `preview.blade.php` dosyasındaki Blade koşulları, `$renderedHtml`'in boş olup olmadığını doğru bir şekilde kontrol edecek şekilde güncellendi. Ayrıca, dolu olan `$renderedHtml` içeriğinin `<div id="widget-container">{!! $renderedHtml !!}</div>` ile doğru bir şekilde ekrana basılması sağlandı.
+- **Hata Ayıklama İyileştirmeleri:** `WidgetPreviewController`'a eklenen detaylı loglama sayesinde, veri akışı ve HTML üretimindeki sorunlar daha etkin bir şekilde tespit edilebildi.
+
+Bu değişiklikler, widget önizleme sisteminin daha stabil, hatasız ve beklendiği gibi çalışmasını sağlamıştır. Artık tüm widget türleri için sunucu taraflı render edilen içerikler önizlemede doğru bir şekilde görüntülenmektedir.

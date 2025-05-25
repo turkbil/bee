@@ -362,7 +362,15 @@ class WidgetService
         return $template;
     }
 
-    private function processWidget(TenantWidget $tenantWidget): string
+    public static function resetAssets(): void
+    {
+        self::$loadedCssFiles = [];
+        self::$loadedJsFiles = [];
+        self::$cssStyles = [];
+        self::$jsScripts = [];
+    }
+
+    public function processWidget(TenantWidget $tenantWidget): string
     {
         if ($tenantWidget->is_custom) {
             $html = $tenantWidget->custom_html;

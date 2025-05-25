@@ -174,14 +174,14 @@ class SliderWidgetSeeder extends Seeder
             [
                 'title' => 'Web Sitesi Çözümleri',
                 'description' => 'Modern ve responsive web siteleri ile işletmenizi dijital dünyada öne çıkarın',
-                'image' => 'https://via.placeholder.com/1200x600',
+                'image' => 'https://placehold.co/1200x600',
                 'button_text' => 'Detaylı Bilgi',
                 'button_url' => '/web-cozumleri'
             ],
             [
                 'title' => 'E-Ticaret Platformları',
                 'description' => 'Güvenli ve kullanıcı dostu e-ticaret çözümleri ile satışlarınızı artırın',
-                'image' => 'https://via.placeholder.com/1200x600',
+                'image' => 'https://placehold.co/1200x600',
                 'button_text' => 'Hemen Başlayın',
                 'button_url' => '/e-ticaret'
             ]
@@ -483,14 +483,14 @@ class SliderWidgetSeeder extends Seeder
             [
                 'title' => 'Web Sitesi Çözümleri',
                 'description' => 'Modern ve responsive web siteleri ile işletmenizi dijital dünyada öne çıkarın',
-                'image' => 'https://via.placeholder.com/1200x600',
+                'image' => 'https://placehold.co/1200x600',
                 'button_text' => 'Detaylı Bilgi',
                 'button_url' => '/web-cozumleri'
             ],
             [
                 'title' => 'E-Ticaret Platformları',
                 'description' => 'Güvenli ve kullanıcı dostu e-ticaret çözümleri ile satışlarınızı artırın',
-                'image' => 'https://via.placeholder.com/1200x600',
+                'image' => 'https://placehold.co/1200x600',
                 'button_text' => 'Hemen Başlayın',
                 'button_url' => '/e-ticaret'
             ]
@@ -563,14 +563,14 @@ class SliderWidgetSeeder extends Seeder
                         [
                             'title' => $tenant->title . ' Web Sitesi',
                             'description' => 'Modern ve responsive web siteleri ile işletmenizi dijital dünyada öne çıkarın',
-                            'image' => 'https://via.placeholder.com/1200x600',
+                            'image' => 'https://placehold.co/1200x600',
                             'button_text' => 'Detaylı Bilgi',
                             'button_url' => '/web-cozumleri'
                         ],
                         [
                             'title' => $tenant->title . ' E-Ticaret',
                             'description' => 'Güvenli ve kullanıcı dostu e-ticaret çözümleri ile satışlarınızı artırın',
-                            'image' => 'https://via.placeholder.com/1200x600',
+                            'image' => 'https://placehold.co/1200x600',
                             'button_text' => 'Hemen Başlayın',
                             'button_url' => '/e-ticaret'
                         ]

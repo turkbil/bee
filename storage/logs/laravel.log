@@ -1,158 +1,23 @@
-[2025-05-24 02:13:19] local.ERROR: TenantTablesSeeder hatası: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'laravel.tenants' doesn't exist (Connection: mysql, SQL: select * from `tenants` where `central` = 0)  
-[2025-05-24 02:13:19] local.ERROR: Central rol atamaları düzeltilirken hata: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'laravel.roles' doesn't exist (Connection: mysql, SQL: select `id` from `roles` where `name` = root limit 1)  
-[2025-05-24 02:13:19] local.ERROR: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'laravel.tenants' doesn't exist (Connection: mysql, SQL: select * from `tenants` where `central` = 0) {"exception":"[object] (Illuminate\\Database\\QueryException(code: 42S02): SQLSTATE[42S02]: Base table or view not found: 1146 Table 'laravel.tenants' doesn't exist (Connection: mysql, SQL: select * from `tenants` where `central` = 0) at C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Connection.php:825)
-[stacktrace]
-#0 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Connection.php(779): Illuminate\\Database\\Connection->runQueryCallback('select * from `...', Array, Object(Closure))
-#1 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Connection.php(398): Illuminate\\Database\\Connection->run('select * from `...', Array, Object(Closure))
-#2 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Query\\Builder.php(3106): Illuminate\\Database\\Connection->select('select * from `...', Array, true)
-#3 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Query\\Builder.php(3091): Illuminate\\Database\\Query\\Builder->runSelect()
-#4 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Query\\Builder.php(3676): Illuminate\\Database\\Query\\Builder->{closure:Illuminate\\Database\\Query\\Builder::get():3090}()
-#5 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Query\\Builder.php(3090): Illuminate\\Database\\Query\\Builder->onceWithColumns(Array, Object(Closure))
-#6 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Eloquent\\Builder.php(796): Illuminate\\Database\\Query\\Builder->get(Array)
-#7 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Eloquent\\Builder.php(778): Illuminate\\Database\\Eloquent\\Builder->getModels(Array)
-#8 C:\\laragon\\www\\laravel\\database\\seeders\\FixModelHasRolesSeeder.php(110): Illuminate\\Database\\Eloquent\\Builder->get()
-#9 C:\\laragon\\www\\laravel\\database\\seeders\\FixModelHasRolesSeeder.php(23): Database\\Seeders\\FixModelHasRolesSeeder->fixTenantRoles()
-#10 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(36): Database\\Seeders\\FixModelHasRolesSeeder->run()
-#11 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Util.php(43): Illuminate\\Container\\BoundMethod::{closure:Illuminate\\Container\\BoundMethod::call():35}()
-#12 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(95): Illuminate\\Container\\Util::unwrapIfClosure(Object(Closure))
-#13 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod(Object(Illuminate\\Foundation\\Application), Array, Object(Closure))
-#14 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Container.php(696): Illuminate\\Container\\BoundMethod::call(Object(Illuminate\\Foundation\\Application), Array, Array, NULL)
-#15 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Seeder.php(184): Illuminate\\Container\\Container->call(Array, Array)
-#16 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Seeder.php(193): Illuminate\\Database\\Seeder->{closure:Illuminate\\Database\\Seeder::__invoke():183}()
-#17 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Seeder.php(61): Illuminate\\Database\\Seeder->__invoke(Array)
-#18 C:\\laragon\\www\\laravel\\database\\seeders\\DatabaseSeeder.php(26): Illuminate\\Database\\Seeder->call('Database\\\\Seeder...')
-#19 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(36): Database\\Seeders\\DatabaseSeeder->run()
-#20 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Util.php(43): Illuminate\\Container\\BoundMethod::{closure:Illuminate\\Container\\BoundMethod::call():35}()
-#21 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(95): Illuminate\\Container\\Util::unwrapIfClosure(Object(Closure))
-#22 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod(Object(Illuminate\\Foundation\\Application), Array, Object(Closure))
-#23 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Container.php(696): Illuminate\\Container\\BoundMethod::call(Object(Illuminate\\Foundation\\Application), Array, Array, NULL)
-#24 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Seeder.php(184): Illuminate\\Container\\Container->call(Array, Array)
-#25 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Seeder.php(193): Illuminate\\Database\\Seeder->{closure:Illuminate\\Database\\Seeder::__invoke():183}()
-#26 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Console\\Seeds\\SeedCommand.php(70): Illuminate\\Database\\Seeder->__invoke()
-#27 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Eloquent\\Concerns\\GuardsAttributes.php(155): Illuminate\\Database\\Console\\Seeds\\SeedCommand->{closure:Illuminate\\Database\\Console\\Seeds\\SeedCommand::handle():69}()
-#28 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Console\\Seeds\\SeedCommand.php(69): Illuminate\\Database\\Eloquent\\Model::unguarded(Object(Closure))
-#29 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(36): Illuminate\\Database\\Console\\Seeds\\SeedCommand->handle()
-#30 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Util.php(43): Illuminate\\Container\\BoundMethod::{closure:Illuminate\\Container\\BoundMethod::call():35}()
-#31 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(95): Illuminate\\Container\\Util::unwrapIfClosure(Object(Closure))
-#32 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod(Object(Illuminate\\Foundation\\Application), Array, Object(Closure))
-#33 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Container.php(696): Illuminate\\Container\\BoundMethod::call(Object(Illuminate\\Foundation\\Application), Array, Array, NULL)
-#34 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Command.php(213): Illuminate\\Container\\Container->call(Array)
-#35 C:\\laragon\\www\\laravel\\vendor\\symfony\\console\\Command\\Command.php(279): Illuminate\\Console\\Command->execute(Object(Symfony\\Component\\Console\\Input\\ArrayInput), Object(Illuminate\\Console\\OutputStyle))
-#36 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Command.php(182): Symfony\\Component\\Console\\Command\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArrayInput), Object(Illuminate\\Console\\OutputStyle))
-#37 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Concerns\\CallsCommands.php(68): Illuminate\\Console\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArrayInput), Object(Illuminate\\Console\\OutputStyle))
-#38 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Concerns\\CallsCommands.php(29): Illuminate\\Console\\Command->runCommand('db:seed', Array, Object(Illuminate\\Console\\OutputStyle))
-#39 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Console\\Migrations\\FreshCommand.php(122): Illuminate\\Console\\Command->call('db:seed', Array)
-#40 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Console\\Migrations\\FreshCommand.php(98): Illuminate\\Database\\Console\\Migrations\\FreshCommand->runSeeder(NULL)
-#41 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(36): Illuminate\\Database\\Console\\Migrations\\FreshCommand->handle()
-#42 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Util.php(43): Illuminate\\Container\\BoundMethod::{closure:Illuminate\\Container\\BoundMethod::call():35}()
-#43 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(95): Illuminate\\Container\\Util::unwrapIfClosure(Object(Closure))
-#44 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod(Object(Illuminate\\Foundation\\Application), Array, Object(Closure))
-#45 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Container.php(696): Illuminate\\Container\\BoundMethod::call(Object(Illuminate\\Foundation\\Application), Array, Array, NULL)
-#46 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Command.php(213): Illuminate\\Container\\Container->call(Array)
-#47 C:\\laragon\\www\\laravel\\vendor\\symfony\\console\\Command\\Command.php(279): Illuminate\\Console\\Command->execute(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Illuminate\\Console\\OutputStyle))
-#48 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Command.php(182): Symfony\\Component\\Console\\Command\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Illuminate\\Console\\OutputStyle))
-#49 C:\\laragon\\www\\laravel\\vendor\\symfony\\console\\Application.php(1094): Illuminate\\Console\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
-#50 C:\\laragon\\www\\laravel\\vendor\\symfony\\console\\Application.php(342): Symfony\\Component\\Console\\Application->doRunCommand(Object(Illuminate\\Database\\Console\\Migrations\\FreshCommand), Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
-#51 C:\\laragon\\www\\laravel\\vendor\\symfony\\console\\Application.php(193): Symfony\\Component\\Console\\Application->doRun(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
-#52 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(198): Symfony\\Component\\Console\\Application->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
-#53 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(1235): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
-#54 C:\\laragon\\www\\laravel\\artisan(13): Illuminate\\Foundation\\Application->handleCommand(Object(Symfony\\Component\\Console\\Input\\ArgvInput))
-#55 {main}
-
-[previous exception] [object] (PDOException(code: 42S02): SQLSTATE[42S02]: Base table or view not found: 1146 Table 'laravel.tenants' doesn't exist at C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Connection.php:407)
-[stacktrace]
-#0 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Connection.php(407): PDO->prepare('select * from `...')
-#1 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Connection.php(812): Illuminate\\Database\\Connection->{closure:Illuminate\\Database\\Connection::select():398}('select * from `...', Array)
-#2 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Connection.php(779): Illuminate\\Database\\Connection->runQueryCallback('select * from `...', Array, Object(Closure))
-#3 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Connection.php(398): Illuminate\\Database\\Connection->run('select * from `...', Array, Object(Closure))
-#4 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Query\\Builder.php(3106): Illuminate\\Database\\Connection->select('select * from `...', Array, true)
-#5 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Query\\Builder.php(3091): Illuminate\\Database\\Query\\Builder->runSelect()
-#6 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Query\\Builder.php(3676): Illuminate\\Database\\Query\\Builder->{closure:Illuminate\\Database\\Query\\Builder::get():3090}()
-#7 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Query\\Builder.php(3090): Illuminate\\Database\\Query\\Builder->onceWithColumns(Array, Object(Closure))
-#8 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Eloquent\\Builder.php(796): Illuminate\\Database\\Query\\Builder->get(Array)
-#9 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Eloquent\\Builder.php(778): Illuminate\\Database\\Eloquent\\Builder->getModels(Array)
-#10 C:\\laragon\\www\\laravel\\database\\seeders\\FixModelHasRolesSeeder.php(110): Illuminate\\Database\\Eloquent\\Builder->get()
-#11 C:\\laragon\\www\\laravel\\database\\seeders\\FixModelHasRolesSeeder.php(23): Database\\Seeders\\FixModelHasRolesSeeder->fixTenantRoles()
-#12 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(36): Database\\Seeders\\FixModelHasRolesSeeder->run()
-#13 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Util.php(43): Illuminate\\Container\\BoundMethod::{closure:Illuminate\\Container\\BoundMethod::call():35}()
-#14 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(95): Illuminate\\Container\\Util::unwrapIfClosure(Object(Closure))
-#15 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod(Object(Illuminate\\Foundation\\Application), Array, Object(Closure))
-#16 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Container.php(696): Illuminate\\Container\\BoundMethod::call(Object(Illuminate\\Foundation\\Application), Array, Array, NULL)
-#17 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Seeder.php(184): Illuminate\\Container\\Container->call(Array, Array)
-#18 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Seeder.php(193): Illuminate\\Database\\Seeder->{closure:Illuminate\\Database\\Seeder::__invoke():183}()
-#19 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Seeder.php(61): Illuminate\\Database\\Seeder->__invoke(Array)
-#20 C:\\laragon\\www\\laravel\\database\\seeders\\DatabaseSeeder.php(26): Illuminate\\Database\\Seeder->call('Database\\\\Seeder...')
-#21 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(36): Database\\Seeders\\DatabaseSeeder->run()
-#22 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Util.php(43): Illuminate\\Container\\BoundMethod::{closure:Illuminate\\Container\\BoundMethod::call():35}()
-#23 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(95): Illuminate\\Container\\Util::unwrapIfClosure(Object(Closure))
-#24 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod(Object(Illuminate\\Foundation\\Application), Array, Object(Closure))
-#25 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Container.php(696): Illuminate\\Container\\BoundMethod::call(Object(Illuminate\\Foundation\\Application), Array, Array, NULL)
-#26 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Seeder.php(184): Illuminate\\Container\\Container->call(Array, Array)
-#27 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Seeder.php(193): Illuminate\\Database\\Seeder->{closure:Illuminate\\Database\\Seeder::__invoke():183}()
-#28 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Console\\Seeds\\SeedCommand.php(70): Illuminate\\Database\\Seeder->__invoke()
-#29 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Eloquent\\Concerns\\GuardsAttributes.php(155): Illuminate\\Database\\Console\\Seeds\\SeedCommand->{closure:Illuminate\\Database\\Console\\Seeds\\SeedCommand::handle():69}()
-#30 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Console\\Seeds\\SeedCommand.php(69): Illuminate\\Database\\Eloquent\\Model::unguarded(Object(Closure))
-#31 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(36): Illuminate\\Database\\Console\\Seeds\\SeedCommand->handle()
-#32 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Util.php(43): Illuminate\\Container\\BoundMethod::{closure:Illuminate\\Container\\BoundMethod::call():35}()
-#33 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(95): Illuminate\\Container\\Util::unwrapIfClosure(Object(Closure))
-#34 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod(Object(Illuminate\\Foundation\\Application), Array, Object(Closure))
-#35 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Container.php(696): Illuminate\\Container\\BoundMethod::call(Object(Illuminate\\Foundation\\Application), Array, Array, NULL)
-#36 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Command.php(213): Illuminate\\Container\\Container->call(Array)
-#37 C:\\laragon\\www\\laravel\\vendor\\symfony\\console\\Command\\Command.php(279): Illuminate\\Console\\Command->execute(Object(Symfony\\Component\\Console\\Input\\ArrayInput), Object(Illuminate\\Console\\OutputStyle))
-#38 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Command.php(182): Symfony\\Component\\Console\\Command\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArrayInput), Object(Illuminate\\Console\\OutputStyle))
-#39 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Concerns\\CallsCommands.php(68): Illuminate\\Console\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArrayInput), Object(Illuminate\\Console\\OutputStyle))
-#40 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Concerns\\CallsCommands.php(29): Illuminate\\Console\\Command->runCommand('db:seed', Array, Object(Illuminate\\Console\\OutputStyle))
-#41 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Console\\Migrations\\FreshCommand.php(122): Illuminate\\Console\\Command->call('db:seed', Array)
-#42 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Console\\Migrations\\FreshCommand.php(98): Illuminate\\Database\\Console\\Migrations\\FreshCommand->runSeeder(NULL)
-#43 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(36): Illuminate\\Database\\Console\\Migrations\\FreshCommand->handle()
-#44 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Util.php(43): Illuminate\\Container\\BoundMethod::{closure:Illuminate\\Container\\BoundMethod::call():35}()
-#45 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(95): Illuminate\\Container\\Util::unwrapIfClosure(Object(Closure))
-#46 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod(Object(Illuminate\\Foundation\\Application), Array, Object(Closure))
-#47 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Container.php(696): Illuminate\\Container\\BoundMethod::call(Object(Illuminate\\Foundation\\Application), Array, Array, NULL)
-#48 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Command.php(213): Illuminate\\Container\\Container->call(Array)
-#49 C:\\laragon\\www\\laravel\\vendor\\symfony\\console\\Command\\Command.php(279): Illuminate\\Console\\Command->execute(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Illuminate\\Console\\OutputStyle))
-#50 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Command.php(182): Symfony\\Component\\Console\\Command\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Illuminate\\Console\\OutputStyle))
-#51 C:\\laragon\\www\\laravel\\vendor\\symfony\\console\\Application.php(1094): Illuminate\\Console\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
-#52 C:\\laragon\\www\\laravel\\vendor\\symfony\\console\\Application.php(342): Symfony\\Component\\Console\\Application->doRunCommand(Object(Illuminate\\Database\\Console\\Migrations\\FreshCommand), Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
-#53 C:\\laragon\\www\\laravel\\vendor\\symfony\\console\\Application.php(193): Symfony\\Component\\Console\\Application->doRun(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
-#54 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(198): Symfony\\Component\\Console\\Application->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
-#55 C:\\laragon\\www\\laravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(1235): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
-#56 C:\\laragon\\www\\laravel\\artisan(13): Illuminate\\Foundation\\Application->handleCommand(Object(Symfony\\Component\\Console\\Input\\ArgvInput))
-#57 {main}
-"} 
-[2025-05-24 02:13:39] local.INFO: Central veritabanında demo hero oluşturuldu.  
-[2025-05-24 02:13:39] local.INFO: Tenant 2 için hero başarıyla oluşturuldu.  
-[2025-05-24 02:13:39] local.INFO: Tenant 3 için hero başarıyla oluşturuldu.  
-[2025-05-24 02:13:39] local.INFO: Tenant 4 için hero başarıyla oluşturuldu.  
-[2025-05-24 02:13:39] local.INFO: Media kategorisi bulundu, slider bu kategori altına eklenecek.  
-[2025-05-24 02:13:39] local.INFO: Slider alt kategorisi oluşturuldu: Sliderlar (slug: sliderlar)  
-[2025-05-24 02:13:39] local.INFO: Central veritabanında demo tenant slider oluşturuldu.  
-[2025-05-24 02:13:39] local.INFO: Tenant 2 için slider başarıyla oluşturuldu.  
-[2025-05-24 02:13:39] local.ERROR: Tenant 2 için slider oluşturma hatası: Undefined variable $tenantCacheKey  
-[2025-05-24 02:13:39] local.INFO: Tenant 3 için slider başarıyla oluşturuldu.  
-[2025-05-24 02:13:39] local.ERROR: Tenant 3 için slider oluşturma hatası: Undefined variable $tenantCacheKey  
-[2025-05-24 02:13:39] local.INFO: Tenant 4 için slider başarıyla oluşturuldu.  
-[2025-05-24 02:13:39] local.ERROR: Tenant 4 için slider oluşturma hatası: Undefined variable $tenantCacheKey  
-[2025-05-24 02:13:39] local.INFO: Slider bileşeni başarıyla oluşturuldu.  
-[2025-05-24 02:13:39] local.INFO: Tenant içinde hero widget zaten oluşturulmuş, atlanıyor...  
-[2025-05-24 02:13:39] local.INFO: Tenant içinde slider widget zaten var, atlanıyor...  
-[2025-05-24 02:13:39] local.INFO: Tenant içinde hero widget zaten oluşturulmuş, atlanıyor...  
-[2025-05-24 02:13:39] local.INFO: Tenant içinde slider widget zaten var, atlanıyor...  
-[2025-05-24 02:13:40] local.INFO: Tenant içinde hero widget zaten oluşturulmuş, atlanıyor...  
-[2025-05-24 02:13:40] local.INFO: Tenant içinde slider widget zaten var, atlanıyor...  
-[2025-05-24 02:13:50] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: widgetmanagement, Permission: view, Roles: root  
-[2025-05-24 02:13:56] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: widgetmanagement, Permission: view, Roles: root  
-[2025-05-24 02:13:59] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: widgetmanagement, Permission: view, Roles: root  
-[2025-05-24 02:14:04] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
-[2025-05-24 02:14:04] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: widgetmanagement, Permission: create, Roles: root  
-[2025-05-24 02:14:14] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: widgetmanagement, Permission: view, Roles: root  
-[2025-05-24 02:14:17] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: widgetmanagement, Permission: view, Roles: root  
-[2025-05-24 02:14:19] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
-[2025-05-24 02:14:19] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: widgetmanagement, Permission: create, Roles: root  
-[2025-05-24 02:14:19] local.INFO: WidgetItemManageComponent::mount {"tenantWidgetId":"2","itemId":"1"} 
-[2025-05-24 02:14:19] local.INFO: Item bulundu: {"item":{"id":1,"tenant_widget_id":2,"content":{"image":"https://via.placeholder.com/1200x600","title":"Web Sitesi Çözümleri","button_url":"/web-cozumleri","button_text":"Detaylı Bilgi","description":"Modern ve responsive web siteleri ile işletmenizi dijital dünyada öne çıkarın"},"order":1,"created_at":"2025-05-24T02:13:39.000000Z","updated_at":"2025-05-24T02:13:39.000000Z"}} 
-[2025-05-24 02:14:19] local.INFO: Form verileri yüklendi: {"formData":{"image":"https://via.placeholder.com/1200x600","title":"Web Sitesi Çözümleri","button_url":"/web-cozumleri","button_text":"Detaylı Bilgi","description":"Modern ve responsive web siteleri ile işletmenizi dijital dünyada öne çıkarın"}} 
-[2025-05-24 02:14:24] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: widgetmanagement, Permission: view, Roles: root  
-[2025-05-24 02:14:27] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: widgetmanagement, Permission: view, Roles: root  
-[2025-05-24 02:14:31] local.INFO: Route ID parametresi bulunmadı, izin tipi 'create' olarak değiştirildi.  
-[2025-05-24 02:14:31] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: widgetmanagement, Permission: create, Roles: root  
+[2025-05-25 01:05:01] local.INFO: Central veritabanında demo hero oluşturuldu.  
+[2025-05-25 01:05:01] local.INFO: Tenant 2 için hero başarıyla oluşturuldu.  
+[2025-05-25 01:05:01] local.INFO: Tenant 3 için hero başarıyla oluşturuldu.  
+[2025-05-25 01:05:01] local.INFO: Tenant 4 için hero başarıyla oluşturuldu.  
+[2025-05-25 01:05:01] local.INFO: Media kategorisi bulundu, slider bu kategori altına eklenecek.  
+[2025-05-25 01:05:01] local.INFO: Slider alt kategorisi oluşturuldu: Sliderlar (slug: sliderlar)  
+[2025-05-25 01:05:01] local.INFO: Central veritabanında demo tenant slider oluşturuldu.  
+[2025-05-25 01:05:01] local.INFO: Tenant 2 için slider başarıyla oluşturuldu.  
+[2025-05-25 01:05:01] local.ERROR: Tenant 2 için slider oluşturma hatası: Undefined variable $tenantCacheKey  
+[2025-05-25 01:05:01] local.INFO: Tenant 3 için slider başarıyla oluşturuldu.  
+[2025-05-25 01:05:01] local.ERROR: Tenant 3 için slider oluşturma hatası: Undefined variable $tenantCacheKey  
+[2025-05-25 01:05:01] local.INFO: Tenant 4 için slider başarıyla oluşturuldu.  
+[2025-05-25 01:05:01] local.ERROR: Tenant 4 için slider oluşturma hatası: Undefined variable $tenantCacheKey  
+[2025-05-25 01:05:01] local.INFO: Slider bileşeni başarıyla oluşturuldu.  
+[2025-05-25 01:05:01] local.INFO: Tenant içinde hero widget zaten oluşturulmuş, atlanıyor...  
+[2025-05-25 01:05:02] local.INFO: Tenant içinde slider widget zaten var, atlanıyor...  
+[2025-05-25 01:05:02] local.INFO: Tenant içinde hero widget zaten oluşturulmuş, atlanıyor...  
+[2025-05-25 01:05:02] local.INFO: Tenant içinde slider widget zaten var, atlanıyor...  
+[2025-05-25 01:05:02] local.INFO: Tenant içinde hero widget zaten oluşturulmuş, atlanıyor...  
+[2025-05-25 01:05:02] local.INFO: Tenant içinde slider widget zaten var, atlanıyor...  
+[2025-05-25 01:08:54] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: widgetmanagement, Permission: view, Roles: root  
+[2025-05-25 01:09:03] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: widgetmanagement, Permission: view, Roles: root  
+[2025-05-25 01:09:08] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: widgetmanagement, Permission: view, Roles: root  

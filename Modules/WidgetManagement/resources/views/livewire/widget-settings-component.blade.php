@@ -43,7 +43,7 @@
             </div>
         </div>
     @else
-        <form wire:submit.prevent="save">
+        <form wire:submit.prevent="save(true)">
             <div class="alert alert-info mx-3 mb-3">
                 <div class="d-flex">
                     <div>
@@ -69,7 +69,7 @@
                                                         @foreach($column['elements'] as $columnElement)
                                                             @include('widgetmanagement::form-builder.partials.form-elements.' . $columnElement['type'], [
                                                                 'element' => $columnElement,
-                                                                'settings' => $settings,
+                                                                'formData' => $formData,
                                                                 'temporaryUpload' => $temporaryUpload
                                                             ])
                                                         @endforeach
@@ -81,7 +81,7 @@
                                 @elseif(!isset($element['hidden']) || !$element['hidden'])
                                     @include('widgetmanagement::form-builder.partials.form-elements.' . $element['type'], [
                                         'element' => $element,
-                                        'settings' => $settings,
+                                        'formData' => $formData,
                                         'temporaryUpload' => $temporaryUpload
                                     ])
                                 @endif

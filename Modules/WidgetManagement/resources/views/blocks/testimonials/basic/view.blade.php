@@ -22,7 +22,7 @@
             </div>
             <p class="text-lg text-center mb-6">"Bu ürün işlerimizi çok daha kolay hale getirdi. Arayüzü sezgisel ve kullanımı basit. Kesinlikle tavsiye ederim!"</p>
             <div class="flex items-center justify-center">
-                <img src="https://via.placeholder.com/60x60" class="rounded-full mr-3 h-12 w-12" alt="Müşteri">
+                <img src="https://placehold.co/60x60" class="rounded-full mr-3 h-12 w-12" alt="Müşteri">
                 <div>
                     <h5 class="font-medium">Ad Soyad</h5>
                     <p class="text-gray-500 text-sm">Şirket / Pozisyon</p>

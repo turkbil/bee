@@ -1,1 +1,1 @@
-<img src="https://via.placeholder.com/800x400" class="w-full h-auto rounded" alt="Görsel açıklaması">
+<img src="https://placehold.co/800x400" class="w-full h-auto rounded" alt="Görsel açıklaması">

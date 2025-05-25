@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('widget_id');
             $table->integer('order')->default(0)->index();
             $table->json('settings')->nullable();
+            $table->string('display_title')->nullable(); // Yeni eklenen alan
             $table->boolean('is_custom')->default(false);
             $table->longText('custom_html')->nullable();
             $table->longText('custom_css')->nullable();

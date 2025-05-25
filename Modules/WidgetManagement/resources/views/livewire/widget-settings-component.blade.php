@@ -27,76 +27,123 @@
                 </div>
             </div>
         </div>
+    </div>
 
-    @if(empty($schema))
-        <div class="alert alert-info mx-3 mb-3">
-            <div class="d-flex">
-                <div>
-                    <i class="fas fa-info-circle fa-2x text-blue me-3"></i>
+    <!-- Display Title Bölümü -->
+    <div class="card mt-3">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fas fa-tag me-2"></i>
+                Görüntüleme Adı
+            </h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="mb-3">
+                        <label class="form-label">Görüntüleme Adı</label>
+                        <input type="text" 
+                               wire:model.blur="displayTitle" 
+                               class="form-control @error('displayTitle') is-invalid @enderror" 
+                               placeholder="Widget'ın görüntüleneceği özel ad (boş bırakılabilir)">
+                        @error('displayTitle')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <div class="form-hint">
+                            Bu alan boş bırakılırsa, widget başlığı kullanılacaktır.
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <h4>Özelleştirme seçeneği bulunamadı</h4>
-                    <div class="text-muted">
-                        Bu widget için tanımlanmış özelleştirme seçeneği bulunmuyor.
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label text-muted">Mevcut Görüntülenen Ad</label>
+                        <div class="form-control-plaintext">
+                            <strong>{{ $tenantWidget->display_title }}</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Widget Settings -->
+    @if(empty($schema))
+        <div class="card mt-3">
+            <div class="alert alert-info mx-3 mb-3">
+                <div class="d-flex">
+                    <div>
+                        <i class="fas fa-info-circle fa-2x text-blue me-3"></i>
+                    </div>
+                    <div>
+                        <h4>Özelleştirme seçeneği bulunamadı</h4>
+                        <div class="text-muted">
+                            Bu widget için tanımlanmış özelleştirme seçeneği bulunmuyor.
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     @else
-        <form wire:submit.prevent="save(true)">
-            <div class="alert alert-info mx-3 mb-3">
-                <div class="d-flex">
-                    <div>
-                        <i class="fas fa-info-circle text-blue me-2" style="margin-top: 3px"></i>
-                    </div>
-                    <div>
-                        <h4 class="alert-title">Widget Özelleştirme</h4>
-                        <div class="text-muted">
-                            Bu sayfadaki ayarları değiştirerek widget görünümünü ve davranışını özelleştirebilirsiniz. Değişiklikler kaydedildikten sonra widget bu ayarlara göre görüntülenecektir.
+        <div class="card mt-3">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-cogs me-2"></i>
+                    Widget Ayarları
+                </h3>
+            </div>
+            <form wire:submit.prevent="save(true)">
+                <div class="alert alert-info mx-3 mb-3">
+                    <div class="d-flex">
+                        <div>
+                            <i class="fas fa-info-circle text-blue me-2" style="margin-top: 3px"></i>
+                        </div>
+                        <div>
+                            <h4 class="alert-title">Widget Özelleştirme</h4>
+                            <div class="text-muted">
+                                Bu sayfadaki ayarları değiştirerek widget görünümünü ve davranışını özelleştirebilirsiniz. Değişiklikler kaydedildikten sonra widget bu ayarlara göre görüntülenecektir.
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="row g-3 mx-2">
-                        @foreach($schema as $element)
-                            @if(isset($element['type']))
-                                @if($element['type'] === 'row' && isset($element['columns']))
-                                    <div class="col-12">
-                                        <div class="row g-3">
-                                            @foreach($element['columns'] as $column)
-                                                <div class="col-md-{{ $column['width'] ?? 6 }}">
-                                                    @if(isset($column['elements']) && is_array($column['elements']))
-                                                        @foreach($column['elements'] as $columnElement)
-                                                            @include('widgetmanagement::form-builder.partials.form-elements.' . $columnElement['type'], [
-                                                                'element' => $columnElement,
-                                                                'formData' => $formData,
-                                                                'temporaryUpload' => $temporaryUpload
-                                                            ])
-                                                        @endforeach
-                                                    @endif
-                                                </div>
-                                            @endforeach
-                                        </div>
+                <div class="row g-3 mx-2">
+                    @foreach($schema as $element)
+                        @if(isset($element['type']))
+                            @if($element['type'] === 'row' && isset($element['columns']))
+                                <div class="col-12">
+                                    <div class="row g-3">
+                                        @foreach($element['columns'] as $column)
+                                            <div class="col-md-{{ $column['width'] ?? 6 }}">
+                                                @if(isset($column['elements']) && is_array($column['elements']))
+                                                    @foreach($column['elements'] as $columnElement)
+                                                        @include('widgetmanagement::form-builder.partials.form-elements.' . $columnElement['type'], [
+                                                            'element' => $columnElement,
+                                                            'formData' => $formData,
+                                                            'temporaryUpload' => $temporaryUpload
+                                                        ])
+                                                    @endforeach
+                                                @endif
+                                            </div>
+                                        @endforeach
                                     </div>
-                                @elseif(!isset($element['hidden']) || !$element['hidden'])
-                                    @include('widgetmanagement::form-builder.partials.form-elements.' . $element['type'], [
-                                        'element' => $element,
-                                        'formData' => $formData,
-                                        'temporaryUpload' => $temporaryUpload
-                                    ])
-                                @endif
+                                </div>
+                            @elseif(!isset($element['hidden']) || !$element['hidden'])
+                                @include('widgetmanagement::form-builder.partials.form-elements.' . $element['type'], [
+                                    'element' => $element,
+                                    'formData' => $formData,
+                                    'temporaryUpload' => $temporaryUpload
+                                ])
                             @endif
-                        @endforeach
-                    </div>
-                    
-                    <div class="card mt-3">
-                        @include('components.form-footer', [
-                            'route' => 'admin.widgetmanagement',
-                            'modelId' => $tenantWidgetId
-                        ])
-                    </div>
-                </form>
-            </div>
+                        @endif
+                    @endforeach
+                </div>
+                
+                <div class="card mt-3">
+                    @include('components.form-footer', [
+                        'route' => 'admin.widgetmanagement',
+                        'modelId' => $tenantWidgetId
+                    ])
+                </div>
+            </form>
         </div>
     @endif
 </div>

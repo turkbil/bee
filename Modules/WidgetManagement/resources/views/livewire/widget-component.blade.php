@@ -134,7 +134,7 @@
                                         <div class="me-auto">
                                             <h3 class="card-title mb-0">
                                                 <a href="{{ $instance->widget->has_items ? route('admin.widgetmanagement.items', $instance->id) : route('admin.widgetmanagement.settings', $instance->id) }}">
-                                                    {{ $instance->settings['title'] ?? $instance->widget->name }}
+                                                    {{ $instance->display_title }}
                                                 </a>
                                             </h3>
                                             @if($instance->widget->category)

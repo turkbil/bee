@@ -169,7 +169,7 @@ class Widget extends Model
         if (!$hasTitle) {
             array_unshift($schema, [
                 'name' => 'widget_title',
-                'label' => 'Widget Başlığı',
+                'label' => 'Başlık',
                 'type' => 'text',
                 'required' => true,
                 'system' => true,
@@ -181,6 +181,7 @@ class Widget extends Model
                     $field['system'] = true;
                     $field['protected'] = true;
                     $field['required'] = true;
+                    $field['label'] = 'Başlık'; // Sadece "Başlık" olacak
                 }
             }
         }

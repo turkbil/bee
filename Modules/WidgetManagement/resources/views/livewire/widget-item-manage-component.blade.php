@@ -69,7 +69,7 @@
 
             <div class="card mt-3">
                 @include('components.form-footer', [
-                    'route' => 'admin.widgetmanagement',
+                    'route' => 'admin.widgetmanagement.items',
                     'modelId' => $itemId
                 ])
             </div>

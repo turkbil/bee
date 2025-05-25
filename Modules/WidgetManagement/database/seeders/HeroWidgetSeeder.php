@@ -15,24 +15,20 @@ use Illuminate\Support\Facades\Cache;
 
 class HeroWidgetSeeder extends Seeder
 {
-    // Çalıştırma izleme anahtarı
     private static $runKey = 'hero_widget_seeder_executed';
     
     public function run()
     {
-        // Cache kontrolü
         $cacheKey = self::$runKey . '_' . config('database.default');
         if (Cache::has($cacheKey)) {
             Log::info('HeroWidgetSeeder zaten çalıştırılmış, atlanıyor...');
             return;
         }
 
-        // Tenant kontrolü
         if (function_exists('tenant') && tenant()) {
             try {
                 $this->createTenantHero();
                 
-                // Bu tenant için çalıştırıldığını işaretle
                 $tenantId = tenant('id');
                 Cache::put(self::$runKey . '_tenant_' . $tenantId, true, 600);
                 return;
@@ -42,9 +38,7 @@ class HeroWidgetSeeder extends Seeder
             }
         }
 
-        // Central işlemleri
         try {
-            // Moduller kategorisini kontrol et
             $moduleCategory = WidgetCategory::where('slug', 'moduller')
                 ->orWhere('title', 'Moduller')
                 ->first();
@@ -71,18 +65,13 @@ class HeroWidgetSeeder extends Seeder
             
             $this->cleanupExtraHeroes();
             
-            // Hero widget'ı oluştur
             $widget = $this->createHeroWidget();
             
             if ($widget) {
-                // Central için örnek bir hero oluştur (tenant değil)
                 $this->createCentralHeroExample($widget);
-                
-                // SADECE gerçek tenant'lar için hero'ları oluştur
                 $this->createHeroForTenants($widget);
             }
             
-            // Seeder'ın çalıştırıldığını işaretle (10 dakika süreyle cache'de tut)
             Cache::put($cacheKey, true, 600);
         } catch (\Exception $e) {
             Log::error('HeroWidgetSeeder central hatası: ' . $e->getMessage());
@@ -92,29 +81,23 @@ class HeroWidgetSeeder extends Seeder
 
     private function cleanupExtraHeroes()
     {
-        // Hero widget'ını al
         $widget = Widget::where('slug', 'full-width-hero')->first();
         
         if (!$widget) {
             return;
         }
         
-        // Bu widget'a ait tüm tenant_widgets kayıtlarını kontrol et
         $tenantWidgets = TenantWidget::where('widget_id', $widget->id)->get();
         
         if ($tenantWidgets->count() <= 1) {
-            return; // Zaten sadece bir tane varsa işlem yapmaya gerek yok
+            return;
         }
         
-        // İlk kaydı koru, diğerlerini sil
         $firstWidgetId = $tenantWidgets->first()->id;
         
         foreach ($tenantWidgets as $tenantWidget) {
             if ($tenantWidget->id != $firstWidgetId) {
-                // Widget item'larını da silelim
                 WidgetItem::where('tenant_widget_id', $tenantWidget->id)->delete();
-                
-                // Widget'ı silelim
                 $tenantWidget->delete();
             }
         }
@@ -122,7 +105,6 @@ class HeroWidgetSeeder extends Seeder
     
     private function createTenantHero()
     {
-        // Tenant için daha önce çalıştırılmış mı kontrol et
         $tenantId = tenant('id');
         $tenantCacheKey = self::$runKey . '_tenant_' . $tenantId;
         
@@ -131,17 +113,14 @@ class HeroWidgetSeeder extends Seeder
             return;
         }
         
-        // Merkezi veritabanından hero widget'ı al
         $centralWidget = null;
         
         try {
-            // Geçici olarak central bağlantısına geç
             $connection = config('database.default');
             config(['database.default' => config('tenancy.database.central_connection')]);
             
             $centralWidget = Widget::where('slug', 'full-width-hero')->first();
             
-            // Bağlantıyı geri al
             config(['database.default' => $connection]);
         } catch (\Exception $e) {
             Log::error('Merkezi widget erişim hatası: ' . $e->getMessage());
@@ -153,31 +132,24 @@ class HeroWidgetSeeder extends Seeder
             return;
         }
         
-        // Önce tenant'ta fazla widget'ları temizleyelim
         $existingWidgets = TenantWidget::where('widget_id', $centralWidget->id)->get();
         
         if ($existingWidgets->count() >= 1) {
-            // İlk kaydı koru, diğerlerini sil
             $firstWidgetId = $existingWidgets->first()->id;
             
             foreach ($existingWidgets as $existingWidget) {
                 if ($existingWidget->id != $firstWidgetId) {
-                    // Widget item'larını da silelim
                     WidgetItem::where('tenant_widget_id', $existingWidget->id)->delete();
-                    
-                    // Widget'ı silelim
                     $existingWidget->delete();
                 }
             }
             
-            // Zaten bir tane var, yenisini oluşturmaya gerek yok
             if ($existingWidgets->count() >= 1) {
                 Log::info('Tenant içinde hero widget zaten var, atlanıyor...');
                 return;
             }
         }
         
-        // Tenant için widget oluştur
         $tenantWidget = TenantWidget::create([
             'widget_id' => $centralWidget->id,
             'settings' => [
@@ -193,36 +165,17 @@ class HeroWidgetSeeder extends Seeder
             'is_active' => true
         ]);
         
-        // WidgetItem oluşturma kaldırıldı
-        // WidgetItem::create([
-        //     'tenant_widget_id' => $tenantWidget->id,
-        //     'content' => [
-        //         'title' => 'Full Width Hero',
-        //         'subtitle' => 'Modern ve Etkileyici',
-        //         'description' => 'Etkileyici bir hero bileşeni ile sayfanızın üst kısmını tasarlayın.',
-        //         'button_text' => 'Daha Fazla',
-        //         'button_url' => '#',
-        //         'show_secondary_button' => true,
-        //         'secondary_button_text' => 'İletişim',
-        //         'secondary_button_url' => '/iletisim'
-        //     ],
-        //     'order' => 1
-        // ]);
-        
         Log::info('Tenant içinde hero widget başarıyla oluşturuldu. Tenant ID: ' . $tenantId);
     }
 
     private function createHeroWidget()
     {
-        // Hero kategorisini bul, yoksa oluştur
         $heroCategory = WidgetCategory::where('slug', 'herolar')->first();
         
-        // Eğer hero kategorisi yoksa, önce 'Content' kategorisini kontrol et
         if (!$heroCategory) {
             $contentCategory = WidgetCategory::where('slug', 'content')->first();
             
             if ($contentCategory) {
-                // Hero alt kategorisini oluştur
                 $heroCategory = WidgetCategory::create([
                     'title' => 'Herolar',
                     'slug' => 'herolar',
@@ -234,7 +187,6 @@ class HeroWidgetSeeder extends Seeder
                     'has_subcategories' => false
                 ]);
             } else {
-                // Content kategorisi yoksa, ana kategori olarak oluştur
                 try {
                     $heroCategory = WidgetCategory::create([
                         'title' => 'Herolar',
@@ -258,11 +210,9 @@ class HeroWidgetSeeder extends Seeder
             }
         }
         
-        // Hero widget'ı zaten var mı kontrolü
         $existingWidget = Widget::where('slug', 'full-width-hero')->first();
         
         if (!$existingWidget) {
-            // Hero widget'ı oluştur - dynamic tip olarak
             $widget = Widget::create([
                 'widget_category_id' => $heroCategory->widget_category_id,
                 'name' => 'Full Width Hero',
@@ -297,55 +247,73 @@ class HeroWidgetSeeder extends Seeder
                         'label' => 'Widget Başlığı (Yönetim)',
                         'type' => 'text',
                         'required' => true,
-                        'default' => 'Full Width Hero',
-                        'col' => 'col-md-12'
+                        'properties' => [
+                            'default_value' => 'Full Width Hero',
+                            'width' => 12,
+                            'placeholder' => 'Widget başlığını giriniz'
+                        ]
                     ],
                     [
                         'name' => 'hero_title',
                         'label' => 'Ana Başlık',
                         'type' => 'text',
                         'required' => true,
-                        'default' => 'Etkileyici Bir Başlık',
-                        'col' => 'col-md-12'
+                        'properties' => [
+                            'default_value' => 'Etkileyici Bir Başlık',
+                            'width' => 12,
+                            'placeholder' => 'Ana başlığı giriniz'
+                        ]
                     ],
                     [
                         'name' => 'hero_subtitle',
                         'label' => 'Alt Başlık',
                         'type' => 'text',
                         'required' => false,
-                        'default' => 'Harika bir alt başlık ile devam edin.',
-                        'col' => 'col-md-12'
+                        'properties' => [
+                            'default_value' => 'Harika bir alt başlık ile devam edin.',
+                            'width' => 12,
+                            'placeholder' => 'Alt başlığı giriniz'
+                        ]
                     ],
                     [
                         'name' => 'hero_description',
                         'label' => 'Açıklama Metni',
                         'type' => 'textarea',
                         'required' => false,
-                        'default' => 'Buraya projenizi veya hizmetinizi anlatan kısa ve etkili bir açıklama yazabilirsiniz.',
-                        'col' => 'col-md-12'
+                        'properties' => [
+                            'default_value' => 'Buraya projenizi veya hizmetinizi anlatan kısa ve etkili bir açıklama yazabilirsiniz.',
+                            'width' => 12,
+                            'placeholder' => 'Açıklama metnini giriniz',
+                            'rows' => 4
+                        ]
                     ],
                     [
                         'name' => 'button_text',
                         'label' => 'Buton Metni',
                         'type' => 'text',
                         'required' => false,
-                        'default' => 'Daha Fazla Bilgi',
-                        'col' => 'col-md-6'
+                        'properties' => [
+                            'default_value' => 'Daha Fazla Bilgi',
+                            'width' => 6,
+                            'placeholder' => 'Buton metnini giriniz'
+                        ]
                     ],
                     [
                         'name' => 'button_url',
                         'label' => 'Buton URL',
                         'type' => 'text',
                         'required' => false,
-                        'default' => '#',
-                        'col' => 'col-md-6'
+                        'properties' => [
+                            'default_value' => '#',
+                            'width' => 6,
+                            'placeholder' => 'Buton URL\'sini giriniz'
+                        ]
                     ]
                 ]
             ]);
             
             return $widget;
         } else {
-            // Widget varsa ama tipi "static" veya "file" ise "dynamic" olarak güncelle
             if ($existingWidget->type !== 'dynamic' || $existingWidget->has_items === true) { 
                 $existingWidget->update([
                     'type' => 'dynamic',
@@ -374,48 +342,67 @@ class HeroWidgetSeeder extends Seeder
                             'label' => 'Widget Başlığı (Yönetim)',
                             'type' => 'text',
                             'required' => true,
-                            'default' => 'Full Width Hero',
-                            'col' => 'col-md-12'
+                            'properties' => [
+                                'default_value' => 'Full Width Hero',
+                                'width' => 12,
+                                'placeholder' => 'Widget başlığını giriniz'
+                            ]
                         ],
                         [
                             'name' => 'hero_title',
                             'label' => 'Ana Başlık',
                             'type' => 'text',
                             'required' => true,
-                            'default' => 'Etkileyici Bir Başlık',
-                            'col' => 'col-md-12'
+                            'properties' => [
+                                'default_value' => 'Etkileyici Bir Başlık',
+                                'width' => 12,
+                                'placeholder' => 'Ana başlığı giriniz'
+                            ]
                         ],
                         [
                             'name' => 'hero_subtitle',
                             'label' => 'Alt Başlık',
                             'type' => 'text',
                             'required' => false,
-                            'default' => 'Harika bir alt başlık ile devam edin.',
-                            'col' => 'col-md-12'
+                            'properties' => [
+                                'default_value' => 'Harika bir alt başlık ile devam edin.',
+                                'width' => 12,
+                                'placeholder' => 'Alt başlığı giriniz'
+                            ]
                         ],
                         [
                             'name' => 'hero_description',
                             'label' => 'Açıklama Metni',
                             'type' => 'textarea',
                             'required' => false,
-                            'default' => 'Buraya projenizi veya hizmetinizi anlatan kısa ve etkili bir açıklama yazabilirsiniz.',
-                            'col' => 'col-md-12'
+                            'properties' => [
+                                'default_value' => 'Buraya projenizi veya hizmetinizi anlatan kısa ve etkili bir açıklama yazabilirsiniz.',
+                                'width' => 12,
+                                'placeholder' => 'Açıklama metnini giriniz',
+                                'rows' => 4
+                            ]
                         ],
                         [
                             'name' => 'button_text',
                             'label' => 'Buton Metni',
                             'type' => 'text',
                             'required' => false,
-                            'default' => 'Daha Fazla Bilgi',
-                            'col' => 'col-md-6'
+                            'properties' => [
+                                'default_value' => 'Daha Fazla Bilgi',
+                                'width' => 6,
+                                'placeholder' => 'Buton metnini giriniz'
+                            ]
                         ],
                         [
                             'name' => 'button_url',
                             'label' => 'Buton URL',
                             'type' => 'text',
                             'required' => false,
-                            'default' => '#',
-                            'col' => 'col-md-6'
+                            'properties' => [
+                                'default_value' => '#',
+                                'width' => 6,
+                                'placeholder' => 'Buton URL\'sini giriniz'
+                            ]
                         ]
                     ]
                 ]);
@@ -424,20 +411,14 @@ class HeroWidgetSeeder extends Seeder
         }
     }
     
-    // Central veritabanı için örnek hero - sadece central veritabanında çalışır, tenant değildir
     private function createCentralHeroExample($widget)
     {
-        // Bu fonksiyon sadece bir kez çalışır ve central için bir örnek oluşturur
-        
-        // Önce central veritabanını kontrol et
         $existingWidgets = TenantWidget::where('widget_id', $widget->id)->get();
         
         if ($existingWidgets->count() >= 1) {
-            // Zaten var, yeni oluşturmaya gerek yok
             return;
         }
         
-        // Tenant için widget oluştur
         $tenantWidget = TenantWidget::create([
             'widget_id' => $widget->id,
             'settings' => [
@@ -453,29 +434,11 @@ class HeroWidgetSeeder extends Seeder
             'is_active' => true
         ]);
         
-        // WidgetItem oluşturma kaldırıldı
-        // WidgetItem::create([
-        //     'tenant_widget_id' => $tenantWidget->id,
-        //     'content' => [
-        //         'title' => 'Central Hero Demo',
-        //         'subtitle' => 'Demo Amaçlı',
-        //         'description' => 'Bu hero widget sadece central veritabanı için örnektir.',
-        //         'button_text' => 'Demo',
-        //         'button_url' => '#',
-        //         'show_secondary_button' => true,
-        //         'secondary_button_text' => 'Örnek',
-        //         'secondary_button_url' => '#'
-        //     ],
-        //     'order' => 1
-        // ]);
-        
         Log::info('Central veritabanında demo hero oluşturuldu.');
     }
     
-    // Sadece gerçek tenant'lar için hero oluşturur - central tenant için çalışmaz
     private function createHeroForTenants($widget)
     {
-        // SADECE central=false olan gerçek tenant'ları al
         $tenants = Tenant::where('central', false)->get();
         
         if ($tenants->isEmpty()) {
@@ -485,7 +448,6 @@ class HeroWidgetSeeder extends Seeder
         
         foreach ($tenants as $tenant) {
             try {
-                // Tenant için daha önce çalıştırılmış mı kontrol et
                 $tenantCacheKey = self::$runKey . '_tenant_' . $tenant->id;
                 
                 if (Cache::has($tenantCacheKey)) {
@@ -493,35 +455,27 @@ class HeroWidgetSeeder extends Seeder
                     continue;
                 }
                 
-                // Her tenant için ayrı ayrı çalıştır
                 $tenant->run(function () use ($widget, $tenant, $tenantCacheKey) {
                     
-                    // Önce tenant'ta fazla widget'ları temizleyelim
                     $existingWidgets = TenantWidget::where('widget_id', $widget->id)->get();
                     
                     if ($existingWidgets->count() > 1) {
-                        // İlk kaydı koru, diğerlerini sil
                         $firstWidgetId = $existingWidgets->first()->id;
                         
                         foreach ($existingWidgets as $existingWidget) {
                             if ($existingWidget->id != $firstWidgetId) {
-                                // Widget item'larını da silelim
                                 WidgetItem::where('tenant_widget_id', $existingWidget->id)->delete();
-                                
-                                // Widget'ı silelim
                                 $existingWidget->delete();
                             }
                         }
                     }
                     
-                    // Zaten bir tane var, yenisini oluşturmaya gerek yok
                     if ($existingWidgets->count() >= 1) {
                         Log::info("Tenant {$tenant->id} için hero widget zaten var, atlanıyor...");
                         Cache::put($tenantCacheKey, true, 600);
                         return;
                     }
                     
-                    // Tenant için widget oluştur
                     $tenantWidget = TenantWidget::create([
                         'widget_id' => $widget->id,
                         'settings' => [
@@ -536,26 +490,9 @@ class HeroWidgetSeeder extends Seeder
                         'order' => 0,
                         'is_active' => true
                     ]);
-
-                    // WidgetItem oluşturma kaldırıldı
-                    // WidgetItem::create([
-                    //     'tenant_widget_id' => $tenantWidget->id,
-                    //     'content' => [
-                    //         'title' => $tenant->name . ' Hero',
-                    //         'subtitle' => 'Kişiselleştirilmiş Deneyim',
-                    //         'description' => $tenant->name . ' web sitesine hoş geldiniz. Modern ve özelleştirilebilir tasarımımızla hizmetinizdeyiz.',
-                    //         'button_text' => 'Keşfet',
-                    //         'button_url' => '/hakkimizda',
-                    //         'show_secondary_button' => true,
-                    //         'secondary_button_text' => 'İletişim',
-                    //         'secondary_button_url' => '/iletisim'
-                    //     ],
-                    //     'order' => 1
-                    // ]);
                     
                     Log::info("Tenant {$tenant->id} için hero başarıyla oluşturuldu.");
                     
-                    // Bu tenant için çalıştırıldığını işaretle
                     Cache::put($tenantCacheKey, true, 600);
                 });
             } catch (\Exception $e) {

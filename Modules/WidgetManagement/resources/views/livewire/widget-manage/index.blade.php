@@ -38,19 +38,18 @@
         </div>
     </div>
 
-    <!-- NEW LOADING BAR -->
     <div class="row" wire:loading wire:target="setMode">
         <div class="col-12">
             <div class="progress mb-4">
-                <div class="progress-bar progress-bar-indeterminate bg-primary"></div>
+                <div class="progress-bar progress-bar-indeterminate"></div>
             </div>
         </div>
     </div>
     @endif
     
-    <form wire:submit.prevent="saveBasicInfo">
-        <div class="row">
-            <div class="{{ $isNewWidget ? 'col-md-12' : 'col-md-8' }}">
+    <form wire:submit.prevent="save(true)">
+        <div class="row g-4">
+            <div class="col-12 col-lg-8 order-2 order-lg-1">
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">
@@ -58,254 +57,270 @@
                             {{ $isNewWidget ? 'Yeni Widget Ekle' : 'Temel Bilgiler' }}
                         </h3>
                     </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-{{ $isNewWidget ? 'md-6' : '12' }}">
-                                <div class="mb-4">
-                                    <label class="form-label required">Widget Adı</label>
-                                    <input type="text" wire:model.live="widget.name" 
-                                        class="form-control @error('widget.name') is-invalid @enderror"
-                                        placeholder="Widget adını giriniz">
-                                    @error('widget.name') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                                </div>
-                                
-                                <div class="mb-4">
-                                    <label class="form-label required">Benzersiz Tanımlayıcı (Slug)</label>
-                                    <input type="text" wire:model="widget.slug" 
-                                        class="form-control @error('widget.slug') is-invalid @enderror"
-                                        placeholder="widget-slug">
-                                    @error('widget.slug') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                                    <small class="form-hint">Sadece küçük harfler, rakamlar ve tire (-) kullanın.</small>
-                                </div>
-                                
-                                <div class="mb-4">
-                                    <label class="form-label">Kategori</label>
-                                    <select wire:model="widget.widget_category_id" class="form-select @error('widget.widget_category_id') is-invalid @enderror">
-                                        <option value="">Kategori Seçiniz</option>
-                                        @foreach($categories as $category)
-                                        <option value="{{ $category->widget_category_id }}">{{ $category->title }}</option>
-                                        @endforeach
-                                    </select>
-                                    @error('widget.widget_category_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                                </div>
-
-                                <div class="mb-4">
-                                    <label class="form-label">Açıklama</label>
-                                    <textarea wire:model="widget.description" 
-                                        class="form-control @error('widget.description') is-invalid @enderror" 
-                                        placeholder="Widget açıklaması"
-                                        rows="4"></textarea>
-                                    @error('widget.description') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    <div class="card-body p-4">
+                        <div class="row g-4">
+                            <div class="col-12">
+                                <div class="row g-3">
+                                    <div class="col-12 col-md-6">
+                                        <label class="form-label required">Widget Adı</label>
+                                        <input type="text" wire:model.live="widget.name" 
+                                            class="form-control @error('widget.name') is-invalid @enderror"
+                                            placeholder="Widget adını giriniz">
+                                        @error('widget.name') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                    </div>
+                                    
+                                    <div class="col-12 col-md-6">
+                                        <label class="form-label required">Benzersiz Tanımlayıcı</label>
+                                        <input type="text" wire:model="widget.slug" 
+                                            class="form-control font-monospace @error('widget.slug') is-invalid @enderror"
+                                            placeholder="widget-slug">
+                                        @error('widget.slug') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                        <small class="form-hint">Sadece küçük harfler, rakamlar ve tire (-) kullanın.</small>
+                                    </div>
                                 </div>
                             </div>
                             
-                            <div class="col-{{ $isNewWidget ? 'md-6' : '12' }}">
-                                <div class="mb-4">
-                                    <label class="form-label required">Widget Tipi</label>
-                                    <div class="row g-3">
-                                        <div class="col-md-3">
-                                            <label class="form-selectgroup-item">
-                                                <input type="radio" name="widget-type" value="static" wire:model.live="widget.type" class="form-selectgroup-input">
-                                                <span class="form-selectgroup-label d-flex align-items-center p-3">
-                                                    <span class="me-3"><span class="form-selectgroup-check"></span></span>
-                                                    <span class="form-selectgroup-label-content text-start">
-                                                        <span class="form-selectgroup-title strong mb-1">Statik</span>
-                                                        <span class="d-block text-muted">Sabit içerik</span>
-                                                    </span>
-                                                </span>
-                                            </label>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <label class="form-selectgroup-item">
-                                                <input type="radio" name="widget-type" value="dynamic" wire:model.live="widget.type" class="form-selectgroup-input">
-                                                <span class="form-selectgroup-label d-flex align-items-center p-3">
-                                                    <span class="me-3"><span class="form-selectgroup-check"></span></span>
-                                                    <span class="form-selectgroup-label-content text-start">
-                                                        <span class="form-selectgroup-title strong mb-1">Dinamik</span>
-                                                        <span class="d-block text-muted">Eklenebilir içerik</span>
-                                                    </span>
-                                                </span>
-                                            </label>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <label class="form-selectgroup-item">
-                                                <input type="radio" name="widget-type" value="module" wire:model.live="widget.type" class="form-selectgroup-input">
-                                                <span class="form-selectgroup-label d-flex align-items-center p-3">
-                                                    <span class="me-3"><span class="form-selectgroup-check"></span></span>
-                                                    <span class="form-selectgroup-label-content text-start">
-                                                        <span class="form-selectgroup-title strong mb-1">Modül</span>
-                                                        <span class="d-block text-muted">Özel modül</span>
-                                                    </span>
-                                                </span>
-                                            </label>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <label class="form-selectgroup-item">
-                                                <input type="radio" name="widget-type" value="file" wire:model.live="widget.type" class="form-selectgroup-input">
-                                                <span class="form-selectgroup-label d-flex align-items-center p-3">
-                                                    <span class="me-3"><span class="form-selectgroup-check"></span></span>
-                                                    <span class="form-selectgroup-label-content text-start">
-                                                        <span class="form-selectgroup-title strong mb-1">Dosya</span>
-                                                        <span class="d-block text-muted">Hazır view</span>
-                                                    </span>
-                                                </span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                    @error('widget.type') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
-                                </div>
+                            <div class="col-12">
+                                <label class="form-label">Kategori</label>
+                                <select wire:model="widget.widget_category_id" class="form-select @error('widget.widget_category_id') is-invalid @enderror">
+                                    <option value="">Kategori Seçiniz</option>
+                                    @foreach($categories as $category)
+                                    <option value="{{ $category->widget_category_id }}">{{ $category->title }}</option>
+                                    @endforeach
+                                </select>
+                                @error('widget.widget_category_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            </div>
 
-                                @if($widget['type'] === 'file' || $widget['type'] === 'module')
+                            <div class="col-12">
+                                <label class="form-label">Açıklama</label>
+                                <textarea wire:model="widget.description" 
+                                    class="form-control @error('widget.description') is-invalid @enderror" 
+                                    placeholder="Widget açıklaması"
+                                    rows="4"></textarea>
+                                @error('widget.description') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            </div>
+                            
+                            <div class="col-12">
+                                <label class="form-label required mb-3">Widget Tipi</label>
+                                <div class="row g-3">
+                                    <div class="col-6 col-lg-3">
+                                        <label class="form-selectgroup-item h-100">
+                                            <input type="radio" name="widget-type" value="static" wire:model.live="widget.type" class="form-selectgroup-input">
+                                            <span class="form-selectgroup-label d-flex flex-column align-items-center p-3 h-100">
+                                                <div class="avatar avatar-lg bg-blue text-white mb-2">
+                                                    <i class="fas fa-file-alt"></i>
+                                                </div>
+                                                <span class="form-selectgroup-title fw-semibold mb-1">Statik</span>
+                                                <span class="text-muted small text-center">Sabit içerik widget'ı</span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                    <div class="col-6 col-lg-3">
+                                        <label class="form-selectgroup-item h-100">
+                                            <input type="radio" name="widget-type" value="dynamic" wire:model.live="widget.type" class="form-selectgroup-input">
+                                            <span class="form-selectgroup-label d-flex flex-column align-items-center p-3 h-100">
+                                                <div class="avatar avatar-lg bg-green text-white mb-2">
+                                                    <i class="fas fa-layer-group"></i>
+                                                </div>
+                                                <span class="form-selectgroup-title fw-semibold mb-1">Dinamik</span>
+                                                <span class="text-muted small text-center">Eklenebilir içerik</span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                    <div class="col-6 col-lg-3">
+                                        <label class="form-selectgroup-item h-100">
+                                            <input type="radio" name="widget-type" value="module" wire:model.live="widget.type" class="form-selectgroup-input">
+                                            <span class="form-selectgroup-label d-flex flex-column align-items-center p-3 h-100">
+                                                <div class="avatar avatar-lg bg-purple text-white mb-2">
+                                                    <i class="fas fa-cubes"></i>
+                                                </div>
+                                                <span class="form-selectgroup-title fw-semibold mb-1">Modül</span>
+                                                <span class="text-muted small text-center">Özel modül widget'ı</span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                    <div class="col-6 col-lg-3">
+                                        <label class="form-selectgroup-item h-100">
+                                            <input type="radio" name="widget-type" value="file" wire:model.live="widget.type" class="form-selectgroup-input">
+                                            <span class="form-selectgroup-label d-flex flex-column align-items-center p-3 h-100">
+                                                <div class="avatar avatar-lg bg-orange text-white mb-2">
+                                                    <i class="fas fa-file-code"></i>
+                                                </div>
+                                                <span class="form-selectgroup-title fw-semibold mb-1">Dosya</span>
+                                                <span class="text-muted small text-center">Hazır view dosyası</span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                                @error('widget.type') <div class="invalid-feedback d-block mt-2">{{ $message }}</div> @enderror
+                            </div>
+
+                            @if($widget['type'] === 'file' || $widget['type'] === 'module')
+                            <div class="col-12">
                                 <div class="alert alert-info">
                                     <i class="fas fa-info-circle me-2"></i>
                                     {{ $widget['type'] === 'file' ? 'Hazır dosya kullanımı için dosya yolunu belirtin.' : 'Modül dosya kullanımı için dosya yolunu belirtin.' }}
                                 </div>
                                 
-                                <div class="mb-4">
-                                    <label class="form-label">{{ $widget['type'] === 'file' ? 'View' : 'Modül' }} Dosya Yolu</label>
-                                    <input type="text" 
-                                        wire:model="widget.file_path" 
-                                        class="form-control font-monospace @error('widget.file_path') is-invalid @enderror"
-                                        placeholder="Örnek: cards/basic">
-                                    @error('widget.file_path') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                                </div>
-                                @endif
-
-                                @if($isNewWidget)
-                                    <div class="mb-3">
-                                        <label class="form-check form-switch">
-                                            <input type="checkbox" class="form-check-input" wire:model.live="widget.has_items">
-                                            <span class="form-check-label">İçerik Ekleme Özelliği</span>
-                                        </label>
-                                        <small class="form-hint ms-4">Kullanıcılar widgeta içerik ekleyebilirler</small>
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <label class="form-check form-switch">
-                                            <input type="checkbox" class="form-check-input" wire:model="widget.is_core">
-                                            <span class="form-check-label">Sistem Widget'ı</span>
-                                        </label>
-                                        <small class="form-hint ms-4">Sistem widget'ları tenant'lar tarafından silinemez</small>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label class="form-check form-switch">
-                                            <input type="checkbox" class="form-check-input" wire:model="widget.is_active">
-                                            <span class="form-check-label">Widget Aktif</span>
-                                        </label>
-                                    </div>
-
-                                    <div class="mb-4">
-                                        <label class="form-label">Önizleme Görseli (Opsiyonel)</label>
-                                        <div class="form-control position-relative" 
-                                            onclick="document.getElementById('thumbnail-upload-new').click()"
-                                            style="height: auto; min-height: 120px; cursor: pointer; border: 2px dashed #ccc;">
-                                            <input type="file" id="thumbnail-upload-new" wire:model="thumbnail" class="d-none" accept="image/*">
-                                            @if($thumbnail && method_exists($thumbnail, 'temporaryUrl'))
-                                                <img src="{{ $thumbnail->temporaryUrl() }}" class="img-fluid rounded" alt="Önizleme">
-                                                <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2" 
-                                                    wire:click.prevent="$set('thumbnail', null)">
-                                                    <i class="fas fa-times"></i>
-                                                </button>
-                                            @else
-                                                <div class="text-center py-3">
-                                                    <i class="fas fa-cloud-upload-alt fa-2x text-primary mb-2"></i>
-                                                    <p class="mb-0">Görseli seçmek için tıklayın</p>
-                                                    <p class="text-muted small mb-0">PNG, JPG, GIF - Maks 3MB</p>
-                                                </div>
-                                            @endif
-                                        </div>
-                                        <div class="progress mt-2" wire:loading wire:target="thumbnail">
-                                            <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%"></div>
-                                        </div>
-                                        @error('thumbnail') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
-                                    </div>
-                                @endif
+                                <label class="form-label">{{ $widget['type'] === 'file' ? 'View' : 'Modül' }} Dosya Yolu</label>
+                                <input type="text" 
+                                    wire:model="widget.file_path" 
+                                    class="form-control font-monospace @error('widget.file_path') is-invalid @enderror"
+                                    placeholder="Örnek: cards/basic">
+                                @error('widget.file_path') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
+                            @endif
                         </div>
                     </div>
                 </div>
             </div>
             
-            @if(!$isNewWidget)
-            <div class="col-md-4">
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h3 class="card-title">Widget Ayarları</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <label class="form-check form-switch">
-                                <input type="checkbox" class="form-check-input" wire:model.live="widget.has_items">
-                                <span class="form-check-label">İçerik Ekleme Özelliği</span>
-                            </label>
-                            <small class="form-hint ms-4">Kullanıcılar widgeta içerik ekleyebilirler</small>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-check form-switch">
-                                <input type="checkbox" class="form-check-input" wire:model="widget.is_core">
-                                <span class="form-check-label">Sistem Widget'ı</span>
-                            </label>
-                            <small class="form-hint ms-4">Sistem widget'ları tenant'lar tarafından silinemez</small>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-check form-switch">
-                                <input type="checkbox" class="form-check-input" wire:model="widget.is_active">
-                                <span class="form-check-label">Widget Aktif</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h3 class="card-title">Önizleme Görseli</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="form-control position-relative" 
-                            onclick="document.getElementById('thumbnail-upload-existing').click()"
-                            style="height: auto; min-height: 200px; cursor: pointer; border: 2px dashed #ccc;">
-                            <input type="file" id="thumbnail-upload-existing" wire:model="thumbnail" class="d-none" accept="image/*">
-                            
-                            @if ($thumbnail && method_exists($thumbnail, 'temporaryUrl'))
-                                <img src="{{ $thumbnail->temporaryUrl() }}" class="img-fluid rounded" alt="Yeni Önizleme">
-                            @elseif ($imagePreview)
-                                <img src="{{ url($imagePreview) }}" class="img-fluid rounded" alt="Mevcut Önizleme">
-                            @endif
-
-                            @if (($thumbnail && method_exists($thumbnail, 'temporaryUrl')) || $imagePreview)
-                                <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2" 
-                                    wire:click.prevent="$set('thumbnail', null); $set('imagePreview', null)">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                            @else
-                                <div class="text-center py-4">
-                                    <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-2"></i>
-                                    <p class="mb-0">Görseli seçmek için tıklayın</p>
-                                    <p class="text-muted small mb-0">PNG, JPG, GIF - Maks 3MB</p>
+            <div class="col-12 col-lg-4 order-1 order-lg-2">
+                <div class="row g-4">
+                    @if(!$isNewWidget)
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Widget Ayarları</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="form-check form-switch">
+                                        <input type="checkbox" class="form-check-input" wire:model.live="widget.has_items">
+                                        <span class="form-check-label">İçerik Ekleme Özelliği</span>
+                                    </label>
+                                    <small class="form-hint ms-4">Kullanıcılar widgeta içerik ekleyebilirler</small>
                                 </div>
-                            @endif
-                        </div>
-                        <div class="progress mt-2" wire:loading wire:target="thumbnail">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%"></div>
-                        </div>
-                        @error('thumbnail') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
-                    </div>
-                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-check form-switch">
+                                        <input type="checkbox" class="form-check-input" wire:model="widget.is_core">
+                                        <span class="form-check-label">Sistem Widget'ı</span>
+                                    </label>
+                                    <small class="form-hint ms-4">Sistem widget'ları tenant'lar tarafından silinemez</small>
+                                </div>
 
+                                <div class="mb-3">
+                                    <label class="form-check form-switch">
+                                        <input type="checkbox" class="form-check-input" wire:model="widget.is_active">
+                                        <span class="form-check-label">Widget Aktif</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Önizleme Görseli</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-control position-relative" 
+                                    onclick="document.getElementById('thumbnail-upload-existing').click()"
+                                    style="height: auto; min-height: 200px; cursor: pointer; border: 2px dashed #ccc;">
+                                    <input type="file" id="thumbnail-upload-existing" wire:model="thumbnail" class="d-none" accept="image/*">
+                                    
+                                    @if ($thumbnail && method_exists($thumbnail, 'temporaryUrl'))
+                                        <img src="{{ $thumbnail->temporaryUrl() }}" class="img-fluid rounded" alt="Yeni Önizleme">
+                                    @elseif ($imagePreview)
+                                        <img src="{{ url($imagePreview) }}" class="img-fluid rounded" alt="Mevcut Önizleme">
+                                    @endif
+
+                                    @if (($thumbnail && method_exists($thumbnail, 'temporaryUrl')) || $imagePreview)
+                                        <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2" 
+                                            wire:click.prevent="$set('thumbnail', null); $set('imagePreview', null)">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    @else
+                                        <div class="text-center py-4">
+                                            <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-2"></i>
+                                            <p class="mb-0">Görseli seçmek için tıklayın</p>
+                                            <p class="text-muted small mb-0">PNG, JPG, GIF - Maks 3MB</p>
+                                        </div>
+                                    @endif
+                                </div>
+                                <div class="progress mt-2" wire:loading wire:target="thumbnail">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%"></div>
+                                </div>
+                                @error('thumbnail') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
+                            </div>
+                        </div>
+                    </div>
+                    @else
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Widget Ayarları</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="form-check form-switch">
+                                        <input type="checkbox" class="form-check-input" wire:model.live="widget.has_items">
+                                        <span class="form-check-label">İçerik Ekleme Özelliği</span>
+                                    </label>
+                                    <small class="form-hint ms-4">Kullanıcılar widgeta içerik ekleyebilirler</small>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-check form-switch">
+                                        <input type="checkbox" class="form-check-input" wire:model="widget.is_core">
+                                        <span class="form-check-label">Sistem Widget'ı</span>
+                                    </label>
+                                    <small class="form-hint ms-4">Sistem widget'ları tenant'lar tarafından silinemez</small>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-check form-switch">
+                                        <input type="checkbox" class="form-check-input" wire:model="widget.is_active">
+                                        <span class="form-check-label">Widget Aktif</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Önizleme Görseli</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-control position-relative" 
+                                    onclick="document.getElementById('thumbnail-upload-new').click()"
+                                    style="height: auto; min-height: 120px; cursor: pointer; border: 2px dashed #ccc;">
+                                    <input type="file" id="thumbnail-upload-new" wire:model="thumbnail" class="d-none" accept="image/*">
+                                    @if($thumbnail && method_exists($thumbnail, 'temporaryUrl'))
+                                        <img src="{{ $thumbnail->temporaryUrl() }}" class="img-fluid rounded" alt="Önizleme">
+                                        <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2" 
+                                            wire:click.prevent="$set('thumbnail', null)">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    @else
+                                        <div class="text-center py-3">
+                                            <i class="fas fa-cloud-upload-alt fa-2x text-primary mb-2"></i>
+                                            <p class="mb-0">Görseli seçmek için tıklayın</p>
+                                            <p class="text-muted small mb-0">PNG, JPG, GIF - Maks 3MB</p>
+                                        </div>
+                                    @endif
+                                </div>
+                                <div class="progress mt-2" wire:loading wire:target="thumbnail">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%"></div>
+                                </div>
+                                @error('thumbnail') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+                </div>
             </div>
-            @endif
         </div>
         
         <div class="card mt-4">
-            <div class="card-footer text-end">
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save me-2"></i>
-                    {{ $isNewWidget ? 'Widget Oluştur' : 'Değişiklikleri Kaydet' }}
-                </button>
-            </div>
+            @include('components.form-footer', [
+                'route' => 'admin.widgetmanagement',
+                'modelId' => $widgetId
+            ])
         </div>
     </form>
 </div>
@@ -315,6 +330,41 @@
 .form-label.required:after {
     content: " *";
     color: red;
+}
+
+.form-selectgroup-item:hover .form-selectgroup-label {
+    border-color: var(--tblr-primary);
+}
+
+.form-selectgroup-input:checked ~ .form-selectgroup-label {
+    border-color: var(--tblr-primary);
+    box-shadow: 0 0 0 0.25rem rgba(var(--tblr-primary-rgb), 0.25);
+}
+
+@media (max-width: 991.98px) {
+    .form-selectgroup-item .form-selectgroup-label {
+        padding: 1rem !important;
+    }
+    
+    .avatar.avatar-lg {
+        width: 3rem;
+        height: 3rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .form-selectgroup-item .form-selectgroup-label {
+        padding: 0.75rem !important;
+    }
+    
+    .form-selectgroup-title {
+        font-size: 0.875rem;
+    }
+    
+    .avatar.avatar-lg {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
 }
 </style>
 @endpush

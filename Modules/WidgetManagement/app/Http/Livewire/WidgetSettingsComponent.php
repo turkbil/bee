@@ -15,7 +15,7 @@ class WidgetSettingsComponent extends Component
     use WithFileUploads;
     
     public $tenantWidgetId;
-    public $settings = [];
+    public $formData = [];
     public $schema = [];
     public $tenantWidget;
     public $temporaryUpload = [];
@@ -33,16 +33,17 @@ class WidgetSettingsComponent extends Component
         $this->tenantWidget = TenantWidget::with('widget')->findOrFail($tenantWidgetId);
         
         $this->schema = $this->tenantWidget->widget->getSettingsSchema();
-        $this->settings = $this->tenantWidget->settings ?? [];
+        $this->formData = $this->tenantWidget->settings ?? [];
         
         $this->processSchema();
+        $this->initializeFormDataFromSchema();
         
-        if (!isset($this->settings['unique_id'])) {
-            $this->settings['unique_id'] = (string) Str::uuid();
+        if (!isset($this->formData['unique_id'])) {
+            $this->formData['unique_id'] = (string) Str::uuid();
         }
         
-        if (!isset($this->settings['title'])) {
-            $this->settings['title'] = $this->tenantWidget->widget->name;
+        if (!isset($this->formData['title'])) {
+            $this->formData['title'] = $this->tenantWidget->widget->name;
         }
     }
     
@@ -97,7 +98,109 @@ class WidgetSettingsComponent extends Component
         }
     }
     
-    public function save()
+    protected function initializeFormDataFromSchema()
+    {
+        foreach ($this->schema as $field) {
+            if (!isset($field['name']) || !isset($field['type'])) continue;
+            
+            $fieldName = $field['name'];
+            
+            if (!isset($this->formData[$fieldName])) {
+                if (isset($field['properties']['default_value'])) {
+                    $this->formData[$fieldName] = $field['properties']['default_value'];
+                } elseif (isset($field['default'])) {
+                    $this->formData[$fieldName] = $field['default'];
+                } else {
+                    switch ($field['type']) {
+                        case 'checkbox':
+                        case 'switch':
+                            $this->formData[$fieldName] = false;
+                            break;
+                        case 'number':
+                            $this->formData[$fieldName] = 0;
+                            break;
+                        case 'image':
+                        case 'file':
+                            $this->formData[$fieldName] = null;
+                            break;
+                        case 'select':
+                            if (isset($field['options']) && is_array($field['options'])) {
+                                $firstOption = array_key_first($field['options']);
+                                $this->formData[$fieldName] = $firstOption;
+                            } else {
+                                $this->formData[$fieldName] = '';
+                            }
+                            break;
+                        default:
+                            $this->formData[$fieldName] = '';
+                            break;
+                    }
+                }
+            }
+        }
+        
+        $this->processNestedFields($this->schema);
+    }
+    
+    protected function processNestedFields($schema)
+    {
+        foreach ($schema as $field) {
+            if (!isset($field['type'])) continue;
+            
+            if ($field['type'] === 'row' && isset($field['columns'])) {
+                foreach ($field['columns'] as $column) {
+                    if (isset($column['elements']) && is_array($column['elements'])) {
+                        $this->processNestedFields($column['elements']);
+                    }
+                }
+            } elseif ($field['type'] === 'card' && isset($field['elements'])) {
+                $this->processNestedFields($field['elements']);
+            } elseif ($field['type'] === 'tab_group' && isset($field['properties']['tabs'])) {
+                foreach ($field['properties']['tabs'] as $tab) {
+                    if (isset($tab['elements']) && is_array($tab['elements'])) {
+                        $this->processNestedFields($tab['elements']);
+                    }
+                }
+            } else {
+                if (isset($field['name']) && !isset($this->formData[$field['name']])) {
+                    $fieldName = $field['name'];
+                    
+                    if (isset($field['properties']['default_value'])) {
+                        $this->formData[$fieldName] = $field['properties']['default_value'];
+                    } elseif (isset($field['default'])) {
+                        $this->formData[$fieldName] = $field['default'];
+                    } else {
+                        switch ($field['type']) {
+                            case 'checkbox':
+                            case 'switch':
+                                $this->formData[$fieldName] = false;
+                                break;
+                            case 'number':
+                                $this->formData[$fieldName] = 0;
+                                break;
+                            case 'image':
+                            case 'file':
+                                $this->formData[$fieldName] = null;
+                                break;
+                            case 'select':
+                                if (isset($field['options']) && is_array($field['options'])) {
+                                    $firstOption = array_key_first($field['options']);
+                                    $this->formData[$fieldName] = $firstOption;
+                                } else {
+                                    $this->formData[$fieldName] = '';
+                                }
+                                break;
+                            default:
+                                $this->formData[$fieldName] = '';
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    public function save($redirect = false, $resetForm = false)
     {
         $rules = [];
         
@@ -106,7 +209,7 @@ class WidgetSettingsComponent extends Component
             if ($field['type'] === 'row') continue;
             
             if (isset($field['required']) && $field['required'] && $field['name'] !== 'unique_id' && $field['name'] !== 'id') {
-                $rules['settings.' . $field['name']] = 'required';
+                $rules['formData.' . $field['name']] = 'required';
             }
         }
         
@@ -117,19 +220,28 @@ class WidgetSettingsComponent extends Component
                 $tenantId = tenant()->id ?? 'central';
                 $filename = time() . '_' . Str::slug($fieldName) . '.' . $upload->getClientOriginalExtension();
                 $path = $upload->storeAs("widgets/{$tenantId}/settings", $filename, 'public');
-                $this->settings[$fieldName] = asset('storage/' . $path);
+                $this->formData[$fieldName] = asset('storage/' . $path);
             }
         }
 
-        if (!isset($this->settings['unique_id'])) {
-            $this->settings['unique_id'] = (string) Str::uuid();
+        if (!isset($this->formData['unique_id'])) {
+            $this->formData['unique_id'] = (string) Str::uuid();
         }
         
         $this->tenantWidget->update([
-            'settings' => $this->settings
+            'settings' => $this->formData
         ]);
         
         $this->widgetService->clearWidgetCache(tenant()->id ?? null, $this->tenantWidgetId);
+        
+        if ($redirect) {
+            session()->flash('toast', [
+                'title' => 'Başarılı!',
+                'message' => 'Widget ayarları kaydedildi.',
+                'type' => 'success'
+            ]);
+            return redirect()->route('admin.widgetmanagement.index');
+        }
         
         $this->dispatch('toast', [
             'title' => 'Başarılı!',

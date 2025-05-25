@@ -173,8 +173,7 @@
                                                     @endif
                                                 @endif
                                                 
-                                                <!-- Önizleme Butonu (Dropdown İçinde) -->
-                                                <a href="{{ route('admin.widgetmanagement.preview', $instance->widget->id) }}" class="dropdown-item" target="_blank">
+                                                <a href="{{ route('admin.widgetmanagement.preview.instance', $instance->id) }}" class="dropdown-item" target="_blank">
                                                     <i class="fas fa-eye me-2"></i> Önizleme
                                                 </a>
                                                 
@@ -220,7 +219,7 @@
                                                 </a>
                                             @endif
                                             
-                                            <a href="{{ route('admin.widgetmanagement.preview', $instance->widget->id) }}" class="btn btn-sm btn-outline-primary" target="_blank">
+                                            <a href="{{ route('admin.widgetmanagement.preview.instance', $instance->id) }}" class="btn btn-sm btn-outline-primary" target="_blank">
                                                 <i class="fas fa-eye me-1"></i>
                                                 Önizle
                                             </a>

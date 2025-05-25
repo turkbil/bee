@@ -8,6 +8,7 @@ use Livewire\Attributes\Layout;
 use Modules\WidgetManagement\app\Models\TenantWidget;
 use Modules\WidgetManagement\app\Models\WidgetItem;
 use Modules\WidgetManagement\app\Services\WidgetItemService;
+use Modules\WidgetManagement\app\Helpers\WidgetStorageHelper;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 
@@ -193,7 +194,7 @@ class WidgetItemManageComponent extends Component
     {
         if (isset($this->formData[$fieldName]) && is_array($this->formData[$fieldName]) && isset($this->formData[$fieldName][$index])) {
             if (function_exists('is_tenant') && is_tenant()) {
-                \Modules\SettingManagement\App\Helpers\TenantStorageHelper::deleteFile($this->formData[$fieldName][$index]);
+                WidgetStorageHelper::deleteWidgetFile($this->formData[$fieldName][$index]);
             }
             
             unset($this->formData[$fieldName][$index]);
@@ -205,7 +206,7 @@ class WidgetItemManageComponent extends Component
     {
         if (isset($this->formData[$fieldName]) && !empty($this->formData[$fieldName])) {
             if (function_exists('is_tenant') && is_tenant()) {
-                \Modules\SettingManagement\App\Helpers\TenantStorageHelper::deleteFile($this->formData[$fieldName]);
+                WidgetStorageHelper::deleteWidgetFile($this->formData[$fieldName]);
             }
             
             $this->formData[$fieldName] = null;
@@ -286,7 +287,7 @@ class WidgetItemManageComponent extends Component
                     $folder = $field['type'] === 'image' ? 'images' : 'files';
                     
                     try {
-                        $urlPath = \Modules\SettingManagement\App\Helpers\TenantStorageHelper::storeTenantFile(
+                        $urlPath = WidgetStorageHelper::storeWidgetFile(
                             $file,
                             "widgets/{$folder}",
                             $filename,
@@ -295,7 +296,7 @@ class WidgetItemManageComponent extends Component
                         
                         $this->formData[$field['name']] = $urlPath;
                     } catch (\Exception $e) {
-                        \Illuminate\Support\Facades\Log::error('Dosya yükleme hatası: ' . $e->getMessage(), [
+                        \Illuminate\Support\Facades\Log::error('Widget dosya yükleme hatası: ' . $e->getMessage(), [
                             'field' => $field['name'],
                             'type' => $field['type'],
                             'tenant' => $tenantId,
@@ -316,7 +317,7 @@ class WidgetItemManageComponent extends Component
                         $filename = time() . '_' . Str::slug($fieldName) . '_' . $index . '_' . $photo->getClientOriginalName();
                         
                         try {
-                            $urlPath = \Modules\SettingManagement\App\Helpers\TenantStorageHelper::storeTenantFile(
+                            $urlPath = WidgetStorageHelper::storeWidgetFile(
                                 $photo,
                                 "widgets/images",
                                 $filename,
@@ -325,7 +326,7 @@ class WidgetItemManageComponent extends Component
                             
                             $this->formData[$fieldName][] = $urlPath;
                         } catch (\Exception $e) {
-                            \Illuminate\Support\Facades\Log::error('Çoklu resim yükleme hatası: ' . $e->getMessage(), [
+                            \Illuminate\Support\Facades\Log::error('Widget çoklu resim yükleme hatası: ' . $e->getMessage(), [
                                 'field' => $fieldName,
                                 'index' => $index,
                                 'tenant' => $tenantId,

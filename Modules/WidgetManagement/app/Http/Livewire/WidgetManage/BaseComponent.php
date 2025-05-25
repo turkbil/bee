@@ -233,7 +233,7 @@ class BaseComponent extends Component
         return $fields;
     }
 
-    public function saveBasicInfo()
+    public function save($redirect = false, $resetForm = false)
     {
         $this->isSubmitting = true;
         
@@ -314,11 +314,47 @@ class BaseComponent extends Component
                 }
             }
             
+            if ($redirect) {
+                session()->flash('toast', [
+                    'title' => 'Başarılı!',
+                    'message' => 'Widget başarıyla kaydedildi.',
+                    'type' => 'success'
+                ]);
+                
+                if ($this->isNewWidget) {
+                    return redirect()->route('admin.widgetmanagement.index');
+                } else {
+                    return redirect()->route('admin.widgetmanagement.index');
+                }
+            }
+            
             $this->dispatch('toast', [
                 'title' => 'Başarılı!',
-                'message' => 'Widget temel bilgileri kaydedildi.',
+                'message' => 'Widget başarıyla kaydedildi.',
                 'type' => 'success'
             ]);
+            
+            if ($resetForm && $this->isNewWidget) {
+                $this->reset(['widget', 'thumbnail', 'imagePreview']);
+                $this->widget = [
+                    'name' => '',
+                    'slug' => '',
+                    'description' => '',
+                    'widget_category_id' => null,
+                    'type' => 'static',
+                    'content_html' => '',
+                    'content_css' => '',
+                    'content_js' => '',
+                    'css_files' => [],
+                    'js_files' => [],
+                    'has_items' => false,
+                    'item_schema' => [],
+                    'settings_schema' => [],
+                    'is_active' => true,
+                    'is_core' => false,
+                    'file_path' => ''
+                ];
+            }
             
             if ($this->isNewWidget) {
                 return redirect()->route('admin.widgetmanagement.manage', $widget->id);
@@ -332,6 +368,11 @@ class BaseComponent extends Component
         }
         
         $this->isSubmitting = false;
+    }
+    
+    public function saveBasicInfo()
+    {
+        $this->save(false, false);
     }
     
     public function saveDesign()

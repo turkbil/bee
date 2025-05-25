@@ -139,7 +139,7 @@
                                                 <a href="{{ route('admin.widgetmanagement.manage', $widget->id) }}" class="dropdown-item">
                                                     <i class="fas fa-tools me-2"></i> Yapılandır
                                                 </a>
-                                                <a href="{{ route('admin.widgetmanagement.file.preview', $widget->id) }}" class="dropdown-item" target="_blank">
+                                                <a href="{{ route('admin.widgetmanagement.preview.template', $widget->id) }}" class="dropdown-item" target="_blank">
                                                     <i class="fas fa-eye me-2"></i> Önizleme
                                                 </a>
                                             </div>
@@ -169,7 +169,7 @@
                                             <a href="{{ route('admin.widgetmanagement.manage', $widget->id) }}" class="btn btn-outline-primary">
                                                 <i class="fas fa-tools me-1"></i> Yapılandır
                                             </a>
-                                            <a href="{{ route('admin.widgetmanagement.file.preview', $widget->id) }}" class="btn btn-outline-secondary" target="_blank">
+                                            <a href="{{ route('admin.widgetmanagement.preview.template', $widget->id) }}" class="btn btn-outline-secondary" target="_blank">
                                                 <i class="fas fa-eye me-1"></i> Önizle
                                             </a>
                                         </div>

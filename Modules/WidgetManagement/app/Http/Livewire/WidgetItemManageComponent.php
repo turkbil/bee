@@ -340,7 +340,8 @@ class WidgetItemManageComponent extends Component
                 $this->itemService->updateItem($this->itemId, $this->formData);
                 $successMessage = 'İçerik güncellendi.';
             } else {
-                $this->itemService->addItem($this->tenantWidgetId, $this->formData);
+                $item = $this->itemService->addItem($this->tenantWidgetId, $this->formData);
+                $this->itemId = $item->id;
                 $successMessage = 'Yeni içerik eklendi.';
             }
             
@@ -363,7 +364,8 @@ class WidgetItemManageComponent extends Component
             ]);
             
             if ($resetForm && !$this->itemId) {
-                $this->reset();
+                $this->reset(['formData', 'temporaryImages', 'photos']);
+                $this->initFormData();
             }
             
         } catch (\Exception $e) {

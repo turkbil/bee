@@ -4754,3 +4754,22 @@
 [2025-05-25 13:32:21] local.DEBUG: tenantMedia request - tenantId: 1, path: widgets/images/1748179940_image_a7.jpg  
 [2025-05-25 13:32:21] local.DEBUG: Central için dosya yolu: C:\laragon\www\laravel\storage\app/public/widgets/images/1748179940_image_a7.jpg  
 [2025-05-25 13:32:23] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: widgetmanagement, Permission: view, Roles: root  
+[2025-05-25 13:35:38] local.DEBUG: Using default module view: page::front.show  
+[2025-05-25 13:35:39] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: page, Permission: view, Roles: root  
+[2025-05-25 13:35:42] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: widgetmanagement, Permission: view, Roles: root  
+[2025-05-25 13:35:46] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: widgetmanagement, Permission: view, Roles: root  
+[2025-05-25 13:35:47] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: widgetmanagement, Permission: view, Roles: root  
+[2025-05-25 13:44:37] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: widgetmanagement, Permission: view, Roles: root  
+[2025-05-25 13:44:37] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: widgetmanagement, Permission: view, Roles: root  
+[2025-05-25 13:44:37] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: widgetmanagement, Permission: view, Roles: root  
+[2025-05-25 13:44:42] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: widgetmanagement, Permission: view, Roles: root  
+[2025-05-25 13:47:41] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: widgetmanagement, Permission: view, Roles: root  
+[2025-05-25 13:47:41] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: widgetmanagement, Permission: view, Roles: root  
+[2025-05-25 13:47:44] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: widgetmanagement, Permission: view, Roles: root  
+[2025-05-25 13:51:49] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: widgetmanagement, Permission: view, Roles: root  
+[2025-05-25 13:51:49] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: widgetmanagement, Permission: view, Roles: root  
+[2025-05-25 14:06:21] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: widgetmanagement, Permission: view, Roles: root  
+[2025-05-25 14:06:21] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: widgetmanagement, Permission: view, Roles: root  
+[2025-05-25 14:10:39] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: widgetmanagement, Permission: view, Roles: root  
+[2025-05-25 14:10:39] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: widgetmanagement, Permission: view, Roles: root  
+[2025-05-25 14:10:40] local.INFO: ModulePermissionMiddleware: User ID: 1, Email: nurullah@nurullah.net, Module: widgetmanagement, Permission: view, Roles: root  

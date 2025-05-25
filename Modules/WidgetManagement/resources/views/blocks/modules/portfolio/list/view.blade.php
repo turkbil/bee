@@ -1,6 +1,9 @@
 @php
     $widgetTitle = $settings['widget_title'] ?? 'Portfolyolar';
-    $itemLimit = (int) ($settings['itemLimit'] ?? $settings['portfolio_limit'] ?? $settings['limit'] ?? 5);
+    $itemLimit = (int) ($settings['itemLimit'] ?? $settings['portfolio_limit'] ?? $settings['limit']);
+    if ($itemLimit <= 0) {
+        $itemLimit = 5;
+    }
     $categorySlug = $settings['categorySlug'] ?? $settings['portfolio_category_slug'] ?? null;
     $columns = $settings['columns'] ?? '3'; // Varsayılan sütun sayısı
 
@@ -9,11 +12,24 @@
     if ($categorySlug) {
         $category = \Modules\Portfolio\App\Models\PortfolioCategory::where('slug', $categorySlug)->first();
         if ($category) {
-            $itemsQuery->where('portfolio_category_id', $category->id);
+            $itemsQuery->where('portfolio_category_id', $category->portfolio_category_id);
         }
+        // Kategori bulunamazsa ekstra koşul eklenmez, tüm aktif portfolyolar listelenir
     }
 
     $items = $itemsQuery->orderBy('created_at', 'desc')->limit($itemLimit)->get();
+
+    // DEBUG LOG: Widget önizleme veri kontrolü
+    \Log::info('Portfolio Widget Debug', [
+        'categorySlug' => $categorySlug,
+        'itemLimit' => $itemLimit,
+        'columns' => $columns,
+        'items_count' => $items->count(),
+        'item_titles' => $items->pluck('title')->toArray(),
+        'portfolio_ids' => $items->pluck('portfolio_id')->toArray(),
+        'query_sql' => $itemsQuery->toSql(),
+        'query_bindings' => $itemsQuery->getBindings(),
+    ]);
 
     $gridClass = 'grid-cols-1'; // Mobil için varsayılan
     if ($columns == '2') {

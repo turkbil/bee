@@ -1,11 +1,9 @@
 @php
-// Theme_id'ye göre theme'i bul
 $theme = null;
 if (function_exists('tenant') && tenant() && tenant()->theme_id) {
     $theme = \Modules\ThemeManagement\App\Models\Theme::find(tenant()->theme_id);
 }
 
-// Theme bulunamadıysa varsayılan olarak blank temasını kullan
 if (!$theme) {
     $theme = \Modules\ThemeManagement\App\Models\Theme::where('is_default', true)->first();
     if (!$theme) {
@@ -18,7 +16,6 @@ if (!$theme) {
 
 $themeFolder = $theme->folder_name ?? 'blank';
 
-// CSS ve JS dosyalarını ayıkla
 preg_match_all('/<link[^>]+href=[\'"]([^\'"]+)[\'"][^>]*>/i', $widget->content_html ?? '', $cssMatches);
 $cssFiles = !empty($cssMatches[1]) ? $cssMatches[1] : [];
 
@@ -28,7 +25,6 @@ $jsFiles = !empty($jsMatches[1]) ? $jsMatches[1] : [];
 
 @include("themes.{$themeFolder}.layouts.header")
 
-<!-- Handlebars önce yüklensin -->
 <script src="https://cdn.jsdelivr.net/npm/handlebars@4.7.8/dist/handlebars.min.js"></script>
 
 <div class="preview-header">
@@ -101,10 +97,6 @@ $jsFiles = !empty($jsMatches[1]) ? $jsMatches[1] : [];
                 <strong>Önizleme Bilgileri:</strong><br>
                 <strong>Tür:</strong> {{ ucfirst($widget->type) }}<br>
                 <strong>Açıklama:</strong> {{ $widget->description ?? 'Açıklama bulunmuyor' }}<br>
-                @if($widget->type === 'dynamic' && isset($context['items']))
-                <strong>İçerik Sayısı:</strong> {{ count($context['items']) }} öğe<br>
-                @endif
-                <strong>Context Özeti:</strong> {{ json_encode(array_keys($context)) }}
             </div>
         </div>
     </div>
@@ -120,9 +112,11 @@ $jsFiles = !empty($jsMatches[1]) ? $jsMatches[1] : [];
                     </svg>
                     Bu modül bileşeni için HTML şablonu tanımlanmamış. Lütfen widget'ı düzenleyin ve bir HTML şablonu ekleyin.
                 </div>
+            @elseif($widget->type == 'module' && !empty($widget->file_path))
+                @include($widget->file_path, ['settings' => $widget->settings, 'items' => $widget->items ?? []])
             @elseif($widget->type == 'file')
-                @include('widgetmanagement::blocks.' . $widget->file_path, ['settings' => $context])
-            @elseif(empty($widget->content_html))
+                @include('widgetmanagement::blocks.' . $widget->file_path, ['settings' => $context ?? []])
+            @elseif(empty($renderedHtml))
                 <div class="bg-gray-100 border border-gray-300 p-8 rounded-md text-gray-600 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 text-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 mx-auto mb-4 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
@@ -130,19 +124,11 @@ $jsFiles = !empty($jsMatches[1]) ? $jsMatches[1] : [];
                         <polyline points="21,15 16,10 5,21"></polyline>
                     </svg>
                     <h3 class="text-lg font-medium mb-2">Widget İçeriği Boş</h3>
-                    <p class="text-sm">Bu widget için HTML içeriği tanımlanmamış.</p>
+                    <p class="text-sm">Bu widget için işlenmiş HTML içeriği bulunamadı.</p>
                     <p class="text-xs mt-2 text-gray-500">Widget Türü: <strong>{{ ucfirst($widget->type) }}</strong></p>
-                    @if($widget->type === 'dynamic' && isset($context['items']) && count($context['items']) > 0)
-                    <div class="mt-4">
-                        <h4 class="font-medium mb-2">Test Verileri Mevcut:</h4>
-                        <div class="text-left bg-white dark:bg-gray-800 p-3 rounded border">
-                            <pre class="text-xs">{{ json_encode($context['items'], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
-                        </div>
-                    </div>
-                    @endif
                 </div>
             @else
-                <div id="widget-container"></div>
+                <div id="widget-container">{!! $renderedHtml !!}</div>
             @endif
         </div>
     </div>
@@ -220,102 +206,41 @@ $jsFiles = !empty($jsMatches[1]) ? $jsMatches[1] : [];
             lightBtn.classList.remove('border-gray-300', 'text-gray-600');
         }
     }
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const widgetContainer = document.getElementById('widget-container');
     
-    @if(!empty($widget->content_html))
-    function renderWidget() {
-        // Template ve context hazırla
-        const template = `{!! str_replace(['`', '\\', "\n", "\r"], ['\`', '\\\\', '\\n', '\\r'], $widget->content_html) !!}`;
-        const context = @json($context);
+    if (widgetContainer) {
+        const externalJsFiles = {!! json_encode($jsFiles ?? []) !!};
+        const widgetInlineJs = {!! json_encode($widgetJs ?? '') !!};
         
-        console.log('Template:', template);
-        console.log('Context:', context);
-        
-        try {
-            // Handlebars template'ini derle
-            const compiledTemplate = Handlebars.compile(template);
-            const html = compiledTemplate(context);
-            
-            // HTML'i container'a yerleş
-            document.getElementById('widget-container').innerHTML = html;
-            
-            // CSS ekle
-            @if(!empty($widget->content_css))
-            const style = document.createElement('style');
-            const cssTemplate = `{!! str_replace(['`', '\\', "\n", "\r"], ['\`', '\\\\', '\\n', '\\r'], $widget->content_css) !!}`;
-            const compiledCss = Handlebars.compile(cssTemplate);
-            style.textContent = compiledCss(context);
-            document.head.appendChild(style);
-            @endif
-            
-            // JS çalıştır
-            @if(!empty($widget->content_js))
-            setTimeout(() => {
-                const jsTemplate = `{!! str_replace(['`', '\\', "\n", "\r"], ['\`', '\\\\', '\\n', '\\r'], $widget->content_js) !!}`;
-                const compiledJs = Handlebars.compile(jsTemplate);
-                const jsCode = compiledJs(context);
-                
-                try {
-                    eval(jsCode);
-                } catch (e) {
-                    console.error('Widget JS hatası:', e);
-                }
-            }, 500);
-            @endif
-            
-        } catch (error) {
-            console.error('Widget render hatası:', error);
-            document.getElementById('widget-container').innerHTML = '<div class="alert alert-danger">Widget render hatası: ' + error.message + '</div>';
+        function loadScriptsSequentially(urls, finalCallback) {
+            if (!urls || urls.length === 0) {
+                if (finalCallback) finalCallback();
+                return;
+            }
+            const url = urls.shift();
+            const script = document.createElement('script');
+            script.src = url;
+            script.onload = () => loadScriptsSequentially(urls, finalCallback);
+            script.onerror = () => {
+                console.error('Failed to load script:', url);
+                loadScriptsSequentially(urls, finalCallback); // Continue with next
+            };
+            document.body.appendChild(script);
         }
-    }
-    @endif
-    
-    document.addEventListener('DOMContentLoaded', function() {
-        const currentMode = localStorage.getItem('darkMode') || 'light';
-        setThemeMode(currentMode);
-        
-        const buttons = document.querySelectorAll('.device-btn');
-        buttons.forEach(btn => {
-            if (btn.classList.contains('active')) {
-                const device = btn.getAttribute('data-device');
-                setPreviewSize(device);
+
+        loadScriptsSequentially(externalJsFiles.slice(), function() {
+            if(widgetInlineJs) {
+                const scriptElement = document.createElement('script');
+                scriptElement.textContent = widgetInlineJs;
+                document.body.appendChild(scriptElement);
             }
         });
-        
-        @if(!empty($widget->content_html))
-        // CSS dosyalarını yükle
-        @foreach($cssFiles as $cssFile)
-            @if(!empty($cssFile))
-                const link{{ $loop->index }} = document.createElement('link');
-                link{{ $loop->index }}.rel = 'stylesheet';
-                link{{ $loop->index }}.href = '{{ $cssFile }}';
-                document.head.appendChild(link{{ $loop->index }});
-            @endif
-        @endforeach
-        
-        // JS dosyalarını yükle
-        let scriptsLoaded = 0;
-        const totalScripts = {{ count($jsFiles) }};
-        
-        @foreach($jsFiles as $cssFile)
-            @if(!empty($cssFile))
-                const script{{ $loop->index }} = document.createElement('script');
-                script{{ $loop->index }}.src = '{{ $cssFile }}';
-                script{{ $loop->index }}.onload = function() {
-                    scriptsLoaded++;
-                    if (scriptsLoaded === totalScripts) {
-                        setTimeout(renderWidget, 100);
-                    }
-                };
-                document.head.appendChild(script{{ $loop->index }});
-            @endif
-        @endforeach
-        
-        // Eğer hiç harici script yoksa direkt render et
-        if (totalScripts === 0) {
-            setTimeout(renderWidget, 100);
-        }
-        @endif
-    });
+    }
+});
 </script>
 
 <style>

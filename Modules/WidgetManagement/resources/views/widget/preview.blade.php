@@ -19,17 +19,17 @@ if (!$theme) {
 $themeFolder = $theme->folder_name ?? 'blank';
 
 // CSS ve JS dosyalarını ayıkla
-preg_match_all('/<link[^>]+href=[\'"]([^\'"]+)[\'"][^>]*>/i', $widget->content_html, $cssMatches);
+preg_match_all('/<link[^>]+href=[\'"]([^\'"]+)[\'"][^>]*>/i', $widget->content_html ?? '', $cssMatches);
 $cssFiles = !empty($cssMatches[1]) ? $cssMatches[1] : [];
 
-preg_match_all('/<script[^>]+src=[\'"]([^\'"]+)[\'"][^>]*><\/script>/i', $widget->content_html, $jsMatches);
+preg_match_all('/<script[^>]+src=[\'"]([^\'"]+)[\'"][^>]*><\/script>/i', $widget->content_html ?? '', $jsMatches);
 $jsFiles = !empty($jsMatches[1]) ? $jsMatches[1] : [];
 
 // Widget Service
 $widgetService = app('widget.service');
 
 // Widget HTML içeriğini render et
-$renderedHtml = $widgetService->renderWidgetHtml($widget, $context, false);
+$renderedHtml = $widgetService->renderWidgetHtml($widget, $context, true);
 
 // Widget CSS içeriğini de işle
 $processedCss = $widget->content_css ?? '';
@@ -161,7 +161,11 @@ if (!empty($processedJs)) {
             <div>
                 <strong>Önizleme Bilgileri:</strong><br>
                 <strong>Tür:</strong> {{ ucfirst($widget->type) }}<br>
-                <strong>Açıklama:</strong> {{ $widget->description }}
+                <strong>Açıklama:</strong> {{ $widget->description ?? 'Açıklama bulunmuyor' }}<br>
+                @if($widget->type === 'dynamic' && isset($context['items']))
+                <strong>İçerik Sayısı:</strong> {{ count($context['items']) }} öğe<br>
+                @endif
+                <strong>Context Özeti:</strong> {{ json_encode(array_keys($context)) }}
             </div>
         </div>
     </div>
@@ -179,6 +183,25 @@ if (!empty($processedJs)) {
                 </div>
             @elseif($widget->type == 'file')
                 @include('widgetmanagement::blocks.' . $widget->file_path, ['settings' => $context])
+            @elseif(empty($widget->content_html))
+                <div class="bg-gray-100 border border-gray-300 p-8 rounded-md text-gray-600 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 mx-auto mb-4 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                        <polyline points="21,15 16,10 5,21"></polyline>
+                    </svg>
+                    <h3 class="text-lg font-medium mb-2">Widget İçeriği Boş</h3>
+                    <p class="text-sm">Bu widget için HTML içeriği tanımlanmamış.</p>
+                    <p class="text-xs mt-2 text-gray-500">Widget Türü: <strong>{{ ucfirst($widget->type) }}</strong></p>
+                    @if($widget->type === 'dynamic' && isset($context['items']) && count($context['items']) > 0)
+                    <div class="mt-4">
+                        <h4 class="font-medium mb-2">Test Verileri Mevcut:</h4>
+                        <div class="text-left bg-white dark:bg-gray-800 p-3 rounded border">
+                            <pre class="text-xs">{{ json_encode($context['items'], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
+                        </div>
+                    </div>
+                    @endif
+                </div>
             @else
                 {!! $renderedHtml !!}
             @endif

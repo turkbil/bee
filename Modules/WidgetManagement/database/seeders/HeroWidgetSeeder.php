@@ -161,6 +161,7 @@ class HeroWidgetSeeder extends Seeder
                 'widget_button_text' => 'Keşfet',
                 'widget_button_url' => '/urunler'
             ],
+            'display_title' => 'Tenant Özel Hero',
             'order' => 0,
             'is_active' => true
         ]);
@@ -244,9 +245,11 @@ class HeroWidgetSeeder extends Seeder
                 'settings_schema' => [
                     [
                         'name' => 'widget_title',
-                        'label' => 'Widget Başlığı (Yönetim)',
+                        'label' => 'Widget Başlığı',
                         'type' => 'text',
                         'required' => true,
+                        'system' => true,
+                        'protected' => true,
                         'properties' => [
                             'default_value' => 'Full Width Hero',
                             'width' => 12,
@@ -255,7 +258,7 @@ class HeroWidgetSeeder extends Seeder
                     ],
                     [
                         'name' => 'widget_hero_title',
-                        'label' => 'Ana Başlık',
+                        'label' => 'Başlık',
                         'type' => 'text',
                         'required' => true,
                         'properties' => [
@@ -277,7 +280,7 @@ class HeroWidgetSeeder extends Seeder
                     ],
                     [
                         'name' => 'widget_hero_description',
-                        'label' => 'Açıklama Metni',
+                        'label' => 'Açıklama',
                         'type' => 'textarea',
                         'required' => false,
                         'properties' => [
@@ -300,7 +303,7 @@ class HeroWidgetSeeder extends Seeder
                     ],
                     [
                         'name' => 'widget_button_url',
-                        'label' => 'Buton URL',
+                        'label' => 'Buton Bağlantısı',
                         'type' => 'text',
                         'required' => false,
                         'properties' => [
@@ -316,6 +319,7 @@ class HeroWidgetSeeder extends Seeder
                         'required' => false,
                         'system' => true,
                         'hidden' => true,
+                        'protected' => true,
                         'properties' => [
                             'width' => 12
                         ]
@@ -350,9 +354,11 @@ class HeroWidgetSeeder extends Seeder
                     'settings_schema' => [
                         [
                             'name' => 'widget_title',
-                            'label' => 'Widget Başlığı (Yönetim)',
+                            'label' => 'Başlık',
                             'type' => 'text',
                             'required' => true,
+                            'system' => true,
+                            'protected' => true,
                             'properties' => [
                                 'default_value' => 'Full Width Hero',
                                 'width' => 12,
@@ -422,6 +428,7 @@ class HeroWidgetSeeder extends Seeder
                             'required' => false,
                             'system' => true,
                             'hidden' => true,
+                            'protected' => true,
                             'properties' => [
                                 'width' => 12
                             ]
@@ -452,6 +459,7 @@ class HeroWidgetSeeder extends Seeder
                 'widget_button_text' => 'Başla',
                 'widget_button_url' => '/demo-start'
             ],
+            'display_title' => 'Demo Hero Alanı',
             'order' => 0,
             'is_active' => true
         ]);
@@ -509,6 +517,7 @@ class HeroWidgetSeeder extends Seeder
                             'widget_button_text' => 'Hizmetlerimiz',
                             'widget_button_url' => '/hizmetler'
                         ],
+                        'display_title' => $tenant->name . ' Ana Sayfa',
                         'order' => 0,
                         'is_active' => true
                     ]);

@@ -166,6 +166,7 @@ class SliderWidgetSeeder extends Seeder
                 'widget_autoplay' => true,
                 'widget_autoplay_delay' => 5000
             ],
+            'display_title' => 'Ana Sayfa Slider',
             'order' => 0,
             'is_active' => true
         ]);
@@ -411,7 +412,7 @@ class SliderWidgetSeeder extends Seeder
                     ],
                     [
                         'name' => 'button_url',
-                        'label' => 'Buton URL',
+                        'label' => 'Buton Bağlantısı',
                         'type' => 'text',
                         'required' => false
                     ],
@@ -456,7 +457,7 @@ class SliderWidgetSeeder extends Seeder
                     ],
                     [
                         'name' => 'widget_autoplay_delay',
-                        'label' => 'Otomatik Oynatma Gecikmesi (ms)',
+                        'label' => 'Geçiş Hızı (ms)',
                         'type' => 'number',
                         'required' => false,
                         'default' => 5000,
@@ -467,7 +468,7 @@ class SliderWidgetSeeder extends Seeder
                     ],
                     [
                         'name' => 'widget_autoplay',
-                        'label' => 'Otomatik Oynatma',
+                        'label' => 'Otomatik Oynat',
                         'type' => 'checkbox',
                         'required' => false,
                         'default' => true,
@@ -516,6 +517,7 @@ class SliderWidgetSeeder extends Seeder
                 'widget_autoplay' => true,
                 'widget_autoplay_delay' => 5000
             ],
+            'display_title' => 'Ana Sayfa Slider',
             'order' => 0,
             'is_active' => true
         ]);
@@ -600,6 +602,7 @@ class SliderWidgetSeeder extends Seeder
                             'widget_autoplay' => true,
                             'widget_autoplay_delay' => 5000
                         ],
+                        'display_title' => $tenant->title . ' Ana Slider',
                         'order' => 0,
                         'is_active' => true
                     ]);

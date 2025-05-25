@@ -196,10 +196,13 @@ window.StudioWidgetManager = (function() {
                 tenantWidgets.forEach(widget => {
                     if (!widget || !widget.id) return;
                     
-                    // Blok ID'sini prefix formatta ayarla
-                    const widgetId = widget.id.toString();
+                    // Widget ID'sini doğru şekilde parse et
+                    let widgetId = widget.id.toString();
+                    if (widgetId.startsWith('tenant-widget-')) {
+                        widgetId = widgetId.replace('tenant-widget-', '');
+                    }
+                    
                     const blockId = `tenant-widget-${widgetId}`;
-                    const tenantWidgetId = widgetId;
                     
                     // Widget referans bloku oluştur
                     editor.BlockManager.add(blockId, {
@@ -211,19 +214,19 @@ window.StudioWidgetManager = (function() {
                         },
                         content: {
                             type: 'widget-embed',
-                            tenant_widget_id: tenantWidgetId,
+                            tenant_widget_id: widgetId,
                             attributes: {
                                 'class': 'widget-embed',
                                 'data-type': 'widget-embed',
-                                'data-tenant-widget-id': tenantWidgetId,
-                                'id': 'widget-embed-' + tenantWidgetId
+                                'data-tenant-widget-id': widgetId,
+                                'id': 'widget-embed-' + widgetId
                             },
                             components: [
                                 {
                                     type: 'div',
                                     attributes: {
                                         'class': 'widget-content-placeholder',
-                                        'id': 'widget-content-' + tenantWidgetId
+                                        'id': 'widget-content-' + widgetId
                                     },
                                     content: '<div class="widget-loading" style="text-align:center; padding:20px;"><i class="fa fa-spin fa-spinner"></i> Widget içeriği yükleniyor...</div>'
                                 }

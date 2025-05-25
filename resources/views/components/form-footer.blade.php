@@ -6,7 +6,35 @@
     </div>
 
     <div class="d-flex justify-content-between align-items-center">
-        <a href="{{ route($route.'.index') }}" class="btn btn-link text-decoration-none">İptal</a>
+        @php
+            $showCancelButton = false;
+            $cancelUrl = '#';
+            
+            try {
+                $cancelRoute = $route;
+                if (!Str::contains($route, '.index') && !Str::contains($route, '.items')) {
+                    $cancelRoute = $route . '.index';
+                }
+                
+                $routeParams = [];
+                if (isset($tenantWidgetId)) {
+                    $routeParams = [$tenantWidgetId];
+                } elseif (isset($widgetId)) {
+                    $routeParams = [$widgetId];
+                }
+                
+                $cancelUrl = route($cancelRoute, $routeParams);
+                $showCancelButton = true;
+            } catch (\Exception $e) {
+                $showCancelButton = false;
+            }
+        @endphp
+        
+        @if($showCancelButton)
+        <a href="{{ $cancelUrl }}" class="btn btn-link text-decoration-none">İptal</a>
+        @else
+        <div></div>
+        @endif
 
         <div class="d-flex gap-2">
             @if($modelId)

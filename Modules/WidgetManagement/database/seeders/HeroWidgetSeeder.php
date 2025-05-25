@@ -153,7 +153,7 @@ class HeroWidgetSeeder extends Seeder
         $tenantWidget = TenantWidget::create([
             'widget_id' => $centralWidget->id,
             'settings' => [
-                'unique_id' => (string) Str::uuid(),
+                'widget_unique_id' => (string) Str::uuid(),
                 'widget_title' => 'Full Width Hero',
                 'widget_hero_title' => 'Tenant Özel Hero Başlığı',
                 'widget_hero_subtitle' => 'Bu tenant için özel olarak hazırlanmış alt başlık.',
@@ -308,6 +308,17 @@ class HeroWidgetSeeder extends Seeder
                             'width' => 6,
                             'placeholder' => 'Buton URL\'sini giriniz'
                         ]
+                    ],
+                    [
+                        'name' => 'widget_unique_id',
+                        'label' => 'Benzersiz ID',
+                        'type' => 'text',
+                        'required' => false,
+                        'system' => true,
+                        'hidden' => true,
+                        'properties' => [
+                            'width' => 12
+                        ]
                     ]
                 ]
             ]);
@@ -403,6 +414,17 @@ class HeroWidgetSeeder extends Seeder
                                 'width' => 6,
                                 'placeholder' => 'Buton URL\'sini giriniz'
                             ]
+                        ],
+                        [
+                            'name' => 'widget_unique_id',
+                            'label' => 'Benzersiz ID',
+                            'type' => 'text',
+                            'required' => false,
+                            'system' => true,
+                            'hidden' => true,
+                            'properties' => [
+                                'width' => 12
+                            ]
                         ]
                     ]
                 ]);
@@ -422,7 +444,7 @@ class HeroWidgetSeeder extends Seeder
         $tenantWidget = TenantWidget::create([
             'widget_id' => $widget->id,
             'settings' => [
-                'unique_id' => (string) Str::uuid(),
+                'widget_unique_id' => (string) Str::uuid(),
                 'widget_title' => 'Merkezi Demo Hero',
                 'widget_hero_title' => 'Merkezi Sistem Hero Başlığı',
                 'widget_hero_subtitle' => 'Bu merkezi sistem için bir demo alt başlığıdır.',
@@ -479,7 +501,7 @@ class HeroWidgetSeeder extends Seeder
                     $tenantWidget = TenantWidget::create([
                         'widget_id' => $widget->id,
                         'settings' => [
-                            'unique_id' => (string) Str::uuid(),
+                            'widget_unique_id' => (string) Str::uuid(),
                             'widget_title' => $tenant->name . ' Hero Alanı',
                             'widget_hero_title' => $tenant->name . ' Hoş Geldiniz!',
                             'widget_hero_subtitle' => 'Size özel içeriklerimizle tanışın.',

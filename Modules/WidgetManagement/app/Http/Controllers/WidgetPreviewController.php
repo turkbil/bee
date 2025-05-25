@@ -5,9 +5,11 @@ namespace Modules\WidgetManagement\app\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Modules\WidgetManagement\app\Models\Widget;
 use Modules\WidgetManagement\app\Models\TenantWidget;
+use Modules\WidgetManagement\app\Models\WidgetItem;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 
 class WidgetPreviewController extends Controller
 {
@@ -151,35 +153,16 @@ class WidgetPreviewController extends Controller
                 
                 $context['widget'][$fieldName] = $defaultValue;
                 $context[$fieldName] = $defaultValue;
+                
+                if (strpos($fieldName, 'widget_') === 0) {
+                    $context[substr($fieldName, 7)] = $defaultValue;
+                } else {
+                    $context['widget_' . $fieldName] = $defaultValue;
+                }
             }
         }
         
-        if ($widget->has_items && $widget->item_schema) {
-            $items = [];
-            for ($i = 1; $i <= 3; $i++) {
-                $item = [];
-                foreach ($widget->item_schema as $field) {
-                    if (!isset($field['name'])) continue;
-                    
-                    $fieldName = $field['name'];
-                    if ($fieldName === 'image') {
-                        $item[$fieldName] = 'https://picsum.photos/800/400?random=' . $i;
-                    } elseif ($fieldName === 'title') {
-                        $item[$fieldName] = 'Örnek Başlık ' . $i;
-                    } elseif ($fieldName === 'description') {
-                        $item[$fieldName] = 'Bu ' . $i . '. örnek açıklama metnidir.';
-                    } elseif ($fieldName === 'button_text') {
-                        $item[$fieldName] = 'Devamını Oku';
-                    } elseif ($fieldName === 'button_url') {
-                        $item[$fieldName] = '#';
-                    } else {
-                        $item[$fieldName] = $field['default'] ?? '';
-                    }
-                }
-                $items[] = $item;
-            }
-            $context['items'] = $items;
-        }
+        $context['items'] = [];
         
         return $context;
     }
@@ -195,6 +178,12 @@ class WidgetPreviewController extends Controller
         foreach ($settings as $key => $value) {
             $context['widget'][$key] = $value;
             $context[$key] = $value;
+            
+            if (strpos($key, 'widget_') === 0) {
+                $context[substr($key, 7)] = $value;
+            } else {
+                $context['widget_' . $key] = $value;
+            }
         }
         
         if ($widget->settings_schema) {
@@ -206,15 +195,26 @@ class WidgetPreviewController extends Controller
                     $defaultValue = $field['default'] ?? ($field['properties']['default_value'] ?? '');
                     $context['widget'][$fieldName] = $defaultValue;
                     $context[$fieldName] = $defaultValue;
+                    
+                    if (strpos($fieldName, 'widget_') === 0) {
+                        $context[substr($fieldName, 7)] = $defaultValue;
+                    } else {
+                        $context['widget_' . $fieldName] = $defaultValue;
+                    }
                 }
             }
         }
         
+        $items = [];
+        
         if ($widget->has_items) {
-            $items = [];
-            foreach ($tenantWidget->items as $item) {
-                if ($item->content['is_active'] ?? true) {
-                    $content = $item->content;
+            $widgetItems = WidgetItem::where('tenant_widget_id', $tenantWidget->id)
+                ->orderBy('order')
+                ->get();
+            
+            foreach ($widgetItems as $widgetItem) {
+                if ($widgetItem->content['is_active'] ?? true) {
+                    $content = $widgetItem->content;
                     
                     foreach ($content as $key => $value) {
                         if (is_string($value) && !empty($value) && !preg_match('/^https?:\/\//', $value)) {
@@ -227,34 +227,9 @@ class WidgetPreviewController extends Controller
                     $items[] = $content;
                 }
             }
-            
-            if (empty($items) && $widget->item_schema) {
-                for ($i = 1; $i <= 3; $i++) {
-                    $item = [];
-                    foreach ($widget->item_schema as $field) {
-                        if (!isset($field['name'])) continue;
-                        
-                        $fieldName = $field['name'];
-                        if ($fieldName === 'image') {
-                            $item[$fieldName] = 'https://picsum.photos/800/400?random=' . $i;
-                        } elseif ($fieldName === 'title') {
-                            $item[$fieldName] = 'Örnek Başlık ' . $i;
-                        } elseif ($fieldName === 'description') {
-                            $item[$fieldName] = 'Bu ' . $i . '. örnek açıklama metnidir.';
-                        } elseif ($fieldName === 'button_text') {
-                            $item[$fieldName] = 'Devamını Oku';
-                        } elseif ($fieldName === 'button_url') {
-                            $item[$fieldName] = '#';
-                        } else {
-                            $item[$fieldName] = $field['default'] ?? '';
-                        }
-                    }
-                    $items[] = $item;
-                }
-            }
-            
-            $context['items'] = $items;
         }
+        
+        $context['items'] = $items;
         
         return $context;
     }

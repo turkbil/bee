@@ -176,14 +176,18 @@ class SliderWidgetSeeder extends Seeder
                 'description' => 'Modern ve responsive web siteleri ile işletmenizi dijital dünyada öne çıkarın',
                 'image' => 'https://placehold.co/1200x600',
                 'button_text' => 'Detaylı Bilgi',
-                'button_url' => '/web-cozumleri'
+                'button_url' => '/web-cozumleri',
+                'is_active' => true,
+                'unique_id' => (string) Str::uuid()
             ],
             [
                 'title' => 'E-Ticaret Platformları',
                 'description' => 'Güvenli ve kullanıcı dostu e-ticaret çözümleri ile satışlarınızı artırın',
                 'image' => 'https://placehold.co/1200x600',
                 'button_text' => 'Hemen Başlayın',
-                'button_url' => '/e-ticaret'
+                'button_url' => '/e-ticaret',
+                'is_active' => true,
+                'unique_id' => (string) Str::uuid()
             ]
         ];
         
@@ -383,7 +387,9 @@ class SliderWidgetSeeder extends Seeder
                         'name' => 'title',
                         'label' => 'Başlık',
                         'type' => 'text',
-                        'required' => true
+                        'required' => true,
+                        'system' => true,
+                        'protected' => true
                     ],
                     [
                         'name' => 'description',
@@ -408,15 +414,67 @@ class SliderWidgetSeeder extends Seeder
                         'label' => 'Buton URL',
                         'type' => 'text',
                         'required' => false
+                    ],
+                    [
+                        'name' => 'is_active',
+                        'label' => 'Durum',
+                        'type' => 'switch',
+                        'required' => false,
+                        'system' => true,
+                        'default' => true,
+                        'protected' => true,
+                        'properties' => [
+                            'active_label' => 'Aktif',
+                            'inactive_label' => 'Aktif Değil'
+                        ]
                     ]
                 ],
                 'settings_schema' => [
                     [
                         'name' => 'widget_title',
-                        'label' => 'Başlık',
+                        'label' => 'Widget Başlığı',
                         'type' => 'text',
                         'required' => true,
-                        'system' => true
+                        'system' => true,
+                        'protected' => true,
+                        'properties' => [
+                            'default_value' => 'Swiper Slider',
+                            'width' => 12,
+                            'placeholder' => 'Widget başlığını giriniz'
+                        ]
+                    ],
+                    [
+                        'name' => 'widget_height',
+                        'label' => 'Yükseklik (px)',
+                        'type' => 'number',
+                        'required' => true,
+                        'default' => 500,
+                        'properties' => [
+                            'default_value' => 500,
+                            'width' => 6
+                        ]
+                    ],
+                    [
+                        'name' => 'widget_autoplay_delay',
+                        'label' => 'Otomatik Oynatma Gecikmesi (ms)',
+                        'type' => 'number',
+                        'required' => false,
+                        'default' => 5000,
+                        'properties' => [
+                            'default_value' => 5000,
+                            'width' => 6
+                        ]
+                    ],
+                    [
+                        'name' => 'widget_autoplay',
+                        'label' => 'Otomatik Oynatma',
+                        'type' => 'checkbox',
+                        'required' => false,
+                        'default' => true,
+                        'properties' => [
+                            'default_value' => true,
+                            'width' => 12
+                        ]
                     ],
                     [
                         'name' => 'widget_unique_id',
@@ -424,28 +482,11 @@ class SliderWidgetSeeder extends Seeder
                         'type' => 'text',
                         'required' => false,
                         'system' => true,
-                        'hidden' => true
-                    ],
-                    [
-                        'name' => 'widget_height',
-                        'label' => 'Yükseklik (px)',
-                        'type' => 'number',
-                        'required' => true,
-                        'default' => 500
-                    ],
-                    [
-                        'name' => 'widget_autoplay',
-                        'label' => 'Otomatik Oynatma',
-                        'type' => 'checkbox',
-                        'required' => false,
-                        'default' => true
-                    ],
-                    [
-                        'name' => 'widget_autoplay_delay',
-                        'label' => 'Otomatik Oynatma Gecikmesi (ms)',
-                        'type' => 'number',
-                        'required' => false,
-                        'default' => 5000
+                        'hidden' => true,
+                        'protected' => true,
+                        'properties' => [
+                            'width' => 12
+                        ]
                     ]
                 ]
             ]);
@@ -485,14 +526,18 @@ class SliderWidgetSeeder extends Seeder
                 'description' => 'Modern ve responsive web siteleri ile işletmenizi dijital dünyada öne çıkarın',
                 'image' => 'https://placehold.co/1200x600',
                 'button_text' => 'Detaylı Bilgi',
-                'button_url' => '/web-cozumleri'
+                'button_url' => '/web-cozumleri',
+                'is_active' => true,
+                'unique_id' => (string) Str::uuid()
             ],
             [
                 'title' => 'E-Ticaret Platformları',
                 'description' => 'Güvenli ve kullanıcı dostu e-ticaret çözümleri ile satışlarınızı artırın',
                 'image' => 'https://placehold.co/1200x600',
                 'button_text' => 'Hemen Başlayın',
-                'button_url' => '/e-ticaret'
+                'button_url' => '/e-ticaret',
+                'is_active' => true,
+                'unique_id' => (string) Str::uuid()
             ]
         ];
         
@@ -565,14 +610,18 @@ class SliderWidgetSeeder extends Seeder
                             'description' => 'Modern ve responsive web siteleri ile işletmenizi dijital dünyada öne çıkarın',
                             'image' => 'https://placehold.co/1200x600',
                             'button_text' => 'Detaylı Bilgi',
-                            'button_url' => '/web-cozumleri'
+                            'button_url' => '/web-cozumleri',
+                            'is_active' => true,
+                            'unique_id' => (string) Str::uuid()
                         ],
                         [
                             'title' => $tenant->title . ' E-Ticaret',
                             'description' => 'Güvenli ve kullanıcı dostu e-ticaret çözümleri ile satışlarınızı artırın',
                             'image' => 'https://placehold.co/1200x600',
                             'button_text' => 'Hemen Başlayın',
-                            'button_url' => '/e-ticaret'
+                            'button_url' => '/e-ticaret',
+                            'is_active' => true,
+                            'unique_id' => (string) Str::uuid()
                         ]
                     ];
                     

@@ -24,73 +24,12 @@ $cssFiles = !empty($cssMatches[1]) ? $cssMatches[1] : [];
 
 preg_match_all('/<script[^>]+src=[\'"]([^\'"]+)[\'"][^>]*><\/script>/i', $widget->content_html ?? '', $jsMatches);
 $jsFiles = !empty($jsMatches[1]) ? $jsMatches[1] : [];
-
-// Widget Service
-$widgetService = app('widget.service');
-
-// Widget HTML içeriğini render et
-$renderedHtml = $widgetService->renderWidgetHtml($widget, $context, true);
-
-// Widget CSS içeriğini de işle
-$processedCss = $widget->content_css ?? '';
-
-if (!empty($processedCss)) {
-    // CSS içindeki değişkenleri işle
-    $processedCss = preg_replace_callback('/\{\{([^{}]+?)\}\}/m', function($matches) use ($context) {
-        $key = trim($matches[1]);
-        
-        // {{widget.var}} formatında mı?
-        if (strpos($key, 'widget.') === 0) {
-            $widgetKey = str_replace('widget.', '', $key);
-            if (isset($context['widget'][$widgetKey])) {
-                return $context['widget'][$widgetKey];
-            } elseif (isset($context[$widgetKey])) {
-                return $context[$widgetKey];
-            }
-        }
-        
-        // Normal değişken mi?
-        if (isset($context[$key])) {
-            if (is_scalar($context[$key])) {
-                return $context[$key];
-            }
-        }
-        
-        return '';
-    }, $processedCss);
-}
-
-// Widget JS içeriğini de işle
-$processedJs = $widget->content_js ?? '';
-
-if (!empty($processedJs)) {
-    // JS içindeki değişkenleri işle
-    $processedJs = preg_replace_callback('/\{\{([^{}]+?)\}\}/m', function($matches) use ($context) {
-        $key = trim($matches[1]);
-        
-        // {{widget.var}} formatında mı?
-        if (strpos($key, 'widget.') === 0) {
-            $widgetKey = str_replace('widget.', '', $key);
-            if (isset($context['widget'][$widgetKey])) {
-                return $context['widget'][$widgetKey];
-            } elseif (isset($context[$widgetKey])) {
-                return $context[$widgetKey];
-            }
-        }
-        
-        // Normal değişken mi?
-        if (isset($context[$key])) {
-            if (is_scalar($context[$key])) {
-                return $context[$key];
-            }
-        }
-        
-        return '';
-    }, $processedJs);
-}
 @endphp
 
 @include("themes.{$themeFolder}.layouts.header")
+
+<!-- Handlebars önce yüklensin -->
+<script src="https://cdn.jsdelivr.net/npm/handlebars@4.7.8/dist/handlebars.min.js"></script>
 
 <div class="preview-header">
     <div class="container-fluid flex justify-between items-center">
@@ -203,7 +142,7 @@ if (!empty($processedJs)) {
                     @endif
                 </div>
             @else
-                {!! $renderedHtml !!}
+                <div id="widget-container"></div>
             @endif
         </div>
     </div>
@@ -237,24 +176,20 @@ if (!empty($processedJs)) {
     </div>
 </div>
 
-<!-- Önizleme Frame Boyutlandırma -->
 <script>
     function setPreviewSize(device) {
         const frame = document.getElementById('preview-frame');
         const buttons = document.querySelectorAll('.device-btn');
         
-        // Aktif butonları temizle
         buttons.forEach(btn => {
             btn.classList.remove('active', 'border-blue-500', 'text-blue-600');
             btn.classList.add('border-gray-300', 'text-gray-600');
         });
         
-        // Aktif butonu işaretle
         const activeBtn = document.querySelector(`.device-btn[data-device="${device}"]`);
         activeBtn.classList.add('active', 'border-blue-500', 'text-blue-600');
         activeBtn.classList.remove('border-gray-300', 'text-gray-600');
         
-        // Frame boyutunu ayarla
         frame.className = 'preview-frame';
         if (device !== 'desktop') {
             frame.classList.add(device);
@@ -266,7 +201,6 @@ if (!empty($processedJs)) {
         const lightBtn = document.getElementById('light-mode-btn');
         const darkBtn = document.getElementById('dark-mode-btn');
         
-        // Tüm tema butonlarının stillerini sıfırla
         document.querySelectorAll('.theme-btn').forEach(btn => {
             btn.classList.remove('border-blue-500', 'text-blue-600');
             btn.classList.add('border-gray-300', 'text-gray-600');
@@ -276,25 +210,69 @@ if (!empty($processedJs)) {
             html.classList.add('dark');
             localStorage.setItem('darkMode', 'dark');
             
-            // Aktif buton stillerini güncelle
             darkBtn.classList.add('border-blue-500', 'text-blue-600');
             darkBtn.classList.remove('border-gray-300', 'text-gray-600');
         } else {
             html.classList.remove('dark');
             localStorage.setItem('darkMode', 'light');
             
-            // Aktif buton stillerini güncelle
             lightBtn.classList.add('border-blue-500', 'text-blue-600');
             lightBtn.classList.remove('border-gray-300', 'text-gray-600');
         }
     }
     
-    // Sayfa yüklendiğinde tema modunu ayarla
+    @if(!empty($widget->content_html))
+    function renderWidget() {
+        // Template ve context hazırla
+        const template = `{!! str_replace(['`', '\\', "\n", "\r"], ['\`', '\\\\', '\\n', '\\r'], $widget->content_html) !!}`;
+        const context = @json($context);
+        
+        console.log('Template:', template);
+        console.log('Context:', context);
+        
+        try {
+            // Handlebars template'ini derle
+            const compiledTemplate = Handlebars.compile(template);
+            const html = compiledTemplate(context);
+            
+            // HTML'i container'a yerleş
+            document.getElementById('widget-container').innerHTML = html;
+            
+            // CSS ekle
+            @if(!empty($widget->content_css))
+            const style = document.createElement('style');
+            const cssTemplate = `{!! str_replace(['`', '\\', "\n", "\r"], ['\`', '\\\\', '\\n', '\\r'], $widget->content_css) !!}`;
+            const compiledCss = Handlebars.compile(cssTemplate);
+            style.textContent = compiledCss(context);
+            document.head.appendChild(style);
+            @endif
+            
+            // JS çalıştır
+            @if(!empty($widget->content_js))
+            setTimeout(() => {
+                const jsTemplate = `{!! str_replace(['`', '\\', "\n", "\r"], ['\`', '\\\\', '\\n', '\\r'], $widget->content_js) !!}`;
+                const compiledJs = Handlebars.compile(jsTemplate);
+                const jsCode = compiledJs(context);
+                
+                try {
+                    eval(jsCode);
+                } catch (e) {
+                    console.error('Widget JS hatası:', e);
+                }
+            }, 500);
+            @endif
+            
+        } catch (error) {
+            console.error('Widget render hatası:', error);
+            document.getElementById('widget-container').innerHTML = '<div class="alert alert-danger">Widget render hatası: ' + error.message + '</div>';
+        }
+    }
+    @endif
+    
     document.addEventListener('DOMContentLoaded', function() {
         const currentMode = localStorage.getItem('darkMode') || 'light';
         setThemeMode(currentMode);
         
-        // Aktif device butonunu ayarla
         const buttons = document.querySelectorAll('.device-btn');
         buttons.forEach(btn => {
             if (btn.classList.contains('active')) {
@@ -302,6 +280,41 @@ if (!empty($processedJs)) {
                 setPreviewSize(device);
             }
         });
+        
+        @if(!empty($widget->content_html))
+        // CSS dosyalarını yükle
+        @foreach($cssFiles as $cssFile)
+            @if(!empty($cssFile))
+                const link{{ $loop->index }} = document.createElement('link');
+                link{{ $loop->index }}.rel = 'stylesheet';
+                link{{ $loop->index }}.href = '{{ $cssFile }}';
+                document.head.appendChild(link{{ $loop->index }});
+            @endif
+        @endforeach
+        
+        // JS dosyalarını yükle
+        let scriptsLoaded = 0;
+        const totalScripts = {{ count($jsFiles) }};
+        
+        @foreach($jsFiles as $cssFile)
+            @if(!empty($cssFile))
+                const script{{ $loop->index }} = document.createElement('script');
+                script{{ $loop->index }}.src = '{{ $cssFile }}';
+                script{{ $loop->index }}.onload = function() {
+                    scriptsLoaded++;
+                    if (scriptsLoaded === totalScripts) {
+                        setTimeout(renderWidget, 100);
+                    }
+                };
+                document.head.appendChild(script{{ $loop->index }});
+            @endif
+        @endforeach
+        
+        // Eğer hiç harici script yoksa direkt render et
+        if (totalScripts === 0) {
+            setTimeout(renderWidget, 100);
+        }
+        @endif
     });
 </script>
 
@@ -381,28 +394,6 @@ if (!empty($processedJs)) {
         background-color: #374151;
         color: #93c5fd;
     }
-
-    /* Widget CSS */
-    {!! $processedCss !!}
 </style>
-
-<!-- CSS Dosyaları -->
-@foreach($cssFiles as $cssFile)
-    @if(!empty($cssFile))
-        <link rel="stylesheet" href="{{ $cssFile }}">
-    @endif
-@endforeach
-
-<!-- JS Dosyaları -->
-@foreach($jsFiles as $jsFile)
-    @if(!empty($jsFile))
-        <script src="{{ $jsFile }}"></script>
-    @endif
-@endforeach
-
-<!-- Widget JavaScript -->
-<script>
-    {!! $processedJs !!}
-</script>
 
 @include("themes.{$themeFolder}.layouts.footer")

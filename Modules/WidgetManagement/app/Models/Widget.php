@@ -156,33 +156,11 @@ class Widget extends Model
     
     private function ensureRequiredSettingsFields($schema)
     {
-        $hasTitle = false;
         $hasUniqueId = false;
         
         foreach ($schema as $field) {
             if (isset($field['name'])) {
-                if ($field['name'] === 'widget_title') $hasTitle = true;
                 if ($field['name'] === 'widget_unique_id') $hasUniqueId = true;
-            }
-        }
-        
-        if (!$hasTitle) {
-            array_unshift($schema, [
-                'name' => 'widget_title',
-                'label' => 'Başlık',
-                'type' => 'text',
-                'required' => true,
-                'system' => true,
-                'protected' => true
-            ]);
-        } else {
-            foreach ($schema as &$field) {
-                if (isset($field['name']) && $field['name'] === 'widget_title') {
-                    $field['system'] = true;
-                    $field['protected'] = true;
-                    $field['required'] = true;
-                    $field['label'] = 'Başlık'; // Sadece "Başlık" olacak
-                }
             }
         }
         

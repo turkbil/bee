@@ -5,7 +5,7 @@ use Livewire\WithFileUploads;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Modules\WidgetManagement\app\Models\Widget;
-// SettingManagement'taki TenantStorageHelper kullanılacak
+use Modules\WidgetManagement\app\Helpers\WidgetStorageHelper;
 
 trait WithImageUpload {
     use WithFileUploads;
@@ -31,43 +31,35 @@ trait WithImageUpload {
     
         if ($model && isset($this->temporaryImages[$imageKey])) {
             try {
-                // Tenant id belirleme - Central ise tenant1, değilse gerçek tenant ID
                 $tenantId = is_tenant() ? tenant_id() : 1;
                 
-                // Benzersiz bir dosya adı oluştur
                 $fileName = time() . '_' . Str::slug($model->slug) . '_' . $this->temporaryImages[$imageKey]->getClientOriginalName();
                 
-                // Koleksiyon adını belirle (klasör)
                 $folder = $this->getCollectionName($imageKey);
                 
-                // Eski dosyayı kontrol et ve sil
                 $oldValue = isset($model->{$imageKey}) ? $model->{$imageKey} : null;
                 if ($oldValue) {
-                    // SettingManagement'taki TenantStorageHelper kullan
-                    \Modules\SettingManagement\App\Helpers\TenantStorageHelper::deleteFile($oldValue);
+                    WidgetStorageHelper::deleteWidgetFile($oldValue);
                 }
                 
-                // SettingManagement'taki TenantStorageHelper ile doğru şekilde dosyayı yükle
-                $urlPath = \Modules\SettingManagement\App\Helpers\TenantStorageHelper::storeTenantFile(
+                $urlPath = WidgetStorageHelper::storeWidgetFile(
                     $this->temporaryImages[$imageKey],
                     "widgets/{$folder}",
                     $fileName,
                     $tenantId
                 );
                 
-                // Eğer bu bir modele ait değer ise güncelle
                 if (isset($this->widget) && isset($this->widget[$imageKey])) {
                     $this->widget[$imageKey] = $urlPath;
                 }
                 
-                // Önizleme güncelle
                 if ($imageKey === 'thumbnail') {
                     $this->imagePreview = $urlPath;
                 }
                 
                 return $urlPath;
             } catch (\Exception $e) {
-                \Illuminate\Support\Facades\Log::error('Resim yükleme hatası: ' . $e->getMessage(), [
+                \Illuminate\Support\Facades\Log::error('Widget resim yükleme hatası: ' . $e->getMessage(), [
                     'model_id' => $model->id,
                     'tenant' => is_tenant() ? tenant_id() : 1,
                     'exception' => $e
@@ -78,10 +70,8 @@ trait WithImageUpload {
         return null;
     }
 
-    // URL'den yerel depolama yolunu çıkarır
     private function extractLocalPath($path)
     {
-        // tenant{id}/ ifadesini ara ve kaldır
         if (preg_match('/^tenant\d+\/(.*)$/', $path, $matches)) {
             return $matches[1];
         }
@@ -94,10 +84,8 @@ trait WithImageUpload {
             $model = Widget::find($this->widgetId);
             
             if ($model && isset($this->widget[$imageKey])) {
-                // SettingManagement'taki TenantStorageHelper ile dosyayı sil
-                \Modules\SettingManagement\App\Helpers\TenantStorageHelper::deleteFile($this->widget[$imageKey]);
+                WidgetStorageHelper::deleteWidgetFile($this->widget[$imageKey]);
                 
-                // Model değerini temizle
                 $this->widget[$imageKey] = null;
                 
                 if ($imageKey === 'thumbnail') {
@@ -111,8 +99,6 @@ trait WithImageUpload {
 
     private function getCollectionName($imageKey)
     {
-        // Tüm resimler için standart olarak "images" klasörünü kullan
-        // Bu SettingManagement ile uyumlu olacak
         return 'images';
     }
     

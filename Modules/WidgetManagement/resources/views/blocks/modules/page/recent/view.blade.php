@@ -2,7 +2,10 @@
 use Modules\Page\app\Models\Page;
 
 $widgetTitle = $settings['widget_title'] ?? 'Son Sayfalar';
-$itemLimit = (int) ($settings['itemLimit'] ?? $settings['page_limit'] ?? $settings['limit'] ?? 5);
+$itemLimit = (int) ($settings['itemLimit'] ?? $settings['page_limit'] ?? $settings['limit']);
+if ($itemLimit <= 0) {
+    $itemLimit = 5;
+}
 
 $pages = Page::query()
     ->where('is_active', true)

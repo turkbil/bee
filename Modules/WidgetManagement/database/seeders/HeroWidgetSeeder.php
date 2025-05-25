@@ -154,7 +154,6 @@ class HeroWidgetSeeder extends Seeder
             'widget_id' => $centralWidget->id,
             'settings' => [
                 'widget_unique_id' => (string) Str::uuid(),
-                'widget_title' => 'Full Width Hero',
                 'widget_hero_title' => 'Tenant Özel Hero Başlığı',
                 'widget_hero_subtitle' => 'Bu tenant için özel olarak hazırlanmış alt başlık.',
                 'widget_hero_description' => 'Tenant kullanıcılarına özel, dinamik olarak yönetilebilen hero alanı.',
@@ -244,23 +243,10 @@ class HeroWidgetSeeder extends Seeder
                 'item_schema' => [],
                 'settings_schema' => [
                     [
-                        'name' => 'widget_title',
-                        'label' => 'Widget Başlığı',
-                        'type' => 'text',
-                        'required' => true,
-                        'system' => true,
-                        'protected' => true,
-                        'properties' => [
-                            'default_value' => 'Full Width Hero',
-                            'width' => 12,
-                            'placeholder' => 'Widget başlığını giriniz'
-                        ]
-                    ],
-                    [
                         'name' => 'widget_hero_title',
                         'label' => 'Başlık',
                         'type' => 'text',
-                        'required' => true,
+                        'required' => false,
                         'properties' => [
                             'default_value' => 'Etkileyici Bir Başlık',
                             'width' => 12,
@@ -353,23 +339,10 @@ class HeroWidgetSeeder extends Seeder
                     'item_schema' => [],
                     'settings_schema' => [
                         [
-                            'name' => 'widget_title',
-                            'label' => 'Başlık',
-                            'type' => 'text',
-                            'required' => true,
-                            'system' => true,
-                            'protected' => true,
-                            'properties' => [
-                                'default_value' => 'Full Width Hero',
-                                'width' => 12,
-                                'placeholder' => 'Widget başlığını giriniz'
-                            ]
-                        ],
-                        [
                             'name' => 'widget_hero_title',
                             'label' => 'Ana Başlık',
                             'type' => 'text',
-                            'required' => true,
+                            'required' => false,
                             'properties' => [
                                 'default_value' => 'Etkileyici Bir Başlık',
                                 'width' => 12,
@@ -452,7 +425,6 @@ class HeroWidgetSeeder extends Seeder
             'widget_id' => $widget->id,
             'settings' => [
                 'widget_unique_id' => (string) Str::uuid(),
-                'widget_title' => 'Merkezi Demo Hero',
                 'widget_hero_title' => 'Merkezi Sistem Hero Başlığı',
                 'widget_hero_subtitle' => 'Bu merkezi sistem için bir demo alt başlığıdır.',
                 'widget_hero_description' => 'Merkezi sistemdeki tüm tenantlar için örnek bir hero açıklaması.',
@@ -510,7 +482,6 @@ class HeroWidgetSeeder extends Seeder
                         'widget_id' => $widget->id,
                         'settings' => [
                             'widget_unique_id' => (string) Str::uuid(),
-                            'widget_title' => $tenant->name . ' Hero Alanı',
                             'widget_hero_title' => $tenant->name . ' Hoş Geldiniz!',
                             'widget_hero_subtitle' => 'Size özel içeriklerimizle tanışın.',
                             'widget_hero_description' => $tenant->name . ' için özel olarak hazırlanmış bu alanda en yeni duyurularımızı ve hizmetlerimizi bulabilirsiniz.',

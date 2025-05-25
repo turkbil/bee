@@ -161,7 +161,6 @@ class SliderWidgetSeeder extends Seeder
             'widget_id' => $centralWidget->id,
             'settings' => [
                 'widget_unique_id' => (string) Str::uuid(),
-                'widget_title' => 'Ana Sayfa Slider',
                 'widget_height' => 500,
                 'widget_autoplay' => true,
                 'widget_autoplay_delay' => 5000
@@ -432,23 +431,10 @@ class SliderWidgetSeeder extends Seeder
                 ],
                 'settings_schema' => [
                     [
-                        'name' => 'widget_title',
-                        'label' => 'Widget Başlığı',
-                        'type' => 'text',
-                        'required' => true,
-                        'system' => true,
-                        'protected' => true,
-                        'properties' => [
-                            'default_value' => 'Swiper Slider',
-                            'width' => 12,
-                            'placeholder' => 'Widget başlığını giriniz'
-                        ]
-                    ],
-                    [
                         'name' => 'widget_height',
                         'label' => 'Yükseklik (px)',
                         'type' => 'number',
-                        'required' => true,
+                        'required' => false,
                         'default' => 500,
                         'properties' => [
                             'default_value' => 500,
@@ -512,7 +498,6 @@ class SliderWidgetSeeder extends Seeder
             'widget_id' => $widget->id,
             'settings' => [
                 'widget_unique_id' => (string) Str::uuid(),
-                'widget_title' => 'Ana Sayfa Slider',
                 'widget_height' => 500,
                 'widget_autoplay' => true,
                 'widget_autoplay_delay' => 5000
@@ -597,7 +582,6 @@ class SliderWidgetSeeder extends Seeder
                         'widget_id' => $widget->id,
                         'settings' => [
                             'widget_unique_id' => (string) Str::uuid(),
-                            'widget_title' => $tenant->title . ' Slider',
                             'widget_height' => 500,
                             'widget_autoplay' => true,
                             'widget_autoplay_delay' => 5000

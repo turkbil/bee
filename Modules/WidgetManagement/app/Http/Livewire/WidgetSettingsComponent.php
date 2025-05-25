@@ -36,17 +36,12 @@ class WidgetSettingsComponent extends Component
         $this->schema = $this->tenantWidget->widget->getSettingsSchema();
         $this->formData = $this->tenantWidget->settings ?? [];
         
-        // Display title'ı yükle
         $this->displayTitle = $this->tenantWidget->display_title ?? '';
         
         $this->initializeFormDataFromSchema();
         
         if (!isset($this->formData['widget_unique_id'])) {
             $this->formData['widget_unique_id'] = (string) Str::uuid();
-        }
-        
-        if (!isset($this->formData['widget_title'])) {
-            $this->formData['widget_title'] = $this->tenantWidget->widget->name;
         }
     }
     

@@ -26,7 +26,7 @@
                                 Kod Editörü
                             </a>
                             @endif
-                            <a href="{{ route('admin.widgetmanagement.preview', $widgetId) }}" 
+                            <a href="{{ route('admin.widgetmanagement.preview.template', $widgetId) }}" 
                                class="btn btn-outline-info" target="_blank">
                                 <i class="fas fa-eye me-2"></i>
                                 Önizleme

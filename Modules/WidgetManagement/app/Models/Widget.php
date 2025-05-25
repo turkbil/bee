@@ -161,14 +161,14 @@ class Widget extends Model
         
         foreach ($schema as $field) {
             if (isset($field['name'])) {
-                if ($field['name'] === 'title') $hasTitle = true;
-                if ($field['name'] === 'unique_id') $hasUniqueId = true;
+                if ($field['name'] === 'widget_title') $hasTitle = true;
+                if ($field['name'] === 'widget_unique_id') $hasUniqueId = true;
             }
         }
         
         if (!$hasTitle) {
             array_unshift($schema, [
-                'name' => 'title',
+                'name' => 'widget_title',
                 'label' => 'Widget Başlığı',
                 'type' => 'text',
                 'required' => true,
@@ -177,7 +177,7 @@ class Widget extends Model
             ]);
         } else {
             foreach ($schema as &$field) {
-                if (isset($field['name']) && $field['name'] === 'title') {
+                if (isset($field['name']) && $field['name'] === 'widget_title') {
                     $field['system'] = true;
                     $field['protected'] = true;
                     $field['required'] = true;
@@ -187,7 +187,7 @@ class Widget extends Model
         
         if (!$hasUniqueId) {
             $schema[] = [
-                'name' => 'unique_id',
+                'name' => 'widget_unique_id',
                 'label' => 'Benzersiz ID',
                 'type' => 'text',
                 'required' => false,
@@ -197,7 +197,7 @@ class Widget extends Model
             ];
         } else {
             foreach ($schema as &$field) {
-                if (isset($field['name']) && $field['name'] === 'unique_id') {
+                if (isset($field['name']) && $field['name'] === 'widget_unique_id') {
                     $field['system'] = true;
                     $field['protected'] = true;
                     $field['hidden'] = true;

@@ -20,6 +20,13 @@ Bu proje, Laravel 11 ile geliştirilmiş, modüler ve çok kiracılı (multi-ten
 
 ## Sürüm Geçmişi
 
+### v0.3 (2025-05-25)
+- Portfolio ve Page modülü widget'larında limit değeri sıfır veya geçersiz geldiğinde varsayılan olarak 5 atanacak şekilde kodlar güncellendi.
+- Artık tüm widget'larda "öğe bulunamadı" hatası alınmaz, örnek veri varsa otomatik listelenir.
+- Kod okunabilirliği ve güvenliği artırıldı.
+- Debug logları ile widget veri akışı kolayca izlenebilir hale getirildi.
+
+
 ### v0.6.0 (2025-05-24)
 - WidgetManagement Modülü iyileştirildi:
     - Hero Widget yapılandırması güncellendi (`has_items` false yapıldı, `item_schema` kaldırıldı, tüm alanlar `settings_schema`'ya taşındı, `content_html` ve seeder veri oluşturma mantığı uyarlandı).

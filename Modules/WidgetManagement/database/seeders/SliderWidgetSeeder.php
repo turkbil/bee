@@ -291,7 +291,6 @@ class SliderWidgetSeeder extends Seeder
                 .swiper {
                     width: 100%;
                     height: {{widget_height}}px;
-                    margin-bottom: 30px;
                 }
 
                 .swiper-slide {

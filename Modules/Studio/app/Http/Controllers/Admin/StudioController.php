@@ -31,18 +31,9 @@ class StudioController extends Controller
         $this->blockService = $blockService;
     }
     
-    /**
-     * İçerik kaydetme işlemi
-     *
-     * @param Request $request
-     * @param string $module
-     * @param int $id
-     * @return JsonResponse
-     */
     public function save(Request $request, string $module, int $id): JsonResponse
     {
         try {
-            // Debug: Gelen request bilgilerini logla
             Log::debug("Studio Save - Request Details", [
                 'module' => $module,
                 'id' => $id,
@@ -54,12 +45,10 @@ class StudioController extends Controller
                 'js_type' => gettype($request->input('js'))
             ]);
 
-            // Tüm parametreler için varsayılan boş string değeri kullan
             $content = $request->input('content') ?? '';
             $css = $request->input('css') ?? '';
             $js = $request->input('js') ?? '';
             
-            // Eğer veri tipi string değilse, dönüştür
             if (!is_string($content)) $content = (string)$content;
             if (!is_string($css)) $css = (string)$css;
             if (!is_string($js)) $js = (string)$js;
@@ -70,7 +59,6 @@ class StudioController extends Controller
                 'js_type' => gettype($js)
             ]);
             
-            // EditorService ile içeriği kaydet
             $result = $this->editorService->saveContent(
                 $module, 
                 $id, 
@@ -105,34 +93,6 @@ class StudioController extends Controller
         }
     }
     
-    /**
-     * Widgetları getir
-     *
-     * @return JsonResponse
-     */
-    public function getWidgets(): JsonResponse
-    {
-        try {
-            return response()->json([
-                'widgets' => $this->widgetService->getWidgetsAsBlocks(),
-                'categories' => $this->widgetService->getCategories()
-            ]);
-        } catch (\Exception $e) {
-            Log::error('Widget verileri alınırken hata: ' . $e->getMessage());
-            
-            return response()->json([
-                'success' => false,
-                'message' => 'Widget verileri alınamadı: ' . $e->getMessage()
-            ], 500);
-        }
-    }
-    
-    /**
-     * Dosya yükleme işlemini gerçekleştirir
-     *
-     * @param Request $request
-     * @return JsonResponse
-     */
     public function uploadAssets(Request $request): JsonResponse
     {
         $result = ['success' => false];
@@ -177,40 +137,30 @@ class StudioController extends Controller
         return response()->json($result);
     }
 
-    /**
-     * Blokları getir
-     *
-     * @return JsonResponse
-     */
     public function getBlocks(): JsonResponse
     {
         try {
             $blocks = $this->blockService->getAllBlocks();
             
-            // Debug log ekle
             Log::debug('getBlocks HTTP yanıtı', [
                 'blocks_count' => count($blocks)
             ]);
             
-            // Sistemdeki kategorilere dayalı kategori listesi
             $categories = [];
                 
-            // "Aktif Bileşenler" kategorisi her zaman ilk sırada
             $categories['active-widgets'] = [
                 'name' => 'Aktif Bileşenler',
                 'icon' => 'fa fa-star',
                 'order' => 0
             ];
             
-            // Widget kategorilerini hiyerarşik olarak ekle
             if (class_exists('Modules\WidgetManagement\App\Models\WidgetCategory')) {
-                // Ana kategorileri al
                 $rootCategories = \Modules\WidgetManagement\App\Models\WidgetCategory::where('is_active', true)
                     ->whereNull('parent_id')
                     ->orderBy('order')
                     ->get();
                 
-                $order = 1; // Kategori sıralaması
+                $order = 1;
                 
                 foreach ($rootCategories as $rootCategory) {
                     $categories[$rootCategory->slug] = [
@@ -219,7 +169,6 @@ class StudioController extends Controller
                         'order' => $order++
                     ];
                     
-                    // Alt kategorileri al ve ekle
                     $childCategories = \Modules\WidgetManagement\App\Models\WidgetCategory::where('is_active', true)
                         ->where('parent_id', $rootCategory->widget_category_id)
                         ->orderBy('order')
@@ -234,7 +183,6 @@ class StudioController extends Controller
                             'parent' => $rootCategory->slug
                         ];
                         
-                        // Üçüncü seviye kategorileri kontrol et
                         $grandchildCategories = \Modules\WidgetManagement\App\Models\WidgetCategory::where('is_active', true)
                             ->where('parent_id', $childCategory->widget_category_id)
                             ->orderBy('order')
@@ -253,13 +201,11 @@ class StudioController extends Controller
                 }
             }
             
-            // Kategorileri basitleştirilmiş formata çevir
             $formattedCategories = [];
             foreach ($categories as $key => $value) {
                 $formattedCategories[$key] = $value['name'];
             }
             
-            // Her bir bloğu logla
             foreach ($blocks as $index => $block) {
                 Log::debug("Blok #{$index}: {$block['id']} - {$block['label']} - Kategori: {$block['category']}");
             }
@@ -284,15 +230,9 @@ class StudioController extends Controller
         }
     }
 
-    /**
-     * Statik kaynakları kopyala
-     * 
-     * @return \Illuminate\Http\RedirectResponse
-     */
     public function publishResources()
     {
         try {
-            // grapes.js ve diğer dosyaları public klasörüne kopyala
             $sourcePath = module_path('Studio', 'resources/assets');
             $destinationPath = public_path('admin/libs/studio');
             
@@ -300,7 +240,6 @@ class StudioController extends Controller
                 mkdir($destinationPath, 0755, true);
             }
             
-            // Css klasörü
             $sourceCssPath = $sourcePath . '/css';
             $destCssPath = $destinationPath . '/css';
             
@@ -308,14 +247,12 @@ class StudioController extends Controller
                 mkdir($destCssPath, 0755, true);
             }
             
-            // Css dosyalarını kopyala
             if (is_dir($sourceCssPath)) {
                 foreach (glob($sourceCssPath . '/*.css') as $file) {
                     copy($file, $destCssPath . '/' . basename($file));
                 }
             }
             
-            // JS klasörü
             $sourceJsPath = $sourcePath . '/js';
             $destJsPath = $destinationPath;
             
@@ -323,14 +260,12 @@ class StudioController extends Controller
                 mkdir($destJsPath, 0755, true);
             }
             
-            // JS dosyalarını kopyala
             if (is_dir($sourceJsPath)) {
                 foreach (glob($sourceJsPath . '/*.js') as $file) {
                     copy($file, $destJsPath . '/' . basename($file));
                 }
             }
             
-            // Partials klasörü oluştur
             $destPartialsPath = $destinationPath . '/partials';
             if (!file_exists($destPartialsPath)) {
                 mkdir($destPartialsPath, 0755, true);

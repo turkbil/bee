@@ -19,6 +19,7 @@ class WidgetSettingsComponent extends Component
     public $schema = [];
     public $tenantWidget;
     public $temporaryUpload = [];
+    public $displayTitle = '';
     
     protected $widgetService;
     
@@ -35,14 +36,17 @@ class WidgetSettingsComponent extends Component
         $this->schema = $this->tenantWidget->widget->getSettingsSchema();
         $this->formData = $this->tenantWidget->settings ?? [];
         
+        // Display title'ı yükle
+        $this->displayTitle = $this->tenantWidget->display_title ?? '';
+        
         $this->initializeFormDataFromSchema();
         
-        if (!isset($this->formData['unique_id'])) {
-            $this->formData['unique_id'] = (string) Str::uuid();
+        if (!isset($this->formData['widget_unique_id'])) {
+            $this->formData['widget_unique_id'] = (string) Str::uuid();
         }
         
-        if (!isset($this->formData['title'])) {
-            $this->formData['title'] = $this->tenantWidget->widget->name;
+        if (!isset($this->formData['widget_title'])) {
+            $this->formData['widget_title'] = $this->tenantWidget->widget->name;
         }
     }
     
@@ -150,13 +154,15 @@ class WidgetSettingsComponent extends Component
     
     public function save($redirect = false, $resetForm = false)
     {
-        $rules = [];
+        $rules = [
+            'displayTitle' => 'nullable|string|max:255',
+        ];
         
         foreach ($this->schema as $field) {
             if (!isset($field['name']) || !isset($field['type'])) continue;
             if ($field['type'] === 'row') continue;
             
-            if (isset($field['required']) && $field['required'] && $field['name'] !== 'unique_id' && $field['name'] !== 'id') {
+            if (isset($field['required']) && $field['required'] && $field['name'] !== 'widget_unique_id' && $field['name'] !== 'id') {
                 $rules['formData.' . $field['name']] = 'required';
             }
         }
@@ -172,12 +178,13 @@ class WidgetSettingsComponent extends Component
             }
         }
 
-        if (!isset($this->formData['unique_id'])) {
-            $this->formData['unique_id'] = (string) Str::uuid();
+        if (!isset($this->formData['widget_unique_id'])) {
+            $this->formData['widget_unique_id'] = (string) Str::uuid();
         }
         
         $this->tenantWidget->update([
-            'settings' => $this->formData
+            'settings' => $this->formData,
+            'display_title' => !empty($this->displayTitle) ? $this->displayTitle : null
         ]);
         
         $this->widgetService->clearWidgetCache(tenant()->id ?? null, $this->tenantWidgetId);

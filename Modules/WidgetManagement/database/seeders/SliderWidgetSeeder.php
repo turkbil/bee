@@ -160,11 +160,11 @@ class SliderWidgetSeeder extends Seeder
         $tenantWidget = TenantWidget::create([
             'widget_id' => $centralWidget->id,
             'settings' => [
-                'unique_id' => (string) Str::uuid(),
-                'title' => 'Ana Sayfa Slider',
-                'height' => 500,
-                'autoplay' => true,
-                'autoplay_delay' => 5000
+                'widget_unique_id' => (string) Str::uuid(),
+                'widget_title' => 'Ana Sayfa Slider',
+                'widget_height' => 500,
+                'widget_autoplay' => true,
+                'widget_autoplay_delay' => 5000
             ],
             'order' => 0,
             'is_active' => true
@@ -260,7 +260,7 @@ class SliderWidgetSeeder extends Seeder
                 'content_html' => '
                 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
 
-                <div class="swiper mySwiper-{{unique_id}}">
+                <div class="swiper mySwiper-{{widget_unique_id}}">
                     <div class="swiper-wrapper">
                         {{#each items}}
                         <div class="swiper-slide">
@@ -286,7 +286,7 @@ class SliderWidgetSeeder extends Seeder
                 'content_css' => '
                 .swiper {
                     width: 100%;
-                    height: {{height}}px;
+                    height: {{widget_height}}px;
                     margin-bottom: 30px;
                 }
 
@@ -355,12 +355,12 @@ class SliderWidgetSeeder extends Seeder
                 }
                 ',
                 'content_js' => '
-                var mySwiper = new Swiper(".mySwiper-{{unique_id}}", {
+                var mySwiper = new Swiper(".mySwiper-{{widget_unique_id}}", {
                     slidesPerView: 1,
                     spaceBetween: 0,
                     loop: true,
                     autoplay: {
-                        delay: {{autoplay_delay}},
+                        delay: {{widget_autoplay_delay}},
                         disableOnInteraction: false,
                     },
                     pagination: {
@@ -412,14 +412,14 @@ class SliderWidgetSeeder extends Seeder
                 ],
                 'settings_schema' => [
                     [
-                        'name' => 'title',
+                        'name' => 'widget_title',
                         'label' => 'Başlık',
                         'type' => 'text',
                         'required' => true,
                         'system' => true
                     ],
                     [
-                        'name' => 'unique_id',
+                        'name' => 'widget_unique_id',
                         'label' => 'Benzersiz ID',
                         'type' => 'text',
                         'required' => false,
@@ -427,21 +427,21 @@ class SliderWidgetSeeder extends Seeder
                         'hidden' => true
                     ],
                     [
-                        'name' => 'height',
+                        'name' => 'widget_height',
                         'label' => 'Yükseklik (px)',
                         'type' => 'number',
                         'required' => true,
                         'default' => 500
                     ],
                     [
-                        'name' => 'autoplay',
+                        'name' => 'widget_autoplay',
                         'label' => 'Otomatik Oynatma',
                         'type' => 'checkbox',
                         'required' => false,
                         'default' => true
                     ],
                     [
-                        'name' => 'autoplay_delay',
+                        'name' => 'widget_autoplay_delay',
                         'label' => 'Otomatik Oynatma Gecikmesi (ms)',
                         'type' => 'number',
                         'required' => false,
@@ -469,11 +469,11 @@ class SliderWidgetSeeder extends Seeder
         $tenantWidget = TenantWidget::create([
             'widget_id' => $widget->id,
             'settings' => [
-                'unique_id' => (string) Str::uuid(),
-                'title' => 'Ana Sayfa Slider',
-                'height' => 500,
-                'autoplay' => true,
-                'autoplay_delay' => 5000
+                'widget_unique_id' => (string) Str::uuid(),
+                'widget_title' => 'Ana Sayfa Slider',
+                'widget_height' => 500,
+                'widget_autoplay' => true,
+                'widget_autoplay_delay' => 5000
             ],
             'order' => 0,
             'is_active' => true
@@ -549,11 +549,11 @@ class SliderWidgetSeeder extends Seeder
                     $tenantWidget = TenantWidget::create([
                         'widget_id' => $widget->id,
                         'settings' => [
-                            'unique_id' => (string) Str::uuid(),
-                            'title' => $tenant->title . ' Slider',
-                            'height' => 500,
-                            'autoplay' => true,
-                            'autoplay_delay' => 5000
+                            'widget_unique_id' => (string) Str::uuid(),
+                            'widget_title' => $tenant->title . ' Slider',
+                            'widget_height' => 500,
+                            'widget_autoplay' => true,
+                            'widget_autoplay_delay' => 5000
                         ],
                         'order' => 0,
                         'is_active' => true

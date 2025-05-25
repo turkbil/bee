@@ -154,12 +154,12 @@ class HeroWidgetSeeder extends Seeder
             'widget_id' => $centralWidget->id,
             'settings' => [
                 'unique_id' => (string) Str::uuid(),
-                'title' => 'Full Width Hero',
-                'hero_title' => 'Tenant Özel Hero Başlığı',
-                'hero_subtitle' => 'Bu tenant için özel olarak hazırlanmış alt başlık.',
-                'hero_description' => 'Tenant kullanıcılarına özel, dinamik olarak yönetilebilen hero alanı.',
-                'button_text' => 'Keşfet',
-                'button_url' => '/urunler'
+                'widget_title' => 'Full Width Hero',
+                'widget_hero_title' => 'Tenant Özel Hero Başlığı',
+                'widget_hero_subtitle' => 'Bu tenant için özel olarak hazırlanmış alt başlık.',
+                'widget_hero_description' => 'Tenant kullanıcılarına özel, dinamik olarak yönetilebilen hero alanı.',
+                'widget_button_text' => 'Keşfet',
+                'widget_button_url' => '/urunler'
             ],
             'order' => 0,
             'is_active' => true
@@ -223,12 +223,12 @@ class HeroWidgetSeeder extends Seeder
                     <div class="container mx-auto px-4">
                         <div class="py-8 lg:py-12">
                             <div class="max-w-3xl mx-auto">
-                                <h1 class="text-3xl font-light mb-4">{{hero_title}}</h1>
-                                <h3 class="text-xl font-light mb-3">{{hero_subtitle}}</h3>
-                                <p class="text-lg mb-6">{{hero_description}}</p>
+                                <h1 class="text-3xl font-light mb-4">{{widget_hero_title}}</h1>
+                                <h3 class="text-xl font-light mb-3">{{widget_hero_subtitle}}</h3>
+                                <p class="text-lg mb-6">{{widget_hero_description}}</p>
                                 <div>
-                                    {{#if button_text}}
-                                    <a href="{{button_url}}" class="inline-block px-4 py-2 mr-2 mb-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">{{button_text}}</a>
+                                    {{#if widget_button_text}}
+                                    <a href="{{widget_button_url}}" class="inline-block px-4 py-2 mr-2 mb-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">{{widget_button_text}}</a>
                                     {{/if}}
                                 </div>
                             </div>
@@ -243,7 +243,7 @@ class HeroWidgetSeeder extends Seeder
                 'item_schema' => [],
                 'settings_schema' => [
                     [
-                        'name' => 'title',
+                        'name' => 'widget_title',
                         'label' => 'Widget Başlığı (Yönetim)',
                         'type' => 'text',
                         'required' => true,
@@ -254,7 +254,7 @@ class HeroWidgetSeeder extends Seeder
                         ]
                     ],
                     [
-                        'name' => 'hero_title',
+                        'name' => 'widget_hero_title',
                         'label' => 'Ana Başlık',
                         'type' => 'text',
                         'required' => true,
@@ -265,7 +265,7 @@ class HeroWidgetSeeder extends Seeder
                         ]
                     ],
                     [
-                        'name' => 'hero_subtitle',
+                        'name' => 'widget_hero_subtitle',
                         'label' => 'Alt Başlık',
                         'type' => 'text',
                         'required' => false,
@@ -276,7 +276,7 @@ class HeroWidgetSeeder extends Seeder
                         ]
                     ],
                     [
-                        'name' => 'hero_description',
+                        'name' => 'widget_hero_description',
                         'label' => 'Açıklama Metni',
                         'type' => 'textarea',
                         'required' => false,
@@ -288,7 +288,7 @@ class HeroWidgetSeeder extends Seeder
                         ]
                     ],
                     [
-                        'name' => 'button_text',
+                        'name' => 'widget_button_text',
                         'label' => 'Buton Metni',
                         'type' => 'text',
                         'required' => false,
@@ -299,7 +299,7 @@ class HeroWidgetSeeder extends Seeder
                         ]
                     ],
                     [
-                        'name' => 'button_url',
+                        'name' => 'widget_button_url',
                         'label' => 'Buton URL',
                         'type' => 'text',
                         'required' => false,
@@ -322,12 +322,12 @@ class HeroWidgetSeeder extends Seeder
                         <div class="container mx-auto px-4">
                             <div class="py-8 lg:py-12">
                                 <div class="max-w-3xl mx-auto">
-                                    <h1 class="text-3xl font-light mb-4">{{hero_title}}</h1>
-                                    <h3 class="text-xl font-light mb-3">{{hero_subtitle}}</h3>
-                                    <p class="text-lg mb-6">{{hero_description}}</p>
+                                    <h1 class="text-3xl font-light mb-4">{{widget_hero_title}}</h1>
+                                    <h3 class="text-xl font-light mb-3">{{widget_hero_subtitle}}</h3>
+                                    <p class="text-lg mb-6">{{widget_hero_description}}</p>
                                     <div>
-                                        {{#if button_text}}
-                                        <a href="{{button_url}}" class="inline-block px-4 py-2 mr-2 mb-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">{{button_text}}</a>
+                                        {{#if widget_button_text}}
+                                        <a href="{{widget_button_url}}" class="inline-block px-4 py-2 mr-2 mb-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">{{widget_button_text}}</a>
                                         {{/if}}
                                     </div>
                                 </div>
@@ -338,7 +338,7 @@ class HeroWidgetSeeder extends Seeder
                     'item_schema' => [],
                     'settings_schema' => [
                         [
-                            'name' => 'title',
+                            'name' => 'widget_title',
                             'label' => 'Widget Başlığı (Yönetim)',
                             'type' => 'text',
                             'required' => true,
@@ -349,7 +349,7 @@ class HeroWidgetSeeder extends Seeder
                             ]
                         ],
                         [
-                            'name' => 'hero_title',
+                            'name' => 'widget_hero_title',
                             'label' => 'Ana Başlık',
                             'type' => 'text',
                             'required' => true,
@@ -360,7 +360,7 @@ class HeroWidgetSeeder extends Seeder
                             ]
                         ],
                         [
-                            'name' => 'hero_subtitle',
+                            'name' => 'widget_hero_subtitle',
                             'label' => 'Alt Başlık',
                             'type' => 'text',
                             'required' => false,
@@ -371,7 +371,7 @@ class HeroWidgetSeeder extends Seeder
                             ]
                         ],
                         [
-                            'name' => 'hero_description',
+                            'name' => 'widget_hero_description',
                             'label' => 'Açıklama Metni',
                             'type' => 'textarea',
                             'required' => false,
@@ -383,7 +383,7 @@ class HeroWidgetSeeder extends Seeder
                             ]
                         ],
                         [
-                            'name' => 'button_text',
+                            'name' => 'widget_button_text',
                             'label' => 'Buton Metni',
                             'type' => 'text',
                             'required' => false,
@@ -394,7 +394,7 @@ class HeroWidgetSeeder extends Seeder
                             ]
                         ],
                         [
-                            'name' => 'button_url',
+                            'name' => 'widget_button_url',
                             'label' => 'Buton URL',
                             'type' => 'text',
                             'required' => false,
@@ -423,12 +423,12 @@ class HeroWidgetSeeder extends Seeder
             'widget_id' => $widget->id,
             'settings' => [
                 'unique_id' => (string) Str::uuid(),
-                'title' => 'Merkezi Demo Hero',
-                'hero_title' => 'Merkezi Sistem Hero Başlığı',
-                'hero_subtitle' => 'Bu merkezi sistem için bir demo alt başlığıdır.',
-                'hero_description' => 'Merkezi sistemdeki tüm tenantlar için örnek bir hero açıklaması.',
-                'button_text' => 'Başla',
-                'button_url' => '/demo-start'
+                'widget_title' => 'Merkezi Demo Hero',
+                'widget_hero_title' => 'Merkezi Sistem Hero Başlığı',
+                'widget_hero_subtitle' => 'Bu merkezi sistem için bir demo alt başlığıdır.',
+                'widget_hero_description' => 'Merkezi sistemdeki tüm tenantlar için örnek bir hero açıklaması.',
+                'widget_button_text' => 'Başla',
+                'widget_button_url' => '/demo-start'
             ],
             'order' => 0,
             'is_active' => true
@@ -480,12 +480,12 @@ class HeroWidgetSeeder extends Seeder
                         'widget_id' => $widget->id,
                         'settings' => [
                             'unique_id' => (string) Str::uuid(),
-                            'title' => $tenant->name . ' Hero Alanı',
-                            'hero_title' => $tenant->name . ' Hoş Geldiniz!',
-                            'hero_subtitle' => 'Size özel içeriklerimizle tanışın.',
-                            'hero_description' => $tenant->name . ' için özel olarak hazırlanmış bu alanda en yeni duyurularımızı ve hizmetlerimizi bulabilirsiniz.',
-                            'button_text' => 'Hizmetlerimiz',
-                            'button_url' => '/hizmetler'
+                            'widget_title' => $tenant->name . ' Hero Alanı',
+                            'widget_hero_title' => $tenant->name . ' Hoş Geldiniz!',
+                            'widget_hero_subtitle' => 'Size özel içeriklerimizle tanışın.',
+                            'widget_hero_description' => $tenant->name . ' için özel olarak hazırlanmış bu alanda en yeni duyurularımızı ve hizmetlerimizi bulabilirsiniz.',
+                            'widget_button_text' => 'Hizmetlerimiz',
+                            'widget_button_url' => '/hizmetler'
                         ],
                         'order' => 0,
                         'is_active' => true

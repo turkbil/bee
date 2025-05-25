@@ -138,13 +138,47 @@ class WidgetPreviewController extends Controller
     
     private function buildTemplateContext($widget)
     {
-        $context = [];
+        $context = [
+            'widget' => []
+        ];
         
-        if ($widget->type === 'static') {
-            $context = $this->getDefaultSettingsContext($widget);
-        } elseif ($widget->type === 'dynamic') {
-            $context = $this->getDefaultSettingsContext($widget);
-            $context['items'] = $this->getDefaultItemsContext($widget);
+        if ($widget->settings_schema) {
+            foreach ($widget->settings_schema as $field) {
+                if (!isset($field['name'])) continue;
+                
+                $fieldName = $field['name'];
+                $defaultValue = $field['default'] ?? ($field['properties']['default_value'] ?? '');
+                
+                $context['widget'][$fieldName] = $defaultValue;
+                $context[$fieldName] = $defaultValue;
+            }
+        }
+        
+        if ($widget->has_items && $widget->item_schema) {
+            $items = [];
+            for ($i = 1; $i <= 3; $i++) {
+                $item = [];
+                foreach ($widget->item_schema as $field) {
+                    if (!isset($field['name'])) continue;
+                    
+                    $fieldName = $field['name'];
+                    if ($fieldName === 'image') {
+                        $item[$fieldName] = 'https://picsum.photos/800/400?random=' . $i;
+                    } elseif ($fieldName === 'title') {
+                        $item[$fieldName] = 'Örnek Başlık ' . $i;
+                    } elseif ($fieldName === 'description') {
+                        $item[$fieldName] = 'Bu ' . $i . '. örnek açıklama metnidir.';
+                    } elseif ($fieldName === 'button_text') {
+                        $item[$fieldName] = 'Devamını Oku';
+                    } elseif ($fieldName === 'button_url') {
+                        $item[$fieldName] = '#';
+                    } else {
+                        $item[$fieldName] = $field['default'] ?? '';
+                    }
+                }
+                $items[] = $item;
+            }
+            $context['items'] = $items;
         }
         
         return $context;
@@ -152,162 +186,77 @@ class WidgetPreviewController extends Controller
     
     private function buildInstanceContext($widget, $tenantWidget)
     {
-        $context = [];
-        
-        if ($widget->type === 'static') {
-            $context = $this->getInstanceSettingsContext($widget, $tenantWidget);
-        } elseif ($widget->type === 'dynamic') {
-            $context = $this->getInstanceSettingsContext($widget, $tenantWidget);
-            $context['items'] = $this->getInstanceItemsContext($widget, $tenantWidget);
-        }
-        
-        return $context;
-    }
-    
-    private function getDefaultSettingsContext($widget)
-    {
         $context = [
-            'widget' => [
-                'title' => $widget->name,
-                'unique_id' => Str::random(),
-            ]
+            'widget' => []
         ];
         
-        if (!empty($widget->settings_schema) && is_array($widget->settings_schema)) {
-            foreach ($widget->settings_schema as $schema) {
-                if (!isset($schema['name'])) continue;
+        $settings = $tenantWidget->settings ?? [];
+        
+        foreach ($settings as $key => $value) {
+            $context['widget'][$key] = $value;
+            $context[$key] = $value;
+        }
+        
+        if ($widget->settings_schema) {
+            foreach ($widget->settings_schema as $field) {
+                if (!isset($field['name'])) continue;
                 
-                $key = $schema['name'];
-                if (isset($schema['default'])) {
-                    $context['widget'][$key] = $schema['default'];
-                } elseif (isset($schema['properties']['default_value'])) {
-                    $context['widget'][$key] = $schema['properties']['default_value'];
-                } else {
-                    switch ($schema['type']) {
-                        case 'checkbox':
-                        case 'switch':
-                            $context['widget'][$key] = false;
-                            break;
-                        case 'number':
-                            $context['widget'][$key] = 0;
-                            break;
-                        default:
-                            $context['widget'][$key] = '';
-                            break;
-                    }
-                }
-                
-                if (strpos($key, 'widget.') !== 0) {
-                    $context[$key] = $context['widget'][$key];
+                $fieldName = $field['name'];
+                if (!isset($context['widget'][$fieldName])) {
+                    $defaultValue = $field['default'] ?? ($field['properties']['default_value'] ?? '');
+                    $context['widget'][$fieldName] = $defaultValue;
+                    $context[$fieldName] = $defaultValue;
                 }
             }
         }
         
-        return $context;
-    }
-    
-    private function getInstanceSettingsContext($widget, $tenantWidget)
-    {
-        $context = [
-            'widget' => [
-                'title' => $tenantWidget->settings['title'] ?? $widget->name,
-                'unique_id' => $tenantWidget->settings['unique_id'] ?? Str::random(),
-            ]
-        ];
-        
-        $tenantSettings = $tenantWidget->settings ?? [];
-        
-        if (!empty($widget->settings_schema) && is_array($widget->settings_schema)) {
-            foreach ($widget->settings_schema as $schema) {
-                if (!isset($schema['name'])) continue;
-                
-                $key = $schema['name'];
-                if (array_key_exists($key, $tenantSettings)) {
-                    $context['widget'][$key] = $tenantSettings[$key];
-                } elseif (isset($schema['default'])) {
-                    $context['widget'][$key] = $schema['default'];
-                } elseif (isset($schema['properties']['default_value'])) {
-                    $context['widget'][$key] = $schema['properties']['default_value'];
-                } else {
-                    switch ($schema['type']) {
-                        case 'checkbox':
-                        case 'switch':
-                            $context['widget'][$key] = false;
-                            break;
-                        case 'number':
-                            $context['widget'][$key] = 0;
-                            break;
-                        default:
-                            $context['widget'][$key] = '';
-                            break;
+        if ($widget->has_items) {
+            $items = [];
+            foreach ($tenantWidget->items as $item) {
+                if ($item->content['is_active'] ?? true) {
+                    $content = $item->content;
+                    
+                    foreach ($content as $key => $value) {
+                        if (is_string($value) && !empty($value) && !preg_match('/^https?:\/\//', $value)) {
+                            if (strpos($key, 'image') !== false || strpos($key, 'photo') !== false || strpos($key, 'picture') !== false) {
+                                $content[$key] = cdn($value);
+                            }
+                        }
                     }
-                }
-                
-                if (strpos($key, 'widget.') !== 0) {
-                    $context[$key] = $context['widget'][$key];
+                    
+                    $items[] = $content;
                 }
             }
-        }
-        
-        return $context;
-    }
-    
-    private function getDefaultItemsContext($widget)
-    {
-        if (!$widget->has_items || empty($widget->item_schema)) {
-            return [];
-        }
-        
-        $defaultItem = [];
-        foreach ($widget->item_schema as $schema) {
-            if (!isset($schema['name'])) continue;
             
-            $key = $schema['name'];
-            if (isset($schema['default']) && $schema['default'] !== '') {
-                $value = $schema['default'];
-            } else {
-                if ($key === 'image') {
-                    $value = 'https://placehold.co/800x400?text=Placeholder';
-                } elseif ($key === 'title') {
-                    $value = 'Örnek Başlık';
-                } elseif ($key === 'description') {
-                    $value = 'Bu bir örnek açıklama metnidir.';
-                } else {
-                    $value = $schema['label'] ?? ucfirst(str_replace('_', ' ', $key));
+            if (empty($items) && $widget->item_schema) {
+                for ($i = 1; $i <= 3; $i++) {
+                    $item = [];
+                    foreach ($widget->item_schema as $field) {
+                        if (!isset($field['name'])) continue;
+                        
+                        $fieldName = $field['name'];
+                        if ($fieldName === 'image') {
+                            $item[$fieldName] = 'https://picsum.photos/800/400?random=' . $i;
+                        } elseif ($fieldName === 'title') {
+                            $item[$fieldName] = 'Örnek Başlık ' . $i;
+                        } elseif ($fieldName === 'description') {
+                            $item[$fieldName] = 'Bu ' . $i . '. örnek açıklama metnidir.';
+                        } elseif ($fieldName === 'button_text') {
+                            $item[$fieldName] = 'Devamını Oku';
+                        } elseif ($fieldName === 'button_url') {
+                            $item[$fieldName] = '#';
+                        } else {
+                            $item[$fieldName] = $field['default'] ?? '';
+                        }
+                    }
+                    $items[] = $item;
                 }
             }
-            $defaultItem[$key] = $value;
+            
+            $context['items'] = $items;
         }
         
-        $defaultItem['is_active'] = true;
-        $defaultItem['unique_id'] = Str::uuid()->toString();
-        
-        return [$defaultItem];
-    }
-    
-    private function getInstanceItemsContext($widget, $tenantWidget)
-    {
-        if (!$widget->has_items) {
-            return [];
-        }
-        
-        $itemsData = $tenantWidget->items
-            ->filter(function ($item) {
-                return !isset($item->content['is_active']) || $item->content['is_active'] === true;
-            })
-            ->map(function ($item) {
-                $content = $item->content;
-                if (isset($content['image']) && !preg_match('/^https?:\/\//', $content['image'])) {
-                    $content['image'] = cdn($content['image']);
-                }
-                return $content;
-            })->toArray();
-        
-        if (empty($itemsData)) {
-            return $this->getDefaultItemsContext($widget);
-        }
-        
-        return $itemsData;
+        return $context;
     }
     
     private function getFileWidgetSettings($widget, $tenantWidget = null)

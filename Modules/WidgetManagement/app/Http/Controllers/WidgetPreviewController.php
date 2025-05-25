@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
+use Modules\WidgetManagement\app\Services\WidgetService;
 
 class WidgetPreviewController extends Controller
 {
@@ -41,34 +42,48 @@ class WidgetPreviewController extends Controller
         }
     }
     
-    public function showInstance($tenantWidgetId)
+    public function showInstance(WidgetService $widgetService, $tenantWidgetId)
     {
         try {
+            WidgetService::resetAssets(); // Assetleri temizle
+
             $tenantWidget = TenantWidget::with(['widget', 'items'])->findOrFail($tenantWidgetId);
             $widget = $tenantWidget->widget;
-            
+
             if (!$widget || !$widget->is_active) {
                 return response()->view('widgetmanagement::widget.error', [
                     'message' => 'Widget bulunamadı veya aktif değil.'
                 ], 404);
             }
-            
-            if ($widget->type === 'file') {
-                return $this->handleFileWidget($widget, $tenantWidget);
+
+            // Sunucu taraflı render için ayarlar
+            $widgetService->setHandlebarsUsage(false);
+            $widgetService->setCacheUsage(false); // Önizlemeler için cache kullanma
+
+            // Widget'ı işle ve render et
+            $renderedHtml = $widgetService->processWidget($tenantWidget);
+
+            if (empty(trim($renderedHtml))) {
+                return response()->view('widgetmanagement::widget.error', [
+                    'message' => 'Rendered HTML is empty or whitespace.'
+                ], 500);
             }
-            
-            if ($widget->type === 'module') {
-                return $this->handleModuleWidget($widget, $tenantWidget);
-            }
-            
-            $context = $this->buildInstanceContext($widget, $tenantWidget);
-            
+
+            // Statik assetleri temizle (her önizleme için yeniden oluşturulsun)
+            // Bu, WidgetService içinde statik array'leri sıfırlayan bir metoda ihtiyaç duyabilir
+            // Şimdilik bu adımı atlıyoruz, ancak idealde olmalı.
+            // Alternatif olarak, WidgetService'i her istekte yeniden oluşturabiliriz.
+            // Veya WidgetService'teki statik array'leri public static yapıp burada sıfırlayabiliriz.
+            // En temizi WidgetService'e bir resetAssets() metodu eklemek olurdu.
+            // Şimdilik, aynı widget tekrar tekrar önizlenirse assetlerin birikebileceğini not edelim.
+
             return view('widgetmanagement::widget.preview', [
-                'widget' => $widget,
-                'context' => $context,
-                'useHandlebars' => true
+                'widget' => $widget, // Orijinal widget bilgisi hala gerekebilir
+                'tenantWidget' => $tenantWidget, // TenantWidget bilgisi de gerekebilir
+                'renderedHtml' => $renderedHtml,
+                'widgetServiceClass' => WidgetService::class // Statik metotlar için
             ]);
-            
+
         } catch (\Exception $e) {
             return response()->view('widgetmanagement::widget.error', [
                 'message' => 'Widget instance yüklenirken bir hata oluştu: ' . $e->getMessage()

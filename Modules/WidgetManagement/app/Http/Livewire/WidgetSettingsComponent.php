@@ -35,7 +35,6 @@ class WidgetSettingsComponent extends Component
         $this->schema = $this->tenantWidget->widget->getSettingsSchema();
         $this->formData = $this->tenantWidget->settings ?? [];
         
-        $this->processSchema();
         $this->initializeFormDataFromSchema();
         
         if (!isset($this->formData['unique_id'])) {
@@ -44,57 +43,6 @@ class WidgetSettingsComponent extends Component
         
         if (!isset($this->formData['title'])) {
             $this->formData['title'] = $this->tenantWidget->widget->name;
-        }
-    }
-    
-    protected function processSchema()
-    {
-        if (!is_array($this->schema)) {
-            $this->schema = [];
-        }
-        
-        $this->schema = array_filter($this->schema ?? [], function($field) {
-            if (!isset($field['name'])) return true;
-            return $field['name'] !== 'unique_id' && $field['name'] !== 'id';
-        });
-        
-        $hasTitle = false;
-        $hasUniqueId = false;
-        
-        foreach ($this->schema as $field) {
-            if (!isset($field['name'])) continue;
-            
-            if ($field['name'] === 'title') $hasTitle = true;
-            if ($field['name'] === 'unique_id') $hasUniqueId = true;
-        }
-        
-        if (!$hasTitle) {
-            array_unshift($this->schema, [
-                'name' => 'title',
-                'label' => 'Widget Başlığı',
-                'type' => 'text',
-                'required' => true,
-                'system' => true,
-                'properties' => [
-                    'width' => 12,
-                    'placeholder' => 'Widget başlığını giriniz',
-                    'default_value' => $this->tenantWidget->widget->name
-                ]
-            ]);
-        }
-        
-        if (!$hasUniqueId) {
-            $this->schema[] = [
-                'name' => 'unique_id',
-                'label' => 'Benzersiz ID',
-                'type' => 'text',
-                'required' => false,
-                'system' => true,
-                'hidden' => true,
-                'properties' => [
-                    'width' => 12
-                ]
-            ];
         }
     }
     

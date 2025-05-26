@@ -43,7 +43,7 @@ window.StudioWidgetLoader = (function() {
                                         'class': 'widget-content-placeholder',
                                         'id': 'widget-content-' + tenantWidgetId
                                     },
-                                    content: '<div class="widget-loading" style="text-align:center; padding:20px;"><i class="fa fa-spin fa-spinner"></i> Widget içeriği yükleniyor...</div>'
+                                    content: '<div class="widget-loading" style="display:none;text-align:center; padding:20px;"><i class="fa fa-spin fa-spinner"></i> Widget içeriği yükleniyor...</div>'
                                 }
                             ]
                         },
@@ -244,10 +244,16 @@ window.StudioWidgetLoader = (function() {
                 margin: 0;
             }
             
-            /* Yükleme göstergesi */
+            /* Yükleme göstergesi - varsayılan gizli */
             .widget-loading {
+                display: none !important;
                 text-align: center;
                 padding: 20px;
+            }
+            
+            /* Sadece aktif yükleme durumunda göster */
+            .widget-loading.loading-active {
+                display: block !important;
             }
         `;
         document.head.appendChild(styleEl);
@@ -901,6 +907,24 @@ window.StudioWidgetLoader = (function() {
             console.error("Widget embed işleme genel hatası:", err);
         }
     }
+    
+    // Tüm loading göstergelerini gizle
+    function hideAllLoadingIndicators() {
+        // Ana belgede
+        document.querySelectorAll('.widget-loading').forEach(loading => {
+            loading.classList.remove('loading-active');
+        });
+        
+        // iframe'lerde
+        document.querySelectorAll('iframe').forEach(iframe => {
+            try {
+                const doc = iframe.contentDocument || iframe.contentWindow.document;
+                doc.querySelectorAll('.widget-loading').forEach(loading => {
+                    loading.classList.remove('loading-active');
+                });
+            } catch(e) {}
+        });
+    }
             
     // Widget içeriğini yükle
     window.studioLoadWidget = function(widgetId) {
@@ -925,37 +949,30 @@ window.StudioWidgetLoader = (function() {
         
         console.log(`Widget ${widgetId} içeriği yükleniyor...`);
         
-        // Sadece bu widget için spesifik yükleme göstergesini göster
-        const showLoading = function(widgetId) {
-            // SADECE belirli widget ID'si için yükleme göster
-            const specificWidgetContainer = document.getElementById(`widget-content-${widgetId}`);
+        // Önce tüm loading göstergelerini gizle
+        hideAllLoadingIndicators();
+        
+        // Sadece belirli widget ID'sine sahip container'larda loading göster
+        const showLoadingForSpecificWidget = function(targetWidgetId) {
+            // Ana belge içinde sadece bu widget'ın container'ını bul
+            const specificWidgetContainer = document.getElementById(`widget-content-${targetWidgetId}`);
             if (specificWidgetContainer) {
-                const loading = specificWidgetContainer.querySelector('.widget-loading') || document.createElement('div');
-                loading.className = 'widget-loading';
-                loading.innerHTML = '<i class="fa fa-spin fa-spinner"></i> Widget içeriği yükleniyor...';
-                loading.style.display = 'block';
-                loading.style.textAlign = 'center';
-                loading.style.padding = '20px';
-                if (!specificWidgetContainer.contains(loading)) {
-                    specificWidgetContainer.appendChild(loading);
+                const loading = specificWidgetContainer.querySelector('.widget-loading');
+                if (loading) {
+                    loading.classList.add('loading-active');
                 }
             }
             
-            // iframe'lerde bu widget için göster
+            // iframe'lerde sadece bu widget ID'sine sahip container'ları bul
             try {
                 document.querySelectorAll('iframe').forEach(iframe => {
                     try {
                         const doc = iframe.contentDocument || iframe.contentWindow.document;
-                        const iframeSpecificContainer = doc.getElementById(`widget-content-${widgetId}`);
+                        const iframeSpecificContainer = doc.getElementById(`widget-content-${targetWidgetId}`);
                         if (iframeSpecificContainer) {
-                            const loading = iframeSpecificContainer.querySelector('.widget-loading') || document.createElement('div');
-                            loading.className = 'widget-loading';
-                            loading.innerHTML = '<i class="fa fa-spin fa-spinner"></i> Widget içeriği yükleniyor...';
-                            loading.style.display = 'block';
-                            loading.style.textAlign = 'center';
-                            loading.style.padding = '20px';
-                            if (!iframeSpecificContainer.contains(loading)) {
-                                iframeSpecificContainer.appendChild(loading);
+                            const loading = iframeSpecificContainer.querySelector('.widget-loading');
+                            if (loading) {
+                                loading.classList.add('loading-active');
                             }
                         }
                     } catch(e) {}
@@ -964,7 +981,7 @@ window.StudioWidgetLoader = (function() {
         };
         
         // Yükleme göstergesini göster
-        showLoading(widgetId);
+        showLoadingForSpecificWidget(widgetId);
         
         // İstek yapılma zamanını kaydet (zaman aşımı kontrolü için)
         const requestTime = Date.now();
@@ -999,7 +1016,7 @@ window.StudioWidgetLoader = (function() {
             window._loadedWidgets.add(widgetId);
             
             // Container bul (main doc veya iframe)
-            const findEmbedElements = function(widgetId) {
+            const findEmbedElements = function(targetWidgetId) {
                 const elements = {
                     embedEl: null,
                     placeholder: null,
@@ -1007,8 +1024,8 @@ window.StudioWidgetLoader = (function() {
                 };
                 
                 // SADECE bu widget için spesifik container'ı bul
-                elements.placeholder = document.getElementById(`widget-content-${widgetId}`);
-                elements.embedEl = document.querySelector(`[data-tenant-widget-id="${widgetId}"]`);
+                elements.placeholder = document.getElementById(`widget-content-${targetWidgetId}`);
+                elements.embedEl = document.querySelector(`[data-tenant-widget-id="${targetWidgetId}"]`);
                 
                 // Ana belgede bulunamadıysa, iframe'leri kontrol et
                 if (!elements.embedEl || !elements.placeholder) {
@@ -1018,7 +1035,7 @@ window.StudioWidgetLoader = (function() {
                                 const doc = fr.contentDocument || fr.contentWindow.document;
                                 
                                 if (!elements.embedEl) {
-                                    const el = doc.querySelector(`[data-tenant-widget-id="${widgetId}"]`);
+                                    const el = doc.querySelector(`[data-tenant-widget-id="${targetWidgetId}"]`);
                                     if (el) {
                                         elements.embedEl = el;
                                         elements.targetDocument = doc;
@@ -1026,7 +1043,7 @@ window.StudioWidgetLoader = (function() {
                                 }
                                 
                                 if (!elements.placeholder) {
-                                    const placeholder = doc.getElementById(`widget-content-${widgetId}`);
+                                    const placeholder = doc.getElementById(`widget-content-${targetWidgetId}`);
                                     if (placeholder) {
                                         elements.placeholder = placeholder;
                                         elements.targetDocument = doc;
@@ -1069,7 +1086,7 @@ window.StudioWidgetLoader = (function() {
                     // Yükleme göstergesini kaldırma
                     const loadingEl = placeholder.querySelector('.widget-loading');
                     if (loadingEl) {
-                        loadingEl.style.display = 'none';
+                        loadingEl.classList.remove('loading-active');
                     }
                     
                     placeholder.innerHTML = html;
@@ -1203,10 +1220,10 @@ window.StudioWidgetLoader = (function() {
         });
         
         // Widget için hata mesajı göster
-        function showWidgetError(widgetId, errorMessage) {
+        function showWidgetError(targetWidgetId, errorMessage) {
             // SADECE bu widget için spesifik container'ı bul
-            let placeholder = document.getElementById(`widget-content-${widgetId}`);
-            let embedEl = document.querySelector(`[data-tenant-widget-id="${widgetId}"]`);
+            let placeholder = document.getElementById(`widget-content-${targetWidgetId}`);
+            let embedEl = document.querySelector(`[data-tenant-widget-id="${targetWidgetId}"]`);
             let targetDocument = document;
             
             if (!placeholder && !embedEl) {
@@ -1216,11 +1233,11 @@ window.StudioWidgetLoader = (function() {
                             const doc = fr.contentDocument || fr.contentWindow.document;
                             
                             if (!placeholder) {
-                                placeholder = doc.getElementById(`widget-content-${widgetId}`);
+                                placeholder = doc.getElementById(`widget-content-${targetWidgetId}`);
                             }
                             
                             if (!embedEl) {
-                                embedEl = doc.querySelector(`[data-tenant-widget-id="${widgetId}"]`);
+                                embedEl = doc.querySelector(`[data-tenant-widget-id="${targetWidgetId}"]`);
                             }
                             
                             if (placeholder || embedEl) {
@@ -1308,37 +1325,30 @@ window.StudioWidgetLoader = (function() {
         
         console.log(`Module widget ${moduleId} içeriği yükleniyor...`);
         
-        // Sadece bu module için spesifik yükleniyor mesajını göster
-        const showLoading = function(moduleId) {
-            // SADECE belirli module ID'si için yükleme göster
-            const specificModuleContainer = document.getElementById(`module-content-${moduleId}`);
+        // Önce tüm loading göstergelerini gizle
+        hideAllLoadingIndicators();
+        
+        // Sadece belirli module ID'sine sahip container'larda loading göster
+        const showLoadingForSpecificModule = function(targetModuleId) {
+            // Ana belge içinde sadece bu module'ün container'ını bul
+            const specificModuleContainer = document.getElementById(`module-content-${targetModuleId}`);
             if (specificModuleContainer) {
-                const loading = specificModuleContainer.querySelector('.widget-loading') || document.createElement('div');
-                loading.className = 'widget-loading';
-                loading.innerHTML = '<i class="fa fa-spin fa-spinner"></i> Module içeriği yükleniyor...';
-                loading.style.display = 'block';
-                loading.style.textAlign = 'center';
-                loading.style.padding = '20px';
-                if (!specificModuleContainer.contains(loading)) {
-                    specificModuleContainer.appendChild(loading);
+                const loading = specificModuleContainer.querySelector('.widget-loading');
+                if (loading) {
+                    loading.classList.add('loading-active');
                 }
             }
             
-            // iframe'lerde bu module için göster
+            // iframe'lerde sadece bu module ID'sine sahip container'ları bul
             try {
                 document.querySelectorAll('iframe').forEach(iframe => {
                     try {
                         const doc = iframe.contentDocument || iframe.contentWindow.document;
-                        const iframeSpecificContainer = doc.getElementById(`module-content-${moduleId}`);
+                        const iframeSpecificContainer = doc.getElementById(`module-content-${targetModuleId}`);
                         if (iframeSpecificContainer) {
-                            const loading = iframeSpecificContainer.querySelector('.widget-loading') || document.createElement('div');
-                            loading.className = 'widget-loading';
-                            loading.innerHTML = '<i class="fa fa-spin fa-spinner"></i> Module içeriği yükleniyor...';
-                            loading.style.display = 'block';
-                            loading.style.textAlign = 'center';
-                            loading.style.padding = '20px';
-                            if (!iframeSpecificContainer.contains(loading)) {
-                                iframeSpecificContainer.appendChild(loading);
+                            const loading = iframeSpecificContainer.querySelector('.widget-loading');
+                            if (loading) {
+                                loading.classList.add('loading-active');
                             }
                         }
                     } catch(e) {}
@@ -1347,7 +1357,7 @@ window.StudioWidgetLoader = (function() {
         };
         
         // Yükleme göstergesini göster
-        showLoading(moduleId);
+        showLoadingForSpecificModule(moduleId);
         
         // API'den modül içeriğini al
         fetch(`/admin/studio/api/module-widget/${moduleId}`, { 
@@ -1377,7 +1387,7 @@ window.StudioWidgetLoader = (function() {
             window._loadedModules.add(moduleId);
             
             // Container bul (main doc veya iframe) 
-            const findModuleElements = function(moduleId) {
+            const findModuleElements = function(targetModuleId) {
                 const elements = {
                     moduleEl: null,
                     placeholder: null,
@@ -1385,8 +1395,8 @@ window.StudioWidgetLoader = (function() {
                 };
                 
                 // SADECE bu module için spesifik container'ı bul
-                elements.placeholder = document.getElementById(`module-content-${moduleId}`);
-                elements.moduleEl = document.querySelector(`[data-widget-module-id="${moduleId}"]`);
+                elements.placeholder = document.getElementById(`module-content-${targetModuleId}`);
+                elements.moduleEl = document.querySelector(`[data-widget-module-id="${targetModuleId}"]`);
                 
                 // Ana belgede bulunamadıysa, iframe'leri kontrol et
                 if (!elements.moduleEl || !elements.placeholder) {
@@ -1396,7 +1406,7 @@ window.StudioWidgetLoader = (function() {
                                 const doc = fr.contentDocument || fr.contentWindow.document;
                                 
                                 if (!elements.moduleEl) {
-                                    const el = doc.querySelector(`[data-widget-module-id="${moduleId}"]`);
+                                    const el = doc.querySelector(`[data-widget-module-id="${targetModuleId}"]`);
                                     if (el) {
                                         elements.moduleEl = el;
                                         elements.targetDocument = doc;
@@ -1404,7 +1414,7 @@ window.StudioWidgetLoader = (function() {
                                 }
                                 
                                 if (!elements.placeholder) {
-                                    const placeholder = doc.getElementById(`module-content-${moduleId}`);
+                                    const placeholder = doc.getElementById(`module-content-${targetModuleId}`);
                                     if (placeholder) {
                                         elements.placeholder = placeholder;
                                         elements.targetDocument = doc;
@@ -1447,7 +1457,7 @@ window.StudioWidgetLoader = (function() {
                     // Yükleme göstergesini kaldır
                     const loadingEl = placeholder.querySelector('.widget-loading');
                     if (loadingEl) {
-                        loadingEl.style.display = 'none';
+                        loadingEl.classList.remove('loading-active');
                     }
                     
                     placeholder.innerHTML = html;
@@ -1568,10 +1578,10 @@ window.StudioWidgetLoader = (function() {
         });
         
         // Module için hata mesajı göster
-        function showModuleError(moduleId, errorMessage) {
+        function showModuleError(targetModuleId, errorMessage) {
             // SADECE bu module için spesifik container'ı bul
-            let placeholder = document.getElementById(`module-content-${moduleId}`);
-            let moduleEl = document.querySelector(`[data-widget-module-id="${moduleId}"]`);
+            let placeholder = document.getElementById(`module-content-${targetModuleId}`);
+            let moduleEl = document.querySelector(`[data-widget-module-id="${targetModuleId}"]`);
             let targetDocument = document;
             
             if (!placeholder && !moduleEl) {
@@ -1581,11 +1591,11 @@ window.StudioWidgetLoader = (function() {
                             const doc = fr.contentDocument || fr.contentWindow.document;
                             
                             if (!placeholder) {
-                                placeholder = doc.getElementById(`module-content-${moduleId}`);
+                                placeholder = doc.getElementById(`module-content-${targetModuleId}`);
                             }
                             
                             if (!moduleEl) {
-                                moduleEl = doc.querySelector(`[data-widget-module-id="${moduleId}"]`);
+                                moduleEl = doc.querySelector(`[data-widget-module-id="${targetModuleId}"]`);
                             }
                             
                             if (placeholder || moduleEl) {

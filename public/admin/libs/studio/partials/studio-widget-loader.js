@@ -242,6 +242,7 @@ window.StudioWidgetLoader = (function() {
                 width: 100%;
                 padding: 0;
                 margin: 0;
+                pointer-events: none !important;
             }
             
             /* Yükleme göstergesi - varsayılan gizli */
@@ -330,6 +331,196 @@ window.StudioWidgetLoader = (function() {
         observer.observe(el, { childList: true });
     }
     
+    // Widget-embed komponenti ekle
+    function registerWidgetEmbedComponent(editor) {
+        if (!editor) return;
+        
+        if (editor.DomComponents.getType('widget-embed')) {
+            return; // Zaten tanımlanmış
+        }
+        
+        editor.DomComponents.addType('widget-embed', {
+            model: {
+                defaults: {
+                    tagName: 'div',
+                    classes: ['studio-widget-container', 'widget-embed'],
+                    draggable: true,
+                    droppable: false,
+                    editable: false,
+                    resizable: false,
+                    attributes: {
+                        'data-type': 'widget-embed'
+                    },
+                    traits: [
+                        {
+                            type: 'number',
+                            name: 'tenant_widget_id',
+                            label: 'Widget ID',
+                            changeProp: true
+                        }
+                    ],
+                    
+                    init() {
+                        this.on('change:tenant_widget_id', this.updateWidgetId);
+                        
+                        // Alt komponentlerin droppable özelliklerini kısıtla
+                        this.get('components').each(comp => {
+                            comp.set('droppable', false);
+                            comp.set('editable', false);
+                        });
+                    },
+                    
+                    updateWidgetId() {
+                        const widgetId = this.get('tenant_widget_id');
+                        if (widgetId) {
+                            this.setAttributes({
+                                'data-widget-id': widgetId,
+                                'data-tenant-widget-id': widgetId,
+                                'id': `widget-embed-${widgetId}`
+                            });
+                            // İçeriği yükle
+                            if (window.studioLoadWidget) {
+                                window.studioLoadWidget(widgetId);
+                            }
+                            const blockEl = document.querySelector(`.block-item[data-block-id="tenant-widget-${widgetId}"]`);
+                            if (blockEl && blockEl.closest('.block-category[data-category="active-widgets"]')) {
+                                blockEl.classList.add('disabled');
+                                blockEl.setAttribute('draggable', 'false');
+                                blockEl.style.cursor = 'not-allowed';
+                                const badge = blockEl.querySelector('.gjs-block-type-badge');
+                                if (badge) {
+                                    badge.classList.replace('active', 'inactive');
+                                    badge.textContent = 'Pasif';
+                                }
+                            }
+                        }
+                    },
+                    
+                    // Widget-embed toHTML metodu - tamamen boş bir div döndürür
+                    toHTML() {
+                        const widgetId = this.get('tenant_widget_id') || 
+                                    this.getAttributes()['data-tenant-widget-id'] || 
+                                    this.getAttributes()['data-widget-id'];
+                                    
+                        if (widgetId) {
+                            return `<div class="widget-embed" data-tenant-widget-id="${widgetId}"></div>`;
+                        }
+                        
+                        return '<div class="widget-embed"></div>';
+                    }
+                },
+                
+                isComponent(el) {
+                    if (el.classList && el.classList.contains('widget-embed') || 
+                        (el.getAttribute && (
+                            el.getAttribute('data-type') === 'widget-embed' ||
+                            el.getAttribute('data-tenant-widget-id')
+                        ))) {
+                        return { type: 'widget-embed' };
+                    }
+                    return false;
+                }
+            },
+            
+            view: {
+                events: {
+                    'dblclick': 'onDblClick'
+                },
+                
+                onDblClick() {
+                    const model = this.model;
+                    const widgetId = model.get('tenant_widget_id') || 
+                                    model.getAttributes()['data-tenant-widget-id'] || 
+                                    model.getAttributes()['data-widget-id'];
+                    
+                    if (widgetId) {
+                        const origin = window.location.origin;
+                        window.open(`${origin}/admin/widgetmanagement/items/${widgetId}`, '_blank');
+                    }
+                },
+                
+                onRender() {
+                    const model = this.model;
+                    const widgetId = model.get('tenant_widget_id') || 
+                                   model.getAttributes()['data-tenant-widget-id'] || 
+                                   model.getAttributes()['data-widget-id'];
+                                   
+                    if (!widgetId) return;
+                    
+                    // Element pozisyonunu RELATIVE yap (kesinlikle gerekli)
+                    const el = this.el;
+                    if (el) {
+                        el.style.position = 'relative';
+                        
+                        // Sınıfları ekle
+                        el.classList.add('studio-widget-container', 'widget-embed');
+                        
+                        // Mevcut overlay ve etiketleri temizle
+                        const labels = el.querySelectorAll('.widget-label, .widget-type-badge');
+                        labels.forEach(label => label.remove());
+                        
+                        const existingOverlays = el.querySelectorAll('.widget-overlay');
+                        existingOverlays.forEach(overlay => overlay.remove());
+                        
+                        // Overlay oluştur
+                        const overlay = document.createElement('div');
+                        overlay.className = 'widget-overlay';
+                        overlay.setAttribute('data-widget-id', widgetId);
+                        
+                        // Overlay stilini düzelt - en üstte olması için yüksek z-index ve absolute
+                        overlay.style.cssText = 'position:absolute !important;top:0 !important;left:0 !important;width:100% !important;height:100% !important;background:rgba(0,0,0,0.4) !important;opacity:0 !important;display:flex !important;align-items:center !important;justify-content:center !important;transition:opacity 0.3s ease !important;z-index:9999 !important;pointer-events:none !important;';
+                        
+                        // Buton oluştur
+                        const actionBtn = document.createElement('a');
+                        actionBtn.className = 'widget-action-btn';
+                        
+                        // Buton stilini düzelt
+                        actionBtn.style.cssText = 'background-color:#3b82f6 !important;color:#fff !important;padding:6px 12px !important;border-radius:4px !important;text-decoration:none !important;font-size:14px !important;transition:background-color 0.2s ease !important;z-index:10000 !important;position:relative !important;pointer-events:auto !important;';
+                        
+                        // Dinamik URL oluştur
+                        const origin = window.location.origin;
+                        actionBtn.href = `${origin}/admin/widgetmanagement/items/${widgetId}`;
+                        actionBtn.target = '_blank';
+                        actionBtn.innerHTML = '<i class="fa fa-pencil-alt me-1"></i> Düzenle';
+                        
+                        // Buton mutlaka tıklanabilir olmalı
+                        actionBtn.style.pointerEvents = 'auto';
+                        
+                        // Hover olaylarını doğrudan JavaScript ile kontrol et
+                        el.addEventListener('mouseenter', function() {
+                            overlay.style.opacity = '1';
+                        });
+                        
+                        el.addEventListener('mouseleave', function() {
+                            overlay.style.opacity = '0';
+                        });
+                        
+                        // Overlay'e buton ekle ve container'a ekle
+                        overlay.appendChild(actionBtn);
+                        el.appendChild(overlay);
+                        
+                        // İçerik kontrol et ve yükle
+                        const uniqueId = 'widget-content-' + widgetId;
+                        let container = el.querySelector(`#${uniqueId}`) || el.querySelector('.widget-content-placeholder');
+                        
+                        if (!container) {
+                            container = document.createElement('div');
+                            container.id = uniqueId;
+                            container.className = 'widget-content-placeholder';
+                            container.innerHTML = '<div class="widget-loading"><i class="fa fa-spin fa-spinner"></i> Widget içeriği yükleniyor...</div>';
+                            el.appendChild(container);
+                        }
+                        
+                        // Widget içeriğini yükle
+                        if (window.studioLoadWidget) {
+                            setTimeout(() => window.studioLoadWidget(widgetId), 100);
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
     // Mevcut widget'ları işle
     function processExistingWidgets(editor) {
         try {
@@ -349,6 +540,16 @@ window.StudioWidgetLoader = (function() {
                     
                     // Widget-embed tipini ekle
                     component.set('type', 'widget-embed');
+                    component.set('droppable', false);
+                    component.set('editable', false);
+                    component.set('resizable', false);
+                    
+                    // Alt komponentlerin droppable özelliklerini kısıtla
+                    component.get('components').each(childComp => {
+                        childComp.set('droppable', false);
+                        childComp.set('editable', false);
+                        childComp.set('draggable', false);
+                    });
                     
                     // Sınıf adını güncelle
                     if (!component.getAttributes().class.includes('studio-widget-container')) {
@@ -356,8 +557,6 @@ window.StudioWidgetLoader = (function() {
                     }
                     
                     // Özellikleri ayarla
-                    component.set('editable', false);
-                    component.set('droppable', false);
                     component.set('draggable', true);
                     component.set('highlightable', true);
                     component.set('selectable', true);
@@ -449,6 +648,16 @@ window.StudioWidgetLoader = (function() {
                     
                     // Module-widget tipini ekle
                     component.set('type', 'module-widget');
+                    component.set('droppable', false);
+                    component.set('editable', false);
+                    component.set('resizable', false);
+                    
+                    // Alt komponentlerin droppable özelliklerini kısıtla
+                    component.get('components').each(childComp => {
+                        childComp.set('droppable', false);
+                        childComp.set('editable', false);
+                        childComp.set('draggable', false);
+                    });
                     
                     // Sınıf adını güncelle
                     if (!component.getAttributes().class.includes('studio-widget-container')) {
@@ -456,8 +665,6 @@ window.StudioWidgetLoader = (function() {
                     }
                     
                     // Özellikleri ayarla
-                    component.set('editable', false);
-                    component.set('droppable', false);
                     component.set('draggable', true);
                     component.set('highlightable', true);
                     component.set('selectable', true);
@@ -574,6 +781,8 @@ window.StudioWidgetLoader = (function() {
                     const moduleWidget = editor.DomComponents.addComponent({
                         type: 'module-widget',
                         widget_module_id: moduleId,
+                        droppable: false,
+                        editable: false,
                         attributes: {
                             'data-widget-module-id': moduleId,
                             'id': `module-widget-${moduleId}`,
@@ -638,6 +847,16 @@ window.StudioWidgetLoader = (function() {
                             // Widget-embed tipini ekle
                             component.set('type', 'widget-embed');
                             component.set('tenant_widget_id', widgetId);
+                            component.set('droppable', false);
+                            component.set('editable', false);
+                            component.set('resizable', false);
+                            
+                            // Alt komponentlerin droppable özelliklerini kısıtla
+                            component.get('components').each(childComp => {
+                                childComp.set('droppable', false);
+                                childComp.set('editable', false);
+                                childComp.set('draggable', false);
+                            });
                             
                             // Sınıf adını güncelle
                             if (!component.getAttributes().class.includes('studio-widget-container')) {
@@ -788,6 +1007,16 @@ window.StudioWidgetLoader = (function() {
                             // Module-widget tipini ekle
                             component.set('type', 'module-widget');
                             component.set('widget_module_id', moduleId);
+                            component.set('droppable', false);
+                            component.set('editable', false);
+                            component.set('resizable', false);
+                            
+                            // Alt komponentlerin droppable özelliklerini kısıtla
+                            component.get('components').each(childComp => {
+                                childComp.set('droppable', false);
+                                childComp.set('editable', false);
+                                childComp.set('draggable', false);
+                            });
                             
                             // Sınıf adını güncelle
                             if (!component.getAttributes().class.includes('studio-widget-container')) {
@@ -1625,186 +1854,6 @@ window.StudioWidgetLoader = (function() {
             }
         }, 10000);
     };
-    
-    // Widget-embed komponenti ekle
-    function registerWidgetEmbedComponent(editor) {
-        if (!editor) return;
-        
-        if (editor.DomComponents.getType('widget-embed')) {
-            return; // Zaten tanımlanmış
-        }
-        
-        editor.DomComponents.addType('widget-embed', {
-            model: {
-                defaults: {
-                    tagName: 'div',
-                    classes: ['studio-widget-container', 'widget-embed'],
-                    attributes: {
-                        'data-type': 'widget-embed'
-                    },
-                    traits: [
-                        {
-                            type: 'number',
-                            name: 'tenant_widget_id',
-                            label: 'Widget ID',
-                            changeProp: true
-                        }
-                    ],
-                    
-                    init() {
-                        this.on('change:tenant_widget_id', this.updateWidgetId);
-                    },
-                    
-                    updateWidgetId() {
-                        const widgetId = this.get('tenant_widget_id');
-                        if (widgetId) {
-                            this.setAttributes({
-                                'data-widget-id': widgetId,
-                                'data-tenant-widget-id': widgetId,
-                                'id': `widget-embed-${widgetId}`
-                            });
-                            // İçeriği yükle
-                            if (window.studioLoadWidget) {
-                                window.studioLoadWidget(widgetId);
-                            }
-                            const blockEl = document.querySelector(`.block-item[data-block-id="tenant-widget-${widgetId}"]`);
-                            if (blockEl && blockEl.closest('.block-category[data-category="active-widgets"]')) {
-                                blockEl.classList.add('disabled');
-                                blockEl.setAttribute('draggable', 'false');
-                                blockEl.style.cursor = 'not-allowed';
-                                const badge = blockEl.querySelector('.gjs-block-type-badge');
-                                if (badge) {
-                                    badge.classList.replace('active', 'inactive');
-                                    badge.textContent = 'Pasif';
-                                }
-                            }
-                        }
-                    },
-                    
-                    // Widget-embed toHTML metodu - tamamen boş bir div döndürür
-                    toHTML() {
-                        const widgetId = this.get('tenant_widget_id') || 
-                                    this.getAttributes()['data-tenant-widget-id'] || 
-                                    this.getAttributes()['data-widget-id'];
-                                    
-                        if (widgetId) {
-                            return `<div class="widget-embed" data-tenant-widget-id="${widgetId}"></div>`;
-                        }
-                        
-                        return '<div class="widget-embed"></div>';
-                    }
-                },
-                
-                isComponent(el) {
-                    if (el.classList && el.classList.contains('widget-embed') || 
-                        (el.getAttribute && (
-                            el.getAttribute('data-type') === 'widget-embed' ||
-                            el.getAttribute('data-tenant-widget-id')
-                        ))) {
-                        return { type: 'widget-embed' };
-                    }
-                    return false;
-                }
-            },
-            
-            view: {
-                events: {
-                    'dblclick': 'onDblClick'
-                },
-                
-                onDblClick() {
-                    const model = this.model;
-                    const widgetId = model.get('tenant_widget_id') || 
-                                    model.getAttributes()['data-tenant-widget-id'] || 
-                                    model.getAttributes()['data-widget-id'];
-                    
-                    if (widgetId) {
-                        const origin = window.location.origin;
-                        window.open(`${origin}/admin/widgetmanagement/items/${widgetId}`, '_blank');
-                    }
-                },
-                
-                onRender() {
-                    const model = this.model;
-                    const widgetId = model.get('tenant_widget_id') || 
-                                   model.getAttributes()['data-tenant-widget-id'] || 
-                                   model.getAttributes()['data-widget-id'];
-                                   
-                    if (!widgetId) return;
-                    
-                    // Element pozisyonunu RELATIVE yap (kesinlikle gerekli)
-                    const el = this.el;
-                    if (el) {
-                        el.style.position = 'relative';
-                        
-                        // Sınıfları ekle
-                        el.classList.add('studio-widget-container', 'widget-embed');
-                        
-                        // Mevcut overlay ve etiketleri temizle
-                        const labels = el.querySelectorAll('.widget-label, .widget-type-badge');
-                        labels.forEach(label => label.remove());
-                        
-                        const existingOverlays = el.querySelectorAll('.widget-overlay');
-                        existingOverlays.forEach(overlay => overlay.remove());
-                        
-                        // Overlay oluştur
-                        const overlay = document.createElement('div');
-                        overlay.className = 'widget-overlay';
-                        overlay.setAttribute('data-widget-id', widgetId);
-                        
-                        // Overlay stilini düzelt - en üstte olması için yüksek z-index ve absolute
-                        overlay.style.cssText = 'position:absolute !important;top:0 !important;left:0 !important;width:100% !important;height:100% !important;background:rgba(0,0,0,0.4) !important;opacity:0 !important;display:flex !important;align-items:center !important;justify-content:center !important;transition:opacity 0.3s ease !important;z-index:9999 !important;pointer-events:none !important;';
-                        
-                        // Buton oluştur
-                        const actionBtn = document.createElement('a');
-                        actionBtn.className = 'widget-action-btn';
-                        
-                        // Buton stilini düzelt
-                        actionBtn.style.cssText = 'background-color:#3b82f6 !important;color:#fff !important;padding:6px 12px !important;border-radius:4px !important;text-decoration:none !important;font-size:14px !important;transition:background-color 0.2s ease !important;z-index:10000 !important;position:relative !important;pointer-events:auto !important;';
-                        
-                        // Dinamik URL oluştur
-                        const origin = window.location.origin;
-                        actionBtn.href = `${origin}/admin/widgetmanagement/items/${widgetId}`;
-                        actionBtn.target = '_blank';
-                        actionBtn.innerHTML = '<i class="fa fa-pencil-alt me-1"></i> Düzenle';
-                        
-                        // Buton mutlaka tıklanabilir olmalı
-                        actionBtn.style.pointerEvents = 'auto';
-                        
-                        // Hover olaylarını doğrudan JavaScript ile kontrol et
-                        el.addEventListener('mouseenter', function() {
-                            overlay.style.opacity = '1';
-                        });
-                        
-                        el.addEventListener('mouseleave', function() {
-                            overlay.style.opacity = '0';
-                        });
-                        
-                        // Overlay'e buton ekle ve container'a ekle
-                        overlay.appendChild(actionBtn);
-                        el.appendChild(overlay);
-                        
-                        // İçerik kontrol et ve yükle
-                        const uniqueId = 'widget-content-' + widgetId;
-                        let container = el.querySelector(`#${uniqueId}`) || el.querySelector('.widget-content-placeholder');
-                        
-                        if (!container) {
-                            container = document.createElement('div');
-                            container.id = uniqueId;
-                            container.className = 'widget-content-placeholder';
-                            container.innerHTML = '<div class="widget-loading"><i class="fa fa-spin fa-spinner"></i> Widget içeriği yükleniyor...</div>';
-                            el.appendChild(container);
-                        }
-                        
-                        // Widget içeriğini yükle
-                        if (window.studioLoadWidget) {
-                            setTimeout(() => window.studioLoadWidget(widgetId), 100);
-                        }
-                    }
-                }
-            }
-        });
-    }
     
     return {
         loadWidgetBlocks: loadWidgetBlocks,

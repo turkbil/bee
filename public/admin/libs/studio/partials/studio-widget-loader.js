@@ -331,12 +331,30 @@ window.StudioWidgetLoader = (function() {
         observer.observe(el, { childList: true });
     }
     
+    // Widget tipini kontrol et ve kopyalama ayarını belirle
+    function getWidgetTypeSettings(widgetId) {
+        let widgetData = null;
+        if (window.StudioWidgetManager && window.StudioWidgetManager.getWidgetData) {
+            widgetData = window.StudioWidgetManager.getWidgetData(widgetId);
+        }
+        
+        const widgetType = widgetData ? (widgetData.type || 'static') : 'static';
+        
+        // Module, dynamic ve static tipler için kopyalama kapalı
+        const copyable = false;
+        
+        return {
+            copyable: copyable,
+            widgetType: widgetType
+        };
+    }
+    
     // Widget-embed komponenti ekle
     function registerWidgetEmbedComponent(editor) {
         if (!editor) return;
         
         if (editor.DomComponents.getType('widget-embed')) {
-            return; // Zaten tanımlanmış
+            return;
         }
         
         editor.DomComponents.addType('widget-embed', {
@@ -347,10 +365,20 @@ window.StudioWidgetLoader = (function() {
                     draggable: true,
                     droppable: false,
                     editable: false,
+                    selectable: true,
+                    hoverable: true,
                     resizable: false,
+                    copyable: false,
+                    removable: true,
                     attributes: {
                         'data-type': 'widget-embed'
                     },
+                    toolbar: [
+                        {
+                            attributes: { class: 'fa fa-trash' },
+                            command: 'tlb-delete'
+                        }
+                    ],
                     traits: [
                         {
                             type: 'number',
@@ -363,11 +391,28 @@ window.StudioWidgetLoader = (function() {
                     init() {
                         this.on('change:tenant_widget_id', this.updateWidgetId);
                         
-                        // Alt komponentlerin droppable özelliklerini kısıtla
+                        // Alt komponentleri konfigüre et
                         this.get('components').each(comp => {
-                            comp.set('droppable', false);
-                            comp.set('editable', false);
+                            comp.set({
+                                draggable: false,
+                                droppable: false,
+                                editable: false,
+                                selectable: false,
+                                hoverable: false,
+                                copyable: false,
+                                removable: false
+                            });
                         });
+                        
+                        // Widget tipi ayarlarını uygula
+                        const widgetId = this.get('tenant_widget_id') || 
+                                        this.getAttributes()['data-tenant-widget-id'] || 
+                                        this.getAttributes()['data-widget-id'];
+                                        
+                        if (widgetId) {
+                            const settings = getWidgetTypeSettings(widgetId);
+                            this.set('copyable', settings.copyable);
+                        }
                     },
                     
                     updateWidgetId() {
@@ -378,6 +423,11 @@ window.StudioWidgetLoader = (function() {
                                 'data-tenant-widget-id': widgetId,
                                 'id': `widget-embed-${widgetId}`
                             });
+                            
+                            // Widget tipi ayarlarını uygula
+                            const settings = getWidgetTypeSettings(widgetId);
+                            this.set('copyable', settings.copyable);
+                            
                             // İçeriği yükle
                             if (window.studioLoadWidget) {
                                 window.studioLoadWidget(widgetId);
@@ -447,6 +497,10 @@ window.StudioWidgetLoader = (function() {
                                    
                     if (!widgetId) return;
                     
+                    // Widget tipi ayarlarını uygula
+                    const settings = getWidgetTypeSettings(widgetId);
+                    model.set('copyable', settings.copyable);
+                    
                     // Element pozisyonunu RELATIVE yap (kesinlikle gerekli)
                     const el = this.el;
                     if (el) {
@@ -454,6 +508,19 @@ window.StudioWidgetLoader = (function() {
                         
                         // Sınıfları ekle
                         el.classList.add('studio-widget-container', 'widget-embed');
+                        
+                        // Alt komponentleri konfigüre et
+                        model.get('components').each(comp => {
+                            comp.set({
+                                draggable: false,
+                                droppable: false,
+                                editable: false,
+                                selectable: false,
+                                hoverable: false,
+                                copyable: false,
+                                removable: false
+                            });
+                        });
                         
                         // Mevcut overlay ve etiketleri temizle
                         const labels = el.querySelectorAll('.widget-label, .widget-type-badge');
@@ -519,6 +586,126 @@ window.StudioWidgetLoader = (function() {
                 }
             }
         });
+        
+        // Module widget için de aynı ayarları uygula
+        editor.DomComponents.addType('module-widget', {
+            model: {
+                defaults: {
+                    tagName: 'div',
+                    classes: ['studio-widget-container', 'module-widget-container'],
+                    draggable: true,
+                    droppable: false,
+                    editable: false,
+                    selectable: true,
+                    hoverable: true,
+                    resizable: false,
+                    copyable: false,
+                    removable: true,
+                    attributes: {
+                        'data-type': 'module-widget'
+                    },
+                    toolbar: [
+                        {
+                            attributes: { class: 'fa fa-trash' },
+                            command: 'tlb-delete'
+                        }
+                    ],
+                    traits: [
+                        {
+                            type: 'number',
+                            name: 'widget_module_id',
+                            label: 'Module ID',
+                            changeProp: true
+                        }
+                    ],
+                    
+                    init() {
+                        this.on('change:widget_module_id', this.updateModuleId);
+                        
+                        // Alt komponentleri konfigüre et
+                        this.get('components').each(comp => {
+                            comp.set({
+                                draggable: false,
+                                droppable: false,
+                                editable: false,
+                                selectable: false,
+                                hoverable: false,
+                                copyable: false,
+                                removable: false
+                            });
+                        });
+                    },
+                    
+                    updateModuleId() {
+                        const moduleId = this.get('widget_module_id');
+                        if (moduleId) {
+                            this.setAttributes({
+                                'data-widget-module-id': moduleId,
+                                'id': `module-widget-${moduleId}`
+                            });
+                            
+                            setTimeout(() => {
+                                if (window.studioLoadModuleWidget) {
+                                    window.studioLoadModuleWidget(moduleId);
+                                }
+                            }, 100);
+                        }
+                    },
+                    
+                    toHTML() {
+                        const moduleId = this.get('widget_module_id') || this.getAttributes()['data-widget-module-id'];
+                        if (moduleId) {
+                            return `[[module:${moduleId}]]`;
+                        }
+                        return this.view.el.outerHTML;
+                    }
+                },
+                
+                isComponent(el) {
+                    if (el.classList && el.classList.contains('module-widget-container') || 
+                        (el.getAttribute && el.getAttribute('data-widget-module-id'))) {
+                        return { type: 'module-widget' };
+                    }
+                    return false;
+                }
+            },
+            
+            view: {
+                events: {
+                    'dblclick': 'onDblClick'
+                },
+                
+                onRender() {
+                    const moduleId = this.model.get('widget_module_id') || 
+                                     this.model.getAttributes()['data-widget-module-id'];
+                    
+                    if (moduleId && window.studioLoadModuleWidget) {
+                        window.studioLoadModuleWidget(moduleId);
+                    }
+                    
+                    const el = this.el;
+                    el.style.position = 'relative';
+                    
+                    // Overlay (UI geri bildirimi)
+                    if (!el.querySelector('.widget-overlay')) {
+                        const overlay = document.createElement('div');
+                        overlay.className = 'widget-overlay';
+                        overlay.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(139,92,246,0.05);pointer-events:none;z-index:10;';
+                        el.appendChild(overlay);
+                    }
+                },
+                
+                onDblClick() {
+                    const model = this.model;
+                    const moduleId = model.get('widget_module_id') || 
+                                     model.getAttributes()['data-widget-module-id'];
+                    
+                    if (moduleId) {
+                        window.open(`/admin/widgetmanagement/modules/preview/${moduleId}`, '_blank');
+                    }
+                }
+            }
+        });
     }
     
     // Mevcut widget'ları işle
@@ -540,26 +727,37 @@ window.StudioWidgetLoader = (function() {
                     
                     // Widget-embed tipini ekle
                     component.set('type', 'widget-embed');
-                    component.set('droppable', false);
-                    component.set('editable', false);
-                    component.set('resizable', false);
+                    
+                    // Widget tipi ayarlarını uygula
+                    const settings = getWidgetTypeSettings(widgetId);
+                    component.set({
+                        draggable: true,
+                        droppable: false,
+                        editable: false,
+                        selectable: true,
+                        hoverable: true,
+                        resizable: false,
+                        copyable: settings.copyable,
+                        removable: true
+                    });
                     
                     // Alt komponentlerin droppable özelliklerini kısıtla
                     component.get('components').each(childComp => {
-                        childComp.set('droppable', false);
-                        childComp.set('editable', false);
-                        childComp.set('draggable', false);
+                        childComp.set({
+                            draggable: false,
+                            droppable: false,
+                            editable: false,
+                            selectable: false,
+                            hoverable: false,
+                            copyable: false,
+                            removable: false
+                        });
                     });
                     
                     // Sınıf adını güncelle
                     if (!component.getAttributes().class.includes('studio-widget-container')) {
                         component.addClass('studio-widget-container');
                     }
-                    
-                    // Özellikleri ayarla
-                    component.set('draggable', true);
-                    component.set('highlightable', true);
-                    component.set('selectable', true);
                     
                     // Ana container için ID ekle
                     component.addAttributes({
@@ -648,26 +846,34 @@ window.StudioWidgetLoader = (function() {
                     
                     // Module-widget tipini ekle
                     component.set('type', 'module-widget');
-                    component.set('droppable', false);
-                    component.set('editable', false);
-                    component.set('resizable', false);
+                    component.set({
+                        draggable: true,
+                        droppable: false,
+                        editable: false,
+                        selectable: true,
+                        hoverable: true,
+                        resizable: false,
+                        copyable: false,
+                        removable: true
+                    });
                     
                     // Alt komponentlerin droppable özelliklerini kısıtla
                     component.get('components').each(childComp => {
-                        childComp.set('droppable', false);
-                        childComp.set('editable', false);
-                        childComp.set('draggable', false);
+                        childComp.set({
+                            draggable: false,
+                            droppable: false,
+                            editable: false,
+                            selectable: false,
+                            hoverable: false,
+                            copyable: false,
+                            removable: false
+                        });
                     });
                     
                     // Sınıf adını güncelle
                     if (!component.getAttributes().class.includes('studio-widget-container')) {
                         component.addClass('studio-widget-container');
                     }
-                    
-                    // Özellikleri ayarla
-                    component.set('draggable', true);
-                    component.set('highlightable', true);
-                    component.set('selectable', true);
                     
                     // Ana container için ID ekle
                     component.addAttributes({
@@ -781,8 +987,14 @@ window.StudioWidgetLoader = (function() {
                     const moduleWidget = editor.DomComponents.addComponent({
                         type: 'module-widget',
                         widget_module_id: moduleId,
+                        draggable: true,
                         droppable: false,
                         editable: false,
+                        selectable: true,
+                        hoverable: true,
+                        resizable: false,
+                        copyable: false,
+                        removable: true,
                         attributes: {
                             'data-widget-module-id': moduleId,
                             'id': `module-widget-${moduleId}`,
@@ -847,15 +1059,31 @@ window.StudioWidgetLoader = (function() {
                             // Widget-embed tipini ekle
                             component.set('type', 'widget-embed');
                             component.set('tenant_widget_id', widgetId);
-                            component.set('droppable', false);
-                            component.set('editable', false);
-                            component.set('resizable', false);
+                            
+                            // Widget tipi ayarlarını uygula
+                            const settings = getWidgetTypeSettings(widgetId);
+                            component.set({
+                                draggable: true,
+                                droppable: false,
+                                editable: false,
+                                selectable: true,
+                                hoverable: true,
+                                resizable: false,
+                                copyable: settings.copyable,
+                                removable: true
+                            });
                             
                             // Alt komponentlerin droppable özelliklerini kısıtla
                             component.get('components').each(childComp => {
-                                childComp.set('droppable', false);
-                                childComp.set('editable', false);
-                                childComp.set('draggable', false);
+                                childComp.set({
+                                    draggable: false,
+                                    droppable: false,
+                                    editable: false,
+                                    selectable: false,
+                                    hoverable: false,
+                                    copyable: false,
+                                    removable: false
+                                });
                             });
                             
                             // Sınıf adını güncelle
@@ -1007,15 +1235,28 @@ window.StudioWidgetLoader = (function() {
                             // Module-widget tipini ekle
                             component.set('type', 'module-widget');
                             component.set('widget_module_id', moduleId);
-                            component.set('droppable', false);
-                            component.set('editable', false);
-                            component.set('resizable', false);
+                            component.set({
+                                draggable: true,
+                                droppable: false,
+                                editable: false,
+                                selectable: true,
+                                hoverable: true,
+                                resizable: false,
+                                copyable: false,
+                                removable: true
+                            });
                             
                             // Alt komponentlerin droppable özelliklerini kısıtla
                             component.get('components').each(childComp => {
-                                childComp.set('droppable', false);
-                                childComp.set('editable', false);
-                                childComp.set('draggable', false);
+                                childComp.set({
+                                    draggable: false,
+                                    droppable: false,
+                                    editable: false,
+                                    selectable: false,
+                                    hoverable: false,
+                                    copyable: false,
+                                    removable: false
+                                });
                             });
                             
                             // Sınıf adını güncelle

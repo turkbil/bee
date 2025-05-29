@@ -63,7 +63,7 @@
                                 <div class="row g-3">
                                     <div class="col-12 col-md-6">
                                         <label class="form-label required">Widget Adı</label>
-                                        <input type="text" wire:model.live="widget.name" 
+                                        <input type="text" id="widget-name" wire:model="widget.name" 
                                             class="form-control @error('widget.name') is-invalid @enderror"
                                             placeholder="Widget adını giriniz">
                                         @error('widget.name') <div class="invalid-feedback">{{ $message }}</div> @enderror
@@ -71,7 +71,7 @@
                                     
                                     <div class="col-12 col-md-6">
                                         <label class="form-label required">Benzersiz Tanımlayıcı</label>
-                                        <input type="text" wire:model="widget.slug" 
+                                        <input type="text" id="widget-slug" wire:model="widget.slug" 
                                             class="form-control font-monospace @error('widget.slug') is-invalid @enderror"
                                             placeholder="widget-slug">
                                         @error('widget.slug') <div class="invalid-feedback">{{ $message }}</div> @enderror
@@ -155,19 +155,89 @@
                                 @error('widget.type') <div class="invalid-feedback d-block mt-2">{{ $message }}</div> @enderror
                             </div>
 
-                            @if($widget['type'] === 'file' || $widget['type'] === 'module')
+                            @if($widget['type'] === 'module')
                             <div class="col-12">
+                                @if($this->hasAvailableModuleFiles())
                                 <div class="alert alert-info">
                                     <i class="fas fa-info-circle me-2"></i>
-                                    {{ $widget['type'] === 'file' ? 'Hazır dosya kullanımı için dosya yolunu belirtin.' : 'Modül dosya kullanımı için dosya yolunu belirtin.' }}
+                                    Modül widget'ı için view dosyasını seçin.
                                 </div>
                                 
-                                <label class="form-label">{{ $widget['type'] === 'file' ? 'View' : 'Modül' }} Dosya Yolu</label>
-                                <input type="text" 
-                                    wire:model="widget.file_path" 
-                                    class="form-control font-monospace @error('widget.file_path') is-invalid @enderror"
-                                    placeholder="Örnek: cards/basic">
+                                <label class="form-label required">Modül View Dosyası</label>
+                                
+                                @if($widget['file_path'])
+                                <div class="mb-3">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" value="{{ ucwords(str_replace(['-', '_', '/'], ' ', str_replace(['modules/', '/view'], '', $widget['file_path']))) }}" readonly>
+                                        <button type="button" class="btn btn-outline-danger" wire:click="$set('widget.file_path', '')">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                    <small class="form-hint">Seçimi değiştirmek için X butonuna tıklayın</small>
+                                </div>
+                                @else
+                                <select wire:model="widget.file_path" class="form-select @error('widget.file_path') is-invalid @enderror">
+                                    <option value="">Dosya Seçiniz</option>
+                                    @foreach($this->getModuleFiles() as $path => $name)
+                                    <option value="{{ $path }}">{{ $name }}</option>
+                                    @endforeach
+                                </select>
                                 @error('widget.file_path') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                @endif
+                                @else
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    Tüm modül dosyaları zaten tanımlanmış. Yeni modül widget'ı oluşturulamaz.
+                                </div>
+                                
+                                <label class="form-label required">Modül View Dosyası</label>
+                                <select disabled class="form-select">
+                                    <option>Uygun dosya bulunamadı</option>
+                                </select>
+                                @endif
+                            </div>
+                            @endif
+
+                            @if($widget['type'] === 'file')
+                            <div class="col-12">
+                                @if($this->hasAvailableViewFiles())
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    Hazır view dosyasını seçin.
+                                </div>
+                                
+                                <label class="form-label required">View Dosyası</label>
+                                
+                                @if($widget['file_path'])
+                                <div class="mb-3">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" value="{{ ucwords(str_replace(['-', '_', '/'], ' ', str_replace('/view', '', $widget['file_path']))) }}" readonly>
+                                        <button type="button" class="btn btn-outline-danger" wire:click="$set('widget.file_path', '')">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                    <small class="form-hint">Seçimi değiştirmek için X butonuna tıklayın</small>
+                                </div>
+                                @else
+                                <select wire:model="widget.file_path" class="form-select @error('widget.file_path') is-invalid @enderror">
+                                    <option value="">Dosya Seçiniz</option>
+                                    @foreach($this->getViewFiles() as $path => $name)
+                                    <option value="{{ $path }}">{{ $name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('widget.file_path') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                @endif
+                                @else
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    Tüm view dosyaları zaten tanımlanmış. Yeni file widget'ı oluşturulamaz.
+                                </div>
+                                
+                                <label class="form-label required">View Dosyası</label>
+                                <select disabled class="form-select">
+                                    <option>Uygun dosya bulunamadı</option>
+                                </select>
+                                @endif
                             </div>
                             @endif
                         </div>
@@ -367,4 +437,57 @@
     }
 }
 </style>
+@endpush
+
+@push('scripts')
+<script>
+$(document).ready(function() {
+    function slugify(text) {
+        // Türkçe karakter haritası
+        const turkishMap = {
+            'ç': 'c', 'Ç': 'C',
+            'ğ': 'g', 'Ğ': 'G',
+            'ı': 'i', 'I': 'I',
+            'İ': 'I', 'i': 'i',
+            'ö': 'o', 'Ö': 'O',
+            'ş': 's', 'Ş': 'S',
+            'ü': 'u', 'Ü': 'U'
+        };
+        
+        return text
+            .toString()
+            .toLowerCase()
+            .trim()
+            // Türkçe karakterleri dönüştür
+            .replace(/[çğıöşüÇĞIÖŞÜ]/g, function(match) {
+                return turkishMap[match] || match;
+            })
+            // Boşluk ve alt çizgiyi tire yap
+            .replace(/[\s_]/g, '-')
+            // Alfanumerik olmayan karakterleri kaldır (tire hariç)
+            .replace(/[^\w\-]+/g, '')
+            // Çoklu tireleri tek tire yap
+            .replace(/\-\-+/g, '-')
+            // Başlangıç ve sondaki tireleri kaldır
+            .replace(/^-+/, '')
+            .replace(/-+$/, '');
+    }
+    
+    $('#widget-name').on('input', function() {
+        var name = $(this).val();
+        var slugField = $('#widget-slug');
+        
+        if (slugField.val() === '' || slugField.data('auto-generated')) {
+            var slug = slugify(name);
+            slugField.val(slug).data('auto-generated', true);
+            @this.set('widget.slug', slug);
+        }
+    });
+    
+    $('#widget-slug').on('input', function() {
+        $(this).data('auto-generated', false);
+        @this.set('widget.slug', $(this).val());
+    });
+});
+</script>
 @endpush

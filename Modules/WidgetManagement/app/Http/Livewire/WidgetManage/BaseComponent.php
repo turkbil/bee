@@ -9,6 +9,7 @@ use Modules\WidgetManagement\app\Models\Widget;
 use Modules\WidgetManagement\app\Models\WidgetCategory;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\File;
 
 #[Layout('admin.layout')]
 class BaseComponent extends Component
@@ -23,6 +24,7 @@ class BaseComponent extends Component
     public $categories = [];
     public $currentMode = 'basic';
     public $isLoading = false;
+    public $originalFilePath = '';
     
     public $widget = [
         'name' => '',
@@ -87,6 +89,8 @@ class BaseComponent extends Component
         if ($id) {
             $widget = Widget::findOrFail($id);
             
+            $this->originalFilePath = $widget->file_path;
+            
             $this->widget = [
                 'name' => $widget->name,
                 'slug' => $widget->slug,
@@ -112,11 +116,101 @@ class BaseComponent extends Component
         }
     }
     
-    public function updatedWidgetName()
+    public function getModuleFiles()
     {
-        if (empty($this->widget['slug'])) {
-            $this->widget['slug'] = Str::slug($this->widget['name']);
+        $modulePath = module_path('WidgetManagement', 'resources/views/blocks/modules');
+        $files = [];
+        
+        if (!File::exists($modulePath)) {
+            return $files;
         }
+        
+        $usedPaths = Widget::where('type', 'module')
+            ->whereNotNull('file_path')
+            ->where('file_path', '!=', '')
+            ->when($this->widgetId, function($query) {
+                $query->where('id', '!=', $this->widgetId);
+            })
+            ->pluck('file_path')
+            ->toArray();
+        
+        $moduleFiles = File::allFiles($modulePath);
+        
+        foreach ($moduleFiles as $file) {
+            if ($file->getExtension() === 'php' && str_ends_with($file->getFilename(), '.blade.php')) {
+                $relativePath = str_replace($modulePath . DIRECTORY_SEPARATOR, '', $file->getPathname());
+                $relativePath = str_replace('.blade.php', '', $relativePath);
+                $relativePath = str_replace('\\', '/', $relativePath);
+                $relativePath = 'modules/' . $relativePath;
+                
+                if (!in_array($relativePath, $usedPaths)) {
+                    $displayName = str_replace('/', ' / ', str_replace('modules/', '', $relativePath));
+                    $displayName = str_replace('/view', '', $displayName);
+                    $files[$relativePath] = ucwords(str_replace(['-', '_'], ' ', $displayName));
+                }
+            }
+        }
+        
+        ksort($files);
+        return $files;
+    }
+    
+    public function getViewFiles()
+    {
+        $blocksPath = module_path('WidgetManagement', 'resources/views/blocks');
+        $files = [];
+        
+        if (!File::exists($blocksPath)) {
+            return $files;
+        }
+        
+        $usedPaths = Widget::where('type', 'file')
+            ->whereNotNull('file_path')
+            ->where('file_path', '!=', '')
+            ->when($this->widgetId, function($query) {
+                $query->where('id', '!=', $this->widgetId);
+            })
+            ->pluck('file_path')
+            ->toArray();
+        
+        $viewFiles = File::allFiles($blocksPath);
+        
+        foreach ($viewFiles as $file) {
+            if ($file->getExtension() === 'php' && str_ends_with($file->getFilename(), '.blade.php')) {
+                $relativePath = str_replace($blocksPath . DIRECTORY_SEPARATOR, '', $file->getPathname());
+                $relativePath = str_replace('.blade.php', '', $relativePath);
+                $relativePath = str_replace('\\', '/', $relativePath);
+                
+                if (!str_starts_with($relativePath, 'modules/') && !in_array($relativePath, $usedPaths)) {
+                    $displayName = str_replace('/', ' / ', $relativePath);
+                    $displayName = str_replace('/view', '', $displayName);
+                    $files[$relativePath] = ucwords(str_replace(['-', '_'], ' ', $displayName));
+                }
+            }
+        }
+        
+        ksort($files);
+        return $files;
+    }
+    
+    public function hasAvailableModuleFiles()
+    {
+        return count($this->getModuleFiles()) > 0;
+    }
+    
+    public function hasAvailableViewFiles()
+    {
+        return count($this->getViewFiles()) > 0;
+    }
+    
+    public function updatedWidgetType()
+    {
+        $this->widget['file_path'] = '';
+    }
+    
+    public function updatedWidgetFilePath()
+    {
+        $this->dispatch('$refresh');
     }
     
     public function updatedThumbnail()
@@ -241,7 +335,7 @@ class BaseComponent extends Component
             $this->widget['slug'] = Str::slug($this->widget['name']);
         }
         
-        $this->validate([
+        $rules = [
             'widget.name' => 'required|min:3|max:255',
             'widget.slug' => 'required|regex:/^[a-z0-9\-_]+$/i|max:255',
             'widget.description' => 'nullable|max:1000',
@@ -250,9 +344,14 @@ class BaseComponent extends Component
             'widget.has_items' => 'boolean',
             'widget.is_active' => 'boolean',
             'widget.is_core' => 'boolean',
-            'widget.file_path' => 'nullable|string|max:255',
             'thumbnail' => 'nullable|image|max:3072',
-        ]);
+        ];
+        
+        if (in_array($this->widget['type'], ['module', 'file'])) {
+            $rules['widget.file_path'] = 'required|string|max:255';
+        }
+        
+        $this->validate($rules);
         
         try {
             if ($this->widgetId) {

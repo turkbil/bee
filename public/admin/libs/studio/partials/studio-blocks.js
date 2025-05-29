@@ -4,35 +4,45 @@
  */
 
 window.StudioBlocks = (function() {
-    // Global kilitleme için flag
+    // Global kilitleme için flag - güçlendirildi
     let blocksLoaded = false;
     let apiRequested = false;
     let categoriesCreated = false;
+    let isProcessing = false;
+    let widgetManagerCalled = false;
     
     /**
      * Blade şablonlarından blokları kaydet
      * @param {Object} editor - GrapesJS editor örneği
      */
     function registerBlocks(editor) {
-        // Global kilitleme sistemi - eğer zaten istek yapıldıysa veya bloklar yüklendiyse işlem yapma
-        if (blocksLoaded || apiRequested) {
-            console.log("Bloklar zaten yüklenmiş veya API isteği yapılmış, işlem atlanıyor.");
-            return;
+        // Güçlendirilmiş kilitleme sistemi
+        if (blocksLoaded || apiRequested || isProcessing) {
+            console.log("Bloklar zaten yüklenmiş veya işlem devam ediyor, işlem atlanıyor.");
+            return Promise.resolve();
         }
         
-        // API isteği kilidi aktif
+        // İşlem kilidi aktif
+        isProcessing = true;
         apiRequested = true;
         
         console.log("Server tarafından bloklar yükleniyor...");
         
         // Reset mevcut kategoriler ve bloklar
-        editor.BlockManager.getAll().reset();
-        editor.BlockManager.getCategories().reset();
+        try {
+            editor.BlockManager.getAll().reset();
+            editor.BlockManager.getCategories().reset();
+        } catch (error) {
+            console.warn("Blok reset hatası:", error);
+        }
         
         // Server'dan blokları al
-        fetch('/admin/studio/api/blocks')
+        return fetch('/admin/studio/api/blocks')
             .then(response => {
                 console.log("API yanıtı alındı:", response.status);
+                if (!response.ok) {
+                    throw new Error(`API yanıtı başarısız: ${response.status}`);
+                }
                 return response.json();
             })
             .then(data => {
@@ -43,10 +53,14 @@ window.StudioBlocks = (function() {
                     // Kategorileri tanımla - API'den gelen kategorileri kaydet
                     Object.keys(data.categories || {}).forEach(key => {
                         console.log("Kategori ekleniyor:", key, "-", data.categories[key]);
-                        editor.BlockManager.getCategories().add({
-                            id: key,
-                            label: data.categories[key]
-                        });
+                        try {
+                            editor.BlockManager.getCategories().add({
+                                id: key,
+                                label: data.categories[key]
+                            });
+                        } catch (error) {
+                            console.warn(`Kategori ${key} eklenirken hata:`, error);
+                        }
                     });
                     
                     // Detaylı kategori bilgilerini global değişkene kaydet
@@ -58,19 +72,23 @@ window.StudioBlocks = (function() {
                     data.blocks.forEach(block => {
                         console.log("Blok ekleniyor:", block.id, "-", block.label, "-", "Kategori:", block.category);
                         
-                        // Blok konfigürasyonu
-                        const blockConfig = {
-                            label: block.label,
-                            category: block.category,
-                            content: block.content,
-                            attributes: { class: block.icon || 'fa fa-cube' }
-                        };
-                        
-                        if (block.media) {
-                            blockConfig.media = block.media;
+                        try {
+                            // Blok konfigürasyonu
+                            const blockConfig = {
+                                label: block.label,
+                                category: block.category,
+                                content: block.content,
+                                attributes: { class: block.icon || 'fa fa-cube' }
+                            };
+                            
+                            if (block.media) {
+                                blockConfig.media = block.media;
+                            }
+                            
+                            editor.BlockManager.add(block.id, blockConfig);
+                        } catch (error) {
+                            console.warn(`Blok ${block.id} eklenirken hata:`, error);
                         }
-                        
-                        editor.BlockManager.add(block.id, blockConfig);
                     });
                     
                     console.log(`${data.blocks.length} adet blok başarıyla yüklendi`);
@@ -78,25 +96,31 @@ window.StudioBlocks = (function() {
                     // Blokları kategorilere ata - bir kez yapılıyor
                     if (!categoriesCreated) {
                         console.log("Blok kategorileri oluşturuluyor...");
-                        window.StudioBlockCategories.createBlockCategories(editor, data.categories || {});
-                        categoriesCreated = true;
-                        
-                        // Kategorilere blokları ekle ve işlemi tamamla
-                        setTimeout(() => {
-                            window.StudioBlockManager.updateBlocksInCategories(editor);
-                            // Mevcut widget embed'leri işleyip blok butonlarını pasifleştir
-                            if (window.StudioWidgetLoader && typeof window.StudioWidgetLoader.processExistingWidgets === 'function') {
-                                window.StudioWidgetLoader.processExistingWidgets(editor);
-                            }
-                            // İşaretleyelim ki tekrar yüklenmesin
-                            blocksLoaded = true;
+                        try {
+                            window.StudioBlockCategories.createBlockCategories(editor, data.categories || {});
+                            categoriesCreated = true;
                             
-                            // Kategori durumlarını yükle
-                            if (!window._blockCategoryStatesLoaded) {
-                                window._blockCategoryStatesLoaded = true;
-                                window.StudioBlockCategories.loadBlockCategoryStates();
-                            }
-                        }, 500);
+                            // Kategorilere blokları ekle ve işlemi tamamla
+                            setTimeout(() => {
+                                window.StudioBlockManager.updateBlocksInCategories(editor);
+                                // Mevcut widget embed'leri işleyip blok butonlarını pasifleştir
+                                if (window.StudioWidgetLoader && typeof window.StudioWidgetLoader.processExistingWidgets === 'function') {
+                                    window.StudioWidgetLoader.processExistingWidgets(editor);
+                                }
+                                // İşaretleyelim ki tekrar yüklenmesin
+                                blocksLoaded = true;
+                                isProcessing = false;
+                                
+                                // Kategori durumlarını yükle
+                                if (!window._blockCategoryStatesLoaded) {
+                                    window._blockCategoryStatesLoaded = true;
+                                    window.StudioBlockCategories.loadBlockCategoryStates();
+                                }
+                            }, 500);
+                        } catch (error) {
+                            console.error("Blok kategorileri oluşturulurken hata:", error);
+                            isProcessing = false;
+                        }
                     }
 
                     // Arama işlevini bir kez ayarla
@@ -105,18 +129,25 @@ window.StudioBlocks = (function() {
                         window._searchSetupDone = true;
                     }
                     
-                    // Widget API'sini çağır ve widget bloklarını yükle
-                    if (window.StudioWidgetManager && typeof window.StudioWidgetManager.loadWidgetBlocks === 'function') {
-                        window.StudioWidgetManager.loadWidgetBlocks(editor);
+                    // Widget API'sini çağır ve widget bloklarını yükle - TEK SEFER
+                    if (!widgetManagerCalled && window.StudioWidgetManager && typeof window.StudioWidgetManager.loadWidgetBlocks === 'function') {
+                        widgetManagerCalled = true;
+                        try {
+                            window.StudioWidgetManager.loadWidgetBlocks(editor);
+                        } catch (error) {
+                            console.error("Widget blokları yüklenirken hata:", error);
+                        }
                     }
                 } else {
                     console.error("Blok yüklenemedi:", data.message || "Server yanıt vermedi");
+                    isProcessing = false;
                 }
             })
             .catch(error => {
                 console.error("Bloklar yüklenirken hata oluştu:", error);
                 // Hata durumunda kilidi serbest bırak ki yeniden deneme yapılabilsin
                 apiRequested = false;
+                isProcessing = false;
             });
     }
     
@@ -220,72 +251,76 @@ window.StudioBlocks = (function() {
      * @param {string} type - Bildirim tipi (success, error, warning, info)
      */
     function showToast(message, type = 'info') {
-        // Toast container kontrol et
-        let container = document.querySelector(".toast-container");
-        if (!container) {
-            container = document.createElement("div");
-            container.className = "toast-container position-fixed bottom-0 end-0 p-3";
-            container.style.zIndex = "9999";
-            document.body.appendChild(container);
-        }
-        
-        // Toast elementi oluştur
-        const toastEl = document.createElement('div');
-        toastEl.className = `toast align-items-center text-white bg-${
-            type === "success" ? "success" : 
-            type === "error" ? "danger" : 
-            type === "warning" ? "warning" : 
-            "info"
-        } border-0`;
-        toastEl.setAttribute('role', 'alert');
-        toastEl.setAttribute('aria-live', 'assertive');
-        toastEl.setAttribute('aria-atomic', 'true');
-        
-        // Toast içeriği
-        toastEl.innerHTML = `
-        <div class="d-flex">
-            <div class="toast-body">
-                <i class="fas ${
-                    type === "success" ? "fa-check-circle" : 
-                    type === "error" ? "fa-times-circle" : 
-                    type === "warning" ? "fa-exclamation-triangle" : 
-                    "fa-info-circle"
-                } me-2"></i>
-                ${message}
-            </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Kapat"></button>
-        </div>
-        `;
-        
-        // Container'a ekle
-        container.appendChild(toastEl);
-        
-        // Bootstrap toast API'si varsa kullan
-        if (typeof bootstrap !== "undefined" && bootstrap.Toast) {
-            const toast = new bootstrap.Toast(toastEl, {
-                autohide: true,
-                delay: 3000
-            });
-            toast.show();
-        } else {
-            // Fallback - basit toast gösterimi
-            toastEl.style.display = 'block';
-            setTimeout(() => {
-                toastEl.style.opacity = '0';
-                setTimeout(() => {
-                    if (container.contains(toastEl)) {
-                        container.removeChild(toastEl);
-                    }
-                }, 300);
-            }, 3000);
-        }
-        
-        // Otomatik kaldır
-        setTimeout(() => {
-            if (container.contains(toastEl)) {
-                container.removeChild(toastEl);
+        try {
+            // Toast container kontrol et
+            let container = document.querySelector(".toast-container");
+            if (!container) {
+                container = document.createElement("div");
+                container.className = "toast-container position-fixed bottom-0 end-0 p-3";
+                container.style.zIndex = "9999";
+                document.body.appendChild(container);
             }
-        }, 3300);
+            
+            // Toast elementi oluştur
+            const toastEl = document.createElement('div');
+            toastEl.className = `toast align-items-center text-white bg-${
+                type === "success" ? "success" : 
+                type === "error" ? "danger" : 
+                type === "warning" ? "warning" : 
+                "info"
+            } border-0`;
+            toastEl.setAttribute('role', 'alert');
+            toastEl.setAttribute('aria-live', 'assertive');
+            toastEl.setAttribute('aria-atomic', 'true');
+            
+            // Toast içeriği
+            toastEl.innerHTML = `
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="fas ${
+                        type === "success" ? "fa-check-circle" : 
+                        type === "error" ? "fa-times-circle" : 
+                        type === "warning" ? "fa-exclamation-triangle" : 
+                        "fa-info-circle"
+                    } me-2"></i>
+                    ${message}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Kapat"></button>
+            </div>
+            `;
+            
+            // Container'a ekle
+            container.appendChild(toastEl);
+            
+            // Bootstrap toast API'si varsa kullan
+            if (typeof bootstrap !== "undefined" && bootstrap.Toast) {
+                const toast = new bootstrap.Toast(toastEl, {
+                    autohide: true,
+                    delay: 3000
+                });
+                toast.show();
+            } else {
+                // Fallback - basit toast gösterimi
+                toastEl.style.display = 'block';
+                setTimeout(() => {
+                    toastEl.style.opacity = '0';
+                    setTimeout(() => {
+                        if (container.contains(toastEl)) {
+                            container.removeChild(toastEl);
+                        }
+                    }, 300);
+                }, 3000);
+            }
+            
+            // Otomatik kaldır
+            setTimeout(() => {
+                if (container.contains(toastEl)) {
+                    container.removeChild(toastEl);
+                }
+            }, 3300);
+        } catch (error) {
+            console.error("Toast gösterim hatası:", error);
+        }
     }
 
     return {

@@ -7,6 +7,7 @@ window.StudioWidgetManager = (function() {
     let widgetData = {};
     let tenantWidgetData = {};
     let loadedWidgets = false;
+    let setupCompleted = false;
     
     /**
      * Widget verilerini yükle
@@ -180,8 +181,6 @@ window.StudioWidgetManager = (function() {
         });
     }
         
-    // Custom studioLoadWidget removed; use loader module implementation
-    
     /**
      * Widget bloklarını yükle
      */
@@ -249,14 +248,6 @@ window.StudioWidgetManager = (function() {
             if (window.StudioWidgetLoader && typeof window.StudioWidgetLoader.addWidgetStyles === 'function') {
                 window.StudioWidgetLoader.addWidgetStyles();
             }
-            
-            // Dinamik widget blokları eklendikten sonra blok durumlarını güncelle
-            if (window.StudioBlockManager && typeof window.StudioBlockManager.updateBlocksInCategories === 'function') {
-                window.StudioBlockManager.updateBlocksInCategories(editor);
-            }
-            
-            // Module widget'ları ve tenant-widget'lar için butonları kontrol et
-            checkAndDisableWidgetButtons(editor);
         });
     }
     
@@ -332,11 +323,15 @@ window.StudioWidgetManager = (function() {
     }
     
     /**
-     * Editör kurulumu
+     * Editör kurulumu - TEK SEFER
      * @param {Object} editor - GrapesJS editor örneği
      */
     function setup(editor) {
-        if (!editor) return;
+        if (!editor || setupCompleted) {
+            console.log('Widget manager zaten kuruldu, atlanıyor');
+            return;
+        }
+        setupCompleted = true;
         
         // Widget verilerini yükle
         loadWidgetData();
@@ -353,118 +348,6 @@ window.StudioWidgetManager = (function() {
         
         // Widget bloklarını yükle
         loadWidgetBlocks(editor);
-        
-        // Sayfa yüklenir yüklenmez mevcut widget'lar için butonları kontrol et
-        setTimeout(() => {
-            checkAndDisableWidgetButtons(editor);
-        }, 300);
-        
-        // İlk yüklemede mevcut widget embed'ler için blok butonlarını pasifleştir
-        if (window.StudioWidgetLoader && typeof window.StudioWidgetLoader.processExistingWidgets === 'function') {
-            window.StudioWidgetLoader.processExistingWidgets(editor);
-        }
-        
-        // Wrapper bileşenlerini tarayarak blok butonlarını pasifleştir
-        editor.DomComponents.getWrapper().find('[data-tenant-widget-id]').forEach(comp => {
-            const widgetId = comp.getAttributes()['data-tenant-widget-id'];
-            if (!widgetId) return;
-            const blockEl = document.querySelector(`.block-item[data-block-id="tenant-widget-${widgetId}"]`);
-            if (blockEl && blockEl.closest('.block-category[data-category="active-widgets"]')) {
-                blockEl.classList.add('disabled');
-                blockEl.setAttribute('draggable', 'false');
-                blockEl.style.cursor = 'not-allowed';
-                const badge = blockEl.querySelector('.gjs-block-type-badge');
-                if (badge) {
-                    badge.classList.replace('active', 'inactive');
-                    badge.textContent = 'Pasif';
-                }
-            }
-        });
-        
-        // Module widget'ları için butonları pasifleştir
-        editor.DomComponents.getWrapper().find('[data-widget-module-id]').forEach(comp => {
-            const moduleId = comp.getAttributes()['data-widget-module-id'];
-            if (!moduleId) return;
-            const blockEl = document.querySelector(`.block-item[data-block-id="widget-${moduleId}"]`);
-            if (blockEl) {
-                blockEl.classList.add('disabled');
-                blockEl.setAttribute('draggable', 'false');
-                blockEl.style.cursor = 'not-allowed';
-                const badge = blockEl.querySelector('.gjs-block-type-badge');
-                if (badge) {
-                    badge.classList.replace('active', 'inactive');
-                    badge.textContent = 'Pasif';
-                }
-            }
-        });
-        
-        // Editor yüklendiğinde mevcut widget'ları işle
-        editor.on('load', () => {
-            // Tüm tenant-widget ve module-widget'ları işle
-            if (window.StudioWidgetLoader && typeof window.StudioWidgetLoader.processExistingWidgets === 'function') {
-                window.StudioWidgetLoader.processExistingWidgets(editor);
-            }
-            
-            // Sayfa yüklendiğinde mevcut widget embed'ler için blok butonlarını pasifleştir
-            editor.DomComponents.getWrapper().find('[data-tenant-widget-id]').forEach(comp => {
-                const widgetId = comp.getAttributes()['data-tenant-widget-id'];
-                if (!widgetId) return;
-                
-                const blockEl = document.querySelector(`.block-item[data-block-id="tenant-widget-${widgetId}"]`);
-                if (blockEl && blockEl.closest('.block-category[data-category="active-widgets"]')) {
-                    blockEl.classList.add('disabled');
-                    blockEl.setAttribute('draggable', 'false');
-                    blockEl.style.cursor = 'not-allowed';
-                    const badge = blockEl.querySelector('.gjs-block-type-badge');
-                    if (badge) {
-                        badge.classList.replace('active', 'inactive');
-                        badge.textContent = 'Pasif';
-                    }
-                }
-            });
-            
-            // Module widget'ları için aynı işlemi yap
-            editor.DomComponents.getWrapper().find('[data-widget-module-id]').forEach(comp => {
-                const moduleId = comp.getAttributes()['data-widget-module-id'];
-                if (!moduleId) return;
-                
-                // Module widget block butonunu pasifleştir
-                const blockEl = document.querySelector(`.block-item[data-block-id="widget-${moduleId}"]`);
-                if (blockEl) {
-                    blockEl.classList.add('disabled');
-                    blockEl.setAttribute('draggable', 'false');
-                    blockEl.style.cursor = 'not-allowed';
-                    const badge = blockEl.querySelector('.gjs-block-type-badge');
-                    if (badge) {
-                        badge.classList.replace('active', 'inactive');
-                        badge.textContent = 'Pasif';
-                    }
-                }
-            });
-            
-            // Sayfa içeriğini analiz ederek module shortcode'ları da kontrol et
-            const htmlContent = editor.getHtml();
-            const moduleRegex = /\[\[module:(\d+)\]\]/g;
-            let match;
-            
-            while ((match = moduleRegex.exec(htmlContent)) !== null) {
-                const moduleId = match[1];
-                if (!moduleId) continue;
-                
-                // Module widget block butonunu pasifleştir
-                const blockEl = document.querySelector(`.block-item[data-block-id="widget-${moduleId}"]`);
-                if (blockEl) {
-                    blockEl.classList.add('disabled');
-                    blockEl.setAttribute('draggable', 'false');
-                    blockEl.style.cursor = 'not-allowed';
-                    const badge = blockEl.querySelector('.gjs-block-type-badge');
-                    if (badge) {
-                        badge.classList.replace('active', 'inactive');
-                        badge.textContent = 'Pasif';
-                    }
-                }
-            }
-        });
         
         // Bileşen ekleme olayı
         editor.on('component:add', component => {
@@ -594,38 +477,7 @@ window.StudioWidgetManager = (function() {
         // Canvas drop olayını izle
         editor.on('canvas:drop', (droppedModel) => {
             setTimeout(() => {
-                // Tüm widget-embed bileşenlerini yeniden işle
-                let embedComponents = editor.DomComponents.getWrapper().find('.widget-embed');
-                embedComponents = embedComponents.concat(
-                    editor.DomComponents.getWrapper().find('[data-tenant-widget-id]')
-                );
-                
-                embedComponents.forEach(component => {
-                    component.set('type', 'widget-embed');
-                    
-                    // Görünümü güncelle
-                    const view = component.view;
-                    if (view && typeof view.onRender === 'function') {
-                        setTimeout(() => view.onRender(), 100);
-                    }
-                    
-                    // Widget ID'sini al ve widget içeriğini yükle
-                    const tenantWidgetId = component.getAttributes()['data-tenant-widget-id'] || 
-                                          component.getAttributes()['data-widget-id'];
-                                          
-                    if (tenantWidgetId) {
-                        // Widget ID'sini komponent özelliği olarak ayarla
-                        component.set('tenant_widget_id', tenantWidgetId);
-                        
-                        setTimeout(() => {
-                            if (window.StudioWidgetLoader && typeof window.StudioWidgetLoader.processWidgetEmbeds === 'function') {
-                                window.StudioWidgetLoader.processWidgetEmbeds(editor);
-                            }
-                        }, 100);
-                    }
-                });
-                
-                // Widget-embed elementlerini özel olarak işle
+                // Widget embed elementlerini özel olarak işle
                 if (window.StudioWidgetLoader && typeof window.StudioWidgetLoader.processWidgetEmbeds === 'function') {
                     window.StudioWidgetLoader.processWidgetEmbeds(editor);
                 }

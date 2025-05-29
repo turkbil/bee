@@ -4,12 +4,21 @@
  */
 
 window.StudioActions = (function() {
+    // Cleanup tekrarlarını önlemek için flag
+    let actionsSetup = false;
+    
     /**
      * Tüm eylem butonlarını ayarlar
      * @param {Object} editor - GrapesJS editor örneği
      * @param {Object} config - Yapılandırma parametreleri
      */
     function setupActions(editor, config) {
+        if (actionsSetup) {
+            console.log("Actions zaten ayarlandı, işlem atlanıyor");
+            return;
+        }
+        actionsSetup = true;
+        
         console.log("Setting up actions");
         
         // Daha önce eklenmiş olay dinleyicilerini temizle
@@ -36,8 +45,9 @@ window.StudioActions = (function() {
         
         buttons.forEach(buttonId => {
             const button = document.getElementById(buttonId);
-            if (button) {
+            if (button && !button.hasAttribute('data-cleaned')) {
                 const newButton = button.cloneNode(true);
+                newButton.setAttribute('data-cleaned', 'true');
                 if (button.parentNode) {
                     button.parentNode.replaceChild(newButton, button);
                 }
@@ -51,7 +61,8 @@ window.StudioActions = (function() {
      */
     function setupVisibilityButton(editor) {
         const swVisibility = document.getElementById("sw-visibility");
-        if (swVisibility) {
+        if (swVisibility && !swVisibility.hasAttribute('data-visibility-setup')) {
+            swVisibility.setAttribute('data-visibility-setup', 'true');
             console.log("Görünürlük butonu bulundu:", swVisibility);
             
             swVisibility.addEventListener("click", () => {
@@ -101,7 +112,7 @@ window.StudioActions = (function() {
             });
         } else {
             // Hata mesajını kaldırdım, buton bulunamazsa sessizce geç
-            console.log("Görünürlük butonu mevcut değil, atlanıyor");
+            console.log("Görünürlük butonu mevcut değil veya zaten ayarlanmış, atlanıyor");
         }
     }
     
@@ -112,7 +123,8 @@ window.StudioActions = (function() {
     function setupCommandButtons(editor) {
         // İçerik temizle butonu
         const cmdClear = document.getElementById("cmd-clear");
-        if (cmdClear) {
+        if (cmdClear && !cmdClear.hasAttribute('data-clear-setup')) {
+            cmdClear.setAttribute('data-clear-setup', 'true');
             cmdClear.addEventListener("click", () => {
                 if (confirm("İçeriği temizlemek istediğinize emin misiniz? Bu işlem geri alınamaz.")) {
                     editor.DomComponents.clear();
@@ -123,7 +135,8 @@ window.StudioActions = (function() {
 
         // Geri Al butonu
         const cmdUndo = document.getElementById("cmd-undo");
-        if (cmdUndo) {
+        if (cmdUndo && !cmdUndo.hasAttribute('data-undo-setup')) {
+            cmdUndo.setAttribute('data-undo-setup', 'true');
             cmdUndo.addEventListener("click", () => {
                 editor.UndoManager.undo();
             });
@@ -131,7 +144,8 @@ window.StudioActions = (function() {
 
         // Yinele butonu
         const cmdRedo = document.getElementById("cmd-redo");
-        if (cmdRedo) {
+        if (cmdRedo && !cmdRedo.hasAttribute('data-redo-setup')) {
+            cmdRedo.setAttribute('data-redo-setup', 'true');
             cmdRedo.addEventListener("click", () => {
                 editor.UndoManager.redo();
             });
@@ -139,7 +153,8 @@ window.StudioActions = (function() {
                 
         // HTML kodu düzenleme
         const cmdCodeEdit = document.getElementById("cmd-code-edit");
-        if (cmdCodeEdit) {
+        if (cmdCodeEdit && !cmdCodeEdit.hasAttribute('data-code-setup')) {
+            cmdCodeEdit.setAttribute('data-code-setup', 'true');
             cmdCodeEdit.addEventListener("click", () => {
                 const htmlContent = editor.getHtml();
                 window.StudioModal.showEditModal("HTML Düzenle", htmlContent, (newHtml) => {
@@ -150,7 +165,8 @@ window.StudioActions = (function() {
 
         // CSS kodu düzenleme
         const cmdCssEdit = document.getElementById("cmd-css-edit");
-        if (cmdCssEdit) {
+        if (cmdCssEdit && !cmdCssEdit.hasAttribute('data-css-setup')) {
+            cmdCssEdit.setAttribute('data-css-setup', 'true');
             cmdCssEdit.addEventListener("click", () => {
                 // avoidProtected parametresi ile CSS içeriğini al
                 const cssContent = editor.getCss({ avoidProtected: true });

@@ -3,9 +3,6 @@
  * Editor yapılandırması ve kurulumu
  */
 
-// Bu dosya StudioEditorSetup modülünü sağlar
-// Global değişkenler app.js'de zaten tanımlanmıştır, burada tekrar tanımlamaya gerek yok
-
 window.StudioEditorSetup = (function() {
     /**
      * Editor'ı yapılandır ve başlat
@@ -60,7 +57,7 @@ window.StudioEditorSetup = (function() {
                     scripts: window.StudioConfig.getConfig('canvas.scripts'),
                     styles: window.StudioConfig.getConfig('canvas.styles')
                 },
-                protectedCss: '' // Koruma altındaki CSS'i devre dışı bırak
+                protectedCss: ''
             });
             
             // Widget bileşeni tipini kaydet
@@ -148,7 +145,7 @@ window.StudioEditorSetup = (function() {
                 // CSS tekrarlama sorununu çöz
                 fixCssIssues(editor);
                 
-                // Widget sistemini kur
+                // Widget sistemini kur - TEK SEFER
                 if (window.StudioWidgetManager && typeof window.StudioWidgetManager.setup === 'function') {
                     window.StudioWidgetManager.setup(editor);
                 }
@@ -161,11 +158,6 @@ window.StudioEditorSetup = (function() {
                 // Yükleme göstergesini gizle
                 if (window.StudioLoader && typeof window.StudioLoader.hide === 'function') {
                     window.StudioLoader.hide();
-                }
-                
-                // Blokları kaydet
-                if (window.StudioBlocks && typeof window.StudioBlocks.registerBlocks === 'function') {
-                    window.StudioBlocks.registerBlocks(editor);
                 }
                 
                 // Custom event tetikle
@@ -200,9 +192,6 @@ window.StudioEditorSetup = (function() {
                         } else {
                             widgetModel.destroy();
                         }
-                        
-                        // Blok butonlarını aktifleştir
-                        window.StudioBlockManager.updateBlocksInCategories(editor);
                     } 
                     else if (widgetType === 'module-widget') {
                         const moduleId = widgetModel.get('widget_module_id') || widgetModel.getAttributes()['data-widget-module-id'];
@@ -221,9 +210,6 @@ window.StudioEditorSetup = (function() {
                         } else {
                             widgetModel.destroy();
                         }
-                        
-                        // Blok butonlarını aktifleştir
-                        window.StudioBlockManager.updateBlocksInCategories(editor);
                     }
                     
                     // HTML içeriğini sanitize ve güncelle

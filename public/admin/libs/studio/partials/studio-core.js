@@ -75,32 +75,36 @@ window.StudioCore = (function() {
             
             // İçerik yüklendikten sonra module widget'ları hemen yükle ve butonları devre dışı bırak
             setTimeout(() => {
-                const frameEl = editor.Canvas.getFrameEl();
-                if (frameEl) {
-                    const doc = frameEl.contentDocument || frameEl.contentWindow.document;
-                    if (doc) {
-                        // Tailwind.config.js ve Alpine entegrasyonu için gerekli script'leri ekle
-                        const script = doc.createElement('script');
-                        script.innerHTML = `
-                            if (!window.tailwind) {
-                                document.documentElement.setAttribute('x-data', '{ darkMode: localStorage.getItem("darkMode") || "light" }');
-                                document.documentElement.setAttribute('x-init', '$watch("darkMode", val => localStorage.setItem("darkMode", val))');
-                                document.documentElement.setAttribute(':class', '{ "dark": darkMode === "dark" }');
-                            }
-                        `;
-                        doc.head.appendChild(script);
-                        
-                        // Dark mode kontrolü
-                        const isDarkMode = Cookies.get('studio_dark_mode') === 'true';
-                        doc.documentElement.classList.toggle('dark', isDarkMode);
-                        
-                        // Tema değişikliği olayını dinle
-                        document.addEventListener('themeChanged', (e) => {
-                            if (e.detail && e.detail.mode) {
-                                doc.documentElement.classList.toggle('dark', e.detail.mode === 'dark');
-                            }
-                        });
+                try {
+                    const frameEl = editorInstance.Canvas.getFrameEl();
+                    if (frameEl) {
+                        const doc = frameEl.contentDocument || frameEl.contentWindow.document;
+                        if (doc) {
+                            // Tailwind.config.js ve Alpine entegrasyonu için gerekli script'leri ekle
+                            const script = doc.createElement('script');
+                            script.innerHTML = `
+                                if (!window.tailwind) {
+                                    document.documentElement.setAttribute('x-data', '{ darkMode: localStorage.getItem("darkMode") || "light" }');
+                                    document.documentElement.setAttribute('x-init', '$watch("darkMode", val => localStorage.setItem("darkMode", val))');
+                                    document.documentElement.setAttribute(':class', '{ "dark": darkMode === "dark" }');
+                                }
+                            `;
+                            doc.head.appendChild(script);
+                            
+                            // Dark mode kontrolü
+                            const isDarkMode = Cookies.get('studio_dark_mode') === 'true';
+                            doc.documentElement.classList.toggle('dark', isDarkMode);
+                            
+                            // Tema değişikliği olayını dinle
+                            document.addEventListener('themeChanged', (e) => {
+                                if (e.detail && e.detail.mode) {
+                                    doc.documentElement.classList.toggle('dark', e.detail.mode === 'dark');
+                                }
+                            });
+                        }
                     }
+                } catch (error) {
+                    console.error('Canvas script enjeksiyon hatası:', error);
                 }
             }, 500);
         });

@@ -151,7 +151,7 @@ window.StudioActions = (function() {
             });
         }
                 
-        // HTML kodu düzenleme
+        // HTML kodu düzenleme - Monaco ile
         const cmdCodeEdit = document.getElementById("cmd-code-edit");
         if (cmdCodeEdit && !cmdCodeEdit.hasAttribute('data-code-setup')) {
             cmdCodeEdit.setAttribute('data-code-setup', 'true');
@@ -159,11 +159,11 @@ window.StudioActions = (function() {
                 const htmlContent = editor.getHtml();
                 window.StudioModal.showEditModal("HTML Düzenle", htmlContent, (newHtml) => {
                     editor.setComponents(newHtml);
-                });
+                }, 'html');
             });
         }
 
-        // CSS kodu düzenleme
+        // CSS kodu düzenleme - Monaco ile
         const cmdCssEdit = document.getElementById("cmd-css-edit");
         if (cmdCssEdit && !cmdCssEdit.hasAttribute('data-css-setup')) {
             cmdCssEdit.setAttribute('data-css-setup', 'true');
@@ -174,7 +174,7 @@ window.StudioActions = (function() {
                 window.StudioModal.showEditModal("CSS Düzenle", cssContent, (newCss) => {
                     // CSS'i tamamen temizlemeden setle
                     editor.setStyle(newCss, { avoidProtected: true });
-                });
+                }, 'css');
             });
         }
     }

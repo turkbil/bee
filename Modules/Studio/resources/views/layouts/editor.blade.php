@@ -20,6 +20,9 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="{{ asset('admin/libs/bootstrap/dist/css/bootstrap.min.css') }}">
 
+    <!-- Monaco Editor CSS -->
+    <link rel="stylesheet" href="{{ asset('admin/libs/monaco-custom/css/monaco-custom.css') }}">
+
     <!-- GrapesJS CSS -->
     <link rel="stylesheet"
         href="{{ asset('admin/libs/studio/css/grapes.min.css') }}?v={{ filemtime(public_path('admin/libs/studio/css/grapes.min.css')) }}">
@@ -135,6 +138,9 @@
     <!-- Bootstrap JS -->
     <script src="{{ asset('admin/libs/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('admin/libs/handlebars/handlebars.min.js') }}"></script>
+
+    <!-- Monaco Editor JS -->
+    <script src="{{ asset('admin/libs/monaco-custom/js/monaco-custom.js') }}"></script>
 
     <!-- GrapesJS Core -->
     <script

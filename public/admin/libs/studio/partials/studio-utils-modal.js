@@ -49,6 +49,169 @@ window.StudioModal = (function() {
     }
     
     /**
+     * Link ekleme modalı göster
+     * @param {string} selectedText - Seçili metin
+     * @param {string} currentUrl - Mevcut URL (düzenleme için)
+     * @param {string} currentTarget - Mevcut target (düzenleme için)
+     * @param {string} currentTitle - Mevcut title (düzenleme için)
+     * @param {Function} callback - Link bilgileri ile çağrılacak fonksiyon
+     */
+    function showLinkModal(selectedText, currentUrl = '', currentTarget = '', currentTitle = '', callback) {
+        // Mevcut modalı temizle
+        const existingModal = document.getElementById("linkEditModal");
+        if (existingModal) {
+            existingModal.remove();
+        }
+        
+        // Mevcut backdrop'ları temizle
+        const backdropElements = document.querySelectorAll('.modal-backdrop');
+        backdropElements.forEach(element => {
+            if (element.parentNode) {
+                element.parentNode.removeChild(element);
+            }
+        });
+        
+        const modal = document.createElement("div");
+        modal.className = "modal fade";
+        modal.id = "linkEditModal";
+        modal.setAttribute("tabindex", "-1");
+        modal.setAttribute("role", "dialog");
+        modal.innerHTML = `
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title d-flex align-items-center">
+                            <i class="fas fa-link text-primary me-2"></i>Link Ekle
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Seçili Metin</label>
+                            <input type="text" class="form-control" id="link-text" value="${selectedText}" readonly style="background-color: #f8f9fa;">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">URL *</label>
+                            <input type="url" class="form-control" id="link-url" placeholder="https://example.com" value="${currentUrl}" required>
+                            <div class="form-text">Başında http:// veya https:// olmalıdır</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Başlık (İsteğe Bağlı)</label>
+                            <input type="text" class="form-control" id="link-title" placeholder="Link başlığı" value="${currentTitle}">
+                            <div class="form-text">Mouse ile üzerine gelindiğinde gösterilecek metin</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Hedef</label>
+                            <select class="form-select" id="link-target">
+                                <option value="false" ${currentTarget === '' || currentTarget === 'false' ? 'selected' : ''}>Aynı Pencerede</option>
+                                <option value="_blank" ${currentTarget === '_blank' ? 'selected' : ''}>Yeni Pencerede</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-1"></i>İptal
+                        </button>
+                        <button type="button" class="btn btn-primary" id="saveLinkBtn">
+                            <i class="fas fa-check me-1"></i>Link Ekle
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        // Bootstrap.Modal nesnesi mevcut mu kontrol et
+        if (typeof bootstrap !== "undefined" && bootstrap.Modal) {
+            const modalInstance = new bootstrap.Modal(modal, {
+                backdrop: 'static',
+                keyboard: false,
+                focus: true
+            });
+            
+            modalInstance.show();
+
+            // URL input'a focus ver
+            setTimeout(() => {
+                const urlInput = document.getElementById("link-url");
+                if (urlInput) {
+                    urlInput.focus();
+                }
+            }, 500);
+
+            // Kaydet butonu işlevi
+            const saveLinkBtn = document.getElementById("saveLinkBtn");
+            if (saveLinkBtn) {
+                saveLinkBtn.addEventListener("click", function () {
+                    const url = document.getElementById("link-url").value.trim();
+                    const title = document.getElementById("link-title").value.trim();
+                    const target = document.getElementById("link-target").value;
+                    
+                    if (!url) {
+                        window.StudioNotification.warning('Lütfen geçerli bir URL girin');
+                        document.getElementById("link-url").focus();
+                        return;
+                    }
+                    
+                    // URL doğrulaması
+                    if (!isValidUrl(url)) {
+                        window.StudioNotification.warning('Lütfen geçerli bir URL girin (http:// veya https:// ile başlamalı)');
+                        document.getElementById("link-url").focus();
+                        return;
+                    }
+                    
+                    const linkData = {
+                        url: url,
+                        title: title,
+                        target: target
+                    };
+                    
+                    modalInstance.hide();
+                    callback(linkData);
+                });
+            }
+
+            // Enter tuşu ile kaydet
+            modal.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    const saveLinkBtn = document.getElementById("saveLinkBtn");
+                    if (saveLinkBtn) {
+                        saveLinkBtn.click();
+                    }
+                }
+            });
+
+            modal.addEventListener("hidden.bs.modal", function () {
+                modal.remove();
+                const backdrops = document.querySelectorAll('.modal-backdrop');
+                backdrops.forEach(backdrop => {
+                    if (backdrop.parentNode) {
+                        backdrop.parentNode.removeChild(backdrop);
+                    }
+                });
+            });
+        }
+    }
+    
+    /**
+     * URL doğrulaması
+     * @param {string} url - Doğrulanacak URL
+     * @returns {boolean} Geçerli URL mi
+     */
+    function isValidUrl(url) {
+        try {
+            const urlObj = new URL(url);
+            return urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
+        } catch (e) {
+            return false;
+        }
+    }
+    
+    /**
      * Kod düzenleme modalı göster (Monaco ile)
      * @param {string} title - Modal başlığı
      * @param {string} content - Düzenlenecek içerik
@@ -474,6 +637,7 @@ window.StudioModal = (function() {
     
     return {
         showEditModal: showEditModal,
-        showConfirmModal: showConfirmModal
+        showConfirmModal: showConfirmModal,
+        showLinkModal: showLinkModal
     };
 })();

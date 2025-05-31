@@ -52,7 +52,7 @@ window.StudioTabs = (function() {
             activateTab(savedTab, panelType);
         } else {
             // Varsayılan değerler
-            activateTab(panelType === 'left' ? 'blocks' : 'element-properties', panelType);
+            activateTab(panelType === 'left' ? 'blocks' : 'configure', panelType);
         }
     }
     
@@ -101,7 +101,7 @@ window.StudioTabs = (function() {
         activateTab(leftTab, 'left');
         
         // Sağ panel
-        const rightTab = localStorage.getItem('studio_right_panel_tab') || 'element-properties';
+        const rightTab = localStorage.getItem('studio_right_panel_tab') || 'configure';
         activateTab(rightTab, 'right');
     }
     

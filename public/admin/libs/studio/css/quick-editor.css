@@ -1,0 +1,318 @@
+/* Studio Quick Editor - Rich Text Editor Styles */
+
+.quick-editor-container {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background-color: var(--panel-bg);
+    overflow: hidden;
+    margin-bottom: var(--spacing-md);
+    transition: var(--transition-normal);
+}
+
+.quick-editor-container.active {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(32, 107, 196, 0.1);
+}
+
+.quick-editor-toolbar {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-sm);
+    background-color: var(--panel-header);
+    border-bottom: 1px solid var(--border-color);
+    gap: 2px;
+}
+
+.quick-editor-toolbar .toolbar-group {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-right: var(--spacing-sm);
+}
+
+.quick-editor-toolbar .toolbar-group:last-child {
+    margin-right: 0;
+}
+
+.quick-editor-toolbar .toolbar-divider {
+    width: 1px;
+    height: 20px;
+    background-color: var(--border-color);
+    margin: 0 var(--spacing-sm);
+}
+
+.quick-editor-btn {
+    width: 28px;
+    height: 28px;
+    border: none;
+    background-color: transparent;
+    color: var(--secondary-color);
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-sm);
+    transition: var(--transition-normal);
+    position: relative;
+}
+
+.quick-editor-btn:hover {
+    background-color: var(--hover-bg);
+    color: var(--primary-color);
+}
+
+.quick-editor-btn.active {
+    background-color: var(--active-bg);
+    color: var(--primary-color);
+}
+
+.quick-editor-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.quick-editor-btn:disabled:hover {
+    background-color: transparent;
+    color: var(--secondary-color);
+}
+
+.quick-editor-content {
+    position: relative;
+    min-height: 120px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.quick-editor-textarea {
+    width: 100%;
+    min-height: 120px;
+    max-height: 300px;
+    border: none;
+    padding: var(--spacing-md);
+    font-family: inherit;
+    font-size: var(--font-md);
+    line-height: 1.5;
+    color: var(--secondary-color);
+    background-color: var(--panel-bg);
+    resize: vertical;
+    outline: none;
+    transition: var(--transition-normal);
+}
+
+.quick-editor-textarea:focus {
+    outline: none;
+    background-color: var(--panel-bg);
+}
+
+.quick-editor-textarea::placeholder {
+    color: var(--secondary-light);
+    font-style: italic;
+}
+
+.quick-editor-preview {
+    padding: var(--spacing-md);
+    min-height: 120px;
+    max-height: 300px;
+    overflow-y: auto;
+    line-height: 1.5;
+    color: var(--secondary-color);
+    background-color: var(--panel-bg);
+    word-wrap: break-word;
+}
+
+.quick-editor-preview:empty::before {
+    content: "Metin burada görünecek...";
+    color: var(--secondary-light);
+    font-style: italic;
+}
+
+.quick-editor-preview a {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+.quick-editor-preview a:hover {
+    color: var(--primary-hover);
+}
+
+.quick-editor-preview strong, .quick-editor-preview b {
+    font-weight: 600;
+}
+
+.quick-editor-preview em, .quick-editor-preview i {
+    font-style: italic;
+}
+
+.quick-editor-preview u {
+    text-decoration: underline;
+}
+
+.quick-editor-status {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-xs) var(--spacing-md);
+    background-color: var(--light-bg);
+    border-top: 1px solid var(--border-color);
+    font-size: var(--font-xs);
+    color: var(--secondary-light);
+}
+
+.quick-editor-status .status-left {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.quick-editor-status .status-right {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.quick-editor-char-count {
+    font-weight: 500;
+}
+
+.quick-editor-sync-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--secondary-light);
+    transition: var(--transition-normal);
+}
+
+.quick-editor-sync-indicator.synced {
+    background-color: #22c55e;
+}
+
+.quick-editor-sync-indicator.syncing {
+    background-color: #f59e0b;
+    animation: pulse 1s infinite;
+}
+
+.quick-editor-sync-indicator.error {
+    background-color: #ef4444;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Selection helpers */
+.quick-editor-selection-info {
+    position: absolute;
+    top: -30px;
+    left: 0;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+    font-size: var(--font-xs);
+    white-space: nowrap;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.quick-editor-selection-info.show {
+    opacity: 1;
+}
+
+/* Tooltip */
+.quick-editor-btn[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: -28px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    white-space: nowrap;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.quick-editor-btn[title]:hover::before {
+    content: "";
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 4px solid transparent;
+    border-bottom-color: rgba(0, 0, 0, 0.8);
+    z-index: 1001;
+    pointer-events: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .quick-editor-toolbar {
+        flex-wrap: wrap;
+        gap: 1px;
+    }
+    
+    .quick-editor-toolbar .toolbar-group {
+        gap: 1px;
+        margin-right: var(--spacing-xs);
+    }
+    
+    .quick-editor-btn {
+        width: 26px;
+        height: 26px;
+        font-size: 11px;
+    }
+    
+    .quick-editor-status {
+        font-size: 10px;
+        padding: var(--spacing-xs);
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .dark .quick-editor-container {
+        background-color: #1f2937;
+        border-color: #374151;
+    }
+    
+    .dark .quick-editor-toolbar {
+        background-color: #111827;
+        border-color: #374151;
+    }
+    
+    .dark .quick-editor-btn {
+        color: #9ca3af;
+    }
+    
+    .dark .quick-editor-btn:hover {
+        background-color: #374151;
+        color: #60a5fa;
+    }
+    
+    .dark .quick-editor-btn.active {
+        background-color: #1e40af;
+        color: #dbeafe;
+    }
+    
+    .dark .quick-editor-textarea {
+        background-color: #1f2937;
+        color: #f3f4f6;
+    }
+    
+    .dark .quick-editor-preview {
+        background-color: #1f2937;
+        color: #f3f4f6;
+    }
+    
+    .dark .quick-editor-status {
+        background-color: #111827;
+        border-color: #374151;
+        color: #6b7280;
+    }
+}

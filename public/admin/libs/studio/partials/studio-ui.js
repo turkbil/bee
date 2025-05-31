@@ -19,7 +19,11 @@ window.StudioUI = (function() {
         setupEditorStyles();
         standardizeLayerPanel();
         handleCanvasEvents(editor);
-        setupTextEditor(editor);
+        
+        // Quick Editor entegrasyonunu tamamla
+        if (window.StudioQuickEditor) {
+            console.log('Quick Editor UI entegrasyonu tamamlandı');
+        }
         
         // Bileşen seçimi olayı
         editor.on('component:selected', function(component) {
@@ -28,14 +32,12 @@ window.StudioUI = (function() {
             // Yapılandır sekmesini etkinleştir
             setTimeout(() => {
                 activateConfigurePanel();
-                handleComponentSelection(component);
             }, 100);
         });
         
         // Bileşen seçimi iptal olayı
         editor.on('component:deselected', function() {
             currentSelectedComponent = null;
-            hideTextEditor();
         });
         
         // Canvas tıklama olayını da dinle
@@ -45,270 +47,9 @@ window.StudioUI = (function() {
                 if (selected) {
                     currentSelectedComponent = selected;
                     activateConfigurePanel();
-                    handleComponentSelection(selected);
                 }
             }, 50);
         });
-    }
-    
-    /**
-     * Text editor sistemini kurulumlar
-     * @param {Object} editor - GrapesJS editor örneği
-     */
-    function setupTextEditor(editor) {
-        const textEditor = document.getElementById('text-content-editor');
-        const textContainer = document.getElementById('text-editor-container');
-        
-        if (!textEditor || !textContainer) return;
-        
-        // Text editor input olayı
-        textEditor.addEventListener('input', function() {
-            if (currentSelectedComponent && isTextComponent(currentSelectedComponent)) {
-                const newContent = this.value;
-                
-                // Component'in içeriğini güncelle
-                currentSelectedComponent.set('content', newContent);
-                
-                // Canvas'ı güncelle
-                const view = currentSelectedComponent.view;
-                if (view && view.el) {
-                    view.el.innerHTML = newContent;
-                }
-            }
-        });
-        
-        // Canvas'ta text değişikliği olaylarını dinle
-        editor.on('component:update:content', function(component) {
-            updateTextEditorFromComponent(component, textEditor);
-        });
-        
-        editor.on('component:update', function(component) {
-            if (component === currentSelectedComponent && isTextComponent(component)) {
-                updateTextEditorFromComponent(component, textEditor);
-            }
-        });
-        
-        // RTE (Rich Text Editor) olaylarını dinle
-        editor.on('rte:disable', function(rte, view) {
-            if (view && view.model === currentSelectedComponent) {
-                setTimeout(() => {
-                    updateTextEditorFromComponent(currentSelectedComponent, textEditor);
-                }, 100);
-            }
-        });
-        
-        // Canvas frame içindeki değişiklikleri dinle
-        editor.on('frame:updated', function() {
-            if (currentSelectedComponent && isTextComponent(currentSelectedComponent)) {
-                setTimeout(() => {
-                    updateTextEditorFromComponent(currentSelectedComponent, textEditor);
-                }, 100);
-            }
-        });
-        
-        // Canvas içindeki input olaylarını dinle
-        setTimeout(() => {
-            const frameEl = editor.Canvas.getFrameEl();
-            if (frameEl) {
-                const frameDoc = frameEl.contentDocument || frameEl.contentWindow.document;
-                
-                frameDoc.addEventListener('input', function(e) {
-                    if (currentSelectedComponent && isTextComponent(currentSelectedComponent)) {
-                        setTimeout(() => {
-                            updateTextEditorFromComponent(currentSelectedComponent, textEditor);
-                        }, 50);
-                    }
-                });
-                
-                frameDoc.addEventListener('keyup', function(e) {
-                    if (currentSelectedComponent && isTextComponent(currentSelectedComponent)) {
-                        setTimeout(() => {
-                            updateTextEditorFromComponent(currentSelectedComponent, textEditor);
-                        }, 50);
-                    }
-                });
-                
-                frameDoc.addEventListener('blur', function(e) {
-                    if (currentSelectedComponent && isTextComponent(currentSelectedComponent)) {
-                        setTimeout(() => {
-                            updateTextEditorFromComponent(currentSelectedComponent, textEditor);
-                        }, 100);
-                    }
-                });
-            }
-        }, 2000);
-    }
-    
-    /**
-     * Component'ten text editor'ı güncelle
-     * @param {Object} component - Component
-     * @param {HTMLElement} textEditor - Text editor element
-     */
-    function updateTextEditorFromComponent(component, textEditor) {
-        if (!component || !textEditor) return;
-        
-        let content = '';
-        
-        // Component content'ini al ve temizle
-        content = component.get('content') || '';
-        
-        // Eğer content boşsa, view element'inden text content al
-        if (!content || content.trim() === '') {
-            const view = component.view;
-            if (view && view.el) {
-                content = getCleanTextContent(view.el);
-            }
-        } else {
-            // HTML etiketlerini temizle
-            content = stripHtmlTags(content);
-        }
-        
-        // Textarea'nın mevcut değeriyle karşılaştır
-        if (textEditor.value !== content) {
-            textEditor.value = content;
-        }
-    }
-    
-    /**
-     * HTML etiketlerini temizle
-     * @param {string} html - HTML içeriği
-     * @returns {string} Temizlenmiş text
-     */
-    function stripHtmlTags(html) {
-        if (!html) return '';
-        
-        // Geçici bir div oluştur ve HTML'i parse et
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = html;
-        
-        // Sadece text content'ini al
-        return tempDiv.textContent || tempDiv.innerText || '';
-    }
-    
-    /**
-     * Element'ten temiz text content al
-     * @param {HTMLElement} element - DOM element
-     * @returns {string} Temizlenmiş text
-     */
-    function getCleanTextContent(element) {
-        if (!element) return '';
-        
-        return element.textContent || element.innerText || '';
-    }
-    
-    /**
-     * Seçilen component'i işle
-     * @param {Object} component - Seçilen component
-     */
-    function handleComponentSelection(component) {
-        if (isTextComponent(component)) {
-            showTextEditor(component);
-        } else {
-            hideTextEditor();
-        }
-    }
-    
-    /**
-     * Component'in text tipinde olup olmadığını kontrol et
-     * @param {Object} component - Kontrol edilecek component
-     * @returns {boolean}
-     */
-    function isTextComponent(component) {
-        if (!component) return false;
-        
-        const type = component.get('type');
-        const tagName = component.get('tagName');
-        const view = component.view;
-        
-        // Direkt text tiplerini kontrol et
-        if (type === 'text' || type === 'textnode') {
-            return true;
-        }
-        
-        // Element view kontrolü
-        if (view && view.el) {
-            const element = view.el;
-            const children = element.children;
-            const textContent = getCleanTextContent(element);
-            
-            // Eğer element alt elementleri varsa container olarak kabul et
-            if (children.length > 0) {
-                // Sadece text node'ları varsa text component kabul et
-                let hasOnlyTextNodes = true;
-                for (let child of children) {
-                    if (child.nodeType !== Node.TEXT_NODE && 
-                        !['A', 'STRONG', 'EM', 'B', 'I', 'U', 'SPAN'].includes(child.tagName)) {
-                        hasOnlyTextNodes = false;
-                        break;
-                    }
-                }
-                
-                // Inline elementler varsa ve text content varsa text component
-                if (hasOnlyTextNodes && textContent.trim()) {
-                    return true;
-                }
-                
-                return false;
-            }
-            
-            // Alt element yoksa ve text content varsa text component
-            if (textContent.trim()) {
-                // Belirli taglerde text component kabul et
-                const textTags = ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'span', 'a', 'li', 'td', 'th', 'label', 'button'];
-                if (tagName && textTags.includes(tagName.toLowerCase())) {
-                    return true;
-                }
-            }
-        }
-        
-        return false;
-    }
-    
-    /**
-     * Text editor'ü göster ve içeriği yükle
-     * @param {Object} component - Text component
-     */
-    function showTextEditor(component) {
-        const textEditor = document.getElementById('text-content-editor');
-        const textContainer = document.getElementById('text-editor-container');
-        
-        if (!textEditor || !textContainer) return;
-        
-        // İçeriği yükle
-        let content = component.get('content') || '';
-        
-        // HTML etiketlerini temizle
-        if (content) {
-            content = stripHtmlTags(content);
-        }
-        
-        // Eğer content boşsa, element text content'ini al
-        if (!content || content.trim() === '') {
-            const view = component.view;
-            if (view && view.el) {
-                content = getCleanTextContent(view.el);
-            }
-        }
-        
-        textEditor.value = content;
-        
-        // Container'ı göster
-        textContainer.style.display = 'block';
-        
-        // Focus ver
-        setTimeout(() => {
-            textEditor.focus();
-        }, 100);
-    }
-    
-    /**
-     * Text editor'ü gizle
-     */
-    function hideTextEditor() {
-        const textContainer = document.getElementById('text-editor-container');
-        if (textContainer) {
-            textContainer.style.display = 'none';
-        }
     }
     
     /**
@@ -776,13 +517,6 @@ window.StudioUI = (function() {
         handleCanvasEvents: handleCanvasEvents,
         activateConfigurePanel: activateConfigurePanel,
         fixNumberInputs: fixNumberInputs,
-        setupPanelSearch: setupPanelSearch,
-        setupTextEditor: setupTextEditor,
-        isTextComponent: isTextComponent,
-        showTextEditor: showTextEditor,
-        hideTextEditor: hideTextEditor,
-        updateTextEditorFromComponent: updateTextEditorFromComponent,
-        stripHtmlTags: stripHtmlTags,
-        getCleanTextContent: getCleanTextContent
+        setupPanelSearch: setupPanelSearch
     };
 })();

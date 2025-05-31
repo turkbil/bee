@@ -73,6 +73,11 @@ window.StudioCore = (function() {
                 window.StudioUI.setupUI(editorInstance);
             }
             
+            // Quick Editor'ı başlat
+            if (window.StudioQuickEditor && typeof window.StudioQuickEditor.initQuickEditor === 'function') {
+                window.StudioQuickEditor.initQuickEditor(editorInstance);
+            }
+            
             // İçerik yüklendikten sonra module widget'ları hemen yükle ve butonları devre dışı bırak
             setTimeout(() => {
                 try {

@@ -59,6 +59,10 @@
     <link rel="stylesheet"
         href="{{ asset('admin/libs/studio/css/utils.css') }}?v={{ filemtime(public_path('admin/libs/studio/css/utils.css')) }}">
 
+    <!-- Quick Editor CSS -->
+    <link rel="stylesheet"
+        href="{{ asset('admin/libs/studio/css/quick-editor.css') }}?v={{ filemtime(public_path('admin/libs/studio/css/quick-editor.css')) }}">
+
     @livewireStyles
 </head>
 
@@ -211,6 +215,11 @@
     </script>
     <script
         src="{{ asset('admin/libs/studio/partials/studio-widget-manager.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-widget-manager.js')) }}">
+    </script>
+
+    <!-- Quick Editor JS -->
+    <script
+        src="{{ asset('admin/libs/studio/partials/studio-quick-editor.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-quick-editor.js')) }}">
     </script>
 
     <script

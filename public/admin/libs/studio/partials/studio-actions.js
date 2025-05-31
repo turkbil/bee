@@ -141,7 +141,6 @@ window.StudioActions = (function() {
         if (cmdCodeEdit && !cmdCodeEdit.hasAttribute('data-code-setup')) {
             cmdCodeEdit.setAttribute('data-code-setup', 'true');
             cmdCodeEdit.addEventListener("click", () => {
-                // HTML içeriğini temizlenmiş halde göster
                 const rawHtml = editor.getHtml();
                 const cleanedHtml = window.StudioSave.cleanHtml(rawHtml);
                 
@@ -174,6 +173,7 @@ window.StudioActions = (function() {
         let currentRTE = null;
         let currentEditedComponent = null;
         
+        // RTE toolbar customization
         editor.on('rte:enable', (rte, view) => {
             console.log('RTE aktif edildi');
             currentRTE = rte;
@@ -184,6 +184,24 @@ window.StudioActions = (function() {
                 frameWindow = frameEl.contentWindow;
                 frameDocument = frameEl.contentDocument || frameWindow.document;
             }
+            
+            // Wrap for style butonunu gizle
+            setTimeout(() => {
+                const wrapButtons = document.querySelectorAll('.gjs-rte-action[title="Wrap for style"]');
+                wrapButtons.forEach(btn => {
+                    btn.style.display = 'none';
+                    btn.remove();
+                });
+                
+                // iframe içindeki wrap butonlarını da gizle
+                if (frameDocument) {
+                    const frameWrapButtons = frameDocument.querySelectorAll('.gjs-rte-action[title="Wrap for style"]');
+                    frameWrapButtons.forEach(btn => {
+                        btn.style.display = 'none';
+                        btn.remove();
+                    });
+                }
+            }, 100);
             
             const checkForLinkButtons = (attempts = 0) => {
                 if (attempts > 15) {
@@ -263,7 +281,6 @@ window.StudioActions = (function() {
                                     const selectedText = selection.toString();
                                     console.log('Seçili metin:', selectedText);
                                     
-                                    // Selection bilgilerini kaydet
                                     let selectionInfo = null;
                                     if (selection.rangeCount > 0) {
                                         const range = selection.getRangeAt(0);
@@ -277,7 +294,6 @@ window.StudioActions = (function() {
                                         };
                                     }
                                     
-                                    // Mevcut link bilgilerini kontrol et
                                     let currentUrl = '';
                                     let currentTarget = '';
                                     let currentTitle = '';
@@ -303,7 +319,6 @@ window.StudioActions = (function() {
                                         console.log('Mevcut link bilgisi alınırken hata:', err);
                                     }
                                     
-                                    // GrapesJS Modal kullanarak link modalını aç
                                     window.StudioModal.showLinkModal(
                                         selectedText, 
                                         currentUrl, 
@@ -315,19 +330,15 @@ window.StudioActions = (function() {
                                             console.log('Link verisi alındı:', linkData);
                                             
                                             try {
-                                                // Manuel olarak link oluştur
                                                 if (frameDocument && selectionInfo) {
                                                     console.log('Manuel link oluşturuluyor...');
                                                     
-                                                    // Selection'ı yeniden oluştur
                                                     const newSelection = frameWindow.getSelection();
                                                     newSelection.removeAllRanges();
                                                     newSelection.addRange(selectionInfo.range);
                                                     
-                                                    // Link elementini oluştur
                                                     const linkElement = frameDocument.createElement('a');
                                                     linkElement.href = linkData.url;
-                                                    linkElement.setAttribute('data-gjs-type', 'link');
                                                     
                                                     if (linkData.target && linkData.target !== 'false') {
                                                         linkElement.target = linkData.target;
@@ -339,34 +350,28 @@ window.StudioActions = (function() {
                                                     
                                                     linkElement.textContent = selectedText;
                                                     
-                                                    // Range içeriğini link ile değiştir
                                                     const range = selectionInfo.range;
                                                     range.deleteContents();
                                                     range.insertNode(linkElement);
                                                     
-                                                    // Selection'ı temizle
                                                     newSelection.removeAllRanges();
                                                     
                                                     console.log('Link DOM\'a eklendi:', linkElement);
                                                     
-                                                    // CRITICAL: DOM'dan tüm HTML'i al ve editörü yeniden parse et
-                                                    const bodyHtml = frameDocument.body.innerHTML;
-                                                    console.log('Frame body HTML:', bodyHtml);
-                                                    
-                                                    // RTE'yi kapat
                                                     if (currentRTE && typeof currentRTE.disable === 'function') {
                                                         currentRTE.disable();
                                                     } else {
                                                         editor.RichTextEditor.disable();
                                                     }
                                                     
-                                                    // Editörü tamamen yeniden parse et
+                                                    const bodyHtml = frameDocument.body.innerHTML;
+                                                    console.log('Frame body HTML:', bodyHtml);
+                                                    
                                                     console.log('Editör yeniden parse ediliyor...');
                                                     editor.setComponents(bodyHtml);
                                                     
                                                     console.log('Editör parse edildi, doğrulama yapılıyor...');
                                                     
-                                                    // Doğrulama
                                                     const finalHtml = editor.getHtml();
                                                     console.log('Final HTML:', finalHtml);
                                                     
@@ -389,7 +394,7 @@ window.StudioActions = (function() {
                                                 }
                                             }
                                         },
-                                        editor // Editor'ü parametre olarak geç
+                                        editor
                                     );
                                     
                                     return false;

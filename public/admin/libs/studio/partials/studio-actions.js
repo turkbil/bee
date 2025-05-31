@@ -141,8 +141,11 @@ window.StudioActions = (function() {
         if (cmdCodeEdit && !cmdCodeEdit.hasAttribute('data-code-setup')) {
             cmdCodeEdit.setAttribute('data-code-setup', 'true');
             cmdCodeEdit.addEventListener("click", () => {
-                const htmlContent = editor.getHtml();
-                window.StudioModal.showEditModal("HTML Düzenle", htmlContent, (newHtml) => {
+                // HTML içeriğini temizlenmiş halde göster
+                const rawHtml = editor.getHtml();
+                const cleanedHtml = window.StudioSave.cleanHtml(rawHtml);
+                
+                window.StudioModal.showEditModal("HTML Düzenle", cleanedHtml, (newHtml) => {
                     editor.setComponents(newHtml);
                 }, 'html');
             });
@@ -260,42 +263,21 @@ window.StudioActions = (function() {
                                     const selectedText = selection.toString();
                                     console.log('Seçili metin:', selectedText);
                                     
+                                    // Selection bilgilerini kaydet
                                     let selectionInfo = null;
-                                    
                                     if (selection.rangeCount > 0) {
                                         const range = selection.getRangeAt(0);
-                                        
-                                        let startNode = range.startContainer;
-                                        let endNode = range.endContainer;
-                                        
-                                        if (startNode.nodeType === Node.TEXT_NODE) {
-                                            startNode = startNode.parentElement;
-                                        }
-                                        if (endNode.nodeType === Node.TEXT_NODE) {
-                                            endNode = endNode.parentElement;
-                                        }
-                                        
                                         selectionInfo = {
+                                            range: range.cloneRange(),
+                                            text: selectedText,
                                             startContainer: range.startContainer,
                                             startOffset: range.startOffset,
                                             endContainer: range.endContainer,
-                                            endOffset: range.endOffset,
-                                            text: selectedText,
-                                            startNodeId: startNode.id || 'node-' + Math.random().toString(36).substr(2, 9),
-                                            endNodeId: endNode.id || 'node-' + Math.random().toString(36).substr(2, 9),
-                                            html: range.cloneContents().textContent,
-                                            document: targetDoc,
-                                            window: frameWindow || window
+                                            endOffset: range.endOffset
                                         };
-                                        
-                                        if (!startNode.id) {
-                                            startNode.id = selectionInfo.startNodeId;
-                                        }
-                                        if (!endNode.id && endNode !== startNode) {
-                                            endNode.id = selectionInfo.endNodeId;
-                                        }
                                     }
                                     
+                                    // Mevcut link bilgilerini kontrol et
                                     let currentUrl = '';
                                     let currentTarget = '';
                                     let currentTitle = '';
@@ -321,190 +303,94 @@ window.StudioActions = (function() {
                                         console.log('Mevcut link bilgisi alınırken hata:', err);
                                     }
                                     
-                                    if (!selectionInfo) {
-                                        if (window.StudioNotification) {
-                                            window.StudioNotification.error('Seçim bilgisi alınamadı');
-                                        }
-                                        return false;
-                                    }
-                                    
-                                    window.StudioModal.showLinkModal(selectedText, currentUrl, currentTarget, currentTitle, (linkData) => {
-                                        if (!linkData.url) return;
-                                        
-                                        console.log('Link verisi alındı:', linkData);
-                                        
-                                        try {
-                                            const targetSelection = selectionInfo.window.getSelection();
-                                            const targetDocument = selectionInfo.document;
+                                    // GrapesJS Modal kullanarak link modalını aç
+                                    window.StudioModal.showLinkModal(
+                                        selectedText, 
+                                        currentUrl, 
+                                        currentTarget, 
+                                        currentTitle, 
+                                        (linkData) => {
+                                            if (!linkData.url) return;
                                             
-                                            targetSelection.removeAllRanges();
-                                            
-                                            const startElement = targetDocument.getElementById(selectionInfo.startNodeId);
-                                            const endElement = targetDocument.getElementById(selectionInfo.endNodeId);
-                                            
-                                            if (!startElement || !endElement) {
-                                                if (window.StudioNotification) {
-                                                    window.StudioNotification.error('Hedef elementler bulunamadı');
-                                                }
-                                                return;
-                                            }
-                                            
-                                            const newRange = targetDocument.createRange();
+                                            console.log('Link verisi alındı:', linkData);
                                             
                                             try {
-                                                let startContainer = selectionInfo.startContainer;
-                                                let endContainer = selectionInfo.endContainer;
-                                                
-                                                if (startContainer.parentElement && startContainer.parentElement.id === selectionInfo.startNodeId) {
-                                                    newRange.setStart(startContainer, selectionInfo.startOffset);
-                                                } else {
-                                                    const textNodes = Array.from(startElement.childNodes).filter(node => node.nodeType === Node.TEXT_NODE);
-                                                    if (textNodes.length > 0) {
-                                                        newRange.setStart(textNodes[0], Math.min(selectionInfo.startOffset, textNodes[0].textContent.length));
-                                                    } else {
-                                                        newRange.setStart(startElement, 0);
-                                                    }
-                                                }
-                                                
-                                                if (endContainer.parentElement && endContainer.parentElement.id === selectionInfo.endNodeId) {
-                                                    newRange.setEnd(endContainer, selectionInfo.endOffset);
-                                                } else {
-                                                    const textNodes = Array.from(endElement.childNodes).filter(node => node.nodeType === Node.TEXT_NODE);
-                                                    if (textNodes.length > 0) {
-                                                        newRange.setEnd(textNodes[textNodes.length - 1], Math.min(selectionInfo.endOffset, textNodes[textNodes.length - 1].textContent.length));
-                                                    } else {
-                                                        newRange.setEnd(endElement, endElement.childNodes.length);
-                                                    }
-                                                }
-                                                
-                                                targetSelection.addRange(newRange);
-                                            } catch (rangeError) {
-                                                console.error('Range oluşturma hatası:', rangeError);
-                                                if (window.StudioNotification) {
-                                                    window.StudioNotification.error('Seçim yeniden oluşturulamadı');
-                                                }
-                                                return;
-                                            }
-                                            
-                                            if (!targetSelection.rangeCount) {
-                                                if (window.StudioNotification) {
-                                                    window.StudioNotification.error('Seçim kayboldu, lütfen tekrar deneyin');
-                                                }
-                                                return;
-                                            }
-                                            
-                                            const range = targetSelection.getRangeAt(0);
-                                            
-                                            let existingLink = null;
-                                            let commonAncestor = range.commonAncestorContainer;
-                                            
-                                            if (commonAncestor.nodeType === Node.TEXT_NODE) {
-                                                commonAncestor = commonAncestor.parentElement;
-                                            }
-                                            
-                                            let checkNode = commonAncestor;
-                                            while (checkNode && checkNode !== targetDocument.body) {
-                                                if (checkNode.tagName === 'A') {
-                                                    existingLink = checkNode;
-                                                    break;
-                                                }
-                                                checkNode = checkNode.parentElement;
-                                            }
-                                            
-                                            if (existingLink) {
-                                                existingLink.href = linkData.url;
-                                                if (linkData.target && linkData.target !== 'false') {
-                                                    existingLink.target = linkData.target;
-                                                } else {
-                                                    existingLink.removeAttribute('target');
-                                                }
-                                                if (linkData.title) {
-                                                    existingLink.title = linkData.title;
-                                                } else {
-                                                    existingLink.removeAttribute('title');
-                                                }
-                                            } else {
-                                                const linkElement = targetDocument.createElement('a');
-                                                linkElement.href = linkData.url;
-                                                
-                                                if (linkData.target && linkData.target !== 'false') {
-                                                    linkElement.target = linkData.target;
-                                                }
-                                                
-                                                if (linkData.title) {
-                                                    linkElement.title = linkData.title;
-                                                }
-                                                
-                                                try {
-                                                    const startOffset = range.startOffset;
-                                                    const endOffset = range.endOffset;
-                                                    const startContainer = range.startContainer;
-                                                    const endContainer = range.endContainer;
+                                                // Manuel olarak link oluştur
+                                                if (frameDocument && selectionInfo) {
+                                                    console.log('Manuel link oluşturuluyor...');
                                                     
-                                                    if (startContainer === endContainer && startContainer.nodeType === Node.TEXT_NODE) {
-                                                        const textNode = startContainer;
-                                                        const beforeText = textNode.textContent.substring(0, startOffset);
-                                                        const selectedText = textNode.textContent.substring(startOffset, endOffset);
-                                                        const afterText = textNode.textContent.substring(endOffset);
-                                                        
-                                                        const beforeTextNode = targetDocument.createTextNode(beforeText);
-                                                        const afterTextNode = targetDocument.createTextNode(afterText);
-                                                        
-                                                        linkElement.textContent = selectedText;
-                                                        
-                                                        const parentNode = textNode.parentNode;
-                                                        parentNode.insertBefore(beforeTextNode, textNode);
-                                                        parentNode.insertBefore(linkElement, textNode);
-                                                        parentNode.insertBefore(afterTextNode, textNode);
-                                                        parentNode.removeChild(textNode);
-                                                    } else {
-                                                        linkElement.textContent = range.toString();
-                                                        range.deleteContents();
-                                                        range.insertNode(linkElement);
+                                                    // Selection'ı yeniden oluştur
+                                                    const newSelection = frameWindow.getSelection();
+                                                    newSelection.removeAllRanges();
+                                                    newSelection.addRange(selectionInfo.range);
+                                                    
+                                                    // Link elementini oluştur
+                                                    const linkElement = frameDocument.createElement('a');
+                                                    linkElement.href = linkData.url;
+                                                    linkElement.setAttribute('data-gjs-type', 'link');
+                                                    
+                                                    if (linkData.target && linkData.target !== 'false') {
+                                                        linkElement.target = linkData.target;
                                                     }
-                                                } catch (e) {
-                                                    console.error('Link ekleme detay hatası:', e);
-                                                    linkElement.textContent = selectionInfo.text;
+                                                    
+                                                    if (linkData.title) {
+                                                        linkElement.title = linkData.title;
+                                                    }
+                                                    
+                                                    linkElement.textContent = selectedText;
+                                                    
+                                                    // Range içeriğini link ile değiştir
+                                                    const range = selectionInfo.range;
                                                     range.deleteContents();
                                                     range.insertNode(linkElement);
+                                                    
+                                                    // Selection'ı temizle
+                                                    newSelection.removeAllRanges();
+                                                    
+                                                    console.log('Link DOM\'a eklendi:', linkElement);
+                                                    
+                                                    // CRITICAL: DOM'dan tüm HTML'i al ve editörü yeniden parse et
+                                                    const bodyHtml = frameDocument.body.innerHTML;
+                                                    console.log('Frame body HTML:', bodyHtml);
+                                                    
+                                                    // RTE'yi kapat
+                                                    if (currentRTE && typeof currentRTE.disable === 'function') {
+                                                        currentRTE.disable();
+                                                    } else {
+                                                        editor.RichTextEditor.disable();
+                                                    }
+                                                    
+                                                    // Editörü tamamen yeniden parse et
+                                                    console.log('Editör yeniden parse ediliyor...');
+                                                    editor.setComponents(bodyHtml);
+                                                    
+                                                    console.log('Editör parse edildi, doğrulama yapılıyor...');
+                                                    
+                                                    // Doğrulama
+                                                    const finalHtml = editor.getHtml();
+                                                    console.log('Final HTML:', finalHtml);
+                                                    
+                                                    if (finalHtml.includes('href=')) {
+                                                        console.log('✓ Link başarıyla model\'e kaydedildi');
+                                                        if (window.StudioNotification) {
+                                                            window.StudioNotification.success('Link başarıyla eklendi');
+                                                        }
+                                                    } else {
+                                                        console.log('✗ Link hala model\'de yok');
+                                                        if (window.StudioNotification) {
+                                                            window.StudioNotification.error('Link eklenemedi');
+                                                        }
+                                                    }
+                                                }
+                                            } catch (error) {
+                                                console.error('Link ekleme işlemi hatası:', error);
+                                                if (window.StudioNotification) {
+                                                    window.StudioNotification.error('Link eklenirken bir hata oluştu: ' + error.message);
                                                 }
                                             }
-                                            
-                                            targetSelection.removeAllRanges();
-                                            
-                                            if (currentRTE && typeof currentRTE.updateContent === 'function') {
-                                                setTimeout(() => {
-                                                    currentRTE.updateContent();
-                                                }, 50);
-                                            }
-                                            
-                                            if (currentEditedComponent) {
-                                                setTimeout(() => {
-                                                    const frameBodyContent = frameDocument.body.innerHTML;
-                                                    currentEditedComponent.trigger('change:content');
-                                                    currentEditedComponent.view.render();
-                                                    editor.trigger('component:update', currentEditedComponent);
-                                                    editor.trigger('change:canvasOffset');
-                                                }, 100);
-                                            }
-                                            
-                                            setTimeout(() => {
-                                                editor.trigger('change');
-                                                if (frameWindow) {
-                                                    frameWindow.focus();
-                                                }
-                                            }, 150);
-                                            
-                                            if (window.StudioNotification) {
-                                                window.StudioNotification.success('Link başarıyla eklendi');
-                                            }
-                                        } catch (error) {
-                                            console.error('Link ekleme hatası:', error);
-                                            if (window.StudioNotification) {
-                                                window.StudioNotification.error('Link eklenirken bir hata oluştu: ' + error.message);
-                                            }
-                                        }
-                                    });
+                                        },
+                                        editor // Editor'ü parametre olarak geç
+                                    );
                                     
                                     return false;
                                 };

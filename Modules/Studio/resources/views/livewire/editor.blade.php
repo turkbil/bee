@@ -63,12 +63,9 @@
             
             <!-- Yapılandır İçeriği -->
             <div class="panel-tab-content active" data-tab-content="configure">
-                <!-- Text Editor Textarea - sadece text seçiliyse görünür -->
-                <div id="text-editor-container" style="display: none;">
-                    <div class="p-3 border-bottom">
-                        <label class="form-label">Metin İçeriği</label>
-                        <textarea id="text-content-editor" class="form-control" rows="3" placeholder="Metin içeriğini düzenleyin..."></textarea>
-                    </div>
+                <!-- Quick Editor Container - Canvas'ta text seçilince görünür -->
+                <div id="text-editor-container">
+                    <!-- Quick Editor buraya dinamik olarak eklenir -->
                 </div>
                 
                 <!-- Element Özellikleri -->

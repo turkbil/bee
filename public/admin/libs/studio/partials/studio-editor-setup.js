@@ -10,7 +10,6 @@ window.StudioEditorSetup = (function() {
      * @returns {Object} GrapesJS editor örneği
      */
     function initEditor(config) {
-        // Editör zaten başlatılmışsa mevcut örneği döndür
         if (window.__STUDIO_EDITOR_INSTANCE) {
             console.log('Editor zaten başlatılmış, mevcut örnek döndürülüyor.');
             return window.__STUDIO_EDITOR_INSTANCE;
@@ -23,13 +22,11 @@ window.StudioEditorSetup = (function() {
             return null;
         }
         
-        // Yükleme göstergesini başlat
         if (window.StudioLoader && typeof window.StudioLoader.show === 'function') {
             window.StudioLoader.show();
         }
         
         try {
-            // GrapesJS Editor yapılandırması
             let editor = grapesjs.init({
                 container: "#" + config.elementId,
                 fromElement: false,
@@ -58,21 +55,13 @@ window.StudioEditorSetup = (function() {
                     styles: window.StudioConfig.getConfig('canvas.styles')
                 },
                 protectedCss: ''
-                // RTE ayarını varsayılan bırak - custom link handling studio-actions.js'te
             });
             
-            // Widget bileşeni tipini kaydet
             setupComponentTypes(editor);
-            
-            // Editor komutlarını ekle
             setupCommands(editor);
-            
-            // TinyMCE kurulumu (opsiyonel)
             setupTinyMCERTE(editor);
             
-            // Component:add olaylarına dinleyici ekle
             editor.on('component:add', component => {
-                // Module widget kontrolü
                 if (component.get('type') === 'module-widget' || 
                     (component.getAttributes && component.getAttributes()['data-widget-module-id'])) {
                     
@@ -82,17 +71,14 @@ window.StudioEditorSetup = (function() {
                     if (moduleId) {
                         console.log(`Module widget #${moduleId} eklendi, hemen işleniyor...`);
                         
-                        // Module widget bileşeni tipini ayarla
                         component.set('type', 'module-widget');
                         component.set('widget_module_id', moduleId);
                         
-                        // ÖNEMLİ: Widget stil ve işlevlerini hemen uygula
                         setTimeout(() => {
                             if (window.StudioWidgetLoader && typeof window.StudioWidgetLoader.processWidgetEmbeds === 'function') {
                                 window.StudioWidgetLoader.processWidgetEmbeds(editor);
                             }
                             
-                            // Module içeriğini hemen yükle
                             if (window.studioLoadModuleWidget) {
                                 window.studioLoadModuleWidget(moduleId);
                             }
@@ -100,7 +86,6 @@ window.StudioEditorSetup = (function() {
                     }
                 }
                 
-                // Widget embed kontrolü
                 else if (component.get('type') === 'widget-embed' || 
                         (component.getAttributes && component.getAttributes()['data-tenant-widget-id'])) {
                     
@@ -110,17 +95,14 @@ window.StudioEditorSetup = (function() {
                     if (widgetId) {
                         console.log(`Widget #${widgetId} eklendi, hemen işleniyor...`);
                         
-                        // Widget-embed tipini ayarla
                         component.set('type', 'widget-embed');
                         component.set('tenant_widget_id', widgetId);
                         
-                        // ÖNEMLİ: Widget stil ve işlevlerini hemen uygula
                         setTimeout(() => {
                             if (window.StudioWidgetLoader && typeof window.StudioWidgetLoader.processWidgetEmbeds === 'function') {
                                 window.StudioWidgetLoader.processWidgetEmbeds(editor);
                             }
                             
-                            // Widget içeriğini hemen yükle
                             if (window.studioLoadWidget) {
                                 window.studioLoadWidget(widgetId);
                             }
@@ -129,72 +111,57 @@ window.StudioEditorSetup = (function() {
                 }
             });
 
-            // Canvas Drop olayı için özel bir dinleyici ekle
             editor.on('canvas:drop', (droppedModel) => {
                 console.log('Canvas Drop olayı tetiklendi, widget işlemleri yapılıyor...');
                 
-                // Kritik: Önce bekleyelim (GrapesJS iç işlemlerinin tamamlanması için)
                 setTimeout(() => {
-                    // Tüm widget'lar için overlay ve işlevleri uygula
                     if (window.StudioWidgetLoader && typeof window.StudioWidgetLoader.processWidgetEmbeds === 'function') {
                         window.StudioWidgetLoader.processWidgetEmbeds(editor);
                     }
                 }, 50);
             });
             
-            // Editor yükleme olayını dinle
             editor.on('load', function() {
                 console.log('Editor yüklendi');
                 
-                // CSS ve HTML temizleme sorunlarını çöz
                 fixCssAndHtmlIssues(editor);
                 
-                // Widget sistemini kur - TEK SEFER
                 if (window.StudioWidgetManager && typeof window.StudioWidgetManager.setup === 'function') {
                     window.StudioWidgetManager.setup(editor);
                 }
                 
-                // Widget-embed component tipini kaydet
                 if (window.StudioWidgetLoader && typeof window.StudioWidgetLoader.registerWidgetEmbedComponent === 'function') {
                     window.StudioWidgetLoader.registerWidgetEmbedComponent(editor);
                 }
                 
-                // Yükleme göstergesini gizle
                 if (window.StudioLoader && typeof window.StudioLoader.hide === 'function') {
                     window.StudioLoader.hide();
                 }
                 
-                // Blokları kaydet
                 if (window.StudioBlocks && typeof window.StudioBlocks.registerBlocks === 'function') {
                     window.StudioBlocks.registerBlocks(editor);
                 }
                 
-                // Custom event tetikle
                 document.dispatchEvent(new CustomEvent('editor:loaded', { detail: { editor } }));
                 
-                // Embed silindiğinde tüm ilişkili model ve DOM'u temizle
                 editor.on('component:remove', component => {
-                    // Widget embed modelini bul
                     let curr = component;
                     while (curr && curr.get('type') !== 'widget-embed' && curr.get('type') !== 'module-widget') curr = curr.parent();
                     if (!curr) return;
                     
                     const widgetModel = curr;
                     
-                    // Widget tipi ve ID'yi al
                     const widgetType = widgetModel.get('type');
                     
                     if (widgetType === 'widget-embed') {
                         const widgetId = widgetModel.get('tenant_widget_id') || widgetModel.getAttributes()['data-tenant-widget-id'] || widgetModel.getAttributes()['data-widget-id'];
                         if (window._loadedWidgets) window._loadedWidgets.delete(widgetId);
                         
-                        // Canvas DOM'dan embed elemanını sil
                         const frameEl = editor.Canvas.getFrameEl();
                         const doc = frameEl.contentDocument || frameEl.contentWindow.document;
                         const embedEl = doc.querySelector(`[data-tenant-widget-id="${widgetId}"]`);
                         if (embedEl) embedEl.remove();
                         
-                        // Model'deki wrapper veya embed'i kaldır
                         const wrapperModel = widgetModel.parent();
                         if (wrapperModel && /\bcol-md-\d+\b/.test(wrapperModel.getAttributes().class || '')) {
                             wrapperModel.destroy();
@@ -202,7 +169,6 @@ window.StudioEditorSetup = (function() {
                             widgetModel.destroy();
                         }
                         
-                        // Blok butonlarını güncelle
                         if (window.StudioBlockManager && typeof window.StudioBlockManager.updateBlocksInCategories === 'function') {
                             window.StudioBlockManager.updateBlocksInCategories(editor);
                         }
@@ -211,13 +177,11 @@ window.StudioEditorSetup = (function() {
                         const moduleId = widgetModel.get('widget_module_id') || widgetModel.getAttributes()['data-widget-module-id'];
                         if (window._loadedModules) window._loadedModules.delete(moduleId);
                         
-                        // Canvas DOM'dan module elemanını sil
                         const frameEl = editor.Canvas.getFrameEl();
                         const doc = frameEl.contentDocument || frameEl.contentWindow.document;
                         const moduleEl = doc.querySelector(`[data-widget-module-id="${moduleId}"]`);
                         if (moduleEl) moduleEl.remove();
                         
-                        // Model'deki wrapper veya module'ü kaldır
                         const wrapperModel = widgetModel.parent();
                         if (wrapperModel && /\bcol-md-\d+\b/.test(wrapperModel.getAttributes().class || '')) {
                             wrapperModel.destroy();
@@ -225,13 +189,11 @@ window.StudioEditorSetup = (function() {
                             widgetModel.destroy();
                         }
                         
-                        // Blok butonlarını güncelle
                         if (window.StudioBlockManager && typeof window.StudioBlockManager.updateBlocksInCategories === 'function') {
                             window.StudioBlockManager.updateBlocksInCategories(editor);
                         }
                     }
                     
-                    // HTML içeriğini sanitize ve güncelle
                     const htmlEl = document.getElementById('html-content');
                     if (htmlEl) {
                         htmlEl.value = `<body>${editor.getHtml()}</body>`;
@@ -257,17 +219,12 @@ window.StudioEditorSetup = (function() {
         }
     }
     
-    /**
-     * TinyMCE RTE kurulumu (opsiyonel)
-     * @param {Object} editor - GrapesJS editor örneği
-     */
     function setupTinyMCERTE(editor) {
         if (typeof tinymce === 'undefined') {
             console.log('TinyMCE yüklenmemiş, varsayılan RTE kullanılacak');
             return;
         }
         
-        // TinyMCE RTE'yi özelleştir
         editor.setCustomRte({
             enable(el, rte) {
                 const id = 'tinymce-' + Date.now();
@@ -322,11 +279,6 @@ window.StudioEditorSetup = (function() {
         });
     }
     
-    /**
-     * İçeriği yükle
-     * @param {Object} editor - GrapesJS editor örneği
-     * @param {Object} config - Yapılandırma
-     */
     function loadContent(editor, config) {
         setTimeout(() => {
             try {
@@ -337,23 +289,19 @@ window.StudioEditorSetup = (function() {
                 
                 let content = htmlContentEl ? htmlContentEl.value : '';
                 
-                // İçerik kontrolü - geçerli HTML içeriği var mı?
                 if (!content || content.trim() === '' || content.trim() === '<body></body>' || content.length < 20) {
                     console.warn('Geçerli içerik bulunamadı. Varsayılan içerik yükleniyor...');
                     content = window.StudioConfig.getConfig('defaultHtml');
                 }
 
-                // Module widget'ları için [[module:XX]] formatı kontrol et
                 const moduleRegex = /\[\[module:(\d+)\]\]/g;
                 let moduleMatch;
                 const moduleIds = [];
                 
-                // Önce module ID'lerini topla
                 while ((moduleMatch = moduleRegex.exec(content)) !== null) {
                     moduleIds.push(moduleMatch[1]);
                 }
                 
-                // Module widget'ları için gerçek HTML yapısını oluştur
                 if (moduleIds.length > 0) {
                     moduleIds.forEach(moduleId => {
                         const modulePattern = new RegExp(`\\[\\[module:${moduleId}\\]\\]`, 'g');
@@ -369,7 +317,6 @@ window.StudioEditorSetup = (function() {
                     });
                 }
 
-                // Shortcode ve widget embed referanslarını dönüştür
                 if (window.StudioHtmlParser) {
                     if (typeof window.StudioHtmlParser.convertAllWidgetReferencesToEmbeds === 'function') {
                         content = window.StudioHtmlParser.convertAllWidgetReferencesToEmbeds(content);
@@ -379,33 +326,26 @@ window.StudioEditorSetup = (function() {
                     }
                 }
 
-                // İçeriği editöre yükle
                 editor.setComponents(content);
                 console.log('İçerik editöre başarıyla yüklendi');
                 
-                // Widget-embed component tipini kaydet
                 if (window.StudioWidgetLoader && typeof window.StudioWidgetLoader.registerWidgetEmbedComponent === 'function') {
                     window.StudioWidgetLoader.registerWidgetEmbedComponent(editor);
                 }
                 
-                // CSS içeriği
                 if (cssContentEl && cssContentEl.value) {
                     editor.setStyle(cssContentEl.value);
                 }
                 
-                // Widget embed elementlerini içerik yüklendikten sonra işle
                 if (window.StudioWidgetLoader && typeof window.StudioWidgetLoader.processExistingWidgets === 'function') {
                     window.StudioWidgetLoader.processExistingWidgets(editor);
                 }
                 
-                // Canvas yükleme sonrası tüm widget embed'ler için ek işleme (disable, load)
                 if (window.StudioWidgetLoader && typeof window.StudioWidgetLoader.processWidgetEmbeds === 'function') {
                     window.StudioWidgetLoader.processWidgetEmbeds(editor);
                 }
                 
-                // İçerik yüklendikten sonra module widget'ları otomatik olarak yükle
                 setTimeout(() => {
-                    // Canvas'ta tüm module widget'ları bul ve yükle
                     const moduleComponents = editor.DomComponents.getWrapper().find('[data-widget-module-id]');
                     if (moduleComponents && moduleComponents.length > 0) {
                         console.log(`${moduleComponents.length} adet module widget bulundu`);
@@ -429,12 +369,7 @@ window.StudioEditorSetup = (function() {
         }, 500);
     }
     
-    /**
-     * Bileşen tiplerini ayarla
-     * @param {Object} editor - GrapesJS editor örneği
-     */
     function setupComponentTypes(editor) {
-        // Widget bileşeni tipi
         editor.DomComponents.addType('widget', {
             model: {
                 defaults: {
@@ -454,7 +389,6 @@ window.StudioEditorSetup = (function() {
                         }
                     ],
                     
-                    // Widget ID değiştiğinde içeriği güncelle
                     init() {
                         this.on('change:widget_id', this.updateWidgetContent);
                     },
@@ -462,7 +396,6 @@ window.StudioEditorSetup = (function() {
                     updateWidgetContent() {
                         const widgetId = this.get('widget_id');
                         if (widgetId) {
-                            // Widget içeriği buraya yüklenecek
                             console.log(`Widget ID ${widgetId} için içerik güncellenecek`);
                         }
                     }
@@ -475,18 +408,15 @@ window.StudioEditorSetup = (function() {
                 },
                 
                 onDblClick() {
-                    // Widget ID'sini doğru şekilde al
                     const model = this.model;
                     const widgetId = model.get('widget_id') || model.getAttributes()['data-widget-id'];
                     
                     if (widgetId) {
-                        // Widget düzenleme sayfasına yönlendir
                         window.open(`/admin/widgetmanagement/items/${widgetId}`, '_blank');
                     }
                 },
                 
                 onRender() {
-                    // Widget görünümü için stil ekle
                     const el = this.el;
                     if (el) {
                         el.style.border = '2px dashed #2a6dcf';
@@ -494,7 +424,6 @@ window.StudioEditorSetup = (function() {
                         el.style.borderRadius = '3px';
                         el.style.position = 'relative';
                         
-                        // Widget etiketi ekle
                         if (!el.querySelector('.widget-label')) {
                             const label = document.createElement('div');
                             label.className = 'widget-label';
@@ -516,7 +445,6 @@ window.StudioEditorSetup = (function() {
             }
         });
         
-        // Module widget bileşeni tipini ekle
         editor.DomComponents.addType('module-widget', {
             model: {
                 defaults: {
@@ -548,7 +476,6 @@ window.StudioEditorSetup = (function() {
                                 'id': `module-widget-${moduleId}`
                             });
                             
-                            // İçeriği yükle
                             setTimeout(() => {
                                 if (window.studioLoadModuleWidget) {
                                     window.studioLoadModuleWidget(moduleId);
@@ -557,7 +484,6 @@ window.StudioEditorSetup = (function() {
                         }
                     },
                     
-                    // Module widget'ı [[module:XX]] formatında kaydet
                     toHTML() {
                         const moduleId = this.get('widget_module_id') || this.getAttributes()['data-widget-module-id'];
                         if (moduleId) {
@@ -592,7 +518,6 @@ window.StudioEditorSetup = (function() {
                     const el = this.el;
                     el.style.position = 'relative';
                     
-                    // Overlay (UI geri bildirimi)
                     if (!el.querySelector('.widget-overlay')) {
                         const overlay = document.createElement('div');
                         overlay.className = 'widget-overlay';
@@ -614,95 +539,102 @@ window.StudioEditorSetup = (function() {
         });
     }
     
-    /**
-     * CSS ve HTML temizleme sorunlarını düzelt
-     * @param {Object} editor - GrapesJS editor örneği
-     */
     function fixCssAndHtmlIssues(editor) {
-        // CSS'i çekme metodunu tamamen override et
         const originalGetCss = editor.getCss;
         editor.getCss = function(opts = {}) {
-            // Her zaman avoidProtected: true kullan
             opts.avoidProtected = true;
             
-            // Orijinal metodu çağır
             let css = originalGetCss.call(this, opts);
             
-            // Yine de box-sizing ve margin sıfırlama kodu varsa kaldır
-            return css.replace(/\*\s*{\s*box-sizing:\s*border-box;\s*}\s*body\s*{\s*margin(-top|-right|-bottom|-left)?:?\s*0(px)?;?\s*}/g, '');
+            css = css.replace(/body\s*{\s*[^}]*}/g, '');
+            css = css.replace(/\[data-gjs-type="wrapper"\]\s*{\s*[^}]*}/g, '');
+            css = css.replace(/\.gjs-dashed\s*\[data-gjs-highlightable\]\s*{\s*[^}]*}/g, '');
+            css = css.replace(/\.gjs-selected\s*{\s*[^}]*}/g, '');
+            css = css.replace(/\.gjs-isgrabbing[^{]*{\s*[^}]*}/g, '');
+            css = css.replace(/\.gjs-is__grabbing[^{]*{\s*[^}]*}/g, '');
+            css = css.replace(/\.gjs-hovered[^{]*{\s*[^}]*}/g, '');
+            css = css.replace(/\.gjs-freezed[^{]*{\s*[^}]*}/g, '');
+            css = css.replace(/\.gjs-no-select[^{]*{\s*[^}]*}/g, '');
+            css = css.replace(/\.gjs-plh-image[^{]*{\s*[^}]*}/g, '');
+            css = css.replace(/\.gjs-text-node[^{]*{\s*[^}]*}/g, '');
+            css = css.replace(/\.gjs-comp-selected[^{]*{\s*[^}]*}/g, '');
+            css = css.replace(/\.gjs-comp-highlighted[^{]*{\s*[^}]*}/g, '');
+            css = css.replace(/\*\s*{\s*box-sizing:\s*border-box;\s*}\s*body\s*{\s*margin(-top|-right|-bottom|-left)?:?\s*0(px)?;?\s*}/g, '');
+            
+            return css;
         };
         
-        // HTML çıktısını temizle
         const originalGetHtml = editor.getHtml;
         editor.getHtml = function(opts = {}) {
-            // Orijinal HTML'i al
             let html = originalGetHtml.call(this, opts);
             
-            // Temizleme işlemi
             html = cleanHtmlOutput(html);
+            
+            html = html.replace(/^<div>\s*/, '');
+            html = html.replace(/\s*<\/div>$/, '');
             
             return html;
         };
         
-        // CSS Composer Config'ini değiştir
         if (editor.CssComposer) {
             editor.CssComposer.getConfig().protectedCss = '';
         }
         
-        // Stil Composer'ın buildCSS metodunu da override et (başka bir yaklaşım)
         if (editor.CssComposer && editor.CssComposer.buildCSS) {
             const originalBuildCSS = editor.CssComposer.buildCSS;
             editor.CssComposer.buildCSS = function() {
                 const result = originalBuildCSS.apply(this, arguments);
-                return result.replace(/\*\s*{\s*box-sizing:\s*border-box;\s*}\s*body\s*{\s*margin(-top|-right|-bottom|-left)?:?\s*0(px)?;?\s*}/g, '');
+                return result.replace(/body\s*{\s*[^}]*}/g, '')
+                            .replace(/\[data-gjs-type="wrapper"\]\s*{\s*[^}]*}/g, '')
+                            .replace(/\.gjs-dashed\s*\[data-gjs-highlightable\]\s*{\s*[^}]*}/g, '')
+                            .replace(/\.gjs-selected\s*{\s*[^}]*}/g, '')
+                            .replace(/\.gjs-isgrabbing[^{]*{\s*[^}]*}/g, '')
+                            .replace(/\.gjs-is__grabbing[^{]*{\s*[^}]*}/g, '')
+                            .replace(/\.gjs-hovered[^{]*{\s*[^}]*}/g, '')
+                            .replace(/\.gjs-freezed[^{]*{\s*[^}]*}/g, '')
+                            .replace(/\.gjs-no-select[^{]*{\s*[^}]*}/g, '')
+                            .replace(/\.gjs-plh-image[^{]*{\s*[^}]*}/g, '')
+                            .replace(/\.gjs-text-node[^{]*{\s*[^}]*}/g, '')
+                            .replace(/\.gjs-comp-selected[^{]*{\s*[^}]*}/g, '')
+                            .replace(/\.gjs-comp-highlighted[^{]*{\s*[^}]*}/g, '')
+                            .replace(/\*\s*{\s*box-sizing:\s*border-box;\s*}\s*body\s*{\s*margin(-top|-right|-bottom|-left)?:?\s*0(px)?;?\s*}/g, '');
             };
         }
     }
     
-    /**
-     * HTML çıktısını temizle
-     * @param {string} html - Ham HTML
-     * @returns {string} - Temizlenmiş HTML
-     */
     function cleanHtmlOutput(html) {
-        // GrapesJS CSS rules ve JS container'larını kaldır
         html = html.replace(/<div[^>]*class="gjs-css-rules"[^>]*>[\s\S]*?<\/div>/gi, '');
         html = html.replace(/<div[^>]*class="gjs-js-cont"[^>]*>[\s\S]*?<\/div>/gi, '');
         html = html.replace(/<div[^>]*id="gjs-css-rules[^"]*"[^>]*>[\s\S]*?<\/div>/gi, '');
         
-        // DOMParser kullanarak HTML'i parse et
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, 'text/html');
         
-        // Gereksiz attribute'ları temizle
         const allElements = doc.querySelectorAll('*');
         allElements.forEach(element => {
-            // GrapesJS ID'lerini kaldır (i ile başlayan rastgele ID'ler)
             if (element.id && /^i[a-z0-9]{2,5}(-\d+)?$/i.test(element.id)) {
                 element.removeAttribute('id');
             }
             
-            // GrapesJS draggable attribute'larını kaldır
             element.removeAttribute('draggable');
             
-            // GrapesJS CSS sınıflarını kaldır
             if (element.classList) {
                 const classesToRemove = [
                     'gjs-hovered', 'gjs-selected', 'gjs-freezed', 
-                    'gjs-css-rules', 'gjs-js-cont'
+                    'gjs-css-rules', 'gjs-js-cont', 'gjs-isgrabbing',
+                    'gjs-is__grabbing', 'gjs-no-select', 'gjs-plh-image',
+                    'gjs-text-node', 'gjs-comp-selected', 'gjs-comp-highlighted'
                 ];
                 
                 classesToRemove.forEach(className => {
                     element.classList.remove(className);
                 });
                 
-                // Eğer class attribute boş kaldıysa, tamamen kaldır
                 if (element.classList.length === 0) {
                     element.removeAttribute('class');
                 }
             }
             
-            // data-gjs attribute'larını kaldır (gizli GrapesJS data attribute'ları hariç)
             const attributesToRemove = [];
             for (let i = 0; i < element.attributes.length; i++) {
                 const attr = element.attributes[i];
@@ -719,28 +651,20 @@ window.StudioEditorSetup = (function() {
             });
         });
         
-        // CSS rules ve JS container div'lerini kaldır
         const cssRulesElements = doc.querySelectorAll('[class*="gjs-css-rules"], [class*="gjs-js-cont"], [id*="gjs-css-rules"]');
         cssRulesElements.forEach(element => {
             element.remove();
         });
         
-        // Body içeriğini al (body tag'i olmadan)
         const bodyContent = doc.body.innerHTML;
         
-        // Ekstra boşlukları temizle
         return bodyContent
             .replace(/\s+/g, ' ')
             .replace(/>\s+</g, '><')
             .trim();
     }
     
-    /**
-     * Editor komutlarını ayarla
-     * @param {Object} editor - GrapesJS editor örneği
-     */
     function setupCommands(editor) {
-        // Canvası görünür kılma komutu ekle
         editor.Commands.add('sw-visibility', {
             state: false,
             
@@ -770,7 +694,6 @@ window.StudioEditorSetup = (function() {
                     }
                 });
                 
-                // Buton aktif durumunu güncelle
                 const btn = document.getElementById('sw-visibility');
                 if (btn) {
                     state ? btn.classList.add('active') : btn.classList.remove('active');
@@ -785,12 +708,10 @@ window.StudioEditorSetup = (function() {
             }
         });
         
-        // Canvas temizleme komutu ekle
         editor.Commands.add('canvas-clear', {
             run(editor) {
                 editor.DomComponents.clear();
                 editor.CssComposer.clear();
-                // Widget yükleme durumu ve blok butonlarını resetle
                 if (window._loadedWidgets) {
                     window._loadedWidgets.clear();
                 }

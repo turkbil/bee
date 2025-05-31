@@ -121,7 +121,7 @@ window.StudioConfig = (function() {
         return defaults;
     }
     
-    // Tam HTML şablonu
+    // Tam HTML şablonu - temiz CSS ile
     function getFullHtmlTemplate(html, css, js) {
         return `<!DOCTYPE html>
 <html lang="tr">

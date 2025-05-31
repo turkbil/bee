@@ -58,6 +58,7 @@ window.StudioEditorSetup = (function() {
                     styles: window.StudioConfig.getConfig('canvas.styles')
                 },
                 protectedCss: ''
+                // RTE ayarını varsayılan bırak - custom link handling studio-actions.js'te
             });
             
             // Widget bileşeni tipini kaydet
@@ -65,6 +66,9 @@ window.StudioEditorSetup = (function() {
             
             // Editor komutlarını ekle
             setupCommands(editor);
+            
+            // TinyMCE kurulumu (opsiyonel)
+            setupTinyMCERTE(editor);
             
             // Component:add olaylarına dinleyici ekle
             editor.on('component:add', component => {
@@ -142,8 +146,8 @@ window.StudioEditorSetup = (function() {
             editor.on('load', function() {
                 console.log('Editor yüklendi');
                 
-                // CSS tekrarlama sorununu çöz
-                fixCssIssues(editor);
+                // CSS ve HTML temizleme sorunlarını çöz
+                fixCssAndHtmlIssues(editor);
                 
                 // Widget sistemini kur - TEK SEFER
                 if (window.StudioWidgetManager && typeof window.StudioWidgetManager.setup === 'function') {
@@ -158,6 +162,11 @@ window.StudioEditorSetup = (function() {
                 // Yükleme göstergesini gizle
                 if (window.StudioLoader && typeof window.StudioLoader.hide === 'function') {
                     window.StudioLoader.hide();
+                }
+                
+                // Blokları kaydet
+                if (window.StudioBlocks && typeof window.StudioBlocks.registerBlocks === 'function') {
+                    window.StudioBlocks.registerBlocks(editor);
                 }
                 
                 // Custom event tetikle
@@ -192,6 +201,11 @@ window.StudioEditorSetup = (function() {
                         } else {
                             widgetModel.destroy();
                         }
+                        
+                        // Blok butonlarını güncelle
+                        if (window.StudioBlockManager && typeof window.StudioBlockManager.updateBlocksInCategories === 'function') {
+                            window.StudioBlockManager.updateBlocksInCategories(editor);
+                        }
                     } 
                     else if (widgetType === 'module-widget') {
                         const moduleId = widgetModel.get('widget_module_id') || widgetModel.getAttributes()['data-widget-module-id'];
@@ -209,6 +223,11 @@ window.StudioEditorSetup = (function() {
                             wrapperModel.destroy();
                         } else {
                             widgetModel.destroy();
+                        }
+                        
+                        // Blok butonlarını güncelle
+                        if (window.StudioBlockManager && typeof window.StudioBlockManager.updateBlocksInCategories === 'function') {
+                            window.StudioBlockManager.updateBlocksInCategories(editor);
                         }
                     }
                     
@@ -236,6 +255,71 @@ window.StudioEditorSetup = (function() {
             
             return null;
         }
+    }
+    
+    /**
+     * TinyMCE RTE kurulumu (opsiyonel)
+     * @param {Object} editor - GrapesJS editor örneği
+     */
+    function setupTinyMCERTE(editor) {
+        if (typeof tinymce === 'undefined') {
+            console.log('TinyMCE yüklenmemiş, varsayılan RTE kullanılacak');
+            return;
+        }
+        
+        // TinyMCE RTE'yi özelleştir
+        editor.setCustomRte({
+            enable(el, rte) {
+                const id = 'tinymce-' + Date.now();
+                el.id = id;
+                el.contentEditable = true;
+                
+                const tinyConfig = {
+                    target: el,
+                    inline: true,
+                    toolbar: 'bold italic underline | bullist numlist | link | removeformat',
+                    menubar: false,
+                    plugins: ['lists', 'link'],
+                    toolbar_mode: 'floating',
+                    branding: false,
+                    statusbar: false,
+                    language: 'tr',
+                    content_style: 'body { font-family: Arial, sans-serif; font-size: 14px; }',
+                    setup(ed) {
+                        ed.on('init', () => {
+                            ed.setContent(el.innerHTML);
+                            setTimeout(() => ed.focus(), 0);
+                        });
+                        
+                        ed.on('change keyup', () => {
+                            const content = ed.getContent();
+                            el.innerHTML = content;
+                            rte.updateContent(content);
+                        });
+                        
+                        ed.on('blur', () => {
+                            const content = ed.getContent();
+                            el.innerHTML = content;
+                            rte.updateContent(content);
+                        });
+                    }
+                };
+                
+                setTimeout(() => {
+                    tinymce.init(tinyConfig);
+                }, 0);
+            },
+            
+            disable(el, rte) {
+                if (el.id && tinymce.get(el.id)) {
+                    const ed = tinymce.get(el.id);
+                    const content = ed.getContent();
+                    el.innerHTML = content;
+                    ed.destroy();
+                }
+                el.contentEditable = false;
+            }
+        });
     }
     
     /**
@@ -531,10 +615,10 @@ window.StudioEditorSetup = (function() {
     }
     
     /**
-     * CSS tekrarlama sorunlarını düzelt
+     * CSS ve HTML temizleme sorunlarını düzelt
      * @param {Object} editor - GrapesJS editor örneği
      */
-    function fixCssIssues(editor) {
+    function fixCssAndHtmlIssues(editor) {
         // CSS'i çekme metodunu tamamen override et
         const originalGetCss = editor.getCss;
         editor.getCss = function(opts = {}) {
@@ -546,6 +630,18 @@ window.StudioEditorSetup = (function() {
             
             // Yine de box-sizing ve margin sıfırlama kodu varsa kaldır
             return css.replace(/\*\s*{\s*box-sizing:\s*border-box;\s*}\s*body\s*{\s*margin(-top|-right|-bottom|-left)?:?\s*0(px)?;?\s*}/g, '');
+        };
+        
+        // HTML çıktısını temizle
+        const originalGetHtml = editor.getHtml;
+        editor.getHtml = function(opts = {}) {
+            // Orijinal HTML'i al
+            let html = originalGetHtml.call(this, opts);
+            
+            // Temizleme işlemi
+            html = cleanHtmlOutput(html);
+            
+            return html;
         };
         
         // CSS Composer Config'ini değiştir
@@ -561,6 +657,82 @@ window.StudioEditorSetup = (function() {
                 return result.replace(/\*\s*{\s*box-sizing:\s*border-box;\s*}\s*body\s*{\s*margin(-top|-right|-bottom|-left)?:?\s*0(px)?;?\s*}/g, '');
             };
         }
+    }
+    
+    /**
+     * HTML çıktısını temizle
+     * @param {string} html - Ham HTML
+     * @returns {string} - Temizlenmiş HTML
+     */
+    function cleanHtmlOutput(html) {
+        // GrapesJS CSS rules ve JS container'larını kaldır
+        html = html.replace(/<div[^>]*class="gjs-css-rules"[^>]*>[\s\S]*?<\/div>/gi, '');
+        html = html.replace(/<div[^>]*class="gjs-js-cont"[^>]*>[\s\S]*?<\/div>/gi, '');
+        html = html.replace(/<div[^>]*id="gjs-css-rules[^"]*"[^>]*>[\s\S]*?<\/div>/gi, '');
+        
+        // DOMParser kullanarak HTML'i parse et
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        
+        // Gereksiz attribute'ları temizle
+        const allElements = doc.querySelectorAll('*');
+        allElements.forEach(element => {
+            // GrapesJS ID'lerini kaldır (i ile başlayan rastgele ID'ler)
+            if (element.id && /^i[a-z0-9]{2,5}(-\d+)?$/i.test(element.id)) {
+                element.removeAttribute('id');
+            }
+            
+            // GrapesJS draggable attribute'larını kaldır
+            element.removeAttribute('draggable');
+            
+            // GrapesJS CSS sınıflarını kaldır
+            if (element.classList) {
+                const classesToRemove = [
+                    'gjs-hovered', 'gjs-selected', 'gjs-freezed', 
+                    'gjs-css-rules', 'gjs-js-cont'
+                ];
+                
+                classesToRemove.forEach(className => {
+                    element.classList.remove(className);
+                });
+                
+                // Eğer class attribute boş kaldıysa, tamamen kaldır
+                if (element.classList.length === 0) {
+                    element.removeAttribute('class');
+                }
+            }
+            
+            // data-gjs attribute'larını kaldır (gizli GrapesJS data attribute'ları hariç)
+            const attributesToRemove = [];
+            for (let i = 0; i < element.attributes.length; i++) {
+                const attr = element.attributes[i];
+                if (attr.name.startsWith('data-gjs-') && 
+                    !attr.name.includes('data-gjs-type') &&
+                    !attr.name.includes('data-widget') &&
+                    !attr.name.includes('data-tenant-widget')) {
+                    attributesToRemove.push(attr.name);
+                }
+            }
+            
+            attributesToRemove.forEach(attrName => {
+                element.removeAttribute(attrName);
+            });
+        });
+        
+        // CSS rules ve JS container div'lerini kaldır
+        const cssRulesElements = doc.querySelectorAll('[class*="gjs-css-rules"], [class*="gjs-js-cont"], [id*="gjs-css-rules"]');
+        cssRulesElements.forEach(element => {
+            element.remove();
+        });
+        
+        // Body içeriğini al (body tag'i olmadan)
+        const bodyContent = doc.body.innerHTML;
+        
+        // Ekstra boşlukları temizle
+        return bodyContent
+            .replace(/\s+/g, ' ')
+            .replace(/>\s+</g, '><')
+            .trim();
     }
     
     /**

@@ -1,11 +1,13 @@
 /**
  * Studio Editor - Modal Modülü
  * Modal dialog gösterme işlevleri
+ * ✅ Link ekleme özelliği GrapesJS Modal API ile çalışıyor
  */
 
 window.StudioModal = (function() {
     let monacoLoaded = false;
     let currentEditor = null;
+    let currentTheme = localStorage.getItem('studio_monaco_theme') || 'vs-dark';
     
     /**
      * Monaco Editor'ü yükle
@@ -49,130 +51,102 @@ window.StudioModal = (function() {
     }
     
     /**
-     * Tüm mevcut modalları ve backdrop'ları temizle
-     */
-    function cleanupModals() {
-        const existingModals = document.querySelectorAll('.modal');
-        existingModals.forEach(modal => {
-            if (modal.parentNode) {
-                modal.parentNode.removeChild(modal);
-            }
-        });
-        
-        const backdrops = document.querySelectorAll('.modal-backdrop');
-        backdrops.forEach(backdrop => {
-            if (backdrop.parentNode) {
-                backdrop.parentNode.removeChild(backdrop);
-            }
-        });
-        
-        document.body.classList.remove('modal-open');
-        document.body.style.paddingRight = '';
-        document.body.style.overflow = '';
-    }
-    
-    /**
-     * Link ekleme modalı göster
+     * ✅ Link ekleme modalı göster (GrapesJS Modal API kullanarak)
      * @param {string} selectedText - Seçili metin
      * @param {string} currentUrl - Mevcut URL (düzenleme için)
      * @param {string} currentTarget - Mevcut target (düzenleme için)
      * @param {string} currentTitle - Mevcut title (düzenleme için)
      * @param {Function} callback - Link bilgileri ile çağrılacak fonksiyon
+     * @param {Object} editor - GrapesJS editor örneği
      */
-    function showLinkModal(selectedText, currentUrl = '', currentTarget = '', currentTitle = '', callback) {
-        cleanupModals();
+    function showLinkModal(selectedText, currentUrl = '', currentTarget = '', currentTitle = '', callback, editor) {
+        if (!editor || !editor.Modal) {
+            console.error('GrapesJS editor veya Modal API bulunamadı');
+            return;
+        }
         
-        const modal = document.createElement("div");
-        modal.className = "modal fade show";
-        modal.id = "linkEditModal";
-        modal.setAttribute("tabindex", "-1");
-        modal.setAttribute("role", "dialog");
-        modal.setAttribute("aria-modal", "true");
-        modal.setAttribute("aria-labelledby", "linkModalTitle");
-        modal.style.display = "block";
-        modal.style.zIndex = "99999";
+        // Modal içeriği oluştur
+        const modalContent = document.createElement('div');
+        modalContent.className = 'link-modal-content';
+        modalContent.style.padding = '20px';
+        modalContent.style.minWidth = '400px';
         
-        modal.innerHTML = `
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="linkModalTitle">
-                            <i class="fas fa-link text-primary me-2"></i>Link Ekle
-                        </h5>
-                        <button type="button" class="btn-close" aria-label="Kapat"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Seçili Metin</label>
-                            <input type="text" class="form-control" id="link-text" value="${selectedText}" readonly style="background-color: #f8f9fa;">
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">URL *</label>
-                            <input type="url" class="form-control" id="link-url" placeholder="https://example.com" value="${currentUrl}" required>
-                            <div class="form-text">Başında http:// veya https:// olmalıdır</div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Başlık (İsteğe Bağlı)</label>
-                            <input type="text" class="form-control" id="link-title" placeholder="Link başlığı" value="${currentTitle}">
-                            <div class="form-text">Mouse ile üzerine gelindiğinde gösterilecek metin</div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Hedef</label>
-                            <select class="form-select" id="link-target">
-                                <option value="false" ${currentTarget === '' || currentTarget === 'false' ? 'selected' : ''}>Aynı Pencerede</option>
-                                <option value="_blank" ${currentTarget === '_blank' ? 'selected' : ''}>Yeni Pencerede</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" id="cancelLinkBtn">
-                            <i class="fas fa-times me-1"></i>İptal
-                        </button>
-                        <button type="button" class="btn btn-primary" id="saveLinkBtn">
-                            <i class="fas fa-check me-1"></i>Link Ekle
-                        </button>
-                    </div>
-                </div>
+        modalContent.innerHTML = `
+            <div class="mb-3">
+                <label class="form-label" style="display: block; margin-bottom: 8px; font-weight: 600;">Seçili Metin</label>
+                <input type="text" class="form-control" id="link-text" value="${selectedText}" readonly 
+                       style="background-color: #f8f9fa; border: 1px solid #dee2e6; padding: 8px 12px; border-radius: 4px; width: 100%;">
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label" style="display: block; margin-bottom: 8px; font-weight: 600;">URL *</label>
+                <input type="url" class="form-control" id="link-url" placeholder="https://example.com" value="${currentUrl}" required
+                       style="border: 1px solid #dee2e6; padding: 8px 12px; border-radius: 4px; width: 100%;">
+                <div class="form-text" style="font-size: 12px; color: #6c757d; margin-top: 4px;">Başında http:// veya https:// olmalıdır</div>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label" style="display: block; margin-bottom: 8px; font-weight: 600;">Başlık (İsteğe Bağlı)</label>
+                <input type="text" class="form-control" id="link-title" placeholder="Link başlığı" value="${currentTitle}"
+                       style="border: 1px solid #dee2e6; padding: 8px 12px; border-radius: 4px; width: 100%;">
+                <div class="form-text" style="font-size: 12px; color: #6c757d; margin-top: 4px;">Mouse ile üzerine gelindiğinde gösterilecek metin</div>
+            </div>
+            
+            <div class="mb-4">
+                <label class="form-label" style="display: block; margin-bottom: 8px; font-weight: 600;">Hedef</label>
+                <select class="form-select" id="link-target" style="border: 1px solid #dee2e6; padding: 8px 12px; border-radius: 4px; width: 100%;">
+                    <option value="false" ${currentTarget === '' || currentTarget === 'false' ? 'selected' : ''}>Aynı Pencerede</option>
+                    <option value="_blank" ${currentTarget === '_blank' ? 'selected' : ''}>Yeni Pencerede</option>
+                </select>
+            </div>
+            
+            <div style="display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid #dee2e6; padding-top: 15px;">
+                <button type="button" class="btn btn-secondary" id="cancelLinkBtn" style="padding: 8px 16px; border: 1px solid #6c757d; background: #6c757d; color: white; border-radius: 4px; cursor: pointer;">
+                    <i class="fas fa-times me-1"></i>İptal
+                </button>
+                <button type="button" class="btn btn-primary" id="saveLinkBtn" style="padding: 8px 16px; border: 1px solid #0d6efd; background: #0d6efd; color: white; border-radius: 4px; cursor: pointer;">
+                    <i class="fas fa-check me-1"></i>Link Ekle
+                </button>
             </div>
         `;
 
-        const backdrop = document.createElement('div');
-        backdrop.className = 'modal-backdrop fade show';
-        backdrop.style.zIndex = '99998';
+        // GrapesJS Modal'ı aç
+        editor.Modal.open({
+            title: '<i class="fas fa-link" style="color: #0d6efd; margin-right: 8px;"></i>Link Ekle',
+            content: modalContent,
+            attributes: { 
+                class: 'studio-link-modal',
+                'data-modal-type': 'link-editor'
+            }
+        });
 
-        document.body.appendChild(backdrop);
-        document.body.appendChild(modal);
-        document.body.classList.add('modal-open');
-
+        // Focus URL input'una
         setTimeout(() => {
-            const urlInput = document.getElementById("link-url");
+            const urlInput = modalContent.querySelector("#link-url");
             if (urlInput) {
                 urlInput.focus();
                 urlInput.select();
             }
         }, 100);
 
-        const saveLinkBtn = document.getElementById("saveLinkBtn");
-        const cancelLinkBtn = document.getElementById("cancelLinkBtn");
-        const closeBtn = modal.querySelector(".btn-close");
+        // Event listener'ları ekle
+        const saveLinkBtn = modalContent.querySelector("#saveLinkBtn");
+        const cancelLinkBtn = modalContent.querySelector("#cancelLinkBtn");
 
         function closeModal() {
-            cleanupModals();
+            editor.Modal.close();
         }
 
         function saveLink() {
-            const url = document.getElementById("link-url").value.trim();
-            const title = document.getElementById("link-title").value.trim();
-            const target = document.getElementById("link-target").value;
+            const url = modalContent.querySelector("#link-url").value.trim();
+            const title = modalContent.querySelector("#link-title").value.trim();
+            const target = modalContent.querySelector("#link-target").value;
             
             if (!url) {
                 if (window.StudioNotification) {
                     window.StudioNotification.warning('Lütfen geçerli bir URL girin');
                 }
-                document.getElementById("link-url").focus();
+                modalContent.querySelector("#link-url").focus();
                 return;
             }
             
@@ -180,7 +154,7 @@ window.StudioModal = (function() {
                 if (window.StudioNotification) {
                     window.StudioNotification.warning('Lütfen geçerli bir URL girin (http:// veya https:// ile başlamalı)');
                 }
-                document.getElementById("link-url").focus();
+                modalContent.querySelector("#link-url").focus();
                 return;
             }
             
@@ -192,6 +166,7 @@ window.StudioModal = (function() {
             
             closeModal();
             
+            // Kısa bir delay ile callback'i çağır
             setTimeout(() => {
                 callback(linkData);
             }, 50);
@@ -205,13 +180,8 @@ window.StudioModal = (function() {
             cancelLinkBtn.addEventListener("click", closeModal);
         }
 
-        if (closeBtn) {
-            closeBtn.addEventListener("click", closeModal);
-        }
-
-        backdrop.addEventListener('click', closeModal);
-
-        modal.addEventListener('keydown', function(e) {
+        // Enter tuşu ile kaydetme
+        modalContent.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
                 saveLink();
@@ -219,6 +189,11 @@ window.StudioModal = (function() {
                 e.preventDefault();
                 closeModal();
             }
+        });
+
+        // Modal kapandığında callback ile temizlik
+        editor.Modal.onceClose(() => {
+            console.log('Link modal kapatıldı');
         });
     }
     
@@ -238,14 +213,9 @@ window.StudioModal = (function() {
     
     /**
      * Kod düzenleme modalı göster (Monaco ile)
-     * @param {string} title - Modal başlığı
-     * @param {string} content - Düzenlenecek içerik
-     * @param {Function} callback - Değişiklik kaydedildiğinde çağrılacak fonksiyon
-     * @param {string} language - Dil (html, css, javascript)
      */
     function showEditModal(title, content, callback, language = 'html') {
-        cleanupModals();
-        
+        // Mevcut Bootstrap modal sistemini koruyoruz - çalışıyor
         const modal = document.createElement("div");
         modal.className = "modal fade show";
         modal.id = "codeEditModal";
@@ -258,7 +228,7 @@ window.StudioModal = (function() {
         modal.innerHTML = `
             <div class="modal-dialog modal-fullscreen">
                 <div class="modal-content">
-                    <div class="modal-header">
+                    <div class="modal-header d-flex justify-content-between align-items-center">
                         <h5 class="modal-title d-flex align-items-center">
                             <i class="fas fa-code text-primary me-2"></i>${title}
                         </h5>
@@ -266,8 +236,8 @@ window.StudioModal = (function() {
                             <button type="button" class="btn btn-sm btn-outline-secondary me-2" id="format-btn" title="Kodu Formatla">
                                 <i class="fas fa-magic me-1"></i>Format
                             </button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary me-2" id="fullscreen-btn" title="Tam Ekran">
-                                <i class="fas fa-expand me-1"></i>Tam Ekran
+                            <button type="button" class="btn btn-sm btn-outline-secondary me-2" id="theme-btn" title="Tema: ${getThemeName(currentTheme)}">
+                                <i class="fas fa-palette me-1"></i>${getThemeName(currentTheme)}
                             </button>
                             <button type="button" class="btn-close" aria-label="Kapat"></button>
                         </div>
@@ -283,14 +253,18 @@ window.StudioModal = (function() {
                                     <i class="fas fa-text-width me-1"></i>
                                     <span id="char-count">0</span> karakter
                                 </span>
-                                <span class="badge bg-secondary">
+                                <span class="badge bg-secondary me-2">
                                     <i class="fas fa-list-ol me-1"></i>
                                     <span id="line-count">0</span> satır
+                                </span>
+                                <span class="badge" style="background-color: ${getThemeColor(currentTheme)}; color: white;">
+                                    <i class="fas fa-palette me-1"></i>
+                                    <span id="theme-name">${getThemeName(currentTheme)}</span>
                                 </span>
                             </div>
                             <div class="d-flex align-items-center">
                                 <small class="text-muted me-3">
-                                    <kbd>Ctrl+S</kbd> Kaydet • <kbd>Ctrl+F</kbd> Bul • <kbd>F11</kbd> Tam Ekran
+                                    <kbd>Ctrl+S</kbd> Kaydet • <kbd>Ctrl+F</kbd> Bul • <kbd>Ctrl+T</kbd> Tema
                                 </small>
                             </div>
                         </div>
@@ -328,7 +302,24 @@ window.StudioModal = (function() {
                 currentEditor.dispose();
                 currentEditor = null;
             }
-            cleanupModals();
+            // Bootstrap modal temizliği
+            const existingModals = document.querySelectorAll('.modal');
+            existingModals.forEach(modal => {
+                if (modal.parentNode) {
+                    modal.parentNode.removeChild(modal);
+                }
+            });
+            
+            const backdrops = document.querySelectorAll('.modal-backdrop');
+            backdrops.forEach(backdrop => {
+                if (backdrop.parentNode) {
+                    backdrop.parentNode.removeChild(backdrop);
+                }
+            });
+            
+            document.body.classList.remove('modal-open');
+            document.body.style.paddingRight = '';
+            document.body.style.overflow = '';
         }
 
         document.getElementById("saveCodeBtn").addEventListener("click", function () {
@@ -343,8 +334,70 @@ window.StudioModal = (function() {
     }
     
     /**
-     * Monaco Editor'ü başlat
+     * Tema adını al
+     * @param {string} theme - Tema kodu
+     * @returns {string} - Tema adı
      */
+    function getThemeName(theme) {
+        const themeNames = {
+            'vs-dark': 'Koyu',
+            'vs': 'Açık',
+            'hc-black': 'Yüksek Kontrast'
+        };
+        return themeNames[theme] || 'Bilinmeyen';
+    }
+    
+    /**
+     * Tema rengini al
+     * @param {string} theme - Tema kodu
+     * @returns {string} - Tema rengi
+     */
+    function getThemeColor(theme) {
+        const themeColors = {
+            'vs-dark': '#1e1e1e',
+            'vs': '#ffffff',
+            'hc-black': '#000000'
+        };
+        return themeColors[theme] || '#6c757d';
+    }
+    
+    /**
+     * Tema değiştir
+     */
+    function toggleTheme() {
+        const themes = ['vs-dark', 'vs', 'hc-black'];
+        const currentIndex = themes.indexOf(currentTheme);
+        currentTheme = themes[(currentIndex + 1) % themes.length];
+        
+        // Temayı localStorage'a kaydet
+        localStorage.setItem('studio_monaco_theme', currentTheme);
+        
+        if (monacoLoaded && currentEditor) {
+            monaco.editor.setTheme(currentTheme);
+        }
+        
+        // Tema adını güncelle
+        const themeNameEl = document.getElementById('theme-name');
+        if (themeNameEl) {
+            themeNameEl.textContent = getThemeName(currentTheme);
+        }
+        
+        // Tema badge rengini güncelle
+        const themeBadge = themeNameEl?.parentElement;
+        if (themeBadge) {
+            themeBadge.style.backgroundColor = getThemeColor(currentTheme);
+            themeBadge.style.color = currentTheme === 'vs' ? '#000000' : '#ffffff';
+        }
+        
+        // Tema buton metnini güncelle
+        const themeBtn = document.getElementById('theme-btn');
+        if (themeBtn) {
+            themeBtn.title = `Tema: ${getThemeName(currentTheme)}`;
+            themeBtn.innerHTML = `<i class="fas fa-palette me-1"></i>${getThemeName(currentTheme)}`;
+        }
+    }
+    
+    // Monaco Editor helper functions (mevcut sistem korunuyor)
     function initMonacoEditor(content, language) {
         const container = document.getElementById('monaco-editor-container');
         if (!container) return;
@@ -352,7 +405,7 @@ window.StudioModal = (function() {
         const editorSettings = {
             value: content,
             language: language,
-            theme: 'vs-dark',
+            theme: currentTheme,
             fontSize: 14,
             lineHeight: 22,
             minimap: { enabled: true },
@@ -418,9 +471,6 @@ window.StudioModal = (function() {
         }
     }
     
-    /**
-     * Sayaçları güncelle
-     */
     function updateCounts() {
         if (!currentEditor) return;
         
@@ -435,9 +485,6 @@ window.StudioModal = (function() {
         if (charCountEl) charCountEl.textContent = chars;
     }
     
-    /**
-     * Klavye kısayollarını ayarla
-     */
     function setupKeyboardShortcuts() {
         if (!currentEditor) return;
         
@@ -445,17 +492,11 @@ window.StudioModal = (function() {
             document.getElementById('saveCodeBtn')?.click();
         });
         
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'F11') {
-                e.preventDefault();
-                document.getElementById('fullscreen-btn')?.click();
-            }
+        currentEditor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyT, () => {
+            toggleTheme();
         });
     }
     
-    /**
-     * Buton olaylarını ayarla
-     */
     function setupButtonEvents() {
         const formatBtn = document.getElementById('format-btn');
         if (formatBtn) {
@@ -466,32 +507,14 @@ window.StudioModal = (function() {
             });
         }
         
-        const fullscreenBtn = document.getElementById('fullscreen-btn');
-        if (fullscreenBtn) {
-            fullscreenBtn.addEventListener('click', () => {
-                const modal = document.getElementById('codeEditModal');
-                if (modal) {
-                    if (modal.classList.contains('fullscreen-mode')) {
-                        modal.classList.remove('fullscreen-mode');
-                        fullscreenBtn.innerHTML = '<i class="fas fa-expand me-1"></i>Tam Ekran';
-                    } else {
-                        modal.classList.add('fullscreen-mode');
-                        fullscreenBtn.innerHTML = '<i class="fas fa-compress me-1"></i>Çıkış';
-                    }
-                    
-                    setTimeout(() => {
-                        if (currentEditor) {
-                            currentEditor.layout();
-                        }
-                    }, 100);
-                }
+        const themeBtn = document.getElementById('theme-btn');
+        if (themeBtn) {
+            themeBtn.addEventListener('click', () => {
+                toggleTheme();
             });
         }
     }
     
-    /**
-     * Fallback textarea
-     */
     function fallbackToTextarea(content) {
         const container = document.getElementById('monaco-editor-container');
         if (!container) return;
@@ -519,15 +542,10 @@ window.StudioModal = (function() {
     }
     
     /**
-     * Onay modalı göster
-     * @param {string} title - Modal başlığı
-     * @param {string} message - Modal mesajı
-     * @param {Function} confirmCallback - Onay butonuna tıklandığında çağrılacak fonksiyon
-     * @param {Function} cancelCallback - İptal butonuna tıklandığında çağrılacak fonksiyon
+     * Onay modalı göster - Mevcut sistem korunuyor
      */
     function showConfirmModal(title, message, confirmCallback, cancelCallback) {
-        cleanupModals();
-        
+        // Bootstrap modal sistemini koruyoruz
         const modal = document.createElement("div");
         modal.className = "modal fade show";
         modal.id = "confirmModal";
@@ -540,7 +558,7 @@ window.StudioModal = (function() {
         modal.innerHTML = `
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <div class="modal-header">
+                    <div class="modal-header d-flex justify-content-between align-items-center">
                         <h5 class="modal-title">${title}</h5>
                         <button type="button" class="btn-close" aria-label="Kapat"></button>
                     </div>
@@ -564,7 +582,23 @@ window.StudioModal = (function() {
         document.body.classList.add('modal-open');
 
         function closeModal() {
-            cleanupModals();
+            const existingModals = document.querySelectorAll('.modal');
+            existingModals.forEach(modal => {
+                if (modal.parentNode) {
+                    modal.parentNode.removeChild(modal);
+                }
+            });
+            
+            const backdrops = document.querySelectorAll('.modal-backdrop');
+            backdrops.forEach(backdrop => {
+                if (backdrop.parentNode) {
+                    backdrop.parentNode.removeChild(backdrop);
+                }
+            });
+            
+            document.body.classList.remove('modal-open');
+            document.body.style.paddingRight = '';
+            document.body.style.overflow = '';
         }
 
         document.getElementById("confirmBtn").addEventListener("click", function () {

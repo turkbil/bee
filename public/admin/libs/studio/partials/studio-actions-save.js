@@ -8,6 +8,76 @@ window.StudioSave = (function() {
     let isSaveInProgress = false;
     
     /**
+     * HTML içeriğini temizle - GrapesJS editör elementlerini kaldır
+     * @param {string} html - Temizlenecek HTML
+     * @returns {string} Temizlenmiş HTML
+     */
+    function cleanHtml(html) {
+        if (!html) return '';
+        
+        // DOM parser ile HTML'i parse et
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        
+        // GrapesJS editör elementlerini kaldır
+        const elementsToRemove = [
+            '.gjs-css-rules',
+            '.gjs-js-cont',
+            '[class*="gjs-"]',
+            '[id*="gjs-"]'
+        ];
+        
+        elementsToRemove.forEach(selector => {
+            const elements = doc.querySelectorAll(selector);
+            elements.forEach(el => el.remove());
+        });
+        
+        // Tüm elementlerden GrapesJS attribute'larını temizle
+        const allElements = doc.querySelectorAll('*');
+        allElements.forEach(element => {
+            // GrapesJS ID'lerini kaldır (rastgele oluşturulan)
+            const id = element.getAttribute('id');
+            if (id && /^i[a-z0-9]{3,4}(-\d+)?$/.test(id)) {
+                element.removeAttribute('id');
+            }
+            
+            // GrapesJS class'larını kaldır
+            const classList = element.classList;
+            const classesToRemove = [];
+            classList.forEach(className => {
+                if (className.startsWith('gjs-')) {
+                    classesToRemove.push(className);
+                }
+            });
+            classesToRemove.forEach(className => {
+                classList.remove(className);
+            });
+            
+            // GrapesJS attribute'larını kaldır
+            const attributesToRemove = [];
+            for (let i = 0; i < element.attributes.length; i++) {
+                const attr = element.attributes[i];
+                if (attr.name.startsWith('data-gjs-') || 
+                    attr.name === 'draggable' ||
+                    attr.name === 'contenteditable') {
+                    attributesToRemove.push(attr.name);
+                }
+            }
+            attributesToRemove.forEach(attrName => {
+                element.removeAttribute(attrName);
+            });
+            
+            // Boş class attribute'ını kaldır
+            if (element.classList.length === 0) {
+                element.removeAttribute('class');
+            }
+        });
+        
+        // Body içeriğini al
+        return doc.body.innerHTML;
+    }
+    
+    /**
      * Kaydet butonunu yapılandırır
      * @param {Object} editor - GrapesJS editor örneği
      * @param {Object} config - Yapılandırma parametreleri
@@ -41,9 +111,9 @@ window.StudioSave = (function() {
             try {
                 let htmlContent, cssContent, jsContent;
                 
-                // HTML içeriğini al ve body etiketlerini temizle
-                htmlContent = editor.getHtml() || '';
-                htmlContent = htmlContent.replace(/^<body[^>]*>|<\/body>$/g, '');
+                // HTML içeriğini al ve temizle
+                const rawHtml = editor.getHtml() || '';
+                htmlContent = cleanHtml(rawHtml);
                 
                 // CSS içeriğini al
                 cssContent = editor.getCss() || '';
@@ -53,7 +123,8 @@ window.StudioSave = (function() {
                 jsContent = jsContentEl ? jsContentEl.value || '' : '';
 
                 console.log("Save content preparation:", {
-                    htmlContentLength: htmlContent.length,
+                    rawHtmlLength: rawHtml.length,
+                    cleanedHtmlLength: htmlContent.length,
                     cssContentLength: cssContent.length,
                     jsContentLength: jsContent.length
                 });
@@ -90,6 +161,12 @@ window.StudioSave = (function() {
                     if (data.success) {
                         console.log("Kayıt başarılı:", data.message);
                         window.StudioNotification.success(data.message || 'İçerik başarıyla kaydedildi!');
+                        
+                        // Hidden input'u da güncelle
+                        const htmlContentEl = document.getElementById('html-content');
+                        if (htmlContentEl) {
+                            htmlContentEl.value = htmlContent;
+                        }
                     } else {
                         console.error("Kayıt başarısız:", data.message);
                         window.StudioNotification.error(data.message || 'Kayıt işlemi başarısız.');
@@ -121,6 +198,7 @@ window.StudioSave = (function() {
     }
     
     return {
-        setupSaveButton: setupSaveButton
+        setupSaveButton: setupSaveButton,
+        cleanHtml: cleanHtml // Export et ki diğer modüller kullanabilsin
     };
 })();

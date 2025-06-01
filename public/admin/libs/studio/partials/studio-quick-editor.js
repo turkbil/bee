@@ -148,13 +148,13 @@ window.StudioQuickEditor = (function() {
             if (!isUpdatingFromCanvas) {
                 console.log('QE: Canvas güncellemesi başlatılıyor...');
                 isUpdatingFromEditor = true;
-                updateCanvasFromQuickEditor();
+                updateCanvasFromQuickEditor(false);
                 
                 clearTimeout(syncTimeout);
                 syncTimeout = setTimeout(() => {
                     isUpdatingFromEditor = false;
                     setSyncStatus('synced');
-                    console.log('QE: Güncelleme kilidini açıldı');
+                    console.log('QE: Güncelleme kilidi açıldı');
                 }, 500);
                 
                 setSyncStatus('syncing');
@@ -402,9 +402,10 @@ window.StudioQuickEditor = (function() {
     }
     
     /**
-     * Quick editor'dan canvas'ı güncelle - Canvas RTE sistemi ile tam uyumlu
+     * Quick editor'dan canvas'ı güncelle - Canvas RTE sistemi ile birebir aynı
+     * @param {boolean} showNotification - Notification göster mi
      */
-    function updateCanvasFromQuickEditor() {
+    function updateCanvasFromQuickEditor(showNotification = true) {
         if (!currentComponent || isUpdatingFromCanvas) {
             console.log('QE: Canvas güncellemesi iptal edildi - component yok veya canvas güncellemesi devam ediyor');
             return;
@@ -424,22 +425,18 @@ window.StudioQuickEditor = (function() {
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
             .replace(/\*(.*?)\*/g, '<em>$1</em>')
             .replace(/_(.*?)_/g, '<u>$1</u>')
-            .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>');
+            .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" data-gjs-type="link">$1</a>');
         
         // Newline'ları <br> ile değiştir
         content = content.replace(/\n/g, '<br>');
         
         console.log('QE: HTML formatına çevrilmiş içerik:', content);
         
-        // Canvas RTE sistemiyle tam uyumlu güncelleme - studio-actions.js sistemiyle aynı
+        // Canvas RTE sistemiyle birebir aynı güncelleme mantığı
         try {
             console.log('QE: Canvas güncelleme işlemi başlıyor...');
             
-            // 1. Component'i seç
-            editorInstance.select(currentComponent);
-            console.log('QE: Component seçildi');
-            
-            // 2. Frame bilgilerini al
+            // Frame bilgilerini al
             const frameEl = editorInstance.Canvas.getFrameEl();
             if (!frameEl) {
                 console.error('QE: Canvas frame bulunamadı');
@@ -450,48 +447,46 @@ window.StudioQuickEditor = (function() {
             const frameDocument = frameEl.contentDocument || frameWindow.document;
             console.log('QE: Frame bilgileri alındı');
             
-            // 3. RTE'yi element üzerinde aktifleştir
-            console.log('QE: RTE aktifleştiriliyor...');
-            editorInstance.RichTextEditor.enable(currentComponent.view.el);
-            
-            // 4. Element içeriğini doğrudan güncelle
+            // Component'in view element'ini al
             const element = currentComponent.view.el;
-            if (element) {
-                console.log('QE: Element içeriği güncelleniyor...');
-                element.innerHTML = content;
-                
-                // 5. Component model'ini güncelle
-                currentComponent.set('content', content);
-                console.log('QE: Component model güncellendi');
+            if (!element) {
+                console.error('QE: Component view element bulunamadı');
+                return;
             }
             
-            // 6. RTE'yi kapat
+            // Canvas RTE sistemi ile birebir aynı: RTE enable
+            console.log('QE: RTE aktifleştiriliyor...');
+            editorInstance.RichTextEditor.enable(element);
+            
+            // Element içeriğini güncelle
+            console.log('QE: Element içeriği güncelleniyor...');
+            element.innerHTML = content;
+            
+            // Canvas RTE sistemi ile birebir aynı: RTE disable
             console.log('QE: RTE devre dışı bırakılıyor...');
             editorInstance.RichTextEditor.disable();
             
-            // 7. KRITIK: Canvas sisteminde olduğu gibi DOM'dan HTML al ve yeniden parse et
+            // Canvas RTE sistemi ile birebir aynı: DOM'dan HTML al ve yeniden parse et
             setTimeout(() => {
-                console.log('QE: DOM\'dan HTML alınıyor ve yeniden parse ediliyor...');
+                console.log('QE: Frame\'den HTML alınıyor...');
                 const bodyHtml = frameDocument.body.innerHTML;
-                console.log('QE: Frame body HTML:', bodyHtml.substring(0, 200) + '...');
+                console.log('QE: Frame body HTML alındı, parse ediliyor...');
+                console.log('QE: Body HTML (ilk 200 karakter):', bodyHtml.substring(0, 200));
                 
-                // 8. Editörü tamamen yeniden parse et (Canvas sistemi ile aynı)
+                // Canvas sistemindeki gibi yeniden parse et
                 editorInstance.setComponents(bodyHtml);
                 console.log('QE: Editor yeniden parse edildi');
                 
-                // 9. Doğrulama - HTML çıktısını kontrol et
+                // Doğrulama
                 setTimeout(() => {
                     const finalHtml = editorInstance.getHtml();
-                    console.log('QE: Final HTML:', finalHtml.substring(0, 200) + '...');
+                    console.log('QE: Final HTML doğrulaması:', finalHtml.substring(0, 200));
                     
-                    if (finalHtml.includes('href=')) {
+                    if (finalHtml.includes('href=') && content.includes('href=')) {
                         console.log('QE: ✓ Link başarıyla model\'e kaydedildi');
-                        if (window.StudioNotification) {
-                            window.StudioNotification.success('İçerik başarıyla güncellendi');
-                        }
                     } else if (content.includes('[') && content.includes('](')) {
                         console.log('QE: ✗ Link model\'e kaydedilmedi');
-                        if (window.StudioNotification) {
+                        if (showNotification && window.StudioNotification) {
                             window.StudioNotification.warning('Link kaydedilemedi, tekrar deneyin');
                         }
                     }
@@ -500,7 +495,7 @@ window.StudioQuickEditor = (function() {
             
         } catch (error) {
             console.error('QE: Canvas güncelleme hatası:', error);
-            if (window.StudioNotification) {
+            if (showNotification && window.StudioNotification) {
                 window.StudioNotification.error('Canvas güncellenirken hata: ' + error.message);
             }
         }
@@ -599,7 +594,7 @@ window.StudioQuickEditor = (function() {
         textarea.focus();
         
         // Canvas'ı güncelle
-        updateCanvasFromQuickEditor();
+        updateCanvasFromQuickEditor(false);
         updateToolbarState();
     }
     
@@ -656,88 +651,16 @@ window.StudioQuickEditor = (function() {
                     textarea.setSelectionRange(start, newEnd);
                     textarea.focus();
                     
-                    // Canvas'ı RTE sistemi ile güncelle - TAM UYUMLU
+                    // Canvas'ı güncelle
                     console.log('QE: Canvas link güncellemesi başlıyor...');
                     setTimeout(() => {
-                        try {
-                            if (!currentComponent) {
-                                console.error('QE: Current component bulunamadı');
-                                return;
-                            }
-                            
-                            // Canvas RTE sisteminin birebir aynısı
-                            console.log('QE: Component seçiliyor...');
-                            editorInstance.select(currentComponent);
-                            
-                            console.log('QE: RTE etkinleştiriliyor...');
-                            editorInstance.RichTextEditor.enable(currentComponent.view.el);
-                            
-                            // Textarea'dan tüm içeriği al ve HTML'e çevir
-                            let fullContent = textarea.value;
-                            console.log('QE: Tam içerik alındı:', fullContent);
-                            
-                            fullContent = fullContent
-                                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                                .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                                .replace(/_(.*?)_/g, '<u>$1</u>')
-                                .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" data-gjs-type="link">$1</a>')
-                                .replace(/\n/g, '<br>');
-                            
-                            console.log('QE: HTML formatına çevrildi:', fullContent);
-                            
-                            // Component içeriğini güncelle
-                            console.log('QE: Component view element güncelliyor...');
-                            currentComponent.view.el.innerHTML = fullContent;
-                            currentComponent.set('content', fullContent);
-                            
-                            console.log('QE: RTE devre dışı bırakılıyor...');
-                            editorInstance.RichTextEditor.disable();
-                            
-                            // Frame'den HTML'i al ve yeniden parse et - Canvas sistemi ile aynı
-                            setTimeout(() => {
-                                console.log('QE: Frame\'den HTML alınıyor...');
-                                const frameEl = editorInstance.Canvas.getFrameEl();
-                                if (frameEl) {
-                                    const frameDocument = frameEl.contentDocument || frameEl.contentWindow.document;
-                                    const bodyHtml = frameDocument.body.innerHTML;
-                                    
-                                    console.log('QE: Frame body HTML alındı, parse ediliyor...');
-                                    console.log('QE: Body HTML (ilk 200 karakter):', bodyHtml.substring(0, 200));
-                                    
-                                    // Canvas'taki link sistemi ile aynı - dökümanasyondaki gibi
-                                    editorInstance.setComponents(bodyHtml);
-                                    
-                                    console.log('QE: Editor yeniden parse edildi');
-                                    
-                                    // Doğrulama
-                                    setTimeout(() => {
-                                        const finalHtml = editorInstance.getHtml();
-                                        console.log('QE: Final HTML doğrulaması:', finalHtml.substring(0, 200));
-                                        
-                                        if (finalHtml.includes('href=')) {
-                                            console.log('QE: ✓ Link başarıyla model\'e kaydedildi');
-                                            if (window.StudioNotification) {
-                                                window.StudioNotification.success('Link başarıyla eklendi');
-                                            }
-                                        } else {
-                                            console.log('QE: ✗ Link model\'e kaydedilmedi');
-                                            if (window.StudioNotification) {
-                                                window.StudioNotification.error('Link kaydedilemedi');
-                                            }
-                                        }
-                                    }, 100);
-                                }
-                            }, 100);
-                            
-                        } catch (error) {
-                            console.error('QE: Link ekleme hatası:', error);
-                            if (window.StudioNotification) {
-                                window.StudioNotification.error('Link eklenirken hata: ' + error.message);
-                            }
+                        updateCanvasFromQuickEditor(false);
+                        updateToolbarState();
+                        
+                        if (window.StudioNotification) {
+                            window.StudioNotification.success('Link başarıyla eklendi');
                         }
                     }, 50);
-                    
-                    updateToolbarState();
                 },
                 editorInstance
             );

@@ -1,174 +1,102 @@
-/* Studio Quick Editor - Rich Text Editor Styles */
-
+/* Studio Quick Editor CSS */
 .quick-editor-container {
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-md);
-    background-color: var(--panel-bg);
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    margin-bottom: 20px;
     overflow: hidden;
-    margin-bottom: var(--spacing-md);
-    transition: var(--transition-normal);
-}
-
-.quick-editor-container.active {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px rgba(32, 107, 196, 0.1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .quick-editor-toolbar {
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    padding: 8px 12px;
     display: flex;
     align-items: center;
-    padding: var(--spacing-sm);
-    background-color: var(--panel-header);
-    border-bottom: 1px solid var(--border-color);
+    gap: 4px;
+}
+
+.toolbar-group {
+    display: flex;
     gap: 2px;
 }
 
-.quick-editor-toolbar .toolbar-group {
-    display: flex;
-    align-items: center;
-    gap: 2px;
-    margin-right: var(--spacing-sm);
-}
-
-.quick-editor-toolbar .toolbar-group:last-child {
-    margin-right: 0;
-}
-
-.quick-editor-toolbar .toolbar-divider {
+.toolbar-divider {
     width: 1px;
     height: 20px;
-    background-color: var(--border-color);
-    margin: 0 var(--spacing-sm);
+    background: #dee2e6;
+    margin: 0 8px;
 }
 
 .quick-editor-btn {
-    width: 28px;
-    height: 28px;
-    border: none;
-    background-color: transparent;
-    color: var(--secondary-color);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    padding: 6px 8px;
     cursor: pointer;
-    border-radius: var(--radius-sm);
+    color: #495057;
+    font-size: 14px;
+    transition: all 0.15s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: var(--font-sm);
-    transition: var(--transition-normal);
-    position: relative;
+    min-width: 32px;
+    height: 28px;
 }
 
 .quick-editor-btn:hover {
-    background-color: var(--hover-bg);
-    color: var(--primary-color);
+    background: #e9ecef;
+    border-color: #dee2e6;
+    color: #212529;
 }
 
 .quick-editor-btn.active {
-    background-color: var(--active-bg);
-    color: var(--primary-color);
+    background: #0d6efd;
+    border-color: #0d6efd;
+    color: #ffffff;
 }
 
-.quick-editor-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.quick-editor-btn:disabled:hover {
-    background-color: transparent;
-    color: var(--secondary-color);
+.quick-editor-btn:active {
+    transform: translateY(1px);
 }
 
 .quick-editor-content {
-    position: relative;
-    min-height: 120px;
-    max-height: 300px;
-    overflow-y: auto;
+    padding: 0;
 }
 
 .quick-editor-textarea {
     width: 100%;
     min-height: 120px;
-    max-height: 300px;
     border: none;
-    padding: var(--spacing-md);
-    font-family: inherit;
-    font-size: var(--font-md);
+    padding: 12px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 14px;
     line-height: 1.5;
-    color: var(--secondary-color);
-    background-color: var(--panel-bg);
     resize: vertical;
     outline: none;
-    transition: var(--transition-normal);
+    background: #ffffff;
 }
 
 .quick-editor-textarea:focus {
-    outline: none;
-    background-color: var(--panel-bg);
-}
-
-.quick-editor-textarea::placeholder {
-    color: var(--secondary-light);
-    font-style: italic;
-}
-
-.quick-editor-preview {
-    padding: var(--spacing-md);
-    min-height: 120px;
-    max-height: 300px;
-    overflow-y: auto;
-    line-height: 1.5;
-    color: var(--secondary-color);
-    background-color: var(--panel-bg);
-    word-wrap: break-word;
-}
-
-.quick-editor-preview:empty::before {
-    content: "Metin burada görünecek...";
-    color: var(--secondary-light);
-    font-style: italic;
-}
-
-.quick-editor-preview a {
-    color: var(--primary-color);
-    text-decoration: underline;
-}
-
-.quick-editor-preview a:hover {
-    color: var(--primary-hover);
-}
-
-.quick-editor-preview strong, .quick-editor-preview b {
-    font-weight: 600;
-}
-
-.quick-editor-preview em, .quick-editor-preview i {
-    font-style: italic;
-}
-
-.quick-editor-preview u {
-    text-decoration: underline;
+    box-shadow: inset 0 0 0 2px rgba(13, 110, 253, 0.1);
 }
 
 .quick-editor-status {
+    background: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+    padding: 6px 12px;
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    padding: var(--spacing-xs) var(--spacing-md);
-    background-color: var(--light-bg);
-    border-top: 1px solid var(--border-color);
-    font-size: var(--font-xs);
-    color: var(--secondary-light);
+    align-items: center;
+    font-size: 12px;
+    color: #6c757d;
 }
 
-.quick-editor-status .status-left {
+.status-left, .status-right {
     display: flex;
     align-items: center;
-    gap: var(--spacing-md);
-}
-
-.quick-editor-status .status-right {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
+    gap: 8px;
 }
 
 .quick-editor-char-count {
@@ -179,21 +107,17 @@
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background-color: var(--secondary-light);
-    transition: var(--transition-normal);
-}
-
-.quick-editor-sync-indicator.synced {
-    background-color: #22c55e;
+    background: #28a745;
+    display: inline-block;
 }
 
 .quick-editor-sync-indicator.syncing {
-    background-color: #f59e0b;
+    background: #ffc107;
     animation: pulse 1s infinite;
 }
 
 .quick-editor-sync-indicator.error {
-    background-color: #ef4444;
+    background: #dc3545;
 }
 
 @keyframes pulse {
@@ -201,118 +125,60 @@
     50% { opacity: 0.5; }
 }
 
-/* Selection helpers */
-.quick-editor-selection-info {
-    position: absolute;
-    top: -30px;
-    left: 0;
-    background-color: var(--primary-color);
-    color: white;
-    padding: 2px 8px;
-    border-radius: var(--radius-sm);
-    font-size: var(--font-xs);
-    white-space: nowrap;
-    z-index: 10;
-    opacity: 0;
-    transition: opacity 0.2s ease;
+/* Dark mode support */
+.dark .quick-editor-container {
+    background: #2d2d2d;
+    border-color: #404040;
 }
 
-.quick-editor-selection-info.show {
-    opacity: 1;
+.dark .quick-editor-toolbar {
+    background: #3a3a3a;
+    border-bottom-color: #404040;
 }
 
-/* Tooltip */
-.quick-editor-btn[title]:hover::after {
-    content: attr(title);
-    position: absolute;
-    bottom: -28px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 11px;
-    white-space: nowrap;
-    z-index: 1000;
-    pointer-events: none;
+.dark .quick-editor-btn {
+    color: #e9ecef;
 }
 
-.quick-editor-btn[title]:hover::before {
-    content: "";
-    position: absolute;
-    bottom: -8px;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 4px solid transparent;
-    border-bottom-color: rgba(0, 0, 0, 0.8);
-    z-index: 1001;
-    pointer-events: none;
+.dark .quick-editor-btn:hover {
+    background: #404040;
+    border-color: #495057;
+    color: #ffffff;
 }
 
-/* Responsive */
+.dark .quick-editor-textarea {
+    background: #2d2d2d;
+    color: #e9ecef;
+}
+
+.dark .quick-editor-status {
+    background: #3a3a3a;
+    border-top-color: #404040;
+    color: #adb5bd;
+}
+
+/* Mobile responsive */
 @media (max-width: 768px) {
     .quick-editor-toolbar {
+        padding: 6px 8px;
         flex-wrap: wrap;
-        gap: 1px;
-    }
-    
-    .quick-editor-toolbar .toolbar-group {
-        gap: 1px;
-        margin-right: var(--spacing-xs);
     }
     
     .quick-editor-btn {
-        width: 26px;
-        height: 26px;
-        font-size: 11px;
+        padding: 4px 6px;
+        min-width: 28px;
+        height: 24px;
+        font-size: 12px;
+    }
+    
+    .toolbar-divider {
+        height: 16px;
+        margin: 0 4px;
     }
     
     .quick-editor-status {
-        font-size: 10px;
-        padding: var(--spacing-xs);
-    }
-}
-
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-    .dark .quick-editor-container {
-        background-color: #1f2937;
-        border-color: #374151;
-    }
-    
-    .dark .quick-editor-toolbar {
-        background-color: #111827;
-        border-color: #374151;
-    }
-    
-    .dark .quick-editor-btn {
-        color: #9ca3af;
-    }
-    
-    .dark .quick-editor-btn:hover {
-        background-color: #374151;
-        color: #60a5fa;
-    }
-    
-    .dark .quick-editor-btn.active {
-        background-color: #1e40af;
-        color: #dbeafe;
-    }
-    
-    .dark .quick-editor-textarea {
-        background-color: #1f2937;
-        color: #f3f4f6;
-    }
-    
-    .dark .quick-editor-preview {
-        background-color: #1f2937;
-        color: #f3f4f6;
-    }
-    
-    .dark .quick-editor-status {
-        background-color: #111827;
-        border-color: #374151;
-        color: #6b7280;
+        flex-direction: column;
+        gap: 4px;
+        align-items: stretch;
     }
 }

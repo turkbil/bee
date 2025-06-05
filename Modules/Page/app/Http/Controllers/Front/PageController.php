@@ -27,47 +27,47 @@ class PageController extends Controller
             ->firstOrFail();
 
         // Standard gösterim mantığını kullan
-        return $this->show($page->slug);
+        return $this->show($page->slug, true);
     }
 
     public function index()
     {
-        $pages = Page::where('is_active', true)
+        $items = Page::where('is_active', true)
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
         try {
             // Modül adıyla tema yolunu al
             $viewPath = $this->themeService->getThemeViewPath('index', 'page');
-            return view($viewPath, compact('pages'));
+            return view($viewPath, compact('items'));
         } catch (\Exception $e) {
             // Hatayı logla
             Log::error("Theme Error: " . $e->getMessage());
             
             // Fallback view'a yönlendir
-            return view('page::front.index', compact('pages'));
+            return view('page::front.index', compact('items'));
         }
     }
 
-    public function show($slug)
+    public function show($slug, $is_homepage = false)
     {
-        $page = Page::where('slug', $slug)
+        $item = Page::where('slug', $slug)
             ->where('is_active', true)
             ->firstOrFail();
 
         // Sayfa görüntüleme sayısını arttır
-        views($page)->record();
+        views($item)->record();
 
         try {
             // Modül adıyla tema yolunu al
             $viewPath = $this->themeService->getThemeViewPath('show', 'page');
-            return view($viewPath, compact('page'));
+            return view($viewPath, compact('item', 'is_homepage'));
         } catch (\Exception $e) {
             // Hatayı logla
             Log::error("Theme Error: " . $e->getMessage());
             
             // Fallback view'a yönlendir
-            return view('page::front.show', compact('page'));
+            return view('page::front.show', compact('item', 'is_homepage'));
         }
     }
 }

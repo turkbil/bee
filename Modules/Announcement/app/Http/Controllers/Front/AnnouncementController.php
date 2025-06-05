@@ -5,6 +5,7 @@ use Illuminate\Routing\Controller;
 use Modules\Announcement\App\Models\Announcement;
 use App\Services\ThemeService;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Log;
 
 class AnnouncementController extends Controller
 {
@@ -17,42 +18,42 @@ class AnnouncementController extends Controller
 
     public function index()
     {
-        $announcements = Announcement::where('is_active', true)
+        $items = Announcement::where('is_active', true)
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
         try {
             // Modül adıyla tema yolunu al
             $viewPath = $this->themeService->getThemeViewPath('index', 'announcement');
-            return view($viewPath, compact('announcements'));
+            return view($viewPath, compact('items'));
         } catch (\Exception $e) {
             // Hatayı logla
-            \Log::error("Theme Error: " . $e->getMessage());
+            Log::error("Theme Error: " . $e->getMessage());
             
             // Fallback view'a yönlendir
-            return view('announcement::front.index', compact('announcements'));
+            return view('announcement::front.index', compact('items'));
         }
     }
 
     public function show($slug)
     {
-        $announcement = Announcement::where('slug', $slug)
+        $item = Announcement::where('slug', $slug)
             ->where('is_active', true)
             ->firstOrFail();
 
         // Duyuru görüntüleme sayısını arttır
-        views($announcement)->record();
+        views($item)->record();
 
         try {
             // Modül adıyla tema yolunu al
             $viewPath = $this->themeService->getThemeViewPath('show', 'announcement');
-            return view($viewPath, compact('announcement'));
+            return view($viewPath, compact('item'));
         } catch (\Exception $e) {
             // Hatayı logla
-            \Log::error("Theme Error: " . $e->getMessage());
+            Log::error("Theme Error: " . $e->getMessage());
             
             // Fallback view'a yönlendir
-            return view('announcement::front.show', compact('announcement'));
+            return view('announcement::front.show', compact('item'));
         }
     }
 }

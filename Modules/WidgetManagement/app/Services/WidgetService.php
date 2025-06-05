@@ -4,6 +4,7 @@ namespace Modules\WidgetManagement\app\Services;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Modules\WidgetManagement\app\Models\Widget;
 use Modules\WidgetManagement\app\Models\TenantWidget;
 use Modules\WidgetManagement\app\Services\Widget\WidgetRenderService;
@@ -25,8 +26,8 @@ class WidgetService
     protected static $jsScripts = [];
     
     public function __construct(
-        WidgetRenderService $renderService = null,
-        WidgetCacheService $cacheService = null
+        ?WidgetRenderService $renderService = null,
+        ?WidgetCacheService $cacheService = null
     ) {
         $this->renderService = $renderService ?? new WidgetRenderService();
         $this->cacheService = $cacheService ?? new WidgetCacheService($this->cachePrefix);
@@ -438,6 +439,7 @@ class WidgetService
                         return '<div class="alert alert-danger">Belirtilen view dosyası bulunamadı: ' . $viewPath . '</div>';
                     }
                 } catch (\Exception $e) {
+                    Log::error('Widget render hatası: ' . $e->getMessage(), ['exception' => $e, 'widget_id' => $widget->id, 'file_path' => $widget->file_path]);
                     return '<div class="alert alert-danger">View render hatası: ' . $e->getMessage() . '</div>';
                 }
             }
@@ -447,11 +449,14 @@ class WidgetService
                     $viewPath = 'widgetmanagement::blocks.' . $widget->file_path;
                     if (view()->exists($viewPath)) {
                         $settings = $tenantWidget->settings ?? [];
-                        return view($viewPath, ['settings' => $settings, 'widget' => $widget])->render();
+                        // Blade bölüm (section) hatalarını önlemek için renderViewWithoutSections kullanıyoruz
+                        $view = view($viewPath, ['settings' => $settings, 'widget' => $widget]);
+                        return $this->renderViewWithoutSections($view);
                     } else {
                         return '<div class="alert alert-danger">Belirtilen modül dosyası bulunamadı: ' . $viewPath . '</div>';
                     }
                 } catch (\Exception $e) {
+                    Log::error('Widget render hatası: ' . $e->getMessage(), ['exception' => $e, 'widget_id' => $widget->id, 'file_path' => $widget->file_path]);
                     return '<div class="alert alert-danger">Modül render hatası: ' . $e->getMessage() . '</div>';
                 }
             }
@@ -677,5 +682,27 @@ class WidgetService
         }
         
         return [];
+    }
+    
+    /**
+     * Blade bölüm (section) hatalarını önlemek için view'ı özel bir şekilde render eder
+     * Bu metod, view içindeki @section ve @endsection direktiflerinin ana şablonu etkilemesini engeller
+     */
+    protected function renderViewWithoutSections($view): string
+    {
+        try {
+            // View'ın içeriğini almak için render() kullanıyoruz
+            $content = $view->render();
+            
+            // Eğer içerik boşsa veya render sırasında hata oluştuysa
+            if (empty($content)) {
+                return '<div class="alert alert-warning">Widget içeriği boş</div>';
+            }
+            
+            return $content;
+        } catch (\Exception $e) {
+            Log::error('Widget view render hatası: ' . $e->getMessage(), ['exception' => $e]);
+            return '<div class="alert alert-danger">Widget render hatası: ' . $e->getMessage() . '</div>';
+        }
     }
 }

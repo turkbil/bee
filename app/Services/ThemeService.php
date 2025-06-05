@@ -48,7 +48,7 @@ class ThemeService
         
         // 1. Modül içerisindeki tema view'ı - YENİ YAPI
         if ($module) {
-            $moduleThemeView = "{$module}-themes.{$themeName}.{$view}";
+            $moduleThemeView = "{$module}::front.themes.{$themeName}.{$view}";
             if (View::exists($moduleThemeView)) {
                 Log::debug("Using module theme view: {$moduleThemeView}");
                 return $moduleThemeView;

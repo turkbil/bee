@@ -2,7 +2,7 @@
 use Modules\Page\app\Models\Page;
 
 $widgetTitle = $settings['widget_title'] ?? 'Son Sayfalar';
-$itemLimit = (int) ($settings['itemLimit'] ?? $settings['page_limit'] ?? $settings['limit']);
+$itemLimit = (int) ($settings['itemLimit'] ?? $settings['page_limit'] ?? $settings['limit'] ?? 5);
 if ($itemLimit <= 0) {
     $itemLimit = 5;
 }
@@ -14,15 +14,12 @@ $pages = Page::query()
     ->get();
 ?>
 
-<div class="recent-pages-widget bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
-    @if(!empty($widgetTitle))
-        <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-white">{{ $widgetTitle }}</h2>
-    @endif
+<div class="recent-pages-widget p-4">
 
     @if($pages->count() > 0)
         <ul class="space-y-2">
             @foreach($pages as $page)
-                <li class="pb-2 border-b border-gray-100 dark:border-gray-700 last:border-b-0">
+                <li class="pb-2">
                     <a href="{{ url($page->slug) }}" 
                        class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary-400 transition-colors duration-300">
                         {{ $page->title }}

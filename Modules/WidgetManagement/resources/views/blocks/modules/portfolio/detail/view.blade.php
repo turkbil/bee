@@ -62,10 +62,10 @@ if ($projectId) {
 
 @endphp
 
-<div class="portfolio-detail-widget p-4 bg-white dark:bg-gray-800 rounded-lg shadow">
+<div class="portfolio-detail-widget p-4">
     @if($item)
         <article class="portfolio-item-detail">
-            <header class="mb-4">
+            <header class="mb-3">
                 <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">{{ $item->title }}</h1>
                 @if($item->relationLoaded('portfolioCategory') && $item->portfolioCategory)
                     <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
@@ -91,7 +91,7 @@ if ($projectId) {
                     $imageUrl = 'https://placehold.co/800x450?text=' . urlencode($item->title);
                 }
             @endphp
-            <div class="mb-6 rounded-lg overflow-hidden shadow-md">
+            <div class="mb-4 overflow-hidden">
                 <img src="{{ $imageUrl }}" alt="{{ $item->title }}" class="w-full h-auto object-cover max-h-[500px]">
             </div>
 
@@ -99,13 +99,13 @@ if ($projectId) {
                 {!! $item->body !!}
             </div>
 
-            <footer class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+            <footer class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
                 <p class="text-sm text-gray-600 dark:text-gray-400">Bu içeriği faydalı buldunuz mu?</p>
             </footer>
 
         </article>
     @else
-        <div class="bg-yellow-100 dark:bg-yellow-700 border-l-4 border-yellow-500 dark:border-yellow-400 text-yellow-700 dark:text-yellow-100 p-4 rounded-md" role="alert">
+        <div class="text-yellow-700 dark:text-yellow-100 p-4 border-t-4 border-yellow-500 dark:border-yellow-400" role="alert">
             <div class="flex">
                 <div class="py-1">
                     <svg class="fill-current h-6 w-6 text-yellow-500 dark:text-yellow-100 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zM9 11v2h2v-2H9zm0-6v5h2V5H9z"/></svg>

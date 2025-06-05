@@ -7,5 +7,5 @@ use Modules\Announcement\App\Http\Controllers\Front\AnnouncementController;
 Route::middleware(['web'])
     ->group(function () {
         Route::get('/announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
-        Route::get('/announcement/{slug}', [AnnouncementController::class, 'show'])->name('announcements.show');
+        Route::get('/announcements/{slug}', [AnnouncementController::class, 'show'])->name('announcements.show');
     });

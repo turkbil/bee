@@ -1,6 +1,6 @@
 @php
     $widgetTitle = $settings['widget_title'] ?? 'Portfolyolar';
-    $itemLimit = (int) ($settings['itemLimit'] ?? $settings['portfolio_limit'] ?? $settings['limit']);
+    $itemLimit = (int) ($settings['itemLimit'] ?? $settings['portfolio_limit'] ?? $settings['limit'] ?? 5);
     if ($itemLimit <= 0) {
         $itemLimit = 5;
     }
@@ -19,17 +19,7 @@
 
     $items = $itemsQuery->orderBy('created_at', 'desc')->limit($itemLimit)->get();
 
-    // DEBUG LOG: Widget önizleme veri kontrolü
-    \Log::info('Portfolio Widget Debug', [
-        'categorySlug' => $categorySlug,
-        'itemLimit' => $itemLimit,
-        'columns' => $columns,
-        'items_count' => $items->count(),
-        'item_titles' => $items->pluck('title')->toArray(),
-        'portfolio_ids' => $items->pluck('portfolio_id')->toArray(),
-        'query_sql' => $itemsQuery->toSql(),
-        'query_bindings' => $itemsQuery->getBindings(),
-    ]);
+    // Debug log kaldırıldı
 
     $gridClass = 'grid-cols-1'; // Mobil için varsayılan
     if ($columns == '2') {
@@ -42,16 +32,12 @@
 
 @endphp
 
-<div class="portfolio-list-widget bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
-    @if(!empty($widgetTitle))
-        <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-white">{{ $widgetTitle }}</h2>
-    @endif
-
+<div class="portfolio-list-widget p-4">
     @if($items->count() > 0)
-        <div class="grid {{ $gridClass }} gap-6">
+        <div class="grid {{ $gridClass }} gap-4">
             @foreach($items as $item)
-                <div class="portfolio-item group bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                    <a href="{{ url('portfolio/' . $item->slug) }}" class="block">
+                <div class="portfolio-item group overflow-hidden hover:shadow-sm transition-shadow duration-300">
+                    <a href="{{ route('portfolios.show', $item->slug) }}" class="block">
                         @php
                             $imageUrl = null;
                             if ($item->image) {
@@ -66,7 +52,7 @@
                     </a>
                     <div class="p-4">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">
-                            <a href="{{ url('portfolio/' . $item->slug) }}" class="hover:text-primary dark:hover:text-primary-400 transition-colors duration-300">
+                            <a href="{{ route('portfolios.show', $item->slug) }}" class="hover:text-primary dark:hover:text-primary-400 transition-colors duration-300">
                                 {{ $item->title }}
                             </a>
                         </h3>
@@ -78,7 +64,7 @@
                         <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
                             {{ \Illuminate\Support\Str::limit(strip_tags($item->body), 80) }}
                         </p>
-                        <a href="{{ url('portfolio/' . $item->slug) }}" class="text-sm text-primary dark:text-primary-400 hover:underline font-medium">
+                        <a href="{{ route('portfolios.show', $item->slug) }}" class="text-sm text-primary dark:text-primary-400 hover:underline font-medium">
                             Devamını Oku &rarr;
                         </a>
                     </div>
@@ -86,7 +72,7 @@
             @endforeach
         </div>
     @else
-        <div class="text-center py-8">
+        <div class="text-center py-6 border-t-4 border-primary-500 dark:border-primary-400">
             <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
             </svg>

@@ -185,31 +185,35 @@ class ShortcodeParser
      * @param array $params Parametreler
      * @return string Render edilmiş HTML
      */
-    protected function renderModuleWidget(int $id, array $params = []): string
+        protected function renderModuleWidget(int $id, array $params = []): string
     {
         try {
-            $widget = Widget::where('id', $id)->where('type', 'module')->where('is_active', true)->first();
-            
-            if (!$widget) {
+            $widgetModel = \Modules\WidgetManagement\App\Models\Widget::where('id', $id)
+                            ->where('type', 'module')
+                            ->where('is_active', true)
+                            ->first();
+
+            if (!$widgetModel) {
+                \Illuminate\Support\Facades\Log::warning("Module Widget (base) '{$id}' bulunamadı veya aktif değil.");
                 return "<!-- Module Widget '{$id}' bulunamadı -->";
             }
-            
-            $viewPath = 'widgetmanagement::blocks.' . $widget->file_path;
-            try {
-                // Module widget'ı direkt render et
-                $settings = [
-                    'title' => $widget->name,
-                    'unique_id' => Str::random(),
-                    'show_description' => true
-                ];
-                
-                return \View::make($viewPath, array_merge($settings, $params))->render();
-            } catch (\Throwable $e) {
-                \Log::error("Module widget render hatası: " . $e->getMessage());
-                return "<!-- Module widget render hatası: {$id} -->";
+
+            // Bu widget için TenantWidget'ı bul veya oluştur.
+            // findOrCreateTenantWidget, $params'ı (kısa kod parametreleri) kullanarak
+            // TenantWidget'ın settings'ini güncelleyebilir veya oluşturabilir.
+            $tenantWidget = $this->findOrCreateTenantWidget($widgetModel, $params);
+
+            if (!$tenantWidget) {
+                \Illuminate\Support\Facades\Log::error("Module TenantWidget '{$id}' için oluşturulamadı veya bulunamadı.");
+                return "<!-- Module Widget '{$id}' yüklenemedi -->";
             }
+            
+            // WidgetService'i kullanarak render et
+            $widgetService = app('widget.service');
+            return $widgetService->renderSingleWidget($tenantWidget);
+
         } catch (\Exception $e) {
-            Log::error("Module widget kısa kodu işlenirken hata: " . $e->getMessage(), [
+            \Illuminate\Support\Facades\Log::error("Module widget kısa kodu işlenirken hata (ID: {$id}): " . $e->getMessage(), [
                 'id' => $id,
                 'params' => $params,
                 'trace' => $e->getTraceAsString()
@@ -266,7 +270,7 @@ class ShortcodeParser
         
         // Yeni tenant widget oluştur
         $settings = array_merge([
-            'widget.title' => $widget->name,
+            'widget_title' => $widget->name,
             'widget.unique_id' => $uniqueId ?? Str::uuid()->toString(),
         ], $params);
         

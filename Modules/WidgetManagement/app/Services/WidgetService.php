@@ -5,6 +5,7 @@ namespace Modules\WidgetManagement\app\Services;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Modules\WidgetManagement\app\Models\Widget;
 use Modules\WidgetManagement\app\Models\TenantWidget;
 use Modules\WidgetManagement\app\Services\Widget\WidgetRenderService;
@@ -373,6 +374,7 @@ class WidgetService
 
     public function processWidget(TenantWidget $tenantWidget): string
     {
+    
         if ($tenantWidget->is_custom) {
             $html = $tenantWidget->custom_html;
             $css = $tenantWidget->custom_css;
@@ -412,6 +414,7 @@ class WidgetService
             }, $html);
             
             $html = $this->renderService->processVariables($html, $settings);
+    
             
             // CSS değişkenlerini işle
             if (!empty($css)) {
@@ -484,6 +487,7 @@ class WidgetService
                     })->toArray();
                 
                 $html = $this->renderService->processItems($html, $items);
+                Log::debug('[WidgetService] processWidget: Standard widget HTML after processItems.', ['tenant_widget_id' => $tenantWidget->id, 'html' => Str::limit($html, 300)]);
                 
                 // Eğer CSS ve JS içerikleri varsa, onlar için de items işleme
                 if (!empty($css)) {
@@ -498,6 +502,7 @@ class WidgetService
             if ($widget->type === 'module') {
                 $moduleItems = $this->getModuleData($widget->data_source, $settings);
                 $html = $this->renderService->processModuleData($html, $moduleItems);
+                Log::debug('[WidgetService] processWidget: Standard widget HTML after processModuleData.', ['tenant_widget_id' => $tenantWidget->id, 'html' => Str::limit($html, 300)]);
                 
                 // Eğer CSS ve JS içerikleri varsa, onları da moduleItems için işle
                 if (!empty($css)) {
@@ -541,6 +546,7 @@ class WidgetService
             
             $html = $this->renderService->processVariables($html, $settings);
             $html = $this->renderService->processConditionalBlocks($html, $settings);
+            Log::debug('[WidgetService] processWidget: Standard widget HTML after processConditionalBlocks.', ['tenant_widget_id' => $tenantWidget->id, 'html' => Str::limit($html, 300)]);
             
             // CSS ve JS değişkenlerini işle
             if (!empty($css)) {
@@ -584,6 +590,7 @@ class WidgetService
             $this->addJsScript($js, $scriptId);
         }
         
+        Log::debug('[WidgetService] processWidget Bitti. Dönen HTML (tam):', ['tenant_widget_id' => $tenantWidget->id, 'html' => $html]);
         return $html;
     }
     

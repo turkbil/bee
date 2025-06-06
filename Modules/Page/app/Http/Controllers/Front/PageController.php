@@ -49,11 +49,22 @@ class PageController extends Controller
         }
     }
 
-    public function show($slug, $is_homepage = false)
+    public function show($slug, $is_homepage_context = false)
     {
         $item = Page::where('slug', $slug)
             ->where('is_active', true)
             ->firstOrFail();
+
+        // Eğer bu sayfa veritabanında ana sayfa olarak işaretlenmişse ($item->is_homepage == true)
+        // VE bu 'show' metodu, ana sayfa route'u (`homepage()` metodu) tarafından çağrılmadıysa
+        // (yani $is_homepage_context == false ise, bu doğrudan slug ile erişim demektir),
+        // o zaman ana sayfa route'una yönlendir.
+        if ($item->is_homepage && !$is_homepage_context) {
+            // Yönlendirme yapıldığını loglayalım.
+            Log::info("Page '{$slug}' is a designated homepage and accessed via its slug. Redirecting to the main homepage route.");
+            // 'homepage' isimli bir route olduğunu ve PageController@homepage metoduna işaret ettiğini varsayıyoruz.
+            return redirect()->route('home');
+        }
 
         // Sayfa görüntüleme sayısını arttır
         views($item)->record();
@@ -61,13 +72,15 @@ class PageController extends Controller
         try {
             // Modül adıyla tema yolunu al
             $viewPath = $this->themeService->getThemeViewPath('show', 'page');
-            return view($viewPath, compact('item', 'is_homepage'));
+            // View'a $item ve $is_homepage_context değişkenlerini gönderiyoruz.
+            // View içinde $is_homepage_context değişkeni $is_homepage olarak erişilebilir olacak şekilde ayarlıyoruz.
+            return view($viewPath, ['item' => $item, 'is_homepage' => $is_homepage_context]);
         } catch (\Exception $e) {
             // Hatayı logla
             Log::error("Theme Error: " . $e->getMessage());
             
             // Fallback view'a yönlendir
-            return view('page::front.show', compact('item', 'is_homepage'));
+            return view('page::front.show', ['item' => $item, 'is_homepage' => $is_homepage_context]);
         }
     }
 }

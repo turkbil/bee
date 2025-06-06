@@ -20,6 +20,10 @@ Bu proje, Laravel 11 ile geliştirilmiş, modüler ve çok kiracılı (multi-ten
 
 ## Sürüm Geçmişi
 
+### v0.7.0 (2025-06-05) - Widget Rendering Düzeltmesi ve Log Temizliği
+- **Widget Rendering Düzeltmesi:** Ana sayfadaki widget'larda ve diğer widget içeren sayfalarda oluşan fazladan kapanış `</div>` etiketi sorunu giderildi. Bu sorun, `ShortcodeParser` içerisindeki `HTML_MODULE_WIDGET_PATTERN` adlı regex deseninin widget yer tutucularını eksik eşleştirmesinden kaynaklanıyordu. Desen, widget'ın tüm dış `div` yapısını kapsayacak şekilde güncellenerek sorun çözüldü.
+- **Log Temizliği:** Hata ayıklama sürecinde `ShortcodeParser.php` ve `WidgetServiceProvider.php` dosyalarına eklenen tüm geçici `Log::debug`, `Log::error` ve `Log::warning` çağrıları kaldırıldı. Bu sayede kod tabanı daha temiz ve stabil hale getirildi.
+
 ### v0.3 (2025-05-25)
 - Portfolio ve Page modülü widget'larında limit değeri sıfır veya geçersiz geldiğinde varsayılan olarak 5 atanacak şekilde kodlar güncellendi.
 - Artık tüm widget'larda "öğe bulunamadı" hatası alınmaz, örnek veri varsa otomatik listelenir.

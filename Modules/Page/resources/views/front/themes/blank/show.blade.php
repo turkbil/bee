@@ -1,19 +1,18 @@
 @extends('page::front.themes.blank.layouts.app')
 
 @section('module_content')
-<!-- DEBUG: IS_HOMEPAGE IS {{ isset($is_homepage) ? ($is_homepage ? 'TRUE' : 'FALSE') : 'NOT SET' }} -->
 @if(isset($is_homepage) && $is_homepage)
-@parsewidgets($item->body)
-    
-    @if(isset($item->js))
+    <div class="homepage-widget-wrapper">@parsewidgets($item->body)</div>
+
+    @if(!empty(trim($item->custom_js ?? '')))
     <script>
-        {!! $item->js !!}
+        {{ $item->custom_js }}
     </script>
     @endif
-    
-    @if(isset($item->css))
+
+    @if(!empty(trim($item->custom_css ?? '')))
     <style>
-        {!! $item->css !!}
+        {{ $item->custom_css }}
     </style>
     @endif
 @else
@@ -41,16 +40,18 @@
             </div>
 
             <div class="content prose max-w-none dark:prose-invert text-gray-800 dark:text-gray-200">
-                @parsewidgets($item->body)
+                <div class="bg-white dark:bg-gray-800 shadow sm:rounded-lg p-6 transition-colors duration-300">
+        @parsewidgets($item->body)
+    </div>
             </div>
             
-            @if(isset($item->js))
+            @if(!empty(trim($item->js ?? '')))
             <script>
                 {!! $item->js !!}
             </script>
             @endif
             
-            @if(isset($item->css))
+            @if(!empty(trim($item->css ?? '')))
             <style>
                 {!! $item->css !!}
             </style>

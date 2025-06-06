@@ -330,6 +330,7 @@ class WidgetCategorySeeder extends Seeder
         $icons = [
             'page' => 'fa-file-alt',
             'portfolio' => 'fa-briefcase',
+            'announcement' => 'fa-announcement',
             'blog' => 'fa-blog',
             'gallery' => 'fa-images',
             'contact' => 'fa-envelope',

@@ -8,6 +8,8 @@ use Modules\WidgetManagement\App\Support\ShortcodeParser;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\View;
 use Modules\WidgetManagement\app\Services\WidgetService;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class WidgetServiceProvider extends ServiceProvider
 {
@@ -134,18 +136,29 @@ class WidgetServiceProvider extends ServiceProvider
      */
     public function resolveWidgetContent($content)
     {
+
+        $replacements_done = 0;
+
         // Widget embed pattern - data-tenant-widget-id'yi bul ve widget içeriğini ekle
         $pattern = '/<div[^>]*data-tenant-widget-id="(\d+)"[^>]*>.*?<div[^>]*id="widget-content-\d+"[^>]*>.*?<\/div><\/div>/s';
         
-        return preg_replace_callback($pattern, function($matches) {
+        $resolvedContent = preg_replace_callback($pattern, function($matches) use (&$replacements_done) {
             $widgetId = $matches[1];
+
+            $replacements_done++;
             
             // Widget içeriğini direkt olarak render et
             if (function_exists('widget_by_id')) {
-                return widget_by_id($widgetId);
+                $widgetHtml = widget_by_id($widgetId);
+
+                return $widgetHtml;
             }
             
+
             return "<!-- Widget ID: $widgetId (Widget helper fonksiyonu bulunamadı) -->";
         }, $content);
+
+
+        return $resolvedContent;
     }
 }

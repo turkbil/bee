@@ -2,7 +2,7 @@
 
 use Modules\ModuleManagement\App\Services\TenantModuleSettingsService;
 
-if (!function_exists('module_route')) {
+if (!function_exists('url')) {
     /**
      * Modül için özelleştirilmiş route slug'ını döndürür
      * 
@@ -11,7 +11,7 @@ if (!function_exists('module_route')) {
      * @param array $parameters
      * @return string
      */
-    function module_route(string $moduleName, string $routeType = 'index_slug', array $parameters = []): string
+    function url(string $moduleName, string $routeType = 'index_slug', array $parameters = []): string
     {
         $service = app(TenantModuleSettingsService::class);
         $slug = $service->getRouteSlug($moduleName, $routeType);
@@ -40,7 +40,7 @@ if (!function_exists('module_url')) {
      */
     function module_url(string $moduleName, string $routeType = 'index_slug', array $parameters = []): string
     {
-        $path = module_route($moduleName, $routeType, $parameters);
+        $path = url($moduleName, $routeType, $parameters);
         return url($path);
     }
 }

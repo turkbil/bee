@@ -40,6 +40,7 @@ class ModuleSettingsComponent extends Component
         $this->defaultRoutes = $this->settingsService->getModuleDefaults($this->module->name)['routes'] ?? [];
         $config = $this->settingsService->getModuleConfig($this->module->name);
         $this->routeSettings = $config['routes'] ?? $this->defaultRoutes;
+        // routeSettings güncellendiğinde Blade inputları da güncellenir
     }
 
     public function saveRouteSetting($key, $value)
@@ -56,6 +57,8 @@ class ModuleSettingsComponent extends Component
 
         $settingKey = "routes.{$key}";
         $this->settingsService->setSetting($this->module->name, $settingKey, trim($value), 'string', "Route slug for {$key}");
+        // routeSettings dizisini güncelle
+        $this->routeSettings[$key] = trim($value);
         
         $this->dispatch('toast', [
             'title' => 'Başarılı!',
@@ -79,7 +82,7 @@ class ModuleSettingsComponent extends Component
             'message' => 'Route ayarları varsayılana sıfırlandı.',
             'type' => 'success',
         ]);
-        
+        $this->routeSettings = $this->defaultRoutes;
         $this->loadSettings();
     }
 

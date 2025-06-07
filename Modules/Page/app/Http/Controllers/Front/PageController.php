@@ -26,8 +26,20 @@ class PageController extends Controller
             ->where('is_active', true)
             ->firstOrFail();
 
-        // Standard gösterim mantığını kullan
-        return $this->show($page->slug, true);
+        // Sayfa görüntüleme sayısını arttır
+        views($page)->record();
+        
+        try {
+            // Modül adıyla tema yolunu al
+            $viewPath = $this->themeService->getThemeViewPath('show', 'page');
+            return view($viewPath, ['item' => $page, 'is_homepage' => true]);
+        } catch (\Exception $e) {
+            // Hatayı logla
+            Log::error("Theme Error: " . $e->getMessage());
+            
+            // Fallback view'a yönlendir
+            return view('page::front.show', ['item' => $page, 'is_homepage' => true]);
+        }
     }
 
     public function index()

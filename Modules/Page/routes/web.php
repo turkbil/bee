@@ -7,6 +7,6 @@ use Modules\Page\App\Http\Controllers\Front\PageController;
 Route::middleware(['web'])
     ->group(function () {
         Route::get('/', [PageController::class, 'homepage'])->name('home');
-        Route::get('/pages', [PageController::class, 'index'])->name('pages.index');
-        Route::get('/page/{slug}', [PageController::class, 'show'])->name('pages.show');
+        Route::get('/' . module_setting('page', 'routes.index_slug', 'pages'), [PageController::class, 'index'])->name('pages.index');
+        Route::get('/' . module_setting('page', 'routes.show_slug', 'page') . '/{slug}', [PageController::class, 'show'])->name('pages.show');
     });

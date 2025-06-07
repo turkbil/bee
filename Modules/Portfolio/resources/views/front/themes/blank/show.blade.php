@@ -1,6 +1,6 @@
-@extends('portfolio::front.themes.blank.layouts.app')
+@extends('themes.blank.layouts.app')
 
-@section('module_content')
+@section('content')
 <div class="container animate-fade-in">
     <article>
         <div class="relative">

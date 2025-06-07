@@ -114,6 +114,13 @@
                                 @endif
                                 @endif
 
+                                @if($module->type === 'content')
+                                <a href="{{ route('admin.modulemanagement.settings', $module->module_id) }}"
+                                    class="dropdown-item">
+                                    <i class="fas fa-link me-2"></i>Slug Ayarları
+                                </a>
+                                @endif
+
                                 <a href="{{ route('admin.modulemanagement.manage', $module->module_id) }}"
                                     class="dropdown-item">
                                     Düzenle
@@ -188,6 +195,11 @@
                                     class="badge bg-{{ $module->type === 'system' ? 'red' : ($module->type === 'management' ? 'yellow' : 'green') }}-lt">
                                     {{ ucfirst($module->type) }}
                                 </span>
+                                @if($module->type === 'content')
+                                <span class="badge bg-blue-lt">
+                                    <i class="fas fa-link fa-xs me-1"></i>Slug
+                                </span>
+                                @endif
                             </div>
                             <div class="d-flex align-items-center gap-3">
                                 <div class="pretty p-default p-curve p-toggle p-smooth ms-1">

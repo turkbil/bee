@@ -6,7 +6,9 @@ use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Modules\ModuleManagement\App\Http\Livewire\ModuleComponent;
 use Modules\ModuleManagement\App\Http\Livewire\ModuleManageComponent;
+use Modules\ModuleManagement\App\Http\Livewire\ModuleSettingsComponent;
 use Modules\ModuleManagement\App\Http\Livewire\Modals\DeleteModal;
+use Modules\ModuleManagement\App\Services\TenantModuleSettingsService;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -40,6 +42,7 @@ class ModuleManagementServiceProvider extends ServiceProvider
         // Livewire bileşenlerini kaydet
         Livewire::component('module-component', ModuleComponent::class);
         Livewire::component('module-manage-component', ModuleManageComponent::class);
+        Livewire::component('module-settings-component', ModuleSettingsComponent::class);
         Livewire::component('modals.delete-modal', DeleteModal::class);
         
         // Yeni modül eklendiğinde ve güncellendiğinde izinlerini otomatik oluştur ve admin'e ata
@@ -59,6 +62,11 @@ class ModuleManagementServiceProvider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
+        
+        // TenantModuleSettingsService'i singleton olarak kaydet
+        $this->app->singleton(TenantModuleSettingsService::class, function ($app) {
+            return new TenantModuleSettingsService();
+        });
     }
 
     /**

@@ -1,6 +1,6 @@
-@extends('portfolio::front.themes.blank.layouts.app')
+@extends('themes.blank.layouts.app')
 
-@section('module_content')
+@section('content')
 <div class="container animate-fade-in">
     <h1 class="text-3xl font-bold mb-6 text-center text-gray-800 dark:text-white">{{ $title ?? 'Portfolyo' }}</h1>
 

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Modules\ModuleManagement\App\Http\Livewire\ModuleComponent;
 use Modules\ModuleManagement\App\Http\Livewire\ModuleManageComponent;
+use Modules\ModuleManagement\App\Http\Livewire\ModuleSettingsComponent;
 
 Route::middleware(['web', 'auth', 'tenant'])
     ->prefix('admin')
@@ -17,5 +18,8 @@ Route::middleware(['web', 'auth', 'tenant'])
                 Route::get('/manage/{id?}', ModuleManageComponent::class)
                     ->middleware('module.permission:modulemanagement,update')
                     ->name('manage');
+                Route::get('/settings/{moduleId}', ModuleSettingsComponent::class)
+                    ->middleware('module.permission:modulemanagement,view')
+                    ->name('settings');
             });
     });

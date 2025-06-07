@@ -1,6 +1,6 @@
-@extends('portfolio::front.themes.blank.layouts.app')
+@extends('themes.blank.layouts.app')
 
-@section('module_content')
+@section('content')
 <div class="container animate-fade-in">
     <h1 class="text-2xl md:text-3xl font-bold mb-6 text-gray-900 dark:text-white">{{ $category->title }} Kategorisi</h1>
             

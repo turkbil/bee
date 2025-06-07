@@ -1,6 +1,6 @@
-@extends('page::front.themes.blank.layouts.app')
+@extends('themes.blank.layouts.app')
 
-@section('module_content')
+@section('content')
 @if(isset($is_homepage) && $is_homepage)
     <div class="homepage-widget-wrapper">@parsewidgets($item->body)</div>
 

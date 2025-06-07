@@ -6,6 +6,6 @@ use Modules\Announcement\App\Http\Controllers\Front\AnnouncementController;
 // Ön yüz rotaları
 Route::middleware(['web'])
     ->group(function () {
-        Route::get('/announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
-        Route::get('/announcements/{slug}', [AnnouncementController::class, 'show'])->name('announcements.show');
+        Route::get('/' . module_setting('announcement', 'routes.index_slug', 'announcements'), [AnnouncementController::class, 'index'])->name('announcements.index');
+        Route::get('/' . module_setting('announcement', 'routes.show_slug', 'announcement') . '/{slug}', [AnnouncementController::class, 'show'])->name('announcements.show');
     });

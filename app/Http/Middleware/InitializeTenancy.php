@@ -32,6 +32,13 @@ class InitializeTenancy extends BaseMiddleware
         
         $host = $request->getHost();
         
+        // Central domainleri config'den kontrol et
+        $centralDomains = config('tenancy.central_domains', []);
+        if (in_array($host, $centralDomains)) {
+            // Config'de tanımlı central domain ise tenancy başlatma
+            return $next($request);
+        }
+        
         try {
             // Domain bilgisini al
             $domain = DB::table('domains')->where('domain', $host)->first();
@@ -43,7 +50,7 @@ class InitializeTenancy extends BaseMiddleware
             // Tenant bilgilerini al
             $tenant = DB::table('tenants')
                 ->where('id', $domain->tenant_id)
-                ->first(['id', 'is_active']);
+                ->first(['id', 'central', 'is_active']);
             
             if (!$tenant) {
                 abort(404, 'Tenant bulunamadı');
@@ -54,7 +61,12 @@ class InitializeTenancy extends BaseMiddleware
                 return response()->view('errors.offline', ['domain' => $host], 503);
             }
             
-            // Tenant modelini al ve başlat - HER ZAMAN!
+            // Tenant central ise tenancy başlatma (eski davranış geri geldi)
+            if ($tenant->central) {
+                return $next($request);
+            }
+            
+            // Tenant modelini al ve başlat
             $tenantModel = Tenant::find($domain->tenant_id);
             
             if (!$tenantModel) {

@@ -48,13 +48,6 @@ class ModuleSlugSettingsComponent extends Component
     
     public function updateSlug($key, $value)
     {
-        Log::info('ModuleSlugSettings: Updating slug', [
-            'module' => $this->moduleName,
-            'key' => $key,
-            'old_value' => $this->slugs[$key] ?? null,
-            'new_value' => $value
-        ]);
-        
         $this->slugs[$key] = $value;
         $this->saveSettings();
         
@@ -100,10 +93,7 @@ class ModuleSlugSettingsComponent extends Component
             ]
         );
         
-        Log::info('ModuleSlugSettings: Settings saved', [
-            'module' => $this->moduleName,
-            'slugs' => $this->slugs
-        ]);
+        // Settings saved
     }
     
     public function render()

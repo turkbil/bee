@@ -10,15 +10,6 @@ class DynamicRouteService
 {
     public function handleDynamicRoute($slug1, $slug2 = null)
     {
-        $currentDatabase = \DB::connection()->getDatabaseName();
-        $currentDomain = request()->getHost();
-        
-        Log::info('DynamicRouteService: Handling dynamic route', [
-            'domain' => $currentDomain,
-            'database' => $currentDatabase,
-            'slug1' => $slug1,
-            'slug2' => $slug2
-        ]);
         
         // Page modülü kontrolü
         $pageIndexSlug = ModuleSlugService::getSlug('Page', 'index');

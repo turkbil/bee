@@ -80,7 +80,7 @@ class ModulePermissionMiddleware
             return redirect()->route('errors.403');
         }
         
-        Log::info("ModulePermissionMiddleware: User ID: {$user->id}, Email: {$user->email}, Module: {$moduleName}, Permission: {$permissionType}, Roles: " . implode(',', $user->getRoleNames()->toArray()));
+        // Log kaldırıldı
         
         // Root yetkisine sahip kullanıcı için hiçbir kısıtlama yok - AMA TENANT'A ATANMAMIŞ MODÜL KONTROLÜ VAR
         if ($user->hasRole('root')) {

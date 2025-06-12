@@ -37,7 +37,25 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         $this->routes(function () {
-            // Modül route'larını yükle ve otomatik middleware ekle
+            // Admin route'larını ÖNCELİKLİ yükle
+            if (file_exists(base_path('routes/admin/web.php'))) {
+                Route::middleware('web')
+                    ->group(base_path('routes/admin/web.php'));
+            }
+            
+            // Modül admin route'larını yükle
+            if (is_dir(base_path('Modules'))) {
+                $modules = array_diff(scandir(base_path('Modules')), ['.', '..']);
+                foreach ($modules as $module) {
+                    $adminRoute = base_path("Modules/{$module}/routes/admin.php");
+                    if (file_exists($adminRoute)) {
+                        Route::middleware('web')
+                            ->group($adminRoute);
+                    }
+                }
+            }
+            
+            // Modül web route'larını yükle
             if (is_dir(base_path('Modules'))) {
                 $modules = array_diff(scandir(base_path('Modules')), ['.', '..']);
                 foreach ($modules as $module) {
@@ -59,13 +77,7 @@ class RouteServiceProvider extends ServiceProvider
                 }
             }
         
-            // Admin route'larını yükle
-            if (file_exists(base_path('routes/admin/web.php'))) {
-                Route::middleware('web')
-                    ->group(base_path('routes/admin/web.php'));
-            }
-        
-            // Web route'larını yükle
+            // Web route'larını SON olarak yükle (dynamic route'lar burada)
             if (file_exists(base_path('routes/web.php'))) {
                 Route::middleware('web')
                     ->group(base_path('routes/web.php'));

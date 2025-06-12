@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Cache;
 use App\Http\Middleware\InitializeTenancy;
 
 // Genel admin rotaları - sadece roller tablosunda kaydı olan kullanıcılar için
-Route::middleware(['web', 'auth', 'tenant'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['web', 'auth', InitializeTenancy::class])->prefix('admin')->name('admin.')->group(function () {
     
     // Admin dashboard rotası - TÜM yetkilendirilmiş kullanıcılar için (editor, admin, root)
     Route::get('/dashboard', function () {
@@ -55,6 +55,6 @@ Route::middleware(['web', 'auth', 'tenant'])->prefix('admin')->name('admin.')->g
 });
 
 // Diğer admin routes - spesifik modül erişimleri için admin.access middleware'i kullanabilirsiniz
-Route::middleware(['web', 'auth', 'tenant', 'admin.access'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['web', 'auth', InitializeTenancy::class, 'admin.access'])->prefix('admin')->name('admin.')->group(function () {
     // Burada spesifik admin kontrolleri gerektiren rotaları tanımlayabilirsiniz
 });

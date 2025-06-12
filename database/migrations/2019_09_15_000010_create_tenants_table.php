@@ -28,6 +28,12 @@ class CreateTenantsTable extends Migration
             
             // İlave indeksler eklendi
             $table->index('title');
+            $table->index('created_at');
+            $table->index('updated_at');
+            
+            // Composite index'ler - Performans optimizasyonu
+            $table->index(['is_active', 'central'], 'tenants_active_central_idx');
+            $table->index(['theme_id', 'is_active'], 'tenants_theme_active_idx');
         });
     }
 

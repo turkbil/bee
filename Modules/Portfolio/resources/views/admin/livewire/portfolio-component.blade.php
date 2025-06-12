@@ -36,32 +36,6 @@
                             @endforeach
                         </select>
                     </div>
-                    <!-- Table Switch -->
-                    <div class="table-mode">
-                        <input type="checkbox" id="table-switch" class="table-switch" <?php echo
-                            (!isset($_COOKIE['tableCompact']) || $_COOKIE['tableCompact']=='1' ) ? 'checked' : '' ; ?>
-                        onchange="toggleTableMode(this.checked)">
-                        <div class="app">
-                            <div class="switch-content">
-                                <div class="switch-label"></div>
-                                <label for="table-switch">
-                                    <div class="toggle"></div>
-                                    <div class="names">
-                                        <p class="large" data-bs-toggle="tooltip" data-bs-placement="left"
-                                            title="Satırları daralt">
-                                            <i class="fa-thin fa-table-cells fa-lg fa-fade"
-                                                style="--fa-animation-duration: 2s;"></i>
-                                        </p>
-                                        <p class="small" data-bs-toggle="tooltip" data-bs-placement="left"
-                                            title="Satırları genişlet">
-                                            <i class="fa-thin fa-table-cells-large fa-lg fa-fade"
-                                                style="--fa-animation-duration: 2s;"></i>
-                                        </p>
-                                    </div>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
                     <!-- Sayfa Adeti Seçimi -->
                     <div style="min-width: 60px">
                         <select wire:model.live="perPage" class="form-select">
@@ -96,8 +70,8 @@
                                 Başlık
                             </button>
                         </th>
-                        <th>
-                            <button style="width: 160x"
+                        <th style="width: 160px">
+                            <button
                                 class="table-sort {{ $sortField === 'portfolio_category_id' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
                                 wire:click="sortBy('portfolio_category_id')">
                                 Kategori
@@ -108,13 +82,6 @@
                                 class="table-sort {{ $sortField === 'is_active' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
                                 wire:click="sortBy('is_active')">
                                 Durum
-                            </button>
-                        </th>
-                        <th class="text-center" style="width: 50px" data-bs-toggle="tooltip" data-bs-placement="top" title="Görüntülenme Sayısı">
-                            <button
-                                class="table-sort {{ $sortField === 'views_count' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
-                                wire:click="sortBy('views_count')">
-                                Hit
                             </button>
                         </th>
                         <th class="text-center" style="width: 120px">İşlemler</th>
@@ -192,11 +159,6 @@
                             </button>
                         </td>
                         <td class="text-center align-middle">
-                            <span class="badge" data-bs-toggle="tooltip" data-bs-placement="top" title="Görüntülenme Sayısı">
-                                {{ $portfolio->views_count ?? 0 }} 
-                            </span>
-                        </td>
-                        <td class="text-center align-middle">
                             <div class="container">
                                 <div class="row">
                                     <div class="col">
@@ -228,7 +190,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" class="text-center py-4">
+                        <td colspan="4" class="text-center py-4">
                             <div class="empty">
                                 <p class="empty-title">Kayıt bulunamadı</p>
                                 <p class="empty-subtitle text-muted">

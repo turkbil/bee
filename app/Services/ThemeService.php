@@ -5,6 +5,7 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 use Modules\ThemeManagement\App\Models\Theme;
 
 class ThemeService
@@ -19,25 +20,43 @@ class ThemeService
     protected function setActiveTheme()
     {
         try {
-            // Tenant-specific theme if available
+            // Cache key oluştur
+            $cacheKey = 'theme_service_active_theme';
+            
+            // Tenant varsa cache key'e tenant id ekle
             if (function_exists('tenant') && $t = tenant()) {
-                $theme = Theme::where('name', $t->theme)
-                              ->where('is_active', true)
-                              ->first();
-                if ($theme) {
-                    $this->activeTheme = $theme;
+                $cacheKey .= '_tenant_' . $t->id;
+                
+                // Tenant-specific theme cache'den kontrol et
+                $this->activeTheme = Cache::remember($cacheKey, now()->addHours(24), function() use ($t) {
+                    return Theme::where('name', $t->theme)
+                                  ->where('is_active', true)
+                                  ->first();
+                });
+                
+                if ($this->activeTheme) {
                     return;
                 }
             }
-            // Global default theme
-            $this->activeTheme = Theme::where('is_default', true)
-                ->where('is_active', true)
-                ->first() ?? new Theme([
+            
+            // Global default theme cache'den al
+            $globalCacheKey = 'theme_service_default_theme';
+            $this->activeTheme = Cache::remember($globalCacheKey, now()->addHours(24), function() {
+                return Theme::where('is_default', true)
+                    ->where('is_active', true)
+                    ->first();
+            });
+            
+            // Cache'de yoksa fallback kullan
+            if (!$this->activeTheme) {
+                $this->activeTheme = new Theme([
                     'name' => 'blank',
                     'folder_name' => 'blank'
                 ]);
+            }
+            
         } catch (\Exception $e) {
-            // Tenant database'de themes tablosu yoksa default theme kullan
+            // Hata durumunda fallback theme kullan
             Log::info('ThemeService: Using fallback theme due to error: ' . $e->getMessage());
             $this->activeTheme = new Theme([
                 'name' => 'blank',
@@ -83,5 +102,34 @@ class ThemeService
         // Tüm alternatifleri kontrol et ve logla
         Log::error("View not found for any path. Module: {$module}, View: {$view}, Theme: {$themeName}");
         throw new \Exception("View [{$view}] not found in any location.");
+    }
+
+    /**
+     * Theme cache'ini temizle
+     */
+    public function clearThemeCache()
+    {
+        Cache::forget('theme_service_default_theme');
+        
+        // Tenant cache'lerini de temizle
+        if (function_exists('tenant') && $t = tenant()) {
+            Cache::forget('theme_service_active_theme_tenant_' . $t->id);
+        }
+    }
+
+    /**
+     * Tüm theme cache'lerini temizle
+     */
+    public static function clearAllThemeCache()
+    {
+        Cache::forget('theme_service_default_theme');
+        
+        // Tenant cache pattern'ini temizle (Redis için)
+        if (Cache::getStore() instanceof \Illuminate\Cache\RedisStore) {
+            $keys = Cache::getRedis()->keys('theme_service_active_theme_tenant_*');
+            if (!empty($keys)) {
+                Cache::getRedis()->del($keys);
+            }
+        }
     }
 }

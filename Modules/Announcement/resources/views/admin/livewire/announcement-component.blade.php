@@ -16,7 +16,7 @@
             <!-- Ortadaki Loading -->
             <div class="col position-relative">
                 <div wire:loading
-                    wire:target="render, search, perAnnouncement, sortBy, gotoAnnouncement, previousAnnouncement, nextAnnouncement, delete, selectedItems, selectAll, bulkDelete, bulkToggleActive"
+                    wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, selectedItems, selectAll, bulkDelete, bulkToggleActive"
                     class="position-absolute top-50 start-50 translate-middle text-center"
                     style="width: 100%; max-width: 250px;">
                     <div class="small text-muted mb-2">Güncelleniyor...</div>
@@ -28,35 +28,9 @@
             <!-- Sağ Taraf (Switch ve Select) -->
             <div class="col">
                 <div class="d-flex align-items-center justify-content-end gap-3">
-                    <!-- Table Switch -->
-                    <div class="table-mode">
-                        <input type="checkbox" id="table-switch" class="table-switch" <?php echo
-                            (!isset($_COOKIE['tableCompact']) || $_COOKIE['tableCompact']=='1' ) ? 'checked' : '' ; ?>
-                        onchange="toggleTableMode(this.checked)">
-                        <div class="app">
-                            <div class="switch-content">
-                                <div class="switch-label"></div>
-                                <label for="table-switch">
-                                    <div class="toggle"></div>
-                                    <div class="names">
-                                        <p class="large" data-bs-toggle="tooltip" data-bs-placement="left"
-                                            title="Satırları daralt">
-                                            <i class="fa-thin fa-table-cells fa-lg fa-fade"
-                                                style="--fa-animation-duration: 2s;"></i>
-                                        </p>
-                                        <p class="small" data-bs-toggle="tooltip" data-bs-placement="left"
-                                            title="Satırları genişlet">
-                                            <i class="fa-thin fa-table-cells-large fa-lg fa-fade"
-                                                style="--fa-animation-duration: 2s;"></i>
-                                        </p>
-                                    </div>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Duyuru Adeti Seçimi -->
+                    <!-- Sayfa Adeti Seçimi -->
                     <div style="min-width: 70px">
-                        <select wire:model.live="perAnnouncement" class="form-select">
+                        <select wire:model.live="perPage" class="form-select">
                             <option value="10">10</option>
                             <option value="50">50</option>
                             <option value="100">100</option>
@@ -93,13 +67,6 @@
                                 class="table-sort {{ $sortField === 'is_active' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
                                 wire:click="sortBy('is_active')">
                                 Durum
-                            </button>
-                        </th>
-                        <th class="text-center" style="width: 50px" data-bs-toggle="tooltip" data-bs-placement="top" title="Görüntülenme Sayısı">
-                            <button
-                                class="table-sort {{ $sortField === 'views_count' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
-                                wire:click="sortBy('views_count')">
-                                Hit
                             </button>
                         </th>
                         <th class="text-center" style="width: 120px">İşlemler</th>
@@ -167,11 +134,6 @@
                                     @endif
                                 </div>
                             </button>
-                        </td>
-                        <td class="text-center align-middle">
-                            <span class="badge text-center align-middle">
-                                {{ $announcement->views_count ?? 0 }} 
-                            </span>
                         </td>
                         <td class="text-center align-middle">
                             <div class="container">

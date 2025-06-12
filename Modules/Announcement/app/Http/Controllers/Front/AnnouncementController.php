@@ -20,7 +20,7 @@ class AnnouncementController extends Controller
     {
         $items = Announcement::where('is_active', true)
             ->orderBy('created_at', 'desc')
-            ->paginate(10);
+            ->simplePaginate(10);
 
         try {
             // Modül adıyla tema yolunu al
@@ -41,8 +41,6 @@ class AnnouncementController extends Controller
             ->where('is_active', true)
             ->firstOrFail();
 
-        // Duyuru görüntüleme sayısını arttır
-        views($item)->record();
 
         try {
             // Modül adıyla tema yolunu al

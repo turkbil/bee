@@ -26,8 +26,6 @@ class PageController extends Controller
             ->where('is_active', true)
             ->firstOrFail();
 
-        // Sayfa görüntüleme sayısını arttır
-        views($page)->record();
         
         try {
             // Modül adıyla tema yolunu al
@@ -46,7 +44,7 @@ class PageController extends Controller
     {
         $items = Page::where('is_active', true)
             ->orderBy('created_at', 'desc')
-            ->paginate(10);
+            ->simplePaginate(10);
 
         try {
             // Modül adıyla tema yolunu al
@@ -78,8 +76,6 @@ class PageController extends Controller
             return redirect()->route('home');
         }
 
-        // Sayfa görüntüleme sayısını arttır
-        views($item)->record();
 
         try {
             // Modül adıyla tema yolunu al

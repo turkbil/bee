@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\UserManagement\App\Console\Commands;
+namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Modules\UserManagement\App\Models\Role;

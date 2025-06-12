@@ -19,9 +19,10 @@ class PortfolioController extends Controller
 
     public function index()
     {
-        $items = Portfolio::where('is_active', true)
+        $items = Portfolio::with(['category', 'media'])
+            ->where('is_active', true)
             ->orderBy('created_at', 'desc')
-            ->paginate(10);
+            ->simplePaginate(10);
 
         try {
             // Modül adıyla tema yolunu al
@@ -43,8 +44,6 @@ class PortfolioController extends Controller
             ->where('is_active', true)
             ->firstOrFail();
 
-        // Portfolyo görüntüleme sayısını arttır
-        views($item)->record();
 
         try {
             // Modül adıyla tema yolunu al
@@ -65,10 +64,11 @@ class PortfolioController extends Controller
             ->where('is_active', true)
             ->firstOrFail();
             
-        $items = Portfolio::where('portfolio_category_id', $category->portfolio_category_id)
+        $items = Portfolio::with(['category', 'media'])
+            ->where('portfolio_category_id', $category->portfolio_category_id)
             ->where('is_active', true)
             ->orderBy('created_at', 'desc')
-            ->paginate(10);
+            ->simplePaginate(10);
 
         try {
             // Modül adıyla tema yolunu al

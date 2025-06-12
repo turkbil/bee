@@ -48,14 +48,45 @@ class ModuleSlugSettingsComponent extends Component
     
     public function updateSlug($key, $value)
     {
-        $this->slugs[$key] = $value;
+        // Boş değer kontrolü
+        if (empty(trim($value))) {
+            $this->dispatch('toast', [
+                'title' => 'Hata!',
+                'message' => 'URL boş olamaz.',
+                'type' => 'error',
+            ]);
+            return;
+        }
+        
+        // URL temizleme
+        $cleanValue = $this->cleanSlug($value);
+        
+        // Çakışma kontrolü
+        if (ModuleSlugService::isSlugConflict($cleanValue, $this->moduleName, $key)) {
+            $this->dispatch('toast', [
+                'title' => 'URL Çakışması!',
+                'message' => "'{$cleanValue}' URL'i zaten başka bir modül tarafından kullanılıyor.",
+                'type' => 'error',
+            ]);
+            return;
+        }
+        
+        $this->slugs[$key] = $cleanValue;
         $this->saveSettings();
+        
+        // Cache'i temizle ki değişiklik anında görünsün
+        ModuleSlugService::clearCache();
         
         $this->dispatch('toast', [
             'title' => 'Başarılı!',
             'message' => ucfirst($key) . ' URL\'i güncellendi.',
             'type' => 'success',
         ]);
+    }
+    
+    protected function cleanSlug($value)
+    {
+        return strtolower(trim(preg_replace('/[^a-zA-Z0-9\-_çğıöşüÇĞIÖŞÜ]/', '', $value)));
     }
     
     public function resetSlug($key)
@@ -74,6 +105,9 @@ class ModuleSlugSettingsComponent extends Component
     {
         $this->slugs = $this->defaultSlugs;
         $this->saveSettings();
+        
+        // Cache'i temizle
+        ModuleSlugService::clearCache();
         
         $this->dispatch('toast', [
             'title' => 'Tümü Sıfırlandı!',

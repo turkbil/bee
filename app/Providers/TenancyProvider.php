@@ -25,7 +25,9 @@ class TenancyProvider extends ServiceProvider
             $prefix = 'tenant_' . $event->tenancy->tenant->id . ':';
             Config::set('database.redis.options.prefix', $prefix);
             RedisFacade::purge();
-            Cache::setPrefix($prefix);
+            
+            // Cache prefix ayarını config üzerinden yap
+            Config::set('cache.prefix', $prefix);
             
             // Tenant bilgisini session'a kaydet
             session(['current_tenant' => $event->tenancy->tenant]);

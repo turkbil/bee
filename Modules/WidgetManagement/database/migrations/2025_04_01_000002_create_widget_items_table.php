@@ -22,6 +22,13 @@ return new class extends Migration
                 ->references('id')
                 ->on('tenant_widgets')
                 ->onDelete('cascade');
+                
+            // İlave indeksler
+            $table->index('created_at');
+            $table->index('updated_at');
+            
+            // Composite index'ler - Performans optimizasyonu
+            $table->index(['tenant_widget_id', 'order'], 'widget_items_tenant_order_idx');
         });
     }
 

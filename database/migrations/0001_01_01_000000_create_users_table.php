@@ -21,6 +21,10 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+            
+            // Composite index'ler - Performans optimizasyonu
+            $table->index(['is_active', 'last_login_at'], 'users_active_last_login_idx');
+            $table->index(['email_verified_at', 'is_active'], 'users_verified_active_idx');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

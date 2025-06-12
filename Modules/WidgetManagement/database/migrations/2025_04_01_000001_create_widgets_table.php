@@ -49,6 +49,15 @@ return new class extends Migration
                   ->references('widget_category_id')
                   ->on('widget_categories')
                   ->onDelete('set null');
+                  
+            // İlave indeksler
+            $table->index('created_at');
+            $table->index('updated_at');
+            
+            // Composite index'ler - Performans optimizasyonu
+            $table->index(['is_active', 'type'], 'widgets_active_type_idx');
+            $table->index(['widget_category_id', 'is_active'], 'widgets_category_active_idx');
+            $table->index(['type', 'is_active', 'has_items'], 'widgets_type_active_items_idx');
         });
     }
 

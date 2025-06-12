@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 use App\Services\ModuleAccessService;
 use App\Helpers\TenantHelpers;
 
@@ -32,7 +33,10 @@ class AdminAccessMiddleware
         preg_match('/admin\/([a-zA-Z0-9_]+)/', $path, $matches);
         $moduleName = $matches[1] ?? null;
         
-        Log::info("Kullanıcı {$user->id} erişim deniyor: {$path}, Modül: {$moduleName}");
+        // Log sadece debug modunda - performans için
+        if (config('app.debug')) {
+            Log::debug("Admin erişim - User: {$user->id}, Path: {$path}, Module: {$moduleName}");
+        }
         
         // Root her yere erişebilir
         if ($user->isRoot()) {
@@ -51,8 +55,15 @@ class AdminAccessMiddleware
             
             // Tenant ise, tenant'a atanan modüllere erişebilir
             if (TenantHelpers::isTenant() && $moduleName) {
-                $module = $this->moduleAccessService->getModuleByName($moduleName);
-                if (!$module || !$this->moduleAccessService->isModuleAssignedToTenant($module->module_id, tenant()->id)) {
+                // Cache ile modül erişim kontrolü - 10 dakika
+                $cacheKey = "module_tenant_access:{$moduleName}:" . tenant()->id;
+                
+                $hasAccess = Cache::remember($cacheKey, 60 * 10, function() use ($moduleName) {
+                    $module = $this->moduleAccessService->getModuleByName($moduleName);
+                    return $module && $this->moduleAccessService->isModuleAssignedToTenant($module->module_id, tenant()->id);
+                });
+                
+                if (!$hasAccess) {
                     Log::warning("Admin kullanıcısı {$user->id} tenant'a atanmamış modüle erişmeye çalışıyor: {$moduleName}");
                     abort(403, 'Bu modül bu tenant\'a atanmamış.');
                 }

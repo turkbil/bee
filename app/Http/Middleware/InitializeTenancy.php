@@ -10,6 +10,7 @@ use Stancl\Tenancy\Tenancy;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 use App\Models\Tenant;
 
 class InitializeTenancy extends BaseMiddleware
@@ -40,34 +41,44 @@ class InitializeTenancy extends BaseMiddleware
         }
         
         try {
-            // Domain bilgisini al
-            $domain = DB::table('domains')->where('domain', $host)->first();
+            // Cache key oluştur - 15 dakika cache
+            $cacheKey = "tenant_domain_data:{$host}";
             
-            if (!$domain) {
+            $tenantData = Cache::remember($cacheKey, 60 * 15, function() use ($host) {
+                // Domain ve tenant bilgilerini tek sorguda al
+                $data = DB::table('domains')
+                    ->join('tenants', 'domains.tenant_id', '=', 'tenants.id')
+                    ->where('domains.domain', $host)
+                    ->select([
+                        'domains.tenant_id',
+                        'tenants.id',
+                        'tenants.central',
+                        'tenants.is_active'
+                    ])
+                    ->first();
+                    
+                return $data ? (array) $data : null;
+            });
+            
+            if (!$tenantData) {
                 abort(404, 'Domain bulunamadı');
             }
             
-            // Tenant bilgilerini al
-            $tenant = DB::table('tenants')
-                ->where('id', $domain->tenant_id)
-                ->first(['id', 'central', 'is_active']);
-            
-            if (!$tenant) {
-                abort(404, 'Tenant bulunamadı');
-            }
-            
             // Tenant pasif ise offline sayfasına yönlendir
-            if (!$tenant->is_active) {
+            if (!$tenantData['is_active']) {
                 return response()->view('errors.offline', ['domain' => $host], 503);
             }
             
-            // Tenant central ise tenancy başlatma (eski davranış geri geldi)
-            if ($tenant->central) {
+            // Tenant central ise tenancy başlatma
+            if ($tenantData['central']) {
                 return $next($request);
             }
             
-            // Tenant modelini al ve başlat
-            $tenantModel = Tenant::find($domain->tenant_id);
+            // Tenant modelini cache'den al
+            $tenantCacheKey = "tenant_model:{$tenantData['tenant_id']}";
+            $tenantModel = Cache::remember($tenantCacheKey, 60 * 30, function() use ($tenantData) {
+                return Tenant::find($tenantData['tenant_id']);
+            });
             
             if (!$tenantModel) {
                 abort(404, 'Tenant modeli bulunamadı');

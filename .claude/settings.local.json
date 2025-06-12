@@ -3,7 +3,12 @@
     "allow": [
       "Bash(php artisan tinker:*)",
       "Bash(php artisan:*)",
-      "Bash(php artisan config:clear:*)"
+      "Bash(php artisan config:clear:*)",
+      "Bash(php:*)",
+      "Bash(rm:*)",
+      "Bash(rg:*)",
+      "Bash(grep:*)",
+      "Bash(find:*)"
     ],
     "deny": []
   }

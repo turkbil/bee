@@ -8,6 +8,5 @@ return [
     App\Providers\TelescopeServiceProvider::class,
     App\Providers\TenancyProvider::class,
     App\Providers\TenancyServiceProvider::class,
-    App\Providers\ViewableServiceProvider::class,
     App\Providers\WidgetServiceProvider::class,
 ];

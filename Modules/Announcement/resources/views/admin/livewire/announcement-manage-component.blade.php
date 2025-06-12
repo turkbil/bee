@@ -40,7 +40,7 @@
                         <div class="mb-3">
                             <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
                                 <input type="checkbox" id="is_active" name="is_active" wire:model="inputs.is_active"
-                                    value="1" {{ $inputs['is_active'] ? 'checked' : '' }} />
+                                    value="1" {{ (!isset($inputs['is_active']) || $inputs['is_active']) ? 'checked' : '' }} />
 
                                 <div class="state p-success p-on ms-2">
                                     <label>Aktif</label>

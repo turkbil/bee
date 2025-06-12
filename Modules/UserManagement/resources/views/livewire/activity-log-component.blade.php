@@ -40,40 +40,15 @@
                         @endif
                     </button>
                     
-                    <!-- Table Switch -->
-                    <div class="table-mode">
-                        <input type="checkbox" id="table-switch" class="table-switch" <?php echo
-                            (!isset($_COOKIE['tableCompact']) || $_COOKIE['tableCompact']=='1' ) ? 'checked' : '' ; ?>
-                        onchange="toggleTableMode(this.checked)">
-                        <div class="app">
-                            <div class="switch-content">
-                                <div class="switch-label"></div>
-                                <label for="table-switch">
-                                    <div class="toggle"></div>
-                                    <div class="names">
-                                        <p class="large" data-bs-toggle="tooltip" data-bs-placement="left"
-                                            title="Satırları daralt">
-                                            <i class="fa-thin fa-table-cells fa-lg fa-fade"
-                                                style="--fa-animation-duration: 2s;"></i>
-                                        </p>
-                                        <p class="small" data-bs-toggle="tooltip" data-bs-placement="left"
-                                            title="Satırları genişlet">
-                                            <i class="fa-thin fa-table-cells-large fa-lg fa-fade"
-                                                style="--fa-animation-duration: 2s;"></i>
-                                        </p>
-                                    </div>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
                     
                     <!-- Sayfa Adeti Seçimi -->
                     <div style="min-width: 70px">
                         <select wire:model.live="perPage" class="form-select">
                             <option value="10">10</option>
-                            <option value="25">25</option>
                             <option value="50">50</option>
                             <option value="100">100</option>
+                            <option value="500">500</option>
+                            <option value="1000">1000</option>
                         </select>
                     </div>
                 </div>

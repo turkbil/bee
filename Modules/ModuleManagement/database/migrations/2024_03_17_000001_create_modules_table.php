@@ -34,6 +34,10 @@ return new class extends Migration
             // İlave indeksler
             $table->index('created_at');
             $table->index('updated_at');
+            
+            // Composite index'ler - Performans optimizasyonu
+            $table->index(['is_active', 'type'], 'modules_active_type_idx');
+            $table->index(['type', 'is_active'], 'modules_type_active_idx');
         });
     }
 

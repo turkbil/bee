@@ -58,25 +58,43 @@ class AIServiceProvider extends ServiceProvider
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
         
-        // Veritabanı tablosu var mı kontrol et
-        $tableExists = Schema::hasTable('ai_settings');
-        
-        // AI Service singleton kaydı
-        $this->app->singleton(AIService::class, function ($app) use ($tableExists) {
-            if ($tableExists) {
-                $deepSeekService = $app->make(DeepSeekService::class);
-                return new AIService($deepSeekService);
-            }
-            
-            // Tablo yoksa, servisi boş başlat
-            return new AIService(new DeepSeekService(true));
+        // AI Service singleton kaydı - Lazy yükleme yaklaşımı
+        $this->app->singleton(AIService::class, function ($app) {
+            // Servisi talep üzerine başlat (lazy loading)
+            $tableExists = $this->isAIModuleActive();
+            $deepSeekService = $app->make(DeepSeekService::class);
+            return new AIService($deepSeekService);
         });
         
-        // DeepSeek Service singleton kaydı
-        $this->app->singleton(DeepSeekService::class, function ($app) use ($tableExists) {
-            // Tablo yoksa, safe mode'da başlat
-            return new DeepSeekService($tableExists ? false : true);
+        // DeepSeek Service singleton kaydı - Lazy yükleme yaklaşımı
+        $this->app->singleton(DeepSeekService::class, function ($app) {
+            // Servisi talep üzerine başlat (lazy loading)
+            $tableExists = $this->isAIModuleActive();
+            return new DeepSeekService(!$tableExists); // !$tableExists = safe mode
         });
+    }
+    
+    /**
+     * AI modülünün aktif olup olmadığını kontrol et
+     * Bu yöntem, sadece AI modülü ile ilgili işlemlerde çağrılacak
+     */
+    private function isAIModuleActive(): bool
+    {
+        // Eğer bir AI rotasındaysak veya AI modülü sayfasına erişiliyorsa
+        $currentRoute = request()->route()?->getName() ?? '';
+        $currentPath = request()->path();
+        
+        // AI modülü ile ilgili rotalar veya cPanel rotaları için kontrolü yap
+        if (strpos($currentRoute, 'ai.') === 0 || 
+            strpos($currentRoute, 'admin.ai.') === 0 ||
+            strpos($currentPath, 'ai') === 0 ||
+            strpos($currentPath, 'admin/ai') === 0) {
+                
+            return Schema::hasTable('ai_settings');
+        }
+        
+        // Diğer tüm durumlar için güvenli modu kullan
+        return false;
     }
 
     /**

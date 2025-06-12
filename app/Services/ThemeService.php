@@ -18,23 +18,32 @@ class ThemeService
 
     protected function setActiveTheme()
     {
-        // Tenant-specific theme if available
-        if (function_exists('tenant') && $t = tenant()) {
-            $theme = Theme::where('name', $t->theme)
-                          ->where('is_active', true)
-                          ->first();
-            if ($theme) {
-                $this->activeTheme = $theme;
-                return;
+        try {
+            // Tenant-specific theme if available
+            if (function_exists('tenant') && $t = tenant()) {
+                $theme = Theme::where('name', $t->theme)
+                              ->where('is_active', true)
+                              ->first();
+                if ($theme) {
+                    $this->activeTheme = $theme;
+                    return;
+                }
             }
-        }
-        // Global default theme
-        $this->activeTheme = Theme::where('is_default', true)
-            ->where('is_active', true)
-            ->first() ?? new Theme([
+            // Global default theme
+            $this->activeTheme = Theme::where('is_default', true)
+                ->where('is_active', true)
+                ->first() ?? new Theme([
+                    'name' => 'blank',
+                    'folder_name' => 'blank'
+                ]);
+        } catch (\Exception $e) {
+            // Tenant database'de themes tablosu yoksa default theme kullan
+            Log::info('ThemeService: Using fallback theme due to error: ' . $e->getMessage());
+            $this->activeTheme = new Theme([
                 'name' => 'blank',
                 'folder_name' => 'blank'
             ]);
+        }
     }
 
     public function getActiveTheme()

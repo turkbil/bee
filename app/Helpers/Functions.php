@@ -183,3 +183,27 @@ if (!function_exists('widget')) {
         return $service->renderWidgetsInPosition($position, $pageId, $module);
     }
 }
+
+if (!function_exists('href')) {
+    /**
+     * Module dynamic URL helper
+     * 
+     * @param string $module Module name (portfolio, page, announcement)
+     * @param string $action Action name (index, show, category)
+     * @param string|null $slug Item slug for show actions
+     * @return string
+     */
+    function href($module, $action, $slug = null)
+    {
+        $slugService = app(\App\Services\ModuleSlugService::class);
+        $moduleSlug = $slugService->getSlug($module, $action);
+        
+        $url = '/' . $moduleSlug;
+        
+        if ($slug) {
+            $url .= '/' . $slug;
+        }
+        
+        return $url;
+    }
+}

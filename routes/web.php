@@ -5,12 +5,29 @@ use App\Http\Controllers\StorageController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\InitializeTenancy;
 use Modules\Page\App\Http\Controllers\Front\PageController;
+use App\Services\DynamicRouteService;
 
 // Admin routes
 require __DIR__.'/admin/web.php';
 
-// Ana web routes - hem central hem tenant için çalışacak
-Route::middleware([InitializeTenancy::class])->get('/', [PageController::class, 'homepage'])->name('home');
+// Ana sayfa route'u
+Route::middleware([InitializeTenancy::class])->get('/', [\Modules\Page\App\Http\Controllers\Front\PageController::class, 'homepage'])->name('home');
+
+// Test route'ları - dinamik route'lardan ÖNCE olmalı
+require __DIR__.'/test.php';
+
+// Dinamik modül route'ları - her domain için ayrı pattern'lar
+Route::middleware([InitializeTenancy::class, 'web'])
+    ->group(function () {
+        // Catch-all route'ları - runtime'da resolve edilecek
+        Route::get('/{slug1}', function($slug1) {
+            return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1);
+        })->where('slug1', '[a-zA-Z0-9\-_çğıöşüÇĞIÖŞÜ]+');
+        
+        Route::get('/{slug1}/{slug2}', function($slug1, $slug2) {
+            return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1, $slug2);
+        })->where(['slug1' => '[a-zA-Z0-9\-_çğıöşüÇĞIÖŞÜ]+', 'slug2' => '[a-zA-Z0-9\-_çğıöşüÇĞIÖŞÜ]+']);
+    });
 
 // Normal üyelerin dashboard'a erişimi
 Route::get('/dashboard', function () {

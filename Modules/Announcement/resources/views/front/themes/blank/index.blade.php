@@ -1,6 +1,6 @@
-@extends('announcement::front.themes.blank.layouts.app')
+@extends('themes.blank.layouts.app')
 
-@section('module_content')
+@section('content')
 <div class="container animate-fade-in">
     <h1 class="text-3xl font-bold mb-6 text-center text-gray-800 dark:text-white">{{ $title ?? 'Duyurular' }}</h1>
     
@@ -10,7 +10,7 @@
         <div class="announcement-item group overflow-hidden hover:shadow-sm transition-shadow duration-300">
             <div class="p-6">
                 <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">
-                    <a href="{{ route('announcements.show', $item->slug) }}" class="hover:text-primary dark:hover:text-primary-400 transition-colors duration-300">{{ $item->title }}</a>
+                    <a href="{{ href('Announcement', 'show', $item->slug) }}" class="hover:text-primary dark:hover:text-primary-400 transition-colors duration-300">{{ $item->title }}</a>
                 </h3>
                 
                 <div class="flex flex-wrap items-center gap-3 text-sm text-gray-600 dark:text-gray-400 mb-4">
@@ -54,7 +54,7 @@
                 @endif
                 
                 <div class="mt-4">
-                    <a href="{{ route('announcements.show', $item->slug) }}" class="inline-flex items-center text-sm text-primary dark:text-primary-400 hover:underline font-medium">
+                    <a href="{{ href('Announcement', 'show', $item->slug) }}" class="inline-flex items-center text-sm text-primary dark:text-primary-400 hover:underline font-medium">
                         Devamını Oku
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />

@@ -109,14 +109,21 @@
                                 @if(Route::has('admin.settingmanagement.values'))
                                 <a href="{{ route('admin.settingmanagement.values', ['group' => $module->settings]) }}"
                                     class="dropdown-item">
-                                    Ayarlar
+                                    <i class="fas fa-cog me-2"></i>Ayarlar
                                 </a>
                                 @endif
                                 @endif
 
+                                @if($module->type === 'content')
+                                <a href="{{ route('admin.modulemanagement.slug-settings', $module->name) }}"
+                                    class="dropdown-item">
+                                    <i class="fas fa-link me-2"></i>URL Ayarları
+                                </a>
+                                @endif
+
                                 <a href="{{ route('admin.modulemanagement.manage', $module->module_id) }}"
                                     class="dropdown-item">
-                                    Düzenle
+                                    <i class="fas fa-edit me-2"></i>Düzenle
                                 </a>
                                 <button class="dropdown-item text-danger" wire:click="$dispatch('showDeleteModal', {'module': 'module', 'id': {{ $module->module_id }}, 'title': '{{ $module->display_name }}'})">
                                     <i class="fas fa-trash me-2"></i>Sil

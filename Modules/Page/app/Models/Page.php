@@ -3,16 +3,12 @@ namespace Modules\Page\App\Models;
 
 use App\Models\BaseModel;
 use Cviebrock\EloquentSluggable\Sluggable;
-use App\Traits\HasContentViews;
-use CyrildeWit\EloquentViewable\Contracts\Viewable;
 
-class Page extends BaseModel implements Viewable
+class Page extends BaseModel
 {
-    use Sluggable, HasContentViews;
+    use Sluggable;
 
     protected $primaryKey = 'page_id';
-    
-    protected $appends = ['views_count'];
 
     protected $fillable = [
         'title',
@@ -44,13 +40,4 @@ class Page extends BaseModel implements Viewable
         ];
     }
     
-    /**
-     * Görüntülenme sayısını döndürür
-     *
-     * @return int
-     */
-    public function getViewsCountAttribute(): int
-    {
-        return $this->views()->count();
-    }
 }

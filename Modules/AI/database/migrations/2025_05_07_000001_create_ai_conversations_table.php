@@ -20,6 +20,10 @@ return new class extends Migration
             $table->index('created_at');
             $table->index('updated_at');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            
+            // Composite index'ler - Performans optimizasyonu
+            $table->index(['user_id', 'created_at'], 'ai_conversations_user_created_idx');
+            $table->index(['prompt_id', 'created_at'], 'ai_conversations_prompt_created_idx');
         });
     }
 

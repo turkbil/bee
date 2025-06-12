@@ -24,6 +24,11 @@ return new class extends Migration
             $table->index('created_at');
             $table->index('updated_at');
             $table->index('deleted_at');
+            
+            // Composite index'ler - Performans optimizasyonu
+            $table->index(['is_active', 'deleted_at'], 'portfolio_categories_active_deleted_idx');
+            $table->index(['is_active', 'deleted_at', 'order'], 'portfolio_categories_active_deleted_order_idx');
+            $table->index(['slug', 'is_active', 'deleted_at'], 'portfolio_categories_slug_active_deleted_idx');
         });
     }
 

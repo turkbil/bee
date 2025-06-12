@@ -3,21 +3,33 @@
     <div class="card-body">
         <!-- Header Bölümü -->
         <div class="row mb-3">
-            <!-- Sol Taraf (Arama ve Filtreler) -->
-            <div class="col-md-8">
-                <div class="row g-2">
-                    <!-- Arama Kutusu -->
-                    <div class="col-md-4">
-                        <div class="input-icon">
-                            <span class="input-icon-addon">
-                                <i class="fas fa-search"></i>
-                            </span>
-                            <input type="text" wire:model.live.debounce.300ms="search" class="form-control"
-                                placeholder="İsim veya e-posta ile ara...">
-                        </div>
+            <!-- Arama Kutusu -->
+            <div class="col">
+                <div class="input-icon">
+                    <span class="input-icon-addon">
+                        <i class="fas fa-search"></i>
+                    </span>
+                    <input type="text" wire:model.live="search" class="form-control"
+                        placeholder="İsim veya e-posta ile ara...">
+                </div>
+            </div>
+            <!-- Ortadaki Loading -->
+            <div class="col position-relative">
+                <div wire:loading
+                    wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, roleFilter, statusFilter, viewType, deleteUser, toggleActive"
+                    class="position-absolute top-50 start-50 translate-middle text-center"
+                    style="width: 100%; max-width: 250px;">
+                    <div class="small text-muted mb-2">Güncelleniyor...</div>
+                    <div class="progress mb-1">
+                        <div class="progress-bar progress-bar-indeterminate"></div>
                     </div>
+                </div>
+            </div>
+            <!-- Sağ Taraf (Filtreler ve Options) -->
+            <div class="col">
+                <div class="d-flex align-items-center justify-content-end gap-3">
                     <!-- Rol Filtresi -->
-                    <div class="col-md-4">
+                    <div style="width: 150px">
                         <select wire:model.live="roleFilter" class="form-select">
                             <option value="">Tüm Roller</option>
                             @foreach($roles as $role)
@@ -26,57 +38,13 @@
                         </select>
                     </div>
                     <!-- Durum Filtresi -->
-                    <div class="col-md-4">
+                    <div style="width: 120px">
                         <select wire:model.live="statusFilter" class="form-select">
                             <option value="">Tüm Durumlar</option>
                             <option value="1">Aktif</option>
                             <option value="0">Pasif</option>
                         </select>
                     </div>
-                </div>
-            </div>
-            <!-- Ortadaki Loading -->
-            <div class="col-md-1 position-relative">
-                <div wire:loading
-                    wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, roleFilter, statusFilter, viewType, deleteUser, toggleActive"
-                    class="position-absolute top-50 start-50 translate-middle text-center"
-                    style="width: 100%; max-width: 250px;">
-                    <div class="progress" style="height: 2px;">
-                        <div class="progress-bar progress-bar-indeterminate"></div>
-                    </div>
-                </div>
-            </div>
-            <!-- Sağ Taraf (Görünüm Seçimi ve Sayfalama) -->
-            <div class="col-md-3">
-                <div class="d-flex align-items-center justify-content-end gap-3">
-                    <!-- Table Mode Switch (Sadece Tablo Görünümünde Göster) -->
-                    @if($viewType == 'list')
-                    <div class="table-mode">
-                        <input type="checkbox" id="table-switch" class="table-switch" <?php echo
-                            (!isset($_COOKIE['tableCompact']) || $_COOKIE['tableCompact']=='1' ) ? 'checked' : '' ; ?>
-                        onchange="toggleTableMode(this.checked)">
-                        <div class="app">
-                            <div class="switch-content">
-                                <div class="switch-label"></div>
-                                <label for="table-switch">
-                                    <div class="toggle"></div>
-                                    <div class="names">
-                                        <p class="large" data-bs-toggle="tooltip" data-bs-placement="left"
-                                            title="Satırları daralt">
-                                            <i class="fa-thin fa-table-cells fa-lg fa-fade"
-                                                style="--fa-animation-duration: 2s;"></i>
-                                        </p>
-                                        <p class="small" data-bs-toggle="tooltip" data-bs-placement="left"
-                                            title="Satırları genişlet">
-                                            <i class="fa-thin fa-table-cells-large fa-lg fa-fade"
-                                                style="--fa-animation-duration: 2s;"></i>
-                                        </p>
-                                    </div>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    @endif
                     <!-- Görünüm Değiştirme -->
                     <div class="btn-group">
                         <button type="button"
@@ -93,11 +61,11 @@
                     <!-- Sayfa Adeti Seçimi -->
                     <div style="min-width: 70px">
                         <select wire:model.live="perPage" class="form-select">
-                            <option value="8">8</option>
-                            <option value="16">16</option>
-                            <option value="32">32</option>
-                            <option value="64">64</option>
+                            <option value="10">10</option>
+                            <option value="50">50</option>
                             <option value="100">100</option>
+                            <option value="500">500</option>
+                            <option value="1000">1000</option>
                         </select>
                     </div>
                 </div>

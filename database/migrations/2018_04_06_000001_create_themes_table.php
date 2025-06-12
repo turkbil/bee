@@ -26,6 +26,10 @@ return new class extends Migration
             
             $table->index('is_active');
             $table->index('is_default');
+            
+            // Composite index'ler - Performans optimizasyonu
+            $table->index(['is_default', 'is_active'], 'themes_default_active_idx');
+            $table->index(['name', 'is_active'], 'themes_name_active_idx');
         });
     }
 

@@ -8,16 +8,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use App\Traits\HasContentViews;
-use CyrildeWit\EloquentViewable\Contracts\Viewable;
 
-class Portfolio extends BaseModel implements HasMedia, Viewable
+class Portfolio extends BaseModel implements HasMedia
 {
-    use Sluggable, SoftDeletes, InteractsWithMedia, HasContentViews;
+    use Sluggable, SoftDeletes, InteractsWithMedia;
 
     protected $primaryKey = 'portfolio_id';
-    
-    protected $appends = ['views_count'];
 
     protected $fillable = [
         'portfolio_category_id',
@@ -70,13 +66,4 @@ class Portfolio extends BaseModel implements HasMedia, Viewable
              ->useDisk('public');
     }
     
-    /**
-     * Görüntülenme sayısını döndürür
-     *
-     * @return int
-     */
-    public function getViewsCountAttribute(): int
-    {
-        return $this->views()->count();
-    }
 }

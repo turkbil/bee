@@ -16,31 +16,21 @@
     </style>
     @endif
 @else
-<div class="animate-fade-in py-6">
-    <article class="max-w-4xl mx-auto overflow-hidden">
+<div class="py-6" x-data="pageShow()" x-init="init()">
+    <article class="max-w-4xl mx-auto" x-show="loaded" x-transition.duration.300ms>
         <div class="p-6">
             <h1 class="text-3xl font-bold mb-4 text-gray-900 dark:text-white">{{ $item->title }}</h1>
             
-            <div class="flex flex-wrap items-center gap-3 mb-6 pb-4 border-b border-gray-200 dark:border-gray-700">
-                <span class="flex items-center text-sm text-gray-600 dark:text-gray-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            <div class="flex items-center gap-3 mb-6 pb-4 border-b border-gray-200 dark:border-gray-700">
+                <time class="flex items-center text-sm text-gray-600 dark:text-gray-400">
+                    <svg class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
                     </svg>
                     {{ $item->created_at->format('d.m.Y') }}
-                </span>
-                
-                @if(function_exists('views'))
-                <span class="flex items-center text-sm text-gray-600 dark:text-gray-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                    </svg>
-                    {{ views($item)->count() }} görüntülenme
-                </span>
-                @endif
+                </time>
             </div>
 
-            <div class="content prose max-w-none dark:prose-invert prose-headings:text-gray-900 dark:prose-headings:text-white prose-p:text-gray-800 dark:prose-p:text-gray-200 prose-a:text-primary dark:prose-a:text-primary-400">
+            <div class="prose max-w-none dark:prose-invert prose-headings:text-gray-900 dark:prose-headings:text-white prose-p:text-gray-800 dark:prose-p:text-gray-200 prose-a:text-blue-600 dark:prose-a:text-blue-400">
                 @parsewidgets($item->body)
             </div>
             
@@ -57,15 +47,46 @@
             @endif
             
             <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-                <a href="{{ route('pages.index') }}" class="inline-flex items-center text-primary dark:text-primary-400 hover:underline font-medium">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                <button @click="goBack()" class="inline-flex items-center text-blue-600 dark:text-blue-400 hover:underline font-medium">
+                    <svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"></path>
                     </svg>
                     Tüm Sayfalar
-                </a>
+                </button>
             </div>
         </div>
     </article>
 </div>
+
+<script>
+function pageShow() {
+    return {
+        loaded: false,
+        
+        init() {
+            // Instant load
+            this.loaded = true;
+            
+            // Preload pages list
+            this.preloadIndex();
+        },
+        
+        preloadIndex() {
+            const link = document.createElement('link');
+            link.rel = 'prefetch';
+            link.href = '{{ route("pages.index") }}';
+            document.head.appendChild(link);
+        },
+        
+        goBack() {
+            if (history.length > 1) {
+                history.back();
+            } else {
+                window.location.href = '{{ route("pages.index") }}';
+            }
+        }
+    }
+}
+</script>
 @endif
 @endsection

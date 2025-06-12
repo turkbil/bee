@@ -1,98 +1,116 @@
 @extends('portfolio::front.themes.blank.layouts.app')
 
 @section('module_content')
-<div class="animate-fade-in py-6">
+<div class="py-6" x-data="portfolioList()" x-init="init()">
     <h1 class="text-3xl font-bold mb-6 text-center text-gray-800 dark:text-white">{{ $title ?? 'Portfolyolar' }}</h1>
     
     @if($items->count() > 0)
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" x-show="loaded" x-transition.duration.300ms>
         @foreach($items as $item)
-        <div class="portfolio-item overflow-hidden hover:shadow-sm transition-shadow duration-300">
+        <article class="group cursor-pointer" 
+                 @mouseenter="prefetch('{{ route('portfolios.show', $item->slug) }}')"
+                 @click="navigate('{{ route('portfolios.show', $item->slug) }}')">
+            
             @if($item->getMedia('images')->isNotEmpty())
-            <div class="relative overflow-hidden aspect-w-16 aspect-h-9">
-                <img src="{{ $item->getFirstMedia('images')->getUrl() }}" alt="{{ $item->title }}" 
-                    class="w-full h-48 object-cover transition-transform duration-300 hover:scale-105">
+            <div class="relative overflow-hidden rounded-lg aspect-video mb-4">
+                <img src="{{ $item->getFirstMedia('images')->getUrl() }}" 
+                     alt="{{ $item->title }}" 
+                     class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+                     loading="lazy">
                 
-                @if(isset($item->category))
-                <div class="absolute top-2 right-2">
-                    <a href="{{ route('portfolios.category', $item->category->slug) }}" 
-                        class="inline-flex items-center px-2 py-1 text-xs font-medium bg-primary bg-opacity-90 text-white rounded-full hover:bg-opacity-100 transition-colors">
+                @if($item->category ?? false)
+                <div class="absolute top-3 right-3">
+                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-purple-600 bg-opacity-90 text-white rounded-full">
                         {{ $item->category->title }}
-                    </a>
+                    </span>
                 </div>
                 @endif
+                
+                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
+                    <svg class="h-12 w-12 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path>
+                    </svg>
+                </div>
             </div>
             @endif
             
             <div class="p-6">
-                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">
-                    <a href="{{ route('portfolios.show', $item->slug) }}" 
-                        class="hover:text-primary dark:hover:text-primary-400 transition-colors duration-300">{{ $item->title }}</a>
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3 group-hover:text-purple-600 transition-colors">
+                    {{ $item->title }}
                 </h3>
                 
-                <div class="flex flex-wrap items-center gap-3 text-sm text-gray-600 dark:text-gray-400 mb-4">
-                    <span class="flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                <div class="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-4">
+                    <time class="flex items-center">
+                        <svg class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
                         </svg>
                         {{ $item->created_at->format('d.m.Y') }}
-                    </span>
+                    </time>
                     
-                    @if(function_exists('views'))
-                    <span class="flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                        </svg>
-                        {{ views($item)->count() }}
-                    </span>
-                    @endif
-                    
-                    @if(isset($item->category))
-                    <span class="flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                    @if($item->category ?? false)
+                    <span class="flex items-center text-purple-500">
+                        <svg class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path>
                         </svg>
                         {{ $item->category->title }}
                     </span>
                     @endif
                 </div>
                 
-                @if(isset($item->metadesc) || isset($item->body) || isset($item->content))
-                <div class="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                    @if(isset($item->metadesc))
-                        {{ Str::limit($item->metadesc, 120) }}
-                    @elseif(isset($item->body))
-                        {{ Str::limit(strip_tags($item->body), 120) }}
-                    @elseif(isset($item->content))
-                        {{ Str::limit(strip_tags($item->content), 120) }}
-                    @endif
-                </div>
+                @if($item->metadesc ?? $item->body ?? false)
+                <p class="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-3">
+                    {{ Str::limit($item->metadesc ?? strip_tags($item->body), 120) }}
+                </p>
                 @endif
                 
-                <div class="mt-4">
-                    <a href="{{ route('portfolios.show', $item->slug) }}" class="inline-flex items-center text-sm text-primary dark:text-primary-400 hover:underline font-medium">
-                        Detayları Gör
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                        </svg>
-                    </a>
-                </div>
+                <span class="inline-flex items-center text-sm text-purple-600 dark:text-purple-400 font-medium group-hover:underline">
+                    Detayları Gör
+                    <svg class="h-4 w-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                </span>
             </div>
-        </div>
+        </article>
         @endforeach
     </div>
     
-    <div class="mt-8">
+    <div class="mt-8" x-show="loaded">
         {{ $items->links() }}
     </div>
     @else
-    <div class="p-8 text-center border-t-4 border-primary dark:border-primary-400">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-400 dark:text-gray-600 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+    <div class="p-8 text-center border-t-4 border-purple-500 rounded-lg">
+        <svg class="h-16 w-16 mx-auto text-gray-400 mb-4" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path>
         </svg>
         <p class="text-lg text-gray-600 dark:text-gray-400">Henüz portfolyo bulunmamaktadır.</p>
     </div>
     @endif
 </div>
+
+<script>
+function portfolioList() {
+    return {
+        loaded: false,
+        prefetchedUrls: new Set(),
+        
+        init() {
+            this.loaded = true;
+        },
+        
+        prefetch(url) {
+            if (this.prefetchedUrls.has(url)) return;
+            
+            const link = document.createElement('link');
+            link.rel = 'prefetch';
+            link.href = url;
+            document.head.appendChild(link);
+            this.prefetchedUrls.add(url);
+        },
+        
+        navigate(url) {
+            window.location.href = url;
+        }
+    }
+}
+</script>
 @endsection

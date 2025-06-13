@@ -1,23 +1,34 @@
 @include('modulemanagement::helper')
 
 <div class="card">
-    <div class="card-header">
-        <div class="row align-items-center">
+    <div class="card-body">
+        <!-- Header Bölümü -->
+        <div class="row mb-3">
+            <!-- Sol Kolon - Başlık ve Açıklama -->
             <div class="col">
-                <h3 class="card-title">
+                <h3 class="card-title mb-2">
                     <i class="fas fa-link me-2"></i>
                     {{ $moduleDisplayName }} URL Ayarları
                 </h3>
-                <div class="text-muted mt-1">
-                    Web sitenizin URL yapısını özelleştirin. Değişiklikler anında kaydedilir ve tüm sayfalarınıza yansır.
+                <div class="text-muted">
+                    Web sitenizin URL yapısını özelleştirin. Değişiklikler anında kaydedilir.
                 </div>
             </div>
-            <div class="col-auto ms-auto d-print-none">
-                <div class="btn-list">
-                    <a href="{{ route('admin.modulemanagement.index') }}" class="btn btn-outline-secondary">
-                        <i class="fas fa-arrow-left me-1"></i>
-                        Geri Dön
-                    </a>
+            <!-- Orta Kolon - Loading -->
+            <div class="col position-relative">
+                <div wire:loading
+                    wire:target="updateSlug, resetSlug, resetAllSlugs"
+                    class="position-absolute top-50 start-50 translate-middle text-center"
+                    style="width: 100%; max-width: 250px;">
+                    <div class="small text-muted mb-2">Güncelleniyor...</div>
+                    <div class="progress mb-1">
+                        <div class="progress-bar progress-bar-indeterminate"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Sağ Kolon - Tümünü Sıfırla Butonu -->
+            <div class="col">
+                <div class="d-flex align-items-center justify-content-end">
                     <button wire:click="resetAllSlugs" class="btn btn-outline-danger">
                         <i class="fas fa-undo me-1"></i>
                         Tümünü Sıfırla

@@ -155,7 +155,7 @@
                                         </a>
                                     </div>
                                     <div class="col">
-                                        <a href="javascript:void(0);" wire:click="openStudioEditor({{ $page->page_id }})"
+                                        <a href="{{ route('admin.studio.editor', ['module' => 'page', 'id' => $page->page_id]) }}" target="_blank"
                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Studio Editör">
                                             <i class="fa-solid fa-wand-magic-sparkles link-secondary fa-lg"></i>
                                         </a>

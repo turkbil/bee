@@ -4,6 +4,7 @@ namespace Modules\Studio\App\Services;
 
 use Illuminate\Support\Facades\Config;
 use Modules\Page\App\Models\Page;
+use Modules\Portfolio\App\Models\Portfolio;
 use Illuminate\Support\Facades\Log;
 
 class EditorService
@@ -87,6 +88,16 @@ class EditorService
             } catch (\Exception $e) {
                 Log::error('Sayfa yüklenirken hata: ' . $e->getMessage());
             }
+        } elseif ($module === 'portfolio') {
+            try {
+                $portfolio = Portfolio::findOrFail($id);
+                $result['content'] = $portfolio->body ?? '';
+                $result['css'] = $portfolio->css ?? '';
+                $result['js'] = $portfolio->js ?? '';
+                $result['title'] = $portfolio->title ?? 'Portfolio Düzenleyici';
+            } catch (\Exception $e) {
+                Log::error('Portfolio yüklenirken hata: ' . $e->getMessage());
+            }
         }
         
         return $result;
@@ -121,6 +132,30 @@ class EditorService
                 return $result;
             } catch (\Exception $e) {
                 Log::error('İçerik kaydedilirken hata: ' . $e->getMessage(), [
+                    'exception' => get_class($e),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+                return false;
+            }
+        } elseif ($module === 'portfolio') {
+            try {
+                $portfolio = Portfolio::findOrFail($id);
+                $portfolio->body = $content;
+                $portfolio->css = $css;
+                $portfolio->js = $js;
+                $result = $portfolio->save();
+                
+                // ContentSaved eventini tetikle
+                event(new \Modules\Studio\App\Events\ContentSaved($module, $id, $content));
+                
+                // Log mesajı ekle
+                Log::info('Log: ' . ($portfolio->title ?? 'Portfolio') . ' - studio ile düzenlendi');
+                
+                return $result;
+            } catch (\Exception $e) {
+                Log::error('Portfolio içerik kaydedilirken hata: ' . $e->getMessage(), [
                     'exception' => get_class($e),
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),

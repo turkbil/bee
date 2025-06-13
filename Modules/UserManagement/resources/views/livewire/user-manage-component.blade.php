@@ -406,19 +406,7 @@
                         </div>
                     </div>
                     
-                    <!-- Kart Footer - Butonlar -->
-                    <div class="card-footer text-end">
-                        <div class="d-flex">
-                            <a href="{{ route('admin.usermanagement.index') }}" class="btn btn-link">
-                                <i class="fas fa-arrow-left me-2"></i>Geri Dön
-                            </a>
-                            <button type="submit" class="btn btn-primary ms-auto">
-                                <i class="fas fa-save me-2"></i>
-                                {{ $userId ? 'Güncelle' : 'Kaydet' }}
-                                <div wire:loading wire:target="save" class="spinner-border spinner-border-sm ms-2" role="status"></div>
-                            </button>
-                        </div>
-                    </div>
+                    <x-form-footer route="admin.usermanagement" :model-id="$userId" />
                 </div>
             </div>
         </div>

@@ -1,17 +1,20 @@
 @include('widgetmanagement::helper')
 <div class="card">
     <div class="card-body">
+        <!-- Header Bölümü -->
         <div class="row mb-3">
-            <!-- Sol Taraf (Başlık ve Kontroller) -->
-            <div class="col-md-8">
-                <h3 class="card-title d-flex align-items-center mb-0">
+            <!-- Sol Kolon - Başlık -->
+            <div class="col">
+                <h3 class="card-title mb-2">
                     <i class="fas fa-layer-group me-2"></i>
                     {{ $tenantWidget->settings['title'] ?? $tenantWidget->widget->name }} - İçerik Yönetimi
                 </h3>
+                <div class="text-muted">
+                    Widget içeriklerini buradan yönetebilirsiniz.
+                </div>
             </div>
-            
-            <!-- Ortadaki Loading -->
-            <div class="col-md-2 position-relative d-flex justify-content-center align-items-center">
+            <!-- Orta Kolon - Loading -->
+            <div class="col position-relative">
                 <div wire:loading
                     wire:target="render, deleteItem, toggleItemActive, updateItemOrder"
                     class="position-absolute top-50 start-50 translate-middle text-center"
@@ -22,15 +25,18 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- Sağ Taraf (Buton) -->
-            <div class="col-md-2 text-md-end">
-                <a href="{{ route('admin.widgetmanagement.item.manage', $tenantWidgetId) }}" class="btn btn-primary">
-                    <i class="fas fa-plus me-2"></i> Yeni İçerik Ekle
-                </a>
+            <!-- Sağ Kolon - Yeni İçerik Ekle Butonu -->
+            <div class="col">
+                <div class="d-flex align-items-center justify-content-end">
+                    <a href="{{ route('admin.widgetmanagement.item.manage', $tenantWidgetId) }}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i> Yeni İçerik Ekle
+                    </a>
+                </div>
             </div>
         </div>
-        
+    </div>
+    
+    <div class="card-body border-top">
         <!-- İçerik Listesi -->
         <div class="row row-cards" id="sortable-list" data-sortable-id="items-container">
             @forelse($items as $item)

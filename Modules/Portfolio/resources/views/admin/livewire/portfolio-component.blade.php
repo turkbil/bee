@@ -84,7 +84,7 @@
                                 Durum
                             </button>
                         </th>
-                        <th class="text-center" style="width: 120px">İşlemler</th>
+                        <th class="text-center" style="width: 160px">İşlemler</th>
                     </tr>
                 </thead>
                 <tbody class="table-tbody">
@@ -167,7 +167,14 @@
                                             <i class="fa-solid fa-pen-to-square link-secondary fa-lg"></i>
                                         </a>
                                     </div>
+                                    <div class="col">
+                                        <a href="{{ route('admin.studio.editor', ['module' => 'portfolio', 'id' => $portfolio->portfolio_id]) }}" target="_blank"
+                                           data-bs-toggle="tooltip" data-bs-placement="top" title="Studio Editör">
+                                            <i class="fa-solid fa-wand-magic-sparkles link-secondary fa-lg"></i>
+                                        </a>
+                                    </div>
                                     <div class="col lh-1">
+                                        @hasmoduleaccess('portfolio', 'delete')
                                         <div class="dropdown mt-1">
                                             <a class="dropdown-toggle text-secondary" href="#" data-bs-toggle="dropdown"
                                                 aria-haspopup="true" aria-expanded="false">
@@ -183,6 +190,7 @@
                                                 </a>
                                             </div>
                                         </div>
+                                        @endhasmoduleaccess
                                     </div>
                                 </div>
                             </div>

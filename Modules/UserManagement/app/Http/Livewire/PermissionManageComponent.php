@@ -24,6 +24,11 @@ class PermissionManageComponent extends Component
 
     public function mount($id = null)
     {
+        // Varsayılan olarak tüm CRUD işlemleri seçili olsun
+        if (empty($this->inputs['permission_types'])) {
+            $this->inputs['permission_types'] = ['view', 'create', 'update', 'delete'];
+        }
+
         if ($id) {
             $this->permissionId = $id;
             $permission = Permission::findOrFail($id);

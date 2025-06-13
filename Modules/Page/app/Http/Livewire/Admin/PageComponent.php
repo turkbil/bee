@@ -80,15 +80,6 @@ class PageComponent extends Component
         }
     }
 
-    public function openStudioEditor($pageId = null)
-    {
-        if ($pageId) {
-            return redirect()->route('admin.studio.editor', ['module' => 'page', 'id' => $pageId]);
-        } else {
-            return redirect()->route('admin.studio.editor', ['module' => 'page', 'id' => $this->pageId]);
-        }
-    }
-
     public function render()
     {
         $query = Page::where(function ($query) {

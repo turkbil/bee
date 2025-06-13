@@ -1,36 +1,22 @@
 @include('modulemanagement::helper')
 <div class="card">
     <div class="card-body">
+        <!-- Header Bölümü -->
         <div class="row mb-3">
-            <!-- Sol Taraf (Arama ve Filtreler) -->
-            <div class="col-md-6">
-                <div class="row g-2">
-                    <!-- Arama Kutusu -->
-                    <div class="col-md-8">
-                        <div class="input-icon">
-                            <span class="input-icon-addon">
-                                <i class="fas fa-search"></i>
-                            </span>
-                            <input type="text" wire:model.live.debounce.300ms="search" class="form-control"
-                                placeholder="Modül ara...">
-                        </div>
-                    </div>
-                    <!-- Tip Filtresi -->
-                    <div class="col-md-4">
-                        <select wire:model.live="typeFilter" class="form-select">
-                            <option value="">Tüm Tipler</option>
-                            <option value="content">İçerik Modülü</option>
-                            <option value="management">Yönetim Modülü</option>
-                            <option value="system">Sistem Modülü</option>
-                        </select>
-                    </div>
+            <!-- Arama Kutusu -->
+            <div class="col">
+                <div class="input-icon">
+                    <span class="input-icon-addon">
+                        <i class="fas fa-search"></i>
+                    </span>
+                    <input type="text" wire:model.live="search" class="form-control"
+                        placeholder="Aramak için yazmaya başlayın...">
                 </div>
             </div>
-            
             <!-- Ortadaki Loading -->
-            <div class="col-md-4 position-relative d-flex justify-content-center align-items-center">
+            <div class="col position-relative">
                 <div wire:loading
-                    wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, selectedItems, selectAll, bulkDelete, bulkToggleActive, selectedCategory, typeFilter, toggleDomains"
+                    wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, selectedItems, selectAll, bulkDelete, bulkToggleActive, typeFilter, toggleDomains"
                     class="position-absolute top-50 start-50 translate-middle text-center"
                     style="width: 100%; max-width: 250px;">
                     <div class="small text-muted mb-2">Güncelleniyor...</div>
@@ -39,21 +25,33 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- Sağ Taraf (Domain Gösterim ve Sayfalama) -->
-            <div class="col-md-2">
+            <!-- Sağ Taraf (Switch ve Select) -->
+            <div class="col">
                 <div class="d-flex align-items-center justify-content-end gap-3">
-                    <button wire:click="toggleDomains" wire:model.live="toggleDomains" class="btn btn-outline-primary btn-icon" data-bs-toggle="tooltip"
+                    <!-- Tip Filtresi -->
+                    <div style="width: 150px">
+                        <select wire:model.live="typeFilter" class="form-select">
+                            <option value="">Tüm Tipler</option>
+                            <option value="content">İçerik</option>
+                            <option value="management">Yönetim</option>
+                            <option value="system">Sistem</option>
+                        </select>
+                    </div>
+                    <!-- Domain Gösterim -->
+                    <button wire:click="toggleDomains" class="btn btn-outline-primary btn-icon" data-bs-toggle="tooltip"
                         title="{{ $showDomains ? 'Domainleri Gizle' : 'Domainleri Göster' }}">
                         <i class="fas fa-globe"></i>
                     </button>
-
-                    <select wire:model.live="perPage" class="form-select" style="width: 80px">
-                        <option value="10">10</option>
-                        <option value="40">40</option>
-                        <option value="100">100</option>
-                        <option value="200">200</option>
-                    </select>
+                    <!-- Sayfa Adeti Seçimi -->
+                    <div style="min-width: 60px">
+                        <select wire:model.live="perPage" class="form-select">
+                            <option value="10">10</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="500">500</option>
+                            <option value="1000">1000</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
@@ -109,7 +107,7 @@
                                 @if(Route::has('admin.settingmanagement.values'))
                                 <a href="{{ route('admin.settingmanagement.values', ['group' => $module->settings]) }}"
                                     class="dropdown-item">
-                                    <i class="fas fa-cog me-2"></i>Ayarlar
+                                    <i class="fas fa-cog me-2" style="width: 14px;"></i>Ayarlar
                                 </a>
                                 @endif
                                 @endif
@@ -117,16 +115,16 @@
                                 @if($module->type === 'content')
                                 <a href="{{ route('admin.modulemanagement.slug-settings', $module->name) }}"
                                     class="dropdown-item">
-                                    <i class="fas fa-link me-2"></i>URL Ayarları
+                                    <i class="fas fa-link me-2" style="width: 14px;"></i>URL Ayarları
                                 </a>
                                 @endif
 
                                 <a href="{{ route('admin.modulemanagement.manage', $module->module_id) }}"
                                     class="dropdown-item">
-                                    <i class="fas fa-edit me-2"></i>Düzenle
+                                    <i class="fas fa-edit me-2" style="width: 14px;"></i>Düzenle
                                 </a>
                                 <button class="dropdown-item text-danger" wire:click="$dispatch('showDeleteModal', {'module': 'module', 'id': {{ $module->module_id }}, 'title': '{{ $module->display_name }}'})">
-                                    <i class="fas fa-trash me-2"></i>Sil
+                                    <i class="fas fa-trash me-2" style="width: 14px;"></i>Sil
                                 </button>
                             </div>
                         </div>

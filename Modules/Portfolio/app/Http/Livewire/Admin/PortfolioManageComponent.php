@@ -15,6 +15,7 @@ class PortfolioManageComponent extends Component
    use WithFileUploads, WithImageUpload;
 
    public $portfolioId;
+   public $studioEnabled = false;
    public $categories = [];
    public $inputs = [
        'portfolio_category_id' => '',
@@ -33,6 +34,9 @@ class PortfolioManageComponent extends Component
        $this->categories = PortfolioCategory::where('is_active', true)
             ->orderBy('title')
             ->get();
+            
+       // Studio modülü aktif mi kontrol et
+       $this->studioEnabled = class_exists('Modules\Studio\App\Http\Livewire\EditorComponent');
             
        if ($id) {
            $this->portfolioId = $id;
@@ -101,6 +105,7 @@ class PortfolioManageComponent extends Component
           }
       } else {
           $portfolio = Portfolio::create($data);
+          $this->portfolioId = $portfolio->portfolio_id;
           $this->handleImageUpload($portfolio);
           
           log_activity($portfolio, 'oluşturuldu');

@@ -16,11 +16,13 @@
                     </li>
                 </ul>
                 
+                @if($studioEnabled && $pageId)
                 <div class="card-actions">
-                    <button type="button" class="btn btn-primary" wire:click="openStudioEditor">
-                        <i class="fas fa-pen-fancy me-2"></i> Studio ile Düzenle
-                    </button>
+                    <a href="{{ route('admin.studio.editor', ['module' => 'page', 'id' => $pageId]) }}" target="_blank" class="btn btn-primary">
+                        <i class="fas fa-wand-magic-sparkles me-2"></i> Studio ile Düzenle
+                    </a>
                 </div>
+                @endif
             </div>
             <div class="card-body">
                 <div class="tab-content">
@@ -41,7 +43,7 @@
                         <div class="mb-3">
                             <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
                                 <input type="checkbox" id="is_active" name="is_active" wire:model="inputs.is_active"
-                                    value="1" {{ $inputs['is_active'] ? 'checked' : '' }} />
+                                    value="1" {{ (!isset($inputs['is_active']) || $inputs['is_active']) ? 'checked' : '' }} />
 
                                 <div class="state p-success p-on ms-2">
                                     <label>Aktif</label>

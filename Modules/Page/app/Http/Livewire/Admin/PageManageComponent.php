@@ -36,7 +36,7 @@ class PageManageComponent extends Component
        }
        
        // Studio modülü aktif mi kontrol et
-       $this->studioEnabled = class_exists('Modules\Studio\App\Http\Livewire\StudioEditor');
+       $this->studioEnabled = class_exists('Modules\Studio\App\Http\Livewire\EditorComponent');
    }
 
    protected function rules()
@@ -102,6 +102,7 @@ class PageManageComponent extends Component
           }
       } else {
           $page = Page::create($data);
+          $this->pageId = $page->page_id;
           log_activity($page, 'oluşturuldu');
           
           $toast = [
@@ -121,20 +122,6 @@ class PageManageComponent extends Component
       if ($resetForm && !$this->pageId) {
           $this->reset();
       }
-   }
-   
-   public function openStudioEditor()
-   {
-       if (!$this->pageId) {
-           // Önce sayfayı kaydet
-           $this->save();
-           
-           if ($this->pageId) {
-               return redirect()->route('admin.studio.editor', ['module' => 'page', 'id' => $this->pageId]);
-           }
-       } else {
-           return redirect()->route('admin.studio.editor', ['module' => 'page', 'id' => $this->pageId]);
-       }
    }
 
    public function render()

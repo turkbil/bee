@@ -4,7 +4,7 @@
         <!-- Header Bölümü -->
         <div class="row mb-3">
             <!-- Arama Kutusu -->
-            <div class="col-md-4">
+            <div class="col">
                 <div class="input-icon">
                     <span class="input-icon-addon">
                         <i class="fas fa-search"></i>
@@ -25,15 +25,17 @@
                     </div>
                 </div>
             </div>
-            <!-- Sağ Taraf (Sayfa Adeti Seçimi) -->
-            <div class="col-md-3">
+            <!-- Sağ Taraf (Switch ve Select) -->
+            <div class="col">
                 <div class="d-flex align-items-center justify-content-end gap-3">
-                    <span class="text-muted">Sayfa Sayısı:</span>
-                    <div style="min-width: 70px">
+                    <!-- Sayfa Adeti Seçimi -->
+                    <div style="min-width: 60px">
                         <select wire:model.live="perPage" class="form-select">
-                            <option value="12">12</option>
-                            <option value="24">24</option>
-                            <option value="48">48</option>
+                            <option value="10">10</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="500">500</option>
+                            <option value="1000">1000</option>
                         </select>
                     </div>
                 </div>

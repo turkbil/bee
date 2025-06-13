@@ -69,7 +69,7 @@
                                 Durum
                             </button>
                         </th>
-                        <th class="text-center" style="width: 120px">İşlemler</th>
+                        <th class="text-center" style="width: 160px">İşlemler</th>
                     </tr>
                 </thead>
                 <tbody class="table-tbody">

@@ -12,6 +12,14 @@
                         <a href="#tabs-2" class="nav-link" data-bs-toggle="tab">SEO</a>
                     </li>
                 </ul>
+                
+                @if($studioEnabled && $portfolioId)
+                <div class="card-actions">
+                    <a href="{{ route('admin.studio.editor', ['module' => 'portfolio', 'id' => $portfolioId]) }}" target="_blank" class="btn btn-primary">
+                        <i class="fas fa-wand-magic-sparkles me-2"></i> Studio ile Düzenle
+                    </a>
+                </div>
+                @endif
             </div>
             <div class="card-body">
                 <div class="tab-content">

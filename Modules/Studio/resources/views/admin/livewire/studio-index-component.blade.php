@@ -1,22 +1,7 @@
 <div>
-    <div class="page-header d-print-none">
-        <div class="container-xl">
-            <div class="row g-2 align-items-center">
-                <div class="col">
-                    <div class="page-pretitle">
-                        <i class="fas fa-wand-magic-sparkles me-2"></i>
-                        Hoşgeldiniz
-                    </div>
-                    <h2 class="page-title">Studio Görsel Editör</h2>
-                    <p class="text-muted mt-1">Drag & Drop ile profesyonel sayfalar oluşturun</p>
-                </div>
-            </div>
-        </div>
-    </div>
+    @include('studio::admin.helper')
 
-    <div class="page-body">
-        <div class="container-xl">
-            <div class="row row-deck row-cards">
+    <div class="row row-deck row-cards">
                 
                 <div class="col-12 mb-4">
                     <div class="row row-cards">
@@ -251,6 +236,5 @@
                     </div>
                 </div>
             </div>
-        </div>
     </div>
 </div>

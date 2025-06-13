@@ -63,7 +63,7 @@
         <input type="checkbox"
                wire:model.defer="inputs.permission_types"
                value="{{ $type }}"
-               @if(empty($inputs['permission_types']) || !in_array($type, $inputs['permission_types'])) checked @endif>
+               {{ in_array($type, $inputs['permission_types'] ?? []) ? 'checked' : '' }}>
         <div class="state p-success p-on ms-2">
             <label>
                 <i class="fas fa-{{ $attrs['icon'] }} me-2"></i>

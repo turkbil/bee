@@ -1,27 +1,35 @@
 @include('settingmanagement::helper')
 
 <div class="card">
-    <div class="card-header">
-        <h3 class="card-title">
-            <i class="fas fa-cogs me-2"></i>
-            Tenant Ayarları
-        </h3>
-    </div>
     <div class="card-body">
-        <!-- Filtreleme Araçları -->
-        <div class="mb-3">
-            <div class="row g-2">
-                <div class="col-md-3">
-                    <div class="input-icon">
-                        <span class="input-icon-addon">
-                            <i class="fas fa-search"></i>
-                        </span>
-                        <input type="text" wire:model.live.debounce.300ms="search" class="form-control"
-                            placeholder="Aramak için yazın...">
+        <!-- Header Bölümü -->
+        <div class="row mb-3">
+            <!-- Sol Kolon - Arama -->
+            <div class="col">
+                <div class="input-icon">
+                    <span class="input-icon-addon">
+                        <i class="fas fa-search"></i>
+                    </span>
+                    <input type="text" wire:model.live.debounce.300ms="search" class="form-control"
+                        placeholder="Aramak için yazın...">
+                </div>
+            </div>
+            <!-- Orta Kolon - Loading -->
+            <div class="col position-relative">
+                <div wire:loading
+                    wire:target="render, search, selectedGroup"
+                    class="position-absolute top-50 start-50 translate-middle text-center"
+                    style="width: 100%; max-width: 250px;">
+                    <div class="small text-muted mb-2">Güncelleniyor...</div>
+                    <div class="progress mb-1">
+                        <div class="progress-bar progress-bar-indeterminate"></div>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <select wire:model.live="selectedGroup" class="form-select">
+            </div>
+            <!-- Sağ Kolon - Grup Filtresi -->
+            <div class="col">
+                <div class="d-flex align-items-center justify-content-end gap-2">
+                    <select wire:model.live="selectedGroup" class="form-select" style="min-width: 150px;">
                         <option value="">Tüm Gruplar</option>
                         @foreach($groups as $group)
                         <option value="{{ $group->id }}">{{ $group->name }}</option>
@@ -30,6 +38,8 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div class="card-body">
 
         <!-- Ayarlar Listesi -->
         @forelse($settings->groupBy('group_id') as $groupId => $groupSettings)

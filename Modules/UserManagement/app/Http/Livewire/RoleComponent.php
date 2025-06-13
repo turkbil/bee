@@ -16,12 +16,32 @@ class RoleComponent extends Component
     protected $paginationTheme = 'bootstrap';
 
     public $search = '';
+    public $perPage = 10;
+    public $sortField = 'id';
+    public $sortDirection = 'desc';
+    public $selectedItems = [];
+    public $selectAll = false;
     public $roleIdToDelete = null;
     public $showDeleteModal = false;
 
     public function updatingSearch()
     {
         $this->resetPage();
+    }
+
+    public function updatedPerPage()
+    {
+        $this->resetPage();
+    }
+
+    public function sortBy($field)
+    {
+        if ($this->sortField === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortField = $field;
+            $this->sortDirection = 'asc';
+        }
     }
 
     public function confirmDelete($id)
@@ -106,8 +126,8 @@ class RoleComponent extends Component
                 // Root olmayan kullanıcılar root rolünü göremesin
                 $query->where('name', '!=', 'root');
             })
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+            ->orderBy($this->sortField, $this->sortDirection)
+            ->paginate($this->perPage);
      
         return view('usermanagement::livewire.role-component', [
             'roles' => $roles

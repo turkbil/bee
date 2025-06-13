@@ -1,7 +1,5 @@
 <div>
     @include('ai::admin.helper')
-
-    <div class="page-body">
         @if ($error)
         <div class="alert alert-warning mb-3">
             <div class="d-flex">
@@ -92,7 +90,6 @@
                 </div>
             </div>
         </div>
-    </div>
 
     <div class="toast-container position-fixed bottom-0 end-0 p-3">
         <div id="toast-notification" class="toast" role="alert" aria-live="assertive" aria-atomic="true">

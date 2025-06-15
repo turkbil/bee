@@ -25,6 +25,49 @@ Bu proje, Laravel 12 ile geliştirilmiş, modüler ve çok kiracılı (multi-ten
 
 ## Sürüm Geçmişi
 
+### v1.2.6 (2025-06-15) - Theme Builder Primary Color Sistemi Tamamen Düzeltildi
+- **Primary Color Sistemi Sorunu Çözüldü:**
+  - `btn-outline-primary` gibi outline butonlar artık theme builder'dan seçilen renge uyum sağlıyor
+  - Tüm primary varyantları (link-primary, badge-outline-primary, nav-link.active) tema rengi desteği aldı
+  - Alert-primary, progress-bar-primary, table-primary gibi elementler için tema rengi entegrasyonu
+- **CSS Düzeltmeleri:**
+  - `var(--primary-color)` ve `var(--primary-color-rgb)` değişkenleri tüm primary sınıflarında kullanılıyor
+  - Outline butonlar için border, text ve hover durumları tema rengine uygun
+  - Primary elementlerin transparent background ve hover efektleri düzeltildi
+- **JavaScript İyileştirmeleri:**
+  - `hexToRgb()` fonksiyonu eklendi, renk değişiminde RGB değeri otomatik hesaplanıyor
+  - Theme değişikliği sırasında hem hex hem RGB değerleri güncellenirdi
+  - `applyThemeChanges()` ve `initializeThemeSettings()` fonksiyonlarında RGB desteği
+- **Kapsamlı Primary Support:**
+  - btn-outline-primary, link-primary, badge-outline-primary 
+  - nav-link.active, nav-pills .nav-link.active
+  - alert-primary, progress-bar-primary, table-primary
+  - Tüm primary elementler artık theme builder ile senkronize çalışıyor
+
+### v1.2.5 (2025-06-15) - Akıllı Border-Radius Sistemi ve Theme Builder Optimizasyonları
+- **Köşe Yuvarlaklığı Sistemi Tamamen Yenilendi:**
+  - Minimal ve stabil border-radius sistemi kuruldu
+  - Ana CSS değişkeni: `--tblr-border-radius` ile tüm sistem kontrol ediliyor
+  - JavaScript'te `updateAllElementRadiuses()` fonksiyonu ile dinamik güncelleme
+  - 6 seviye radius desteği: 0, 0.25rem, 0.375rem, 0.5rem, 0.75rem, 1rem
+- **Smart Group Element Sistemi:**
+  - Button Group (.btn-group): İlk buton sol köşeler, son buton sağ köşeler yuvarlak
+  - Input Group (.input-group): Aynı mantıkla form elementleri gruplanıyor
+  - Pagination (.pagination): Sayfalama butonları birleşik görünümde
+  - Ortadaki elementler düz kalıyor, birleşik akış sağlanıyor
+- **Basit Element Radius Kuralları:**
+  - Tek butonlar (.btn), kartlar (.card), badge'ler (.badge) tam yuvarlak
+  - Form elementleri (.form-control, .form-select) yuvarlak
+  - Navigation linkleri (.nav-link), dropdown item'ları (.dropdown-item) yuvarlak
+  - Avatar'lar (.avatar) ve dropdown menüler (.dropdown-menu) yuvarlak
+- **Primary Color Sistemi Düzeltildi:**
+  - btn-outline-primary, btn-primary vb. elementler doğru primary color kullanıyor
+  - Tema rengi değişiminde tüm primary varyantları güncelleniyor
+- **Theme Builder Slider Sistemi:**
+  - HTML template'de 6 radius örneği ve max="5" ayarlandı
+  - CSS'te radius-2 değeri 0.375rem olarak Tabler standartına uygun hale getirildi
+  - Radius slider artık tüm UI elementlerinde tutarlı çalışıyor
+
 ### v1.2.4 (2025-06-14) - Sistem Geneli Form Element Görsel Standartizasyonu
 - **Help Text/Info Yazıları Standardizasyonu:**
   - Tüm help text'lere `<i class="fas fa-info-circle me-1"></i>` ikonu eklendi

@@ -53,6 +53,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 "--primary-color",
                 color
             );
+            
+            // RGB değerini de güncelle
+            const rgbValue = hexToRgb(color);
+            if (rgbValue) {
+                document.documentElement.style.setProperty(
+                    "--primary-color-rgb",
+                    `${rgbValue.r}, ${rgbValue.g}, ${rgbValue.b}`
+                );
+            }
+            
             updateTextColor(color);
 
             // Radius örneklerini güncelle (aktif renk değişimi için)
@@ -66,7 +76,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const radiusExamples = document.querySelectorAll(".radius-example");
 
     if (radiusSlider && radiusValue) {
-        const radiusMap = ["0", "0.25rem", "0.5rem", "0.75rem", "1rem"];
+        const radiusMap = ["0", "0.25rem", "0.375rem", "0.5rem", "0.75rem", "1rem"];
 
         radiusSlider.addEventListener("input", function () {
             const selectedIndex = parseInt(this.value);
@@ -80,12 +90,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 selectedRadius
             );
 
-            // Card body elementlerinin radius değerlerini güncelle
-            document.documentElement.style.setProperty(
-                "--card-border-radius",
-                selectedRadius
-            );
-            updateCardBodyRadiuses(selectedRadius);
+            // Tüm UI elementlerinin border-radius değerlerini güncelle
+            updateAllElementRadiuses(selectedRadius);
 
             // Örnekleri güncelle
             radiusExamples.forEach((example, index) => {
@@ -416,6 +422,16 @@ document.addEventListener("DOMContentLoaded", function () {
             "--primary-color",
             currentColor
         );
+        
+        // RGB değerini de güncelle
+        const rgbValue = hexToRgb(currentColor);
+        if (rgbValue) {
+            document.documentElement.style.setProperty(
+                "--primary-color-rgb",
+                `${rgbValue.r}, ${rgbValue.g}, ${rgbValue.b}`
+            );
+        }
+        
         updateTextColor(currentColor);
         updateRadiusExamples();
 
@@ -564,6 +580,27 @@ document.addEventListener("DOMContentLoaded", function () {
         if (parts.length === 2) return parts.pop().split(";").shift();
     }
 
+    // Hex rengi RGB'ye çevirme
+    function hexToRgb(hex) {
+        // # işaretini kaldır
+        hex = hex.replace('#', '');
+        
+        // Eğer 3 karakterli hex ise, 6 karaktere genişlet
+        if (hex.length === 3) {
+            hex = hex.split('').map(char => char + char).join('');
+        }
+        
+        if (hex.length !== 6) {
+            return null;
+        }
+        
+        const r = parseInt(hex.substring(0, 2), 16);
+        const g = parseInt(hex.substring(2, 4), 16);
+        const b = parseInt(hex.substring(4, 6), 16);
+        
+        return { r, g, b };
+    }
+
     // Font boyutlarını güncelleme fonksiyonu
     function updateFontSizes(sizeCategory) {
         // Varsayılan boyutlar (normal boyut için)
@@ -619,6 +656,16 @@ document.addEventListener("DOMContentLoaded", function () {
             "--primary-color",
             currentColor
         );
+        
+        // RGB değerini de güncelle
+        const rgbValue = hexToRgb(currentColor);
+        if (rgbValue) {
+            document.documentElement.style.setProperty(
+                "--primary-color-rgb",
+                `${rgbValue.r}, ${rgbValue.g}, ${rgbValue.b}`
+            );
+        }
+        
         updateTextColor(currentColor);
 
         // Tablo görünümünü ayarla
@@ -661,9 +708,10 @@ document.addEventListener("DOMContentLoaded", function () {
         // Tüm font boyutlarını güncelle
         updateFontSizes(fontSize);
 
-        // Card Body radius değerlerini ayarla
-        const themeRadius = getCookie("themeRadius") || "0.25rem";
-        updateCardBodyRadiuses(themeRadius);
+        // Border radius değerlerini ayarla
+        const themeRadius = getCookie("themeRadius") || "0.375rem";
+        document.documentElement.style.setProperty("--tblr-border-radius", themeRadius);
+        updateAllElementRadiuses(themeRadius);
 
         // Gerekli Google fontlarını yükle
         const currentFont = getCookie("themeFont");
@@ -699,6 +747,84 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Koyu tema değiştiğinde radius örneklerini güncelle
     document.addEventListener("darkModeChange", updateRadiusExamples);
+
+    // Basit border-radius güncelleme fonksiyonu
+    function updateAllElementRadiuses(radiusValue) {
+        // Ana CSS değişkenini güncelle
+        document.documentElement.style.setProperty("--tblr-border-radius", radiusValue);
+        
+        // Basit element listesi
+        const simpleElements = [
+            '.btn', '.card', '.badge', '.form-control', '.form-select', 
+            '.dropdown-menu', '.dropdown-item', '.alert', '.avatar', '.nav-link'
+        ];
+        
+        // Her element için radius uygula
+        simpleElements.forEach(selector => {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach(element => {
+                element.style.borderRadius = radiusValue;
+            });
+        });
+        
+        // Group elementleri için özel mantık - başlangıç/bitiş yuvarlak, orta düz
+        
+        // Button Group
+        const buttonGroups = document.querySelectorAll('.btn-group');
+        buttonGroups.forEach(group => {
+            const buttons = group.querySelectorAll('.btn');
+            buttons.forEach((button, index) => {
+                button.style.borderRadius = '0';
+                
+                if (index === 0) {
+                    // İlk buton - sol köşeler yuvarlak
+                    button.style.borderTopLeftRadius = radiusValue;
+                    button.style.borderBottomLeftRadius = radiusValue;
+                }
+                if (index === buttons.length - 1) {
+                    // Son buton - sağ köşeler yuvarlak
+                    button.style.borderTopRightRadius = radiusValue;
+                    button.style.borderBottomRightRadius = radiusValue;
+                }
+            });
+        });
+        
+        // Input Group
+        const inputGroups = document.querySelectorAll('.input-group');
+        inputGroups.forEach(group => {
+            const elements = group.querySelectorAll('.form-control, .input-group-text, .btn');
+            elements.forEach((element, index) => {
+                element.style.borderRadius = '0';
+                
+                if (index === 0) {
+                    element.style.borderTopLeftRadius = radiusValue;
+                    element.style.borderBottomLeftRadius = radiusValue;
+                }
+                if (index === elements.length - 1) {
+                    element.style.borderTopRightRadius = radiusValue;
+                    element.style.borderBottomRightRadius = radiusValue;
+                }
+            });
+        });
+        
+        // Pagination
+        const paginationGroups = document.querySelectorAll('.pagination');
+        paginationGroups.forEach(pagination => {
+            const pageItems = pagination.querySelectorAll('.page-item .page-link');
+            pageItems.forEach((link, index) => {
+                link.style.borderRadius = '0';
+                
+                if (index === 0) {
+                    link.style.borderTopLeftRadius = radiusValue;
+                    link.style.borderBottomLeftRadius = radiusValue;
+                }
+                if (index === pageItems.length - 1) {
+                    link.style.borderTopRightRadius = radiusValue;
+                    link.style.borderBottomRightRadius = radiusValue;
+                }
+            });
+        });
+    }
 
     // Sayfa tamamen yüklendikten sonra bir kez daha tema düğmesini kontrol et
     window.addEventListener("load", function () {

@@ -2,7 +2,7 @@
     <div class="form-renderer">
         <div class="form-container">
             @if(isset($group->layout['title']))
-                <h3 class="form-title mb-4">{{ $group->layout['title'] }}</h3>
+                <h3 class="form-title mb-2">{{ $group->layout['title'] }}</h3>
             @endif
             <div class="row g-3">
 

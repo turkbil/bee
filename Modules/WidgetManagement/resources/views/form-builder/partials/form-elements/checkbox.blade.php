@@ -42,47 +42,41 @@
 @endphp
 
 <div class="col-{{ $width }}" wire:key="element-{{ $elementName }}">
-    <div class="card mb-3 w-100">
-        <div class="card-header">
-            <div class="d-flex align-items-center justify-content-between">
-                <h3 class="card-title d-flex align-items-center">
-                    <i class="fa-regular fa-square-check me-2 text-primary"></i>
-                    {{ $elementLabel }}
-                </h3>
-            </div>
-        </div>
-        <div class="card-body">
-            <div class="form-group w-100">
-                <div class="form-check">
-                    <input 
-                        type="checkbox" 
-                        id="checkbox-{{ $elementName }}" 
-                        name="{{ $elementName }}" 
-                        class="form-check-input" 
-                        wire:model="formData.{{ $elementName }}"
-                        @if($isRequired) required @endif
-                        @if($defaultValue) checked @endif
-                    >
-                    <label class="form-check-label" for="checkbox-{{ $elementName }}">
-                        {{ $elementLabel }}
-                    </label>
-                </div>
-                
-                @if($helpText)
-                    <div class="form-text text-muted mt-2">
-                        <i class="fas fa-info-circle me-1"></i>
-                        {{ $helpText }}
-                    </div>
+    <div class="mb-3">
+        <label class="form-check">
+            <input 
+                type="checkbox" 
+                id="checkbox-{{ $elementName }}" 
+                name="{{ $elementName }}" 
+                class="form-check-input @error('formData.' . $elementName) is-invalid @enderror" 
+                wire:model="formData.{{ $elementName }}"
+                @if($isRequired) required @endif
+                @if($defaultValue) checked @endif
+            >
+            <span class="form-check-label">
+                {{ $elementLabel }}
+                @if($isRequired) 
+                    <span class="text-danger">*</span> 
                 @endif
-                
-                @if(isset($originalData[$elementName]) && isset($formData[$elementName]) && $originalData[$elementName] != $formData[$elementName])
-                    <div class="mt-2 text-end">
-                        <span class="badge bg-yellow cursor-pointer" wire:click="resetToDefault('{{ $elementName }}')">
-                            <i class="fas fa-undo me-1"></i> Varsayılana Döndür
-                        </span>
-                    </div>
-                @endif
+            </span>
+        </label>
+        
+        @error('formData.' . $elementName)
+            <div class="invalid-feedback d-block">{{ $message }}</div>
+        @enderror
+        
+        @if($helpText)
+            <div class="form-text mt-2 ms-2">
+                <i class="fas fa-info-circle me-1"></i>{{ $helpText }}
             </div>
-        </div>
+        @endif
+        
+        @if(isset($originalData[$elementName]) && isset($formData[$elementName]) && $originalData[$elementName] != $formData[$elementName])
+            <div class="mt-2 text-end">
+                <button type="button" class="btn btn-sm btn-outline-warning" wire:click="resetToDefault('{{ $elementName }}')">
+                    <i class="ti ti-rotate-clockwise me-1"></i> Varsayılana Döndür
+                </button>
+            </div>
+        @endif
     </div>
 </div>

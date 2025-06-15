@@ -33,7 +33,7 @@
         <div class="card-header">
             <div class="d-flex align-items-center justify-content-between">
                 <h3 class="card-title d-flex align-items-center">
-                    <i class="fa-regular fa-comment fa-flip-horizontal me-2 text-primary"></i>
+                    <i class="fa-regular fa-comment fa-flip-horizontal me-2"></i>
                     {{ $element['properties']['label'] ?? 'Anahtar' }}
                 </h3>
             </div>

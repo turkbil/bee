@@ -65,23 +65,19 @@
                         </div>
                         
                         <!-- Tema Görseli -->
-                        <div class="card mb-3">
-                            <div class="card-header">
-                                <h3 class="card-title">Tema Önizleme Görseli</h3>
-                            </div>
-                            <div class="card-body">
-                                @include('thememanagement::livewire.partials.image-upload', [
-                                    'imageKey' => 'thumbnail',
-                                    'label' => 'Önizleme görselini sürükleyip bırakın veya tıklayın'
-                                ])
-                            </div>
+                        <div class="mb-4">
+                            <h4 class="form-label">Tema Önizleme Görseli</h4>
+                            @include('thememanagement::livewire.partials.image-upload', [
+                                'imageKey' => 'thumbnail',
+                                'label' => 'Önizleme görselini sürükleyip bırakın veya tıklayın'
+                            ])
                         </div>
                         
                         <!-- Tema Açıklaması -->
-                        <div class="mb-3">
-                            <label class="form-label">Tema Açıklaması</label>
+                        <div class="form-floating mb-3">
                             <textarea wire:model="inputs.description" class="form-control" data-bs-toggle="autosize" rows="5" 
                                 placeholder="Tema hakkında detaylı açıklama"></textarea>
+                            <label>Tema Açıklaması</label>
                         </div>
                     </div>
                 </div>

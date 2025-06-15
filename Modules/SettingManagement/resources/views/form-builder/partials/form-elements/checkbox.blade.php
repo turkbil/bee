@@ -1,71 +1,76 @@
 @php
-    $settingId = null;
-    $settingKey = null;
-    $width = isset($element['properties']['width']) ? $element['properties']['width'] : 12;
-    $isRequired = isset($element['properties']['required']) && $element['properties']['required'] === true;
-    $defaultValue = isset($element['properties']['default_value']) ? $element['properties']['default_value'] : null;
-    $checkboxLabel = isset($element['properties']['checkbox_label']) ? $element['properties']['checkbox_label'] : null;
-    $helpText = isset($element['properties']['help_text']) ? $element['properties']['help_text'] : null;
+    // Element dizisinin var olduğunu kontrol edelim
+    if (!isset($element) || !is_array($element)) {
+        $element = [];
+    }
     
-    if(isset($element['properties']['setting_id'])) {
-        $settingId = $element['properties']['setting_id'];
-    } elseif(isset($element['properties']['name'])) {
-        $settingName = $element['properties']['name'];
-        
-        // Ayarı adından bul
-        $setting = $settings->firstWhere('key', $settingName);
-        if($setting) {
-            $settingId = $setting->id;
-            $settingKey = $setting->key;
-        } else {
-            // Ayar yoksa oluştur
-            // Bu kısım gerçek uygulamada ayar oluşturma mantığına göre değişebilir
-            $settingId = $settingName;
-        }
+    // Temel alan özelliklerini al
+    $fieldName = isset($element['name']) ? $element['name'] : (isset($element['properties']['name']) ? $element['properties']['name'] : 'checkbox_' . uniqid());
+    $fieldLabel = isset($element['label']) ? $element['label'] : (isset($element['properties']['label']) ? $element['properties']['label'] : 'Onay Kutusu');
+    $isRequired = isset($element['required']) ? $element['required'] : (isset($element['properties']['required']) && $element['properties']['required']);
+    $checkboxLabel = isset($element['checkbox_label']) ? $element['checkbox_label'] : (isset($element['properties']['checkbox_label']) ? $element['properties']['checkbox_label'] : $fieldLabel);
+    $helpText = isset($element['help_text']) ? $element['help_text'] : (isset($element['properties']['help_text']) ? $element['properties']['help_text'] : '');
+    
+    // Diğer özellikleri al
+    $width = isset($element['width']) ? $element['width'] : (isset($element['properties']['width']) ? $element['properties']['width'] : 12);
+    $defaultValue = isset($element['default']) ? $element['default'] : (isset($element['properties']['default_value']) ? $element['properties']['default_value'] : false);
+    
+    // Boolean değeri düzelt
+    if (is_string($defaultValue)) {
+        $defaultValue = ($defaultValue === 'true' || $defaultValue === '1');
+    }
+    
+    // values ve originalValues kontrolü
+    if (!isset($values) || !is_array($values)) {
+        $values = [];
+    }
+    
+    if (!isset($originalValues) || !is_array($originalValues)) {
+        $originalValues = [];
+    }
+    
+    // values için varsayılan değeri ayarla
+    if (!isset($values[$fieldName])) {
+        $values[$fieldName] = $defaultValue;
     }
 @endphp
 
-<div class="col-{{ $width }}" wire:key="element-{{ $element['properties']['name'] ?? 'checkbox' }}">
-    <div class="card mb-3 w-100">
-        <div class="card-header">
-            <div class="d-flex align-items-center justify-content-between">
-                <h3 class="card-title d-flex align-items-center">
-                    <i class="fa-regular fa-comment fa-flip-horizontal me-2 text-primary"></i>
-                    {{ $element['properties']['label'] ?? 'Onay Kutusu' }}
-                </h3>
-            </div>
+<div class="col-{{ $width }}">
+    <div class="mb-3">
+        <label class="form-label">
+            {{ $fieldLabel }}
+            @if($isRequired) 
+                <span class="text-danger">*</span> 
+            @endif
+        </label>
+        <div class="form-check">
+            <input class="form-check-input" 
+                type="checkbox" 
+                id="{{ $fieldName }}" 
+                wire:model="values.{{ $fieldName }}"
+                value="1"
+                @if($isRequired) required @endif
+                @if($defaultValue) checked @endif>
+            <label class="form-check-label" for="{{ $fieldName }}">
+                {{ $checkboxLabel }}
+            </label>
+            @error('values.' . $fieldName)
+                <div class="invalid-feedback d-block">{{ $message }}</div>
+            @enderror
         </div>
-        <div class="card-body">
-            <div class="form-group w-100">
-                <div class="mb-3">
-                    <label class="form-check">
-                        <input class="form-check-input" type="checkbox" 
-                            id="value-{{ $element['properties']['name'] }}" 
-                            name="{{ $element['properties']['name'] }}" 
-                            wire:model="formData.{{ $element['properties']['name'] }}"
-                            value="1"
-                            @if($isRequired) required @endif
-                            @if($defaultValue === 'true') checked @endif
-                        >
-                        <span class="form-check-label">{{ $checkboxLabel ?? ($element['properties']['label'] ?? 'Onay') }}</span>
-                    </label>
-                </div>
-                
-                @if($helpText)
-                    <div class="form-text text-muted mt-2">
-                        <i class="fas fa-info-circle me-1"></i>
-                        {{ $helpText }}
-                    </div>
-                @endif
-                
-                @if(isset($originalData[$element['properties']['name']]) && $originalData[$element['properties']['name']] != $formData[$element['properties']['name']])
-                    <div class="mt-2 text-end">
-                        <span class="badge bg-yellow cursor-pointer" wire:click="resetToDefault('{{ $element['properties']['name'] }}')">
-                            <i class="fas fa-undo me-1"></i> Varsayılana Döndür
-                        </span>
-                    </div>
-                @endif
+        
+        @if($helpText)
+            <div class="form-text mt-2 ms-2">
+                <i class="fas fa-info-circle me-1"></i>{{ $helpText }}
             </div>
-        </div>
+        @endif
+        
+        @if(isset($originalValues[$fieldName]) && isset($values[$fieldName]) && $originalValues[$fieldName] != $values[$fieldName])
+            <div class="mt-2 text-end">
+                <button type="button" class="btn btn-sm btn-outline-warning" wire:click="resetToDefault('{{ $fieldName }}')">
+                    <i class="ti ti-rotate-clockwise me-1"></i> Varsayılana Döndür
+                </button>
+            </div>
+        @endif
     </div>
 </div>

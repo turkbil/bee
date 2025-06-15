@@ -1,43 +1,36 @@
-<?php namespace Cviebrock\EloquentSluggable\Tests\Models;
+<?php
+
+namespace Cviebrock\EloquentSluggable\Tests\Models;
 
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Post
+ * Class Post.
  *
- * @package Cviebrock\EloquentSluggable\Tests\Models
- *
- * @property integer id
- * @property string title
- * @property string|null subtitle
- * @property string|null slug
- * @property string|null dummy
- * @property integer author_id
+ * @property int     $id
+ * @property string  $title
+ * @property ?string $subtitle
+ * @property ?string $slug
+ * @property ?string $dummy
+ * @property ?int    $author_id
  */
 class Post extends Model
 {
-
     use Sluggable;
 
     /**
-     * The table associated with the model.
-     *
-     * @var string
+     * {@inheritdoc}
      */
     protected $table = 'posts';
 
     /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
+     * {@inheritdoc}
      */
     public $timestamps = false;
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
+     * {@inheritdoc}
      */
     protected $fillable = ['title', 'subtitle', 'slug', 'dummy', 'author_id'];
 
@@ -53,15 +46,13 @@ class Post extends Model
 
     /**
      * Return the sluggable configuration array for this model.
-     *
-     * @return array
      */
     public function sluggable(): array
     {
         return [
             'slug' => [
-                'source' => 'title'
-            ]
+                'source' => 'title',
+            ],
         ];
     }
 }

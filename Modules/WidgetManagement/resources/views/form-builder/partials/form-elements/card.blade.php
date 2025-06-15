@@ -42,7 +42,7 @@
         <div class="card-header">
             <div class="d-flex align-items-center justify-content-between">
                 <h3 class="card-title d-flex align-items-center">
-                    <i class="fas fa-square me-2 text-primary"></i>
+                    <i class="fas fa-square me-2"></i>
                     {{ $cardTitle }}
                 </h3>
             </div>

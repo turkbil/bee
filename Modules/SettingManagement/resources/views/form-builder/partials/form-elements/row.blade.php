@@ -1,4 +1,4 @@
-<div class="col-12 mb-4">
+<div class="col-12 mb-3">
     <div class="row g-3">
         @if(isset($element['columns']) && is_array($element['columns']))
             @foreach($element['columns'] as $column)

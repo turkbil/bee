@@ -20,19 +20,24 @@
 
                         <!-- Modül Seçimi Bölümü -->
                         <div class="mb-3">
-                            <label class="form-label">Modül Seçimi</label>
                             @if(count($this->availableModules) > 0)
                             <!-- Computed property kullanımı -->
-                            <select wire:model.defer="inputs.name"
-                                class="form-select tomselect @error('inputs.name') is-invalid @enderror">
-                                <option value="">Lütfen bir modül seçin</option>
-                                @foreach($this->availableModules as $name => $display)
-                                <option value="{{ $name }}">{{ $display }}</option>
-                                @endforeach
-                            </select>
-                            @error('inputs.name')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <div class="form-floating">
+                                <select wire:model.defer="inputs.name"
+                                    class="form-select @error('inputs.name') is-invalid @enderror"
+                                    data-choices
+                                    data-choices-search="{{ count($this->availableModules) > 6 ? 'true' : 'false' }}"
+                                    data-choices-placeholder="Lütfen bir modül seçin">
+                                    <option value="">Lütfen bir modül seçin</option>
+                                    @foreach($this->availableModules as $name => $display)
+                                    <option value="{{ $name }}">{{ $display }}</option>
+                                    @endforeach
+                                </select>
+                                <label>Modül Seçimi</label>
+                                @error('inputs.name')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                             @else
                             <div class="alert alert-info d-flex align-items-center">
                                 <i class="fas fa-check-circle me-3"></i>
@@ -48,7 +53,10 @@
                         <!-- Modül Tipi -->
                         <div class="form-floating mb-3">
                             <select wire:model.defer="inputs.type"
-                                class="form-select tomselect @error('inputs.type') is-invalid @enderror">
+                                class="form-select @error('inputs.type') is-invalid @enderror"
+                                data-choices
+                                data-choices-search="false"
+                                data-choices-placeholder="Modül tipi seçin">
                                 <option value="content" {{ $inputs['type']=='content' ? 'selected' : '' }}>İçerik Modülü
                                 </option>
                                 <option value="management" {{ $inputs['type']=='management' ? 'selected' : '' }}>Yönetim
@@ -65,8 +73,11 @@
                         <!-- Ayar Seçimi alanı -->
                         <div class="form-floating mb-3">
                             <select wire:model.defer="inputs.setting"
-                                class="form-select tomselect @error('inputs.setting') is-invalid @enderror">
-                                <option value="">Ayar Seçiniz</option>
+                                class="form-select @error('inputs.setting') is-invalid @enderror"
+                                data-choices
+                                data-choices-search="{{ count($availableSettings) > 6 ? 'true' : 'false' }}"
+                                data-choices-placeholder="Ayar seçiniz">
+                                <option value="">Ayar seçiniz</option>
                                 @foreach($availableSettings as $setting)
                                 <option value="{{ $setting->id }}" {{ $inputs['setting']==$setting->id ? 'selected' :
                                     '' }}>{{ $setting->name }}</option>

@@ -1,69 +1,77 @@
 @php
-    $settingId = null;
-    $settingKey = null;
+    // Element dizisinin var olduğunu kontrol edelim
+    if (!isset($element) || !is_array($element)) {
+        $element = [];
+    }
     
-    if(isset($element['properties']['setting_id'])) {
-        $settingId = $element['properties']['setting_id'];
-    } elseif(isset($element['properties']['name'])) {
-        $settingName = $element['properties']['name'];
-        
-        // Ayarı adından bul
-        $setting = $settings->firstWhere('key', $settingName);
-        if($setting) {
-            $settingId = $setting->id;
-            $settingKey = $setting->key;
-        }
+    // Temel alan özelliklerini al
+    $fieldName = isset($element['name']) ? $element['name'] : (isset($element['properties']['name']) ? $element['properties']['name'] : 'tel_' . uniqid());
+    $fieldLabel = isset($element['label']) ? $element['label'] : (isset($element['properties']['label']) ? $element['properties']['label'] : 'Telefon');
+    $isRequired = isset($element['required']) ? $element['required'] : (isset($element['properties']['required']) && $element['properties']['required']);
+    $placeholder = isset($element['placeholder']) ? $element['placeholder'] : (isset($element['properties']['placeholder']) ? $element['properties']['placeholder'] : '');
+    $helpText = isset($element['help_text']) ? $element['help_text'] : (isset($element['properties']['help_text']) ? $element['properties']['help_text'] : '');
+    
+    // Diğer özellikleri al
+    $width = isset($element['width']) ? $element['width'] : (isset($element['properties']['width']) ? $element['properties']['width'] : 12);
+    $defaultValue = isset($element['default']) ? $element['default'] : (isset($element['properties']['default_value']) ? $element['properties']['default_value'] : '');
+    
+    // values ve originalValues kontrolü
+    if (!isset($values) || !is_array($values)) {
+        $values = [];
+    }
+    
+    if (!isset($originalValues) || !is_array($originalValues)) {
+        $originalValues = [];
+    }
+    
+    // Mevcut değeri belirle
+    if(isset($values[$fieldName])) {
+        $fieldValue = $values[$fieldName];
+    } elseif(isset($settings) && is_object($settings)) {
+        $cleanFieldName = str_replace('setting.', '', $fieldName);
+        $fieldValue = $settings[$cleanFieldName] ?? $defaultValue;
+    } else {
+        $fieldValue = $defaultValue;
+    }
+    
+    // values için varsayılan değeri ayarla
+    if (!isset($values[$fieldName])) {
+        $values[$fieldName] = $fieldValue;
     }
 @endphp
 
-@if($settingId)
-    <div class="col-12" wire:key="setting-{{ $settingId }}">
-        <div class="card mb-3 w-100">
-            <div class="card-header">
-                <div class="d-flex align-items-center justify-content-between">
-                    <h3 class="card-title d-flex align-items-center">
-                        <i class="fas fa-phone me-2 text-primary"></i>
-                        {{ $element['properties']['label'] ?? 'Telefon' }}
-                    </h3>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="form-group w-100">
-                    <div class="input-icon w-100">
-                        <span class="input-icon-addon">
-                            <i class="fas fa-phone"></i>
-                        </span>
-                        <input 
-                            type="tel" 
-                            wire:model="values.{{ $settingId }}" 
-                            class="form-control w-100" 
-                            placeholder="{{ $element['properties']['placeholder'] ?? 'Telefon numarası girin' }}"
-                        >
-                    </div>
-                    
-                    @if(isset($element['properties']['help_text']) && !empty($element['properties']['help_text']))
-                        <div class="form-text text-muted mt-2">
-                            <i class="fas fa-info-circle me-1"></i>
-                            {{ $element['properties']['help_text'] }}
-                        </div>
-                    @endif
-                    
-                    @if(isset($originalValues[$settingId]) && $originalValues[$settingId] != $values[$settingId])
-                        <div class="mt-2 text-end">
-                            <span class="badge bg-yellow cursor-pointer" wire:click="resetToDefault({{ $settingId }})">
-                                <i class="fas fa-undo me-1"></i> Varsayılana Döndür
-                            </span>
-                        </div>
-                    @endif
-                </div>
-            </div>
+<div class="col-{{ $width }}">
+    <div class="mb-3">
+        <div class="form-floating">
+            <input type="tel" 
+                id="{{ $fieldName }}"
+                wire:model="values.{{ $fieldName }}" 
+                class="form-control @error('values.' . $fieldName) is-invalid @enderror" 
+                placeholder="{{ $placeholder ?: $fieldLabel }}"
+                @if($isRequired) required @endif>
+            <label for="{{ $fieldName }}">
+                {{ $fieldLabel }}
+                @if($isRequired) 
+                    <span class="text-danger">*</span> 
+                @endif
+            </label>
+            @error('values.' . $fieldName)
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
         </div>
+        
+        @if($helpText)
+            <div class="form-text mt-2 ms-2">
+                <i class="fas fa-info-circle me-1"></i>{{ $helpText }}
+            </div>
+        @endif
+        
+        @if(isset($originalValues[$fieldName]) && isset($values[$fieldName]) && $originalValues[$fieldName] != $values[$fieldName])
+            <div class="mt-2 text-end">
+                <button type="button" class="btn btn-sm btn-outline-warning" wire:click="resetToDefault('{{ $fieldName }}')">
+                    <i class="ti ti-rotate-clockwise me-1"></i> Varsayılana Döndür
+                </button>
+            </div>
+        @endif
     </div>
-@else
-    <div class="col-12">
-        <div class="alert alert-danger mb-3 w-100">
-            <i class="fas fa-exclamation-circle me-2"></i>
-            Bu telefon alanı için ayar bulunamadı: {{ $element['properties']['name'] ?? 'Bilinmeyen' }}
-        </div>
-    </div>
-@endif
+</div>

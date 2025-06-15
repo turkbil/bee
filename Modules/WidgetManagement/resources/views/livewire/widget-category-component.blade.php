@@ -69,7 +69,10 @@
                             @if($editCategoryId)
                                 <select 
                                     wire:model="editData.parent_id" 
-                                    class="form-select">
+                                    class="form-control"
+                                    data-choices
+                                    data-choices-search="{{ count($parentCategories) > 6 ? 'true' : 'false' }}"
+                                    data-choices-placeholder="Üst Kategori Seçin">
                                     <option value="">Ana Kategori Olarak Ekle</option>
                                     @foreach($parentCategories as $parent)
                                         @if($parent->widget_category_id != $editCategoryId)
@@ -81,7 +84,10 @@
                             @else
                                 <select 
                                     wire:model="parentId" 
-                                    class="form-select">
+                                    class="form-control"
+                                    data-choices
+                                    data-choices-search="{{ count($parentCategories) > 6 ? 'true' : 'false' }}"
+                                    data-choices-placeholder="Üst Kategori Seçin">
                                     <option value="">Ana Kategori Olarak Ekle</option>
                                     @foreach($parentCategories as $parent)
                                         <option value="{{ $parent->widget_category_id }}">{{ $parent->title }}</option>
@@ -164,9 +170,11 @@
         <div class="col-12 col-lg-8">
             <div class="card">
                 <div class="card-header">
-                    <div class="d-flex align-items-center">
-                        <h3 class="card-title">Kategoriler</h3>
-                        <div class="ms-auto">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h3 class="card-title">Kategoriler</h3>
+                        </div>
+                        <div class="col-auto">
                             <div class="input-icon">
                                 <span class="input-icon-addon">
                                     <i class="fas fa-search"></i>
@@ -222,9 +230,11 @@
                                                 <div class="d-flex align-items-center">
                                                     <div class="container">
                                                         <div class="row">
-                                                            <div class="col text-center align-middle">
+                                                            <div class="col">
                                                                 <button wire:click="toggleActive({{ $category->widget_category_id }})"
-                                                                    class="btn btn-icon btn-sm {{ $category->is_active ? 'text-muted bg-transparent' : 'text-red bg-transparent' }}">
+                                                                    class="btn btn-icon btn-sm {{ $category->is_active ? 'text-muted bg-transparent' : 'text-red bg-transparent' }}"
+                                                                    data-bs-toggle="tooltip" data-bs-placement="top" 
+                                                                    title="{{ $category->is_active ? 'Deaktive Et' : 'Aktive Et' }}">
                                                                     <!-- Loading Durumu -->
                                                                     <div wire:loading wire:target="toggleActive({{ $category->widget_category_id }})"
                                                                         class="spinner-border spinner-border-sm">
@@ -232,9 +242,9 @@
                                                                     <!-- Normal Durum: Aktif/Pasif İkonları -->
                                                                     <div wire:loading.remove wire:target="toggleActive({{ $category->widget_category_id }})">
                                                                         @if($category->is_active)
-                                                                        <i class="fas fa-check"></i>
+                                                                        <i class="fas fa-check fa-lg"></i>
                                                                         @else
-                                                                        <i class="fas fa-times"></i>
+                                                                        <i class="fas fa-times fa-lg"></i>
                                                                         @endif
                                                                     </div>
                                                                 </button>
@@ -299,9 +309,11 @@
                                                         <div class="d-flex align-items-center">
                                                             <div class="container">
                                                                 <div class="row">
-                                                                    <div class="col text-center align-middle">
+                                                                    <div class="col">
                                                                         <button wire:click="toggleActive({{ $child->widget_category_id }})"
-                                                                            class="btn btn-icon btn-sm {{ $child->is_active ? 'text-muted bg-transparent' : 'text-red bg-transparent' }}">
+                                                                            class="btn btn-icon btn-sm {{ $child->is_active ? 'text-muted bg-transparent' : 'text-red bg-transparent' }}"
+                                                                            data-bs-toggle="tooltip" data-bs-placement="top" 
+                                                                            title="{{ $child->is_active ? 'Deaktive Et' : 'Aktive Et' }}">
                                                                             <!-- Loading Durumu -->
                                                                             <div wire:loading wire:target="toggleActive({{ $child->widget_category_id }})"
                                                                                 class="spinner-border spinner-border-sm">
@@ -309,9 +321,9 @@
                                                                             <!-- Normal Durum: Aktif/Pasif İkonları -->
                                                                             <div wire:loading.remove wire:target="toggleActive({{ $child->widget_category_id }})">
                                                                                 @if($child->is_active)
-                                                                                <i class="fas fa-check"></i>
+                                                                                <i class="fas fa-check fa-lg"></i>
                                                                                 @else
-                                                                                <i class="fas fa-times"></i>
+                                                                                <i class="fas fa-times fa-lg"></i>
                                                                                 @endif
                                                                             </div>
                                                                         </button>

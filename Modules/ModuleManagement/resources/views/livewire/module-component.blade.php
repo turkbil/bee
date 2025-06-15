@@ -30,7 +30,7 @@
                 <div class="d-flex align-items-center justify-content-end gap-3">
                     <!-- Tip Filtresi -->
                     <div style="width: 150px">
-                        <select wire:model.live="typeFilter" class="form-select">
+                        <select wire:model.live="typeFilter" class="form-select listing-filter-select">
                             <option value="">Tüm Tipler</option>
                             <option value="content">İçerik</option>
                             <option value="management">Yönetim</option>
@@ -44,7 +44,7 @@
                     </button>
                     <!-- Sayfa Adeti Seçimi -->
                     <div style="min-width: 60px">
-                        <select wire:model.live="perPage" class="form-select">
+                        <select wire:model.live="perPage" class="form-select listing-filter-select">
                             <option value="10">10</option>
                             <option value="50">50</option>
                             <option value="100">100</option>
@@ -147,7 +147,7 @@
                         @endphp
                         <div class="list-group-item py-2 list-group-item-action">
                             <div class="d-flex align-items-center">
-                                <span class="avatar avatar-xs me-2 bg-{{ $isActive ? 'blue' : 'secondary' }}-lt">
+                                <span class="avatar avatar-xs me-2 bg-{{ $isActive ? 'secondary' : 'secondary' }}-lt">
                                     <i class="fas fa-globe fa-sm"></i>
                                 </span>
                                 <div class="flex-fill">{{ $domain->title ?? $domain->id }}</div>
@@ -170,13 +170,13 @@
                                 @endphp
                                 
                                 @forelse($activeDomains as $tenant)
-                                <span class="badge bg-blue-lt">{{ $tenant->title ?? $tenant->id }}</span>
+                                <span class="badge bg-light-lt">{{ $tenant->title ?? $tenant->id }}</span>
                                 @empty
                                 <span class="badge bg-secondary-lt">Atanmamış</span>
                                 @endforelse
                                 
                                 @if($module->tenants->where('pivot.is_active', true)->count() > 3)
-                                <span class="badge bg-blue-lt">
+                                <span class="badge bg-light-lt">
                                     +{{ $module->tenants->where('pivot.is_active', true)->count() - 3 }}
                                 </span>
                                 @endif
@@ -189,8 +189,7 @@
                     <div class="card-footer">
                         <div class="d-flex align-items-center justify-content-between">
                             <div class="d-flex gap-2">
-                                <span
-                                    class="badge bg-{{ $module->type === 'system' ? 'red' : ($module->type === 'management' ? 'yellow' : 'green') }}-lt">
+                                <span class="text-muted small">
                                     {{ ucfirst($module->type) }}
                                 </span>
                             </div>
@@ -229,11 +228,10 @@
             @endforelse
         </div>
     </div>
+
     <!-- Pagination -->
     @if($modules->hasPages())
-    <div class="card-footer d-flex align-items-center justify-content-end">
-        {{ $modules->links() }}
-    </div>
+    {{ $modules->links() }}
     @endif
 
     <livewire:modals.delete-modal />

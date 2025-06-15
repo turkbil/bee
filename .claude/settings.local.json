@@ -8,8 +8,52 @@
       "Bash(rm:*)",
       "Bash(rg:*)",
       "Bash(grep:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(npm run:*)",
+      "Bash(composer update:*)",
+      "Bash(COMPOSER_ALLOW_SUPERUSER=1 composer update --with-all-dependencies)",
+      "Bash(COMPOSER_ALLOW_SUPERUSER=1 composer dump-autoload)",
+      "Bash(COMPOSER_ALLOW_SUPERUSER=1 composer install)",
+      "Bash(COMPOSER_ALLOW_SUPERUSER=1 composer update wire-elements/modal)",
+      "Bash(mkdir:*)",
+      "Bash(chmod:*)",
+      "Bash(python:*)",
+      "Bash(claude mcp add memory:*)",
+      "Bash(claude mcp list)",
+      "Bash(exit)",
+      "Bash(claude)",
+      "Bash(claude mcp add:*)",
+      "Bash(claude mcp get claude-code-server)",
+      "Bash(/mcp)",
+      "Bash(pip3 install:*)",
+      "Bash(sudo apt install:*)",
+      "Bash(./start_mcp_tmux.sh:*)",
+      "Bash(tmux kill-session:*)",
+      "Bash(true)",
+      "Bash(ls:*)",
+      "Bash(claude mcp remove memory)",
+      "Bash(claude mcp:*)",
+      "Bash(mv:*)",
+      "Bash(cp:*)",
+      "Bash(sed:*)",
+      "Bash(npm install:*)",
+      "Bash(claude --debug mcp get claude-code-server)",
+      "Bash(timeout:*)",
+      "Bash(ss:*)"
     ],
     "deny": []
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "memory"
+  ],
+  "mcpServers": {
+    "memory": {
+      "command": "python3",
+      "args": [
+        "mcp/cli/memory.py"
+      ],
+      "env": {}
+    }
   }
 }

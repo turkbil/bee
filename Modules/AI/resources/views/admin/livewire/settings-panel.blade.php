@@ -28,9 +28,8 @@
                                 class="form-control @error('settings.api_key') is-invalid @enderror"
                                 placeholder="DeepSeek API anahtarınızı girin" id="api_key_input">
                             <label for="api_key_input">API Anahtarı</label>
-                            <div class="form-text d-flex align-items-center">
-                                <i class="fa-thin fa-circle-info me-2"></i>
-                                DeepSeek API anahtarını
+                            <div class="form-text mt-2 ms-2">
+                                <i class="fas fa-info-circle me-1"></i>DeepSeek API anahtarını
                                 <a href="https://platform.deepseek.com/" target="_blank" class="ms-1">DeepSeek
                                     platformundan</a> alabilirsiniz.
                                 <button type="button" id="togglePassword" class="btn btn-sm btn-ghost-secondary ms-2">
@@ -80,9 +79,8 @@
                                 class="form-control @error('settings.max_tokens') is-invalid @enderror"
                                 placeholder="Maksimum token sayısı" id="max_tokens_input">
                             <label for="max_tokens_input">Maksimum Token</label>
-                            <div class="form-text">
-                                <i class="fa-thin fa-circle-info me-2"></i>
-                                Bir yanıtın maksimum token sayısı (4096 önerilir)
+                            <div class="form-text mt-2 ms-2">
+                                <i class="fas fa-info-circle me-1"></i>Bir yanıtın maksimum token sayısı (4096 önerilir)
                             </div>
                             @error('settings.max_tokens')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -94,9 +92,8 @@
                             <input type="range" wire:model="settings.temperature"
                                 class="form-range @error('settings.temperature') is-invalid @enderror" min="0" max="1"
                                 step="0.1" id="temperature_range">
-                            <div class="form-text">
-                                <i class="fa-thin fa-circle-info me-2"></i>
-                                Daha düşük değerler daha tutarlı yanıtlar üretir
+                            <div class="form-text mt-2 ms-2">
+                                <i class="fas fa-info-circle me-1"></i>Daha düşük değerler daha tutarlı yanıtlar üretir
                             </div>
                             @error('settings.temperature')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -114,9 +111,8 @@
                                     <label>Aktif Değil</label>
                                 </div>
                             </div>
-                            <div class="form-text mt-2">
-                                <i class="fa-thin fa-circle-info me-2"></i>
-                                Devre dışı bırakıldığında, hiçbir kullanıcı AI asistanını kullanamaz
+                            <div class="form-text mt-2 ms-2">
+                                <i class="fas fa-info-circle me-1"></i>Devre dışı bırakıldığında, hiçbir kullanıcı AI asistanını kullanamaz
                             </div>
                         </div>
 
@@ -135,7 +131,7 @@
                             <i class="fas fa-cog fa-2x text-muted"></i>
                         </div>
                         <div>
-                            <h3 class="mb-0">Ortak Özellikler Promptu</h3>
+                            <h3 class="card-title mb-0">Ortak Özellikler Promptu</h3>
                             <p class="text-muted mb-0">AI asistanınızın kimliğini, kişiliğini ve davranışlarını
                                 tanımlayan temel özellikleri belirleyin.</p>
                         </div>
@@ -167,9 +163,8 @@
                             <textarea wire:model="commonPrompt.content"
                                 class="form-control @error('commonPrompt.content') is-invalid @enderror" rows="10"
                                 placeholder="Ortak özellikler promptunu girin"></textarea>
-                            <div class="form-text">
-                                <i class="fa-thin fa-circle-info me-2"></i>
-                                Bu içerik, AI'ın her yanıtında tutarlı bir kimlik ve kişilik sergilemesi için
+                            <div class="form-text mt-2 ms-2">
+                                <i class="fas fa-info-circle me-1"></i>Bu içerik, AI'ın her yanıtında tutarlı bir kimlik ve kişilik sergilemesi için
                                 kullanılır.
                             </div>
                             @error('commonPrompt.content')
@@ -195,9 +190,8 @@
                                 class="form-control @error('limits.daily_limit') is-invalid @enderror"
                                 placeholder="Günlük kullanım limiti" id="daily_limit_input">
                             <label for="daily_limit_input">Günlük Limit</label>
-                            <div class="form-text">
-                                <i class="fa-thin fa-circle-info me-2"></i>
-                                Bir kullanıcının günlük olarak gönderebileceği mesaj sayısı
+                            <div class="form-text mt-2 ms-2">
+                                <i class="fas fa-info-circle me-1"></i>Bir kullanıcının günlük olarak gönderebileceği mesaj sayısı
                             </div>
                             @error('limits.daily_limit')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -209,9 +203,8 @@
                                 class="form-control @error('limits.monthly_limit') is-invalid @enderror"
                                 placeholder="Aylık kullanım limiti" id="monthly_limit_input">
                             <label for="monthly_limit_input">Aylık Limit</label>
-                            <div class="form-text">
-                                <i class="fa-thin fa-circle-info me-2"></i>
-                                Bir kullanıcının aylık olarak gönderebileceği mesaj sayısı
+                            <div class="form-text mt-2 ms-2">
+                                <i class="fas fa-info-circle me-1"></i>Bir kullanıcının aylık olarak gönderebileceği mesaj sayısı
                             </div>
                             @error('limits.monthly_limit')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -229,7 +222,7 @@
                 <!-- Prompt Şablonları -->
                 <div class="tab-pane" id="tabs-prompts">
                     <div class="d-flex justify-content-between mb-3">
-                        <h4>Prompt Şablonları</h4>
+                        <h4 class="section-title">Prompt Şablonları</h4>
                         <button class="btn btn-primary" wire:click="$dispatch('openPromptModal')">
                             <i class="fas fa-plus me-2"></i> Yeni Prompt
                         </button>

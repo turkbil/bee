@@ -8,7 +8,7 @@
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">
-                            <i class="fas fa-user-circle text-primary me-2"></i>Kullanıcı Profili
+                            <i class="fas fa-user-circle me-2"></i>Kullanıcı Profili
                         </h3>
                     </div>
                     <div class="card-body">
@@ -53,42 +53,27 @@
                         </div>
                         
                         <!-- İsim -->
-                        <div class="mb-3">
-                            <label class="form-label required">İsim Soyisim</label>
-                            <div class="input-icon">
-                                <span class="input-icon-addon">
-                                    <i class="fas fa-user"></i>
-                                </span>
-                                <input type="text" wire:model.defer="inputs.name" class="form-control @error('inputs.name') is-invalid @enderror" placeholder="İsim Soyisim">
-                            </div>
+                        <div class="form-floating mb-3">
+                            <input type="text" wire:model.defer="inputs.name" class="form-control @error('inputs.name') is-invalid @enderror" placeholder="İsim Soyisim">
+                            <label>İsim Soyisim *</label>
                             @error('inputs.name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                         
                         <!-- E-posta -->
-                        <div class="mb-3">
-                            <label class="form-label required">E-posta Adresi</label>
-                            <div class="input-icon">
-                                <span class="input-icon-addon">
-                                    <i class="fas fa-envelope"></i>
-                                </span>
-                                <input type="email" wire:model.defer="inputs.email" class="form-control @error('inputs.email') is-invalid @enderror" placeholder="ornek@mail.com">
-                            </div>
+                        <div class="form-floating mb-3">
+                            <input type="email" wire:model.defer="inputs.email" class="form-control @error('inputs.email') is-invalid @enderror" placeholder="ornek@mail.com">
+                            <label>E-posta Adresi *</label>
                             @error('inputs.email')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                         
                         <!-- Şifre -->
-                        <div class="mb-3">
-                            <label class="form-label {{ !$userId ? 'required' : '' }}">Şifre {{ $userId ? '(Değiştirmek için doldurun)' : '' }}</label>
-                            <div class="input-icon">
-                                <span class="input-icon-addon">
-                                    <i class="fas fa-lock"></i>
-                                </span>
-                                <input type="password" wire:model.defer="inputs.password" class="form-control @error('inputs.password') is-invalid @enderror" placeholder="••••••••">
-                            </div>
+                        <div class="form-floating mb-3">
+                            <input type="password" wire:model.defer="inputs.password" class="form-control @error('inputs.password') is-invalid @enderror" placeholder="••••••••">
+                            <label>Şifre {{ $userId ? '(Değiştirmek için doldurun)' : '*' }}</label>
                             @error('inputs.password')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -117,7 +102,7 @@
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">
-                            <i class="fas fa-user-shield text-primary me-2"></i>Kullanıcı Rolü
+                            <i class="fas fa-user-shield me-2"></i>Kullanıcı Rolü
                         </h3>
                     </div>
                     
@@ -289,8 +274,8 @@
                         <!-- Modül Yetkilendirme (Sadece Editör için) -->
                         <div id="editorPermissionsSection" style="display: {{ $inputs['role_id'] === 'editor' ? 'block' : 'none' }}">
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h4>
-                                    <i class="fas fa-puzzle-piece text-primary me-2"></i>Modül Yetkilendirme
+                                <h4 class="section-title">
+                                    <i class="fas fa-puzzle-piece me-2"></i>Modül Yetkilendirme
                                 </h4>
                                 <button type="button" wire:click="toggleDetailedPermissions" id="toggleDetailedPermissions" class="btn btn-outline-primary btn-sm">
                                     <i class="fas {{ $showDetailedPermissions ? 'fa-compress-alt' : 'fa-cogs' }} me-1"></i> 

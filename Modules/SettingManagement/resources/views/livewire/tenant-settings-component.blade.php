@@ -82,7 +82,7 @@
                                 <div class="text-truncate" style="max-width: 250px;" title="{{ $setting->current_value }}">
                                 @if($setting->type === 'file' && $setting->current_value)
                                     <div class="d-flex align-items-center">
-                                        <i class="fas fa-file text-primary me-2"></i>
+                                        <i class="fas fa-file me-2"></i>
                                         <a href="{{ cdn($setting->current_value) }}" target="_blank" class="text-truncate">
                                             {{ basename($setting->current_value) }}
                                         </a>

@@ -3,7 +3,6 @@
     $fieldLabel = $element['label'] ?? '';
     $isRequired = isset($element['required']) && $element['required'];
     $helpText = $element['help_text'] ?? '';
-    $isSystem = isset($element['system']) && $element['system'];
     $width = isset($element['properties']['width']) ? $element['properties']['width'] : 12;
     
     $fieldValue = $formData[$fieldName] ?? '';
@@ -14,11 +13,8 @@
         <div class="card-header">
             <div class="d-flex align-items-center justify-content-between">
                 <h3 class="card-title d-flex align-items-center">
-                    <i class="fas fa-image me-2 text-primary"></i>
+                    <i class="fas fa-image me-2"></i>
                     {{ $fieldLabel }}
-                    @if($isSystem)
-                        <span class="badge bg-orange ms-2">Sistem</span>
-                    @endif
                 </h3>
             </div>
         </div>
@@ -102,9 +98,8 @@
                 </div>
                 
                 @if($helpText)
-                    <div class="form-text text-muted mt-2">
-                        <i class="fas fa-info-circle me-1"></i>
-                        {{ $helpText }}
+                    <div class="form-text mt-2 ms-2">
+                        <i class="fas fa-info-circle me-1"></i>{{ $helpText }}
                     </div>
                 @endif
             </div>

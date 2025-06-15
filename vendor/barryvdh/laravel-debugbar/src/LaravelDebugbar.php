@@ -20,6 +20,7 @@ use Barryvdh\Debugbar\DataFormatter\QueryFormatter;
 use Barryvdh\Debugbar\Storage\SocketStorage;
 use Barryvdh\Debugbar\Storage\FilesystemStorage;
 use Barryvdh\Debugbar\Support\Clockwork\ClockworkCollector;
+use Barryvdh\Debugbar\Support\RequestIdGenerator;
 use DebugBar\Bridge\MonologCollector;
 use DebugBar\Bridge\Symfony\SymfonyMailCollector;
 use DebugBar\DataCollector\ConfigCollector;
@@ -100,6 +101,13 @@ class LaravelDebugbar extends DebugBar
      */
     protected $is_lumen = false;
 
+    /**
+     * Laravel default error handler
+     *
+     * @var callable|null
+     */
+    protected $prevErrorHandler = null;
+
     protected ?string $editorTemplateLink = null;
     protected array $remoteServerReplacements = [];
     protected bool $responseIsModified = false;
@@ -118,6 +126,7 @@ class LaravelDebugbar extends DebugBar
         if ($this->is_lumen) {
             $this->version = Str::betweenFirst($app->version(), '(', ')');
         }
+        $this->setRequestIdGenerator(new RequestIdGenerator());
     }
 
     /**
@@ -171,7 +180,7 @@ class LaravelDebugbar extends DebugBar
 
         // Set custom error handler
         if ($config->get('debugbar.error_handler', false)) {
-            set_error_handler([$this, 'handleError']);
+            $this->prevErrorHandler = set_error_handler([$this, 'handleError']);
         }
 
         $this->selectStorage($this);
@@ -186,6 +195,16 @@ class LaravelDebugbar extends DebugBar
             if ($config->get('debugbar.options.messages.trace', true)) {
                 $this['messages']->collectFileTrace(true);
             }
+
+            if ($config->get('debugbar.options.messages.capture_dumps', false)) {
+                $originalHandler = \Symfony\Component\VarDumper\VarDumper::setHandler(function ($var) use (&$originalHandler) {
+                    if ($originalHandler) {
+                        $originalHandler($var);
+                    }
+
+                    self::addMessage($var);
+                });
+            }
         }
 
         if ($this->shouldCollect('time', true)) {
@@ -196,7 +215,7 @@ class LaravelDebugbar extends DebugBar
                 $this['time']->showMemoryUsage();
             }
 
-            if (! $this->isLumen() && $startTime) {
+            if ($startTime) {
                 $app->booted(
                     function () use ($startTime) {
                         $this->addMeasure('Booting', $startTime, microtime(true), [], 'time');
@@ -205,6 +224,22 @@ class LaravelDebugbar extends DebugBar
             }
 
             $this->startMeasure('application', 'Application', 'time');
+
+            if ($events) {
+                 $events->listen(\Illuminate\Routing\Events\Routing::class, function() {
+                     $this->startMeasure('Routing');
+                 });
+                 $events->listen(\Illuminate\Routing\Events\RouteMatched::class, function() {
+                     $this->stopMeasure('Routing');
+                 });
+
+                $events->listen(\Illuminate\Routing\Events\PreparingResponse::class, function() {
+                    $this->startMeasure('Preparing Response');
+                });
+                $events->listen(\Illuminate\Routing\Events\ResponsePrepared::class, function() {
+                    $this->stopMeasure('Preparing Response');
+                });
+            }
         }
 
         if ($this->shouldCollect('memory', true)) {
@@ -253,7 +288,12 @@ class LaravelDebugbar extends DebugBar
                 $collectData = $config->get('debugbar.options.views.data', true);
                 $excludePaths = $config->get('debugbar.options.views.exclude_paths', []);
                 $group = $config->get('debugbar.options.views.group', true);
-                $this->addCollector(new ViewCollector($collectData, $excludePaths, $group));
+                if ($this->hasCollector('time') && $config->get('debugbar.options.views.timeline', false)) {
+                    $timeCollector = $this['time'];
+                } else {
+                    $timeCollector = null;
+                }
+                $this->addCollector(new ViewCollector($collectData, $excludePaths, $group, $timeCollector));
                 $events->listen(
                     'composing:*',
                     function ($event, $params) {
@@ -569,6 +609,7 @@ class LaravelDebugbar extends DebugBar
         $renderer->setIncludeVendors($config->get('debugbar.include_vendors', true));
         $renderer->setBindAjaxHandlerToFetch($config->get('debugbar.capture_ajax', true));
         $renderer->setBindAjaxHandlerToXHR($config->get('debugbar.capture_ajax', true));
+        $renderer->setDeferDatasets($config->get('debugbar.defer_datasets', false));
 
         $this->booted = true;
     }
@@ -615,16 +656,17 @@ class LaravelDebugbar extends DebugBar
      */
     public function handleError($level, $message, $file = '', $line = 0, $context = [])
     {
-        $exception = new \ErrorException($message, 0, $level, $file, $line);
-        if (error_reporting() & $level) {
-            throw $exception;
-        }
-
-        $this->addThrowable($exception);
+        $this->addThrowable(new \ErrorException($message, 0, $level, $file, $line));
         if ($this->hasCollector('messages')) {
             $file = $file ? ' on ' . $this['messages']->normalizeFilePath($file) . ":{$line}" : '';
             $this['messages']->addMessage($message . $file, 'deprecation');
         }
+
+        if (! $this->prevErrorHandler) {
+            return;
+        }
+
+        return call_user_func($this->prevErrorHandler, $level, $message, $file, $line, $context);
     }
 
     /**

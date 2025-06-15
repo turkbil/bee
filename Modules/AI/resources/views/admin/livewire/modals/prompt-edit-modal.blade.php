@@ -36,9 +36,8 @@
                                     id="prompt_is_default">
                                 <label class="form-check-label" for="prompt_is_default">Varsayılan prompt</label>
                             </div>
-                            <div class="form-text">
-                                <i class="fa-thin fa-circle-info me-1"></i>
-                                Varsayılan prompt, özel bir prompt seçilmediğinde kullanılır.
+                            <div class="form-text mt-2 ms-2">
+                                <i class="fas fa-info-circle me-1"></i>Varsayılan prompt, özel bir prompt seçilmediğinde kullanılır.
                             </div>
                         </div>
 
@@ -48,9 +47,8 @@
                                     id="prompt_is_common">
                                 <label class="form-check-label" for="prompt_is_common">Ortak özellikler promptu</label>
                             </div>
-                            <div class="form-text">
-                                <i class="fa-thin fa-circle-info me-1"></i>
-                                Ortak özellikler promptu, tüm konuşmalarda kullanılır.
+                            <div class="form-text mt-2 ms-2">
+                                <i class="fas fa-info-circle me-1"></i>Ortak özellikler promptu, tüm konuşmalarda kullanılır.
                             </div>
                         </div>
                     </div>

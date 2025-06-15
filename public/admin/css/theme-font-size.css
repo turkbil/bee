@@ -506,7 +506,7 @@ sub, sup { font-size: var(--tblr-small-font-size); }
   font-size: 1rem !important;
 }
 
-/* Pagination */
+/* Pagination - Neutral Design */
 .font-size-small .pagination,
 .font-size-small .page-link {
   font-size: 0.75rem !important;
@@ -538,6 +538,34 @@ sub, sup { font-size: var(--tblr-small-font-size); }
 }
 .font-size-large .pagination-lg {
   font-size: 1.125rem !important;
+}
+
+/* Pagination sade tasarım - tüm font boyutları için */
+.font-size-small .page-link,
+.font-size-normal .page-link,
+.font-size-large .page-link {
+    color: var(--tblr-muted) !important;
+    background-color: transparent !important;
+    border: none !important;
+    text-decoration: none !important;
+    transition: color 0.2s ease !important;
+}
+
+.font-size-small .page-item.active .page-link,
+.font-size-normal .page-item.active .page-link,
+.font-size-large .page-item.active .page-link {
+    background-color: transparent !important;
+    border: none !important;
+    color: var(--tblr-body-color) !important;
+    font-weight: 600 !important;
+}
+
+.font-size-small .page-link:hover,
+.font-size-normal .page-link:hover,
+.font-size-large .page-link:hover {
+    color: var(--tblr-body-color) !important;
+    background-color: transparent !important;
+    border: none !important;
 }
 
 /* Uyarılar */

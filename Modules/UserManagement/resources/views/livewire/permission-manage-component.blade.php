@@ -14,34 +14,35 @@
                     <div class="card-body">
                         <!-- Guard Name -->
                         <div class="mb-4">
-                            <label class="form-label">
-                                <i class="fas fa-lock me-1 text-blue"></i>
-                                Yetki Koruma Tipi
-                            </label>
-                            <select wire:model.defer="inputs.guard_name"
-                                class="form-select @error('inputs.guard_name') is-invalid @enderror">
-                                <option value="admin" selected>Admin Guard</option>
-                                <option value="web">Web Guard</option>
-                                <option value="api">API Guard</option>
-                            </select>
-                            @error('inputs.guard_name')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <div class="form-floating">
+                                <select wire:model.defer="inputs.guard_name"
+                                    class="form-select @error('inputs.guard_name') is-invalid @enderror"
+                                    data-choices
+                                    data-choices-search="false"
+                                    data-choices-placeholder="Koruma tipi seçin">
+                                    <option value="admin" selected>Admin Guard</option>
+                                    <option value="web">Web Guard</option>
+                                    <option value="api">API Guard</option>
+                                </select>
+                                <label>Yetki Koruma Tipi</label>
+                                @error('inputs.guard_name')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                             <small class="text-muted">Yetkinin hangi alanda kullanılacağını seçin</small>
                         </div>
 
                         <!-- Modül Adı -->
                         <div class="mb-4">
-                            <label class="form-label">
-                                <i class="fas fa-cube me-1 text-blue"></i>
-                                Modül Adı
-                            </label>
-                            <input type="text" wire:model.defer="inputs.module_name"
-                                class="form-control @error('inputs.module_name') is-invalid @enderror"
-                                placeholder="Örn: kullanici, urun, siparis">
-                            @error('inputs.module_name')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <div class="form-floating">
+                                <input type="text" wire:model.defer="inputs.module_name"
+                                    class="form-control @error('inputs.module_name') is-invalid @enderror"
+                                    placeholder="Örn: kullanici, urun, siparis">
+                                <label>Modül Adı</label>
+                                @error('inputs.module_name')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                             <small class="text-muted">İzinlerin oluşturulacağı modülü belirtin</small>
                         </div>
 
@@ -112,17 +113,15 @@
                     <div class="card-body">
                         <!-- Manuel Yetki Ekleme -->
                         <div class="mb-4">
-                            <div class="input-icon mb-2">
+                            <div class="form-floating mb-2">
                                 <input type="text" wire:model.defer="manualPermission"
                                     class="form-control @error('manualPermission') is-invalid @enderror"
                                     placeholder="Özel yetki ekle (Örn: urun.export)">
-                                <span class="input-icon-addon">
-                                    <i class="fas fa-key"></i>
-                                </span>
+                                <label>Özel Yetki Ekle</label>
+                                @error('manualPermission')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
-                            @error('manualPermission')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
-                            @enderror
                             <button type="button" class="btn btn-outline-primary btn-sm w-100"
                                 wire:click="addManualPermission">
                                 <i class="fas fa-plus me-1"></i>

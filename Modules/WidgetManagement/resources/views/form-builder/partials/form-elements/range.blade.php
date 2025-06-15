@@ -43,51 +43,45 @@
 @endphp
 
 <div class="col-{{ $width }}" wire:key="setting-{{ $elementName }}">
-    <div class="card mb-3 w-100">
-        <div class="card-header">
-            <div class="d-flex align-items-center justify-content-between">
-                <h3 class="card-title d-flex align-items-center">
-                    <i class="fas fa-sliders-h me-2 text-primary"></i>
-                    {{ $elementLabel }}
-                </h3>
-            </div>
+    <div class="mb-3">
+        <label class="form-label">
+            {{ $elementLabel }}
+            @if($isRequired)
+                <span class="text-danger">*</span>
+            @endif
+        </label>
+        
+        <div class="mb-2">
+            <input 
+                type="range" 
+                wire:model="formData.{{ $elementName }}" 
+                class="form-range" 
+                min="{{ $minValue }}" 
+                max="{{ $maxValue }}" 
+                step="{{ $step }}" 
+                onInput="document.getElementById('rangeValue-{{ $elementName }}').innerHTML = this.value"
+            >
         </div>
-        <div class="card-body">
-            <div class="form-group w-100">
-                <div class="mb-3">
-                    <div class="form-range mb-2 text-primary" id="range-{{ $elementName }}" wire:ignore>
-                        <input 
-                            type="range" 
-                            wire:model="formData.{{ $elementName }}" 
-                            class="form-range" 
-                            min="{{ $minValue }}" 
-                            max="{{ $maxValue }}" 
-                            step="{{ $step }}" 
-                            onInput="document.getElementById('rangeValue-{{ $elementName }}').innerHTML = this.value"
-                        >
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <span class="small text-muted">{{ $minValue }}</span>
-                        <span class="badge bg-primary" id="rangeValue-{{ $elementName }}">{{ $fieldValue }}</span>
-                        <span class="small text-muted">{{ $maxValue }}</span>
-                    </div>
-                </div>
-                
-                @if(!empty($helpText))
-                    <div class="form-text text-muted mt-2">
-                        <i class="fas fa-info-circle me-1"></i>
-                        {{ $helpText }}
-                    </div>
-                @endif
-                
-                @if(isset($originalData[$elementName]) && isset($formData[$elementName]) && $originalData[$elementName] != $formData[$elementName])
-                    <div class="mt-2 text-end">
-                        <span class="badge bg-yellow cursor-pointer" wire:click="resetToDefault('{{ $elementName }}')">
-                            <i class="fas fa-undo me-1"></i> Varsayılana Döndür
-                        </span>
-                    </div>
-                @endif
-            </div>
+        
+        <div class="d-flex justify-content-between align-items-center">
+            <span class="small text-muted">{{ $minValue }}</span>
+            <span class="badge bg-primary" id="rangeValue-{{ $elementName }}">{{ $fieldValue }}</span>
+            <span class="small text-muted">{{ $maxValue }}</span>
         </div>
+        
+        @if(!empty($helpText))
+            <div class="form-text mt-2 ms-2">
+                <i class="fas fa-info-circle me-1"></i>{{ $helpText }}
+            </div>
+        @endif
+        
+        @if(isset($originalData[$elementName]) && isset($formData[$elementName]) && $originalData[$elementName] != $formData[$elementName])
+            <div class="mt-2">
+                <button type="button" class="btn btn-sm btn-outline-warning" wire:click="resetToDefault('{{ $elementName }}')">
+                    <i class="ti ti-refresh me-1"></i>
+                    Varsayılana Döndür
+                </button>
+            </div>
+        @endif
     </div>
 </div>

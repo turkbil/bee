@@ -45,51 +45,46 @@
 @endphp
 
 <div class="col-{{ $width }}" wire:key="element-{{ $elementName }}">
-    <div class="card mb-3 w-100">
-        <div class="card-header">
-            <div class="d-flex align-items-center justify-content-between">
-                <h3 class="card-title d-flex align-items-center">
-                    <i class="fa-solid fa-toggle-on me-2 text-primary"></i>
-                    {{ $elementLabel }}
-                </h3>
+    <div class="mb-3">
+        <label class="form-label">
+            {{ $elementLabel }}
+            @if($isRequired) 
+                <span class="text-danger">*</span> 
+            @endif
+        </label>
+        <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
+            <input type="checkbox" 
+                id="switch-{{ $elementName }}" 
+                name="{{ $elementName }}" 
+                wire:model="formData.{{ $elementName }}"
+                value="1"
+                @if($isRequired) required @endif
+                @if($defaultValue) checked @endif
+            >
+            <div class="state p-success p-on ms-2">
+                <label>{{ $activeLabel }}</label>
+            </div>
+            <div class="state p-danger p-off ms-2">
+                <label>{{ $inactiveLabel }}</label>
             </div>
         </div>
-        <div class="card-body">
-            <div class="form-group w-100">
-                <div class="mb-3">
-                    <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
-                        <input type="checkbox" 
-                            id="switch-{{ $elementName }}" 
-                            name="{{ $elementName }}" 
-                            wire:model="formData.{{ $elementName }}"
-                            value="1"
-                            @if($isRequired) required @endif
-                            @if($defaultValue) checked @endif
-                        >
-                        <div class="state p-success p-on ms-2">
-                            <label>{{ $activeLabel }}</label>
-                        </div>
-                        <div class="state p-danger p-off ms-2">
-                            <label>{{ $inactiveLabel }}</label>
-                        </div>
-                    </div>
-                </div>
-                
-                @if($helpText)
-                    <div class="form-text text-muted mt-2">
-                        <i class="fas fa-info-circle me-1"></i>
-                        {{ $helpText }}
-                    </div>
-                @endif
-                
-                @if(isset($originalData[$elementName]) && isset($formData[$elementName]) && $originalData[$elementName] != $formData[$elementName])
-                    <div class="mt-2 text-end">
-                        <span class="badge bg-yellow cursor-pointer" wire:click="resetToDefault('{{ $elementName }}')">
-                            <i class="fas fa-undo me-1"></i> Varsayılana Döndür
-                        </span>
-                    </div>
-                @endif
+        
+        @error('formData.' . $elementName)
+            <div class="invalid-feedback d-block">{{ $message }}</div>
+        @enderror
+        
+        @if($helpText)
+            <div class="form-text mt-2 ms-2">
+                <i class="fas fa-info-circle me-1"></i>{{ $helpText }}
             </div>
-        </div>
+        @endif
+        
+        @if(isset($originalData[$elementName]) && isset($formData[$elementName]) && $originalData[$elementName] != $formData[$elementName])
+            <div class="mt-2 text-end">
+                <button type="button" class="btn btn-sm btn-outline-warning" wire:click="resetToDefault('{{ $elementName }}')">
+                    <i class="ti ti-rotate-clockwise me-1"></i> Varsayılana Döndür
+                </button>
+            </div>
+        @endif
     </div>
 </div>

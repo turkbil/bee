@@ -1,4 +1,4 @@
-<div class="col-12 mb-4">
+<div class="col-12 mb-2">
     @php
         $headingLevel = isset($element['properties']['size']) ? $element['properties']['size'] : 'h3';
         $content = isset($element['properties']['content']) ? $element['properties']['content'] : 'Başlık';

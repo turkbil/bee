@@ -37,7 +37,10 @@
                         
                         <div class="form-floating mb-3">
                             <select wire:model.defer="inputs.portfolio_category_id"
-                                class="form-select tomselect @error('inputs.portfolio_category_id') is-invalid @enderror">
+                                class="form-control @error('inputs.portfolio_category_id') is-invalid @enderror"
+                                data-choices 
+                                data-choices-search="{{ count($categories) > 6 ? 'true' : 'false' }}"
+                                data-choices-placeholder="Kategori Seçin">
                                 <option value="">Kategori Seçin</option>
                                 @foreach($categories as $category)
                                 <option value="{{ $category->portfolio_category_id }}" {{ $category->
@@ -81,15 +84,17 @@
                             <input type="text" wire:model="inputs.slug" class="form-control" placeholder="Slug">
                             <label>Slug</label>
                         </div>
-                        <div class="form-floating mb-3" wire:ignore>
-                            <select wire:model="inputs.metakey" class="form-select tags"
-                                placeholder="Meta anahtar kelimeler" multiple>
-                                @if($inputs['metakey'])
-                                    @foreach(is_array($inputs['metakey']) ? $inputs['metakey'] : explode(',', $inputs['metakey']) as $tag)
-                                        <option value="{{ $tag }}" selected>{{ $tag }}</option>
-                                    @endforeach
-                                @endif
-                            </select>
+                        <div class="form-floating mb-3">
+                            <input type="text" 
+                                wire:model.defer="inputs.metakey"
+                                class="form-control"
+                                data-choices
+                                data-choices-multiple="true"
+                                data-choices-search="false"
+                                data-choices-filter="true"
+                                data-choices-placeholder="Anahtar kelime girin..."
+                                value="{{ is_array($inputs['metakey']) ? implode(',', $inputs['metakey']) : $inputs['metakey'] }}"
+                                placeholder="Anahtar kelime girin...">
                             <label>Meta Anahtar Kelimeler</label>
                         </div>
 

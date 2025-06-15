@@ -38,43 +38,43 @@
 @endphp
 
 <div class="col-{{ $width }}" wire:key="element-{{ $elementName }}">
-    <div class="card mb-3 w-100">
-        <div class="card-header">
-            <div class="d-flex align-items-center justify-content-between">
-                <h3 class="card-title d-flex align-items-center">
-                    <i class="fa-regular fa-rectangle-list me-2 text-primary"></i>
-                    {{ $elementLabel }}
-                </h3>
-            </div>
-        </div>
-        <div class="card-body">
-            <div class="form-group w-100">
-                <select class="form-select" wire:model="formData.{{ $elementName }}" @if($isRequired) required @endif>
-                    <option value="">{{ $placeholder }}</option>
-                    @if(is_array($optionsArray))
-                        @foreach($optionsArray as $value => $label)
-                            <option value="{{ $value }}" @if($defaultValue === $value) selected @endif>
-                                {{ $label }}
-                            </option>
-                        @endforeach
-                    @endif
-                </select>
-                
-                @if($helpText)
-                    <div class="form-text text-muted mt-2">
-                        <i class="fas fa-info-circle me-1"></i>
-                        {{ $helpText }}
-                    </div>
+    <div class="mb-3">
+        <div class="form-floating">
+            <select id="{{ $elementName }}" class="form-select @error('formData.' . $elementName) is-invalid @enderror" 
+                    wire:model="formData.{{ $elementName }}" @if($isRequired) required @endif>
+                <option value="">{{ $placeholder ?: 'Seçiniz' }}</option>
+                @if(is_array($optionsArray))
+                    @foreach($optionsArray as $value => $label)
+                        <option value="{{ $value }}" @if($defaultValue === $value) selected @endif>
+                            {{ $label }}
+                        </option>
+                    @endforeach
                 @endif
-                
-                @if(isset($originalData[$elementName]) && isset($formData[$elementName]) && $originalData[$elementName] != $formData[$elementName])
-                    <div class="mt-2 text-end">
-                        <span class="badge bg-yellow cursor-pointer" wire:click="resetToDefault('{{ $elementName }}')">
-                            <i class="fas fa-undo me-1"></i> Varsayılana Döndür
-                        </span>
-                    </div>
+            </select>
+            <label for="{{ $elementName }}">
+                {{ $elementLabel }}
+                @if($isRequired) 
+                    <span class="text-danger">*</span> 
                 @endif
-            </div>
+            </label>
         </div>
+        
+        @error('formData.' . $elementName)
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+        
+        @if($helpText)
+            <div class="form-text mt-2 ms-2">
+                <i class="fas fa-info-circle me-1"></i>{{ $helpText }}
+            </div>
+        @endif
+        
+        @if(isset($originalData[$elementName]) && isset($formData[$elementName]) && $originalData[$elementName] != $formData[$elementName])
+            <div class="mt-2 text-end">
+                <button type="button" class="btn btn-sm btn-outline-warning" wire:click="resetToDefault('{{ $elementName }}')">
+                    <i class="ti ti-rotate-clockwise me-1"></i> Varsayılana Döndür
+                </button>
+            </div>
+        @endif
     </div>
 </div>

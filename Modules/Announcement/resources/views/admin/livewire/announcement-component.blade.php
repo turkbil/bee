@@ -29,13 +29,16 @@
             <div class="col">
                 <div class="d-flex align-items-center justify-content-end gap-3">
                     <!-- Sayfa Adeti Seçimi -->
-                    <div style="min-width: 70px">
-                        <select wire:model.live="perPage" class="form-select">
-                            <option value="10">10</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
-                            <option value="500">500</option>
-                            <option value="1000">1000</option>
+                    <div style="width: 80px; min-width: 80px">
+                        <select wire:model.live="perPage" class="form-control listing-filter-select" 
+                                data-choices 
+                                data-choices-search="false"
+                                data-choices-filter="true">
+                            <option value="10"><nobr>10</nobr></option>
+                            <option value="50"><nobr>50</nobr></option>
+                            <option value="100"><nobr>100</nobr></option>
+                            <option value="500"><nobr>500</nobr></option>
+                            <option value="1000"><nobr>1000</nobr></option>
                         </select>
                     </div>
                 </div>

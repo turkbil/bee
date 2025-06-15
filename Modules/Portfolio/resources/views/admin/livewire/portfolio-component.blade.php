@@ -18,7 +18,7 @@
                 <div wire:loading
                     wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, selectedItems, selectAll, bulkDelete, bulkToggleActive, selectedCategory"
                     class="position-absolute top-50 start-50 translate-middle text-center"
-                    style="width: 100%; max-width: 250px;">
+                    style="width: 100%; max-width: 250px; z-index: 10;">
                     <div class="small text-muted mb-2">Güncelleniyor...</div>
                     <div class="progress mb-1">
                         <div class="progress-bar progress-bar-indeterminate"></div>
@@ -28,8 +28,12 @@
             <!-- Sağ Taraf (Switch ve Select) -->
             <div class="col">
                 <div class="d-flex align-items-center justify-content-end gap-3">
+                    <!-- Kategori Filtresi -->
                     <div style="width: 200px">
-                        <select wire:model.live="selectedCategory" class="form-select">
+                        <select wire:model.live="selectedCategory" name="selectedCategory" class="form-control listing-filter-select" 
+                                data-choices 
+                                data-choices-search="false"
+                                data-choices-filter="true">
                             <option value="">Tüm Kategoriler</option>
                             @foreach($categories as $category)
                             <option value="{{ $category->portfolio_category_id }}">{{ $category->title }}</option>
@@ -37,13 +41,16 @@
                         </select>
                     </div>
                     <!-- Sayfa Adeti Seçimi -->
-                    <div style="min-width: 60px">
-                        <select wire:model.live="perPage" class="form-select">
-                            <option value="10">10</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
-                            <option value="500">500</option>
-                            <option value="1000">1000</option>
+                    <div style="width: 80px; min-width: 80px">
+                        <select wire:model.live="perPage" class="form-control listing-filter-select" 
+                                data-choices 
+                                data-choices-search="false"
+                                data-choices-filter="true">
+                            <option value="10"><nobr>10</nobr></option>
+                            <option value="50"><nobr>50</nobr></option>
+                            <option value="100"><nobr>100</nobr></option>
+                            <option value="500"><nobr>500</nobr></option>
+                            <option value="1000"><nobr>1000</nobr></option>
                         </select>
                     </div>
                 </div>

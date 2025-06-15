@@ -18,7 +18,7 @@
                 <div wire:loading
                     wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, roleFilter, statusFilter, viewType, deleteUser, toggleActive"
                     class="position-absolute top-50 start-50 translate-middle text-center"
-                    style="width: 100%; max-width: 250px;">
+                    style="width: 100%; max-width: 250px; z-index: 10;">
                     <div class="small text-muted mb-2">Güncelleniyor...</div>
                     <div class="progress mb-1">
                         <div class="progress-bar progress-bar-indeterminate"></div>
@@ -29,20 +29,15 @@
             <div class="col">
                 <div class="d-flex align-items-center justify-content-end gap-3">
                     <!-- Rol Filtresi -->
-                    <div style="width: 150px">
-                        <select wire:model.live="roleFilter" class="form-select">
-                            <option value="">Tüm Roller</option>
+                    <div style="width: 140px; min-width: 140px">
+                        <select wire:model.live="roleFilter" class="form-control listing-filter-select" 
+                                data-choices 
+                                data-choices-search="false"
+                                data-choices-filter="true">
+                            <option value=""><nobr>Tüm Roller</nobr></option>
                             @foreach($roles as $role)
-                            <option value="{{ $role->id }}">{{ $role->name }}</option>
+                            <option value="{{ $role->id }}"><nobr>{{ $role->name }}</nobr></option>
                             @endforeach
-                        </select>
-                    </div>
-                    <!-- Durum Filtresi -->
-                    <div style="width: 120px">
-                        <select wire:model.live="statusFilter" class="form-select">
-                            <option value="">Tüm Durumlar</option>
-                            <option value="1">Aktif</option>
-                            <option value="0">Pasif</option>
                         </select>
                     </div>
                     <!-- Görünüm Değiştirme -->
@@ -59,13 +54,16 @@
                         </button>
                     </div>
                     <!-- Sayfa Adeti Seçimi -->
-                    <div style="min-width: 70px">
-                        <select wire:model.live="perPage" class="form-select">
-                            <option value="10">10</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
-                            <option value="500">500</option>
-                            <option value="1000">1000</option>
+                    <div style="width: 80px; min-width: 80px">
+                        <select wire:model.live="perPage" class="form-control listing-filter-select" 
+                                data-choices 
+                                data-choices-search="false"
+                                data-choices-filter="true">
+                            <option value="12"><nobr>12</nobr></option>
+                            <option value="48"><nobr>48</nobr></option>
+                            <option value="99"><nobr>99</nobr></option>
+                            <option value="498"><nobr>498</nobr></option>
+                            <option value="999"><nobr>999</nobr></option>
                         </select>
                     </div>
                 </div>
@@ -84,7 +82,7 @@
                             {{ mb_strtoupper(mb_substr($user->name, 0, 2, 'UTF-8'), 'UTF-8') }}
                         </span>
                         <!-- Kullanıcı Bilgileri -->
-                        <h3 class="m-0 mb-1">{{ $user->name }}</h3>
+                        <h3 class="card-title m-0 mb-1">{{ $user->name }}</h3>
                         <div class="text-muted">{{ $user->email }}</div>
                         <!-- Roller ve Durum -->
                         <div class="mt-3">
@@ -256,12 +254,10 @@
             </table>
         </div>
         @endif
-
-        <!-- Pagination -->
-        <div class="mt-3">
-            {{ $users->links() }}
-        </div>
     </div>
+
+    <!-- Pagination -->
+    {{ $users->links() }}
 
     <livewire:modals.user-delete-modal />
 </div>

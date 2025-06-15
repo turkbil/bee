@@ -1,4 +1,4 @@
-<div class="offcanvas offcanvas-start theme-builder" tabindex="-1" id="offcanvasTheme" aria-labelledby="offcanvasThemeLabel">
+<div class="offcanvas offcanvas-start theme-builder theme-settings-form" tabindex="-1" id="offcanvasTheme" aria-labelledby="offcanvasThemeLabel">
     <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="offcanvasThemeLabel">
             <i class="fa-solid fa-palette me-2"></i>Tema Ayarları
@@ -41,71 +41,99 @@
                     <span>Ana Renk</span>
                 </div>
                 <div class="theme-section-body pt-4">
+                    <!-- İlk Satır: 12 Tabler Standart Renk -->
                     <div class="row g-2 mb-2">
                         <div class="col-auto">
                             <label class="form-colorinput">
-                                <input name="theme-primary" type="radio" value="#066fd1" class="form-colorinput-input" {{ (!isset($_COOKIE['siteColor']) || $_COOKIE['siteColor'] == '#066fd1') ? 'checked' : '' }}>
-                                <span class="form-colorinput-color" style="background-color: #066fd1"></span>
+                                <input name="theme-primary" type="radio" value="blue" class="form-colorinput-input" {{ (!isset($_COOKIE['siteColor']) || $_COOKIE['siteColor'] == '#066fd1' || $_COOKIE['siteColor'] == 'blue') ? 'checked' : '' }}>
+                                <span class="form-colorinput-color bg-blue"></span>
                             </label>
                         </div>
                         <div class="col-auto">
                             <label class="form-colorinput">
-                                <input name="theme-primary" type="radio" value="#1E40AF" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#1E40AF') ? 'checked' : '' }}>
-                                <span class="form-colorinput-color" style="background-color: #1E40AF"></span>
+                                <input name="theme-primary" type="radio" value="azure" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && ($_COOKIE['siteColor'] == '#4299e1' || $_COOKIE['siteColor'] == 'azure')) ? 'checked' : '' }}>
+                                <span class="form-colorinput-color bg-azure"></span>
                             </label>
                         </div>
                         <div class="col-auto">
                             <label class="form-colorinput">
-                                <input name="theme-primary" type="radio" value="#5F3DC4" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#5F3DC4') ? 'checked' : '' }}>
-                                <span class="form-colorinput-color" style="background-color: #5F3DC4"></span>
+                                <input name="theme-primary" type="radio" value="indigo" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && ($_COOKIE['siteColor'] == '#6366f1' || $_COOKIE['siteColor'] == 'indigo')) ? 'checked' : '' }}>
+                                <span class="form-colorinput-color bg-indigo"></span>
                             </label>
                         </div>
                         <div class="col-auto">
                             <label class="form-colorinput">
-                                <input name="theme-primary" type="radio" value="#F03E3E" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#F03E3E') ? 'checked' : '' }}>
-                                <span class="form-colorinput-color" style="background-color: #F03E3E"></span>
+                                <input name="theme-primary" type="radio" value="purple" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && ($_COOKIE['siteColor'] == '#8b5cf6' || $_COOKIE['siteColor'] == 'purple')) ? 'checked' : '' }}>
+                                <span class="form-colorinput-color bg-purple"></span>
                             </label>
                         </div>
                         <div class="col-auto">
                             <label class="form-colorinput">
-                                <input name="theme-primary" type="radio" value="#AE3EC9" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#AE3EC9') ? 'checked' : '' }}>
-                                <span class="form-colorinput-color" style="background-color: #AE3EC9"></span>
+                                <input name="theme-primary" type="radio" value="pink" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && ($_COOKIE['siteColor'] == '#ec4899' || $_COOKIE['siteColor'] == 'pink')) ? 'checked' : '' }}>
+                                <span class="form-colorinput-color bg-pink"></span>
                             </label>
                         </div>
                         <div class="col-auto">
                             <label class="form-colorinput">
-                                <input name="theme-primary" type="radio" value="#7209B7" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#7209B7') ? 'checked' : '' }}>
-                                <span class="form-colorinput-color" style="background-color: #7209B7"></span>
+                                <input name="theme-primary" type="radio" value="red" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && ($_COOKIE['siteColor'] == '#ef4444' || $_COOKIE['siteColor'] == 'red')) ? 'checked' : '' }}>
+                                <span class="form-colorinput-color bg-red"></span>
                             </label>
                         </div>
                         <div class="col-auto">
                             <label class="form-colorinput">
-                                <input name="theme-primary" type="radio" value="#BE4BDB" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#BE4BDB') ? 'checked' : '' }}>
-                                <span class="form-colorinput-color" style="background-color: #BE4BDB"></span>
+                                <input name="theme-primary" type="radio" value="orange" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && ($_COOKIE['siteColor'] == '#f97316' || $_COOKIE['siteColor'] == 'orange')) ? 'checked' : '' }}>
+                                <span class="form-colorinput-color bg-orange"></span>
                             </label>
                         </div>
                         <div class="col-auto">
                             <label class="form-colorinput">
-                                <input name="theme-primary" type="radio" value="#D6336C" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#D6336C') ? 'checked' : '' }}>
-                                <span class="form-colorinput-color" style="background-color: #D6336C"></span>
+                                <input name="theme-primary" type="radio" value="yellow" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && ($_COOKIE['siteColor'] == '#fbbf24' || $_COOKIE['siteColor'] == 'yellow')) ? 'checked' : '' }}>
+                                <span class="form-colorinput-color bg-yellow"></span>
                             </label>
                         </div>
                         <div class="col-auto">
                             <label class="form-colorinput">
-                                <input name="theme-primary" type="radio" value="#7950F2" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#7950F2') ? 'checked' : '' }}>
-                                <span class="form-colorinput-color" style="background-color: #7950F2"></span>
+                                <input name="theme-primary" type="radio" value="lime" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && ($_COOKIE['siteColor'] == '#84cc16' || $_COOKIE['siteColor'] == 'lime')) ? 'checked' : '' }}>
+                                <span class="form-colorinput-color bg-lime"></span>
                             </label>
                         </div>
                         <div class="col-auto">
                             <label class="form-colorinput">
-                                <input name="theme-primary" type="radio" value="#4338CA" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#4338CA') ? 'checked' : '' }}>
-                                <span class="form-colorinput-color" style="background-color: #4338CA"></span>
+                                <input name="theme-primary" type="radio" value="green" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && ($_COOKIE['siteColor'] == '#10b981' || $_COOKIE['siteColor'] == 'green')) ? 'checked' : '' }}>
+                                <span class="form-colorinput-color bg-green"></span>
                             </label>
                         </div>
                         <div class="col-auto">
                             <label class="form-colorinput">
-                                <input name="theme-primary" type="radio" value="#0EA5E9" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#0EA5E9') ? 'checked' : '' }}>
-                                <span class="form-colorinput-color" style="background-color: #0EA5E9"></span>
+                                <input name="theme-primary" type="radio" value="teal" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && ($_COOKIE['siteColor'] == '#06b6d4' || $_COOKIE['siteColor'] == 'teal')) ? 'checked' : '' }}>
+                                <span class="form-colorinput-color bg-teal"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <!-- İkinci Satır: 11 Özel Hex Renk -->
+                    <div class="row g-2 mb-2">
+                        <div class="col-auto">
+                            <label class="form-colorinput">
+                                <input name="theme-primary" type="radio" value="cyan" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && ($_COOKIE['siteColor'] == '#0891b2' || $_COOKIE['siteColor'] == 'cyan')) ? 'checked' : '' }}>
+                                <span class="form-colorinput-color bg-cyan"></span>
+                            </label>
+                        </div>
+                        <div class="col-auto">
+                            <label class="form-colorinput">
+                                <input name="theme-primary" type="radio" value="#7C3AED" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#7C3AED') ? 'checked' : '' }}>
+                                <span class="form-colorinput-color" style="background-color: #7C3AED"></span>
+                            </label>
+                        </div>
+                        <div class="col-auto">
+                            <label class="form-colorinput">
+                                <input name="theme-primary" type="radio" value="#F59E0B" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#F59E0B') ? 'checked' : '' }}>
+                                <span class="form-colorinput-color" style="background-color: #F59E0B"></span>
+                            </label>
+                        </div>
+                        <div class="col-auto">
+                            <label class="form-colorinput">
+                                <input name="theme-primary" type="radio" value="#84CC16" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#84CC16') ? 'checked' : '' }}>
+                                <span class="form-colorinput-color" style="background-color: #84CC16"></span>
                             </label>
                         </div>
                         <div class="col-auto">
@@ -116,62 +144,38 @@
                         </div>
                         <div class="col-auto">
                             <label class="form-colorinput">
-                                <input name="theme-primary" type="radio" value="#0891B2" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#0891B2') ? 'checked' : '' }}>
-                                <span class="form-colorinput-color" style="background-color: #0891B2"></span>
+                                <input name="theme-primary" type="radio" value="#8B5CF6" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#8B5CF6') ? 'checked' : '' }}>
+                                <span class="form-colorinput-color" style="background-color: #8B5CF6"></span>
                             </label>
                         </div>
                         <div class="col-auto">
                             <label class="form-colorinput">
-                                <input name="theme-primary" type="radio" value="#059669" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#059669') ? 'checked' : '' }}>
-                                <span class="form-colorinput-color" style="background-color: #059669"></span>
+                                <input name="theme-primary" type="radio" value="#F97316" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#F97316') ? 'checked' : '' }}>
+                                <span class="form-colorinput-color" style="background-color: #F97316"></span>
                             </label>
                         </div>
                         <div class="col-auto">
                             <label class="form-colorinput">
-                                <input name="theme-primary" type="radio" value="#16A34A" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#16A34A') ? 'checked' : '' }}>
-                                <span class="form-colorinput-color" style="background-color: #16A34A"></span>
+                                <input name="theme-primary" type="radio" value="#EF4444" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#EF4444') ? 'checked' : '' }}>
+                                <span class="form-colorinput-color" style="background-color: #EF4444"></span>
                             </label>
                         </div>
                         <div class="col-auto">
                             <label class="form-colorinput">
-                                <input name="theme-primary" type="radio" value="#65A30D" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#65A30D') ? 'checked' : '' }}>
-                                <span class="form-colorinput-color" style="background-color: #65A30D"></span>
+                                <input name="theme-primary" type="radio" value="#10B981" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#10B981') ? 'checked' : '' }}>
+                                <span class="form-colorinput-color" style="background-color: #10B981"></span>
                             </label>
                         </div>
                         <div class="col-auto">
                             <label class="form-colorinput">
-                                <input name="theme-primary" type="radio" value="#CA8A04" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#CA8A04') ? 'checked' : '' }}>
-                                <span class="form-colorinput-color" style="background-color: #CA8A04"></span>
+                                <input name="theme-primary" type="radio" value="#3B82F6" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#3B82F6') ? 'checked' : '' }}>
+                                <span class="form-colorinput-color" style="background-color: #3B82F6"></span>
                             </label>
                         </div>
                         <div class="col-auto">
                             <label class="form-colorinput">
-                                <input name="theme-primary" type="radio" value="#D97706" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#D97706') ? 'checked' : '' }}>
-                                <span class="form-colorinput-color" style="background-color: #D97706"></span>
-                            </label>
-                        </div>
-                        <div class="col-auto">
-                            <label class="form-colorinput">
-                                <input name="theme-primary" type="radio" value="#EA580C" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#EA580C') ? 'checked' : '' }}>
-                                <span class="form-colorinput-color" style="background-color: #EA580C"></span>
-                            </label>
-                        </div>
-                        <div class="col-auto">
-                            <label class="form-colorinput">
-                                <input name="theme-primary" type="radio" value="#DC2626" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#DC2626') ? 'checked' : '' }}>
-                                <span class="form-colorinput-color" style="background-color: #DC2626"></span>
-                            </label>
-                        </div>
-                        <div class="col-auto">
-                            <label class="form-colorinput">
-                                <input name="theme-primary" type="radio" value="#475569" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#475569') ? 'checked' : '' }}>
-                                <span class="form-colorinput-color" style="background-color: #475569"></span>
-                            </label>
-                        </div>
-                        <div class="col-auto">
-                            <label class="form-colorinput">
-                                <input name="theme-primary" type="radio" value="#0F172A" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#0F172A') ? 'checked' : '' }}>
-                                <span class="form-colorinput-color" style="background-color: #0F172A"></span>
+                                <input name="theme-primary" type="radio" value="#EC4899" class="form-colorinput-input" {{ (isset($_COOKIE['siteColor']) && $_COOKIE['siteColor'] == '#EC4899') ? 'checked' : '' }}>
+                                <span class="form-colorinput-color" style="background-color: #EC4899"></span>
                             </label>
                         </div>
                     </div>

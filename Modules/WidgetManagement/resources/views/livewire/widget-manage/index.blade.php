@@ -62,42 +62,54 @@
                             <div class="col-12">
                                 <div class="row g-3">
                                     <div class="col-12 col-md-6">
-                                        <label class="form-label required">Widget Adı</label>
-                                        <input type="text" id="widget-name" wire:model="widget.name" 
-                                            class="form-control @error('widget.name') is-invalid @enderror"
-                                            placeholder="Widget adını giriniz">
-                                        @error('widget.name') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                        <div class="form-floating">
+                                            <input type="text" id="widget-name" wire:model="widget.name" 
+                                                class="form-control @error('widget.name') is-invalid @enderror"
+                                                placeholder="Widget adını giriniz">
+                                            <label class="required">Widget Adı *</label>
+                                            @error('widget.name') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                        </div>
                                     </div>
                                     
                                     <div class="col-12 col-md-6">
-                                        <label class="form-label required">Benzersiz Tanımlayıcı</label>
-                                        <input type="text" id="widget-slug" wire:model="widget.slug" 
-                                            class="form-control font-monospace @error('widget.slug') is-invalid @enderror"
-                                            placeholder="widget-slug">
-                                        @error('widget.slug') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                        <div class="form-floating">
+                                            <input type="text" id="widget-slug" wire:model="widget.slug" 
+                                                class="form-control font-monospace @error('widget.slug') is-invalid @enderror"
+                                                placeholder="widget-slug">
+                                            <label class="required">Benzersiz Tanımlayıcı *</label>
+                                            @error('widget.slug') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                        </div>
                                         <small class="form-hint">Sadece küçük harfler, rakamlar ve tire (-) kullanın.</small>
                                     </div>
                                 </div>
                             </div>
                             
                             <div class="col-12">
-                                <label class="form-label">Kategori</label>
-                                <select wire:model="widget.widget_category_id" class="form-select @error('widget.widget_category_id') is-invalid @enderror">
-                                    <option value="">Kategori Seçiniz</option>
-                                    @foreach($categories as $category)
-                                    <option value="{{ $category->widget_category_id }}">{{ $category->title }}</option>
-                                    @endforeach
-                                </select>
-                                @error('widget.widget_category_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                <div class="form-floating">
+                                    <select wire:model="widget.widget_category_id" 
+                                        class="form-control @error('widget.widget_category_id') is-invalid @enderror"
+                                        data-choices
+                                        data-choices-search="{{ count($categories) > 6 ? 'true' : 'false' }}"
+                                        data-choices-placeholder="Kategori Seçin">
+                                        <option value="">Kategori Seçin</option>
+                                        @foreach($categories as $category)
+                                        <option value="{{ $category->widget_category_id }}">{{ $category->title }}</option>
+                                        @endforeach
+                                    </select>
+                                    <label>Kategori</label>
+                                    @error('widget.widget_category_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                </div>
                             </div>
 
                             <div class="col-12">
-                                <label class="form-label">Açıklama</label>
-                                <textarea wire:model="widget.description" 
-                                    class="form-control @error('widget.description') is-invalid @enderror" 
-                                    placeholder="Widget açıklaması"
-                                    rows="4"></textarea>
-                                @error('widget.description') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                <div class="form-floating">
+                                    <textarea wire:model="widget.description" 
+                                        class="form-control @error('widget.description') is-invalid @enderror" 
+                                        placeholder="Widget açıklaması"
+                                        rows="4"></textarea>
+                                    <label>Açıklama</label>
+                                    @error('widget.description') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                </div>
                             </div>
                             
                             <div class="col-12">
@@ -176,8 +188,12 @@
                                     <small class="form-hint">Seçimi değiştirmek için X butonuna tıklayın</small>
                                 </div>
                                 @else
-                                <select wire:model="widget.file_path" class="form-select @error('widget.file_path') is-invalid @enderror">
-                                    <option value="">Dosya Seçiniz</option>
+                                <select wire:model="widget.file_path" 
+                                    class="form-control @error('widget.file_path') is-invalid @enderror"
+                                    data-choices
+                                    data-choices-search="{{ count($this->getModuleFiles()) > 6 ? 'true' : 'false' }}"
+                                    data-choices-placeholder="Dosya Seçin">
+                                    <option value="">Dosya Seçin</option>
                                     @foreach($this->getModuleFiles() as $path => $name)
                                     <option value="{{ $path }}">{{ $name }}</option>
                                     @endforeach
@@ -219,8 +235,12 @@
                                     <small class="form-hint">Seçimi değiştirmek için X butonuna tıklayın</small>
                                 </div>
                                 @else
-                                <select wire:model="widget.file_path" class="form-select @error('widget.file_path') is-invalid @enderror">
-                                    <option value="">Dosya Seçiniz</option>
+                                <select wire:model="widget.file_path" 
+                                    class="form-control @error('widget.file_path') is-invalid @enderror"
+                                    data-choices
+                                    data-choices-search="{{ count($this->getViewFiles()) > 6 ? 'true' : 'false' }}"
+                                    data-choices-placeholder="Dosya Seçin">
+                                    <option value="">Dosya Seçin</option>
                                     @foreach($this->getViewFiles() as $path => $name)
                                     <option value="{{ $path }}">{{ $name }}</option>
                                     @endforeach
@@ -304,7 +324,7 @@
                                         </button>
                                     @else
                                         <div class="text-center py-4">
-                                            <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-2"></i>
+                                            <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-2"></i>
                                             <p class="mb-0">Görseli seçmek için tıklayın</p>
                                             <p class="text-muted small mb-0">PNG, JPG, GIF - Maks 3MB</p>
                                         </div>
@@ -368,7 +388,7 @@
                                         </button>
                                     @else
                                         <div class="text-center py-3">
-                                            <i class="fas fa-cloud-upload-alt fa-2x text-primary mb-2"></i>
+                                            <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-2"></i>
                                             <p class="mb-0">Görseli seçmek için tıklayın</p>
                                             <p class="text-muted small mb-0">PNG, JPG, GIF - Maks 3MB</p>
                                         </div>

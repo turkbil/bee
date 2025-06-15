@@ -203,7 +203,7 @@ class QueryCollector extends PDOCollector
         ];
 
         if ($this->timeCollector !== null) {
-            $this->timeCollector->addMeasure(Str::limit($sql, 100), $startTime, $endTime, [], 'db');
+            $this->timeCollector->addMeasure(Str::limit($sql, 100), $startTime, $endTime, [], 'db', 'Database Query');
         }
     }
 
@@ -378,7 +378,7 @@ class QueryCollector extends PDOCollector
         $filename = pathinfo($file, PATHINFO_FILENAME);
 
         foreach ($this->middleware as $alias => $class) {
-            if (strpos($class, $filename) !== false) {
+            if (!is_null($class) && !is_null($filename) && strpos($class, $filename) !== false) {
                 return $alias;
             }
         }
@@ -577,14 +577,16 @@ class QueryCollector extends PDOCollector
             $this->infoStatements+= 2;
         } elseif ($this->softLimit && $this->queryCount > $this->softLimit) {
             array_unshift($statements, [
-                'sql' => '# Query soft limit for Debugbar is reached after ' . $this->softLimit . ' queries, additional ' . ($this->queryCount - $this->softLimit) . ' queries only show the query. Limit can be raised in the config. Limits can be raised in the config (debugbar.options.db.soft_limit)',
+                'sql' => '# Query soft limit for Debugbar is reached after ' . $this->softLimit . ' queries, additional ' . ($this->queryCount - $this->softLimit) . ' queries only show the query. Limits can be raised in the config (debugbar.options.db.soft_limit)',
                 'type' => 'info',
             ]);
             $this->infoStatements++;
         }
 
         $visibleStatements = count($statements) - $this->infoStatements;
+
         $data = [
+            'count' => $visibleStatements,
             'nb_statements' => $this->queryCount,
             'nb_visible_statements' => $visibleStatements,
             'nb_excluded_statements' => $this->queryCount + $this->transactionEventsCount - $visibleStatements,
@@ -628,7 +630,7 @@ class QueryCollector extends PDOCollector
     private function getSqlQueryToDisplay(array $query): string
     {
         $sql = $query['query'];
-        if ($query['type'] === 'query' && $this->renderSqlWithParams && method_exists(DB::connection($query['connection'])->getQueryGrammar(), 'substituteBindingsIntoRawSql')) {
+        if ($query['type'] === 'query' && $this->renderSqlWithParams && DB::connection($query['connection'])->getQueryGrammar() instanceof \Illuminate\Database\Query\Grammars\Grammar && method_exists(DB::connection($query['connection'])->getQueryGrammar(), 'substituteBindingsIntoRawSql')) {
             try {
                 $sql = DB::connection($query['connection'])->getQueryGrammar()->substituteBindingsIntoRawSql($sql, $query['bindings'] ?? []);
                 return $this->getDataFormatter()->formatSql($sql);

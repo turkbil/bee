@@ -52,6 +52,16 @@ Route::middleware(['web', 'auth', InitializeTenancy::class])->prefix('admin')->n
     Route::get('/access-denied', function() {
         abort(403, 'Bu işlem için yetkiniz bulunmamaktadır.');
     })->name('access.denied');
+    
+    // Debug log endpoint - sadece geliştirme için
+    Route::post('/debug-log', function() {
+        if (!config('app.debug')) return response('Disabled', 403);
+        
+        $data = request()->json()->all();
+        \Illuminate\Support\Facades\Log::channel('single')->info('JS_DEBUG', $data);
+        
+        return response()->json(['status' => 'logged']);
+    })->name('debug.log');
 });
 
 // Diğer admin routes - spesifik modül erişimleri için admin.access middleware'i kullanabilirsiniz

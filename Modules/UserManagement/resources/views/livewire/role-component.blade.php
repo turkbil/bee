@@ -34,7 +34,7 @@
                     </a>
                     <!-- Sayfa Adeti Seçimi -->
                     <div style="min-width: 60px">
-                        <select wire:model.live="perPage" class="form-select">
+                        <select wire:model.live="perPage" class="form-select listing-filter-select">
                             <option value="10">10</option>
                             <option value="50">50</option>
                             <option value="100">100</option>

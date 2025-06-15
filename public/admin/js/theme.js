@@ -50,26 +50,70 @@ document.addEventListener('DOMContentLoaded', function() {
                     themeSwitch.checked = prefersDarkMode;
                 }
             }
+            
+            // Mevcut primary rengi koru - tema değişiminde tekrar uygula
+            const currentColor = getCookie('siteColor') || '#066fd1';
+            const primaryPalette = generatePrimaryPalette(currentColor);
+            applyPrimaryPalette(primaryPalette);
+            
+            // CSS değişkenlerini zorla güncelle
+            forceUpdateThemeVariables();
+            
+            // Smooth transition için kısa delay
+            setTimeout(() => {
+                forceUpdateAllElements();
+            }, 50);
         });
     });
     
     // Karanlık mod switch için tema geçiş fonksiyonu
     initThemeSwitch();
 
-    // Ana renk değiştirme
-    const colorRadios = document.querySelectorAll('input[name="theme-primary"]');
-    colorRadios.forEach(radio => {
-        radio.addEventListener('change', function() {
-            const color = this.value;
-            document.cookie = `siteColor=${color};path=/;max-age=31536000`;
-            
-            // Sayfa yenilemeden rengi değiştir
-            document.documentElement.style.setProperty('--primary-color', color);
-            updateTextColor(color);
-            
-            // Radius örneklerini güncelle (aktif renk değişimi için)
-            updateRadiusExamples();
+    // Ana renk değiştirme - Tabler.io uyumlu
+    function initColorPickers() {
+        const colorRadios = document.querySelectorAll('input[name="theme-primary"]');
+        colorRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                const color = this.value;
+                document.cookie = `siteColor=${color};path=/;max-age=31536000`;
+                
+                // Primary renk paletini hesapla ve uygula
+                const primaryPalette = generatePrimaryPalette(color);
+                applyPrimaryPalette(primaryPalette);
+                updateTextColor(color);
+                
+                // Radius örneklerini güncelle
+                updateRadiusExamples();
+                
+                // Anında görsel geri bildirim için
+                console.log('Primary color changed to:', color);
+            });
         });
+    }
+    
+    // Sayfa yüklendiğinde ve dinamik içerik yüklendiğinde çalıştır
+    initColorPickers();
+    
+    // MutationObserver ile yeni eklenen color picker'ları yakalayalım
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'childList') {
+                mutation.addedNodes.forEach(function(node) {
+                    if (node.nodeType === 1) { // Element node
+                        const newColorRadios = node.querySelectorAll ? node.querySelectorAll('input[name="theme-primary"]') : [];
+                        if (newColorRadios.length > 0) {
+                            initColorPickers();
+                        }
+                    }
+                });
+            }
+        });
+    });
+    
+    // DOM değişikliklerini izle
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
     });
 
     // Köşe yuvarlaklığı değiştirme - Range slider
@@ -316,6 +360,19 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Tema durumunu güncelle
             updateThemeState();
+            
+            // Mevcut primary rengi koru - tema değişiminde tekrar uygula
+            const currentColor = getCookie('siteColor') || '#066fd1';
+            const primaryPalette = generatePrimaryPalette(currentColor);
+            applyPrimaryPalette(primaryPalette);
+            
+            // CSS değişkenlerini zorla güncelle
+            forceUpdateThemeVariables();
+            
+            // Smooth transition için kısa delay
+            setTimeout(() => {
+                forceUpdateAllElements();
+            }, 50);
         });
         
         // Sistem teması değiştiğinde otomatik güncelleme
@@ -330,11 +387,190 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Sistem teması değiştiğinde tema durumunu güncelle
                 updateThemeState();
+                
+                // Sistem tema değişiminde de primary rengi koru
+                const currentColor = getCookie('siteColor') || '#066fd1';
+                const primaryPalette = generatePrimaryPalette(currentColor);
+                applyPrimaryPalette(primaryPalette);
             }
         });
     }
 
     // Yardımcı Fonksiyonlar
+    
+    // Primary renk paleti oluşturma - Tabler.io uyumlu
+    function generatePrimaryPalette(primaryColor) {
+        // HEX rengini RGB'ye dönüştür
+        const hex = primaryColor.replace('#', '');
+        const r = parseInt(hex.substring(0, 2), 16);
+        const g = parseInt(hex.substring(2, 4), 16);
+        const b = parseInt(hex.substring(4, 6), 16);
+        
+        // HSL'e dönüştür
+        const [h, s, l] = rgbToHsl(r, g, b);
+        
+        // Tabler.io primary palet tonları
+        const palette = {
+            50: hslToHex(h, Math.min(s, 0.3), Math.min(l + 0.45, 0.95)),
+            100: hslToHex(h, Math.min(s, 0.4), Math.min(l + 0.35, 0.9)),
+            200: hslToHex(h, Math.min(s + 0.1, 0.6), Math.min(l + 0.25, 0.85)),
+            300: hslToHex(h, Math.min(s + 0.15, 0.7), Math.min(l + 0.15, 0.75)),
+            400: hslToHex(h, Math.min(s + 0.2, 0.8), Math.min(l + 0.05, 0.65)),
+            500: primaryColor, // Ana renk
+            600: hslToHex(h, Math.min(s + 0.1, 0.9), Math.max(l - 0.1, 0.2)),
+            700: hslToHex(h, Math.min(s + 0.15, 0.95), Math.max(l - 0.2, 0.15)),
+            800: hslToHex(h, Math.min(s + 0.2, 1), Math.max(l - 0.3, 0.1)),
+            900: hslToHex(h, Math.min(s + 0.25, 1), Math.max(l - 0.4, 0.05)),
+            950: hslToHex(h, Math.min(s + 0.3, 1), Math.max(l - 0.45, 0.02))
+        };
+        
+        return palette;
+    }
+    
+    // Primary paleti uygula
+    function applyPrimaryPalette(palette) {
+        const root = document.documentElement;
+        
+        // Tabler.io primary CSS değişkenlerini ayarla - !important ile zorla
+        root.style.setProperty('--tblr-primary', palette[500], 'important');
+        root.style.setProperty('--tblr-primary-rgb', hexToRgb(palette[500]), 'important');
+        root.style.setProperty('--tblr-primary-50', palette[50], 'important');
+        root.style.setProperty('--tblr-primary-100', palette[100], 'important');
+        root.style.setProperty('--tblr-primary-200', palette[200], 'important');
+        root.style.setProperty('--tblr-primary-300', palette[300], 'important');
+        root.style.setProperty('--tblr-primary-400', palette[400], 'important');
+        root.style.setProperty('--tblr-primary-500', palette[500], 'important');
+        root.style.setProperty('--tblr-primary-600', palette[600], 'important');
+        root.style.setProperty('--tblr-primary-700', palette[700], 'important');
+        root.style.setProperty('--tblr-primary-800', palette[800], 'important');
+        root.style.setProperty('--tblr-primary-900', palette[900], 'important');
+        root.style.setProperty('--tblr-primary-950', palette[950], 'important');
+        
+        // Primary text renkleri hesapla ve uygula
+        const primaryTextColor = calculateContrastColor(palette[500]);
+        const primaryLightTextColor = calculateContrastColor(palette[100]);
+        
+        // Hover renkleri hesapla
+        const primaryHoverBg = primaryTextColor === '#ffffff' ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.15)';
+        const primaryLtHoverBg = primaryLightTextColor === '#ffffff' ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.15)';
+        
+        root.style.setProperty('--tblr-primary-text', primaryTextColor, 'important');
+        root.style.setProperty('--tblr-primary-lt-text', primaryLightTextColor, 'important');
+        
+        // Hover renkleri uygula
+        root.style.setProperty('--tblr-primary-hover-bg', primaryHoverBg, 'important');
+        root.style.setProperty('--tblr-primary-hover-text', primaryTextColor, 'important');
+        root.style.setProperty('--tblr-primary-lt-hover-bg', primaryLtHoverBg, 'important');
+        root.style.setProperty('--tblr-primary-lt-hover-text', primaryLightTextColor, 'important');
+        
+        // Eski değişken uyumluluğu için
+        root.style.setProperty('--primary-color', palette[500], 'important');
+        root.style.setProperty('--primary-color-rgb', hexToRgb(palette[500]), 'important');
+        root.style.setProperty('--primary-text-color', primaryTextColor, 'important');
+        
+        // Light tema tonları
+        root.style.setProperty('--tblr-primary-lt', palette[100], 'important');
+        root.style.setProperty('--tblr-primary-lt-rgb', hexToRgb(palette[100]), 'important');
+        
+        // Body'de de değişkenleri zorla - hem light hem dark tema için
+        const body = document.body;
+        body.style.setProperty('--tblr-primary', palette[500], 'important');
+        body.style.setProperty('--tblr-primary-rgb', hexToRgb(palette[500]), 'important');
+        body.style.setProperty('--tblr-primary-text', primaryTextColor, 'important');
+        body.style.setProperty('--tblr-primary-50', palette[50], 'important');
+        body.style.setProperty('--tblr-primary-100', palette[100], 'important');
+        body.style.setProperty('--tblr-primary-200', palette[200], 'important');
+        body.style.setProperty('--tblr-primary-300', palette[300], 'important');
+        body.style.setProperty('--tblr-primary-400', palette[400], 'important');
+        body.style.setProperty('--tblr-primary-500', palette[500], 'important');
+        body.style.setProperty('--tblr-primary-600', palette[600], 'important');
+        body.style.setProperty('--tblr-primary-700', palette[700], 'important');
+        body.style.setProperty('--tblr-primary-800', palette[800], 'important');
+        body.style.setProperty('--tblr-primary-900', palette[900], 'important');
+        body.style.setProperty('--tblr-primary-950', palette[950], 'important');
+        
+        // Önemli elementleri de güncelle
+        const cards = document.querySelectorAll('.card');
+        cards.forEach(card => {
+            card.style.setProperty('--tblr-primary', palette[500], 'important');
+        });
+        
+        // Tüm primary sınıflarını kullanan elementleri güncelle
+        const primaryElements = document.querySelectorAll('.btn-primary, .bg-primary, .text-primary, .border-primary');
+        primaryElements.forEach(element => {
+            element.style.setProperty('--tblr-primary', palette[500], 'important');
+            element.style.setProperty('--tblr-primary-rgb', hexToRgb(palette[500]), 'important');
+        });
+    }
+    
+    // Kontrast rengini hesapla (beyaz ya da siyah)
+    function calculateContrastColor(backgroundColor) {
+        // HEX rengini RGB'ye dönüştür
+        const hex = backgroundColor.replace('#', '');
+        const r = parseInt(hex.substring(0, 2), 16);
+        const g = parseInt(hex.substring(2, 4), 16);
+        const b = parseInt(hex.substring(4, 6), 16);
+        
+        // Luminance hesapla (W3C formülü)
+        const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+        
+        // Koyu renkler için beyaz, açık renkler için siyah metin
+        return luminance > 0.5 ? '#000000' : '#ffffff';
+    }
+    
+    // RGB'den HSL'e dönüştür
+    function rgbToHsl(r, g, b) {
+        r /= 255; g /= 255; b /= 255;
+        const max = Math.max(r, g, b), min = Math.min(r, g, b);
+        let h, s, l = (max + min) / 2;
+        
+        if (max === min) {
+            h = s = 0;
+        } else {
+            const d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch (max) {
+                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                case g: h = (b - r) / d + 2; break;
+                case b: h = (r - g) / d + 4; break;
+            }
+            h /= 6;
+        }
+        return [h, s, l];
+    }
+    
+    // HSL'den HEX'e dönüştür
+    function hslToHex(h, s, l) {
+        const hue2rgb = (p, q, t) => {
+            if (t < 0) t += 1;
+            if (t > 1) t -= 1;
+            if (t < 1/6) return p + (q - p) * 6 * t;
+            if (t < 1/2) return q;
+            if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+            return p;
+        };
+        
+        if (s === 0) {
+            const gray = Math.round(l * 255);
+            return `#${gray.toString(16).padStart(2, '0').repeat(3)}`;
+        }
+        
+        const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+        const p = 2 * l - q;
+        const r = Math.round(hue2rgb(p, q, h + 1/3) * 255);
+        const g = Math.round(hue2rgb(p, q, h) * 255);
+        const b = Math.round(hue2rgb(p, q, h - 1/3) * 255);
+        
+        return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+    }
+    
+    // HEX'den RGB string'e dönüştür
+    function hexToRgb(hex) {
+        const r = parseInt(hex.substring(1, 3), 16);
+        const g = parseInt(hex.substring(3, 5), 16);
+        const b = parseInt(hex.substring(5, 7), 16);
+        return `${r}, ${g}, ${b}`;
+    }
     
     // Metin rengini hesaplama
     function updateTextColor(backgroundColor) {
@@ -372,7 +608,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const examples = document.querySelectorAll('.radius-example');
         examples.forEach(example => {
             if (example.classList.contains('active')) {
-                example.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
+                example.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--tblr-primary');
             }
         });
     }
@@ -455,8 +691,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Başlangıç durumunu ayarla
     function initializeThemeSettings() {
-        // Mevcut tema rengi için metin rengini güncelle
+        // Mevcut tema rengi için primary paleti ve metin rengini güncelle
         const currentColor = getCookie('siteColor') || '#066fd1';
+        const primaryPalette = generatePrimaryPalette(currentColor);
+        applyPrimaryPalette(primaryPalette);
         updateTextColor(currentColor);
         
         // Tablo görünümünü ayarla
@@ -520,6 +758,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (document.getElementById('switch')) {
                     document.getElementById('switch').checked = prefersDarkMode;
                 }
+                
+                // Primary rengi yeniden uygula
+                const currentColor = getCookie('siteColor') || '#066fd1';
+                const primaryPalette = generatePrimaryPalette(currentColor);
+                applyPrimaryPalette(primaryPalette);
+                
+                // CSS değişkenlerini zorla güncelle
+                forceUpdateThemeVariables();
+                
+                setTimeout(() => {
+                    forceUpdateAllElements();
+                }, 50);
             }
         });
     }
@@ -534,5 +784,305 @@ document.addEventListener('DOMContentLoaded', function() {
     // Sayfa tamamen yüklendikten sonra bir kez daha tema düğmesini kontrol et
     window.addEventListener('load', function() {
         initThemeSwitch();
+        initColorPickers(); // Color picker'ları da yeniden başlat
+        
+        // Mevcut seçili rengi zorla uygula
+        const selectedColorRadio = document.querySelector('input[name="theme-primary"]:checked');
+        if (selectedColorRadio) {
+            const color = selectedColorRadio.value;
+            const primaryPalette = generatePrimaryPalette(color);
+            applyPrimaryPalette(primaryPalette);
+            updateTextColor(color);
+        }
     });
+    
+    // Tema değişkenlerini zorla güncelleme fonksiyonu
+    function forceUpdateThemeVariables() {
+        const root = document.documentElement;
+        const body = document.body;
+        const isDark = body.getAttribute('data-bs-theme') === 'dark';
+        
+        // Tema değişkenlerini zorla yenile
+        if (isDark) {
+            root.classList.add('dark-theme');
+            root.classList.remove('light-theme');
+        } else {
+            root.classList.add('light-theme');
+            root.classList.remove('dark-theme');
+        }
+        
+        // Body'de CSS değişkenlerini zorla güncelle
+        body.style.setProperty('--theme-transition', 'none');
+        setTimeout(() => {
+            body.style.removeProperty('--theme-transition');
+        }, 100);
+    }
+    
+    // Tüm elementleri zorla güncelleme fonksiyonu
+    function forceUpdateAllElements() {
+        // Tüm card'ları güncelle
+        const cards = document.querySelectorAll('.card');
+        cards.forEach(card => {
+            card.style.display = 'none';
+            card.offsetHeight; // reflow trigger
+            card.style.display = '';
+        });
+        
+        // Badge'leri güncelle
+        const badges = document.querySelectorAll('.badge');
+        badges.forEach(badge => {
+            // Önce inline style'ları temizle
+            badge.style.removeProperty('background-color');
+            badge.style.removeProperty('color');
+            badge.style.removeProperty('border-color');
+            
+            // Reflow tetikle
+            badge.style.display = 'none';
+            badge.offsetHeight;
+            badge.style.display = '';
+            
+            // CSS class'ları yeniden uygula
+            const isDark = document.body.getAttribute('data-bs-theme') === 'dark';
+            
+            if (badge.classList.contains('bg-blue-lt')) {
+                if (isDark) {
+                    badge.style.setProperty('background-color', 'var(--tblr-primary-800)', 'important');
+                    badge.style.setProperty('color', 'var(--tblr-primary-200)', 'important');
+                } else {
+                    badge.style.setProperty('background-color', 'var(--tblr-primary-100)', 'important');
+                    badge.style.setProperty('color', 'var(--tblr-primary-700)', 'important');
+                }
+            }
+        });
+        
+        // Avatar'ları güncelle
+        const avatars = document.querySelectorAll('.avatar');
+        avatars.forEach(avatar => {
+            const computedStyle = window.getComputedStyle(avatar);
+            avatar.style.backgroundColor = computedStyle.backgroundColor;
+            avatar.style.color = computedStyle.color;
+        });
+        
+        // List group item'ları güncelle
+        const listItems = document.querySelectorAll('.list-group-item');
+        listItems.forEach(item => {
+            const computedStyle = window.getComputedStyle(item);
+            item.style.backgroundColor = computedStyle.backgroundColor;
+            item.style.color = computedStyle.color;
+        });
+        
+        // Button'ları güncelle
+        const buttons = document.querySelectorAll('.btn');
+        buttons.forEach(button => {
+            button.style.display = 'none';
+            button.offsetHeight; // reflow trigger
+            button.style.display = '';
+        });
+        
+        // Text renkleri güncelle
+        const textElements = document.querySelectorAll('.text-muted, .text-body');
+        textElements.forEach(element => {
+            const computedStyle = window.getComputedStyle(element);
+            element.style.color = computedStyle.color;
+        });
+        
+        // Form elementleri güncelle
+        const formElements = document.querySelectorAll('.form-control, .form-select');
+        formElements.forEach(element => {
+            const computedStyle = window.getComputedStyle(element);
+            element.style.backgroundColor = computedStyle.backgroundColor;
+            element.style.color = computedStyle.color;
+            element.style.borderColor = computedStyle.borderColor;
+        });
+        
+        // Navbar dropdown'ları güncelle
+        const dropdownItems = document.querySelectorAll('.dropdown-item');
+        dropdownItems.forEach(item => {
+            item.style.display = 'none';
+            item.offsetHeight; // reflow trigger
+            item.style.display = '';
+        });
+        
+        // Inline style'ları temizle
+        clearInlineStyles();
+        
+        // Boş style attribute'ları olan elementleri özel olarak güncelle
+        updateEmptyStyleElements();
+        
+        console.log('Theme elements force updated');
+    }
+    
+    // Inline style'ları temizleyerek CSS'in kontrolü ele almasını sağla
+    function clearInlineStyles() {
+        // Problemli RGB renkleri olan elementleri bul ve style'larını temizle
+        const problematicColors = [
+            'rgb(248, 250, 252)',
+            'rgb(255, 255, 255)', 
+            'rgb(220, 225, 231)',
+            'rgb(71, 85, 105)',
+            'rgb(46, 60, 81)',
+            'rgb(33, 14, 90)',
+            'rgb(174, 155, 230)'
+        ];
+        
+        problematicColors.forEach(color => {
+            // Background color'u temizle
+            const bgElements = document.querySelectorAll(`[style*="background-color: ${color}"]`);
+            bgElements.forEach(element => {
+                element.style.removeProperty('background-color');
+            });
+            
+            // Text color'u temizle
+            const textElements = document.querySelectorAll(`[style*="color: ${color}"]`);
+            textElements.forEach(element => {
+                element.style.removeProperty('color');
+            });
+            
+            // Border color'u temizle
+            const borderElements = document.querySelectorAll(`[style*="border-color: ${color}"]`);
+            borderElements.forEach(element => {
+                element.style.removeProperty('border-color');
+            });
+        });
+        
+        // Form elementlerini özel olarak temizle
+        const formElements = document.querySelectorAll('.form-control, .form-select');
+        formElements.forEach(element => {
+            if (element.style.backgroundColor || element.style.color || element.style.borderColor) {
+                element.style.removeProperty('background-color');
+                element.style.removeProperty('color');
+                element.style.removeProperty('border-color');
+            }
+        });
+        
+        // Badge'leri temizle
+        const badges = document.querySelectorAll('.badge');
+        badges.forEach(badge => {
+            if (badge.style.backgroundColor || badge.style.color) {
+                badge.style.removeProperty('background-color');
+                badge.style.removeProperty('color');
+                badge.style.removeProperty('border-color');
+            }
+            
+            // Badge sınıflarını zorla güncelle
+            badge.classList.remove('theme-updating');
+            badge.offsetHeight; // reflow trigger
+            badge.classList.add('theme-updating');
+            
+            setTimeout(() => {
+                badge.classList.remove('theme-updating');
+            }, 200);
+        });
+        
+        // List group item'ları temizle
+        const listItems = document.querySelectorAll('.list-group-item, .bg-muted-lt');
+        listItems.forEach(item => {
+            if (item.style.backgroundColor || item.style.color) {
+                item.style.removeProperty('background-color');
+                item.style.removeProperty('color');
+            }
+        });
+        
+        // Icon'ları temizle
+        const icons = document.querySelectorAll('.fas, .far, .fab, .text-muted');
+        icons.forEach(icon => {
+            if (icon.style.color) {
+                icon.style.removeProperty('color');
+            }
+        });
+        
+        console.log('Inline styles cleared for theme consistency');
+    }
+    
+    // Boş style attribute'ları olan elementleri güncelle
+    function updateEmptyStyleElements() {
+        // Boş style attribute'ları olan elementleri bul
+        const emptyStyleElements = document.querySelectorAll('[style=""]');
+        
+        emptyStyleElements.forEach(element => {
+            // Element tipine göre uygun sınıfları tetikle
+            if (element.classList.contains('list-group-item') || element.classList.contains('bg-muted-lt')) {
+                element.classList.add('theme-updating');
+                setTimeout(() => {
+                    element.classList.remove('theme-updating');
+                }, 100);
+            }
+            
+            if (element.classList.contains('form-control') || element.classList.contains('form-select')) {
+                element.classList.add('theme-updating');
+                setTimeout(() => {
+                    element.classList.remove('theme-updating');
+                }, 100);
+            }
+            
+            if (element.classList.contains('fas') || element.classList.contains('text-muted')) {
+                element.classList.add('theme-updating');
+                setTimeout(() => {
+                    element.classList.remove('theme-updating');
+                }, 100);
+            }
+            
+            if (element.classList.contains('badge')) {
+                element.classList.add('theme-updating');
+                setTimeout(() => {
+                    element.classList.remove('theme-updating');
+                }, 100);
+            }
+        });
+        
+        // Özel problemli sınıf kombinasyonlarını bul
+        const problematicElements = [
+            '.list-group-item.py-3.px-2.mx-1',
+            '.d-flex.align-items-center.p-2.bg-muted-lt.rounded',
+            '.col-12.mb-2 .bg-muted-lt'
+        ];
+        
+        problematicElements.forEach(selector => {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach(element => {
+                element.style.display = 'none';
+                element.offsetHeight; // reflow trigger
+                element.style.display = '';
+                
+                element.classList.add('theme-updating');
+                setTimeout(() => {
+                    element.classList.remove('theme-updating');
+                }, 150);
+            });
+        });
+        
+        // Tüm bg-muted-lt elementlerini zorla güncelle
+        const bgMutedElements = document.querySelectorAll('.bg-muted-lt');
+        bgMutedElements.forEach(element => {
+            element.style.display = 'none';
+            element.offsetHeight;
+            element.style.display = '';
+        });
+        
+        // Bu spesifik problemli element için ekstra güncelleme
+        const specificElements = document.querySelectorAll('div.d-flex.align-items-center.p-2.bg-muted-lt.rounded[style=""]');
+        specificElements.forEach(element => {
+            // Inline style'ları tamamen kaldır
+            element.removeAttribute('style');
+            
+            // Reflow tetikle
+            element.style.display = 'none';
+            element.offsetHeight;
+            element.style.display = '';
+            
+            // CSS sınıflarını zorla yeniden uygula
+            const className = element.className;
+            element.className = '';
+            element.offsetHeight;
+            element.className = className;
+            
+            // Theme-updating sınıfı ekle
+            element.classList.add('theme-updating');
+            setTimeout(() => {
+                element.classList.remove('theme-updating');
+            }, 200);
+        });
+        
+        console.log('Empty style elements and problematic containers updated for theme consistency');
+    }
 });

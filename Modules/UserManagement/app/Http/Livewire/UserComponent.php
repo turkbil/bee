@@ -52,6 +52,7 @@ class UserComponent extends Component
 
     public function updatedPerPage()
     {
+        $this->perPage = (int) $this->perPage;
         $this->resetPage();
     }
 

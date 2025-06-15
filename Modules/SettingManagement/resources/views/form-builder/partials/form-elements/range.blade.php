@@ -1,76 +1,88 @@
 @php
-    $settingId = null;
-    $settingKey = null;
+    // Element dizisinin var olduğunu kontrol edelim
+    if (!isset($element) || !is_array($element)) {
+        $element = [];
+    }
     
-    if(isset($element['properties']['setting_id'])) {
-        $settingId = $element['properties']['setting_id'];
-    } elseif(isset($element['properties']['name'])) {
-        $settingName = $element['properties']['name'];
-        
-        // Ayarı adından bul
-        $setting = $settings->firstWhere('key', $settingName);
-        if($setting) {
-            $settingId = $setting->id;
-            $settingKey = $setting->key;
-        }
+    // Temel alan özelliklerini al
+    $fieldName = isset($element['name']) ? $element['name'] : (isset($element['properties']['name']) ? $element['properties']['name'] : 'range_' . uniqid());
+    $fieldLabel = isset($element['label']) ? $element['label'] : (isset($element['properties']['label']) ? $element['properties']['label'] : 'Değer Aralığı');
+    $isRequired = isset($element['required']) ? $element['required'] : (isset($element['properties']['required']) && $element['properties']['required']);
+    $helpText = isset($element['help_text']) ? $element['help_text'] : (isset($element['properties']['help_text']) ? $element['properties']['help_text'] : '');
+    
+    // Range özel özellikleri
+    $min = isset($element['min']) ? $element['min'] : (isset($element['properties']['min']) ? $element['properties']['min'] : 0);
+    $max = isset($element['max']) ? $element['max'] : (isset($element['properties']['max']) ? $element['properties']['max'] : 100);
+    $step = isset($element['step']) ? $element['step'] : (isset($element['properties']['step']) ? $element['properties']['step'] : 1);
+    
+    // Diğer özellikleri al
+    $width = isset($element['width']) ? $element['width'] : (isset($element['properties']['width']) ? $element['properties']['width'] : 12);
+    $defaultValue = isset($element['default']) ? $element['default'] : (isset($element['properties']['default_value']) ? $element['properties']['default_value'] : $min);
+    
+    // values ve originalValues kontrolü
+    if (!isset($values) || !is_array($values)) {
+        $values = [];
+    }
+    
+    if (!isset($originalValues) || !is_array($originalValues)) {
+        $originalValues = [];
+    }
+    
+    // Mevcut değeri belirle
+    if(isset($values[$fieldName])) {
+        $fieldValue = $values[$fieldName];
+    } elseif(isset($settings) && is_object($settings)) {
+        $cleanFieldName = str_replace('setting.', '', $fieldName);
+        $fieldValue = $settings[$cleanFieldName] ?? $defaultValue;
+    } else {
+        $fieldValue = $defaultValue;
+    }
+    
+    // values için varsayılan değeri ayarla
+    if (!isset($values[$fieldName])) {
+        $values[$fieldName] = $fieldValue;
     }
 @endphp
 
-@if($settingId)
-    <div class="col-12" wire:key="setting-{{ $settingId }}">
-        <div class="card mb-3 w-100">
-            <div class="card-header">
-                <div class="d-flex align-items-center justify-content-between">
-                    <h3 class="card-title d-flex align-items-center">
-                        <i class="fas fa-sliders-h me-2 text-primary"></i>
-                        {{ $element['properties']['label'] ?? 'Değer Aralığı' }}
-                    </h3>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="form-group w-100">
-                    <div class="mb-3">
-                        <div class="form-range mb-2 text-primary" id="range-{{ $settingId }}" wire:ignore>
-                            <input 
-                                type="range" 
-                                wire:model="values.{{ $settingId }}" 
-                                class="form-range" 
-                                @if(isset($element['properties']['min'])) min="{{ $element['properties']['min'] }}" @else min="0" @endif
-                                @if(isset($element['properties']['max'])) max="{{ $element['properties']['max'] }}" @else max="100" @endif
-                                @if(isset($element['properties']['step'])) step="{{ $element['properties']['step'] }}" @else step="1" @endif
-                                onInput="document.getElementById('rangeValue-{{ $settingId }}').innerHTML = this.value"
-                            >
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <span class="small text-muted">{{ isset($element['properties']['min']) ? $element['properties']['min'] : '0' }}</span>
-                            <span class="badge bg-primary" id="rangeValue-{{ $settingId }}">{{ $values[$settingId] ?? 0 }}</span>
-                            <span class="small text-muted">{{ isset($element['properties']['max']) ? $element['properties']['max'] : '100' }}</span>
-                        </div>
-                    </div>
-                    
-                    @if(isset($element['properties']['help_text']) && !empty($element['properties']['help_text']))
-                        <div class="form-text text-muted mt-2">
-                            <i class="fas fa-info-circle me-1"></i>
-                            {{ $element['properties']['help_text'] }}
-                        </div>
-                    @endif
-                    
-                    @if(isset($originalValues[$settingId]) && $originalValues[$settingId] != $values[$settingId])
-                        <div class="mt-2 text-end">
-                            <span class="badge bg-yellow cursor-pointer" wire:click="resetToDefault({{ $settingId }})">
-                                <i class="fas fa-undo me-1"></i> Varsayılana Döndür
-                            </span>
-                        </div>
-                    @endif
-                </div>
-            </div>
+<div class="col-{{ $width }}">
+    <div class="mb-3">
+        <label class="form-label">
+            {{ $fieldLabel }}
+            @if($isRequired) 
+                <span class="text-danger">*</span> 
+            @endif
+        </label>
+        
+        <div class="mb-2">
+            <input type="range" 
+                id="{{ $fieldName }}"
+                wire:model="values.{{ $fieldName }}" 
+                class="form-range" 
+                min="{{ $min }}"
+                max="{{ $max }}"
+                step="{{ $step }}"
+                @if($isRequired) required @endif
+                oninput="document.getElementById('rangeValue-{{ $fieldName }}').innerHTML = this.value">
         </div>
-    </div>
-@else
-    <div class="col-12">
-        <div class="alert alert-danger mb-3 w-100">
-            <i class="fas fa-exclamation-circle me-2"></i>
-            Bu değer aralığı alanı için ayar bulunamadı: {{ $element['properties']['name'] ?? 'Bilinmeyen' }}
+        
+        <div class="d-flex justify-content-between align-items-center">
+            <span class="small text-muted">{{ $min }}</span>
+            <span class="badge bg-primary" id="rangeValue-{{ $fieldName }}">{{ $values[$fieldName] ?? $defaultValue }}</span>
+            <span class="small text-muted">{{ $max }}</span>
         </div>
+        
+        @if($helpText)
+            <div class="form-text mt-2 ms-2">
+                <i class="fas fa-info-circle me-1"></i>{{ $helpText }}
+            </div>
+        @endif
+        
+        @if(isset($originalValues[$fieldName]) && isset($values[$fieldName]) && $originalValues[$fieldName] != $values[$fieldName])
+            <div class="mt-2 text-end">
+                <button type="button" class="btn btn-sm btn-outline-warning" wire:click="resetToDefault('{{ $fieldName }}')">
+                    <i class="ti ti-rotate-clockwise me-1"></i> Varsayılana Döndür
+                </button>
+            </div>
+        @endif
     </div>
-@endif
+</div>

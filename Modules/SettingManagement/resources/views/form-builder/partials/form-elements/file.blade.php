@@ -22,7 +22,7 @@
             <div class="card-header">
                 <div class="d-flex align-items-center justify-content-between">
                     <h3 class="card-title d-flex align-items-center">
-                        <i class="fas fa-file me-2 text-primary"></i>
+                        <i class="fas fa-file me-2"></i>
                         {{ $element['properties']['label'] ?? 'Dosya' }}
                     </h3>
                 </div>
@@ -36,9 +36,8 @@
                     ])
                     
                     @if(isset($element['properties']['help_text']) && !empty($element['properties']['help_text']))
-                        <div class="form-text text-muted mt-2">
-                            <i class="fas fa-info-circle me-1"></i>
-                            {{ $element['properties']['help_text'] }}
+                        <div class="form-text mt-2 ms-2">
+                            <i class="fas fa-info-circle me-1"></i>{{ $element['properties']['help_text'] }}
                         </div>
                     @endif
                     

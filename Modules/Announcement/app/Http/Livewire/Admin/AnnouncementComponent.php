@@ -18,7 +18,7 @@ class AnnouncementComponent extends Component
     public $search = '';
 
     #[Url]
-    public $perAnnouncement = 10;
+    public $perPage = 10;
 
     #[Url]
     public $sortField = 'announcement_id';
@@ -31,14 +31,15 @@ class AnnouncementComponent extends Component
         return Announcement::class;
     }
 
-    public function updatedPerAnnouncement()
+    public function updatedPerPage()
     {
-        $this->resetAnnouncement();
+        $this->perPage = (int) $this->perPage;
+        $this->resetPage();
     }
 
     public function updatedSearch()
     {
-        $this->resetAnnouncement();
+        $this->resetPage();
     }
 
     public function sortBy($field)
@@ -79,7 +80,7 @@ class AnnouncementComponent extends Component
             });
     
         $announcements = $query->orderBy($this->sortField, $this->sortDirection)
-            ->paginate($this->perAnnouncement);
+            ->paginate($this->perPage);
     
         return view('announcement::admin.livewire.announcement-component', [
             'announcements' => $announcements,

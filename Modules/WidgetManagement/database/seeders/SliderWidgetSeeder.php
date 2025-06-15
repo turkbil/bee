@@ -20,7 +20,7 @@ class SliderWidgetSeeder extends Seeder
     public function run()
     {
         $cacheKey = self::$runKey . '_' . config('database.default');
-        if (Cache::has($cacheKey)) {
+        if (Cache::store(config('cache.default'))->has($cacheKey)) {
             Log::info('SliderWidgetSeeder zaten çalıştırılmış, atlanıyor...');
             return;
         }
@@ -30,7 +30,7 @@ class SliderWidgetSeeder extends Seeder
                 $this->createTenantSlider();
                 
                 $tenantId = tenant('id');
-                Cache::put(self::$runKey . '_tenant_' . $tenantId, true, 600);
+                Cache::store(config('cache.default'))->put(self::$runKey . '_tenant_' . $tenantId, true, 600);
                 return;
             } catch (\Exception $e) {
                 Log::error('Tenant SliderWidgetSeeder hatası: ' . $e->getMessage());
@@ -75,7 +75,7 @@ class SliderWidgetSeeder extends Seeder
 
             Log::info('Slider bileşeni başarıyla oluşturuldu.');
             
-            Cache::put($cacheKey, true, 600);
+            Cache::store(config('cache.default'))->put($cacheKey, true, 600);
         } catch (\Exception $e) {
             Log::error('SliderWidgetSeeder central hatası: ' . $e->getMessage());
             Log::error($e->getTraceAsString());
@@ -114,7 +114,7 @@ class SliderWidgetSeeder extends Seeder
         $tenantId = tenant('id');
         $tenantCacheKey = self::$runKey . '_tenant_' . $tenantId;
         
-        if (Cache::has($tenantCacheKey)) {
+        if (Cache::store(config('cache.default'))->has($tenantCacheKey)) {
             Log::info('Tenant içinde slider widget zaten oluşturulmuş, atlanıyor...');
             return;
         }
@@ -550,7 +550,7 @@ class SliderWidgetSeeder extends Seeder
         foreach ($tenants as $tenant) {
             $tenantCacheKey = self::$runKey . '_tenant_' . $tenant->id;
             
-            if (Cache::has($tenantCacheKey)) {
+            if (Cache::store(config('cache.default'))->has($tenantCacheKey)) {
                 Log::info("Tenant {$tenant->id} için slider zaten oluşturulmuş, atlanıyor...");
                 continue;
             }
@@ -621,7 +621,7 @@ class SliderWidgetSeeder extends Seeder
                     
                     Log::info("Tenant {$tenant->id} için slider başarıyla oluşturuldu.");
                     
-                    Cache::put($tenantCacheKey, true, 600);
+                    Cache::store(config('cache.default'))->put($tenantCacheKey, true, 600);
                 });
             } catch (\Exception $e) {
                 Log::error("Tenant {$tenant->id} için slider oluşturma hatası: " . $e->getMessage());

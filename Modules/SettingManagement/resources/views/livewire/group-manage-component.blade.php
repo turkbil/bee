@@ -16,51 +16,62 @@
                             <div class="row g-3">
                                 <!-- Grup Adı -->
                                 <div class="col-md-12">
-                                    <label class="form-label required">Grup Adı</label>
-                                    <input type="text" wire:model="inputs.name"
-                                        class="form-control @error('inputs.name') is-invalid @enderror"
-                                        placeholder="Grup adını girin">
-                                    @error('inputs.name')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <div class="form-floating">
+                                        <input type="text" wire:model="inputs.name"
+                                            class="form-control @error('inputs.name') is-invalid @enderror"
+                                            placeholder="Grup adını girin">
+                                        <label>Grup Adı *</label>
+                                        @error('inputs.name')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
                                 </div>
 
                                 <!-- Üst Grup -->
                                 <div class="col-md-12">
-                                    <label class="form-label">Üst Grup</label>
-                                    <select wire:model.live="inputs.parent_id" id="parent-group-select"
-                                        class="form-select @error('inputs.parent_id') is-invalid @enderror">
-                                        <option value="">Ana Grup Olarak Ekle</option>
-                                        @foreach($parentGroups as $group)
-                                        <option value="{{ $group->id }}">{{ $group->name }}</option>
-                                        @endforeach
-                                    </select>
-                                    @error('inputs.parent_id')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <div class="form-floating">
+                                        <select wire:model.live="inputs.parent_id" id="parent-group-select"
+                                            class="form-select @error('inputs.parent_id') is-invalid @enderror"
+                                            data-choices
+                                            data-choices-search="{{ count($parentGroups) > 6 ? 'true' : 'false' }}"
+                                            data-choices-placeholder="Ana grup olarak ekle">
+                                            <option value="">Ana grup olarak ekle</option>
+                                            @foreach($parentGroups as $group)
+                                            <option value="{{ $group->id }}">{{ $group->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        <label>Üst Grup</label>
+                                        @error('inputs.parent_id')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
                                 </div>
 
                                 <!-- Prefix - Sadece alt gruplar için -->
                                 <div id="prefix-field" class="col-md-12" style="display: {{ !empty($inputs['parent_id']) ? 'block' : 'none' }}">
-                                    <label class="form-label">Prefix</label>
-                                    <input type="text" wire:model="inputs.prefix"
-                                        class="form-control @error('inputs.prefix') is-invalid @enderror"
-                                        placeholder="Alt grup için prefix girin">
-                                    <small class="form-text text-muted">Bu prefix, alt grubun ayarlarını gruplandırmak için kullanılır</small>
-                                    @error('inputs.prefix')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <div class="form-floating">
+                                        <input type="text" wire:model="inputs.prefix"
+                                            class="form-control @error('inputs.prefix') is-invalid @enderror"
+                                            placeholder="Alt grup için prefix girin">
+                                        <label>Prefix</label>
+                                        @error('inputs.prefix')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="form-text mt-2 ms-2"><i class="fas fa-info-circle me-1"></i>Bu prefix, alt grubun ayarlarını gruplandırmak için kullanılır</div>
                                 </div>
 
                                 <!-- Açıklama -->
                                 <div class="col-md-12">
-                                    <label class="form-label">Açıklama</label>
-                                    <textarea wire:model="inputs.description"
-                                        class="form-control @error('inputs.description') is-invalid @enderror" rows="3"
-                                        placeholder="Grup hakkında kısa açıklama"></textarea>
-                                    @error('inputs.description')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <div class="form-floating">
+                                        <textarea wire:model="inputs.description"
+                                            class="form-control @error('inputs.description') is-invalid @enderror" rows="3" data-bs-toggle="autosize"
+                                            placeholder="Grup hakkında kısa açıklama"></textarea>
+                                        <label>Açıklama</label>
+                                        @error('inputs.description')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -102,7 +113,7 @@
                                         class="form-control @error('inputs.icon') is-invalid @enderror"
                                         placeholder="fas fa-icon">
                                 </div>
-                                <small class="text-muted">FontAwesome ikon sınıfını girin (örn. fas fa-cog)</small>
+                                <div class="form-text mt-2 ms-2"><i class="fas fa-info-circle me-1"></i>FontAwesome ikon sınıfını girin (örn. fas fa-cog)</div>
                                 @error('inputs.icon')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror

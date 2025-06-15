@@ -15,7 +15,7 @@ return [
      */
 
     'enabled' => env('DEBUGBAR_ENABLED', null),
-    'hide_empty_tabs' => false, // Hide tabs until they have content
+    'hide_empty_tabs' => true, // Hide tabs until they have content
     'except' => [
         'telescope*',
         'horizon*',
@@ -121,13 +121,15 @@ return [
      |
      | By default `ajax_handler_auto_show` is set to true allowing ajax requests to be shown automatically in the Debugbar.
      | Changing `ajax_handler_auto_show` to false will prevent the Debugbar from reloading.
+     |
+     | You can defer loading the dataset, so it will be loaded with ajax after the request is done. (Experimental)
      */
 
     'capture_ajax' => true,
     'add_ajax_timing' => false,
     'ajax_handler_auto_show' => true,
     'ajax_handler_enable_tab' => true,
-
+    'defer_datasets' => false,
     /*
      |--------------------------------------------------------------------------
      | Custom Error Handler for Deprecated warnings
@@ -160,7 +162,7 @@ return [
      */
 
     'collectors' => [
-        'phpinfo'         => true,  // Php version
+        'phpinfo'         => false,  // Php version
         'messages'        => true,  // Messages
         'time'            => true,  // Time Datalogger
         'memory'          => true,  // Memory usage
@@ -168,13 +170,13 @@ return [
         'log'             => true,  // Logs from Monolog (merged in messages if enabled)
         'db'              => true,  // Show database (PDO) queries and bindings
         'views'           => true,  // Views with their data
-        'route'           => true,  // Current route information
+        'route'           => false,  // Current route information
         'auth'            => false, // Display Laravel authentication status
         'gate'            => true,  // Display Laravel Gate checks
-        'session'         => true,  // Display session data
+        'session'         => false,  // Display session data
         'symfony_request' => true,  // Only one can be enabled..
         'mail'            => true,  // Catch mail messages
-        'laravel'         => false, // Laravel version and environment
+        'laravel'         => true, // Laravel version and environment
         'events'          => false, // All events fired
         'default_request' => false, // Regular or special Symfony request logger
         'logs'            => false, // Add the latest log messages
@@ -201,7 +203,8 @@ return [
             'memory_usage' => false,  // Calculated by subtracting memory start and end, it may be inaccurate
         ],
         'messages' => [
-            'trace' => true,   // Trace the origin of the debug message
+            'trace' => true,          // Trace the origin of the debug message
+            'capture_dumps' => false, // Capture laravel `dump();` as message
         ],
         'memory' => [
             'reset_peak' => false,     // run memory_reset_peak_usage before collecting
@@ -232,11 +235,11 @@ return [
             'hard_limit'       => 500,      // After the hard limit, queries are ignored
         ],
         'mail' => [
-            'timeline' => false,  // Add mails to the timeline
+            'timeline' => true,  // Add mails to the timeline
             'show_body' => true,
         ],
         'views' => [
-            'timeline' => false,    // Add the views to the timeline (Experimental)
+            'timeline' => true,    // Add the views to the timeline
             'data' => false,        // True for all data, 'keys' for only names, false for no parameters.
             'group' => 50,          // Group duplicate views. Pass value to auto-group, or true/false to force
             'exclude_paths' => [    // Add the paths which you don't want to appear in the views
@@ -250,6 +253,7 @@ return [
             'hiddens' => [], // Hides sensitive values using array paths
         ],
         'symfony_request' => [
+            'label' => true,  // Show route on bar
             'hiddens' => [], // Hides sensitive values using array paths, example: request_request.password
         ],
         'events' => [

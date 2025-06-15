@@ -1,31 +1,26 @@
-<?php namespace Cviebrock\EloquentSluggable\Tests\Models;
+<?php
+
+namespace Cviebrock\EloquentSluggable\Tests\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Author
+ * Class Author.
  *
  * A test model used for the relationship tests.
  *
- * @package Cviebrock\EloquentSluggable\Tests\Models
- *
- * @property integer id
- * @property string name
+ * @property int    $id
+ * @property string $name
  */
 class Author extends Model
 {
-
     /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
+     * {@inheritdoc}
      */
     public $timestamps = false;
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
+     * {@inheritdoc}
      */
     protected $fillable = ['name'];
 }

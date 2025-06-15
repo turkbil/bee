@@ -11,7 +11,6 @@
     $isRequired = isset($element['required']) && $element['required'];
     $placeholder = $element['placeholder'] ?? '';
     $helpText = $element['help_text'] ?? '';
-    $isSystem = isset($element['system']) && $element['system'];
     
     // Diğer özellikleri al
     $width = isset($element['width']) ? $element['width'] : 12;
@@ -43,59 +42,56 @@
 @endphp
 
 <div class="col-{{ $width }}">
-    <div class="card mb-3 w-100">
-        <div class="card-header">
-            <div class="d-flex align-items-center justify-content-between">
-                <h3 class="card-title d-flex align-items-center">
-                    <i class="fas fa-font me-2 text-primary"></i>
+    <div class="mb-3">
+        
+        <div class="form-floating">
+            @if(isset($formData))
+                <input type="{{ $fieldType }}" 
+                    id="{{ $fieldName }}"
+                    wire:model="formData.{{ $fieldName }}" 
+                    class="form-control @error('formData.' . $fieldName) is-invalid @enderror" 
+                    placeholder="{{ $placeholder ?: $fieldLabel }}"
+                    @if($isRequired) required @endif>
+                <label for="{{ $fieldName }}">
                     {{ $fieldLabel }}
-                    @if($isSystem)
-                        <span class="badge bg-orange ms-2">Sistem</span>
+                    @if($isRequired) 
+                        <span class="text-danger">*</span> 
                     @endif
-                </h3>
-            </div>
+                </label>
+                @error('formData.' . $fieldName)
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            @else
+                <input type="{{ $fieldType }}" 
+                    id="{{ $fieldName }}"
+                    wire:model="settings.{{ str_replace('widget.', '', $fieldName) }}" 
+                    class="form-control @error('settings.' . str_replace('widget.', '', $fieldName)) is-invalid @enderror" 
+                    placeholder="{{ $placeholder ?: $fieldLabel }}"
+                    @if($isRequired) required @endif>
+                <label for="{{ $fieldName }}">
+                    {{ $fieldLabel }}
+                    @if($isRequired) 
+                        <span class="text-danger">*</span> 
+                    @endif
+                </label>
+                @error('settings.' . str_replace('widget.', '', $fieldName))
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            @endif
         </div>
-        <div class="card-body">
-            <div class="form-group w-100">
-                @if(isset($formData))
-                    <div class="mb-2">
-                        <input type="{{ $fieldType }}" 
-                            wire:model="formData.{{ $fieldName }}" 
-                            class="form-control @error('formData.' . $fieldName) is-invalid @enderror" 
-                            placeholder="{{ $placeholder }}"
-                            @if($isRequired) required @endif>
-                        @error('formData.' . $fieldName)
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                @else
-                    <div class="mb-2">
-                        <input type="{{ $fieldType }}" 
-                            wire:model="settings.{{ str_replace('widget.', '', $fieldName) }}" 
-                            class="form-control @error('settings.' . str_replace('widget.', '', $fieldName)) is-invalid @enderror" 
-                            placeholder="{{ $placeholder }}"
-                            @if($isRequired) required @endif>
-                        @error('settings.' . str_replace('widget.', '', $fieldName))
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                @endif
-                
-                @if($helpText)
-                    <div class="form-text text-muted mt-2">
-                        <i class="fas fa-info-circle me-1"></i>
-                        {{ $helpText }}
-                    </div>
-                @endif
-                
-                @if(isset($originalData[$fieldName]) && isset($formData[$fieldName]) && $originalData[$fieldName] != $formData[$fieldName])
-                    <div class="mt-2 text-end">
-                        <span class="badge bg-yellow cursor-pointer" wire:click="resetToDefault('{{ $fieldName }}')">
-                            <i class="fas fa-undo me-1"></i> Varsayılana Döndür
-                        </span>
-                    </div>
-                @endif
+        
+        @if($helpText)
+            <div class="form-text mt-2 ms-2">
+                <i class="fas fa-info-circle me-1"></i>{{ $helpText }}
             </div>
-        </div>
+        @endif
+        
+        @if(isset($originalData[$fieldName]) && isset($formData[$fieldName]) && $originalData[$fieldName] != $formData[$fieldName])
+            <div class="mt-2 text-end">
+                <button type="button" class="btn btn-sm btn-outline-warning" wire:click="resetToDefault('{{ $fieldName }}')">
+                    <i class="ti ti-rotate-clockwise me-1"></i> Varsayılana Döndür
+                </button>
+            </div>
+        @endif
     </div>
 </div>

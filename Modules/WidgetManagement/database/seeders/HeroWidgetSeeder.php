@@ -20,7 +20,7 @@ class HeroWidgetSeeder extends Seeder
     public function run()
     {
         $cacheKey = self::$runKey . '_' . config('database.default');
-        if (Cache::has($cacheKey)) {
+        if (Cache::store(config('cache.default'))->has($cacheKey)) {
             Log::info('HeroWidgetSeeder zaten çalıştırılmış, atlanıyor...');
             return;
         }
@@ -30,7 +30,7 @@ class HeroWidgetSeeder extends Seeder
                 $this->createTenantHero();
                 
                 $tenantId = tenant('id');
-                Cache::put(self::$runKey . '_tenant_' . $tenantId, true, 600);
+                Cache::store(config('cache.default'))->put(self::$runKey . '_tenant_' . $tenantId, true, 600);
                 return;
             } catch (\Exception $e) {
                 Log::error('Tenant HeroWidgetSeeder hatası: ' . $e->getMessage());
@@ -72,7 +72,7 @@ class HeroWidgetSeeder extends Seeder
                 $this->createHeroForTenants($widget);
             }
             
-            Cache::put($cacheKey, true, 600);
+            Cache::store(config('cache.default'))->put($cacheKey, true, 600);
         } catch (\Exception $e) {
             Log::error('HeroWidgetSeeder central hatası: ' . $e->getMessage());
             Log::error($e->getTraceAsString());
@@ -108,7 +108,7 @@ class HeroWidgetSeeder extends Seeder
         $tenantId = tenant('id');
         $tenantCacheKey = self::$runKey . '_tenant_' . $tenantId;
         
-        if (Cache::has($tenantCacheKey)) {
+        if (Cache::store(config('cache.default'))->has($tenantCacheKey)) {
             Log::info('Tenant içinde hero widget zaten oluşturulmuş, atlanıyor...');
             return;
         }
@@ -452,7 +452,7 @@ class HeroWidgetSeeder extends Seeder
             try {
                 $tenantCacheKey = self::$runKey . '_tenant_' . $tenant->id;
                 
-                if (Cache::has($tenantCacheKey)) {
+                if (Cache::store(config('cache.default'))->has($tenantCacheKey)) {
                     Log::info("Tenant {$tenant->id} için hero zaten oluşturulmuş, atlanıyor...");
                     continue;
                 }
@@ -474,7 +474,7 @@ class HeroWidgetSeeder extends Seeder
                     
                     if ($existingWidgets->count() >= 1) {
                         Log::info("Tenant {$tenant->id} için hero widget zaten var, atlanıyor...");
-                        Cache::put($tenantCacheKey, true, 600);
+                        Cache::store(config('cache.default'))->put($tenantCacheKey, true, 600);
                         return;
                     }
                     
@@ -495,7 +495,7 @@ class HeroWidgetSeeder extends Seeder
                     
                     Log::info("Tenant {$tenant->id} için hero başarıyla oluşturuldu.");
                     
-                    Cache::put($tenantCacheKey, true, 600);
+                    Cache::store(config('cache.default'))->put($tenantCacheKey, true, 600);
                 });
             } catch (\Exception $e) {
                 Log::error("Tenant {$tenant->id} için hero oluşturma hatası: " . $e->getMessage());

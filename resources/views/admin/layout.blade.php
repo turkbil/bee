@@ -46,8 +46,10 @@
     @endif
     <link rel="stylesheet" href="{{ asset('admin/css/plugins.css') }}?v={{ filemtime(public_path('admin/css/plugins.css')) }}" />
     <link rel="stylesheet" href="{{ asset('admin/libs/fontawesome-pro@6.7.1/css/all.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin/libs/choices/choices.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin/css/choices-custom.css') }}?v={{ filemtime(public_path('admin/css/choices-custom.css')) }}">
     <link rel="stylesheet" href="{{ asset('admin/css/main.css') }}?v={{ filemtime(public_path('admin/css/main.css')) }}" />
-    <link rel="stylesheet" href="{{ asset('admin/css/theme-builder.css') }}?v={{ filemtime(public_path('admin/css/theme-builder.css')) }}" />
+    <link rel="stylesheet" href="{{ asset('admin/css/theme-simple.css') }}?v={{ filemtime(public_path('admin/css/theme-simple.css')) }}" />
     <link rel="stylesheet" href="{{ asset('admin/css/theme-font-size.css') }}?v={{ filemtime(public_path('admin/css/theme-font-size.css')) }}" />
     <link rel="stylesheet" href="{{ asset('admin/css/responsive.css') }}?v={{ filemtime(public_path('admin/css/responsive.css')) }}" />
     @stack('styles') @stack('css')
@@ -178,10 +180,9 @@
 <script src="{{ asset('admin/js/tabler.min.js') }}" defer></script>
 <script src="{{ asset('admin/libs/litepicker/dist/litepicker.js') }}" defer></script>
 <script src="{{ asset('admin/libs/fslightbox/index.js') }}" defer></script>
-<script src="{{ asset('admin/libs/tom-select/dist/js/tom-select.complete.min.js') }}" defer></script>
-<script src="{{ asset('admin/libs/tom-select/dist/js/plugins/restore_on_backspace.js') }}"></script>
+<script src="{{ asset('admin/libs/choices/choices.min.js') }}" defer></script>
 <script src="{{ asset('admin/js/main.js') }}?v={{ filemtime(public_path('admin/js/main.js')) }}"></script>
-<script src="{{ asset('admin/js/theme.js') }}?v={{ filemtime(public_path('admin/js/theme.js')) }}"></script>
+<script src="{{ asset('admin/js/theme-simple.js') }}?v={{ filemtime(public_path('admin/js/theme-simple.js')) }}"></script>
 <script src="{{ asset('admin/js/toast.js') }}?v={{ filemtime(public_path('admin/js/toast.js')) }}" defer></script>
 @livewireScripts
 @stack('scripts') @stack('js')

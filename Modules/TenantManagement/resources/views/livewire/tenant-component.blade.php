@@ -30,7 +30,7 @@
                 <div class="d-flex align-items-center justify-content-end gap-3">
                     <!-- Sayfa Adeti Seçimi -->
                     <div style="min-width: 70px">
-                        <select wire:model.live="perPage" class="form-select">
+                        <select wire:model.live="perPage" class="form-select listing-filter-select">
                             <option value="10">10</option>
                             <option value="50">50</option>
                             <option value="100">100</option>
@@ -132,24 +132,24 @@
                 </div>
                 <form wire:submit.prevent="saveTenant('close')">
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Name</label>
-                            <input type="text" class="form-control" wire:model="name">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" wire:model="name" placeholder="Tenant adı">
+                            <label>Tenant Adı</label>
                             @error('name') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Yetkili Adı Soyadı</label>
-                            <input type="text" class="form-control" wire:model="fullname">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" wire:model="fullname" placeholder="Yetkili adı soyadı">
+                            <label>Yetkili Adı Soyadı</label>
                             @error('fullname') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Email Adresi</label>
-                            <input type="email" class="form-control" wire:model="email">
+                        <div class="form-floating mb-3">
+                            <input type="email" class="form-control" wire:model="email" placeholder="ornek@mail.com">
+                            <label>Email Adresi</label>
                             @error('email') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Telefon Numarası</label>
-                            <input type="text" class="form-control" wire:model="phone">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" wire:model="phone" placeholder="Telefon numarası">
+                            <label>Telefon Numarası</label>
                             @error('phone') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                         <div class="mb-3">
@@ -163,13 +163,13 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Tema</label>
-                            <select class="form-select" wire:model="theme_id">
+                        <div class="form-floating mb-3">
+                            <select class="form-select" wire:model="theme_id" data-choices data-choices-search="{{ count($themes) > 6 ? 'true' : 'false' }}" data-choices-placeholder="Tema seçin">
                                 @foreach($themes as $key => $label)
                                 <option value="{{ $key }}">{{ $label }}</option>
                                 @endforeach
                             </select>
+                            <label>Tema</label>
                             @error('theme_id') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                         
@@ -227,24 +227,24 @@
                 </div>
                 <form wire:submit.prevent="saveTenant('close')">
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Name</label>
-                            <input type="text" class="form-control" wire:model="name">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" wire:model="name" placeholder="Tenant adı">
+                            <label>Tenant Adı</label>
                             @error('name') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Yetkili Adı Soyadı</label>
-                            <input type="text" class="form-control" wire:model="fullname">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" wire:model="fullname" placeholder="Yetkili adı soyadı">
+                            <label>Yetkili Adı Soyadı</label>
                             @error('fullname') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Email Adresi</label>
-                            <input type="email" class="form-control" wire:model="email">
+                        <div class="form-floating mb-3">
+                            <input type="email" class="form-control" wire:model="email" placeholder="ornek@mail.com">
+                            <label>Email Adresi</label>
                             @error('email') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Telefon Numarası</label>
-                            <input type="text" class="form-control" wire:model="phone">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" wire:model="phone" placeholder="Telefon numarası">
+                            <label>Telefon Numarası</label>
                             @error('phone') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                         <div class="mb-3">
@@ -261,13 +261,13 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Tema</label>
-                            <select class="form-select" wire:model="theme_id">
+                        <div class="form-floating mb-3">
+                            <select class="form-select" wire:model="theme_id" data-choices data-choices-search="{{ count($themes) > 6 ? 'true' : 'false' }}" data-choices-placeholder="Tema seçin">
                                 @foreach($themes as $key => $label)
                                 <option value="{{ $key }}">{{ $label }}</option>
                                 @endforeach
                             </select>
+                            <label>Tema</label>
                             @error('theme_id') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                     </div>

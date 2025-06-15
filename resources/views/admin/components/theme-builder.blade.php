@@ -255,15 +255,16 @@
                 </div>
                 <div class="theme-section-body py-4">
                     <div class="radius-slider-container pt-2 px-3">
-                        <input type="range" class="radius-slider" id="radius-slider" min="0" max="4" step="1" value="{{ $radiusValue = isset($_COOKIE['themeRadius']) ? (($_COOKIE['themeRadius'] == '0') ? 0 : (($_COOKIE['themeRadius'] == '0.25rem') ? 1 : (($_COOKIE['themeRadius'] == '0.5rem') ? 2 : (($_COOKIE['themeRadius'] == '0.75rem') ? 3 : 4)))) : 2 }}">
+                        <input type="range" class="radius-slider" id="radius-slider" min="0" max="5" step="1" value="{{ $radiusValue = isset($_COOKIE['themeRadius']) ? (($_COOKIE['themeRadius'] == '0') ? 0 : (($_COOKIE['themeRadius'] == '0.25rem') ? 1 : (($_COOKIE['themeRadius'] == '0.375rem') ? 2 : (($_COOKIE['themeRadius'] == '0.5rem') ? 3 : (($_COOKIE['themeRadius'] == '0.75rem') ? 4 : 5))))) : 2 }}">
                         <div class="radius-preview pt-3">
                             <div class="radius-example radius-0 {{ $radiusValue == 0 ? 'active' : '' }}" data-radius="0"></div>
                             <div class="radius-example radius-1 {{ $radiusValue == 1 ? 'active' : '' }}" data-radius="1"></div>
                             <div class="radius-example radius-2 {{ $radiusValue == 2 ? 'active' : '' }}" data-radius="2"></div>
                             <div class="radius-example radius-3 {{ $radiusValue == 3 ? 'active' : '' }}" data-radius="3"></div>
                             <div class="radius-example radius-4 {{ $radiusValue == 4 ? 'active' : '' }}" data-radius="4"></div>
+                            <div class="radius-example radius-5 {{ $radiusValue == 5 ? 'active' : '' }}" data-radius="5"></div>
                         </div>
-                        <input type="hidden" id="radius-value" name="theme-radius" value="{{ isset($_COOKIE['themeRadius']) ? $_COOKIE['themeRadius'] : '0.25rem' }}">
+                        <input type="hidden" id="radius-value" name="theme-radius" value="{{ isset($_COOKIE['themeRadius']) ? $_COOKIE['themeRadius'] : '0.375rem' }}">
                     </div>
                 </div>
             </div>

@@ -30,5 +30,19 @@
         }
     </script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    {{-- Genel Organization Schema.org - Tüm tenant'larda otomatik --}}
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "{{ config('app.name') }}",
+        "url": "{{ url('/') }}",
+        "sameAs": []
+    }
+    </script>
+    
+    {{-- SEO ve Schema.org için alan --}}
+    @stack('head')
 </head>
 <body class="font-sans antialiased min-h-screen bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-200 transition-colors duration-300">

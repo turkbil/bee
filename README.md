@@ -25,6 +25,59 @@ Bu proje, Laravel 12 ile geliştirilmiş, modüler ve çok kiracılı (multi-ten
 
 ## Sürüm Geçmişi
 
+### v1.3.1 (2025-06-19) - ModuleSlugService Cache Sistemi Düzeltildi
+- **Yeni Özellikler:**
+  - ✅ `php artisan module:clear-cache` komutu eklendi
+  - ✅ Debug sayfası oluşturuldu: `/debug/portfolio`
+  - ✅ Case-insensitive module isim desteği eklendi
+  
+- **Düzeltmeler:**
+  - ✅ ModuleSlugService cache problemi çözüldü
+  - ✅ Veritabanındaki slug ayarları artık doğru okunuyor
+  - ✅ Her tenant kendi özel slug'larını kullanabiliyor
+  
+- **Test Edilen URL'ler:**
+  - ✅ laravel.test/projeler (veritabanından)
+  - ✅ a.test/referanslar (veritabanından)
+  - ✅ b.test/portfolios (config'den default)
+
+### v1.3.0 (2025-06-15) - Response Cache Tamamen Aktif 
+- **Response Cache Sistemi (Tamamlandı):**
+  - ✅ **TenantCacheProfile:** Tenant-aware cache profili aktif
+  - ✅ **Cache Middleware:** Tüm GET isteklerde otomatik cache
+  - ✅ **Redis Backend:** Tenant bazlı cache tagging sistemi
+  - ✅ **Cache Headers:** `cache-control: max-age=3600, public` doğru header'lar
+  - ✅ **Admin Exclusion:** Admin sayfaları cache'den hariç
+
+### v1.2.9 (2025-06-15) - Schema.org Tüm Sayfalarda Aktif
+- **Schema.org JSON-LD Sistemi (Tamamlandı):**
+  - ✅ **Organization Schema:** Her tenant için otomatik organizasyon schema'sı (tüm sayfalarda)
+  - ✅ **Page Schema:** Sayfa içeriğine göre otomatik WebPage schema'sı 
+  - ✅ **Dinamik URL:** Tüm tenant'larda (a.test, b.test, laravel.test) otomatik çalışıyor
+  - ✅ **Header Entegrasyonu:** Otomatik JSON-LD ekleme sistemi (`@stack('head')`)
+  - ✅ **SEO Footer:** Schema test linkleri ve araçları
+
+### v1.2.8 (2025-06-15) - SEO Sistemleri Tamamen Aktif Edildi
+- **SEO Altyapı Sistemleri (Tamamlandı):**
+  - ✅ **Missing Page Redirector:** 404 sayfalarını tenant anasayfasına yönlendirme (çalışıyor)
+  - ✅ **Eloquent Sluggable:** SEO dostu URL'ler (zaten aktifti, test edildi)
+  - ✅ **Redis Cache:** Tenant-aware cache tagging sistemi (çalışıyor)
+  - ✅ **Schema.org:** Structured data için spatie/schema-org (autoload düzeltildi, çalışıyor)
+  - ✅ **Sitemap Generator:** spatie/laravel-sitemap (namespace düzeltildi, /sitemap.xml çalışıyor)
+  - ✅ **Response Cache:** Sayfa hızı optimizasyonu (middleware sırası düzeltildi)
+- **Düzeltilen Sorunlar:**
+  - Schema.org autoload sorunu: composer dump-autoload ile çözüldü
+  - Sitemap route sorunu: /routes/web.php'de yorum satırları kaldırıldı
+  - Response cache middleware çakışması: bootstrap/app.php'de sıralama düzeltildi
+
+### v1.2.7 (2025-06-15) - SEO Sistemi Temel Altyapısı Kuruldu
+- **Oluşturulan Dosyalar:**
+  - `/app/Services/TenantAwareRedirector.php` - Tenant-aware 404 yönlendirme
+  - `/app/Services/SEOService.php` - Schema.org helper metodları
+  - `/app/Services/TenantSitemapService.php` - Tenant bazlı sitemap üretimi
+  - `/config/missing-page-redirector.php` - 404 redirect konfigürasyonu
+- **Yapılacaklar:** Autoload sorunları düzeltme, modül entegrasyonları, ralphjsmit/laravel-seo kurulumu
+
 ### v1.2.6 (2025-06-15) - Theme Builder Primary Color Sistemi Tamamen Düzeltildi
 - **Primary Color Sistemi Sorunu Çözüldü:**
   - `btn-outline-primary` gibi outline butonlar artık theme builder'dan seçilen renge uyum sağlıyor

@@ -30,6 +30,7 @@ class ThemeManagementServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
 
         $this->loadRoutesFrom(module_path('ThemeManagement', 'routes/web.php'));
+        $this->loadRoutesFrom(module_path('ThemeManagement', 'routes/admin.php'));
         $this->loadViewsFrom(module_path('ThemeManagement', 'resources/views'), 'thememanagement');
         $this->loadMigrationsFrom(module_path('ThemeManagement', 'database/migrations'));
 

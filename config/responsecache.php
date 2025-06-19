@@ -13,7 +13,7 @@ return [
      *  You can provide your own class given that it implements the
      *  CacheProfile interface.
      */
-    'cache_profile' => Spatie\ResponseCache\CacheProfiles\CacheAllSuccessfulGetRequests::class,
+    'cache_profile' => \App\Services\TenantCacheProfile::class,
 
     /*
      *  Optionally, you can specify a header that will force a cache bypass.
@@ -35,7 +35,7 @@ return [
      * should be added to a cached response. This can be handy when
      * debugging.
      */
-    'add_cache_time_header' => env('APP_DEBUG', false),
+    'add_cache_time_header' => true,
 
     /*
      * This setting determines the name of the http header that contains

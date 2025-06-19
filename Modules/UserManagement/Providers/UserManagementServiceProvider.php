@@ -42,6 +42,7 @@ class UserManagementServiceProvider extends ServiceProvider
     
         // Modülün routes ve views dosyalarını yükle
         $this->loadRoutesFrom(module_path('UserManagement', 'routes/web.php'));
+        $this->loadRoutesFrom(module_path('UserManagement', 'routes/admin.php'));
         $this->loadViewsFrom(module_path('UserManagement', 'resources/views'), 'usermanagement');
     
         // Livewire component'lerini kaydet

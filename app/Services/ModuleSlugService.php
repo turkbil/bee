@@ -20,6 +20,7 @@ class ModuleSlugService
     
     public static function getSlug(string $moduleName, string $slugKey): string
     {
+        
         // Memory cache kontrolü
         $memoryCacheKey = $moduleName . '.' . $slugKey;
         if (isset(self::$memoryCache[$memoryCacheKey])) {
@@ -31,7 +32,12 @@ class ModuleSlugService
             self::loadGlobalSettings();
         }
         
-        // Config'den slug'ı al ve memory cache'e kaydet
+        // loadGlobalSettings memory cache'i doldurmuş olmalı, tekrar kontrol et
+        if (isset(self::$memoryCache[$memoryCacheKey])) {
+            return self::$memoryCache[$memoryCacheKey];
+        }
+        
+        // Hala yoksa config'den al ve memory cache'e kaydet
         $result = self::getConfigSlug($moduleName, $slugKey);
         self::$memoryCache[$memoryCacheKey] = $result;
         
@@ -66,9 +72,11 @@ class ModuleSlugService
             foreach ($modules as $moduleName) {
                 $configSlugs = self::getAllConfigSlugs($moduleName);
                 
-                if (isset($allSettings[$moduleName]) && isset($allSettings[$moduleName]->settings['slugs'])) {
+                // Case-insensitive arama (veritabanında küçük harf olabilir)
+                $dbSetting = $allSettings[$moduleName] ?? $allSettings[strtolower($moduleName)] ?? null;
+                if ($dbSetting && isset($dbSetting->settings['slugs'])) {
                     // Custom ayarlar varsa onları kullan
-                    $customSlugs = $allSettings[$moduleName]->settings['slugs'];
+                    $customSlugs = $dbSetting->settings['slugs'];
                     foreach ($configSlugs as $key => $defaultSlug) {
                         $finalSlug = $customSlugs[$key] ?? $defaultSlug;
                         self::$memoryCache[$moduleName . '.' . $key] = $finalSlug;
@@ -176,6 +184,15 @@ class ModuleSlugService
         Cache::forget('module_config_Page');
         Cache::forget('module_config_Portfolio');
         Cache::forget('module_config_Announcement');
+        
+        // Tüm cache tag'lerini temizle
+        try {
+            Cache::flush();
+        } catch (\Exception $e) {
+            // Cache driver flush desteklemiyorsa sessizce devam et
+        }
+        
+        Log::info('ModuleSlugService: All caches cleared');
     }
     
     /**

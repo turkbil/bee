@@ -57,34 +57,26 @@ class ClearAll extends Command
             foreach ($logFiles as $file) {
                 if (!str_contains($file->getFilename(), '.gitignore')) {
                     if (str_contains($file->getFilename(), '.log')) {
-                        // Log dosyalarını boşalt ama silme
+                        // Log dosyalarını güvenli şekilde temizle
                         try {
-                            // İlk yöntem: doğrudan yazma
-                            File::put($file->getPathname(), '');
-                        } catch (\Exception $e) {
-                            // İlk yöntem başarısız olursa, ikinci yöntemi dene
-                            try {
-                                // Dosyayı sil ve yeniden oluştur
-                                if (File::exists($file->getPathname())) {
-                                    File::delete($file->getPathname());
-                                }
-                                File::put($file->getPathname(), '');
-                                $this->info("{$file->getPathname()} dosyası silindi ve yeniden oluşturuldu.");
-                            } catch (\Exception $e2) {
-                                // Üçüncü yöntem: fopen ile boşaltmayı dene
-                                try {
-                                    $handle = @fopen($file->getPathname(), 'w');
-                                    if ($handle) {
-                                        ftruncate($handle, 0);
-                                        fclose($handle);
-                                        $this->info("{$file->getPathname()} dosyası fopen ile temizlendi.");
-                                    } else {
-                                        throw new \Exception("Dosya açılamadı");
-                                    }
-                                } catch (\Exception $e3) {
-                                    $this->warn("İzin hatası: {$file->getPathname()} dosyası hiçbir yöntemle temizlenemedi. Lütfen uygulamayı durdurup tekrar deneyin.");
+                            // Dosyanın izinlerini kontrol et
+                            if (is_writable($file->getPathname())) {
+                                // Dosya yazılabilir ise içeriğini boşalt
+                                file_put_contents($file->getPathname(), '', LOCK_EX);
+                                $this->info("{$file->getFilename()} dosyası temizlendi.");
+                            } else {
+                                // Dosya yazılabilir değilse, silinmeye çalış
+                                if (File::delete($file->getPathname())) {
+                                    // Silinirse yeni boş dosya oluştur doğru izinlerle
+                                    touch($file->getPathname());
+                                    chmod($file->getPathname(), 0664);
+                                    $this->info("{$file->getFilename()} dosyası silindi ve yeniden oluşturuldu.");
+                                } else {
+                                    $this->warn("İzin hatası: {$file->getFilename()} dosyası temizlenemedi.");
                                 }
                             }
+                        } catch (\Exception $e) {
+                            $this->warn("Hata: {$file->getFilename()} - " . $e->getMessage());
                         }
                     } else {
                         // Diğer dosyaları sil
@@ -136,34 +128,26 @@ class ClearAll extends Command
                 foreach ($logFiles as $file) {
                     if (!str_contains($file->getFilename(), '.gitignore')) {
                         if (str_contains($file->getFilename(), '.log')) {
-                            // Log dosyalarını boşalt ama silme
+                            // Log dosyalarını güvenli şekilde temizle
                             try {
-                                // İlk yöntem: doğrudan yazma
-                                File::put($file->getPathname(), '');
-                            } catch (\Exception $e) {
-                                // İlk yöntem başarısız olursa, ikinci yöntemi dene
-                                try {
-                                    // Dosyayı sil ve yeniden oluştur
-                                    if (File::exists($file->getPathname())) {
-                                        File::delete($file->getPathname());
-                                    }
-                                    File::put($file->getPathname(), '');
-                                    $this->info("{$file->getPathname()} dosyası silindi ve yeniden oluşturuldu.");
-                                } catch (\Exception $e2) {
-                                    // Üçüncü yöntem: fopen ile boşaltmayı dene
-                                    try {
-                                        $handle = @fopen($file->getPathname(), 'w');
-                                        if ($handle) {
-                                            ftruncate($handle, 0);
-                                            fclose($handle);
-                                            $this->info("{$file->getPathname()} dosyası fopen ile temizlendi.");
-                                        } else {
-                                            throw new \Exception("Dosya açılamadı");
-                                        }
-                                    } catch (\Exception $e3) {
-                                        $this->warn("İzin hatası: {$file->getPathname()} dosyası hiçbir yöntemle temizlenemedi. Lütfen uygulamayı durdurup tekrar deneyin.");
+                                // Dosyanın izinlerini kontrol et
+                                if (is_writable($file->getPathname())) {
+                                    // Dosya yazılabilir ise içeriğini boşalt
+                                    file_put_contents($file->getPathname(), '', LOCK_EX);
+                                    $this->info("Tenant {$file->getFilename()} dosyası temizlendi.");
+                                } else {
+                                    // Dosya yazılabilir değilse, silinmeye çalış
+                                    if (File::delete($file->getPathname())) {
+                                        // Silinirse yeni boş dosya oluştur doğru izinlerle
+                                        touch($file->getPathname());
+                                        chmod($file->getPathname(), 0664);
+                                        $this->info("Tenant {$file->getFilename()} dosyası silindi ve yeniden oluşturuldu.");
+                                    } else {
+                                        $this->warn("İzin hatası: Tenant {$file->getFilename()} dosyası temizlenemedi.");
                                     }
                                 }
+                            } catch (\Exception $e) {
+                                $this->warn("Hata: Tenant {$file->getFilename()} - " . $e->getMessage());
                             }
                         } else {
                             // Diğer dosyaları sil

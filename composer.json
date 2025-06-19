@@ -16,7 +16,6 @@
         "laravel/breeze": "^2.3",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.9",
-        "wire-elements/modal": "^2.0",
         "livewire/livewire": "^3.5",
         "livewire/volt": "^1.6",
         "nesbot/carbon": "^3.8",
@@ -24,9 +23,13 @@
         "predis/predis": "^2.3",
         "spatie/laravel-activitylog": "^4.10",
         "spatie/laravel-medialibrary": "^11.12",
+        "spatie/laravel-missing-page-redirector": "*",
         "spatie/laravel-permission": "^6.16",
-        "spatie/laravel-responsecache": "^7.6",
-        "stancl/tenancy": "^3.8"
+        "spatie/laravel-responsecache": "*",
+        "spatie/laravel-sitemap": "*",
+        "spatie/schema-org": "*",
+        "stancl/tenancy": "^3.8",
+        "wire-elements/modal": "^2.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.14",

@@ -43,39 +43,8 @@ class RouteServiceProvider extends ServiceProvider
                     ->group(base_path('routes/admin/web.php'));
             }
             
-            // Modül admin route'larını yükle
-            if (is_dir(base_path('Modules'))) {
-                $modules = array_diff(scandir(base_path('Modules')), ['.', '..']);
-                foreach ($modules as $module) {
-                    $adminRoute = base_path("Modules/{$module}/routes/admin.php");
-                    if (file_exists($adminRoute)) {
-                        Route::middleware('web')
-                            ->group($adminRoute);
-                    }
-                }
-            }
-            
-            // Modül web route'larını yükle
-            if (is_dir(base_path('Modules'))) {
-                $modules = array_diff(scandir(base_path('Modules')), ['.', '..']);
-                foreach ($modules as $module) {
-                    $moduleName = strtolower($module);
-                    $webRoute = base_path("Modules/{$module}/routes/web.php");
-                    
-                    if (file_exists($webRoute)) {
-                        // TenantManagement modülü sadece root için
-                        if ($moduleName === 'tenantmanagement') {
-                            // Middleware'i isim ile kullanıyoruz, closure yerine
-                            Route::middleware(['web', 'auth', 'root.access', 'tenant'])
-                                ->group($webRoute);
-                        } else {
-                            // Diğer modüller için izin kontrolü yap
-                            Route::middleware(['web', 'auth', 'tenant', "module.permission:{$moduleName},view"])
-                                ->group($webRoute);
-                        }
-                    }
-                }
-            }
+            // NOT: Modül rotaları kendi ServiceProvider'ları tarafından yükleniyor
+            // Burada tekrar yüklemeye gerek yok, çift yükleme sorununa neden oluyor
         
             // Web route'larını SON olarak yükle (dynamic route'lar burada)
             if (file_exists(base_path('routes/web.php'))) {

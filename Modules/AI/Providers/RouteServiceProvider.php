@@ -46,8 +46,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapAdminRoutes(): void
     {
-        Route::middleware(['web'])
-            ->group(module_path('AI', 'routes/admin.php'));
+        Route::group([], module_path('AI', 'routes/admin.php'));
     }
 
     /**

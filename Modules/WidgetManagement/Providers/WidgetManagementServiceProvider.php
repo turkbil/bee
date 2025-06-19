@@ -50,6 +50,7 @@ class WidgetManagementServiceProvider extends ServiceProvider
         }
 
         $this->loadRoutesFrom(module_path($this->name, 'routes/web.php'));
+        $this->loadRoutesFrom(module_path($this->name, 'routes/admin.php'));
         $this->loadViewsFrom(module_path($this->name, 'resources/views'), $this->nameLower);
         
         Livewire::component('widget-component', WidgetComponent::class);

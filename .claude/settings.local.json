@@ -39,7 +39,11 @@
       "Bash(npm install:*)",
       "Bash(claude --debug mcp get claude-code-server)",
       "Bash(timeout:*)",
-      "Bash(ss:*)"
+      "Bash(ss:*)",
+      "Bash(composer:*)",
+      "Bash(curl:*)",
+      "Bash(touch:*)",
+      "Bash(sudo service:*)"
     ],
     "deny": []
   },

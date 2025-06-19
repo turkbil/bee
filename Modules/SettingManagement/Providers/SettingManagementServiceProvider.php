@@ -59,6 +59,7 @@ class SettingManagementServiceProvider extends ServiceProvider
         }
 
         $this->loadRoutesFrom(module_path($this->name, 'routes/web.php'));
+        $this->loadRoutesFrom(module_path($this->name, 'routes/admin.php'));
         $this->loadViewsFrom(module_path($this->name, 'resources/views'), $this->nameLower);
         
         // Livewire bileşenlerini kaydedelim

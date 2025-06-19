@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\SettingManagement\Http\Controllers\SettingManagementController;
+// use Modules\SettingManagement\Http\Controllers\SettingManagementController;
 
 /*
  *--------------------------------------------------------------------------
@@ -15,5 +15,5 @@ use Modules\SettingManagement\Http\Controllers\SettingManagementController;
 */
 
 Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
-    Route::apiResource('settingmanagement', SettingManagementController::class)->names('settingmanagement');
+    // Route::apiResource('settingmanagement', SettingManagementController::class)->names('settingmanagement');
 });

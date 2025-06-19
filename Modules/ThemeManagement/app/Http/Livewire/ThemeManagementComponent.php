@@ -57,6 +57,9 @@ class ThemeManagementComponent extends Component
         if ($theme) {
             $theme->update(['is_active' => !$theme->is_active]);
             
+            // Cache'i temizle
+            app('App\Services\ThemeService')->clearThemeCache();
+            
             log_activity(
                 $theme,
                 $theme->is_active ? 'aktif edildi' : 'pasif edildi'
@@ -78,6 +81,9 @@ class ThemeManagementComponent extends Component
         // Seçilen temayı varsayılan yap
         $theme = Theme::findOrFail($id);
         $theme->update(['is_default' => true]);
+        
+        // Cache'i temizle
+        app('App\Services\ThemeService')->clearThemeCache();
         
         log_activity(
             $theme,

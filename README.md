@@ -25,6 +25,26 @@ Bu proje, Laravel 12 ile geliştirilmiş, modüler ve çok kiracılı (multi-ten
 
 ## Sürüm Geçmişi
 
+### v1.3.2 (2025-06-19) - Tema Offline Modu Sistemi Eklendi
+- **Yeni Özellikler:**
+  - ✅ `CheckThemeStatus` middleware'i eklendi - tema durumu kontrolü
+  - ✅ Theme offline sayfası oluşturuldu (`theme-offline.blade.php`)
+  - ✅ Admin panelinde tema offline yapıldığında otomatik cache temizleme
+  - ✅ Tema durumu değiştirildiğinde (`toggleActive` ve `setDefault`) cache temizleme
+  - ✅ **TAM OFFLINE MODU:** Admin paneli dahil tüm sayfalar kapalı
+  
+- **Düzeltmeler:**
+  - ✅ Tema offline yapıldığında hala erişilebilir olma sorunu çözüldü
+  - ✅ `ThemeManagementComponent`'e cache temizleme sistemi eklendi
+  - ✅ Middleware sıralaması düzeltildi (tenant kontrolünden sonra tema kontrolü)
+  - ✅ Admin rotası koruması kaldırıldı - artık tam bakım modu
+  
+- **Teknik Detaylar:**
+  - ✅ Offline tema durumunda güzel bakım sayfası gösteriliyor
+  - ✅ **Site tamamen kapalı:** Admin + Public sayfalar offline
+  - ✅ 503 status code ile SEO dostu offline durumu
+  - ✅ Tema cache'i artık gerçek zamanlı güncelleniyor
+
 ### v1.3.1 (2025-06-19) - ModuleSlugService Cache Sistemi Düzeltildi
 - **Yeni Özellikler:**
   - ✅ `php artisan module:clear-cache` komutu eklendi

@@ -10,6 +10,16 @@ class DynamicRouteService
 {
     public function handleDynamicRoute($slug1, $slug2 = null)
     {
+        // GEÇİCİ LOG - Debug için
+        if (request() && str_starts_with(request()->getPathInfo(), '/admin')) {
+            Log::info('DynamicRouteService::handleDynamicRoute admin yolunda çağrıldı', [
+                'slug1' => $slug1,
+                'slug2' => $slug2,
+                'path' => request()->getPathInfo(),
+                'url' => request()->getUri(),
+                'session_id' => session()->getId()
+            ]);
+        }
         
         // Page modülü kontrolü
         $pageIndexSlug = ModuleSlugService::getSlug('Page', 'index');

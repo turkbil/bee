@@ -9,6 +9,7 @@ Route::middleware(['web', 'auth', InitializeTenancy::class])->prefix('admin')->n
     
     // Admin dashboard rotası - TÜM yetkilendirilmiş kullanıcılar için (editor, admin, root)
     Route::get('/dashboard', function () {
+        
         // Rol kontrolü
         if (!auth()->user()->hasAnyRole(['admin', 'root', 'editor'])) {
             abort(403, 'Bu alana erişim yetkiniz bulunmamaktadır.');

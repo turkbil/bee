@@ -9,4 +9,6 @@ return [
     App\Providers\TenancyProvider::class,
     App\Providers\TenancyServiceProvider::class,
     App\Providers\WidgetServiceProvider::class,
+    Spatie\MissingPageRedirector\MissingPageRedirectorServiceProvider::class,
+    Spatie\ResponseCache\ResponseCacheServiceProvider::class,
 ];

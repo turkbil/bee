@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StorageController;
+use App\Http\Controllers\DebugController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\InitializeTenancy;
 use Modules\Page\App\Http\Controllers\Front\PageController;
@@ -13,6 +14,14 @@ require __DIR__.'/admin/web.php';
 
 // Ana sayfa route'u
 Route::middleware([InitializeTenancy::class])->get('/', [\Modules\Page\App\Http\Controllers\Front\PageController::class, 'homepage'])->name('home');
+
+// Sitemap route'u
+Route::middleware([InitializeTenancy::class])->get('/sitemap.xml', function() {
+    $sitemap = \App\Services\TenantSitemapService::generate();
+    return response($sitemap->render(), 200, [
+        'Content-Type' => 'application/xml'
+    ]);
+})->name('sitemap');
 
 // Normal Laravel route'ları - ÖNCE tanımlanmalı
 Route::middleware('auth')->group(function () {
@@ -30,18 +39,23 @@ require __DIR__.'/auth.php';
 
 // Test route'ları - dinamik route'lardan ÖNCE olmalı
 require __DIR__.'/test.php';
+require __DIR__.'/test-schema.php';
 
-// Dinamik modül route'ları - /admin hariç tüm URL'ler
+// Debug route'ları
+Route::middleware([InitializeTenancy::class])->get('/debug/portfolio', [DebugController::class, 'portfolioDebug'])->name('debug.portfolio');
+
+// Dinamik modül route'ları - sadece frontend içerik için
 Route::middleware([InitializeTenancy::class, 'web'])
     ->group(function () {
-        // Catch-all route'ları - /admin ile başlamayanlar için
+        // Catch-all route'ları - sadece content route'ları için
+        // Regex ile admin, api vb. system route'larını hariç tut
         Route::get('/{slug1}', function($slug1) {
             return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1);
-        })->where('slug1', '(?!admin)[a-zA-Z0-9\-_çğıöşüÇĞIÖŞÜ]+');
+        })->where('slug1', '^(?!admin|api|login|logout|register|password|auth|storage|css|js|assets).*$');
         
         Route::get('/{slug1}/{slug2}', function($slug1, $slug2) {
             return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1, $slug2);
-        })->where(['slug1' => '(?!admin)[a-zA-Z0-9\-_çğıöşüÇĞIÖŞÜ]+', 'slug2' => '[a-zA-Z0-9\-_çğıöşüÇĞIÖŞÜ]+']);
+        })->where('slug1', '^(?!admin|api|login|logout|register|password|auth|storage|css|js|assets).*$');
     });
 
 // Tenant medya dosyalarına erişim

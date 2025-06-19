@@ -3,6 +3,21 @@ HER ZAMAN TÜRKÇE DÜŞÜN.
 
 aferin dediğim zaman olmuş demektir. aferin dediğim zaman yapılanları readme.md dosyasına yeni versiyon atayarak ekle. yeni versiyonlar her zaman en üstte olacak.
 
+**YENİ SAYFA DURUMU TETİKLEYİCİSİ:**
+"YENİ SAYFA" kelimesini duyduğumda MUTLAKA şu özeti çıkar:
+- Bu sayfada ne yaptığımız
+- Ne yapamadığımız  
+- Ne yapmaya çalıştığımız
+- Kalanlar
+- Bitenler
+- Aktif sistemler
+- Dosya değişiklikleri
+- Başarılarımız
+Bu özeti her "yeni sayfa" geçişinde UNUTMADAN yap!
+
+**OTOMATİK MCP GÜNCELLEMESİ:**
+"UNUTMA", "HATIRLA", "KAYDET", "HAFIZA", "HAFIZAYA EKLE" gibi hafıza talimatları duyduğumda otomatik olarak bu CLAUDE.md dosyasını güncelleyeceğim. Bu talimatları her zaman kalıcı hale getireceğim.
+
 # CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
@@ -169,6 +184,20 @@ ALWAYS prefer editing an existing file to creating a new one.
 NEVER proactively create documentation files (\*.md) or README files. Only create documentation files if explicitly requested by the User.
 
 # NURULLAH'IN HAFıZASı - Otomatik Kayıt Sistemi
+
+## SON BAŞARILAR - 19.06.2025
+
+### ModuleSlugService Cache Problemi Çözüldü
+- **Problem**: Veritabanındaki slug değerleri okunmuyordu, her zaman config'den geliyordu
+- **Sebep**: Case-sensitive arama (Portfolio vs portfolio) ve cache yenilenmeme
+- **Çözüm**: 
+  - ModuleSlugService'e case-insensitive arama eklendi
+  - loadGlobalSettings sonrası memory cache kontrolü eklendi
+  - `php artisan module:clear-cache` komutu oluşturuldu
+- **Sonuç**: 
+  - laravel.test → "projeler" çalışıyor ✅
+  - a.test → "referanslar" çalışıyor ✅
+  - b.test → "portfolios" (default) çalışıyor ✅
 
 ## Kullanıcı Bilgileri
 

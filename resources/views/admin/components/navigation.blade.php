@@ -128,7 +128,7 @@ $siteTitle = settings('site_title', config('app.name'));
                 <ul class="navbar-nav">
                     @if($groupedModules->has('content') && $groupedModules['content']->count() > 0)
                     <li class="nav-item {{ $activeType == 'content' ? 'active' : '' }} dropdown">
-                        <a class="nav-link dropdown-toggle" href="#navbar-content" data-bs-toggle="dropdown"
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"
                             data-bs-auto-close="outside" role="button" aria-expanded="false">
                             <span class="nav-link-icon d-md-none d-lg-inline-block">
                                 <i class="fa-solid fa-user-graduate"></i>
@@ -136,23 +136,19 @@ $siteTitle = settings('site_title', config('app.name'));
                             <span class="nav-link-title">İçerik</span>
                         </a>
                         <div class="dropdown-menu">
-                            <div class="dropdown-menu-columns">
-                                <div class="dropdown-menu-column">
-                                    @foreach($groupedModules['content'] as $module)
-                                    <a class="dropdown-item"
-                                        href="{{ route('admin.' . strtolower($module->name) . '.index') }}">
-                                        {{ $module->display_name }}
-                                    </a>
-                                    @endforeach
-                                </div>
-                            </div>
+                            @foreach($groupedModules['content'] as $module)
+                            <a class="dropdown-item"
+                                href="{{ route('admin.' . strtolower($module->name) . '.index') }}">
+                                {{ $module->display_name }}
+                            </a>
+                            @endforeach
                         </div>
                     </li>
                     @endif
 
                     @if($groupedModules->has('widget') && $groupedModules['widget']->count() > 0)
                     <li class="nav-item {{ $activeType == 'widget' ? 'active' : '' }} dropdown">
-                        <a class="nav-link dropdown-toggle" href="#navbar-widget" data-bs-toggle="dropdown"
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"
                             data-bs-auto-close="outside" role="button" aria-expanded="false">
                             <span class="nav-link-icon d-md-none d-lg-inline-block">
                                 <i class="fa-solid fa-user-chef"></i>
@@ -172,7 +168,7 @@ $siteTitle = settings('site_title', config('app.name'));
 
                     @if($groupedModules->has('management') && $groupedModules['management']->count() > 0)
                     <li class="nav-item {{ $activeType == 'management' ? 'active' : '' }} dropdown">
-                        <a class="nav-link dropdown-toggle" href="#navbar-management" data-bs-toggle="dropdown"
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"
                             data-bs-auto-close="outside" role="button" aria-expanded="false">
                             <span class="nav-link-icon d-md-none d-lg-inline-block">
                                 <i class="fa-solid fa-user-police-tie"></i>
@@ -192,7 +188,7 @@ $siteTitle = settings('site_title', config('app.name'));
 
                     @if($groupedModules->has('system') && $groupedModules['system']->count() > 0)
                     <li class="nav-item {{ $activeType == 'system' ? 'active' : '' }} dropdown">
-                        <a class="nav-link dropdown-toggle" href="#navbar-system" data-bs-toggle="dropdown"
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"
                             data-bs-auto-close="outside" role="button" aria-expanded="false">
                             <span class="nav-link-icon d-md-none d-lg-inline-block">
                                 <i class="fa-solid fa-user-doctor"></i>

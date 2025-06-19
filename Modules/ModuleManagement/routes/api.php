@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\ModuleManagement\Http\Controllers\ModuleManagementController;
 
 /*
  *--------------------------------------------------------------------------
@@ -14,6 +13,7 @@ use Modules\ModuleManagement\Http\Controllers\ModuleManagementController;
  *
 */
 
-Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
-    Route::apiResource('modulemanagement', ModuleManagementController::class)->names('modulemanagement');
-});
+// API routes will be added when needed
+// Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
+//     Route::apiResource('modulemanagement', ModuleManagementController::class)->names('modulemanagement');
+// });

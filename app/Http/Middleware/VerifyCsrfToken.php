@@ -17,16 +17,54 @@ class VerifyCsrfToken extends Middleware
     ];
     
     /**
-     * CSRF token süresini uzatmak için bu metodu ekleyin
+     * Determine if the session and input CSRF tokens match.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return bool
      */
     protected function tokensMatch($request)
     {
-        // Multi-tenant ortamında token sorunlarını önlemek için
-        // önce session'ı yeniliyoruz
-        if ($request->session()->has('tenant_id')) {
-            $request->session()->regenerateToken();
+        // Multi-tenant ortamında token kontrolü
+        $token = $this->getTokenFromRequest($request);
+        
+        if (!$token) {
+            return false;
         }
         
-        return parent::tokensMatch($request);
+        // Session token ile request token'ı karşılaştır
+        return hash_equals($request->session()->token(), $token);
+    }
+    
+    /**
+     * Add the CSRF token to the response cookies.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Symfony\Component\HttpFoundation\Response  $response
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    protected function addCookieToResponse($request, $response)
+    {
+        $config = config('session');
+        
+        // Tenant domain'i için cookie ayarlarını güncelle
+        if (tenant()) {
+            $config['domain'] = $request->getHost();
+        }
+        
+        $response->headers->setCookie(
+            new \Symfony\Component\HttpFoundation\Cookie(
+                'XSRF-TOKEN',
+                $request->session()->token(),
+                $this->availableAt(60 * $config['lifetime']),
+                $config['path'],
+                $config['domain'],
+                $config['secure'],
+                false,
+                false,
+                $config['same_site'] ?? null
+            )
+        );
+        
+        return $response;
     }
 }

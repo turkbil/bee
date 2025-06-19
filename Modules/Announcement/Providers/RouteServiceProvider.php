@@ -46,8 +46,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapAdminRoutes(): void
     {
-        Route::prefix('admin')
-            ->group(module_path('Announcement', 'routes/admin.php'));
+        Route::group([], module_path('Announcement', 'routes/admin.php'));
     }
 
     /**

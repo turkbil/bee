@@ -1,5 +1,10 @@
 @extends('page::front.themes.blank.layouts.app')
 
+@push('head')
+{{-- Schema.org için sayfa bilgileri --}}
+{!! \App\Services\SEOService::getPageSchema($item) !!}
+@endpush
+
 @section('content')
 @if(isset($is_homepage) && $is_homepage)
 @parsewidgets($item->body)

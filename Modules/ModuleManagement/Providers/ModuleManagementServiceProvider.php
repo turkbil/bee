@@ -35,6 +35,7 @@ class ModuleManagementServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
 
         $this->loadRoutesFrom(module_path('ModuleManagement', 'routes/web.php'));
+        $this->loadRoutesFrom(module_path('ModuleManagement', 'routes/admin.php'));
         $this->loadViewsFrom(module_path('ModuleManagement', 'resources/views'), 'modulemanagement');
         $this->loadMigrationsFrom(module_path('ModuleManagement', 'database/migrations'));
 

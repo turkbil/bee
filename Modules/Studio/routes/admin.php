@@ -48,5 +48,16 @@ Route::middleware(['web', 'auth', 'tenant'])
                 Route::get('/api/blocks', [StudioController::class, 'getBlocks'])
                     ->middleware('module.permission:studio,view')
                     ->name('api.blocks');
+
+                // Web.php'den taşınan API rotaları
+                Route::get('/api/widgets', [\Modules\Studio\App\Http\Controllers\Api\StudioApiController::class, 'getWidgets'])
+                    ->middleware('module.permission:studio,view')
+                    ->name('api.widgets');
+                Route::get('/api/widget-content/{tenantWidgetId}', [\Modules\Studio\App\Http\Controllers\Api\StudioApiController::class, 'getWidgetContent'])
+                    ->middleware('module.permission:studio,view')
+                    ->name('api.widget-content');
+                Route::get('/api/module-widget/{moduleId}', [\Modules\Studio\App\Http\Controllers\Api\StudioApiController::class, 'getModuleWidget'])
+                    ->middleware('module.permission:studio,view')
+                    ->name('api.module-widget');
             });
     });

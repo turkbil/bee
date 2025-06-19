@@ -31,6 +31,7 @@ class TenantManagementServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
 
         $this->loadRoutesFrom(module_path('TenantManagement', 'routes/web.php'));
+        $this->loadRoutesFrom(module_path('TenantManagement', 'routes/admin.php'));
         $this->loadViewsFrom(module_path('TenantManagement', 'resources/views'), 'tenantmanagement');
         $this->loadMigrationsFrom(module_path('TenantManagement', 'database/migrations'));
 

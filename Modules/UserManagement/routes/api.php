@@ -14,6 +14,7 @@ use Modules\UserManagement\Http\Controllers\UserManagementController;
  *
 */
 
-Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
-    Route::apiResource('usermanagement', UserManagementController::class)->names('usermanagement');
-});
+// API routes commented out until controller is created
+// Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
+//     Route::apiResource('usermanagement', UserManagementController::class)->names('usermanagement');
+// });

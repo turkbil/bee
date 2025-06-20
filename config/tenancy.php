@@ -20,7 +20,6 @@ return [
         Stancl\Tenancy\Bootstrappers\CacheTenancyBootstrapper::class,
         Stancl\Tenancy\Bootstrappers\FilesystemTenancyBootstrapper::class,
         Stancl\Tenancy\Bootstrappers\QueueTenancyBootstrapper::class,
-        // Session tenant'lara göre ayrıştır
         \App\Tenancy\SessionTenancyBootstrapper::class,
     ],
     

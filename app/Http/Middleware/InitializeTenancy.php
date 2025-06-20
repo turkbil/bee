@@ -64,9 +64,14 @@ class InitializeTenancy extends BaseMiddleware
                 abort(404, 'Domain bulunamadı');
             }
             
-            // Tenant pasif ise offline sayfasına yönlendir
+            // Tenant pasif ise admin ve login hariç offline sayfasına yönlendir
             if (!$tenantData['is_active']) {
-                return response()->view('errors.offline', ['domain' => $host], 503);
+                // Sadece admin ve login rotalarına izin ver
+                if ($request->is('admin') || $request->is('admin/*') || $request->is('login')) {
+                    // Admin sayfalarına devam et
+                } else {
+                    return response()->view('errors.offline', ['domain' => $host], 503);
+                }
             }
             
             // Tenant central ise tenancy başlatma

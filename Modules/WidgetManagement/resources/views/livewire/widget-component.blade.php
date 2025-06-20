@@ -115,8 +115,9 @@
                     
                     <!-- Bileşenleri Kategoriye Göre Gruplandırma -->
                     @php
-                        $groupedEntities = $entities->groupBy(function($item) {
-                            return $item->widget->category->title ?? 'Kategori Atanmamış';
+                        $groupedEntities = $entities->groupBy(function($item) use ($widgets) {
+                            $widget = $widgets->get($item->widget_id);
+                            return $widget && $widget->category ? $widget->category->title : 'Kategori Atanmamış';
                         });
                     @endphp
                     
@@ -125,24 +126,27 @@
                         <h4 class="border-bottom pb-2 mb-3">{{ $categoryName }}</h4>
                         <div class="row row-cards">
                             @foreach($categoryEntities as $instance)
+                            @php
+                                $widget = $widgets->get($instance->widget_id);
+                            @endphp
                             <div class="col-12 col-sm-6 col-lg-6">
                                 <div class="card h-100">
-                                    <div class="card-status-top {{ $instance->widget && $instance->widget->is_active ? 'bg-primary' : 'bg-danger' }}"></div>
+                                    <div class="card-status-top {{ $widget && $widget->is_active ? 'bg-primary' : 'bg-danger' }}"></div>
                                     
                                     <!-- Kart Header -->
                                     <div class="card-header d-flex align-items-center">
                                         <div class="me-auto">
                                             <h3 class="card-title mb-0">
-                                                <a href="{{ $instance->widget->has_items ? route('admin.widgetmanagement.items', $instance->id) : route('admin.widgetmanagement.settings', $instance->id) }}">
+                                                <a href="{{ $widget && $widget->has_items ? route('admin.widgetmanagement.items', $instance->id) : route('admin.widgetmanagement.settings', $instance->id) }}">
                                                     {{ $instance->display_title }}
                                                 </a>
                                             </h3>
-                                            @if($instance->widget->category)
+                                            @if($widget && $widget->category)
                                             <div class="text-muted small">
-                                                @if($instance->widget->category->parent)
-                                                <span>{{ $instance->widget->category->parent->title }} / {{ $instance->widget->category->title }}</span>
+                                                @if($widget->category->parent)
+                                                <span>{{ $widget->category->parent->title }} / {{ $widget->category->title }}</span>
                                                 @else
-                                                <span>{{ $instance->widget->category->title }}</span>
+                                                <span>{{ $widget->category->title }}</span>
                                                 @endif
                                             </div>
                                             @endif
@@ -154,11 +158,11 @@
                                             
                                             <div class="dropdown-menu dropdown-menu-end">
                                                 <a href="{{ route('admin.widgetmanagement.settings', $instance->id) }}" class="dropdown-item">
-                                                    <i class="fas fa-sliders-h me-2"></i> {{ $instance->widget->has_items ? 'Ayarlar' : 'Özelleştir' }}
+                                                    <i class="fas fa-sliders-h me-2"></i> {{ $widget && $widget->has_items ? 'Ayarlar' : 'Özelleştir' }}
                                                 </a>
 
-                                                @if($instance->widget->has_items)
-                                                    @if($instance->widget->type === 'static')
+                                                @if($widget && $widget->has_items)
+                                                    @if($widget->type === 'static')
                                                         @php
                                                             $staticItem = $instance->items->first();
                                                             $itemId = $staticItem ? $staticItem->id : 0;
@@ -178,8 +182,8 @@
                                                 </a>
                                                 
                                                 <div class="dropdown-divider"></div>
-                                                @if($hasRootPermission)
-                                                <a href="{{ route('admin.widgetmanagement.manage', $instance->widget->id) }}" class="dropdown-item">
+                                                @if($hasRootPermission && $widget)
+                                                <a href="{{ route('admin.widgetmanagement.manage', $widget->id) }}" class="dropdown-item">
                                                     <i class="fas fa-tools me-2"></i> Yapılandır
                                                 </a>
                                                 @endif
@@ -196,8 +200,8 @@
                                         <div class="d-flex align-items-center justify-content-between mb-2">
                                             <div class="d-flex gap-2">
 
-                                            @if($instance->widget->has_items)
-                                                @if($instance->widget->type === 'static')
+                                            @if($widget && $widget->has_items)
+                                                @if($widget->type === 'static')
                                                     @php
                                                         $staticItem = $instance->items->first();
                                                         $itemId = $staticItem ? $staticItem->id : 0;

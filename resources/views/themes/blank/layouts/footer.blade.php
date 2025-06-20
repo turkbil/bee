@@ -85,5 +85,8 @@
 
     @widgetstyles
     @widgetscripts
+    @livewireStyles
+    @livewireScripts
+    @stack('scripts')
 </body>
 </html>

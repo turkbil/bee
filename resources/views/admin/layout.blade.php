@@ -38,20 +38,19 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     @livewireStyles
-    <link rel="stylesheet" href="{{ asset('admin/css/tabler.min.css') }}?v={{ filemtime(public_path('admin/css/tabler.min.css')) }}">
-    <link rel="stylesheet" href="{{ asset('admin/css/theme-font-size.css') }}?v={{ filemtime(public_path('admin/css/theme-font-size.css')) }}">
-    <link rel="stylesheet" href="{{ asset('admin/css/tabler-vendors.min.css') }}?v={{ filemtime(public_path('admin/css/tabler-vendors.min.css')) }}">
+    <link rel="stylesheet" href="/admin-assets/css/tabler.min.css?v={{ time() }}">
+    <link rel="stylesheet" href="/admin-assets/css/theme-font-size.css?v={{ time() }}">
+    <link rel="stylesheet" href="/admin-assets/css/tabler-vendors.min.css?v={{ time() }}">
     @if (Str::contains(Request::url(), ['create', 'edit', 'manage', 'form']))
     @else
     @endif
-    <link rel="stylesheet" href="{{ asset('admin/css/plugins.css') }}?v={{ filemtime(public_path('admin/css/plugins.css')) }}" />
-    <link rel="stylesheet" href="{{ asset('admin/libs/fontawesome-pro@6.7.1/css/all.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('admin/libs/choices/choices.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('admin/css/choices-custom.css') }}?v={{ filemtime(public_path('admin/css/choices-custom.css')) }}">
-    <link rel="stylesheet" href="{{ asset('admin/css/main.css') }}?v={{ filemtime(public_path('admin/css/main.css')) }}" />
-    <link rel="stylesheet" href="{{ asset('admin/css/theme-simple.css') }}?v={{ filemtime(public_path('admin/css/theme-simple.css')) }}" />
-    <link rel="stylesheet" href="{{ asset('admin/css/theme-font-size.css') }}?v={{ filemtime(public_path('admin/css/theme-font-size.css')) }}" />
-    <link rel="stylesheet" href="{{ asset('admin/css/responsive.css') }}?v={{ filemtime(public_path('admin/css/responsive.css')) }}" />
+    <link rel="stylesheet" href="/admin-assets/css/plugins.css?v={{ time() }}" />
+    <link rel="stylesheet" href="/admin-assets/libs/fontawesome-pro@6.7.1/css/all.min.css">
+    <link rel="stylesheet" href="/admin-assets/libs/choices/choices.min.css">
+    <link rel="stylesheet" href="/admin-assets/css/choices-custom.css?v={{ time() }}">
+    <link rel="stylesheet" href="/admin-assets/css/main.css?v={{ time() }}" />
+    <link rel="stylesheet" href="/admin-assets/css/theme-simple.css?v={{ time() }}" />
+    <link rel="stylesheet" href="/admin-assets/css/responsive.css?v={{ time() }}" />
     @stack('styles') @stack('css')
     <style>
         :root {
@@ -176,14 +175,14 @@
     </div>
 </div>
 
-<script src="{{ asset('admin/js/plugins.js') }}?v={{ filemtime(public_path('admin/js/plugins.js')) }}"></script>
-<script src="{{ asset('admin/js/tabler.min.js') }}" defer></script>
-<script src="{{ asset('admin/libs/litepicker/dist/litepicker.js') }}" defer></script>
-<script src="{{ asset('admin/libs/fslightbox/index.js') }}" defer></script>
-<script src="{{ asset('admin/libs/choices/choices.min.js') }}" defer></script>
-<script src="{{ asset('admin/js/main.js') }}?v={{ filemtime(public_path('admin/js/main.js')) }}"></script>
-<script src="{{ asset('admin/js/theme-simple.js') }}?v={{ filemtime(public_path('admin/js/theme-simple.js')) }}"></script>
-<script src="{{ asset('admin/js/toast.js') }}?v={{ filemtime(public_path('admin/js/toast.js')) }}" defer></script>
+<script src="/admin-assets/js/plugins.js?v={{ time() }}"></script>
+<script src="/admin-assets/js/tabler.min.js" defer></script>
+<script src="/admin-assets/libs/litepicker/dist/litepicker.js" defer></script>
+<script src="/admin-assets/libs/fslightbox/index.js" defer></script>
+<script src="/admin-assets/libs/choices/choices.min.js" defer></script>
+<script src="/admin-assets/js/main.js?v={{ time() }}"></script>
+<script src="/admin-assets/js/theme-simple.js?v={{ time() }}"></script>
+<script src="/admin-assets/js/toast.js?v={{ time() }}" defer></script>
 @livewireScripts
 @stack('scripts') @stack('js')
 

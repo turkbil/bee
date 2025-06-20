@@ -38,51 +38,164 @@ $activeType = request()->segment(2);
 $siteTitle = settings('site_title', config('app.name'));
 @endphp
 
-<header class="navbar navbar-expand-md d-print-none">
-    <div class="container">
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu">
+<header class="navbar navbar-expand-md d-print-none" style="background: #7952b3" data-bs-theme="dark">
+    <div class="container-xl">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu" aria-controls="navbar-menu" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
+        <div class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
             <a href="{{ route('admin.dashboard') }}">
-                {{ $siteTitle }}
-                @if(!$isCentral && $tenantId)
-                @php
-                $tenant = \App\Models\Tenant::find($tenantId);
-                $tenantName = $tenant ? $tenant->name ?? $tenant->id : '';
-                @endphp
-                <span class="small text-muted ms-2">({{ $tenantName }})</span>
-                @endif
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 68 68" width="32" height="32" aria-label="{{ $siteTitle }}" class="navbar-brand-image">
+                    <path d="M64.6 16.2C63 9.9 58.1 5 51.8 3.4 40 1.5 28 1.5 16.2 3.4 9.9 5 5 9.9 3.4 16.2 1.5 28 1.5 40 3.4 51.8 5 58.1 9.9 63 16.2 64.6c11.8 1.9 23.8 1.9 35.6 0C58.1 63 63 58.1 64.6 51.8c1.9-11.8 1.9-23.8 0-35.6zM33.3 36.3c-2.8 4.4-6.6 8.2-11.1 11-1.5.9-3.3.9-4.8.1s-2.4-2.3-2.5-4c0-1.7.9-3.3 2.4-4.1 2.3-1.4 4.4-3.2 6.1-5.3-1.8-2.1-3.8-3.8-6.1-5.3-2.3-1.3-3-4.2-1.7-6.4s4.3-2.9 6.5-1.6c4.5 2.8 8.2 6.5 11.1 10.9 1 1.4 1 3.3.1 4.7zM49.2 46H37.8c-2.1 0-3.8-1-3.8-3s1.7-3 3.8-3h11.4c2.1 0 3.8 1 3.8 3s-1.7 3-3.8 3z" fill="#066fd1" style="fill: var(--tblr-primary, #066fd1)"></path>
+                </svg>
             </a>
-        </h1>
+        </div>
 
         <div class="navbar-nav flex-row order-md-last">
-            <!-- Tema Ayarları Butonu -->
-            <div class="nav-item me-2">
-                <a href="#" class="d-flex lh-1 text-reset p-0" data-bs-toggle="offcanvas"
-                    data-bs-target="#offcanvasTheme">
-                    <span class="me-2">
-                        <i class="fa-solid fa-brush" style="font-size: 18px"></i>
-                    </span>
-                </a>
-            </div>
-
             <div class="d-none d-md-flex">
-                <!-- Karanlık mod switch'i -->
-                <!-- Karanlık mod switch'i - orijinal tasarım korundu -->
-                <div class="theme-mode mt-0 pt-2 me-2" data-theme="light">
-                    <input type="checkbox" id="switch" class="dark-switch">
-                    <div class="app">
-                        <div class="switch-content">
-                            <div class="switch-label"></div>
-                            <label for="switch">
-                                <div class="toggle"></div>
-                                <div class="names">
-                                    <p class="light"><i class="fa-solid fa-moon"></i></p>
-                                    <p class="dark"><i class="fa-solid fa-sun"></i></p>
-                                    <p class="auto"><i class="fa-solid fa-circle-half-stroke"></i></p>
+                <!-- Dark/Light Mode Switch -->
+                <div class="nav-item">
+                    <a href="#" class="nav-link px-0 hide-theme-dark" data-bs-toggle="tooltip" data-bs-placement="bottom" aria-label="Enable dark mode" data-bs-original-title="Enable dark mode">
+                        <i class="fa-solid fa-moon"></i>
+                    </a>
+                    <a href="#" class="nav-link px-0 hide-theme-light" data-bs-toggle="tooltip" data-bs-placement="bottom" aria-label="Enable light mode" data-bs-original-title="Enable light mode">
+                        <i class="fa-solid fa-sun"></i>
+                    </a>
+                </div>
+                
+                <!-- Notifications Dropdown -->
+                <div class="nav-item dropdown d-none d-md-flex">
+                    <a href="#" class="nav-link px-0" data-bs-toggle="dropdown" tabindex="-1" aria-label="Show notifications" data-bs-auto-close="outside" aria-expanded="false">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="badge bg-red"></span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-arrow dropdown-menu-end dropdown-menu-card">
+                        <div class="card">
+                            <div class="card-header d-flex">
+                                <h3 class="card-title">Bildirimler</h3>
+                                <div class="btn-close ms-auto" data-bs-dismiss="dropdown"></div>
+                            </div>
+                            <div class="list-group list-group-flush list-group-hoverable">
+                                @if($isCentral)
+                                <div class="list-group-item">
+                                    <div class="row align-items-center">
+                                        <div class="col-auto"><span class="status-dot status-dot-animated bg-red d-block"></span></div>
+                                        <div class="col text-truncate">
+                                            <a href="#" class="text-body d-block">Sistem Güncellemesi</a>
+                                            <div class="d-block text-secondary text-truncate mt-n1">
+                                                Yeni özellikler ve güvenlik yamaları uygulandı
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <a href="#" class="list-group-item-actions">
+                                                <i class="fa-regular fa-star text-muted"></i>
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
-                            </label>
+                                @else
+                                <div class="list-group-item">
+                                    <div class="row align-items-center">
+                                        <div class="col-auto"><span class="status-dot d-block"></span></div>
+                                        <div class="col text-truncate">
+                                            <a href="#" class="text-body d-block">Yeni İçerik</a>
+                                            <div class="d-block text-secondary text-truncate mt-n1">
+                                                5 yeni sayfa eklendi
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <a href="#" class="list-group-item-actions show">
+                                                <i class="fa-solid fa-star text-yellow"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <a href="#" class="btn btn-outline-primary w-100">Tümünü Arşivle</a>
+                                    </div>
+                                    <div class="col">
+                                        <a href="#" class="btn btn-outline-primary w-100">Okundu İşaretle</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Apps/Cache Actions Dropdown -->
+                <div class="nav-item dropdown d-none d-md-flex me-3">
+                    <a href="#" class="nav-link px-0" data-bs-toggle="dropdown" tabindex="-1" aria-label="Show app menu" data-bs-auto-close="outside" aria-expanded="false">
+                        <i class="fa-solid fa-grid-3"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-arrow dropdown-menu-end dropdown-menu-card">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">Hızlı İşlemler</div>
+                                <div class="card-actions btn-actions">
+                                    <a href="#" class="btn-action" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTheme">
+                                        <i class="fa-solid fa-cog"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="card-body p-2">
+                                <div class="row g-2">
+                                    @if($isCentral)
+                                    <div class="col-4">
+                                        <a href="#" class="d-flex flex-column flex-center text-center text-secondary py-3 px-2 link-hoverable cache-clear-btn" data-action="clear">
+                                            <i class="fa-solid fa-broom mb-2" style="font-size: 24px;"></i>
+                                            <span class="small">Cache Temizle</span>
+                                        </a>
+                                    </div>
+                                    <div class="col-4">
+                                        <a href="#" class="d-flex flex-column flex-center text-center text-secondary py-3 px-2 link-hoverable cache-clear-all-btn" data-action="clear-all">
+                                            <i class="fa-solid fa-trash-can mb-2" style="font-size: 24px;"></i>
+                                            <span class="small">Tüm Cache</span>
+                                        </a>
+                                    </div>
+                                    @else
+                                    <div class="col-4">
+                                        <a href="#" class="d-flex flex-column flex-center text-center text-secondary py-3 px-2 link-hoverable cache-clear-btn" data-action="clear">
+                                            <i class="fa-solid fa-broom mb-2" style="font-size: 24px;"></i>
+                                            <span class="small">Cache Temizle</span>
+                                        </a>
+                                    </div>
+                                    @endif
+                                    <div class="col-4">
+                                        <a href="#" class="d-flex flex-column flex-center text-center text-secondary py-3 px-2 link-hoverable" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTheme">
+                                            <i class="fa-solid fa-brush mb-2" style="font-size: 24px;"></i>
+                                            <span class="small">Tema Ayarları</span>
+                                        </a>
+                                    </div>
+                                    <div class="col-4">
+                                        <a href="{{ route('admin.modulemanagement.index') }}" class="d-flex flex-column flex-center text-center text-secondary py-3 px-2 link-hoverable">
+                                            <i class="fa-solid fa-puzzle-piece mb-2" style="font-size: 24px;"></i>
+                                            <span class="small">Modüller</span>
+                                        </a>
+                                    </div>
+                                    <div class="col-4">
+                                        <a href="{{ route('admin.settingmanagement.index') }}" class="d-flex flex-column flex-center text-center text-secondary py-3 px-2 link-hoverable">
+                                            <i class="fa-solid fa-sliders mb-2" style="font-size: 24px;"></i>
+                                            <span class="small">Ayarlar</span>
+                                        </a>
+                                    </div>
+                                    <div class="col-4">
+                                        <a href="{{ route('admin.usermanagement.index') }}" class="d-flex flex-column flex-center text-center text-secondary py-3 px-2 link-hoverable">
+                                            <i class="fa-solid fa-users mb-2" style="font-size: 24px;"></i>
+                                            <span class="small">Kullanıcılar</span>
+                                        </a>
+                                    </div>
+                                    <div class="col-4">
+                                        <a href="{{ route('admin.studio.index') }}" class="d-flex flex-column flex-center text-center text-secondary py-3 px-2 link-hoverable">
+                                            <i class="fa-solid fa-palette mb-2" style="font-size: 24px;"></i>
+                                            <span class="small">Studio</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

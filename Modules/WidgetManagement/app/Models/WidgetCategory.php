@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Cviebrock\EloquentSluggable\Sluggable;
+use Stancl\Tenancy\Database\Concerns\CentralConnection;
 
 class WidgetCategory extends Model
 {
-    use Sluggable;
+    use Sluggable, CentralConnection;
 
     protected $primaryKey = 'widget_category_id';
 

@@ -391,6 +391,6 @@
 
 
 @push('scripts')
-<script src="{{ asset('admin/libs/sortable/sortable.min.js') }}"></script>
-<script src="{{ asset('admin/libs/sortable/sortable-settings.js') }}"></script>
+<script src="{{ asset('admin-assets/libs/sortable/sortable.min.js') }}"></script>
+<script src="{{ asset('admin-assets/libs/sortable/sortable-settings.js') }}"></script>
 @endpush

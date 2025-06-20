@@ -43,7 +43,20 @@
       "Bash(composer:*)",
       "Bash(curl:*)",
       "Bash(touch:*)",
-      "Bash(sudo service:*)"
+      "Bash(sudo service:*)",
+      "Bash(mysql:*)",
+      "Bash(time php artisan tinker:*)",
+      "Bash(for module in AI Announcement ModuleManagement Page Portfolio SettingManagement Studio)",
+      "Bash(do)",
+      "Bash(file=\"Modules/$module/routes/api.php\")",
+      "Bash(if [ -f \"$file\" ])",
+      "Bash(then)",
+      "Bash(echo:*)",
+      "Bash(fi)",
+      "Bash(done)",
+      "Bash(git checkout:*)",
+      "Bash(openssl x509:*)",
+      "Bash(redis-cli:*)"
     ],
     "deny": []
   },

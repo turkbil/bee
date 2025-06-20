@@ -62,6 +62,9 @@ class UserManagementServiceProvider extends ServiceProvider
         Livewire::component('usermanagement.user-activity-log-component', UserActivityLogComponent::class);
         
         Livewire::component('usermanagement.confirm-action-modal', ConfirmActionModal::class);
+        
+        // Front-end components
+        Livewire::component('usermanagement.avatar-upload', \Modules\UserManagement\App\Http\Livewire\Front\AvatarUploadComponent::class);
 
         // Middleware'i kaydet
         $this->app['router']->aliasMiddleware('module.permission', ModulePermissionMiddleware::class);

@@ -127,34 +127,38 @@ class WidgetComponent extends Component
             }
         }
         
+        // Önce central DB'den uygun widget ID'lerini çek
+        $validWidgetIds = Widget::where('type', '!=', 'file')
+            ->where('type', '!=', 'module')
+            ->pluck('id')
+            ->toArray();
+            
         // Tenant widget'ları - file ve module olmayanları bul (sayılar için)
-        $standardWidgetsQuery = TenantWidget::whereHas('widget', function($q) {
-            $q->where('type', '!=', 'file')->where('type', '!=', 'module');
-        });
+        $standardWidgetsQuery = TenantWidget::whereIn('widget_id', $validWidgetIds);
         
         // Ana kategorileri getir
         $parentCategories = WidgetCategory::whereNull('parent_id')
             ->where('is_active', true)
             ->where('widget_category_id', '!=', 1) // Moduller (1 nolu kategori) hariç tut
-            ->withCount(['widgets' => function($query) use ($standardWidgetsQuery) {
-                $query->whereHas('tenantWidgets', function($q) use ($standardWidgetsQuery) {
-                    $q->whereIn('id', $standardWidgetsQuery->pluck('id'));
-                })->where('type', '!=', 'file')->where('type', '!=', 'module');
+            ->withCount(['widgets' => function($query) use ($validWidgetIds) {
+                $query->whereIn('id', $validWidgetIds);
             }, 'children'])
             ->orderBy('order')
             ->get();
         
         // Her ana kategori için toplam widget sayısını hesapla
-        $parentCategories->each(function($category) use ($standardWidgetsQuery) {
+        $parentCategories->each(function($category) use ($validWidgetIds) {
             // Alt kategorilerin ID'lerini al
             $childCategoryIds = $category->children->pluck('widget_category_id');
             
+            // Alt kategorilere ait widget ID'lerini bul
+            $childWidgetIds = Widget::whereIn('widget_category_id', $childCategoryIds)
+                ->whereIn('id', $validWidgetIds)
+                ->pluck('id')
+                ->toArray();
+            
             // Alt kategorilere ait widgetlara bağlı tenant widgetları say
-            $childWidgetsCount = TenantWidget::whereHas('widget', function($q) use ($childCategoryIds) {
-                $q->whereIn('widget_category_id', $childCategoryIds)
-                  ->where('type', '!=', 'file')
-                  ->where('type', '!=', 'module');
-            })->count();
+            $childWidgetsCount = TenantWidget::whereIn('widget_id', $childWidgetIds)->count();
             
             // Ana kategorideki widget sayısı + alt kategorilerdeki widget sayısı
             $category->total_widgets_count = $category->widgets_count + $childWidgetsCount;
@@ -165,67 +169,83 @@ class WidgetComponent extends Component
         if ($this->parentCategoryFilter) {
             $childCategories = WidgetCategory::where('parent_id', $this->parentCategoryFilter)
                 ->where('is_active', true)
-                ->withCount(['widgets' => function($query) use ($standardWidgetsQuery) {
-                    $query->whereHas('tenantWidgets', function($q) use ($standardWidgetsQuery) {
-                        $q->whereIn('id', $standardWidgetsQuery->pluck('id'));
-                    })->where('type', '!=', 'file')->where('type', '!=', 'module');
+                ->withCount(['widgets' => function($query) use ($validWidgetIds) {
+                    $query->whereIn('id', $validWidgetIds);
                 }])
                 ->orderBy('order')
                 ->get();
         }
         
+        // Moduller kategorisi hariç widget ID'lerini al
+        $excludeModuleWidgetIds = Widget::whereHas('category', function($cq) {
+            $cq->where('widget_category_id', '!=', 1); // Moduller kategorisini (1 nolu) hariç tut
+        })->whereIn('id', $validWidgetIds)->pluck('id')->toArray();
+        
         // Aktif kullanılan tüm tenant widget'ları getir
-        $query = TenantWidget::with(['widget', 'items'])
-            ->whereHas('widget', function($q) {
-                $q->where('type', '!=', 'file') // file tipindeki widgetları hariç tut
-                  ->where('type', '!=', 'module') // module tipindeki widgetları hariç tut
-                  ->whereHas('category', function($cq) {
-                      $cq->where('widget_category_id', '!=', 1); // Moduller kategorisini (1 nolu) hariç tut
-                  });
-            })
-            ->when($this->search, function ($q) {
-                $q->where('settings->title', 'like', "%{$this->search}%")
-                  ->orWhereHas('widget', function($wq) {
-                      $wq->where('name', 'like', "%{$this->search}%");
-                  });
-            })
-            ->when($this->typeFilter, function ($q) {
-                $q->whereHas('widget', function($wq) {
-                    $wq->where('type', $this->typeFilter);
+        $query = TenantWidget::with(['items'])
+            ->whereIn('widget_id', $excludeModuleWidgetIds)
+            ->when($this->search, function ($q) use ($validWidgetIds) {
+                // Eşleşen widget ID'lerini bul
+                $searchWidgetIds = Widget::where('name', 'like', "%{$this->search}%")
+                    ->whereIn('id', $validWidgetIds)
+                    ->pluck('id')
+                    ->toArray();
+                    
+                $q->where(function($query) use ($searchWidgetIds) {
+                    $query->where('settings->title', 'like', "%{$this->search}%")
+                          ->orWhereIn('widget_id', $searchWidgetIds);
                 });
             })
-            ->when($this->parentCategoryFilter, function ($q) {
+            ->when($this->typeFilter, function ($q) use ($validWidgetIds) {
+                $typeWidgetIds = Widget::where('type', $this->typeFilter)
+                    ->whereIn('id', $validWidgetIds)
+                    ->pluck('id')
+                    ->toArray();
+                $q->whereIn('widget_id', $typeWidgetIds);
+            })
+            ->when($this->parentCategoryFilter, function ($q) use ($validWidgetIds) {
                 if ($this->categoryFilter) {
                     // Eğer alt kategori seçilmişse, sadece o kategoriyi filtrele
-                    $q->whereHas('widget', function($wq) {
-                        $wq->where('widget_category_id', $this->categoryFilter);
-                    });
+                    $categoryWidgetIds = Widget::where('widget_category_id', $this->categoryFilter)
+                        ->whereIn('id', $validWidgetIds)
+                        ->pluck('id')
+                        ->toArray();
+                    $q->whereIn('widget_id', $categoryWidgetIds);
                 } else {
                     // Ana kategori seçilmişse ve alt kategori seçilmemişse
                     // Ana kategoriye ait tüm alt kategorileri dahil et
-                    $q->whereHas('widget', function($wq) {
-                        $wq->where(function($query) {
-                            $query->where('widget_category_id', $this->parentCategoryFilter)
-                                  ->orWhereHas('category', function($cq) {
-                                      $cq->where('parent_id', $this->parentCategoryFilter);
-                                  });
-                        });
-                    });
+                    $childCategoryIds = WidgetCategory::where('parent_id', $this->parentCategoryFilter)
+                        ->pluck('widget_category_id')
+                        ->toArray();
+                    $childCategoryIds[] = $this->parentCategoryFilter;
+                    
+                    $categoryWidgetIds = Widget::whereIn('widget_category_id', $childCategoryIds)
+                        ->whereIn('id', $validWidgetIds)
+                        ->pluck('id')
+                        ->toArray();
+                    $q->whereIn('widget_id', $categoryWidgetIds);
                 }
             })
-            ->when(!$this->parentCategoryFilter && $this->categoryFilter, function ($q) {
-                $q->whereHas('widget', function($wq) {
-                    $wq->where('widget_category_id', $this->categoryFilter);
-                });
+            ->when(!$this->parentCategoryFilter && $this->categoryFilter, function ($q) use ($validWidgetIds) {
+                $categoryWidgetIds = Widget::where('widget_category_id', $this->categoryFilter)
+                    ->whereIn('id', $validWidgetIds)
+                    ->pluck('id')
+                    ->toArray();
+                $q->whereIn('widget_id', $categoryWidgetIds);
             });
             
         $instances = $query->orderBy('updated_at', 'desc')
             ->paginate($this->perPage);
             
+        // Widget verilerini cache'leyerek template'e gönder
+        $widgetIds = $instances->pluck('widget_id')->unique()->toArray();
+        $widgets = Widget::with('category')->whereIn('id', $widgetIds)->get()->keyBy('id');
+        
         $entities = $instances;
             
         return view('widgetmanagement::livewire.widget-component', [
             'entities' => $entities,
+            'widgets' => $widgets,
             'types' => [
                 'static' => 'Statik',
                 'dynamic' => 'Dinamik',

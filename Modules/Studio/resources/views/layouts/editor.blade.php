@@ -15,53 +15,53 @@
         rel="stylesheet">
 
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="{{ asset('admin/libs/fontawesome-pro@6.7.1/css/all.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin-assets/libs/fontawesome-pro@6.7.1/css/all.min.css') }}">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="{{ asset('admin/libs/bootstrap/dist/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin-assets/libs/bootstrap/dist/css/bootstrap.min.css') }}">
 
     <!-- Monaco Editor CSS -->
-    <link rel="stylesheet" href="{{ asset('admin/libs/monaco-custom/css/monaco-custom.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin-assets/libs/monaco-custom/css/monaco-custom.css') }}">
 
     <!-- GrapesJS CSS -->
     <link rel="stylesheet"
-        href="{{ asset('admin/libs/studio/css/grapes.min.css') }}?v={{ filemtime(public_path('admin/libs/studio/css/grapes.min.css')) }}">
+        href="{{ asset('admin-assets/libs/studio/css/grapes.min.css') }}?v={{ filemtime(public_path('admin-assets/libs/studio/css/grapes.min.css')) }}">
     <link rel="stylesheet"
-        href="{{ asset('admin/libs/studio/css/core.css') }}?v={{ filemtime(public_path('admin/libs/studio/css/core.css')) }}">
+        href="{{ asset('admin-assets/libs/studio/css/core.css') }}?v={{ filemtime(public_path('admin-assets/libs/studio/css/core.css')) }}">
     <link rel="stylesheet"
-        href="{{ asset('admin/libs/studio/css/layout.css') }}?v={{ filemtime(public_path('admin/libs/studio/css/layout.css')) }}">
+        href="{{ asset('admin-assets/libs/studio/css/layout.css') }}?v={{ filemtime(public_path('admin-assets/libs/studio/css/layout.css')) }}">
     <link rel="stylesheet"
-        href="{{ asset('admin/libs/studio/css/panel.css') }}?v={{ filemtime(public_path('admin/libs/studio/css/panel.css')) }}">
+        href="{{ asset('admin-assets/libs/studio/css/panel.css') }}?v={{ filemtime(public_path('admin-assets/libs/studio/css/panel.css')) }}">
     <link rel="stylesheet"
-        href="{{ asset('admin/libs/studio/css/toolbar.css') }}?v={{ filemtime(public_path('admin/libs/studio/css/toolbar.css')) }}">
+        href="{{ asset('admin-assets/libs/studio/css/toolbar.css') }}?v={{ filemtime(public_path('admin-assets/libs/studio/css/toolbar.css')) }}">
     <link rel="stylesheet"
-        href="{{ asset('admin/libs/studio/css/forms.css') }}?v={{ filemtime(public_path('admin/libs/studio/css/forms.css')) }}">
+        href="{{ asset('admin-assets/libs/studio/css/forms.css') }}?v={{ filemtime(public_path('admin-assets/libs/studio/css/forms.css')) }}">
     <link rel="stylesheet"
-        href="{{ asset('admin/libs/studio/css/canvas.css') }}?v={{ filemtime(public_path('admin/libs/studio/css/canvas.css')) }}">
+        href="{{ asset('admin-assets/libs/studio/css/canvas.css') }}?v={{ filemtime(public_path('admin-assets/libs/studio/css/canvas.css')) }}">
     <link rel="stylesheet"
-        href="{{ asset('admin/libs/studio/css/components.css') }}?v={{ filemtime(public_path('admin/libs/studio/css/components.css')) }}">
+        href="{{ asset('admin-assets/libs/studio/css/components.css') }}?v={{ filemtime(public_path('admin-assets/libs/studio/css/components.css')) }}">
     <link rel="stylesheet"
-        href="{{ asset('admin/libs/studio/css/layers.css') }}?v={{ filemtime(public_path('admin/libs/studio/css/layers.css')) }}">
+        href="{{ asset('admin-assets/libs/studio/css/layers.css') }}?v={{ filemtime(public_path('admin-assets/libs/studio/css/layers.css')) }}">
     <link rel="stylesheet"
-        href="{{ asset('admin/libs/studio/css/colors.css') }}?v={{ filemtime(public_path('admin/libs/studio/css/colors.css')) }}">
+        href="{{ asset('admin-assets/libs/studio/css/colors.css') }}?v={{ filemtime(public_path('admin-assets/libs/studio/css/colors.css')) }}">
     <link rel="stylesheet"
-        href="{{ asset('admin/libs/studio/css/devices.css') }}?v={{ filemtime(public_path('admin/libs/studio/css/devices.css')) }}">
+        href="{{ asset('admin-assets/libs/studio/css/devices.css') }}?v={{ filemtime(public_path('admin-assets/libs/studio/css/devices.css')) }}">
     <link rel="stylesheet"
-        href="{{ asset('admin/libs/studio/css/modal.css') }}?v={{ filemtime(public_path('admin/libs/studio/css/modal.css')) }}">
+        href="{{ asset('admin-assets/libs/studio/css/modal.css') }}?v={{ filemtime(public_path('admin-assets/libs/studio/css/modal.css')) }}">
     <link rel="stylesheet"
-        href="{{ asset('admin/libs/studio/css/toast.css') }}?v={{ filemtime(public_path('admin/libs/studio/css/toast.css')) }}">
+        href="{{ asset('admin-assets/libs/studio/css/toast.css') }}?v={{ filemtime(public_path('admin-assets/libs/studio/css/toast.css')) }}">
     <link rel="stylesheet"
-        href="{{ asset('admin/libs/studio/css/context-menu.css') }}?v={{ filemtime(public_path('admin/libs/studio/css/context-menu.css')) }}">
+        href="{{ asset('admin-assets/libs/studio/css/context-menu.css') }}?v={{ filemtime(public_path('admin-assets/libs/studio/css/context-menu.css')) }}">
     <link rel="stylesheet"
-        href="{{ asset('admin/libs/studio/css/style-manager.css') }}?v={{ filemtime(public_path('admin/libs/studio/css/style-manager.css')) }}">
+        href="{{ asset('admin-assets/libs/studio/css/style-manager.css') }}?v={{ filemtime(public_path('admin-assets/libs/studio/css/style-manager.css')) }}">
     <link rel="stylesheet"
-        href="{{ asset('admin/libs/studio/css/responsive.css') }}?v={{ filemtime(public_path('admin/libs/studio/css/responsive.css')) }}">
+        href="{{ asset('admin-assets/libs/studio/css/responsive.css') }}?v={{ filemtime(public_path('admin-assets/libs/studio/css/responsive.css')) }}">
     <link rel="stylesheet"
-        href="{{ asset('admin/libs/studio/css/utils.css') }}?v={{ filemtime(public_path('admin/libs/studio/css/utils.css')) }}">
+        href="{{ asset('admin-assets/libs/studio/css/utils.css') }}?v={{ filemtime(public_path('admin-assets/libs/studio/css/utils.css')) }}">
 
     <!-- Quick Editor CSS -->
     <link rel="stylesheet"
-        href="{{ asset('admin/libs/studio/css/quick-editor.css') }}?v={{ filemtime(public_path('admin/libs/studio/css/quick-editor.css')) }}">
+        href="{{ asset('admin-assets/libs/studio/css/quick-editor.css') }}?v={{ filemtime(public_path('admin-assets/libs/studio/css/quick-editor.css')) }}">
 
     @livewireStyles
 </head>
@@ -137,101 +137,101 @@
     </div>
 
     <!-- jQuery -->
-    <script src="{{ asset('admin/libs/jquery@3.7.1/jquery.min.js') }}"></script>
+    <script src="{{ asset('admin-assets/libs/jquery@3.7.1/jquery.min.js') }}"></script>
 
     <!-- Bootstrap JS -->
-    <script src="{{ asset('admin/libs/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('admin/libs/handlebars/handlebars.min.js') }}"></script>
+    <script src="{{ asset('admin-assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('admin-assets/libs/handlebars/handlebars.min.js') }}"></script>
 
     <!-- Monaco Editor JS -->
-    <script src="{{ asset('admin/libs/monaco-custom/js/monaco-custom.js') }}"></script>
+    <script src="{{ asset('admin-assets/libs/monaco-custom/js/monaco-custom.js') }}"></script>
 
     <!-- GrapesJS Core -->
     <script
-        src="{{ asset('admin/libs/studio/grapes.min.js') }}?v={{ filemtime(public_path('admin/libs/studio/grapes.min.js')) }}">
+        src="{{ asset('admin-assets/libs/studio/grapes.min.js') }}?v={{ filemtime(public_path('admin-assets/libs/studio/grapes.min.js')) }}">
     </script>
 
     <!-- Studio Modülleri -->
     <script
-        src="{{ asset('admin/libs/studio/partials/studio-config.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-config.js')) }}">
+        src="{{ asset('admin-assets/libs/studio/partials/studio-config.js') }}?v={{ filemtime(public_path('admin-assets/libs/studio/partials/studio-config.js')) }}">
     </script>
     <script
-        src="{{ asset('admin/libs/studio/partials/studio-loader.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-loader.js')) }}">
+        src="{{ asset('admin-assets/libs/studio/partials/studio-loader.js') }}?v={{ filemtime(public_path('admin-assets/libs/studio/partials/studio-loader.js')) }}">
     </script>
     <script
-        src="{{ asset('admin/libs/studio/partials/studio-utils-modal.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-utils-modal.js')) }}">
+        src="{{ asset('admin-assets/libs/studio/partials/studio-utils-modal.js') }}?v={{ filemtime(public_path('admin-assets/libs/studio/partials/studio-utils-modal.js')) }}">
     </script>
     <script
-        src="{{ asset('admin/libs/studio/partials/studio-utils-notification.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-utils-notification.js')) }}">
+        src="{{ asset('admin-assets/libs/studio/partials/studio-utils-notification.js') }}?v={{ filemtime(public_path('admin-assets/libs/studio/partials/studio-utils-notification.js')) }}">
     </script>
     <script
-        src="{{ asset('admin/libs/studio/partials/studio-fix.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-fix.js')) }}">
+        src="{{ asset('admin-assets/libs/studio/partials/studio-fix.js') }}?v={{ filemtime(public_path('admin-assets/libs/studio/partials/studio-fix.js')) }}">
     </script>
     <script
-        src="{{ asset('admin/libs/studio/partials/studio-utils.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-utils.js')) }}">
+        src="{{ asset('admin-assets/libs/studio/partials/studio-utils.js') }}?v={{ filemtime(public_path('admin-assets/libs/studio/partials/studio-utils.js')) }}">
     </script>
     <script
-        src="{{ asset('admin/libs/studio/partials/studio-html-parser.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-html-parser.js')) }}">
-    </script>
-
-    <script
-        src="{{ asset('admin/libs/studio/partials/studio-ui-tabs.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-ui-tabs.js')) }}">
-    </script>
-    <script
-        src="{{ asset('admin/libs/studio/partials/studio-ui-panels.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-ui-panels.js')) }}">
-    </script>
-    <script
-        src="{{ asset('admin/libs/studio/partials/studio-ui-devices.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-ui-devices.js')) }}">
-    </script>
-    <script
-        src="{{ asset('admin/libs/studio/partials/studio-ui.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-ui.js')) }}">
+        src="{{ asset('admin-assets/libs/studio/partials/studio-html-parser.js') }}?v={{ filemtime(public_path('admin-assets/libs/studio/partials/studio-html-parser.js')) }}">
     </script>
 
     <script
-        src="{{ asset('admin/libs/studio/partials/studio-blocks-category.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-blocks-category.js')) }}">
+        src="{{ asset('admin-assets/libs/studio/partials/studio-ui-tabs.js') }}?v={{ filemtime(public_path('admin-assets/libs/studio/partials/studio-ui-tabs.js')) }}">
     </script>
     <script
-        src="{{ asset('admin/libs/studio/partials/studio-blocks-manager.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-blocks-manager.js')) }}">
+        src="{{ asset('admin-assets/libs/studio/partials/studio-ui-panels.js') }}?v={{ filemtime(public_path('admin-assets/libs/studio/partials/studio-ui-panels.js')) }}">
     </script>
     <script
-        src="{{ asset('admin/libs/studio/partials/studio-blocks.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-blocks.js')) }}">
-    </script>
-
-    <script
-        src="{{ asset('admin/libs/studio/partials/studio-actions-save.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-actions-save.js')) }}">
+        src="{{ asset('admin-assets/libs/studio/partials/studio-ui-devices.js') }}?v={{ filemtime(public_path('admin-assets/libs/studio/partials/studio-ui-devices.js')) }}">
     </script>
     <script
-        src="{{ asset('admin/libs/studio/partials/studio-actions-export.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-actions-export.js')) }}">
-    </script>
-    <script
-        src="{{ asset('admin/libs/studio/partials/studio-actions.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-actions.js')) }}">
+        src="{{ asset('admin-assets/libs/studio/partials/studio-ui.js') }}?v={{ filemtime(public_path('admin-assets/libs/studio/partials/studio-ui.js')) }}">
     </script>
 
     <script
-        src="{{ asset('admin/libs/studio/partials/studio-widget-components.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-widget-components.js')) }}">
+        src="{{ asset('admin-assets/libs/studio/partials/studio-blocks-category.js') }}?v={{ filemtime(public_path('admin-assets/libs/studio/partials/studio-blocks-category.js')) }}">
     </script>
     <script
-        src="{{ asset('admin/libs/studio/partials/studio-widget-loader.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-widget-loader.js')) }}">
+        src="{{ asset('admin-assets/libs/studio/partials/studio-blocks-manager.js') }}?v={{ filemtime(public_path('admin-assets/libs/studio/partials/studio-blocks-manager.js')) }}">
     </script>
     <script
-        src="{{ asset('admin/libs/studio/partials/studio-widget-manager.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-widget-manager.js')) }}">
+        src="{{ asset('admin-assets/libs/studio/partials/studio-blocks.js') }}?v={{ filemtime(public_path('admin-assets/libs/studio/partials/studio-blocks.js')) }}">
+    </script>
+
+    <script
+        src="{{ asset('admin-assets/libs/studio/partials/studio-actions-save.js') }}?v={{ filemtime(public_path('admin-assets/libs/studio/partials/studio-actions-save.js')) }}">
+    </script>
+    <script
+        src="{{ asset('admin-assets/libs/studio/partials/studio-actions-export.js') }}?v={{ filemtime(public_path('admin-assets/libs/studio/partials/studio-actions-export.js')) }}">
+    </script>
+    <script
+        src="{{ asset('admin-assets/libs/studio/partials/studio-actions.js') }}?v={{ filemtime(public_path('admin-assets/libs/studio/partials/studio-actions.js')) }}">
+    </script>
+
+    <script
+        src="{{ asset('admin-assets/libs/studio/partials/studio-widget-components.js') }}?v={{ filemtime(public_path('admin-assets/libs/studio/partials/studio-widget-components.js')) }}">
+    </script>
+    <script
+        src="{{ asset('admin-assets/libs/studio/partials/studio-widget-loader.js') }}?v={{ filemtime(public_path('admin-assets/libs/studio/partials/studio-widget-loader.js')) }}">
+    </script>
+    <script
+        src="{{ asset('admin-assets/libs/studio/partials/studio-widget-manager.js') }}?v={{ filemtime(public_path('admin-assets/libs/studio/partials/studio-widget-manager.js')) }}">
     </script>
 
     <!-- Quick Editor JS -->
     <script
-        src="{{ asset('admin/libs/studio/partials/studio-quick-editor.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-quick-editor.js')) }}">
+        src="{{ asset('admin-assets/libs/studio/partials/studio-quick-editor.js') }}?v={{ filemtime(public_path('admin-assets/libs/studio/partials/studio-quick-editor.js')) }}">
     </script>
 
     <script
-        src="{{ asset('admin/libs/studio/partials/studio-editor-setup.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-editor-setup.js')) }}">
+        src="{{ asset('admin-assets/libs/studio/partials/studio-editor-setup.js') }}?v={{ filemtime(public_path('admin-assets/libs/studio/partials/studio-editor-setup.js')) }}">
     </script>
     <script
-        src="{{ asset('admin/libs/studio/partials/studio-core.js') }}?v={{ filemtime(public_path('admin/libs/studio/partials/studio-core.js')) }}">
+        src="{{ asset('admin-assets/libs/studio/partials/studio-core.js') }}?v={{ filemtime(public_path('admin-assets/libs/studio/partials/studio-core.js')) }}">
     </script>
     <script
-        src="{{ asset('admin/libs/js-cookie@3.0.5/js.cookie.min.js') }}?v={{ filemtime(public_path('admin/libs/js-cookie@3.0.5/js.cookie.min.js')) }}">
+        src="{{ asset('admin-assets/libs/js-cookie@3.0.5/js.cookie.min.js') }}?v={{ filemtime(public_path('admin-assets/libs/js-cookie@3.0.5/js.cookie.min.js')) }}">
     </script>
-    <script src="{{ asset('admin/libs/studio/app.js') }}?v={{ filemtime(public_path('admin/libs/studio/app.js')) }}">
+    <script src="{{ asset('admin-assets/libs/studio/app.js') }}?v={{ filemtime(public_path('admin-assets/libs/studio/app.js')) }}">
     </script>
 
     @livewireScripts

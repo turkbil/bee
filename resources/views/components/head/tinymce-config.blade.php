@@ -1,4 +1,4 @@
-<script src="{{ asset('admin/libs/tinymce/tinymce.min.js') }}"></script>
+<script src="{{ asset('admin-assets/libs/tinymce/tinymce.min.js') }}"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         // TinyMCE yapılandırması

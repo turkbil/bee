@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\ThemeManagement\Http\Controllers\ThemeManagementController;
+use Modules\ThemeManagement\App\Http\Controllers\ThemeManagementController;
 
 /*
  *--------------------------------------------------------------------------
@@ -14,6 +14,7 @@ use Modules\ThemeManagement\Http\Controllers\ThemeManagementController;
  *
 */
 
-Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
-    Route::apiResource('thememanagement', ThemeManagementController::class)->names('thememanagement');
-});
+// API routes geçici olarak deaktif - controller eksik olduğu için
+// Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
+//     Route::apiResource('thememanagement', ThemeManagementController::class)->names('thememanagement');
+// });

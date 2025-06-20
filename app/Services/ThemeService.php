@@ -29,7 +29,7 @@ class ThemeService
                 
                 // Tenant-specific theme cache'den kontrol et
                 $this->activeTheme = Cache::remember($cacheKey, now()->addHours(24), function() use ($t) {
-                    return Theme::where('name', $t->theme)
+                    return Theme::on('mysql')->where('name', $t->theme)
                                   ->where('is_active', true)
                                   ->first();
                 });
@@ -42,7 +42,7 @@ class ThemeService
             // Global default theme cache'den al
             $globalCacheKey = 'theme_service_default_theme';
             $this->activeTheme = Cache::remember($globalCacheKey, now()->addHours(24), function() {
-                return Theme::where('is_default', true)
+                return Theme::on('mysql')->where('is_default', true)
                     ->where('is_active', true)
                     ->first();
             });

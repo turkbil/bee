@@ -642,7 +642,7 @@
     </div>
     
     @push('styles')
-    <link rel="stylesheet" href="{{ asset('admin/libs/monaco-custom/css/monaco-custom.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin-assets/libs/monaco-custom/css/monaco-custom.css') }}">
     <style>
         .variable-code {
             cursor: pointer;
@@ -674,8 +674,8 @@
     @endpush
     
     @push('scripts')
-    <script src="{{ asset('admin/libs/monaco-custom/js/monaco-custom.js') }}"></script>
-    <script src="{{ asset('admin/libs/monaco-custom/js/widget-example.js') }}"></script>
+    <script src="{{ asset('admin-assets/libs/monaco-custom/js/monaco-custom.js') }}"></script>
+    <script src="{{ asset('admin-assets/libs/monaco-custom/js/widget-example.js') }}"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         function initMonacoEditor() {

@@ -8,14 +8,14 @@
     <title>{{ $widget->name ?? 'Widget Form Builder' }} - Widget Form Düzenleyici</title>
     
     <!-- Tabler CSS -->
-    <link rel="stylesheet" href="{{ asset('admin/css/tabler.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('admin/css/tabler-vendors.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin-assets/css/tabler.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin-assets/css/tabler-vendors.min.css') }}">
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Widget Form Builder CSS -->
-    <link rel="stylesheet" href="{{ asset('admin/libs/form-builder/widgetmanagement/css/form-builder.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin-assets/libs/form-builder/widgetmanagement/css/form-builder.css') }}">
     
     <!-- Özel Stiller -->
     @stack('styles')
@@ -26,17 +26,17 @@
     {{ $slot }}
     
     <!-- JavaScript -->
-    <script src="{{ asset('admin/js/tabler.min.js') }}"></script>
-    <script src="{{ asset('admin/libs/sortable/sortable.min.js') }}"></script>
+    <script src="{{ asset('admin-assets/js/tabler.min.js') }}"></script>
+    <script src="{{ asset('admin-assets/libs/sortable/sortable.min.js') }}"></script>
     
     <!-- Widget Form Builder Ana Modüller -->
-    <script src="{{ asset('admin/libs/form-builder/widgetmanagement/js/form-builder-templates.js') }}"></script>
-    <script src="{{ asset('admin/libs/form-builder/widgetmanagement/js/form-builder-ui.js') }}"></script>
-    <script src="{{ asset('admin/libs/form-builder/widgetmanagement/js/form-builder-drag-drop.js') }}"></script>
-    <script src="{{ asset('admin/libs/form-builder/widgetmanagement/js/form-builder-operations.js') }}"></script>
-    <script src="{{ asset('admin/libs/form-builder/widgetmanagement/js/form-builder-elements.js') }}"></script>
-    <script src="{{ asset('admin/libs/form-builder/widgetmanagement/js/form-builder-core.js') }}"></script>
-    <script src="{{ asset('admin/libs/form-builder/widgetmanagement/js/form-builder.js') }}"></script>
+    <script src="{{ asset('admin-assets/libs/form-builder/widgetmanagement/js/form-builder-templates.js') }}"></script>
+    <script src="{{ asset('admin-assets/libs/form-builder/widgetmanagement/js/form-builder-ui.js') }}"></script>
+    <script src="{{ asset('admin-assets/libs/form-builder/widgetmanagement/js/form-builder-drag-drop.js') }}"></script>
+    <script src="{{ asset('admin-assets/libs/form-builder/widgetmanagement/js/form-builder-operations.js') }}"></script>
+    <script src="{{ asset('admin-assets/libs/form-builder/widgetmanagement/js/form-builder-elements.js') }}"></script>
+    <script src="{{ asset('admin-assets/libs/form-builder/widgetmanagement/js/form-builder-core.js') }}"></script>
+    <script src="{{ asset('admin-assets/libs/form-builder/widgetmanagement/js/form-builder.js') }}"></script>
     
     <!-- Özel JavaScript -->
     @stack('scripts')

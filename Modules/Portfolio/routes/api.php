@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\Portfolio\Http\Controllers\PortfolioController;
+// use Modules\Portfolio\Http\Controllers\PortfolioController;
 
 /*
  *--------------------------------------------------------------------------
@@ -14,5 +14,5 @@ use Modules\Portfolio\Http\Controllers\PortfolioController;
  *
 */
 
-Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
-});
+// Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
+// });

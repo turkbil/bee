@@ -57,6 +57,7 @@ $siteTitle = settings('site_title', config('app.name'));
         </h1>
 
         <div class="navbar-nav flex-row order-md-last align-items-center">
+            <!-- Desktop: Tüm butonlar görünür -->
             <div class="d-none d-md-flex align-items-center">
                 <!-- Tema Ayarları Butonu -->
                 <div class="nav-item me-2">
@@ -70,7 +71,7 @@ $siteTitle = settings('site_title', config('app.name'));
 
                 <!-- Gece/Gündüz Mod Switch'i -->
                 <div class="nav-item me-2">
-                    <div class="d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; border-radius: 0.375rem;" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Tema Modu">
+                    <div class="d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; border-radius: 0.375rem; margin-top: -2px;" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Tema Modu">
                         <div class="theme-mode" data-theme="light">
                             <input type="checkbox" id="switch" class="dark-switch">
                             <div class="app">
@@ -125,8 +126,8 @@ $siteTitle = settings('site_title', config('app.name'));
                                             </span>
                                         </div>
                                         <div class="col text-truncate">
-                                            <div class="fw-bold text-dark d-block">
-                                                {{ $activity->description }}
+                                            <div class="fw-bold d-block">
+                                                {{ ucfirst($activity->description) }}
                                             </div>
                                             <div class="d-block text-muted small">
                                                 {{ $activity->causer->name ?? 'Sistem' }} • {{ $activity->created_at->diffForHumans() }}
@@ -176,52 +177,143 @@ $siteTitle = settings('site_title', config('app.name'));
                                 <div class="row g-3">
                                     @if($isCentral)
                                     <div class="col-4">
-                                        <a href="#" class="d-flex flex-column text-center p-3 border rounded-2 text-decoration-none text-dark cache-clear-btn hover-bg-light" data-action="clear">
-                                            <i class="fa-solid fa-broom mb-2 text-primary" style="font-size: 28px;"></i>
-                                            <span class="fw-semibold">Cache<br>Temizle</span>
+                                        <a href="#" class="d-flex flex-column text-center py-3 px-2 quick-action-item cache-clear-btn" data-action="clear">
+                                            <i class="fa-solid fa-broom mb-2" style="font-size: 28px;"></i>
+                                            <span class="nav-link-title">Cache<br>Temizle</span>
                                         </a>
                                     </div>
                                     <div class="col-4">
-                                        <a href="#" class="d-flex flex-column text-center p-3 border rounded-2 text-decoration-none text-dark cache-clear-all-btn hover-bg-light" data-action="clear-all">
-                                            <i class="fa-solid fa-trash-can mb-2 text-danger" style="font-size: 28px;"></i>
-                                            <span class="fw-semibold">Sistem<br>Cache</span>
+                                        <a href="#" class="d-flex flex-column text-center py-3 px-2 quick-action-item cache-clear-all-btn" data-action="clear-all">
+                                            <i class="fa-solid fa-trash-can mb-2" style="font-size: 28px;"></i>
+                                            <span class="nav-link-title">Sistem<br>Cache</span>
                                         </a>
                                     </div>
                                     <div class="col-4">
-                                        <a href="{{ route('admin.modulemanagement.index') }}" class="d-flex flex-column text-center p-3 border rounded-2 text-decoration-none text-dark hover-bg-light">
-                                            <i class="fa-solid fa-puzzle-piece mb-2 text-info" style="font-size: 28px;"></i>
-                                            <span class="fw-semibold">Modüller</span>
+                                        <a href="{{ route('admin.modulemanagement.index') }}" class="d-flex flex-column text-center py-3 px-2 quick-action-item">
+                                            <i class="fa-solid fa-puzzle-piece mb-2" style="font-size: 28px;"></i>
+                                            <span class="nav-link-title">Modüller</span>
                                         </a>
                                     </div>
                                     @else
                                     <div class="col-4">
-                                        <a href="#" class="d-flex flex-column text-center p-3 border rounded-2 text-decoration-none text-dark cache-clear-btn hover-bg-light" data-action="clear">
-                                            <i class="fa-solid fa-broom mb-2 text-primary" style="font-size: 28px;"></i>
-                                            <span class="fw-semibold">Cache<br>Temizle</span>
+                                        <a href="#" class="d-flex flex-column text-center py-3 px-2 quick-action-item cache-clear-btn" data-action="clear">
+                                            <i class="fa-solid fa-broom mb-2" style="font-size: 28px;"></i>
+                                            <span class="nav-link-title">Cache<br>Temizle</span>
                                         </a>
                                     </div>
                                     <div class="col-4">
-                                        <a href="{{ route('admin.modulemanagement.index') }}" class="d-flex flex-column text-center p-3 border rounded-2 text-decoration-none text-dark hover-bg-light">
-                                            <i class="fa-solid fa-puzzle-piece mb-2 text-info" style="font-size: 28px;"></i>
-                                            <span class="fw-semibold">Modüller</span>
+                                        <a href="{{ route('admin.modulemanagement.index') }}" class="d-flex flex-column text-center py-3 px-2 quick-action-item">
+                                            <i class="fa-solid fa-puzzle-piece mb-2" style="font-size: 28px;"></i>
+                                            <span class="nav-link-title">Modüller</span>
                                         </a>
                                     </div>
                                     <div class="col-4">
-                                        <a href="{{ route('admin.usermanagement.index') }}" class="d-flex flex-column text-center p-3 border rounded-2 text-decoration-none text-dark hover-bg-light">
-                                            <i class="fa-solid fa-users mb-2 text-success" style="font-size: 28px;"></i>
-                                            <span class="fw-semibold">Kullanıcılar</span>
+                                        <a href="{{ route('admin.usermanagement.index') }}" class="d-flex flex-column text-center py-3 px-2 quick-action-item">
+                                            <i class="fa-solid fa-users mb-2" style="font-size: 28px;"></i>
+                                            <span class="nav-link-title">Kullanıcılar</span>
                                         </a>
                                     </div>
                                     @endif
+                                    <div class="col-4">
+                                        <a href="{{ route('admin.studio.index') }}" class="d-flex flex-column text-center py-3 px-2 quick-action-item">
+                                            <i class="fa-solid fa-palette mb-2" style="font-size: 28px;"></i>
+                                            <span class="nav-link-title">Studio</span>
+                                        </a>
+                                    </div>
+                                    <div class="col-4">
+                                        <a href="{{ route('admin.settingmanagement.index') }}" class="d-flex flex-column text-center py-3 px-2 quick-action-item">
+                                            <i class="fa-solid fa-sliders mb-2" style="font-size: 28px;"></i>
+                                            <span class="nav-link-title">Ayarlar</span>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                
             </div>
+
+            <!-- Mobile: Tek buton -->
+            <div class="d-md-none nav-item dropdown me-3">
+                <a href="#" class="nav-link d-flex flex-column align-items-center justify-content-center" data-bs-toggle="dropdown" tabindex="-1" data-bs-auto-close="outside" aria-expanded="false" style="width: 50px; height: 50px; border-radius: 0.375rem;">
+                    <i class="fa-solid fa-ellipsis-v" style="font-size: 16px;"></i>
+                    <small class="mt-1" style="font-size: 9px; line-height: 1;">Menü</small>
+                </a>
+                <div class="dropdown-menu dropdown-menu-arrow dropdown-menu-end dropdown-menu-card">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Admin İşlemler</div>
+                        </div>
+                        <div class="card-body p-2">
+                            <div class="row g-2">
+                                <!-- Cache Temizle -->
+                                <div class="col-6">
+                                    <a href="#" class="d-flex flex-column text-center p-2 border rounded mobile-quick-action cache-clear-btn" data-action="clear">
+                                        <i class="fa-solid fa-broom mb-1 text-primary" style="font-size: 18px;"></i>
+                                        <small class="fw-bold">Cache<br>Temizle</small>
+                                    </a>
+                                </div>
+                                @if($isCentral)
+                                <!-- Sistem Cache -->
+                                <div class="col-6">
+                                    <a href="#" class="d-flex flex-column text-center p-2 border rounded mobile-quick-action cache-clear-all-btn" data-action="clear-all">
+                                        <i class="fa-solid fa-trash-can mb-1 text-danger" style="font-size: 18px;"></i>
+                                        <small class="fw-bold">Sistem<br>Cache</small>
+                                    </a>
+                                </div>
+                                @endif
+                                <!-- Tema -->
+                                <div class="col-6">
+                                    <a href="#" class="d-flex flex-column text-center p-2 border rounded mobile-quick-action" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTheme">
+                                        <i class="fa-solid fa-brush mb-1 text-primary" style="font-size: 18px;"></i>
+                                        <small class="fw-bold">Tema<br>Ayarları</small>
+                                    </a>
+                                </div>
+                                <!-- Aktiviteler -->
+                                <div class="col-6">
+                                    <a href="{{ route('admin.usermanagement.activity.logs') }}" class="d-flex flex-column text-center p-2 border rounded mobile-quick-action">
+                                        <i class="fa-solid fa-bell mb-1 text-info" style="font-size: 18px;"></i>
+                                        <small class="fw-bold">Son<br>Aktiviteler</small>
+                                    </a>
+                                </div>
+                                <!-- Modüller -->
+                                <div class="col-6">
+                                    <a href="{{ route('admin.modulemanagement.index') }}" class="d-flex flex-column text-center p-2 border rounded mobile-quick-action">
+                                        <i class="fa-solid fa-puzzle-piece mb-1 text-info" style="font-size: 18px;"></i>
+                                        <small class="fw-bold">Modül<br>Yönetimi</small>
+                                    </a>
+                                </div>
+                                @if(!$isCentral)
+                                <!-- Kullanıcılar -->
+                                <div class="col-6">
+                                    <a href="{{ route('admin.usermanagement.index') }}" class="d-flex flex-column text-center p-2 border rounded mobile-quick-action">
+                                        <i class="fa-solid fa-users mb-1 text-success" style="font-size: 18px;"></i>
+                                        <small class="fw-bold">Kullanıcı<br>Yönetimi</small>
+                                    </a>
+                                </div>
+                                @endif
+                                <!-- Studio -->
+                                <div class="col-6">
+                                    <a href="{{ route('admin.studio.index') }}" class="d-flex flex-column text-center p-2 border rounded mobile-quick-action">
+                                        <i class="fa-solid fa-palette mb-1 text-warning" style="font-size: 18px;"></i>
+                                        <small class="fw-bold">Studio<br>Editör</small>
+                                    </a>
+                                </div>
+                                <!-- Ayarlar -->
+                                <div class="col-6">
+                                    <a href="{{ route('admin.settingmanagement.index') }}" class="d-flex flex-column text-center p-2 border rounded mobile-quick-action">
+                                        <i class="fa-solid fa-sliders mb-1 text-secondary" style="font-size: 18px;"></i>
+                                        <small class="fw-bold">Sistem<br>Ayarları</small>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <div class="nav-item dropdown">
-                <a href="#" class="nav-link d-flex lh-1 p-0 px-2 align-items-center" data-bs-toggle="dropdown" aria-label="Open user menu" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="Kullanıcı Menüsü">
+                <a href="#" class="nav-link d-flex lh-1 p-0 px-2 align-items-center" data-bs-toggle="dropdown" aria-label="Open user menu" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Kullanıcı Menüsü">
                     <span class="avatar avatar-sm d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; border-radius: 0.375rem;">
                         <i class="fa-solid fa-user" style="font-size: 18px;"></i>
                     </span>
@@ -266,7 +358,7 @@ $siteTitle = settings('site_title', config('app.name'));
                         <a class="nav-link dropdown-toggle" href="#navbar-content" data-bs-toggle="dropdown"
                             data-bs-auto-close="outside" role="button" aria-expanded="false">
                             <span class="nav-link-icon d-md-none d-lg-inline-block">
-                                <i class="fa-solid fa-file-alt" style="width: 24px; height: 24px; font-size: 18px;"></i>
+                                <i class="fa-solid fa-file-alt" style="font-size: 18px;"></i>
                             </span>
                             <span class="nav-link-title">İçerik</span>
                         </a>
@@ -286,7 +378,7 @@ $siteTitle = settings('site_title', config('app.name'));
                         <a class="nav-link dropdown-toggle" href="#navbar-widget" data-bs-toggle="dropdown"
                             data-bs-auto-close="outside" role="button" aria-expanded="false">
                             <span class="nav-link-icon d-md-none d-lg-inline-block">
-                                <i class="fa-solid fa-puzzle-piece" style="width: 24px; height: 24px; font-size: 18px;"></i>
+                                <i class="fa-solid fa-puzzle-piece" style="font-size: 18px;"></i>
                             </span>
                             <span class="nav-link-title">Bileşen</span>
                         </a>
@@ -306,7 +398,7 @@ $siteTitle = settings('site_title', config('app.name'));
                         <a class="nav-link dropdown-toggle" href="#navbar-management" data-bs-toggle="dropdown"
                             data-bs-auto-close="outside" role="button" aria-expanded="false">
                             <span class="nav-link-icon d-md-none d-lg-inline-block">
-                                <i class="fa-solid fa-cogs" style="width: 24px; height: 24px; font-size: 18px;"></i>
+                                <i class="fa-solid fa-cogs" style="font-size: 18px;"></i>
                             </span>
                             <span class="nav-link-title">Yönetim</span>
                         </a>
@@ -326,7 +418,7 @@ $siteTitle = settings('site_title', config('app.name'));
                         <a class="nav-link dropdown-toggle" href="#navbar-system" data-bs-toggle="dropdown"
                             data-bs-auto-close="outside" role="button" aria-expanded="false">
                             <span class="nav-link-icon d-md-none d-lg-inline-block">
-                                <i class="fa-solid fa-server" style="width: 24px; height: 24px; font-size: 18px;"></i>
+                                <i class="fa-solid fa-server" style="font-size: 18px;"></i>
                             </span>
                             <span class="nav-link-title">Sistem</span>
                         </a>

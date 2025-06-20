@@ -98,6 +98,11 @@ class LimitService
                     'used_month' => 0,
                     'reset_at' => now(),
                 ]);
+                
+                // Limit oluşturma log'u
+                if (function_exists('log_activity')) {
+                    log_activity($limit, 'oluşturuldu');
+                }
             }
             
             return $limit;

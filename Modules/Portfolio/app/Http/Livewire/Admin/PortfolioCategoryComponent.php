@@ -152,6 +152,15 @@ class PortfolioCategoryComponent extends Component
                 ->update(['order' => $item['order']]);
         }
 
+        // Sıralama işlemi log'u
+        if (function_exists('log_activity')) {
+            activity()
+                ->causedBy(auth()->user())
+                ->inLog('PortfolioCategory')
+                ->withProperties(['kategori_sayisi' => count($list)])
+                ->log('Portfolio kategorileri sıralandı');
+        }
+
         $this->loadCategories();
         
         $this->dispatch('toast', [

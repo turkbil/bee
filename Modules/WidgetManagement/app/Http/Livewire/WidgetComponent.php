@@ -71,6 +71,11 @@ class WidgetComponent extends Component
             ]
         ]);
         
+        // Widget instance oluşturma log'u
+        if ($tenantWidget && function_exists('log_activity')) {
+            log_activity($tenantWidget, 'oluşturuldu');
+        }
+        
         if ($tenantWidget) {
             $this->dispatch('toast', [
                 'title' => 'Başarılı!',
@@ -84,6 +89,11 @@ class WidgetComponent extends Component
     {
         $tenantWidget = TenantWidget::findOrFail($tenantWidgetId);
         $name = $tenantWidget->settings['title'] ?? 'Bileşen';
+        
+        // Widget instance silme log'u
+        if (function_exists('log_activity')) {
+            log_activity($tenantWidget, 'silindi');
+        }
         
         if ($tenantWidget->delete()) {
             $this->dispatch('toast', [
@@ -101,6 +111,11 @@ class WidgetComponent extends Component
         // TenantWidget'ın aktif durumunu değiştir
         $tenantWidget->is_active = !$tenantWidget->is_active;
         $tenantWidget->save();
+        
+        // Widget toggle log'u
+        if (function_exists('log_activity')) {
+            log_activity($tenantWidget, $tenantWidget->is_active ? 'aktifleştirildi' : 'pasifleştirildi');
+        }
         
         $status = $tenantWidget->is_active ? 'aktifleştirildi' : 'devre dışı bırakıldı';
         $type = $tenantWidget->is_active ? 'success' : 'warning';

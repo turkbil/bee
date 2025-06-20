@@ -146,9 +146,9 @@
 
 @push('scripts')
 <script
-    src="{{ asset('admin/libs/sortable/sortable.min.js') }}?v={{ filemtime(public_path('admin/libs/sortable/sortable.min.js')) }}">
+    src="{{ asset('admin-assets/libs/sortable/sortable.min.js') }}?v={{ filemtime(public_path('admin-assets/libs/sortable/sortable.min.js')) }}">
 </script>
 <script
-    src="{{ asset('admin/libs/sortable/sortable-settings.js') }}?v={{ filemtime(public_path('admin/libs/sortable/sortable-settings.js')) }}">
+    src="{{ asset('admin-assets/libs/sortable/sortable-settings.js') }}?v={{ filemtime(public_path('admin-assets/libs/sortable/sortable-settings.js')) }}">
 </script>
 @endpush

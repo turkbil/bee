@@ -57,8 +57,12 @@ class ThemeManagementComponent extends Component
         if ($theme) {
             $theme->update(['is_active' => !$theme->is_active]);
             
-            // Cache'i temizle
+            // Tüm cache'leri temizle
             app('App\Services\ThemeService')->clearThemeCache();
+            \Illuminate\Support\Facades\Cache::flush();
+            \Illuminate\Support\Facades\Artisan::call('config:clear');
+            \Illuminate\Support\Facades\Artisan::call('route:clear');
+            \Illuminate\Support\Facades\Artisan::call('view:clear');
             
             log_activity(
                 $theme,
@@ -82,8 +86,12 @@ class ThemeManagementComponent extends Component
         $theme = Theme::findOrFail($id);
         $theme->update(['is_default' => true]);
         
-        // Cache'i temizle
+        // Tüm cache'leri temizle
         app('App\Services\ThemeService')->clearThemeCache();
+        \Illuminate\Support\Facades\Cache::flush();
+        \Illuminate\Support\Facades\Artisan::call('config:clear');
+        \Illuminate\Support\Facades\Artisan::call('route:clear');
+        \Illuminate\Support\Facades\Artisan::call('view:clear');
         
         log_activity(
             $theme,

@@ -25,6 +25,108 @@ Bu proje, Laravel 12 ile geliştirilmiş, modüler ve çok kiracılı (multi-ten
 
 ## Sürüm Geçmişi
 
+### v1.4.0 (2025-06-20) - Cache Clear Buton Sistemi ve Navigation İyileştirmeleri
+
+- **Cache Clear Buton Sistemi:**
+  - ✅ Admin panele cache temizleme butonları eklendi
+  - ✅ Central domain için 2 buton: Cache Temizle + Tüm Sistem Cache Temizle
+  - ✅ Tenant domain için 1 buton: Cache Temizle
+  - ✅ AJAX ile sayfa yenilenmeden çalışıyor
+  - ✅ Toast notification sistemi entegre
+  - ✅ Loading animasyonları (spinner) eklendi
+
+- **Navigation İkon Standardizasyonu:**
+  - ✅ Tüm navigation ikonları aynı boyut ve hizalamada (32x32px)
+  - ✅ `nav-icon` CSS class'ı ile tutarlı tasarım
+  - ✅ Hover efektleri: Sadece opacity, renk değişimi yok
+  - ✅ Bootstrap tooltip sistemi tüm ikonlarda aktif
+  - ✅ Responsive uyumlu - tüm cihazlarda aynı davranış
+  - ✅ `align-items-center` ile perfect middle alignment
+
+- **Tooltip ve UX İyileştirmeleri:**
+  - ✅ 4 ikonda da tooltip mevcut (bottom placement)
+  - ✅ "Tenant" kelimesi kaldırıldı - sadece "Cache Temizle"
+  - ✅ Hover'da alt çizgi ve renk değişimi kaldırıldı
+  - ✅ Gece/gündüz switch'ine de tooltip eklendi: "Tema Modu"
+  - ✅ `color: inherit !important` ile mavi renk sorunu çözüldü
+
+- **Teknik Detaylar:**
+  - ✅ `CacheController`: Central ve tenant aware cache temizleme
+  - ✅ Redis, Laravel Cache, View, Route, Config cache temizleme
+  - ✅ `main.js`'e cache clear JavaScript kodu eklendi
+  - ✅ `main.css`'e nav-icon stilleri eklendi
+  - ✅ Route'lar: `/admin/cache/clear` ve `/admin/cache/clear-all`
+
+### v1.3.5 (2025-06-20) - Auth Sayfaları Layout ve SVG Tasarımları
+- **Yeni Özellikler:**
+  - ✅ **Login Sayfası:** Eğlenceli ve oyunsu SVG tasarımı (gülümseyen yüz, dans eden yıldızlar, uçan kalpler, müzik notaları, parıltı efektleri)
+  - ✅ **Register Sayfası:** Organik doğa esintili SVG art (büyüyen ağaç dalları, uçan yapraklar, spiral büyüme desenleri)
+  - ✅ **Forgot Password:** Dijital/teknoloji temalı SVG art (veri akış çizgileri, devre düğümleri, binary kod noktaları)
+  - ✅ **Domain Bazlı Test Girişleri:** Her domain kendi test kullanıcısını gösteriyor
+  
+- **Layout Düzeltmeleri:**
+  - ✅ Guest layout'tan `min-h-screen` ve zorlanmış ortalama kaldırıldı
+  - ✅ Tüm auth sayfalarında `py-16` ile mükemmel eşit üst/alt boşluklar
+  - ✅ Doğal yükseklikler kullanılıyor, zorlanmış boyut problemleri çözüldü
+  - ✅ Container'lar artık aynı noktadan başlayıp doğal akışlarını takip ediyor
+  
+- **Hızlı Test Girişi Sistemi:**
+  - ✅ Nurullah + Turkbil her domain'de görünür
+  - ✅ laravel.test → Laravel User eklendi
+  - ✅ a.test → A User eklendi  
+  - ✅ b.test → B User eklendi
+  - ✅ c.test → C User eklendi
+  - ✅ 3 sütun grid layout ile kompakt tasarım
+  
+- **SVG Animasyon Sistemi:**
+  - ✅ Senkronize animasyonlar (bounce, spin, pulse, ping)
+  - ✅ Farklı gecikme süreleri ile dinamik görünüm
+  - ✅ Her sayfa için unique sanatsal konsept
+  - ✅ Responsive tasarım ve dark mode uyumlu
+
+### v1.3.4 (2025-06-20) - Avatar Yönetim Sistemi Tamamen Yenilendi
+- **Yeni Özellikler:**
+  - ✅ Modern Alpine.js & Tailwind tabanlı avatar yönetim arayüzü
+  - ✅ Drag & Drop dosya yükleme sistemi
+  - ✅ Real-time avatar önizleme ve progress bar
+  - ✅ Anında DOM güncellemesi - sayfa yenilenmeden çalışıyor
+  - ✅ Global avatar senkronizasyonu (header, sidebar, profile sayfası)
+  
+- **Cache ve Performance:**
+  - ✅ Avatar sayfası `no-cache` headers ile cache sorunu çözüldü
+  - ✅ Agresif cache temizleme: `cache()->flush()` + opcache reset
+  - ✅ URL cache busting: `?v=timestamp` parametresi
+  - ✅ Event-driven sistem ile tüm componentler senkronize
+  
+- **Düzeltmeler:**
+  - ✅ Avatar silme sonrası DOM'da eski resim kalma sorunu çözüldü
+  - ✅ Blade `@if/@else` yapısı kaldırıldı, tamamen Alpine.js ile yapıldı
+  - ✅ AJAX error handling ve user feedback iyileştirildi
+  - ✅ File validation (tip, boyut) güçlendirildi
+  
+- **Teknik Detaylar:**
+  - ✅ **Custom Event System:** `avatar-updated` eventi ile componentler arası iletişim
+  - ✅ **Consistent State:** `avatarUrl` değişkeni ile tüm UI state yönetimi
+  - ✅ **Real-time Updates:** Yükleme/silme işlemlerinde anında görsel güncelleme
+  - ✅ **Türkçe Karakter Desteği:** `user_initials()` helper ile UTF-8 destek
+
+### v1.3.3 (2025-06-19) - Tenant Gerçek Zamanlı Cache Sistemi Eklendi
+- **Yeni Özellikler:**
+  - ✅ Tenant aktif/pasif yapıldığında otomatik cache temizleme (`TenantComponent::toggleActive`)
+  - ✅ Tenant güncelleme/oluşturma sırasında otomatik cache temizleme (`TenantComponent::saveTenant`)
+  - ✅ ThemeService central veritabanı bağlantısı düzeltildi (`Theme::on('mysql')`)
+  - ✅ Gerçek zamanlı tenant durumu değişikliği sistemi
+  
+- **Düzeltmeler:**
+  - ✅ Tenant offline yapıldığında hala erişilebilir olma sorunu çözüldü
+  - ✅ Theme fallback sistemi düzeltildi - tenant/central veritabanı ayrımı
+  - ✅ Cache temizleme: Application, Config, Route, View cache'leri
+  
+- **Teknik Detaylar:**
+  - ✅ **Anında etki:** Tenant durumu değiştirildiğinde site anında açılır/kapanır
+  - ✅ **Kapsamlı cache temizleme:** Tüm cache türleri otomatik temizleniyor
+  - ✅ **Central/Tenant ayrımı:** Theme modeli doğru veritabanından okunuyor
+
 ### v1.3.2 (2025-06-19) - Tema Offline Modu Sistemi Eklendi
 - **Yeni Özellikler:**
   - ✅ `CheckThemeStatus` middleware'i eklendi - tema durumu kontrolü

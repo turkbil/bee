@@ -29,6 +29,19 @@ class TenantWidget extends Model
     }
     
     /**
+     * Widget bilgilerini güvenli şekilde çek
+     */
+    public function getWidget()
+    {
+        if (!$this->widget_id) {
+            return null;
+        }
+        
+        // Central DB'den widget bilgisini çek
+        return Widget::find($this->widget_id);
+    }
+    
+    /**
      * Widget öğeleri (dinamik widget'lar için)
      */
     public function items(): HasMany

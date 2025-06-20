@@ -207,3 +207,50 @@ if (!function_exists('href')) {
         return $url;
     }
 }
+
+if (!function_exists('user_initials')) {
+    /**
+     * Kullanıcı adından avatar harfleri çıkarır (Türkçe karakter destekli)
+     * 
+     * @param string $name
+     * @param int $length
+     * @return string
+     */
+    function user_initials($name, $length = 2)
+    {
+        // Türkçe karakterleri temizle ve normalize et
+        $name = trim($name);
+        if (empty($name)) {
+            return 'U'; // Default User
+        }
+        
+        // İsimleri böl
+        $parts = explode(' ', $name);
+        $initials = '';
+        
+        // Her kelimeden ilk harfi al
+        foreach ($parts as $part) {
+            if (!empty($part)) {
+                // mb_substr kullanarak Türkçe karakter desteği
+                $initial = mb_strtoupper(mb_substr($part, 0, 1, 'UTF-8'), 'UTF-8');
+                $initials .= $initial;
+                
+                // İstenilen uzunluka ulaştık mı?
+                if (mb_strlen($initials, 'UTF-8') >= $length) {
+                    break;
+                }
+            }
+        }
+        
+        // Eğer yeterli harf yoksa, ilk kelimeden daha fazla harf al
+        if (mb_strlen($initials, 'UTF-8') < $length && !empty($parts[0])) {
+            $needed = $length - mb_strlen($initials, 'UTF-8');
+            $firstWord = $parts[0];
+            for ($i = 1; $i <= $needed && $i < mb_strlen($firstWord, 'UTF-8'); $i++) {
+                $initials .= mb_strtoupper(mb_substr($firstWord, $i, 1, 'UTF-8'), 'UTF-8');
+            }
+        }
+        
+        return mb_substr($initials, 0, $length, 'UTF-8');
+    }
+}

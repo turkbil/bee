@@ -25,8 +25,17 @@ Route::middleware([InitializeTenancy::class])->get('/sitemap.xml', function() {
 
 // Normal Laravel route'ları - ÖNCE tanımlanmalı
 Route::middleware('auth')->group(function () {
+    // Profile routes - ayrı sayfalar
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/profile/avatar', [ProfileController::class, 'avatar'])->name('profile.avatar');
+    Route::get('/profile/password', [ProfileController::class, 'password'])->name('profile.password');
+    Route::get('/profile/delete', [ProfileController::class, 'delete'])->name('profile.delete');
+    
+    // Profile actions
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/password', [ProfileController::class, 'updatePassword'])->name('password.update');
+    Route::post('/profile/avatar', [ProfileController::class, 'uploadAvatar'])->name('avatar.upload');
+    Route::delete('/profile/avatar', [ProfileController::class, 'removeAvatar'])->name('avatar.remove');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
@@ -51,11 +60,11 @@ Route::middleware([InitializeTenancy::class, 'web'])
         // Regex ile admin, api vb. system route'larını hariç tut
         Route::get('/{slug1}', function($slug1) {
             return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1);
-        })->where('slug1', '^(?!admin|api|login|logout|register|password|auth|storage|css|js|assets).*$');
+        })->where('slug1', '^(?!admin|api|login|logout|register|password|auth|storage|css|js|assets|profile|dashboard).*$');
         
         Route::get('/{slug1}/{slug2}', function($slug1, $slug2) {
             return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1, $slug2);
-        })->where('slug1', '^(?!admin|api|login|logout|register|password|auth|storage|css|js|assets).*$');
+        })->where('slug1', '^(?!admin|api|login|logout|register|password|auth|storage|css|js|assets|profile|dashboard).*$');
     });
 
 // Tenant medya dosyalarına erişim

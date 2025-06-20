@@ -217,6 +217,12 @@ class TenantComponent extends Component
     
             $this->resetForm();
     
+            // Cache temizle
+            \Illuminate\Support\Facades\Cache::flush();
+            \Illuminate\Support\Facades\Artisan::call('config:clear');
+            \Illuminate\Support\Facades\Artisan::call('route:clear');
+            \Illuminate\Support\Facades\Artisan::call('view:clear');
+            
             $this->dispatch('toast', [
                 'title' => 'Başarılı!',
                 'message' => $wasRecentlyCreated ? 'Tenant başarıyla oluşturuldu.' : 'Tenant başarıyla güncellendi.',
@@ -288,6 +294,12 @@ class TenantComponent extends Component
                         'is_active' => $newStatus ? 1 : 0,
                         'updated_at' => now()
                     ]);
+                
+                // Tüm cache'leri temizle
+                \Illuminate\Support\Facades\Cache::flush();
+                \Illuminate\Support\Facades\Artisan::call('config:clear');
+                \Illuminate\Support\Facades\Artisan::call('route:clear');
+                \Illuminate\Support\Facades\Artisan::call('view:clear');
                 
                 // Log işlemi
                 activity()

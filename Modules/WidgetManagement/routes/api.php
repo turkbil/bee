@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\WidgetManagement\Http\Controllers\WidgetManagementController;
+// use Modules\WidgetManagement\Http\Controllers\WidgetManagementController;
 
 /*
  *--------------------------------------------------------------------------
@@ -14,6 +14,7 @@ use Modules\WidgetManagement\Http\Controllers\WidgetManagementController;
  *
 */
 
-Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
-    Route::apiResource('widgetmanagement', WidgetManagementController::class)->names('widgetmanagement');
-});
+// API routes commented out until controller is created
+// Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
+//     Route::apiResource('widgetmanagement', WidgetManagementController::class)->names('widgetmanagement');
+// });

@@ -38,98 +38,129 @@ $activeType = request()->segment(2);
 $siteTitle = settings('site_title', config('app.name'));
 @endphp
 
-<header class="navbar navbar-expand-md d-print-none" style="background: #7952b3" data-bs-theme="dark">
-    <div class="container-xl">
+<header class="navbar navbar-expand-md d-print-none">
+    <div class="container">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu" aria-controls="navbar-menu" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
+        <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
             <a href="{{ route('admin.dashboard') }}">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 68 68" width="32" height="32" aria-label="{{ $siteTitle }}" class="navbar-brand-image">
-                    <path d="M64.6 16.2C63 9.9 58.1 5 51.8 3.4 40 1.5 28 1.5 16.2 3.4 9.9 5 5 9.9 3.4 16.2 1.5 28 1.5 40 3.4 51.8 5 58.1 9.9 63 16.2 64.6c11.8 1.9 23.8 1.9 35.6 0C58.1 63 63 58.1 64.6 51.8c1.9-11.8 1.9-23.8 0-35.6zM33.3 36.3c-2.8 4.4-6.6 8.2-11.1 11-1.5.9-3.3.9-4.8.1s-2.4-2.3-2.5-4c0-1.7.9-3.3 2.4-4.1 2.3-1.4 4.4-3.2 6.1-5.3-1.8-2.1-3.8-3.8-6.1-5.3-2.3-1.3-3-4.2-1.7-6.4s4.3-2.9 6.5-1.6c4.5 2.8 8.2 6.5 11.1 10.9 1 1.4 1 3.3.1 4.7zM49.2 46H37.8c-2.1 0-3.8-1-3.8-3s1.7-3 3.8-3h11.4c2.1 0 3.8 1 3.8 3s-1.7 3-3.8 3z" fill="#066fd1" style="fill: var(--tblr-primary, #066fd1)"></path>
-                </svg>
+                {{ $siteTitle }}
+                @if(!$isCentral && $tenantId)
+                @php
+                $tenant = \App\Models\Tenant::find($tenantId);
+                $tenantName = $tenant ? $tenant->name ?? $tenant->id : '';
+                @endphp
+                <span class="small text-muted ms-2">({{ $tenantName }})</span>
+                @endif
             </a>
-        </div>
+        </h1>
 
-        <div class="navbar-nav flex-row order-md-last">
-            <div class="d-none d-md-flex">
-                <!-- Dark/Light Mode Switch -->
-                <div class="nav-item">
-                    <a href="#" class="nav-link px-0 hide-theme-dark" data-bs-toggle="tooltip" data-bs-placement="bottom" aria-label="Enable dark mode" data-bs-original-title="Enable dark mode">
-                        <i class="fa-solid fa-moon"></i>
-                    </a>
-                    <a href="#" class="nav-link px-0 hide-theme-light" data-bs-toggle="tooltip" data-bs-placement="bottom" aria-label="Enable light mode" data-bs-original-title="Enable light mode">
-                        <i class="fa-solid fa-sun"></i>
+        <div class="navbar-nav flex-row order-md-last align-items-center">
+            <div class="d-none d-md-flex align-items-center">
+                <!-- Tema Ayarları Butonu -->
+                <div class="nav-item me-2">
+                    <a href="#" class="nav-link d-flex align-items-center justify-content-center" data-bs-toggle="offcanvas"
+                        data-bs-target="#offcanvasTheme" data-bs-toggle="tooltip" data-bs-placement="bottom" 
+                        title="Tema Ayarları" 
+                        style="width: 40px; height: 40px; border-radius: 0.375rem;">
+                        <i class="fa-solid fa-brush" style="font-size: 18px;"></i>
                     </a>
                 </div>
-                
-                <!-- Notifications Dropdown -->
-                <div class="nav-item dropdown d-none d-md-flex">
-                    <a href="#" class="nav-link px-0" data-bs-toggle="dropdown" tabindex="-1" aria-label="Show notifications" data-bs-auto-close="outside" aria-expanded="false">
-                        <i class="fa-solid fa-bell"></i>
-                        <span class="badge bg-red"></span>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-arrow dropdown-menu-end dropdown-menu-card">
-                        <div class="card">
-                            <div class="card-header d-flex">
-                                <h3 class="card-title">Bildirimler</h3>
-                                <div class="btn-close ms-auto" data-bs-dismiss="dropdown"></div>
-                            </div>
-                            <div class="list-group list-group-flush list-group-hoverable">
-                                @if($isCentral)
-                                <div class="list-group-item">
-                                    <div class="row align-items-center">
-                                        <div class="col-auto"><span class="status-dot status-dot-animated bg-red d-block"></span></div>
-                                        <div class="col text-truncate">
-                                            <a href="#" class="text-body d-block">Sistem Güncellemesi</a>
-                                            <div class="d-block text-secondary text-truncate mt-n1">
-                                                Yeni özellikler ve güvenlik yamaları uygulandı
-                                            </div>
+
+                <!-- Gece/Gündüz Mod Switch'i -->
+                <div class="nav-item me-2">
+                    <div class="d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; border-radius: 0.375rem;" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Tema Modu">
+                        <div class="theme-mode" data-theme="light">
+                            <input type="checkbox" id="switch" class="dark-switch">
+                            <div class="app">
+                                <div class="switch-content">
+                                    <div class="switch-label"></div>
+                                    <label for="switch">
+                                        <div class="toggle"></div>
+                                        <div class="names">
+                                            <p class="light"><i class="fa-solid fa-moon"></i></p>
+                                            <p class="dark"><i class="fa-solid fa-sun"></i></p>
+                                            <p class="auto"><i class="fa-solid fa-circle-half-stroke"></i></p>
                                         </div>
-                                        <div class="col-auto">
-                                            <a href="#" class="list-group-item-actions">
-                                                <i class="fa-regular fa-star text-muted"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                                @else
-                                <div class="list-group-item">
-                                    <div class="row align-items-center">
-                                        <div class="col-auto"><span class="status-dot d-block"></span></div>
-                                        <div class="col text-truncate">
-                                            <a href="#" class="text-body d-block">Yeni İçerik</a>
-                                            <div class="d-block text-secondary text-truncate mt-n1">
-                                                5 yeni sayfa eklendi
-                                            </div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <a href="#" class="list-group-item-actions show">
-                                                <i class="fa-solid fa-star text-yellow"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                                @endif
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col">
-                                        <a href="#" class="btn btn-outline-primary w-100">Tümünü Arşivle</a>
-                                    </div>
-                                    <div class="col">
-                                        <a href="#" class="btn btn-outline-primary w-100">Okundu İşaretle</a>
-                                    </div>
+                                    </label>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Apps/Cache Actions Dropdown -->
-                <div class="nav-item dropdown d-none d-md-flex me-3">
-                    <a href="#" class="nav-link px-0" data-bs-toggle="dropdown" tabindex="-1" aria-label="Show app menu" data-bs-auto-close="outside" aria-expanded="false">
-                        <i class="fa-solid fa-grid-3"></i>
+                <!-- Son Aktiviteler Dropdown -->
+                <div class="nav-item dropdown me-2">
+                    <a href="#" class="nav-link d-flex align-items-center justify-content-center" data-bs-toggle="dropdown" tabindex="-1" data-bs-auto-close="outside" aria-expanded="false" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Son Aktiviteler" style="width: 40px; height: 40px; border-radius: 0.375rem;">
+                        <i class="fa-solid fa-bell" style="font-size: 18px;"></i>
+                        @php
+                        // Son 5 dakikadaki aktivite sayısı  
+                        $recentActivityCount = \Spatie\Activitylog\Models\Activity::where('created_at', '>=', now()->subMinutes(5))->count();
+                        @endphp
+                        @if($recentActivityCount > 0)
+                        <span class="badge bg-red">{{ $recentActivityCount }}</span>
+                        @endif
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-arrow dropdown-menu-end dropdown-menu-card">
+                        <div class="card">
+                            <div class="card-header d-flex">
+                                <h3 class="card-title">Son Aktiviteler</h3>
+                                <div class="btn-close ms-auto" data-bs-dismiss="dropdown"></div>
+                            </div>
+                            <div class="list-group list-group-flush list-group-hoverable">
+                                @php
+                                // Son 6 aktiviteyi al
+                                $activities = \Spatie\Activitylog\Models\Activity::with('causer')
+                                    ->latest()
+                                    ->take(6)
+                                    ->get();
+                                @endphp
+                                @forelse($activities as $activity)
+                                <div class="list-group-item py-3">
+                                    <div class="row align-items-center">
+                                        <div class="col-auto">
+                                            <span class="avatar avatar-sm bg-primary text-white rounded-circle">
+                                                <i class="fa-solid fa-{{ $activity->created_at->diffInMinutes(now()) < 5 ? 'bolt' : 'user' }}" style="font-size: 12px;"></i>
+                                            </span>
+                                        </div>
+                                        <div class="col text-truncate">
+                                            <div class="fw-bold text-dark d-block">
+                                                {{ $activity->description }}
+                                            </div>
+                                            <div class="d-block text-muted small">
+                                                {{ $activity->causer->name ?? 'Sistem' }} • {{ $activity->created_at->diffForHumans() }}
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <a href="{{ route('admin.usermanagement.user.activity.logs', ['id' => $activity->causer_id ?? 0]) }}" class="btn btn-ghost-primary btn-sm">
+                                                <i class="fa-solid fa-arrow-right" style="font-size: 12px;"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                @empty
+                                <div class="list-group-item py-4">
+                                    <div class="text-center text-muted">
+                                        <i class="fa-solid fa-inbox mb-2" style="font-size: 24px;"></i>
+                                        <div>Henüz aktivite kaydı yok</div>
+                                    </div>
+                                </div>
+                                @endforelse
+                            </div>
+                            <div class="card-body">
+                                <a href="{{ route('admin.usermanagement.activity.logs') }}" class="btn btn-outline-primary w-100">
+                                    Tüm Aktiviteleri Görüntüle
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Hızlı İşlemler Dropdown -->
+                <div class="nav-item dropdown me-3">
+                    <a href="#" class="nav-link d-flex align-items-center justify-content-center" data-bs-toggle="dropdown" tabindex="-1" data-bs-auto-close="outside" aria-expanded="false" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Hızlı İşlemler" style="width: 40px; height: 40px; border-radius: 0.375rem;">
+                        <i class="fa-solid fa-grid-2" style="font-size: 18px;"></i>
                     </a>
                     <div class="dropdown-menu dropdown-menu-arrow dropdown-menu-end dropdown-menu-card">
                         <div class="card">
@@ -137,72 +168,63 @@ $siteTitle = settings('site_title', config('app.name'));
                                 <div class="card-title">Hızlı İşlemler</div>
                                 <div class="card-actions btn-actions">
                                     <a href="#" class="btn-action" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTheme">
-                                        <i class="fa-solid fa-cog"></i>
+                                        <i class="fa-solid fa-brush" style="font-size: 18px;"></i>
                                     </a>
                                 </div>
                             </div>
-                            <div class="card-body p-2">
-                                <div class="row g-2">
+                            <div class="card-body p-3">
+                                <div class="row g-3">
                                     @if($isCentral)
                                     <div class="col-4">
-                                        <a href="#" class="d-flex flex-column flex-center text-center text-secondary py-3 px-2 link-hoverable cache-clear-btn" data-action="clear">
-                                            <i class="fa-solid fa-broom mb-2" style="font-size: 24px;"></i>
-                                            <span class="small">Cache Temizle</span>
+                                        <a href="#" class="d-flex flex-column text-center p-3 border rounded-2 text-decoration-none text-dark cache-clear-btn hover-bg-light" data-action="clear">
+                                            <i class="fa-solid fa-broom mb-2 text-primary" style="font-size: 28px;"></i>
+                                            <span class="fw-semibold">Cache<br>Temizle</span>
                                         </a>
                                     </div>
                                     <div class="col-4">
-                                        <a href="#" class="d-flex flex-column flex-center text-center text-secondary py-3 px-2 link-hoverable cache-clear-all-btn" data-action="clear-all">
-                                            <i class="fa-solid fa-trash-can mb-2" style="font-size: 24px;"></i>
-                                            <span class="small">Tüm Cache</span>
+                                        <a href="#" class="d-flex flex-column text-center p-3 border rounded-2 text-decoration-none text-dark cache-clear-all-btn hover-bg-light" data-action="clear-all">
+                                            <i class="fa-solid fa-trash-can mb-2 text-danger" style="font-size: 28px;"></i>
+                                            <span class="fw-semibold">Sistem<br>Cache</span>
+                                        </a>
+                                    </div>
+                                    <div class="col-4">
+                                        <a href="{{ route('admin.modulemanagement.index') }}" class="d-flex flex-column text-center p-3 border rounded-2 text-decoration-none text-dark hover-bg-light">
+                                            <i class="fa-solid fa-puzzle-piece mb-2 text-info" style="font-size: 28px;"></i>
+                                            <span class="fw-semibold">Modüller</span>
                                         </a>
                                     </div>
                                     @else
                                     <div class="col-4">
-                                        <a href="#" class="d-flex flex-column flex-center text-center text-secondary py-3 px-2 link-hoverable cache-clear-btn" data-action="clear">
-                                            <i class="fa-solid fa-broom mb-2" style="font-size: 24px;"></i>
-                                            <span class="small">Cache Temizle</span>
+                                        <a href="#" class="d-flex flex-column text-center p-3 border rounded-2 text-decoration-none text-dark cache-clear-btn hover-bg-light" data-action="clear">
+                                            <i class="fa-solid fa-broom mb-2 text-primary" style="font-size: 28px;"></i>
+                                            <span class="fw-semibold">Cache<br>Temizle</span>
+                                        </a>
+                                    </div>
+                                    <div class="col-4">
+                                        <a href="{{ route('admin.modulemanagement.index') }}" class="d-flex flex-column text-center p-3 border rounded-2 text-decoration-none text-dark hover-bg-light">
+                                            <i class="fa-solid fa-puzzle-piece mb-2 text-info" style="font-size: 28px;"></i>
+                                            <span class="fw-semibold">Modüller</span>
+                                        </a>
+                                    </div>
+                                    <div class="col-4">
+                                        <a href="{{ route('admin.usermanagement.index') }}" class="d-flex flex-column text-center p-3 border rounded-2 text-decoration-none text-dark hover-bg-light">
+                                            <i class="fa-solid fa-users mb-2 text-success" style="font-size: 28px;"></i>
+                                            <span class="fw-semibold">Kullanıcılar</span>
                                         </a>
                                     </div>
                                     @endif
-                                    <div class="col-4">
-                                        <a href="#" class="d-flex flex-column flex-center text-center text-secondary py-3 px-2 link-hoverable" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTheme">
-                                            <i class="fa-solid fa-brush mb-2" style="font-size: 24px;"></i>
-                                            <span class="small">Tema Ayarları</span>
-                                        </a>
-                                    </div>
-                                    <div class="col-4">
-                                        <a href="{{ route('admin.modulemanagement.index') }}" class="d-flex flex-column flex-center text-center text-secondary py-3 px-2 link-hoverable">
-                                            <i class="fa-solid fa-puzzle-piece mb-2" style="font-size: 24px;"></i>
-                                            <span class="small">Modüller</span>
-                                        </a>
-                                    </div>
-                                    <div class="col-4">
-                                        <a href="{{ route('admin.settingmanagement.index') }}" class="d-flex flex-column flex-center text-center text-secondary py-3 px-2 link-hoverable">
-                                            <i class="fa-solid fa-sliders mb-2" style="font-size: 24px;"></i>
-                                            <span class="small">Ayarlar</span>
-                                        </a>
-                                    </div>
-                                    <div class="col-4">
-                                        <a href="{{ route('admin.usermanagement.index') }}" class="d-flex flex-column flex-center text-center text-secondary py-3 px-2 link-hoverable">
-                                            <i class="fa-solid fa-users mb-2" style="font-size: 24px;"></i>
-                                            <span class="small">Kullanıcılar</span>
-                                        </a>
-                                    </div>
-                                    <div class="col-4">
-                                        <a href="{{ route('admin.studio.index') }}" class="d-flex flex-column flex-center text-center text-secondary py-3 px-2 link-hoverable">
-                                            <i class="fa-solid fa-palette mb-2" style="font-size: 24px;"></i>
-                                            <span class="small">Studio</span>
-                                        </a>
-                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                
             </div>
             <div class="nav-item dropdown">
-                <a href="#" class="nav-link d-flex p-0 px-1" data-bs-toggle="dropdown" aria-label="Open user menu">
-                    <span class="avatar avatar-sm"><i class="fa-solid fa-user"></i> </span>
+                <a href="#" class="nav-link d-flex lh-1 p-0 px-2 align-items-center" data-bs-toggle="dropdown" aria-label="Open user menu" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="Kullanıcı Menüsü">
+                    <span class="avatar avatar-sm d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; border-radius: 0.375rem;">
+                        <i class="fa-solid fa-user" style="font-size: 18px;"></i>
+                    </span>
                     <div class="d-none d-xl-block ps-2">
                         <div>{{ Auth::user()->name }}</div>
                         <div class="mt-1 small text-secondary">
@@ -241,10 +263,10 @@ $siteTitle = settings('site_title', config('app.name'));
                 <ul class="navbar-nav">
                     @if($groupedModules->has('content') && $groupedModules['content']->count() > 0)
                     <li class="nav-item {{ $activeType == 'content' ? 'active' : '' }} dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"
+                        <a class="nav-link dropdown-toggle" href="#navbar-content" data-bs-toggle="dropdown"
                             data-bs-auto-close="outside" role="button" aria-expanded="false">
                             <span class="nav-link-icon d-md-none d-lg-inline-block">
-                                <i class="fa-solid fa-user-graduate"></i>
+                                <i class="fa-solid fa-file-alt" style="width: 24px; height: 24px; font-size: 18px;"></i>
                             </span>
                             <span class="nav-link-title">İçerik</span>
                         </a>
@@ -261,10 +283,10 @@ $siteTitle = settings('site_title', config('app.name'));
 
                     @if($groupedModules->has('widget') && $groupedModules['widget']->count() > 0)
                     <li class="nav-item {{ $activeType == 'widget' ? 'active' : '' }} dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"
+                        <a class="nav-link dropdown-toggle" href="#navbar-widget" data-bs-toggle="dropdown"
                             data-bs-auto-close="outside" role="button" aria-expanded="false">
                             <span class="nav-link-icon d-md-none d-lg-inline-block">
-                                <i class="fa-solid fa-user-chef"></i>
+                                <i class="fa-solid fa-puzzle-piece" style="width: 24px; height: 24px; font-size: 18px;"></i>
                             </span>
                             <span class="nav-link-title">Bileşen</span>
                         </a>
@@ -281,10 +303,10 @@ $siteTitle = settings('site_title', config('app.name'));
 
                     @if($groupedModules->has('management') && $groupedModules['management']->count() > 0)
                     <li class="nav-item {{ $activeType == 'management' ? 'active' : '' }} dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"
+                        <a class="nav-link dropdown-toggle" href="#navbar-management" data-bs-toggle="dropdown"
                             data-bs-auto-close="outside" role="button" aria-expanded="false">
                             <span class="nav-link-icon d-md-none d-lg-inline-block">
-                                <i class="fa-solid fa-user-police-tie"></i>
+                                <i class="fa-solid fa-cogs" style="width: 24px; height: 24px; font-size: 18px;"></i>
                             </span>
                             <span class="nav-link-title">Yönetim</span>
                         </a>
@@ -301,10 +323,10 @@ $siteTitle = settings('site_title', config('app.name'));
 
                     @if($groupedModules->has('system') && $groupedModules['system']->count() > 0)
                     <li class="nav-item {{ $activeType == 'system' ? 'active' : '' }} dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"
+                        <a class="nav-link dropdown-toggle" href="#navbar-system" data-bs-toggle="dropdown"
                             data-bs-auto-close="outside" role="button" aria-expanded="false">
                             <span class="nav-link-icon d-md-none d-lg-inline-block">
-                                <i class="fa-solid fa-user-doctor"></i>
+                                <i class="fa-solid fa-server" style="width: 24px; height: 24px; font-size: 18px;"></i>
                             </span>
                             <span class="nav-link-title">Sistem</span>
                         </a>

@@ -126,6 +126,11 @@ class EditorService
                 // ContentSaved eventini tetikle
                 event(new \Modules\Studio\App\Events\ContentSaved($module, $id, $content));
                 
+                // Activity log ekle
+                if (function_exists('log_activity')) {
+                    log_activity($page, 'studio ile düzenlendi');
+                }
+                
                 // Log mesajı ekle
                 Log::info('Log: ' . ($page->title ?? 'Sayfa') . ' - studio ile düzenlendi');
                 
@@ -149,6 +154,11 @@ class EditorService
                 
                 // ContentSaved eventini tetikle
                 event(new \Modules\Studio\App\Events\ContentSaved($module, $id, $content));
+                
+                // Activity log ekle
+                if (function_exists('log_activity')) {
+                    log_activity($portfolio, 'studio ile düzenlendi');
+                }
                 
                 // Log mesajı ekle
                 Log::info('Log: ' . ($portfolio->title ?? 'Portfolio') . ' - studio ile düzenlendi');

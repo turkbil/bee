@@ -44,6 +44,16 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
 
         Auth::login($user);
+        
+        // Kayıt log'u
+        activity()
+            ->causedBy($user)
+            ->inLog('User')
+            ->withProperties(['baslik' => $user->name, 'modul' => 'User'])
+            ->tap(function ($activity) {
+                $activity->event = 'kayıt oldu';
+            })
+            ->log("\"{$user->name}\" kayıt oldu");
 
         return redirect(route('dashboard', absolute: false));
     }

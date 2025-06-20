@@ -35,7 +35,18 @@ class ProfileController extends Controller
             $request->user()->email_verified_at = null;
         }
 
-        $request->user()->save();
+        $user = $request->user();
+        $user->save();
+
+        // Profil güncelleme log'u
+        activity()
+            ->causedBy($user)
+            ->inLog('User')
+            ->withProperties(['baslik' => $user->name, 'modul' => 'User'])
+            ->tap(function ($activity) {
+                $activity->event = 'profil güncellendi';
+            })
+            ->log("\"{$user->name}\" profil güncellendi");
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
@@ -84,9 +95,20 @@ class ProfileController extends Controller
             'password' => ['required', Password::defaults(), 'confirmed'],
         ]);
 
-        $request->user()->update([
+        $user = $request->user();
+        $user->update([
             'password' => Hash::make($validated['password']),
         ]);
+
+        // Şifre değiştirme log'u
+        activity()
+            ->causedBy($user)
+            ->inLog('User')
+            ->withProperties(['baslik' => $user->name, 'modul' => 'User'])
+            ->tap(function ($activity) {
+                $activity->event = 'şifre değiştirildi';
+            })
+            ->log("\"{$user->name}\" şifre değiştirildi");
 
         return Redirect::route('profile.password')->with('status', 'password-updated');
     }
@@ -112,6 +134,16 @@ class ProfileController extends Controller
             $media = $user->addMedia($request->file('avatar')->getRealPath())
                 ->usingFileName($fileName)
                 ->toMediaCollection('avatar', 'public');
+            
+            // Avatar yükleme log'u
+            activity()
+                ->causedBy($user)
+                ->inLog('User')
+                ->withProperties(['baslik' => $user->name, 'modul' => 'User'])
+                ->tap(function ($activity) {
+                    $activity->event = 'avatar yüklendi';
+                })
+                ->log("\"{$user->name}\" avatar yüklendi");
             
             // Cache temizle - daha agresif cache temizleme
             cache()->forget('user_avatar_' . $user->id);
@@ -154,6 +186,16 @@ class ProfileController extends Controller
             $user = $request->user();
             $user->clearMediaCollection('avatar');
             
+            // Avatar silme log'u
+            activity()
+                ->causedBy($user)
+                ->inLog('User')
+                ->withProperties(['baslik' => $user->name, 'modul' => 'User'])
+                ->tap(function ($activity) {
+                    $activity->event = 'avatar silindi';
+                })
+                ->log("\"{$user->name}\" avatar silindi");
+            
             // Cache temizle - daha agresif cache temizleme
             cache()->forget('user_avatar_' . $user->id);
             cache()->flush(); // Tüm cache'i temizle
@@ -195,6 +237,16 @@ class ProfileController extends Controller
         ]);
 
         $user = $request->user();
+
+        // Hesap silme log'u
+        activity()
+            ->causedBy($user)
+            ->inLog('User')
+            ->withProperties(['baslik' => $user->name, 'modul' => 'User'])
+            ->tap(function ($activity) {
+                $activity->event = 'hesap silindi';
+            })
+            ->log("\"{$user->name}\" hesap silindi");
 
         Auth::logout();
 

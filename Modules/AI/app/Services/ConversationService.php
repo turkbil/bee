@@ -25,11 +25,17 @@ class ConversationService
 
     public function createConversation(string $title, ?int $promptId = null): Conversation
     {
-        return Conversation::create([
+        $conversation = Conversation::create([
             'title' => $title,
             'user_id' => Auth::id(),
             'prompt_id' => $promptId,
         ]);
+        
+        if (function_exists('log_activity')) {
+            log_activity($conversation, 'oluşturuldu');
+        }
+        
+        return $conversation;
     }
 
     public function addMessage(Conversation $conversation, string $content, string $role = 'user', ?int $tokens = null): Message

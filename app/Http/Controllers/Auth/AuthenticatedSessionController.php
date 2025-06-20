@@ -34,6 +34,16 @@ class AuthenticatedSessionController extends Controller
         if ($user) {
             $user->last_login_at = Carbon::now();
             $user->save();
+            
+            // Giriş log'u
+            activity()
+                ->causedBy($user)
+                ->inLog('User')
+                ->withProperties(['baslik' => $user->name, 'modul' => 'User'])
+                ->tap(function ($activity) {
+                    $activity->event = 'giriş yaptı';
+                })
+                ->log("\"{$user->name}\" giriş yaptı");
         }
 
         return redirect()->intended(route('dashboard', absolute: false));
@@ -44,11 +54,25 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        $user = Auth::user();
+        
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
+        
+        // Çıkış log'u
+        if ($user) {
+            activity()
+                ->causedBy($user)
+                ->inLog('User')
+                ->withProperties(['baslik' => $user->name, 'modul' => 'User'])
+                ->tap(function ($activity) {
+                    $activity->event = 'çıkış yaptı';
+                })
+                ->log("\"{$user->name}\" çıkış yaptı");
+        }
 
         return redirect('/');
     }

@@ -163,6 +163,11 @@ class AIService
         
         $settings->save();
         
+        // AI ayar güncelleme log'u
+        if (function_exists('log_activity')) {
+            log_activity($settings, 'güncellendi');
+        }
+        
         // Önbelleği temizle
         Cache::forget("ai_settings");
         

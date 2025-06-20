@@ -145,37 +145,30 @@
                 </div>
                 
                 <div class="col-lg-3">
-                    <div class="card border-0 shadow-sm h-100">
-                        <div class="card-header border-0 bg-transparent">
+                    <div class="card h-100">
+                        <div class="card-header">
                             <h3 class="card-title">
-                                <i class="fas fa-rocket me-2 text-muted"></i>
+                                <i class="ti ti-rocket me-2"></i>
                                 Hızlı Başlangıç
                             </h3>
                         </div>
                         <div class="card-body">
-                            <div class="d-grid gap-3">
-                                <a href="{{ route('admin.page.manage') }}" class="btn btn-outline-primary p-3">
-                                    <div class="d-flex align-items-center">
-                                        <div class="avatar avatar-md bg-primary-lt me-3">
-                                            <i class="fas fa-plus"></i>
-                                        </div>
-                                        <div class="text-start">
-                                            <div class="fw-bold">Yeni Sayfa</div>
-                                            <div class="text-muted small">Sıfırdan başla</div>
-                                        </div>
-                                    </div>
+                            <div class="mb-3">
+                                <a href="{{ route('admin.page.manage') }}" class="btn btn-primary w-100">
+                                    <i class="ti ti-plus me-2"></i>
+                                    Yeni Sayfa Oluştur
                                 </a>
-                                
-                                <a href="{{ route('admin.page.index') }}" class="btn btn-outline-info p-3">
-                                    <div class="d-flex align-items-center">
-                                        <div class="avatar avatar-md bg-info-lt me-3">
-                                            <i class="fas fa-list"></i>
-                                        </div>
-                                        <div class="text-start">
-                                            <div class="fw-bold">Sayfa Listesi</div>
-                                            <div class="text-muted small">Mevcut sayfalar</div>
-                                        </div>
-                                    </div>
+                            </div>
+                            <div class="mb-3">
+                                <a href="{{ route('admin.page.index') }}" class="btn btn-outline-primary w-100">
+                                    <i class="ti ti-list me-2"></i>
+                                    Tüm Sayfalar
+                                </a>
+                            </div>
+                            <div class="mb-0">
+                                <a href="{{ route('admin.widgetmanagement.index') }}" class="btn btn-outline-secondary w-100">
+                                    <i class="ti ti-components me-2"></i>
+                                    Widget Yönetimi
                                 </a>
                             </div>
                         </div>
@@ -191,7 +184,7 @@
                             </h3>
                         </div>
                         <div class="card-body">
-                            <div class="space-y-3">
+                            <div class="d-grid gap-3">
                                 <div class="d-flex">
                                     <div class="flex-shrink-0">
                                         <span class="avatar avatar-sm bg-blue text-white">1</span>

@@ -291,6 +291,40 @@ function initializeTagsInput() {
     });
 }
 
+// Tooltip Sistemi
+function initializeTooltips() {
+    // Mevcut tooltip'leri dispose et
+    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(element) {
+        if (element._tooltip) {
+            element._tooltip.dispose();
+        }
+    });
+    
+    // Yeni tooltip'leri başlat
+    const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"], [title]');
+    
+    tooltips.forEach(function (tooltipElement) {
+        // Sadece title attribute'u olan elementler için tooltip oluştur
+        if (tooltipElement.getAttribute('title') && 
+            !tooltipElement.hasAttribute('data-bs-toggle')) {
+            tooltipElement.setAttribute('data-bs-toggle', 'tooltip');
+        }
+        
+        if (tooltipElement.hasAttribute('data-bs-toggle') && 
+            tooltipElement.getAttribute('data-bs-toggle') === 'tooltip') {
+            
+            // Bootstrap 5 kullanımı
+            if (typeof bootstrap !== 'undefined' && bootstrap.Tooltip) {
+                const tooltip = new bootstrap.Tooltip(tooltipElement, {
+                    trigger: 'hover focus',
+                    placement: 'bottom'
+                });
+                tooltipElement._tooltip = tooltip;
+            }
+        }
+    });
+}
+
 // Document Ready
 document.addEventListener("DOMContentLoaded", function () {
     // Choices.js'i başlat
@@ -304,6 +338,7 @@ document.addEventListener("DOMContentLoaded", function () {
         setTimeout(function() {
             initializeChoices();
             initializeTagsInput();
+            initializeTooltips();
         }, 100);
     });
 
@@ -311,6 +346,7 @@ document.addEventListener("DOMContentLoaded", function () {
         setTimeout(function() {
             initializeChoices();
             initializeTagsInput();
+            initializeTooltips();
         }, 100);
     });
 
@@ -321,10 +357,10 @@ document.addEventListener("DOMContentLoaded", function () {
             if (mutation.type === 'childList') {
                 mutation.addedNodes.forEach(function(node) {
                     if (node.nodeType === 1) {
-                        if (node.matches && (node.matches('.tags-input') || node.matches('[data-choices]'))) {
+                        if (node.matches && (node.matches('.tags-input') || node.matches('[data-choices]') || node.matches('[title]') || node.matches('[data-bs-toggle="tooltip"]'))) {
                             shouldReinit = true;
                         }
-                        if (node.querySelectorAll && (node.querySelectorAll('.tags-input').length > 0 || node.querySelectorAll('[data-choices]').length > 0)) {
+                        if (node.querySelectorAll && (node.querySelectorAll('.tags-input').length > 0 || node.querySelectorAll('[data-choices]').length > 0 || node.querySelectorAll('[title]').length > 0 || node.querySelectorAll('[data-bs-toggle="tooltip"]').length > 0)) {
                             shouldReinit = true;
                         }
                     }
@@ -335,6 +371,7 @@ document.addEventListener("DOMContentLoaded", function () {
             setTimeout(function() {
                 initializeChoices();
                 initializeTagsInput();
+                initializeTooltips();
             }, 50);
         }
     });
@@ -345,16 +382,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Tooltip başlat
-    const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-    if (tooltips.length && typeof window.Tooltip !== 'undefined') {
-        tooltips.forEach(function (tooltip) {
-            new window.Tooltip(tooltip);
-        });
-    } else if (tooltips.length && typeof bootstrap !== 'undefined' && bootstrap.Tooltip) {
-        tooltips.forEach(function (tooltip) {
-            new bootstrap.Tooltip(tooltip);
-        });
-    }
+    initializeTooltips();
 
     // Module menu
     const dropdowns = document.querySelectorAll(".module-menu .dropdown");
@@ -474,6 +502,7 @@ document.addEventListener("hidden.bs.modal", function (event) {
 document.addEventListener('DOMContentLoaded', function() {
     initializeChoices();
     initializeTagsInput();
+    initializeTooltips();
 });
 
 // Livewire güncellemelerinden sonra yeniden başlat
@@ -481,6 +510,7 @@ document.addEventListener('livewire:updated', function() {
     console.log('🚀 LIVEWIRE UPDATED EVENT');
     initializeChoices();
     initializeTagsInput();
+    initializeTooltips();
 });
 
 // Livewire component'ler mount olduğunda kontrol et

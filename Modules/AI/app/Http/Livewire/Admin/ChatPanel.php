@@ -153,6 +153,11 @@ class ChatPanel extends Component
                     $conversation->prompt_id = $promptId;
                     $saved = $conversation->save();
                     
+                    // Konuşma prompt güncelleme log'u
+                    if (function_exists('log_activity')) {
+                        log_activity($conversation, 'güncellendi');
+                    }
+                    
                     Log::info('Konuşma promptu güncellendi', [
                         'conversation_id' => $conversation->id,
                         'old_prompt_id' => $oldPromptId,
@@ -399,6 +404,12 @@ class ChatPanel extends Component
                 'tokens' => strlen($userMessage) / 4,
             ]);
             $userMessageModel->save();
+            
+            // Kullanıcı mesajı log'u
+            if (function_exists('log_activity')) {
+                log_activity($userMessageModel, 'oluşturuldu');
+            }
+            
             Log::info('Kullanıcı mesajı kaydedildi, ID: ' . $userMessageModel->id);
             
             // Boş AI mesajı oluştur
@@ -409,6 +420,11 @@ class ChatPanel extends Component
                 'tokens' => 0,
             ]);
             $aiMessage->save();
+            
+            // AI mesajı oluşturma log'u
+            if (function_exists('log_activity')) {
+                log_activity($aiMessage, 'oluşturuldu');
+            }
             
             $this->currentMessageId = $aiMessage->id;
             Log::info('Boş AI mesajı oluşturuldu, ID: ' . $aiMessage->id);
@@ -458,6 +474,11 @@ class ChatPanel extends Component
                     $aiMessage->content = $fullContent;
                     $aiMessage->tokens = strlen($fullContent) / 4;
                     $aiMessage->save();
+                    
+                    // AI mesajı tamamlanma log'u
+                    if (function_exists('log_activity')) {
+                        log_activity($aiMessage, 'tamamlandı');
+                    }
                 } else {
                     Log::warning('AI yanıtı boş döndü!');
                     $this->error = 'AI yanıtı alınamadı. Lütfen tekrar deneyin.';
@@ -465,6 +486,11 @@ class ChatPanel extends Component
                     // Boş yanıt durumunda özel mesaj ekle
                     $aiMessage->content = 'Yanıt alınamadı. Lütfen tekrar deneyin.';
                     $aiMessage->save();
+                    
+                    // Hata mesajı log'u
+                    if (function_exists('log_activity')) {
+                        log_activity($aiMessage, 'hata');
+                    }
                 }
             } catch (Exception $e) {
                 Log::error('AI yanıtı alınırken hata: ' . $e->getMessage());
@@ -472,6 +498,11 @@ class ChatPanel extends Component
                 
                 $aiMessage->content = 'Yanıt alınırken bir hata oluştu: ' . $e->getMessage();
                 $aiMessage->save();
+                
+                // Exception mesajı log'u
+                if (function_exists('log_activity')) {
+                    log_activity($aiMessage, 'hata');
+                }
             }
             
             // Stream tamamlandı sinyali gönder

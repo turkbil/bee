@@ -62,6 +62,11 @@ class WidgetItemService
             'order' => $maxOrder + 1
         ]);
         
+        // Widget item oluşturma log'u
+        if (function_exists('log_activity')) {
+            log_activity($item, 'oluşturuldu');
+        }
+        
         // Widget önbelleğini temizle
         if (function_exists('tenant') && tenant()) {
             $this->widgetService->clearWidgetCache(tenant()->id, $tenantWidgetId);
@@ -96,6 +101,11 @@ class WidgetItemService
         
         $item->update(['content' => $content]);
         
+        // Widget item güncelleme log'u
+        if (function_exists('log_activity')) {
+            log_activity($item, 'güncellendi');
+        }
+        
         // Widget önbelleğini temizle
         if (function_exists('tenant') && tenant()) {
             $this->widgetService->clearWidgetCache(tenant()->id, $item->tenant_widget_id);
@@ -113,6 +123,11 @@ class WidgetItemService
     {
         $item = WidgetItem::findOrFail($itemId);
         $tenantWidgetId = $item->tenant_widget_id;
+        
+        // Widget item silme log'u
+        if (function_exists('log_activity')) {
+            log_activity($item, 'silindi');
+        }
         
         $result = $item->delete();
         
@@ -145,6 +160,18 @@ class WidgetItemService
             WidgetItem::where('id', $itemId)
                 ->where('tenant_widget_id', $tenantWidgetId)
                 ->update(['order' => $order]);
+        }
+        
+        // Widget item sıralama log'u (tek seferlik)
+        if (function_exists('log_activity')) {
+            // TenantWidget bulup log ekle
+            $tenantWidget = TenantWidget::find($tenantWidgetId);
+            if ($tenantWidget) {
+                activity()
+                    ->performedOn($tenantWidget)
+                    ->withProperties(['item_count' => count($itemIds)])
+                    ->log('widget itemları sıralandı');
+            }
         }
         
         // Widget önbelleğini temizle

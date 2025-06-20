@@ -44,12 +44,19 @@ class ConversationService
             $tokens = (int) (strlen($content) / 4);
         }
 
-        return Message::create([
+        $message = Message::create([
             'conversation_id' => $conversation->id,
             'role' => $role,
             'content' => $content,
             'tokens' => $tokens,
         ]);
+        
+        // Mesaj ekleme log'u
+        if (function_exists('log_activity')) {
+            log_activity($message, 'oluşturuldu');
+        }
+        
+        return $message;
     }
 
     public function getAIResponse(Conversation $conversation, string $userMessage, bool $stream = false)
@@ -104,6 +111,8 @@ class ConversationService
                 $aiMessage->content = $fullContent;
                 $aiMessage->tokens = (int) (strlen($fullContent) / 4);
                 $aiMessage->save();
+                
+                // Stream mesaj güncelleme (çok sık olduğu için log eklemeyelim)
             });
         }
         
@@ -113,6 +122,11 @@ class ConversationService
             
             $aiMessage->content = $errorMsg;
             $aiMessage->save();
+            
+            // Hata mesajı log'u
+            if (function_exists('log_activity')) {
+                log_activity($aiMessage, 'hata');
+            }
         }
         
         $this->limitService->incrementUsage($aiMessage->tokens);
@@ -123,6 +137,12 @@ class ConversationService
     public function updateConversation(Conversation $conversation, array $data): Conversation
     {
         $conversation->update($data);
+        
+        // Konuşma güncelleme log'u
+        if (function_exists('log_activity')) {
+            log_activity($conversation, 'güncellendi');
+        }
+        
         return $conversation;
     }
     
@@ -140,6 +160,11 @@ class ConversationService
     
     public function deleteConversation(Conversation $conversation): bool
     {
+        // Konuşma silme log'u
+        if (function_exists('log_activity')) {
+            log_activity($conversation, 'silindi');
+        }
+        
         return $conversation->delete();
     }
     

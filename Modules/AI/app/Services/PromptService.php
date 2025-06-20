@@ -106,6 +106,11 @@ class PromptService
             $prompt->is_common = $data['is_common'] ?? false;
             $success = $prompt->save();
             
+            // Prompt oluşturma log'u
+            if ($success && function_exists('log_activity')) {
+                log_activity($prompt, 'oluşturuldu');
+            }
+            
             // Önbelleği temizle
             if ($success) {
                 $this->clearCache();
@@ -153,6 +158,11 @@ class PromptService
             $prompt->is_common = $data['is_common'] ?? false;
             $success = $prompt->save();
             
+            // Prompt güncelleme log'u
+            if ($success && function_exists('log_activity')) {
+                log_activity($prompt, 'güncellendi');
+            }
+            
             // Önbelleği temizle
             if ($success) {
                 $this->clearCache();
@@ -181,6 +191,11 @@ class PromptService
         $success = false;
         
         try {
+            // Prompt silme log'u (silmeden önce)
+            if (function_exists('log_activity')) {
+                log_activity($prompt, 'silindi');
+            }
+            
             $success = $prompt->delete();
             
             // Önbelleği temizle

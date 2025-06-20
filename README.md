@@ -25,6 +25,78 @@ Bu proje, Laravel 12 ile geliştirilmiş, modüler ve çok kiracılı (multi-ten
 
 ## Sürüm Geçmişi
 
+### v1.6.0 (2025-06-20) - Kapsamlı Activity Log Sistemi Implementasyonu
+- **Activity Log Sistemi Tamamen Tamamlandı:**
+  - ✅ 517 PHP dosyası tarandı ve analiz edildi
+  - ✅ 42 dosyada log_activity() helper kullanılıyor
+  - ✅ Tüm CRUD operasyonları (oluşturma, güncelleme, silme) loglanıyor
+  - ✅ Auth işlemleri: giriş, çıkış, kayıt, şifre sıfırlama
+  - ✅ Cache operasyonları, profil güncellemeleri, avatar yönetimi
+  - ✅ AI modülü: prompt, mesaj, konuşma yönetimi
+  - ✅ Widget ve tenant yönetimi tamamen loglı
+  
+- **Log Mesajları Sadeleştirildi:**
+  - ✅ 15+ uzun açıklama tek kelimeye indirildi
+  - ✅ Standart mesajlar: oluşturuldu, güncellendi, silindi
+  - ✅ Durum mesajları: aktifleştirildi, pasifleştirildi
+  - ✅ Özel durumlar: hata, tamamlandı, temizlendi
+  
+- **Teknik İyileştirmeler:**
+  - ✅ function_exists('log_activity') kontrolleri eklendi
+  - ✅ activity() helper'dan log_activity() fonksiyonuna geçiş
+  - ✅ Tüm modüllerde %100 kritik operasyon kapsama
+  - ✅ Türkçe tek kelime log standardı
+
+### v1.5.2 (2025-06-20) - Auth Sayfaları Modernizasyonu Tamamlandı
+- **Auth Layout Container Düzeltmesi:**
+  - ✅ Guest layout container yapısı dashboard ile tamamen eşitlendi
+  - ✅ `max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8` yapısı kullanılıyor
+  - ✅ Auth sayfalarından fazladan wrapper'lar kaldırıldı
+  - ✅ Login, register, forgot-password sayfaları artık dashboard ile aynı genişlikte
+
+- **Modern Toggle Switch:**
+  - ✅ "Beni hatırla" butonu modern toggle switch'e dönüştürüldü
+  - ✅ Mavi-purple gradient aktif durum, gri inaktif durum
+  - ✅ Smooth 200ms animasyonlar ile yumuşak geçişler
+  - ✅ Alpine.js reaktif bağlantı (x-model="rememberMe")
+  - ✅ Dark mode desteği ve gölge efektleri
+
+- **Teknik İyileştirmeler:**
+  - ✅ Container genişlik tutarsızlığı sorunu çözüldü
+  - ✅ Responsive tasarım korunarak modern UI uygulandı
+  - ✅ Theme uyumluluğu sağlandı
+
+### v1.5.1 (2025-06-20) - Studio Hızlı Başlangıç Arayüzü Düzeltildi
+- **Studio Sayfa Düzeltmeleri:**
+  - ✅ Hızlı başlangıç kısmındaki sol taraf büyük boşluk sorunu giderildi
+  - ✅ Kart tasarımı sıfırdan kodlandı - temiz ve basit yapı
+  - ✅ Tabler ikonları (ti ti-*) ile tutarlı tasarım
+  - ✅ 3 buton: Yeni Sayfa, Tüm Sayfalar, Widget Yönetimi
+  - ✅ `w-100` ile tam genişlik butonlar, `mb-3` ile düzgün aralıklar
+  - ✅ Route hatası düzeltildi: `admin.widget.index` → `admin.widgetmanagement.index`
+
+- **Teknik Düzeltmeler:**
+  - ✅ Gereksiz CSS class'ları kaldırıldı (space-y-3, flex-shrink-0)
+  - ✅ Basit kart yapısı ile Bootstrap standartlarına uygun
+  - ✅ Internal Server Error'a neden olan route hatası çözüldü
+
+### v1.5.0 (2025-06-20) - Navigation Hover Sistemi Tabler Uyumluluğu
+
+- **Tabler CSS Sistemi Entegrasyonu:**
+  - ✅ Tüm inline hover style'lar kaldırıldı (onmouseover/onmouseout)
+  - ✅ Tabler'ın kendi CSS değişkenleri kullanılıyor (`--tblr-body-color-rgb`, `--tblr-border-radius`)
+  - ✅ `.quick-action-item` class'ı desktop hızlı işlemler için
+  - ✅ `.mobile-quick-action` class'ı mobile dropdown menü için
+  - ✅ Tutarlı hover efektleri: background color + transform + shadow
+  - ✅ Tema değişikliklerinde otomatik uyum sağlıyor
+  - ✅ Activity log'larda açıklama metinleri ucfirst() ile düzenlendi
+
+- **Kod Kalitesi İyileştirmeleri:**
+  - ✅ "Saçma kod" problemi çözüldü - artık profesyonel CSS
+  - ✅ Tabler framework konvansiyonlarına tam uyum
+  - ✅ CSS custom properties ile theme-aware tasarım
+  - ✅ 0.15s ease-in-out transition timing (Tabler standardı)
+
 ### v1.4.0 (2025-06-20) - Cache Clear Buton Sistemi ve Navigation İyileştirmeleri
 
 - **Cache Clear Buton Sistemi:**

@@ -84,7 +84,7 @@ class UserComponent extends Component
             $user->save();
 
             $status = $user->is_active ? 'aktif' : 'pasif';
-            log_activity($user, $status . ' yapıldı', [
+            log_activity($user, $status, [
                 'status' => $status,
                 'bulk_update' => true
             ]);
@@ -118,7 +118,7 @@ class UserComponent extends Component
             $user->save();
             $status = $user->is_active ? 'aktif' : 'pasif';
 
-            log_activity($user, $status . ' yapıldı', [
+            log_activity($user, $status, [
                 'status' => $status
             ]);
 

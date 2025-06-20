@@ -20,9 +20,20 @@ class PasswordController extends Controller
             'password' => ['required', Password::defaults(), 'confirmed'],
         ]);
 
-        $request->user()->update([
+        $user = $request->user();
+        $user->update([
             'password' => Hash::make($validated['password']),
         ]);
+
+        // Şifre değiştirme log'u
+        activity()
+            ->causedBy($user)
+            ->inLog('User')
+            ->withProperties(['baslik' => $user->name, 'modul' => 'User'])
+            ->tap(function ($activity) {
+                $activity->event = 'şifre değiştirildi';
+            })
+            ->log("\"{$user->name}\" şifre değiştirildi");
 
         return back()->with('status', 'password-updated');
     }

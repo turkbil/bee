@@ -471,7 +471,7 @@ sub, sup { font-size: var(--tblr-small-font-size); }
 /* Navigasyon */
 .font-size-small .nav-link,
 .font-size-small .navbar-nav .nav-link {
-  font-size: 0.75rem !important;
+  font-size: 0.85rem !important;
 }
 .font-size-normal .nav-link,
 .font-size-normal .navbar-nav .nav-link {

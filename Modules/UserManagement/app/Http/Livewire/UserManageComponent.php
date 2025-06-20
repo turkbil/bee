@@ -591,20 +591,38 @@ class UserManageComponent extends Component
             ]);
             
             // 1. Önce tüm rolleri temizle 
-            DB::table('model_has_roles')
+            $deletedRoles = DB::table('model_has_roles')
                 ->where('model_id', $user->id)
                 ->where('model_type', User::class)
                 ->delete();
+                
+            // Rol silme log'u
+            if ($deletedRoles > 0 && function_exists('log_activity')) {
+                activity()
+                    ->causedBy(auth()->user())
+                    ->performedOn($user)
+                    ->withProperties(['silinen_rol_sayisi' => $deletedRoles])
+                    ->log("\"{$user->name}\" kullanıcısının rolleri temizlendi");
+            }
                 
             Log::debug('Deleted all roles for user', [
                 'user_id' => $user->id
             ]);
             
             // 2. Tüm direkt izinleri de temizle
-            DB::table('model_has_permissions')
+            $deletedPermissions = DB::table('model_has_permissions')
                 ->where('model_id', $user->id)
                 ->where('model_type', User::class)
                 ->delete();
+                
+            // İzin silme log'u
+            if ($deletedPermissions > 0 && function_exists('log_activity')) {
+                activity()
+                    ->causedBy(auth()->user())
+                    ->performedOn($user)
+                    ->withProperties(['silinen_izin_sayisi' => $deletedPermissions])
+                    ->log("\"{$user->name}\" kullanıcısının direkt izinleri temizlendi");
+            }
                 
             Log::debug('Deleted all direct permissions for user', [
                 'user_id' => $user->id
@@ -612,6 +630,15 @@ class UserManageComponent extends Component
             
             // 3. Modül bazlı izinleri temizle
             $modulePermsDeleted = UserModulePermission::where('user_id', $user->id)->delete();
+            
+            // Modül izin silme log'u
+            if ($modulePermsDeleted > 0 && function_exists('log_activity')) {
+                activity()
+                    ->causedBy(auth()->user())
+                    ->performedOn($user)
+                    ->withProperties(['silinen_modul_izin_sayisi' => $modulePermsDeleted])
+                    ->log("\"{$user->name}\" kullanıcısının modül izinleri temizlendi");
+            }
             
             Log::debug('Deleted module permissions for user', [
                 'user_id' => $user->id,
@@ -700,7 +727,16 @@ class UserManageComponent extends Component
             
             // Önce kullanıcının tüm modül izinlerini temizle
             $oldPermissions = UserModulePermission::where('user_id', $user->id)->get();
-            UserModulePermission::where('user_id', $user->id)->delete();
+            $deletedCount = UserModulePermission::where('user_id', $user->id)->delete();
+            
+            // Modül izin güncelleme log'u
+            if ($deletedCount > 0 && function_exists('log_activity')) {
+                activity()
+                    ->causedBy(auth()->user())
+                    ->performedOn($user)
+                    ->withProperties(['temizlenen_izin_sayisi' => $deletedCount])
+                    ->log("\"{$user->name}\" kullanıcısının modül izinleri güncellendi");
+            }
             
             $createdPermissions = [];
             
@@ -719,6 +755,11 @@ class UserManageComponent extends Component
                                 'permission_type' => $permissionType,
                                 'is_active' => true
                             ]);
+                            
+                            // Modül izin oluşturma log'u (toplu işlem sonunda)
+                            if (function_exists('log_activity')) {
+                                log_activity($permissionRecord, 'oluşturuldu');
+                            }
                             
                             $createdPermissions[] = $permissionRecord->id;
                         }

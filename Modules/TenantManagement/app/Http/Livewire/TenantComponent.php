@@ -162,13 +162,9 @@ class TenantComponent extends Component
                     $tenant = Tenant::find($tenant->id);
                     
                     // Log işlemi
-                    activity()
-                        ->performedOn($tenant)
-                        ->withProperties([
-                            'title' => $this->name,
-                            'data' => $data
-                        ])
-                        ->log('tenant güncellendi');
+                    if (function_exists('log_activity')) {
+                        log_activity($tenant, 'güncellendi');
+                    }
                 } else {
                     throw new \Exception("Tenant bulunamadı");
                 }
@@ -204,13 +200,9 @@ class TenantComponent extends Component
                 $this->prepareTenantDirectories($tenant->id);
                 
                 // Log işlemi
-                activity()
-                    ->performedOn($tenant)
-                    ->withProperties([
-                        'title' => $this->name,
-                        'data' => $data
-                    ])
-                    ->log('tenant oluşturuldu');
+                if (function_exists('log_activity')) {
+                    log_activity($tenant, 'oluşturuldu');
+                }
                 
                 $wasRecentlyCreated = true;
             }
@@ -251,13 +243,9 @@ class TenantComponent extends Component
                 $this->cleanTenantDirectories($tenant->id);
                 
                 // Log işlemi
-                activity()
-                    ->performedOn($tenant)
-                    ->withProperties([
-                        'id' => $tenant->id,
-                        'title' => $tenant->title
-                    ])
-                    ->log('tenant silindi');
+                if (function_exists('log_activity')) {
+                    log_activity($tenant, 'silindi');
+                }
                     
                 $tenant->delete();
                 
@@ -302,13 +290,9 @@ class TenantComponent extends Component
                 \Illuminate\Support\Facades\Artisan::call('view:clear');
                 
                 // Log işlemi
-                activity()
-                    ->performedOn($tenant)
-                    ->withProperties([
-                        'old_status' => $tenant->is_active,
-                        'new_status' => $newStatus
-                    ])
-                    ->log('tenant durumu değiştirildi');
+                if (function_exists('log_activity')) {
+                    log_activity($tenant, $newStatus ? 'aktifleştirildi' : 'pasifleştirildi');
+                }
                 
                 $this->dispatch('toast', [
                     'title' => 'Başarılı!',
@@ -351,13 +335,9 @@ class TenantComponent extends Component
                     'domain' => $this->newDomain,
                 ]);
 
-                activity()
-                    ->performedOn($domain)
-                    ->withProperties([
-                        'domain' => $domain->domain,
-                        'tenant_id' => $tenant->id
-                    ])
-                    ->log('domain oluşturuldu');
+                if (function_exists('log_activity')) {
+                    log_activity($domain, 'oluşturuldu');
+                }
                 
                 $this->loadDomains($this->tenantId);
                 $this->newDomain = '';
@@ -392,13 +372,9 @@ class TenantComponent extends Component
                 $oldDomain = $domain->domain;
                 $domain->update(['domain' => $this->editingDomainValue]);
 
-                activity()
-                    ->performedOn($domain)
-                    ->withProperties([
-                        'old' => $oldDomain,
-                        'new' => $this->editingDomainValue
-                    ])
-                    ->log('domain güncellendi');
+                if (function_exists('log_activity')) {
+                    log_activity($domain, 'güncellendi');
+                }
 
                 $this->loadDomains($this->tenantId);
                 $this->editingDomainId    = null;
@@ -425,13 +401,9 @@ class TenantComponent extends Component
             $domain = Domain::find($domainId);
 
             if ($domain) {
-                activity()
-                    ->performedOn($domain)
-                    ->withProperties([
-                        'domain' => $domain->domain,
-                        'tenant_id' => $domain->tenant_id
-                    ])
-                    ->log('domain silindi');
+                if (function_exists('log_activity')) {
+                    log_activity($domain, 'silindi');
+                }
                     
                 $domain->delete();
                 $this->loadDomains($this->tenantId);

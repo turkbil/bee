@@ -128,7 +128,7 @@ class EditorService
                 
                 // Activity log ekle
                 if (function_exists('log_activity')) {
-                    log_activity($page, 'studio ile düzenlendi');
+                    log_activity($page, 'düzenlendi');
                 }
                 
                 // Log mesajı ekle
@@ -157,7 +157,7 @@ class EditorService
                 
                 // Activity log ekle
                 if (function_exists('log_activity')) {
-                    log_activity($portfolio, 'studio ile düzenlendi');
+                    log_activity($portfolio, 'düzenlendi');
                 }
                 
                 // Log mesajı ekle

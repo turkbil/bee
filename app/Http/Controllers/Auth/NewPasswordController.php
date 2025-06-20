@@ -47,6 +47,16 @@ class NewPasswordController extends Controller
                     'remember_token' => Str::random(60),
                 ])->save();
 
+                // Şifre sıfırlama log'u
+                activity()
+                    ->causedBy($user)
+                    ->inLog('User')
+                    ->withProperties(['baslik' => $user->name, 'modul' => 'User'])
+                    ->tap(function ($activity) {
+                        $activity->event = 'şifre sıfırlandı';
+                    })
+                    ->log("\"{$user->name}\" şifre sıfırlandı");
+
                 event(new PasswordReset($user));
             }
         );

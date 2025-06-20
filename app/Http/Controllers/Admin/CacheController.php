@@ -46,6 +46,16 @@ class CacheController extends Controller
                 Artisan::call('config:clear');
                 $clearedItems[] = 'Config Cache';
                 
+                // Cache temizleme log'u
+                activity()
+                    ->causedBy(auth()->user())
+                    ->inLog('System')
+                    ->withProperties(['baslik' => 'Tenant Cache', 'modul' => 'System', 'tenant' => $tenant->id])
+                    ->tap(function ($activity) {
+                        $activity->event = 'cache temizlendi';
+                    })
+                    ->log("Tenant cache temizlendi");
+                
                 return response()->json([
                     'success' => true,
                     'message' => 'Tenant cache başarıyla temizlendi',
@@ -75,6 +85,16 @@ class CacheController extends Controller
                 
                 Artisan::call('config:clear');
                 $clearedItems[] = 'Config Cache';
+                
+                // Central cache temizleme log'u
+                activity()
+                    ->causedBy(auth()->user())
+                    ->inLog('System')
+                    ->withProperties(['baslik' => 'Central Cache', 'modul' => 'System'])
+                    ->tap(function ($activity) {
+                        $activity->event = 'cache temizlendi';
+                    })
+                    ->log("Central cache temizlendi");
                 
                 return response()->json([
                     'success' => true,
@@ -137,6 +157,16 @@ class CacheController extends Controller
                 opcache_reset();
                 $clearedItems[] = 'OPCache';
             }
+            
+            // Tüm cache temizleme log'u
+            activity()
+                ->causedBy(auth()->user())
+                ->inLog('System')
+                ->withProperties(['baslik' => 'Tüm Sistem Cache', 'modul' => 'System'])
+                ->tap(function ($activity) {
+                    $activity->event = 'tüm cache temizlendi';
+                })
+                ->log("Tüm sistem cache temizlendi");
             
             return response()->json([
                 'success' => true,

@@ -172,7 +172,7 @@ class ShortcodeParser
             $widget = Widget::where('slug', $slug)->where('is_active', true)->first();
             
             if (!$widget) {
-                $errorMessage = "<!-- Widget '{$slug}' bulunamadı -->";
+                $errorMessage = "";
                 
                 return $errorMessage;
             }
@@ -181,7 +181,7 @@ class ShortcodeParser
             $tenantWidget = $this->findOrCreateTenantWidget($widget, $params);
             
             if (!$tenantWidget) {
-                $errorMessage = "<!-- Widget '{$slug}' yüklenemedi -->";
+                $errorMessage = "";
                 
                 return $errorMessage;
             }
@@ -196,7 +196,7 @@ class ShortcodeParser
             return $html;
         } catch (\Exception $e) {
             
-            $errorMessage = "<!-- Widget işleme hatası: {$slug} -->";
+            $errorMessage = "";
             
             return $errorMessage;
         }
@@ -220,7 +220,7 @@ class ShortcodeParser
 
             if (!$widgetModel) {
                 
-                $errorMessage = "<!-- Module Widget '{$id}' bulunamadı -->";
+                $errorMessage = "";
                 
                 return $errorMessage;
             }
@@ -231,7 +231,7 @@ class ShortcodeParser
             $tenantWidget = $this->findOrCreateTenantWidget($widgetModel, $params);
 
             if (!$tenantWidget) {
-                $errorMessage = "<!-- Module Widget '{$id}' yüklenemedi -->";
+                $errorMessage = "";
                 
                 return $errorMessage;
             }
@@ -244,7 +244,7 @@ class ShortcodeParser
 
         } catch (\Exception $e) {
             
-            $errorMessage = "<!-- Module widget işleme hatası: {$id} -->";
+            $errorMessage = "";
             
             return $errorMessage;
         }
@@ -263,7 +263,7 @@ class ShortcodeParser
             $renderedHtml = widget_file_by_id($id, $params);
             return $renderedHtml;
         } catch (\Exception $e) {
-            $errorMessage = "<!-- File widget işleme hatası: {$id} -->";
+            $errorMessage = "";
             return $errorMessage;
         }
     }

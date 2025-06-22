@@ -1,9 +1,9 @@
 @include('widgetmanagement::helper')
 <div class="card">
     <div class="card-body">
-        <!-- Header Bölümü -->
+        
         <div class="row mb-3">
-            <!-- Sol Kolon - Başlık -->
+            
             <div class="col">
                 <h3 class="card-title mb-2">
                     <i class="fas fa-layer-group me-2"></i>
@@ -13,7 +13,7 @@
                     Widget içeriklerini buradan yönetebilirsiniz.
                 </div>
             </div>
-            <!-- Orta Kolon - Loading -->
+            
             <div class="col position-relative">
                 <div wire:loading
                     wire:target="render, deleteItem, toggleItemActive, updateItemOrder"
@@ -25,7 +25,7 @@
                     </div>
                 </div>
             </div>
-            <!-- Sağ Kolon - Yeni İçerik Ekle Butonu -->
+            
             <div class="col">
                 <div class="d-flex align-items-center justify-content-end">
                     <a href="{{ route('admin.widgetmanagement.item.manage', $tenantWidgetId) }}" class="btn btn-primary">
@@ -37,7 +37,7 @@
     </div>
     
     <div class="card-body border-top">
-        <!-- İçerik Listesi -->
+        
         <div class="row row-cards" id="sortable-list" data-sortable-id="items-container">
             @forelse($items as $item)
             <div class="col-12 col-sm-6 col-lg-4 widget-item-row" data-id="{{ $item->id }}" id="item-{{ $item->id }}">
@@ -137,7 +137,7 @@
                         @endif
                     </div>
 
-                    <!-- Kart Footer -->
+                    
                     <div class="card-footer">
                         <div class="d-flex align-items-center justify-content-between">
                             <div class="d-flex gap-2">

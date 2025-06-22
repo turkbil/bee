@@ -17,9 +17,9 @@
                         </path>
                         <path d="M12 16h.01"></path>
                     </svg>
-                    <h3>Promptu silmek istediğinize emin misiniz?</h3>
+                    <h3>{{ t('ai::messages.confirm.delete_prompt') }}</h3>
                     <div class="text-muted">
-                        "{{ $promptName }}" adlı prompt silinecek ve bu işlem geri alınamaz.
+                        {{ t('ai::messages.confirm.delete_prompt_description', ['name' => $promptName]) }}
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -27,12 +27,12 @@
                         <div class="row">
                             <div class="col">
                                 <button type="button" class="btn w-100" wire:click="closeModal">
-                                    İptal
+                                    {{ t('ai::general.cancel') }}
                                 </button>
                             </div>
                             <div class="col">
                                 <button type="button" class="btn btn-danger w-100" wire:click="delete">
-                                    Sil
+                                    {{ t('ai::general.delete') }}
                                 </button>
                             </div>
                         </div>

@@ -22,6 +22,7 @@ class CreateTenantsTable extends Migration
             $table->boolean('is_active')->default(true)->index();
             $table->boolean('central')->default(false);
             $table->unsignedBigInteger('theme_id')->default(1)->index();
+            $table->string('admin_default_language', 10)->default('tr'); // System language reference
             $table->foreign('theme_id')->references('theme_id')->on('themes');
             $table->json('data')->nullable();
             $table->timestamps();
@@ -30,6 +31,7 @@ class CreateTenantsTable extends Migration
             $table->index('title');
             $table->index('created_at');
             $table->index('updated_at');
+            $table->index('admin_default_language');
             
             // Composite index'ler - Performans optimizasyonu
             $table->index(['is_active', 'central'], 'tenants_active_central_idx');

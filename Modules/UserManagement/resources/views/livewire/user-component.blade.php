@@ -10,7 +10,7 @@
                         <i class="fas fa-search"></i>
                     </span>
                     <input type="text" wire:model.live="search" class="form-control"
-                        placeholder="İsim veya e-posta ile ara...">
+                        placeholder="{{ t('usermanagement::general.search_name_email') }}">
                 </div>
             </div>
             <!-- Ortadaki Loading -->
@@ -19,7 +19,7 @@
                     wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, roleFilter, statusFilter, viewType, deleteUser, toggleActive"
                     class="position-absolute top-50 start-50 translate-middle text-center"
                     style="width: 100%; max-width: 250px; z-index: 10;">
-                    <div class="small text-muted mb-2">Güncelleniyor...</div>
+                    <div class="small text-muted mb-2">{{ t('usermanagement::general.updating') }}</div>
                     <div class="progress mb-1">
                         <div class="progress-bar progress-bar-indeterminate"></div>
                     </div>
@@ -34,7 +34,7 @@
                                 data-choices 
                                 data-choices-search="false"
                                 data-choices-filter="true">
-                            <option value=""><nobr>Tüm Roller</nobr></option>
+                            <option value=""><nobr>{{ t('usermanagement::general.all_roles') }}</nobr></option>
                             @foreach($roles as $role)
                             <option value="{{ $role->id }}"><nobr>{{ $role->name }}</nobr></option>
                             @endforeach
@@ -44,12 +44,12 @@
                     <div class="btn-group">
                         <button type="button"
                             class="btn {{ $viewType == 'grid' ? 'btn-secondary' : 'btn-outline-secondary' }}"
-                            wire:click="$set('viewType', 'grid')" title="Grid Görünüm">
+                            wire:click="$set('viewType', 'grid')" title="{{ t('usermanagement::general.grid_view') }}">
                             <i class="fas fa-th-large"></i>
                         </button>
                         <button type="button"
                             class="btn {{ $viewType == 'list' ? 'btn-secondary' : 'btn-outline-secondary' }}"
-                            wire:click="$set('viewType', 'list')" title="Liste Görünüm">
+                            wire:click="$set('viewType', 'list')" title="{{ t('usermanagement::general.list_view') }}">
                             <i class="fas fa-list"></i>
                         </button>
                     </div>
@@ -92,7 +92,7 @@
                                 @endforeach
                             @endif
                             <span class="badge mt-2 {{ $user->is_active ? 'bg-green-lt' : 'bg-red-lt' }}">
-                                {{ $user->is_active ? 'Aktif' : 'Pasif' }}
+                                {{ $user->is_active ? t('usermanagement::general.active') : t('usermanagement::general.passive') }}
                             </span>
                         </div>
                     </div>
@@ -100,13 +100,13 @@
                     <div class="d-flex">
                         <a href="{{ route('admin.usermanagement.manage', $user->id) }}" class="card-btn">
                             <i class="fas fa-edit me-2"></i>
-                            Düzenle
+                            {{ t('usermanagement::general.edit') }}
                         </a>
 
                         @if(auth()->user()->isRoot() || !$user->isRoot())
                         <a href="{{ route('admin.usermanagement.user.activity.logs', $user->id) }}" class="card-btn">
                             <i class="fas fa-history me-2"></i>
-                            Kayıtlar
+                            {{ t('usermanagement::general.records') }}
                         </a>
                         @endif
 
@@ -114,7 +114,7 @@
                             wire:click="$dispatch('showDeleteModal', { userId: {{ $user->id }}, userName: '{{ $user->name }}' })"
                             class="card-btn text-danger">
                             <i class="fas fa-trash me-2"></i>
-                            Sil
+                            {{ t('usermanagement::general.delete') }}
                         </a>
                     </div>
                 </div>
@@ -122,9 +122,9 @@
             @empty
             <div class="col-12">
                 <div class="empty">
-                    <p class="empty-title">Kayıt bulunamadı</p>
+                    <p class="empty-title">{{ t('usermanagement::general.no_records') }}</p>
                     <p class="empty-subtitle text-muted">
-                        Arama kriterlerinize uygun kayıt bulunmamaktadır.
+                        {{ t('usermanagement::general.no_records_text') }}
                     </p>
                 </div>
             </div>
@@ -140,38 +140,38 @@
                             <button
                                 class="table-sort {{ $sortField === 'id' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
                                 wire:click="sortBy('id')">
-                                ID
+                                {{ t('usermanagement::general.id') }}
                             </button>
                         </th>
                         <th>
                             <button
                                 class="table-sort {{ $sortField === 'name' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
                                 wire:click="sortBy('name')">
-                                İsim Soyisim
+                                {{ t('usermanagement::general.name_surname') }}
                             </button>
                         </th>
                         <th>
                             <button
                                 class="table-sort {{ $sortField === 'email' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
                                 wire:click="sortBy('email')">
-                                E-posta
+                                {{ t('usermanagement::general.email_address') }}
                             </button>
                         </th>
                         <th class="text-center" style="width: 80px">
                             <button
                                 class="table-sort {{ $sortField === 'role' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
                                 wire:click="sortBy('role')">
-                                Rol
+                                {{ t('usermanagement::general.role') }}
                             </button>
                         </th>
                         <th class="text-center" style="width: 80px">
                             <button
                                 class="table-sort {{ $sortField === 'is_active' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
                                 wire:click="sortBy('is_active')">
-                                Durum
+                                {{ t('usermanagement::general.status') }}
                             </button>
                         </th>
-                        <th class="text-center" style="width: 160px">İşlemler</th>
+                        <th class="text-center" style="width: 160px">{{ t('usermanagement::general.actions') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -207,14 +207,14 @@
                                 <div class="row">
                                     <div class="col">
                                         <a href="{{ route('admin.usermanagement.manage', $user->id) }}" data-bs-toggle="tooltip"
-                                            data-bs-placement="top" title="Düzenle">
+                                            data-bs-placement="top" title="{{ t('usermanagement::general.edit') }}">
                                             <i class="fa-solid fa-pen-to-square link-secondary fa-lg"></i>
                                         </a>
                                     </div>
                                     <div class="col">
                                         @if(auth()->user()->isRoot() || !$user->isRoot())
                                         <a href="{{ route('admin.usermanagement.user.activity.logs', $user->id) }}" data-bs-toggle="tooltip"
-                                            data-bs-placement="top" title="İşlem Kayıtları">
+                                            data-bs-placement="top" title="{{ t('usermanagement::general.activity_records') }}">
                                             <i class="fa-solid fa-history link-secondary fa-lg"></i>
                                         </a>
                                         @endif
@@ -229,7 +229,7 @@
                                                 <a href="javascript:void(0);"
                                                     wire:click="$dispatch('showDeleteModal', { userId: {{ $user->id }}, userName: '{{ $user->name }}' })"
                                                     class="dropdown-item link-danger">
-                                                    Sil
+                                                    {{ t('usermanagement::general.delete') }}
                                                 </a>
                                             </div>
                                         </div>
@@ -242,9 +242,9 @@
                     <tr>
                         <td colspan="6">
                             <div class="empty">
-                                <p class="empty-title">Kayıt bulunamadı</p>
+                                <p class="empty-title">{{ t('usermanagement.general.no_records') }}</p>
                                 <p class="empty-subtitle text-muted">
-                                    Arama kriterlerinize uygun kayıt bulunmamaktadır.
+                                    {{ t('usermanagement.general.no_records_text') }}
                                 </p>
                             </div>
                         </td>

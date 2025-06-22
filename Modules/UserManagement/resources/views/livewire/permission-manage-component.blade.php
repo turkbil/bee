@@ -8,7 +8,7 @@
                     <div class="card-header">
                         <h3 class="card-title">
                             <i class="fas fa-shield-alt text-blue me-2"></i>
-                            Temel Yetki Ayarları
+                            {{ t('usermanagement::general.basic_permission_settings') }}
                         </h3>
                     </div>
                     <div class="card-body">
@@ -19,17 +19,17 @@
                                     class="form-select @error('inputs.guard_name') is-invalid @enderror"
                                     data-choices
                                     data-choices-search="false"
-                                    data-choices-placeholder="Koruma tipi seçin">
-                                    <option value="admin" selected>Admin Guard</option>
-                                    <option value="web">Web Guard</option>
-                                    <option value="api">API Guard</option>
+                                    data-choices-placeholder="{{ t('usermanagement::general.select_guard_type') }}">
+                                    <option value="admin" selected>{{ t('usermanagement::general.admin_guard') }}</option>
+                                    <option value="web">{{ t('usermanagement::general.web_guard') }}</option>
+                                    <option value="api">{{ t('usermanagement::general.api_guard') }}</option>
                                 </select>
-                                <label>Yetki Koruma Tipi</label>
+                                <label>{{ t('usermanagement::general.permission_guard_type') }}</label>
                                 @error('inputs.guard_name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <small class="text-muted">Yetkinin hangi alanda kullanılacağını seçin</small>
+                            <small class="text-muted">{{ t('usermanagement::general.guard_area_text') }}</small>
                         </div>
 
                         <!-- Modül Adı -->
@@ -37,27 +37,27 @@
                             <div class="form-floating">
                                 <input type="text" wire:model.defer="inputs.module_name"
                                     class="form-control @error('inputs.module_name') is-invalid @enderror"
-                                    placeholder="Örn: kullanici, urun, siparis">
-                                <label>Modül Adı</label>
+                                    placeholder="{{ t('usermanagement::general.module_name_placeholder') }}">
+                                <label>{{ t('usermanagement::general.module_name') }}</label>
                                 @error('inputs.module_name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <small class="text-muted">İzinlerin oluşturulacağı modülü belirtin</small>
+                            <small class="text-muted">{{ t('usermanagement::general.module_permission_text') }}</small>
                         </div>
 
                         <!-- Yetki Tipleri -->
                         <div class="mb-4">
                             <label class="form-label d-block">
                                 <i class="fas fa-tasks me-1 text-blue"></i>
-                                CRUD İşlemleri
+                                {{ t('usermanagement::general.crud_operations') }}
                             </label>
                             <div class="row g-2">
                                 @foreach([
-                                'view' => ['icon' => 'eye', 'color' => 'info', 'text' => 'Görüntüleme'],
-                                'create' => ['icon' => 'plus', 'color' => 'success', 'text' => 'Oluşturma'],
-                                'update' => ['icon' => 'edit', 'color' => 'warning', 'text' => 'Güncelleme'],
-                                'delete' => ['icon' => 'trash', 'color' => 'danger', 'text' => 'Silme']
+                                'view' => ['icon' => 'eye', 'color' => 'info', 'text' => t('usermanagement::general.view')],
+                                'create' => ['icon' => 'plus', 'color' => 'success', 'text' => t('usermanagement::general.create')],
+                                'update' => ['icon' => 'edit', 'color' => 'warning', 'text' => t('usermanagement::general.update')],
+                                'delete' => ['icon' => 'trash', 'color' => 'danger', 'text' => t('usermanagement::general.delete')]
                                 ] as $type => $attrs)
 <div class="col-6 mb-2">
     <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
@@ -88,7 +88,7 @@
                             <button type="button" class="btn btn-primary w-100" wire:loading.attr="disabled"
                                 wire:click="generatePermissions">
                                 <i class="fas fa-magic me-2"></i>
-                                Yetkileri Oluştur
+                                {{ t('usermanagement::general.generate_permissions') }}
                                 <div wire:loading wire:target="generatePermissions">
                                     <span class="spinner-border spinner-border-sm ms-2" role="status"></span>
                                 </div>
@@ -98,16 +98,16 @@
                 </div>
             </div>
 
-            <!-- Sağ Kolon - Oluşturulan Yetkiler -->
+            <!-- Sağ Kolon - {{ t('usermanagement::general.generated_permissions') }} -->
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">
                             <i class="fas fa-list-check text-green me-2"></i>
-                            Oluşturulan Yetkiler
+                            {{ t('usermanagement::general.generated_permissions') }}
                         </h3>
                         <div class="card-actions">
-                            <span class="badge bg-blue">{{ count($generatedPermissions) }} yetki</span>
+                            <span class="badge bg-blue">{{ t('usermanagement::general.permissions_count', ['count' => count($generatedPermissions)]) }}</span>
                         </div>
                     </div>
                     <div class="card-body">
@@ -116,8 +116,8 @@
                             <div class="form-floating mb-2">
                                 <input type="text" wire:model.defer="manualPermission"
                                     class="form-control @error('manualPermission') is-invalid @enderror"
-                                    placeholder="Özel yetki ekle (Örn: urun.export)">
-                                <label>Özel Yetki Ekle</label>
+                                    placeholder="{{ t('usermanagement::general.custom_permission_placeholder') }}">
+                                <label>{{ t('usermanagement::general.add_custom_permission') }}</label>
                                 @error('manualPermission')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -125,7 +125,7 @@
                             <button type="button" class="btn btn-outline-primary btn-sm w-100"
                                 wire:click="addManualPermission">
                                 <i class="fas fa-plus me-1"></i>
-                                Özel Yetki Ekle
+                                {{ t('usermanagement::general.add_custom_permission') }}
                             </button>
                         </div>
 
@@ -176,9 +176,9 @@
                             <div class="empty-icon">
                                 <i class="fas fa-shield-alt text-muted" style="font-size: 2rem;"></i>
                             </div>
-                            <p class="empty-title">Henüz Yetki Yok</p>
+                            <p class="empty-title">{{ t('usermanagement::general.no_permissions_yet') }}</p>
                             <p class="empty-subtitle text-muted">
-                                Modül seçip yetki tiplerini işaretleyerek veya manuel olarak yetki ekleyebilirsiniz.
+                                {{ t('usermanagement::general.module_permission_create_text') }}
                             </p>
                         </div>
                         @endif
@@ -187,12 +187,12 @@
                     @if(count($generatedPermissions) > 0)
                     <div class="card-footer d-flex justify-content-between align-items-center">
                         <div class="text-muted small">
-                            Toplam {{ count($generatedPermissions) }} yetki oluşturuldu
+                            {{ t('usermanagement::general.total_permissions_created', ['count' => count($generatedPermissions)]) }}
                         </div>
                         <div>
                             <button type="submit" class="btn btn-success" wire:loading.attr="disabled">
                                 <i class="fas fa-save me-2"></i>
-                                Yetkileri Kaydet
+                                {{ t('usermanagement::general.save_permissions') }}
                                 <div wire:loading wire:target="save">
                                     <span class="spinner-border spinner-border-sm ms-2" role="status"></span>
                                 </div>

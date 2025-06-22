@@ -1,34 +1,34 @@
 @include('thememanagement::helper')
 <div class="card">
     <div class="card-body">
-        <!-- Header Bölümü -->
+        <!-- {{ t('thememanagement::general.header_section') }} -->
         <div class="row mb-3">
-            <!-- Arama Kutusu -->
+            <!-- {{ t('thememanagement::general.search_box') }} -->
             <div class="col">
                 <div class="input-icon">
                     <span class="input-icon-addon">
                         <i class="fas fa-search"></i>
                     </span>
                     <input type="text" wire:model.live="search" class="form-control"
-                        placeholder="Aramak için yazmaya başlayın...">
+                        placeholder="{{ t('thememanagement::general.search_placeholder') }}">
                 </div>
             </div>
-            <!-- Ortadaki Loading -->
+            <!-- {{ t('thememanagement::general.middle_loading') }} -->
             <div class="col position-relative">
                 <div wire:loading
                     wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage"
                     class="position-absolute top-50 start-50 translate-middle text-center"
                     style="width: 100%; max-width: 250px;">
-                    <div class="small text-muted mb-2">Güncelleniyor...</div>
+                    <div class="small text-muted mb-2">{{ t('thememanagement::general.updating') }}</div>
                     <div class="progress mb-1">
                         <div class="progress-bar progress-bar-indeterminate"></div>
                     </div>
                 </div>
             </div>
-            <!-- Sağ Taraf (Switch ve Select) -->
+            <!-- {{ t('thememanagement::general.right_side') }} -->
             <div class="col">
                 <div class="d-flex align-items-center justify-content-end gap-3">
-                    <!-- Sayfa Adeti Seçimi -->
+                    <!-- {{ t('thememanagement::general.page_count_selection') }} -->
                     <div style="min-width: 60px">
                         <select wire:model.live="perPage" class="form-select">
                             <option value="10">10</option>
@@ -42,12 +42,12 @@
             </div>
         </div>
         
-        <!-- Tema Kartları -->
+        <!-- {{ t('thememanagement::general.theme_cards') }} -->
         <div class="row row-cards">
             @forelse($themes as $theme)
             <div class="col-md-4 col-xl-3" wire:key="theme-{{ $theme->theme_id }}">
                 <div class="card {{ $theme->is_default ? 'card-active' : '' }}">
-                    <!-- Tema Önizleme Resmi -->
+                    <!-- {{ t('thememanagement::general.theme_preview_image') }} -->
                     <div class="card-img-top img-responsive img-responsive-16x9" style="background-image: url({{ $theme->getFirstMedia('images') ? url($theme->getFirstMedia('images')->getUrl()) : asset('assets/static/illustrations/undraw_design_components_9vy6.svg') }}); background-size: cover; background-position: center; height: 160px;"></div>
                     <div class="card-body">
                         <h3 class="card-title">
@@ -57,7 +57,7 @@
                                 <div class="flexible-input-wrapper">
                                     <input type="text" wire:model.defer="newTitle"
                                         class="form-control form-control-sm flexible-input"
-                                        placeholder="Yeni başlık girin" wire:keydown.enter="updateTitleInline"
+                                        placeholder="{{ t('thememanagement::general.new_title') }}" wire:keydown.enter="updateTitleInline"
                                         wire:keydown.escape="$set('editingTitleId', null)" x-init="$nextTick(() => {
                                                 $el.focus();
                                                 $el.style.width = '20px';
@@ -98,10 +98,10 @@
                         <div class="mt-4 d-flex justify-content-between align-items-center">
                             <div>
                                 @if($theme->is_default)
-                                <span class="badge bg-green">Varsayılan</span>
+                                <span class="badge bg-green">{{ t('thememanagement::general.default') }}</span>
                                 @endif
                                 <span class="badge {{ $theme->is_active ? 'bg-blue' : 'bg-red' }}">
-                                    {{ $theme->is_active ? 'Aktif' : 'Pasif' }}
+                                    {{ $theme->is_active ? t('thememanagement::general.active') : t('thememanagement::general.inactive') }}
                                 </span>
                             </div>
                             <div class="dropdown">
@@ -110,16 +110,16 @@
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-end">
                                     <a href="{{ route('admin.thememanagement.manage', $theme->theme_id) }}" class="dropdown-item">
-                                        <i class="fas fa-edit me-2"></i> Düzenle
+                                        <i class="fas fa-edit me-2"></i> {{ t('thememanagement::general.edit') }}
                                     </a>
                                     @if(!$theme->is_default)
                                     <a href="javascript:void(0);" wire:click="setDefault({{ $theme->theme_id }})" class="dropdown-item">
-                                        <i class="fas fa-check-circle me-2"></i> Varsayılan Yap
+                                        <i class="fas fa-check-circle me-2"></i> {{ t('thememanagement::general.set_as_default') }}
                                     </a>
                                     @endif
                                     <a href="javascript:void(0);" wire:click="toggleActive({{ $theme->theme_id }})" class="dropdown-item">
                                         <i class="fas {{ $theme->is_active ? 'fa-ban' : 'fa-check' }} me-2"></i> 
-                                        {{ $theme->is_active ? 'Pasif Yap' : 'Aktif Yap' }}
+                                        {{ $theme->is_active ? t('thememanagement::general.deactivate') : t('thememanagement::general.activate') }}
                                     </a>
                                     @if(!$theme->is_default)
                                     <a href="javascript:void(0);" wire:click="$dispatch('showDeleteModal', {
@@ -127,11 +127,11 @@
                                         id: {{ $theme->theme_id }},
                                         title: '{{ $theme->title }}'
                                     })" class="dropdown-item text-danger">
-                                        <i class="fas fa-trash me-2"></i> Sil
+                                        <i class="fas fa-trash me-2"></i> {{ t('thememanagement::general.delete') }}
                                     </a>
                                     @else
                                     <a href="javascript:void(0);" class="dropdown-item text-muted" onclick="event.preventDefault();">
-                                        <i class="fas fa-lock me-2"></i> Varsayılan Tema Silinemez
+                                        <i class="fas fa-lock me-2"></i> {{ t('thememanagement::general.default_theme_cannot_be_deleted') }}
                                     </a>
                                     @endif
                                 </div>
@@ -146,13 +146,13 @@
                     <div class="empty-img">
                         <img src="{{ asset('assets/static/illustrations/undraw_no_data_re_kwbl.svg') }}" height="128" alt="">
                     </div>
-                    <p class="empty-title">Tema bulunamadı</p>
+                    <p class="empty-title">{{ t('thememanagement::general.no_theme_found') }}</p>
                     <p class="empty-subtitle text-muted">
-                        Arama kriterlerinize uygun tema bulunmamaktadır.
+                        {{ t('thememanagement::general.no_theme_description') }}
                     </p>
                     <div class="empty-action">
                         <a href="{{ route('admin.thememanagement.manage') }}" class="btn btn-primary">
-                            <i class="fas fa-plus me-2"></i> Yeni Tema Ekle
+                            <i class="fas fa-plus me-2"></i> {{ t('thememanagement::general.add_new_theme') }}
                         </a>
                     </div>
                 </div>
@@ -160,7 +160,7 @@
             @endforelse
         </div>
         
-        <!-- Pagination -->
+        <!-- {{ t('thememanagement::general.pagination') }} -->
         <div class="mt-4">
             {{ $themes->links() }}
         </div>

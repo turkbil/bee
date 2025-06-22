@@ -6,20 +6,20 @@
                 <button type="button" class="btn-close" wire:click="$set('showModal', false)"></button>
                 <div class="modal-status bg-danger"></div>
                 <div class="modal-body text-center py-4">
-                    <h3>Silmek istediğinize emin misiniz?</h3>
-                    <div class="text-muted">"{{ $title }}" kaydını silmek üzeresiniz.</div>
+                    <h3>{{ t('modulemanagement::general.confirm_delete') }}</h3>
+                    <div class="text-muted">"{{ $title }}" {{ t('modulemanagement::general.about_to_delete') }}</div>
                 </div>
                 <div class="modal-footer">
                     <div class="w-100">
                         <div class="row">
                             <div class="col">
                                 <button class="btn w-100" wire:click="$set('showModal', false)">
-                                    İptal
+                                    {{ t('modulemanagement::general.cancel') }}
                                 </button>
                             </div>
                             <div class="col">
                                 <button class="btn btn-danger w-100" wire:click="delete" wire:loading.attr="disabled">
-                                    Sil
+                                    {{ t('modulemanagement::general.delete') }}
                                 </button>
                             </div>
                         </div>

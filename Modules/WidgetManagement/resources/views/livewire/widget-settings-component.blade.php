@@ -19,7 +19,7 @@
             <div class="card-body">
                 <div class="tab-content">
                     <div class="tab-pane fade active show" id="tabs-1">
-                        <!-- Display Title -->
+                        
                         <div class="form-floating mb-3">
                             <input type="text" 
                                    wire:model.blur="displayTitle" 
@@ -31,7 +31,7 @@
                             @enderror
                         </div>
 
-                        <!-- Widget Form Elements -->
+                        
                         @if(!empty($schema))
                             <div class="row g-3">
                                 @foreach($schema as $element)

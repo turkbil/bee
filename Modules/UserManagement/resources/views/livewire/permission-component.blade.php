@@ -9,12 +9,12 @@
                         <div class="input-icon">
                             <span class="input-icon-addon"><i class="fas fa-search"></i></span>
                             <input type="text" wire:model.live.debounce.300ms="search" class="form-control"
-                                placeholder="Yetkilerde ara...">
+                                placeholder="{{ t('usermanagement::general.search_permissions') }}">
                         </div>
                     </div>
                     <div class="col-md-6 text-end">
                         <a href="{{ route('admin.usermanagement.permission.manage') }}" class="btn btn-primary">
-                            <i class="fas fa-plus me-2"></i> Yeni Yetki Ekle
+                            <i class="fas fa-plus me-2"></i> {{ t('usermanagement::general.new_permission') }}
                         </a>
                     </div>
                 </div>
@@ -84,7 +84,7 @@
                     <div class="card-footer">
                         <div class="d-flex align-items-center">
                             <div class="text-muted">
-                                <i class="fas fa-key me-1"></i> {{ $permissions->count() }} yetki
+                                <i class="fas fa-key me-1"></i> {{ t('usermanagement::general.permissions_count', ['count' => $permissions->count()]) }}
                             </div>
                             <div class="ms-auto">
                                 <a href="{{ route('admin.usermanagement.permission.manage') }}?module={{ $module }}"
@@ -102,13 +102,13 @@
                     <div class="empty-icon">
                         <i class="fas fa-key fa-3x text-muted"></i>
                     </div>
-                    <p class="empty-title">Yetki bulunamadı</p>
+                    <p class="empty-title">{{ t('usermanagement::general.permission_not_found') }}</p>
                     <p class="empty-subtitle text-muted">
-                        Arama kriterlerinize uygun yetki bulunmamaktadır.
+                        {{ t('usermanagement::general.no_permissions_yet') }}
                     </p>
                     <div class="empty-action">
                         <a href="{{ route('admin.usermanagement.permission.manage') }}" class="btn btn-primary">
-                            <i class="fas fa-plus me-2"></i> Yeni Yetki Ekle
+                            <i class="fas fa-plus me-2"></i> {{ t('usermanagement::general.new_permission') }}
                         </a>
                     </div>
                 </div>
@@ -122,15 +122,15 @@
         <div class="modal-dialog modal-sm modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Yetki Sil</h5>
+                    <h5 class="modal-title">{{ t('usermanagement::general.delete') }} {{ t('usermanagement::general.permissions') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Bu yetkiyi silmek istediğinizden emin misiniz?</p>
+                    <p>{{ t('usermanagement::messages.confirm_delete_permission') }}</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
-                    <button type="button" class="btn btn-danger" wire:click="deletePermission">Sil</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ t('usermanagement::general.cancel') }}</button>
+                    <button type="button" class="btn btn-danger" wire:click="deletePermission">{{ t('usermanagement::general.delete') }}</button>
                 </div>
             </div>
         </div>

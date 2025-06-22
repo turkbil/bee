@@ -84,7 +84,7 @@ class StudioHelper
         $content = $widgetService->getWidgetContent($widgetId);
         
         if (!$content) {
-            return new HtmlString('<!-- Widget not found: ' . $widgetId . ' -->');
+            return new HtmlString('');
         }
         
         $html = $content['html'] ?? '';

@@ -62,7 +62,7 @@
             </div>
             <div class="card-body">
                 <div class="form-group w-100">
-                    <!-- Mevcut Çoklu Resimler -->
+                    
                     @php
                         $currentImages = isset($multipleImagesArrays[$settingId]) ? $multipleImagesArrays[$settingId] : [];
                     @endphp
@@ -72,7 +72,7 @@
                         'images' => $currentImages
                     ])
                     
-                    <!-- Yükleme Alanı -->
+                    
                     <div class="card mt-3">
                         <div class="card-body p-3">
                             <form wire:submit="updatedTempPhoto">
@@ -91,7 +91,7 @@
                         </div>
                     </div>
                     
-                    <!-- Geçici yüklenen görseller -->
+                    
                     @if(isset($temporaryMultipleImages[$settingId]) && is_array($temporaryMultipleImages[$settingId]) && count($temporaryMultipleImages[$settingId]) > 0)
                         <div class="mt-3">
                             <label class="form-label">Yeni Yüklenen Görseller</label>

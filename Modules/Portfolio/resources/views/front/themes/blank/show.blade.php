@@ -49,25 +49,25 @@
             
             @if(isset($item->client) || isset($item->date) || isset($item->url))
             <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-                <h3 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Proje Detayları</h3>
+                <h3 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">{{ t('portfolio::general.project_details') }}</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700 dark:text-gray-400">
                     @if(isset($item->client))
                     <div>
-                        <span class="font-medium block text-gray-900 dark:text-white">Müşteri:</span>
+                        <span class="font-medium block text-gray-900 dark:text-white">{{ t('portfolio::general.client') }}:</span>
                         <span>{{ $item->client }}</span>
                     </div>
                     @endif
                     
                     @if(isset($item->date))
                     <div>
-                        <span class="font-medium block text-gray-900 dark:text-white">Proje Tarihi:</span>
+                        <span class="font-medium block text-gray-900 dark:text-white">{{ t('portfolio::general.project_date') }}:</span>
                         <span>{{ $item->date }}</span>
                     </div>
                     @endif
                     
                     @if(isset($item->url))
                     <div class="md:col-span-2">
-                        <span class="font-medium block text-gray-900 dark:text-white">Proje URL:</span>
+                        <span class="font-medium block text-gray-900 dark:text-white">{{ t('portfolio::general.project_url') }}:</span>
                         <a href="{{ $item->url }}" target="_blank" class="text-primary dark:text-primary-400 hover:underline">{{ $item->url }}</a>
                     </div>
                     @endif
@@ -80,7 +80,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                     </svg>
-                    Tüm Projeler
+                    {{ t('portfolio::general.all_portfolios') }}
                 </a>
                 
                 @if(isset($item->category))
@@ -88,7 +88,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
                     </svg>
-                    {{ $item->category->title }} Projeleri
+                    {{ $item->category->title }} {{ t('portfolio::general.portfolios') }}
                 </a>
                 @endif
             </div>

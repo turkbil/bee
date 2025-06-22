@@ -85,8 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Radius örneklerini güncelle
                 updateRadiusExamples();
                 
-                // Anında görsel geri bildirim için
-                console.log('Primary color changed to:', color);
+                // Primary renk değiştirildi
             });
         });
     }
@@ -909,7 +908,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Boş style attribute'ları olan elementleri özel olarak güncelle
         updateEmptyStyleElements();
         
-        console.log('Theme elements force updated');
+        // Tema elementleri güncellendi
     }
     
     // Inline style'ları temizleyerek CSS'in kontrolü ele almasını sağla
@@ -991,7 +990,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        console.log('Inline styles cleared for theme consistency');
+        // Inline style'lar temizlendi
     }
     
     // Boş style attribute'ları olan elementleri güncelle
@@ -1083,6 +1082,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 200);
         });
         
-        console.log('Empty style elements and problematic containers updated for theme consistency');
+        // Boş style elementleri güncellendi
     }
 });

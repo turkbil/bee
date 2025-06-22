@@ -5,16 +5,16 @@
         <div class="card-header">
             <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs">
                 <li class="nav-item">
-                    <a href="#tabs-settings" class="nav-link active" data-bs-toggle="tab">Temel Ayarlar</a>
+                    <a href="#tabs-settings" class="nav-link active" data-bs-toggle="tab">{{ t('ai::general.basic_settings') }}</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#tabs-common-prompt" class="nav-link" data-bs-toggle="tab">Ortak Özellikler</a>
+                    <a href="#tabs-common-prompt" class="nav-link" data-bs-toggle="tab">{{ t('ai::general.common_features') }}</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#tabs-limits" class="nav-link" data-bs-toggle="tab">Kullanım Limitleri</a>
+                    <a href="#tabs-limits" class="nav-link" data-bs-toggle="tab">{{ t('ai::general.usage_limits') }}</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#tabs-prompts" class="nav-link" data-bs-toggle="tab">Prompt Şablonları</a>
+                    <a href="#tabs-prompts" class="nav-link" data-bs-toggle="tab">{{ t('ai::general.prompt_templates') }}</a>
                 </li>
             </ul>
         </div>
@@ -26,12 +26,10 @@
                         <div class="form-floating mb-3">
                             <input type="password" wire:model="settings.api_key"
                                 class="form-control @error('settings.api_key') is-invalid @enderror"
-                                placeholder="DeepSeek API anahtarınızı girin" id="api_key_input">
-                            <label for="api_key_input">API Anahtarı</label>
+                                placeholder="{{ t('ai::general.enter_api_key') }}" id="api_key_input">
+                            <label for="api_key_input">{{ t('ai::general.api_key') }}</label>
                             <div class="form-text mt-2 ms-2">
-                                <i class="fas fa-info-circle me-1"></i>DeepSeek API anahtarını
-                                <a href="https://platform.deepseek.com/" target="_blank" class="ms-1">DeepSeek
-                                    platformundan</a> alabilirsiniz.
+                                <i class="fas fa-info-circle me-1"></i>{!! t('ai::general.api_key_info') !!}
                                 <button type="button" id="togglePassword" class="btn btn-sm btn-ghost-secondary ms-2">
                                     <i class="fas fa-eye"></i>
                                 </button>
@@ -48,7 +46,7 @@
                                 <i class="fas fa-plug me-2" wire:loading.class="d-none"
                                     wire:target="testApiConnection"></i>
                                 <i class="fas fa-spinner fa-spin me-2" wire:loading wire:target="testApiConnection"></i>
-                                API Bağlantısını Test Et
+                                {{ t('ai::general.test_connection') }}
                             </button>
 
                             @if($connectionTestResult)
@@ -68,7 +66,7 @@
                                 <option value="deepseek-chat">DeepSeek Chat</option>
                                 <option value="deepseek-coder">DeepSeek Coder</option>
                             </select>
-                            <label for="model_select">Model</label>
+                            <label for="model_select">{{ t('ai::general.model') }}</label>
                             @error('settings.model')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -77,10 +75,10 @@
                         <div class="form-floating mb-3">
                             <input type="number" wire:model="settings.max_tokens"
                                 class="form-control @error('settings.max_tokens') is-invalid @enderror"
-                                placeholder="Maksimum token sayısı" id="max_tokens_input">
-                            <label for="max_tokens_input">Maksimum Token</label>
+                                placeholder="{{ t('ai::general.max_tokens') }}" id="max_tokens_input">
+                            <label for="max_tokens_input">{{ t('ai::general.max_tokens') }}</label>
                             <div class="form-text mt-2 ms-2">
-                                <i class="fas fa-info-circle me-1"></i>Bir yanıtın maksimum token sayısı (4096 önerilir)
+                                <i class="fas fa-info-circle me-1"></i>{{ t('ai::general.max_tokens_info') }}
                             </div>
                             @error('settings.max_tokens')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -88,12 +86,12 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Sıcaklık (Temperature): {{ $settings['temperature'] }}</label>
+                            <label class="form-label">{{ t('ai::general.temperature') }}: {{ $settings['temperature'] }}</label>
                             <input type="range" wire:model="settings.temperature"
                                 class="form-range @error('settings.temperature') is-invalid @enderror" min="0" max="1"
                                 step="0.1" id="temperature_range">
                             <div class="form-text mt-2 ms-2">
-                                <i class="fas fa-info-circle me-1"></i>Daha düşük değerler daha tutarlı yanıtlar üretir
+                                <i class="fas fa-info-circle me-1"></i>{{ t('ai::general.temperature_info') }}
                             </div>
                             @error('settings.temperature')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -105,20 +103,20 @@
                                 <input type="checkbox" id="is_active" name="is_active" wire:model="settings.enabled"
                                     value="1">
                                 <div class="state p-success p-on ms-2">
-                                    <label>Aktif</label>
+                                    <label>{{ t('ai::general.active') }}</label>
                                 </div>
                                 <div class="state p-danger p-off ms-2">
-                                    <label>Aktif Değil</label>
+                                    <label>{{ t('ai::general.inactive') }}</label>
                                 </div>
                             </div>
                             <div class="form-text mt-2 ms-2">
-                                <i class="fas fa-info-circle me-1"></i>Devre dışı bırakıldığında, hiçbir kullanıcı AI asistanını kullanamaz
+                                <i class="fas fa-info-circle me-1"></i>{{ t('ai::general.inactive_info') }}
                             </div>
                         </div>
 
                         <div class="form-footer">
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save me-2"></i> Ayarları Kaydet
+                                <i class="fas fa-save me-2"></i> {{ t('ai::general.save_settings') }}
                             </button>
                         </div>
                     </form>
@@ -131,9 +129,8 @@
                             <i class="fas fa-cog fa-2x text-muted"></i>
                         </div>
                         <div>
-                            <h3 class="card-title mb-0">Ortak Özellikler Promptu</h3>
-                            <p class="text-muted mb-0">AI asistanınızın kimliğini, kişiliğini ve davranışlarını
-                                tanımlayan temel özellikleri belirleyin.</p>
+                            <h3 class="card-title mb-0">{{ t('ai::general.common_features_prompt') }}</h3>
+                            <p class="text-muted mb-0">{{ t('ai::messages.info.common_prompt_description') }}</p>
                         </div>
                     </div>
 
@@ -143,17 +140,13 @@
                                 <i class="fas fa-info-circle fa-2x"></i>
                             </div>
                             <div>
-                                <h4 class="alert-title">Bu prompt nedir?</h4>
-                                <p>Bu prompt, AI asistanın kimliğini, kişiliğini ve davranışlarını tanımlar. Her
-                                    konuşmada, konuşmaya özel prompttan önce eklenerek AI'ın tutarlı bir kişiliğe sahip
-                                    olmasını sağlar.</p>
-                                <p class="mb-0">Bu bölümde şunları tanımlayabilirsiniz:</p>
+                                <h4 class="alert-title">{{ t('ai::messages.info.what_is_this_prompt') }}</h4>
+                                <p>{{ t('ai::messages.info.common_prompt_description') }}</p>
+                                <p class="mb-0">{{ t('ai::messages.info.common_prompt_features') }}</p>
                                 <ul class="mb-0 mt-2">
-                                    <li>AI asistanın adı</li>
-                                    <li>Şirket veya kuruluş bilgileri</li>
-                                    <li>Yanıt verme tarzı ve tonu</li>
-                                    <li>Uzmanlık alanları</li>
-                                    <li>Diğer kişilik özellikleri</li>
+                                    @foreach(t('ai::messages.info.common_prompt_features_list') as $feature)
+                                        <li>{{ $feature }}</li>
+                                    @endforeach
                                 </ul>
                             </div>
                         </div>
@@ -162,10 +155,9 @@
                         <div class="mb-3">
                             <textarea wire:model="commonPrompt.content"
                                 class="form-control @error('commonPrompt.content') is-invalid @enderror" rows="10"
-                                placeholder="Ortak özellikler promptunu girin"></textarea>
+                                placeholder="{{ t('ai::general.enter_common_prompt') }}"></textarea>
                             <div class="form-text mt-2 ms-2">
-                                <i class="fas fa-info-circle me-1"></i>Bu içerik, AI'ın her yanıtında tutarlı bir kimlik ve kişilik sergilemesi için
-                                kullanılır.
+                                <i class="fas fa-info-circle me-1"></i>{{ t('ai::general.common_features_usage_info') }}
                             </div>
                             @error('commonPrompt.content')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -173,9 +165,9 @@
                         </div>
                         <div class="form-footer">
                             <div class="d-flex justify-content-between align-items-center">
-                                <span class="text-muted">Bu prompt, sistem tarafından korunmaktadır ve silinemez.</span>
+                                <span class="text-muted">{{ t('ai::general.system_protected_info') }}</span>
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-save me-2"></i> Ortak Özellikleri Kaydet
+                                    <i class="fas fa-save me-2"></i> {{ t('ai::general.save_common_features') }}
                                 </button>
                             </div>
                         </div>
@@ -188,10 +180,10 @@
                         <div class="form-floating mb-3">
                             <input type="number" wire:model="limits.daily_limit"
                                 class="form-control @error('limits.daily_limit') is-invalid @enderror"
-                                placeholder="Günlük kullanım limiti" id="daily_limit_input">
-                            <label for="daily_limit_input">Günlük Limit</label>
+                                placeholder="{{ t('ai::general.daily_limit') }}" id="daily_limit_input">
+                            <label for="daily_limit_input">{{ t('ai::general.daily_limit') }}</label>
                             <div class="form-text mt-2 ms-2">
-                                <i class="fas fa-info-circle me-1"></i>Bir kullanıcının günlük olarak gönderebileceği mesaj sayısı
+                                <i class="fas fa-info-circle me-1"></i>{{ t('ai::general.daily_limit_info') }}
                             </div>
                             @error('limits.daily_limit')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -201,10 +193,10 @@
                         <div class="form-floating mb-3">
                             <input type="number" wire:model="limits.monthly_limit"
                                 class="form-control @error('limits.monthly_limit') is-invalid @enderror"
-                                placeholder="Aylık kullanım limiti" id="monthly_limit_input">
-                            <label for="monthly_limit_input">Aylık Limit</label>
+                                placeholder="{{ t('ai::general.monthly_limit') }}" id="monthly_limit_input">
+                            <label for="monthly_limit_input">{{ t('ai::general.monthly_limit') }}</label>
                             <div class="form-text mt-2 ms-2">
-                                <i class="fas fa-info-circle me-1"></i>Bir kullanıcının aylık olarak gönderebileceği mesaj sayısı
+                                <i class="fas fa-info-circle me-1"></i>{{ t('ai::general.monthly_limit_info') }}
                             </div>
                             @error('limits.monthly_limit')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -213,7 +205,7 @@
 
                         <div class="form-footer">
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save me-2"></i> Limitleri Kaydet
+                                <i class="fas fa-save me-2"></i> {{ t('ai::general.save_limits') }}
                             </button>
                         </div>
                     </form>
@@ -222,9 +214,9 @@
                 <!-- Prompt Şablonları -->
                 <div class="tab-pane" id="tabs-prompts">
                     <div class="d-flex justify-content-between mb-3">
-                        <h4 class="section-title">Prompt Şablonları</h4>
+                        <h4 class="section-title">{{ t('ai::general.prompt_templates') }}</h4>
                         <button class="btn btn-primary" wire:click="$dispatch('openPromptModal')">
-                            <i class="fas fa-plus me-2"></i> Yeni Prompt
+                            <i class="fas fa-plus me-2"></i> {{ t('ai::general.new_prompt') }}
                         </button>
                     </div>
 
@@ -240,10 +232,10 @@
                                         <h3 class="card-title mb-0">{{ $promptItem->name }}</h3>
                                         <div>
                                             @if($promptItem->is_default)
-                                            <span class="badge bg-secondary">Varsayılan</span>
+                                            <span class="badge bg-secondary">{{ t('ai::general.default') }}</span>
                                             @endif
                                             @if($promptItem->is_system && !$promptItem->is_common)
-                                            <span class="badge bg-secondary">Sistem</span>
+                                            <span class="badge bg-secondary">{{ t('ai::general.system') }}</span>
                                             @endif
                                         </div>
                                     </div>
@@ -263,10 +255,10 @@
                                                     $promptItem->is_active ? 'checked' : '' }}
                                                 {{ $promptItem->is_system ? 'disabled' : '' }}>
                                                 <div class="state p-success p-on ms-2">
-                                                    <label>Aktif</label>
+                                                    <label>{{ t('ai::general.active') }}</label>
                                                 </div>
                                                 <div class="state p-danger p-off ms-2">
-                                                    <label>Pasif</label>
+                                                    <label>{{ t('ai::general.passive') }}</label>
                                                 </div>
                                             </div>
 
@@ -278,7 +270,7 @@
                                                 {{ $promptItem->is_system && !$promptItem->is_common ? 'disabled' : ''
                                                 }}>
                                                 <div class="state p-primary ms-2">
-                                                    <label>Varsayılan</label>
+                                                    <label>{{ t('ai::general.default') }}</label>
                                                 </div>
                                             </div>
                                             @endif
@@ -287,13 +279,13 @@
                                             <button class="btn btn-sm btn-ghost-secondary"
                                                 wire:click="editPrompt({{ $promptItem->id }})"
                                                 @if($promptItem->is_system && !$promptItem->is_common) disabled
-                                                title="Sistem promptları düzenlenemez" @endif>
+                                                title="{{ t('ai::messages.warning.prompt_system_no_edit') }}" @endif>
                                                 <i class="fas fa-edit"></i>
                                             </button>
                                             <button class="btn btn-sm btn-ghost-danger"
                                                 wire:click="$dispatch('showPromptDeleteModal', {id: {{$promptItem->id}}, name: '{{$promptItem->name}}'})"
                                                 @if($promptItem->is_default || $promptItem->is_system) disabled
-                                                title="Bu prompt silinemez" @endif>
+                                                title="{{ t('ai::messages.warning.prompt_cannot_delete') }}" @endif>
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </div>
@@ -305,9 +297,9 @@
                         @empty
                         <div class="col-12">
                             <div class="empty">
-                                <p class="empty-title">Henüz prompt şablonu yok</p>
+                                <p class="empty-title">{{ t('ai::messages.info.no_prompts') }}</p>
                                 <p class="empty-subtitle text-muted">
-                                    Yeni prompt şablonları eklemek için "Yeni Prompt" butonunu kullanabilirsiniz.
+                                    {{ t('ai::messages.info.no_prompts_description') }}
                                 </p>
                             </div>
                         </div>

@@ -1,14 +1,14 @@
 @include('widgetmanagement::helper')
 <div>
     <div class="row g-3">
-        <!-- Sol Taraf: Kategori Ekleme/Düzenleme Formu -->
+        
         <div class="col-12 col-lg-4">
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">{{ $editCategoryId ? 'Kategori Düzenle' : 'Yeni Kategori Ekle' }}</h3>
                 </div>
                 <div class="card-body position-relative">
-                    <!-- Loading Göstergesi -->
+                    
                     <div wire:loading 
                         wire:target="saveEdit, quickAdd, cancelEdit"
                         class="position-absolute top-50 start-50 translate-middle text-center"
@@ -166,7 +166,7 @@
             </div>
         </div>
         
-        <!-- Sağ Taraf: Kategoriler Listesi -->
+        
         <div class="col-12 col-lg-8">
             <div class="card">
                 <div class="card-header">
@@ -187,7 +187,7 @@
                 </div>
                 
                 <div class="card-body p-0 position-relative">
-                    <!-- Loading Göstergesi -->
+                    
                     <div wire:loading
                         wire:target="loadCategories, toggleActive, delete, updatedSearch, updateOrder"
                         class="position-absolute top-50 start-50 translate-middle text-center"
@@ -201,32 +201,32 @@
                     <div wire:loading.class="opacity-50" wire:target="loadCategories, toggleActive, delete, updatedSearch, updateOrder">
                         <div class="list-group list-group-flush" id="category-sortable-list">
                             @forelse($categories as $category)
-                                <!-- Ana Kategori -->
+                                
                                 <div class="category-item list-group-item p-2" 
                                     wire:key="category-{{ $category->widget_category_id }}" 
                                     id="item-{{ $category->widget_category_id }}" 
                                     data-id="{{ $category->widget_category_id }}"
                                     data-is-parent="1">
                                     <div class="d-flex align-items-center">
-                                        <!-- Sürükleme Kolu -->
+                                        
                                         <div class="category-drag-handle me-2">
                                             <i class="fas fa-grip-vertical text-muted"></i>
                                         </div>
                                         
-                                        <!-- İkon -->
+                                        
                                         <div class="bg-primary-lt rounded-2 d-flex align-items-center justify-content-center me-2" 
                                             style="width: 2.5rem; height: 2.5rem;">
                                             <i class="{{ $category->icon ?? 'fas fa-folder' }}"></i>
                                         </div>
                                         
-                                        <!-- Kategori Bilgisi -->
+                                        
                                         <div class="flex-grow-1">
                                             <div class="d-flex align-items-center justify-content-between">
                                                 <div>
                                                     <div class="h4 mb-0">{{ $category->title }}</div>
                                                 </div>
                                                 
-                                                <!-- İşlem Butonları -->
+                                                
                                                 <div class="d-flex align-items-center">
                                                     <div class="container">
                                                         <div class="row">
@@ -235,11 +235,11 @@
                                                                     class="btn btn-icon btn-sm {{ $category->is_active ? 'text-muted bg-transparent' : 'text-red bg-transparent' }}"
                                                                     data-bs-toggle="tooltip" data-bs-placement="top" 
                                                                     title="{{ $category->is_active ? 'Deaktive Et' : 'Aktive Et' }}">
-                                                                    <!-- Loading Durumu -->
+                                                                    
                                                                     <div wire:loading wire:target="toggleActive({{ $category->widget_category_id }})"
                                                                         class="spinner-border spinner-border-sm">
                                                                     </div>
-                                                                    <!-- Normal Durum: Aktif/Pasif İkonları -->
+                                                                    
                                                                     <div wire:loading.remove wire:target="toggleActive({{ $category->widget_category_id }})">
                                                                         @if($category->is_active)
                                                                         <i class="fas fa-check fa-lg"></i>
@@ -277,7 +277,7 @@
                                     </div>
                                 </div>
                                 
-                                <!-- Alt Kategoriler -->
+                                
                                 @if($category->children && $category->children->count() > 0)
                                     @foreach($category->children as $child)
                                         <div class="category-item list-group-item p-2 ps-5" 
@@ -287,25 +287,25 @@
                                             data-parent-id="{{ $category->widget_category_id }}"
                                             data-is-parent="0">
                                             <div class="d-flex align-items-center">
-                                                <!-- Sürükleme Kolu -->
+                                                
                                                 <div class="category-drag-handle me-2">
                                                     <i class="fas fa-grip-vertical text-muted"></i>
                                                 </div>
                                                 
-                                                <!-- İkon -->
+                                                
                                                 <div class="bg-secondary-lt rounded-2 d-flex align-items-center justify-content-center me-2" 
                                                     style="width: 2.5rem; height: 2.5rem;">
                                                     <i class="{{ $child->icon ?? 'fas fa-folder' }}"></i>
                                                 </div>
                                                 
-                                                <!-- Kategori Bilgisi -->
+                                                
                                                 <div class="flex-grow-1">
                                                     <div class="d-flex align-items-center justify-content-between">
                                                         <div>
                                                             <div class="h4 mb-0">{{ $child->title }}</div>
                                                         </div>
                                                         
-                                                        <!-- İşlem Butonları -->
+                                                        
                                                         <div class="d-flex align-items-center">
                                                             <div class="container">
                                                                 <div class="row">
@@ -314,11 +314,11 @@
                                                                             class="btn btn-icon btn-sm {{ $child->is_active ? 'text-muted bg-transparent' : 'text-red bg-transparent' }}"
                                                                             data-bs-toggle="tooltip" data-bs-placement="top" 
                                                                             title="{{ $child->is_active ? 'Deaktive Et' : 'Aktive Et' }}">
-                                                                            <!-- Loading Durumu -->
+                                                                            
                                                                             <div wire:loading wire:target="toggleActive({{ $child->widget_category_id }})"
                                                                                 class="spinner-border spinner-border-sm">
                                                                             </div>
-                                                                            <!-- Normal Durum: Aktif/Pasif İkonları -->
+                                                                            
                                                                             <div wire:loading.remove wire:target="toggleActive({{ $child->widget_category_id }})">
                                                                                 @if($child->is_active)
                                                                                 <i class="fas fa-check fa-lg"></i>

@@ -107,14 +107,14 @@ if (!empty($processedJs)) {
 </style>
 @endif
 
-<!-- CSS Dosyaları -->
+
 @foreach($cssFiles as $cssFile)
     @if(!empty($cssFile))
         <link rel="stylesheet" href="{{ $cssFile }}">
     @endif
 @endforeach
 
-<!-- JS Dosyaları -->
+
 @foreach($jsFiles as $jsFile)
     @if(!empty($jsFile))
         <script src="{{ $jsFile }}"></script>

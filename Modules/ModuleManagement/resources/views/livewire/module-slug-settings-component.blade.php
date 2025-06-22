@@ -8,10 +8,10 @@
             <div class="col">
                 <h3 class="card-title mb-2">
                     <i class="fas fa-link me-2"></i>
-                    {{ $moduleDisplayName }} URL Ayarları
+                    {{ $moduleDisplayName }} {{ t('modulemanagement::general.module_url_settings') }}
                 </h3>
                 <div class="text-muted">
-                    Web sitenizin URL yapısını özelleştirin. Değişiklikler anında kaydedilir.
+                    {{ t('modulemanagement::general.customize_website_structure') }}
                 </div>
             </div>
             <!-- Orta Kolon - Loading -->
@@ -20,7 +20,7 @@
                     wire:target="updateSlug, resetSlug, resetAllSlugs"
                     class="position-absolute top-50 start-50 translate-middle text-center"
                     style="width: 100%; max-width: 250px;">
-                    <div class="small text-muted mb-2">Güncelleniyor...</div>
+                    <div class="small text-muted mb-2">{{ t('modulemanagement::general.updating_status') }}</div>
                     <div class="progress mb-1">
                         <div class="progress-bar progress-bar-indeterminate"></div>
                     </div>
@@ -31,7 +31,7 @@
                 <div class="d-flex align-items-center justify-content-end">
                     <button wire:click="resetAllSlugs" class="btn btn-outline-danger">
                         <i class="fas fa-undo me-1"></i>
-                        Tümünü Sıfırla
+                        {{ t('modulemanagement::general.reset_all_button') }}
                     </button>
                 </div>
             </div>
@@ -48,8 +48,8 @@
                                     <i class="fas fa-exclamation-triangle me-2"></i>
                                 </div>
                                 <div>
-                                    <h4 class="alert-title">Yapılandırma Bulunamadı</h4>
-                                    Bu modül için slug yapılandırması tanımlanmamış.
+                                    <h4 class="alert-title">{{ t('modulemanagement::general.configuration_not_found') }}</h4>
+                                    {{ t('modulemanagement::general.no_slug_configuration') }}
                                 </div>
                             </div>
                         </div>
@@ -63,21 +63,21 @@
                                             <div class="col">
                                                 <div class="mb-2">
                                                     <label class="form-label mb-1">
-                                                        <strong>{{ ucfirst($key) }} Sayfası URL'i</strong>
+                                                        <strong>{{ ucfirst($key) }} {{ t('modulemanagement::general.page_url') }}</strong>
                                                     </label>
                                                     <div class="text-muted small">
                                                         @switch($key)
                                                             @case('index')
-                                                                Liste sayfası için kullanılacak URL
+                                                                {{ t('modulemanagement::general.list_page_url_info') }}
                                                                 @break
                                                             @case('show')
-                                                                Detay sayfaları için kullanılacak URL öneki
+                                                                {{ t('modulemanagement::general.detail_page_url_info') }}
                                                                 @break
                                                             @case('category')
-                                                                Kategori sayfaları için kullanılacak URL öneki
+                                                                {{ t('modulemanagement::general.category_page_url_info') }}
                                                                 @break
                                                             @default
-                                                                {{ ucfirst($key) }} sayfaları için kullanılacak URL
+                                                                {{ ucfirst($key) }} {{ t('modulemanagement::general.default_page_url_info') }}
                                                         @endswitch
                                                     </div>
                                                 </div>
@@ -104,9 +104,9 @@
                                                     <div class="d-flex align-items-center justify-content-between">
                                                         <small class="text-muted">
                                                             <i class="fas fa-eye me-1"></i>
-                                                            Önizleme: 
+                                                            {{ t('modulemanagement::general.preview') }}: 
                                                             <code class="text-primary">
-                                                                /{{ $slugs[$key] ?? $defaultValue }}{{ in_array($key, ['show', 'category']) ? '/ornek-sayfa' : '' }}
+                                                                /{{ $slugs[$key] ?? $defaultValue }}{{ in_array($key, ['show', 'category']) ? '/' . t('modulemanagement::general.example_page') : '' }}
                                                             </code>
                                                         </small>
                                                         
@@ -114,7 +114,7 @@
                                                         <button 
                                                             wire:click="resetSlug('{{ $key }}')" 
                                                             class="btn btn-sm btn-outline-secondary"
-                                                            title="Varsayılana döndür: {{ $defaultValue }}"
+                                                            title="{{ t('modulemanagement::general.reset_to_default') }}: {{ $defaultValue }}"
                                                         >
                                                             <i class="fas fa-undo fa-xs"></i>
                                                         </button>
@@ -136,13 +136,13 @@
                                         <i class="fas fa-info-circle me-2"></i>
                                     </div>
                                     <div>
-                                        <h4 class="alert-title">URL Özelleştirme Hakkında</h4>
+                                        <h4 class="alert-title">{{ t('modulemanagement::general.url_customization_info') }}</h4>
                                         <ul class="mb-0">
-                                            <li>URL değişiklikleri anında kaydedilir ve web sitenizde görünür</li>
-                                            <li>Özel URL yapınızı kullanıcı dostu hale getirebilirsiniz</li>
-                                            <li>Geçersiz karakterler otomatik olarak temizlenir</li>
-                                            <li>Boş bırakılan alanlar varsayılan değeri kullanır</li>
-                                            <li>SEO uyumlu URL'ler oluşturarak arama motoru sıralamanızı iyileştirebilirsiniz</li>
+                                            <li>{{ t('modulemanagement::general.url_changes_saved_instantly') }}</li>
+                                            <li>{{ t('modulemanagement::general.user_friendly_urls') }}</li>
+                                            <li>{{ t('modulemanagement::general.invalid_chars_cleaned') }}</li>
+                                            <li>{{ t('modulemanagement::general.empty_fields_use_default') }}</li>
+                                            <li>{{ t('modulemanagement::general.seo_friendly_urls') }}</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -158,22 +158,22 @@
                                         <i class="fas fa-code me-2"></i>
                                     </div>
                                     <div>
-                                        <h4 class="alert-title">Geliştiriciler için</h4>
+                                        <h4 class="alert-title">{{ t('modulemanagement::general.for_developers') }}</h4>
                                         <div class="mb-3">
-                                            <label class="form-label">Template'lerde kullanım örneği:</label>
+                                            <label class="form-label">{{ t('modulemanagement::general.template_usage_example') }}:</label>
                                             <div class="bg-dark text-light p-3 rounded">
                                                 <code class="text-success">
-                                                    &lt;!-- Liste sayfası linki --&gt;<br>
-                                                    &lt;a href="&#123;&#123; href('{{ strtolower($moduleName) }}', 'index') &#125;&#125;"&gt;{{ ucfirst($moduleName) }} Listesi&lt;/a&gt;<br><br>
-                                                    &lt;!-- Detay sayfası linki --&gt;<br>
-                                                    &lt;a href="&#123;&#123; href('{{ strtolower($moduleName) }}', 'show', $item-&gt;slug) &#125;&#125;"&gt;Detay Görüntüle&lt;/a&gt;
+                                                    &lt;!-- {{ t('modulemanagement::general.list_page_link') }} --&gt;<br>
+                                                    &lt;a href="&#123;&#123; href('{{ strtolower($moduleName) }}', 'index') &#125;&#125;"&gt;{{ ucfirst($moduleName) }} {{ t('modulemanagement::general.list') }}&lt;/a&gt;<br><br>
+                                                    &lt;!-- {{ t('modulemanagement::general.detail_page_link') }} --&gt;<br>
+                                                    &lt;a href="&#123;&#123; href('{{ strtolower($moduleName) }}', 'show', $item-&gt;slug) &#125;&#125;"&gt;{{ t('modulemanagement::general.view_detail') }}&lt;/a&gt;
                                                 </code>
                                             </div>
                                         </div>
                                         
                                         <div class="small text-muted">
                                             <i class="fas fa-lightbulb me-1"></i>
-                                            href() fonksiyonu özelleştirdiğiniz URL'leri otomatik olarak kullanır.
+                                            {{ t('modulemanagement::general.href_function_info') }}
                                         </div>
                                     </div>
                                 </div>

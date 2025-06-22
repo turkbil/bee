@@ -1,7 +1,7 @@
 <div>
     <!-- Mevcut Avatar -->
     <div class="mb-6">
-        <h4 class="text-sm font-medium text-gray-700 mb-4">Mevcut Avatar</h4>
+        <h4 class="text-sm font-medium text-gray-700 mb-4">{{ t('usermanagement::general.current_avatar') }}</h4>
         <div class="flex items-center space-x-4">
             @if($user->getFirstMedia('avatar'))
                 <div class="relative">
@@ -20,16 +20,16 @@
                     </form>
                 </div>
                 <div class="text-sm text-gray-600">
-                    <p class="font-medium">Avatar yüklendi</p>
-                    <p>Değiştirmek için yeni bir fotoğraf yükleyin</p>
+                    <p class="font-medium">{{ t('usermanagement::general.avatar_uploaded') }}</p>
+                    <p>{{ t('usermanagement::general.change_avatar_text') }}</p>
                 </div>
             @else
                 <div class="w-24 h-24 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-2xl">
                     {{ strtoupper(substr($user->name, 0, 1)) }}
                 </div>
                 <div class="text-sm text-gray-600">
-                    <p class="font-medium">Avatar yok</p>
-                    <p>Profil fotoğrafınızı yükleyin</p>
+                    <p class="font-medium">{{ t('usermanagement::general.no_avatar') }}</p>
+                    <p>{{ t('usermanagement::general.upload_profile_photo') }}</p>
                 </div>
             @endif
         </div>
@@ -46,9 +46,9 @@
                     </svg>
                     
                     <p class="mb-2 text-sm text-gray-600">
-                        <span class="font-semibold">Tıklayın</span> veya dosya seçin
+                        <span class="font-semibold">{{ t('usermanagement::general.click_or_select') }}</span>
                     </p>
-                    <p class="text-xs text-gray-500">PNG, JPG, WebP (Max. 2MB)</p>
+                    <p class="text-xs text-gray-500">{{ t('usermanagement::general.supported_formats') }}</p>
                 </label>
                 
                 <input id="avatar-upload" 
@@ -61,7 +61,7 @@
         </div>
         
         <button type="submit" class="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg transition-colors">
-            Avatar Yükle
+            {{ t('usermanagement::general.avatar_upload') }}
         </button>
     </form>
 

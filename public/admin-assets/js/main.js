@@ -2,11 +2,9 @@
 // Choices.js Sistemi
 function initializeChoices() {
     const choicesElements = document.querySelectorAll('[data-choices]');
-    console.log('🎯 INITIALIZE CHOICES - Found elements:', choicesElements.length);
     
     choicesElements.forEach(function(element) {
         if (element.dataset.choicesInitialized) {
-            console.log('⏭️ Skipping already initialized element');
             return;
         }
         
@@ -18,32 +16,29 @@ function initializeChoices() {
         ];
         
         if (listingFilters.includes(wireModel)) {
-            console.log('⏭️ Skipping listing filter element - will be normal select:', wireModel);
             return;
         }
         
         element.dataset.choicesInitialized = 'true';
-        console.log('🎯 Initializing choices for:', element);
         
         const options = {
             searchEnabled: true,
-            searchPlaceholderValue: 'Arama yapın...',
-            noResultsText: 'Sonuç bulunamadı',
-            noChoicesText: 'Seçenek yok',
-            itemSelectText: 'Seçmek için tıklayın',
+            searchPlaceholderValue: t('search_placeholder'),
+            noResultsText: t('no_results'),
+            noChoicesText: t('no_choices'),
+            itemSelectText: t('item_select'),
             removeItemButton: false,
             duplicateItemsAllowed: false,
             placeholder: true,
-            placeholderValue: 'Seçiniz...',
+            placeholderValue: t('select_placeholder'),
             searchResultLimit: 10,
             shouldSort: true,
             position: 'bottom',
-            // Türkçe ayarları
-            loadingText: 'Yükleniyor...',
-            addItemText: (value) => `"${value}" eklemek için Enter'a basın`,
-            maxItemText: (maxItemCount) => `Sadece ${maxItemCount} değer ekleyebilirsiniz`,
-            uniqueItemText: 'Bu değer zaten eklendi',
-            customAddItemText: 'Virgül karakteri kullanılamaz',
+            loadingText: t('loading'),
+            addItemText: (value) => `"${value}" ${t('add_item')}`,
+            maxItemText: (maxItemCount) => t('max_items', {count: maxItemCount}),
+            uniqueItemText: t('duplicate_item'),
+            customAddItemText: t('invalid_comma'),
         };
         
         // Data attribute'lardan özel ayarları al
@@ -89,14 +84,6 @@ function initializeChoices() {
         // Element'a choices instance'ını ekle
         element.choicesInstance = choices;
         
-        // DEBUG: Element'in name attribute'unu kontrol et
-        console.log('🔍 DEBUG Element:', {
-            id: element.id,
-            name: element.name,
-            wireModel: element.getAttribute('wire:model.live'),
-            hasName: element.hasAttribute('name'),
-            nameValue: element.getAttribute('name')
-        });
         
         // Choices.js'in name attribute'unu düzelt
         if (element.getAttribute('wire:model.live') === 'selectedCategory') {
@@ -109,7 +96,6 @@ function initializeChoices() {
                 choices.passedElement.element.setAttribute('name', 'selectedCategory');
             }
             
-            console.log('🔧 Fixed name attribute to:', element.name);
         }
         
         // Choices.js getValue metodunu override et - Livewire için
@@ -131,16 +117,9 @@ function initializeChoices() {
                 const currentValue = element.value;
                 const finalValue = currentValue; // Normal choices için sadece mevcut değer
                 
-                // Normal choices debug
-                console.log('Choices set value:', {
-                    wireModel: element.getAttribute('wire:model.live'),
-                    finalValue: finalValue,
-                    choicesValue: choices.getValue(true)
-                });
                 
                 if (finalValue && choices.getValue(true) !== finalValue) {
                     choices.setChoiceByValue(finalValue);
-                    console.log('Set choices value to:', finalValue);
                 }
             }, 50);
         }
@@ -184,14 +163,7 @@ function initializeChoices() {
                 // Element'in değerini kontrol et ve choices'ı güncelle
                 const updateChoicesValue = () => {
                     const currentValue = element.value;
-                    console.log('🔄 UPDATE CHOICES VALUE:', {
-                        element: element,
-                        currentValue: currentValue,
-                        choicesValue: choices.getValue(true),
-                        wireModel: element.getAttribute('wire:model.live')
-                    });
                     if (currentValue && choices.getValue(true) !== currentValue) {
-                        console.log('🔄 Updating choices to:', currentValue);
                         choices.setChoiceByValue(currentValue);
                     }
                 };
@@ -412,21 +384,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Datepicker
     const litepickerLocale = {
-        months: [
-            "Ocak",
-            "Şubat",
-            "Mart",
-            "Nisan",
-            "Mayıs",
-            "Haziran",
-            "Temmuz",
-            "Ağustos",
-            "Eylül",
-            "Ekim",
-            "Kasım",
-            "Aralık",
-        ],
-        weekdaysShort: ["Paz", "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt"],
+        months: t('months'),
+        weekdaysShort: t('weekdays_short'),
     };
 
     const datepickers = document.querySelectorAll(".datepicker");
@@ -507,7 +466,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Livewire güncellemelerinden sonra yeniden başlat
 document.addEventListener('livewire:updated', function() {
-    console.log('🚀 LIVEWIRE UPDATED EVENT');
     initializeChoices();
     initializeTagsInput();
     initializeTooltips();
@@ -584,28 +542,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (data.success) {
                     // Başarı toast'ı göster
                     if (typeof showToast === 'function') {
-                        showToast('Başarılı', data.message, 'success');
-                    } else {
-                        console.log('✅ ' + data.message);
+                        showToast(t('success'), data.message, 'success');
                     }
                     
-                    // Console'a detayları yazdır
-                    console.log('Cache temizlendi:', data.cleared);
                 } else {
                     // Hata toast'ı göster
                     if (typeof showToast === 'function') {
-                        showToast('Hata', data.message, 'error');
-                    } else {
-                        console.error('❌ ' + data.message);
+                        showToast(t('error'), data.message, 'error');
                     }
                 }
             })
             .catch(error => {
-                console.error('Cache clear error:', error);
                 if (typeof showToast === 'function') {
-                    showToast('Hata', 'Cache temizleme sırasında bir hata oluştu', 'error');
-                } else {
-                    console.error('❌ Cache temizleme sırasında bir hata oluştu');
+                    showToast(t('error'), t('cache_error'), 'error');
                 }
             })
             .finally(() => {

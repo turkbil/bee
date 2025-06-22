@@ -4,7 +4,7 @@
     $width = isset($element['properties']['width']) ? $element['properties']['width'] : 12;
     $isRequired = isset($element['properties']['required']) && $element['properties']['required'] === true;
     $defaultValue = isset($element['properties']['default_value']) ? $element['properties']['default_value'] : null;
-    $placeholder = isset($element['properties']['placeholder']) ? $element['properties']['placeholder'] : 'Seçiniz';
+    $placeholder = isset($element['properties']['placeholder']) ? $element['properties']['placeholder'] : t('settingmanagement::general.select_field_placeholder');
     $helpText = isset($element['properties']['help_text']) ? $element['properties']['help_text'] : null;
     $options = isset($element['properties']['options']) ? $element['properties']['options'] : [];
     
@@ -32,7 +32,7 @@
             <div class="d-flex align-items-center justify-content-between">
                 <h3 class="card-title d-flex align-items-center">
                     <i class="fa-regular fa-comment fa-flip-horizontal me-2"></i>
-                    {{ $element['properties']['label'] ?? 'Açılır Liste' }}
+                    {{ $element['properties']['label'] ?? t('settingmanagement::general.select_field_default') }}
                 </h3>
             </div>
         </div>
@@ -64,7 +64,7 @@
                 @if(isset($originalData[$element['properties']['name']]) && $originalData[$element['properties']['name']] != $formData[$element['properties']['name']])
                     <div class="mt-2 text-end">
                         <span class="badge bg-yellow cursor-pointer" wire:click="resetToDefault('{{ $element['properties']['name'] }}')">
-                            <i class="fas fa-undo me-1"></i> Varsayılana Döndür
+                            <i class="fas fa-undo me-1"></i> {{ t('settingmanagement::general.reset_to_default_button') }}
                         </span>
                     </div>
                 @endif

@@ -21,7 +21,7 @@
             @else
                 <div class="alert alert-warning">
                     <i class="fas fa-exclamation-triangle me-2"></i>
-                    Form yapısı bulunamadı veya geçersiz. Lütfen Form Builder'ı kullanarak form yapısını düzenleyin.
+                    {{ t('settingmanagement::general.form_structure_not_found_warning') }}
                 </div>
             @endif
             </div>
@@ -30,9 +30,9 @@
 @else
     <div class="alert alert-info">
         <i class="fas fa-info-circle me-2"></i>
-        Bu grup için henüz form yapısı oluşturulmamış. 
+        {{ t('settingmanagement::general.no_form_structure') }} 
         <a href="{{ route('admin.settingmanagement.form-builder.edit', $group->id) }}" class="alert-link">
-            Form Builder'ı kullanarak bir form yapısı oluşturun.
+            {{ t('settingmanagement::general.create_form_structure') }}
         </a>
     </div>
 @endif

@@ -4,14 +4,14 @@
         // TinyMCE yapılandırması
         let options = {
           selector: '#editor',
-          plugins: 'code table lists link image media searchreplace fullscreen preview paste wordcount visualblocks visualchars nonbreaking hr importcss charmap emoticons pagebreak accordion autoresize codesample quickbars',
-          toolbar: 'code preview | undo redo | blocks | bold italic underline | link image media codesample | alignleft aligncenter alignright alignjustify | bullist numlist | table | accordion | visualblocks visualchars | hr pagebreak | emoticons | searchreplace | fullscreen | wordcount',
+          plugins: 'code table lists link image media searchreplace fullscreen preview wordcount visualblocks visualchars nonbreaking importcss charmap emoticons pagebreak accordion autoresize codesample quickbars',
+          toolbar: 'code preview | undo redo | blocks | bold italic underline | link image media codesample | alignleft aligncenter alignright alignjustify | bullist numlist | table | accordion | visualblocks visualchars | pagebreak | emoticons | searchreplace | fullscreen | wordcount',
           // Menü özelleştirmesi
           menubar: 'edit view insert format tools table',
           menu: {
-            edit: { title: 'Düzenle', items: 'undo redo | cut copy paste pastetext | selectall | searchreplace' },
+            edit: { title: 'Düzenle', items: 'undo redo | cut copy | selectall | searchreplace' },
             view: { title: 'Görüntüle', items: 'code preview | visualaid visualchars visualblocks | spellchecker | fullscreen' },
-            insert: { title: 'Ekle', items: 'image link media template codesample inserttable | charmap emoticons hr | accordion | pagebreak nonbreaking' },
+            insert: { title: 'Ekle', items: 'image link media template codesample inserttable | charmap emoticons | accordion | pagebreak nonbreaking' },
             format: { title: 'Biçim', items: 'bold italic underline strikethrough superscript subscript codeformat | formats blockformats fontformats fontsizes align | forecolor backcolor | removeformat' },
             tools: { title: 'Araçlar', items: 'spellchecker spellcheckerlanguage | wordcount' },
             table: { title: 'Tablo', items: 'inserttable | cell row column | tableprops deletetable' }

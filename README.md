@@ -25,6 +25,48 @@ Bu proje, Laravel 12 ile geliştirilmiş, modüler ve çok kiracılı (multi-ten
 
 ## Sürüm Geçmişi
 
+### v1.7.0 (2025-06-21) - Dil Yönetimi Sistemi Tamamen Tamamlandı
+- **Çoklu Dil Yönetim Sistemi:**
+  - ✅ SystemLanguage ve SiteLanguage modelleri oluşturuldu
+  - ✅ İki katmanlı mimari: Sistem dilleri (admin) + Site dilleri (frontend)
+  - ✅ Central domain erişim kontrolü (sadece merkezi domain'den sistem dili yönetimi)
+  - ✅ Tenant bazlı site dili yönetimi (her tenant kendi dillerini yönetir)
+  - ✅ Service layer pattern (SystemLanguageService, SiteLanguageService)
+  - ✅ Helper fonksiyonları ve cache sistemi
+
+- **Modern UI/UX Tasarımı:**
+  - ✅ ModuleManagement benzeri dashboard tasarımı
+  - ✅ Sürükle-bırak sıralama (Sortable.js entegrasyonu)
+  - ✅ Choices.js ile gelişmiş select elementleri
+  - ✅ Pretty checkbox'lar (form-switch yerine modern toggle)
+  - ✅ Card tabanlı responsive görünüm
+  - ✅ Real-time arama ve filtreleme
+  - ✅ Flash mesajları ve loading animasyonları
+
+- **Livewire Bileşenleri:**
+  - ✅ LanguageSettingsComponent (ana dashboard)
+  - ✅ SystemLanguageComponent (sistem dilleri listesi)
+  - ✅ SystemLanguageManageComponent (sistem dili ekleme/düzenleme)
+  - ✅ SiteLanguageComponent (site dilleri listesi)
+  - ✅ SiteLanguageManageComponent (site dili ekleme/düzenleme)
+  - ✅ x-form-footer bileşeni entegrasyonu
+
+- **Gelişmiş Özellikler:**
+  - ✅ Otomatik sort_order hesaplaması (manuel alan kaldırıldı)
+  - ✅ Korumalı diller (TR, EN silinemiyor/deaktive edilemiyor)
+  - ✅ Varsayılan dil sistemi (her tenant için bir varsayılan)
+  - ✅ Flag icon desteği (emoji bayraklar)
+  - ✅ RTL/LTR metin yönü desteği
+  - ✅ Activity log entegrasyonu (tüm işlemler loglanıyor)
+
+- **Teknik Altyapı:**
+  - ✅ Middleware sistemi (CentralDomainOnly)
+  - ✅ Route grupları ve güvenlik kontrolleri
+  - ✅ Service provider kayıtları
+  - ✅ Database migrations (central + tenant)
+  - ✅ Validation kuralları ve error handling
+  - ✅ Cache clear komutları
+
 ### v1.6.0 (2025-06-20) - Kapsamlı Activity Log Sistemi Implementasyonu
 - **Activity Log Sistemi Tamamen Tamamlandı:**
   - ✅ 517 PHP dosyası tarandı ve analiz edildi

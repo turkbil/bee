@@ -56,12 +56,14 @@
             "Modules\\WidgetManagement\\App\\": "Modules/WidgetManagement/app/",
             "Modules\\ThemeManagement\\App\\": "Modules/ThemeManagement/app/",
             "Modules\\Announcement\\App\\": "Modules/Announcement/app/",
+            "Modules\\LanguageManager\\App\\": "Modules/LanguageManager/app/",
             "Modules\\AI\\App\\": "Modules/AI/app/"
         },
         "files": [
             "app/Helpers/Functions.php",
             "app/Helpers/TenantHelpers.php",
-            "app/Helpers/LogHelper.php"
+            "app/Helpers/LogHelper.php",
+            "app/Helpers/TranslationHelper.php"
         ]
     },
     "autoload-dev": {

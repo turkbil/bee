@@ -13,12 +13,10 @@ window.StudioActions = (function() {
      */
     function setupActions(editor, config) {
         if (actionsSetup) {
-            console.log("Actions zaten ayarlandı, işlem atlanıyor");
             return;
         }
         actionsSetup = true;
         
-        console.log("Setting up actions");
         
         cleanup();
         
@@ -56,35 +54,24 @@ window.StudioActions = (function() {
         const swVisibility = document.getElementById("sw-visibility");
         if (swVisibility && !swVisibility.hasAttribute('data-visibility-setup')) {
             swVisibility.setAttribute('data-visibility-setup', 'true');
-            console.log("Görünürlük butonu bulundu:", swVisibility);
             
             swVisibility.addEventListener("click", () => {
-                console.log("Görünürlük butonuna tıklandı");
                 try {
                     let currentState = swVisibility.classList.contains('active');
-                    console.log("Mevcut durum (active):", currentState);
                     
-                    console.log("Editor:", editor);
-                    console.log("Canvas:", editor.Canvas);
                     
                     const frames = editor.Canvas.getFrames();
-                    console.log("Frames:", frames);
                     
                     frames.forEach((frame, index) => {
-                        console.log(`Frame ${index} işleniyor:`, frame);
                         const body = frame.view.getBody();
-                        console.log(`Frame ${index} body:`, body);
                         
                         const allElements = body.querySelectorAll('*');
-                        console.log(`Frame ${index} element sayısı:`, allElements.length);
                         
                         if (!currentState) {
-                            console.log("Sınırları göster işlemi yapılıyor");
                             allElements.forEach(el => {
                                 el.style.outline = '1px dashed rgba(170, 170, 170, 0.7)';
                             });
                         } else {
-                            console.log("Sınırları gizle işlemi yapılıyor");
                             allElements.forEach(el => {
                                 el.style.outline = '';
                             });
@@ -92,7 +79,6 @@ window.StudioActions = (function() {
                     });
                     
                     swVisibility.classList.toggle('active');
-                    console.log("Buton durumu güncellendi:", swVisibility.classList.contains('active'));
                     
                     return swVisibility.classList.contains('active');
                 } catch (error) {
@@ -101,7 +87,6 @@ window.StudioActions = (function() {
                 }
             });
         } else {
-            console.log("Görünürlük butonu mevcut değil veya zaten ayarlanmış, atlanıyor");
         }
     }
     
@@ -175,7 +160,6 @@ window.StudioActions = (function() {
         
         // RTE toolbar customization
         editor.on('rte:enable', (rte, view) => {
-            console.log('RTE aktif edildi');
             currentRTE = rte;
             currentEditedComponent = view.model;
             
@@ -205,7 +189,6 @@ window.StudioActions = (function() {
             
             const checkForLinkButtons = (attempts = 0) => {
                 if (attempts > 15) {
-                    console.log('Link butonları bulunamadı, maksimum deneme sayısına ulaşıldı');
                     return;
                 }
                 
@@ -214,19 +197,16 @@ window.StudioActions = (function() {
                         let linkButtons = document.querySelectorAll('.gjs-rte-action[title="Link"], .gjs-rte-action');
                         let allRteElements = document.querySelectorAll('.gjs-rte-action, .gjs-rte-toolbar, [class*="gjs-rte"]');
                         
-                        console.log(`Deneme ${attempts + 1} (Ana belge): RTE elementler: ${allRteElements.length}, Link butonları: ${linkButtons.length}`);
                         
                         if (frameEl && frameDocument) {
                             const iframeLinkButtons = frameDocument.querySelectorAll('.gjs-rte-action[title="Link"], .gjs-rte-action');
                             const iframeRteElements = frameDocument.querySelectorAll('.gjs-rte-action, .gjs-rte-toolbar, [class*="gjs-rte"]');
                             
-                            console.log(`Deneme ${attempts + 1} (iframe): RTE elementler: ${iframeRteElements.length}, Link butonları: ${iframeLinkButtons.length}`);
                             
                             linkButtons = [...linkButtons, ...iframeLinkButtons];
                         }
                         
                         if (linkButtons.length === 0) {
-                            console.log('Link butonları henüz yüklenmedi, tekrar deneniyor...');
                             checkForLinkButtons(attempts + 1);
                             return;
                         }
@@ -243,10 +223,8 @@ window.StudioActions = (function() {
                             return btn.title === 'Link';
                         });
                         
-                        console.log('Gerçek link butonları bulundu:', realLinkButtons.length);
                         
                         if (realLinkButtons.length === 0) {
-                            console.log('Gerçek link butonları henüz yüklenmedi, tekrar deneniyor...');
                             checkForLinkButtons(attempts + 1);
                             return;
                         }
@@ -256,7 +234,6 @@ window.StudioActions = (function() {
                                 linkButton.setAttribute('data-custom-link-setup', 'true');
                                 
                                 const handleLinkClick = (e) => {
-                                    console.log('Custom link butonuna tıklandı!');
                                     e.preventDefault();
                                     e.stopPropagation();
                                     e.stopImmediatePropagation();
@@ -279,7 +256,6 @@ window.StudioActions = (function() {
                                     }
                                     
                                     const selectedText = selection.toString();
-                                    console.log('Seçili metin:', selectedText);
                                     
                                     let selectionInfo = null;
                                     if (selection.rangeCount > 0) {
@@ -316,7 +292,6 @@ window.StudioActions = (function() {
                                             currentTitle = parentNode.getAttribute('title') || '';
                                         }
                                     } catch (err) {
-                                        console.log('Mevcut link bilgisi alınırken hata:', err);
                                     }
                                     
                                     window.StudioModal.showLinkModal(
@@ -327,11 +302,9 @@ window.StudioActions = (function() {
                                         (linkData) => {
                                             if (!linkData.url) return;
                                             
-                                            console.log('Link verisi alındı:', linkData);
                                             
                                             try {
                                                 if (frameDocument && selectionInfo) {
-                                                    console.log('Manuel link oluşturuluyor...');
                                                     
                                                     const newSelection = frameWindow.getSelection();
                                                     newSelection.removeAllRanges();
@@ -356,7 +329,6 @@ window.StudioActions = (function() {
                                                     
                                                     newSelection.removeAllRanges();
                                                     
-                                                    console.log('Link DOM\'a eklendi:', linkElement);
                                                     
                                                     if (currentRTE && typeof currentRTE.disable === 'function') {
                                                         currentRTE.disable();
@@ -365,23 +337,17 @@ window.StudioActions = (function() {
                                                     }
                                                     
                                                     const bodyHtml = frameDocument.body.innerHTML;
-                                                    console.log('Frame body HTML:', bodyHtml);
                                                     
-                                                    console.log('Editör yeniden parse ediliyor...');
                                                     editor.setComponents(bodyHtml);
                                                     
-                                                    console.log('Editör parse edildi, doğrulama yapılıyor...');
                                                     
                                                     const finalHtml = editor.getHtml();
-                                                    console.log('Final HTML:', finalHtml);
                                                     
                                                     if (finalHtml.includes('href=')) {
-                                                        console.log('✓ Link başarıyla model\'e kaydedildi');
                                                         if (window.StudioNotification) {
                                                             window.StudioNotification.success('Link başarıyla eklendi');
                                                         }
                                                     } else {
-                                                        console.log('✗ Link hala model\'de yok');
                                                         if (window.StudioNotification) {
                                                             window.StudioNotification.error('Link eklenemedi');
                                                         }
@@ -404,7 +370,6 @@ window.StudioActions = (function() {
                                 linkButton.addEventListener('mousedown', handleLinkClick, true);
                                 linkButton.addEventListener('touchstart', handleLinkClick, true);
                                 
-                                console.log(`Link butonu ${index} için event listener eklendi`);
                             }
                         });
                     } catch (error) {
@@ -418,7 +383,6 @@ window.StudioActions = (function() {
         });
         
         editor.on('rte:disable', () => {
-            console.log('RTE devre dışı bırakıldı');
             currentRTE = null;
             currentEditedComponent = null;
         });

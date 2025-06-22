@@ -111,21 +111,21 @@ class GroupManageComponent extends Component
             
             log_activity(
                 $group,
-                'güncellendi',
+                t('settingmanagement.actions.updated'),
                 $changes
             );
             
-            $message = 'Grup güncellendi';
+            $message = t('settingmanagement.messages.group_updated');
         } else {
             // Slug oluşturma işlemi artık Sluggable trait tarafından otomatik yapılıyor
             $group = SettingGroup::create($this->inputs);
             
             log_activity(
                 $group,
-                'oluşturuldu'
+                t('settingmanagement.actions.created')
             );
             
-            $message = 'Grup oluşturuldu';
+            $message = t('settingmanagement.messages.group_created');
         }
     
         if ($this->redirect) {
@@ -133,7 +133,7 @@ class GroupManageComponent extends Component
         }
     
         $this->dispatch('toast', [
-            'title' => 'Başarılı!',
+            'title' => t('settingmanagement.messages.success'),
             'message' => $message,
             'type' => 'success'
         ]);

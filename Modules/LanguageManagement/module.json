@@ -1,0 +1,11 @@
+{
+    "name": "LanguageManagement",
+    "alias": "languagemanagement",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\LanguageManagement\\Providers\\LanguageManagementServiceProvider"
+    ],
+    "files": []
+}

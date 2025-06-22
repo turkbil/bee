@@ -1,66 +1,66 @@
 {{-- PreTitle --}}
 @push('pretitle')
-Bileşenler
+{{ t('widgetmanagement.title') }}
 @endpush
 
 {{-- Başlık --}}
 @push('title')
-Bileşen Yönetimi
+{{ t('widgetmanagement.title') }}
 @endpush
 
 {{-- Modül Menüsü --}}
 @push('module-menu')
 <div class="dropdown d-grid d-md-flex module-menu">
-    <a href="#" class="btn dropdown-toggle d-inline-block d-lg-none" data-bs-toggle="dropdown">Menü</a>
+    <a href="#" class="btn dropdown-toggle d-inline-block d-lg-none" data-bs-toggle="dropdown">{{ t('common.menu') }}</a>
     <div class="dropdown-menu dropdown-module-menu">
         <div class="module-menu-revert">
             <div class="dropdown">
                 <button type="button" class="dropdown-module-item dropdown-toggle btn btn-ghost-secondary"
                     data-bs-toggle="dropdown">
-                    Bileşen Menüsü
+                    {{ t('widgetmanagement.widget.menu') }}
                 </button>
                 <div class="dropdown-menu">
                     @hasmoduleaccess('widgetmanagement', 'view')
                     <a class="dropdown-item" href="{{ route('admin.widgetmanagement.index') }}">
-                        Aktif Bileşenler
+                        {{ t('widgetmanagement.active_components') }}
                     </a>
                     <a class="dropdown-item" href="{{ route('admin.widgetmanagement.gallery') }}">
-                        Bileşen Galerisi
+                        {{ t('widgetmanagement.gallery') }}
                     </a>
                     @endhasmoduleaccess
                     
                     @role('root')
                     <h6 class="dropdown-menu-header card-header-light">
-                        <span class="dropdown-header">Özel Bileşenler</span>
+                        <span class="dropdown-header">{{ t('widgetmanagement.special_components') }}</span>
                     </h6>
                     
                     <a class="dropdown-item" href="{{ route('admin.widgetmanagement.modules') }}">
-                        Moduller
+                        {{ t('widgetmanagement.modules') }}
                     </a>
                     
                     <a class="dropdown-item" href="{{ route('admin.widgetmanagement.files') }}">
-                        Hazır Dosyalar
+                        {{ t('widgetmanagement.ready_files') }}
                     </a>
                     
                     <h6 class="dropdown-menu-header card-header-light">
-                        <span class="dropdown-header">Bileşen Yapılandırması</span>
+                        <span class="dropdown-header">{{ t('widgetmanagement.configuration') }}</span>
                     </h6>
                     
                     <a class="dropdown-item" href="{{ route('admin.widgetmanagement.category.index') }}">
-                        Kategori Yönetimi
+                        {{ t('widgetmanagement.category_management') }}
                     </a>
 
                     <a class="dropdown-item" href="{{ route('admin.widgetmanagement.manage') }}">
-                        Bileşen Ekle
+                        {{ t('widgetmanagement.add_component') }}
                     </a>                    
                     @endrole
                 </div>
             </div>
             <a href="{{ route('admin.widgetmanagement.index') }}" class="dropdown-module-item btn {{ request()->routeIs('admin.widgetmanagement.index') ? 'btn-primary' : 'btn-outline-primary' }}">
-                Aktif Bileşenler
+                {{ t('widgetmanagement.active_components') }}
             </a>
             <a href="{{ route('admin.widgetmanagement.gallery') }}" class="dropdown-module-item btn {{ request()->routeIs('admin.widgetmanagement.gallery') ? 'btn-primary' : 'btn-outline-primary' }}">
-                Bileşen Galerisi
+                {{ t('widgetmanagement.gallery') }}
             </a>
         </div>
     </div>

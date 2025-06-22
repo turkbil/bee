@@ -130,9 +130,9 @@
                                 </div>
                             </div>
                         </div>
-                    </div> <!-- #editor-card kapanışı -->
-                </div> <!-- col-12 kapanışı -->
-            </div> <!-- row kapanışı -->
+                    </div> 
+                </div> 
+            </div> 
             
             <div class="card mt-3" id="external-files-section">
                 <div class="card-header">

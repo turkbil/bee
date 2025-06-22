@@ -39,7 +39,7 @@ class HandlebarsRenderer
             return $html;
         } catch (\Exception $e) {
             Log::error("Handlebars şablonu render hatası: " . $e->getMessage());
-            return '<!-- Handlebars render hatası: ' . $e->getMessage() . ' -->';
+            return '';
         }
     }
     

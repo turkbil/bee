@@ -9,7 +9,7 @@
             <h3 class="card-title">{{ $conversation->title }}</h3>
             <div class="card-actions">
                 <a href="{{ route('admin.ai.conversations.index') }}" class="btn btn-outline-primary">
-                    <i class="fas fa-arrow-left me-2"></i> Tüm Konuşmalar
+                    <i class="fas fa-arrow-left me-2"></i> {{ t('ai::general.all_conversations') }}
                 </a>
             </div>
         </div>
@@ -22,13 +22,13 @@
                     <div class="message-content">
                         <p>{!! nl2br(e($message->content)) !!}</p>
                         <small class="text-muted d-block mt-1">
-                            {{ $message->created_at->format('d.m.Y H:i') }} · {{ $message->tokens }} token
+                            {{ $message->created_at->format(t('ai::general.date_format')) }} · {{ $message->tokens }} {{ t('ai::general.token') }}
                         </small>
                     </div>
                     @if($message->role == 'assistant')
                     <div class="message-actions">
                         <button class="btn btn-sm btn-ghost-secondary copy-message" data-bs-toggle="tooltip"
-                            title="Mesajı Kopyala" onclick="copyToClipboard(this)">
+                            title="{{ t('ai::general.copy_message') }}" onclick="copyToClipboard(this)">
                             <i class="fa-thin fa-copy"></i>
                         </button>
                     </div>
@@ -41,7 +41,7 @@
     <div class="card-footer">
         <div class="d-flex justify-content-center">
             <a href="{{ route('admin.ai.index') }}?conversation={{ $conversation->id }}" class="btn btn-primary">
-                <i class="fas fa-reply me-2"></i> Bu Konuşmaya Devam Et
+                <i class="fas fa-reply me-2"></i> {{ t('ai::general.continue_conversation') }}
             </a>
         </div>
     </div>

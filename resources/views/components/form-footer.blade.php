@@ -31,7 +31,7 @@
         @endphp
         
         @if($showCancelButton)
-        <a href="{{ $cancelUrl }}" class="btn btn-link text-decoration-none">İptal</a>
+        <a href="{{ $cancelUrl }}" class="btn btn-link text-decoration-none">{{ t('common.cancel') }}</a>
         @else
         <div></div>
         @endif
@@ -42,10 +42,10 @@
                 wire:target="save">
                 <span class="d-flex align-items-center">
                     <span class="ms-2" wire:loading.remove wire:target="save(false, false)">
-                        <i class="fa-thin fa-plus me-2"></i> Kaydet ve Devam Et
+                        <i class="fa-thin fa-plus me-2"></i> {{ t('common.save_and_continue') }}
                     </span>
                     <span class="ms-2" wire:loading wire:target="save(false, false)">
-                        <i class="fa-duotone fa-solid fa-spinner fa-spin me-2"></i> Kaydet ve Devam Et
+                        <i class="fa-duotone fa-solid fa-spinner fa-spin me-2"></i> {{ t('common.save_and_continue') }}
                     </span>
                 </span>
             </button>
@@ -54,10 +54,10 @@
                 wire:target="save">
                 <span class="d-flex align-items-center">
                     <span class="ms-2" wire:loading.remove wire:target="save(false, true)">
-                        <i class="fa-thin fa-plus me-2"></i> Kaydet ve Yeni Ekle
+                        <i class="fa-thin fa-plus me-2"></i> {{ t('common.save_and_new') }}
                     </span>
                     <span class="ms-2" wire:loading wire:target="save(false, true)">
-                        <i class="fa-duotone fa-solid fa-spinner fa-spin me-2"></i> Kaydet ve Yeni Ekle
+                        <i class="fa-duotone fa-solid fa-spinner fa-spin me-2"></i> {{ t('common.save_and_new') }}
                     </span>
                 </span>
             </button>
@@ -67,10 +67,10 @@
                 wire:loading.attr="disabled" wire:target="save">
                 <span class="d-flex align-items-center">
                     <span class="ms-2" wire:loading.remove wire:target="save(true, false)">
-                        <i class="fa-thin fa-floppy-disk me-2"></i> Kaydet
+                        <i class="fa-thin fa-floppy-disk me-2"></i> {{ t('common.save') }}
                     </span>
                     <span class="ms-2" wire:loading wire:target="save(true, false)">
-                        <i class="fa-duotone fa-solid fa-spinner fa-spin me-2"></i> Kaydet
+                        <i class="fa-duotone fa-solid fa-spinner fa-spin me-2"></i> {{ t('common.save') }}
                     </span>
                 </span>
             </button>

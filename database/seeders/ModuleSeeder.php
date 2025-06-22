@@ -145,6 +145,10 @@ class ModuleSeeder extends Seeder
                 }
             }
             
+            // Her tenant için varsayılan site dili oluştur
+            $this->command->info("Seeding site languages for tenant: {$tenant->id}");
+            $this->call(SiteLanguagesSeeder::class);
+            
             // Tenant bağlamını sonlandır ve central'a geri dön
             tenancy()->end();
         }

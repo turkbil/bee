@@ -11,8 +11,8 @@
                         <div class="form-floating mb-3">
                             <input type="text" wire:model.defer="inputs.display_name"
                                 class="form-control @error('inputs.display_name') is-invalid @enderror"
-                                placeholder="Örn: Blog Modülü">
-                            <label>Görünen Ad</label>
+                                placeholder="{{ t('modulemanagement::general.display_name_placeholder') }}">
+                            <label>{{ t('modulemanagement::general.display_name') }}</label>
                             @error('inputs.display_name')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -27,13 +27,13 @@
                                     class="form-select @error('inputs.name') is-invalid @enderror"
                                     data-choices
                                     data-choices-search="{{ count($this->availableModules) > 6 ? 'true' : 'false' }}"
-                                    data-choices-placeholder="Lütfen bir modül seçin">
-                                    <option value="">Lütfen bir modül seçin</option>
+                                    data-choices-placeholder="{{ t('modulemanagement::general.module_select_placeholder') }}">
+                                    <option value="">{{ t('modulemanagement::general.module_select_placeholder') }}</option>
                                     @foreach($this->availableModules as $name => $display)
                                     <option value="{{ $name }}">{{ $display }}</option>
                                     @endforeach
                                 </select>
-                                <label>Modül Seçimi</label>
+                                <label>{{ t('modulemanagement::general.module_selection') }}</label>
                                 @error('inputs.name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -42,8 +42,8 @@
                             <div class="alert alert-info d-flex align-items-center">
                                 <i class="fas fa-check-circle me-3"></i>
                                 <div>
-                                    <h4 class="alert-title">Tüm modüller eklenmiş!</h4>
-                                    <div class="text-muted">Yeni modül eklemek için sisteminize modül yüklemelisiniz.
+                                    <h4 class="alert-title">{{ t('modulemanagement::general.all_modules_added') }}</h4>
+                                    <div class="text-muted">{{ t('modulemanagement::general.install_new_modules_info') }}
                                     </div>
                                 </div>
                             </div>
@@ -56,15 +56,14 @@
                                 class="form-select @error('inputs.type') is-invalid @enderror"
                                 data-choices
                                 data-choices-search="false"
-                                data-choices-placeholder="Modül tipi seçin">
-                                <option value="content" {{ $inputs['type']=='content' ? 'selected' : '' }}>İçerik Modülü
+                                data-choices-placeholder="{{ t('modulemanagement::general.module_type_placeholder') }}">
+                                <option value="content" {{ $inputs['type']=='content' ? 'selected' : '' }}>{{ t('modulemanagement::general.content_module') }}
                                 </option>
-                                <option value="management" {{ $inputs['type']=='management' ? 'selected' : '' }}>Yönetim
-                                    Modülü</option>
-                                <option value="system" {{ $inputs['type']=='system' ? 'selected' : '' }}>Sistem Modülü
+                                <option value="management" {{ $inputs['type']=='management' ? 'selected' : '' }}>{{ t('modulemanagement::general.management_module') }}</option>
+                                <option value="system" {{ $inputs['type']=='system' ? 'selected' : '' }}>{{ t('modulemanagement::general.system_module') }}
                                 </option>
                             </select>
-                            <label>Modül Tipi</label>
+                            <label>{{ t('modulemanagement::general.module_type') }}</label>
                             @error('inputs.type')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -76,14 +75,14 @@
                                 class="form-select @error('inputs.setting') is-invalid @enderror"
                                 data-choices
                                 data-choices-search="{{ count($availableSettings) > 6 ? 'true' : 'false' }}"
-                                data-choices-placeholder="Ayar seçiniz">
-                                <option value="">Ayar seçiniz</option>
+                                data-choices-placeholder="{{ t('modulemanagement::general.setting_placeholder') }}">
+                                <option value="">{{ t('modulemanagement::general.setting_placeholder') }}</option>
                                 @foreach($availableSettings as $setting)
                                 <option value="{{ $setting->id }}" {{ $inputs['setting']==$setting->id ? 'selected' :
                                     '' }}>{{ $setting->name }}</option>
                                 @endforeach
                             </select>
-                            <label>Ayar Seçiniz</label>
+                            <label>{{ t('modulemanagement::general.setting_selection') }}</label>
                             @error('inputs.setting')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -93,8 +92,8 @@
                         <div class="form-floating mb-3">
                             <input type="text" wire:model.defer="inputs.version"
                                 class="form-control @error('inputs.version') is-invalid @enderror"
-                                placeholder="1.0.0">
-                            <label>Versiyon</label>
+                                placeholder="{{ t('modulemanagement::general.version_placeholder') }}">
+                            <label>{{ t('modulemanagement::general.version') }}</label>
                             @error('inputs.version')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -103,8 +102,8 @@
                         <!-- Açıklama -->
                         <div class="form-floating mb-3">
                             <textarea wire:model.defer="inputs.description" class="form-control" data-bs-toggle="autosize"
-                                placeholder="Açıklama"></textarea>
-                            <label>Açıklama</label>
+                                placeholder="{{ t('modulemanagement::general.description_placeholder') }}"></textarea>
+                            <label>{{ t('modulemanagement::general.description') }}</label>
                         </div>
                         
                         <!-- Aktif/Pasif -->
@@ -114,10 +113,10 @@
                                     value="1" checked />
 
                                 <div class="state p-success p-on ms-2">
-                                    <label>Aktif</label>
+                                    <label>{{ t('modulemanagement::general.active') }}</label>
                                 </div>
                                 <div class="state p-danger p-off ms-2">
-                                    <label>Aktif Değil </label>
+                                    <label>{{ t('modulemanagement::general.inactive') }}</label>
                                 </div>
                             </div>
                         </div>
@@ -127,7 +126,7 @@
                     <div class="col-lg-4 mt-4 mt-lg-0">
                         <div class="card">
                             <div class="card-header">
-                                <h3 class="card-title">Domain Ataması</h3>
+                                <h3 class="card-title">{{ t('modulemanagement::general.domain_assignment') }}</h3>
                             </div>
                             <div class="list-group list-group-flush overflow-auto" style="max-height: 35rem">
                                 @foreach($domains as $domainId => $domain)

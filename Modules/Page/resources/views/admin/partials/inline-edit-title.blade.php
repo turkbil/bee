@@ -5,7 +5,7 @@
                 <input type="text"
                     wire:model.defer="newTitle"
                     class="form-control form-control-sm flexible-input"
-                    placeholder="Yeni başlık girin"
+                    placeholder="{{ t('page::general.enter_new_title') }}"
                     wire:keydown.enter="updateTitleInline"
                     wire:keydown.escape="$set('editingTitleId', null)"
                     x-init="$nextTick(() => {

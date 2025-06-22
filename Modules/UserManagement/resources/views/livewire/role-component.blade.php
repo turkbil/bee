@@ -10,7 +10,7 @@
                         <i class="fas fa-search"></i>
                     </span>
                     <input type="text" wire:model.live="search" class="form-control"
-                        placeholder="Aramak için yazmaya başlayın...">
+                        placeholder="{{ t('usermanagement::general.search_placeholder') }}">
                 </div>
             </div>
             <!-- Ortadaki Loading -->
@@ -19,7 +19,7 @@
                     wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, selectedItems, selectAll, bulkDelete, bulkToggleActive"
                     class="position-absolute top-50 start-50 translate-middle text-center"
                     style="width: 100%; max-width: 250px;">
-                    <div class="small text-muted mb-2">Güncelleniyor...</div>
+                    <div class="small text-muted mb-2">{{ t('usermanagement::general.updating') }}</div>
                     <div class="progress mb-1">
                         <div class="progress-bar progress-bar-indeterminate"></div>
                     </div>
@@ -30,7 +30,7 @@
                 <div class="d-flex align-items-center justify-content-end gap-3">
                     <!-- Yeni Rol Butonu -->
                     <a href="{{ route('admin.usermanagement.role.manage') }}" class="btn btn-primary">
-                        <i class="fas fa-plus me-2"></i> Yeni Rol
+                        <i class="fas fa-plus me-2"></i> {{ t('usermanagement::general.new_role') }}
                     </a>
                     <!-- Sayfa Adeti Seçimi -->
                     <div style="min-width: 60px">
@@ -65,13 +65,13 @@
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end">
                                     <a href="{{ route('admin.usermanagement.role.manage', $role->id) }}" class="dropdown-item">
-                                        <i class="fas fa-edit me-2"></i> Düzenle
+                                        <i class="fas fa-edit me-2"></i> {{ t('usermanagement::general.edit') }}
                                     </a>
                                     @if($role->name !== 'root')
                                     <button class="dropdown-item text-danger"
                                             wire:click="confirmDelete({{ $role->id }})"
-                                            onclick="return confirm('Bu rolü silmek istediğinize emin misiniz?');">
-                                        <i class="fas fa-trash me-2"></i> Sil
+                                            onclick="return confirm('{{ t('usermanagement::messages.confirm_delete_role') }}');">
+                                        <i class="fas fa-trash me-2"></i> {{ t('usermanagement::general.delete') }}
                                     </button>
                                     @endif
                                 </div>
@@ -84,13 +84,13 @@
                             <div class="col-6">
                                 <div class="text-center">
                                     <div class="h3 mb-1">{{ $role->users_count ?? 0 }}</div>
-                                    <div class="text-muted small">Kullanıcı</div>
+                                    <div class="text-muted small">{{ t('usermanagement::general.user') }}</div>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="text-center">
                                     <div class="h3 mb-1">{{ $role->permissions_count ?? 0 }}</div>
-                                    <div class="text-muted small">Yetki</div>
+                                    <div class="text-muted small">{{ t('usermanagement::general.permissions_count_simple') }}</div>
                                 </div>
                             </div>
                         </div>
@@ -109,7 +109,7 @@
                         @else
                         <div class="text-muted text-center">
                             <i class="fas fa-plus me-1"></i>
-                            Yetki eklenebilir
+                            {{ t('usermanagement::general.permission_can_be_added') }}
                         </div>
                         @endif
                     </div>
@@ -132,13 +132,13 @@
                     <div class="empty-img">
                         <i class="fas fa-user-shield fa-4x text-muted"></i>
                     </div>
-                    <p class="empty-title">Henüz rol bulunmuyor</p>
+                    <p class="empty-title">{{ t('usermanagement::general.no_roles_yet') }}</p>
                     <p class="empty-subtitle text-muted">
-                        "Yeni Rol" butonunu kullanarak ilk rolünüzü oluşturun.
+                        {{ t('usermanagement::general.create_first_role') }}
                     </p>
                     <div class="empty-action">
                         <a href="{{ route('admin.usermanagement.role.manage') }}" class="btn btn-primary">
-                            <i class="fas fa-plus me-2"></i> Yeni Rol
+                            <i class="fas fa-plus me-2"></i> {{ t('usermanagement::general.new_role') }}
                         </a>
                     </div>
                 </div>
@@ -155,17 +155,17 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="deleteModalLabel">Rolü Sil</h5>
+                    <h5 class="modal-title" id="deleteModalLabel">{{ t('usermanagement::general.delete') }} {{ t('usermanagement::general.role') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
                         wire:click="cancelDelete"></button>
                 </div>
                 <div class="modal-body">
-                    Bu rolü silmek istediğinize emin misiniz?
+                    {{ t('usermanagement::messages.confirm_delete_role') }}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                        wire:click="cancelDelete">İptal</button>
-                    <button type="button" class="btn btn-danger" wire:click="delete">Sil</button>
+                        wire:click="cancelDelete">{{ t('usermanagement::general.cancel') }}</button>
+                    <button type="button" class="btn btn-danger" wire:click="delete">{{ t('usermanagement::general.delete') }}</button>
                 </div>
             </div>
         </div>

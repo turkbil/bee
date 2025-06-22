@@ -29,7 +29,7 @@ x-on:drop="handleDrop($event)">
                         accept="image/jpeg,image/png,image/webp,image/gif" />
                 </div>
 
-                <!-- Progress Bar Alanı -->
+                
                 <div class="progress-container" style="height: 10px;">
                     <div class="progress progress-sm mt-2" wire:loading
                         wire:target="temporaryImages.{{ $imageKey }}">

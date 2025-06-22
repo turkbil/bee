@@ -21,7 +21,7 @@ if (!function_exists('widget_by_id')) {
             return $widgetService->renderSingleWidget($tenantWidget);
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error("Widget render hatası: " . $e->getMessage());
-            return "<!-- Widget #$id yüklenemedi -->";
+            return "";
         }
     }
 }
@@ -39,7 +39,7 @@ if (!function_exists('widget_by_slug')) {
     {
         $widget = Widget::where('slug', $slug)->where('is_active', true)->first();
         if (!$widget) {
-            return "<!-- Widget '{$slug}' bulunamadı -->";
+            return "";
         }
         $settings = array_merge([
             'title' => $widget->name,
@@ -131,7 +131,7 @@ if (!function_exists('module_widget_by_id')) {
     {
         $widget = Widget::where('id', $id)->where('type', 'module')->where('is_active', true)->first();
         if (!$widget) {
-            return "<!-- Module Widget '{$id}' bulunamadı -->";
+            return "";
         }
         $viewPath = 'widgetmanagement::blocks.' . $widget->file_path;
         try {
@@ -180,7 +180,7 @@ if (!function_exists('widget_file_by_id')) {
     {
         $widget = Widget::where('id', $id)->where('type', 'file')->where('is_active', true)->first();
         if (!$widget) {
-            return "<!-- File Widget '{$id}' bulunamadı -->";
+            return "";
         }
         $viewPath = 'widgetmanagement::blocks.' . $widget->file_path;
         try {

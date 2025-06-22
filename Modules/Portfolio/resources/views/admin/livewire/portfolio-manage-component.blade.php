@@ -6,17 +6,17 @@
             <div class="card-header">
                 <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs">
                     <li class="nav-item">
-                        <a href="#tabs-1" class="nav-link active" data-bs-toggle="tab">Temel Bilgiler</a>
+                        <a href="#tabs-1" class="nav-link active" data-bs-toggle="tab">{{ t('portfolio::admin.basic_info') }}</a>
                     </li>
                     <li class="nav-item">
-                        <a href="#tabs-2" class="nav-link" data-bs-toggle="tab">SEO</a>
+                        <a href="#tabs-2" class="nav-link" data-bs-toggle="tab">{{ t('portfolio::admin.seo') }}</a>
                     </li>
                 </ul>
                 
                 @if($studioEnabled && $portfolioId)
                 <div class="card-actions">
                     <a href="{{ route('admin.studio.editor', ['module' => 'portfolio', 'id' => $portfolioId]) }}" target="_blank" class="btn btn-primary">
-                        <i class="fas fa-wand-magic-sparkles me-2"></i> Studio ile Düzenle
+                        <i class="fas fa-wand-magic-sparkles me-2"></i> {{ t('portfolio::admin.edit_with_studio') }}
                     </a>
                 </div>
                 @endif
@@ -28,8 +28,8 @@
                         <div class="form-floating mb-3">
                             <input type="text" wire:model="inputs.title"
                                 class="form-control @error('inputs.title') is-invalid @enderror"
-                                placeholder="Portfolyo başlığı">
-                            <label>Başlık</label>
+                                placeholder="{{ t('portfolio::admin.portfolio_title_placeholder') }}">
+                            <label>{{ t('portfolio::admin.title') }}</label>
                             @error('inputs.title')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -40,8 +40,8 @@
                                 class="form-control @error('inputs.portfolio_category_id') is-invalid @enderror"
                                 data-choices 
                                 data-choices-search="{{ count($categories) > 6 ? 'true' : 'false' }}"
-                                data-choices-placeholder="Kategori Seçin">
-                                <option value="">Kategori Seçin</option>
+                                data-choices-placeholder="{{ t('portfolio::admin.select_category') }}">
+                                <option value="">{{ t('portfolio::admin.select_category') }}</option>
                                 @foreach($categories as $category)
                                 <option value="{{ $category->portfolio_category_id }}" {{ $category->
                                     portfolio_category_id == $inputs['portfolio_category_id'] ? 'selected' : '' }}>
@@ -49,7 +49,7 @@
                                 </option>
                                 @endforeach
                             </select>
-                            <label>Kategori</label>
+                            <label>{{ t('portfolio::admin.category') }}</label>
                             @error('inputs.portfolio_category_id')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -57,7 +57,7 @@
 
                         @include('portfolio::admin.partials.image-upload', [
                         'imageKey' => 'image',
-                        'label' => 'Görseli sürükleyip bırakın veya tıklayın'
+                        'label' => t('portfolio::admin.drag_drop_image')
                         ])
 
                         <div class="mb-3" wire:ignore>
@@ -70,10 +70,10 @@
                                     value="1" {{ (!isset($inputs['is_active']) || $inputs['is_active']) ? 'checked' : '' }} />
 
                                 <div class="state p-success p-on ms-2">
-                                    <label>Aktif</label>
+                                    <label>{{ t('portfolio::admin.active') }}</label>
                                 </div>
                                 <div class="state p-danger p-off ms-2">
-                                    <label>Aktif Değil </label>
+                                    <label>{{ t('portfolio::admin.not_active') }}</label>
                                 </div>
                             </div>
                         </div>
@@ -81,8 +81,8 @@
                     <!-- SEO -->
                     <div class="tab-pane fade" id="tabs-2">
                         <div class="form-floating mb-3">
-                            <input type="text" wire:model="inputs.slug" class="form-control" placeholder="Slug">
-                            <label>Slug</label>
+                            <input type="text" wire:model="inputs.slug" class="form-control" placeholder="{{ t('portfolio::admin.slug') }}">
+                            <label>{{ t('portfolio::admin.slug') }}</label>
                         </div>
                         <div class="form-floating mb-3">
                             <input type="text" 
@@ -92,16 +92,16 @@
                                 data-choices-multiple="true"
                                 data-choices-search="false"
                                 data-choices-filter="true"
-                                data-choices-placeholder="Anahtar kelime girin..."
+                                data-choices-placeholder="{{ t('portfolio::admin.enter_keywords') }}"
                                 value="{{ is_array($inputs['metakey']) ? implode(',', $inputs['metakey']) : $inputs['metakey'] }}"
-                                placeholder="Anahtar kelime girin...">
-                            <label>Meta Anahtar Kelimeler</label>
+                                placeholder="{{ t('portfolio::admin.enter_keywords') }}">
+                            <label>{{ t('portfolio::admin.meta_keywords') }}</label>
                         </div>
 
                         <div class="form-floating mb-3">
                             <textarea wire:model="inputs.metadesc" class="form-control" data-bs-toggle="autosize"
-                                placeholder="Meta açıklaması"></textarea>
-                            <label>Meta Açıklama</label>
+                                placeholder="{{ t('portfolio::admin.meta_description_placeholder') }}"></textarea>
+                            <label>{{ t('portfolio::admin.meta_description') }}</label>
                         </div>
                     </div>
                 </div>

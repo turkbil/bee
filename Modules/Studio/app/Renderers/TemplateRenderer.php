@@ -45,7 +45,7 @@ class TemplateRenderer implements RendererInterface
             return View::make($template, $params)->render();
         }
         
-        return '<!-- Template not found: ' . $template . ' -->';
+        return '';
     }
     
     /**
@@ -77,7 +77,7 @@ class TemplateRenderer implements RendererInterface
             return View::make($viewName, $params)->render();
         }
         
-        return '<!-- Theme template not found: ' . $viewName . ' -->';
+        return '';
     }
     
     /**

@@ -6,13 +6,13 @@
             <div class="card-header">
                 <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs">
                     <li class="nav-item">
-                        <a href="#tabs-1" class="nav-link active" data-bs-toggle="tab">{{ $group->name }} - Ayarları</a>
+                        <a href="#tabs-1" class="nav-link active" data-bs-toggle="tab">{{ $group->name }} - {{ t('settingmanagement::general.settings_tab_title') }}</a>
                     </li>
                 </ul>
                 
                 <div class="card-actions">
                     <a href="{{ route('admin.settingmanagement.index') }}" class="btn btn-outline-secondary">
-                        <i class="fas fa-arrow-left me-2"></i> Geri Dön
+                        <i class="fas fa-arrow-left me-2"></i> {{ t('settingmanagement::general.back_button') }}
                     </a>
                 </div>
             </div>
@@ -37,7 +37,7 @@
                             @else
                                 <div class="alert alert-warning">
                                     <i class="fas fa-exclamation-triangle me-2"></i>
-                                    Form yapısı bulunamadı veya geçersiz. Lütfen Form Builder'ı kullanarak form yapısını düzenleyin.
+                                    {{ t('settingmanagement::general.form_structure_not_found') }}
                                 </div>
                             @endif
                         @else
@@ -313,7 +313,7 @@
                                         @if(isset($originalValues[$setting->id]) && $originalValues[$setting->id] != $values[$setting->id])
                                             <div class="mt-2 text-end">
                                                 <button type="button" class="btn btn-sm btn-outline-warning" wire:click="resetToDefault({{ $setting->id }})">
-                                                    <i class="ti ti-rotate-clockwise me-1"></i> Varsayılana Döndür
+                                                    <i class="ti ti-rotate-clockwise me-1"></i> {{ t('settingmanagement::general.reset_to_default') }}
                                                 </button>
                                             </div>
                                         @endif
@@ -325,7 +325,7 @@
                         @if(count($changes) > 0)
                             <div class="alert alert-success mt-3">
                                 <i class="fas fa-info-circle me-2"></i>
-                                {{ count($changes) }} adet değişiklik yapıldı.
+                                {{ t('settingmanagement::general.changes_count', ['count' => count($changes)]) }}
                             </div>
                         @endif
                     </div>

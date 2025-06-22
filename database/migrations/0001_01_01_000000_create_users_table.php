@@ -19,8 +19,12 @@ return new class extends Migration
             $table->timestamp('last_login_at')->nullable()->index();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('admin_language_preference', 10)->nullable(); // System language preference
             $table->rememberToken();
             $table->timestamps();
+            
+            // Dil tercihleri için indeksler  
+            $table->index('admin_language_preference');
             
             // Composite index'ler - Performans optimizasyonu
             $table->index(['is_active', 'last_login_at'], 'users_active_last_login_idx');

@@ -1,4 +1,21 @@
-<div>
+<div
+    data-t-warning="{{ t('ai::messages.status.warning') }}"
+    data-t-empty-message="{{ t('ai::messages.error.empty_message') }}"
+    data-t-typing="{{ t('ai::general.typing') }}"
+    data-t-copied="{{ t('ai::messages.status.copied') }}"
+    data-t-message-copied="{{ t('ai::messages.success.message_copied') }}"
+    data-t-server-error="{{ t('ai::messages.error.server_error') }}"
+    data-t-reset-confirm="{{ t('ai::messages.confirm.reset_conversation') }}"
+    data-t-greeting="{{ t('ai::messages.info.greeting') }}"
+    data-t-successful="{{ t('ai::messages.status.successful') }}"
+    data-t-reset-success="{{ t('ai::messages.success.conversation_reset') }}"
+    data-t-error="{{ t('ai::messages.error.general_error') }}"
+    data-t-conversation-copied="{{ t('ai::messages.success.conversation_copied') }}"
+    data-t-you="{{ t('ai::messages.general.you') }}"
+    data-t-ai="{{ t('ai::messages.general.ai') }}"
+    data-t-connection-error="{{ t('ai::messages.error.connection_error') }}"
+    data-t-retry="{{ t('ai::general.retry') }}"
+>
     @include('ai::admin.helper')
         @if ($error)
         <div class="alert alert-warning mb-3">
@@ -9,7 +26,7 @@
                 <div>
                     {{ $error }}
                     <button type="button" class="btn btn-sm btn-warning ms-3" wire:click="retryLastMessage">
-                        <i class="fas fa-redo-alt me-1"></i> Yeniden Dene
+                        <i class="fas fa-redo-alt me-1"></i> {{ t('ai::general.retry') }}
                     </button>
                 </div>
             </div>
@@ -21,7 +38,7 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-center">
-                            <h3 class="card-title">AI Asistan</h3>
+                            <h3 class="card-title">{{ t('ai::general.ai_assistant') }}</h3>
                             <div class="d-flex align-items-center">
                                 <!-- Prompt Seçimi -->
                                 <div class="me-3">
@@ -42,13 +59,11 @@
                                     </button>
                                     <ul class="dropdown-menu">
                                         <li><a class="dropdown-item reset-conversation" href="javascript:void(0)"><i
-                                                    class="fa-thin fa-rotate me-2"></i>Konuşmayı Sıfırla</a></li>
+                                                    class="fa-thin fa-rotate me-2"></i>{{ t('ai::general.reset_conversation') }}</a></li>
                                         <li><a class="dropdown-item copy-conversation" href="javascript:void(0)"><i
-                                                    class="fa-thin fa-copy me-2"></i>Tüm Konuşmayı Kopyala</a></li>
+                                                    class="fa-thin fa-copy me-2"></i>{{ t('ai::general.copy_conversation') }}</a></li>
                                         <li><a class="dropdown-item new-window" href="{{ route('admin.ai.index') }}"
-                                                target="_blank"><i class="fa-thin fa-external-link me-2"></i>Yeni
-                                                Pencerede
-                                                Aç</a></li>
+                                                target="_blank"><i class="fa-thin fa-external-link me-2"></i>{{ t('ai::general.new_window') }}</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -59,11 +74,11 @@
                             <div class="chat-messages p-3" id="chat-messages">
                                 <div class="message ai-message">
                                     <div class="message-content">
-                                        <p>Merhaba! Size nasıl yardımcı olabilirim?</p>
+                                        <p>{{ t('ai::messages.info.greeting') }}</p>
                                     </div>
                                     <div class="message-actions">
                                         <button class="btn btn-sm btn-ghost-secondary copy-message"
-                                            data-bs-toggle="tooltip" title="Mesajı Kopyala">
+                                            data-bs-toggle="tooltip" title="{{ t('ai::general.copy_message') }}">
                                             <i class="fa-thin fa-copy"></i>
                                         </button>
                                     </div>
@@ -76,7 +91,7 @@
                             <input type="hidden" id="conversation-id" value="{{ md5(time() . rand(1000, 9999)) }}">
                             <div class="w-100 position-relative">
                                 <textarea id="user-message" class="form-control" rows="1"
-                                    placeholder="Mesajınızı yazın..." required></textarea>
+                                    placeholder="{{ t('ai::general.message_placeholder') }}" required></textarea>
                                 <div id="loading-indicator" class="position-absolute"
                                     style="display: none; right: 10px; bottom: 10px;">
                                     <div class="spinner-border spinner-border-sm text-muted" role="status"></div>
@@ -95,11 +110,11 @@
         <div id="toast-notification" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="toast-header">
                 <i class="fa-thin fa-circle-check text-success me-2"></i>
-                <strong class="me-auto" id="toast-title">Başarılı</strong>
-                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Kapat"></button>
+                <strong class="me-auto" id="toast-title">{{ t('ai::messages.status.successful') }}</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="{{ t('ai::general.close') }}"></button>
             </div>
             <div class="toast-body" id="toast-message">
-                İşlem başarıyla tamamlandı.
+                {{ t('ai::messages.success.operation_completed') }}
             </div>
         </div>
     </div>

@@ -7,17 +7,17 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $group->name ?? 'Form Builder' }} - Form Düzenleyici</title>
     
-    <!-- Tabler CSS -->
+    
     <link rel="stylesheet" href="{{ asset('admin-assets/css/tabler.min.css') }}">
     <link rel="stylesheet" href="{{ asset('admin-assets/css/tabler-vendors.min.css') }}">
     
-    <!-- Font Awesome -->
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Form Builder CSS -->
+    
     <link rel="stylesheet" href="{{ asset('admin-assets/libs/form-builder/settingmanagement/css/form-builder.css') }}">
     
-    <!-- Özel Stiller -->
+    
     @stack('styles')
     
     @livewireStyles
@@ -25,11 +25,11 @@
 <body>
     {{ $slot }}
     
-    <!-- JavaScript -->
+    
     <script src="{{ asset('admin-assets/js/tabler.min.js') }}"></script>
     <script src="{{ asset('admin-assets/libs/sortable/sortable.min.js') }}"></script>
     
-    <!-- Form Builder Ana Modüller -->
+    
     <script src="{{ asset('admin-assets/libs/form-builder/settingmanagement/js/form-builder-templates.js') }}"></script>
     <script src="{{ asset('admin-assets/libs/form-builder/settingmanagement/js/form-builder-ui.js') }}"></script>
     <script src="{{ asset('admin-assets/libs/form-builder/settingmanagement/js/form-builder-drag-drop.js') }}"></script>
@@ -38,7 +38,7 @@
     <script src="{{ asset('admin-assets/libs/form-builder/settingmanagement/js/form-builder-core.js') }}"></script>
     <script src="{{ asset('admin-assets/libs/form-builder/settingmanagement/js/form-builder.js') }}"></script>
     
-    <!-- Özel JavaScript -->
+    
     @stack('scripts')
     
     @livewireScripts

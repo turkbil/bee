@@ -56,7 +56,22 @@
       "Bash(done)",
       "Bash(git checkout:*)",
       "Bash(openssl x509:*)",
-      "Bash(redis-cli:*)"
+      "Bash(redis-cli:*)",
+      "Bash(cat:*)",
+      "Bash(source ~/.bashrc)",
+      "Bash(~/.claude/local/claude --version)",
+      "Bash(claude --version)",
+      "Bash(npm uninstall:*)",
+      "Bash(hash -r)",
+      "Bash(~/.claude/local/claude doctor)",
+      "Bash(claude:*)",
+      "Bash(export PATH=\"$HOME/.claude/local:$PATH\")",
+      "mcp__claude-code-server__LS",
+      "mcp__claude-code-server__Read",
+      "mcp__claude-code-server__Glob",
+      "mcp__claude-code-server__Bash",
+      "mcp__claude-code-server__Write",
+      "mcp__claude-code-server__MultiEdit"
     ],
     "deny": []
   },

@@ -73,13 +73,13 @@ class WidgetComponent extends Component
         
         // Widget instance oluşturma log'u
         if ($tenantWidget && function_exists('log_activity')) {
-            log_activity($tenantWidget, 'oluşturuldu');
+            log_activity($tenantWidget, t('widgetmanagement.actions.created'));
         }
         
         if ($tenantWidget) {
             $this->dispatch('toast', [
-                'title' => 'Başarılı!',
-                'message' => 'Yeni bileşen oluşturuldu.',
+                'title' => t('widgetmanagement.messages.success'),
+                'message' => t('widgetmanagement.messages.widget_created'),
                 'type' => 'success'
             ]);
         }
@@ -88,17 +88,17 @@ class WidgetComponent extends Component
     public function deleteInstance($tenantWidgetId)
     {
         $tenantWidget = TenantWidget::findOrFail($tenantWidgetId);
-        $name = $tenantWidget->settings['title'] ?? 'Bileşen';
+        $name = $tenantWidget->settings['title'] ?? t('widgetmanagement.widget.default_name');
         
         // Widget instance silme log'u
         if (function_exists('log_activity')) {
-            log_activity($tenantWidget, 'silindi');
+            log_activity($tenantWidget, t('widgetmanagement.actions.deleted'));
         }
         
         if ($tenantWidget->delete()) {
             $this->dispatch('toast', [
-                'title' => 'Başarılı!',
-                'message' => "$name silindi.",
+                'title' => t('widgetmanagement.messages.success'),
+                'message' => "$name " . t('widgetmanagement.messages.widget_deleted'),
                 'type' => 'success'
             ]);
         }
@@ -114,15 +114,15 @@ class WidgetComponent extends Component
         
         // Widget toggle log'u
         if (function_exists('log_activity')) {
-            log_activity($tenantWidget, $tenantWidget->is_active ? 'aktifleştirildi' : 'pasifleştirildi');
+            log_activity($tenantWidget, $tenantWidget->is_active ? t('widgetmanagement.actions.activated') : t('widgetmanagement.actions.deactivated'));
         }
         
-        $status = $tenantWidget->is_active ? 'aktifleştirildi' : 'devre dışı bırakıldı';
+        $status = $tenantWidget->is_active ? t('widgetmanagement.messages.widget_activated') : t('widgetmanagement.messages.widget_deactivated');
         $type = $tenantWidget->is_active ? 'success' : 'warning';
         
         $this->dispatch('toast', [
-            'title' => 'Başarılı!',
-            'message' => "Bileşen $status.",
+            'title' => t('widgetmanagement.messages.success'),
+            'message' => t('widgetmanagement.widget.component') . " $status.",
             'type' => $type
         ]);
     }
@@ -262,9 +262,9 @@ class WidgetComponent extends Component
             'entities' => $entities,
             'widgets' => $widgets,
             'types' => [
-                'static' => 'Statik',
-                'dynamic' => 'Dinamik',
-                'content' => 'İçerik'
+                'static' => t('widgetmanagement.types.static'),
+                'dynamic' => t('widgetmanagement.types.dynamic'),
+                'content' => t('widgetmanagement.types.content')
             ],
             'parentCategories' => $parentCategories,
             'childCategories' => $childCategories,

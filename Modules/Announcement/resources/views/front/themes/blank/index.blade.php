@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container animate-fade-in">
-    <h1 class="text-3xl font-bold mb-6 text-center text-gray-800 dark:text-white">{{ $title ?? 'Duyurular' }}</h1>
+    <h1 class="text-3xl font-bold mb-6 text-center text-gray-800 dark:text-white">{{ $title ?? t('announcement::general.announcements') }}</h1>
     
     @if($items->count() > 0)
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -18,7 +18,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
-                        {{ $item->created_at->format('d.m.Y') }}
+                        {{ $item->created_at->format(t('announcement::general.date_format')) }}
                     </span>
                     
                     
@@ -27,7 +27,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
                         </svg>
-                        <span class="text-xs">Ek</span>
+                        <span class="text-xs">{{ t('announcement::general.attachment') }}</span>
                     </span>
                     @endif
                 </div>
@@ -46,7 +46,7 @@
                 
                 <div class="mt-4">
                     <a href="{{ href('Announcement', 'show', $item->slug) }}" class="inline-flex items-center text-sm text-primary dark:text-primary-400 hover:underline font-medium">
-                        Devamını Oku
+                        {{ t('announcement::general.continue_reading') }}
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                         </svg>
@@ -65,7 +65,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-400 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
         </svg>
-        <p class="mt-4 text-xl">Henüz duyuru bulunmamaktadır.</p>
+        <p class="mt-4 text-xl">{{ t('announcement::general.no_announcements_yet') }}</p>
     </div>
     @endif
 </div>

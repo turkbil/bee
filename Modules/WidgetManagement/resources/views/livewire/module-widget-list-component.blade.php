@@ -16,7 +16,7 @@
                             </div>
                         </div>
                         
-                        <!-- Ana Kategoriler -->
+                        
                         <div class="mb-4">
                             <div class="list-group list-group-transparent mb-3">
 
@@ -40,7 +40,7 @@
                             </div>
                         </div>
                         
-                        <!-- Alt Kategoriler - Seçilen Ana Kategoriye göre -->
+                        
                         @if($childCategories->count() > 0 && $parentCategoryFilter && !$categoryFilter)
                         <div class="form-label">Alt Kategoriler</div>
                         <div class="mb-4">
@@ -61,7 +61,7 @@
                         </div>
                         @endif
                         
-                        <!-- Sayfalama Ayarı -->
+                        
                         <div class="form-label">Sayfa Başına</div>
                         <div class="mb-4">
                             <select wire:model.live="perPage" class="form-select">
@@ -80,14 +80,14 @@
         <div class="col-md-9">
             <div class="card">
                 <div class="card-body">
-                    <!-- Üstteki Butonlar ve Başlık -->
+                    
                     <div class="d-flex justify-content-between mb-4">
                         <div>
                             <h3 class="card-title">Moduller</h3>
                             <p class="text-muted">Modüller tarafından sağlanan bileşenleri görüntüleyin</p>
                         </div>
                         
-                        <!-- Loading İndikatörü -->
+                        
                         <div class="position-relative d-flex justify-content-center align-items-center">
                             <div wire:loading
                                 wire:target="render, search, perPage, gotoPage, previousPage, nextPage, categoryFilter, parentCategoryFilter"
@@ -98,7 +98,7 @@
                         </div>
                     </div>
                     
-                    <!-- Bileşenleri Kategoriye Göre Gruplandırma -->
+                    
                     @php
                         $groupedWidgets = $widgets->groupBy(function($item) {
                             return $item->category->title ?? 'Kategori Atanmamış';
@@ -114,7 +114,7 @@
                                 <div class="card h-100 shadow-sm">
                                     <div class="card-status-top {{ $widget->is_active ? 'bg-primary' : 'bg-danger' }}"></div>
                                     
-                                    <!-- Kart Header -->
+                                    
                                     <div class="card-header d-flex align-items-center">
                                         <div class="me-auto">
                                             <h3 class="card-title mb-0">
@@ -160,7 +160,7 @@
                                         </div>
                                     </div>
                                     
-                                    <!-- Kart Footer -->
+                                    
                                     <div class="card-footer">
                                         <div class="d-flex align-items-center justify-content-between">
                                             <a href="{{ route('admin.widgetmanagement.manage', $widget->id) }}" class="btn btn-outline-primary">
@@ -199,7 +199,7 @@
                     @endforelse
                 </div>
                 
-                <!-- Pagination -->
+                
                 @if($widgets->hasPages())
                 <div class="card-footer d-flex align-items-center justify-content-end">
                     {{ $widgets->links() }}

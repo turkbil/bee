@@ -81,7 +81,6 @@ document.addEventListener('livewire:initialized', function() {
     function initCategorySortable() {
         const container = document.getElementById('category-sortable-list');
         if (!container) {
-            console.log('Sortable listesi bulunamadı');
             return;
         }
         

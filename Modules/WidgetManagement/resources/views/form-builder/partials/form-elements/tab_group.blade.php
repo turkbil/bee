@@ -49,7 +49,7 @@
 @endphp
 
 <div class="card mb-4" id="{{ $tabGroupId }}_container">
-    <!-- Gizli form alanları -->
+    
     <input type="hidden" name="elements[{{ $loop->index ?? 0 }}][id]" value="{{ $tabGroupId }}">
     <input type="hidden" name="elements[{{ $loop->index ?? 0 }}][type]" value="tab_group">
     <input type="hidden" name="elements[{{ $loop->index ?? 0 }}][name]" value="{{ $tabGroupName }}">
@@ -70,7 +70,7 @@
                         </span>
                     </a>
                 </li>
-                <!-- Her sekme için gizli form alanı -->
+                
                 <input type="hidden" name="elements[{{ $loop->index ?? 0 }}][properties][tabs][{{ $index }}][title]" value="{{ $tab['title'] ?? 'Sekme ' . ($index + 1) }}">
                 @if(isset($tab['icon']))
                     <input type="hidden" name="elements[{{ $loop->index ?? 0 }}][properties][tabs][{{ $index }}][icon]" value="{{ $tab['icon'] }}">

@@ -10,6 +10,9 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(ThemesSeeder::class);
         
+        // Dilleri oluştur (central)
+        $this->call(LanguagesSeeder::class);
+        
         // Önce tenant'ları oluştur
         $this->call(TenantSeeder::class);
         

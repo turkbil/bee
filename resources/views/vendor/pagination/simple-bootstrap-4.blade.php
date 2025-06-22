@@ -4,22 +4,22 @@
             {{-- Previous Page Link --}}
             @if ($paginator->onFirstPage())
                 <li class="page-item disabled" aria-disabled="true">
-                    <span class="page-link">@lang('pagination.previous')</span>
+                    <span class="page-link">{{ t('admin.pagination_previous') }}</span>
                 </li>
             @else
                 <li class="page-item">
-                    <a class="page-link" href="{{ $paginator->previousPageUrl() }}" rel="prev">@lang('pagination.previous')</a>
+                    <a class="page-link" href="{{ $paginator->previousPageUrl() }}" rel="prev">{{ t('admin.pagination_previous') }}</a>
                 </li>
             @endif
 
             {{-- Next Page Link --}}
             @if ($paginator->hasMorePages())
                 <li class="page-item">
-                    <a class="page-link" href="{{ $paginator->nextPageUrl() }}" rel="next">@lang('pagination.next')</a>
+                    <a class="page-link" href="{{ $paginator->nextPageUrl() }}" rel="next">{{ t('admin.pagination_next') }}</a>
                 </li>
             @else
                 <li class="page-item disabled" aria-disabled="true">
-                    <span class="page-link">@lang('pagination.next')</span>
+                    <span class="page-link">{{ t('admin.pagination_next') }}</span>
                 </li>
             @endif
         </ul>

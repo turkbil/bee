@@ -15,6 +15,9 @@ return Application::configure(basePath: dirname(__DIR__))
         // Web middleware grubuna InitializeTenancy'yi doğrudan ekleyelim
         $middleware->prependToGroup('web', \App\Http\Middleware\InitializeTenancy::class);
         
+        // Language middleware'ini ekle
+        $middleware->appendToGroup('web', \App\Http\Middleware\SetLanguageMiddleware::class);
+        
         // SEO middleware'leri ekle
         $middleware->appendToGroup('web', \Spatie\MissingPageRedirector\RedirectsMissingPages::class);
         $middleware->appendToGroup('web', \Spatie\ResponseCache\Middlewares\CacheResponse::class);

@@ -130,6 +130,15 @@ class ModuleManagementSeeder extends Seeder
                     'type' => 'content',
                     'is_active' => true
                 ],
+                [
+                    'name' => 'languagemanagement',
+                    'display_name' => 'Dil Yönetimi',
+                    'description' => 'Çoklu dil yönetim sistemi',
+                    'version' => '1.0.0',
+                    'settings' => null,
+                    'type' => 'system',
+                    'is_active' => true
+                ],
             ];
 
             // Tablo var mı kontrol et

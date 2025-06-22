@@ -8,7 +8,7 @@
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">
-                            <i class="fas fa-user-circle me-2"></i>Kullanıcı Profili
+                            <i class="fas fa-user-circle me-2"></i>{{ t('usermanagement::general.user_profile') }}
                         </h3>
                     </div>
                     <div class="card-body">
@@ -18,13 +18,13 @@
                                 @if(isset($temporaryImages['avatar']))
                                     <span class="avatar avatar-xl" style="background-image: url('{{ $temporaryImages['avatar']->temporaryUrl() }}')"></span>
                                     <a class="position-absolute top-0 end-0 bg-danger text-white rounded-circle p-1" style="margin-top: -5px; margin-right: -5px; cursor: pointer;"
-                                       wire:click.prevent="removeImage('avatar')" title="Fotoğrafı Kaldır">
+                                       wire:click.prevent="removeImage('avatar')" title="{{ t('usermanagement::general.remove_photo') }}">
                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="14" height="14" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                                     </a>
                                 @elseif($model && $model->getFirstMedia('avatar'))
                                     <span class="avatar avatar-xl" style="background-image: url('{{ $model->getFirstMediaUrl('avatar') }}')"></span>
                                     <a class="position-absolute top-0 end-0 bg-danger text-white rounded-circle p-1" style="margin-top: -5px; margin-right: -5px; cursor: pointer;"
-                                       wire:click.prevent="removeImage('avatar')" title="Fotoğrafı Kaldır">
+                                       wire:click.prevent="removeImage('avatar')" title="{{ t('usermanagement::general.remove_photo') }}">
                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="14" height="14" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                                     </a>
                                 @else
@@ -36,7 +36,7 @@
                             
                             <div class="mt-3">
                                 <label class="btn btn-outline-primary btn-sm" for="avatar-upload">
-                                    <i class="fas fa-camera me-1"></i> Fotoğraf Yükle
+                                    <i class="fas fa-camera me-1"></i> {{ t('usermanagement::general.upload_photo') }}
                                 </label>
                                 <input id="avatar-upload" type="file" wire:model="temporaryImages.avatar" class="d-none" accept="image/jpeg,image/png,image/webp">
                                 
@@ -54,8 +54,8 @@
                         
                         <!-- İsim -->
                         <div class="form-floating mb-3">
-                            <input type="text" wire:model.defer="inputs.name" class="form-control @error('inputs.name') is-invalid @enderror" placeholder="İsim Soyisim">
-                            <label>İsim Soyisim *</label>
+                            <input type="text" wire:model.defer="inputs.name" class="form-control @error('inputs.name') is-invalid @enderror" placeholder="{{ t('usermanagement::general.name_surname') }}">
+                            <label>{{ t('usermanagement::general.name_surname') }} {{ t('usermanagement::general.required') }}</label>
                             @error('inputs.name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -63,8 +63,8 @@
                         
                         <!-- E-posta -->
                         <div class="form-floating mb-3">
-                            <input type="email" wire:model.defer="inputs.email" class="form-control @error('inputs.email') is-invalid @enderror" placeholder="ornek@mail.com">
-                            <label>E-posta Adresi *</label>
+                            <input type="email" wire:model.defer="inputs.email" class="form-control @error('inputs.email') is-invalid @enderror" placeholder="example@mail.com">
+                            <label>{{ t('usermanagement::general.email_address') }} {{ t('usermanagement::general.required') }}</label>
                             @error('inputs.email')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -73,7 +73,7 @@
                         <!-- Şifre -->
                         <div class="form-floating mb-3">
                             <input type="password" wire:model.defer="inputs.password" class="form-control @error('inputs.password') is-invalid @enderror" placeholder="••••••••">
-                            <label>Şifre {{ $userId ? '(Değiştirmek için doldurun)' : '*' }}</label>
+                            <label>{{ t('usermanagement::general.password') }} {{ $userId ? t('usermanagement::general.change_password_note') : t('usermanagement::general.required') }}</label>
                             @error('inputs.password')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -81,15 +81,15 @@
                         
                         <!-- Durum -->
                         <div class="mb-3">
-                            <label class="form-label d-block">Kullanıcı Durumu</label>
+                            <label class="form-label d-block">{{ t('usermanagement::general.user_status') }}</label>
                             <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
                                 <input type="checkbox" id="is_active" name="is_active" wire:model.defer="inputs.is_active"
                                     value="1" {{ (!isset($inputs['is_active']) || $inputs['is_active']) ? 'checked' : '' }} />
                                 <div class="state p-success p-on ms-2">
-                                    <label>Aktif</label>
+                                    <label>{{ t('usermanagement::general.active') }}</label>
                                 </div>
                                 <div class="state p-danger p-off ms-2">
-                                    <label>Aktif Değil</label>
+                                    <label>{{ t('usermanagement::general.inactive') }}</label>
                                 </div>
                             </div>
                         </div>
@@ -102,7 +102,7 @@
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">
-                            <i class="fas fa-user-shield me-2"></i>Kullanıcı Rolü
+                            <i class="fas fa-user-shield me-2"></i>{{ t('usermanagement::general.user_role') }}
                         </h3>
                     </div>
                     
@@ -125,8 +125,8 @@
                                                 <i class="fas fa-user fa-lg"></i>
                                             </span>
                                             <div>
-                                                <div class="font-weight-medium fs-4">Üye</div>
-                                                <div class="text-muted">Normal Kullanıcı</div>
+                                                <div class="font-weight-medium fs-4">{{ t('usermanagement::general.member') }}</div>
+                                                <div class="text-muted">{{ t('usermanagement::general.normal_user') }}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -149,8 +149,8 @@
                                                 <i class="fas fa-user-edit fa-lg"></i>
                                             </span>
                                             <div>
-                                                <div class="font-weight-medium fs-4">Editör</div>
-                                                <div class="text-muted">İçerik Düzenleyici</div>
+                                                <div class="font-weight-medium fs-4">{{ t('usermanagement::general.editor') }}</div>
+                                                <div class="text-muted">{{ t('usermanagement::general.content_editor') }}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -173,8 +173,8 @@
                                                 <i class="fas fa-user-cog fa-lg"></i>
                                             </span>
                                             <div>
-                                                <div class="font-weight-medium fs-4">Admin</div>
-                                                <div class="text-muted">Tenant Yöneticisi</div>
+                                                <div class="font-weight-medium fs-4">{{ t('usermanagement::general.admin') }}</div>
+                                                <div class="text-muted">{{ t('usermanagement::general.tenant_admin') }}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -198,8 +198,8 @@
                                                 <i class="fas fa-crown fa-lg"></i>
                                             </span>
                                             <div>
-                                                <div class="font-weight-medium fs-4">Root</div>
-                                                <div class="text-muted">Süper Yönetici</div>
+                                                <div class="font-weight-medium fs-4">{{ t('usermanagement::general.root') }}</div>
+                                                <div class="text-muted">{{ t('usermanagement::general.super_admin') }}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -218,8 +218,8 @@
                                             <i class="fas fa-info-circle fa-2x me-3"></i>
                                         </div>
                                         <div>
-                                            <h4 class="alert-title">Normal Üye</h4>
-                                            <p class="mb-0">Normal üye rolündeki kullanıcılar, sadece temel kullanıcı işlemlerini yapabilirler. Yönetim paneline ve modüllere erişimleri yoktur.</p>
+                                            <h4 class="alert-title">{{ t('usermanagement::general.normal_user') }}</h4>
+                                            <p class="mb-0">{{ t('usermanagement::messages.user_role_description') }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -233,8 +233,8 @@
                                             <i class="fas fa-info-circle fa-2x me-3"></i>
                                         </div>
                                         <div>
-                                            <h4 class="alert-title">Editör Rolü</h4>
-                                            <p class="mb-0">Editörler, aşağıda seçilen modüllere erişebilir ve bu modüllerle ilgili işlemleri yapabilirler. Her modül için ayrı CRUD yetkileri tanımlanabilir.</p>
+                                            <h4 class="alert-title">{{ t('usermanagement::general.editor') }}</h4>
+                                            <p class="mb-0">{{ t('usermanagement::messages.editor_role_description') }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -248,8 +248,8 @@
                                             <i class="fas fa-info-circle fa-2x me-3"></i>
                                         </div>
                                         <div>
-                                            <h4 class="alert-title">Admin Yetkileri</h4>
-                                            <p class="mb-0">Admin kullanıcısı, kendi tenant'ı içerisindeki tüm modüllere ve fonksiyonlara tam erişime sahiptir. Bu rol için özel izin ataması gerekmez.</p>
+                                            <h4 class="alert-title">{{ t('usermanagement::general.admin') }}</h4>
+                                            <p class="mb-0">{{ t('usermanagement::messages.admin_role_description') }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -263,8 +263,8 @@
                                             <i class="fas fa-exclamation-triangle fa-2x me-3"></i>
                                         </div>
                                         <div>
-                                            <h4 class="alert-title">Root Yetkisi Uyarısı</h4>
-                                            <p class="mb-0">Root kullanıcısı, sistemdeki tüm modüllere ve fonksiyonlara tam erişime sahiptir. Bu rol, sadece sistem yöneticileri için tasarlanmıştır.</p>
+                                            <h4 class="alert-title">{{ t('usermanagement::general.root') }}</h4>
+                                            <p class="mb-0">{{ t('usermanagement::messages.root_role_warning') }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -275,11 +275,11 @@
                         <div id="editorPermissionsSection" style="display: {{ $inputs['role_id'] === 'editor' ? 'block' : 'none' }}">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h4 class="section-title">
-                                    <i class="fas fa-puzzle-piece me-2"></i>Modül Yetkilendirme
+                                    <i class="fas fa-puzzle-piece me-2"></i>{{ t('usermanagement::messages.module_authorization') }}
                                 </h4>
                                 <button type="button" wire:click="toggleDetailedPermissions" id="toggleDetailedPermissions" class="btn btn-outline-primary btn-sm">
                                     <i class="fas {{ $showDetailedPermissions ? 'fa-compress-alt' : 'fa-cogs' }} me-1"></i> 
-                                    {{ $showDetailedPermissions ? 'Basit Görünüm' : 'Detaylı Yetkilendirme' }}
+                                    {{ $showDetailedPermissions ? t('usermanagement::messages.simple_view') : t('usermanagement::messages.detailed_authorization') }}
                                 </button>
                             </div>
                             

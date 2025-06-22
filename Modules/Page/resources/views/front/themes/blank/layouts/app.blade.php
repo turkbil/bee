@@ -1,4 +1,4 @@
-@include('themes.blank.layouts.header', ['title' => $title ?? ($item->title ?? 'Sayfa')])
+@include('themes.blank.layouts.header', ['title' => $title ?? ($item->title ?? t('page::general.page'))])
 
 <main class="container mx-auto px-4 py-8">
     @yield('content')

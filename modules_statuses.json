@@ -9,5 +9,6 @@
     "ThemeManagement": true,
     "Studio": true,
     "Announcement": true,
-    "AI": true
+    "AI": true,
+    "LanguageManagement": true
 }

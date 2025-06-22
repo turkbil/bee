@@ -63,6 +63,32 @@ Route::middleware(['web', 'auth', InitializeTenancy::class])->prefix('admin')->n
     // Cache clear endpoints
     Route::post('/cache/clear', [\App\Http\Controllers\Admin\CacheController::class, 'clearCache'])->name('cache.clear');
     Route::post('/cache/clear-all', [\App\Http\Controllers\Admin\CacheController::class, 'clearAllCache'])->name('cache.clear.all');
+    
+    // Language switch route - hızlı dil değişimi
+    Route::get('/language/{locale}', function ($locale) {
+        // Cache'li dil kontrolü
+        $cacheKey = "system_language_{$locale}";
+        $language = Cache::remember($cacheKey, 3600, function() use ($locale) {
+            if (class_exists('Modules\LanguageManagement\App\Models\SystemLanguage')) {
+                return \Modules\LanguageManagement\App\Models\SystemLanguage::where('code', $locale)
+                    ->where('is_active', true)
+                    ->first();
+            }
+            return null;
+        });
+        
+        if ($language && auth()->check()) {
+            // Kullanıcı dil tercihini hemen güncelle
+            $user = auth()->user();
+            $user->language = $locale;
+            $user->save();
+            
+            // Session'a da kaydet hızlı erişim için
+            session(['locale' => $locale]);
+        }
+        
+        return redirect()->back();
+    })->name('language.switch');
 });
 
 // Diğer admin routes - spesifik modül erişimleri için admin.access middleware'i kullanabilirsiniz

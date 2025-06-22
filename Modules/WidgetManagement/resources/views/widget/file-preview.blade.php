@@ -97,7 +97,7 @@ $themeFolder = $theme->folder_name ?? 'blank';
     
     <div class="preview-frame" id="preview-frame">
         <div class="preview-content dark:bg-gray-800 dark:text-white dark:border-gray-700">
-            <!-- Hazır Dosya İçeriği -->
+            
             @include('widgetmanagement::blocks.' . $widget->file_path, ['settings' => $settings])
         </div>
     </div>
@@ -116,7 +116,7 @@ $themeFolder = $theme->folder_name ?? 'blank';
     </div>
 </div>
 
-<!-- Önizleme Frame Boyutlandırma -->
+
 <script>
     function setPreviewSize(device) {
         const frame = document.getElementById('preview-frame');

@@ -68,12 +68,12 @@ class GroupListComponent extends Component
     
         log_activity(
             $group,
-            $group->is_active ? 'aktif edildi' : 'pasif edildi'
+            $group->is_active ? t('settingmanagement.actions.group_activated') : t('settingmanagement.actions.group_deactivated')
         );
     
         $this->dispatch('toast', [
-            'title' => 'Başarılı!',
-            'message' => 'Grup durumu güncellendi',
+            'title' => t('settingmanagement.messages.success'),
+            'message' => t('settingmanagement.messages.group_status_updated'),
             'type' => 'success'
         ]);
     }
@@ -94,22 +94,22 @@ class GroupListComponent extends Component
     
             log_activity(
                 $group,
-                'oluşturuldu'
+                t('settingmanagement.actions.created')
             );
     
             $this->reset('inputs');
             $this->showAddForm = false;
     
             $this->dispatch('toast', [
-                'title' => 'Başarılı!',
-                'message' => 'Grup başarıyla eklendi',
+                'title' => t('settingmanagement.messages.success'),
+                'message' => t('settingmanagement.messages.group_created'),
                 'type' => 'success'
             ]);
     
         } catch (\Exception $e) {
             $this->dispatch('toast', [
-                'title' => 'Hata!',
-                'message' => 'Grup eklenirken bir hata oluştu',
+                'title' => t('settingmanagement.messages.error'),
+                'message' => t('settingmanagement.messages.group_create_error'),
                 'type' => 'error'
             ]);
         }
@@ -124,7 +124,7 @@ class GroupListComponent extends Component
     
         log_activity(
             $group,
-            'güncellendi',
+            t('settingmanagement.actions.updated'),
             array_diff_assoc($group->toArray(), $oldData)
         );
     
@@ -132,8 +132,8 @@ class GroupListComponent extends Component
         $this->reset('inputs');
     
         $this->dispatch('toast', [
-            'title' => 'Başarılı!',
-            'message' => 'Grup başarıyla güncellendi',
+            'title' => t('settingmanagement.messages.success'),
+            'message' => t('settingmanagement.messages.group_updated'),
             'type' => 'success'
         ]);
     }
@@ -144,8 +144,8 @@ class GroupListComponent extends Component
     
         if ($group->children()->count() > 0) {
             $this->dispatch('toast', [
-                'title' => 'Hata!',
-                'message' => 'Alt grupları olan bir grubu silemezsiniz',
+                'title' => t('settingmanagement.messages.error'),
+                'message' => t('settingmanagement.messages.group_delete_error'),
                 'type' => 'error'
             ]);
             return;
@@ -156,12 +156,12 @@ class GroupListComponent extends Component
     
         log_activity(
             $deletedGroup,
-            'silindi'
+            t('settingmanagement.actions.deleted')
         );
     
         $this->dispatch('toast', [
-            'title' => 'Başarılı!',
-            'message' => 'Grup başarıyla silindi',
+            'title' => t('settingmanagement.messages.success'),
+            'message' => t('settingmanagement.messages.group_deleted'),
             'type' => 'success'
         ]);
     }
@@ -187,12 +187,12 @@ class GroupListComponent extends Component
         
         log_activity(
             $group,
-            'form layout güncellendi'
+            t('settingmanagement.actions.form_layout_updated')
         );
         
         $this->dispatch('toast', [
-            'title' => 'Başarılı!',
-            'message' => 'Form yapısı kaydedildi',
+            'title' => t('settingmanagement.messages.success'),
+            'message' => t('settingmanagement.messages.form_layout_saved'),
             'type' => 'success'
         ]);
         

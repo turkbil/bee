@@ -195,7 +195,7 @@ class WidgetRenderService
                     
                     if (count($currentStack) >= self::MAX_STACK_DEPTH) {
                         $this->debug('processModuleData - Maksimum stack derinliğine ulaşıldı');
-                        return "<!-- Max stack depth exceeded -->";
+                        return "";
                     }
                     
                     // İlişki eşleşmelerini kur
@@ -542,7 +542,7 @@ class WidgetRenderService
                 
                 if (count($currentStack) >= self::MAX_STACK_DEPTH) {
                     $this->debug('processNestedLoops - Maksimum stack derinliğine ulaşıldı');
-                    return "<!-- Max stack depth exceeded -->";
+                    return "";
                 }
                 
                 // İlişki eşleşmelerini kur

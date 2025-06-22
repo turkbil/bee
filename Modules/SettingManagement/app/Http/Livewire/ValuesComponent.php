@@ -27,7 +27,6 @@ class ValuesComponent extends Component
     public $temporaryMultipleImages = [];
     public $multipleImagesArrays = [];
     
-    // Çoklu resim seçimi için yeni değişkenler
     public $tempPhoto;
     public $photoField; // Hangi alan için yüklüyoruz
 
@@ -101,7 +100,6 @@ class ValuesComponent extends Component
         }
     }
     
-    // Çoklu resim için güncelleme - toplu seçim yapmayı destekler
     public function updatedTempPhoto()
     {
         if ($this->tempPhoto && $this->photoField) {
@@ -258,8 +256,8 @@ class ValuesComponent extends Component
                     $this->values[$settingId] = $value;
                 } catch (\Exception $e) {
                     $this->dispatch('toast', [
-                        'title' => 'Hata!',
-                        'message' => 'Dosya yüklenirken bir hata oluştu: ' . $e->getMessage(),
+                        'title' => t('settingmanagement.messages.error'),
+                        'message' => t('settingmanagement.messages.file_upload_error') . $e->getMessage(),
                         'type' => 'error',
                     ]);
                     continue;
@@ -310,8 +308,8 @@ class ValuesComponent extends Component
                     }
                 } catch (\Exception $e) {
                     $this->dispatch('toast', [
-                        'title' => 'Hata!',
-                        'message' => 'Çoklu resim yüklenirken bir hata oluştu: ' . $e->getMessage(),
+                        'title' => t('settingmanagement.messages.error'),
+                        'message' => t('settingmanagement.messages.multi_image_upload_error') . $e->getMessage(),
                         'type' => 'error',
                     ]);
                     continue;
@@ -329,7 +327,7 @@ class ValuesComponent extends Component
                 if ($oldValue !== $value) {
                     log_activity(
                         $setting,
-                        'varsayılan değere döndürüldü',
+                        t('settingmanagement.actions.reset_to_default'),
                         ['old' => $oldValue, 'new' => $value]
                     );
                 }
@@ -342,7 +340,7 @@ class ValuesComponent extends Component
                 
                 log_activity(
                     $setting,
-                    'değeri güncellendi',
+                    t('settingmanagement.actions.value_updated'),
                     ['old' => $oldValue, 'new' => $value]
                 );
             }
@@ -358,8 +356,8 @@ class ValuesComponent extends Component
         }
     
         $this->dispatch('toast', [
-            'title' => 'Başarılı!',
-            'message' => 'Değişiklikler kaydedildi.',
+            'title' => t('settingmanagement.messages.success'),
+            'message' => t('settingmanagement.messages.values_saved'),
             'type' => 'success'
         ]);
     }
@@ -371,8 +369,8 @@ class ValuesComponent extends Component
             $this->checkChanges();
             
             $this->dispatch('toast', [
-                'title' => 'Başarılı!',
-                'message' => 'Dosya kaldırıldı.',
+                'title' => t('settingmanagement.messages.success'),
+                'message' => t('settingmanagement.messages.file_removed'),
                 'type' => 'success'
             ]);
         }
@@ -394,8 +392,8 @@ class ValuesComponent extends Component
                 $this->checkChanges();
                 
                 $this->dispatch('toast', [
-                    'title' => 'Başarılı!',
-                    'message' => 'Dosya silindi.',
+                    'title' => t('settingmanagement.messages.success'),
+                    'message' => t('settingmanagement.messages.file_deleted'),
                     'type' => 'success'
                 ]);
             }

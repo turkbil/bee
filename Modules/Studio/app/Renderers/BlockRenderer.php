@@ -57,7 +57,7 @@ class BlockRenderer implements RendererInterface
         $block = $this->blockManager->getById($blockId);
         
         if (!$block) {
-            return '<!-- Block not found: ' . $blockId . ' -->';
+            return '';
         }
         
         // Şablon dosyasından mı yoksa ham içerikten mi render edileceğini kontrol et
@@ -88,7 +88,7 @@ class BlockRenderer implements RendererInterface
             return View::make($template, $params)->render();
         }
         
-        return '<!-- Template not found: ' . $template . ' -->';
+        return '';
     }
     
     /**
@@ -115,7 +115,7 @@ class BlockRenderer implements RendererInterface
         $block = $this->blockManager->getById($blockId);
         
         if (!$block) {
-            return '<!-- Block preview not available: ' . $blockId . ' -->';
+            return '';
         }
         
         // Eğer önizleme varsa onu kullan, yoksa içeriği kısalt

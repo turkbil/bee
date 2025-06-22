@@ -9,9 +9,9 @@
                         <a href="#tabs-1" class="nav-link active" data-bs-toggle="tab">
                             {{ $tenantWidget->widget->name }} - 
                             @if($itemId)
-                                İçerik Düzenle
+                                {{ t('widgetmanagement.items.edit') }}
                             @else
-                                İçerik Ekle
+                                {{ t('widgetmanagement.items.create') }}
                             @endif
                         </a>
                     </li>
@@ -19,7 +19,7 @@
                 
                 <div class="card-actions">
                     <a href="{{ route('admin.widgetmanagement.items', $tenantWidgetId) }}" class="btn btn-outline-secondary">
-                        <i class="fas fa-arrow-left me-2"></i> Geri Dön
+                        <i class="fas fa-arrow-left me-2"></i> {{ t('common.back') }}
                     </a>
                 </div>
             </div>

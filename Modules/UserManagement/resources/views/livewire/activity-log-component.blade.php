@@ -10,7 +10,7 @@
                         <i class="fas fa-search"></i>
                     </span>
                     <input type="text" wire:model.live.debounce.300ms="search" class="form-control"
-                        placeholder="Aramak için yazmaya başlayın...">
+                        placeholder="{{ t('usermanagement::general.search_placeholder') }}">
                 </div>
             </div>
             
@@ -20,7 +20,7 @@
                     wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, confirmDelete, userFilter, moduleFilter, eventFilter, dateFrom, dateTo, clearFilters, clearLogs, clearUserLogs"
                     class="position-absolute top-50 start-50 translate-middle text-center"
                     style="width: 100%; max-width: 250px;">
-                    <div class="small text-muted mb-2">Güncelleniyor...</div>
+                    <div class="small text-muted mb-2">{{ t('usermanagement::general.updating') }}</div>
                     <div class="progress mb-1">
                         <div class="progress-bar progress-bar-indeterminate"></div>
                     </div>
@@ -34,9 +34,9 @@
                     <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" 
                         data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
                         <i class="fas fa-filter me-1"></i>
-                        Filtreler
+                        {{ t('usermanagement::general.filters') }}
                         @if($search || $userFilter || $moduleFilter || $eventFilter || $dateFrom || $dateTo)
-                        <span class="badge bg-primary ms-1">Aktif</span>
+                        <span class="badge bg-primary ms-1">{{ t('usermanagement::general.filters_active') }}</span>
                         @endif
                     </button>
                     
@@ -61,9 +61,9 @@
                 <div class="row g-3">
                     <!-- Kullanıcı Filtresi -->
                     <div class="col-md-4">
-                        <label class="form-label">Kullanıcı</label>
+                        <label class="form-label">{{ t('usermanagement::general.user') }}</label>
                         <select wire:model.live="userFilter" class="form-select">
-                            <option value="">Tüm Kullanıcılar</option>
+                            <option value="">{{ t('usermanagement::general.all_users') }}</option>
                             @foreach($users as $user)
                                 <option value="{{ $user->id }}">{{ $user->name }}</option>
                             @endforeach
@@ -72,9 +72,9 @@
                     
                     <!-- Modül Filtresi -->
                     <div class="col-md-4">
-                        <label class="form-label">Modül</label>
+                        <label class="form-label">{{ t('usermanagement::general.module') }}</label>
                         <select wire:model.live="moduleFilter" class="form-select">
-                            <option value="">Tüm Modüller</option>
+                            <option value="">{{ t('usermanagement::general.all_modules') }}</option>
                             @foreach($modules as $module)
                                 <option value="{{ $module }}">{{ $module }}</option>
                             @endforeach
@@ -83,9 +83,9 @@
                     
                     <!-- Eylem Filtresi -->
                     <div class="col-md-4">
-                        <label class="form-label">Eylem</label>
+                        <label class="form-label">{{ t('usermanagement::general.action') }}</label>
                         <select wire:model.live="eventFilter" class="form-select">
-                            <option value="">Tüm Eylemler</option>
+                            <option value="">{{ t('usermanagement::general.all_events') }}</option>
                             @foreach($events as $event)
                                 <option value="{{ $event }}">{{ $event }}</option>
                             @endforeach
@@ -94,7 +94,7 @@
                     
                     <!-- Tarih Aralığı -->
                     <div class="col-md-4">
-                        <label class="form-label">Başlangıç Tarihi</label>
+                        <label class="form-label">{{ t('usermanagement::general.start_date') }}</label>
                         <div class="input-icon">
                             <span class="input-icon-addon">
                                 <i class="fas fa-calendar-alt"></i>
@@ -104,7 +104,7 @@
                     </div>
                     
                     <div class="col-md-4">
-                        <label class="form-label">Bitiş Tarihi</label>
+                        <label class="form-label">{{ t('usermanagement::general.end_date') }}</label>
                         <div class="input-icon">
                             <span class="input-icon-addon">
                                 <i class="fas fa-calendar-alt"></i>
@@ -117,7 +117,7 @@
                     <div class="col-md-4 d-flex align-items-end">
                         @if($search || $userFilter || $moduleFilter || $eventFilter || $dateFrom || $dateTo)
                         <button type="button" class="btn btn-outline-secondary" wire:click="clearFilters">
-                            <i class="fas fa-times me-1"></i>Filtreleri Temizle
+                            <i class="fas fa-times me-1"></i>{{ t('usermanagement::general.clear_filters') }}
                         </button>
                         @endif
                     </div>
@@ -127,22 +127,22 @@
                 @if($search || $userFilter || $moduleFilter || $eventFilter || $dateFrom || $dateTo)
                 <div class="d-flex flex-wrap gap-2 mt-3">
                     @if($search)
-                        <span class="badge bg-azure-lt">Arama: {{ $search }}</span>
+                        <span class="badge bg-azure-lt">{{ t('usermanagement::general.search') }}: {{ $search }}</span>
                     @endif
                     @if($userFilter)
-                        <span class="badge bg-blue-lt">Kullanıcı: {{ $users->firstWhere('id', $userFilter)->name ?? 'Kullanıcı' }}</span>
+                        <span class="badge bg-blue-lt">{{ t('usermanagement::general.user') }}: {{ $users->firstWhere('id', $userFilter)->name ?? t('usermanagement::general.user') }}</span>
                     @endif
                     @if($moduleFilter)
-                        <span class="badge bg-indigo-lt">Modül: {{ $moduleFilter }}</span>
+                        <span class="badge bg-indigo-lt">{{ t('usermanagement::general.module') }}: {{ $moduleFilter }}</span>
                     @endif
                     @if($eventFilter)
-                        <span class="badge bg-purple-lt">Eylem: {{ $eventFilter }}</span>
+                        <span class="badge bg-purple-lt">{{ t('usermanagement::general.action') }}: {{ $eventFilter }}</span>
                     @endif
                     @if($dateFrom)
-                        <span class="badge bg-teal-lt">Başlangıç: {{ $dateFrom }}</span>
+                        <span class="badge bg-teal-lt">{{ t('usermanagement::general.start_date') }}: {{ $dateFrom }}</span>
                     @endif
                     @if($dateTo)
-                        <span class="badge bg-cyan-lt">Bitiş: {{ $dateTo }}</span>
+                        <span class="badge bg-cyan-lt">{{ t('usermanagement::general.end_date') }}: {{ $dateTo }}</span>
                     @endif
                 </div>
                 @endif
@@ -167,38 +167,38 @@
                             <button
                                 class="table-sort {{ $sortField === 'log_name' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
                                 wire:click="sortBy('log_name')">
-                                Modül
+                                {{ t('usermanagement::general.module') }}
                             </button>
                         </th>
                         <th>
                             <button
                                 class="table-sort {{ $sortField === 'description' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
                                 wire:click="sortBy('description')">
-                                Açıklama
+                                {{ t('usermanagement::general.description') }}
                             </button>
                         </th>
                         <th>
                             <button
                                 class="table-sort {{ $sortField === 'event' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
                                 wire:click="sortBy('event')">
-                                Eylem
+                                {{ t('usermanagement::general.action') }}
                             </button>
                         </th>
                         <th>
                             <button
                                 class="table-sort {{ $sortField === 'causer_id' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
                                 wire:click="sortBy('causer_id')">
-                                Kullanıcı
+                                {{ t('usermanagement::general.user') }}
                             </button>
                         </th>
                         <th>
                             <button
                                 class="table-sort {{ $sortField === 'created_at' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
                                 wire:click="sortBy('created_at')">
-                                Tarih
+                                {{ t('usermanagement::general.date') }}
                             </button>
                         </th>
-                        <th class="text-center" style="width: 120px">İşlemler</th>
+                        <th class="text-center" style="width: 120px">{{ t('usermanagement::general.actions') }}</th>
                     </tr>
                 </thead>
                 <tbody class="table-tbody">
@@ -236,7 +236,7 @@
                                     @endif
                                 @endif
                             @else
-                                <span class="text-secondary">Sistem</span>
+                                <span class="text-secondary">{{ t('usermanagement::general.system') }}</span>
                             @endif
                         </td>
                         <td>
@@ -248,7 +248,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <a href="#" data-bs-toggle="modal" data-bs-target="#details-modal-{{ $log->id }}"
-                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Detayları Görüntüle">
+                                            data-bs-toggle="tooltip" data-bs-placement="top" title="{{ t('usermanagement::general.details') }}">
                                             <i class="fa-solid fa-eye link-secondary fa-lg"></i>
                                         </a>
                                     </div>
@@ -263,7 +263,7 @@
                                             <div class="dropdown-menu dropdown-menu-end">
                                                 <a href="javascript:void(0);" wire:click="confirmDelete({{ $log->id }})" 
                                                     class="dropdown-item link-danger">
-                                                    Sil
+                                                    {{ t('usermanagement::general.delete') }}
                                                 </a>
                                             </div>
                                         </div>
@@ -279,7 +279,7 @@
                                         <div class="modal-header">
                                             <h5 class="modal-title">
                                                 <i class="fas fa-info-circle text-info me-2"></i>
-                                                İşlem #{{ $log->id }} Detayı
+                                                {{ t('usermanagement::general.operation_detail', ['id' => $log->id]) }}
                                             </h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
@@ -290,30 +290,30 @@
                                                     <div class="card">
                                                         <div class="card-status-top bg-primary"></div>
                                                         <div class="card-header">
-                                                            <h3 class="card-title">Genel Bilgiler</h3>
+                                                            <h3 class="card-title">{{ t('usermanagement::general.general_info') }}</h3>
                                                         </div>
                                                         <div class="list-group list-group-flush">
                                                             <div class="list-group-item">
                                                                 <div class="row">
-                                                                    <div class="col-4">Modül</div>
+                                                                    <div class="col-4">{{ t('usermanagement::general.module') }}</div>
                                                                     <div class="col-8 text-muted">{{ $log->log_name }}</div>
                                                                 </div>
                                                             </div>
                                                             <div class="list-group-item">
                                                                 <div class="row">
-                                                                    <div class="col-4">Açıklama</div>
+                                                                    <div class="col-4">{{ t('usermanagement::general.description') }}</div>
                                                                     <div class="col-8 text-muted">{{ $log->description }}</div>
                                                                 </div>
                                                             </div>
                                                             <div class="list-group-item">
                                                                 <div class="row">
-                                                                    <div class="col-4">Eylem</div>
+                                                                    <div class="col-4">{{ t('usermanagement::general.action') }}</div>
                                                                     <div class="col-8 text-muted">{{ $log->event }}</div>
                                                                 </div>
                                                             </div>
                                                             <div class="list-group-item">
                                                                 <div class="row">
-                                                                    <div class="col-4">Kullanıcı</div>
+                                                                    <div class="col-4">{{ t('usermanagement::general.user') }}</div>
                                                                     <div class="col-8">
                                                                         @if($log->causer)
                                                                             @if($isRoot || !$log->causer->isRoot())
@@ -324,14 +324,14 @@
                                                                                 {{ $log->causer->name }}
                                                                             @endif
                                                                         @else
-                                                                            <span class="text-muted">Sistem</span>
+                                                                            <span class="text-muted">{{ t('usermanagement::general.system') }}</span>
                                                                         @endif
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                             <div class="list-group-item">
                                                                 <div class="row">
-                                                                    <div class="col-4">Tarih</div>
+                                                                    <div class="col-4">{{ t('usermanagement::general.date') }}</div>
                                                                     <div class="col-8 text-muted">{{ $log->created_at->format('d.m.Y H:i:s') }}</div>
                                                                 </div>
                                                             </div>
@@ -344,12 +344,12 @@
                                                     <div class="card">
                                                         <div class="card-status-top bg-indigo"></div>
                                                         <div class="card-header">
-                                                            <h3 class="card-title">Nesne Bilgileri</h3>
+                                                            <h3 class="card-title">{{ t('usermanagement::general.object_info') }}</h3>
                                                         </div>
                                                         <div class="list-group list-group-flush">
                                                             <div class="list-group-item">
                                                                 <div class="row">
-                                                                    <div class="col-4">Tür</div>
+                                                                    <div class="col-4">{{ t('usermanagement::general.type') }}</div>
                                                                     <div class="col-8 text-muted">
                                                                         {{ $log->subject_type ? class_basename($log->subject_type) : '-' }}
                                                                     </div>
@@ -365,7 +365,7 @@
                                                             </div>
                                                             <div class="list-group-item">
                                                                 <div class="row">
-                                                                    <div class="col-4">Başlık</div>
+                                                                    <div class="col-4">{{ t('usermanagement::general.title') }}</div>
                                                                     <div class="col-8 text-muted">
                                                                         {{ $log->properties['baslik'] ?? '-' }}
                                                                     </div>
@@ -373,7 +373,7 @@
                                                             </div>
                                                             <div class="list-group-item">
                                                                 <div class="row">
-                                                                    <div class="col-4">Modül</div>
+                                                                    <div class="col-4">{{ t('usermanagement::general.module') }}</div>
                                                                     <div class="col-8 text-muted">
                                                                         {{ $log->properties['modul'] ?? $log->log_name }}
                                                                     </div>
@@ -389,14 +389,14 @@
                                                     <div class="card">
                                                         <div class="card-status-top bg-purple"></div>
                                                         <div class="card-header">
-                                                            <h3 class="card-title">Değişen Alanlar</h3>
+                                                            <h3 class="card-title">{{ t('usermanagement::general.changed_fields') }}</h3>
                                                         </div>
                                                         <div class="table-responsive">
                                                             @if(!is_array($log->properties['degisenler']))
                                                             <table class="table card-table table-vcenter">
                                                                 <tbody>
                                                                     <tr>
-                                                                        <td class="fw-medium">Değişiklik</td>
+                                                                        <td class="fw-medium">{{ t('usermanagement::general.change') }}</td>
                                                                         <td>{{ $log->properties['degisenler'] }}</td>
                                                                     </tr>
                                                                 </tbody>
@@ -405,9 +405,9 @@
                                                             <table class="table card-table table-vcenter">
                                                                 <thead>
                                                                     <tr>
-                                                                        <th>Alan</th>
-                                                                        <th>Eski Değer</th>
-                                                                        <th>Yeni Değer</th>
+                                                                        <th>{{ t('usermanagement::general.field') }}</th>
+                                                                        <th>{{ t('usermanagement::general.old_value') }}</th>
+                                                                        <th>{{ t('usermanagement::general.new_value') }}</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
@@ -457,7 +457,7 @@
                                                     <div class="card">
                                                         <div class="card-status-top bg-yellow"></div>
                                                         <div class="card-header">
-                                                            <h3 class="card-title">JSON Verisi Özet</h3>
+                                                            <h3 class="card-title">{{ t('usermanagement::general.json_data_summary') }}</h3>
                                                         </div>
                                                         <div class="table-responsive">
                                                             <table class="table card-table table-vcenter">
@@ -490,7 +490,7 @@
                                             </div>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn" data-bs-dismiss="modal">Kapat</button>
+                                            <button type="button" class="btn" data-bs-dismiss="modal">{{ t('usermanagement::general.close') }}</button>
                                         </div>
                                     </div>
                                 </div>
@@ -501,9 +501,9 @@
                     <tr>
                         <td colspan="7" class="text-center py-4">
                             <div class="empty">
-                                <p class="empty-title">Kayıt bulunamadı</p>
+                                <p class="empty-title">{{ t('usermanagement::general.no_records') }}</p>
                                 <p class="empty-subtitle text-muted">
-                                    Arama kriterlerinize uygun kayıt bulunmamaktadır.
+                                    {{ t('usermanagement::general.no_records_text') }}
                                 </p>
                             </div>
                         </td>
@@ -523,16 +523,16 @@
         <div class="card shadow-lg border-0 rounded-lg " style="backdrop-filter: blur(12px); background: var(--tblr-bg-surface);"><span class="badge bg-red badge-notification badge-blink"></span>
             <div class="card-body p-3">
                 <div class="d-flex flex-wrap gap-3 align-items-center justify-content-center">
-                    <span class="text-muted small">{{ count($selectedItems) }} öğe seçildi</span>
+                    <span class="text-muted small">{{ t('usermanagement::general.selected_items', ['count' => count($selectedItems)]) }}</span>
                     @if($isRoot)
                     <button type="button" class="btn btn-sm btn-outline-danger px-3 py-1 hover-btn" wire:click="confirmBulkDelete">
                         <i class="fas fa-trash me-2"></i>
-                        <span>Sil</span>
+                        <span>{{ t('usermanagement::general.delete') }}</span>
                     </button>
                     @endif
                     <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1 hover-btn" wire:click="refreshSelectedItems">
                         <i class="fas fa-times me-2"></i>
-                        <span>Seçimi İptal Et</span>
+                        <span>{{ t('usermanagement::general.cancel_selection') }}</span>
                     </button>
                 </div>
             </div>

@@ -7,23 +7,23 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ isset($pageTitle) ? $pageTitle . ' - ' : '' }}Studio Editor</title>
 
-    <!-- Google Fonts -->
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500&display=swap"
         rel="stylesheet">
 
-    <!-- Font Awesome -->
+    
     <link rel="stylesheet" href="{{ asset('admin-assets/libs/fontawesome-pro@6.7.1/css/all.min.css') }}">
 
-    <!-- Bootstrap CSS -->
+    
     <link rel="stylesheet" href="{{ asset('admin-assets/libs/bootstrap/dist/css/bootstrap.min.css') }}">
 
-    <!-- Monaco Editor CSS -->
+    
     <link rel="stylesheet" href="{{ asset('admin-assets/libs/monaco-custom/css/monaco-custom.css') }}">
 
-    <!-- GrapesJS CSS -->
+    
     <link rel="stylesheet"
         href="{{ asset('admin-assets/libs/studio/css/grapes.min.css') }}?v={{ filemtime(public_path('admin-assets/libs/studio/css/grapes.min.css')) }}">
     <link rel="stylesheet"
@@ -59,7 +59,7 @@
     <link rel="stylesheet"
         href="{{ asset('admin-assets/libs/studio/css/utils.css') }}?v={{ filemtime(public_path('admin-assets/libs/studio/css/utils.css')) }}">
 
-    <!-- Quick Editor CSS -->
+    
     <link rel="stylesheet"
         href="{{ asset('admin-assets/libs/studio/css/quick-editor.css') }}?v={{ filemtime(public_path('admin-assets/libs/studio/css/quick-editor.css')) }}">
 
@@ -136,22 +136,22 @@
         {{ $slot }}
     </div>
 
-    <!-- jQuery -->
+    
     <script src="{{ asset('admin-assets/libs/jquery@3.7.1/jquery.min.js') }}"></script>
 
-    <!-- Bootstrap JS -->
+    
     <script src="{{ asset('admin-assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('admin-assets/libs/handlebars/handlebars.min.js') }}"></script>
 
-    <!-- Monaco Editor JS -->
+    
     <script src="{{ asset('admin-assets/libs/monaco-custom/js/monaco-custom.js') }}"></script>
 
-    <!-- GrapesJS Core -->
+    
     <script
         src="{{ asset('admin-assets/libs/studio/grapes.min.js') }}?v={{ filemtime(public_path('admin-assets/libs/studio/grapes.min.js')) }}">
     </script>
 
-    <!-- Studio Modülleri -->
+    
     <script
         src="{{ asset('admin-assets/libs/studio/partials/studio-config.js') }}?v={{ filemtime(public_path('admin-assets/libs/studio/partials/studio-config.js')) }}">
     </script>
@@ -217,7 +217,7 @@
         src="{{ asset('admin-assets/libs/studio/partials/studio-widget-manager.js') }}?v={{ filemtime(public_path('admin-assets/libs/studio/partials/studio-widget-manager.js')) }}">
     </script>
 
-    <!-- Quick Editor JS -->
+    
     <script
         src="{{ asset('admin-assets/libs/studio/partials/studio-quick-editor.js') }}?v={{ filemtime(public_path('admin-assets/libs/studio/partials/studio-quick-editor.js')) }}">
     </script>

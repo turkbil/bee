@@ -31,7 +31,7 @@ class="mb-3">
                         accept="image/*" multiple />
                 </div>
 
-                <!-- Progress bar kaldırıldı -->
+                
                 @error('temporaryMultipleImages.' . $settingId . '.' . $index)
                 <div class="text-danger small mt-2">{{ $message }}</div>
                 @enderror

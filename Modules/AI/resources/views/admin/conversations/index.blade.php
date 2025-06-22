@@ -14,7 +14,7 @@
                         <i class="fas fa-search"></i>
                     </span>
                     <form method="GET" action="{{ route('admin.ai.conversations.index') }}">
-                        <input type="text" name="search" class="form-control" placeholder="Aramak için yazmaya başlayın..." 
+                        <input type="text" name="search" class="form-control" placeholder="{{ t('ai::general.search_placeholder') }}" 
                             value="{{ request('search') }}">
                     </form>
                 </div>
@@ -23,7 +23,7 @@
             <div class="col-auto">
                 <div class="d-flex align-items-center justify-content-end gap-3">
                     <a href="{{ route('admin.ai.index') }}" class="btn btn-primary">
-                        <i class="fas fa-comment me-2"></i> AI Asistana Git
+                        <i class="fas fa-comment me-2"></i> {{ t('ai::general.go_to_ai_assistant') }}
                     </a>
                 </div>
             </div>
@@ -34,10 +34,10 @@
             <table class="table table-vcenter card-table table-hover text-nowrap datatable">
                 <thead>
                     <tr>
-                        <th>Başlık</th>
-                        <th>Son Mesaj</th>
-                        <th>Oluşturulma</th>
-                        <th class="text-center" style="width: 120px">İşlemler</th>
+                        <th>{{ t('ai::general.title') }}</th>
+                        <th>{{ t('ai::general.last_message') }}</th>
+                        <th>{{ t('ai::general.creation') }}</th>
+                        <th class="text-center" style="width: 120px">{{ t('ai::general.actions') }}</th>
                     </tr>
                 </thead>
                 <tbody class="table-tbody">
@@ -68,7 +68,7 @@
                                     <div class="row">
                                         <div class="col">
                                             <a href="{{ route('admin.ai.conversations.show', $conversation->id) }}"
-                                                data-bs-toggle="tooltip" data-bs-placement="top" title="Görüntüle">
+                                                data-bs-toggle="tooltip" data-bs-placement="top" title="{{ t('ai::general.view') }}">
                                                 <i class="fa-solid fa-eye link-secondary fa-lg"></i>
                                             </a>
                                         </div>
@@ -80,11 +80,11 @@
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-end">
                                                     <form action="{{ route('admin.ai.conversations.delete', $conversation->id) }}" method="POST" 
-                                                        onsubmit="return confirm('Bu konuşmayı silmek istediğinizden emin misiniz?')">
+                                                        onsubmit="return confirm('{{ t('ai::messages.confirm.delete_conversation') }}')">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="dropdown-item link-danger">
-                                                            <i class="fas fa-trash me-2"></i> Sil
+                                                            <i class="fas fa-trash me-2"></i> {{ t('ai::general.delete') }}
                                                         </button>
                                                     </form>
                                                 </div>
@@ -101,13 +101,13 @@
                                     <div class="empty-img">
                                         <i class="fas fa-comments fa-3x text-muted"></i>
                                     </div>
-                                    <p class="empty-title">Henüz konuşma yok</p>
+                                    <p class="empty-title">{{ t('ai::messages.info.no_conversations') }}</p>
                                     <p class="empty-subtitle text-muted">
-                                        AI asistanı kullanarak yeni bir konuşma başlatabilirsiniz.
+                                        {{ t('ai::messages.info.no_conversations_description') }}
                                     </p>
                                     <div class="empty-action">
                                         <a href="{{ route('admin.ai.index') }}" class="btn btn-primary">
-                                            <i class="fas fa-comment me-2"></i> AI Asistana Git
+                                            <i class="fas fa-comment me-2"></i> {{ t('ai::general.go_to_ai_assistant') }}
                                         </a>
                                     </div>
                                 </div>

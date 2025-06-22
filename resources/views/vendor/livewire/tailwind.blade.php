@@ -11,9 +11,9 @@ $scrollIntoViewJsSnippet = ($scrollTo !== false)
 <div class="card-footer d-flex flex-column flex-md-row align-items-center">
     <!-- Sol Taraf: Kayıt Bilgisi -->
     <p class="small text-muted m-0 text-center text-md-start">
-        Gösterilen <span class="fw-semibold">{{ $paginator->firstItem() }}</span> -
+        {{ t('admin.pagination_showing') }} <span class="fw-semibold">{{ $paginator->firstItem() }}</span> {{ t('admin.pagination_to') }}
         <span class="fw-semibold">{{ $paginator->lastItem() }}</span>
-        arası, toplam <span class="fw-semibold">{{ $paginator->total() }}</span> sonuç
+        {{ t('admin.pagination_between') }}, {{ t('admin.pagination_of') }} <span class="fw-semibold">{{ $paginator->total() }}</span> {{ t('admin.pagination_results') }}
     </p>
 
     @if ($paginator->hasPages())
@@ -29,7 +29,7 @@ $scrollIntoViewJsSnippet = ($scrollTo !== false)
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                     <path d="M15 6l-6 6l6 6"></path>
                 </svg>
-                Önceki
+                {{ t('admin.pagination_previous') }}
             </span>
         </li>
         @else
@@ -42,7 +42,7 @@ $scrollIntoViewJsSnippet = ($scrollTo !== false)
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                     <path d="M15 6l-6 6l6 6"></path>
                 </svg>
-                Önceki
+                {{ t('admin.pagination_previous') }}
             </button>
         </li>
         @endif
@@ -94,7 +94,7 @@ $scrollIntoViewJsSnippet = ($scrollTo !== false)
                 <li class="page-item">
                     <button wire:click="nextPage('{{ $paginator->getPageName() }}')" class="page-link link-secondary"
                         x-on:click="{{ $scrollIntoViewJsSnippet }}">
-                        Sonraki
+                        {{ t('admin.pagination_next') }}
                         <!-- SVG - İleri Butonu -->
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -107,7 +107,7 @@ $scrollIntoViewJsSnippet = ($scrollTo !== false)
                 @else
                 <li class="page-item disabled">
                     <span class="page-link link-secondary">
-                        Sonraki
+                        {{ t('admin.pagination_next') }}
                         <!-- SVG - İleri Butonu -->
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"

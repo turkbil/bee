@@ -3,18 +3,18 @@
     <div class="card shadow-lg border-0 rounded-lg " style="backdrop-filter: blur(12px); background: var(--tblr-bg-surface);"><span class="badge bg-red badge-notification badge-blink"></span>
         <div class="card-body p-3">
             <div class="d-flex flex-wrap gap-3 align-items-center justify-content-center">
-                <span class="text-muted small">{{ count($selectedItems) }} öğe seçildi</span>
+                <span class="text-muted small">{{ count($selectedItems) }} {{ t('announcement::general.items_selected') }}</span>
                 <button type="button" class="btn btn-sm btn-outline-success px-3 py-1 hover-btn" wire:click="bulkToggleActive(true)">
                     <i class="fas fa-check me-2"></i>
-                    <span>Aktif Yap</span>
+                    <span>{{ t('announcement::general.make_active') }}</span>
                 </button>
                 <button type="button" class="btn btn-sm btn-outline-warning px-3 py-1 hover-btn" wire:click="bulkToggleActive(false)">
                     <i class="fas fa-times me-2"></i>
-                    <span>Pasif Yap</span>
+                    <span>{{ t('announcement::general.make_inactive') }}</span>
                 </button>
                 <button type="button" class="btn btn-sm btn-outline-danger px-3 py-1 hover-btn" wire:click="confirmBulkDelete">
                     <i class="fas fa-trash me-2"></i>
-                    <span>Sil</span>
+                    <span>{{ t('announcement::general.bulk_delete') }}</span>
                 </button>
             </div>
         </div>

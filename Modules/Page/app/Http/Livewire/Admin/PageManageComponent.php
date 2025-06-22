@@ -54,9 +54,9 @@ class PageManageComponent extends Component
    }
 
    protected $messages = [
-       'inputs.title.required' => 'Başlık alanı zorunludur.',
-       'inputs.title.min' => 'Başlık en az 3 karakter olmalıdır.',
-       'inputs.title.max' => 'Başlık 255 karakteri geçemez.',
+       'inputs.title.required' => 'page::messages.title_required',
+       'inputs.title.min' => 'page::messages.title_min',
+       'inputs.title.max' => 'page::messages.title_max',
    ];
 
    public function save($redirect = false, $resetForm = false)
@@ -73,8 +73,8 @@ class PageManageComponent extends Component
       // Eğer ana sayfa ise pasif yapılmasına izin verme
       if (($this->inputs['is_homepage'] || ($this->pageId && Page::find($this->pageId)?->is_homepage)) && isset($data['is_active']) && $data['is_active'] == false) {
           $this->dispatch('toast', [
-              'title' => 'Uyarı',
-              'message' => 'Ana sayfa pasif yapılamaz!',
+              'title' => t('common.warning'),
+              'message' => t('page::messages.homepage_cannot_be_deactivated'),
               'type' => 'warning',
           ]);
           return;
@@ -86,8 +86,8 @@ class PageManageComponent extends Component
           
           if ($data == $currentData) {
               $toast = [
-                  'title' => 'Bilgi',
-                  'message' => 'Herhangi bir değişiklik yapılmadı.',
+                  'title' => t('common.info'),
+                  'message' => t('common.no_changes'),
                   'type' => 'info'
               ];
           } else {
@@ -95,8 +95,8 @@ class PageManageComponent extends Component
               log_activity($page, 'güncellendi');
               
               $toast = [
-                  'title' => 'Başarılı!',
-                  'message' => 'Sayfa başarıyla güncellendi.',
+                  'title' => t('common.success'),
+                  'message' => t('page::messages.page_updated'),
                   'type' => 'success'
               ];
           }
@@ -106,8 +106,8 @@ class PageManageComponent extends Component
           log_activity($page, 'oluşturuldu');
           
           $toast = [
-              'title' => 'Başarılı!',
-              'message' => 'Sayfa başarıyla oluşturuldu.',
+              'title' => t('common.success'),
+              'message' => t('page::messages.page_created'),
               'type' => 'success'
           ];
       }

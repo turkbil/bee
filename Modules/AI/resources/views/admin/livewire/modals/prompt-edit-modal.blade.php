@@ -5,25 +5,25 @@
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{{ $isEditing ? 'Prompt Düzenle' : 'Yeni Prompt Ekle' }}</h5>
+                    <h5 class="modal-title">{{ $isEditing ? t('ai::general.edit') . ' ' . t('ai::general.prompt') : t('ai::general.new_prompt') }}</h5>
                     <button type="button" class="btn-close" wire:click="closeModal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="form-floating mb-3">
                         <input type="text" wire:model="prompt.name"
                             class="form-control @error('prompt.name') is-invalid @enderror" id="prompt_name"
-                            placeholder="Prompt adı">
-                        <label for="prompt_name">Prompt Adı</label>
+                            placeholder="{{ t('ai::general.prompt_name') }}">
+                        <label for="prompt_name">{{ t('ai::general.prompt_name') }}</label>
                         @error('prompt.name')
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Prompt İçeriği</label>
+                        <label class="form-label">{{ t('ai::general.prompt_content') }}</label>
                         <textarea wire:model="prompt.content"
                             class="form-control @error('prompt.content') is-invalid @enderror" id="prompt_content"
-                            rows="8" placeholder="Sistem prompt içeriği"></textarea>
+                            rows="8" placeholder="{{ t('ai::general.system_prompt_content') }}"></textarea>
                         @error('prompt.content')
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -34,10 +34,10 @@
                             <div class="form-check form-switch">
                                 <input wire:model="prompt.is_default" class="form-check-input" type="checkbox"
                                     id="prompt_is_default">
-                                <label class="form-check-label" for="prompt_is_default">Varsayılan prompt</label>
+                                <label class="form-check-label" for="prompt_is_default">{{ t('ai::general.default_prompt') }}</label>
                             </div>
                             <div class="form-text mt-2 ms-2">
-                                <i class="fas fa-info-circle me-1"></i>Varsayılan prompt, özel bir prompt seçilmediğinde kullanılır.
+                                <i class="fas fa-info-circle me-1"></i>{{ t('ai::general.default_prompt_info') }}
                             </div>
                         </div>
 
@@ -45,20 +45,20 @@
                             <div class="form-check form-switch">
                                 <input wire:model="prompt.is_common" class="form-check-input" type="checkbox"
                                     id="prompt_is_common">
-                                <label class="form-check-label" for="prompt_is_common">Ortak özellikler promptu</label>
+                                <label class="form-check-label" for="prompt_is_common">{{ t('ai::general.common_features_prompt') }}</label>
                             </div>
                             <div class="form-text mt-2 ms-2">
-                                <i class="fas fa-info-circle me-1"></i>Ortak özellikler promptu, tüm konuşmalarda kullanılır.
+                                <i class="fas fa-info-circle me-1"></i>{{ t('ai::general.common_prompt_info') }}
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-link link-secondary" wire:click="closeModal">
-                        İptal
+                        {{ t('ai::general.cancel') }}
                     </button>
                     <button type="button" class="btn btn-primary ms-auto" wire:click="save">
-                        <i class="fas fa-save me-2"></i> {{ $isEditing ? 'Güncelle' : 'Kaydet' }}
+                        <i class="fas fa-save me-2"></i> {{ $isEditing ? t('ai::general.update') : t('ai::general.save') }}
                     </button>
                 </div>
             </div>

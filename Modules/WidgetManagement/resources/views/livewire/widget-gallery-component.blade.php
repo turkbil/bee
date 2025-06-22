@@ -16,7 +16,7 @@
                             </div>
                         </div>
                         
-                        <!-- Tip Filtresi -->
+                        
                         <div class="mb-4">
                             <div class="form-label">Bileşen Tipi</div>
                             <select wire:model.live="typeFilter" class="form-select">
@@ -27,7 +27,7 @@
                             </select>
                         </div>
                         
-                        <!-- Ana Kategoriler -->    
+                            
                         <div class="mb-4">
                             <div class="list-group list-group-transparent mb-3">
                                 <a class="list-group-item list-group-item-action py-2 d-flex align-items-center {{ $parentCategoryFilter == '' ? 'active' : '' }}" 
@@ -56,7 +56,7 @@
                             </div>
                         </div>
                         
-                        <!-- Alt Kategoriler - Seçilen Ana Kategoriye göre -->
+                        
                         @if($childCategories->count() > 0 && $parentCategoryFilter && !$categoryFilter)
                         <div class="form-label">Alt Kategoriler</div>
                         <div class="mb-4">
@@ -77,7 +77,7 @@
                         </div>
                         @endif
                         
-                        <!-- Sayfalama Ayarı -->
+                        
                         <div class="form-label">Sayfa Başına</div>
                         <div class="mb-4">
                             <select wire:model.live="perPage" class="form-select">
@@ -96,14 +96,14 @@
         <div class="col-md-9">
             <div class="card">
                 <div class="card-body">
-                    <!-- Üstteki Butonlar ve Başlık -->
+                    
                     <div class="d-flex justify-content-between mb-4">
                         <div>
                             <h3 class="card-title">Bileşen Galerisi</h3>
                             <p class="text-muted">Kullanmak istediğiniz bileşeni seçin ve kuruluma başlayın</p>
                         </div>
                         
-                        <!-- Loading İndikatörü -->
+                        
                         <div class="position-relative d-flex justify-content-center align-items-center">
                             <div wire:loading
                                 wire:target="render, search, perPage, gotoPage, previousPage, nextPage, createInstance, categoryFilter, parentCategoryFilter"
@@ -114,7 +114,7 @@
                         </div>
                     </div>
                     
-                    <!-- Bileşenleri Kategoriye Göre Gruplandırma -->
+                    
                     @php
                         $groupedTemplates = $templates->groupBy(function($item) {
                             return $item->category->title ?? 'Kategori Atanmamış';
@@ -130,7 +130,7 @@
                                 <div class="card h-100">
                                     <div class="card-status-top {{ $template->is_active ? 'bg-primary' : 'bg-danger' }}"></div>
                                     
-                                    <!-- Kart Header -->
+                                    
                                     <div class="card-header d-flex align-items-center">
                                         <div class="me-auto">
                                             <h3 class="card-title mb-0">{{ $template->name }}</h3>
@@ -171,7 +171,7 @@
                                         @endif
                                     </div>
             
-                                    <!-- Kart Footer -->
+                                    
                                     <div class="card-footer">
                                         <div class="d-flex align-items-center justify-content-between">
                                             <div class="d-flex gap-2">
@@ -204,7 +204,7 @@
                     @endforelse
                 </div>
                 
-                <!-- Pagination -->
+                
                 @if($templates->hasPages())
                 <div class="card-footer d-flex align-items-center justify-content-end">
                     {{ $templates->links() }}
@@ -214,7 +214,7 @@
         </div>
     </div>
     
-    <!-- İsim Belirleme Modal -->
+    
     <div class="modal @if($showNameModal) show @endif" tabindex="-1" style="display: @if($showNameModal) block @else none @endif; background-color: rgba(0,0,0,0.5);">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">

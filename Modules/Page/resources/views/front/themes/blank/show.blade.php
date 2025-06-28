@@ -2,7 +2,7 @@
 
 @section('content')
 @if(isset($is_homepage) && $is_homepage)
-    <div class="homepage-widget-wrapper">@parsewidgets($item->body)</div>
+    <div class="homepage-widget-wrapper">@parsewidgets($item->getTranslated('body', app()->getLocale()) ?? '')</div>
 
     @if(!empty(trim($item->custom_js ?? '')))
     <script>
@@ -18,7 +18,7 @@
 @else
 <div class="container animate-fade-in">
     <article>
-            <h1 class="text-3xl font-bold mb-4 text-gray-900 dark:text-white">{{ $item->title }}</h1>
+            <h1 class="text-3xl font-bold mb-4 text-gray-900 dark:text-white">{{ $item->getTranslated('title', app()->getLocale()) ?? $item->getTranslated('title', 'tr') }}</h1>
             
             <div class="flex flex-wrap items-center gap-3 mb-6 pb-4 border-b">
                 <span class="flex items-center text-sm text-gray-600 dark:text-gray-400">
@@ -32,7 +32,7 @@
 
             <div class="content prose max-w-none dark:prose-invert text-gray-800 dark:text-gray-200">
                 <div class="bg-white dark:bg-gray-800 shadow sm:rounded-lg p-6 transition-colors duration-300">
-        @parsewidgets($item->body)
+        @parsewidgets($item->getTranslated('body', app()->getLocale()) ?? '')
     </div>
             </div>
             
@@ -53,7 +53,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                     </svg>
-                    {{ t('page::general.all_pages') }}
+                    {{ __('page::general.all_pages') }}
                 </a>
             </div>
     </article>

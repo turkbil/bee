@@ -4,9 +4,9 @@
             <div class="col-12 col-lg-auto mt-3 mt-lg-0">
                 <ul class="list-inline list-inline-dots mb-0">
                     <li class="list-inline-item">
-                        Copyright &copy; {{ date('Y') }}
+                        {{ __('admin.common.copyright') }} &copy; {{ date('Y') }}
                         <a href="." class="link-secondary">{{ config('app.name') }}</a>.
-                        Tüm hakları saklıdır.
+                        {{ __('admin.common.all_rights_reserved') }}
                     </li>
                 </ul>
             </div>

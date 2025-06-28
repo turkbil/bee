@@ -11,7 +11,7 @@
                         <i class="fas fa-search"></i>
                     </span>
                     <input type="text" wire:model.live.debounce.300ms="search" class="form-control"
-                        placeholder="{{ t('settingmanagement::general.search_placeholder') }}">
+                        placeholder="{{ __('settingmanagement::general.search_placeholder') }}">
                 </div>
             </div>
             
@@ -20,7 +20,7 @@
                     wire:target="render, search, selectedGroup"
                     class="position-absolute top-50 start-50 translate-middle text-center"
                     style="width: 100%; max-width: 250px;">
-                    <div class="small text-muted mb-2">{{ t('settingmanagement::general.updating') }}</div>
+                    <div class="small text-muted mb-2">{{ __('settingmanagement::general.updating') }}</div>
                     <div class="progress mb-1">
                         <div class="progress-bar progress-bar-indeterminate"></div>
                     </div>
@@ -30,7 +30,7 @@
             <div class="col">
                 <div class="d-flex align-items-center justify-content-end gap-2">
                     <select wire:model.live="selectedGroup" class="form-select" style="min-width: 150px;">
-                        <option value="">{{ t('settingmanagement::general.all_groups') }}</option>
+                        <option value="">{{ __('settingmanagement::general.all_groups') }}</option>
                         @foreach($groups as $group)
                         <option value="{{ $group->id }}">{{ $group->name }}</option>
                         @endforeach
@@ -51,7 +51,7 @@
                 </div>
                 <div>
                     <a href="{{ route('admin.settingmanagement.values', $groupId) }}" class="btn btn-sm btn-ghost-secondary">
-                        {{ t('settingmanagement::general.bulk_edit') }} 
+                        {{ __('settingmanagement::general.bulk_edit') }} 
                     </a>
                 </div>
             </div>
@@ -59,11 +59,11 @@
                 <table class="table card-table table-vcenter">
                     <thead>
                         <tr>
-                            <th style="width: 25%">{{ t('settingmanagement::general.table_header_title') }}</th>
-                            <th style="width: 5%">{{ t('settingmanagement::general.table_header_custom') }}</th>
-                            <th style="width: 35%">{{ t('settingmanagement::general.table_header_value') }}</th>
-                            <th style="width: 20%">{{ t('settingmanagement::general.table_header_key') }}</th>
-                            <th style="width: 10%">{{ t('settingmanagement::general.table_header_type') }}</th>
+                            <th style="width: 25%">{{ __('settingmanagement::general.table_header_title') }}</th>
+                            <th style="width: 5%">{{ __('settingmanagement::general.table_header_custom') }}</th>
+                            <th style="width: 35%">{{ __('settingmanagement::general.table_header_value') }}</th>
+                            <th style="width: 20%">{{ __('settingmanagement::general.table_header_key') }}</th>
+                            <th style="width: 10%">{{ __('settingmanagement::general.table_header_type') }}</th>
                             <th style="width: 5%"></th>
                         </tr>
                     </thead>
@@ -82,7 +82,7 @@
                                 <div class="text-truncate" style="max-width: 250px;" title="{{ $setting->current_value }}">
                                 @if($setting->type === 'file' && $setting->current_value)
                                     <div class="d-flex align-items-center">
-                                        <i class="fas fa-file me-2" aria-label="{{ t('settingmanagement::general.file_icon_description') }}"></i>
+                                        <i class="fas fa-file me-2" aria-label="{{ __('settingmanagement::general.file_icon_description') }}"></i>
                                         <a href="{{ cdn($setting->current_value) }}" target="_blank" class="text-truncate">
                                             {{ basename($setting->current_value) }}
                                         </a>
@@ -94,7 +94,7 @@
                                         
                                     </div>
                                 @elseif($setting->type === 'checkbox')
-                                    {{ $setting->current_value == '1' ? t('settingmanagement::general.yes') : t('settingmanagement::general.no') }}
+                                    {{ $setting->current_value == '1' ? __('settingmanagement::general.yes') : __('settingmanagement::general.no') }}
                                 @elseif($setting->type === 'textarea' || $setting->type === 'html')
                                     <span class="text-muted">{{ Str::limit(strip_tags($setting->current_value), 50) ?: '-' }}</span>
                                 @else
@@ -120,9 +120,9 @@
             <div class="empty-icon">
                 <i class="fas fa-cogs"></i>
             </div>
-            <p class="empty-title">{{ t('settingmanagement::general.empty_title') }}</p>
+            <p class="empty-title">{{ __('settingmanagement::general.empty_title') }}</p>
             <p class="empty-subtitle text-muted">
-                {{ t('settingmanagement::general.empty_subtitle') }}
+                {{ __('settingmanagement::general.empty_subtitle') }}
             </p>
         </div>
         @endforelse

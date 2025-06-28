@@ -53,6 +53,7 @@ class Tenant extends BaseTenant implements TenantWithDatabase
             'is_active',
             'central',
             'theme_id',
+            'admin_default_language',
             'data',
         ];
     }
@@ -66,5 +67,30 @@ class Tenant extends BaseTenant implements TenantWithDatabase
             'module_id'
         )->withPivot('is_active')
         ->withTimestamps();
+    }
+
+    /**
+     * Site languages relationship - tenant context'te çalışır
+     */
+    public function siteLanguages()
+    {
+        // Central tenant ise ana veritabanından, değilse tenant'ın kendi veritabanından
+        if ($this->central) {
+            // Central tenant - ana veritabanından al
+            return \Modules\LanguageManagement\app\Models\SiteLanguage::on('mysql')->query();
+        } else {
+            // Normal tenant - tenant veritabanından al
+            return \Modules\LanguageManagement\app\Models\SiteLanguage::query();
+        }
+    }
+
+    /**
+     * Module settings relationship
+     */
+    public function moduleSettings()
+    {
+        // Basit fallback - data field'ından module ayarlarını döndür
+        $data = $this->data ?? [];
+        return (object) ($data['module_settings'] ?? []);
     }
 }

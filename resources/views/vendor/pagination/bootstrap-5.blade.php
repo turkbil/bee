@@ -5,22 +5,22 @@
                 {{-- Previous Page Link --}}
                 @if ($paginator->onFirstPage())
                     <li class="page-item disabled" aria-disabled="true">
-                        <span class="page-link">{{ t('admin.pagination_previous') }}</span>
+                        <span class="page-link">{{ __('admin.pagination_previous') }}</span>
                     </li>
                 @else
                     <li class="page-item">
-                        <a class="page-link" href="{{ $paginator->previousPageUrl() }}" rel="prev">{{ t('admin.pagination_previous') }}</a>
+                        <a class="page-link" href="{{ $paginator->previousPageUrl() }}" rel="prev">{{ __('admin.pagination_previous') }}</a>
                     </li>
                 @endif
 
                 {{-- Next Page Link --}}
                 @if ($paginator->hasMorePages())
                     <li class="page-item">
-                        <a class="page-link" href="{{ $paginator->nextPageUrl() }}" rel="next">{{ t('admin.pagination_next') }}</a>
+                        <a class="page-link" href="{{ $paginator->nextPageUrl() }}" rel="next">{{ __('admin.pagination_next') }}</a>
                     </li>
                 @else
                     <li class="page-item disabled" aria-disabled="true">
-                        <span class="page-link">{{ t('admin.pagination_next') }}</span>
+                        <span class="page-link">{{ __('admin.pagination_next') }}</span>
                     </li>
                 @endif
             </ul>
@@ -29,13 +29,13 @@
         <div class="d-none flex-sm-fill d-sm-flex align-items-sm-center justify-content-sm-between">
             <div>
                 <p class="small text-muted">
-                    {{ t('admin.pagination_showing') }}
+                    {{ __('admin.pagination_showing') }}
                     <span class="fw-semibold">{{ $paginator->firstItem() }}</span>
-                    {{ t('admin.pagination_to') }}
+                    {{ __('admin.pagination_to') }}
                     <span class="fw-semibold">{{ $paginator->lastItem() }}</span>
-                    {{ t('admin.pagination_of') }}
+                    {{ __('admin.pagination_of') }}
                     <span class="fw-semibold">{{ $paginator->total() }}</span>
-                    {{ t('admin.pagination_results') }}
+                    {{ __('admin.pagination_results') }}
                 </p>
             </div>
 
@@ -43,12 +43,12 @@
                 <ul class="pagination">
                     {{-- Previous Page Link --}}
                     @if ($paginator->onFirstPage())
-                        <li class="page-item disabled" aria-disabled="true" aria-label="{{ t('admin.pagination_previous') }}">
+                        <li class="page-item disabled" aria-disabled="true" aria-label="{{ __('admin.pagination_previous') }}">
                             <span class="page-link" aria-hidden="true">&lsaquo;</span>
                         </li>
                     @else
                         <li class="page-item">
-                            <a class="page-link" href="{{ $paginator->previousPageUrl() }}" rel="prev" aria-label="{{ t('admin.pagination_previous') }}">&lsaquo;</a>
+                            <a class="page-link" href="{{ $paginator->previousPageUrl() }}" rel="prev" aria-label="{{ __('admin.pagination_previous') }}">&lsaquo;</a>
                         </li>
                     @endif
 
@@ -74,10 +74,10 @@
                     {{-- Next Page Link --}}
                     @if ($paginator->hasMorePages())
                         <li class="page-item">
-                            <a class="page-link" href="{{ $paginator->nextPageUrl() }}" rel="next" aria-label="{{ t('admin.pagination_next') }}">&rsaquo;</a>
+                            <a class="page-link" href="{{ $paginator->nextPageUrl() }}" rel="next" aria-label="{{ __('admin.pagination_next') }}">&rsaquo;</a>
                         </li>
                     @else
-                        <li class="page-item disabled" aria-disabled="true" aria-label="{{ t('admin.pagination_next') }}">
+                        <li class="page-item disabled" aria-disabled="true" aria-label="{{ __('admin.pagination_next') }}">
                             <span class="page-link" aria-hidden="true">&rsaquo;</span>
                         </li>
                     @endif

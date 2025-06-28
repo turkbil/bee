@@ -23,7 +23,7 @@
                 <div class="d-flex align-items-center justify-content-between">
                     <h3 class="card-title d-flex align-items-center">
                         <i class="fas fa-phone me-2"></i>
-                        {{ $element['properties']['label'] ?? t('settingmanagement::general.tel_field_default') }}
+                        {{ $element['properties']['label'] ?? __('settingmanagement::general.tel_field_default') }}
                     </h3>
                 </div>
             </div>
@@ -37,7 +37,7 @@
                             type="tel" 
                             wire:model="values.{{ $settingId }}" 
                             class="form-control w-100" 
-                            placeholder="{{ $element['properties']['placeholder'] ?? t('settingmanagement::general.tel_field_placeholder') }}"
+                            placeholder="{{ $element['properties']['placeholder'] ?? __('settingmanagement::general.tel_field_placeholder') }}"
                         >
                     </div>
                     
@@ -51,7 +51,7 @@
                     @if(isset($originalValues[$settingId]) && $originalValues[$settingId] != $values[$settingId])
                         <div class="mt-2 text-end">
                             <span class="badge bg-yellow cursor-pointer" wire:click="resetToDefault({{ $settingId }})">
-                                <i class="fas fa-undo me-1"></i> {{ t('settingmanagement::general.reset_to_default_button') }}
+                                <i class="fas fa-undo me-1"></i> {{ __('settingmanagement::general.reset_to_default_button') }}
                             </span>
                         </div>
                     @endif
@@ -63,7 +63,7 @@
     <div class="col-12">
         <div class="alert alert-danger mb-3 w-100">
             <i class="fas fa-exclamation-circle me-2"></i>
-            {{ t('settingmanagement::general.tel_setting_not_found') }} {{ $element['properties']['name'] ?? 'Bilinmeyen' }}
+            {{ __('settingmanagement::general.tel_setting_not_found') }} {{ $element['properties']['name'] ?? 'Bilinmeyen' }}
         </div>
     </div>
 @endif

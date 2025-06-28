@@ -23,7 +23,7 @@
                 <div class="d-flex align-items-center justify-content-between">
                     <h3 class="card-title d-flex align-items-center">
                         <i class="fas fa-file me-2"></i>
-                        {{ $element['properties']['label'] ?? t('settingmanagement::general.file_field_default') }}
+                        {{ $element['properties']['label'] ?? __('settingmanagement::general.file_field_default') }}
                     </h3>
                 </div>
             </div>
@@ -31,7 +31,7 @@
                 <div class="form-group w-100">
                     @include('settingmanagement::livewire.partials.file-upload', [
                         'fileKey' => $settingId,
-                        'label' => $element['properties']['placeholder'] ?? t('settingmanagement::general.file_field_placeholder'),
+                        'label' => $element['properties']['placeholder'] ?? __('settingmanagement::general.file_field_placeholder'),
                         'values' => $values
                     ])
                     
@@ -45,7 +45,7 @@
                     @if(isset($originalValues[$settingId]) && $originalValues[$settingId] != $values[$settingId])
                         <div class="mt-2 text-end">
                             <span class="badge bg-yellow cursor-pointer" wire:click="resetToDefault({{ $settingId }})">
-                                <i class="fas fa-undo me-1"></i> {{ t('settingmanagement::general.reset_to_default_button') }}
+                                <i class="fas fa-undo me-1"></i> {{ __('settingmanagement::general.reset_to_default_button') }}
                             </span>
                         </div>
                     @endif
@@ -57,7 +57,7 @@
     <div class="col-12">
         <div class="alert alert-danger mb-3 w-100">
             <i class="fas fa-exclamation-circle me-2"></i>
-            {{ t('settingmanagement::general.file_setting_not_found') }} {{ $element['properties']['name'] ?? 'Bilinmeyen' }}
+            {{ __('settingmanagement::general.file_setting_not_found') }} {{ $element['properties']['name'] ?? 'Bilinmeyen' }}
         </div>
     </div>
 @endif

@@ -521,7 +521,7 @@
             </a>
             
             <footer>
-                &copy; 2025 - Tüm hakları saklıdır.
+                &copy; {{ date('Y') }} - {{ __('LanguageManagement::front.all_rights_reserved') }}
             </footer>
         </div>
     </div>

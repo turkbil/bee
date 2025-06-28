@@ -160,9 +160,57 @@
                             </p>
                         </div>
                     </form>
+
+                    <!-- Quick Demo Login -->
+                    <div class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-3 text-center">Hızlı Test Girişi:</p>
+                        <div class="grid grid-cols-3 gap-2">
+                            @php $host = request()->getHost(); @endphp
+                            
+                            <!-- Nurullah ve Turkbil her zaman görünür -->
+                            <button type="button" @click="autoLogin('nurullah')" 
+                                    class="p-3 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 rounded-lg transition-all transform hover:scale-105 text-center shadow-lg">
+                                <div class="text-sm font-bold text-white">Nurullah</div>
+                                <div class="text-xs text-yellow-100 opacity-90">Root</div>
+                            </button>
+                            
+                            <button type="button" @click="autoLogin('turkbilisim')" 
+                                    class="p-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 rounded-lg transition-all transform hover:scale-105 text-center shadow-lg">
+                                <div class="text-sm font-bold text-white">Turkbil</div>
+                                <div class="text-xs text-purple-100 opacity-90">Admin</div>
+                            </button>
+                            
+                            <!-- Domain'e özel tek kullanıcı -->
+                            @if($host === 'laravel.test')
+                                <button type="button" @click="autoLogin('laravel')" 
+                                        class="p-3 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 rounded-lg transition-all transform hover:scale-105 text-center shadow-lg">
+                                    <div class="text-sm font-bold text-white">Laravel</div>
+                                    <div class="text-xs text-blue-100 opacity-90">Test</div>
+                                </button>
+                            @elseif($host === 'a.test')
+                                <button type="button" @click="autoLogin('a')" 
+                                        class="p-3 bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 rounded-lg transition-all transform hover:scale-105 text-center shadow-lg">
+                                    <div class="text-sm font-bold text-white">A User</div>
+                                    <div class="text-xs text-green-100 opacity-90">Test</div>
+                                </button>
+                            @elseif($host === 'b.test')
+                                <button type="button" @click="autoLogin('b')" 
+                                        class="p-3 bg-gradient-to-r from-red-500 to-rose-500 hover:from-red-600 hover:to-rose-600 rounded-lg transition-all transform hover:scale-105 text-center shadow-lg">
+                                    <div class="text-sm font-bold text-white">B User</div>
+                                    <div class="text-xs text-red-100 opacity-90">Test</div>
+                                </button>
+                            @elseif($host === 'c.test')
+                                <button type="button" @click="autoLogin('c')" 
+                                        class="p-3 bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600 rounded-lg transition-all transform hover:scale-105 text-center shadow-lg">
+                                    <div class="text-sm font-bold text-white">C User</div>
+                                    <div class="text-xs text-indigo-100 opacity-90">Test</div>
+                                </button>
+                            @endif
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Right Column - SVG & Details -->
+                <!-- Right Column - Tetris Game -->
                 <div class="bg-gradient-to-br from-blue-600 to-purple-700 dark:from-blue-800 dark:to-purple-900 px-8 py-16 lg:px-12 flex flex-col justify-center relative overflow-hidden">
                     <!-- Animated Background Elements -->
                     <div class="absolute inset-0 overflow-hidden">
@@ -171,187 +219,9 @@
                         <div class="absolute top-1/3 right-10 w-24 h-24 bg-white/5 rounded-full animate-ping" style="animation-delay: 1s;"></div>
                     </div>
 
-                    <!-- Main SVG Art -->
-                    <div class="relative z-10 text-center">
-                        <div class="mb-8">
-                            <svg class="w-80 h-80 mx-auto" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <!-- Fun & Playful Login Art -->
-                                
-                                <!-- Central smiling character -->
-                                <g class="animate-bounce" style="animation-duration: 3s;">
-                                    <circle cx="200" cy="180" r="40" fill="white" fill-opacity="0.3" stroke="white" stroke-opacity="0.6" stroke-width="3"/>
-                                    <!-- Eyes -->
-                                    <circle cx="185" cy="170" r="4" fill="white" fill-opacity="0.8"/>
-                                    <circle cx="215" cy="170" r="4" fill="white" fill-opacity="0.8"/>
-                                    <!-- Smile -->
-                                    <path d="M180 190 Q200 200 220 190" stroke="white" stroke-opacity="0.8" stroke-width="3" fill="none"/>
-                                </g>
-                                
-                                <!-- Dancing stars around -->
-                                <g class="animate-spin" style="animation-duration: 8s;">
-                                    <g transform="translate(120, 100)">
-                                        <polygon points="0,-8 2,-2 8,-2 3,2 5,8 0,4 -5,8 -3,2 -8,-2 -2,-2" fill="white" fill-opacity="0.7"/>
-                                    </g>
-                                </g>
-                                
-                                <g class="animate-spin" style="animation-duration: 6s; animation-direction: reverse;">
-                                    <g transform="translate(280, 120)">
-                                        <polygon points="0,-6 1.5,-1.5 6,-1.5 2.5,1.5 4,6 0,3 -4,6 -2.5,1.5 -6,-1.5 -1.5,-1.5" fill="white" fill-opacity="0.6"/>
-                                    </g>
-                                </g>
-                                
-                                <g class="animate-spin" style="animation-duration: 10s;">
-                                    <g transform="translate(320, 260)">
-                                        <polygon points="0,-5 1,-1 5,-1 2,1 3,5 0,3 -3,5 -2,1 -5,-1 -1,-1" fill="white" fill-opacity="0.5"/>
-                                    </g>
-                                </g>
-                                
-                                <!-- Floating hearts -->
-                                <g class="animate-pulse" style="animation-delay: 1s; animation-duration: 4s;">
-                                    <path d="M80 250 C80 245, 85 240, 90 240 C95 240, 100 245, 100 250 C100 260, 90 270, 90 270 C90 270, 80 260, 80 250 Z" fill="white" fill-opacity="0.4"/>
-                                </g>
-                                
-                                <g class="animate-pulse" style="animation-delay: 2s; animation-duration: 5s;">
-                                    <path d="M320 320 C320 317, 323 314, 326 314 C329 314, 332 317, 332 320 C332 326, 326 332, 326 332 C326 332, 320 326, 320 320 Z" fill="white" fill-opacity="0.3"/>
-                                </g>
-                                
-                                <!-- Bouncing circles -->
-                                <g class="animate-bounce" style="animation-delay: 0.5s; animation-duration: 2s;">
-                                    <circle cx="70" cy="180" r="8" fill="white" fill-opacity="0.5"/>
-                                </g>
-                                
-                                <g class="animate-bounce" style="animation-delay: 1.5s; animation-duration: 2.5s;">
-                                    <circle cx="330" cy="200" r="10" fill="white" fill-opacity="0.4"/>
-                                </g>
-                                
-                                <g class="animate-bounce" style="animation-delay: 2.5s; animation-duration: 3s;">
-                                    <circle cx="150" cy="320" r="6" fill="white" fill-opacity="0.6"/>
-                                </g>
-                                
-                                <!-- Wavy lines for movement -->
-                                <g class="animate-pulse" style="animation-delay: 0.8s; animation-duration: 6s;">
-                                    <path d="M50 150 Q80 140 110 150 Q140 160 170 150" stroke="white" stroke-opacity="0.3" stroke-width="2" fill="none"/>
-                                    <path d="M230 280 Q260 270 290 280 Q320 290 350 280" stroke="white" stroke-opacity="0.25" stroke-width="2" fill="none"/>
-                                </g>
-                                
-                                <!-- Musical notes -->
-                                <g class="animate-bounce" style="animation-delay: 1.2s; animation-duration: 4s;">
-                                    <circle cx="350" cy="100" r="3" fill="white" fill-opacity="0.7"/>
-                                    <rect x="352" y="85" width="1.5" height="15" fill="white" fill-opacity="0.7"/>
-                                    <path d="M354 85 Q360 82 365 85" stroke="white" stroke-opacity="0.7" stroke-width="1" fill="none"/>
-                                </g>
-                                
-                                <g class="animate-bounce" style="animation-delay: 2.8s; animation-duration: 3.5s;">
-                                    <circle cx="60" cy="320" r="2.5" fill="white" fill-opacity="0.6"/>
-                                    <rect x="61.5" y="308" width="1" height="12" fill="white" fill-opacity="0.6"/>
-                                </g>
-                                
-                                <!-- Sparkle effects -->
-                                <g class="animate-ping" style="animation-delay: 0.3s; animation-duration: 2s;">
-                                    <circle cx="250" cy="80" r="2" fill="white" fill-opacity="0.8"/>
-                                </g>
-                                
-                                <g class="animate-ping" style="animation-delay: 1.8s; animation-duration: 2.5s;">
-                                    <circle cx="120" cy="350" r="1.5" fill="white" fill-opacity="0.7"/>
-                                </g>
-                                
-                                <g class="animate-ping" style="animation-delay: 3.2s; animation-duration: 2s;">
-                                    <circle cx="380" cy="180" r="2.5" fill="white" fill-opacity="0.6"/>
-                                </g>
-                                
-                                <!-- Playful zigzag -->
-                                <g class="animate-pulse" style="animation-delay: 2.2s; animation-duration: 5s;">
-                                    <path d="M30 100 L45 85 L60 100 L75 85 L90 100" stroke="white" stroke-opacity="0.3" stroke-width="2" fill="none"/>
-                                    <path d="M300 350 L315 335 L330 350 L345 335 L360 350" stroke="white" stroke-opacity="0.25" stroke-width="2" fill="none"/>
-                                </g>
-                                
-                                <!-- Floating bubbles -->
-                                <g class="animate-pulse" style="animation-delay: 0.7s; animation-duration: 8s;">
-                                    <circle cx="380" cy="300" r="6" fill="white" fill-opacity="0.2" stroke="white" stroke-opacity="0.4" stroke-width="1"/>
-                                    <circle cx="30" cy="60" r="8" fill="white" fill-opacity="0.15" stroke="white" stroke-opacity="0.3" stroke-width="1"/>
-                                    <circle cx="200" cy="350" r="4" fill="white" fill-opacity="0.25" stroke="white" stroke-opacity="0.5" stroke-width="1"/>
-                                </g>
-                            </svg>
-                        </div>
-
-                        <!-- Welcome Text -->
-                        <div class="text-white">
-                            <h3 class="text-2xl font-bold mb-4">{{ tenant('title') ?? config('app.name') }}</h3>
-                            <p class="text-blue-100 mb-6 leading-relaxed">
-                                Hesabınıza giriş yapın ve tüm özelliklerden yararlanmaya başlayın. 
-                                Güvenli giriş ile verileriniz her zaman korunur.
-                            </p>
-                            
-                            <!-- Features -->
-                            <div class="space-y-3 text-left">
-                                <div class="flex items-center text-blue-100">
-                                    <svg class="w-5 h-5 mr-3 text-green-300" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                    </svg>
-                                    <span>Güvenli Giriş Sistemi</span>
-                                </div>
-                                <div class="flex items-center text-blue-100">
-                                    <svg class="w-5 h-5 mr-3 text-green-300" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                    </svg>
-                                    <span>Kişisel Veri Koruması</span>
-                                </div>
-                                <div class="flex items-center text-blue-100">
-                                    <svg class="w-5 h-5 mr-3 text-green-300" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                    </svg>
-                                    <span>Kolay Kullanım</span>
-                                </div>
-                            </div>
-
-                            <!-- Quick Demo Login -->
-                            <div class="mt-8 pt-6 border-t border-white/20">
-                                <p class="text-sm text-blue-200 mb-3">Hızlı Test Girişi:</p>
-                                <div class="grid grid-cols-3 gap-1.5">
-                                    @php $host = request()->getHost(); @endphp
-                                    
-                                    <!-- Nurullah ve Turkbil her zaman görünür -->
-                                    <button type="button" @click="autoLogin('nurullah')" 
-                                            class="p-2 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 hover:from-yellow-500/30 hover:to-orange-500/30 rounded-lg transition-colors text-center">
-                                        <div class="text-xs font-medium">Nurullah</div>
-                                        <div class="text-xs text-yellow-300 opacity-75">Root</div>
-                                    </button>
-                                    
-                                    <button type="button" @click="autoLogin('turkbilisim')" 
-                                            class="p-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 hover:from-purple-500/30 hover:to-pink-500/30 rounded-lg transition-colors text-center">
-                                        <div class="text-xs font-medium">Turkbil</div>
-                                        <div class="text-xs text-purple-300 opacity-75">Admin</div>
-                                    </button>
-                                    
-                                    <!-- Domain'e özel tek kullanıcı -->
-                                    @if($host === 'laravel.test')
-                                        <button type="button" @click="autoLogin('laravel')" 
-                                                class="p-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors text-center">
-                                            <div class="text-xs font-medium">Laravel</div>
-                                            <div class="text-xs text-blue-300 opacity-75">Test</div>
-                                        </button>
-                                    @elseif($host === 'a.test')
-                                        <button type="button" @click="autoLogin('a')" 
-                                                class="p-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors text-center">
-                                            <div class="text-xs font-medium">A User</div>
-                                            <div class="text-xs text-blue-300 opacity-75">Test</div>
-                                        </button>
-                                    @elseif($host === 'b.test')
-                                        <button type="button" @click="autoLogin('b')" 
-                                                class="p-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors text-center">
-                                            <div class="text-xs font-medium">B User</div>
-                                            <div class="text-xs text-blue-300 opacity-75">Test</div>
-                                        </button>
-                                    @elseif($host === 'c.test')
-                                        <button type="button" @click="autoLogin('c')" 
-                                                class="p-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors text-center">
-                                            <div class="text-xs font-medium">C User</div>
-                                            <div class="text-xs text-blue-300 opacity-75">Test</div>
-                                        </button>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
+                    <!-- Tetris Game Component -->
+                    <div class="relative z-10 h-full flex items-center justify-center">
+                        <x-tetris-game />
                     </div>
                 </div>
             </div>

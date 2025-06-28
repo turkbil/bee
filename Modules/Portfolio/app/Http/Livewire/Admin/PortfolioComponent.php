@@ -83,8 +83,8 @@ class PortfolioComponent extends Component
             );
     
             $this->dispatch('toast', [
-                'title' => 'Başarılı!',
-                'message' => "\"{$portfolio->title}\" " . ($portfolio->is_active ? 'aktif' : 'pasif') . " edildi.",
+                'title' => __('admin::common.success'),
+                'message' => __('admin::common.item_status_changed', ['title' => $portfolio->title, 'status' => $portfolio->is_active ? __('admin::common.active') : __('admin::common.inactive')]),
                 'type' => 'success',
             ]);
         }

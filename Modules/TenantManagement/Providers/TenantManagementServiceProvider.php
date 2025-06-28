@@ -72,14 +72,18 @@ class TenantManagementServiceProvider extends ServiceProvider
      */
     public function registerTranslations(): void
     {
-        $langPath = resource_path('lang/modules/' . $this->nameLower);
-
-        if (is_dir($langPath)) {
-            $this->loadTranslationsFrom($langPath, $this->nameLower);
-            $this->loadJsonTranslationsFrom($langPath);
-        } else {
-            $this->loadTranslationsFrom(module_path($this->name, 'lang'), $this->nameLower);
-            $this->loadJsonTranslationsFrom(module_path($this->name, 'lang'));
+        // Ana dil dosyaları - modül klasöründen yükle
+        $moduleLangPath = module_path($this->name, 'lang');
+        if (is_dir($moduleLangPath)) {
+            $this->loadTranslationsFrom($moduleLangPath, $this->nameLower);
+            $this->loadJsonTranslationsFrom($moduleLangPath);
+        }
+        
+        // Resource'daki dil dosyaları (varsa)
+        $resourceLangPath = resource_path('lang/modules/' . $this->nameLower);
+        if (is_dir($resourceLangPath)) {
+            $this->loadTranslationsFrom($resourceLangPath, $this->nameLower);
+            $this->loadJsonTranslationsFrom($resourceLangPath);
         }
     }
 

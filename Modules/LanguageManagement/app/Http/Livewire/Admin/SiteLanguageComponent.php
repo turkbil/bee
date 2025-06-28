@@ -27,6 +27,12 @@ class SiteLanguageComponent extends Component
             session()->flash('error', 'Site dili bulunamadı.');
             return;
         }
+        
+        // Varsayılan dil silinemez
+        if ($language->is_default) {
+            session()->flash('error', 'Varsayılan site dili silinemez.');
+            return;
+        }
 
         $siteLanguageService = app(SiteLanguageService::class);
         
@@ -47,6 +53,12 @@ class SiteLanguageComponent extends Component
         
         if (!$language) {
             session()->flash('error', 'Site dili bulunamadı.');
+            return;
+        }
+        
+        // Varsayılan dil pasif yapılamaz
+        if ($language->is_default && $language->is_active) {
+            session()->flash('error', 'Varsayılan site dili pasif yapılamaz.');
             return;
         }
 

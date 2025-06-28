@@ -17,9 +17,9 @@
                         </path>
                         <path d="M12 16h.01"></path>
                     </svg>
-                    <h3>{{ t('ai::messages.confirm.delete_prompt') }}</h3>
+                    <h3>{{ __('ai::admin.confirm.delete_prompt') }}</h3>
                     <div class="text-muted">
-                        {{ t('ai::messages.confirm.delete_prompt_description', ['name' => $promptName]) }}
+                        {{ __('ai::admin.confirm.delete_prompt_description', ['name' => $promptName]) }}
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -27,12 +27,12 @@
                         <div class="row">
                             <div class="col">
                                 <button type="button" class="btn w-100" wire:click="closeModal">
-                                    {{ t('ai::general.cancel') }}
+                                    {{ __('ai::admin.cancel') }}
                                 </button>
                             </div>
                             <div class="col">
                                 <button type="button" class="btn btn-danger w-100" wire:click="delete">
-                                    {{ t('ai::general.delete') }}
+                                    {{ __('ai::admin.delete') }}
                                 </button>
                             </div>
                         </div>

@@ -10,7 +10,7 @@
                         <i class="fas fa-search"></i>
                     </span>
                     <input type="text" wire:model.live="search" class="form-control"
-                        placeholder="{{ t('modulemanagement::general.search_placeholder') }}">
+                        placeholder="{{ __('modulemanagement::admin.search_placeholder') }}">
                 </div>
             </div>
             <!-- Ortadaki Loading -->
@@ -19,7 +19,7 @@
                     wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, selectedItems, selectAll, bulkDelete, bulkToggleActive, typeFilter, toggleDomains"
                     class="position-absolute top-50 start-50 translate-middle text-center"
                     style="width: 100%; max-width: 250px;">
-                    <div class="small text-muted mb-2">{{ t('modulemanagement::general.updating') }}</div>
+                    <div class="small text-muted mb-2">{{ __('modulemanagement::admin.updating') }}</div>
                     <div class="progress mb-1">
                         <div class="progress-bar progress-bar-indeterminate"></div>
                     </div>
@@ -31,15 +31,15 @@
                     <!-- Tip Filtresi -->
                     <div style="width: 150px">
                         <select wire:model.live="typeFilter" class="form-select listing-filter-select">
-                            <option value="">{{ t('modulemanagement::general.all_types') }}</option>
-                            <option value="content">{{ t('modulemanagement::general.content') }}</option>
-                            <option value="management">{{ t('modulemanagement::general.management') }}</option>
-                            <option value="system">{{ t('modulemanagement::general.system') }}</option>
+                            <option value="">{{ __('modulemanagement::admin.all_types') }}</option>
+                            <option value="content">{{ __('modulemanagement::admin.content') }}</option>
+                            <option value="management">{{ __('modulemanagement::admin.management') }}</option>
+                            <option value="system">{{ __('modulemanagement::admin.system') }}</option>
                         </select>
                     </div>
                     <!-- Domain Gösterim -->
                     <button wire:click="toggleDomains" class="btn btn-outline-primary btn-icon" data-bs-toggle="tooltip"
-                        title="{{ $showDomains ? t('modulemanagement::general.hide_domains') : t('modulemanagement::general.show_domains') }}">
+                        title="{{ $showDomains ? __('modulemanagement::admin.hide_domains') : __('modulemanagement::admin.show_domains') }}">
                         <i class="fas fa-globe"></i>
                     </button>
                     <!-- Sayfa Adeti Seçimi -->
@@ -69,20 +69,20 @@
                     @switch($type)
                     @case('system')
                     <i class="fas fa-shield-alt me-2 text-muted"></i>
-                    <h3 class="mb-0 h4">{{ t('modulemanagement::general.system_modules') }}</h3>
+                    <h3 class="mb-0 h4">{{ __('modulemanagement::admin.system_modules') }}</h3>
                     @break
                     @case('management')
                     <i class="fas fa-cogs me-2 text-muted"></i>
-                    <h3 class="mb-0 h4">{{ t('modulemanagement::general.management_modules') }}</h3>
+                    <h3 class="mb-0 h4">{{ __('modulemanagement::admin.management_modules') }}</h3>
                     @break
                     @case('content')
                     <i class="fas fa-file-alt me-2 text-muted"></i>
-                    <h3 class="mb-0 h4">{{ t('modulemanagement::general.content_modules') }}</h3>
+                    <h3 class="mb-0 h4">{{ __('modulemanagement::admin.content_modules') }}</h3>
                     @break
                     @endswitch
                     <div class="ms-auto">
                         <span class="badge bg-primary">
-                            {{ $groupedModules[$type]->count() }} {{ t('modulemanagement::general.module_count') }}
+                            {{ $groupedModules[$type]->count() }} {{ __('modulemanagement::admin.module_count') }}
                         </span>
                     </div>
                 </div>
@@ -107,7 +107,7 @@
                                 @if(Route::has('admin.settingmanagement.values'))
                                 <a href="{{ route('admin.settingmanagement.values', ['group' => $module->settings]) }}"
                                     class="dropdown-item">
-                                    <i class="fas fa-cog me-2" style="width: 14px;"></i>{{ t('modulemanagement::general.settings') }}
+                                    <i class="fas fa-cog me-2" style="width: 14px;"></i>{{ __('modulemanagement::admin.settings') }}
                                 </a>
                                 @endif
                                 @endif
@@ -115,16 +115,16 @@
                                 @if($module->type === 'content')
                                 <a href="{{ route('admin.modulemanagement.slug-settings', $module->name) }}"
                                     class="dropdown-item">
-                                    <i class="fas fa-link me-2" style="width: 14px;"></i>{{ t('modulemanagement::general.url_settings') }}
+                                    <i class="fas fa-link me-2" style="width: 14px;"></i>{{ __('modulemanagement::admin.url_settings') }}
                                 </a>
                                 @endif
 
                                 <a href="{{ route('admin.modulemanagement.manage', $module->module_id) }}"
                                     class="dropdown-item">
-                                    <i class="fas fa-edit me-2" style="width: 14px;"></i>{{ t('modulemanagement::general.edit') }}
+                                    <i class="fas fa-edit me-2" style="width: 14px;"></i>{{ __('modulemanagement::admin.edit') }}
                                 </a>
                                 <button class="dropdown-item text-danger" wire:click="$dispatch('showDeleteModal', {'module': 'module', 'id': {{ $module->module_id }}, 'title': '{{ $module->display_name }}'})">
-                                    <i class="fas fa-trash me-2" style="width: 14px;"></i>{{ t('modulemanagement::general.delete') }}
+                                    <i class="fas fa-trash me-2" style="width: 14px;"></i>{{ __('modulemanagement::admin.delete') }}
                                 </button>
                             </div>
                         </div>
@@ -135,7 +135,7 @@
                         <div class="list-group-item py-2 bg-muted-lt">
                             <div class="d-flex align-items-center">
                                 <i class="fas fa-globe text-muted me-2"></i>
-                                <strong>{{ t('modulemanagement::general.assigned_domains') }}</strong>
+                                <strong>{{ __('modulemanagement::admin.assigned_domains') }}</strong>
                             </div>
                         </div>
 
@@ -172,7 +172,7 @@
                                 @forelse($activeDomains as $tenant)
                                 <span class="badge bg-light-lt">{{ $tenant->title ?? $tenant->id }}</span>
                                 @empty
-                                <span class="badge bg-secondary-lt">{{ t('modulemanagement::general.unassigned') }}</span>
+                                <span class="badge bg-secondary-lt">{{ __('modulemanagement::admin.unassigned') }}</span>
                                 @endforelse
                                 
                                 @if($module->tenants->where('pivot.is_active', true)->count() > 3)
@@ -199,10 +199,10 @@
                                         {{ $module->is_active ? 'checked' : '' }} value="1" />
 
                                     <div class="state p-success p-on ms-2">
-                                        <label>{{ t('modulemanagement::general.active') }}</label>
+                                        <label>{{ __('modulemanagement::admin.active') }}</label>
                                     </div>
                                     <div class="state p-danger p-off ms-2">
-                                        <label>{{ t('modulemanagement::general.inactive') }}</label>
+                                        <label>{{ __('modulemanagement::admin.inactive') }}</label>
                                     </div>
                                 </div>
                             </div>
@@ -219,9 +219,9 @@
                         <img src="{{ asset('tabler/static/illustrations/undraw_quitting_time_dm8t.svg') }}"
                             height="128" alt="">
                     </div>
-                    <p class="empty-title">{{ t('modulemanagement::general.no_modules_found') }}</p>
+                    <p class="empty-title">{{ __('modulemanagement::admin.no_modules_found') }}</p>
                     <p class="empty-subtitle text-muted">
-                        {{ t('modulemanagement::general.add_new_module_info') }}
+                        {{ __('modulemanagement::admin.add_new_module_info') }}
                     </p>
                 </div>
             </div>

@@ -18,6 +18,11 @@ class LanguageSettingsComponent extends Component
     public $currentSiteLanguage = 'tr';
     public $recentSystemLanguages = [];
     public $recentSiteLanguages = [];
+    
+    // URL Prefix Ayarları
+    public $urlPrefixMode = 'except_default'; // none, except_default, all
+    public $defaultLanguageCode = 'tr';
+    public $availableLanguages = [];
 
     public function mount()
     {
@@ -44,6 +49,55 @@ class LanguageSettingsComponent extends Component
             ->orderBy('created_at', 'desc')
             ->limit(3)
             ->get();
+            
+        // URL Prefix ayarlarını yükle
+        $this->loadUrlPrefixSettings();
+    }
+    
+    public function loadUrlPrefixSettings()
+    {
+        // Site dillerini yükle
+        $this->availableLanguages = SiteLanguage::where('is_active', true)
+            ->orderBy('sort_order')
+            ->get(['code', 'name', 'native_name'])
+            ->toArray();
+        
+        // Varsayılan dili al
+        $defaultLang = SiteLanguage::where('is_default', true)->first();
+        if ($defaultLang) {
+            $this->urlPrefixMode = $defaultLang->url_prefix_mode ?? 'except_default';
+            $this->defaultLanguageCode = $defaultLang->code;
+        }
+    }
+    
+    public function saveUrlPrefixSettings()
+    {
+        $this->validate([
+            'urlPrefixMode' => 'required|in:none,except_default,all',
+            'defaultLanguageCode' => 'required|exists:site_languages,code'
+        ]);
+        
+        // Tüm site dillerini güncelle
+        SiteLanguage::query()->update(['url_prefix_mode' => $this->urlPrefixMode]);
+        
+        // Önce tüm is_default'ları false yap
+        SiteLanguage::query()->update(['is_default' => false]);
+        
+        // Sonra yeni varsayılanı belirle
+        SiteLanguage::where('code', $this->defaultLanguageCode)
+            ->update(['is_default' => true]);
+        
+        // Cache temizle
+        if (class_exists('Modules\LanguageManagement\app\Services\UrlPrefixService')) {
+            \Modules\LanguageManagement\app\Services\UrlPrefixService::clearCache();
+        }
+        \App\Services\ModuleSlugService::clearCache();
+        
+        session()->flash('success', 'URL Prefix ayarları başarıyla kaydedildi!');
+        
+        if (function_exists('log_activity')) {
+            log_activity('url_prefix_ayarlar_kaydedildi');
+        }
     }
 
     public function render()

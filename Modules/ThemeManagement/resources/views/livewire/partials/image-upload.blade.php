@@ -20,9 +20,9 @@
                             <div class="d-flex flex-column align-items-center justify-content-center p-4">
                                 <i class="fa-solid fa-cloud-arrow-up fa-2x mb-2 text-muted"></i>
                                 <div class="text-muted">
-                                    <span x-show="!isDropping">{{ $label ?? 'Görseli sürükleyip bırakın veya tıklayın'
+                                    <span x-show="!isDropping">{{ $label ?? __('thememanagement::admin.drag_drop_image')
                                         }}</span>
-                                    <span x-show="isDropping" class="text-primary">Bırakın!</span>
+                                    <span x-show="isDropping" class="text-primary">{{ __('thememanagement::admin.drop_here') }}</span>
                                 </div>
                             </div>
                             <input type="file" id="fileInput_{{ $imageKey }}"
@@ -55,7 +55,7 @@
                                 <i class="fa-solid fa-xmark"></i>
                             </button>
                             <img src="{{ $temporaryImages[$imageKey]->temporaryUrl() }}"
-                                class="img-fluid rounded h-100 w-100 object-fit-cover" alt="Yüklenen Fotoğraf">
+                                class="img-fluid rounded h-100 w-100 object-fit-cover" alt="{{ __('thememanagement::admin.uploaded_image') }}">
                         </div>
                         @elseif ($model && $model->getFirstMedia('images'))
                         <div class="position-relative" style="height: 156px;">
@@ -64,7 +64,7 @@
                                 <i class="fa-solid fa-xmark"></i>
                             </button>
                             <img src="{{ url($model->getFirstMedia('images')->getUrl()) }}"
-                                class="img-fluid rounded h-100 w-100 object-fit-cover" alt="Mevcut Fotoğraf">
+                                class="img-fluid rounded h-100 w-100 object-fit-cover" alt="{{ __('thememanagement::admin.current_image') }}">
                         </div>
                         @else
                         <div class="d-flex align-items-center justify-content-center text-muted" style="height: 156px;">

@@ -21,10 +21,10 @@ class="mb-3">
                     <div class="d-flex flex-column align-items-center justify-content-center p-4">
                         <i class="fa-solid fa-cloud-arrow-up fa-2x mb-2 text-muted"></i>
                         <div class="text-muted">
-                            <span x-show="!isDropping">{{ $label ?? t('settingmanagement.file_upload.drag_drop') }}</span>
-                            <span x-show="isDropping" class="text-primary">{{ t('settingmanagement.file_upload.drop_here') }}</span>
+                            <span x-show="!isDropping">{{ $label ?? __('settingmanagement.file_upload.drag_drop') }}</span>
+                            <span x-show="isDropping" class="text-primary">{{ __('settingmanagement.file_upload.drop_here') }}</span>
                         </div>
-                        <p class="text-muted small">{{ t('settingmanagement.file_upload.supported_formats') }}</p>
+                        <p class="text-muted small">{{ __('settingmanagement.file_upload.supported_formats') }}</p>
                     </div>
                     <input type="file" id="fileInput_multiple_{{ $settingId }}_{{ $index }}"
                         wire:model="temporaryMultipleImages.{{ $settingId }}.{{ $index }}" class="d-none"
@@ -48,7 +48,7 @@ class="mb-3">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
                     <img src="{{ $temporaryMultipleImages[$settingId][$index]->temporaryUrl() }}"
-                        class="img-fluid rounded h-100 w-100 object-fit-cover" alt="{{ t('settingmanagement.file_upload.uploaded_photo') }}">
+                        class="img-fluid rounded h-100 w-100 object-fit-cover" alt="{{ __('settingmanagement.file_upload.uploaded_photo') }}">
                 </div>
                 @else
                 <div class="d-flex align-items-center justify-content-center text-muted" style="height: 156px;">

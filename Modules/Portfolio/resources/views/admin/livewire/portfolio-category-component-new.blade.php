@@ -5,13 +5,13 @@
             <form wire:submit="quickAdd">
                 <div class="row align-items-center flex-column flex-md-row text-center text-md-start">
                     <div class="col-12 col-md-auto mb-2 mb-md-0">
-                        <span class="fw-bold">{{ t('portfolio::admin.quick_add_category') }}:</span>
+                        <span class="fw-bold">{{ __('portfolio::admin.quick_add_category') }}:</span>
                     </div>
                     <div class="col-12 col-md mb-2 mb-md-0">
                         <div class="input-icon">
                             <input type="text" wire:model="title"
                                 class="form-control @error('title') is-invalid @enderror"
-                                placeholder="{{ t('portfolio::admin.category_name_placeholder') }}"
+                                placeholder="{{ __('portfolio::admin.category_name_placeholder') }}"
                                 autocomplete="off">
                             <span class="input-icon-addon">
                                 <i class="fas fa-tag"></i>
@@ -24,10 +24,10 @@
                     <div class="col-12 col-md-auto">
                         <button type="submit" class="btn btn-muted w-100 w-md-auto" wire:loading.attr="disabled">
                             <span wire:loading.remove wire:target="quickAdd">
-                                {{ t('portfolio::admin.add_category') }}
+                                {{ __('portfolio::admin.add_category') }}
                             </span>
                             <span wire:loading wire:target="quickAdd">
-                                {{ t('portfolio::admin.adding') }}...
+                                {{ __('portfolio::admin.adding') }}...
                             </span>
                         </button>
                     </div>
@@ -60,12 +60,12 @@
                             <div class="h2 mb-0">{{ $category->title }}</div>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="text-muted small">
-                                    {{ $category->portfolios_count }} {{ t('portfolio::admin.content_count') }}
+                                    {{ $category->portfolios_count }} {{ __('portfolio::admin.content_count') }}
                                 </div>
                                 <div class="d-flex align-items-center gap-2">
                                     <button wire:click="toggleActive({{ $category->portfolio_category_id }})"
                                         data-bs-toggle="tooltip" data-bs-placement="top"
-                                        title="{{ $category->is_active ? t('portfolio::admin.make_inactive') : t('portfolio::admin.make_active') }}"
+                                        title="{{ $category->is_active ? __('portfolio::admin.make_inactive') : __('portfolio::admin.make_active') }}"
                                         class="btn btn-icon btn-sm {{ $category->is_active ? 'text-muted bg-transparent' : 'text-red bg-transparent' }}">
                                         <!-- Loading Durumu -->
                                         <div wire:loading
@@ -83,7 +83,7 @@
                                         </div>
                                     </button>
                                     <a href="{{ route('admin.portfolio.category.manage', $category->portfolio_category_id) }}"
-                                        data-bs-toggle="tooltip" data-bs-placement="top" title="{{ t('portfolio::admin.edit') }}"
+                                        data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('portfolio::admin.edit') }}"
                                         class="btn btn-icon btn-sm">
                                         <i class="fa-solid fa-pen-to-square link-secondary fa-lg"></i>
                                     </a>
@@ -97,7 +97,7 @@
                                             <a href="#"
                                                 wire:click.prevent="delete({{ $category->portfolio_category_id }})"
                                                 class="dropdown-item link-danger">
-                                                <i class="fas fa-trash me-2"></i> {{ t('portfolio::admin.delete') }}
+                                                <i class="fas fa-trash me-2"></i> {{ __('portfolio::admin.delete') }}
                                             </a>
                                             @else
                                             <a href="javascript:void(0);" wire:click="$dispatch('showCategoryDeleteModal', {
@@ -105,7 +105,7 @@
                                                     id: {{ $category->portfolio_category_id }}, 
                                                     title: '{{ $category->title }}'
                                                 })" class="dropdown-item link-danger">
-                                                <i class="fas fa-trash me-2"></i> {{ t('portfolio::admin.delete') }}
+                                                <i class="fas fa-trash me-2"></i> {{ __('portfolio::admin.delete') }}
                                             </a>
                                             @endif
                                         </div>
@@ -131,9 +131,9 @@
         @empty
         <div class="col-12">
             <div class="empty">
-                <p class="empty-title">{{ t('portfolio::admin.no_categories_yet') }}</p>
+                <p class="empty-title">{{ __('portfolio::admin.no_categories_yet') }}</p>
                 <p class="empty-subtitle text-muted">
-                    {{ t('portfolio::admin.add_category_instruction') }}
+                    {{ __('portfolio::admin.add_category_instruction') }}
                 </p>
             </div>
         </div>

@@ -13,12 +13,36 @@ class PageManageComponent extends Component
    use WithFileUploads;
 
    public $pageId;
+   public $currentLanguage = 'tr'; // Aktif dil sekmesi
+   public $availableLanguages = ['tr', 'en', 'ar']; // Mevcut diller
+   
+   // Çoklu dil inputs - her dil için ayrı
+   public $multiLangInputs = [
+       'tr' => [
+           'title' => '',
+           'body' => '',
+           'slug' => '',
+           'metakey' => '',
+           'metadesc' => '',
+       ],
+       'en' => [
+           'title' => '',
+           'body' => '',
+           'slug' => '',
+           'metakey' => '',
+           'metadesc' => '',
+       ],
+       'ar' => [
+           'title' => '',
+           'body' => '',
+           'slug' => '',
+           'metakey' => '',
+           'metadesc' => '',
+       ],
+   ];
+   
+   // Dil-neutral inputs
    public $inputs = [
-       'title' => '',
-       'body' => '',
-       'slug' => '',
-       'metakey' => '',
-       'metadesc' => '',
        'css' => '',
        'js' => '',
        'is_active' => true,
@@ -32,7 +56,20 @@ class PageManageComponent extends Component
        if ($id) {
            $this->pageId = $id;
            $page = Page::findOrFail($id);
-           $this->inputs = $page->only(array_keys($this->inputs));
+           
+           // Dil-neutral alanları doldur
+           $this->inputs = $page->only(['css', 'js', 'is_active', 'is_homepage']);
+           
+           // Çoklu dil alanları doldur
+           foreach ($this->availableLanguages as $lang) {
+               $this->multiLangInputs[$lang] = [
+                   'title' => $page->getTranslated('title', $lang) ?? '',
+                   'body' => $page->getTranslated('body', $lang) ?? '',
+                   'slug' => $page->getTranslated('slug', $lang) ?? '',
+                   'metakey' => $page->getTranslated('metakey', $lang) ?? '',
+                   'metadesc' => $page->getTranslated('metadesc', $lang) ?? '',
+               ];
+           }
        }
        
        // Studio modülü aktif mi kontrol et
@@ -41,40 +78,85 @@ class PageManageComponent extends Component
 
    protected function rules()
    {
-       return [
-           'inputs.title' => 'required|min:3|max:255',
-           'inputs.slug' => 'nullable|unique:pages,slug,' . $this->pageId . ',page_id',
-           'inputs.metakey' => 'nullable',
-           'inputs.metadesc' => 'nullable|string|max:255',
+       $rules = [
            'inputs.css' => 'nullable|string',
            'inputs.js' => 'nullable|string',
            'inputs.is_active' => 'boolean',
            'inputs.is_homepage' => 'boolean',
        ];
+       
+       // Her dil için validation kuralları ekle
+       foreach ($this->availableLanguages as $lang) {
+           $rules["multiLangInputs.{$lang}.title"] = $lang === 'tr' ? 'required|min:3|max:255' : 'nullable|min:3|max:255';
+           $rules["multiLangInputs.{$lang}.slug"] = 'nullable|string|max:255';
+           $rules["multiLangInputs.{$lang}.metakey"] = 'nullable|string';
+           $rules["multiLangInputs.{$lang}.metadesc"] = 'nullable|string|max:255';
+           $rules["multiLangInputs.{$lang}.body"] = 'nullable|string';
+       }
+       
+       return $rules;
    }
 
    protected $messages = [
-       'inputs.title.required' => 'page::messages.title_required',
-       'inputs.title.min' => 'page::messages.title_min',
-       'inputs.title.max' => 'page::messages.title_max',
+       'multiLangInputs.tr.title.required' => 'page::messages.title_required',
+       'multiLangInputs.tr.title.min' => 'page::messages.title_min',
+       'multiLangInputs.tr.title.max' => 'page::messages.title_max',
    ];
+   
+   /**
+    * Dil sekmesi değiştir
+    */
+   public function switchLanguage($language)
+   {
+       if (in_array($language, $this->availableLanguages)) {
+           $this->currentLanguage = $language;
+           
+           // JavaScript'e dil değişikliğini bildir (TinyMCE için)
+           $this->dispatch('language-switched', [
+               'language' => $language,
+               'editorId' => "editor_{$language}",
+               'content' => $this->multiLangInputs[$language]['body'] ?? ''
+           ]);
+       }
+   }
 
    public function save($redirect = false, $resetForm = false)
    {
+      // TinyMCE içeriğini senkronize et
+      $this->dispatch('sync-tinymce-content');
+      
       $this->validate();
       
-      $data = array_merge($this->inputs, [
-          'title' => Str::limit($this->inputs['title'], 191, ''),
-          'slug' => $this->inputs['slug'] ?: Str::slug($this->inputs['title']),
-          'metakey' => is_array($this->inputs['metakey']) ? implode(',', $this->inputs['metakey']) : $this->inputs['metakey'],
-          'metadesc' => Str::limit($this->inputs['metadesc'] ?? $this->inputs['body'], 191, '')
-      ]);
+      // JSON formatında çoklu dil verilerini hazırla
+      $multiLangData = [];
+      foreach (['title', 'slug', 'body', 'metakey', 'metadesc'] as $field) {
+          $multiLangData[$field] = [];
+          foreach ($this->availableLanguages as $lang) {
+              $value = $this->multiLangInputs[$lang][$field] ?? '';
+              
+              // Boş slug'lar için otomatik oluştur
+              if ($field === 'slug' && empty($value) && !empty($this->multiLangInputs[$lang]['title'])) {
+                  $value = Str::slug($this->multiLangInputs[$lang]['title']);
+              }
+              
+              // Boş metadesc için body'den oluştur  
+              if ($field === 'metadesc' && empty($value) && !empty($this->multiLangInputs[$lang]['body'])) {
+                  $value = Str::limit(strip_tags($this->multiLangInputs[$lang]['body']), 191, '');
+              }
+              
+              if (!empty($value)) {
+                  $multiLangData[$field][$lang] = $value;
+              }
+          }
+      }
+      
+      $data = array_merge($this->inputs, $multiLangData);
 
       // Eğer ana sayfa ise pasif yapılmasına izin verme
       if (($this->inputs['is_homepage'] || ($this->pageId && Page::find($this->pageId)?->is_homepage)) && isset($data['is_active']) && $data['is_active'] == false) {
           $this->dispatch('toast', [
-              'title' => t('common.warning'),
-              'message' => t('page::messages.homepage_cannot_be_deactivated'),
+              'title' => __('admin::common.warning'),
+              'message' => __('page::messages.homepage_cannot_be_deactivated'),
               'type' => 'warning',
           ]);
           return;
@@ -86,8 +168,8 @@ class PageManageComponent extends Component
           
           if ($data == $currentData) {
               $toast = [
-                  'title' => t('common.info'),
-                  'message' => t('common.no_changes'),
+                  'title' => __('admin::common.info'),
+                  'message' => __('admin::common.no_changes'),
                   'type' => 'info'
               ];
           } else {
@@ -95,8 +177,8 @@ class PageManageComponent extends Component
               log_activity($page, 'güncellendi');
               
               $toast = [
-                  'title' => t('common.success'),
-                  'message' => t('page::messages.page_updated'),
+                  'title' => __('admin::common.success'),
+                  'message' => __('page::messages.page_updated'),
                   'type' => 'success'
               ];
           }
@@ -106,8 +188,8 @@ class PageManageComponent extends Component
           log_activity($page, 'oluşturuldu');
           
           $toast = [
-              'title' => t('common.success'),
-              'message' => t('page::messages.page_created'),
+              'title' => __('admin::common.success'),
+              'message' => __('page::messages.page_created'),
               'type' => 'success'
           ];
       }
@@ -121,6 +203,12 @@ class PageManageComponent extends Component
    
       if ($resetForm && !$this->pageId) {
           $this->reset();
+          $this->currentLanguage = 'tr';
+          $this->multiLangInputs = [
+              'tr' => ['title' => '', 'body' => '', 'slug' => '', 'metakey' => '', 'metadesc' => ''],
+              'en' => ['title' => '', 'body' => '', 'slug' => '', 'metakey' => '', 'metadesc' => ''],
+              'ar' => ['title' => '', 'body' => '', 'slug' => '', 'metakey' => '', 'metadesc' => ''],
+          ];
       }
    }
 

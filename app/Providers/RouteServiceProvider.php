@@ -21,20 +21,14 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Global olarak tüm route'lara tenant middleware'ini ekle
-        Route::middlewareGroup('web', [
-            \Illuminate\Cookie\Middleware\EncryptCookies::class,
-            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
-            \Illuminate\Session\Middleware\StartSession::class,
-            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-            \Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class,
-            \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            InitializeTenancy::class, // Tenant middleware'ini web grubuna ekledik
-        ]);
+        // NOT: InitializeTenancy middleware bootstrap/app.php'de tanımlı - burada duplikasyon giderildi
 
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });
+
+        // NOT: ModuleRouteService her request'te çalışmamalı!
+        // Bu sadece application boot'ta 1 kez çalışacak şekilde taşındı
 
         $this->routes(function () {
             // Admin route'larını ÖNCELİKLİ yükle

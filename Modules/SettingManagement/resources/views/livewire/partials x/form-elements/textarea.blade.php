@@ -23,7 +23,7 @@
                 <div class="d-flex align-items-center justify-content-between">
                     <h3 class="card-title d-flex align-items-center">
                         <i class="fa-regular fa-comment fa-flip-horizontal me-2"></i>
-                        {{ $element['properties']['label'] ?? t('settingmanagement::general.textarea_field_default') }}
+                        {{ $element['properties']['label'] ?? __('settingmanagement::general.textarea_field_default') }}
                     </h3>
                 </div>
             </div>
@@ -32,7 +32,7 @@
                     <textarea 
                         wire:model="values.{{ $settingId }}" 
                         class="form-control" 
-                        placeholder="{{ $element['properties']['placeholder'] ?? t('settingmanagement::general.textarea_field_placeholder') }}"
+                        placeholder="{{ $element['properties']['placeholder'] ?? __('settingmanagement::general.textarea_field_placeholder') }}"
                         rows="{{ $element['properties']['rows'] ?? 3 }}"
                     ></textarea>
                     
@@ -46,7 +46,7 @@
                     @if(isset($originalValues[$settingId]) && $originalValues[$settingId] != $values[$settingId])
                         <div class="mt-2 text-end">
                             <span class="badge bg-yellow cursor-pointer" wire:click="resetToDefault({{ $settingId }})">
-                                <i class="fas fa-undo me-1"></i> {{ t('settingmanagement::general.reset_to_default_button') }}
+                                <i class="fas fa-undo me-1"></i> {{ __('settingmanagement::general.reset_to_default_button') }}
                             </span>
                         </div>
                     @endif
@@ -58,7 +58,7 @@
     <div class="col-12">
         <div class="alert alert-danger mb-3 w-100">
             <i class="fas fa-exclamation-circle me-2"></i>
-            {{ t('settingmanagement::general.setting_not_found') }} {{ $element['properties']['name'] ?? 'Bilinmeyen' }}
+            {{ __('settingmanagement::general.setting_not_found') }} {{ $element['properties']['name'] ?? 'Bilinmeyen' }}
         </div>
     </div>
 @endif

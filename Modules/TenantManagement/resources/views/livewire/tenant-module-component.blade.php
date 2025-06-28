@@ -2,7 +2,7 @@
     @if($modules && $modules->count() > 0)
     <div class="d-flex justify-content-between mb-3">
         <button type="button" class="btn btn-outline-primary" wire:click="toggleSelectAll">
-            {{ count($selectedModules) === $modules->count() ? 'Tümünü Kaldır' : 'Tümünü Seç' }}
+            {{ count($selectedModules) === $modules->count() ? __('tenantmanagement::admin.deselect_all') : __('tenantmanagement::admin.select_all') }}
         </button>
     </div>
 
@@ -48,12 +48,12 @@
             <div class="row">
                 <div class="col">
                     <button type="button" class="btn w-100" data-bs-dismiss="modal">
-                        İptal
+                        {{ __('tenantmanagement::admin.cancel') }}
                     </button>
                 </div>
                 <div class="col">
                     <button type="button" class="btn btn-primary w-100" wire:click="save">
-                        Kaydet
+                        {{ __('tenantmanagement::admin.save') }}
                     </button>
                 </div>
             </div>
@@ -64,9 +64,9 @@
         <div class="empty-icon">
             <i class="fas fa-cube fa-3x text-muted"></i>
         </div>
-        <p class="empty-title">Modül bulunamadı</p>
+        <p class="empty-title">{{ __('tenantmanagement::admin.no_modules_found') }}</p>
         <p class="empty-subtitle text-muted">
-            Sistemde aktif modül bulunmamaktadır. Önce modül eklemeniz gerekmektedir.
+            {{ __('tenantmanagement::admin.no_active_modules_info') }}
         </p>
     </div>
     @endif

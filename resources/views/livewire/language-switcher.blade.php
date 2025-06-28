@@ -28,7 +28,7 @@
             @endforeach
         @else
             <span class="dropdown-item-text text-muted">
-                {{ __('common.no_languages', ['default' => 'No languages available']) }}
+                {{ __('admin.no_language_found') }}
             </span>
         @endif
         

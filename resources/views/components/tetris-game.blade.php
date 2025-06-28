@@ -3,18 +3,18 @@
     <div class="tetris-game relative flex flex-col items-center">
         <!-- Score and Info Panel -->
         <div class="text-white text-center mb-4">
-            <h3 class="text-xl font-bold mb-2">TETRIS</h3>
+            <h3 class="text-xl font-bold mb-2">{{ __('front.tetris') }}</h3>
             <div class="flex justify-center gap-6 text-sm">
                 <div>
-                    <span class="opacity-75">Skor:</span>
+                    <span class="opacity-75">{{ __('front.score') }}:</span>
                     <span id="tetris-score" class="font-bold ml-1">0</span>
                 </div>
                 <div>
-                    <span class="opacity-75">Level:</span>
+                    <span class="opacity-75">{{ __('front.level') }}:</span>
                     <span id="tetris-level" class="font-bold ml-1">1</span>
                 </div>
                 <div>
-                    <span class="opacity-75">Satır:</span>
+                    <span class="opacity-75">{{ __('front.lines') }}:</span>
                     <span id="tetris-lines" class="font-bold ml-1">0</span>
                 </div>
             </div>
@@ -29,10 +29,10 @@
                 <!-- Game Over Overlay -->
                 <div id="game-over" class="absolute inset-0 bg-black/80 rounded-lg items-center justify-center hidden">
                     <div class="text-center text-white">
-                        <h4 class="text-2xl font-bold mb-2">Oyun Bitti!</h4>
-                        <p class="text-lg mb-4">Skor: <span id="final-score">0</span></p>
+                        <h4 class="text-2xl font-bold mb-2">{{ __('front.game_over') }}</h4>
+                        <p class="text-lg mb-4">{{ __('front.score') }}: <span id="final-score">0</span></p>
                         <button onclick="restartTetris()" class="px-6 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors">
-                            Tekrar Oyna
+                            {{ __('front.play_again') }}
                         </button>
                     </div>
                 </div>
@@ -40,24 +40,24 @@
                 <!-- Pause Overlay -->
                 <div id="game-paused" class="absolute inset-0 bg-black/60 rounded-lg items-center justify-center hidden">
                     <div class="text-center text-white">
-                        <h4 class="text-xl font-bold mb-2">Oyun Duraklatıldı</h4>
-                        <p class="text-sm opacity-75">Devam etmek için ENTER tuşuna basın</p>
+                        <h4 class="text-xl font-bold mb-2">{{ __('front.game_paused') }}</h4>
+                        <p class="text-sm opacity-75">{{ __('front.press_enter_to_continue') }}</p>
                     </div>
                 </div>
             </div>
             
             <!-- Next Piece Preview -->
             <div>
-                <div class="text-white text-sm mb-2 opacity-90 font-semibold text-center">Sonraki:</div>
+                <div class="text-white text-sm mb-2 opacity-90 font-semibold text-center">{{ __('front.next') }}:</div>
                 <canvas id="next-piece" width="100" height="100" class="bg-black/30 border-2 border-white/30 rounded-lg shadow-lg"></canvas>
             </div>
         </div>
 
         <!-- Controls -->
         <div class="mt-6 text-center text-white/60 text-xs">
-            <div class="mb-1">← → Hareket | ↓ Hızlandır | ↑ Döndür | SPACE Düşür</div>
-            <div class="mb-1">ENTER Duraklat | R Yeniden Başlat</div>
-            <div class="opacity-75">Kesikli çizgi: Taşın düşeceği yer | 0.5sn ek yerleştirme süresi</div>
+            <div class="mb-1">{{ __('front.controls_move') }}</div>
+            <div class="mb-1">{{ __('front.controls_pause') }}</div>
+            <div class="opacity-75">{{ __('front.controls_info') }}</div>
         </div>
     </div>
 </div>

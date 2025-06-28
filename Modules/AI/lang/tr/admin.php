@@ -1,18 +1,9 @@
 <?php
 
 return [
-    // Admin Panel Temel
-    'module_management' => 'AI Yönetimi',
+    // Sadece blade dosyalarında kullanılan anahtarlar
     'title' => 'Yapay Zeka',
-    'ai_operations' => 'AI İşlemleri',
-    'ai_settings' => 'AI Ayarları',
-    
-    // Admin Konuşma Yönetimi
-    'all_conversations' => 'Tüm Konuşmalar',
-    'my_conversations' => 'Konuşmalarım',
-    'conversation_management' => 'Konuşma Yönetimi',
     'search_placeholder' => 'Ara...',
-    'loading' => 'Güncelleniyor...',
     'actions' => 'İşlemler',
     'edit' => 'Düzenle',
     'delete' => 'Sil',
@@ -21,14 +12,42 @@ return [
     'creation' => 'Oluşturma',
     'date_format' => 'd.m.Y H:i',
     'token' => 'token',
-    
-    // Admin Ayarlar
+    'all_conversations' => 'Tüm Konuşmalar',
+    'my_conversations' => 'Konuşmalarım',
+    'ai_operations' => 'AI İşlemleri',
+    'ai_settings' => 'AI Ayarları',
+    'go_to_ai_assistant' => 'AI Asistana Git',
+    'continue_conversation' => 'Konuşmaya Devam Et',
+    'copy_message' => 'Mesajı Kopyala',
+    'menu' => 'Menü',
+    'artificial_intelligence' => 'Yapay Zeka',
+    'ai_assistant' => 'AI Asistan',
+    'open_ai_assistant' => 'AI Asistanı Aç',
+    'typing' => 'Yazıyor',
+    'retry' => 'Yeniden Dene',
+    'reset_conversation' => 'Konuşmayı Sıfırla',
+    'copy_conversation' => 'Konuşmayı Kopyala',
+    'new_window' => 'Yeni Pencere',
+    'message_placeholder' => 'Mesajınızı yazın...',
+    'close' => 'Kapat',
+    'cancel' => 'İptal',
+    'prompt' => 'Prompt',
+    'new_prompt' => 'Yeni Prompt',
+    'prompt_name' => 'Prompt Adı',
+    'prompt_content' => 'Prompt İçeriği',
+    'system_prompt_content' => 'Sistem prompt içeriğini girin',
+    'default_prompt' => 'Varsayılan Prompt',
+    'default_prompt_info' => 'Bu prompt varsayılan olarak kullanılacak',
+    'common_features_prompt' => 'Ortak Özellikler Prompt\'u',
+    'common_prompt_info' => 'Ortak özellikler için kullanılacak',
+    'update' => 'Güncelle',
+    'save' => 'Kaydet',
     'basic_settings' => 'Temel Ayarlar',
     'common_features' => 'Ortak Özellikler',
     'usage_limits' => 'Kullanım Limitleri',
     'prompt_templates' => 'Prompt Şablonları',
-    'api_key' => 'API Anahtarı',
     'enter_api_key' => 'API anahtarını girin',
+    'api_key' => 'API Anahtarı',
     'api_key_info' => 'OpenAI API anahtarınızı girin',
     'test_connection' => 'Bağlantı Testi',
     'model' => 'Model',
@@ -38,78 +57,76 @@ return [
     'temperature_info' => 'Yaratıcılık seviyesi (0-1)',
     'active' => 'Aktif',
     'inactive' => 'Pasif',
-    'passive' => 'Pasif',
     'inactive_info' => 'Modül durumu',
     'save_settings' => 'Ayarları Kaydet',
-    'save_limits' => 'Limitleri Kaydet',
-    'save_common_features' => 'Ortak Özellikleri Kaydet',
-    
-    // Admin Prompt Yönetimi
-    'prompt' => 'Prompt',
-    'new_prompt' => 'Yeni Prompt',
-    'prompt_name' => 'Prompt Adı',
-    'prompt_content' => 'Prompt İçeriği',
-    'system_prompt_content' => 'Sistem prompt içeriğini girin',
-    'default' => 'Varsayılan',
-    'system' => 'Sistem',
-    'default_prompt' => 'Varsayılan Prompt',
-    'default_prompt_info' => 'Bu prompt varsayılan olarak kullanılacak',
-    'common_features_prompt' => 'Ortak Özellikler Prompt\'u',
-    'common_prompt_info' => 'Ortak özellikler için kullanılacak',
     'enter_common_prompt' => 'Ortak prompt\'u girin',
     'common_features_usage_info' => 'Ortak özellikler kullanım bilgisi',
     'system_protected_info' => 'Sistem korumalı bilgi',
-    'cancel' => 'İptal',
-    'update' => 'Güncelle',
-    'save' => 'Kaydet',
-    
-    // Admin Limit Ayarları
+    'save_common_features' => 'Ortak Özellikleri Kaydet',
     'daily_limit' => 'Günlük Limit',
     'daily_limit_info' => 'Günlük kullanım sınırı',
     'monthly_limit' => 'Aylık Limit',
     'monthly_limit_info' => 'Aylık kullanım sınırı',
+    'save_limits' => 'Limitleri Kaydet',
+    'default' => 'Varsayılan',
+    'system' => 'Sistem',
+    'passive' => 'Pasif',
     
-    // Admin Mesajlar
+    'general' => [
+        'you' => 'Siz',
+        'ai' => 'AI',
+    ],
+    
+    'status' => [
+        'warning' => 'Uyarı',
+        'successful' => 'Başarılı',
+    ],
+    
     'success' => [
-        'settings_updated' => 'Ayarlar başarıyla güncellendi',
-        'prompt_created' => 'Prompt başarıyla oluşturuldu',
-        'prompt_updated' => 'Prompt başarıyla güncellendi',
-        'prompt_deleted' => 'Prompt başarıyla silindi',
-        'conversation_deleted' => 'Konuşma başarıyla silindi',
+        'message_copied' => 'Mesaj panoya kopyalandı',
+        'conversation_copied' => 'Tüm konuşma panoya kopyalandı',
+        'conversation_reset' => 'Konuşma sıfırlandı',
+        'operation_completed' => 'İşlem tamamlandı',
     ],
     
-    'error' => [
-        'save_failed' => 'Kayıt başarısız',
-        'prompt_not_found' => 'Prompt bulunamadı',
-        'conversation_not_found' => 'Konuşma bulunamadı',
-        'access_denied' => 'Erişim reddedildi',
-    ],
-    
-    // Admin Onay Mesajları
     'confirm' => [
         'delete_prompt' => 'Prompt\'u Sil',
         'delete_prompt_description' => ':name prompt\'unu silmek istediğinizden emin misiniz?',
         'delete_conversation' => 'Konuşmayı silmek istediğinizden emin misiniz?',
-        'reset_settings' => 'Ayarları sıfırlamak istediğinizden emin misiniz?',
+        'reset_conversation' => 'Konuşma geçmişi sıfırlanacak. Emin misiniz?',
     ],
     
-    // Admin Uyarılar
     'warning' => [
         'prompt_system_no_edit' => 'Sistem prompt\'u düzenlenemez',
         'prompt_cannot_delete' => 'Bu prompt silinemez',
-        'api_key_required' => 'API anahtarı gerekli',
-        'connection_failed' => 'Bağlantı başarısız',
     ],
     
-    // Admin Bilgi Mesajları
     'info' => [
-        'no_prompts' => 'Prompt bulunamadı',
-        'no_prompts_description' => 'Henüz prompt eklenmemiş',
-        'no_conversations' => 'Konuşma bulunamadı',
-        'no_conversations_description' => 'Henüz konuşma başlatılmamış',
         'common_prompt_description' => 'Ortak özellikler açıklaması',
         'what_is_this_prompt' => 'Bu prompt nedir?',
         'common_prompt_features' => 'Ortak prompt özellikleri',
-        'common_prompt_features_list' => 'Özellik listesi',
+        'common_prompt_features_list' => [
+            'Otomatik tamamlama',
+            'Hata düzeltme',
+            'Kod önerileri',
+            'Bağlamsal öneriler',
+            'Performans optimizasyonu'
+        ],
+        'greeting' => 'Merhaba! Size nasıl yardımcı olabilirim?',
+        'no_conversations' => 'Konuşma bulunamadı',
+        'no_conversations_description' => 'Henüz konuşma başlatılmamış',
+        'no_prompts' => 'Prompt bulunamadı',
+        'no_prompts_description' => 'Henüz prompt eklenmemiş',
+    ],
+    
+    'js' => [
+        'please_enter_message' => 'Lütfen bir mesaj yazın',
+        'copied_title' => 'Kopyalandı',
+        'server_response_failed' => 'Sunucu yanıtı başarısız',
+        'success_title' => 'Başarılı',
+        'error_title' => 'Hata',
+        'connection_error_occurred' => 'Bağlantı hatası oluştu',
+        'retry_action' => 'Yeniden Dene',
+        'generic_error' => 'Bir hata oluştu',
     ],
 ];

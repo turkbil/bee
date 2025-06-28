@@ -60,7 +60,7 @@ class PageComponent extends Component
             // Eğer ana sayfa ise pasif yapılmasına izin verme
             if ($page->is_homepage && $page->is_active) {
                 $this->dispatch('toast', [
-                    'title' => __('admin::common.warning'),
+                    'title' => __('admin.warning'),
                     'message' => __('page::messages.homepage_cannot_be_deactivated'),
                     'type' => 'warning',
                 ]);
@@ -70,11 +70,11 @@ class PageComponent extends Component
             
             log_activity(
                 $page,
-                $page->is_active ? __('admin::common.activated') : __('admin::common.deactivated')
+                $page->is_active ? __('admin.activated') : __('admin.deactivated')
             );
     
             $this->dispatch('toast', [
-                'title' => __('admin::common.success'),
+                'title' => __('admin.success'),
                 'message' => __($page->is_active ? 'page::messages.page_activated' : 'page::messages.page_deactivated', ['title' => $page->getTranslated('title', app()->getLocale()) ?? $page->getTranslated('title', 'tr')]),
                 'type' => $page->is_active ? 'success' : 'warning',
             ]);

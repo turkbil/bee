@@ -59,7 +59,7 @@
                                     </a>
                                     <button class="dropdown-item text-danger"
                                             wire:click="deleteItem({{ $item->id }})"
-                                            onclick="return confirm('Bu içeriği silmek istediğinize emin misiniz?');">
+                                            onclick="return confirm('{{ __('admin.confirm_delete_message') }}');">
                                         <i class="fas fa-trash me-2"></i> Sil
                                     </button>
                                 </div>

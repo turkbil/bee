@@ -5,14 +5,14 @@
             <div class="row align-items-center">
                 <div class="col">
                     <h2 class="page-title">
-                        {{ $user->name }} - Modül İzinleri
+                        {{ $user->name }} - {{ __('usermanagement::admin.module_permissions') }}
                     </h2>
                 </div>
                 <div class="col-auto ms-auto">
                     <div class="btn-list">
                         <a href="{{ route('admin.usermanagement.index') }}" class="btn btn-outline-primary">
                             <i class="fas fa-arrow-left me-2"></i>
-                            Kullanıcı Listesine Dön
+                            {{ __('usermanagement::admin.back_to_user_list') }}
                         </a>
                     </div>
                 </div>
@@ -24,13 +24,13 @@
             <div class="col-md-4">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Modüller</h3>
+                        <h3 class="card-title">{{ __('usermanagement::admin.modules') }}</h3>
                         <div class="card-actions">
                             <div class="input-icon">
                                 <span class="input-icon-addon">
                                     <i class="fas fa-search"></i>
                                 </span>
-                                <input type="text" wire:model.live.debounce.300ms="search" class="form-control" placeholder="Modül ara...">
+                                <input type="text" wire:model.live.debounce.300ms="search" class="form-control" placeholder="{{ __('usermanagement::admin.search_module') }}">
                             </div>
                         </div>
                     </div>
@@ -51,7 +51,7 @@
                         </a>
                         @empty
                         <div class="list-group-item">
-                            <div class="text-muted">Modül bulunamadı</div>
+                            <div class="text-muted">{{ __('usermanagement::admin.no_module_found') }}</div>
                         </div>
                         @endforelse
                     </div>

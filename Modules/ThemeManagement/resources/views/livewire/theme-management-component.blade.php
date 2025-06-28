@@ -19,7 +19,7 @@
                     wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage"
                     class="position-absolute top-50 start-50 translate-middle text-center"
                     style="width: 100%; max-width: 250px;">
-                    <div class="small text-muted mb-2">{{ __('thememanagement::admin.loading') }}</div>
+                    <div class="small text-muted mb-2">{{ __('admin.loading') }}</div>
                     <div class="progress mb-1">
                         <div class="progress-bar progress-bar-indeterminate"></div>
                     </div>
@@ -98,10 +98,10 @@
                         <div class="mt-4 d-flex justify-content-between align-items-center">
                             <div>
                                 @if($theme->is_default)
-                                <span class="badge bg-green">{{ __('thememanagement::admin.default') }}</span>
+                                <span class="badge bg-green">{{ __('admin.default') }}</span>
                                 @endif
                                 <span class="badge {{ $theme->is_active ? 'bg-blue' : 'bg-red' }}">
-                                    {{ $theme->is_active ? __('thememanagement::admin.active') : __('thememanagement::admin.inactive') }}
+                                    {{ $theme->is_active ? __('admin.active') : __('admin.inactive') }}
                                 </span>
                             </div>
                             <div class="dropdown">
@@ -110,7 +110,7 @@
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-end">
                                     <a href="{{ route('admin.thememanagement.manage', $theme->theme_id) }}" class="dropdown-item">
-                                        <i class="fas fa-edit me-2"></i> {{ __('thememanagement::admin.edit') }}
+                                        <i class="fas fa-edit me-2"></i> {{ __('admin.edit') }}
                                     </a>
                                     @if(!$theme->is_default)
                                     <a href="javascript:void(0);" wire:click="setDefault({{ $theme->theme_id }})" class="dropdown-item">
@@ -127,7 +127,7 @@
                                         id: {{ $theme->theme_id }},
                                         title: '{{ $theme->title }}'
                                     })" class="dropdown-item text-danger">
-                                        <i class="fas fa-trash me-2"></i> {{ __('thememanagement::admin.delete') }}
+                                        <i class="fas fa-trash me-2"></i> {{ __('admin.delete') }}
                                     </a>
                                     @else
                                     <a href="javascript:void(0);" class="dropdown-item text-muted" onclick="event.preventDefault();">

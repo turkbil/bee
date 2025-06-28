@@ -57,7 +57,7 @@
 
                         @include('portfolio::admin.partials.image-upload', [
                         'imageKey' => 'image',
-                        'label' => __('admin::common.drag_drop_image')
+                        'label' => __('admin.drag_drop_image')
                         ])
 
                         <div class="mb-3" wire:ignore>

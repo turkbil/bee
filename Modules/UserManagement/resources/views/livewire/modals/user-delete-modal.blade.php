@@ -4,15 +4,15 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Kullanıcıyı Sil</h5>
+                    <h5 class="modal-title">{{ __('usermanagement::admin.delete_user') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Bu kullanıcıyı silmek istediğinize emin misiniz?</p>
+                    <p>{{ __('usermanagement::admin.confirm_delete_user') }}</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
-                    <button type="button" class="btn btn-danger" wire:click="deleteUser">Sil</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('usermanagement::admin.cancel') }}</button>
+                    <button type="button" class="btn btn-danger" wire:click="deleteUser">{{ __('usermanagement::admin.delete') }}</button>
                 </div>
             </div>
         </div>

@@ -1,32 +1,5 @@
 <?php
 
 return [
-    'title' => 'Studio',
-    'studio' => 'Studio',
-    'open_studio' => 'Open Studio',
-    'edit_with_studio' => 'Edit with Studio',
-    'design_mode' => 'Design Mode',
-    'preview' => 'Preview',
-    'view_mode' => 'View Mode',
-    'edit_page' => 'Edit Page',
-    'customize' => 'Customize',
-    'loading' => 'Loading...',
-    'page_editor' => 'Page Editor',
-    'visual_editor' => 'Visual Editor',
-    'content_editor' => 'Content Editor',
-    'design_tools' => 'Design Tools',
-    'layout_options' => 'Layout Options',
-    'style_options' => 'Style Options',
-    'save' => 'Save',
-    'cancel' => 'Cancel',
-    'close' => 'Close',
-    'done' => 'Done',
-    'editing' => 'Editing',
-    'changes_saved' => 'Changes saved',
-    'studio_loading' => 'Studio loading...',
-    'editor_ready' => 'Editor ready',
-    'mobile_friendly' => 'Mobile Friendly',
-    'responsive' => 'Responsive',
-    'interactive' => 'Interactive',
-    'customizable' => 'Customizable',
+    // Frontend çevirileri henüz eklenmedi
 ];

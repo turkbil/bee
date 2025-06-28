@@ -42,7 +42,7 @@
                                     <input type="checkbox" id="is_active" name="is_active" wire:model="inputs.is_active"
                                         value="1" {{ $inputs['is_active'] ? 'checked' : '' }} />
                                     <div class="state p-success p-on ms-2">
-                                        <label>{{ __('thememanagement::admin.active') }}</label>
+                                        <label>{{ __('admin.active') }}</label>
                                     </div>
                                     <div class="state p-danger p-off ms-2">
                                         <label>{{ __('thememanagement::admin.not_active') }}</label>
@@ -55,7 +55,7 @@
                                     <input type="checkbox" id="is_default" name="is_default" wire:model="inputs.is_default"
                                         value="1" {{ $inputs['is_default'] ? 'checked' : '' }} />
                                     <div class="state p-success p-on ms-2">
-                                        <label>{{ __('thememanagement::admin.default_theme') }}</label>
+                                        <label>{{ __('admin.default_theme') }}</label>
                                     </div>
                                     <div class="state p-danger p-off ms-2">
                                         <label>{{ __('thememanagement::admin.not_default') }}</label>

@@ -13,7 +13,7 @@
 @push('module-menu')
 
 <div class="dropdown d-grid d-md-flex module-menu">
-    <a href="#" class="btn dropdown-toggle d-inline-block d-lg-none" data-bs-toggle="dropdown">{{ __('common.menu') }}</a>
+    <a href="#" class="btn dropdown-toggle d-inline-block d-lg-none" data-bs-toggle="dropdown">{{ __('page::admin.menu') }}</a>
     <div class="dropdown-menu dropdown-module-menu">
         <div class="module-menu-revert">
             @hasmoduleaccess('page', 'view')

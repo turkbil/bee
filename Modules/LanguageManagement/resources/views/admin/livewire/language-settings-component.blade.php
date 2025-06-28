@@ -105,7 +105,7 @@
                                 @if($type === 'system')
                                 <div class="dropdown-divider"></div>
                                 <a href="{{ route('admin.languagemanagement.translations') }}" class="dropdown-item">
-                                    <i class="fas fa-edit me-2" style="width: 14px;"></i>{{ __('languagemanagement::admin.edit_translations') }}
+                                    <i class="fas fa-edit me-2" style="width: 14px;"></i>{{ __('admin.edit_translations') }}
                                 </a>
                                 @endif
                             </div>
@@ -136,12 +136,12 @@
                                 </div>
                                 <div class="d-flex gap-1">
                                     @if($type === 'site' && $language->is_default)
-                                        <span class="badge bg-primary">{{ __('languagemanagement::admin.default') }}</span>
+                                        <span class="badge bg-primary">{{ __('admin.default') }}</span>
                                     @endif
                                     @if($language->is_active)
-                                        <span class="badge bg-success-lt">{{ __('languagemanagement::admin.active') }}</span>
+                                        <span class="badge bg-success-lt">{{ __('admin.active') }}</span>
                                     @else
-                                        <span class="badge bg-secondary-lt">{{ __('languagemanagement::admin.inactive') }}</span>
+                                        <span class="badge bg-secondary-lt">{{ __('admin.inactive') }}</span>
                                     @endif
                                 </div>
                             </div>
@@ -230,7 +230,7 @@
                                 
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label class="form-label">{{ __('languagemanagement::admin.default_language') }}</label>
+                                        <label class="form-label">{{ __('admin.default_language') }}</label>
                                         <select wire:model.live="defaultLanguageCode" class="form-select">
                                             @if($availableLanguages && count($availableLanguages) > 0)
                                                 @foreach($availableLanguages as $language)
@@ -244,7 +244,7 @@
                                                 <option value="ar">العربية (AR)</option>
                                             @endif
                                         </select>
-                                        <div class="form-text">{{ __('languagemanagement::admin.default_language_description') }}</div>
+                                        <div class="form-text">{{ __('admin.default_language_description') }}</div>
                                     </div>
                                 </div>
                             </div>
@@ -288,7 +288,7 @@
                             <div class="d-flex gap-2">
                                 <button type="submit" class="btn btn-warning">
                                     <i class="fas fa-save me-1"></i>
-                                    {{ __('languagemanagement::admin.save_settings') }}
+                                    {{ __('admin.save_settings') }}
                                 </button>
                                 <button type="button" wire:click="loadUrlPrefixSettings" class="btn btn-outline-secondary">
                                     <i class="fas fa-undo me-1"></i>

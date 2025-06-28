@@ -1,32 +1,5 @@
 <?php
 
 return [
-    'title' => 'Studio',
-    'studio' => 'Studio',
-    'open_studio' => 'Studio\'yu Aç',
-    'edit_with_studio' => 'Studio ile Düzenle',
-    'design_mode' => 'Tasarım Modu',
-    'preview' => 'Önizleme',
-    'view_mode' => 'Görüntüleme Modu',
-    'edit_page' => 'Sayfayı Düzenle',
-    'customize' => 'Özelleştir',
-    'loading' => 'Yükleniyor...',
-    'page_editor' => 'Sayfa Editörü',
-    'visual_editor' => 'Görsel Editör',
-    'content_editor' => 'İçerik Editörü',
-    'design_tools' => 'Tasarım Araçları',
-    'layout_options' => 'Düzen Seçenekleri',
-    'style_options' => 'Stil Seçenekleri',
-    'save' => 'Kaydet',
-    'cancel' => 'İptal',
-    'close' => 'Kapat',
-    'done' => 'Tamamlandı',
-    'editing' => 'Düzenleniyor',
-    'changes_saved' => 'Değişiklikler kaydedildi',
-    'studio_loading' => 'Studio yükleniyor...',
-    'editor_ready' => 'Editör hazır',
-    'mobile_friendly' => 'Mobil Uyumlu',
-    'responsive' => 'Duyarlı',
-    'interactive' => 'Etkileşimli',
-    'customizable' => 'Özelleştirilebilir',
+    // Frontend çevirileri henüz eklenmedi
 ];

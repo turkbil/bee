@@ -19,7 +19,7 @@
                     wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, selectedItems, selectAll, bulkDelete, bulkToggleActive"
                     class="position-absolute top-50 start-50 translate-middle text-center"
                     style="width: 100%; max-width: 250px;">
-                    <div class="small text-muted mb-2">{{ __('admin::common.updating') }}</div>
+                    <div class="small text-muted mb-2">{{ __('admin.updating') }}</div>
                     <div class="progress mb-1">
                         <div class="progress-bar progress-bar-indeterminate"></div>
                     </div>
@@ -75,7 +75,7 @@
                                 {{ __('page::admin.status') }}
                             </button>
                         </th>
-                        <th class="text-center" style="width: 160px">{{ __('admin::common.actions') }}</th>
+                        <th class="text-center" style="width: 160px">{{ __('admin.actions') }}</th>
                     </tr>
                 </thead>
                 <tbody class="table-tbody">
@@ -153,7 +153,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <a href="{{ route('admin.page.manage', $page->page_id) }}"
-                                            data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('admin::common.edit') }}">
+                                            data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('admin.edit') }}">
                                             <i class="fa-solid fa-pen-to-square link-secondary fa-lg"></i>
                                         </a>
                                     </div>
@@ -177,7 +177,7 @@
                                                     id: {{ $page->page_id }},
                                                     title: '{{ addslashes($page->getTranslated('title', app()->getLocale()) ?? $page->getTranslated('title', 'tr')) }}'
                                                 })" class="dropdown-item link-danger">
-                                                    {{ __('admin::common.delete') }}
+                                                    {{ __('admin.delete') }}
                                                 </a>
                                             </div>
                                         </div>

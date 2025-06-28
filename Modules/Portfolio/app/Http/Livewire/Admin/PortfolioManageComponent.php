@@ -65,9 +65,9 @@ class PortfolioManageComponent extends Component
        'inputs.title.required' => 'portfolio::admin.title_required',
        'inputs.title.min' => 'portfolio::admin.title_min',
        'inputs.title.max' => 'portfolio::admin.title_max',
-       'temporaryImages.*.image' => 'admin::common.file_must_be_image',
-       'temporaryImages.*.mimes' => 'admin::common.image_format_error',
-       'temporaryImages.*.max' => 'admin::common.image_size_error'
+       'temporaryImages.*.image' => 'admin.file_must_be_image',
+       'temporaryImages.*.mimes' => 'admin.image_format_error',
+       'temporaryImages.*.max' => 'admin.image_size_error'
    ];
 
    public function save($redirect = false, $resetForm = false)
@@ -87,8 +87,8 @@ class PortfolioManageComponent extends Component
           
           if ($data == $currentData) {
               $toast = [
-                  'title' => __('admin::common.info'),
-                  'message' => __('admin::common.no_changes'),
+                  'title' => __('admin.info'),
+                  'message' => __('admin.no_changes'),
                   'type' => 'info'
               ];
           } else {
@@ -98,7 +98,7 @@ class PortfolioManageComponent extends Component
               log_activity($portfolio, 'güncellendi');
               
               $toast = [
-                  'title' => __('admin::common.success'),
+                  'title' => __('admin.success'),
                   'message' => __('portfolio::admin.portfolio_updated'),
                   'type' => 'success'
               ];

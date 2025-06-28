@@ -31,7 +31,7 @@
         @endphp
         
         @if($showCancelButton)
-        <a href="{{ $cancelUrl }}" class="btn btn-link text-decoration-none">{{ __('common.cancel') }}</a>
+        <a href="{{ $cancelUrl }}" class="btn btn-link text-decoration-none">{{ __('admin.cancel') }}</a>
         @else
         <div></div>
         @endif
@@ -42,10 +42,10 @@
                 wire:target="save">
                 <span class="d-flex align-items-center">
                     <span class="ms-2" wire:loading.remove wire:target="save(false, false)">
-                        <i class="fa-thin fa-plus me-2"></i> {{ __('common.save_and_continue') }}
+                        <i class="fa-thin fa-plus me-2"></i> {{ __('admin.save_and_continue') }}
                     </span>
                     <span class="ms-2" wire:loading wire:target="save(false, false)">
-                        <i class="fa-duotone fa-solid fa-spinner fa-spin me-2"></i> {{ __('common.save_and_continue') }}
+                        <i class="fa-duotone fa-solid fa-spinner fa-spin me-2"></i> {{ __('admin.save_and_continue') }}
                     </span>
                 </span>
             </button>
@@ -54,10 +54,10 @@
                 wire:target="save">
                 <span class="d-flex align-items-center">
                     <span class="ms-2" wire:loading.remove wire:target="save(false, true)">
-                        <i class="fa-thin fa-plus me-2"></i> {{ __('common.save_and_new') }}
+                        <i class="fa-thin fa-plus me-2"></i> {{ __('admin.save_and_new') }}
                     </span>
                     <span class="ms-2" wire:loading wire:target="save(false, true)">
-                        <i class="fa-duotone fa-solid fa-spinner fa-spin me-2"></i> {{ __('common.save_and_new') }}
+                        <i class="fa-duotone fa-solid fa-spinner fa-spin me-2"></i> {{ __('admin.save_and_new') }}
                     </span>
                 </span>
             </button>
@@ -67,10 +67,10 @@
                 wire:loading.attr="disabled" wire:target="save">
                 <span class="d-flex align-items-center">
                     <span class="ms-2" wire:loading.remove wire:target="save(true, false)">
-                        <i class="fa-thin fa-floppy-disk me-2"></i> {{ __('common.save') }}
+                        <i class="fa-thin fa-floppy-disk me-2"></i> {{ __('admin.save') }}
                     </span>
                     <span class="ms-2" wire:loading wire:target="save(true, false)">
-                        <i class="fa-duotone fa-solid fa-spinner fa-spin me-2"></i> {{ __('common.save') }}
+                        <i class="fa-duotone fa-solid fa-spinner fa-spin me-2"></i> {{ __('admin.save') }}
                     </span>
                 </span>
             </button>

@@ -6,13 +6,13 @@
             <div class="col-md-4">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Modüller</h3>
+                        <h3 class="card-title">{{ __('usermanagement::admin.modules') }}</h3>
                         <div class="card-actions">
                             <div class="input-icon">
                                 <span class="input-icon-addon">
                                     <i class="fas fa-search"></i>
                                 </span>
-                                <input type="text" wire:model.live.debounce.300ms="search" class="form-control" placeholder="Modül ara...">
+                                <input type="text" wire:model.live.debounce.300ms="search" class="form-control" placeholder="{{ __('usermanagement::admin.search_module') }}">
                             </div>
                         </div>
                     </div>
@@ -33,7 +33,7 @@
                         </a>
                         @empty
                         <div class="list-group-item">
-                            <div class="text-muted">Modül bulunamadı</div>
+                            <div class="text-muted">{{ __('usermanagement::admin.no_module_found') }}</div>
                         </div>
                         @endforelse
                     </div>
@@ -48,21 +48,21 @@
                             @if($selectedModuleData)
                             {{ $selectedModuleData->display_name }} İzinleri
                             @else
-                            Modül İzinleri
+                            {{ __('usermanagement::admin.module_permissions') }}
                             @endif
                         </h3>
                         <div>
                             @if($selectedModuleData)
                                 @if($isEditing)
                                 <button type="button" class="btn btn-success me-2" wire:click="save">
-                                    <i class="fas fa-save me-2"></i>Kaydet
+                                    <i class="fas fa-save me-2"></i>{{ __('usermanagement::admin.save') }}
                                 </button>
                                 <button type="button" class="btn btn-secondary" wire:click="toggleEdit">
-                                    <i class="fas fa-times me-2"></i>İptal
+                                    <i class="fas fa-times me-2"></i>{{ __('usermanagement::admin.cancel') }}
                                 </button>
                                 @else
                                 <button type="button" class="btn btn-primary" wire:click="toggleEdit">
-                                    <i class="fas fa-edit me-2"></i>Düzenle
+                                    <i class="fas fa-edit me-2"></i>{{ __('usermanagement::admin.edit') }}
                                 </button>
                                 @endif
                             @endif

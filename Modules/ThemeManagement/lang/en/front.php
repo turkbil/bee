@@ -1,30 +1,5 @@
 <?php
 
 return [
-    'title' => 'Theme',
-    'theme' => 'Theme',
-    'current_theme' => 'Current Theme',
-    'theme_options' => 'Theme Options',
-    'customize' => 'Customize',
-    'appearance' => 'Appearance',
-    'color_scheme' => 'Color Scheme',
-    'dark_mode' => 'Dark Mode',
-    'light_mode' => 'Light Mode',
-    'auto_mode' => 'Auto',
-    'font_size' => 'Font Size',
-    'layout_style' => 'Layout Style',
-    'header_style' => 'Header Style',
-    'footer_style' => 'Footer Style',
-    'sidebar_position' => 'Sidebar Position',
-    'background_color' => 'Background Color',
-    'text_color' => 'Text Color',
-    'link_color' => 'Link Color',
-    'accent_color' => 'Accent Color',
-    'save' => 'Save',
-    'reset' => 'Reset',
-    'preview' => 'Preview',
-    'apply' => 'Apply',
-    'loading' => 'Loading...',
-    'changes_saved' => 'Changes saved',
-    'theme_applied' => 'Theme applied',
+    // Frontend çevirileri henüz eklenmedi
 ];

@@ -19,7 +19,7 @@
                 
                 <div class="card-actions">
                     <a href="{{ route('admin.widgetmanagement.items', $tenantWidgetId) }}" class="btn btn-outline-secondary">
-                        <i class="fas fa-arrow-left me-2"></i> {{ __('common.back') }}
+                        <i class="fas fa-arrow-left me-2"></i> {{ __('admin.back') }}
                     </a>
                 </div>
             </div>

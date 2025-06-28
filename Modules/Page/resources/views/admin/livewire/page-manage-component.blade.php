@@ -29,13 +29,13 @@
                 
                 <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs">
                     <li class="nav-item">
-                        <a href="#tabs-1" class="nav-link active" data-bs-toggle="tab">{{ __('admin::common.basic_info') }}</a>
+                        <a href="#tabs-1" class="nav-link active" data-bs-toggle="tab">{{ __('admin.basic_info') }}</a>
                     </li>
                     <li class="nav-item">
                         <a href="#tabs-2" class="nav-link" data-bs-toggle="tab">{{ __('page::admin.seo') }}</a>
                     </li>
                     <li class="nav-item">
-                        <a href="#tabs-3" class="nav-link" data-bs-toggle="tab">{{ __('admin::common.code_area') }}</a>
+                        <a href="#tabs-3" class="nav-link" data-bs-toggle="tab">{{ __('admin.code_area') }}</a>
                     </li>
                 </ul>
                 
@@ -49,7 +49,7 @@
             </div>
             <div class="card-body">
                 <div class="tab-content">
-                    <!-- {{ __('admin::common.basic_info') }} -->
+                    <!-- {{ __('admin.basic_info') }} -->
                     <div class="tab-pane fade active show" id="tabs-1">
                         <!-- Başlık alanı - Dil bazlı -->
                         <div class="form-floating mb-3">
@@ -164,17 +164,17 @@
                         </div>
                     </div>
 
-                    <!-- {{ __('admin::common.code_area') }} -->
+                    <!-- {{ __('admin.code_area') }} -->
                     <div class="tab-pane fade" id="tabs-3">
                         <div class="form-floating mb-3">
                             <textarea wire:model="inputs.css" class="form-control" data-bs-toggle="autosize"
-                                placeholder="{{ __('admin::common.css_code') }}"></textarea>
-                            <label>{{ __('admin::common.css') }}</label>
+                                placeholder="{{ __('admin.css_code') }}"></textarea>
+                            <label>{{ __('admin.css') }}</label>
                         </div>
                         <div class="form-floating mb-3">
                             <textarea wire:model="inputs.js" class="form-control" data-bs-toggle="autosize"
-                                placeholder="{{ __('admin::common.js_code') }}"></textarea>
-                            <label>{{ __('admin::common.javascript') }}</label>
+                                placeholder="{{ __('admin.js_code') }}"></textarea>
+                            <label>{{ __('admin.javascript') }}</label>
                         </div>
                     </div>
                 </div>

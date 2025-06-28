@@ -5,7 +5,7 @@
         <div class="col-12 col-lg-4">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">{{ $editCategoryId ? 'Kategori Düzenle' : 'Yeni Kategori Ekle' }}</h3>
+                    <h3 class="card-title">{{ $editCategoryId ? __('widgetmanagement::admin.edit_category') : __('widgetmanagement::admin.new_category') }}</h3>
                 </div>
                 <div class="card-body position-relative">
                     
@@ -13,7 +13,7 @@
                         wire:target="saveEdit, quickAdd, cancelEdit"
                         class="position-absolute top-50 start-50 translate-middle text-center"
                         style="width: 100%; max-width: 250px; z-index: 10;">
-                        <div class="small text-muted mb-2">Güncelleniyor...</div>
+                        <div class="small text-muted mb-2">{{ __('widgetmanagement::admin.updating') }}</div>
                         <div class="progress mb-1">
                             <div class="category-progress-bar-indeterminate"></div>
                         </div>
@@ -25,8 +25,8 @@
                                 <input type="text" 
                                     wire:model="editData.title" 
                                     class="form-control @error('editData.title') is-invalid @enderror" 
-                                    placeholder="Kategori başlığı">
-                                <label>Kategori Başlığı</label>
+                                    placeholder="{{ __('widgetmanagement::admin.category_title_placeholder') }}">
+                                <label>{{ __('widgetmanagement::admin.category_title') }}</label>
                                 @error('editData.title')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -34,8 +34,8 @@
                                 <input type="text" 
                                     wire:model="title" 
                                     class="form-control @error('title') is-invalid @enderror" 
-                                    placeholder="Kategori başlığı">
-                                <label>Kategori Başlığı</label>
+                                    placeholder="{{ __('widgetmanagement::admin.category_title_placeholder') }}">
+                                <label>{{ __('widgetmanagement::admin.category_title') }}</label>
                                 @error('title')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -47,8 +47,8 @@
                                 <input type="text" 
                                     wire:model="editData.slug" 
                                     class="form-control @error('editData.slug') is-invalid @enderror"
-                                    placeholder="kategori-slug">
-                                <label>Slug</label>
+                                    placeholder="{{ __('widgetmanagement::admin.category_slug_placeholder') }}">
+                                <label>{{ __('widgetmanagement::admin.slug') }}</label>
                                 @error('editData.slug')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -56,13 +56,13 @@
                                 <input type="text" 
                                     wire:model="slug" 
                                     class="form-control @error('slug') is-invalid @enderror"
-                                    placeholder="kategori-slug">
-                                <label>Slug</label>
+                                    placeholder="{{ __('widgetmanagement::admin.category_slug_placeholder') }}">
+                                <label>{{ __('widgetmanagement::admin.slug') }}</label>
                                 @error('slug')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             @endif
-                            <small class="form-hint">Boş bırakırsanız otomatik oluşturulur</small>
+                            <small class="form-hint">{{ __('widgetmanagement::admin.auto_slug_note') }}</small>
                         </div>
                         
                         <div class="form-floating mb-3">
@@ -72,28 +72,28 @@
                                     class="form-control"
                                     data-choices
                                     data-choices-search="{{ count($parentCategories) > 6 ? 'true' : 'false' }}"
-                                    data-choices-placeholder="Üst Kategori Seçin">
-                                    <option value="">Ana Kategori Olarak Ekle</option>
+                                    data-choices-placeholder="{{ __('widgetmanagement::admin.select_parent_category') }}">
+                                    <option value="">{{ __('widgetmanagement::admin.add_as_main_category') }}</option>
                                     @foreach($parentCategories as $parent)
                                         @if($parent->widget_category_id != $editCategoryId)
                                         <option value="{{ $parent->widget_category_id }}">{{ $parent->title }}</option>
                                         @endif
                                     @endforeach
                                 </select>
-                                <label>Üst Kategori</label>
+                                <label>{{ __('widgetmanagement::admin.parent_category') }}</label>
                             @else
                                 <select 
                                     wire:model="parentId" 
                                     class="form-control"
                                     data-choices
                                     data-choices-search="{{ count($parentCategories) > 6 ? 'true' : 'false' }}"
-                                    data-choices-placeholder="Üst Kategori Seçin">
-                                    <option value="">Ana Kategori Olarak Ekle</option>
+                                    data-choices-placeholder="{{ __('widgetmanagement::admin.select_parent_category') }}">
+                                    <option value="">{{ __('widgetmanagement::admin.add_as_main_category') }}</option>
                                     @foreach($parentCategories as $parent)
                                         <option value="{{ $parent->widget_category_id }}">{{ $parent->title }}</option>
                                     @endforeach
                                 </select>
-                                <label>Üst Kategori</label>
+                                <label>{{ __('widgetmanagement::admin.parent_category') }}</label>
                             @endif
                         </div>
                         
@@ -103,15 +103,15 @@
                                     wire:model="editData.description" 
                                     class="form-control" 
                                     rows="3"
-                                    placeholder="Kategori açıklaması"></textarea>
-                                <label>Açıklama</label>
+                                    placeholder="{{ __('widgetmanagement::admin.category_description_placeholder') }}"></textarea>
+                                <label>{{ __('widgetmanagement::admin.description') }}</label>
                             @else
                                 <textarea 
                                     wire:model="description" 
                                     class="form-control" 
                                     rows="3"
-                                    placeholder="Kategori açıklaması"></textarea>
-                                <label>Açıklama</label>
+                                    placeholder="{{ __('widgetmanagement::admin.category_description_placeholder') }}"></textarea>
+                                <label>{{ __('widgetmanagement::admin.description') }}</label>
                             @endif
                         </div>
                         
@@ -132,7 +132,7 @@
                                         placeholder="fa-folder">
                                 @endif
                             </div>
-                            <small class="form-hint">FontAwesome ikon kodu (örn: fa-folder)</small>
+                            <small class="form-hint">{{ __('widgetmanagement::admin.icon_placeholder') }}</small>
                         </div>
                         
                         <div class="mb-3">
@@ -143,10 +143,10 @@
                                     <input type="checkbox" wire:model="is_active" value="1" />
                                 @endif
                                 <div class="state p-success p-on ms-2">
-                                    <label>Aktif</label>
+                                    <label>{{ __('widgetmanagement::admin.active') }}</label>
                                 </div>
                                 <div class="state p-danger p-off ms-2">
-                                    <label>Aktif Değil</label>
+                                    <label>{{ __('widgetmanagement::admin.not_active') }}</label>
                                 </div>
                             </div>
                         </div>
@@ -154,11 +154,11 @@
                         <div class="d-flex justify-content-between">
                             @if($editCategoryId)
                             <button type="button" class="btn btn-outline-secondary" wire:click="cancelEdit">
-                                <i class="fas fa-times me-1"></i> İptal
+                                <i class="fas fa-times me-1"></i> {{ __('widgetmanagement::admin.cancel') }}
                             </button>
                             @endif
                             <button type="submit" class="btn btn-primary ms-auto" wire:loading.attr="disabled">
-                                <i class="fas fa-save me-1"></i> {{ $editCategoryId ? 'Güncelle' : 'Ekle' }}
+                                <i class="fas fa-save me-1"></i> {{ $editCategoryId ? __('widgetmanagement::admin.update') : __('widgetmanagement::admin.add') }}
                             </button>
                         </div>
                     </form>
@@ -172,7 +172,7 @@
                 <div class="card-header">
                     <div class="row align-items-center">
                         <div class="col">
-                            <h3 class="card-title">Kategoriler</h3>
+                            <h3 class="card-title">{{ __('widgetmanagement::admin.categories') }}</h3>
                         </div>
                         <div class="col-auto">
                             <div class="input-icon">
@@ -180,7 +180,7 @@
                                     <i class="fas fa-search"></i>
                                 </span>
                                 <input type="text" wire:model.live.debounce.300ms="search" class="form-control"
-                                    placeholder="Aramak için yazmaya başlayın...">
+                                    placeholder="{{ __('widgetmanagement::admin.search_placeholder') }}">
                             </div>
                         </div>
                     </div>
@@ -192,7 +192,7 @@
                         wire:target="loadCategories, toggleActive, delete, updatedSearch, updateOrder"
                         class="position-absolute top-50 start-50 translate-middle text-center"
                         style="width: 100%; max-width: 250px; z-index: 10;">
-                        <div class="small text-muted mb-2">Güncelleniyor...</div>
+                        <div class="small text-muted mb-2">{{ __('widgetmanagement::admin.updating') }}</div>
                         <div class="progress mb-1">
                             <div class="category-progress-bar-indeterminate"></div>
                         </div>
@@ -234,7 +234,7 @@
                                                                 <button wire:click="toggleActive({{ $category->widget_category_id }})"
                                                                     class="btn btn-icon btn-sm {{ $category->is_active ? 'text-muted bg-transparent' : 'text-red bg-transparent' }}"
                                                                     data-bs-toggle="tooltip" data-bs-placement="top" 
-                                                                    title="{{ $category->is_active ? 'Deaktive Et' : 'Aktive Et' }}">
+                                                                    title="{{ $category->is_active ? __('widgetmanagement::admin.deactivate') : __('widgetmanagement::admin.activate') }}">
                                                                     
                                                                     <div wire:loading wire:target="toggleActive({{ $category->widget_category_id }})"
                                                                         class="spinner-border spinner-border-sm">
@@ -251,7 +251,7 @@
                                                             </div>
                                                             <div class="col">
                                                                 <a href="javascript:void(0);" wire:click="startEdit({{ $category->widget_category_id }})" 
-                                                                   data-bs-toggle="tooltip" data-bs-placement="top" title="Düzenle">
+                                                                   data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('widgetmanagement::admin.edit') }}">
                                                                     <i class="fa-solid fa-pen-to-square link-secondary fa-lg"></i>
                                                                 </a>
                                                             </div>
@@ -264,7 +264,7 @@
                                                                     <div class="dropdown-menu dropdown-menu-end">
                                                                         <a href="javascript:void(0);" wire:click="delete({{ $category->widget_category_id }})" 
                                                                            class="dropdown-item link-danger">
-                                                                            <i class="fas fa-trash me-2"></i> Sil
+                                                                            <i class="fas fa-trash me-2"></i> {{ __('widgetmanagement::admin.delete') }}
                                                                         </a>
                                                                     </div>
                                                                 </div>
@@ -313,7 +313,7 @@
                                                                         <button wire:click="toggleActive({{ $child->widget_category_id }})"
                                                                             class="btn btn-icon btn-sm {{ $child->is_active ? 'text-muted bg-transparent' : 'text-red bg-transparent' }}"
                                                                             data-bs-toggle="tooltip" data-bs-placement="top" 
-                                                                            title="{{ $child->is_active ? 'Deaktive Et' : 'Aktive Et' }}">
+                                                                            title="{{ $child->is_active ? __('widgetmanagement::admin.deactivate') : __('widgetmanagement::admin.activate') }}">
                                                                             
                                                                             <div wire:loading wire:target="toggleActive({{ $child->widget_category_id }})"
                                                                                 class="spinner-border spinner-border-sm">
@@ -330,7 +330,7 @@
                                                                     </div>
                                                                     <div class="col">
                                                                         <a href="javascript:void(0);" wire:click="startEdit({{ $child->widget_category_id }})" 
-                                                                           data-bs-toggle="tooltip" data-bs-placement="top" title="Düzenle">
+                                                                           data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('widgetmanagement::admin.edit') }}">
                                                                             <i class="fa-solid fa-pen-to-square link-secondary fa-lg"></i>
                                                                         </a>
                                                                     </div>
@@ -343,7 +343,7 @@
                                                                             <div class="dropdown-menu dropdown-menu-end">
                                                                                 <a href="javascript:void(0);" wire:click="delete({{ $child->widget_category_id }})" 
                                                                                    class="dropdown-item link-danger">
-                                                                                    <i class="fas fa-trash me-2"></i> Sil
+                                                                                    <i class="fas fa-trash me-2"></i> {{ __('widgetmanagement::admin.delete') }}
                                                                                 </a>
                                                                             </div>
                                                                         </div>
@@ -363,18 +363,18 @@
                                         <div class="empty-img">
                                             <i class="fas fa-folder-open fa-4x text-muted"></i>
                                         </div>
-                                        <p class="empty-title mt-2">Kategori bulunamadı</p>
+                                        <p class="empty-title mt-2">{{ __('widgetmanagement::admin.category_not_found') }}</p>
                                         <p class="empty-subtitle text-muted">
                                             @if(!empty($search))
-                                                Arama kriterinize uygun kategori bulunamadı.
+                                                {{ __('widgetmanagement::admin.no_category_match') }}
                                             @else
-                                                Henüz kategori eklenmemiş. Sol taraftaki formu kullanarak yeni bir kategori ekleyebilirsiniz.
+                                                {{ __('widgetmanagement::admin.no_category_yet') }}
                                             @endif
                                         </p>
                                         @if(!empty($search))
                                             <div class="empty-action">
                                                 <button wire:click="$set('search', '')" class="btn btn-primary">
-                                                    <i class="fas fa-times me-1"></i> Aramayı Temizle
+                                                    <i class="fas fa-times me-1"></i> {{ __('widgetmanagement::admin.clear_search') }}
                                                 </button>
                                             </div>
                                         @endif

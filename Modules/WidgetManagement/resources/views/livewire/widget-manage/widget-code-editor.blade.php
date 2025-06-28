@@ -8,46 +8,46 @@
                     <div class="card-body py-3">
                         <div class="d-flex align-items-center justify-content-between">
                             <div class="d-flex align-items-center">
-                                <h3 class="mb-0 me-4">{{ $widget['name'] }} - Kod Editörü</h3>
+                                <h3 class="mb-0 me-4">{{ $widget['name'] }} {{ __('widgetmanagement::admin.code_editor_title') }}</h3>
                                 <span class="badge fs-6 px-3 py-2">{{ ucfirst($widget['type']) }}</span>
                             </div>
                             <div class="d-flex gap-2">
                                 <a href="{{ route('admin.widgetmanagement.manage', $widgetId) }}" class="btn btn-outline-secondary">
                                     <i class="fas fa-arrow-left me-2"></i>
-                                    Geri Dön
+                                    {{ __('widgetmanagement::admin.back') }}
                                 </a>
                                 <a href="{{ route('admin.widgetmanagement.form-builder.edit', ['widgetId' => $widgetId, 'schemaType' => 'settings']) }}" 
                                    class="btn btn-outline-info" target="_blank">
                                     <i class="fas fa-sliders-h me-2"></i>
-                                    Özelleştirme Ayarları
+                                    {{ __('widgetmanagement::admin.customization_settings') }}
                                 </a>
                                 @if($widget['has_items'])
                                 <a href="{{ route('admin.widgetmanagement.form-builder.edit', ['widgetId' => $widgetId, 'schemaType' => 'items']) }}" 
                                    class="btn btn-outline-info" target="_blank">
                                     <i class="fas fa-list me-2"></i>
-                                    İçerik Ayarları
+                                    {{ __('widgetmanagement::admin.content_settings') }}
                                 </a>
                                 @endif
                                 <a href="{{ route('admin.widgetmanagement.preview.template', $widgetId) }}" 
                                    class="btn btn-outline-info" target="_blank">
                                     <i class="fas fa-eye me-2"></i>
-                                    Önizleme
+                                    {{ __('widgetmanagement::admin.preview') }}
                                 </a>
 
-                                {{-- Kodu Kaydet Butonu Başlangıcı --}}
+                                {{-- {{ __('widgetmanagement::admin.save_code') }} Butonu Başlangıcı --}}
                                         <div class="d-flex justify-content-end align-items-center ms-2"> {{-- ms-2 eklendi --}}
                                             <button type="submit" class="btn btn-primary" wire:loading.attr="disabled" wire:target="save" form="widget-form">
                                                 <span wire:loading.remove wire:target="save">
                                                     <i class="fas fa-save me-2"></i>
-                                                    Kodu Kaydet
+                                                    {{ __('widgetmanagement::admin.save_code') }}
                                                 </span>
                                                 <span wire:loading wire:target="save">
                                                     <i class="fas fa-spinner fa-spin me-2"></i>
-                                                    Kaydediliyor...
+                                                    {{ __('widgetmanagement::admin.saving') }}
                                                 </span>
                                             </button>
                                         </div>
-                                {{-- Kodu Kaydet Butonu Sonu --}}
+                                {{-- {{ __('widgetmanagement::admin.save_code') }} Butonu Sonu --}}
                             </div>
                         </div>
                     </div>
@@ -64,43 +64,43 @@
                                 <li class="nav-item">
                                     <a href="#html-pane" class="nav-link active" data-bs-toggle="tab">
                                         <i class="fab fa-html5 me-2"></i>
-                                        HTML
+                                        {{ __('widgetmanagement::admin.html') }}
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="#css-pane" class="nav-link" data-bs-toggle="tab">
                                         <i class="fab fa-css3-alt me-2"></i>
-                                        CSS
+                                        {{ __('widgetmanagement::admin.css') }}
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="#js-pane" class="nav-link" data-bs-toggle="tab">
                                         <i class="fab fa-js-square me-2"></i>
-                                        JavaScript
+                                        {{ __('widgetmanagement::admin.javascript') }}
                                     </a>
                                 </li>
                                 <li class="nav-item ms-auto">
-                                    <a href="#" class="nav-link" title="Kodu Formatla" onclick="editorActions.formatCode(); return false;">
+                                    <a href="#" class="nav-link" title="{{ __('widgetmanagement::admin.format_code') }}" onclick="editorActions.formatCode(); return false;">
                                         <i class="fas fa-indent"></i>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#" class="nav-link" title="Bul/Değiştir" onclick="editorActions.openFind(); return false;">
+                                    <a href="#" class="nav-link" title="{{ __('widgetmanagement::admin.find_replace') }}" onclick="editorActions.openFind(); return false;">
                                         <i class="fas fa-search"></i>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#" class="nav-link" title="Tümünü Katla" onclick="editorActions.toggleFoldAll(); return false;">
+                                    <a href="#" class="nav-link" title="{{ __('widgetmanagement::admin.fold_all') }}" onclick="editorActions.toggleFoldAll(); return false;">
                                         <i class="fas fa-compress-alt"></i>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#" class="nav-link" title="Tema Değiştir" onclick="editorActions.toggleTheme(); return false;">
+                                    <a href="#" class="nav-link" title="{{ __('widgetmanagement::admin.change_theme') }}" onclick="editorActions.toggleTheme(); return false;">
                                         <i class="fas fa-palette"></i>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#" class="nav-link" title="Tam Ekran" onclick="editorActions.toggleFullscreen(); return false;">
+                                    <a href="#" class="nav-link" title="{{ __('widgetmanagement::admin.fullscreen') }}" onclick="editorActions.toggleFullscreen(); return false;">
                                         <i class="fas fa-expand" id="fullscreen-icon"></i>
                                     </a>
                                 </li>
@@ -138,7 +138,7 @@
                 <div class="card-header">
                     <h3 class="card-title">
                         <i class="fas fa-file-code me-2"></i>
-                        Harici Dosyalar
+                        {{ __('widgetmanagement::admin.external_files') }}
                     </h3>
                 </div>
                 <div class="card-body">
@@ -149,7 +149,7 @@
                                     <div class="d-flex justify-content-between align-items-center">
                                         <h4 class="card-title mb-0">
                                             <i class="fab fa-css3-alt me-2"></i>
-                                            CSS Dosyaları
+                                            {{ __('widgetmanagement::admin.css_files') }}
                                         </h4>
                                         <button type="button" class="btn btn-sm btn-primary" wire:click.prevent="addCssFile">
                                             <i class="fas fa-plus"></i>
@@ -160,7 +160,7 @@
                                     @if(empty($widget['css_files']) || count($widget['css_files']) === 0)
                                     <div class="text-center py-3 ">
                                         <i class="fab fa-css3-alt fa-2x mb-2"></i>
-                                        <p class="mb-0">Henüz CSS dosyası eklenmedi.</p>
+                                        <p class="mb-0">{{ __('widgetmanagement::admin.no_css_files_yet') }}</p>
                                     </div>
                                     @else
                                     @foreach($widget['css_files'] as $index => $cssFile)
@@ -187,7 +187,7 @@
                                     <div class="d-flex justify-content-between align-items-center">
                                         <h4 class="card-title mb-0">
                                             <i class="fab fa-js-square me-2"></i>
-                                            JavaScript Dosyaları
+                                            {{ __('widgetmanagement::admin.javascript_files') }}
                                         </h4>
                                         <button type="button" class="btn btn-sm btn-primary" wire:click.prevent="addJsFile">
                                             <i class="fas fa-plus"></i>
@@ -198,7 +198,7 @@
                                     @if(empty($widget['js_files']) || count($widget['js_files']) === 0)
                                     <div class="text-center py-3 ">
                                         <i class="fab fa-js-square fa-2x mb-2"></i>
-                                        <p class="mb-0">Henüz JavaScript dosyası eklenmedi.</p>
+                                        <p class="mb-0">{{ __('widgetmanagement::admin.no_js_files_yet') }}</p>
                                     </div>
                                     @else
                                     @foreach($widget['js_files'] as $index => $jsFile)
@@ -237,7 +237,7 @@
                     <div class="card-header">
                         <h4 class="card-title mb-0">
                             <i class="fas fa-sliders-h me-2"></i>
-                            Özelleştirme Değişkenleri
+                            {{ __('widgetmanagement::admin.customization_variables') }}
                         </h4>
                     </div>
                     <div class="card-body">
@@ -264,7 +264,7 @@
                     <div class="card-header">
                         <h4 class="card-title mb-0">
                             <i class="fas fa-layer-group me-2"></i>
-                            İçerik Değişkenleri
+                            {{ __('widgetmanagement::admin.content_variables') }}
                         </h4>
                     </div>
                     <div class="card-body">
@@ -290,7 +290,7 @@
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h4 class="card-title mb-0">
                             <i class="fas fa-magic me-2"></i>
-                            Handlebars Döngüleri
+                            {{ __('widgetmanagement::admin.handlebars_loops') }}
                         </h4>
                         <button type="button" class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#handlebarsModal">
                             <i class="fas fa-info-circle"></i>
@@ -303,37 +303,37 @@
                                     <td class="variable-code" data-copy="&#123;&#123;#each items&#125;&#125;" style="width: 60%;">
                                         <code class="copyable-code">&#123;&#123;#each items&#125;&#125;</code>
                                     </td>
-                                    <td class="" style="width: 40%;">Döngü başlat</td>
+                                    <td class="" style="width: 40%;">{{ __('widgetmanagement::admin.loop_start') }}</td>
                                 </tr>
                                 <tr>
                                     <td class="variable-code" data-copy="&#123;&#123;/each&#125;&#125;" style="width: 60%;">
                                         <code class="copyable-code">&#123;&#123;/each&#125;&#125;</code>
                                     </td>
-                                    <td class="" style="width: 40%;">Döngü bitir</td>
+                                    <td class="" style="width: 40%;">{{ __('widgetmanagement::admin.loop_end') }}</td>
                                 </tr>
                                 <tr>
                                     <td class="variable-code" data-copy="&#123;&#123;@index&#125;&#125;" style="width: 60%;">
                                         <code class="copyable-code">&#123;&#123;@index&#125;&#125;</code>
                                     </td>
-                                    <td class="" style="width: 40%;">Sıra numarası</td>
+                                    <td class="" style="width: 40%;">{{ __('widgetmanagement::admin.order_number') }}</td>
                                 </tr>
                                 <tr>
                                     <td class="variable-code" data-copy="&#123;&#123;@first&#125;&#125;" style="width: 60%;">
                                         <code class="copyable-code">&#123;&#123;@first&#125;&#125;</code>
                                     </td>
-                                    <td class="" style="width: 40%;">İlk eleman</td>
+                                    <td class="" style="width: 40%;">{{ __('widgetmanagement::admin.first_element') }}</td>
                                 </tr>
                                 <tr>
                                     <td class="variable-code" data-copy="&#123;&#123;@last&#125;&#125;" style="width: 60%;">
                                         <code class="copyable-code">&#123;&#123;@last&#125;&#125;</code>
                                     </td>
-                                    <td class="" style="width: 40%;">Son eleman</td>
+                                    <td class="" style="width: 40%;">{{ __('widgetmanagement::admin.last_element') }}</td>
                                 </tr>
                                 <tr>
                                     <td class="variable-code" data-copy="&#123;&#123;#if kullanici_aktif&#125;&#125;&#10;&#9;&lt;p&gt;Hoş geldiniz!&lt;/p&gt;&#10;&#123;&#123;else&#125;&#125;&#10;&#9;&lt;p&gt;Lütfen giriş yapın.&lt;/p&gt;&#10;&#123;&#123;/if&#125;&#125;" style="width: 60%;">
                                         <code class="copyable-code">&#123;&#123;#if active&#125;&#125; <br /> ... &#123;&#123;else&#125;&#125; ... <br /> &#123;&#123;/if&#125;&#125;</code>
                                     </td>
-                                    <td class="" style="width: 40%;">Koşullu ifade (if/else)</td>
+                                    <td class="" style="width: 40%;">{{ __('widgetmanagement::admin.conditional_expression') }}</td>
                                 </tr>
                             </table>
                         </div>
@@ -347,13 +347,13 @@
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Handlebars Şablon Kullanım Örnekleri</h5>
+                        <h5 class="modal-title">{{ __('widgetmanagement::admin.handlebars_usage_examples') }}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
                         <ul class="nav nav-tabs" id="handlebarsTab" role="tablist">
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="each-tab" data-bs-toggle="tab" data-bs-target="#each-content" type="button" role="tab">Each (Döngü)</button>
+                                <button class="nav-link active" id="each-tab" data-bs-toggle="tab" data-bs-target="#each-content" type="button" role="tab">{{ __('widgetmanagement::admin.each_loop') }}</button>
                             </li>
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="if-tab" data-bs-toggle="tab" data-bs-target="#if-content" type="button" role="tab">If / Else</button>
@@ -373,7 +373,7 @@
                             <div class="tab-pane fade show active" id="each-content" role="tabpanel">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <h6>Kullanım Metodu:</h6>
+                                        <h6>{{ __('widgetmanagement::admin.usage_method') }}</h6>
                                         <pre><code>// Karşılaştırma
     &#123;&#123;#if (eq type "premium")&#125;&#125;
       Premium içerik
@@ -408,7 +408,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <h6>Örnek Çıktı:</h6>
+                                        <h6>{{ __('widgetmanagement::admin.example_output') }}</h6>
                                         <div class="border p-3 ">
                                             <div class="item mb-2">
                                                 <h6>Birinci Başlık</h6>
@@ -432,7 +432,7 @@
                             <div class="tab-pane fade" id="if-content" role="tabpanel">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <h6>Kullanım Metodu:</h6>
+                                        <h6>{{ __('widgetmanagement::admin.usage_method') }}</h6>
                                         <pre><code>// Karşılaştırma
     &#123;&#123;#if (eq type "premium")&#125;&#125;
       Premium içerik
@@ -464,7 +464,7 @@
     &#123;&#123;myCustomHelper "parametre"&#125;&#125;</code></pre>
                                     </div>
                                     <div class="col-md-6">
-                                        <h6>Örnek Çıktı:</h6>
+                                        <h6>{{ __('widgetmanagement::admin.example_output') }}</h6>
                                         <div class="border p-3  mb-3">
                                             <div class=" p-2 ">
                                                 <h5>Widget Başlığı</h5>
@@ -488,7 +488,7 @@
                             <div class="tab-pane fade" id="unless-content" role="tabpanel">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <h6>Kullanım Metodu:</h6>
+                                        <h6>{{ __('widgetmanagement::admin.usage_method') }}</h6>
                                         <pre><code>&#123;&#123;#unless isHidden&#125;&#125;
       &lt;div class="content"&gt;
         &lt;p&gt;Bu içerik görünür durumdadır.&lt;/p&gt;
@@ -503,7 +503,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <h6>Örnek Çıktı:</h6>
+                                        <h6>{{ __('widgetmanagement::admin.example_output') }}</h6>
                                         <div class="border p-3  mb-3">
                                             <h6>Koşul: isHidden = false</h6>
                                             <div class=" p-2 ">
@@ -527,7 +527,7 @@
                             <div class="tab-pane fade" id="with-content" role="tabpanel">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <h6>Kullanım Metodu:</h6>
+                                        <h6>{{ __('widgetmanagement::admin.usage_method') }}</h6>
                                         <pre><code>&#123;&#123;#with user&#125;&#125;
       &lt;div class="user-card"&gt;
         &lt;h3&gt;&#123;&#123;name&#125;&#125;&lt;/h3&gt;
@@ -544,7 +544,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <h6>Örnek Çıktı:</h6>
+                                        <h6>{{ __('widgetmanagement::admin.example_output') }}</h6>
                                         <div class="border p-3 ">
                                             <div class="user-card">
                                                 <h5>Ahmet Yılmaz</h5>
@@ -607,7 +607,7 @@
     &#123;&#123;myCustomHelper "parametre"&#125;&#125;</code></pre>
                                     </div>
                                     <div class="col-md-6">
-                                        <h6>Örnek Çıktı:</h6>
+                                        <h6>{{ __('widgetmanagement::admin.example_output') }}</h6>
                                         <div class="border p-3  mb-3">
                                             <div class="premium-content">
                                                 <span class="badge">Premium</span>
@@ -632,9 +632,9 @@
                     </div>
                     <div class="modal-footer">
                         <a href="https://handlebarsjs.com/guide/" target="_blank" class="btn btn-sm btn-outline-secondary me-auto">
-                            <i class="fas fa-external-link-alt me-1"></i> Handlebars Dokümantasyon
+                            <i class="fas fa-external-link-alt me-1"></i> {{ __('widgetmanagement::admin.handlebars_documentation') }}
                         </a>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('widgetmanagement::admin.close') }}</button>
                     </div>
                 </div>
             </div>
@@ -710,7 +710,7 @@
 
             const feedback = document.createElement('div');
             feedback.className = 'copy-feedback';
-            feedback.textContent = 'Kopyalandı!';
+            feedback.textContent = '{{ __('widgetmanagement::admin.copied') }}';
             element.appendChild(feedback);
             
             setTimeout(() => {

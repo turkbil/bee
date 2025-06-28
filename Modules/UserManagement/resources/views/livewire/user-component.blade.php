@@ -10,7 +10,7 @@
                         <i class="fas fa-search"></i>
                     </span>
                     <input type="text" wire:model.live="search" class="form-control"
-                        placeholder="{{ __('usermanagement::general.search_name_email') }}">
+                        placeholder="{{ __('usermanagement::admin.search_name_email') }}">
                 </div>
             </div>
             <!-- Ortadaki Loading -->
@@ -19,7 +19,7 @@
                     wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, roleFilter, statusFilter, viewType, deleteUser, toggleActive"
                     class="position-absolute top-50 start-50 translate-middle text-center"
                     style="width: 100%; max-width: 250px; z-index: 10;">
-                    <div class="small text-muted mb-2">{{ __('usermanagement::general.updating') }}</div>
+                    <div class="small text-muted mb-2">{{ __('usermanagement::admin.updating') }}</div>
                     <div class="progress mb-1">
                         <div class="progress-bar progress-bar-indeterminate"></div>
                     </div>
@@ -34,7 +34,7 @@
                                 data-choices 
                                 data-choices-search="false"
                                 data-choices-filter="true">
-                            <option value=""><nobr>{{ __('usermanagement::general.all_roles') }}</nobr></option>
+                            <option value=""><nobr>{{ __('usermanagement::admin.all_roles') }}</nobr></option>
                             @foreach($roles as $role)
                             <option value="{{ $role->id }}"><nobr>{{ $role->name }}</nobr></option>
                             @endforeach
@@ -44,12 +44,12 @@
                     <div class="btn-group">
                         <button type="button"
                             class="btn {{ $viewType == 'grid' ? 'btn-secondary' : 'btn-outline-secondary' }}"
-                            wire:click="$set('viewType', 'grid')" title="{{ __('usermanagement::general.grid_view') }}">
+                            wire:click="$set('viewType', 'grid')" title="{{ __('usermanagement::admin.grid_view') }}">
                             <i class="fas fa-th-large"></i>
                         </button>
                         <button type="button"
                             class="btn {{ $viewType == 'list' ? 'btn-secondary' : 'btn-outline-secondary' }}"
-                            wire:click="$set('viewType', 'list')" title="{{ __('usermanagement::general.list_view') }}">
+                            wire:click="$set('viewType', 'list')" title="{{ __('usermanagement::admin.list_view') }}">
                             <i class="fas fa-list"></i>
                         </button>
                     </div>
@@ -92,7 +92,7 @@
                                 @endforeach
                             @endif
                             <span class="badge mt-2 {{ $user->is_active ? 'bg-green-lt' : 'bg-red-lt' }}">
-                                {{ $user->is_active ? __('usermanagement::general.active') : __('usermanagement::general.passive') }}
+                                {{ $user->is_active ? __('usermanagement::admin.active') : __('usermanagement::admin.passive') }}
                             </span>
                         </div>
                     </div>
@@ -100,13 +100,13 @@
                     <div class="d-flex">
                         <a href="{{ route('admin.usermanagement.manage', $user->id) }}" class="card-btn">
                             <i class="fas fa-edit me-2"></i>
-                            {{ __('usermanagement::general.edit') }}
+                            {{ __('usermanagement::admin.edit') }}
                         </a>
 
                         @if(auth()->user()->isRoot() || !$user->isRoot())
                         <a href="{{ route('admin.usermanagement.user.activity.logs', $user->id) }}" class="card-btn">
                             <i class="fas fa-history me-2"></i>
-                            {{ __('usermanagement::general.records') }}
+                            {{ __('usermanagement::admin.records') }}
                         </a>
                         @endif
 
@@ -114,7 +114,7 @@
                             wire:click="$dispatch('showDeleteModal', { userId: {{ $user->id }}, userName: '{{ $user->name }}' })"
                             class="card-btn text-danger">
                             <i class="fas fa-trash me-2"></i>
-                            {{ __('usermanagement::general.delete') }}
+                            {{ __('usermanagement::admin.delete') }}
                         </a>
                     </div>
                 </div>
@@ -122,9 +122,9 @@
             @empty
             <div class="col-12">
                 <div class="empty">
-                    <p class="empty-title">{{ __('usermanagement::general.no_records') }}</p>
+                    <p class="empty-title">{{ __('usermanagement::admin.no_records') }}</p>
                     <p class="empty-subtitle text-muted">
-                        {{ __('usermanagement::general.no_records_text') }}
+                        {{ __('usermanagement::admin.no_records_text') }}
                     </p>
                 </div>
             </div>
@@ -140,38 +140,38 @@
                             <button
                                 class="table-sort {{ $sortField === 'id' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
                                 wire:click="sortBy('id')">
-                                {{ __('usermanagement::general.id') }}
+                                {{ __('usermanagement::admin.id') }}
                             </button>
                         </th>
                         <th>
                             <button
                                 class="table-sort {{ $sortField === 'name' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
                                 wire:click="sortBy('name')">
-                                {{ __('usermanagement::general.name_surname') }}
+                                {{ __('usermanagement::admin.name_surname') }}
                             </button>
                         </th>
                         <th>
                             <button
                                 class="table-sort {{ $sortField === 'email' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
                                 wire:click="sortBy('email')">
-                                {{ __('usermanagement::general.email_address') }}
+                                {{ __('usermanagement::admin.email_address') }}
                             </button>
                         </th>
                         <th class="text-center" style="width: 80px">
                             <button
                                 class="table-sort {{ $sortField === 'role' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
                                 wire:click="sortBy('role')">
-                                {{ __('usermanagement::general.role') }}
+                                {{ __('usermanagement::admin.role') }}
                             </button>
                         </th>
                         <th class="text-center" style="width: 80px">
                             <button
                                 class="table-sort {{ $sortField === 'is_active' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
                                 wire:click="sortBy('is_active')">
-                                {{ __('usermanagement::general.status') }}
+                                {{ __('usermanagement::admin.status') }}
                             </button>
                         </th>
-                        <th class="text-center" style="width: 160px">{{ __('usermanagement::general.actions') }}</th>
+                        <th class="text-center" style="width: 160px">{{ __('usermanagement::admin.actions') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -207,14 +207,14 @@
                                 <div class="row">
                                     <div class="col">
                                         <a href="{{ route('admin.usermanagement.manage', $user->id) }}" data-bs-toggle="tooltip"
-                                            data-bs-placement="top" title="{{ __('usermanagement::general.edit') }}">
+                                            data-bs-placement="top" title="{{ __('usermanagement::admin.edit') }}">
                                             <i class="fa-solid fa-pen-to-square link-secondary fa-lg"></i>
                                         </a>
                                     </div>
                                     <div class="col">
                                         @if(auth()->user()->isRoot() || !$user->isRoot())
                                         <a href="{{ route('admin.usermanagement.user.activity.logs', $user->id) }}" data-bs-toggle="tooltip"
-                                            data-bs-placement="top" title="{{ __('usermanagement::general.activity_records') }}">
+                                            data-bs-placement="top" title="{{ __('usermanagement::admin.activity_records') }}">
                                             <i class="fa-solid fa-history link-secondary fa-lg"></i>
                                         </a>
                                         @endif
@@ -229,7 +229,7 @@
                                                 <a href="javascript:void(0);"
                                                     wire:click="$dispatch('showDeleteModal', { userId: {{ $user->id }}, userName: '{{ $user->name }}' })"
                                                     class="dropdown-item link-danger">
-                                                    {{ __('usermanagement::general.delete') }}
+                                                    {{ __('usermanagement::admin.delete') }}
                                                 </a>
                                             </div>
                                         </div>
@@ -242,9 +242,9 @@
                     <tr>
                         <td colspan="6">
                             <div class="empty">
-                                <p class="empty-title">{{ __('usermanagement.general.no_records') }}</p>
+                                <p class="empty-title">{{ __('usermanagement::admin.no_records') }}</p>
                                 <p class="empty-subtitle text-muted">
-                                    {{ __('usermanagement.general.no_records_text') }}
+                                    {{ __('usermanagement::admin.no_records_text') }}
                                 </p>
                             </div>
                         </td>

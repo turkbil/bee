@@ -65,7 +65,7 @@
                                 <div class="d-flex align-items-center gap-2">
                                     <button wire:click="toggleActive({{ $category->portfolio_category_id }})"
                                         data-bs-toggle="tooltip" data-bs-placement="top"
-                                        title="{{ $category->is_active ? __('admin::common.make_inactive') : __('admin::common.make_active') }}"
+                                        title="{{ $category->is_active ? __('admin.make_inactive') : __('admin.make_active') }}"
                                         class="btn btn-icon btn-sm {{ $category->is_active ? 'text-muted bg-transparent' : 'text-red bg-transparent' }}">
                                         <!-- Loading Durumu -->
                                         <div wire:loading

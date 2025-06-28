@@ -6,11 +6,11 @@
             <div class="card-header">
                 <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs">
                     <li class="nav-item">
-                        <a href="#tabs-1" class="nav-link active" data-bs-toggle="tab">Temel Bilgiler</a>
+                        <a href="#tabs-1" class="nav-link active" data-bs-toggle="tab">{{ __('usermanagement::admin.basic_info') }}</a>
                     </li>
                     @if($roleId)
                     <li class="nav-item">
-                        <a href="#tabs-2" class="nav-link" data-bs-toggle="tab">İzinler</a>
+                        <a href="#tabs-2" class="nav-link" data-bs-toggle="tab">{{ __('usermanagement::admin.permissions') }}</a>
                     </li>
                     @endif
                 </ul>
@@ -19,7 +19,7 @@
                 <div class="card-actions">
                     <span class="badge {{ $role->isBaseRole() ? 'bg-red' : 'bg-green' }}">
                         <i class="fas {{ $role->isBaseRole() ? 'fa-lock' : 'fa-unlock' }} me-1"></i>
-                        {{ $role->isBaseRole() ? 'Korumalı Rol' : 'Düzenlenebilir' }}
+                        {{ $role->isBaseRole() ? __('usermanagement::admin.protected_role') : __('usermanagement::admin.editable_role') }}
                     </span>
                 </div>
                 @endif
@@ -33,7 +33,7 @@
                                 class="form-control @error('inputs.name') is-invalid @enderror"
                                 placeholder="Rol adı"
                                 {{ $roleId && $role->isBaseRole() ? 'readonly' : '' }}>
-                            <label>Rol Adı</label>
+                            <label>{{ __('usermanagement::admin.role_name') }}</label>
                             @error('inputs.name')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -44,7 +44,7 @@
                                 class="form-control @error('inputs.guard_name') is-invalid @enderror"
                                 placeholder="Guard adı"
                                 {{ $roleId && $role->isBaseRole() ? 'readonly' : '' }}>
-                            <label>Guard Name</label>
+                            <label>{{ __('usermanagement::admin.guard_name') }}</label>
                             @error('inputs.guard_name')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -55,7 +55,7 @@
                                 class="form-control @error('inputs.description') is-invalid @enderror" 
                                 data-bs-toggle="autosize"
                                 placeholder="Rol açıklaması"></textarea>
-                            <label>Açıklama</label>
+                            <label>{{ __('usermanagement::admin.description') }}</label>
                             @error('inputs.description')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -68,10 +68,10 @@
                                     value="1" {{ (!isset($inputs['is_active']) || $inputs['is_active']) ? 'checked' : '' }} />
 
                                 <div class="state p-success p-on ms-2">
-                                    <label>Aktif</label>
+                                    <label>{{ __('usermanagement::admin.active') }}</label>
                                 </div>
                                 <div class="state p-danger p-off ms-2">
-                                    <label>Aktif Değil</label>
+                                    <label>{{ __('usermanagement::admin.inactive') }}</label>
                                 </div>
                             </div>
                         </div>

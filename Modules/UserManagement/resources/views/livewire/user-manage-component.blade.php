@@ -8,7 +8,7 @@
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">
-                            <i class="fas fa-user-circle me-2"></i>{{ __('usermanagement::general.user_profile') }}
+                            <i class="fas fa-user-circle me-2"></i>{{ __('usermanagement::admin.user_profile') }}
                         </h3>
                     </div>
                     <div class="card-body">
@@ -18,13 +18,13 @@
                                 @if(isset($temporaryImages['avatar']))
                                     <span class="avatar avatar-xl" style="background-image: url('{{ $temporaryImages['avatar']->temporaryUrl() }}')"></span>
                                     <a class="position-absolute top-0 end-0 bg-danger text-white rounded-circle p-1" style="margin-top: -5px; margin-right: -5px; cursor: pointer;"
-                                       wire:click.prevent="removeImage('avatar')" title="{{ __('usermanagement::general.remove_photo') }}">
+                                       wire:click.prevent="removeImage('avatar')" title="{{ __('usermanagement::admin.remove_photo') }}">
                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="14" height="14" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                                     </a>
                                 @elseif($model && $model->getFirstMedia('avatar'))
                                     <span class="avatar avatar-xl" style="background-image: url('{{ $model->getFirstMediaUrl('avatar') }}')"></span>
                                     <a class="position-absolute top-0 end-0 bg-danger text-white rounded-circle p-1" style="margin-top: -5px; margin-right: -5px; cursor: pointer;"
-                                       wire:click.prevent="removeImage('avatar')" title="{{ __('usermanagement::general.remove_photo') }}">
+                                       wire:click.prevent="removeImage('avatar')" title="{{ __('usermanagement::admin.remove_photo') }}">
                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="14" height="14" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                                     </a>
                                 @else
@@ -36,7 +36,7 @@
                             
                             <div class="mt-3">
                                 <label class="btn btn-outline-primary btn-sm" for="avatar-upload">
-                                    <i class="fas fa-camera me-1"></i> {{ __('usermanagement::general.upload_photo') }}
+                                    <i class="fas fa-camera me-1"></i> {{ __('usermanagement::admin.upload_photo') }}
                                 </label>
                                 <input id="avatar-upload" type="file" wire:model="temporaryImages.avatar" class="d-none" accept="image/jpeg,image/png,image/webp">
                                 
@@ -54,8 +54,8 @@
                         
                         <!-- İsim -->
                         <div class="form-floating mb-3">
-                            <input type="text" wire:model.defer="inputs.name" class="form-control @error('inputs.name') is-invalid @enderror" placeholder="{{ __('usermanagement::general.name_surname') }}">
-                            <label>{{ __('usermanagement::general.name_surname') }} {{ __('usermanagement::general.required') }}</label>
+                            <input type="text" wire:model.defer="inputs.name" class="form-control @error('inputs.name') is-invalid @enderror" placeholder="{{ __('usermanagement::admin.name_surname') }}">
+                            <label>{{ __('usermanagement::admin.name_surname') }} {{ __('usermanagement::admin.required') }}</label>
                             @error('inputs.name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -64,7 +64,7 @@
                         <!-- E-posta -->
                         <div class="form-floating mb-3">
                             <input type="email" wire:model.defer="inputs.email" class="form-control @error('inputs.email') is-invalid @enderror" placeholder="example@mail.com">
-                            <label>{{ __('usermanagement::general.email_address') }} {{ __('usermanagement::general.required') }}</label>
+                            <label>{{ __('usermanagement::admin.email_address') }} {{ __('usermanagement::admin.required') }}</label>
                             @error('inputs.email')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -73,7 +73,7 @@
                         <!-- Şifre -->
                         <div class="form-floating mb-3">
                             <input type="password" wire:model.defer="inputs.password" class="form-control @error('inputs.password') is-invalid @enderror" placeholder="••••••••">
-                            <label>{{ __('usermanagement::general.password') }} {{ $userId ? __('usermanagement::general.change_password_note') : __('usermanagement::general.required') }}</label>
+                            <label>{{ __('usermanagement::admin.password') }} {{ $userId ? __('usermanagement::admin.change_password_note') : __('usermanagement::admin.required') }}</label>
                             @error('inputs.password')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -81,15 +81,15 @@
                         
                         <!-- Durum -->
                         <div class="mb-3">
-                            <label class="form-label d-block">{{ __('usermanagement::general.user_status') }}</label>
+                            <label class="form-label d-block">{{ __('usermanagement::admin.user_status') }}</label>
                             <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
                                 <input type="checkbox" id="is_active" name="is_active" wire:model.defer="inputs.is_active"
                                     value="1" {{ (!isset($inputs['is_active']) || $inputs['is_active']) ? 'checked' : '' }} />
                                 <div class="state p-success p-on ms-2">
-                                    <label>{{ __('usermanagement::general.active') }}</label>
+                                    <label>{{ __('usermanagement::admin.active') }}</label>
                                 </div>
                                 <div class="state p-danger p-off ms-2">
-                                    <label>{{ __('usermanagement::general.inactive') }}</label>
+                                    <label>{{ __('usermanagement::admin.inactive') }}</label>
                                 </div>
                             </div>
                         </div>
@@ -102,7 +102,7 @@
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">
-                            <i class="fas fa-user-shield me-2"></i>{{ __('usermanagement::general.user_role') }}
+                            <i class="fas fa-user-shield me-2"></i>{{ __('usermanagement::admin.user_role') }}
                         </h3>
                     </div>
                     
@@ -125,8 +125,8 @@
                                                 <i class="fas fa-user fa-lg"></i>
                                             </span>
                                             <div>
-                                                <div class="font-weight-medium fs-4">{{ __('usermanagement::general.member') }}</div>
-                                                <div class="text-muted">{{ __('usermanagement::general.normal_user') }}</div>
+                                                <div class="font-weight-medium fs-4">{{ __('usermanagement::admin.member') }}</div>
+                                                <div class="text-muted">{{ __('usermanagement::admin.normal_user') }}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -149,8 +149,8 @@
                                                 <i class="fas fa-user-edit fa-lg"></i>
                                             </span>
                                             <div>
-                                                <div class="font-weight-medium fs-4">{{ __('usermanagement::general.editor') }}</div>
-                                                <div class="text-muted">{{ __('usermanagement::general.content_editor') }}</div>
+                                                <div class="font-weight-medium fs-4">{{ __('usermanagement::admin.editor') }}</div>
+                                                <div class="text-muted">{{ __('usermanagement::admin.content_editor') }}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -173,8 +173,8 @@
                                                 <i class="fas fa-user-cog fa-lg"></i>
                                             </span>
                                             <div>
-                                                <div class="font-weight-medium fs-4">{{ __('usermanagement::general.admin') }}</div>
-                                                <div class="text-muted">{{ __('usermanagement::general.tenant_admin') }}</div>
+                                                <div class="font-weight-medium fs-4">{{ __('usermanagement::admin.admin') }}</div>
+                                                <div class="text-muted">{{ __('usermanagement::admin.tenant_admin') }}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -198,8 +198,8 @@
                                                 <i class="fas fa-crown fa-lg"></i>
                                             </span>
                                             <div>
-                                                <div class="font-weight-medium fs-4">{{ __('usermanagement::general.root') }}</div>
-                                                <div class="text-muted">{{ __('usermanagement::general.super_admin') }}</div>
+                                                <div class="font-weight-medium fs-4">{{ __('usermanagement::admin.root') }}</div>
+                                                <div class="text-muted">{{ __('usermanagement::admin.super_admin') }}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -218,8 +218,8 @@
                                             <i class="fas fa-info-circle fa-2x me-3"></i>
                                         </div>
                                         <div>
-                                            <h4 class="alert-title">{{ __('usermanagement::general.normal_user') }}</h4>
-                                            <p class="mb-0">{{ __('usermanagement::messages.user_role_description') }}</p>
+                                            <h4 class="alert-title">{{ __('usermanagement::admin.normal_user') }}</h4>
+                                            <p class="mb-0">{{ __('usermanagement::admin.user_role_description') }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -233,8 +233,8 @@
                                             <i class="fas fa-info-circle fa-2x me-3"></i>
                                         </div>
                                         <div>
-                                            <h4 class="alert-title">{{ __('usermanagement::general.editor') }}</h4>
-                                            <p class="mb-0">{{ __('usermanagement::messages.editor_role_description') }}</p>
+                                            <h4 class="alert-title">{{ __('usermanagement::admin.editor') }}</h4>
+                                            <p class="mb-0">{{ __('usermanagement::admin.editor_role_description') }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -248,8 +248,8 @@
                                             <i class="fas fa-info-circle fa-2x me-3"></i>
                                         </div>
                                         <div>
-                                            <h4 class="alert-title">{{ __('usermanagement::general.admin') }}</h4>
-                                            <p class="mb-0">{{ __('usermanagement::messages.admin_role_description') }}</p>
+                                            <h4 class="alert-title">{{ __('usermanagement::admin.admin') }}</h4>
+                                            <p class="mb-0">{{ __('usermanagement::admin.admin_role_description') }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -263,8 +263,8 @@
                                             <i class="fas fa-exclamation-triangle fa-2x me-3"></i>
                                         </div>
                                         <div>
-                                            <h4 class="alert-title">{{ __('usermanagement::general.root') }}</h4>
-                                            <p class="mb-0">{{ __('usermanagement::messages.root_role_warning') }}</p>
+                                            <h4 class="alert-title">{{ __('usermanagement::admin.root') }}</h4>
+                                            <p class="mb-0">{{ __('usermanagement::admin.root_role_warning') }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -275,11 +275,11 @@
                         <div id="editorPermissionsSection" style="display: {{ $inputs['role_id'] === 'editor' ? 'block' : 'none' }}">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h4 class="section-title">
-                                    <i class="fas fa-puzzle-piece me-2"></i>{{ __('usermanagement::messages.module_authorization') }}
+                                    <i class="fas fa-puzzle-piece me-2"></i>{{ __('usermanagement::admin.module_authorization') }}
                                 </h4>
                                 <button type="button" wire:click="toggleDetailedPermissions" id="toggleDetailedPermissions" class="btn btn-outline-primary btn-sm">
                                     <i class="fas {{ $showDetailedPermissions ? 'fa-compress-alt' : 'fa-cogs' }} me-1"></i> 
-                                    {{ $showDetailedPermissions ? __('usermanagement::messages.simple_view') : __('usermanagement::messages.detailed_authorization') }}
+                                    {{ $showDetailedPermissions ? __('usermanagement::admin.simple_view') : __('usermanagement::admin.detailed_authorization') }}
                                 </button>
                             </div>
                             

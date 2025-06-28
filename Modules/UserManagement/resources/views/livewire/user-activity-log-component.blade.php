@@ -10,7 +10,7 @@
                         <i class="fas fa-search"></i>
                     </span>
                     <input type="text" wire:model.live.debounce.300ms="search" class="form-control"
-                        placeholder="{{ __('usermanagement::general.search_placeholder') }}">
+                        placeholder="{{ __('usermanagement::admin.search_placeholder') }}">
                 </div>
             </div>
             
@@ -20,7 +20,7 @@
                     wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, confirmDelete, moduleFilter, eventFilter, dateFrom, dateTo, clearFilters, clearUserLogs"
                     class="position-absolute top-50 start-50 translate-middle text-center"
                     style="width: 100%; max-width: 250px;">
-                    <div class="small text-muted mb-2">{{ __('usermanagement::general.updating') }}</div>
+                    <div class="small text-muted mb-2">{{ __('usermanagement::admin.updating') }}</div>
                     <div class="progress mb-1">
                         <div class="progress-bar progress-bar-indeterminate"></div>
                     </div>
@@ -34,9 +34,9 @@
                     <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" 
                         data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
                         <i class="fas fa-filter me-1"></i>
-                        {{ __('usermanagement::general.filters') }}
+                        {{ __('usermanagement::admin.filters') }}
                         @if($search || $moduleFilter || $eventFilter || $dateFrom || $dateTo)
-                        <span class="badge bg-primary ms-1">{{ __('usermanagement::general.filters_active') }}</span>
+                        <span class="badge bg-primary ms-1">{{ __('usermanagement::admin.filters_active') }}</span>
                         @endif
                     </button>
                     
@@ -59,9 +59,9 @@
                 <div class="row g-3">
                     <!-- Modül Filtresi -->
                     <div class="col-md-4">
-                        <label class="form-label">{{ __('usermanagement::general.module') }}</label>
+                        <label class="form-label">{{ __('usermanagement::admin.module') }}</label>
                         <select wire:model.live="moduleFilter" class="form-select">
-                            <option value="">{{ __('usermanagement::general.all_modules') }}</option>
+                            <option value="">{{ __('usermanagement::admin.all_modules') }}</option>
                             @foreach($modules as $module)
                                 <option value="{{ $module }}">{{ $module }}</option>
                             @endforeach
@@ -70,9 +70,9 @@
                     
                     <!-- Eylem Filtresi -->
                     <div class="col-md-4">
-                        <label class="form-label">{{ __('usermanagement::general.action') }}</label>
+                        <label class="form-label">{{ __('usermanagement::admin.action') }}</label>
                         <select wire:model.live="eventFilter" class="form-select">
-                            <option value="">{{ __('usermanagement::general.all_events') }}</option>
+                            <option value="">{{ __('usermanagement::admin.all_events') }}</option>
                             @foreach($events as $event)
                                 <option value="{{ $event }}">{{ $event }}</option>
                             @endforeach
@@ -81,7 +81,7 @@
                     
                     <!-- Sayfa Başına Kayıt -->
                     <div class="col-md-4">
-                        <label class="form-label">{{ __('usermanagement::general.per_page') }}</label>
+                        <label class="form-label">{{ __('usermanagement::admin.per_page') }}</label>
                         <select wire:model.live="perPage" class="form-select">
                             <option value="10">10</option>
                             <option value="25">25</option>
@@ -92,7 +92,7 @@
                     
                     <!-- Tarih Aralığı -->
                     <div class="col-md-4">
-                        <label class="form-label">{{ __('usermanagement::general.start_date') }}</label>
+                        <label class="form-label">{{ __('usermanagement::admin.start_date') }}</label>
                         <div class="input-icon">
                             <span class="input-icon-addon">
                                 <i class="fas fa-calendar-alt"></i>
@@ -102,7 +102,7 @@
                     </div>
                     
                     <div class="col-md-4">
-                        <label class="form-label">{{ __('usermanagement::general.end_date') }}</label>
+                        <label class="form-label">{{ __('usermanagement::admin.end_date') }}</label>
                         <div class="input-icon">
                             <span class="input-icon-addon">
                                 <i class="fas fa-calendar-alt"></i>
@@ -115,7 +115,7 @@
                     <div class="col-md-4 d-flex align-items-end">
                         @if($search || $moduleFilter || $eventFilter || $dateFrom || $dateTo)
                         <button type="button" class="btn btn-outline-secondary" wire:click="clearFilters">
-                            <i class="fas fa-times me-1"></i>{{ __('usermanagement::general.clear_filters') }}
+                            <i class="fas fa-times me-1"></i>{{ __('usermanagement::admin.clear_filters') }}
                         </button>
                         @endif
                     </div>
@@ -125,19 +125,19 @@
                 @if($search || $moduleFilter || $eventFilter || $dateFrom || $dateTo)
                 <div class="d-flex flex-wrap gap-2 mt-3">
                     @if($search)
-                        <span class="badge bg-azure-lt">{{ __('usermanagement::general.search') }}: {{ $search }}</span>
+                        <span class="badge bg-azure-lt">{{ __('usermanagement::admin.search') }}: {{ $search }}</span>
                     @endif
                     @if($moduleFilter)
-                        <span class="badge bg-indigo-lt">{{ __('usermanagement::general.module') }}: {{ $moduleFilter }}</span>
+                        <span class="badge bg-indigo-lt">{{ __('usermanagement::admin.module') }}: {{ $moduleFilter }}</span>
                     @endif
                     @if($eventFilter)
-                        <span class="badge bg-purple-lt">{{ __('usermanagement::general.action') }}: {{ $eventFilter }}</span>
+                        <span class="badge bg-purple-lt">{{ __('usermanagement::admin.action') }}: {{ $eventFilter }}</span>
                     @endif
                     @if($dateFrom)
-                        <span class="badge bg-teal-lt">{{ __('usermanagement::general.start_date') }}: {{ $dateFrom }}</span>
+                        <span class="badge bg-teal-lt">{{ __('usermanagement::admin.start_date') }}: {{ $dateFrom }}</span>
                     @endif
                     @if($dateTo)
-                        <span class="badge bg-cyan-lt">{{ __('usermanagement::general.end_date') }}: {{ $dateTo }}</span>
+                        <span class="badge bg-cyan-lt">{{ __('usermanagement::admin.end_date') }}: {{ $dateTo }}</span>
                     @endif
                 </div>
                 @endif
@@ -146,16 +146,16 @@
         
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h3 class="card-title m-0">
-                <i class="fas fa-history me-2"></i>{{ __('usermanagement::general.user_activity_logs', ['name' => $userName]) }}
+                <i class="fas fa-history me-2"></i>{{ __('usermanagement::admin.user_activity_logs', ['name' => $userName]) }}
             </h3>
             <div class="btn-list">
                 <a href="{{ route('admin.usermanagement.index') }}" class="btn btn-outline-secondary">
-                    <i class="fas fa-arrow-left me-2"></i>{{ __('usermanagement::general.back_to_user_list') }}
+                    <i class="fas fa-arrow-left me-2"></i>{{ __('usermanagement::admin.back_to_user_list') }}
                 </a>
                 
                 @if($isRoot)
                 <button type="button" class="btn btn-outline-danger" wire:click="clearUserLogs">
-                    <i class="fas fa-trash-alt me-2"></i>{{ __('usermanagement::general.clear_all_logs') }}
+                    <i class="fas fa-trash-alt me-2"></i>{{ __('usermanagement::admin.clear_all_logs') }}
                 </button>
                 @endif
             </div>
@@ -204,7 +204,7 @@
                             <div class="row">
                                 <div class="col">
                                     <a href="#" data-bs-toggle="modal" data-bs-target="#details-modal-{{ $log->id }}"
-                                        data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('usermanagement::general.details') }}">
+                                        data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('usermanagement::admin.details') }}">
                                         <i class="fa-solid fa-eye link-secondary fa-lg"></i>
                                     </a>
                                 </div>
@@ -218,7 +218,7 @@
                                         <div class="dropdown-menu dropdown-menu-end">
                                             <a href="javascript:void(0);" wire:click="confirmDelete({{ $log->id }})" 
                                                 class="dropdown-item link-danger">
-                                                {{ __('usermanagement::general.delete') }}
+                                                {{ __('usermanagement::admin.delete') }}
                                             </a>
                                         </div>
                                     </div>
@@ -236,7 +236,7 @@
                             <div class="modal-header">
                                 <h5 class="modal-title">
                                     <i class="fas fa-info-circle text-info me-2"></i>
-                                    {{ __('usermanagement::general.operation_detail', ['id' => $log->id]) }}
+                                    {{ __('usermanagement::admin.operation_detail', ['id' => $log->id]) }}
                                 </h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
@@ -247,7 +247,7 @@
                                         <div class="card">
                                             <div class="card-status-top bg-primary"></div>
                                             <div class="card-header">
-                                                <h3 class="card-title">{{ __('usermanagement::general.general_info') }}</h3>
+                                                <h3 class="card-title">{{ __('usermanagement::admin.general_info') }}</h3>
                                             </div>
                                             <div class="list-group list-group-flush">
                                                 <div class="list-group-item">
@@ -258,19 +258,19 @@
                                                 </div>
                                                 <div class="list-group-item">
                                                     <div class="row">
-                                                        <div class="col-4">{{ __('usermanagement::general.description') }}</div>
+                                                        <div class="col-4">{{ __('usermanagement::admin.description') }}</div>
                                                         <div class="col-8 text-muted">{{ $log->description }}</div>
                                                     </div>
                                                 </div>
                                                 <div class="list-group-item">
                                                     <div class="row">
-                                                        <div class="col-4">{{ __('usermanagement::general.action') }}</div>
+                                                        <div class="col-4">{{ __('usermanagement::admin.action') }}</div>
                                                         <div class="col-8 text-muted">{{ $log->event }}</div>
                                                     </div>
                                                 </div>
                                                 <div class="list-group-item">
                                                     <div class="row">
-                                                        <div class="col-4">{{ __('usermanagement::general.date') }}</div>
+                                                        <div class="col-4">{{ __('usermanagement::admin.date') }}</div>
                                                         <div class="col-8 text-muted">{{ $log->created_at->format('d.m.Y H:i:s') }}</div>
                                                     </div>
                                                 </div>
@@ -283,12 +283,12 @@
                                         <div class="card">
                                             <div class="card-status-top bg-indigo"></div>
                                             <div class="card-header">
-                                                <h3 class="card-title">{{ __('usermanagement::general.object_info') }}</h3>
+                                                <h3 class="card-title">{{ __('usermanagement::admin.object_info') }}</h3>
                                             </div>
                                             <div class="list-group list-group-flush">
                                                 <div class="list-group-item">
                                                     <div class="row">
-                                                        <div class="col-4">{{ __('usermanagement::general.type') }}</div>
+                                                        <div class="col-4">{{ __('usermanagement::admin.type') }}</div>
                                                         <div class="col-8 text-muted">
                                                             {{ $log->subject_type ? class_basename($log->subject_type) : '-' }}
                                                         </div>
@@ -304,7 +304,7 @@
                                                 </div>
                                                 <div class="list-group-item">
                                                     <div class="row">
-                                                        <div class="col-4">{{ __('usermanagement::general.title') }}</div>
+                                                        <div class="col-4">{{ __('usermanagement::admin.title') }}</div>
                                                         <div class="col-8 text-muted">
                                                             {{ $log->properties['baslik'] ?? '-' }}
                                                         </div>
@@ -328,14 +328,14 @@
                                         <div class="card">
                                             <div class="card-status-top bg-purple"></div>
                                             <div class="card-header">
-                                                <h3 class="card-title">{{ __('usermanagement::general.changed_fields') }}</h3>
+                                                <h3 class="card-title">{{ __('usermanagement::admin.changed_fields') }}</h3>
                                             </div>
                                             <div class="table-responsive">
                                                 @if(!is_array($log->properties['degisenler']))
                                                 <table class="table card-table table-vcenter">
                                                     <tbody>
                                                         <tr>
-                                                            <td class="fw-medium">{{ __('usermanagement::general.change') }}</td>
+                                                            <td class="fw-medium">{{ __('usermanagement::admin.change') }}</td>
                                                             <td>{{ $log->properties['degisenler'] }}</td>
                                                         </tr>
                                                     </tbody>
@@ -344,9 +344,9 @@
                                                 <table class="table card-table table-vcenter">
                                                     <thead>
                                                         <tr>
-                                                            <th>{{ __('usermanagement::general.field') }}</th>
-                                                            <th>{{ __('usermanagement::general.old_value') }}</th>
-                                                            <th>{{ __('usermanagement::general.new_value') }}</th>
+                                                            <th>{{ __('usermanagement::admin.field') }}</th>
+                                                            <th>{{ __('usermanagement::admin.old_value') }}</th>
+                                                            <th>{{ __('usermanagement::admin.new_value') }}</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -396,7 +396,7 @@
                                         <div class="card">
                                             <div class="card-status-top bg-yellow"></div>
                                             <div class="card-header">
-                                                <h3 class="card-title">{{ __('usermanagement::general.json_data_summary') }}</h3>
+                                                <h3 class="card-title">{{ __('usermanagement::admin.json_data_summary') }}</h3>
                                             </div>
                                             <div class="table-responsive">
                                                 <table class="table card-table table-vcenter">
@@ -429,7 +429,7 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn" data-bs-dismiss="modal">{{ __('usermanagement::general.close') }}</button>
+                                <button type="button" class="btn" data-bs-dismiss="modal">{{ __('usermanagement::admin.close') }}</button>
                             </div>
                         </div>
                     </div>
@@ -440,13 +440,13 @@
                 <div class="empty-img">
                     <i class="fas fa-search fa-3x text-muted"></i>
                 </div>
-                <p class="empty-title">{{ __('usermanagement::general.no_records') }}</p>
+                <p class="empty-title">{{ __('usermanagement::admin.no_records') }}</p>
                 <p class="empty-subtitle text-muted">
-                    {{ __('usermanagement::general.no_records_text') }}
+                    {{ __('usermanagement::admin.no_records_text') }}
                 </p>
                 <div class="empty-action">
                     <button class="btn btn-primary" wire:click="clearFilters">
-                        <i class="fas fa-times me-2"></i>Filtreleri Temizle
+                        <i class="fas fa-times me-2"></i>{{ __('usermanagement::admin.clear_filters') }}
                     </button>
                 </div>
             </div>

@@ -14,7 +14,7 @@
                 </button>
                 <button type="button" class="btn btn-sm btn-outline-danger px-3 py-1 hover-btn" wire:click="confirmBulkDelete">
                     <i class="fas fa-trash me-2"></i>
-                    <span>{{ __('common.delete') }}</span>
+                    <span>{{ __('admin.delete') }}</span>
                 </button>
             </div>
         </div>

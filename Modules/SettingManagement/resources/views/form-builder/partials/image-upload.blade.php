@@ -20,8 +20,8 @@ x-on:drop="handleDrop($event)">
                     <div class="d-flex flex-column align-items-center justify-content-center p-4">
                         <i class="fa-solid fa-cloud-arrow-up fa-2x mb-2 text-muted"></i>
                         <div class="text-muted">
-                            <span x-show="!isDropping">{{ $label ?? 'Görseli sürükleyip bırakın veya tıklayın' }}</span>
-                            <span x-show="isDropping" class="text-primary">Bırakın!</span>
+                            <span x-show="!isDropping">{{ $label ?? __('admin.drag_drop_image') }}</span>
+                            <span x-show="isDropping" class="text-primary">{{ __('admin.drop_it') }}</span>
                         </div>
                     </div>
                     <input type="file" id="fileInput_image_{{ $imageKey }}"
@@ -54,7 +54,7 @@ x-on:drop="handleDrop($event)">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
                     <img src="{{ $temporaryImages[$imageKey]->temporaryUrl() }}"
-                        class="img-fluid rounded h-100 w-100 object-fit-cover" alt="Yüklenen Fotoğraf">
+                        class="img-fluid rounded h-100 w-100 object-fit-cover" alt="{{ __('admin.uploaded_photo') }}">
                 </div>
                 @elseif (!empty($values[$imageKey]))
                 <div class="position-relative" style="height: 156px;">
@@ -63,7 +63,7 @@ x-on:drop="handleDrop($event)">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
                     <img src="{{ cdn($values[$imageKey]) }}"
-                        class="img-fluid rounded h-100 w-100 object-fit-cover" alt="Mevcut Fotoğraf">
+                        class="img-fluid rounded h-100 w-100 object-fit-cover" alt="{{ __('admin.current_photo') }}">
                 </div>
                 @else
                 <div class="d-flex align-items-center justify-content-center text-muted" style="height: 156px;">

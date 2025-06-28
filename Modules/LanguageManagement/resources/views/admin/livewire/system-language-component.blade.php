@@ -97,19 +97,19 @@
                                         
                                         @if(!in_array(strtolower($language->code), ['tr', 'en']))
                                             <button wire:click="toggleActive({{ $language->id }})" 
-                                                    wire:confirm="Durumu değiştirmek istediğinize emin misiniz?"
+                                                    wire:confirm="{{ __('admin.confirm_status_change') }}"
                                                     class="btn btn-outline-{{ $language->is_active ? 'warning' : 'success' }} btn-sm">
                                                 <i class="fas fa-{{ $language->is_active ? 'pause' : 'play' }} me-1"></i>
-                                                {{ $language->is_active ? 'Pasifle' : 'Aktifle' }}
+                                                {{ $language->is_active ? __('admin.deactivate') : __('admin.activate') }}
                                             </button>
                                         @endif
                                     </div>
                                     
                                     @if(!in_array(strtolower($language->code), ['tr', 'en']))
                                         <button wire:click="delete({{ $language->id }})" 
-                                                wire:confirm="Bu sistem dilini silmek istediğinize emin misiniz?"
+                                                wire:confirm="{{ __('admin.confirm_delete_message') }}"
                                                 class="btn btn-outline-danger btn-sm">
-                                            <i class="fas fa-trash me-1"></i> Sil
+                                            <i class="fas fa-trash me-1"></i> {{ __('admin.delete') }}
                                         </button>
                                     @endif
                                 </div>
@@ -121,7 +121,7 @@
         @else
             <div class="text-center py-5">
                 <i class="fas fa-globe fa-3x text-muted mb-3"></i>
-                <h5 class="text-muted">Sistem dili bulunamadı</h5>
+                <h5 class="text-muted">{{ __('admin.no_language_found') }}</h5>
                 <p class="text-muted">
                     @if($search)
                         "{{ $search }}" araması için sonuç bulunamadı.

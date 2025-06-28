@@ -11,15 +11,15 @@
                                     <i class="fas fa-search"></i>
                                 </span>
                                 <input type="text" wire:model.live.debounce.300ms="search" class="form-control"
-                                    placeholder="{{ __('widgetmanagement::general.search_component') }}">
+                                    placeholder="{{ __('widgetmanagement::admin.search_component') }}">
                             </div>
                         </div>
                         
                         
                         <div class="mb-4">
-                            <div class="form-label">{{ __('widgetmanagement::general.component_type') }}</div>
+                            <div class="form-label">{{ __('widgetmanagement::admin.component_type') }}</div>
                             <select wire:model.live="typeFilter" class="form-select">
-                                <option value="">{{ __('widgetmanagement::general.all_types') }}</option>
+                                <option value="">{{ __('widgetmanagement::admin.all_types') }}</option>
                                 @foreach($types as $key => $label)
                                 <option value="{{ $key }}">{{ $label }}</option>
                                 @endforeach
@@ -31,7 +31,7 @@
                             <div class="list-group list-group-transparent mb-3">
                                 <a class="list-group-item list-group-item-action py-2 d-flex align-items-center {{ $parentCategoryFilter == '' ? 'active' : '' }}" 
                                 wire:click.prevent="$set('parentCategoryFilter', '')" href="#">
-                                 {{ __('widgetmanagement::general.all_categories') }}
+                                 {{ __('widgetmanagement::admin.all_categories') }}
                                  <small class="text-secondary ms-auto">{{ $entities->total() }}</small>
                                 </a>
                                 
@@ -57,12 +57,12 @@
                         
                         
                         @if($childCategories->count() > 0 && $parentCategoryFilter && !$categoryFilter)
-                        <div class="form-label">{{ __('widgetmanagement::general.subcategories') }}</div>
+                        <div class="form-label">{{ __('widgetmanagement::admin.subcategories') }}</div>
                         <div class="mb-4">
                             <div class="list-group list-group-transparent mb-3">
                                 <a class="list-group-item list-group-item-action py-2 d-flex align-items-center {{ $categoryFilter == '' ? 'active' : '' }}" 
                                    wire:click.prevent="$set('categoryFilter', '')" href="#">
-                                    {{ __('widgetmanagement.misc.show_all') }}
+                                    {{ __('widgetmanagement::admin.show_all') }}
                                 </a>
                                 
                                 @foreach($childCategories as $childCategory)
@@ -77,14 +77,14 @@
                         @endif
                         
                         
-                        <div class="form-label">{{ __('widgetmanagement::general.per_page_items') }}</div>
+                        <div class="form-label">{{ __('widgetmanagement::admin.per_page_items') }}</div>
                         <div class="mb-4">
                             <select wire:model.live="perPage" class="form-select">
-                                <option value="100">{{ __('widgetmanagement::general.components_count', ['count' => 100]) }}</option>
-                                <option value="200">{{ __('widgetmanagement::general.components_count', ['count' => 200]) }}</option>
-                                <option value="300">{{ __('widgetmanagement::general.components_count', ['count' => 300]) }}</option>
-                                <option value="500">{{ __('widgetmanagement::general.components_count', ['count' => 500]) }}</option>
-                                <option value="1000">{{ __('widgetmanagement::general.components_count', ['count' => 1000]) }}</option>
+                                <option value="100">{{ __('widgetmanagement::admin.components_count', ['count' => 100]) }}</option>
+                                <option value="200">{{ __('widgetmanagement::admin.components_count', ['count' => 200]) }}</option>
+                                <option value="300">{{ __('widgetmanagement::admin.components_count', ['count' => 300]) }}</option>
+                                <option value="500">{{ __('widgetmanagement::admin.components_count', ['count' => 500]) }}</option>
+                                <option value="1000">{{ __('widgetmanagement::admin.components_count', ['count' => 1000]) }}</option>
                             </select>
                         </div>
                         
@@ -99,8 +99,8 @@
                     
                     <div class="d-flex justify-content-between mb-4">
                         <div>
-                            <h3 class="card-title">{{ __('widgetmanagement::general.active_components') }}</h3>
-                            <p class="text-muted">{{ __('widgetmanagement::general.manage_active_components') }}</p>
+                            <h3 class="card-title">{{ __('widgetmanagement::admin.active_components') }}</h3>
+                            <p class="text-muted">{{ __('widgetmanagement::admin.manage_active_components') }}</p>
                         </div>
                         
                         
@@ -108,7 +108,7 @@
                             <div wire:loading
                                 wire:target="render, search, perPage, gotoPage, previousPage, nextPage, createInstance, deleteInstance, toggleActive, categoryFilter, parentCategoryFilter"
                                 class="text-center">
-                                <div class="small text-muted me-2">{{ __('widgetmanagement::general.updating') }}</div>
+                                <div class="small text-muted me-2">{{ __('widgetmanagement::admin.updating') }}</div>
                                 <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
                             </div>
                         </div>
@@ -118,7 +118,7 @@
                     @php
                         $groupedEntities = $entities->groupBy(function($item) use ($widgets) {
                             $widget = $widgets->get($item->widget_id);
-                            return $widget && $widget->category ? $widget->category->title : __('widgetmanagement::general.no_category_assigned');
+                            return $widget && $widget->category ? $widget->category->title : __('widgetmanagement::admin.no_category_assigned');
                         });
                     @endphp
                     
@@ -159,7 +159,7 @@
                                             
                                             <div class="dropdown-menu dropdown-menu-end">
                                                 <a href="{{ route('admin.widgetmanagement.settings', $instance->id) }}" class="dropdown-item">
-                                                    <i class="fas fa-sliders-h me-2"></i> {{ $widget && $widget->has_items ? __('widgetmanagement.fields.settings') : __('widgetmanagement.misc.customize') }}
+                                                    <i class="fas fa-sliders-h me-2"></i> {{ $widget && $widget->has_items ? __('widgetmanagement::admin.settings') : __('widgetmanagement::admin.customize') }}
                                                 </a>
 
                                                 @if($widget && $widget->has_items)
@@ -169,28 +169,28 @@
                                                             $itemId = $staticItem ? $staticItem->id : 0;
                                                         @endphp
                                                         <a href="{{ route('admin.widgetmanagement.item.manage', [$instance->id, $itemId]) }}" class="dropdown-item">
-                                                            <i class="fas fa-layer-group me-2"></i> {{ __('widgetmanagement.fields.content') }}
+                                                            <i class="fas fa-layer-group me-2"></i> {{ __('widgetmanagement::admin.content') }}
                                                         </a>
                                                     @else
                                                         <a href="{{ route('admin.widgetmanagement.items', $instance->id) }}" class="dropdown-item">
-                                                            <i class="fas fa-layer-group me-2"></i> {{ __('widgetmanagement.fields.content') }}
+                                                            <i class="fas fa-layer-group me-2"></i> {{ __('widgetmanagement::admin.content') }}
                                                         </a>
                                                     @endif
                                                 @endif
                                                 
                                                 <a href="{{ route('admin.widgetmanagement.preview.instance', $instance->id) }}" class="dropdown-item" target="_blank">
-                                                    <i class="fas fa-eye me-2"></i> {{ __('widgetmanagement.fields.preview') }}
+                                                    <i class="fas fa-eye me-2"></i> {{ __('widgetmanagement::admin.preview') }}
                                                 </a>
                                                 
                                                 <div class="dropdown-divider"></div>
                                                 @if($hasRootPermission && $widget)
                                                 <a href="{{ route('admin.widgetmanagement.manage', $widget->id) }}" class="dropdown-item">
-                                                    <i class="fas fa-tools me-2"></i> {{ __('widgetmanagement::general.configure') }}
+                                                    <i class="fas fa-tools me-2"></i> {{ __('widgetmanagement::admin.configure') }}
                                                 </a>
                                                 @endif
                                                 <button class="dropdown-item text-danger" wire:click="deleteInstance({{ $instance->id }})" 
-                                                onclick="return confirm('{{ __('widgetmanagement::general.confirm_delete') }}')">
-                                                    <i class="fas fa-trash me-2"></i> {{ __('widgetmanagement::general.delete') }}
+                                                onclick="return confirm('{{ __('widgetmanagement::admin.confirm_delete') }}')">
+                                                    <i class="fas fa-trash me-2"></i> {{ __('widgetmanagement::admin.delete') }}
                                                 </button>
                                             </div>
                                         </div>
@@ -209,24 +209,24 @@
                                                     @endphp
                                                     <a href="{{ route('admin.widgetmanagement.item.manage', [$instance->id, $itemId]) }}" class="btn btn-sm btn-outline-primary">
                                                         <i class="fas fa-info-circle me-2 text-muted"></i>
-                                                        {{ __('widgetmanagement::general.how_to_use') }}
+                                                        {{ __('widgetmanagement::admin.how_to_use') }}
                                                     </a>
                                                 @else
                                                     <a href="{{ route('admin.widgetmanagement.items', $instance->id) }}" class="btn btn-sm btn-outline-primary">
                                                         <i class="fas fa-info-circle me-2 text-muted"></i>
-                                                        {{ __('widgetmanagement::general.how_to_use') }}
+                                                        {{ __('widgetmanagement::admin.how_to_use') }}
                                                     </a>
                                                 @endif
                                             @else
                                                 <a href="{{ route('admin.widgetmanagement.settings', $instance->id) }}" class="btn btn-sm btn-outline-primary">
                                                     <i class="ti ti-rocket me-2"></i>
-                                                    {{ __('widgetmanagement::general.quick_start') }}
+                                                    {{ __('widgetmanagement::admin.quick_start') }}
                                                 </a>
                                             @endif
                                             
                                             <a href="{{ route('admin.widgetmanagement.preview.instance', $instance->id) }}" class="btn btn-sm btn-outline-primary" target="_blank">
                                                 <i class="fas fa-eye me-1"></i>
-                                                {{ __('widgetmanagement::general.preview') }}
+                                                {{ __('widgetmanagement::admin.preview') }}
                                             </a>
 
                                             </div>
@@ -235,10 +235,10 @@
                                                     <input type="checkbox" wire:click="toggleActive({{ $instance->id }})"
                                                         {{ $instance->is_active ? 'checked' : '' }} value="1" />
                                                     <div class="state p-success p-on ms-2">
-                                                        <label>{{ __('widgetmanagement::general.active') }}</label>
+                                                        <label>{{ __('widgetmanagement::admin.active') }}</label>
                                                     </div>
                                                     <div class="state p-danger p-off ms-2">
-                                                        <label>{{ __('widgetmanagement::general.inactive') }}</label>
+                                                        <label>{{ __('widgetmanagement::admin.inactive') }}</label>
                                                     </div>
                                                 </div>
                                             </div>
@@ -254,13 +254,13 @@
                         <div class="empty-img">
                             <img src="{{ asset('images/empty.svg') }}" height="128" alt="">
                         </div>
-                        <p class="empty-title">{{ __('widgetmanagement::general.no_components_found') }}</p>
+                        <p class="empty-title">{{ __('widgetmanagement::admin.no_components_found') }}</p>
                         <p class="empty-subtitle text-muted">
-                            {{ __('widgetmanagement::general.no_components_description') }}
+                            {{ __('widgetmanagement::admin.no_components_description') }}
                         </p>
                         <div class="empty-action">
                             <a href="{{ route('admin.widgetmanagement.gallery') }}" class="btn btn-primary">
-                                <i class="fas fa-th-large me-2"></i> {{ __('widgetmanagement::general.go_to_component_gallery') }}
+                                <i class="fas fa-th-large me-2"></i> {{ __('widgetmanagement::admin.go_to_component_gallery') }}
                             </a>
                         </div>
                     </div>

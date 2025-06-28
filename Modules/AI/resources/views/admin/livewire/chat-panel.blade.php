@@ -1,20 +1,21 @@
 <div
     data-t-warning="{{ __('ai::admin.status.warning') }}"
-    data-t-empty-message="{{ __('ai::admin.error.empty_message') }}"
+    data-t-empty-message="{{ __('ai::admin.js.please_enter_message') }}"
     data-t-typing="{{ __('ai::admin.typing') }}"
-    data-t-copied="{{ __('ai::admin.status.copied') }}"
+    data-t-copied="{{ __('ai::admin.js.copied_title') }}"
     data-t-message-copied="{{ __('ai::admin.success.message_copied') }}"
-    data-t-server-error="{{ __('ai::admin.error.server_error') }}"
+    data-t-server-error="{{ __('ai::admin.js.server_response_failed') }}"
     data-t-reset-confirm="{{ __('ai::admin.confirm.reset_conversation') }}"
     data-t-greeting="{{ __('ai::admin.info.greeting') }}"
-    data-t-successful="{{ __('ai::admin.status.successful') }}"
+    data-t-successful="{{ __('ai::admin.js.success_title') }}"
     data-t-reset-success="{{ __('ai::admin.success.conversation_reset') }}"
-    data-t-error="{{ __('ai::admin.error.general_error') }}"
+    data-t-error="{{ __('ai::admin.js.error_title') }}"
     data-t-conversation-copied="{{ __('ai::admin.success.conversation_copied') }}"
     data-t-you="{{ __('ai::admin.general.you') }}"
     data-t-ai="{{ __('ai::admin.general.ai') }}"
-    data-t-connection-error="{{ __('ai::admin.error.connection_error') }}"
-    data-t-retry="{{ __('ai::admin.retry') }}"
+    data-t-connection-error="{{ __('ai::admin.js.connection_error_occurred') }}"
+    data-t-retry="{{ __('ai::admin.js.retry_action') }}"
+    data-t-generic-error="{{ __('ai::admin.js.generic_error') }}"
 >
     @include('ai::admin.helper')
         @if ($error)
@@ -190,7 +191,9 @@
             
             const message = userMessage.value.trim();
             if (!message) {
-                showToast('Uyarı', 'Lütfen bir mesaj yazın.', 'warning');
+                const warning = chatContainer.dataset.tWarning;
+                const emptyMessage = chatContainer.dataset.tEmptyMessage;
+                showToast(warning, emptyMessage, 'warning');
                 return;
             }
             
@@ -233,7 +236,8 @@
             aiResponseContent = aiResponseElement.querySelector('.message-content p');
             
             // Yazıyor animasyonu ekle
-            aiResponseContent.innerHTML = '<span class="typing-animation">Yazıyor<span>.</span><span>.</span><span>.</span></span>';
+            const typingText = chatContainer.dataset.tTyping;
+            aiResponseContent.innerHTML = `<span class="typing-animation">${typingText}<span>.</span><span>.</span><span>.</span></span>`;
             
             // Stream veri alındığında
             eventSource.onmessage = function(event) {
@@ -306,7 +310,8 @@
                         })
                         .then(response => {
                             if (!response.ok) {
-                                throw new Error('Sunucu yanıtı başarısız: ' + response.status);
+                                const serverError = chatContainer.dataset.tServerError;
+                                throw new Error(`${serverError}: ${response.status}`);
                             }
                             return response.json();
                         })
@@ -326,15 +331,18 @@
             
             // Hata durumunda
             eventSource.addEventListener('error', function(event) {
-                const data = event.data ? JSON.parse(event.data) : { message: 'Bağlantı hatası oluştu.' };
+                const connectionError = chatContainer.dataset.tConnectionError;
+                const data = event.data ? JSON.parse(event.data) : { message: connectionError };
                 
                 // Hata mesajını göster
-                aiResponseContent.innerHTML = `<span class="text-danger">Hata: ${data.message}</span>`;
+                const errorText = chatContainer.dataset.tError;
+                aiResponseContent.innerHTML = `<span class="text-danger">${errorText}: ${data.message}</span>`;
                 
                 // Yeniden deneme butonu ekle
                 const retryButton = document.createElement('button');
                 retryButton.className = 'btn btn-sm btn-outline-danger mt-2';
-                retryButton.innerHTML = 'Yeniden Dene';
+                const retryText = chatContainer.dataset.tRetry;
+                retryButton.innerHTML = retryText;
                 retryButton.addEventListener('click', function() {
                     // AI mesaj elementini kaldır
                     chatMessages.removeChild(aiResponseElement);
@@ -480,7 +488,8 @@
         
         // Konuşmayı sıfırla
         document.querySelector('.reset-conversation').addEventListener('click', function() {
-            if (confirm('Konuşma geçmişi sıfırlanacak. Emin misiniz?')) {
+            const confirmText = chatContainer.dataset.tResetConfirm;
+            if (confirm(confirmText)) {
                 fetch(`/ai/reset?conversation_id=${conversationId.value}`, {
                     method: 'POST',
                     headers: {
@@ -498,15 +507,21 @@
                         conversationId.value = md5(Date.now() + Math.random().toString());
                         
                         // Hoş geldin mesajını ekle
-                        addMessage('Merhaba! Size nasıl yardımcı olabilirim?', 'ai');
+                        const greetingText = chatContainer.dataset.tGreeting;
+                        addMessage(greetingText, 'ai');
                         
-                        showToast('Başarılı', 'Konuşma sıfırlandı.');
+                        const successText = chatContainer.dataset.tSuccessful;
+                        const resetSuccessText = chatContainer.dataset.tResetSuccess;
+                        showToast(successText, resetSuccessText);
                     } else {
-                        showToast('Hata', data.message, 'error');
+                        const errorText = chatContainer.dataset.tError;
+                        showToast(errorText, data.message, 'error');
                     }
                 })
                 .catch(error => {
-                    showToast('Hata', 'Bir hata oluştu.', 'error');
+                    const errorText = chatContainer.dataset.tError;
+                    const genericError = chatContainer.dataset.tGenericError;
+                    showToast(errorText, genericError, 'error');
                     console.error('Konuşma sıfırlama hatası:', error);
                 });
             }
@@ -517,14 +532,18 @@
             let conversation = '';
             
             document.querySelectorAll('.message').forEach(function(message) {
-                const role = message.classList.contains('user-message') ? 'Siz' : 'AI';
+                const youText = chatContainer.dataset.tYou;
+                const aiText = chatContainer.dataset.tAi;
+                const role = message.classList.contains('user-message') ? youText : aiText;
                 const content = message.querySelector('.message-content p').textContent;
                 
                 conversation += `${role}: ${content}\n\n`;
             });
             
             copyToClipboard(conversation);
-            showToast('Kopyalandı', 'Tüm konuşma panoya kopyalandı.');
+            const copiedText = chatContainer.dataset.tCopied;
+            const conversationCopiedText = chatContainer.dataset.tConversationCopied;
+            showToast(copiedText, conversationCopiedText);
         });
         
         // MD5

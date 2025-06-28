@@ -17,19 +17,19 @@
                                 class="btn {{ $currentMode === 'basic' ? 'btn-primary' : 'btn-outline-primary' }}" 
                                 wire:click="setMode('basic')">
                                 <i class="fas fa-info-circle me-2"></i>
-                                Temel Bilgiler
+                                {{ __('widgetmanagement::admin.basic_info') }}
                             </button>
                             @if($widget['type'] !== 'file' && $widget['type'] !== 'module')
                             <a href="{{ route('admin.widgetmanagement.code-editor', $widgetId) }}" 
                                class="btn btn-outline-secondary">
                                 <i class="fas fa-code me-2"></i>
-                                Kod Editörü
+                                {{ __('widgetmanagement::admin.code_editor') }}
                             </a>
                             @endif
                             <a href="{{ route('admin.widgetmanagement.preview.template', $widgetId) }}" 
                                class="btn btn-outline-info" target="_blank">
                                 <i class="fas fa-eye me-2"></i>
-                                Önizleme
+                                {{ __('widgetmanagement::admin.preview') }}
                             </a>
                         </div>
                     </div>
@@ -54,7 +54,7 @@
                     <div class="card-header">
                         <h3 class="card-title">
                             <i class="fas fa-{{ $isNewWidget ? 'plus' : 'edit' }} me-2"></i>
-                            {{ $isNewWidget ? 'Yeni Widget Ekle' : 'Temel Bilgiler' }}
+                            {{ $isNewWidget ? __('widgetmanagement::admin.new_widget_add') : __('widgetmanagement::admin.basic_info') }}
                         </h3>
                     </div>
                     <div class="card-body p-4">
@@ -65,8 +65,8 @@
                                         <div class="form-floating">
                                             <input type="text" id="widget-name" wire:model="widget.name" 
                                                 class="form-control @error('widget.name') is-invalid @enderror"
-                                                placeholder="Widget adını giriniz">
-                                            <label class="required">Widget Adı *</label>
+                                                placeholder="{{ __('widgetmanagement::admin.widget_name') }}">
+                                            <label class="required">{{ __('widgetmanagement::admin.widget_name') }} *</label>
                                             @error('widget.name') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                         </div>
                                     </div>
@@ -75,11 +75,11 @@
                                         <div class="form-floating">
                                             <input type="text" id="widget-slug" wire:model="widget.slug" 
                                                 class="form-control font-monospace @error('widget.slug') is-invalid @enderror"
-                                                placeholder="widget-slug">
-                                            <label class="required">Benzersiz Tanımlayıcı *</label>
+                                                placeholder="{{ __('widgetmanagement::admin.unique_identifier') }}">
+                                            <label class="required">{{ __('widgetmanagement::admin.unique_identifier') }} *</label>
                                             @error('widget.slug') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                         </div>
-                                        <small class="form-hint">Sadece küçük harfler, rakamlar ve tire (-) kullanın.</small>
+                                        <small class="form-hint">{{ __('widgetmanagement::admin.only_lowercase_rule') }}</small>
                                     </div>
                                 </div>
                             </div>
@@ -90,8 +90,8 @@
                                         class="form-control @error('widget.widget_category_id') is-invalid @enderror"
                                         data-choices
                                         data-choices-search="{{ count($categories) > 6 ? 'true' : 'false' }}"
-                                        data-choices-placeholder="Kategori Seçin">
-                                        <option value="">Kategori Seçin</option>
+                                        data-choices-placeholder="{{ __('widgetmanagement::admin.category_select') }}">
+                                        <option value="">{{ __('widgetmanagement::admin.category_select') }}</option>
                                         @foreach($categories as $category)
                                         <option value="{{ $category->widget_category_id }}">{{ $category->title }}</option>
                                         @endforeach
@@ -105,15 +105,15 @@
                                 <div class="form-floating">
                                     <textarea wire:model="widget.description" 
                                         class="form-control @error('widget.description') is-invalid @enderror" 
-                                        placeholder="Widget açıklaması"
+                                        placeholder="{{ __('widgetmanagement::admin.widget_description_placeholder') }}"
                                         rows="4"></textarea>
-                                    <label>Açıklama</label>
+                                    <label>{{ __('widgetmanagement::admin.description') }}</label>
                                     @error('widget.description') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                 </div>
                             </div>
                             
                             <div class="col-12">
-                                <label class="form-label required mb-3">Widget Tipi</label>
+                                <label class="form-label required mb-3">{{ __('widgetmanagement::admin.widget_type') }}</label>
                                 <div class="row g-3">
                                     <div class="col-6 col-lg-3">
                                         <label class="form-selectgroup-item h-100">
@@ -122,8 +122,8 @@
                                                 <div class="avatar avatar-lg bg-blue text-white mb-2">
                                                     <i class="fas fa-file-alt"></i>
                                                 </div>
-                                                <span class="form-selectgroup-title fw-semibold mb-1">Statik</span>
-                                                <span class="text-muted small text-center">Sabit içerik widget'ı</span>
+                                                <span class="form-selectgroup-title fw-semibold mb-1">{{ __('widgetmanagement::admin.static') }}</span>
+                                                <span class="text-muted small text-center">{{ __('widgetmanagement::admin.static_desc') }}</span>
                                             </span>
                                         </label>
                                     </div>
@@ -134,8 +134,8 @@
                                                 <div class="avatar avatar-lg bg-green text-white mb-2">
                                                     <i class="fas fa-layer-group"></i>
                                                 </div>
-                                                <span class="form-selectgroup-title fw-semibold mb-1">Dinamik</span>
-                                                <span class="text-muted small text-center">Eklenebilir içerik</span>
+                                                <span class="form-selectgroup-title fw-semibold mb-1">{{ __('widgetmanagement::admin.dynamic') }}</span>
+                                                <span class="text-muted small text-center">{{ __('widgetmanagement::admin.dynamic_desc') }}</span>
                                             </span>
                                         </label>
                                     </div>
@@ -146,8 +146,8 @@
                                                 <div class="avatar avatar-lg bg-purple text-white mb-2">
                                                     <i class="fas fa-cubes"></i>
                                                 </div>
-                                                <span class="form-selectgroup-title fw-semibold mb-1">Modül</span>
-                                                <span class="text-muted small text-center">Özel modül widget'ı</span>
+                                                <span class="form-selectgroup-title fw-semibold mb-1">{{ __('widgetmanagement::admin.module') }}</span>
+                                                <span class="text-muted small text-center">{{ __('widgetmanagement::admin.module_desc') }}</span>
                                             </span>
                                         </label>
                                     </div>
@@ -158,8 +158,8 @@
                                                 <div class="avatar avatar-lg bg-orange text-white mb-2">
                                                     <i class="fas fa-file-code"></i>
                                                 </div>
-                                                <span class="form-selectgroup-title fw-semibold mb-1">Dosya</span>
-                                                <span class="text-muted small text-center">Hazır view dosyası</span>
+                                                <span class="form-selectgroup-title fw-semibold mb-1">{{ __('widgetmanagement::admin.file') }}</span>
+                                                <span class="text-muted small text-center">{{ __('widgetmanagement::admin.file_desc') }}</span>
                                             </span>
                                         </label>
                                     </div>
@@ -172,10 +172,10 @@
                                 @if($this->hasAvailableModuleFiles())
                                 <div class="alert alert-info">
                                     <i class="fas fa-info-circle me-2"></i>
-                                    Modül widget'ı için view dosyasını seçin.
+                                    {{ __('widgetmanagement::admin.module') }} widget'ı için view dosyasını seçin.
                                 </div>
                                 
-                                <label class="form-label required">Modül View Dosyası</label>
+                                <label class="form-label required">{{ __('widgetmanagement::admin.module') }} View {{ __('widgetmanagement::admin.file') }}sı</label>
                                 
                                 @if($widget['file_path'])
                                 <div class="mb-3">
@@ -185,15 +185,15 @@
                                             <i class="fas fa-times"></i>
                                         </button>
                                     </div>
-                                    <small class="form-hint">Seçimi değiştirmek için X butonuna tıklayın</small>
+                                    <small class="form-hint">{{ __('widgetmanagement::admin.change_selection_tip') }}</small>
                                 </div>
                                 @else
                                 <select wire:model="widget.file_path" 
                                     class="form-control @error('widget.file_path') is-invalid @enderror"
                                     data-choices
                                     data-choices-search="{{ count($this->getModuleFiles()) > 6 ? 'true' : 'false' }}"
-                                    data-choices-placeholder="Dosya Seçin">
-                                    <option value="">Dosya Seçin</option>
+                                    data-choices-placeholder="{{ __('widgetmanagement::admin.file_select') }}"
+                                    <option value="">{{ __('widgetmanagement::admin.file_select') }}</option>
                                     @foreach($this->getModuleFiles() as $path => $name)
                                     <option value="{{ $path }}">{{ $name }}</option>
                                     @endforeach
@@ -203,12 +203,12 @@
                                 @else
                                 <div class="alert alert-warning">
                                     <i class="fas fa-exclamation-triangle me-2"></i>
-                                    Tüm modül dosyaları zaten tanımlanmış. Yeni modül widget'ı oluşturulamaz.
+                                    {{ __('widgetmanagement::admin.all_module_files_assigned') }}
                                 </div>
                                 
-                                <label class="form-label required">Modül View Dosyası</label>
+                                <label class="form-label required">{{ __('widgetmanagement::admin.module') }} View {{ __('widgetmanagement::admin.file') }}sı</label>
                                 <select disabled class="form-select">
-                                    <option>Uygun dosya bulunamadı</option>
+                                    <option>{{ __('widgetmanagement::admin.no_suitable_file') }}</option>
                                 </select>
                                 @endif
                             </div>
@@ -219,10 +219,10 @@
                                 @if($this->hasAvailableViewFiles())
                                 <div class="alert alert-info">
                                     <i class="fas fa-info-circle me-2"></i>
-                                    Hazır view dosyasını seçin.
+                                    {{ __('widgetmanagement::admin.select_ready_view_file') }}
                                 </div>
                                 
-                                <label class="form-label required">View Dosyası</label>
+                                <label class="form-label required">View {{ __('widgetmanagement::admin.file') }}sı</label>
                                 
                                 @if($widget['file_path'])
                                 <div class="mb-3">
@@ -232,15 +232,15 @@
                                             <i class="fas fa-times"></i>
                                         </button>
                                     </div>
-                                    <small class="form-hint">Seçimi değiştirmek için X butonuna tıklayın</small>
+                                    <small class="form-hint">{{ __('widgetmanagement::admin.change_selection_tip') }}</small>
                                 </div>
                                 @else
                                 <select wire:model="widget.file_path" 
                                     class="form-control @error('widget.file_path') is-invalid @enderror"
                                     data-choices
                                     data-choices-search="{{ count($this->getViewFiles()) > 6 ? 'true' : 'false' }}"
-                                    data-choices-placeholder="Dosya Seçin">
-                                    <option value="">Dosya Seçin</option>
+                                    data-choices-placeholder="{{ __('widgetmanagement::admin.file_select') }}"
+                                    <option value="">{{ __('widgetmanagement::admin.file_select') }}</option>
                                     @foreach($this->getViewFiles() as $path => $name)
                                     <option value="{{ $path }}">{{ $name }}</option>
                                     @endforeach
@@ -250,12 +250,12 @@
                                 @else
                                 <div class="alert alert-warning">
                                     <i class="fas fa-exclamation-triangle me-2"></i>
-                                    Tüm view dosyaları zaten tanımlanmış. Yeni file widget'ı oluşturulamaz.
+                                    {{ __('widgetmanagement::admin.all_view_files_assigned') }}
                                 </div>
                                 
-                                <label class="form-label required">View Dosyası</label>
+                                <label class="form-label required">View {{ __('widgetmanagement::admin.file') }}sı</label>
                                 <select disabled class="form-select">
-                                    <option>Uygun dosya bulunamadı</option>
+                                    <option>{{ __('widgetmanagement::admin.no_suitable_file') }}</option>
                                 </select>
                                 @endif
                             </div>
@@ -271,29 +271,29 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
-                                <h3 class="card-title">Widget Ayarları</h3>
+                                <h3 class="card-title">{{ __('widgetmanagement::admin.widget_settings') }}</h3>
                             </div>
                             <div class="card-body">
                                 <div class="mb-3">
                                     <label class="form-check form-switch">
                                         <input type="checkbox" class="form-check-input" wire:model.live="widget.has_items">
-                                        <span class="form-check-label">İçerik Ekleme Özelliği</span>
+                                        <span class="form-check-label">{{ __('widgetmanagement::admin.content_adding_feature') }}</span>
                                     </label>
-                                    <small class="form-hint ms-4">Kullanıcılar widgeta içerik ekleyebilirler</small>
+                                    <small class="form-hint ms-4">{{ __('widgetmanagement::admin.users_can_add_content') }}</small>
                                 </div>
                                 
                                 <div class="mb-3">
                                     <label class="form-check form-switch">
                                         <input type="checkbox" class="form-check-input" wire:model="widget.is_core">
-                                        <span class="form-check-label">Sistem Widget'ı</span>
+                                        <span class="form-check-label">{{ __('widgetmanagement::admin.system_widget') }}</span>
                                     </label>
-                                    <small class="form-hint ms-4">Sistem widget'ları tenant'lar tarafından silinemez</small>
+                                    <small class="form-hint ms-4">{{ __('widgetmanagement::admin.system_widgets_not_deletable') }}</small>
                                 </div>
 
                                 <div class="mb-3">
                                     <label class="form-check form-switch">
                                         <input type="checkbox" class="form-check-input" wire:model="widget.is_active">
-                                        <span class="form-check-label">Widget Aktif</span>
+                                        <span class="form-check-label">{{ __('widgetmanagement::admin.widget_active') }}</span>
                                     </label>
                                 </div>
                             </div>
@@ -303,7 +303,7 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
-                                <h3 class="card-title">Önizleme Görseli</h3>
+                                <h3 class="card-title">{{ __('widgetmanagement::admin.preview') }} Görseli</h3>
                             </div>
                             <div class="card-body">
                                 <div class="form-control position-relative" 
@@ -312,9 +312,9 @@
                                     <input type="file" id="thumbnail-upload-existing" wire:model="thumbnail" class="d-none" accept="image/*">
                                     
                                     @if ($thumbnail && method_exists($thumbnail, 'temporaryUrl'))
-                                        <img src="{{ $thumbnail->temporaryUrl() }}" class="img-fluid rounded" alt="Yeni Önizleme">
+                                        <img src="{{ $thumbnail->temporaryUrl() }}" class="img-fluid rounded" alt="Yeni {{ __('widgetmanagement::admin.preview') }}">
                                     @elseif ($imagePreview)
-                                        <img src="{{ url($imagePreview) }}" class="img-fluid rounded" alt="Mevcut Önizleme">
+                                        <img src="{{ url($imagePreview) }}" class="img-fluid rounded" alt="Mevcut {{ __('widgetmanagement::admin.preview') }}">
                                     @endif
 
                                     @if (($thumbnail && method_exists($thumbnail, 'temporaryUrl')) || $imagePreview)
@@ -325,8 +325,8 @@
                                     @else
                                         <div class="text-center py-4">
                                             <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-2"></i>
-                                            <p class="mb-0">Görseli seçmek için tıklayın</p>
-                                            <p class="text-muted small mb-0">PNG, JPG, GIF - Maks 3MB</p>
+                                            <p class="mb-0">{{ __('widgetmanagement::admin.click_to_select_image') }}</p>
+                                            <p class="text-muted small mb-0">{{ __('widgetmanagement::admin.image_format_size_info') }}</p>
                                         </div>
                                     @endif
                                 </div>
@@ -341,29 +341,29 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
-                                <h3 class="card-title">Widget Ayarları</h3>
+                                <h3 class="card-title">{{ __('widgetmanagement::admin.widget_settings') }}</h3>
                             </div>
                             <div class="card-body">
                                 <div class="mb-3">
                                     <label class="form-check form-switch">
                                         <input type="checkbox" class="form-check-input" wire:model.live="widget.has_items">
-                                        <span class="form-check-label">İçerik Ekleme Özelliği</span>
+                                        <span class="form-check-label">{{ __('widgetmanagement::admin.content_adding_feature') }}</span>
                                     </label>
-                                    <small class="form-hint ms-4">Kullanıcılar widgeta içerik ekleyebilirler</small>
+                                    <small class="form-hint ms-4">{{ __('widgetmanagement::admin.users_can_add_content') }}</small>
                                 </div>
                                 
                                 <div class="mb-3">
                                     <label class="form-check form-switch">
                                         <input type="checkbox" class="form-check-input" wire:model="widget.is_core">
-                                        <span class="form-check-label">Sistem Widget'ı</span>
+                                        <span class="form-check-label">{{ __('widgetmanagement::admin.system_widget') }}</span>
                                     </label>
-                                    <small class="form-hint ms-4">Sistem widget'ları tenant'lar tarafından silinemez</small>
+                                    <small class="form-hint ms-4">{{ __('widgetmanagement::admin.system_widgets_not_deletable') }}</small>
                                 </div>
 
                                 <div class="mb-3">
                                     <label class="form-check form-switch">
                                         <input type="checkbox" class="form-check-input" wire:model="widget.is_active">
-                                        <span class="form-check-label">Widget Aktif</span>
+                                        <span class="form-check-label">{{ __('widgetmanagement::admin.widget_active') }}</span>
                                     </label>
                                 </div>
                             </div>
@@ -373,7 +373,7 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
-                                <h3 class="card-title">Önizleme Görseli</h3>
+                                <h3 class="card-title">{{ __('widgetmanagement::admin.preview') }} Görseli</h3>
                             </div>
                             <div class="card-body">
                                 <div class="form-control position-relative" 
@@ -381,7 +381,7 @@
                                     style="height: auto; min-height: 120px; cursor: pointer; border: 2px dashed #ccc;">
                                     <input type="file" id="thumbnail-upload-new" wire:model="thumbnail" class="d-none" accept="image/*">
                                     @if($thumbnail && method_exists($thumbnail, 'temporaryUrl'))
-                                        <img src="{{ $thumbnail->temporaryUrl() }}" class="img-fluid rounded" alt="Önizleme">
+                                        <img src="{{ $thumbnail->temporaryUrl() }}" class="img-fluid rounded" alt="{{ __('widgetmanagement::admin.preview') }}">
                                         <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2" 
                                             wire:click.prevent="$set('thumbnail', null)">
                                             <i class="fas fa-times"></i>
@@ -389,8 +389,8 @@
                                     @else
                                         <div class="text-center py-3">
                                             <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-2"></i>
-                                            <p class="mb-0">Görseli seçmek için tıklayın</p>
-                                            <p class="text-muted small mb-0">PNG, JPG, GIF - Maks 3MB</p>
+                                            <p class="mb-0">{{ __('widgetmanagement::admin.click_to_select_image') }}</p>
+                                            <p class="text-muted small mb-0">{{ __('widgetmanagement::admin.image_format_size_info') }}</p>
                                         </div>
                                     @endif
                                 </div>

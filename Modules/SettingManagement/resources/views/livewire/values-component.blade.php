@@ -6,13 +6,13 @@
             <div class="card-header">
                 <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs">
                     <li class="nav-item">
-                        <a href="#tabs-1" class="nav-link active" data-bs-toggle="tab">{{ $group->name }} - {{ __('settingmanagement::general.settings_tab_title') }}</a>
+                        <a href="#tabs-1" class="nav-link active" data-bs-toggle="tab">{{ $group->name }} - {{ __('settingmanagement::admin.settings_tab_title') }}</a>
                     </li>
                 </ul>
                 
                 <div class="card-actions">
                     <a href="{{ route('admin.settingmanagement.index') }}" class="btn btn-outline-secondary">
-                        <i class="fas fa-arrow-left me-2"></i> {{ __('settingmanagement::general.back_button') }}
+                        <i class="fas fa-arrow-left me-2"></i> {{ __('settingmanagement::admin.back_button') }}
                     </a>
                 </div>
             </div>
@@ -37,7 +37,7 @@
                             @else
                                 <div class="alert alert-warning">
                                     <i class="fas fa-exclamation-triangle me-2"></i>
-                                    {{ __('settingmanagement::general.form_structure_not_found') }}
+                                    {{ __('settingmanagement::admin.form_structure_not_found') }}
                                 </div>
                             @endif
                         @else
@@ -65,7 +65,7 @@
                                                         <select wire:model="values.{{ $setting->id }}" 
                                                             id="setting-{{ $setting->id }}"
                                                             class="form-select @error('values.' . $setting->id) is-invalid @enderror">
-                                                            <option value="">Seçiniz</option>
+                                                            <option value="">{{ __('settingmanagement::admin.select_option') }}</option>
                                                             @foreach($setting->options as $key => $label)
                                                                 <option value="{{ $key }}">{{ is_string($label) ? $label : json_encode($label) }}</option>
                                                             @endforeach
@@ -103,7 +103,7 @@
                                                     <label class="form-label">{{ $setting->label }}</label>
                                                     @include('settingmanagement::form-builder.partials.file-upload', [
                                                         'fileKey' => $setting->id,
-                                                        'label' => 'Dosyayı sürükleyip bırakın veya tıklayın',
+                                                        'label' => __('settingmanagement::admin.drag_drop_file'),
                                                         'values' => $values
                                                     ])
                                                 </div>
@@ -114,7 +114,7 @@
                                                     <label class="form-label">{{ $setting->label }}</label>
                                                     @include('settingmanagement::form-builder.partials.image-upload', [
                                                         'imageKey' => $setting->id,
-                                                        'label' => 'Görseli sürükleyip bırakın veya tıklayın',
+                                                        'label' => __('settingmanagement::admin.drag_drop_image'),
                                                         'values' => $values
                                                     ])
                                                 </div>
@@ -142,7 +142,7 @@
                                                                         
                                                                     <div class="text-center">
                                                                         <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
-                                                                        <h4 class="section-title text-muted">Görselleri sürükleyip bırakın veya tıklayın</h4>
+                                                                        <h4 class="section-title text-muted">{{ __('settingmanagement::admin.drag_drop_images') }}</h4>
                                                                         <p class="text-muted small">PNG, JPG, WEBP, GIF - Maks 2MB - <strong>Toplu seçim yapabilirsiniz</strong></p>
                                                                     </div>
                                                                 </div>
@@ -152,7 +152,7 @@
                                                     
                                                     @if(isset($temporaryMultipleImages[$setting->id]) && is_array($temporaryMultipleImages[$setting->id]) && count($temporaryMultipleImages[$setting->id]) > 0)
                                                         <div class="mt-3">
-                                                            <label class="form-label">Yeni Yüklenen Görseller</label>
+                                                            <label class="form-label">{{ __('settingmanagement::admin.new_uploaded_images') }}</label>
                                                             <div class="row g-2">
                                                                 @foreach($temporaryMultipleImages[$setting->id] as $index => $photo)
                                                                     @if($photo)
@@ -185,7 +185,7 @@
                                                         class="form-control form-control-color @error('values.' . $setting->id) is-invalid @enderror" 
                                                         value="{{ $values[$setting->id] ?? '#ffffff' }}" 
                                                         wire:model="values.{{ $setting->id }}"
-                                                        title="Renk seçin">
+                                                        title="{{ __('settingmanagement::admin.choose_color') }}">
                                                     @error('values.' . $setting->id)
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
@@ -313,7 +313,7 @@
                                         @if(isset($originalValues[$setting->id]) && $originalValues[$setting->id] != $values[$setting->id])
                                             <div class="mt-2 text-end">
                                                 <button type="button" class="btn btn-sm btn-outline-warning" wire:click="resetToDefault({{ $setting->id }})">
-                                                    <i class="ti ti-rotate-clockwise me-1"></i> {{ __('settingmanagement::general.reset_to_default') }}
+                                                    <i class="ti ti-rotate-clockwise me-1"></i> {{ __('settingmanagement::admin.reset_to_default') }}
                                                 </button>
                                             </div>
                                         @endif
@@ -325,7 +325,7 @@
                         @if(count($changes) > 0)
                             <div class="alert alert-success mt-3">
                                 <i class="fas fa-info-circle me-2"></i>
-                                {{ __('settingmanagement::general.changes_count', ['count' => count($changes)]) }}
+                                {{ __('settingmanagement::admin.changes_count', ['count' => count($changes)]) }}
                             </div>
                         @endif
                     </div>

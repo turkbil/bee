@@ -14,21 +14,21 @@
                         <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"/>
                         <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"/>
                     </svg>
-                    <h3>Kategori Silme Onayı</h3>
-                    <div class="text-muted">Bu kategoriyi silmek istediğinize emin misiniz? İçindeki tüm alt kategoriler de silinecek!</div>
+                    <h3>{{ __('admin.confirm_delete_category') }}</h3>
+                    <div class="text-muted">{{ __('admin.confirm_delete_category_message') }}</div>
                 </div>
                 <div class="modal-footer">
                     <div class="w-100">
                         <div class="row">
                             <div class="col">
                                 <button class="btn w-100" wire:click="$set('showModal', false)">
-                                    İptal
+                                    {{ __('admin.cancel') }}
                                 </button>
                             </div>
                             <div class="col">
                                 <button class="btn btn-danger w-100" wire:click="deleteCategory" wire:loading.attr="disabled">
-                                    <span wire:loading.remove>Kategoriyi Sil</span>
-                                    <span wire:loading>Siliniyor...</span>
+                                    <span wire:loading.remove>{{ __('admin.delete') }}</span>
+                                    <span wire:loading>{{ __('admin.updating') }}</span>
                                 </button>
                             </div>
                         </div>

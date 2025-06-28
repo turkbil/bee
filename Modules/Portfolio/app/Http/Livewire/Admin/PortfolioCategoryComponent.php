@@ -55,8 +55,8 @@ class PortfolioCategoryComponent extends Component
         );
 
         $this->dispatch('toast', [
-            'title' => __('admin::common.success'), 
-            'message' => __('admin::common.category_status_changed', ['status' => $category->is_active ? __('admin::common.active') : __('admin::common.inactive')]),
+            'title' => __('admin.success'), 
+            'message' => __('admin.category_status_changed', ['status' => $category->is_active ? __('admin.active') : __('admin.inactive')]),
             'type' => 'success'
         ]);
 
@@ -69,8 +69,8 @@ class PortfolioCategoryComponent extends Component
         
         if ($category->portfolios()->count() > 0) {
             $this->dispatch('toast', [
-                'title' => __('admin::common.warning'),
-                'message' => __('admin::common.category_has_items'),
+                'title' => __('admin.warning'),
+                'message' => __('admin.category_has_items'),
                 'type' => 'warning'
             ]);
             return;
@@ -84,8 +84,8 @@ class PortfolioCategoryComponent extends Component
         );
 
         $this->dispatch('toast', [
-            'title' => __('admin::common.success'),
-            'message' => __('admin::common.category_deleted'),
+            'title' => __('admin.success'),
+            'message' => __('admin.category_deleted'),
             'type' => 'success'
         ]);
 
@@ -113,8 +113,8 @@ class PortfolioCategoryComponent extends Component
             log_activity($category, 'oluşturuldu');
 
             $this->dispatch('toast', [
-                'title' => __('admin::common.success'),
-                'message' => __('admin::common.category_created'),
+                'title' => __('admin.success'),
+                'message' => __('admin.category_created'),
                 'type' => 'success',
             ]);
             
@@ -123,14 +123,14 @@ class PortfolioCategoryComponent extends Component
 
         } catch (\Illuminate\Validation\ValidationException $e) {
             $this->dispatch('toast', [
-                'title' => __('admin::common.error'),
-                'message' => __('admin::common.form_error'),
+                'title' => __('admin.error'),
+                'message' => __('admin.form_error'),
                 'type' => 'error',
             ]);
         } catch (\Exception $e) {
             $this->dispatch('toast', [
-                'title' => __('admin::common.error'),
-                'message' => __('admin::common.category_create_error'),
+                'title' => __('admin.error'),
+                'message' => __('admin.category_create_error'),
                 'type' => 'error',
             ]);
         }
@@ -164,8 +164,8 @@ class PortfolioCategoryComponent extends Component
         $this->loadCategories();
         
         $this->dispatch('toast', [
-            'title' => __('admin::common.success'),
-            'message' => __('admin::common.order_updated'),
+            'title' => __('admin.success'),
+            'message' => __('admin.order_updated'),
             'type' => 'success',
         ]);
     }

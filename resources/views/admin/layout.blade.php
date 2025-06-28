@@ -150,23 +150,23 @@
                         <ul class="list-inline list-inline-dots mb-0">
                             <li class="list-inline-item">
                                 <a href="#" class="link-secondary" rel="noopener">
-                                    {{ __('admin.common.documentation') }}
+                                    Dokümantasyon
                                 </a>
                             </li>
                             <li class="list-inline-item">
                                 <a href="#" class="link-secondary" rel="noopener">
-                                    {{ __('admin.common.license') }}
+                                    Lisans
                                 </a>
                             </li>
                             <li class="list-inline-item">
                                 <a href="#" class="link-secondary" rel="noopener">
-                                    {{ __('admin.common.source_code') }}
+                                    Kaynak Kodu
                                 </a>
                             </li>
                             <li class="list-inline-item">
                                 <a href="#" class="link-secondary" rel="noopener">
                                     <i class="fa-thin fa-heart text-pink"></i>
-                                    {{ __('admin.common.coded_with_love') }}
+                                    Sevgiyle kodlandı.
                                 </a>
                             </li>
                         </ul>
@@ -174,12 +174,12 @@
                     <div class="col-12 col-lg-auto mt-3 mt-lg-0">
                         <ul class="list-inline list-inline-dots mb-0">
                             <li class="list-inline-item">
-                                {{ __('admin.common.copyright') }} &copy; {{ date('Y') }}
+                                Telif Hakkı &copy; {{ date('Y') }}
                                 <a href="https://turkbilisim.com.tr" class="link-secondary" target="_blank"
                                     rel="noopener">
                                     Türk Bilişim
                                 </a>.
-                                {{ __('admin.common.all_rights_reserved') }}
+                                Tüm hakları saklıdır.
                             </li>
                             <li class="list-inline-item">
                                 <a href="#" class="link-secondary" rel="noopener">

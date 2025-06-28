@@ -155,7 +155,7 @@ class PageManageComponent extends Component
       // Eğer ana sayfa ise pasif yapılmasına izin verme
       if (($this->inputs['is_homepage'] || ($this->pageId && Page::find($this->pageId)?->is_homepage)) && isset($data['is_active']) && $data['is_active'] == false) {
           $this->dispatch('toast', [
-              'title' => __('admin::common.warning'),
+              'title' => __('admin.warning'),
               'message' => __('page::messages.homepage_cannot_be_deactivated'),
               'type' => 'warning',
           ]);
@@ -168,8 +168,8 @@ class PageManageComponent extends Component
           
           if ($data == $currentData) {
               $toast = [
-                  'title' => __('admin::common.info'),
-                  'message' => __('admin::common.no_changes'),
+                  'title' => __('admin.info'),
+                  'message' => __('admin.no_changes'),
                   'type' => 'info'
               ];
           } else {
@@ -177,7 +177,7 @@ class PageManageComponent extends Component
               log_activity($page, 'güncellendi');
               
               $toast = [
-                  'title' => __('admin::common.success'),
+                  'title' => __('admin.success'),
                   'message' => __('page::messages.page_updated'),
                   'type' => 'success'
               ];
@@ -188,7 +188,7 @@ class PageManageComponent extends Component
           log_activity($page, 'oluşturuldu');
           
           $toast = [
-              'title' => __('admin::common.success'),
+              'title' => __('admin.success'),
               'message' => __('page::messages.page_created'),
               'type' => 'success'
           ];

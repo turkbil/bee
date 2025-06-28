@@ -6,10 +6,10 @@
             <div class="card-header">
                 <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs">
                     <li class="nav-item">
-                        <a href="#tabs-1" class="nav-link active" data-bs-toggle="tab">Temel Bilgiler</a>
+                        <a href="#tabs-1" class="nav-link active" data-bs-toggle="tab">{{ __('portfolio::admin.basic_information') }}</a>
                     </li>
                     <li class="nav-item">
-                        <a href="#tabs-2" class="nav-link" data-bs-toggle="tab">SEO</a>
+                        <a href="#tabs-2" class="nav-link" data-bs-toggle="tab">{{ __('portfolio::admin.seo') }}</a>
                     </li>
                 </ul>
             </div>
@@ -20,8 +20,8 @@
                         <div class="form-floating mb-3">
                             <input type="text" wire:model="inputs.title"
                                 class="form-control @error('inputs.title') is-invalid @enderror"
-                                placeholder="Kategori başlığı">
-                            <label>Başlık</label>
+                                placeholder="{{ __('portfolio::admin.category_title') }}">
+                            <label>{{ __('portfolio::admin.category_title_label') }}</label>
                             @error('inputs.title')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -36,10 +36,10 @@
                                 <input type="checkbox" id="is_active" name="is_active" wire:model="inputs.is_active"
                                     value="1" {{ $inputs['is_active'] ? 'checked' : '' }} />
                                 <div class="state p-success p-on ms-2">
-                                    <label>Aktif</label>
+                                    <label>{{ __('portfolio::admin.active') }}</label>
                                 </div>
                                 <div class="state p-danger p-off ms-2">
-                                    <label>Aktif Değil</label>
+                                    <label>{{ __('portfolio::admin.inactive') }}</label>
                                 </div>
                             </div>
                         </div>
@@ -50,7 +50,7 @@
                         <div class="form-floating mb-3">
                             <input type="text" wire:model="inputs.slug"
                                 class="form-control @error('inputs.slug') is-invalid @enderror" placeholder="Slug">
-                            <label>Slug</label>
+                            <label>{{ __('portfolio::admin.slug_label') }}</label>
                             @error('inputs.slug')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -64,16 +64,16 @@
                                 data-choices-multiple="true"
                                 data-choices-search="false"
                                 data-choices-filter="true"
-                                data-choices-placeholder="Anahtar kelime girin..."
+                                data-choices-placeholder="{{ __('portfolio::admin.meta_keywords_placeholder') }}"
                                 value="{{ is_array($inputs['metakey']) ? implode(',', $inputs['metakey']) : $inputs['metakey'] }}"
-                                placeholder="Anahtar kelime girin...">
-                            <label>Meta Anahtar Kelimeler</label>
+                                placeholder="{{ __('portfolio::admin.meta_keywords_placeholder') }}">
+                            <label>{{ __('portfolio::admin.meta_keywords_label') }}</label>
                         </div>
 
                         <div class="form-floating mb-3">
                             <textarea wire:model="inputs.metadesc" class="form-control" data-bs-toggle="autosize"
-                                placeholder="Meta açıklaması"></textarea>
-                            <label>Meta Açıklama</label>
+                                placeholder="{{ __('portfolio::admin.meta_description_placeholder_text') }}"></textarea>
+                            <label>{{ __('portfolio::admin.meta_description_label') }}</label>
                         </div>
                     </div>
                 </div>

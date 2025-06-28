@@ -112,7 +112,7 @@
                                                     <a href="{{ route('admin.studio.editor', ['module' => 'page', 'id' => $page->page_id]) }}" 
                                                        class="btn btn-primary btn-sm">
                                                         <i class="fas fa-wand-magic-sparkles me-1"></i>
-                                                        {{ __('studio::admin.edit') }}
+                                                        {{ __('admin.edit') }}
                                                     </a>
                                                 </div>
                                             </div>
@@ -223,8 +223,8 @@
                                         <span class="avatar avatar-sm bg-purple text-white">4</span>
                                     </div>
                                     <div class="flex-fill ms-3">
-                                        <div class="fw-bold">{{ __('studio::admin.save') }}</div>
-                                        <div class="text-muted small">{{ __('studio::admin.save_description') }}</div>
+                                        <div class="fw-bold">{{ __('admin.save') }}</div>
+                                        <div class="text-muted small">{{ __('admin.save_description') }}</div>
                                     </div>
                                 </div>
                             </div>

@@ -11,26 +11,53 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
+    ->booted(function ($app) {
+        // Admin dilleri için namespace kaydet
+        $adminLangPath = lang_path('admin');
+        if (is_dir($adminLangPath)) {
+            $app['translator']->addNamespace('admin', $adminLangPath);
+        }
+        
+        // Modül dynamic route'larını TEK SEFER yükle - testing ortamında değil
+        if (!$app->environment('testing')) {
+            try {
+                \App\Services\ModuleRouteService::autoLoadModuleRoutes();
+            } catch (\Exception $e) {
+                // Silent fail - route yükleme hatasını loglayalım ama app'i çökermeyelim
+                \Log::error('ModuleRouteService boot error: ' . $e->getMessage());
+            }
+        }
+    })
     ->withMiddleware(function (Middleware $middleware) {
-        // Web middleware grubuna InitializeTenancy'yi doğrudan ekleyelim
+        // 1. TENANT - Domain belirleme (EN ÖNCELİKLİ)
         $middleware->prependToGroup('web', \App\Http\Middleware\InitializeTenancy::class);
         
-        // Language middleware'ini ekle
-        $middleware->appendToGroup('web', \App\Http\Middleware\SetLanguageMiddleware::class);
+        // 2. SESSION - Tenant'tan HEMEN sonra
+        $middleware->appendToGroup('web', \Illuminate\Session\Middleware\StartSession::class);
         
-        // SEO middleware'leri ekle
+        // 3. DİL - Session'dan sonra (Site için varsayılan)
+        $middleware->appendToGroup('web', \Modules\LanguageManagement\app\Http\Middleware\SiteSetLocaleMiddleware::class);
+        
+        // 4. TEMA - Dil'den sonra
+        $middleware->appendToGroup('web', \App\Http\Middleware\CheckThemeStatus::class);
+        
+        // 5. SEO & CACHE - Son sırada
         $middleware->appendToGroup('web', \Spatie\MissingPageRedirector\RedirectsMissingPages::class);
         $middleware->appendToGroup('web', \Spatie\ResponseCache\Middlewares\CacheResponse::class);
         
         // Middleware alias tanımları
         $middleware->alias([
             'tenant' => \App\Http\Middleware\InitializeTenancy::class,
+            'auth.cache.bypass' => \App\Http\Middleware\AuthCacheBypass::class,
+            'page.tracker' => \App\Http\Middleware\PageTracker::class,
             'root.access' => \App\Http\Middleware\RootAccessMiddleware::class,
             'admin.access' => \App\Http\Middleware\AdminAccessMiddleware::class,
             'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
             'module.permission' => \Modules\UserManagement\App\Http\Middleware\ModulePermissionMiddleware::class,
+            'locale.admin' => \Modules\LanguageManagement\app\Http\Middleware\AdminSetLocaleMiddleware::class,
+            'locale.site' => \Modules\LanguageManagement\app\Http\Middleware\SiteSetLocaleMiddleware::class,
         ]);
                 
         // Admin middleware grubu
@@ -62,4 +89,22 @@ return Application::configure(basePath: dirname(__DIR__))
                 return response()->view('errors.offline', ['domain' => $request->getHost()], 503);
             }
         });
-    })->create();
+    })
+    ->create();
+
+// Helper dosyalarını doğru sırada yükle
+$helperFiles = [
+    app_path('Helpers/Functions.php'),           // 1. Temel fonksiyonlar (Log, Settings dahil)
+    app_path('Helpers/CacheHelper.php'),         // 2. Cache helper
+    app_path('Helpers/LanguageHelper.php'),      // 3. Dil helper'ları
+    app_path('Helpers/RouteHelper.php'),         // 4. Route helper'ları
+    app_path('Helpers/TranslationHelper.php'),   // 5. Translation helper
+    app_path('Helpers/TenantHelpers.php'),       // 6. Tenant helper'ları
+    app_path('Helpers/ModulePermissionHelper.php'), // 7. Permission helper
+];
+
+foreach ($helperFiles as $file) {
+    if (file_exists($file)) {
+        require_once $file;
+    }
+}

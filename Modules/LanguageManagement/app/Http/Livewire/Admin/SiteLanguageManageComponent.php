@@ -75,6 +75,20 @@ class SiteLanguageManageComponent extends Component
         try {
             $siteLanguageService = app(SiteLanguageService::class);
             
+            // Varsayılan dil koruma kontrolü
+            if ($this->isEditing) {
+                $currentLanguage = SiteLanguage::find($this->languageId);
+                if ($currentLanguage && $currentLanguage->is_default) {
+                    // Varsayılan dil pasif yapılamaz
+                    if (!$this->is_active) {
+                        $this->addError('is_active', 'Varsayılan site dili pasif yapılamaz.');
+                        return;
+                    }
+                    // Varsayılan durum korunmalı
+                    $this->is_default = true;
+                }
+            }
+            
             // Kod benzersizlik kontrolü (düzenleme hariç)
             if (!$this->isEditing) {
                 $existing = SiteLanguage::where('code', $this->code)->first();

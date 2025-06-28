@@ -22,14 +22,22 @@ config(['database.connections.tenant.driver' => 'mysql']);
 DB::purge('tenant');
 }
 
-// Dil seçim mantığı: 1. User admin dili 2. Tenant admin dili 3. tr
+// Dil seçim mantığı: 1. Session 2. User admin dili 3. Tenant admin dili 4. tr
 $currentLocale = 'tr'; // Varsayılan
 
-// 1. Kullanıcının seçtiği admin dili
-if (auth()->check() && auth()->user()->language) {
+// 1. Session'dan admin dili (en güncel)
+if (session('admin_locale')) {
+    $currentLocale = session('admin_locale');
+}
+// 2. Kullanıcının kaydettiği admin dil tercihi
+elseif (auth()->check() && auth()->user()->admin_language_preference) {
+    $currentLocale = auth()->user()->admin_language_preference;
+}
+// 3. Kullanıcının eski dil tercihi (fallback)
+elseif (auth()->check() && auth()->user()->language) {
     $currentLocale = auth()->user()->language;
 }
-// 2. Tenant'ın seçtiği admin dili (varsa)
+// 4. Tenant'ın seçtiği admin dili (varsa)
 elseif (function_exists('tenant') && tenant() && isset(tenant()->admin_language)) {
     $currentLocale = tenant()->admin_language;
 }
@@ -82,11 +90,20 @@ $siteTitle = settings('site_title', config('app.name'));
         <div class="navbar-nav flex-row order-md-last align-items-center">
             <!-- Desktop: Tüm butonlar görünür -->
             <div class="d-none d-md-flex align-items-center">
-                <!-- Tema Ayarları Butonu -->
+                <!-- Anasayfa Butonu -->
                 <div class="nav-item me-2">
+                    <a href="{{ url('/') }}" target="_blank" class="nav-link d-flex align-items-center justify-content-center" 
+                        data-bs-toggle="tooltip" data-bs-placement="bottom" 
+                        title="{{ __('admin::common.homepage') }}" 
+                        style="width: 40px; height: 40px; border-radius: 0.375rem;">
+                        <i class="fa-solid fa-home" style="font-size: 18px;"></i>
+                    </a>
+                </div>
+
+                <!-- Tema Ayarları Butonu -->
+                <div class="nav-item me-2" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('admin::common.theme_settings') }}">
                     <a href="#" class="nav-link d-flex align-items-center justify-content-center" data-bs-toggle="offcanvas"
-                        data-bs-target="#offcanvasTheme" data-bs-toggle="tooltip" data-bs-placement="bottom" 
-                        title="{{ t('common.theme_settings') }}" 
+                        data-bs-target="#offcanvasTheme" 
                         style="width: 40px; height: 40px; border-radius: 0.375rem;">
                         <i class="fa-solid fa-brush" style="font-size: 18px;"></i>
                     </a>
@@ -94,7 +111,7 @@ $siteTitle = settings('site_title', config('app.name'));
 
                 <!-- Gece/Gündüz Mod Switch'i -->
                 <div class="nav-item me-2">
-                    <div class="d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; border-radius: 0.375rem; margin-top: -2px;" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ t('common.theme_mode') }}">
+                    <div class="d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; border-radius: 0.375rem; margin-top: -2px;" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('admin::common.theme_mode') }}">
                         <div class="theme-mode" data-theme="light">
                             <input type="checkbox" id="switch" class="dark-switch">
                             <div class="app">
@@ -115,22 +132,23 @@ $siteTitle = settings('site_title', config('app.name'));
                 </div>
                 
                 <!-- Son Aktiviteler Dropdown -->
-                <div class="nav-item dropdown me-2">
-                    <a href="#" class="nav-link d-flex align-items-center justify-content-center" data-bs-toggle="dropdown" tabindex="-1" data-bs-auto-close="outside" aria-expanded="false" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ t('common.recent_activities') }}" style="width: 40px; height: 40px; border-radius: 0.375rem;">
+                <div class="nav-item dropdown me-2" id="activities-dropdown" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('admin::common.recent_activities') }}">
+                    <a href="#" class="nav-link d-flex align-items-center justify-content-center" data-bs-toggle="dropdown" tabindex="-1" aria-expanded="false" style="width: 40px; height: 40px; border-radius: 0.375rem;">
                         <i class="fa-solid fa-bell" style="font-size: 18px;"></i>
                         @php
-                        // Son 5 dakikadaki aktivite sayısı  
-                        $recentActivityCount = \Spatie\Activitylog\Models\Activity::where('created_at', '>=', now()->subMinutes(5))->count();
+                        // Son aktiviteleri ve okunmamış sayısını hesapla
+                        $lastReadTime = $_COOKIE['last_activity_read'] ?? 0;
+                        $unreadActivitiesCount = \Spatie\Activitylog\Models\Activity::where('created_at', '>', date('Y-m-d H:i:s', $lastReadTime))->count();
                         @endphp
-                        @if($recentActivityCount > 0)
-                        <span class="badge bg-red">{{ $recentActivityCount }}</span>
+                        @if($unreadActivitiesCount > 0)
+                        <span class="badge bg-red">{{ $unreadActivitiesCount }}</span>
                         @endif
                     </a>
                     <div class="dropdown-menu dropdown-menu-arrow dropdown-menu-end dropdown-menu-card">
                         <div class="card">
                             <div class="card-header d-flex">
-                                <h3 class="card-title">{{ t('common.recent_activities') }}</h3>
-                                <div class="btn-close ms-auto" data-bs-dismiss="dropdown"></div>
+                                <h3 class="card-title">{{ __('admin::common.recent_activities') }}</h3>
+                                <button type="button" class="btn-close ms-auto" data-bs-dismiss="dropdown" aria-label="Kapat"></button>
                             </div>
                             <div class="list-group list-group-flush list-group-hoverable">
                                 @php
@@ -167,14 +185,14 @@ $siteTitle = settings('site_title', config('app.name'));
                                 <div class="list-group-item py-4">
                                     <div class="text-center text-muted">
                                         <i class="fa-solid fa-inbox mb-2" style="font-size: 24px;"></i>
-                                        <div>{{ t('common.no_activities_yet') }}</div>
+                                        <div>{{ __('admin::common.no_activities_yet') }}</div>
                                     </div>
                                 </div>
                                 @endforelse
                             </div>
                             <div class="card-body">
                                 <a href="{{ route('admin.usermanagement.activity.logs') }}" class="btn btn-outline-primary w-100">
-                                    {{ t('common.view_all_activities') }}
+                                    {{ __('admin::common.view_all_activities') }}
                                 </a>
                             </div>
                         </div>
@@ -182,58 +200,66 @@ $siteTitle = settings('site_title', config('app.name'));
                 </div>
                 
                 <!-- Hızlı İşlemler Dropdown -->
-                <div class="nav-item dropdown me-3">
-                    <a href="#" class="nav-link d-flex align-items-center justify-content-center" data-bs-toggle="dropdown" tabindex="-1" data-bs-auto-close="outside" aria-expanded="false" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ t('common.quick_actions') }}" style="width: 40px; height: 40px; border-radius: 0.375rem;">
+                <div class="nav-item dropdown me-3" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('admin::common.quick_actions') }}">
+                    <a href="#" class="nav-link d-flex align-items-center justify-content-center" data-bs-toggle="dropdown" tabindex="-1" aria-expanded="false" style="width: 40px; height: 40px; border-radius: 0.375rem;">
                         <i class="fa-solid fa-grid-2" style="font-size: 18px;"></i>
                     </a>
                     <div class="dropdown-menu dropdown-menu-arrow dropdown-menu-end dropdown-menu-card">
                         <div class="card">
-                            <div class="card-header">
-                                <div class="card-title">{{ t('common.quick_actions') }}</div>
-                                <div class="card-actions btn-actions">
-                                    <a href="#" class="btn-action" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTheme">
-                                        <i class="fa-solid fa-brush" style="font-size: 18px;"></i>
-                                    </a>
-                                </div>
+                            <div class="card-header d-flex">
+                                <h3 class="card-title">{{ __('admin::common.quick_actions') }}</h3>
+                                <button type="button" class="btn-close ms-auto" data-bs-dismiss="dropdown" aria-label="Kapat"></button>
                             </div>
                             <div class="card-body p-3">
                                 <div class="row g-3">
                                     @if($isCentral)
                                     <div class="col-4">
+                                        <a href="#" class="d-flex flex-column text-center py-3 px-2 quick-action-item" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTheme">
+                                            <i class="fa-solid fa-brush mb-2" style="font-size: 28px;"></i>
+                                            <span class="nav-link-title">{{ __('admin::common.theme_settings') }}</span>
+                                        </a>
+                                    </div>
+                                    <div class="col-4">
                                         <a href="#" class="d-flex flex-column text-center py-3 px-2 quick-action-item cache-clear-btn" data-action="clear">
                                             <i class="fa-solid fa-broom mb-2" style="font-size: 28px;"></i>
-                                            <span class="nav-link-title">{{ t('common.clear_cache') }}</span>
+                                            <span class="nav-link-title">{{ __('admin::common.clear_cache') }}</span>
                                         </a>
                                     </div>
                                     <div class="col-4">
                                         <a href="#" class="d-flex flex-column text-center py-3 px-2 quick-action-item cache-clear-all-btn" data-action="clear-all">
                                             <i class="fa-solid fa-trash-can mb-2" style="font-size: 28px;"></i>
-                                            <span class="nav-link-title">{{ t('common.system_cache') }}</span>
+                                            <span class="nav-link-title">{{ __('admin::common.system_cache') }}</span>
                                         </a>
                                     </div>
                                     <div class="col-4">
                                         <a href="{{ route('admin.modulemanagement.index') }}" class="d-flex flex-column text-center py-3 px-2 quick-action-item">
                                             <i class="fa-solid fa-puzzle-piece mb-2" style="font-size: 28px;"></i>
-                                            <span class="nav-link-title">{{ t('common.modules') }}</span>
+                                            <span class="nav-link-title">{{ __('admin::common.modules') }}</span>
                                         </a>
                                     </div>
                                     @else
                                     <div class="col-4">
+                                        <a href="#" class="d-flex flex-column text-center py-3 px-2 quick-action-item" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTheme">
+                                            <i class="fa-solid fa-brush mb-2" style="font-size: 28px;"></i>
+                                            <span class="nav-link-title">{{ __('admin::common.theme_settings') }}</span>
+                                        </a>
+                                    </div>
+                                    <div class="col-4">
                                         <a href="#" class="d-flex flex-column text-center py-3 px-2 quick-action-item cache-clear-btn" data-action="clear">
                                             <i class="fa-solid fa-broom mb-2" style="font-size: 28px;"></i>
-                                            <span class="nav-link-title">{{ t('common.clear_cache') }}</span>
+                                            <span class="nav-link-title">{{ __('admin::common.clear_cache') }}</span>
                                         </a>
                                     </div>
                                     <div class="col-4">
                                         <a href="{{ route('admin.modulemanagement.index') }}" class="d-flex flex-column text-center py-3 px-2 quick-action-item">
                                             <i class="fa-solid fa-puzzle-piece mb-2" style="font-size: 28px;"></i>
-                                            <span class="nav-link-title">{{ t('common.modules') }}</span>
+                                            <span class="nav-link-title">{{ __('admin::common.modules') }}</span>
                                         </a>
                                     </div>
                                     <div class="col-4">
                                         <a href="{{ route('admin.usermanagement.index') }}" class="d-flex flex-column text-center py-3 px-2 quick-action-item">
                                             <i class="fa-solid fa-users mb-2" style="font-size: 28px;"></i>
-                                            <span class="nav-link-title">{{ t('common.users') }}</span>
+                                            <span class="nav-link-title">{{ __('admin::common.users') }}</span>
                                         </a>
                                     </div>
                                     @endif
@@ -246,7 +272,7 @@ $siteTitle = settings('site_title', config('app.name'));
                                     <div class="col-4">
                                         <a href="{{ route('admin.settingmanagement.index') }}" class="d-flex flex-column text-center py-3 px-2 quick-action-item">
                                             <i class="fa-solid fa-sliders mb-2" style="font-size: 28px;"></i>
-                                            <span class="nav-link-title">{{ t('common.settings') }}</span>
+                                            <span class="nav-link-title">{{ __('admin::common.settings') }}</span>
                                         </a>
                                     </div>
                                 </div>
@@ -260,20 +286,27 @@ $siteTitle = settings('site_title', config('app.name'));
             <div class="d-md-none nav-item dropdown me-3">
                 <a href="#" class="nav-link d-flex flex-column align-items-center justify-content-center" data-bs-toggle="dropdown" tabindex="-1" data-bs-auto-close="outside" aria-expanded="false" style="width: 50px; height: 50px; border-radius: 0.375rem;">
                     <i class="fa-solid fa-ellipsis-v" style="font-size: 16px;"></i>
-                    <small class="mt-1" style="font-size: 9px; line-height: 1;">{{ t('common.menu') }}</small>
+                    <small class="mt-1" style="font-size: 9px; line-height: 1;">{{ __('admin::common.menu') }}</small>
                 </a>
                 <div class="dropdown-menu dropdown-menu-arrow dropdown-menu-end dropdown-menu-card">
                     <div class="card">
                         <div class="card-header">
-                            <div class="card-title">{{ t('common.admin_actions') }}</div>
+                            <div class="card-title">{{ __('admin::common.admin_actions') }}</div>
                         </div>
                         <div class="card-body p-2">
                             <div class="row g-2">
+                                <!-- Anasayfa -->
+                                <div class="col-6">
+                                    <a href="{{ url('/') }}" target="_blank" class="d-flex flex-column text-center p-2 border rounded mobile-quick-action">
+                                        <i class="fa-solid fa-home mb-1 text-primary" style="font-size: 18px;"></i>
+                                        <small class="fw-bold">{{ __('admin::common.homepage') }}</small>
+                                    </a>
+                                </div>
                                 <!-- Cache Temizle -->
                                 <div class="col-6">
                                     <a href="#" class="d-flex flex-column text-center p-2 border rounded mobile-quick-action cache-clear-btn" data-action="clear">
                                         <i class="fa-solid fa-broom mb-1 text-primary" style="font-size: 18px;"></i>
-                                        <small class="fw-bold">{{ t('common.clear_cache') }}</small>
+                                        <small class="fw-bold">{{ __('admin::common.clear_cache') }}</small>
                                     </a>
                                 </div>
                                 @if($isCentral)
@@ -281,7 +314,7 @@ $siteTitle = settings('site_title', config('app.name'));
                                 <div class="col-6">
                                     <a href="#" class="d-flex flex-column text-center p-2 border rounded mobile-quick-action cache-clear-all-btn" data-action="clear-all">
                                         <i class="fa-solid fa-trash-can mb-1 text-danger" style="font-size: 18px;"></i>
-                                        <small class="fw-bold">{{ t('common.system_cache') }}</small>
+                                        <small class="fw-bold">{{ __('admin::common.system_cache') }}</small>
                                     </a>
                                 </div>
                                 @endif
@@ -289,21 +322,21 @@ $siteTitle = settings('site_title', config('app.name'));
                                 <div class="col-6">
                                     <a href="#" class="d-flex flex-column text-center p-2 border rounded mobile-quick-action" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTheme">
                                         <i class="fa-solid fa-brush mb-1 text-primary" style="font-size: 18px;"></i>
-                                        <small class="fw-bold">{{ t('common.theme_settings') }}</small>
+                                        <small class="fw-bold">{{ __('admin::common.theme_settings') }}</small>
                                     </a>
                                 </div>
                                 <!-- Aktiviteler -->
                                 <div class="col-6">
                                     <a href="{{ route('admin.usermanagement.activity.logs') }}" class="d-flex flex-column text-center p-2 border rounded mobile-quick-action">
                                         <i class="fa-solid fa-bell mb-1 text-info" style="font-size: 18px;"></i>
-                                        <small class="fw-bold">{{ t('common.recent_activities') }}</small>
+                                        <small class="fw-bold">{{ __('admin::common.recent_activities') }}</small>
                                     </a>
                                 </div>
                                 <!-- Modüller -->
                                 <div class="col-6">
                                     <a href="{{ route('admin.modulemanagement.index') }}" class="d-flex flex-column text-center p-2 border rounded mobile-quick-action">
                                         <i class="fa-solid fa-puzzle-piece mb-1 text-info" style="font-size: 18px;"></i>
-                                        <small class="fw-bold">{{ t('common.module_management') }}</small>
+                                        <small class="fw-bold">{{ __('admin::common.module_management') }}</small>
                                     </a>
                                 </div>
                                 @if(!$isCentral)
@@ -311,7 +344,7 @@ $siteTitle = settings('site_title', config('app.name'));
                                 <div class="col-6">
                                     <a href="{{ route('admin.usermanagement.index') }}" class="d-flex flex-column text-center p-2 border rounded mobile-quick-action">
                                         <i class="fa-solid fa-users mb-1 text-success" style="font-size: 18px;"></i>
-                                        <small class="fw-bold">{{ t('common.user_management') }}</small>
+                                        <small class="fw-bold">{{ __('admin::common.user_management') }}</small>
                                     </a>
                                 </div>
                                 @endif
@@ -319,49 +352,19 @@ $siteTitle = settings('site_title', config('app.name'));
                                 <div class="col-6">
                                     <a href="{{ route('admin.studio.index') }}" class="d-flex flex-column text-center p-2 border rounded mobile-quick-action">
                                         <i class="fa-solid fa-palette mb-1 text-warning" style="font-size: 18px;"></i>
-                                        <small class="fw-bold">{{ t('common.studio_editor') }}</small>
+                                        <small class="fw-bold">{{ __('admin::common.studio_editor') }}</small>
                                     </a>
                                 </div>
                                 <!-- Ayarlar -->
                                 <div class="col-6">
                                     <a href="{{ route('admin.settingmanagement.index') }}" class="d-flex flex-column text-center p-2 border rounded mobile-quick-action">
                                         <i class="fa-solid fa-sliders mb-1 text-secondary" style="font-size: 18px;"></i>
-                                        <small class="fw-bold">{{ t('common.system_settings') }}</small>
+                                        <small class="fw-bold">{{ __('admin::common.system_settings') }}</small>
                                     </a>
                                 </div>
-                                <!-- Dil Seçimi (Mobil) -->
+                                <!-- Dil Seçimi (Mobil) - Livewire ile -->
                                 <div class="col-6">
-                                    <div class="dropdown">
-                                        <a href="#" class="d-flex flex-column text-center p-2 border rounded mobile-quick-action" 
-                                           data-bs-toggle="dropdown">
-                                            @if($currentLanguage && $currentLanguage->flag_icon)
-                                                <span class="mb-1" style="font-size: 18px;">{!! $currentLanguage->flag_icon !!}</span>
-                                            @else
-                                                <i class="fa-solid fa-language mb-1 text-primary" style="font-size: 18px;"></i>
-                                            @endif
-                                            <small class="fw-bold">{{ t('common.language_selection') }}</small>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-end">
-                                            @forelse($systemLanguages as $language)
-                                                <a href="{{ route('admin.language.switch', $language->code) }}" 
-                                                   class="dropdown-item {{ $currentLocale == $language->code ? 'active' : '' }}">
-                                                    <span class="me-2">
-                                                        @if($language->flag_icon)
-                                                            {!! $language->flag_icon !!}
-                                                        @else
-                                                            <i class="fa-solid fa-flag"></i>
-                                                        @endif
-                                                    </span>
-                                                    {{ $language->native_name }}
-                                                </a>
-                                            @empty
-                                                <div class="dropdown-item text-muted">
-                                                    <i class="fa-solid fa-info-circle me-2"></i>
-                                                    {{ t('common.no_language_found') }}
-                                                </div>
-                                            @endforelse
-                                        </div>
-                                    </div>
+                                    @livewire('languagemanagement::admin-language-switcher')
                                 </div>
                             </div>
                         </div>
@@ -369,11 +372,11 @@ $siteTitle = settings('site_title', config('app.name'));
                 </div>
             </div>
             
-            <!-- Dil Değiştirme Dropdown (Livewire) -->
-            <livewire:language-switcher />
+            <!-- Dil Değiştirme Dropdown (Livewire) - Admin Context -->
+            @livewire('languagemanagement::admin-language-switcher')
             
             <div class="nav-item dropdown">
-                <a href="#" class="nav-link d-flex lh-1 p-0 px-2 align-items-center" data-bs-toggle="dropdown" aria-label="Open user menu" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ t('common.user_menu') }}">
+                <a href="#" class="nav-link d-flex lh-1 p-0 px-2 align-items-center" data-bs-toggle="dropdown" aria-label="Open user menu" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('admin::common.user_menu') }}">
                     <span class="avatar avatar-sm d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; border-radius: 0.375rem;">
                         <i class="fa-solid fa-user" style="font-size: 18px;"></i>
                     </span>
@@ -398,13 +401,13 @@ $siteTitle = settings('site_title', config('app.name'));
                 </a>
                 <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
                     <a href="{{ route('admin.usermanagement.user.activity.logs', ['id' => auth()->id()]) }}"
-                        class="dropdown-item">{{ t('common.my_activities') }}</a>
+                        class="dropdown-item">{{ __('admin::common.my_activities') }}</a>
                     <a href="{{ route('admin.usermanagement.manage', ['id' => auth()->id()]) }}"
-                        class="dropdown-item">{{ t('common.my_profile') }}</a>
+                        class="dropdown-item">{{ __('admin::common.my_profile') }}</a>
                     <div class="dropdown-divider"></div>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit" class="dropdown-item">{{ t('common.logout') }}</button>
+                        <button type="submit" class="dropdown-item">{{ __('admin::common.logout') }}</button>
                     </form>
                 </div>
             </div>
@@ -420,7 +423,7 @@ $siteTitle = settings('site_title', config('app.name'));
                             <span class="nav-link-icon d-md-none d-lg-inline-block">
                                 <i class="fa-solid fa-file-alt" style="font-size: 18px;"></i>
                             </span>
-                            <span class="nav-link-title">{{ t('common.content') }}</span>
+                            <span class="nav-link-title">{{ __('admin::common.content') }}</span>
                         </a>
                         <div class="dropdown-menu">
                             @foreach($groupedModules['content'] as $module)
@@ -440,7 +443,7 @@ $siteTitle = settings('site_title', config('app.name'));
                             <span class="nav-link-icon d-md-none d-lg-inline-block">
                                 <i class="fa-solid fa-puzzle-piece" style="font-size: 18px;"></i>
                             </span>
-                            <span class="nav-link-title">{{ t('common.widget') }}</span>
+                            <span class="nav-link-title">{{ __('admin::common.widget') }}</span>
                         </a>
                         <div class="dropdown-menu">
                             @foreach($groupedModules['widget'] as $module)
@@ -460,7 +463,7 @@ $siteTitle = settings('site_title', config('app.name'));
                             <span class="nav-link-icon d-md-none d-lg-inline-block">
                                 <i class="fa-solid fa-cogs" style="font-size: 18px;"></i>
                             </span>
-                            <span class="nav-link-title">{{ t('common.management') }}</span>
+                            <span class="nav-link-title">{{ __('admin::common.management') }}</span>
                         </a>
                         <div class="dropdown-menu">
                             @foreach($groupedModules['management'] as $module)
@@ -480,7 +483,7 @@ $siteTitle = settings('site_title', config('app.name'));
                             <span class="nav-link-icon d-md-none d-lg-inline-block">
                                 <i class="fa-solid fa-server" style="font-size: 18px;"></i>
                             </span>
-                            <span class="nav-link-title">{{ t('common.system') }}</span>
+                            <span class="nav-link-title">{{ __('admin::common.system') }}</span>
                         </a>
                         <div class="dropdown-menu">
                             @foreach($groupedModules['system'] as $module)
@@ -499,4 +502,24 @@ $siteTitle = settings('site_title', config('app.name'));
 </header>
 
 @include('admin.components.theme-builder')
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Aktiviteler dropdown'ına tıklayınca badge'i sıfırla
+    const activitiesDropdown = document.getElementById('activities-dropdown');
+    if (activitiesDropdown) {
+        activitiesDropdown.addEventListener('shown.bs.dropdown', function() {
+            // Cookie'yi güncelle (şimdiki zaman)
+            const now = Math.floor(Date.now() / 1000);
+            document.cookie = `last_activity_read=${now}; path=/; max-age=${60*60*24*30}`; // 30 gün
+            
+            // Badge'i gizle
+            const badge = this.querySelector('.badge');
+            if (badge) {
+                badge.style.display = 'none';
+            }
+        });
+    }
+});
+</script>
 

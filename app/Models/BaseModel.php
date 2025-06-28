@@ -55,7 +55,14 @@ class BaseModel extends Model
      */
     protected function ensureUniqueSlug()
     {
-        if (!empty($this->slug)) {
+        // HasTranslations trait'i varsa JSON slug kontrolü
+        if (method_exists($this, 'isTranslatable') && $this->isTranslatable('slug')) {
+            // JSON slug sistemi için özel kontrol (şimdilik skip)
+            return;
+        }
+        
+        // Normal string slug kontrolü
+        if (!empty($this->slug) && is_string($this->slug)) {
             $originalSlug = $this->slug;
             $suffix = 1;
 

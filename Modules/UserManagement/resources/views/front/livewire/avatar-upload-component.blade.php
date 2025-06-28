@@ -1,7 +1,7 @@
 <div>
     <!-- Mevcut Avatar -->
     <div class="mb-6">
-        <h4 class="text-sm font-medium text-gray-700 mb-4">{{ t('usermanagement::general.current_avatar') }}</h4>
+        <h4 class="text-sm font-medium text-gray-700 mb-4">{{ __('usermanagement::general.current_avatar') }}</h4>
         <div class="flex items-center space-x-4">
             @if($user->getFirstMedia('avatar'))
                 <div class="relative">
@@ -20,16 +20,16 @@
                     </form>
                 </div>
                 <div class="text-sm text-gray-600">
-                    <p class="font-medium">{{ t('usermanagement::general.avatar_uploaded') }}</p>
-                    <p>{{ t('usermanagement::general.change_avatar_text') }}</p>
+                    <p class="font-medium">{{ __('usermanagement::general.avatar_uploaded') }}</p>
+                    <p>{{ __('usermanagement::general.change_avatar_text') }}</p>
                 </div>
             @else
                 <div class="w-24 h-24 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-2xl">
                     {{ strtoupper(substr($user->name, 0, 1)) }}
                 </div>
                 <div class="text-sm text-gray-600">
-                    <p class="font-medium">{{ t('usermanagement::general.no_avatar') }}</p>
-                    <p>{{ t('usermanagement::general.upload_profile_photo') }}</p>
+                    <p class="font-medium">{{ __('usermanagement::general.no_avatar') }}</p>
+                    <p>{{ __('usermanagement::general.upload_profile_photo') }}</p>
                 </div>
             @endif
         </div>
@@ -46,9 +46,9 @@
                     </svg>
                     
                     <p class="mb-2 text-sm text-gray-600">
-                        <span class="font-semibold">{{ t('usermanagement::general.click_or_select') }}</span>
+                        <span class="font-semibold">{{ __('usermanagement::general.click_or_select') }}</span>
                     </p>
-                    <p class="text-xs text-gray-500">{{ t('usermanagement::general.supported_formats') }}</p>
+                    <p class="text-xs text-gray-500">{{ __('usermanagement::general.supported_formats') }}</p>
                 </label>
                 
                 <input id="avatar-upload" 
@@ -61,7 +61,7 @@
         </div>
         
         <button type="submit" class="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg transition-colors">
-            {{ t('usermanagement::general.avatar_upload') }}
+            {{ __('usermanagement::general.avatar_upload') }}
         </button>
     </form>
 

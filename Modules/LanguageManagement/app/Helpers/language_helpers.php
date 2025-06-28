@@ -120,3 +120,70 @@ if (!function_exists('set_user_site_language')) {
         return app(SiteLanguageService::class)->setUserSiteLanguagePreference($languageCode);
     }
 }
+
+if (!function_exists('needs_locale_prefix')) {
+    /**
+     * Bu dil için URL prefix gerekli mi?
+     */
+    function needs_locale_prefix(string $locale): bool
+    {
+        if (class_exists('Modules\LanguageManagement\app\Services\UrlPrefixService')) {
+            return \Modules\LanguageManagement\app\Services\UrlPrefixService::needsPrefix($locale);
+        }
+        
+        $defaultLanguage = default_site_language();
+        return $locale !== $defaultLanguage;
+    }
+}
+
+if (!function_exists('locale_route')) {
+    /**
+     * Locale-aware route oluştur
+     */
+    function locale_route(string $name, array $parameters = [], string $locale = null): string
+    {
+        $locale = $locale ?? app()->getLocale();
+        
+        if (needs_locale_prefix($locale)) {
+            $parameters = array_merge(['lang' => $locale], $parameters);
+            return route($name, $parameters);
+        }
+        
+        return route($name, $parameters);
+    }
+}
+
+if (!function_exists('current_url_for_locale')) {
+    /**
+     * Mevcut URL'i başka dil için oluştur
+     */
+    function current_url_for_locale(string $locale): string
+    {
+        try {
+            $request = request();
+            $currentLocale = app()->getLocale();
+            $path = $request->path();
+            
+            // Ana sayfa kontrolü
+            if ($path === '/') {
+                return needs_locale_prefix($locale) ? url('/' . $locale) : url('/');
+            }
+            
+            // Mevcut URL'den locale prefix'ini temizle
+            if (needs_locale_prefix($currentLocale)) {
+                $path = preg_replace('/^' . preg_quote($currentLocale, '/') . '\//', '', $path);
+            }
+            
+            // Yeni locale için prefix ekle (gerekirse)
+            if (needs_locale_prefix($locale)) {
+                $path = $locale . '/' . $path;
+            }
+            
+            return url('/' . ltrim($path, '/'));
+            
+        } catch (\Exception $e) {
+            // Fallback to language switch route
+            return url('/language/' . $locale);
+        }
+    }
+}

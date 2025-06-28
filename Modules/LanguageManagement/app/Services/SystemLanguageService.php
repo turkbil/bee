@@ -192,6 +192,22 @@ class SystemLanguageService
     }
     
     /**
+     * Mevcut dili getir (LanguageService için)
+     */
+    public function getCurrentLanguage(): string
+    {
+        return $this->getCurrentAdminLocale();
+    }
+    
+    /**
+     * Mevcut dili set et (LanguageService için)
+     */
+    public function setCurrentLanguage(string $languageCode): bool
+    {
+        return $this->setAdminLocale($languageCode);
+    }
+    
+    /**
      * Sistem dil cache'ini temizle
      */
     public function clearSystemLanguageCache(): void
@@ -202,6 +218,17 @@ class SystemLanguageService
         foreach ($languages as $language) {
             Cache::forget("system_language.{$language->code}");
         }
+    }
+    
+    /**
+     * Aktif sistem dillerini collection olarak al (LanguageService için)
+     */
+    public function getAvailableLanguages()
+    {
+        return SystemLanguage::where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get();
     }
     
     /**

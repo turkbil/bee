@@ -5,21 +5,12 @@ namespace App\Services;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Log;
 use App\Services\ModuleSlugService;
+use Modules\LanguageManagement\app\Services\UrlPrefixService;
 
 class DynamicRouteService
 {
     public function handleDynamicRoute($slug1, $slug2 = null)
     {
-        // GEÇİCİ LOG - Debug için
-        if (request() && str_starts_with(request()->getPathInfo(), '/admin')) {
-            Log::info('DynamicRouteService::handleDynamicRoute admin yolunda çağrıldı', [
-                'slug1' => $slug1,
-                'slug2' => $slug2,
-                'path' => request()->getPathInfo(),
-                'url' => request()->getUri(),
-                'session_id' => session()->getId()
-            ]);
-        }
         
         // Page modülü kontrolü
         $pageIndexSlug = ModuleSlugService::getSlug('Page', 'index');
@@ -31,9 +22,12 @@ class DynamicRouteService
         }
         
         if ($slug1 === $pageShowSlug && $slug2) {
-            // Page show
+            // Page show - slug2'yi kullan
+            Log::info("DynamicRouteService: Page show called with slug: {$slug2}");
             return app(\Modules\Page\App\Http\Controllers\Front\PageController::class)->show($slug2);
         }
+        
+        // Direkt slug eşleştirmesi kaldırıldı - artık sadece /page/xxx formatı destekleniyor
         
         // Portfolio modülü kontrolü
         $portfolioIndexSlug = ModuleSlugService::getSlug('Portfolio', 'index');
@@ -99,11 +93,21 @@ class DynamicRouteService
             'show_slug' => $showSlug
         ]);
         
-        Route::middleware(['web'])->group(function () use ($indexSlug, $showSlug) {
-            Route::get('/', [\Modules\Page\App\Http\Controllers\Front\PageController::class, 'homepage'])->name('home');
-            Route::get('/' . $indexSlug, [\Modules\Page\App\Http\Controllers\Front\PageController::class, 'index'])->name('pages.index');
-            Route::get('/' . $showSlug . '/{slug}', [\Modules\Page\App\Http\Controllers\Front\PageController::class, 'show'])->name('pages.show');
-        });
+        // Use UrlPrefixService if available
+        if (class_exists('Modules\LanguageManagement\app\Services\UrlPrefixService')) {
+            UrlPrefixService::registerLocaleRoutes(function () use ($indexSlug, $showSlug) {
+                Route::get('/', [\Modules\Page\App\Http\Controllers\Front\PageController::class, 'homepage'])->name('home');
+                Route::get('/' . $indexSlug, [\Modules\Page\App\Http\Controllers\Front\PageController::class, 'index'])->name('pages.index');
+                Route::get('/' . $showSlug . '/{slug}', [\Modules\Page\App\Http\Controllers\Front\PageController::class, 'show'])->name('pages.show');
+            });
+        } else {
+            // Fallback to regular routes
+            Route::middleware(['web'])->group(function () use ($indexSlug, $showSlug) {
+                Route::get('/', [\Modules\Page\App\Http\Controllers\Front\PageController::class, 'homepage'])->name('home');
+                Route::get('/' . $indexSlug, [\Modules\Page\App\Http\Controllers\Front\PageController::class, 'index'])->name('pages.index');
+                Route::get('/' . $showSlug . '/{slug}', [\Modules\Page\App\Http\Controllers\Front\PageController::class, 'show'])->name('pages.show');
+            });
+        }
     }
     
     protected static function registerPortfolioRoutes()
@@ -118,11 +122,21 @@ class DynamicRouteService
             'category_slug' => $categorySlug
         ]);
         
-        Route::middleware(['web'])->group(function () use ($indexSlug, $showSlug, $categorySlug) {
-            Route::get('/' . $indexSlug, [\Modules\Portfolio\App\Http\Controllers\Front\PortfolioController::class, 'index'])->name('portfolios.index');
-            Route::get('/' . $showSlug . '/{slug}', [\Modules\Portfolio\App\Http\Controllers\Front\PortfolioController::class, 'show'])->name('portfolios.show');
-            Route::get('/' . $categorySlug . '/{slug}', [\Modules\Portfolio\App\Http\Controllers\Front\PortfolioController::class, 'category'])->name('portfolios.category');
-        });
+        // Use UrlPrefixService if available
+        if (class_exists('Modules\LanguageManagement\app\Services\UrlPrefixService')) {
+            UrlPrefixService::registerLocaleRoutes(function () use ($indexSlug, $showSlug, $categorySlug) {
+                Route::get('/' . $indexSlug, [\Modules\Portfolio\App\Http\Controllers\Front\PortfolioController::class, 'index'])->name('portfolios.index');
+                Route::get('/' . $showSlug . '/{slug}', [\Modules\Portfolio\App\Http\Controllers\Front\PortfolioController::class, 'show'])->name('portfolios.show');
+                Route::get('/' . $categorySlug . '/{slug}', [\Modules\Portfolio\App\Http\Controllers\Front\PortfolioController::class, 'category'])->name('portfolios.category');
+            });
+        } else {
+            // Fallback to regular routes
+            Route::middleware(['web'])->group(function () use ($indexSlug, $showSlug, $categorySlug) {
+                Route::get('/' . $indexSlug, [\Modules\Portfolio\App\Http\Controllers\Front\PortfolioController::class, 'index'])->name('portfolios.index');
+                Route::get('/' . $showSlug . '/{slug}', [\Modules\Portfolio\App\Http\Controllers\Front\PortfolioController::class, 'show'])->name('portfolios.show');
+                Route::get('/' . $categorySlug . '/{slug}', [\Modules\Portfolio\App\Http\Controllers\Front\PortfolioController::class, 'category'])->name('portfolios.category');
+            });
+        }
     }
     
     protected static function registerAnnouncementRoutes()
@@ -135,9 +149,18 @@ class DynamicRouteService
             'show_slug' => $showSlug
         ]);
         
-        Route::middleware(['web'])->group(function () use ($indexSlug, $showSlug) {
-            Route::get('/' . $indexSlug, [\Modules\Announcement\App\Http\Controllers\Front\AnnouncementController::class, 'index'])->name('announcements.index');
-            Route::get('/' . $showSlug . '/{slug}', [\Modules\Announcement\App\Http\Controllers\Front\AnnouncementController::class, 'show'])->name('announcements.show');
-        });
+        // Use UrlPrefixService if available
+        if (class_exists('Modules\LanguageManagement\app\Services\UrlPrefixService')) {
+            UrlPrefixService::registerLocaleRoutes(function () use ($indexSlug, $showSlug) {
+                Route::get('/' . $indexSlug, [\Modules\Announcement\App\Http\Controllers\Front\AnnouncementController::class, 'index'])->name('announcements.index');
+                Route::get('/' . $showSlug . '/{slug}', [\Modules\Announcement\App\Http\Controllers\Front\AnnouncementController::class, 'show'])->name('announcements.show');
+            });
+        } else {
+            // Fallback to regular routes
+            Route::middleware(['web'])->group(function () use ($indexSlug, $showSlug) {
+                Route::get('/' . $indexSlug, [\Modules\Announcement\App\Http\Controllers\Front\AnnouncementController::class, 'index'])->name('announcements.index');
+                Route::get('/' . $showSlug . '/{slug}', [\Modules\Announcement\App\Http\Controllers\Front\AnnouncementController::class, 'show'])->name('announcements.show');
+            });
+        }
     }
 }

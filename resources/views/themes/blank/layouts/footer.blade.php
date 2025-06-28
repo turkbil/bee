@@ -5,7 +5,7 @@
                 <!-- Main footer content -->
                 <div class="flex flex-col sm:flex-row justify-between items-center">
                     <div class="mb-4 sm:mb-0">
-                        <p class="text-sm text-gray-500 dark:text-gray-400">&copy; {{ date('Y') }} {{ config('app.name') }}. Tüm hakları saklıdır.</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">&copy; {{ date('Y') }} {{ config('app.name') }}. {{ __('LanguageManagement::front.all_rights_reserved') }}</p>
                     </div>
                     
                     <!-- Social Media Links -->
@@ -85,8 +85,15 @@
 
     @widgetstyles
     @widgetscripts
-    @livewireStyles
     @livewireScripts
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script>
+        // Debug Livewire loading
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Livewire available:', typeof window.Livewire !== 'undefined');
+            console.log('Alpine available:', typeof window.Alpine !== 'undefined');
+        });
+    </script>
     @stack('scripts')
 </body>
 </html>

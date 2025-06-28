@@ -3,16 +3,16 @@
         <ul class="pagination">
             {{-- Previous Page Link --}}
             @if ($paginator->onFirstPage())
-                <li class="disabled" aria-disabled="true"><span>{{ t('admin.pagination_previous') }}</span></li>
+                <li class="disabled" aria-disabled="true"><span>{{ __('admin.pagination_previous') }}</span></li>
             @else
-                <li><a href="{{ $paginator->previousPageUrl() }}" rel="prev">{{ t('admin.pagination_previous') }}</a></li>
+                <li><a href="{{ $paginator->previousPageUrl() }}" rel="prev">{{ __('admin.pagination_previous') }}</a></li>
             @endif
 
             {{-- Next Page Link --}}
             @if ($paginator->hasMorePages())
-                <li><a href="{{ $paginator->nextPageUrl() }}" rel="next">{{ t('admin.pagination_next') }}</a></li>
+                <li><a href="{{ $paginator->nextPageUrl() }}" rel="next">{{ __('admin.pagination_next') }}</a></li>
             @else
-                <li class="disabled" aria-disabled="true"><span>{{ t('admin.pagination_next') }}</span></li>
+                <li class="disabled" aria-disabled="true"><span>{{ __('admin.pagination_next') }}</span></li>
             @endif
         </ul>
     </nav>

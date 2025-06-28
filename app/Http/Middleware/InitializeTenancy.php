@@ -61,7 +61,11 @@ class InitializeTenancy extends BaseMiddleware
             });
             
             if (!$tenantData) {
-                abort(404, 'Domain bulunamadı');
+                // Tenant bulunamadı - özel error sayfası göster
+                return response()->view('errors.tenant-not-found', [
+                    'domain' => $host,
+                    'message' => 'Bu domain için aktif bir site bulunamadı.'
+                ], 404);
             }
             
             // Tenant pasif ise admin ve login hariç offline sayfasına yönlendir
@@ -86,7 +90,11 @@ class InitializeTenancy extends BaseMiddleware
             });
             
             if (!$tenantModel) {
-                abort(404, 'Tenant modeli bulunamadı');
+                // Tenant modeli bulunamadı - özel error sayfası göster
+                return response()->view('errors.tenant-not-found', [
+                    'domain' => $host,
+                    'message' => 'Site yapılandırması bulunamadı.'
+                ], 404);
             }
             
             // Tenant'ı başlat
@@ -95,8 +103,16 @@ class InitializeTenancy extends BaseMiddleware
             return $next($request);
             
         } catch (\Exception $e) {
-            Log::error('Tenant başlatma hatası: ' . $e->getMessage());
-            abort(500, 'Tenant başlatılamadı');
+            Log::error('Tenant başlatma hatası: ' . $e->getMessage(), [
+                'host' => $host,
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            // Genel hata sayfası göster
+            return response()->view('errors.tenant-not-found', [
+                'domain' => $host,
+                'message' => 'Site yüklenirken bir hata oluştu.'
+            ], 500);
         }
     }
 }

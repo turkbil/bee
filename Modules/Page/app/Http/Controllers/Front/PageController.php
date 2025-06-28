@@ -21,10 +21,27 @@ class PageController extends Controller
      */
     public function homepage()
     {
+        $isAuthenticated = auth()->check();
+        $userId = $isAuthenticated ? auth()->id() : 'guest';
+        
+        \Log::info('🏠 HOMEPAGE CONTROLLER', [
+            'app_locale' => app()->getLocale(),
+            'session_site_locale' => session('site_locale'),
+            'is_authenticated' => $isAuthenticated,
+            'user_id' => $userId
+        ]);
+        
         // Aktif ve ana sayfa olarak işaretli sayfayı al
         $page = Page::where('is_homepage', true)
             ->where('is_active', true)
             ->firstOrFail();
+            
+        \Log::info('📄 PAGE CONTENT DEBUG', [
+            'page_id' => $page->page_id,
+            'title_raw' => $page->getRawOriginal('title'),
+            'title_translated' => $page->getTranslated('title', app()->getLocale()),
+            'available_locales' => $page->title ? array_keys($page->title) : 'none'
+        ]);
 
         
         try {
@@ -61,8 +78,13 @@ class PageController extends Controller
 
     public function show($slug, $is_homepage_context = false)
     {
-        $item = Page::where('slug', $slug)
-            ->where('is_active', true)
+        // JSON slug arama - tüm dillerde ara
+        $item = Page::where('is_active', true)
+            ->where(function($query) use ($slug) {
+                $query->whereJsonContains('slug->tr', $slug)
+                      ->orWhereJsonContains('slug->en', $slug)
+                      ->orWhereJsonContains('slug->ar', $slug);
+            })
             ->firstOrFail();
 
         // Eğer bu sayfa veritabanında ana sayfa olarak işaretlenmişse ($item->is_homepage == true)

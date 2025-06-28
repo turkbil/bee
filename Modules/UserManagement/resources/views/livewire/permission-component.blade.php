@@ -9,12 +9,12 @@
                         <div class="input-icon">
                             <span class="input-icon-addon"><i class="fas fa-search"></i></span>
                             <input type="text" wire:model.live.debounce.300ms="search" class="form-control"
-                                placeholder="{{ t('usermanagement::general.search_permissions') }}">
+                                placeholder="{{ __('usermanagement::general.search_permissions') }}">
                         </div>
                     </div>
                     <div class="col-md-6 text-end">
                         <a href="{{ route('admin.usermanagement.permission.manage') }}" class="btn btn-primary">
-                            <i class="fas fa-plus me-2"></i> {{ t('usermanagement::general.new_permission') }}
+                            <i class="fas fa-plus me-2"></i> {{ __('usermanagement::general.new_permission') }}
                         </a>
                     </div>
                 </div>
@@ -84,7 +84,7 @@
                     <div class="card-footer">
                         <div class="d-flex align-items-center">
                             <div class="text-muted">
-                                <i class="fas fa-key me-1"></i> {{ t('usermanagement::general.permissions_count', ['count' => $permissions->count()]) }}
+                                <i class="fas fa-key me-1"></i> {{ __('usermanagement::general.permissions_count', ['count' => $permissions->count()]) }}
                             </div>
                             <div class="ms-auto">
                                 <a href="{{ route('admin.usermanagement.permission.manage') }}?module={{ $module }}"
@@ -102,13 +102,13 @@
                     <div class="empty-icon">
                         <i class="fas fa-key fa-3x text-muted"></i>
                     </div>
-                    <p class="empty-title">{{ t('usermanagement::general.permission_not_found') }}</p>
+                    <p class="empty-title">{{ __('usermanagement::general.permission_not_found') }}</p>
                     <p class="empty-subtitle text-muted">
-                        {{ t('usermanagement::general.no_permissions_yet') }}
+                        {{ __('usermanagement::general.no_permissions_yet') }}
                     </p>
                     <div class="empty-action">
                         <a href="{{ route('admin.usermanagement.permission.manage') }}" class="btn btn-primary">
-                            <i class="fas fa-plus me-2"></i> {{ t('usermanagement::general.new_permission') }}
+                            <i class="fas fa-plus me-2"></i> {{ __('usermanagement::general.new_permission') }}
                         </a>
                     </div>
                 </div>
@@ -122,15 +122,15 @@
         <div class="modal-dialog modal-sm modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{{ t('usermanagement::general.delete') }} {{ t('usermanagement::general.permissions') }}</h5>
+                    <h5 class="modal-title">{{ __('usermanagement::general.delete') }} {{ __('usermanagement::general.permissions') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p>{{ t('usermanagement::messages.confirm_delete_permission') }}</p>
+                    <p>{{ __('usermanagement::messages.confirm_delete_permission') }}</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ t('usermanagement::general.cancel') }}</button>
-                    <button type="button" class="btn btn-danger" wire:click="deletePermission">{{ t('usermanagement::general.delete') }}</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('usermanagement::general.cancel') }}</button>
+                    <button type="button" class="btn btn-danger" wire:click="deletePermission">{{ __('usermanagement::general.delete') }}</button>
                 </div>
             </div>
         </div>

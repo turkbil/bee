@@ -94,7 +94,8 @@
                         <div class="card-body">
                             <div class="mb-3">
                                 <div class="pretty p-default p-curve p-toggle p-smooth">
-                                    <input type="checkbox" wire:model="is_active" id="is_active">
+                                    <input type="checkbox" wire:model="is_active" id="is_active" 
+                                           @if($is_default) disabled @endif>
                                     <div class="state p-success p-on">
                                         <label>Aktif</label>
                                     </div>
@@ -103,7 +104,14 @@
                                     </div>
                                 </div>
                                 <div class="form-text mt-2">
-                                    Pasif diller site dillerinde görünmez
+                                    @if($is_default)
+                                        <span class="text-warning">
+                                            <i class="fas fa-lock me-1"></i>
+                                            Varsayılan dil pasif yapılamaz
+                                        </span>
+                                    @else
+                                        Pasif diller site dillerinde görünmez
+                                    @endif
                                 </div>
                             </div>
 
@@ -127,38 +135,6 @@
                         </div>
                     </div>
 
-                    <!-- Önizleme -->
-                    @if($native_name || $flag_icon)
-                        <div class="card border-0 bg-green-lt">
-                            <div class="card-header">
-                                <h4 class="card-title">
-                                    <i class="fas fa-eye me-2"></i>
-                                    Önizleme
-                                </h4>
-                            </div>
-                            <div class="card-body text-center">
-                                <div class="d-flex align-items-center justify-content-center">
-                                    @if($flag_icon)
-                                        <span class="avatar me-3" style="font-size: 1.5rem;">{{ $flag_icon }}</span>
-                                    @endif
-                                    <div class="text-{{ $direction === 'rtl' ? 'end' : 'start' }}">
-                                        <div class="fw-bold">{{ $native_name ?: 'Yerel Adı' }}</div>
-                                        @if($name)
-                                            <small class="text-muted">{{ $name }}</small>
-                                        @endif
-                                        <div class="mt-1">
-                                            @if($code)
-                                                <span class="badge bg-primary-lt">{{ strtoupper($code) }}</span>
-                                            @endif
-                                            @if($is_default)
-                                                <span class="badge bg-success-lt ms-1">Varsayılan</span>
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endif
                 </div>
             </div>
         </div>

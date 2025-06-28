@@ -5,16 +5,16 @@
         <div class="card-header">
             <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs">
                 <li class="nav-item">
-                    <a href="#tabs-settings" class="nav-link active" data-bs-toggle="tab">{{ t('ai::general.basic_settings') }}</a>
+                    <a href="#tabs-settings" class="nav-link active" data-bs-toggle="tab">{{ __('ai::admin.basic_settings') }}</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#tabs-common-prompt" class="nav-link" data-bs-toggle="tab">{{ t('ai::general.common_features') }}</a>
+                    <a href="#tabs-common-prompt" class="nav-link" data-bs-toggle="tab">{{ __('ai::admin.common_features') }}</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#tabs-limits" class="nav-link" data-bs-toggle="tab">{{ t('ai::general.usage_limits') }}</a>
+                    <a href="#tabs-limits" class="nav-link" data-bs-toggle="tab">{{ __('ai::admin.usage_limits') }}</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#tabs-prompts" class="nav-link" data-bs-toggle="tab">{{ t('ai::general.prompt_templates') }}</a>
+                    <a href="#tabs-prompts" class="nav-link" data-bs-toggle="tab">{{ __('ai::admin.prompt_templates') }}</a>
                 </li>
             </ul>
         </div>
@@ -26,10 +26,10 @@
                         <div class="form-floating mb-3">
                             <input type="password" wire:model="settings.api_key"
                                 class="form-control @error('settings.api_key') is-invalid @enderror"
-                                placeholder="{{ t('ai::general.enter_api_key') }}" id="api_key_input">
-                            <label for="api_key_input">{{ t('ai::general.api_key') }}</label>
+                                placeholder="{{ __('ai::admin.enter_api_key') }}" id="api_key_input">
+                            <label for="api_key_input">{{ __('ai::admin.api_key') }}</label>
                             <div class="form-text mt-2 ms-2">
-                                <i class="fas fa-info-circle me-1"></i>{!! t('ai::general.api_key_info') !!}
+                                <i class="fas fa-info-circle me-1"></i>{!! __('ai::admin.api_key_info') !!}
                                 <button type="button" id="togglePassword" class="btn btn-sm btn-ghost-secondary ms-2">
                                     <i class="fas fa-eye"></i>
                                 </button>
@@ -46,7 +46,7 @@
                                 <i class="fas fa-plug me-2" wire:loading.class="d-none"
                                     wire:target="testApiConnection"></i>
                                 <i class="fas fa-spinner fa-spin me-2" wire:loading wire:target="testApiConnection"></i>
-                                {{ t('ai::general.test_connection') }}
+                                {{ __('ai::admin.test_connection') }}
                             </button>
 
                             @if($connectionTestResult)
@@ -66,7 +66,7 @@
                                 <option value="deepseek-chat">DeepSeek Chat</option>
                                 <option value="deepseek-coder">DeepSeek Coder</option>
                             </select>
-                            <label for="model_select">{{ t('ai::general.model') }}</label>
+                            <label for="model_select">{{ __('ai::admin.model') }}</label>
                             @error('settings.model')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -75,10 +75,10 @@
                         <div class="form-floating mb-3">
                             <input type="number" wire:model="settings.max_tokens"
                                 class="form-control @error('settings.max_tokens') is-invalid @enderror"
-                                placeholder="{{ t('ai::general.max_tokens') }}" id="max_tokens_input">
-                            <label for="max_tokens_input">{{ t('ai::general.max_tokens') }}</label>
+                                placeholder="{{ __('ai::admin.max_tokens') }}" id="max_tokens_input">
+                            <label for="max_tokens_input">{{ __('ai::admin.max_tokens') }}</label>
                             <div class="form-text mt-2 ms-2">
-                                <i class="fas fa-info-circle me-1"></i>{{ t('ai::general.max_tokens_info') }}
+                                <i class="fas fa-info-circle me-1"></i>{{ __('ai::admin.max_tokens_info') }}
                             </div>
                             @error('settings.max_tokens')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -86,12 +86,12 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">{{ t('ai::general.temperature') }}: {{ $settings['temperature'] }}</label>
+                            <label class="form-label">{{ __('ai::admin.temperature') }}: {{ $settings['temperature'] }}</label>
                             <input type="range" wire:model="settings.temperature"
                                 class="form-range @error('settings.temperature') is-invalid @enderror" min="0" max="1"
                                 step="0.1" id="temperature_range">
                             <div class="form-text mt-2 ms-2">
-                                <i class="fas fa-info-circle me-1"></i>{{ t('ai::general.temperature_info') }}
+                                <i class="fas fa-info-circle me-1"></i>{{ __('ai::admin.temperature_info') }}
                             </div>
                             @error('settings.temperature')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -103,20 +103,20 @@
                                 <input type="checkbox" id="is_active" name="is_active" wire:model="settings.enabled"
                                     value="1">
                                 <div class="state p-success p-on ms-2">
-                                    <label>{{ t('ai::general.active') }}</label>
+                                    <label>{{ __('ai::admin.active') }}</label>
                                 </div>
                                 <div class="state p-danger p-off ms-2">
-                                    <label>{{ t('ai::general.inactive') }}</label>
+                                    <label>{{ __('ai::admin.inactive') }}</label>
                                 </div>
                             </div>
                             <div class="form-text mt-2 ms-2">
-                                <i class="fas fa-info-circle me-1"></i>{{ t('ai::general.inactive_info') }}
+                                <i class="fas fa-info-circle me-1"></i>{{ __('ai::admin.inactive_info') }}
                             </div>
                         </div>
 
                         <div class="form-footer">
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save me-2"></i> {{ t('ai::general.save_settings') }}
+                                <i class="fas fa-save me-2"></i> {{ __('ai::admin.save_settings') }}
                             </button>
                         </div>
                     </form>
@@ -129,8 +129,8 @@
                             <i class="fas fa-cog fa-2x text-muted"></i>
                         </div>
                         <div>
-                            <h3 class="card-title mb-0">{{ t('ai::general.common_features_prompt') }}</h3>
-                            <p class="text-muted mb-0">{{ t('ai::messages.info.common_prompt_description') }}</p>
+                            <h3 class="card-title mb-0">{{ __('ai::admin.common_features_prompt') }}</h3>
+                            <p class="text-muted mb-0">{{ __('ai::admin.info.common_prompt_description') }}</p>
                         </div>
                     </div>
 
@@ -140,11 +140,11 @@
                                 <i class="fas fa-info-circle fa-2x"></i>
                             </div>
                             <div>
-                                <h4 class="alert-title">{{ t('ai::messages.info.what_is_this_prompt') }}</h4>
-                                <p>{{ t('ai::messages.info.common_prompt_description') }}</p>
-                                <p class="mb-0">{{ t('ai::messages.info.common_prompt_features') }}</p>
+                                <h4 class="alert-title">{{ __('ai::admin.info.what_is_this_prompt') }}</h4>
+                                <p>{{ __('ai::admin.info.common_prompt_description') }}</p>
+                                <p class="mb-0">{{ __('ai::admin.info.common_prompt_features') }}</p>
                                 <ul class="mb-0 mt-2">
-                                    @foreach(t('ai::messages.info.common_prompt_features_list') as $feature)
+                                    @foreach(__('ai::admin.info.common_prompt_features_list') as $feature)
                                         <li>{{ $feature }}</li>
                                     @endforeach
                                 </ul>
@@ -155,9 +155,9 @@
                         <div class="mb-3">
                             <textarea wire:model="commonPrompt.content"
                                 class="form-control @error('commonPrompt.content') is-invalid @enderror" rows="10"
-                                placeholder="{{ t('ai::general.enter_common_prompt') }}"></textarea>
+                                placeholder="{{ __('ai::admin.enter_common_prompt') }}"></textarea>
                             <div class="form-text mt-2 ms-2">
-                                <i class="fas fa-info-circle me-1"></i>{{ t('ai::general.common_features_usage_info') }}
+                                <i class="fas fa-info-circle me-1"></i>{{ __('ai::admin.common_features_usage_info') }}
                             </div>
                             @error('commonPrompt.content')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -165,9 +165,9 @@
                         </div>
                         <div class="form-footer">
                             <div class="d-flex justify-content-between align-items-center">
-                                <span class="text-muted">{{ t('ai::general.system_protected_info') }}</span>
+                                <span class="text-muted">{{ __('ai::admin.system_protected_info') }}</span>
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-save me-2"></i> {{ t('ai::general.save_common_features') }}
+                                    <i class="fas fa-save me-2"></i> {{ __('ai::admin.save_common_features') }}
                                 </button>
                             </div>
                         </div>
@@ -180,10 +180,10 @@
                         <div class="form-floating mb-3">
                             <input type="number" wire:model="limits.daily_limit"
                                 class="form-control @error('limits.daily_limit') is-invalid @enderror"
-                                placeholder="{{ t('ai::general.daily_limit') }}" id="daily_limit_input">
-                            <label for="daily_limit_input">{{ t('ai::general.daily_limit') }}</label>
+                                placeholder="{{ __('ai::admin.daily_limit') }}" id="daily_limit_input">
+                            <label for="daily_limit_input">{{ __('ai::admin.daily_limit') }}</label>
                             <div class="form-text mt-2 ms-2">
-                                <i class="fas fa-info-circle me-1"></i>{{ t('ai::general.daily_limit_info') }}
+                                <i class="fas fa-info-circle me-1"></i>{{ __('ai::admin.daily_limit_info') }}
                             </div>
                             @error('limits.daily_limit')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -193,10 +193,10 @@
                         <div class="form-floating mb-3">
                             <input type="number" wire:model="limits.monthly_limit"
                                 class="form-control @error('limits.monthly_limit') is-invalid @enderror"
-                                placeholder="{{ t('ai::general.monthly_limit') }}" id="monthly_limit_input">
-                            <label for="monthly_limit_input">{{ t('ai::general.monthly_limit') }}</label>
+                                placeholder="{{ __('ai::admin.monthly_limit') }}" id="monthly_limit_input">
+                            <label for="monthly_limit_input">{{ __('ai::admin.monthly_limit') }}</label>
                             <div class="form-text mt-2 ms-2">
-                                <i class="fas fa-info-circle me-1"></i>{{ t('ai::general.monthly_limit_info') }}
+                                <i class="fas fa-info-circle me-1"></i>{{ __('ai::admin.monthly_limit_info') }}
                             </div>
                             @error('limits.monthly_limit')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -205,7 +205,7 @@
 
                         <div class="form-footer">
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save me-2"></i> {{ t('ai::general.save_limits') }}
+                                <i class="fas fa-save me-2"></i> {{ __('ai::admin.save_limits') }}
                             </button>
                         </div>
                     </form>
@@ -214,9 +214,9 @@
                 <!-- Prompt Şablonları -->
                 <div class="tab-pane" id="tabs-prompts">
                     <div class="d-flex justify-content-between mb-3">
-                        <h4 class="section-title">{{ t('ai::general.prompt_templates') }}</h4>
+                        <h4 class="section-title">{{ __('ai::admin.prompt_templates') }}</h4>
                         <button class="btn btn-primary" wire:click="$dispatch('openPromptModal')">
-                            <i class="fas fa-plus me-2"></i> {{ t('ai::general.new_prompt') }}
+                            <i class="fas fa-plus me-2"></i> {{ __('ai::admin.new_prompt') }}
                         </button>
                     </div>
 
@@ -232,10 +232,10 @@
                                         <h3 class="card-title mb-0">{{ $promptItem->name }}</h3>
                                         <div>
                                             @if($promptItem->is_default)
-                                            <span class="badge bg-secondary">{{ t('ai::general.default') }}</span>
+                                            <span class="badge bg-secondary">{{ __('ai::admin.default') }}</span>
                                             @endif
                                             @if($promptItem->is_system && !$promptItem->is_common)
-                                            <span class="badge bg-secondary">{{ t('ai::general.system') }}</span>
+                                            <span class="badge bg-secondary">{{ __('ai::admin.system') }}</span>
                                             @endif
                                         </div>
                                     </div>
@@ -255,10 +255,10 @@
                                                     $promptItem->is_active ? 'checked' : '' }}
                                                 {{ $promptItem->is_system ? 'disabled' : '' }}>
                                                 <div class="state p-success p-on ms-2">
-                                                    <label>{{ t('ai::general.active') }}</label>
+                                                    <label>{{ __('ai::admin.active') }}</label>
                                                 </div>
                                                 <div class="state p-danger p-off ms-2">
-                                                    <label>{{ t('ai::general.passive') }}</label>
+                                                    <label>{{ __('ai::admin.passive') }}</label>
                                                 </div>
                                             </div>
 
@@ -270,7 +270,7 @@
                                                 {{ $promptItem->is_system && !$promptItem->is_common ? 'disabled' : ''
                                                 }}>
                                                 <div class="state p-primary ms-2">
-                                                    <label>{{ t('ai::general.default') }}</label>
+                                                    <label>{{ __('ai::admin.default') }}</label>
                                                 </div>
                                             </div>
                                             @endif
@@ -279,13 +279,13 @@
                                             <button class="btn btn-sm btn-ghost-secondary"
                                                 wire:click="editPrompt({{ $promptItem->id }})"
                                                 @if($promptItem->is_system && !$promptItem->is_common) disabled
-                                                title="{{ t('ai::messages.warning.prompt_system_no_edit') }}" @endif>
+                                                title="{{ __('ai::admin.warning.prompt_system_no_edit') }}" @endif>
                                                 <i class="fas fa-edit"></i>
                                             </button>
                                             <button class="btn btn-sm btn-ghost-danger"
                                                 wire:click="$dispatch('showPromptDeleteModal', {id: {{$promptItem->id}}, name: '{{$promptItem->name}}'})"
                                                 @if($promptItem->is_default || $promptItem->is_system) disabled
-                                                title="{{ t('ai::messages.warning.prompt_cannot_delete') }}" @endif>
+                                                title="{{ __('ai::admin.warning.prompt_cannot_delete') }}" @endif>
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </div>
@@ -297,9 +297,9 @@
                         @empty
                         <div class="col-12">
                             <div class="empty">
-                                <p class="empty-title">{{ t('ai::messages.info.no_prompts') }}</p>
+                                <p class="empty-title">{{ __('ai::admin.info.no_prompts') }}</p>
                                 <p class="empty-subtitle text-muted">
-                                    {{ t('ai::messages.info.no_prompts_description') }}
+                                    {{ __('ai::admin.info.no_prompts_description') }}
                                 </p>
                             </div>
                         </div>

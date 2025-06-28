@@ -2,7 +2,7 @@
 
 @section('module_content')
 <div class="container py-6" x-data="announcementList()" x-init="init()">
-    <h1 class="text-3xl font-bold mb-6 text-center text-gray-900 dark:text-white">{{ $title ?? t('announcement::general.announcements') }}</h1>
+    <h1 class="text-3xl font-bold mb-6 text-center text-gray-900 dark:text-white">{{ $title ?? __('announcement::general.announcements') }}</h1>
     
     @if($items->count() > 0)
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" x-show="loaded" x-transition.duration.300ms>
@@ -28,7 +28,7 @@
                         <svg class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clip-rule="evenodd"></path>
                         </svg>
-                        {{ t('announcement::general.attachment') }}
+                        {{ __('announcement::general.attachment') }}
                     </span>
                     @endif
                 </div>
@@ -40,7 +40,7 @@
                 @endif
                 
                 <span class="inline-flex items-center text-sm text-orange-600 dark:text-orange-400 font-medium group-hover:underline">
-                    {{ t('announcement::general.continue_reading') }}
+                    {{ __('announcement::general.continue_reading') }}
                     <svg class="h-4 w-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                     </svg>
@@ -59,7 +59,7 @@
             <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
             <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path>
         </svg>
-        <p class="text-lg text-gray-600 dark:text-gray-400">{{ t('announcement::general.no_announcements_yet') }}</p>
+        <p class="text-lg text-gray-600 dark:text-gray-400">{{ __('announcement::general.no_announcements_yet') }}</p>
     </div>
     @endif
 </div>

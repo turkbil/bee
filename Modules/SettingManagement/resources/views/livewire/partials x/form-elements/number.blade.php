@@ -23,7 +23,7 @@
                 <div class="d-flex align-items-center justify-content-between">
                     <h3 class="card-title d-flex align-items-center">
                         <i class="fas fa-hashtag me-2"></i>
-                        {{ $element['properties']['label'] ?? t('settingmanagement::general.number_field_default') }}
+                        {{ $element['properties']['label'] ?? __('settingmanagement::general.number_field_default') }}
                     </h3>
                 </div>
             </div>
@@ -37,7 +37,7 @@
                             type="number" 
                             wire:model="values.{{ $settingId }}" 
                             class="form-control" 
-                            placeholder="{{ $element['properties']['placeholder'] ?? t('settingmanagement::general.number_field_placeholder') }}"
+                            placeholder="{{ $element['properties']['placeholder'] ?? __('settingmanagement::general.number_field_placeholder') }}"
                             @if(isset($element['properties']['min'])) min="{{ $element['properties']['min'] }}" @endif
                             @if(isset($element['properties']['max'])) max="{{ $element['properties']['max'] }}" @endif
                             @if(isset($element['properties']['step'])) step="{{ $element['properties']['step'] }}" @endif
@@ -54,13 +54,13 @@
                     @if(isset($element['properties']['min']) || isset($element['properties']['max']) || isset($element['properties']['step']))
                         <div class="d-flex justify-content-between px-2 small text-muted mb-2">
                             @if(isset($element['properties']['min']))
-                                <span>{{ t('settingmanagement::general.number_min') }}: {{ $element['properties']['min'] }}</span>
+                                <span>{{ __('settingmanagement::general.number_min') }}: {{ $element['properties']['min'] }}</span>
                             @endif
                             @if(isset($element['properties']['max']))
-                                <span>{{ t('settingmanagement::general.number_max') }}: {{ $element['properties']['max'] }}</span>
+                                <span>{{ __('settingmanagement::general.number_max') }}: {{ $element['properties']['max'] }}</span>
                             @endif
                             @if(isset($element['properties']['step']))
-                                <span>{{ t('settingmanagement::general.number_step') }}: {{ $element['properties']['step'] }}</span>
+                                <span>{{ __('settingmanagement::general.number_step') }}: {{ $element['properties']['step'] }}</span>
                             @endif
                         </div>
                     @endif
@@ -75,7 +75,7 @@
                     @if(isset($originalValues[$settingId]) && $originalValues[$settingId] != $values[$settingId])
                         <div class="mt-2 text-end">
                             <span class="badge bg-yellow cursor-pointer" wire:click="resetToDefault({{ $settingId }})">
-                                <i class="fas fa-undo me-1"></i> {{ t('settingmanagement::general.reset_to_default_button') }}
+                                <i class="fas fa-undo me-1"></i> {{ __('settingmanagement::general.reset_to_default_button') }}
                             </span>
                         </div>
                     @endif
@@ -87,7 +87,7 @@
     <div class="col-12">
         <div class="alert alert-danger mb-3 w-100">
             <i class="fas fa-exclamation-circle me-2"></i>
-            {{ t('settingmanagement::general.number_setting_not_found') }} {{ $element['properties']['name'] ?? 'Bilinmeyen' }}
+            {{ __('settingmanagement::general.number_setting_not_found') }} {{ $element['properties']['name'] ?? 'Bilinmeyen' }}
         </div>
     </div>
 @endif

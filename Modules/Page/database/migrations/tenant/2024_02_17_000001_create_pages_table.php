@@ -10,13 +10,13 @@ return new class extends Migration
     {
         Schema::create('pages', function (Blueprint $table) {
             $table->id('page_id');
-            $table->string('title')->index();
-            $table->string('slug')->unique();
-            $table->longText('body')->nullable();
+            $table->json('title')->comment('Çoklu dil başlık: {"tr": "Başlık", "en": "Title"}');
+            $table->json('slug')->comment('Çoklu dil slug: {"tr": "baslik", "en": "title"}');
+            $table->json('body')->nullable()->comment('Çoklu dil içerik: {"tr": "İçerik", "en": "Content"}');
             $table->text('css')->nullable();
             $table->text('js')->nullable();
-            $table->string('metakey')->nullable();
-            $table->string('metadesc')->nullable();
+            $table->json('metakey')->nullable()->comment('Çoklu dil meta anahtar: {"tr": "anahtar", "en": "keywords"}');
+            $table->json('metadesc')->nullable()->comment('Çoklu dil meta açıklama: {"tr": "açıklama", "en": "description"}');
             $table->boolean('is_active')->default(true)->index();
             $table->boolean('is_homepage')->default(false)->index();
             $table->timestamps();
@@ -27,11 +27,15 @@ return new class extends Migration
             $table->index('updated_at');
             $table->index('deleted_at');
             
+            // JSON kolonlar için özel indeksler oluşturulamaz, ancak sanal kolonlar kullanılabilir
             // Composite index'ler - Performans optimizasyonu
             $table->index(['is_homepage', 'is_active', 'deleted_at'], 'pages_homepage_active_deleted_idx');
             $table->index(['is_active', 'deleted_at', 'created_at'], 'pages_active_deleted_created_idx');
-            $table->index(['slug', 'is_active', 'deleted_at'], 'pages_slug_active_deleted_idx');
             $table->index(['is_active', 'deleted_at'], 'pages_active_deleted_idx');
+            
+            // JSON slug arama için virtual column index (MySQL 5.7+)
+            // $table->rawIndex('(CAST(JSON_UNQUOTE(JSON_EXTRACT(slug, "$.tr")) AS CHAR(255)))', 'pages_slug_tr_idx');
+            // $table->rawIndex('(CAST(JSON_UNQUOTE(JSON_EXTRACT(slug, "$.en")) AS CHAR(255)))', 'pages_slug_en_idx');
         });
     }
 

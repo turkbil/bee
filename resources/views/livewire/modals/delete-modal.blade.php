@@ -6,8 +6,13 @@
                 <button type="button" class="btn-close" wire:click="$set('showModal', false)"></button>
                 <div class="modal-status bg-danger"></div>
                 <div class="modal-body text-center py-4">
-                    <h3>Silmek istediğinize emin misiniz?</h3>
-                    <div class="text-muted">"{{ $title }}" kaydını silmek üzeresiniz.</div>
+                    <svg class="icon mb-2 text-danger icon-lg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M12 9v2m0 4v.01"/>
+                        <path d="M5 19h14a2 2 0 0 0 1.84 -2.75l-7.1 -12.25a2 2 0 0 0 -3.5 0l-7.1 12.25a2 2 0 0 0 1.75 2.75"/>
+                    </svg>
+                    <h3>Silme Onayı</h3>
+                    <div class="text-muted">Bu kaydı silmek istediğinize emin misiniz? Bu işlem geri alınamaz!</div>
                 </div>
                 <div class="modal-footer">
                     <div class="w-100">
@@ -18,15 +23,10 @@
                                 </button>
                             </div>
                             <div class="col">
-                                @if(auth()->user()->hasModulePermission($module, 'delete'))
                                 <button class="btn btn-danger w-100" wire:click="delete" wire:loading.attr="disabled">
-                                    Sil
+                                    <span wire:loading.remove>Sil</span>
+                                    <span wire:loading>Siliniyor...</span>
                                 </button>
-                                @else
-                                <button class="btn btn-secondary w-100" disabled>
-                                    Yetkisiz İşlem
-                                </button>
-                                @endif
                             </div>
                         </div>
                     </div>
@@ -40,9 +40,7 @@
     <script>
         document.addEventListener('livewire:initialized', () => {
             $(document).on('keydown', function(e) {
-                if (e.keyCode === 32 && $('#delete-modal').is(':visible') && 
-                    document.querySelector('#delete-modal .btn-danger') && 
-                    !document.querySelector('#delete-modal .btn-danger').disabled) {
+                if (e.keyCode === 32 && $('#delete-modal').is(':visible')) {
                     e.preventDefault();
                     $('#delete-modal .btn-danger').click();
                 }

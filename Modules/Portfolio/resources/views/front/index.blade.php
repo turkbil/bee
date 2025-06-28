@@ -2,7 +2,7 @@
 
 @section('module_content')
 <div class="py-6" x-data="portfolioList()" x-init="init()">
-    <h1 class="text-3xl font-bold mb-6 text-center text-gray-800 dark:text-white">{{ $title ?? t('portfolio::general.portfolios') }}</h1>
+    <h1 class="text-3xl font-bold mb-6 text-center text-gray-800 dark:text-white">{{ $title ?? __('portfolio::general.portfolios') }}</h1>
     
     @if($items->count() > 0)
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" x-show="loaded" x-transition.duration.300ms>
@@ -64,7 +64,7 @@
                 @endif
                 
                 <span class="inline-flex items-center text-sm text-purple-600 dark:text-purple-400 font-medium group-hover:underline">
-                    {{ t('portfolio::general.view_details') }}
+                    {{ __('portfolio::general.view_details') }}
                     <svg class="h-4 w-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                     </svg>
@@ -82,7 +82,7 @@
         <svg class="h-16 w-16 mx-auto text-gray-400 mb-4" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path>
         </svg>
-        <p class="text-lg text-gray-600 dark:text-gray-400">{{ t('portfolio::general.no_portfolio_found') }}</p>
+        <p class="text-lg text-gray-600 dark:text-gray-400">{{ __('portfolio::general.no_portfolio_found') }}</p>
     </div>
     @endif
 </div>

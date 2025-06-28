@@ -10,26 +10,26 @@
                     <div class="tab-icon-container">
                         <i class="fa fa-cubes tab-icon"></i>
                     </div>
-                    <span class="tab-text">Bileşenler</span>
+                    <span class="tab-text">{{ __('studio::admin.components') }}</span>
                 </div>
                 <div class="panel-tab" data-tab="layers">
                     <div class="tab-icon-container">
                         <i class="fa fa-layer-group tab-icon"></i>
                     </div>
-                    <span class="tab-text">Katmanlar</span>
+                    <span class="tab-text">{{ __('studio::admin.layers') }}</span>
                 </div>
             </div>
             
             <div class="panel-tab-content active" data-tab-content="blocks">
                 <div class="blocks-search">
-                    <input type="text" id="blocks-search" class="form-control" placeholder="Bileşen ara...">
+                    <input type="text" id="blocks-search" class="form-control" placeholder="{{ __('studio::admin.search_components') }}">
                 </div>
                 <div id="blocks-container" class="blocks-container"></div>
             </div>
             
             <div class="panel-tab-content" data-tab-content="layers">
                 <div class="blocks-search">
-                    <input type="text" id="layers-search" class="form-control" placeholder="Katman ara...">
+                    <input type="text" id="layers-search" class="form-control" placeholder="{{ __('studio::admin.search_layers') }}">
                 </div>
                 <div id="layers-container" class="layers-container"></div>
             </div>
@@ -45,13 +45,13 @@
                     <div class="tab-icon-container">
                         <i class="fa fa-cogs tab-icon"></i>
                     </div>
-                    <span class="tab-text">Yapılandır</span>
+                    <span class="tab-text">{{ __('studio::admin.configure') }}</span>
                 </div>
                 <div class="panel-tab" data-tab="design">
                     <div class="tab-icon-container">
                         <i class="fa fa-paint-brush tab-icon"></i>
                     </div>
-                    <span class="tab-text">Tasarla</span>
+                    <span class="tab-text">{{ __('studio::admin.design') }}</span>
                 </div>
             </div>
             

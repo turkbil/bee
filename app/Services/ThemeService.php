@@ -11,6 +11,7 @@ use Modules\ThemeManagement\App\Models\Theme;
 class ThemeService
 {
     protected $activeTheme;
+    protected static $staticThemeCache = null;
 
     public function __construct()
     {
@@ -39,13 +40,22 @@ class ThemeService
                 }
             }
             
-            // Global default theme cache'den al
-            $globalCacheKey = 'theme_service_default_theme';
-            $this->activeTheme = Cache::remember($globalCacheKey, now()->addHours(24), function() {
+            // STATIC CACHE + REDIS CACHE - İKİLİ KORUMA
+            if (self::$staticThemeCache !== null) {
+                $this->activeTheme = self::$staticThemeCache;
+                return;
+            }
+            
+            $globalCacheKey = 'theme_service_default_theme_v2';
+            $this->activeTheme = Cache::remember($globalCacheKey, now()->addDays(7), function() {
+                \Log::info('🎨 THEME CACHE MISS - Database sorgusu yapılıyor');
                 return Theme::on('mysql')->where('is_default', true)
                     ->where('is_active', true)
                     ->first();
             });
+            
+            // Static cache'e de kaydet
+            self::$staticThemeCache = $this->activeTheme;
             
             // Cache'de yoksa fallback kullan
             if (!$this->activeTheme) {

@@ -5,8 +5,8 @@
     $isRequired = isset($element['properties']['required']) && $element['properties']['required'] === true;
     $defaultValue = isset($element['properties']['default_value']) ? $element['properties']['default_value'] : null;
     // $switchLabel değişkeni kaldırıldı
-    $activeLabel = isset($element['properties']['active_label']) ? $element['properties']['active_label'] : t('settingmanagement::general.switch_active_label');
-    $inactiveLabel = isset($element['properties']['inactive_label']) ? $element['properties']['inactive_label'] : t('settingmanagement::general.switch_inactive_label');
+    $activeLabel = isset($element['properties']['active_label']) ? $element['properties']['active_label'] : __('settingmanagement::general.switch_active_label');
+    $inactiveLabel = isset($element['properties']['inactive_label']) ? $element['properties']['inactive_label'] : __('settingmanagement::general.switch_inactive_label');
     // $defaultValueText değişkeni kaldırıldı
     $helpText = isset($element['properties']['help_text']) ? $element['properties']['help_text'] : null;
     
@@ -34,7 +34,7 @@
             <div class="d-flex align-items-center justify-content-between">
                 <h3 class="card-title d-flex align-items-center">
                     <i class="fa-regular fa-comment fa-flip-horizontal me-2"></i>
-                    {{ $element['properties']['label'] ?? t('settingmanagement::general.switch_field_default') }}
+                    {{ $element['properties']['label'] ?? __('settingmanagement::general.switch_field_default') }}
                 </h3>
             </div>
         </div>
@@ -72,7 +72,7 @@
                 @if(isset($originalData[$element['properties']['name']]) && $originalData[$element['properties']['name']] != $formData[$element['properties']['name']])
                     <div class="mt-2 text-end">
                         <span class="badge bg-yellow cursor-pointer" wire:click="resetToDefault('{{ $element['properties']['name'] }}')">
-                            <i class="fas fa-undo me-1"></i> {{ t('settingmanagement::general.reset_to_default_button') }}
+                            <i class="fas fa-undo me-1"></i> {{ __('settingmanagement::general.reset_to_default_button') }}
                         </span>
                     </div>
                 @endif

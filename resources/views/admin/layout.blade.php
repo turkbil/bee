@@ -91,6 +91,25 @@
 ?>>
 
 <div class="page">
+    <!-- Global Loading Bar - Tabler Style -->
+    <div id="global-loading-bar" class="progress" style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        z-index: 99999;
+        opacity: 0;
+        transition: opacity 0.1s ease;
+        background: transparent;
+    ">
+        <div id="loading-progress" class="progress-bar" style="
+            background-color: var(--tblr-primary, #066fd1);
+            width: 0%;
+            transition: width 0.2s ease;
+        "></div>
+    </div>
+    
     @include('admin.components.navigation')
     
     <div class="page-wrapper">
@@ -131,23 +150,23 @@
                         <ul class="list-inline list-inline-dots mb-0">
                             <li class="list-inline-item">
                                 <a href="#" class="link-secondary" rel="noopener">
-                                    Dokümantasyon
+                                    {{ __('admin.common.documentation') }}
                                 </a>
                             </li>
                             <li class="list-inline-item">
                                 <a href="#" class="link-secondary" rel="noopener">
-                                    Lisans
+                                    {{ __('admin.common.license') }}
                                 </a>
                             </li>
                             <li class="list-inline-item">
                                 <a href="#" class="link-secondary" rel="noopener">
-                                    Kaynak Kodu
+                                    {{ __('admin.common.source_code') }}
                                 </a>
                             </li>
                             <li class="list-inline-item">
                                 <a href="#" class="link-secondary" rel="noopener">
                                     <i class="fa-thin fa-heart text-pink"></i>
-                                    Sevgiyle kodlandı.
+                                    {{ __('admin.common.coded_with_love') }}
                                 </a>
                             </li>
                         </ul>
@@ -155,12 +174,12 @@
                     <div class="col-12 col-lg-auto mt-3 mt-lg-0">
                         <ul class="list-inline list-inline-dots mb-0">
                             <li class="list-inline-item">
-                                Telif Hakkı &copy; {{ date('Y') }}
+                                {{ __('admin.common.copyright') }} &copy; {{ date('Y') }}
                                 <a href="https://turkbilisim.com.tr" class="link-secondary" target="_blank"
                                     rel="noopener">
                                     Türk Bilişim
                                 </a>.
-                                Tüm hakları saklıdır.
+                                {{ __('admin.common.all_rights_reserved') }}
                             </li>
                             <li class="list-inline-item">
                                 <a href="#" class="link-secondary" rel="noopener">
@@ -183,6 +202,125 @@
 <script src="/admin-assets/js/main.js?v={{ time() }}"></script>
 <script src="/admin-assets/js/theme-simple.js?v={{ time() }}"></script>
 <script src="/admin-assets/js/toast.js?v={{ time() }}" defer></script>
+
+<!-- Global Loading Bar Script - Tabler Native -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const loadingBar = document.getElementById('global-loading-bar');
+    const progressBar = document.getElementById('loading-progress');
+    
+    // Tabler Turbo benzeri loading bar sistemi
+    const loader = {
+        show: function() {
+            loadingBar.style.opacity = '1';
+            progressBar.style.width = '10%';
+        },
+        
+        setValue: function(value) {
+            progressBar.style.width = (value * 100) + '%';
+        },
+        
+        hide: function() {
+            this.setValue(1);
+            setTimeout(() => {
+                loadingBar.style.opacity = '0';
+                progressBar.style.width = '0%';
+            }, 100);
+        }
+    };
+    
+    // Loading bar gösterme
+    function showLoadingBar() {
+        loader.show();
+        // Yavaş yavaş %90'a kadar çıkar
+        setTimeout(() => loader.setValue(0.9), 200);
+    }
+    
+    // Loading bar gizleme
+    function hideLoadingBar() {
+        loader.hide();
+    }
+    
+    // Admin linkleri ve AJAX işlemleri için loading bar
+    function attachLoadingToLinks() {
+        const links = document.querySelectorAll('a[href]:not([href^="#"]):not([href^="javascript:"]):not([href^="mailto:"]):not([href^="tel:"]):not([data-no-loading])');
+        
+        links.forEach(link => {
+            // Zaten event listener eklenmiş mi kontrol et
+            if (link.dataset.loadingAttached) return;
+            link.dataset.loadingAttached = 'true';
+            
+            link.addEventListener('click', function(e) {
+                // External linkler için loading bar gösterme
+                if (this.hostname !== window.location.hostname) return;
+                
+                // Dropdown toggle'lar için loading bar gösterme
+                if (this.getAttribute('data-bs-toggle')) return;
+                
+                // Modal toggle'lar için loading bar gösterme
+                if (this.getAttribute('data-bs-target')) return;
+                
+                showLoadingBar();
+            });
+        });
+        
+        // Wire:click elementleri için de loading bar
+        const wireElements = document.querySelectorAll('[wire:click]');
+        wireElements.forEach(element => {
+            if (element.dataset.wireLoadingAttached) return;
+            element.dataset.wireLoadingAttached = 'true';
+            
+            element.addEventListener('click', function(e) {
+                showLoadingBar();
+            });
+        });
+    }
+    
+    // Sayfa yüklendiğinde loading bar'ı %100 yap ve gizle
+    window.addEventListener('load', hideLoadingBar);
+    
+    // Linkleri yakala
+    attachLoadingToLinks();
+    
+    // Livewire için loading bar
+    if (typeof Livewire !== 'undefined') {
+        Livewire.hook('message.sent', () => {
+            showLoadingBar();
+        });
+        
+        Livewire.hook('message.processed', () => {
+            hideLoadingBar();
+        });
+    }
+    
+    // Sayfa değişikliklerinde linkleri yeniden yakala (AJAX sonrası)
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.addedNodes.length > 0) {
+                // Yeni eklenen linkler için loading bar ekle
+                setTimeout(attachLoadingToLinks, 100);
+            }
+        });
+    });
+    
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+    
+    // Form submit'leri için loading bar
+    document.addEventListener('submit', function(e) {
+        if (e.target.tagName === 'FORM') {
+            showLoadingBar();
+        }
+    });
+    
+    // Browser back/forward için loading bar
+    window.addEventListener('beforeunload', function() {
+        showLoadingBar();
+    });
+});
+</script>
 @livewireScripts
 @stack('scripts') @stack('js')
 

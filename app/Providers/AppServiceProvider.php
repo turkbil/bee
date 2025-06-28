@@ -20,6 +20,11 @@ class AppServiceProvider extends ServiceProvider
             return new SettingsService();
         });
         
+        // ThemeService singleton - cache duplikasyonunu önler
+        $this->app->singleton(\App\Services\ThemeService::class, function ($app) {
+            return new \App\Services\ThemeService();
+        });
+        
         $this->loadHelperFiles();
     }
 

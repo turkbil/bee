@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\LanguageManagement\Http\Controllers\LanguageManagementController;
+use Modules\LanguageManagement\App\Http\Controllers\LanguageManagementController;
 
 /*
  *--------------------------------------------------------------------------

@@ -23,9 +23,9 @@ class PortfolioCategoryComponent extends Component
     ];
 
     protected $messages = [
-        'title.required' => 'Kategori başlığı zorunludur.',
-        'title.min' => 'Kategori başlığı en az 3 karakter olmalıdır.',
-        'title.max' => 'Kategori başlığı en fazla 255 karakter olmalıdır.',
+        'title.required' => 'portfolio::admin.category_title_required',
+        'title.min' => 'portfolio::admin.category_title_min',
+        'title.max' => 'portfolio::admin.category_title_max',
     ];
 
     public function mount()
@@ -55,8 +55,8 @@ class PortfolioCategoryComponent extends Component
         );
 
         $this->dispatch('toast', [
-            'title' => 'Başarılı!', 
-            'message' => "Kategori " . ($category->is_active ? 'aktif' : 'pasif') . " edildi.",
+            'title' => __('admin::common.success'), 
+            'message' => __('admin::common.category_status_changed', ['status' => $category->is_active ? __('admin::common.active') : __('admin::common.inactive')]),
             'type' => 'success'
         ]);
 
@@ -69,8 +69,8 @@ class PortfolioCategoryComponent extends Component
         
         if ($category->portfolios()->count() > 0) {
             $this->dispatch('toast', [
-                'title' => 'Uyarı!',
-                'message' => 'Bu kategoriye bağlı portfolyolar var. Önce bunları silmelisiniz veya başka kategoriye taşımalısınız.',
+                'title' => __('admin::common.warning'),
+                'message' => __('admin::common.category_has_items'),
                 'type' => 'warning'
             ]);
             return;
@@ -84,8 +84,8 @@ class PortfolioCategoryComponent extends Component
         );
 
         $this->dispatch('toast', [
-            'title' => 'Başarılı!',
-            'message' => 'Kategori başarıyla silindi.',
+            'title' => __('admin::common.success'),
+            'message' => __('admin::common.category_deleted'),
             'type' => 'success'
         ]);
 
@@ -113,8 +113,8 @@ class PortfolioCategoryComponent extends Component
             log_activity($category, 'oluşturuldu');
 
             $this->dispatch('toast', [
-                'title' => 'Başarılı!',
-                'message' => 'Kategori başarıyla eklendi.',
+                'title' => __('admin::common.success'),
+                'message' => __('admin::common.category_created'),
                 'type' => 'success',
             ]);
             
@@ -123,14 +123,14 @@ class PortfolioCategoryComponent extends Component
 
         } catch (\Illuminate\Validation\ValidationException $e) {
             $this->dispatch('toast', [
-                'title' => 'Hata!',
-                'message' => 'Lütfen form alanlarını kontrol ediniz.',
+                'title' => __('admin::common.error'),
+                'message' => __('admin::common.form_error'),
                 'type' => 'error',
             ]);
         } catch (\Exception $e) {
             $this->dispatch('toast', [
-                'title' => 'Hata!',
-                'message' => 'Kategori eklenirken bir hata oluştu.',
+                'title' => __('admin::common.error'),
+                'message' => __('admin::common.category_create_error'),
                 'type' => 'error',
             ]);
         }
@@ -164,8 +164,8 @@ class PortfolioCategoryComponent extends Component
         $this->loadCategories();
         
         $this->dispatch('toast', [
-            'title' => 'Başarılı!',
-            'message' => 'Kategori sıralaması güncellendi.',
+            'title' => __('admin::common.success'),
+            'message' => __('admin::common.order_updated'),
             'type' => 'success',
         ]);
     }

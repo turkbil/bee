@@ -1,28 +1,6 @@
 <?php
 
-if (!function_exists('t')) {
-    /**
-     * Çoklu kaynak translation helper
-     * Sıralama: Site > Modül > Sistem > Fallback
-     */
-    function t(string $key, array $replace = [], ?string $locale = null): string
-    {
-        $locale = $locale ?? app()->getLocale();
-        $translationManager = app('App\Services\TranslationFileManager');
-        
-        // Key'i parçala (örn: "portfolio::general.title" veya "common.save")
-        $parts = explode('::', $key);
-        
-        if (count($parts) === 2) {
-            // Modül translation (örn: "portfolio::general.title")
-            [$module, $moduleKey] = $parts;
-            return getModuleTranslation($module, $moduleKey, $replace, $locale);
-        } else {
-            // Sistem veya site translation (örn: "common.save")
-            return getSystemTranslation($key, $replace, $locale);
-        }
-    }
-}
+// __() fonksiyonu kaldırıldı - Laravel 11 standartı __() kullanın
 
 if (!function_exists('getSystemTranslation')) {
     /**
@@ -236,8 +214,8 @@ if (!function_exists('trans_choice_smart')) {
         
         // Türkçe için basit çoğul kuralı
         if ($locale === 'tr') {
-            $singular = t($key . '_singular', $replace, $locale);
-            $plural = t($key . '_plural', $replace, $locale);
+            $singular = __($key . '_singular', $replace, $locale);
+            $plural = __($key . '_plural', $replace, $locale);
             
             return $count === 1 ? $singular : $plural;
         }

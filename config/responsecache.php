@@ -4,7 +4,7 @@ return [
     /*
      * Determine if the response cache middleware should be enabled.
      */
-    'enabled' => env('RESPONSE_CACHE_ENABLED', true),
+    'enabled' => env('RESPONSE_CACHE_ENABLED', true), // AUTH-AWARE CACHE AKTİF
 
     /*
      *  The given class will determinate if a request should be cached. The
@@ -79,13 +79,13 @@ return [
      *
      * You may use a string or an array here.
      */
-    'cache_tag' => 'tenant_'.tenant('id').'_response_cache',
+    'cache_tag' => 'response_cache',
 
     /*
      * This class is responsible for generating a hash for a request. This hash
      * is used to look up a cached response.
      */
-    'hasher' => \Spatie\ResponseCache\Hasher\DefaultHasher::class,
+    'hasher' => \App\Services\AuthAwareHasher::class,
 
     /*
      * This class is responsible for serializing responses.

@@ -256,8 +256,8 @@ class ValuesComponent extends Component
                     $this->values[$settingId] = $value;
                 } catch (\Exception $e) {
                     $this->dispatch('toast', [
-                        'title' => t('settingmanagement.messages.error'),
-                        'message' => t('settingmanagement.messages.file_upload_error') . $e->getMessage(),
+                        'title' => __('settingmanagement.messages.error'),
+                        'message' => __('settingmanagement.messages.file_upload_error') . $e->getMessage(),
                         'type' => 'error',
                     ]);
                     continue;
@@ -308,8 +308,8 @@ class ValuesComponent extends Component
                     }
                 } catch (\Exception $e) {
                     $this->dispatch('toast', [
-                        'title' => t('settingmanagement.messages.error'),
-                        'message' => t('settingmanagement.messages.multi_image_upload_error') . $e->getMessage(),
+                        'title' => __('settingmanagement.messages.error'),
+                        'message' => __('settingmanagement.messages.multi_image_upload_error') . $e->getMessage(),
                         'type' => 'error',
                     ]);
                     continue;
@@ -327,7 +327,7 @@ class ValuesComponent extends Component
                 if ($oldValue !== $value) {
                     log_activity(
                         $setting,
-                        t('settingmanagement.actions.reset_to_default'),
+                        __('settingmanagement.actions.reset_to_default'),
                         ['old' => $oldValue, 'new' => $value]
                     );
                 }
@@ -340,7 +340,7 @@ class ValuesComponent extends Component
                 
                 log_activity(
                     $setting,
-                    t('settingmanagement.actions.value_updated'),
+                    __('settingmanagement.actions.value_updated'),
                     ['old' => $oldValue, 'new' => $value]
                 );
             }
@@ -356,8 +356,8 @@ class ValuesComponent extends Component
         }
     
         $this->dispatch('toast', [
-            'title' => t('settingmanagement.messages.success'),
-            'message' => t('settingmanagement.messages.values_saved'),
+            'title' => __('settingmanagement.messages.success'),
+            'message' => __('settingmanagement.messages.values_saved'),
             'type' => 'success'
         ]);
     }
@@ -369,8 +369,8 @@ class ValuesComponent extends Component
             $this->checkChanges();
             
             $this->dispatch('toast', [
-                'title' => t('settingmanagement.messages.success'),
-                'message' => t('settingmanagement.messages.file_removed'),
+                'title' => __('settingmanagement.messages.success'),
+                'message' => __('settingmanagement.messages.file_removed'),
                 'type' => 'success'
             ]);
         }
@@ -392,8 +392,8 @@ class ValuesComponent extends Component
                 $this->checkChanges();
                 
                 $this->dispatch('toast', [
-                    'title' => t('settingmanagement.messages.success'),
-                    'message' => t('settingmanagement.messages.file_deleted'),
+                    'title' => __('settingmanagement.messages.success'),
+                    'message' => __('settingmanagement.messages.file_deleted'),
                     'type' => 'success'
                 ]);
             }

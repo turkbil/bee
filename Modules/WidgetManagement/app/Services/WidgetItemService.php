@@ -45,7 +45,7 @@ class WidgetItemService
         
         // Title yok ise ekle
         if (!isset($content['title'])) {
-            $content['title'] = t('widgetmanagement.items.default_content') . date('Y-m-d H:i:s');
+            $content['title'] = __('widgetmanagement.items.default_content') . date('Y-m-d H:i:s');
         }
         
         // is_active yok ise ekle ve varsayılan aktif
@@ -64,7 +64,7 @@ class WidgetItemService
         
         // Widget item oluşturma log'u
         if (function_exists('log_activity')) {
-            log_activity($item, t('widgetmanagement.actions.created'));
+            log_activity($item, __('widgetmanagement.actions.created'));
         }
         
         // Widget önbelleğini temizle
@@ -103,7 +103,7 @@ class WidgetItemService
         
         // Widget item güncelleme log'u
         if (function_exists('log_activity')) {
-            log_activity($item, t('widgetmanagement.actions.updated'));
+            log_activity($item, __('widgetmanagement.actions.updated'));
         }
         
         // Widget önbelleğini temizle
@@ -126,7 +126,7 @@ class WidgetItemService
         
         // Widget item silme log'u
         if (function_exists('log_activity')) {
-            log_activity($item, t('widgetmanagement.actions.deleted'));
+            log_activity($item, __('widgetmanagement.actions.deleted'));
         }
         
         $result = $item->delete();
@@ -170,7 +170,7 @@ class WidgetItemService
                 activity()
                     ->performedOn($tenantWidget)
                     ->withProperties(['item_count' => count($itemIds)])
-                    ->log(t('widgetmanagement.actions.reordered'));
+                    ->log(__('widgetmanagement.actions.reordered'));
             }
         }
         

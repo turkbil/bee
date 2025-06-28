@@ -8,10 +8,10 @@
             <div class="col">
                 <h3 class="card-title mb-2">
                     <i class="fas fa-link me-2"></i>
-                    {{ $moduleDisplayName }} {{ t('modulemanagement::general.module_url_settings') }}
+                    {{ $moduleDisplayName }} {{ __('modulemanagement::admin.module_url_settings') }}
                 </h3>
                 <div class="text-muted">
-                    {{ t('modulemanagement::general.customize_website_structure') }}
+                    {{ __('modulemanagement::admin.customize_website_structure') }}
                 </div>
             </div>
             <!-- Orta Kolon - Loading -->
@@ -20,7 +20,7 @@
                     wire:target="updateSlug, resetSlug, resetAllSlugs"
                     class="position-absolute top-50 start-50 translate-middle text-center"
                     style="width: 100%; max-width: 250px;">
-                    <div class="small text-muted mb-2">{{ t('modulemanagement::general.updating_status') }}</div>
+                    <div class="small text-muted mb-2">{{ __('modulemanagement::admin.updating_status') }}</div>
                     <div class="progress mb-1">
                         <div class="progress-bar progress-bar-indeterminate"></div>
                     </div>
@@ -31,7 +31,7 @@
                 <div class="d-flex align-items-center justify-content-end">
                     <button wire:click="resetAllSlugs" class="btn btn-outline-danger">
                         <i class="fas fa-undo me-1"></i>
-                        {{ t('modulemanagement::general.reset_all_button') }}
+                        {{ __('modulemanagement::admin.reset_all_button') }}
                     </button>
                 </div>
             </div>
@@ -48,8 +48,8 @@
                                     <i class="fas fa-exclamation-triangle me-2"></i>
                                 </div>
                                 <div>
-                                    <h4 class="alert-title">{{ t('modulemanagement::general.configuration_not_found') }}</h4>
-                                    {{ t('modulemanagement::general.no_slug_configuration') }}
+                                    <h4 class="alert-title">{{ __('modulemanagement::admin.configuration_not_found') }}</h4>
+                                    {{ __('modulemanagement::admin.no_slug_configuration') }}
                                 </div>
                             </div>
                         </div>
@@ -63,21 +63,21 @@
                                             <div class="col">
                                                 <div class="mb-2">
                                                     <label class="form-label mb-1">
-                                                        <strong>{{ ucfirst($key) }} {{ t('modulemanagement::general.page_url') }}</strong>
+                                                        <strong>{{ ucfirst($key) }} {{ __('modulemanagement::admin.page_url') }}</strong>
                                                     </label>
                                                     <div class="text-muted small">
                                                         @switch($key)
                                                             @case('index')
-                                                                {{ t('modulemanagement::general.list_page_url_info') }}
+                                                                {{ __('modulemanagement::admin.list_page_url_info') }}
                                                                 @break
                                                             @case('show')
-                                                                {{ t('modulemanagement::general.detail_page_url_info') }}
+                                                                {{ __('modulemanagement::admin.detail_page_url_info') }}
                                                                 @break
                                                             @case('category')
-                                                                {{ t('modulemanagement::general.category_page_url_info') }}
+                                                                {{ __('modulemanagement::admin.category_page_url_info') }}
                                                                 @break
                                                             @default
-                                                                {{ ucfirst($key) }} {{ t('modulemanagement::general.default_page_url_info') }}
+                                                                {{ ucfirst($key) }} {{ __('modulemanagement::admin.default_page_url_info') }}
                                                         @endswitch
                                                     </div>
                                                 </div>
@@ -104,9 +104,9 @@
                                                     <div class="d-flex align-items-center justify-content-between">
                                                         <small class="text-muted">
                                                             <i class="fas fa-eye me-1"></i>
-                                                            {{ t('modulemanagement::general.preview') }}: 
+                                                            {{ __('modulemanagement::admin.preview') }}: 
                                                             <code class="text-primary">
-                                                                /{{ $slugs[$key] ?? $defaultValue }}{{ in_array($key, ['show', 'category']) ? '/' . t('modulemanagement::general.example_page') : '' }}
+                                                                /{{ $slugs[$key] ?? $defaultValue }}{{ in_array($key, ['show', 'category']) ? '/' . __('modulemanagement::admin.example_page') : '' }}
                                                             </code>
                                                         </small>
                                                         
@@ -114,7 +114,7 @@
                                                         <button 
                                                             wire:click="resetSlug('{{ $key }}')" 
                                                             class="btn btn-sm btn-outline-secondary"
-                                                            title="{{ t('modulemanagement::general.reset_to_default') }}: {{ $defaultValue }}"
+                                                            title="{{ __('modulemanagement::admin.reset_to_default') }}: {{ $defaultValue }}"
                                                         >
                                                             <i class="fas fa-undo fa-xs"></i>
                                                         </button>
@@ -136,13 +136,13 @@
                                         <i class="fas fa-info-circle me-2"></i>
                                     </div>
                                     <div>
-                                        <h4 class="alert-title">{{ t('modulemanagement::general.url_customization_info') }}</h4>
+                                        <h4 class="alert-title">{{ __('modulemanagement::admin.url_customization_info') }}</h4>
                                         <ul class="mb-0">
-                                            <li>{{ t('modulemanagement::general.url_changes_saved_instantly') }}</li>
-                                            <li>{{ t('modulemanagement::general.user_friendly_urls') }}</li>
-                                            <li>{{ t('modulemanagement::general.invalid_chars_cleaned') }}</li>
-                                            <li>{{ t('modulemanagement::general.empty_fields_use_default') }}</li>
-                                            <li>{{ t('modulemanagement::general.seo_friendly_urls') }}</li>
+                                            <li>{{ __('modulemanagement::admin.url_changes_saved_instantly') }}</li>
+                                            <li>{{ __('modulemanagement::admin.user_friendly_urls') }}</li>
+                                            <li>{{ __('modulemanagement::admin.invalid_chars_cleaned') }}</li>
+                                            <li>{{ __('modulemanagement::admin.empty_fields_use_default') }}</li>
+                                            <li>{{ __('modulemanagement::admin.seo_friendly_urls') }}</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -158,22 +158,22 @@
                                         <i class="fas fa-code me-2"></i>
                                     </div>
                                     <div>
-                                        <h4 class="alert-title">{{ t('modulemanagement::general.for_developers') }}</h4>
+                                        <h4 class="alert-title">{{ __('modulemanagement::admin.for_developers') }}</h4>
                                         <div class="mb-3">
-                                            <label class="form-label">{{ t('modulemanagement::general.template_usage_example') }}:</label>
+                                            <label class="form-label">{{ __('modulemanagement::admin.template_usage_example') }}:</label>
                                             <div class="bg-dark text-light p-3 rounded">
                                                 <code class="text-success">
-                                                    &lt;!-- {{ t('modulemanagement::general.list_page_link') }} --&gt;<br>
-                                                    &lt;a href="&#123;&#123; href('{{ strtolower($moduleName) }}', 'index') &#125;&#125;"&gt;{{ ucfirst($moduleName) }} {{ t('modulemanagement::general.list') }}&lt;/a&gt;<br><br>
-                                                    &lt;!-- {{ t('modulemanagement::general.detail_page_link') }} --&gt;<br>
-                                                    &lt;a href="&#123;&#123; href('{{ strtolower($moduleName) }}', 'show', $item-&gt;slug) &#125;&#125;"&gt;{{ t('modulemanagement::general.view_detail') }}&lt;/a&gt;
+                                                    &lt;!-- {{ __('modulemanagement::admin.list_page_link') }} --&gt;<br>
+                                                    &lt;a href="&#123;&#123; href('{{ strtolower($moduleName) }}', 'index') &#125;&#125;"&gt;{{ ucfirst($moduleName) }} {{ __('modulemanagement::admin.list') }}&lt;/a&gt;<br><br>
+                                                    &lt;!-- {{ __('modulemanagement::admin.detail_page_link') }} --&gt;<br>
+                                                    &lt;a href="&#123;&#123; href('{{ strtolower($moduleName) }}', 'show', $item-&gt;slug) &#125;&#125;"&gt;{{ __('modulemanagement::admin.view_detail') }}&lt;/a&gt;
                                                 </code>
                                             </div>
                                         </div>
                                         
                                         <div class="small text-muted">
                                             <i class="fas fa-lightbulb me-1"></i>
-                                            {{ t('modulemanagement::general.href_function_info') }}
+                                            {{ __('modulemanagement::admin.href_function_info') }}
                                         </div>
                                     </div>
                                 </div>

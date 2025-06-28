@@ -10,7 +10,7 @@
                         <i class="fas fa-search"></i>
                     </span>
                     <input type="text" wire:model.live="search" class="form-control"
-                        placeholder="{{ t('tenantmanagement::general.search_placeholder') }}">
+                        placeholder="{{ __('tenantmanagement::admin.search_placeholder') }}">
                 </div>
             </div>
             <!-- Ortadaki Loading -->
@@ -19,7 +19,7 @@
                     wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, saveTenant, deleteTenant, loadDomains, addDomain, updateDomain, deleteDomain"
                     class="position-absolute top-50 start-50 translate-middle text-center"
                     style="width: 100%; max-width: 250px;">
-                    <div class="small text-muted mb-2">{{ t('tenantmanagement::general.updating') }}</div>
+                    <div class="small text-muted mb-2">{{ __('tenantmanagement::admin.updating') }}</div>
                     <div class="progress mb-1">
                         <div class="progress-bar progress-bar-indeterminate"></div>
                     </div>
@@ -56,7 +56,7 @@
                             </div>
                             <div class="col">
                                 <h4 class="card-title m-0">
-                                    <a href="javascript:void(0);" class="text-reset" wire:click.prevent="editTenant('{{ $tenant->id }}')" data-bs-toggle="modal" data-bs-target="#modal-tenant-edit">{{ $tenant->title ?? t('tenantmanagement::general.unknown_name') }}</a>
+                                    <a href="javascript:void(0);" class="text-reset" wire:click.prevent="editTenant('{{ $tenant->id }}')" data-bs-toggle="modal" data-bs-target="#modal-tenant-edit">{{ $tenant->title ?? __('tenantmanagement::admin.unknown_name') }}</a>
                                 </h4>
                                 <div class="text-secondary">
                                     @if (method_exists($tenant, 'domains') && $tenant->domains && $tenant->domains->count() > 0)
@@ -75,9 +75,9 @@
                                 <div class="small mt-1">
                                     <a href="javascript:void(0);" class="text-decoration-none" wire:click.prevent="toggleActive('{{ $tenant->id }}')">
                                         @if($tenant->is_active)
-                                        <span class="badge bg-green fa-fade"></span> <span class="text-muted">{{ t('tenantmanagement::general.online') }}</span>
+                                        <span class="badge bg-green fa-fade"></span> <span class="text-muted">{{ __('tenantmanagement::admin.online') }}</span>
                                         @else
-                                        <span class="badge bg-red fa-fade"></span> <span class="text-muted">{{ t('tenantmanagement::general.offline') }}</span>
+                                        <span class="badge bg-red fa-fade"></span> <span class="text-muted">{{ __('tenantmanagement::admin.offline') }}</span>
                                         @endif
                                     </a>
                                 </div>
@@ -86,7 +86,7 @@
                                 <a href="javascript:void(0);" class="btn btn-outline-info btn-open-domain-modal"
                                     data-bs-toggle="modal" data-bs-target="#modal-domain-management"
                                     wire:click="loadDomains('{{ $tenant->id }}')">
-                                    {{ t('tenantmanagement::general.domains') }}
+                                    {{ __('tenantmanagement::admin.domains') }}
                                 </a>
                             </div>
                             <div class="col-auto">
@@ -98,16 +98,16 @@
                                         <a href="javascript:void(0);" class="dropdown-item"
                                             wire:click.prevent="manageModules('{{ $tenant->id }}')" data-bs-toggle="modal"
                                             data-bs-target="#modal-module-management">
-                                            {{ t('tenantmanagement::general.manage_modules') }}
+                                            {{ __('tenantmanagement::admin.manage_modules') }}
                                         </a>
                                         <a href="javascript:void(0);" class="dropdown-item"
                                             wire:click.prevent="editTenant('{{ $tenant->id }}')" data-bs-toggle="modal"
                                             data-bs-target="#modal-tenant-edit">
-                                            {{ t('tenantmanagement::general.edit') }}
+                                            {{ __('tenantmanagement::admin.edit') }}
                                         </a>
                                         <a href="javascript:void(0);" class="dropdown-item text-danger"
                                             wire:click.prevent="deleteTenant('{{ $tenant->id }}')">
-                                            {{ t('tenantmanagement::general.delete') }}
+                                            {{ __('tenantmanagement::admin.delete') }}
                                         </a>
                                     </div>
                                 </div>
@@ -127,39 +127,39 @@
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{{ t('tenantmanagement::general.tenant_update') }}</h5>
+                    <h5 class="modal-title">{{ __('tenantmanagement::admin.tenant_update') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" wire:click="resetForm"></button>
                 </div>
                 <form wire:submit.prevent="saveTenant('close')">
                     <div class="modal-body">
                         <div class="form-floating mb-3">
                             <input type="text" class="form-control" wire:model="name" placeholder="Tenant adı">
-                            <label>{{ t('tenantmanagement::general.tenant_name') }}</label>
+                            <label>{{ __('tenantmanagement::admin.tenant_name') }}</label>
                             @error('name') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                         <div class="form-floating mb-3">
                             <input type="text" class="form-control" wire:model="fullname" placeholder="Yetkili adı soyadı">
-                            <label>{{ t('tenantmanagement::general.authorized_name') }}</label>
+                            <label>{{ __('tenantmanagement::admin.authorized_name') }}</label>
                             @error('fullname') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                         <div class="form-floating mb-3">
                             <input type="email" class="form-control" wire:model="email" placeholder="ornek@mail.com">
-                            <label>{{ t('tenantmanagement::general.email_address') }}</label>
+                            <label>{{ __('tenantmanagement::admin.email_address') }}</label>
                             @error('email') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                         <div class="form-floating mb-3">
                             <input type="text" class="form-control" wire:model="phone" placeholder="Telefon numarası">
-                            <label>{{ t('tenantmanagement::general.phone_number') }}</label>
+                            <label>{{ __('tenantmanagement::admin.phone_number') }}</label>
                             @error('phone') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                         <div class="mb-3">
                             <div class="pretty p-default p-curve p-toggle p-smooth">
                                 <input type="checkbox" id="is_active" name="is_active" wire:model="is_active" />
                                 <div class="state p-success p-on">
-                                    <label>{{ t('tenantmanagement::general.active') }}</label>
+                                    <label>{{ __('tenantmanagement::admin.active') }}</label>
                                 </div>
                                 <div class="state p-danger p-off">
-                                    <label>{{ t('tenantmanagement::general.not_active') }}</label>
+                                    <label>{{ __('tenantmanagement::admin.not_active') }}</label>
                                 </div>
                             </div>
                         </div>
@@ -169,7 +169,7 @@
                                 <option value="{{ $key }}">{{ $label }}</option>
                                 @endforeach
                             </select>
-                            <label>{{ t('tenantmanagement::general.theme') }}</label>
+                            <label>{{ __('tenantmanagement::admin.theme') }}</label>
                             @error('theme_id') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                         
@@ -189,7 +189,7 @@
                                         <div class="form-text mb-1">
                                             <span class="text-secondary">
                                                 <i class="fas fa-server me-1"></i>
-                                                <strong>{{ t('tenantmanagement::general.database') }}:</strong> {{ $editingTenant->tenancy_db_name }}
+                                                <strong>{{ __('tenantmanagement::admin.database') }}:</strong> {{ $editingTenant->tenancy_db_name }}
                                             </span>
                                         </div>
                                     </div>
@@ -203,11 +203,11 @@
                             <div class="row">
                                 <div class="col">
                                     <button type="button" class="btn w-100" data-bs-dismiss="modal" wire:click="resetForm">
-                                        {{ t('tenantmanagement::general.cancel') }}
+                                        {{ __('tenantmanagement::admin.cancel') }}
                                     </button>
                                 </div>
                                 <div class="col">
-                                    <button type="submit" class="btn btn-primary w-100">{{ t('tenantmanagement::general.save') }}</button>
+                                    <button type="submit" class="btn btn-primary w-100">{{ __('tenantmanagement::admin.save') }}</button>
                                 </div>
                             </div>
                         </div>
@@ -222,29 +222,29 @@
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{{ t('tenantmanagement::general.add_new_tenant') }}</h5>
+                    <h5 class="modal-title">{{ __('tenantmanagement::admin.add_new_tenant') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" wire:click="resetForm"></button>
                 </div>
                 <form wire:submit.prevent="saveTenant('close')">
                     <div class="modal-body">
                         <div class="form-floating mb-3">
                             <input type="text" class="form-control" wire:model="name" placeholder="Tenant adı">
-                            <label>{{ t('tenantmanagement::general.tenant_name') }}</label>
+                            <label>{{ __('tenantmanagement::admin.tenant_name') }}</label>
                             @error('name') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                         <div class="form-floating mb-3">
                             <input type="text" class="form-control" wire:model="fullname" placeholder="Yetkili adı soyadı">
-                            <label>{{ t('tenantmanagement::general.authorized_name') }}</label>
+                            <label>{{ __('tenantmanagement::admin.authorized_name') }}</label>
                             @error('fullname') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                         <div class="form-floating mb-3">
                             <input type="email" class="form-control" wire:model="email" placeholder="ornek@mail.com">
-                            <label>{{ t('tenantmanagement::general.email_address') }}</label>
+                            <label>{{ __('tenantmanagement::admin.email_address') }}</label>
                             @error('email') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                         <div class="form-floating mb-3">
                             <input type="text" class="form-control" wire:model="phone" placeholder="Telefon numarası">
-                            <label>{{ t('tenantmanagement::general.phone_number') }}</label>
+                            <label>{{ __('tenantmanagement::admin.phone_number') }}</label>
                             @error('phone') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                         <div class="mb-3">
@@ -253,11 +253,11 @@
                                     value="1" />
                                 <div class="state p-on">
                                     <i class="icon fa-regular fa-square-check"></i>
-                                    <label>{{ t('tenantmanagement::general.active_online') }}</label>
+                                    <label>{{ __('tenantmanagement::admin.active_online') }}</label>
                                 </div>
                                 <div class="state p-off">
                                     <i class="icon fa-regular fa-square"></i>
-                                    <label>{{ t('tenantmanagement::general.not_active_offline') }}</label>
+                                    <label>{{ __('tenantmanagement::admin.not_active_offline') }}</label>
                                 </div>
                             </div>
                         </div>
@@ -267,7 +267,7 @@
                                 <option value="{{ $key }}">{{ $label }}</option>
                                 @endforeach
                             </select>
-                            <label>{{ t('tenantmanagement::general.theme') }}</label>
+                            <label>{{ __('tenantmanagement::admin.theme') }}</label>
                             @error('theme_id') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                     </div>
@@ -276,11 +276,11 @@
                             <div class="row">
                                 <div class="col">
                                     <button type="button" class="btn w-100" data-bs-dismiss="modal" wire:click="resetForm">
-                                        {{ t('tenantmanagement::general.cancel') }}
+                                        {{ __('tenantmanagement::admin.cancel') }}
                                     </button>
                                 </div>
                                 <div class="col">
-                                    <button type="submit" class="btn btn-primary w-100">{{ t('tenantmanagement::general.save') }}</button>
+                                    <button type="submit" class="btn btn-primary w-100">{{ __('tenantmanagement::admin.save') }}</button>
                                 </div>
                             </div>
                         </div>
@@ -295,7 +295,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{{ t('tenantmanagement::general.module_management') }}</h5>
+                    <h5 class="modal-title">{{ __('tenantmanagement::admin.module_management') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -312,27 +312,27 @@
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{{ t('tenantmanagement::general.domain_management') }}</h5>
+                    <h5 class="modal-title">{{ __('tenantmanagement::admin.domain_management') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <!-- Yeni Domain Ekleme -->
                     <div class="input-group mb-4">
-                        <input type="text" class="form-control" placeholder="{{ t('tenantmanagement::general.add_new_domain') }}" wire:model="newDomain">
-                        <button class="btn btn-primary" wire:click="addDomain">{{ t('tenantmanagement::general.add') }}</button>
+                        <input type="text" class="form-control" placeholder="{{ __('tenantmanagement::admin.add_new_domain') }}" wire:model="newDomain">
+                        <button class="btn btn-primary" wire:click="addDomain">{{ __('tenantmanagement::admin.add') }}</button>
                     </div>
                     <!-- Ekli Domainler Tablosu -->
                     @if (count($domains) > 0)
                     <div class="card">
                         <div class="card-header">
-                            <h5 class="card-title mb-0">{{ t('tenantmanagement::general.attached_domains') }}</h5>
+                            <h5 class="card-title mb-0">{{ __('tenantmanagement::admin.attached_domains') }}</h5>
                         </div>
                         <div class="table-responsive">
                             <table class="table table-vcenter card-table">
                                 <thead>
                                     <tr>
-                                        <th>{{ t('tenantmanagement::general.domain') }}</th>
-                                        <th class="w-1">{{ t('tenantmanagement::general.action') }}</th>
+                                        <th>{{ __('tenantmanagement::admin.domain') }}</th>
+                                        <th class="w-1">{{ __('tenantmanagement::admin.action') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -344,7 +344,7 @@
                                                 <input type="text" class="form-control"
                                                     wire:model.defer="editingDomainValue">
                                                 <button class="btn btn-primary"
-                                                    wire:click="updateDomain({{ $domain['id'] }})">{{ t('tenantmanagement::general.save') }}</button>
+                                                    wire:click="updateDomain({{ $domain['id'] }})">{{ __('tenantmanagement::admin.save') }}</button>
                                             </div>
                                             @else
                                             {{ $domain['domain'] }}
@@ -353,9 +353,9 @@
                                         <td>
                                             <div class="d-flex gap-2 justify-content-end">
                                                 <button class="btn btn-outline-secondary"
-                                                    wire:click="startEditingDomain({{ $domain['id'] }}, '{{ $domain['domain'] }}')">{{ t('tenantmanagement::general.edit') }}</button>
+                                                    wire:click="startEditingDomain({{ $domain['id'] }}, '{{ $domain['domain'] }}')">{{ __('tenantmanagement::admin.edit') }}</button>
                                                 <button class="btn btn-outline-danger"
-                                                    wire:click="deleteDomain({{ $domain['id'] }})">{{ t('tenantmanagement::general.delete') }}</button>
+                                                    wire:click="deleteDomain({{ $domain['id'] }})">{{ __('tenantmanagement::admin.delete') }}</button>
                                             </div>
                                         </td>
                                     </tr>
@@ -366,7 +366,7 @@
                     </div>
                     @else
                     <div class="alert alert-secondary text-center">
-                        {{ t('tenantmanagement::general.no_domains_found') }}
+                        {{ __('tenantmanagement::admin.no_domains_found') }}
                     </div>
                     @endif
                 </div>

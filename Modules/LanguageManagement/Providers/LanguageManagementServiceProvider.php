@@ -14,6 +14,8 @@ use Modules\LanguageManagement\app\Http\Livewire\Admin\SystemLanguageManageCompo
 use Modules\LanguageManagement\app\Http\Livewire\Admin\SiteLanguageComponent;
 use Modules\LanguageManagement\app\Http\Livewire\Admin\SiteLanguageManageComponent;
 use Modules\LanguageManagement\app\Http\Livewire\Admin\TranslationManageComponent;
+use Modules\LanguageManagement\app\Http\Livewire\LanguageSwitcher;
+use Modules\LanguageManagement\app\Http\Livewire\AdminLanguageSwitcher;
 use Modules\LanguageManagement\app\Http\Middleware\SetLocaleMiddleware;
 use Modules\LanguageManagement\app\Http\Middleware\CentralDomainOnly;
 
@@ -79,14 +81,18 @@ class LanguageManagementServiceProvider extends ServiceProvider
      */
     public function registerTranslations(): void
     {
-        $langPath = resource_path('lang/modules/'.$this->nameLower);
-
-        if (is_dir($langPath)) {
-            $this->loadTranslationsFrom($langPath, $this->nameLower);
-            $this->loadJsonTranslationsFrom($langPath);
-        } else {
-            $this->loadTranslationsFrom(module_path($this->name, 'lang'), $this->nameLower);
-            $this->loadJsonTranslationsFrom(module_path($this->name, 'lang'));
+        // Ana dil dosyaları - modül klasöründen yükle
+        $moduleLangPath = module_path($this->name, 'lang');
+        if (is_dir($moduleLangPath)) {
+            $this->loadTranslationsFrom($moduleLangPath, $this->nameLower);
+            $this->loadJsonTranslationsFrom($moduleLangPath);
+        }
+        
+        // Resource'daki dil dosyaları (varsa)
+        $resourceLangPath = resource_path('lang/modules/' . $this->nameLower);
+        if (is_dir($resourceLangPath)) {
+            $this->loadTranslationsFrom($resourceLangPath, $this->nameLower);
+            $this->loadJsonTranslationsFrom($resourceLangPath);
         }
     }
 
@@ -141,6 +147,8 @@ class LanguageManagementServiceProvider extends ServiceProvider
         Livewire::component('languagemanagement::admin.site-language', SiteLanguageComponent::class);
         Livewire::component('languagemanagement::admin.site-language-manage', SiteLanguageManageComponent::class);
         Livewire::component('languagemanagement::admin.translation-manage', TranslationManageComponent::class);
+        Livewire::component('languagemanagement::language-switcher', LanguageSwitcher::class);
+        Livewire::component('languagemanagement::admin-language-switcher', AdminLanguageSwitcher::class);
     }
 
     /**

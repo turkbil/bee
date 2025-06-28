@@ -12,7 +12,7 @@
                         <i class="fas fa-search"></i>
                     </span>
                     <input type="text" wire:model.live="search" class="form-control"
-                        placeholder="Site dili ara...">
+                        placeholder="{{ __('admin::common.search_site_language') }}...">
                 </div>
             </div>
             <!-- Loading -->
@@ -21,7 +21,7 @@
                     wire:target="render, search, delete, toggleActive, setAsDefault, updateOrder"
                     class="position-absolute top-50 start-50 translate-middle text-center"
                     style="width: 100%; max-width: 250px; z-index: 10;">
-                    <div class="small text-muted mb-2">Güncelleniyor...</div>
+                    <div class="small text-muted mb-2">{{ __('admin::common.updating') }}...</div>
                     <div class="progress mb-1">
                         <div class="progress-bar progress-bar-indeterminate"></div>
                     </div>
@@ -52,7 +52,7 @@
                         <div class="card h-100 {{ !$language->is_active ? 'opacity-50' : '' }} {{ $language->is_default ? 'border-primary' : '' }}" style="cursor: move;">
                             @if($language->is_default)
                                 <div class="card-header bg-primary text-white py-2">
-                                    <small><i class="fas fa-star me-1"></i> Varsayılan Site Dili</small>
+                                    <small><i class="fas fa-star me-1"></i> {{ __('admin::common.default_site_language') }}</small>
                                 </div>
                             @endif
                             <div class="card-body d-flex flex-column">
@@ -69,12 +69,12 @@
                                 <div class="mb-3 flex-grow-1">
                                     <div class="row g-2">
                                         <div class="col-6">
-                                            <small class="text-muted">Kod:</small>
+                                            <small class="text-muted">{{ __('admin::common.code') }}:</small>
                                             <div><code>{{ $language->code }}</code></div>
                                         </div>
                                         <div class="col-6">
-                                            <small class="text-muted">Yön:</small>
-                                            <div>{{ $language->direction === 'rtl' ? 'Sağdan Sola' : 'Soldan Sağa' }}</div>
+                                            <small class="text-muted">{{ __('admin::common.direction') }}:</small>
+                                            <div>{{ $language->direction === 'rtl' ? __('admin::common.rtl') : __('admin::common.ltr') }}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -82,13 +82,13 @@
                                 <!-- Durum Badge'leri -->
                                 <div class="mb-3">
                                     @if($language->is_active)
-                                        <span class="badge bg-success">Aktif</span>
+                                        <span class="badge bg-success">{{ __('admin::common.active') }}</span>
                                     @else
-                                        <span class="badge bg-secondary">Pasif</span>
+                                        <span class="badge bg-secondary">{{ __('admin::common.inactive') }}</span>
                                     @endif
                                     
                                     @if($language->is_default)
-                                        <span class="badge bg-primary ms-1">Varsayılan</span>
+                                        <span class="badge bg-primary ms-1">{{ __('admin::common.default') }}</span>
                                     @endif
                                 </div>
 
@@ -97,31 +97,31 @@
                                     <div class="d-flex gap-2">
                                         <a href="{{ route('admin.languagemanagement.site.manage', $language->id) }}" 
                                            class="btn btn-outline-primary btn-sm flex-fill">
-                                            <i class="fas fa-edit me-1"></i> Düzenle
+                                            <i class="fas fa-edit me-1"></i> {{ __('admin::common.edit') }}
                                         </a>
                                         
                                         <button wire:click="toggleActive({{ $language->id }})" 
-                                                wire:confirm="Durumu değiştirmek istediğinize emin misiniz?"
+                                                wire:confirm="{{ __('admin::common.confirm_status_change') }}?"
                                                 class="btn btn-outline-{{ $language->is_active ? 'warning' : 'success' }} btn-sm">
                                             <i class="fas fa-{{ $language->is_active ? 'pause' : 'play' }} me-1"></i>
-                                            {{ $language->is_active ? 'Pasifle' : 'Aktifle' }}
+                                            {{ $language->is_active ? __('admin::common.deactivate') : __('admin::common.activate') }}
                                         </button>
                                     </div>
                                     
                                     <div class="d-flex gap-2">
                                         @if(!$language->is_default)
                                             <button wire:click="setAsDefault({{ $language->id }})" 
-                                                    wire:confirm="Bu dili varsayılan yapmak istediğinize emin misiniz?"
+                                                    wire:confirm="{{ __('admin::common.confirm_set_default') }}?"
                                                     class="btn btn-outline-info btn-sm flex-fill">
-                                                <i class="fas fa-star me-1"></i> Varsayılan Yap
+                                                <i class="fas fa-star me-1"></i> {{ __('admin::common.set_default') }}
                                             </button>
                                         @endif
                                         
                                         <button wire:click="delete({{ $language->id }})" 
-                                                wire:confirm="Bu site dilini silmek istediğinize emin misiniz?"
+                                                wire:confirm="{{ __('admin::common.confirm_delete_site_language') }}?"
                                                 class="btn btn-outline-danger btn-sm {{ $language->is_default ? 'flex-fill' : '' }}">
                                             <i class="fas fa-trash me-1"></i>
-                                            {{ $language->is_default ? 'Sil' : '' }}
+                                            {{ $language->is_default ? __('admin::common.delete') : '' }}
                                         </button>
                                     </div>
                                 </div>
@@ -133,16 +133,16 @@
         @else
             <div class="text-center py-5">
                 <i class="fas fa-globe fa-3x text-muted mb-3"></i>
-                <h5 class="text-muted">Site dili bulunamadı</h5>
+                <h5 class="text-muted">{{ __('admin::common.no_site_languages_found') }}</h5>
                 <p class="text-muted">
                     @if($search)
-                        "{{ $search }}" araması için sonuç bulunamadı.
+                        {{ __('admin::common.no_search_results', ['search' => $search]) }}
                     @else
-                        Henüz site dili eklenmemiş.
+                        {{ __('admin::common.no_site_languages_yet') }}
                     @endif
                 </p>
                 <a href="{{ route('admin.languagemanagement.site.manage') }}" class="btn btn-primary">
-                    <i class="fas fa-plus me-1"></i> İlk Site Dilini Ekle
+                    <i class="fas fa-plus me-1"></i> {{ __('admin::common.add_first_site_language') }}
                 </a>
             </div>
         @endif

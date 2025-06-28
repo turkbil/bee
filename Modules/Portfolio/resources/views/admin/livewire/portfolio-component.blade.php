@@ -10,7 +10,7 @@
                         <i class="fas fa-search"></i>
                     </span>
                     <input type="text" wire:model.live="search" class="form-control"
-                        placeholder="{{ t('portfolio::admin.search_placeholder') }}">
+                        placeholder="{{ __('portfolio::admin.search_placeholder') }}">
                 </div>
             </div>
             <!-- Ortadaki Loading -->
@@ -19,7 +19,7 @@
                     wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, selectedItems, selectAll, bulkDelete, bulkToggleActive, selectedCategory"
                     class="position-absolute top-50 start-50 translate-middle text-center"
                     style="width: 100%; max-width: 250px; z-index: 10;">
-                    <div class="small text-muted mb-2">{{ t('portfolio::admin.loading') }}</div>
+                    <div class="small text-muted mb-2">{{ __('portfolio::admin.loading') }}</div>
                     <div class="progress mb-1">
                         <div class="progress-bar progress-bar-indeterminate"></div>
                     </div>
@@ -34,7 +34,7 @@
                                 data-choices 
                                 data-choices-search="false"
                                 data-choices-filter="true">
-                            <option value="">{{ t('portfolio::admin.all_categories') }}</option>
+                            <option value="">{{ __('portfolio::admin.all_categories') }}</option>
                             @foreach($categories as $category)
                             <option value="{{ $category->portfolio_category_id }}">{{ $category->title }}</option>
                             @endforeach
@@ -74,24 +74,24 @@
                             <button
                                 class="table-sort {{ $sortField === 'title' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
                                 wire:click="sortBy('title')">
-                                {{ t('portfolio::admin.title') }}
+                                {{ __('portfolio::admin.title') }}
                             </button>
                         </th>
                         <th style="width: 160px">
                             <button
                                 class="table-sort {{ $sortField === 'portfolio_category_id' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
                                 wire:click="sortBy('portfolio_category_id')">
-                                {{ t('portfolio::admin.category') }}
+                                {{ __('portfolio::admin.category') }}
                             </button>
                         </th>
-                        <th class="text-center" style="width: 80px" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ t('portfolio::admin.status_tooltip') }}">
+                        <th class="text-center" style="width: 80px" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('portfolio::admin.status_tooltip') }}">
                             <button
                                 class="table-sort {{ $sortField === 'is_active' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
                                 wire:click="sortBy('is_active')">
-                                {{ t('portfolio::admin.status') }}
+                                {{ __('portfolio::admin.status') }}
                             </button>
                         </th>
-                        <th class="text-center" style="width: 160px">{{ t('portfolio::admin.actions') }}</th>
+                        <th class="text-center" style="width: 160px">{{ __('portfolio::admin.actions') }}</th>
                     </tr>
                 </thead>
                 <tbody class="table-tbody">
@@ -113,7 +113,7 @@
                                 <div class="flexible-input-wrapper">
                                     <input type="text" wire:model.defer="newTitle"
                                         class="form-control form-control-sm flexible-input"
-                                        placeholder="{{ t('portfolio::admin.new_title') }}" wire:keydown.enter="updateTitleInline"
+                                        placeholder="{{ __('portfolio::admin.new_title') }}" wire:keydown.enter="updateTitleInline"
                                         wire:keydown.escape="$set('editingTitleId', null)" x-init="$nextTick(() => {
                                                 $el.focus();
                                                 $el.style.width = '20px';
@@ -170,13 +170,13 @@
                                 <div class="row">
                                     <div class="col">
                                         <a href="{{ route('admin.portfolio.manage', $portfolio->portfolio_id) }}"
-                                            data-bs-toggle="tooltip" data-bs-placement="top" title="{{ t('portfolio::admin.edit') }}">
+                                            data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('portfolio::admin.edit') }}">
                                             <i class="fa-solid fa-pen-to-square link-secondary fa-lg"></i>
                                         </a>
                                     </div>
                                     <div class="col">
                                         <a href="{{ route('admin.studio.editor', ['module' => 'portfolio', 'id' => $portfolio->portfolio_id]) }}" target="_blank"
-                                           data-bs-toggle="tooltip" data-bs-placement="top" title="{{ t('portfolio::admin.studio_editor') }}">
+                                           data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('portfolio::admin.studio_editor') }}">
                                             <i class="fa-solid fa-wand-magic-sparkles link-secondary fa-lg"></i>
                                         </a>
                                     </div>
@@ -193,7 +193,7 @@
                                                     id: {{ $portfolio->portfolio_id }},
                                                     title: '{{ $portfolio->title }}'
                                                 })" class="dropdown-item link-danger">
-                                                    {{ t('portfolio::admin.delete') }}
+                                                    {{ __('portfolio::admin.delete') }}
                                                 </a>
                                             </div>
                                         </div>
@@ -207,9 +207,9 @@
                     <tr>
                         <td colspan="4" class="text-center py-4">
                             <div class="empty">
-                                <p class="empty-title">{{ t('portfolio::admin.no_records_found') }}</p>
+                                <p class="empty-title">{{ __('portfolio::admin.no_records_found') }}</p>
                                 <p class="empty-subtitle text-muted">
-                                    {{ t('portfolio::admin.no_records_found_subtitle') }}
+                                    {{ __('portfolio::admin.no_records_found_subtitle') }}
                                 </p>
                             </div>
                         </td>

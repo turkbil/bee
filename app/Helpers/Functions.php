@@ -186,14 +186,15 @@ if (!function_exists('widget')) {
 
 if (!function_exists('href')) {
     /**
-     * Module dynamic URL helper
+     * Module dynamic URL helper with locale prefix support
      * 
      * @param string $module Module name (portfolio, page, announcement)
      * @param string $action Action name (index, show, category)
      * @param string|null $slug Item slug for show actions
+     * @param string|null $locale Locale for URL prefix
      * @return string
      */
-    function href($module, $action, $slug = null)
+    function href($module, $action, $slug = null, $locale = null)
     {
         $slugService = app(\App\Services\ModuleSlugService::class);
         $moduleSlug = $slugService->getSlug($module, $action);
@@ -202,6 +203,14 @@ if (!function_exists('href')) {
         
         if ($slug) {
             $url .= '/' . $slug;
+        }
+        
+        // Locale prefix desteği ekle
+        $currentLocale = $locale ?: app()->getLocale();
+        
+        // UrlPrefixService kullanarak prefix gerekli mi kontrol et
+        if (function_exists('needs_locale_prefix') && needs_locale_prefix($currentLocale)) {
+            $url = '/' . $currentLocale . $url;
         }
         
         return $url;
@@ -252,5 +261,84 @@ if (!function_exists('user_initials')) {
         }
         
         return mb_substr($initials, 0, $length, 'UTF-8');
+    }
+}
+
+// =====================================================
+// LOG HELPER FUNCTIONS (eski LogHelper.php'den)
+// =====================================================
+
+if (!function_exists('log_activity')) {
+    function log_activity(
+        \Illuminate\Database\Eloquent\Model $model, 
+        string $event,
+        ?array $degisenler = null
+    ): void {
+        $baslik = $model->title ?? $model->name ?? 'Bilinmeyen';
+        $modelName = class_basename($model);
+        $batchUuid = \Illuminate\Support\Str::uuid();
+
+        activity()
+            ->performedOn($model)
+            ->causedBy(auth()->user())
+            ->inLog($modelName)
+            ->withProperties([
+                'baslik' => $baslik,
+                'modul' => $modelName,
+                'degisenler' => $degisenler ?: []
+            ])
+            ->tap(function (\Spatie\Activitylog\Models\Activity $activity) use ($batchUuid, $event) {
+                $activity->batch_uuid = $batchUuid;
+                $activity->event = $event;
+            })
+            ->log("{$baslik} {$event}");
+
+        \Illuminate\Support\Facades\Log::info("Log: {$baslik} - {$event}");
+    }
+}
+
+// =====================================================
+// SETTINGS HELPER FUNCTIONS (eski SettingsHelper.php'den)
+// =====================================================
+
+if (!function_exists('settings')) {
+    function settings($key = null, $default = null)
+    {
+        if (is_null($key)) {
+            return app('settings');
+        }
+
+        try {
+            if (function_exists('is_tenant') && is_tenant()) {
+                config(['database.connections.tenant.driver' => 'mysql']);
+                \Illuminate\Support\Facades\DB::purge('tenant');
+            }
+            
+            return app('settings')->get($key, $default);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error("Settings helper error: " . $e->getMessage());
+            return $default;
+        }
+    }
+}
+
+if (!function_exists('settings_id')) {
+    function settings_id($id = null, $default = null)
+    {
+        if (is_null($id)) {
+            return app('settings');
+        }
+
+        try {
+            if (function_exists('is_tenant') && is_tenant()) {
+                config(['database.connections.tenant.driver' => 'mysql']);
+                \Illuminate\Support\Facades\DB::purge('tenant');
+            }
+            
+            return app('settings')->getById($id, $default);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error("Settings ID helper error: " . $e->getMessage());
+            return $default;
+        }
     }
 }

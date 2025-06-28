@@ -4,8 +4,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Middleware\InitializeTenancy;
 
-// Genel admin rotaları - sadece roller tablosunda kaydı olan kullanıcılar için
-Route::middleware(['web', 'auth', InitializeTenancy::class])->prefix('admin')->name('admin.')->group(function () {
+// Genel admin rotaları - sadece roller tablosunda kaydı olan kullanıcılar için  
+Route::middleware(['web', 'auth', 'tenant', 'locale.admin'])->prefix('admin')->name('admin.')->group(function () {
     
     // /admin rotası - dashboard'a yönlendir
     Route::get('/', function () {
@@ -78,17 +78,51 @@ Route::middleware(['web', 'auth', InitializeTenancy::class])->prefix('admin')->n
         });
         
         if ($language && auth()->check()) {
-            // Kullanıcı dil tercihini hemen güncelle
+            // Kullanıcı admin dil tercihini hemen güncelle
             $user = auth()->user();
-            $user->language = $locale;
+            $user->admin_language_preference = $locale; // admin_language_preference kullan
+            $user->language = $locale; // Eski alan da güncellensin
             $user->save();
             
             // Session'a da kaydet hızlı erişim için
-            session(['locale' => $locale]);
+            session(['admin_locale' => $locale, 'locale' => $locale]);
+            
+            // Laravel locale'ini hemen ayarla
+            app()->setLocale($locale);
         }
         
         return redirect()->back();
-    })->name('language.switch');
+    })->name('language.switch'); // AdminLanguageSwitcher için 'admin.language.switch' route name'i gerekiyor
+    
+    // AdminLanguageSwitcher için alias route - component admin.language.switch arıyor
+    Route::get('/admin-language/{locale}', function ($locale) {
+        // Yukarıdaki aynı mantığı kullan
+        $cacheKey = "system_language_{$locale}";
+        $language = Cache::remember($cacheKey, 3600, function() use ($locale) {
+            if (class_exists('Modules\LanguageManagement\App\Models\SystemLanguage')) {
+                return \Modules\LanguageManagement\App\Models\SystemLanguage::where('code', $locale)
+                    ->where('is_active', true)
+                    ->first();
+            }
+            return null;
+        });
+        
+        if ($language && auth()->check()) {
+            // Kullanıcı admin dil tercihini hemen güncelle
+            $user = auth()->user();
+            $user->admin_language_preference = $locale;
+            $user->language = $locale;
+            $user->save();
+            
+            // Session'a da kaydet hızlı erişim için  
+            session(['admin_locale' => $locale, 'locale' => $locale]);
+            
+            // Laravel locale'ini hemen ayarla
+            app()->setLocale($locale);
+        }
+        
+        return redirect()->back();
+    })->name('admin.language.switch');
 });
 
 // Diğer admin routes - spesifik modül erişimleri için admin.access middleware'i kullanabilirsiniz

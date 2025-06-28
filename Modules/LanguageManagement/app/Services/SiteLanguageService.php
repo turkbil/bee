@@ -86,6 +86,16 @@ class SiteLanguageService
     }
     
     /**
+     * Aktif site dillerini Collection olarak al (LanguageService için)
+     */
+    public function getAvailableLanguages()
+    {
+        return Cache::remember('site_languages.collection.' . $this->getTenantCacheKey(), 1800, function () {
+            return SiteLanguage::active()->ordered()->get();
+        });
+    }
+    
+    /**
      * Site dili geçerli mi kontrol et
      */
     public function isValidSiteLanguage(string $languageCode): bool
@@ -200,6 +210,22 @@ class SiteLanguageService
     }
     
     /**
+     * Mevcut dili getir (LanguageService için)
+     */
+    public function getCurrentLanguage(): string
+    {
+        return $this->getCurrentSiteLocale();
+    }
+    
+    /**
+     * Mevcut dili set et (LanguageService için)
+     */
+    public function setCurrentLanguage(string $languageCode): bool
+    {
+        return $this->setSiteLocale($languageCode);
+    }
+    
+    /**
      * Tenant'ın varsayılan site dilini al (Dashboard için)
      */
     public function getTenantDefaultSiteLanguage(): string
@@ -225,10 +251,21 @@ class SiteLanguageService
     {
         Cache::forget('site_language.default');
         Cache::forget('site_languages.active.' . $this->getTenantCacheKey());
+        Cache::forget('site_languages.collection.' . $this->getTenantCacheKey());
         
         $languages = SiteLanguage::all();
         foreach ($languages as $language) {
             Cache::forget("site_language.{$language->code}." . $this->getTenantCacheKey());
+        }
+        
+        // Language regex cache'ini de temizle
+        if (function_exists('clearLanguageRegexCache')) {
+            clearLanguageRegexCache();
+        }
+        
+        // URL prefix cache'ini de temizle
+        if (class_exists('Modules\LanguageManagement\app\Services\UrlPrefixService')) {
+            \Modules\LanguageManagement\app\Services\UrlPrefixService::clearCache();
         }
     }
     

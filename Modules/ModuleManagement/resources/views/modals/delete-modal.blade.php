@@ -6,20 +6,20 @@
                 <button type="button" class="btn-close" wire:click="$set('showModal', false)"></button>
                 <div class="modal-status bg-danger"></div>
                 <div class="modal-body text-center py-4">
-                    <h3>{{ t('modulemanagement::general.confirm_delete') }}</h3>
-                    <div class="text-muted">"{{ $title }}" {{ t('modulemanagement::general.about_to_delete') }}</div>
+                    <h3>{{ __('modulemanagement::admin.confirm_delete') }}</h3>
+                    <div class="text-muted">"{{ $title }}" {{ __('modulemanagement::admin.about_to_delete') }}</div>
                 </div>
                 <div class="modal-footer">
                     <div class="w-100">
                         <div class="row">
                             <div class="col">
                                 <button class="btn w-100" wire:click="$set('showModal', false)">
-                                    {{ t('modulemanagement::general.cancel') }}
+                                    {{ __('modulemanagement::admin.cancel') }}
                                 </button>
                             </div>
                             <div class="col">
                                 <button class="btn btn-danger w-100" wire:click="delete" wire:loading.attr="disabled">
-                                    {{ t('modulemanagement::general.delete') }}
+                                    {{ __('modulemanagement::admin.delete') }}
                                 </button>
                             </div>
                         </div>

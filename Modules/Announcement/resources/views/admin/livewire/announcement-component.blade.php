@@ -10,7 +10,7 @@
                         <i class="fas fa-search"></i>
                     </span>
                     <input type="text" wire:model.live="search" class="form-control"
-                        placeholder="{{ t('announcement::general.search_placeholder') }}">
+                        placeholder="{{ __('announcement::admin.search_placeholder') }}">
                 </div>
             </div>
             <!-- Ortadaki Loading -->
@@ -19,7 +19,7 @@
                     wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, selectedItems, selectAll, bulkDelete, bulkToggleActive"
                     class="position-absolute top-50 start-50 translate-middle text-center"
                     style="width: 100%; max-width: 250px;">
-                    <div class="small text-muted mb-2">{{ t('announcement::general.updating') }}</div>
+                    <div class="small text-muted mb-2">{{ __('announcement::admin.updating') }}</div>
                     <div class="progress mb-1">
                         <div class="progress-bar progress-bar-indeterminate"></div>
                     </div>
@@ -62,17 +62,17 @@
                             <button
                                 class="table-sort {{ $sortField === 'title' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
                                 wire:click="sortBy('title')">
-                                {{ t('announcement::general.title') }}
+                                {{ __('announcement::admin.title') }}
                             </button>
                         </th>
-                        <th class="text-center" style="width: 80px" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ t('announcement::general.active_status_info') }}">
+                        <th class="text-center" style="width: 80px" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('announcement::admin.active_status_info') }}">
                             <button
                                 class="table-sort {{ $sortField === 'is_active' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
                                 wire:click="sortBy('is_active')">
-                                {{ t('announcement::general.status') }}
+                                {{ __('announcement::admin.status') }}
                             </button>
                         </th>
-                        <th class="text-center" style="width: 160px">{{ t('announcement::general.operations') }}</th>
+                        <th class="text-center" style="width: 160px">{{ __('announcement::admin.operations') }}</th>
                     </tr>
                 </thead>
                 <tbody class="table-tbody">
@@ -93,7 +93,7 @@
                                 <div class="flexible-input-wrapper">
                                     <input type="text" wire:model.defer="newTitle"
                                         class="form-control form-control-sm flexible-input"
-                                        placeholder="{{ t('announcement::general.enter_new_title') }}" wire:keydown.enter="updateTitleInline"
+                                        placeholder="{{ __('announcement::admin.enter_new_title') }}" wire:keydown.enter="updateTitleInline"
                                         wire:keydown.escape="$set('editingTitleId', null)" x-init="$nextTick(() => {
                                                 $el.focus();
                                                 $el.style.width = '20px';
@@ -143,7 +143,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <a href="{{ route('admin.announcement.manage', $announcement->announcement_id) }}"
-                                            data-bs-toggle="tooltip" data-bs-placement="top" title="{{ t('announcement::general.edit') }}">
+                                            data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('announcement::admin.edit') }}">
                                             <i class="fa-solid fa-pen-to-square link-secondary fa-lg"></i>
                                         </a>
                                     </div>
@@ -160,7 +160,7 @@
                                                     id: {{ $announcement->announcement_id }},
                                                     title: '{{ $announcement->title }}'
                                                 })" class="dropdown-item link-danger">
-                                                    {{ t('announcement::general.delete') }}
+                                                    {{ __('announcement::admin.delete') }}
                                                 </a>
                                             </div>
                                         </div>
@@ -174,9 +174,9 @@
                     <tr>
                         <td colspan="4" class="text-center py-4">
                             <div class="empty">
-                                <p class="empty-title">{{ t('announcement::general.no_records_found') }}</p>
+                                <p class="empty-title">{{ __('announcement::admin.no_records_found') }}</p>
                                 <p class="empty-subtitle text-muted">
-                                    {{ t('announcement::general.no_records_criteria') }}
+                                    {{ __('announcement::admin.no_records_criteria') }}
                                 </p>
                             </div>
                         </td>

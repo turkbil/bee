@@ -48,5 +48,5 @@ return array(
     'f36d7ea9144e9f8ff76be0eaaff1ee80' => $vendorDir . '/stancl/tenancy/src/helpers.php',
     'cd6300adadbd4f8fd3c2a0a1b3efa58a' => $baseDir . '/app/Helpers/Functions.php',
     '328ac2dfc6cbdb61ee942279aca1141c' => $baseDir . '/app/Helpers/TenantHelpers.php',
-    '0033944debfeaf12d03ee55033df2857' => $baseDir . '/app/Helpers/LogHelper.php',
+    '83bd2eaaa0c8f246d1feccb8de5192b9' => $baseDir . '/app/Helpers/TranslationHelper.php',
 );

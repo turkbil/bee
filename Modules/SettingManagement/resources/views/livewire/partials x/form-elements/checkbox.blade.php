@@ -31,7 +31,7 @@
             <div class="d-flex align-items-center justify-content-between">
                 <h3 class="card-title d-flex align-items-center">
                     <i class="fa-regular fa-comment fa-flip-horizontal me-2"></i>
-                    {{ $element['properties']['label'] ?? t('settingmanagement::general.checkbox_field_default') }}
+                    {{ $element['properties']['label'] ?? __('settingmanagement::general.checkbox_field_default') }}
                 </h3>
             </div>
         </div>
@@ -47,7 +47,7 @@
                             @if($isRequired) required @endif
                             @if($defaultValue === 'true') checked @endif
                         >
-                        <span class="form-check-label">{{ $checkboxLabel ?? ($element['properties']['label'] ?? t('settingmanagement::general.checkbox_field_label')) }}</span>
+                        <span class="form-check-label">{{ $checkboxLabel ?? ($element['properties']['label'] ?? __('settingmanagement::general.checkbox_field_label')) }}</span>
                     </label>
                 </div>
                 
@@ -61,7 +61,7 @@
                 @if(isset($originalData[$element['properties']['name']]) && $originalData[$element['properties']['name']] != $formData[$element['properties']['name']])
                     <div class="mt-2 text-end">
                         <span class="badge bg-yellow cursor-pointer" wire:click="resetToDefault('{{ $element['properties']['name'] }}')">
-                            <i class="fas fa-undo me-1"></i> {{ t('settingmanagement::general.reset_to_default_button') }}
+                            <i class="fas fa-undo me-1"></i> {{ __('settingmanagement::general.reset_to_default_button') }}
                         </span>
                     </div>
                 @endif

@@ -60,8 +60,8 @@ class PageComponent extends Component
             // Eğer ana sayfa ise pasif yapılmasına izin verme
             if ($page->is_homepage && $page->is_active) {
                 $this->dispatch('toast', [
-                    'title' => t('common.warning'),
-                    'message' => t('page::messages.homepage_cannot_be_deactivated'),
+                    'title' => __('admin::common.warning'),
+                    'message' => __('page::messages.homepage_cannot_be_deactivated'),
                     'type' => 'warning',
                 ]);
                 return;
@@ -70,12 +70,12 @@ class PageComponent extends Component
             
             log_activity(
                 $page,
-                $page->is_active ? t('common.activated') : t('common.deactivated')
+                $page->is_active ? __('admin::common.activated') : __('admin::common.deactivated')
             );
     
             $this->dispatch('toast', [
-                'title' => t('common.success'),
-                'message' => t($page->is_active ? 'page::messages.page_activated' : 'page::messages.page_deactivated', ['title' => $page->title]),
+                'title' => __('admin::common.success'),
+                'message' => __($page->is_active ? 'page::messages.page_activated' : 'page::messages.page_deactivated', ['title' => $page->getTranslated('title', app()->getLocale()) ?? $page->getTranslated('title', 'tr')]),
                 'type' => $page->is_active ? 'success' : 'warning',
             ]);
         }
@@ -84,12 +84,24 @@ class PageComponent extends Component
     public function render()
     {
         $query = Page::where(function ($query) {
-                $query->where('title', 'like', '%' . $this->search . '%')
-                    ->orWhere('slug', 'like', '%' . $this->search . '%');
+                // JSON title ve slug arama
+                $searchTerm = '%' . $this->search . '%';
+                $query->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.tr')) LIKE ?", [$searchTerm])
+                      ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.en')) LIKE ?", [$searchTerm])
+                      ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.ar')) LIKE ?", [$searchTerm])
+                      ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(slug, '$.tr')) LIKE ?", [$searchTerm])
+                      ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(slug, '$.en')) LIKE ?", [$searchTerm])
+                      ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(slug, '$.ar')) LIKE ?", [$searchTerm]);
             });
     
-        $pages = $query->orderBy($this->sortField, $this->sortDirection)
-            ->paginate($this->perPage);
+        // Sorting: JSON field'lar için özel sıralama
+        if ($this->sortField === 'title') {
+            $pages = $query->orderByRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.tr')) {$this->sortDirection}")
+                ->paginate($this->perPage);
+        } else {
+            $pages = $query->orderBy($this->sortField, $this->sortDirection)
+                ->paginate($this->perPage);
+        }
     
         return view('page::admin.livewire.page-component', [
             'pages' => $pages,

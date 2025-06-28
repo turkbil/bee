@@ -1,9 +1,9 @@
-<script src="{{ asset('admin-assets/libs/tinymce/tinymce.min.js') }}"></script>
+<script src="/admin-assets/libs/tinymce/tinymce.min.js?v={{ time() }}"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         // TinyMCE yapılandırması
         let options = {
-          selector: '#editor',
+          selector: '#editor, [id^="editor_"]',
           plugins: 'code table lists link image media searchreplace fullscreen preview wordcount visualblocks visualchars nonbreaking importcss charmap emoticons pagebreak accordion autoresize codesample quickbars',
           toolbar: 'code preview | undo redo | blocks | bold italic underline | link image media codesample | alignleft aligncenter alignright alignjustify | bullist numlist | table | accordion | visualblocks visualchars | pagebreak | emoticons | searchreplace | fullscreen | wordcount',
           // Menü özelleştirmesi
@@ -34,14 +34,29 @@
           setup: function(editor) {
             editor.on('change', function() {
               editor.save();
-              document.getElementById('editor').dispatchEvent(new Event('input'));
+              
+              // Hem #editor hem de #editor_xx için event dispatch et
+              const editorElement = document.getElementById(editor.id);
+              if (editorElement) {
+                editorElement.dispatchEvent(new Event('input'));
+              }
             });
             
             // min-height için veri özniteliğini kontrol et
-            const editorElement = document.getElementById('editor');
+            const editorElement = document.getElementById(editor.id);
             if (editorElement && editorElement.dataset.minHeight) {
               options.min_height = parseInt(editorElement.dataset.minHeight);
               options.content_style = 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 14px; min-height: ' + options.min_height + 'px; }';
+            }
+            
+            // Dil desteği - editör ID'sinden dil tespiti
+            if (editor.id.includes('_')) {
+              const language = editor.id.split('_')[1];
+              if (language === 'ar') {
+                editor.settings.directionality = 'rtl';
+              } else {
+                editor.settings.directionality = 'ltr';
+              }
             }
           }
         };
@@ -68,13 +83,16 @@
         // Livewire yeniden yükleme olayını dinle
         if (typeof window.Livewire !== 'undefined') {
           window.Livewire.hook('message.processed', function() {
-            if (!document.getElementById('editor')) return;
+            // Tüm editor'ları kontrol et
+            const editors = document.querySelectorAll('#editor, [id^="editor_"]');
             
-            if (!tinymce.get('editor')) {
-              setTimeout(function() {
-                tinymce.init(options);
-              }, 100);
-            }
+            editors.forEach(function(editorElement) {
+              if (!tinymce.get(editorElement.id)) {
+                setTimeout(function() {
+                  tinymce.init(options);
+                }, 100);
+              }
+            });
           });
         }
     });

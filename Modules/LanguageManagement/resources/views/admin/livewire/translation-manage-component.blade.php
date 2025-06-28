@@ -70,7 +70,7 @@
                                     <label class="form-label">Dil</label>
                                     <select wire:model="selectedLocale" class="form-select">
                                         @foreach($availableLocales as $locale)
-                                            <option value="{{ $locale }}">{{ locale_name($locale) }}</option>
+                                            <option value="{{ $locale }}">{{ $locale === 'tr' ? 'Türkçe' : ($locale === 'en' ? 'English' : strtoupper($locale)) }}</option>
                                         @endforeach
                                     </select>
                                 </div>

@@ -73,13 +73,13 @@ class WidgetComponent extends Component
         
         // Widget instance oluşturma log'u
         if ($tenantWidget && function_exists('log_activity')) {
-            log_activity($tenantWidget, t('widgetmanagement.actions.created'));
+            log_activity($tenantWidget, __('widgetmanagement.actions.created'));
         }
         
         if ($tenantWidget) {
             $this->dispatch('toast', [
-                'title' => t('widgetmanagement.messages.success'),
-                'message' => t('widgetmanagement.messages.widget_created'),
+                'title' => __('widgetmanagement.messages.success'),
+                'message' => __('widgetmanagement.messages.widget_created'),
                 'type' => 'success'
             ]);
         }
@@ -88,17 +88,17 @@ class WidgetComponent extends Component
     public function deleteInstance($tenantWidgetId)
     {
         $tenantWidget = TenantWidget::findOrFail($tenantWidgetId);
-        $name = $tenantWidget->settings['title'] ?? t('widgetmanagement.widget.default_name');
+        $name = $tenantWidget->settings['title'] ?? __('widgetmanagement.widget.default_name');
         
         // Widget instance silme log'u
         if (function_exists('log_activity')) {
-            log_activity($tenantWidget, t('widgetmanagement.actions.deleted'));
+            log_activity($tenantWidget, __('widgetmanagement.actions.deleted'));
         }
         
         if ($tenantWidget->delete()) {
             $this->dispatch('toast', [
-                'title' => t('widgetmanagement.messages.success'),
-                'message' => "$name " . t('widgetmanagement.messages.widget_deleted'),
+                'title' => __('widgetmanagement.messages.success'),
+                'message' => "$name " . __('widgetmanagement.messages.widget_deleted'),
                 'type' => 'success'
             ]);
         }
@@ -114,15 +114,15 @@ class WidgetComponent extends Component
         
         // Widget toggle log'u
         if (function_exists('log_activity')) {
-            log_activity($tenantWidget, $tenantWidget->is_active ? t('widgetmanagement.actions.activated') : t('widgetmanagement.actions.deactivated'));
+            log_activity($tenantWidget, $tenantWidget->is_active ? __('widgetmanagement.actions.activated') : __('widgetmanagement.actions.deactivated'));
         }
         
-        $status = $tenantWidget->is_active ? t('widgetmanagement.messages.widget_activated') : t('widgetmanagement.messages.widget_deactivated');
+        $status = $tenantWidget->is_active ? __('widgetmanagement.messages.widget_activated') : __('widgetmanagement.messages.widget_deactivated');
         $type = $tenantWidget->is_active ? 'success' : 'warning';
         
         $this->dispatch('toast', [
-            'title' => t('widgetmanagement.messages.success'),
-            'message' => t('widgetmanagement.widget.component') . " $status.",
+            'title' => __('widgetmanagement.messages.success'),
+            'message' => __('widgetmanagement.widget.component') . " $status.",
             'type' => $type
         ]);
     }
@@ -262,9 +262,9 @@ class WidgetComponent extends Component
             'entities' => $entities,
             'widgets' => $widgets,
             'types' => [
-                'static' => t('widgetmanagement.types.static'),
-                'dynamic' => t('widgetmanagement.types.dynamic'),
-                'content' => t('widgetmanagement.types.content')
+                'static' => __('widgetmanagement.types.static'),
+                'dynamic' => __('widgetmanagement.types.dynamic'),
+                'content' => __('widgetmanagement.types.content')
             ],
             'parentCategories' => $parentCategories,
             'childCategories' => $childCategories,

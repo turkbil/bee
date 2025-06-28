@@ -1,20 +1,20 @@
 <div
-    data-t-warning="{{ t('ai::messages.status.warning') }}"
-    data-t-empty-message="{{ t('ai::messages.error.empty_message') }}"
-    data-t-typing="{{ t('ai::general.typing') }}"
-    data-t-copied="{{ t('ai::messages.status.copied') }}"
-    data-t-message-copied="{{ t('ai::messages.success.message_copied') }}"
-    data-t-server-error="{{ t('ai::messages.error.server_error') }}"
-    data-t-reset-confirm="{{ t('ai::messages.confirm.reset_conversation') }}"
-    data-t-greeting="{{ t('ai::messages.info.greeting') }}"
-    data-t-successful="{{ t('ai::messages.status.successful') }}"
-    data-t-reset-success="{{ t('ai::messages.success.conversation_reset') }}"
-    data-t-error="{{ t('ai::messages.error.general_error') }}"
-    data-t-conversation-copied="{{ t('ai::messages.success.conversation_copied') }}"
-    data-t-you="{{ t('ai::messages.general.you') }}"
-    data-t-ai="{{ t('ai::messages.general.ai') }}"
-    data-t-connection-error="{{ t('ai::messages.error.connection_error') }}"
-    data-t-retry="{{ t('ai::general.retry') }}"
+    data-t-warning="{{ __('ai::admin.status.warning') }}"
+    data-t-empty-message="{{ __('ai::admin.error.empty_message') }}"
+    data-t-typing="{{ __('ai::admin.typing') }}"
+    data-t-copied="{{ __('ai::admin.status.copied') }}"
+    data-t-message-copied="{{ __('ai::admin.success.message_copied') }}"
+    data-t-server-error="{{ __('ai::admin.error.server_error') }}"
+    data-t-reset-confirm="{{ __('ai::admin.confirm.reset_conversation') }}"
+    data-t-greeting="{{ __('ai::admin.info.greeting') }}"
+    data-t-successful="{{ __('ai::admin.status.successful') }}"
+    data-t-reset-success="{{ __('ai::admin.success.conversation_reset') }}"
+    data-t-error="{{ __('ai::admin.error.general_error') }}"
+    data-t-conversation-copied="{{ __('ai::admin.success.conversation_copied') }}"
+    data-t-you="{{ __('ai::admin.general.you') }}"
+    data-t-ai="{{ __('ai::admin.general.ai') }}"
+    data-t-connection-error="{{ __('ai::admin.error.connection_error') }}"
+    data-t-retry="{{ __('ai::admin.retry') }}"
 >
     @include('ai::admin.helper')
         @if ($error)
@@ -26,7 +26,7 @@
                 <div>
                     {{ $error }}
                     <button type="button" class="btn btn-sm btn-warning ms-3" wire:click="retryLastMessage">
-                        <i class="fas fa-redo-alt me-1"></i> {{ t('ai::general.retry') }}
+                        <i class="fas fa-redo-alt me-1"></i> {{ __('ai::admin.retry') }}
                     </button>
                 </div>
             </div>
@@ -38,7 +38,7 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-center">
-                            <h3 class="card-title">{{ t('ai::general.ai_assistant') }}</h3>
+                            <h3 class="card-title">{{ __('ai::admin.ai_assistant') }}</h3>
                             <div class="d-flex align-items-center">
                                 <!-- Prompt Seçimi -->
                                 <div class="me-3">
@@ -59,11 +59,11 @@
                                     </button>
                                     <ul class="dropdown-menu">
                                         <li><a class="dropdown-item reset-conversation" href="javascript:void(0)"><i
-                                                    class="fa-thin fa-rotate me-2"></i>{{ t('ai::general.reset_conversation') }}</a></li>
+                                                    class="fa-thin fa-rotate me-2"></i>{{ __('ai::admin.reset_conversation') }}</a></li>
                                         <li><a class="dropdown-item copy-conversation" href="javascript:void(0)"><i
-                                                    class="fa-thin fa-copy me-2"></i>{{ t('ai::general.copy_conversation') }}</a></li>
+                                                    class="fa-thin fa-copy me-2"></i>{{ __('ai::admin.copy_conversation') }}</a></li>
                                         <li><a class="dropdown-item new-window" href="{{ route('admin.ai.index') }}"
-                                                target="_blank"><i class="fa-thin fa-external-link me-2"></i>{{ t('ai::general.new_window') }}</a></li>
+                                                target="_blank"><i class="fa-thin fa-external-link me-2"></i>{{ __('ai::admin.new_window') }}</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -74,11 +74,11 @@
                             <div class="chat-messages p-3" id="chat-messages">
                                 <div class="message ai-message">
                                     <div class="message-content">
-                                        <p>{{ t('ai::messages.info.greeting') }}</p>
+                                        <p>{{ __('ai::admin.info.greeting') }}</p>
                                     </div>
                                     <div class="message-actions">
                                         <button class="btn btn-sm btn-ghost-secondary copy-message"
-                                            data-bs-toggle="tooltip" title="{{ t('ai::general.copy_message') }}">
+                                            data-bs-toggle="tooltip" title="{{ __('ai::admin.copy_message') }}">
                                             <i class="fa-thin fa-copy"></i>
                                         </button>
                                     </div>
@@ -91,7 +91,7 @@
                             <input type="hidden" id="conversation-id" value="{{ md5(time() . rand(1000, 9999)) }}">
                             <div class="w-100 position-relative">
                                 <textarea id="user-message" class="form-control" rows="1"
-                                    placeholder="{{ t('ai::general.message_placeholder') }}" required></textarea>
+                                    placeholder="{{ __('ai::admin.message_placeholder') }}" required></textarea>
                                 <div id="loading-indicator" class="position-absolute"
                                     style="display: none; right: 10px; bottom: 10px;">
                                     <div class="spinner-border spinner-border-sm text-muted" role="status"></div>
@@ -110,11 +110,11 @@
         <div id="toast-notification" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="toast-header">
                 <i class="fa-thin fa-circle-check text-success me-2"></i>
-                <strong class="me-auto" id="toast-title">{{ t('ai::messages.status.successful') }}</strong>
-                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="{{ t('ai::general.close') }}"></button>
+                <strong class="me-auto" id="toast-title">{{ __('ai::admin.status.successful') }}</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="{{ __('ai::admin.close') }}"></button>
             </div>
             <div class="toast-body" id="toast-message">
-                {{ t('ai::messages.success.operation_completed') }}
+                {{ __('ai::admin.success.operation_completed') }}
             </div>
         </div>
     </div>

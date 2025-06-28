@@ -61,13 +61,13 @@ class PortfolioManageComponent extends Component
    }
 
    protected $messages = [
-       'inputs.portfolio_category_id.required' => 'Kategori seçimi zorunludur',
-       'inputs.title.required' => 'Başlık alanı zorunludur.',
-       'inputs.title.min' => 'Başlık en az 3 karakter olmalıdır.',
-       'inputs.title.max' => 'Başlık 255 karakteri geçemez.',
-       'temporaryImages.*.image' => 'Dosya bir resim olmalıdır',
-       'temporaryImages.*.mimes' => 'Resim dosyası jpg, jpeg, png veya webp formatında olmalıdır',
-       'temporaryImages.*.max' => 'Resim dosyası en fazla 2MB olabilir'
+       'inputs.portfolio_category_id.required' => 'portfolio::admin.category_required',
+       'inputs.title.required' => 'portfolio::admin.title_required',
+       'inputs.title.min' => 'portfolio::admin.title_min',
+       'inputs.title.max' => 'portfolio::admin.title_max',
+       'temporaryImages.*.image' => 'admin::common.file_must_be_image',
+       'temporaryImages.*.mimes' => 'admin::common.image_format_error',
+       'temporaryImages.*.max' => 'admin::common.image_size_error'
    ];
 
    public function save($redirect = false, $resetForm = false)
@@ -87,8 +87,8 @@ class PortfolioManageComponent extends Component
           
           if ($data == $currentData) {
               $toast = [
-                  'title' => 'Bilgi',
-                  'message' => 'Herhangi bir değişiklik yapılmadı.',
+                  'title' => __('admin::common.info'),
+                  'message' => __('admin::common.no_changes'),
                   'type' => 'info'
               ];
           } else {
@@ -98,8 +98,8 @@ class PortfolioManageComponent extends Component
               log_activity($portfolio, 'güncellendi');
               
               $toast = [
-                  'title' => 'Başarılı!',
-                  'message' => 'Portfolyo başarıyla güncellendi.',
+                  'title' => __('admin::common.success'),
+                  'message' => __('portfolio::admin.portfolio_updated'),
                   'type' => 'success'
               ];
           }
@@ -112,7 +112,7 @@ class PortfolioManageComponent extends Component
           
           $toast = [
               'title' => 'Başarılı!',
-              'message' => 'Portfolyo başarıyla oluşturuldu.',
+              'message' => __('portfolio::admin.portfolio_created'),
               'type' => 'success'
           ];
       }

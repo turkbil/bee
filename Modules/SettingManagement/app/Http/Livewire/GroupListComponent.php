@@ -68,12 +68,12 @@ class GroupListComponent extends Component
     
         log_activity(
             $group,
-            $group->is_active ? t('settingmanagement.actions.group_activated') : t('settingmanagement.actions.group_deactivated')
+            $group->is_active ? __('settingmanagement.actions.group_activated') : __('settingmanagement.actions.group_deactivated')
         );
     
         $this->dispatch('toast', [
-            'title' => t('settingmanagement.messages.success'),
-            'message' => t('settingmanagement.messages.group_status_updated'),
+            'title' => __('settingmanagement.messages.success'),
+            'message' => __('settingmanagement.messages.group_status_updated'),
             'type' => 'success'
         ]);
     }
@@ -94,22 +94,22 @@ class GroupListComponent extends Component
     
             log_activity(
                 $group,
-                t('settingmanagement.actions.created')
+                __('settingmanagement.actions.created')
             );
     
             $this->reset('inputs');
             $this->showAddForm = false;
     
             $this->dispatch('toast', [
-                'title' => t('settingmanagement.messages.success'),
-                'message' => t('settingmanagement.messages.group_created'),
+                'title' => __('settingmanagement.messages.success'),
+                'message' => __('settingmanagement.messages.group_created'),
                 'type' => 'success'
             ]);
     
         } catch (\Exception $e) {
             $this->dispatch('toast', [
-                'title' => t('settingmanagement.messages.error'),
-                'message' => t('settingmanagement.messages.group_create_error'),
+                'title' => __('settingmanagement.messages.error'),
+                'message' => __('settingmanagement.messages.group_create_error'),
                 'type' => 'error'
             ]);
         }
@@ -124,7 +124,7 @@ class GroupListComponent extends Component
     
         log_activity(
             $group,
-            t('settingmanagement.actions.updated'),
+            __('settingmanagement.actions.updated'),
             array_diff_assoc($group->toArray(), $oldData)
         );
     
@@ -132,8 +132,8 @@ class GroupListComponent extends Component
         $this->reset('inputs');
     
         $this->dispatch('toast', [
-            'title' => t('settingmanagement.messages.success'),
-            'message' => t('settingmanagement.messages.group_updated'),
+            'title' => __('settingmanagement.messages.success'),
+            'message' => __('settingmanagement.messages.group_updated'),
             'type' => 'success'
         ]);
     }
@@ -144,8 +144,8 @@ class GroupListComponent extends Component
     
         if ($group->children()->count() > 0) {
             $this->dispatch('toast', [
-                'title' => t('settingmanagement.messages.error'),
-                'message' => t('settingmanagement.messages.group_delete_error'),
+                'title' => __('settingmanagement.messages.error'),
+                'message' => __('settingmanagement.messages.group_delete_error'),
                 'type' => 'error'
             ]);
             return;
@@ -156,12 +156,12 @@ class GroupListComponent extends Component
     
         log_activity(
             $deletedGroup,
-            t('settingmanagement.actions.deleted')
+            __('settingmanagement.actions.deleted')
         );
     
         $this->dispatch('toast', [
-            'title' => t('settingmanagement.messages.success'),
-            'message' => t('settingmanagement.messages.group_deleted'),
+            'title' => __('settingmanagement.messages.success'),
+            'message' => __('settingmanagement.messages.group_deleted'),
             'type' => 'success'
         ]);
     }
@@ -187,12 +187,12 @@ class GroupListComponent extends Component
         
         log_activity(
             $group,
-            t('settingmanagement.actions.form_layout_updated')
+            __('settingmanagement.actions.form_layout_updated')
         );
         
         $this->dispatch('toast', [
-            'title' => t('settingmanagement.messages.success'),
-            'message' => t('settingmanagement.messages.form_layout_saved'),
+            'title' => __('settingmanagement.messages.success'),
+            'message' => __('settingmanagement.messages.form_layout_saved'),
             'type' => 'success'
         ]);
         

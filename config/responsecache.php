@@ -79,13 +79,18 @@ return [
      *
      * You may use a string or an array here.
      */
-    'cache_tag' => 'response_cache',
+    'cache_tag' => 'central_response_cache', // Default: central, tenant'lar kendi tag'ini alır
 
     /*
      * This class is responsible for generating a hash for a request. This hash
      * is used to look up a cached response.
      */
     'hasher' => \App\Services\AuthAwareHasher::class,
+    
+    /*
+     * Enable role-based cache variation (experimental)
+     */
+    'role_based_cache' => env('RESPONSE_CACHE_ROLE_BASED', false),
 
     /*
      * This class is responsible for serializing responses.
@@ -98,5 +103,18 @@ return [
     'skip_caching_paths' => [
         'admin/*',
         'livewire/*',
+    ],
+    
+    /*
+     * Configurable excluded paths for TenantCacheProfile
+     */
+    'excluded_paths' => [
+        'admin/*',
+        'language/*',
+        'debug-lang/*',
+        'debug/*',
+        'livewire/*',
+        'api/*',
+        'auth/*'
     ],
 ];

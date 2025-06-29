@@ -21,14 +21,19 @@ trait HasTranslations
         
         // Alan çevrilebilir mi kontrol et
         if (!$this->isTranslatable($field)) {
-            return $this->getAttribute($field);
+            $value = $this->getAttribute($field);
+            // Eğer array ise string'e çevir
+            if (is_array($value)) {
+                return json_encode($value);
+            }
+            return is_string($value) ? $value : (string) $value;
         }
         
         $translations = $this->getAttribute($field);
         
-        // JSON değilse direkt döndür
+        // JSON değilse direkt döndür - ama string olduğundan emin ol
         if (!is_array($translations)) {
-            return $translations;
+            return is_string($translations) ? $translations : (string) $translations;
         }
         
         // İstenen dil varsa döndür
@@ -47,13 +52,14 @@ trait HasTranslations
     {
         // 1. Varsayılan dil (tr) varsa döndür
         if (isset($translations['tr']) && !empty($translations['tr'])) {
-            return $translations['tr'];
+            $value = $translations['tr'];
+            return is_string($value) ? $value : (string) $value;
         }
         
         // 2. İlk dolu dili bul
         foreach ($translations as $locale => $content) {
             if (!empty($content)) {
-                return $content;
+                return is_string($content) ? $content : (string) $content;
             }
         }
         

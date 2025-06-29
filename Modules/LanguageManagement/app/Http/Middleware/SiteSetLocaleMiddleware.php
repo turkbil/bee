@@ -19,16 +19,11 @@ class SiteSetLocaleMiddleware
 
     /**
      * Handle an incoming request for SITE context only
-     * Uses site_languages table and site_locale session
+     * Uses tenant_languages table and site_locale session
      */
     public function handle(Request $request, Closure $next): Response
     {
-        \Log::info('🔧 SiteSetLocaleMiddleware BAŞLADI', [
-            'url' => $request->fullUrl(),
-            'current_app_locale' => app()->getLocale(),
-            'session_site_locale' => session('site_locale'),
-            'user_site_preference' => auth()->check() ? auth()->user()->site_language_preference : null
-        ]);
+        // Minimal logging for performance
 
         // URL prefix desteği - sadece site context için
         if (class_exists('Modules\LanguageManagement\app\Services\UrlPrefixService')) {
@@ -55,11 +50,6 @@ class SiteSetLocaleMiddleware
                         $request->merge(['clean_path' => $urlData['clean_path']]);
                     }
                     
-                    \Log::info('✅ Site URL prefix ile dil ayarlandı', [
-                        'locale' => $locale,
-                        'has_prefix' => $urlData['has_prefix'],
-                        'clean_path' => $urlData['clean_path']
-                    ]);
                     
                     return $next($request);
                 }
@@ -79,10 +69,6 @@ class SiteSetLocaleMiddleware
                     $this->languageService->setUserLanguagePreference($langFromRoute, 'site');
                 }
                 
-                \Log::info('✅ Site route parametresinden dil ayarlandı', [
-                    'locale' => $langFromRoute,
-                    'source' => 'route_parameter'
-                ]);
                 
                 return $next($request);
             }
@@ -101,10 +87,6 @@ class SiteSetLocaleMiddleware
                     $this->languageService->setUserLanguagePreference($languageFromUrl, 'site');
                 }
                 
-                \Log::info('✅ Site URL parametresinden dil ayarlandı', [
-                    'locale' => $languageFromUrl,
-                    'source' => 'url_parameter'
-                ]);
             }
         } else {
             // URL'de dil yok, site session/user tercihi/varsayılan sırasıyla kontrol et
@@ -113,18 +95,9 @@ class SiteSetLocaleMiddleware
             // Sadece mevcut locale farklıysa güncelle
             if (app()->getLocale() !== $currentLanguage) {
                 $this->languageService->setLocale($currentLanguage, 'site');
-                \Log::info('🔄 Site LanguageService ile locale güncellendi', [
-                    'from' => app()->getLocale(),
-                    'to' => $currentLanguage,
-                    'source' => 'session_or_preference'
-                ]);
             }
         }
 
-        \Log::info('🎯 SiteSetLocaleMiddleware TAMAMLANDI', [
-            'final_app_locale' => app()->getLocale(),
-            'final_session_site_locale' => session('site_locale')
-        ]);
 
         return $next($request);
     }

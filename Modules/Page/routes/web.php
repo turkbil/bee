@@ -1,12 +1,8 @@
 <?php
 // Modules/Page/routes/web.php
-use Illuminate\Support\Facades\Route;
-use Modules\Page\App\Http\Controllers\Front\PageController;
 
-// Ön yüz rotaları - DynamicRouteService tarafından yönetiliyor
-// Route::middleware(['web'])
-//     ->group(function () {
-//         Route::get('/', [PageController::class, 'homepage'])->name('home');
-//         Route::get('/pages', [PageController::class, 'index'])->name('pages.index');
-//         Route::get('/page/{slug}', [PageController::class, 'show'])->name('pages.show');
-//     });
+// ⚠️  FRONTEND ROUTES DynamicRouteService TARAFINDAN YÖNETİLİYOR
+// Bu dosyada sadece özel route'lar (homepage gibi) tanımlanmalı
+// Normal content route'ları (index, show) DynamicRouteService'den geliyor
+
+// Ana sayfa route'u routes/web.php'de tanımlı

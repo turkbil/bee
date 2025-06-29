@@ -11,24 +11,65 @@ class AuthAwareHasher extends DefaultHasher
     {
         $baseHash = parent::getHashFor($request);
         
-        // Auth durumu + dil durumunu hash'e ekle
-        $authStatus = auth()->check() ? 'auth_' . auth()->id() : 'guest';
-        $locale = app()->getLocale();
-        $siteLocale = session('site_locale', $locale);
+        // Deterministic hash components
+        $components = [
+            $baseHash,
+            $this->getAuthComponent(),
+            $this->getLocaleComponent(),
+            $this->getRoleComponent() // Opsiyonel: role-based cache
+        ];
         
-        // Final hash: base + auth + locale
-        $finalHash = $baseHash . '_' . $authStatus . '_' . $siteLocale;
+        // SHA1 ile deterministic hash oluştur
+        $finalHash = sha1(implode('|', array_filter($components)));
         
-        // Debug için sadece önemli durumlarda log
-        if (request()->has('debug_cache')) {
-            \Log::info('🔍 AUTH+LOCALE AWARE HASHER', [
+        // Debug log sadece gerektiğinde
+        if (app()->environment(['local', 'staging']) && $request->has('debug_cache')) {
+            \Log::debug('Cache hash generated', [
                 'url' => $request->fullUrl(),
-                'auth_status' => $authStatus,
-                'locale' => $siteLocale,
+                'components' => $components,
                 'final_hash' => $finalHash
             ]);
         }
         
         return $finalHash;
+    }
+    
+    /**
+     * Auth component hash'i oluştur
+     */
+    protected function getAuthComponent(): string
+    {
+        return auth()->check() ? 'auth_' . auth()->id() : 'guest';
+    }
+    
+    /**
+     * Locale component hash'i oluştur
+     */
+    protected function getLocaleComponent(): string
+    {
+        $locale = app()->getLocale();
+        $siteLocale = session('site_locale', $locale);
+        
+        return 'locale_' . $siteLocale;
+    }
+    
+    /**
+     * Role component hash'i oluştur (opsiyonel)
+     */
+    protected function getRoleComponent(): ?string
+    {
+        if (!auth()->check()) {
+            return null;
+        }
+        
+        $user = auth()->user();
+        
+        // Role-based cache variation gerekiyorsa
+        if (config('responsecache.role_based_cache', false)) {
+            $roles = $user->getRoleNames()->sort()->toArray();
+            return empty($roles) ? 'no_role' : 'roles_' . implode('_', $roles);
+        }
+        
+        return null;
     }
 }

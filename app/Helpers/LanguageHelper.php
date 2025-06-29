@@ -1,7 +1,7 @@
 <?php
 
 use Modules\LanguageManagement\app\Services\UrlPrefixService;
-use Modules\LanguageManagement\app\Models\SiteLanguage;
+use Modules\LanguageManagement\app\Models\TenantLanguage;
 
 if (!function_exists('getSupportedLanguageRegex')) {
     /**
@@ -29,7 +29,7 @@ if (!function_exists('getSupportedLanguageRegex')) {
             
             // Yoksa veritabanından al
             try {
-                $languages = SiteLanguage::where('is_active', true)
+                $languages = TenantLanguage::where('is_active', true)
                     ->pluck('code')
                     ->toArray();
                     
@@ -75,8 +75,7 @@ if (!function_exists('is_default_language')) {
             return $locale === config('app.locale');
         }
         
-        return $tenant->siteLanguages()
-            ->where('prefix', $locale)
+        return \Modules\LanguageManagement\app\Models\TenantLanguage::where('prefix', $locale)
             ->where('is_default', 1)
             ->exists();
     }
@@ -91,9 +90,9 @@ if (!function_exists('get_language_flag')) {
     {
         try {
             if ($context === 'admin') {
-                // Admin dilleri için SystemLanguage tablosundan
-                if (class_exists('Modules\LanguageManagement\app\Models\SystemLanguage')) {
-                    $language = \Modules\LanguageManagement\app\Models\SystemLanguage::where('code', $locale)
+                // Admin dilleri için AdminLanguage tablosundan
+                if (class_exists('Modules\LanguageManagement\app\Models\AdminLanguage')) {
+                    $language = \Modules\LanguageManagement\app\Models\AdminLanguage::where('code', $locale)
                         ->where('is_active', true)
                         ->first();
                     
@@ -102,11 +101,10 @@ if (!function_exists('get_language_flag')) {
                     }
                 }
             } else {
-                // Site dilleri için SiteLanguage tablosundan
+                // Site dilleri için TenantLanguage tablosundan
                 $tenant = tenant();
-                if ($tenant && class_exists('Modules\LanguageManagement\app\Models\SiteLanguage')) {
-                    $language = $tenant->siteLanguages()
-                        ->where('prefix', $locale)
+                if ($tenant && class_exists('Modules\LanguageManagement\app\Models\TenantLanguage')) {
+                    $language = \Modules\LanguageManagement\app\Models\TenantLanguage::where('prefix', $locale)
                         ->where('status', 1)
                         ->first();
                     

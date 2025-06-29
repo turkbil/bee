@@ -7,10 +7,10 @@ use Illuminate\Http\Request;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain as BaseMiddleware;
 use Stancl\Tenancy\Resolvers\DomainTenantResolver;
 use Stancl\Tenancy\Tenancy;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
+use Stancl\Tenancy\Database\Models\Domain;
 use App\Models\Tenant;
 
 class InitializeTenancy extends BaseMiddleware
@@ -44,23 +44,12 @@ class InitializeTenancy extends BaseMiddleware
             // Cache key oluştur - 15 dakika cache
             $cacheKey = "tenant_domain_data:{$host}";
             
-            $tenantData = Cache::remember($cacheKey, 60 * 15, function() use ($host) {
-                // Domain ve tenant bilgilerini tek sorguda al
-                $data = DB::table('domains')
-                    ->join('tenants', 'domains.tenant_id', '=', 'tenants.id')
-                    ->where('domains.domain', $host)
-                    ->select([
-                        'domains.tenant_id',
-                        'tenants.id',
-                        'tenants.central',
-                        'tenants.is_active'
-                    ])
-                    ->first();
-                    
-                return $data ? (array) $data : null;
+            $domainModel = Cache::remember($cacheKey, 60 * 15, function() use ($host) {
+                // Stancl API ile domain ve tenant bilgilerini al
+                return Domain::with('tenant')->where('domain', $host)->first();
             });
             
-            if (!$tenantData) {
+            if (!$domainModel || !$domainModel->tenant) {
                 // Tenant bulunamadı - özel error sayfası göster
                 return response()->view('errors.tenant-not-found', [
                     'domain' => $host,
@@ -68,8 +57,10 @@ class InitializeTenancy extends BaseMiddleware
                 ], 404);
             }
             
+            $tenant = $domainModel->tenant;
+            
             // Tenant pasif ise admin ve login hariç offline sayfasına yönlendir
-            if (!$tenantData['is_active']) {
+            if (!$tenant->is_active) {
                 // Sadece admin ve login rotalarına izin ver
                 if ($request->is('admin') || $request->is('admin/*') || $request->is('login')) {
                     // Admin sayfalarına devam et
@@ -79,26 +70,12 @@ class InitializeTenancy extends BaseMiddleware
             }
             
             // Tenant central ise tenancy başlatma
-            if ($tenantData['central']) {
+            if ($tenant->central) {
                 return $next($request);
             }
             
-            // Tenant modelini cache'den al
-            $tenantCacheKey = "tenant_model:{$tenantData['tenant_id']}";
-            $tenantModel = Cache::remember($tenantCacheKey, 60 * 30, function() use ($tenantData) {
-                return Tenant::find($tenantData['tenant_id']);
-            });
-            
-            if (!$tenantModel) {
-                // Tenant modeli bulunamadı - özel error sayfası göster
-                return response()->view('errors.tenant-not-found', [
-                    'domain' => $host,
-                    'message' => 'Site yapılandırması bulunamadı.'
-                ], 404);
-            }
-            
             // Tenant'ı başlat
-            $this->tenancy->initialize($tenantModel);
+            $this->tenancy->initialize($tenant);
             
             return $next($request);
             

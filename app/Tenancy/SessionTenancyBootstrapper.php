@@ -38,9 +38,13 @@ class SessionTenancyBootstrapper implements TenancyBootstrapper
     {
         // Orijinal session ayarlarına geri dön
         Config::set([
-            'session.cookie' => config('session.cookie'),
+            'session.cookie' => env('SESSION_COOKIE', 'laravel_session'),
             'session.domain' => env('SESSION_DOMAIN'),
+            'session.path' => env('SESSION_PATH', '/'),
+            'session.secure' => env('SESSION_SECURE_COOKIE', false),
+            'session.same_site' => env('SESSION_SAME_SITE', 'lax'),
             'session.connection' => env('SESSION_CONNECTION'),
+            'session.files' => env('SESSION_FILES', storage_path('framework/sessions')),
         ]);
     }
 }

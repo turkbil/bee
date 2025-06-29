@@ -39,10 +39,26 @@ class PortfolioController extends Controller
 
     public function show($slug)
     {
-        $item = Portfolio::with('category')
-            ->where('slug', $slug)
-            ->where('is_active', true)
-            ->firstOrFail();
+        // Eğer sayısal ise direkt ID ile ara
+        if (is_numeric($slug)) {
+            $item = Portfolio::with('category')
+                ->where('portfolio_id', $slug)
+                ->where('is_active', true)
+                ->first();
+        } else {
+            // String slug ise slug alanında ara
+            $item = Portfolio::with('category')
+                ->where('is_active', true)
+                ->where(function($query) use ($slug) {
+                    // Basit slug araması
+                    $query->where('slug', 'LIKE', '%"' . $slug . '"%');
+                })
+                ->first();
+        }
+        
+        if (!$item) {
+            abort(404);
+        }
 
 
         try {
@@ -60,9 +76,20 @@ class PortfolioController extends Controller
     
     public function category($slug)
     {
-        $category = PortfolioCategory::where('slug', $slug)
-            ->where('is_active', true)
-            ->firstOrFail();
+        // Eğer sayısal ise direkt ID ile ara
+        if (is_numeric($slug)) {
+            $category = PortfolioCategory::where('portfolio_category_id', $slug)
+                ->where('is_active', true)
+                ->firstOrFail();
+        } else {
+            // String slug ise slug alanında ara
+            $category = PortfolioCategory::where('is_active', true)
+                ->where(function($query) use ($slug) {
+                    // Basit slug araması
+                    $query->where('slug', 'LIKE', '%"' . $slug . '"%');
+                })
+                ->firstOrFail();
+        }
             
         $items = Portfolio::with(['category', 'media'])
             ->where('portfolio_category_id', $category->portfolio_category_id)

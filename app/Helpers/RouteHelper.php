@@ -48,8 +48,7 @@ if (!function_exists('route_with_locale')) {
         }
         
         // Varsayılan dil mi kontrolü
-        $isDefault = $tenant->siteLanguages()
-            ->where('prefix', $locale)
+        $isDefault = \Modules\LanguageManagement\app\Models\TenantLanguage::where('prefix', $locale)
             ->where('is_default', 1)
             ->exists();
         

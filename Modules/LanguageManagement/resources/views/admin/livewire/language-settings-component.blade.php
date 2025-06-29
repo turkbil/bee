@@ -34,7 +34,7 @@
                     </div>
                     <div class="text-center">
                         <div class="text-muted small">{{ __('languagemanagement::admin.site_language') }}</div>
-                        <code class="text-info">{{ strtoupper($currentSiteLanguage) }}</code>
+                        <code class="text-info">{{ strtoupper($currentTenantLanguage) }}</code>
                     </div>
                 </div>
             </div>
@@ -49,7 +49,7 @@
                     'description' => __('languagemanagement::admin.admin_panel_languages'),
                     'icon' => 'fas fa-cogs',
                     'color' => 'primary',
-                    'languages' => $recentSystemLanguages,
+                    'languages' => $recentAdminLanguages,
                     'count' => $systemLanguagesCount,
                     'current' => $currentAdminLanguage,
                     'listRoute' => 'admin.languagemanagement.system.index',
@@ -60,9 +60,9 @@
                     'description' => __('languagemanagement::admin.frontend_content_languages'),
                     'icon' => 'fas fa-globe',
                     'color' => 'success',
-                    'languages' => $recentSiteLanguages,
+                    'languages' => $recentTenantLanguages,
                     'count' => $siteLanguagesCount,
-                    'current' => $currentSiteLanguage,
+                    'current' => $currentTenantLanguage,
                     'listRoute' => 'admin.languagemanagement.site.index',
                     'addRoute' => 'admin.languagemanagement.site.manage'
                 ]
@@ -255,8 +255,8 @@
                                 <div class="row g-2">
                                     @php
                                         $previewLanguages = [];
-                                        if($recentSiteLanguages && count($recentSiteLanguages) > 0) {
-                                            $previewLanguages = $recentSiteLanguages->take(3);
+                                        if($recentTenantLanguages && count($recentTenantLanguages) > 0) {
+                                            $previewLanguages = $recentTenantLanguages->take(3);
                                         } else {
                                             $previewLanguages = collect([
                                                 (object)['code' => 'tr', 'native_name' => 'Türkçe'],

@@ -1,7 +1,7 @@
 <?php
 
-use Modules\LanguageManagement\app\Services\SystemLanguageService;
-use Modules\LanguageManagement\app\Services\SiteLanguageService;
+use Modules\LanguageManagement\app\Services\AdminLanguageService;
+use Modules\LanguageManagement\app\Services\TenantLanguageService;
 
 if (!function_exists('current_admin_language')) {
     /**
@@ -9,7 +9,7 @@ if (!function_exists('current_admin_language')) {
      */
     function current_admin_language(): string
     {
-        return app(SystemLanguageService::class)->getCurrentAdminLocale();
+        return app(AdminLanguageService::class)->getCurrentAdminLocale();
     }
 }
 
@@ -19,7 +19,7 @@ if (!function_exists('current_site_language')) {
      */
     function current_site_language(): string
     {
-        return app(SiteLanguageService::class)->getCurrentSiteLocale();
+        return app(TenantLanguageService::class)->getCurrentTenantLocale();
     }
 }
 
@@ -29,7 +29,7 @@ if (!function_exists('available_admin_languages')) {
      */
     function available_admin_languages(): array
     {
-        return app(SystemLanguageService::class)->getActiveSystemLanguages();
+        return app(AdminLanguageService::class)->getActiveAdminLanguages();
     }
 }
 
@@ -39,7 +39,7 @@ if (!function_exists('available_site_languages')) {
      */
     function available_site_languages(): array
     {
-        return app(SiteLanguageService::class)->getActiveSiteLanguages();
+        return app(TenantLanguageService::class)->getActiveTenantLanguages();
     }
 }
 
@@ -49,7 +49,7 @@ if (!function_exists('default_admin_language')) {
      */
     function default_admin_language(): string
     {
-        return app(SystemLanguageService::class)->getDefaultAdminLanguage();
+        return app(AdminLanguageService::class)->getDefaultAdminLanguage();
     }
 }
 
@@ -59,7 +59,7 @@ if (!function_exists('default_site_language')) {
      */
     function default_site_language(): string
     {
-        return app(SiteLanguageService::class)->getDefaultSiteLanguage();
+        return app(TenantLanguageService::class)->getDefaultTenantLanguage();
     }
 }
 
@@ -69,7 +69,7 @@ if (!function_exists('system_language_name')) {
      */
     function system_language_name(string $code): string
     {
-        $language = app(SystemLanguageService::class)->getSystemLanguageByCode($code);
+        $language = app(AdminLanguageService::class)->getAdminLanguageByCode($code);
         return $language ? $language->native_name : $code;
     }
 }
@@ -80,7 +80,7 @@ if (!function_exists('site_language_name')) {
      */
     function site_language_name(string $code): string
     {
-        $language = app(SiteLanguageService::class)->getSiteLanguageByCode($code);
+        $language = app(TenantLanguageService::class)->getTenantLanguageByCode($code);
         return $language ? $language->native_name : $code;
     }
 }
@@ -92,9 +92,9 @@ if (!function_exists('language_flag')) {
     function language_flag(string $code, string $context = 'admin'): string
     {
         if ($context === 'admin') {
-            $language = app(SystemLanguageService::class)->getSystemLanguageByCode($code);
+            $language = app(AdminLanguageService::class)->getAdminLanguageByCode($code);
         } else {
-            $language = app(SiteLanguageService::class)->getSiteLanguageByCode($code);
+            $language = app(TenantLanguageService::class)->getTenantLanguageByCode($code);
         }
         
         return $language ? ($language->flag_icon ?? '🌐') : '🌐';
@@ -107,7 +107,7 @@ if (!function_exists('set_user_admin_language')) {
      */
     function set_user_admin_language(string $languageCode): bool
     {
-        return app(SystemLanguageService::class)->setUserAdminLanguagePreference($languageCode);
+        return app(AdminLanguageService::class)->setUserAdminLanguagePreference($languageCode);
     }
 }
 
@@ -117,7 +117,7 @@ if (!function_exists('set_user_site_language')) {
      */
     function set_user_site_language(string $languageCode): bool
     {
-        return app(SiteLanguageService::class)->setUserSiteLanguagePreference($languageCode);
+        return app(TenantLanguageService::class)->setUserTenantLanguagePreference($languageCode);
     }
 }
 

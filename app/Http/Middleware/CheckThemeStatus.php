@@ -20,11 +20,14 @@ class CheckThemeStatus
             $themeService = app(ThemeService::class);
             $activeTheme = $themeService->getActiveTheme();
             
-            \Log::info('CheckThemeStatus Middleware - Theme Status:', [
-                'url' => $request->url(),
-                'theme_name' => $activeTheme ? $activeTheme->name : 'null',
-                'is_active' => $activeTheme ? $activeTheme->is_active : 'null'
-            ]);
+            // Log seviyesi: sadece local/staging'de info, production'da warning+
+            if (app()->environment(['local', 'staging'])) {
+                \Log::info('CheckThemeStatus Middleware - Theme Status:', [
+                    'url' => $request->url(),
+                    'theme_name' => $activeTheme ? $activeTheme->name : 'null',
+                    'is_active' => $activeTheme ? $activeTheme->is_active : 'null'
+                ]);
+            }
             
             // Tema bulunamadı veya aktif değil
             if (!$activeTheme || !$activeTheme->is_active) {

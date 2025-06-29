@@ -4,8 +4,8 @@ namespace Modules\LanguageManagement\App\Http\Livewire;
 
 use Livewire\Component;
 use Modules\LanguageManagement\App\Services\LanguageService;
-use Modules\LanguageManagement\App\Models\SiteLanguage;
-use Modules\LanguageManagement\App\Models\SystemLanguage;
+use Modules\LanguageManagement\App\Models\TenantLanguage;
+use Modules\LanguageManagement\App\Models\AdminLanguage;
 use Illuminate\Support\Facades\Session;
 
 class LanguageSwitcher extends Component
@@ -26,32 +26,32 @@ class LanguageSwitcher extends Component
         
         // Context'e göre dilleri çek
         if ($this->context === 'admin') {
-            $this->availableLanguages = SystemLanguage::where('is_active', true)
+            $this->availableLanguages = AdminLanguage::where('is_active', true)
                 ->orderBy('sort_order')
                 ->pluck('code')
                 ->toArray();
             
-            // Admin dil öncelik sırası: 1. Session 2. User preference 3. Default
+            // Admin dil öncelik sırası: 1. Session 2. User locale 3. Default
             $this->currentLanguage = Session::get('admin_locale');
             if (!$this->currentLanguage && auth()->check()) {
-                $this->currentLanguage = auth()->user()->admin_language_preference ?? auth()->user()->language;
+                $this->currentLanguage = auth()->user()->admin_locale;
             }
             if (!$this->currentLanguage) {
                 $this->currentLanguage = config('app.locale', 'tr');
             }
         } else {
-            $this->availableLanguages = SiteLanguage::where('is_active', true)
+            $this->availableLanguages = TenantLanguage::where('is_active', true)
                 ->orderBy('sort_order')
                 ->pluck('code')
                 ->toArray();
                 
-            // Site dil öncelik sırası: 1. App locale (en güncel) 2. Session 3. User preference 4. Default
+            // Site dil öncelik sırası: 1. App locale (en güncel) 2. Session 3. User locale 4. Default
             $this->currentLanguage = app()->getLocale();
             if (!$this->currentLanguage) {
                 $this->currentLanguage = Session::get('site_locale') ?? Session::get('locale');
             }
             if (!$this->currentLanguage && auth()->check()) {
-                $this->currentLanguage = auth()->user()->site_language_preference;
+                $this->currentLanguage = auth()->user()->tenant_locale;
             }
             if (!$this->currentLanguage) {
                 $this->currentLanguage = config('app.locale', 'tr');
@@ -99,22 +99,22 @@ class LanguageSwitcher extends Component
     public function refreshComponent()
     {
         if ($this->context === 'admin') {
-            // Admin dil öncelik sırası: 1. Session 2. User preference 3. Default
+            // Admin dil öncelik sırası: 1. Session 2. User locale 3. Default
             $this->currentLanguage = Session::get('admin_locale');
             if (!$this->currentLanguage && auth()->check()) {
-                $this->currentLanguage = auth()->user()->admin_language_preference ?? auth()->user()->language;
+                $this->currentLanguage = auth()->user()->admin_locale;
             }
             if (!$this->currentLanguage) {
                 $this->currentLanguage = config('app.locale', 'tr');
             }
         } else {
-            // Site dil öncelik sırası: 1. App locale (en güncel) 2. Session 3. User preference 4. Default
+            // Site dil öncelik sırası: 1. App locale (en güncel) 2. Session 3. User locale 4. Default
             $this->currentLanguage = app()->getLocale();
             if (!$this->currentLanguage) {
                 $this->currentLanguage = Session::get('site_locale') ?? Session::get('locale');
             }
             if (!$this->currentLanguage && auth()->check()) {
-                $this->currentLanguage = auth()->user()->site_language_preference;
+                $this->currentLanguage = auth()->user()->tenant_locale;
             }
             if (!$this->currentLanguage) {
                 $this->currentLanguage = config('app.locale', 'tr');
@@ -160,11 +160,11 @@ class LanguageSwitcher extends Component
     {
         // Context'e göre veritabanından aktif dilleri çek
         if ($this->context === 'admin') {
-            $languages = SystemLanguage::where('is_active', true)
+            $languages = AdminLanguage::where('is_active', true)
                 ->orderBy('sort_order')
                 ->get();
         } else {
-            $languages = SiteLanguage::where('is_active', true)
+            $languages = TenantLanguage::where('is_active', true)
                 ->orderBy('sort_order')
                 ->get();
         }
@@ -172,9 +172,9 @@ class LanguageSwitcher extends Component
         // Mevcut dili ilgili tablodan al
         $currentLanguageData = null;
         if ($this->context === 'admin') {
-            $currentLanguageData = SystemLanguage::where('code', $this->currentLanguage)->first();
+            $currentLanguageData = AdminLanguage::where('code', $this->currentLanguage)->first();
         } else {
-            $currentLanguageData = SiteLanguage::where('code', $this->currentLanguage)->first();
+            $currentLanguageData = TenantLanguage::where('code', $this->currentLanguage)->first();
         }
         
         return view('languagemanagement::livewire.language-switcher', [

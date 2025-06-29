@@ -10,11 +10,11 @@ return new class extends Migration
     {
         Schema::create('announcements', function (Blueprint $table) {
             $table->id('announcement_id');
-            $table->string('title')->index();
-            $table->string('slug')->unique();
+            $table->text('title');
+            $table->text('slug');
             $table->longText('body')->nullable();
-            $table->string('metakey')->nullable();
-            $table->string('metadesc')->nullable();
+            $table->text('metakey')->nullable();
+            $table->text('metadesc')->nullable();
             $table->boolean('is_active')->default(true)->index();
             $table->timestamps();
             $table->softDeletes();
@@ -27,7 +27,6 @@ return new class extends Migration
             // Composite index'ler - Performans optimizasyonu
             $table->index(['is_active', 'deleted_at'], 'announcements_active_deleted_idx');
             $table->index(['is_active', 'deleted_at', 'created_at'], 'announcements_active_deleted_created_idx');
-            $table->index(['slug', 'is_active', 'deleted_at'], 'announcements_slug_active_deleted_idx');
         });
     }
 

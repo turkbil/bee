@@ -5,7 +5,7 @@
                 <!-- Main footer content -->
                 <div class="flex flex-col sm:flex-row justify-between items-center">
                     <div class="mb-4 sm:mb-0">
-                        <p class="text-sm text-gray-500 dark:text-gray-400">&copy; {{ date('Y') }} {{ config('app.name') }}. {{ __('LanguageManagement::front.all_rights_reserved') }}</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">&copy; {{ date('Y') }} {{ config('app.name') }}. {{ __('front.all_rights_reserved') }}</p>
                     </div>
                     
                     <!-- Social Media Links -->

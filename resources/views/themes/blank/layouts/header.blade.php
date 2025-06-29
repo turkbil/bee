@@ -7,7 +7,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     
-    <title>{{ $title ?? 'Sayfa Başlığı' }} - {{ config('app.name') }}</title>
+    @php
+        $pageTitle = 'Sayfa Başlığı';
+        if (isset($title)) {
+            if (is_array($title)) {
+                $locale = app()->getLocale();
+                $pageTitle = $title[$locale] ?? $title[array_key_first($title)] ?? 'Sayfa Başlığı';
+            } else {
+                $pageTitle = $title;
+            }
+        }
+    @endphp
+    <title>{{ $pageTitle }} - {{ config('app.name') }}</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -101,14 +112,13 @@
                                 $debugInfo['tenant_id'] = tenant() ? tenant()->id : 'null';
                                 
                                 if (tenant()) {
-                                    $siteLanguages = tenant()->siteLanguages()
-                                        ->where('is_active', 1)
+                                    $siteLanguages = \Modules\LanguageManagement\app\Models\TenantLanguage::where('is_active', 1)
                                         ->orderBy('sort_order')
                                         ->get();
                                     $debugInfo['source'] = 'tenant';
                                 } else {
-                                    // Tenant yoksa direkt SiteLanguage modelinden çek
-                                    $siteLanguages = \Modules\LanguageManagement\app\Models\SiteLanguage::where('is_active', 1)
+                                    // Tenant yoksa direkt TenantLanguage modelinden çek
+                                    $siteLanguages = \Modules\LanguageManagement\app\Models\TenantLanguage::where('is_active', 1)
                                         ->orderBy('sort_order')
                                         ->get();
                                     $debugInfo['source'] = 'direct';
@@ -128,11 +138,11 @@
                         @endphp
                         
                         {{-- DEBUG BİLGİSİ --}}
-                        <!-- DEBUG: {{ json_encode($debugInfo) }} -->
+                        <!-- DEBUG: {!! json_encode($debugInfo, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?: '{}' !!} -->
                         
                         <button @click="open = !open" 
                                 class="flex items-center justify-center w-10 h-10 text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors duration-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
-                            {{ $currentLangObj->flag_icon ?? '🌐' }}
+                            {{ $currentLangObj ? ($currentLangObj->flag_icon ?? '🌐') : '🌐' }}
                         </button>
                         
                         <div x-show="open" 
@@ -145,18 +155,24 @@
                              x-transition:leave-end="opacity-0 scale-95"
                              class="absolute right-0 top-full mt-2 w-44 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-50">
                             
-                            @foreach($siteLanguages as $lang)
-                                <a href="/language/{{ $lang->code }}" 
-                                   class="w-full flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 {{ $lang->code === $currentLang ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' : '' }}">
-                                    <span class="mr-2 text-base">{{ $lang->flag_icon ?? '🌐' }}</span>
-                                    <span class="flex-1 text-left">{{ $lang->native_name ?? $lang->name }}</span>
-                                    @if($lang->code === $currentLang)
-                                        <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                                        </svg>
-                                    @endif
-                                </a>
-                            @endforeach
+                            @if($siteLanguages && $siteLanguages->count() > 0)
+                                @foreach($siteLanguages as $lang)
+                                    <a href="/language/{{ $lang->code ?? '' }}" 
+                                       class="w-full flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 {{ ($lang->code ?? '') === $currentLang ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' : '' }}">
+                                        <span class="mr-2 text-base">{{ $lang->flag_icon ?? '🌐' }}</span>
+                                        <span class="flex-1 text-left">{{ $lang->native_name ?? $lang->name ?? 'Dil' }}</span>
+                                        @if(($lang->code ?? '') === $currentLang)
+                                            <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                            </svg>
+                                        @endif
+                                    </a>
+                                @endforeach
+                            @else
+                                <div class="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">
+                                    Dil seçeneği bulunamadı
+                                </div>
+                            @endif
                         </div>
                     </div>
                     

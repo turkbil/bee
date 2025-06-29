@@ -18,15 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
             $app['translator']->addNamespace('admin', $adminLangPath);
         }
         
-        // Modül dynamic route'larını TEK SEFER yükle - testing ortamında değil
-        if (!$app->environment('testing')) {
-            try {
-                \App\Services\ModuleRouteService::autoLoadModuleRoutes();
-            } catch (\Exception $e) {
-                // Silent fail - route yükleme hatasını loglayalım ama app'i çökermeyelim
-                \Log::error('ModuleRouteService boot error: ' . $e->getMessage());
-            }
-        }
+        // Legacy module route loading removed - now event-driven via ModuleEnabled events
     })
     ->withMiddleware(function (Middleware $middleware) {
         // 1. TENANT - Domain belirleme (EN ÖNCELİKLİ)
@@ -48,7 +40,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Middleware alias tanımları
         $middleware->alias([
             'tenant' => \App\Http\Middleware\InitializeTenancy::class,
-            'auth.cache.bypass' => \App\Http\Middleware\AuthCacheBypass::class,
+            // 'auth.cache.bypass' => \App\Http\Middleware\AuthCacheBypass::class, // KALDIRILDI - Performance killer!
             'page.tracker' => \App\Http\Middleware\PageTracker::class,
             'root.access' => \App\Http\Middleware\RootAccessMiddleware::class,
             'admin.access' => \App\Http\Middleware\AdminAccessMiddleware::class,

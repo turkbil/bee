@@ -8,6 +8,7 @@
         @endphp
 
         @yield('content')
+        @yield('module_content')
 
         @php
         $content = ob_get_clean();

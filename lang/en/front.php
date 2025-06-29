@@ -17,4 +17,10 @@ return [
     'controls_move' => '← → Move | ↓ Speed Up | ↑ Rotate | SPACE Drop',
     'controls_pause' => 'ENTER Pause | R Restart',
     'controls_info' => 'Dashed line: Drop location | 0.5s placement time',
+    
+    // =============================================
+    // GENERAL FRONTEND TRANSLATIONS
+    // =============================================
+    
+    'all_rights_reserved' => 'All rights reserved.',
 ];

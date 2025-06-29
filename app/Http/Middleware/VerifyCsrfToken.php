@@ -49,6 +49,18 @@ class VerifyCsrfToken extends Middleware
         // Tenant domain'i için cookie ayarlarını güncelle
         if (tenant()) {
             $config['domain'] = $request->getHost();
+        } else {
+            // Central domain için wildcard domain desteği
+            $centralDomains = config('tenancy.central_domains', []);
+            $currentHost = $request->getHost();
+            
+            // Central domain'lerden birindeyse wildcard kullan
+            foreach ($centralDomains as $centralDomain) {
+                if ($currentHost === $centralDomain || str_ends_with($currentHost, '.' . $centralDomain)) {
+                    $config['domain'] = '.' . $centralDomain; // Wildcard için nokta ekle
+                    break;
+                }
+            }
         }
         
         $response->headers->setCookie(

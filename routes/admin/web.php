@@ -64,61 +64,65 @@ Route::middleware(['web', 'auth', 'tenant', 'locale.admin'])->prefix('admin')->n
     Route::post('/cache/clear', [\App\Http\Controllers\Admin\CacheController::class, 'clearCache'])->name('cache.clear');
     Route::post('/cache/clear-all', [\App\Http\Controllers\Admin\CacheController::class, 'clearAllCache'])->name('cache.clear.all');
     
-    // Language switch route - hızlı dil değişimi
+    // Admin dil değiştirme - tenant-aware cache temizleme ile
     Route::get('/language/{locale}', function ($locale) {
-        // Cache'li dil kontrolü
-        $cacheKey = "system_language_{$locale}";
-        $language = Cache::remember($cacheKey, 3600, function() use ($locale) {
-            if (class_exists('Modules\LanguageManagement\App\Models\SystemLanguage')) {
-                return \Modules\LanguageManagement\App\Models\SystemLanguage::where('code', $locale)
-                    ->where('is_active', true)
-                    ->first();
-            }
-            return null;
-        });
+        // Basit geçerlik kontrolü
+        if (!in_array($locale, ['tr', 'en']) || !auth()->check()) {
+            return redirect()->back();
+        }
         
-        if ($language && auth()->check()) {
-            // Kullanıcı admin dil tercihini hemen güncelle
-            $user = auth()->user();
-            $user->admin_language_preference = $locale; // admin_language_preference kullan
-            $user->language = $locale; // Eski alan da güncellensin
-            $user->save();
-            
-            // Session'a da kaydet hızlı erişim için
-            session(['admin_locale' => $locale, 'locale' => $locale]);
-            
-            // Laravel locale'ini hemen ayarla
-            app()->setLocale($locale);
+        // Hızlı güncelleme
+        auth()->user()->update(['admin_locale' => $locale]);
+        session(['admin_locale' => $locale]);
+        app()->setLocale($locale);
+        
+        // 🧹 TENANT-AWARE RESPONSE CACHE TEMİZLEME
+        try {
+            if (class_exists('\Spatie\ResponseCache\Facades\ResponseCache')) {
+                $tenant = tenant();
+                if ($tenant) {
+                    $tenantTag = 'tenant_' . $tenant->id . '_response_cache';
+                    \Spatie\ResponseCache\Facades\ResponseCache::forget($tenantTag);
+                } else {
+                    // Central domain için
+                    $centralTag = 'central_response_cache';
+                    \Spatie\ResponseCache\Facades\ResponseCache::forget($centralTag);
+                }
+            }
+        } catch (\Exception $e) {
+            \Log::warning('Admin language switch cache clear error: ' . $e->getMessage());
         }
         
         return redirect()->back();
     })->name('language.switch'); // AdminLanguageSwitcher için 'admin.language.switch' route name'i gerekiyor
     
-    // AdminLanguageSwitcher için alias route - component admin.language.switch arıyor
+    // AdminLanguageSwitcher için alias route - tenant-aware cache temizleme ile
     Route::get('/admin-language/{locale}', function ($locale) {
-        // Yukarıdaki aynı mantığı kullan
-        $cacheKey = "system_language_{$locale}";
-        $language = Cache::remember($cacheKey, 3600, function() use ($locale) {
-            if (class_exists('Modules\LanguageManagement\App\Models\SystemLanguage')) {
-                return \Modules\LanguageManagement\App\Models\SystemLanguage::where('code', $locale)
-                    ->where('is_active', true)
-                    ->first();
-            }
-            return null;
-        });
+        // Basit geçerlik kontrolü
+        if (!in_array($locale, ['tr', 'en']) || !auth()->check()) {
+            return redirect()->back();
+        }
         
-        if ($language && auth()->check()) {
-            // Kullanıcı admin dil tercihini hemen güncelle
-            $user = auth()->user();
-            $user->admin_language_preference = $locale;
-            $user->language = $locale;
-            $user->save();
-            
-            // Session'a da kaydet hızlı erişim için  
-            session(['admin_locale' => $locale, 'locale' => $locale]);
-            
-            // Laravel locale'ini hemen ayarla
-            app()->setLocale($locale);
+        // Hızlı güncelleme
+        auth()->user()->update(['admin_locale' => $locale]);
+        session(['admin_locale' => $locale]);
+        app()->setLocale($locale);
+        
+        // 🧹 TENANT-AWARE RESPONSE CACHE TEMİZLEME
+        try {
+            if (class_exists('\Spatie\ResponseCache\Facades\ResponseCache')) {
+                $tenant = tenant();
+                if ($tenant) {
+                    $tenantTag = 'tenant_' . $tenant->id . '_response_cache';
+                    \Spatie\ResponseCache\Facades\ResponseCache::forget($tenantTag);
+                } else {
+                    // Central domain için
+                    $centralTag = 'central_response_cache';
+                    \Spatie\ResponseCache\Facades\ResponseCache::forget($centralTag);
+                }
+            }
+        } catch (\Exception $e) {
+            \Log::warning('Admin language switch cache clear error: ' . $e->getMessage());
         }
         
         return redirect()->back();

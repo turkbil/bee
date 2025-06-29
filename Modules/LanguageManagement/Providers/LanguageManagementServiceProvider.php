@@ -9,10 +9,10 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Livewire\Livewire;
 use Modules\LanguageManagement\app\Http\Livewire\Admin\LanguageSettingsComponent;
-use Modules\LanguageManagement\app\Http\Livewire\Admin\SystemLanguageComponent;
-use Modules\LanguageManagement\app\Http\Livewire\Admin\SystemLanguageManageComponent;
-use Modules\LanguageManagement\app\Http\Livewire\Admin\SiteLanguageComponent;
-use Modules\LanguageManagement\app\Http\Livewire\Admin\SiteLanguageManageComponent;
+use Modules\LanguageManagement\app\Http\Livewire\Admin\AdminLanguageComponent;
+use Modules\LanguageManagement\app\Http\Livewire\Admin\AdminLanguageManageComponent;
+use Modules\LanguageManagement\app\Http\Livewire\Admin\TenantLanguageComponent;
+use Modules\LanguageManagement\app\Http\Livewire\Admin\TenantLanguageManageComponent;
 use Modules\LanguageManagement\app\Http\Livewire\Admin\TranslationManageComponent;
 use Modules\LanguageManagement\app\Http\Livewire\LanguageSwitcher;
 use Modules\LanguageManagement\app\Http\Livewire\AdminLanguageSwitcher;
@@ -142,10 +142,10 @@ class LanguageManagementServiceProvider extends ServiceProvider
     protected function registerLivewireComponents(): void
     {
         Livewire::component('languagemanagement::admin.language-settings', LanguageSettingsComponent::class);
-        Livewire::component('languagemanagement::admin.system-language', SystemLanguageComponent::class);
-        Livewire::component('languagemanagement::admin.system-language-manage', SystemLanguageManageComponent::class);
-        Livewire::component('languagemanagement::admin.site-language', SiteLanguageComponent::class);
-        Livewire::component('languagemanagement::admin.site-language-manage', SiteLanguageManageComponent::class);
+        Livewire::component('languagemanagement::admin.system-language', AdminLanguageComponent::class);
+        Livewire::component('languagemanagement::admin.system-language-manage', AdminLanguageManageComponent::class);
+        Livewire::component('languagemanagement::admin.site-language', TenantLanguageComponent::class);
+        Livewire::component('languagemanagement::admin.site-language-manage', TenantLanguageManageComponent::class);
         Livewire::component('languagemanagement::admin.translation-manage', TranslationManageComponent::class);
         Livewire::component('languagemanagement::language-switcher', LanguageSwitcher::class);
         Livewire::component('languagemanagement::admin-language-switcher', AdminLanguageSwitcher::class);

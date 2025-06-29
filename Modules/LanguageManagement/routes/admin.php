@@ -2,10 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\LanguageManagement\app\Http\Livewire\Admin\LanguageSettingsComponent;
-use Modules\LanguageManagement\app\Http\Livewire\Admin\SystemLanguageComponent;
-use Modules\LanguageManagement\app\Http\Livewire\Admin\SystemLanguageManageComponent;
-use Modules\LanguageManagement\app\Http\Livewire\Admin\SiteLanguageComponent;
-use Modules\LanguageManagement\app\Http\Livewire\Admin\SiteLanguageManageComponent;
+use Modules\LanguageManagement\app\Http\Livewire\Admin\AdminLanguageComponent;
+use Modules\LanguageManagement\app\Http\Livewire\Admin\AdminLanguageManageComponent;
+use Modules\LanguageManagement\app\Http\Livewire\Admin\TenantLanguageComponent;
+use Modules\LanguageManagement\app\Http\Livewire\Admin\TenantLanguageManageComponent;
 use Modules\LanguageManagement\app\Http\Livewire\Admin\TranslationManageComponent;
 
 // Admin rotaları
@@ -27,11 +27,11 @@ Route::middleware(['web', 'auth', 'tenant'])
                     ->name('system.')
                     ->middleware('central.domain')
                     ->group(function () {
-                        Route::get('/', SystemLanguageComponent::class)
+                        Route::get('/', AdminLanguageComponent::class)
                             ->middleware('module.permission:languagemanagement,view')
                             ->name('index');
                         
-                        Route::get('/manage/{id?}', SystemLanguageManageComponent::class)
+                        Route::get('/manage/{id?}', AdminLanguageManageComponent::class)
                             ->middleware('module.permission:languagemanagement,create')
                             ->name('manage');
                     });
@@ -40,11 +40,11 @@ Route::middleware(['web', 'auth', 'tenant'])
                 Route::prefix('site')
                     ->name('site.')
                     ->group(function () {
-                        Route::get('/', SiteLanguageComponent::class)
+                        Route::get('/', TenantLanguageComponent::class)
                             ->middleware('module.permission:languagemanagement,view')
                             ->name('index');
                         
-                        Route::get('/manage/{id?}', SiteLanguageManageComponent::class)
+                        Route::get('/manage/{id?}', TenantLanguageManageComponent::class)
                             ->middleware('module.permission:languagemanagement,create')
                             ->name('manage');
                     });

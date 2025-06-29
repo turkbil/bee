@@ -3,8 +3,8 @@
 namespace Modules\LanguageManagement\Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Modules\LanguageManagement\app\Models\SystemLanguage;
-use Modules\LanguageManagement\app\Models\SiteLanguage;
+use Modules\LanguageManagement\app\Models\AdminLanguage;
+use Modules\LanguageManagement\app\Models\TenantLanguage;
 
 class LanguageManagementDatabaseSeeder extends Seeder
 {
@@ -13,13 +13,13 @@ class LanguageManagementDatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->seedSystemLanguages();
-        $this->seedSiteLanguages();
+        $this->seedAdminLanguages();
+        $this->seedTenantLanguages();
     }
 
-    private function seedSystemLanguages(): void
+    private function seedAdminLanguages(): void
     {
-        $systemLanguages = [
+        $adminLanguages = [
             [
                 'code' => 'tr',
                 'name' => 'Turkish',
@@ -40,21 +40,21 @@ class LanguageManagementDatabaseSeeder extends Seeder
             ],
         ];
 
-        foreach ($systemLanguages as $language) {
-            SystemLanguage::updateOrCreate(
+        foreach ($adminLanguages as $language) {
+            AdminLanguage::updateOrCreate(
                 ['code' => $language['code']],
                 $language
             );
         }
 
-        $this->command->info('System languages seeded successfully.');
+        $this->command->info('Admin languages seeded successfully.');
     }
 
-    private function seedSiteLanguages(): void
+    private function seedTenantLanguages(): void
     {
         // Her tenant kendi site dillerini yönetecek
         // Sadece TR'yi default olarak ekleyelim
-        $siteLanguages = [
+        $tenantLanguages = [
             [
                 'code' => 'tr',
                 'name' => 'Turkish',
@@ -62,18 +62,18 @@ class LanguageManagementDatabaseSeeder extends Seeder
                 'direction' => 'ltr',
                 'flag_icon' => '🇹🇷',
                 'is_active' => true,
-                'is_default' => true,
+                // is_default kaldırıldı - artık tenants.tenant_default_locale'de
                 'sort_order' => 1,
             ],
         ];
 
-        foreach ($siteLanguages as $language) {
-            SiteLanguage::updateOrCreate(
+        foreach ($tenantLanguages as $language) {
+            TenantLanguage::updateOrCreate(
                 ['code' => $language['code']],
                 $language
             );
         }
 
-        $this->command->info('Site languages seeded successfully.');
+        $this->command->info('Tenant languages seeded successfully.');
     }
 }

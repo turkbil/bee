@@ -17,7 +17,10 @@ class ModulePermissionServiceProvider extends ServiceProvider
     {
         // ModuleAccessService singleton olarak kaydet
         $this->app->singleton(ModuleAccessService::class, function ($app) {
-            return new ModuleAccessService();
+            return new ModuleAccessService(
+                $app->make(\App\Services\ModulePermissionChecker::class),
+                $app->make(\App\Services\ModuleAccessCache::class)
+            );
         });
         
         // Konfigürasyon dosyasını yayınla

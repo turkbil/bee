@@ -53,42 +53,39 @@ class AuthenticatedSessionController extends Controller
                 ->log("\"{$user->name}\" giriş yaptı");
         }
         
-        // User language preference'larını session'a yükle - REGENERATE'DEN ÖNCE!
+        // User locale'lerini session'a yükle - REGENERATE'DEN ÖNCE!
         if ($user) {
-            // Admin context preference'ını session'a kaydet
-            if ($user->admin_language_preference) {
-                session(['admin_locale' => $user->admin_language_preference]);
-                \Log::info('🔄 LOGIN: Admin language preference loaded', [
+            // Admin context locale'ini session'a kaydet
+            if ($user->admin_locale) {
+                session(['admin_locale' => $user->admin_locale]);
+                \Log::info('🔄 LOGIN: Admin locale loaded', [
                     'user_id' => $user->id,
-                    'admin_preference' => $user->admin_language_preference
+                    'admin_locale' => $user->admin_locale
                 ]);
             }
             
-            // Site context preference yükle (domain-specific)
-            if ($user->site_language_preference) {
+            // Site context locale yükle (domain-specific)
+            if ($user->tenant_locale) {
                 $domain = request()->getHost();
                 $sessionKey = 'site_locale_' . str_replace('.', '_', $domain);
-                session([$sessionKey => $user->site_language_preference]);
-                session(['site_locale' => $user->site_language_preference]); // Legacy key
-                \Log::info('🔄 LOGIN: Site language preference loaded', [
+                session([$sessionKey => $user->tenant_locale]);
+                session(['site_locale' => $user->tenant_locale]); // Legacy key
+                \Log::info('🔄 LOGIN: Tenant locale loaded', [
                     'user_id' => $user->id,
-                    'site_preference' => $user->site_language_preference,
+                    'tenant_locale' => $user->tenant_locale,
                     'domain_session_key' => $sessionKey
                 ]);
             }
         }
 
-        // 🧹 LOGIN CACHE TEMİZLEME - Auth/Guest cache karışıklığını önlemek için TÜM response cache'i temizle
+        // 🧹 LOGIN CACHE TEMİZLEME - Tenant-aware tag ile sadece bu tenant'ın cache'ini temizle
         try {
-            // Agresif cache temizleme - auth/guest cache çakışmasını önler
-            if (class_exists('\Spatie\ResponseCache\Facades\ResponseCache')) {
-                \Spatie\ResponseCache\Facades\ResponseCache::clear();
-                \Log::info('🧹 LOGIN: Tüm ResponseCache temizlendi (auth/guest cache karışıklığı önlendi)', ['user_id' => $user->id]);
-            }
+            // Tenant-specific response cache temizleme
+            $this->clearTenantResponseCache();
             
             // Ek olarak guest cache'leri de temizle
             $this->clearGuestCaches();
-            \Log::info('🧹 LOGIN: Guest cache\'leri de temizlendi', ['user_id' => $user->id]);
+            \Log::info('🧹 LOGIN: Tenant-aware cache temizleme tamamlandı', ['user_id' => $user->id]);
         } catch (\Exception $e) {
             \Log::warning('Login cache clear error: ' . $e->getMessage());
         }
@@ -97,10 +94,10 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         // Dashboard'a giderken SetLocaleMiddleware halledecek, burada ayarlamıyoruz
-        \Log::info('🔄 LOGIN: Session preferences loaded, middleware will handle locale', [
+        \Log::info('🔄 LOGIN: Session locales loaded, middleware will handle locale', [
             'user_id' => $user->id,
-            'admin_preference' => $user->admin_language_preference,
-            'site_preference' => $user->site_language_preference
+            'admin_locale' => $user->admin_locale,
+            'tenant_locale' => $user->tenant_locale
         ]);
 
         // Normal redirect - cache bypass header'ları ile
@@ -136,10 +133,11 @@ class AuthenticatedSessionController extends Controller
                 })
                 ->log("\"{$user->name}\" çıkış yaptı");
                 
-            // 🧹 AUTH CACHE TEMİZLEME - Logout sonrası auth cache'leri gitsin
+            // 🧹 AUTH CACHE TEMİZLEME - Logout sonrası tenant-aware auth cache'leri gitsin
             try {
                 $this->clearUserAuthCaches($user->id);
-                \Log::info('🧹 LOGOUT: Auth cache\'leri temizlendi', ['user_id' => $user->id]);
+                $this->clearTenantResponseCache(); // Tenant-specific response cache de temizle
+                \Log::info('🧹 LOGOUT: Auth cache\'leri ve tenant response cache temizlendi', ['user_id' => $user->id]);
             } catch (\Exception $e) {
                 \Log::warning('Auth cache clear error: ' . $e->getMessage());
             }
@@ -287,6 +285,46 @@ class AuthenticatedSessionController extends Controller
             
         } catch (\Exception $e) {
             \Log::warning("Redis auth cache clear error for user {$userId}: " . $e->getMessage());
+        }
+    }
+    
+    /**
+     * Tenant-specific ResponseCache temizleme - İzolasyon için kritik!
+     */
+    protected function clearTenantResponseCache(): void
+    {
+        if (!class_exists('\Spatie\ResponseCache\Facades\ResponseCache')) {
+            return;
+        }
+        
+        try {
+            $tenant = tenant();
+            
+            if ($tenant) {
+                // Sadece bu tenant'ın response cache tag'ini temizle
+                $tenantTag = 'tenant_' . $tenant->id . '_response_cache';
+                \Spatie\ResponseCache\Facades\ResponseCache::forget($tenantTag);
+                
+                \Log::info('🧹 TENANT RESPONSE CACHE CLEAR', [
+                    'tenant_id' => $tenant->id,
+                    'cache_tag' => $tenantTag
+                ]);
+            } else {
+                // Central domain için central tag'i temizle
+                $centralTag = 'central_response_cache';
+                \Spatie\ResponseCache\Facades\ResponseCache::forget($centralTag);
+                
+                \Log::info('🧹 CENTRAL RESPONSE CACHE CLEAR', [
+                    'cache_tag' => $centralTag
+                ]);
+            }
+            
+        } catch (\Exception $e) {
+            \Log::warning('Tenant response cache clear error: ' . $e->getMessage());
+            
+            // Fallback: Tüm ResponseCache temizle
+            \Spatie\ResponseCache\Facades\ResponseCache::clear();
+            \Log::info('🧹 FALLBACK: Tüm ResponseCache temizlendi');
         }
     }
 }

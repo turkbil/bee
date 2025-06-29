@@ -29,6 +29,9 @@ class TenancyProvider extends ServiceProvider
             // Cache prefix ayarını config üzerinden yap
             Config::set('cache.prefix', $prefix);
             
+            // TENANT-BAZLI RESPONSE CACHE TAG AYARI - İZOLASYON CRİTİK!
+            Config::set('responsecache.cache_tag', 'tenant_' . $event->tenancy->tenant->id . '_response_cache');
+            
             // Tenant bilgisini session'a kaydet
             session(['current_tenant' => $event->tenancy->tenant]);
         });

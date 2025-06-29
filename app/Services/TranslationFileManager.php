@@ -162,7 +162,7 @@ class TranslationFileManager
     {
         try {
             // 1. Sistem dil dosyalarını oluştur
-            $this->createSystemLanguageFiles($locale);
+            $this->createAdminLanguageFiles($locale);
             
             // 2. Modül dil dosyalarını oluştur
             foreach ($modules as $module) {
@@ -184,7 +184,7 @@ class TranslationFileManager
     /**
      * Sistem dil dosyalarını oluştur
      */
-    protected function createSystemLanguageFiles(string $locale): void
+    protected function createAdminLanguageFiles(string $locale): void
     {
         $langPath = $this->systemLangPath . "/{$locale}";
         

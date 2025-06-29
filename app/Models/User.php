@@ -23,9 +23,8 @@ class User extends Authenticatable implements HasMedia
         'email',
         'password',
         'is_active',
-        'language',
-        'admin_language_preference',
-        'site_language_preference',
+        'admin_locale',
+        'tenant_locale',
     ];
 
     /**

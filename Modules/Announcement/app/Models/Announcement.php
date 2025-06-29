@@ -2,11 +2,12 @@
 namespace Modules\Announcement\App\Models;
 
 use App\Models\BaseModel;
+use App\Traits\HasTranslations;
 use Cviebrock\EloquentSluggable\Sluggable;
 
 class Announcement extends BaseModel
 {
-    use Sluggable;
+    use Sluggable, HasTranslations;
 
     protected $primaryKey = 'announcement_id';
 
@@ -19,17 +20,26 @@ class Announcement extends BaseModel
         'is_active',
     ];
 
+    protected $casts = [
+        'title' => 'array',
+        'slug' => 'array',
+        'body' => 'array',
+        'metakey' => 'array',
+        'metadesc' => 'array',
+    ];
+
     /**
-     * Sluggable Ayarları
+     * Çevrilebilir alanlar
+     */
+    protected $translatable = ['title', 'slug', 'body', 'metakey', 'metadesc'];
+
+    /**
+     * Sluggable Ayarları - JSON slug alanları için devre dışı
      */
     public function sluggable(): array
     {
         return [
-            'slug' => [
-                'source' => 'title', // Başlık üzerinden slug oluşturulur
-                'unique' => true,    // Benzersiz olmasını sağlar
-                'onUpdate' => false, // Güncellemede slug değiştirilmez
-            ],
+            // JSON slug alanları manuel olarak yönetiliyor
         ];
     }
     

@@ -38,7 +38,6 @@ class PageController extends Controller
             
         \Log::info('📄 PAGE CONTENT DEBUG', [
             'page_id' => $page->page_id,
-            'title_raw' => $page->getRawOriginal('title'),
             'title_translated' => $page->getTranslated('title', app()->getLocale()),
             'available_locales' => $page->title ? array_keys($page->title) : 'none'
         ]);
@@ -55,6 +54,7 @@ class PageController extends Controller
             // Fallback view'a yönlendir
             return view('page::front.show', ['item' => $page, 'is_homepage' => true]);
         }
+        
     }
 
     public function index()

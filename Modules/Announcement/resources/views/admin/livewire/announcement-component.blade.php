@@ -113,9 +113,9 @@
                             </div>
                             @else
                             <div class="d-flex align-items-center">
-                                <span class="editable-title pr-4">{{ $announcement->title }}</span>
+                                <span class="editable-title pr-4">{{ $announcement->getTranslated('title', app()->getLocale()) ?? $announcement->getTranslated('title', 'tr') }}</span>
                                 <button class="btn btn-sm px-2 py-1 edit-icon ms-4"
-                                    wire:click="startEditingTitle({{ $announcement->announcement_id }}, '{{ $announcement->title }}')">
+                                    wire:click="startEditingTitle({{ $announcement->announcement_id }}, '{{ addslashes($announcement->getTranslated('title', app()->getLocale()) ?? $announcement->getTranslated('title', 'tr')) }}')"
                                     <i class="fas fa-pen"></i>
                                 </button>
                             </div>
@@ -158,7 +158,7 @@
                                                 <a href="javascript:void(0);" wire:click="$dispatch('showDeleteModal', {
                                                     module: 'announcement',
                                                     id: {{ $announcement->announcement_id }},
-                                                    title: '{{ $announcement->title }}'
+                                                    title: '{{ addslashes($announcement->getTranslated('title', app()->getLocale()) ?? $announcement->getTranslated('title', 'tr')) }}'
                                                 })" class="dropdown-item link-danger">
                                                     {{ __('announcement::admin.delete') }}
                                                 </a>

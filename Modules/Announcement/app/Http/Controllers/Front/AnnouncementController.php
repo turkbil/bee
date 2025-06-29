@@ -37,9 +37,24 @@ class AnnouncementController extends Controller
 
     public function show($slug)
     {
-        $item = Announcement::where('slug', $slug)
-            ->where('is_active', true)
-            ->firstOrFail();
+        // Eğer sayısal ise direkt ID ile ara
+        if (is_numeric($slug)) {
+            $item = Announcement::where('announcement_id', $slug)
+                ->where('is_active', true)
+                ->first();
+        } else {
+            // String slug ise slug alanında ara
+            $item = Announcement::where('is_active', true)
+                ->where(function($query) use ($slug) {
+                    // Basit slug araması
+                    $query->where('slug', 'LIKE', '%"' . $slug . '"%');
+                })
+                ->first();
+        }
+        
+        if (!$item) {
+            abort(404);
+        }
 
 
         try {

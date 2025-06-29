@@ -3,13 +3,14 @@
 namespace Modules\Portfolio\App\Models;
 
 use App\Models\BaseModel;
+use App\Traits\HasTranslations;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PortfolioCategory extends BaseModel 
 {
-    use Sluggable, SoftDeletes;
+    use Sluggable, SoftDeletes, HasTranslations;
 
     protected $primaryKey = 'portfolio_category_id';
 
@@ -26,20 +27,25 @@ class PortfolioCategory extends BaseModel
     protected $casts = [
         'is_active' => 'boolean',
         'order' => 'integer',
+        'title' => 'array',
+        'slug' => 'array',
+        'body' => 'array',
+        'metakey' => 'array',
+        'metadesc' => 'array',
     ];
 
     /**
-     * Sluggable Ayarları
+     * Çevrilebilir alanlar
+     */
+    protected $translatable = ['title', 'slug', 'body', 'metakey', 'metadesc'];
+
+    /**
+     * Sluggable Ayarları - JSON slug alanları için devre dışı
      */
     public function sluggable(): array
     {
         return [
-            'slug' => [
-                'source' => 'title',
-                'onUpdate' => true,
-                'unique' => true,
-                'includeTrashed' => true,
-            ],
+            // JSON slug alanları manuel olarak yönetiliyor
         ];
     }
 

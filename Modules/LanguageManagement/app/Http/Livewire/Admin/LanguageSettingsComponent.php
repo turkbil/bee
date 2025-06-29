@@ -4,10 +4,10 @@ namespace Modules\LanguageManagement\app\Http\Livewire\Admin;
 
 use Livewire\Attributes\Layout;
 use Livewire\Component;
-use Modules\LanguageManagement\app\Services\SystemLanguageService;
-use Modules\LanguageManagement\app\Services\SiteLanguageService;
-use Modules\LanguageManagement\app\Models\SystemLanguage;
-use Modules\LanguageManagement\app\Models\SiteLanguage;
+use Modules\LanguageManagement\app\Services\AdminLanguageService;
+use Modules\LanguageManagement\app\Services\TenantLanguageService;
+use Modules\LanguageManagement\app\Models\AdminLanguage;
+use Modules\LanguageManagement\app\Models\TenantLanguage;
 
 #[Layout('admin.layout')]
 class LanguageSettingsComponent extends Component
@@ -15,9 +15,9 @@ class LanguageSettingsComponent extends Component
     public $systemLanguagesCount = 0;
     public $siteLanguagesCount = 0;
     public $currentAdminLanguage = 'tr';
-    public $currentSiteLanguage = 'tr';
-    public $recentSystemLanguages = [];
-    public $recentSiteLanguages = [];
+    public $currentTenantLanguage = 'tr';
+    public $recentAdminLanguages = [];
+    public $recentTenantLanguages = [];
     
     // URL Prefix Ayarları
     public $urlPrefixMode = 'except_default'; // none, except_default, all
@@ -31,21 +31,21 @@ class LanguageSettingsComponent extends Component
 
     public function loadStats()
     {
-        $systemLanguageService = app(SystemLanguageService::class);
-        $siteLanguageService = app(SiteLanguageService::class);
+        $systemLanguageService = app(AdminLanguageService::class);
+        $siteLanguageService = app(TenantLanguageService::class);
 
         // Sistem dilleri istatistikleri
-        $this->systemLanguagesCount = SystemLanguage::where('is_active', true)->count();
+        $this->systemLanguagesCount = AdminLanguage::where('is_active', true)->count();
         $this->currentAdminLanguage = $systemLanguageService->getTenantAdminLanguage() ?: 'tr';
-        $this->recentSystemLanguages = SystemLanguage::where('is_active', true)
+        $this->recentAdminLanguages = AdminLanguage::where('is_active', true)
             ->orderBy('created_at', 'desc')
             ->limit(3)
             ->get();
 
         // Site dilleri istatistikleri
-        $this->siteLanguagesCount = SiteLanguage::where('is_active', true)->count();
-        $this->currentSiteLanguage = $siteLanguageService->getTenantDefaultSiteLanguage() ?: 'tr';
-        $this->recentSiteLanguages = SiteLanguage::where('is_active', true)
+        $this->siteLanguagesCount = TenantLanguage::where('is_active', true)->count();
+        $this->currentTenantLanguage = $siteLanguageService->getTenantDefaultLocale() ?: 'tr';
+        $this->recentTenantLanguages = TenantLanguage::where('is_active', true)
             ->orderBy('created_at', 'desc')
             ->limit(3)
             ->get();
@@ -57,13 +57,13 @@ class LanguageSettingsComponent extends Component
     public function loadUrlPrefixSettings()
     {
         // Site dillerini yükle
-        $this->availableLanguages = SiteLanguage::where('is_active', true)
+        $this->availableLanguages = TenantLanguage::where('is_active', true)
             ->orderBy('sort_order')
             ->get(['code', 'name', 'native_name'])
             ->toArray();
         
         // Varsayılan dili al
-        $defaultLang = SiteLanguage::where('is_default', true)->first();
+        $defaultLang = TenantLanguage::where('is_default', true)->first();
         if ($defaultLang) {
             $this->urlPrefixMode = $defaultLang->url_prefix_mode ?? 'except_default';
             $this->defaultLanguageCode = $defaultLang->code;
@@ -74,17 +74,17 @@ class LanguageSettingsComponent extends Component
     {
         $this->validate([
             'urlPrefixMode' => 'required|in:none,except_default,all',
-            'defaultLanguageCode' => 'required|exists:site_languages,code'
+            'defaultLanguageCode' => 'required|exists:tenant_languages,code'
         ]);
         
         // Tüm site dillerini güncelle
-        SiteLanguage::query()->update(['url_prefix_mode' => $this->urlPrefixMode]);
+        TenantLanguage::query()->update(['url_prefix_mode' => $this->urlPrefixMode]);
         
         // Önce tüm is_default'ları false yap
-        SiteLanguage::query()->update(['is_default' => false]);
+        TenantLanguage::query()->update(['is_default' => false]);
         
         // Sonra yeni varsayılanı belirle
-        SiteLanguage::where('code', $this->defaultLanguageCode)
+        TenantLanguage::where('code', $this->defaultLanguageCode)
             ->update(['is_default' => true]);
         
         // Cache temizle

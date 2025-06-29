@@ -46,6 +46,13 @@ class CacheController extends Controller
                 Artisan::call('config:clear');
                 $clearedItems[] = 'Config Cache';
                 
+                // Tenant-specific ResponseCache temizleme
+                if (class_exists('\Spatie\ResponseCache\Facades\ResponseCache')) {
+                    $tenantTag = 'tenant_' . $tenant->id . '_response_cache';
+                    \Spatie\ResponseCache\Facades\ResponseCache::forget($tenantTag);
+                    $clearedItems[] = 'Response Cache (Tenant)';
+                }
+                
                 // Cache temizleme log'u
                 activity()
                     ->causedBy(auth()->user())
@@ -85,6 +92,13 @@ class CacheController extends Controller
                 
                 Artisan::call('config:clear');
                 $clearedItems[] = 'Config Cache';
+                
+                // Central-specific ResponseCache temizleme
+                if (class_exists('\Spatie\ResponseCache\Facades\ResponseCache')) {
+                    $centralTag = 'central_response_cache';
+                    \Spatie\ResponseCache\Facades\ResponseCache::forget($centralTag);
+                    $clearedItems[] = 'Response Cache (Central)';
+                }
                 
                 // Central cache temizleme log'u
                 activity()
@@ -151,6 +165,12 @@ class CacheController extends Controller
             
             Artisan::call('cache:clear');
             $clearedItems[] = 'Application Cache';
+            
+            // TÜM ResponseCache temizle (tenant + central)
+            if (class_exists('\Spatie\ResponseCache\Facades\ResponseCache')) {
+                \Spatie\ResponseCache\Facades\ResponseCache::clear();
+                $clearedItems[] = 'Response Cache (Tüm)';
+            }
             
             // Opcache temizle (eğer varsa)
             if (function_exists('opcache_reset')) {

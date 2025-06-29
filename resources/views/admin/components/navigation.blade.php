@@ -22,30 +22,32 @@ config(['database.connections.tenant.driver' => 'mysql']);
 DB::purge('tenant');
 }
 
-// Dil seçim mantığı: 1. Session 2. User admin dili 3. Tenant admin dili 4. tr
-$currentLocale = 'tr'; // Varsayılan
+// Admin fallback locale'i tenant'tan al (modül display_name'leri için)
+$adminFallbackLocale = 'tr'; // Sistem varsayılanı
+if (function_exists('tenant') && tenant() && isset(tenant()->admin_default_locale)) {
+    $adminFallbackLocale = tenant()->admin_default_locale;
+}
+
+// Dil seçim mantığı: 1. Session 2. User admin dili 3. Tenant admin dili 4. fallback
+$currentLocale = $adminFallbackLocale; // Tenant'ın varsayılan admin dili
 
 // 1. Session'dan admin dili (en güncel)
 if (session('admin_locale')) {
     $currentLocale = session('admin_locale');
 }
 // 2. Kullanıcının kaydettiği admin dil tercihi
-elseif (auth()->check() && auth()->user()->admin_language_preference) {
-    $currentLocale = auth()->user()->admin_language_preference;
+elseif (auth()->check() && auth()->user()->admin_locale) {
+    $currentLocale = auth()->user()->admin_locale;
 }
-// 3. Kullanıcının eski dil tercihi (fallback)
-elseif (auth()->check() && auth()->user()->language) {
-    $currentLocale = auth()->user()->language;
-}
-// 4. Tenant'ın seçtiği admin dili (varsa)
-elseif (function_exists('tenant') && tenant() && isset(tenant()->admin_language)) {
-    $currentLocale = tenant()->admin_language;
-}
+
+// Admin interface için her zaman fallback locale'i de ayarla (modül isimleri için)
+$originalLocale = app()->getLocale();
+app()->setLocale($adminFallbackLocale);
 
 // Sistem dillerini al
 $systemLanguages = collect();
-if (class_exists('Modules\LanguageManagement\App\Models\SystemLanguage')) {
-    $systemLanguages = \Modules\LanguageManagement\App\Models\SystemLanguage::where('is_active', true)
+if (class_exists('Modules\LanguageManagement\App\Models\AdminLanguage')) {
+    $systemLanguages = \Modules\LanguageManagement\App\Models\AdminLanguage::where('is_active', true)
         ->orderBy('id')
         ->get();
 }
@@ -67,6 +69,9 @@ $activeType = request()->segment(2);
 
 // Settings helper ile site başlığı ve logo bilgilerini al
 $siteTitle = settings('site_title', config('app.name'));
+
+// Original locale'i geri yükle
+app()->setLocale($originalLocale);
 @endphp
 
 <header class="navbar navbar-expand-md d-print-none">

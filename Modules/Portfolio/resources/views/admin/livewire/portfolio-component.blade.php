@@ -36,7 +36,7 @@
                                 data-choices-filter="true">
                             <option value="">{{ __('portfolio::admin.all_categories') }}</option>
                             @foreach($categories as $category)
-                            <option value="{{ $category->portfolio_category_id }}">{{ $category->title }}</option>
+                            <option value="{{ $category->portfolio_category_id }}">{{ $category->getTranslated('title', app()->getLocale()) ?? $category->getTranslated('title', 'tr') }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -133,9 +133,9 @@
                             </div>
                             @else
                             <div class="d-flex align-items-center">
-                                <span class="editable-title pr-4">{{ $portfolio->title }}</span>
+                                <span class="editable-title pr-4">{{ $portfolio->getTranslated('title', app()->getLocale()) ?? $portfolio->getTranslated('title', 'tr') }}</span>
                                 <button class="btn btn-sm px-2 py-1 edit-icon ms-4"
-                                    wire:click="startEditingTitle({{ $portfolio->portfolio_id }}, '{{ $portfolio->title }}')">
+                                    wire:click="startEditingTitle({{ $portfolio->portfolio_id }}, '{{ addslashes($portfolio->getTranslated('title', app()->getLocale()) ?? $portfolio->getTranslated('title', 'tr')) }}')">
                                     <i class="fas fa-pen"></i>
                                 </button>
                             </div>
@@ -145,7 +145,7 @@
                             <a href="javascript:void(0);"
                                 wire:click="$set('selectedCategory', '{{ $portfolio->category->portfolio_category_id ?? '' }}')"
                                 class="text-muted {{ $selectedCategory == ($portfolio->category->portfolio_category_id ?? '') ? '' : '' }}">
-                                {{ $portfolio->category->title ?? '-' }}
+                                {{ $portfolio->category ? ($portfolio->category->getTranslated('title', app()->getLocale()) ?? $portfolio->category->getTranslated('title', 'tr')) : '-' }}
                             </a>
                         </td>
                         <td wire:key="status-{{ $portfolio->portfolio_id }}" class="text-center align-middle">
@@ -191,7 +191,7 @@
                                                 <a href="javascript:void(0);" wire:click="$dispatch('showDeleteModal', {
                                                     module: 'portfolio',
                                                     id: {{ $portfolio->portfolio_id }},
-                                                    title: '{{ $portfolio->title }}'
+                                                    title: '{{ addslashes($portfolio->getTranslated('title', app()->getLocale()) ?? $portfolio->getTranslated('title', 'tr')) }}'
                                                 })" class="dropdown-item link-danger">
                                                     {{ __('portfolio::admin.delete') }}
                                                 </a>

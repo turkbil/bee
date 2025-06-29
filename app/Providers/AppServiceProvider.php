@@ -12,6 +12,28 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        // Contracts binding
+        $this->app->bind(
+            \App\Contracts\ModuleAccessServiceInterface::class,
+            \App\Services\ModuleAccessService::class
+        );
+        
+        $this->app->bind(
+            \App\Contracts\ThemeRepositoryInterface::class,
+            \App\Repositories\ThemeRepository::class
+        );
+        
+        $this->app->bind(
+            \App\Contracts\DynamicRouteResolverInterface::class,
+            \App\Services\DynamicRouteResolver::class
+        );
+        
+        $this->app->bind(
+            \App\Contracts\ModuleRepositoryInterface::class,
+            \App\Repositories\ModuleRepository::class
+        );
+        
+        // Service singletons
         $this->app->singleton(ModuleTenantPermissionService::class, function ($app) {
             return new ModuleTenantPermissionService();
         });
@@ -20,10 +42,17 @@ class AppServiceProvider extends ServiceProvider
             return new SettingsService();
         });
         
-        // ThemeService singleton - cache duplikasyonunu önler
+        // ThemeService singleton - simplified for emergency fix
         $this->app->singleton(\App\Services\ThemeService::class, function ($app) {
             return new \App\Services\ThemeService();
         });
+        
+        // Module permission helper services
+        $this->app->singleton(\App\Services\ModulePermissionChecker::class);
+        $this->app->singleton(\App\Services\ModuleAccessCache::class);
+        
+        // Dynamic route services
+        $this->app->singleton(\App\Services\DynamicRouteRegistrar::class);
         
         $this->loadHelperFiles();
     }

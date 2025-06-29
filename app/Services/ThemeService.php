@@ -1,5 +1,4 @@
 <?php
-// app/Services/ThemeService.php
 
 namespace App\Services;
 
@@ -10,136 +9,219 @@ use Modules\ThemeManagement\App\Models\Theme;
 
 class ThemeService
 {
-    protected $activeTheme;
-    protected static $staticThemeCache = null;
-
+    protected ?object $activeTheme = null;
+    
     public function __construct()
     {
-        $this->setActiveTheme();
+        // Basit constructor - dependency olmadan çalışsın
     }
-
-    protected function setActiveTheme()
+    
+    /**
+     * Aktif temayı getirir
+     */
+    public function getActiveTheme(): ?object
+    {
+        if ($this->activeTheme === null) {
+            $this->activeTheme = $this->loadActiveTheme();
+        }
+        
+        return $this->activeTheme;
+    }
+    
+    /**
+     * Aktif temayı yükle (basit implementasyon)
+     */
+    protected function loadActiveTheme(): ?object
     {
         try {
-            // Cache key oluştur
             $cacheKey = 'theme_service_active_theme';
             
             // Tenant varsa cache key'e tenant id ekle
             if (function_exists('tenant') && $t = tenant()) {
                 $cacheKey .= '_tenant_' . $t->id;
                 
-                // Tenant-specific theme cache'den kontrol et
-                $this->activeTheme = Cache::remember($cacheKey, now()->addHours(24), function() use ($t) {
+                // Tenant-specific tema
+                $theme = Cache::remember($cacheKey, now()->addHours(24), function() use ($t) {
                     return Theme::on('mysql')->where('name', $t->theme)
                                   ->where('is_active', true)
                                   ->first();
                 });
                 
-                if ($this->activeTheme) {
-                    return;
+                if ($theme) {
+                    return $theme;
                 }
             }
             
-            // STATIC CACHE + REDIS CACHE - İKİLİ KORUMA
-            if (self::$staticThemeCache !== null) {
-                $this->activeTheme = self::$staticThemeCache;
-                return;
-            }
-            
-            $globalCacheKey = 'theme_service_default_theme_v2';
-            $this->activeTheme = Cache::remember($globalCacheKey, now()->addDays(7), function() {
-                \Log::info('🎨 THEME CACHE MISS - Database sorgusu yapılıyor');
-                return Theme::on('mysql')->where('is_default', true)
+            // Default tema
+            $defaultCacheKey = 'theme_service_default_theme_v3';
+            return Cache::remember($defaultCacheKey, now()->addDays(7), function() {
+                // Default tema ara
+                $theme = Theme::on('mysql')
+                    ->where('is_default', true)
                     ->where('is_active', true)
                     ->first();
+                
+                if (!$theme) {
+                    // Herhangi bir aktif tema ara
+                    $theme = Theme::on('mysql')
+                        ->where('is_active', true)
+                        ->first();
+                }
+                
+                if (!$theme) {
+                    // Emergency fallback tema oluştur
+                    return (object) [
+                        'id' => 0,
+                        'name' => 'emergency',
+                        'display_name' => 'Emergency Theme',
+                        'is_active' => true,
+                        'is_default' => true,
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ];
+                }
+                
+                return $theme;
             });
             
-            // Static cache'e de kaydet
-            self::$staticThemeCache = $this->activeTheme;
-            
-            // Cache'de yoksa fallback kullan
-            if (!$this->activeTheme) {
-                $this->activeTheme = new Theme([
-                    'name' => 'blank',
-                    'folder_name' => 'blank'
-                ]);
-            }
-            
         } catch (\Exception $e) {
-            // Hata durumunda fallback theme kullan
-            Log::info('ThemeService: Using fallback theme due to error: ' . $e->getMessage());
-            $this->activeTheme = new Theme([
-                'name' => 'blank',
-                'folder_name' => 'blank'
-            ]);
+            Log::error('ThemeService error: ' . $e->getMessage());
+            
+            // Emergency fallback
+            return (object) [
+                'id' => 0,
+                'name' => 'emergency',
+                'display_name' => 'Emergency Theme',
+                'is_active' => true,
+                'is_default' => true,
+                'created_at' => now(),
+                'updated_at' => now()
+            ];
         }
     }
-
-    public function getActiveTheme()
-    {
-        return $this->activeTheme;
-    }
-
-    public function getThemeViewPath($view, $module = null)
-    {
-        $themeName = $this->activeTheme->folder_name;
-        
-        // 1. Modül içerisindeki tema view'ı - YENİ YAPI
-        if ($module) {
-            $moduleThemeView = "{$module}::front.themes.{$themeName}.{$view}";
-            if (View::exists($moduleThemeView)) {
     
-                return $moduleThemeView;
-            }
+    /**
+     * Tema view path'lerini ayarlar
+     */
+    public function setupThemeViews(): void
+    {
+        $theme = $this->getActiveTheme();
+        
+        if (!$theme) {
+            return;
         }
         
-        // 2. Ana tema içerisindeki view - YENİ YAPI
-        $mainThemeView = "themes.{$themeName}.{$view}";
-        if (View::exists($mainThemeView)) {
-            Log::debug("Using main theme view: {$mainThemeView}");
-            return $mainThemeView;
+        // Tema view path'ini ayarla
+        $themePath = resource_path("views/themes/{$theme->name}");
+        
+        if (is_dir($themePath)) {
+            View::addLocation($themePath);
+        }
+    }
+    
+    /**
+     * Tema asset URL'ini getirir
+     */
+    public function getThemeAssetUrl(string $asset): string
+    {
+        $theme = $this->getActiveTheme();
+        
+        if (!$theme) {
+            return asset($asset);
         }
         
-        // 3. Modül içindeki fallback view - YENİ YAPI
+        return asset("themes/{$theme->name}/{$asset}");
+    }
+    
+    /**
+     * Tema bilgilerini getirir
+     */
+    public function getThemeInfo(): array
+    {
+        $theme = $this->getActiveTheme();
+        
+        if (!$theme) {
+            return [
+                'name' => 'emergency',
+                'display_name' => 'Emergency Theme',
+                'is_active' => true
+            ];
+        }
+        
+        return [
+            'name' => $theme->name,
+            'display_name' => $theme->display_name ?? $theme->name,
+            'is_active' => $theme->is_active ?? true,
+            'is_default' => $theme->is_default ?? false
+        ];
+    }
+    
+    /**
+     * Tema cache'ini temizler
+     */
+    public function clearThemeCache(?string $tenantId = null): void
+    {
+        $this->activeTheme = null; // Instance cache'i temizle
+        
+        $cacheKeys = [
+            'theme_service_active_theme',
+            'theme_service_default_theme_v3'
+        ];
+        
+        if ($tenantId) {
+            $cacheKeys[] = "theme_service_active_theme_tenant_{$tenantId}";
+        }
+        
+        foreach ($cacheKeys as $key) {
+            Cache::forget($key);
+        }
+    }
+    
+    /**
+     * Tema view path'ini getirir (modül desteği ile)
+     */
+    public function getThemeViewPath(string $view, string $module = null): string
+    {
+        $theme = $this->getActiveTheme();
+        
+        if (!$theme) {
+            // Theme yoksa modül view'ını kullan
+            return $module ? "{$module}::front.{$view}" : $view;
+        }
+        
+        $themeName = $theme->name;
+        
         if ($module) {
-            $defaultModuleView = "{$module}::front.{$view}";
-            if (View::exists($defaultModuleView)) {
-                Log::debug("Using default module view: {$defaultModuleView}");
-                return $defaultModuleView;
+            // Önce modül içindeki tema view'ını kontrol et
+            // Modules/{Module}/resources/views/themes/{theme}/{view}.blade.php
+            $moduleThemeViewPath = "{$module}::themes.{$themeName}.{$view}";
+            
+            if (view()->exists($moduleThemeViewPath)) {
+                return $moduleThemeViewPath;
             }
+            
+            // Tema yoksa modül default view'ını kullan
+            // Modules/{Module}/resources/views/front/{view}.blade.php
+            return "{$module}::front.{$view}";
         }
         
-        // Tüm alternatifleri kontrol et ve logla
-        Log::error("View not found for any path. Module: {$module}, View: {$view}, Theme: {$themeName}");
-        throw new \Exception("View [{$view}] not found in any location.");
+        // Genel tema view'ı (layout için)
+        $themeViewPath = "themes.{$themeName}.{$view}";
+        
+        if (view()->exists($themeViewPath)) {
+            return $themeViewPath;
+        }
+        
+        // Fallback
+        return $view;
     }
-
+    
     /**
-     * Theme cache'ini temizle
+     * Tema değiştirildiğinde çağrılır
      */
-    public function clearThemeCache()
+    public function refreshTheme(): void
     {
-        Cache::forget('theme_service_default_theme');
-        
-        // Tenant cache'lerini de temizle
-        if (function_exists('tenant') && $t = tenant()) {
-            Cache::forget('theme_service_active_theme_tenant_' . $t->id);
-        }
-    }
-
-    /**
-     * Tüm theme cache'lerini temizle
-     */
-    public static function clearAllThemeCache()
-    {
-        Cache::forget('theme_service_default_theme');
-        
-        // Tenant cache pattern'ini temizle (Redis için)
-        if (Cache::getStore() instanceof \Illuminate\Cache\RedisStore) {
-            $keys = Cache::getRedis()->keys('theme_service_active_theme_tenant_*');
-            if (!empty($keys)) {
-                Cache::getRedis()->del($keys);
-            }
-        }
+        $this->activeTheme = null;
+        $this->setupThemeViews();
     }
 }

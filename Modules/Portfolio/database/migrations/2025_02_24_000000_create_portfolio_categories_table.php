@@ -10,12 +10,12 @@ return new class extends Migration
     {
         Schema::create('portfolio_categories', function (Blueprint $table) {
             $table->id('portfolio_category_id');
-            $table->string('title', 255)->index();
-            $table->string('slug')->unique();
+            $table->text('title');
+            $table->text('slug');
             $table->text('body')->nullable();
             $table->integer('order')->default(0)->index();
-            $table->string('metakey', 255)->nullable();
-            $table->string('metadesc', 255)->nullable();
+            $table->text('metakey')->nullable();
+            $table->text('metadesc')->nullable();
             $table->boolean('is_active')->default(true)->index();
             $table->timestamps();
             $table->softDeletes();
@@ -28,7 +28,6 @@ return new class extends Migration
             // Composite index'ler - Performans optimizasyonu
             $table->index(['is_active', 'deleted_at'], 'portfolio_categories_active_deleted_idx');
             $table->index(['is_active', 'deleted_at', 'order'], 'portfolio_categories_active_deleted_order_idx');
-            $table->index(['slug', 'is_active', 'deleted_at'], 'portfolio_categories_slug_active_deleted_idx');
         });
     }
 

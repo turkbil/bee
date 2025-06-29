@@ -5,20 +5,20 @@ namespace Modules\LanguageManagement\app\Services;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use Modules\LanguageManagement\app\Services\SystemLanguageService;
-use Modules\LanguageManagement\app\Services\SiteLanguageService;
+use Modules\LanguageManagement\app\Services\AdminLanguageService;
+use Modules\LanguageManagement\app\Services\TenantLanguageService;
 
 class LanguageService
 {
-    protected $systemLanguageService;
-    protected $siteLanguageService;
+    protected $adminLanguageService;
+    protected $tenantLanguageService;
 
     public function __construct(
-        SystemLanguageService $systemLanguageService,
-        SiteLanguageService $siteLanguageService
+        AdminLanguageService $adminLanguageService,
+        TenantLanguageService $tenantLanguageService
     ) {
-        $this->systemLanguageService = $systemLanguageService;
-        $this->siteLanguageService = $siteLanguageService;
+        $this->adminLanguageService = $adminLanguageService;
+        $this->tenantLanguageService = $tenantLanguageService;
     }
 
     /**
@@ -27,9 +27,9 @@ class LanguageService
     public function isValidLanguageForContext(string $languageCode, string $context = 'admin'): bool
     {
         if ($context === 'admin') {
-            $availableLanguages = $this->systemLanguageService->getAvailableLanguages();
+            $availableLanguages = $this->adminLanguageService->getAvailableLanguages();
         } else {
-            $availableLanguages = $this->siteLanguageService->getAvailableLanguages();
+            $availableLanguages = $this->tenantLanguageService->getAvailableLanguages();
         }
 
         return $availableLanguages->contains('code', $languageCode);
@@ -48,9 +48,9 @@ class LanguageService
         
         // Context'e göre service'i güncelle
         if ($context === 'admin') {
-            $this->systemLanguageService->setCurrentLanguage($languageCode);
+            $this->adminLanguageService->setCurrentLanguage($languageCode);
         } else {
-            $this->siteLanguageService->setCurrentLanguage($languageCode);
+            $this->tenantLanguageService->setCurrentLanguage($languageCode);
         }
     }
 
@@ -68,12 +68,12 @@ class LanguageService
         if ($context === 'admin') {
             // Admin language tercihi
             if ($user && method_exists($user, 'update')) {
-                $user->update(['admin_language_preference' => $languageCode]);
+                $user->update(['admin_locale' => $languageCode]);
             }
         } else {
             // Site language tercihi  
             if ($user && method_exists($user, 'update')) {
-                $user->update(['site_language_preference' => $languageCode]);
+                $user->update(['tenant_locale' => $languageCode]);
             }
         }
     }
@@ -84,9 +84,9 @@ class LanguageService
     public function getDefaultLanguage(string $context = 'admin'): string
     {
         if ($context === 'admin') {
-            return $this->systemLanguageService->getDefaultAdminLanguage();
+            return $this->adminLanguageService->getDefaultAdminLanguage();
         } else {
-            return $this->siteLanguageService->getDefaultSiteLanguage();
+            return $this->tenantLanguageService->getDefaultTenantLanguage();
         }
     }
 
@@ -132,7 +132,7 @@ class LanguageService
         // Kullanıcı tercihini kontrol et
         if (Auth::check()) {
             $user = Auth::user();
-            $preferenceField = $context === 'admin' ? 'admin_language_preference' : 'site_language_preference';
+            $preferenceField = $context === 'admin' ? 'admin_locale' : 'tenant_locale';
             
             if ($user && isset($user->$preferenceField) && $user->$preferenceField) {
                 return $user->$preferenceField;
@@ -149,16 +149,16 @@ class LanguageService
     public function getAvailableLanguages(string $context = 'admin')
     {
         if ($context === 'admin') {
-            return $this->systemLanguageService->getAvailableLanguages();
+            return $this->adminLanguageService->getAvailableLanguages();
         } else {
-            return $this->siteLanguageService->getAvailableLanguages();
+            return $this->tenantLanguageService->getAvailableLanguages();
         }
     }
     
     /**
      * Site dilini al - Session veya kullanıcı tercihinden
      */
-    public function getSiteLanguage(): string
+    public function getTenantLanguage(): string
     {
         return $this->getCurrentLocale('site');
     }

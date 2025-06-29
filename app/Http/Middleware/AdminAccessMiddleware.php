@@ -29,8 +29,8 @@ class AdminAccessMiddleware
         $user = auth()->user();
         $path = $request->path();
         
-        // Hangi modülü erişmeye çalıştığını belirle
-        preg_match('/admin\/([a-zA-Z0-9_]+)/', $path, $matches);
+        // Hangi modülü erişmeye çalıştığını belirle - alt yolları da yakala
+        preg_match('/^admin\/([^\/]+)/', $path, $matches);
         $moduleName = $matches[1] ?? null;
         
         // Log sadece debug modunda - performans için

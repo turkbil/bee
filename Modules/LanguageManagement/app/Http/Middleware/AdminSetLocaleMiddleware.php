@@ -18,7 +18,7 @@ class AdminSetLocaleMiddleware
 
     /**
      * Handle an incoming request for ADMIN context only
-     * Uses system_languages table and admin_locale session
+     * Uses admin_languages table and admin_locale session
      */
     public function handle(Request $request, Closure $next): Response
     {
@@ -26,7 +26,7 @@ class AdminSetLocaleMiddleware
             'url' => $request->fullUrl(),
             'current_app_locale' => app()->getLocale(),
             'session_admin_locale' => session('admin_locale'),
-            'user_admin_preference' => auth()->check() ? auth()->user()->admin_language_preference : null
+            'user_admin_preference' => auth()->check() ? auth()->user()->admin_locale : null
         ]);
 
         // URL'den dil parametresi kontrol et (route parameter veya query string)

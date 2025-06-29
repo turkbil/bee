@@ -90,14 +90,36 @@ if (!function_exists('parse_widget_shortcodes')) {
      * @param string $content İçerik
      * @return string İşlenmiş içerik
      */
-    function parse_widget_shortcodes(string $content): string
+    function parse_widget_shortcodes($content): string
     {
         try {
+            // Content array ise string'e çevir
+            if (is_array($content)) {
+                // JSON multi-language content ise locale'ye göre al
+                $locale = app()->getLocale();
+                if (isset($content[$locale])) {
+                    $content = $content[$locale];
+                } else {
+                    // Fallback: ilk değeri al ya da boş string
+                    $content = reset($content) ?: '';
+                }
+            }
+            
+            // Null ise boş string yap
+            if (is_null($content)) {
+                $content = '';
+            }
+            
+            // String değilse string'e çevir
+            if (!is_string($content)) {
+                $content = (string) $content;
+            }
+            
             $parser = app('shortcode.parser');
             return $parser->parse($content);
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error("Widget kısa kod ayrıştırma hatası: " . $e->getMessage());
-            return $content;
+            return is_string($content) ? $content : '';
         }
     }
 }

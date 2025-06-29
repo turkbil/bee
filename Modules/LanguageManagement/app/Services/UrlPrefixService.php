@@ -2,7 +2,7 @@
 
 namespace Modules\LanguageManagement\app\Services;
 
-use Modules\LanguageManagement\app\Models\SiteLanguage;
+use Modules\LanguageManagement\app\Models\TenantLanguage;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
@@ -22,7 +22,7 @@ class UrlPrefixService
         if (self::$defaultLanguageObject === null) {
             self::$defaultLanguageObject = Cache::remember('site_default_language_object', 3600, function () {
                 try {
-                    $defaultLang = SiteLanguage::where('is_default', true)->first();
+                    $defaultLang = TenantLanguage::where('is_default', true)->first();
                     return $defaultLang ? [
                         'code' => $defaultLang->code,
                         'url_prefix_mode' => $defaultLang->url_prefix_mode ?? 'except_default'
@@ -76,7 +76,7 @@ class UrlPrefixService
         if (self::$availableLocales === null) {
             self::$availableLocales = Cache::remember('site_available_locales', 3600, function () {
                 try {
-                    return SiteLanguage::where('is_active', true)
+                    return TenantLanguage::where('is_active', true)
                         ->orderBy('sort_order')
                         ->pluck('code')
                         ->toArray();
@@ -159,36 +159,12 @@ class UrlPrefixService
         $domain = request()->getHost();
         $sessionKey = 'site_locale_' . str_replace('.', '_', $domain);
         
-        // User giriş yapmışsa preference'ını kontrol et
+        // Hızlı user locale kontrolü
         $userLocale = null;
-        $userDebug = ['authenticated' => false];
-        
         if (auth()->check()) {
             $user = auth()->user();
             $isAdminContext = str_contains(request()->url(), '/admin/');
-            
-            $userDebug = [
-                'authenticated' => true,
-                'user_id' => $user->id,
-                'user_name' => $user->name,
-                'is_admin_context' => $isAdminContext,
-                'admin_language_preference' => $user->admin_language_preference,
-                'site_language_preference' => $user->site_language_preference,
-                'current_url' => request()->url()
-            ];
-            
-            if ($isAdminContext && $user->admin_language_preference) {
-                $userLocale = $user->admin_language_preference;
-                $userDebug['selected_preference'] = 'admin';
-                $userDebug['selected_locale'] = $userLocale;
-            } elseif (!$isAdminContext && $user->site_language_preference) {
-                $userLocale = $user->site_language_preference;
-                $userDebug['selected_preference'] = 'site';
-                $userDebug['selected_locale'] = $userLocale;
-            } else {
-                $userDebug['selected_preference'] = 'none';
-                $userDebug['reason'] = $isAdminContext ? 'admin_pref_empty' : 'site_pref_empty';
-            }
+            $userLocale = $isAdminContext ? $user->admin_locale : $user->tenant_locale;
         }
         
         // Öncelik sırası: User preference → Session → Fallback
@@ -196,22 +172,7 @@ class UrlPrefixService
         $tenant = tenant();
         $isCentralTenant = $tenant ? $tenant->central : false;
         
-        // Debug bilgilerini return data'ya ekle
-        $debugInfo = [
-            'domain' => $domain,
-            'session_key' => $sessionKey,
-            'user_debug' => $userDebug,
-            'user_locale' => $userLocale,
-            'session_locale' => $sessionLocale,
-            'final_locale' => $sessionLocale,
-            'locale_source' => $userLocale ? 'USER_PREFERENCE' : 'SESSION',
-            'session_has_old_key' => session()->has('site_locale'),
-            'session_has_domain_key' => session()->has($sessionKey),
-            'path' => $path,
-            'tenant_exists' => $tenant ? 'YES' : 'NO',
-            'tenant_id' => $tenant ? $tenant->id : 'NULL',
-            'is_central_tenant' => $isCentralTenant ? 'YES' : 'NO'
-        ];
+        // Minimal processing - debug bilgileri kaldırıldı
         
         // Session'da locale varsa onu kullan
         if ($sessionLocale) {
@@ -225,8 +186,7 @@ class UrlPrefixService
                 //     'session_locale' => $sessionLocale
                 // ]);
                 
-                $sessionLanguage = $tenant->siteLanguages()
-                    ->where('code', $sessionLocale)
+                $sessionLanguage = \Modules\LanguageManagement\app\Models\TenantLanguage::where('code', $sessionLocale)
                     ->where('is_active', 1)
                     ->first();
             } else {
@@ -236,7 +196,7 @@ class UrlPrefixService
                 //     'domain' => request()->getHost()
                 // ]);
                 
-                $sessionLanguage = \Modules\LanguageManagement\app\Models\SiteLanguage::on('mysql')
+                $sessionLanguage = \Modules\LanguageManagement\app\Models\TenantLanguage::on('mysql')
                     ->where('code', $sessionLocale)
                     ->where('is_active', 1)
                     ->first();
@@ -254,9 +214,8 @@ class UrlPrefixService
                     'prefix' => null,
                     'clean_path' => $path,
                     'has_prefix' => false,
-                    'is_default' => $sessionLanguage->is_default ?? false,
-                    'debug_info' => $debugInfo
-                ];
+                    'is_default' => $sessionLanguage->is_default ?? false
+                        ];
             }
         }
         
@@ -273,8 +232,7 @@ class UrlPrefixService
             'prefix' => null,
             'clean_path' => $path,
             'has_prefix' => false,
-            'is_default' => true,
-            'debug_info' => $debugInfo
+            'is_default' => true
         ];
     }
     

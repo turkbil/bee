@@ -17,4 +17,10 @@ return [
     'controls_move' => '← → Hareket | ↓ Hızlandır | ↑ Döndür | SPACE Düşür',
     'controls_pause' => 'ENTER Duraklat | R Yeniden Başlat',
     'controls_info' => 'Kesikli çizgi: Taşın düşeceği yer | 0.5sn ek yerleştirme süresi',
+    
+    // =============================================
+    // GENEL FRONTEND ÇEVİRİLERİ
+    // =============================================
+    
+    'all_rights_reserved' => 'Tüm hakları saklıdır.',
 ];

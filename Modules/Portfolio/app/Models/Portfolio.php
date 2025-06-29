@@ -3,6 +3,7 @@
 namespace Modules\Portfolio\App\Models;
 
 use App\Models\BaseModel;
+use App\Traits\HasTranslations;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -11,7 +12,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Portfolio extends BaseModel implements HasMedia
 {
-    use Sluggable, SoftDeletes, InteractsWithMedia;
+    use Sluggable, SoftDeletes, InteractsWithMedia, HasTranslations;
 
     protected $primaryKey = 'portfolio_id';
 
@@ -25,23 +26,30 @@ class Portfolio extends BaseModel implements HasMedia
         'js',
         'metakey',
         'metadesc',
+        'client',
+        'date',
+        'url',
         'is_active',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'title' => 'array',
+        'slug' => 'array',
+        'body' => 'array',
+        'metakey' => 'array',
+        'metadesc' => 'array',
     ];
+
+    /**
+     * Çevrilebilir alanlar
+     */
+    protected $translatable = ['title', 'slug', 'body', 'metakey', 'metadesc'];
 
     public function sluggable(): array
     {
         return [
-            'slug' => [
-                'source' => 'title',
-                'onUpdate' => true,
-                'maxLength' => 100,
-                'unique' => true,
-                'includeTrashed' => true,
-            ],
+            // JSON slug alanları manuel olarak yönetiliyor
         ];
     }
 

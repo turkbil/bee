@@ -3,7 +3,7 @@
 namespace Modules\LanguageManagement\App\Http\Livewire;
 
 use Livewire\Component;
-use Modules\LanguageManagement\App\Models\SystemLanguage;
+use Modules\LanguageManagement\App\Models\AdminLanguage;
 use Illuminate\Support\Facades\Session;
 
 class AdminLanguageSwitcher extends Component
@@ -18,15 +18,15 @@ class AdminLanguageSwitcher extends Component
     public function mount()
     {
         // Admin dilleri al - sadece system_languages tablosundan
-        $this->availableLanguages = SystemLanguage::where('is_active', true)
+        $this->availableLanguages = AdminLanguage::where('is_active', true)
             ->orderBy('sort_order')
             ->pluck('code')
             ->toArray();
         
-        // Admin dil öncelik sırası: 1. Session 2. User preference 3. Default
+        // Admin dil öncelik sırası: 1. Session 2. User locale 3. Default
         $this->currentLanguage = Session::get('admin_locale');
         if (!$this->currentLanguage && auth()->check()) {
-            $this->currentLanguage = auth()->user()->admin_language_preference ?? auth()->user()->language;
+            $this->currentLanguage = auth()->user()->admin_locale;
         }
         if (!$this->currentLanguage) {
             $this->currentLanguage = config('app.locale', 'tr');
@@ -55,10 +55,10 @@ class AdminLanguageSwitcher extends Component
 
     public function refreshComponent()
     {
-        // Admin dil öncelik sırası: 1. Session 2. User preference 3. Default
+        // Admin dil öncelik sırası: 1. Session 2. User locale 3. Default
         $this->currentLanguage = Session::get('admin_locale');
         if (!$this->currentLanguage && auth()->check()) {
-            $this->currentLanguage = auth()->user()->admin_language_preference ?? auth()->user()->language;
+            $this->currentLanguage = auth()->user()->admin_locale;
         }
         if (!$this->currentLanguage) {
             $this->currentLanguage = config('app.locale', 'tr');
@@ -88,12 +88,12 @@ class AdminLanguageSwitcher extends Component
     public function render()
     {
         // Admin system_languages tablosundan aktif dilleri çek
-        $systemLanguages = SystemLanguage::where('is_active', true)
+        $systemLanguages = AdminLanguage::where('is_active', true)
             ->orderBy('sort_order')
             ->get();
         
         // Mevcut dili system_languages tablosundan al
-        $currentLanguageData = SystemLanguage::where('code', $this->currentLanguage)->first();
+        $currentLanguageData = AdminLanguage::where('code', $this->currentLanguage)->first();
         $currentLocale = $this->currentLanguage;
         
         return view('languagemanagement::livewire.admin-language-switcher', [

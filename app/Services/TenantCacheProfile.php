@@ -16,65 +16,47 @@ class TenantCacheProfile implements CacheProfile
 
     public function shouldCacheRequest(Request $request): bool
     {
-        \Log::info('🔧 CACHE PROFILE: shouldCacheRequest çağrıldı', [
-            'url' => $request->fullUrl(),
-            'method' => $request->method(),
-            'is_ajax' => $request->ajax(),
-            'is_auth' => auth()->check(),
-            'query_params' => $request->query()
+        // Debug log sadece local/staging'de
+        if (app()->environment(['local', 'staging'])) {
+            \Log::debug('Cache profile check', [
+                'url' => $request->fullUrl(),
+                'method' => $request->method(),
+                'is_ajax' => $request->ajax(),
+                'is_auth' => auth()->check()
+            ]);
+        }
+        
+        // Temel kontroller
+        if ($request->ajax() || $request->isMethod('get') === false) {
+            return false;
+        }
+
+        // Config'den excluded paths al
+        $excludedPaths = config('responsecache.excluded_paths', [
+            'admin/*',
+            'language/*',
+            'debug-lang/*',
+            'debug/*',
+            'livewire/*'
         ]);
         
-        // GET request ve başarılı response
-        if ($request->ajax()) {
-            \Log::info('🚫 CACHE: Ajax request - cache yok');
-            return false;
+        foreach ($excludedPaths as $pattern) {
+            if ($request->is($pattern)) {
+                return false;
+            }
         }
 
-        if ($request->isMethod('get') === false) {
-            \Log::info('🚫 CACHE: Non-GET request - cache yok');
-            return false;
-        }
-
-        // Admin sayfalarını cache'leme
-        if ($request->is('admin/*')) {
-            return false;
-        }
-
-        // DİL DEĞİŞTİRME ROUTE'LARINI CACHE'LEME!
-        if ($request->is('language/*')) {
-            return false;
-        }
-
-        // CACHE BYPASS QUERY PARAMETRELERİ KONTROLÜ
-        if ($request->has(['_', 'lang_changed']) || $request->has('cb')) {
-            \Log::info('🚫 CACHE BYPASS: Dil değişikliği parametreleri mevcut', [
-                'lang_changed' => $request->get('lang_changed'),
-                'timestamp' => $request->get('_'),
-                'cache_buster' => $request->get('cb')
-            ]);
-            return false;
-        }
-
-        // Debug sayfalarını cache'leme
-        if ($request->is('debug-lang/*') || $request->is('debug/*')) {
+        // Cache bypass parametreleri
+        $bypassParams = ['_', 'lang_changed', 'cb', 'no_cache'];
+        if ($request->hasAny($bypassParams)) {
+            if (app()->environment(['local', 'staging'])) {
+                \Log::debug('Cache bypass params detected', [
+                    'params' => $request->only($bypassParams)
+                ]);
+            }
             return false;
         }
         
-        // Cache temizlendi, normal cache devam etsin
-
-        // AUTH USER'LAR İÇİN DE CACHE AKTİF - PC bazlı cache silme ile çözüldü
-        if (auth()->check()) {
-            \Log::info('✅ CACHE ENABLED for auth user', [
-                'user_id' => auth()->id(),
-                'url' => $request->fullUrl()
-            ]);
-            // Auth cache artık açık, login/logout'ta temizlik yapılıyor
-        }
-        
-        \Log::info('✅ CACHE: Request cache\'lenecek', [
-            'url' => $request->fullUrl(),
-            'auth_status' => auth()->check() ? 'auth_' . auth()->id() : 'guest'
-        ]);
         return true;
     }
 

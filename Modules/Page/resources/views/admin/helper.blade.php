@@ -1,74 +1,129 @@
-{{-- Page Module Admin Helper - Scripts Only --}}
-@push('scripts')
+{{-- Modules/Page/resources/views/admin/helper.blade.php --}}
+{{-- PreTitle --}}
+@push('pretitle')
+{{ __('page::admin.pages') }}
+@endpush
+
+{{-- Başlık --}}
+@push('title')
+{{ __('page::admin.page_management') }}
+@endpush
+
+{{-- Çok Dilli Tab Sistemi --}}
+@push('admin-js')
 <script>
 $(document).ready(function() {
-    // Initialize tab manager with custom key for Page module
-    TabManager.init('pageEditActiveTab');
+    // Aktif tab'ı kaydet
+    const routeName = '{{ request()->route()->getName() }}';
+    const tabKey = routeName.replace('.', '') + 'ActiveTab';
     
-    // Initialize multi-language form switcher
+    // Tab Manager
+    const TabManager = {
+        init: function(storageKey) {
+            this.storageKey = storageKey;
+            this.restoreActiveTab();
+            this.bindTabEvents();
+        },
+        
+        restoreActiveTab: function() {
+            const activeTab = localStorage.getItem(this.storageKey);
+            if (activeTab) {
+                $('.nav-tabs .nav-link').removeClass('active');
+                $('.tab-content .tab-pane').removeClass('active show');
+                
+                const targetTab = $(`[href="${activeTab}"]`);
+                if (targetTab.length) {
+                    targetTab.addClass('active');
+                    $(activeTab).addClass('active show');
+                }
+            }
+        },
+        
+        bindTabEvents: function() {
+            const self = this;
+            $('.nav-tabs .nav-link').on('click', function() {
+                const href = $(this).attr('href');
+                localStorage.setItem(self.storageKey, href);
+            });
+        }
+    };
+    
+    // Çok Dilli Form Switcher
+    const MultiLangFormSwitcher = {
+        init: function() {
+            this.bindLanguageToggle();
+        },
+        
+        bindLanguageToggle: function() {
+            $('.language-toggle').on('click', function(e) {
+                e.preventDefault();
+                const targetLang = $(this).data('language');
+                const currentLang = $('.language-toggle.active').data('language');
+                
+                // Form değerlerini kaydet
+                MultiLangFormSwitcher.saveFormData(currentLang);
+                
+                // Yeni dil verilerini yükle
+                MultiLangFormSwitcher.loadFormData(targetLang);
+                
+                // Aktif dil toggle'ını değiştir
+                $('.language-toggle').removeClass('active');
+                $(this).addClass('active');
+            });
+        },
+        
+        saveFormData: function(lang) {
+            const formData = {};
+            $('[data-multilang]').each(function() {
+                const fieldName = $(this).data('multilang');
+                formData[fieldName] = $(this).val();
+            });
+            
+            // Livewire ile veri gönder
+            if (window.Livewire) {
+                @this.updateLanguageData(lang, formData);
+            }
+        },
+        
+        loadFormData: function(lang) {
+            // Livewire'dan veri al ve form alanlarını doldur
+            if (window.Livewire) {
+                @this.loadLanguageData(lang).then(data => {
+                    $.each(data, function(fieldName, value) {
+                        $(`[data-multilang="${fieldName}"]`).val(value);
+                    });
+                });
+            }
+        }
+    };
+    
+    // Initialize
+    TabManager.init(tabKey);
     MultiLangFormSwitcher.init();
-    
-    // Initialize TinyMCE for multi-language editors
-    if (typeof tinymce !== 'undefined') {
-        TinyMCEMultiLang.initAll();
-    }
-    
-    // Language switcher for underline style
-    $('.language-switch-btn').on('click', function(e) {
-        e.preventDefault();
-        const selectedLang = $(this).data('language');
-        
-        // Remove active from all siblings
-        $('.language-switch-btn').each(function() {
-            $(this).removeClass('text-primary').addClass('text-muted');
-            $(this).css('border-bottom', '2px solid transparent');
-        });
-        
-        // Add active to clicked button
-        $(this).removeClass('text-muted').addClass('text-primary');
-        
-        // Get primary color from theme builder variable
-        const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') ||
-                             getComputedStyle(document.documentElement).getPropertyValue('--tblr-primary') ||
-                             '#066fd1';
-        
-        $(this).css('border-bottom', `2px solid ${primaryColor}`);
-        
-        // Switch language content
-        MultiLangFormSwitcher.switchLanguage(selectedLang);
-    });
-});
-
-// Re-initialize on Livewire updates
-document.addEventListener('livewire:updated', function() {
-    if (typeof tinymce !== 'undefined') {
-        TinyMCEMultiLang.initAll();
-    }
-    
-    // Re-bind language switcher events
-    $('.language-switch-btn').off('click').on('click', function(e) {
-        e.preventDefault();
-        const selectedLang = $(this).data('language');
-        
-        // Remove active from all siblings
-        $('.language-switch-btn').each(function() {
-            $(this).removeClass('text-primary').addClass('text-muted');
-            $(this).css('border-bottom', '2px solid transparent');
-        });
-        
-        // Add active to clicked button
-        $(this).removeClass('text-muted').addClass('text-primary');
-        
-        // Get primary color from theme builder variable
-        const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') ||
-                             getComputedStyle(document.documentElement).getPropertyValue('--tblr-primary') ||
-                             '#066fd1';
-        
-        $(this).css('border-bottom', `2px solid ${primaryColor}`);
-        
-        // Switch language content
-        MultiLangFormSwitcher.switchLanguage(selectedLang);
-    });
 });
 </script>
+@endpush
+
+{{-- Modül Menüsü --}}
+@push('module-menu')
+
+<div class="dropdown d-grid d-md-flex module-menu">
+    <a href="#" class="btn dropdown-toggle d-inline-block d-lg-none" data-bs-toggle="dropdown">{{ __('page::admin.menu') }}</a>
+    <div class="dropdown-menu dropdown-module-menu">
+        <div class="module-menu-revert">
+            @hasmoduleaccess('page', 'view')
+            <a href="{{ route('admin.page.index') }}" class="dropdown-module-item btn btn-ghost-secondary">
+                {{ __('page::admin.pages') }}
+            </a>
+            @endhasmoduleaccess
+
+            @hasmoduleaccess('page', 'create')
+            <a href="{{ route('admin.page.manage') }}" class="dropdown-module-item btn btn-primary">
+                {{ __('page::admin.new_page') }}
+            </a>
+            @endhasmoduleaccess
+        </div>
+    </div>
+</div>
+
 @endpush

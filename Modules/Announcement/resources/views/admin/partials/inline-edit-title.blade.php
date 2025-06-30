@@ -30,9 +30,9 @@
         </div>
     @else
         <div class="d-flex align-items-center">
-            <span class="editable-title pr-4">{{ $announcement->title }}</span>
+            <span class="editable-title pr-4">{{ $announcement->getTranslated('title') }}</span>
             <button class="btn btn-sm px-2 py-1 edit-icon ms-4"
-                    wire:click="startEditingTitle({{ $announcement->announcement_id }}, '{{ $announcement->title }}')">
+                    wire:click="startEditingTitle({{ $announcement->announcement_id }}, '{{ $announcement->getTranslated('title') }}')">
                 <i class="fas fa-pen"></i>
             </button>
         </div>

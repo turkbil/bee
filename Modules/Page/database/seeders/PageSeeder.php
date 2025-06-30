@@ -87,15 +87,29 @@ class PageSeeder extends Seeder
                         </div>
                     </div>'
                 ],
-                'metakey' => [
-                    'tr' => 'anasayfa, ana sayfa, hoşgeldin',
-                    'en' => 'homepage, home page, welcome',
-                    'ar' => 'الصفحة الرئيسية، ترحيب'
-                ],
-                'metadesc' => [
-                    'tr' => 'Web sitemizin ana sayfası',
-                    'en' => 'Main page of our website',
-                    'ar' => 'الصفحة الرئيسية لموقعنا'
+                'seo' => [
+                    'tr' => [
+                        'meta_title' => 'Turkbil Bee - Anasayfa',
+                        'meta_description' => 'Web sitemizin ana sayfası',
+                        'keywords' => ['anasayfa', 'ana sayfa', 'hoşgeldin'],
+                        'og_title' => 'Turkbil Bee - Modern Web Çözümleri',
+                        'og_description' => 'Modern web teknolojileri ile güçlü çözümler üretiyoruz',
+                        'robots' => 'index,follow'
+                    ],
+                    'en' => [
+                        'meta_title' => 'Turkbil Bee - Homepage', 
+                        'meta_description' => 'Main page of our website',
+                        'keywords' => ['homepage', 'home page', 'welcome'],
+                        'og_title' => 'Turkbil Bee - Modern Web Solutions',
+                        'og_description' => 'We create powerful solutions with modern web technologies',
+                        'robots' => 'index,follow'
+                    ],
+                    'ar' => [
+                        'meta_title' => 'Turkbil Bee - الصفحة الرئيسية',
+                        'meta_description' => 'الصفحة الرئيسية لموقعنا',
+                        'keywords' => ['الصفحة الرئيسية', 'ترحيب'],
+                        'robots' => 'index,follow'
+                    ]
                 ],
                 'is_homepage' => true,
             ],
@@ -115,15 +129,25 @@ class PageSeeder extends Seeder
                     'en' => '<h1>Cookie Policy</h1><p>Information about our cookie policy.</p>',
                     'ar' => '<h1>سياسة ملفات تعريف الارتباط</h1><p>معلومات حول سياسة ملفات تعريف الارتباط الخاصة بنا.</p>'
                 ],
-                'metakey' => [
-                    'tr' => 'çerez, cookie, politika, gizlilik',
-                    'en' => 'cookie, policy, privacy',
-                    'ar' => 'ملفات تعريف الارتباط، سياسة، خصوصية'
-                ],
-                'metadesc' => [
-                    'tr' => 'Web sitemizin çerez politikası',
-                    'en' => 'Cookie policy of our website',
-                    'ar' => 'سياسة ملفات تعريف الارتباط لموقعنا'
+                'seo' => [
+                    'tr' => [
+                        'meta_title' => 'Çerez Politikası - Turkbil Bee',
+                        'meta_description' => 'Web sitemizin çerez politikası',
+                        'keywords' => ['çerez', 'cookie', 'politika', 'gizlilik'],
+                        'robots' => 'index,follow'
+                    ],
+                    'en' => [
+                        'meta_title' => 'Cookie Policy - Turkbil Bee',
+                        'meta_description' => 'Cookie policy of our website',
+                        'keywords' => ['cookie', 'policy', 'privacy'],
+                        'robots' => 'index,follow'
+                    ],
+                    'ar' => [
+                        'meta_title' => 'سياسة ملفات تعريف الارتباط - Turkbil Bee',
+                        'meta_description' => 'سياسة ملفات تعريف الارتباط لموقعنا',
+                        'keywords' => ['ملفات تعريف الارتباط', 'سياسة', 'خصوصية'],
+                        'robots' => 'index,follow'
+                    ]
                 ],
                 'is_homepage' => false,
             ],
@@ -143,15 +167,25 @@ class PageSeeder extends Seeder
                     'en' => '<h1>Personal Data Processing Policy</h1><p>Information about processing your personal data.</p>',
                     'ar' => '<h1>سياسة معالجة البيانات الشخصية</h1><p>معلومات حول معالجة بياناتك الشخصية.</p>'
                 ],
-                'metakey' => [
-                    'tr' => 'kişisel veri, KVKK, gizlilik, politika',
-                    'en' => 'personal data, GDPR, privacy, policy',
-                    'ar' => 'البيانات الشخصية، الخصوصية، سياسة'
-                ],
-                'metadesc' => [
-                    'tr' => 'Kişisel verilerinizin korunması politikamız',
-                    'en' => 'Our personal data protection policy',
-                    'ar' => 'سياسة حماية البيانات الشخصية الخاصة بنا'
+                'seo' => [
+                    'tr' => [
+                        'meta_title' => 'Kişisel Verilerin İşlenmesi Politikası - Turkbil Bee',
+                        'meta_description' => 'Kişisel verilerinizin korunması politikamız',
+                        'keywords' => ['kişisel veri', 'KVKK', 'gizlilik', 'politika'],
+                        'robots' => 'index,follow'
+                    ],
+                    'en' => [
+                        'meta_title' => 'Personal Data Processing Policy - Turkbil Bee',
+                        'meta_description' => 'Our personal data protection policy',
+                        'keywords' => ['personal data', 'GDPR', 'privacy', 'policy'],
+                        'robots' => 'index,follow'
+                    ],
+                    'ar' => [
+                        'meta_title' => 'سياسة معالجة البيانات الشخصية - Turkbil Bee',
+                        'meta_description' => 'سياسة حماية البيانات الشخصية الخاصة بنا',
+                        'keywords' => ['البيانات الشخصية', 'الخصوصية', 'سياسة'],
+                        'robots' => 'index,follow'
+                    ]
                 ],
                 'is_homepage' => false,
             ],
@@ -222,15 +256,25 @@ class PageSeeder extends Seeder
                         </ul>
                     </div>'
                 ],
-                'metakey' => [
-                    'tr' => 'hakkımızda, şirket, ekip, misyon',
-                    'en' => 'about us, company, team, mission',
-                    'ar' => 'من نحن، شركة، فريق، مهمة'
-                ],
-                'metadesc' => [
-                    'tr' => 'Şirketimiz ve ekibimiz hakkında bilgiler',
-                    'en' => 'Information about our company and team',
-                    'ar' => 'معلومات حول شركتنا وفريقنا'
+                'seo' => [
+                    'tr' => [
+                        'meta_title' => 'Hakkımızda - Turkbil Bee',
+                        'meta_description' => 'Şirketimiz ve ekibimiz hakkında bilgiler',
+                        'keywords' => ['hakkımızda', 'şirket', 'ekip', 'misyon'],
+                        'robots' => 'index,follow'
+                    ],
+                    'en' => [
+                        'meta_title' => 'About Us - Turkbil Bee',
+                        'meta_description' => 'Information about our company and team',
+                        'keywords' => ['about us', 'company', 'team', 'mission'],
+                        'robots' => 'index,follow'
+                    ],
+                    'ar' => [
+                        'meta_title' => 'من نحن - Turkbil Bee',
+                        'meta_description' => 'معلومات حول شركتنا وفريقنا',
+                        'keywords' => ['من نحن', 'شركة', 'فريق', 'مهمة'],
+                        'robots' => 'index,follow'
+                    ]
                 ],
                 'is_homepage' => false,
             ],
@@ -343,15 +387,25 @@ class PageSeeder extends Seeder
                         </div>
                     </div>'
                 ],
-                'metakey' => [
-                    'tr' => 'iletişim, telefon, email, adres',
-                    'en' => 'contact, phone, email, address',
-                    'ar' => 'اتصال، هاتف، بريد إلكتروني، عنوان'
-                ],
-                'metadesc' => [
-                    'tr' => 'Bizimle iletişime geçmek için bilgiler',
-                    'en' => 'Information to contact us',
-                    'ar' => 'معلومات للاتصال بنا'
+                'seo' => [
+                    'tr' => [
+                        'meta_title' => 'İletişim - Turkbil Bee',
+                        'meta_description' => 'Bizimle iletişime geçmek için bilgiler',
+                        'keywords' => ['iletişim', 'telefon', 'email', 'adres'],
+                        'robots' => 'index,follow'
+                    ],
+                    'en' => [
+                        'meta_title' => 'Contact - Turkbil Bee',
+                        'meta_description' => 'Information to contact us',
+                        'keywords' => ['contact', 'phone', 'email', 'address'],
+                        'robots' => 'index,follow'
+                    ],
+                    'ar' => [
+                        'meta_title' => 'اتصل بنا - Turkbil Bee',
+                        'meta_description' => 'معلومات للاتصال بنا',
+                        'keywords' => ['اتصال', 'هاتف', 'بريد إلكتروني', 'عنوان'],
+                        'robots' => 'index,follow'
+                    ]
                 ],
                 'is_homepage' => false,
             ],
@@ -364,8 +418,7 @@ class PageSeeder extends Seeder
                 'body' => $page['body'],
                 'css' => null,
                 'js' => null,
-                'metakey' => $page['metakey'],
-                'metadesc' => $page['metadesc'],
+                'seo' => $page['seo'],
                 'is_active' => true,
                 'is_homepage' => $page['is_homepage'],
             ]);

@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Cache;
 use App\Helpers\TenantHelpers;
 use App\Services\ModuleTenantPermissionService;
 use App\Services\SettingsService;
+use App\Services\TenantCacheManager;
 use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
@@ -53,6 +54,11 @@ class AppServiceProvider extends ServiceProvider
         
         // Dynamic route services
         $this->app->singleton(\App\Services\DynamicRouteRegistrar::class);
+        
+        // Tenant Cache Manager
+        $this->app->singleton(TenantCacheManager::class, function ($app) {
+            return new TenantCacheManager();
+        });
         
         $this->loadHelperFiles();
     }

@@ -23,7 +23,6 @@ class SiteSetLocaleMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Minimal logging for performance
 
         // URL prefix desteği - sadece site context için
         if (class_exists('Modules\LanguageManagement\app\Services\UrlPrefixService')) {
@@ -39,6 +38,20 @@ class SiteSetLocaleMiddleware
                 }
                 
                 if ($locale) {
+                    // 🎯 CENTRAL TENANT KONTROLÜ - UrlPrefixService locale'i override edebilir
+                    if (!app(\Stancl\Tenancy\Tenancy::class)->initialized) {
+                        // Central tenant'ın varsayılan dilini kontrol et
+                        $centralTenant = \App\Helpers\TenantHelpers::central(function() {
+                            return \App\Models\Tenant::where('central', true)->first();
+                        });
+                        
+                        if ($centralTenant && $centralTenant->tenant_default_locale && 
+                            $centralTenant->tenant_default_locale !== $locale) {
+                            $locale = $centralTenant->tenant_default_locale;
+                            
+                        }
+                    }
+                    
                     // Laravel locale'i ayarla
                     app()->setLocale($locale);
                     
@@ -49,7 +62,6 @@ class SiteSetLocaleMiddleware
                     if ($urlData['has_prefix']) {
                         $request->merge(['clean_path' => $urlData['clean_path']]);
                     }
-                    
                     
                     return $next($request);
                 }
@@ -77,6 +89,7 @@ class SiteSetLocaleMiddleware
         // URL'den dil parametresi var mı kontrol et (query parameter)
         $languageFromUrl = $request->route('language') ?? $request->get('lang');
         
+        
         if ($languageFromUrl) {
             // URL'den gelen dil geçerli mi kontrol et
             if ($this->languageService->isValidLanguageForContext($languageFromUrl, 'site')) {
@@ -89,6 +102,27 @@ class SiteSetLocaleMiddleware
                 
             }
         } else {
+            // 🎯 CENTRAL TENANT İÇİN ÖZEL KONTROL - Site context
+            // Central tenant kontrolü - Tenancy başlatılmamışsa central'dayız  
+            if (!app(\Stancl\Tenancy\Tenancy::class)->initialized) {
+                // Central tenant bilgisini al
+                $centralTenant = \App\Helpers\TenantHelpers::central(function() {
+                    return \App\Models\Tenant::where('central', true)->first();
+                });
+                
+                if ($centralTenant && $centralTenant->tenant_default_locale) {
+                    // Session'daki dil central tenant'ın varsayılanından farklıysa güncelle
+                    $sessionLocale = session('site_locale');
+                    if ($sessionLocale !== $centralTenant->tenant_default_locale) {
+                        session(['site_locale' => $centralTenant->tenant_default_locale]);
+                        app()->setLocale($centralTenant->tenant_default_locale);
+                        
+                        
+                        return $next($request);
+                    }
+                }
+            }
+            
             // URL'de dil yok, site session/user tercihi/varsayılan sırasıyla kontrol et
             $currentLanguage = $this->languageService->getCurrentLocale('site');
             

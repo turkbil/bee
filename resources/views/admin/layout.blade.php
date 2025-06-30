@@ -336,6 +336,134 @@ document.addEventListener('DOMContentLoaded', function() {
 
 @if (request()->routeIs('admin.*.manage*'))
     <x-head.tinymce-config />
+    
+    {{-- Global Multi-Language Form Management for All Modules --}}
+    <script>
+    $(document).ready(function() {
+        // Initialize tab manager with dynamic key based on current route
+        const routeName = '{{ request()->route()->getName() }}';
+        const tabKey = routeName.replace('.', '') + 'ActiveTab';
+        TabManager.init(tabKey);
+        
+        // Check if page has multi-language support
+        if ($('.language-content').length > 0 || $('.language-switch-btn').length > 0) {
+            // Initialize multi-language form switcher
+            MultiLangFormSwitcher.init();
+            
+            // Initialize TinyMCE for multi-language editors
+            if (typeof tinymce !== 'undefined') {
+                TinyMCEMultiLang.initAll();
+            }
+        } else {
+            // Single language - initialize standard TinyMCE
+            if (typeof tinymce !== 'undefined' && $('#editor').length > 0) {
+                tinymce.init({
+                    selector: '#editor',
+                    height: 400,
+                    menubar: true,
+                    plugins: [
+                        'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                        'insertdatetime', 'media', 'table', 'help', 'wordcount'
+                    ],
+                    toolbar: 'undo redo | blocks | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+                    content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif; font-size: 14px }',
+                    setup: function(editor) {
+                        editor.on('change', function() {
+                            editor.save();
+                        });
+                    }
+                });
+            }
+        }
+        
+        // Language switcher for underline style buttons (.language-switch-btn) - only if exists
+        if ($('.language-switch-btn').length > 0) {
+            $('.language-switch-btn').on('click', function(e) {
+            e.preventDefault();
+            const selectedLang = $(this).data('language');
+            
+            // Remove active from all siblings
+            $('.language-switch-btn').each(function() {
+                $(this).removeClass('text-primary').addClass('text-muted');
+                $(this).css('border-bottom', '2px solid transparent');
+            });
+            
+            // Add active to clicked button
+            $(this).removeClass('text-muted').addClass('text-primary');
+            
+            // Get primary color from theme builder variable
+            const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') ||
+                                 getComputedStyle(document.documentElement).getPropertyValue('--tblr-primary') ||
+                                 '#066fd1';
+            
+            $(this).css('border-bottom', `2px solid ${primaryColor}`);
+            
+            // Switch language content
+            MultiLangFormSwitcher.switchLanguage(selectedLang);
+        });
+        }
+    });
+
+    // Re-initialize on Livewire updates
+    document.addEventListener('livewire:updated', function() {
+        // Check if page has multi-language support
+        if ($('.language-content').length > 0 || $('.language-switch-btn').length > 0) {
+            if (typeof tinymce !== 'undefined') {
+                TinyMCEMultiLang.initAll();
+            }
+        } else {
+            // Single language TinyMCE re-init
+            if (typeof tinymce !== 'undefined' && $('#editor').length > 0) {
+                tinymce.remove('#editor');
+                tinymce.init({
+                    selector: '#editor',
+                    height: 400,
+                    menubar: true,
+                    plugins: [
+                        'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                        'insertdatetime', 'media', 'table', 'help', 'wordcount'
+                    ],
+                    toolbar: 'undo redo | blocks | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+                    content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif; font-size: 14px }',
+                    setup: function(editor) {
+                        editor.on('change', function() {
+                            editor.save();
+                        });
+                    }
+                });
+            }
+        }
+        
+        // Re-bind language switcher events - only if exists
+        if ($('.language-switch-btn').length > 0) {
+            $('.language-switch-btn').off('click').on('click', function(e) {
+            e.preventDefault();
+            const selectedLang = $(this).data('language');
+            
+            // Remove active from all siblings
+            $('.language-switch-btn').each(function() {
+                $(this).removeClass('text-primary').addClass('text-muted');
+                $(this).css('border-bottom', '2px solid transparent');
+            });
+            
+            // Add active to clicked button
+            $(this).removeClass('text-muted').addClass('text-primary');
+            
+            // Get primary color from theme builder variable
+            const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') ||
+                                 getComputedStyle(document.documentElement).getPropertyValue('--tblr-primary') ||
+                                 '#066fd1';
+            
+            $(this).css('border-bottom', `2px solid ${primaryColor}`);
+            
+            // Switch language content
+            MultiLangFormSwitcher.switchLanguage(selectedLang);
+        });
+        }
+    });
+    </script>
 @endif
 </body>
 </html>

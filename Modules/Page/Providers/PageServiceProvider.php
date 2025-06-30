@@ -51,6 +51,15 @@ class PageServiceProvider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
+        
+        // Repository Pattern bindings
+        $this->app->bind(
+            \Modules\Page\App\Contracts\PageRepositoryInterface::class,
+            \Modules\Page\App\Repositories\PageRepository::class
+        );
+        
+        // Service Layer bindings
+        $this->app->singleton(\Modules\Page\App\Services\PageService::class);
     }
 
     /**

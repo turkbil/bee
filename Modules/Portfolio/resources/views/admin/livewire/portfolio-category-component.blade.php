@@ -57,7 +57,7 @@
 
                         <!-- Sağ Kolon - İçerik -->
                         <div class="flex-grow-1">
-                            <div class="h2 mb-0">{{ $category->title }}</div>
+                            <div class="h2 mb-0">{{ $category->getTranslated('title') }}</div>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="text-muted small">
                                     {{ $category->portfolios_count }} {{ __('portfolio::admin.content_count') }}
@@ -103,7 +103,7 @@
                                             <a href="javascript:void(0);" wire:click="$dispatch('showCategoryDeleteModal', {
                                                     module: 'portfolio', 
                                                     id: {{ $category->portfolio_category_id }}, 
-                                                    title: '{{ $category->title }}'
+                                                    title: '{{ $category->getTranslated('title') }}'
                                                 })" class="dropdown-item link-danger">
                                                 <i class="fas fa-trash me-2"></i> {{ __('portfolio::admin.delete') }}
                                             </a>

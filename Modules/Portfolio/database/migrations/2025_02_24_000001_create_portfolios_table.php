@@ -11,13 +11,15 @@ return new class extends Migration
         Schema::create('portfolios', function (Blueprint $table) {
             $table->id('portfolio_id');
             $table->unsignedBigInteger('portfolio_category_id')->index();
-            $table->text('title');
-            $table->text('slug');
-            $table->text('body')->nullable();
+            $table->json('title'); // Çok dilli destek
+            $table->json('slug'); // Çok dilli destek
+            $table->json('body')->nullable(); // Çok dilli destek
+            $table->string('image')->nullable(); // Resim alanı
             $table->text('css')->nullable();
             $table->text('js')->nullable();
-            $table->text('metakey')->nullable();
-            $table->text('metadesc')->nullable();
+            $table->json('metakey')->nullable(); // Çok dilli destek
+            $table->json('metadesc')->nullable(); // Çok dilli destek
+            $table->json('seo')->nullable(); // SEO JSON column
             $table->string('client')->nullable();
             $table->string('date')->nullable();
             $table->string('url')->nullable();

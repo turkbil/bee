@@ -10,12 +10,13 @@ return new class extends Migration
     {
         Schema::create('portfolio_categories', function (Blueprint $table) {
             $table->id('portfolio_category_id');
-            $table->text('title');
-            $table->text('slug');
-            $table->text('body')->nullable();
+            $table->json('title'); // Çok dilli destek
+            $table->json('slug'); // Çok dilli destek
+            $table->json('body')->nullable(); // Çok dilli destek
             $table->integer('order')->default(0)->index();
-            $table->text('metakey')->nullable();
-            $table->text('metadesc')->nullable();
+            $table->json('metakey')->nullable(); // Çok dilli destek
+            $table->json('metadesc')->nullable(); // Çok dilli destek
+            $table->json('seo')->nullable(); // SEO JSON column
             $table->boolean('is_active')->default(true)->index();
             $table->timestamps();
             $table->softDeletes();

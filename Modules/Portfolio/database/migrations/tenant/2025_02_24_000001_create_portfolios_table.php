@@ -11,13 +11,15 @@ return new class extends Migration
         Schema::create('portfolios', function (Blueprint $table) {
             $table->id('portfolio_id');                       // Özel primary key
             $table->unsignedBigInteger('portfolio_category_id'); // Kategori ID
-            $table->text('title');                            // Sayfa başlığı (JSON)
-            $table->text('slug');                             // URL slug (JSON)
-            $table->text('body')->nullable();                 // Sayfa içeriği (JSON)
+            $table->json('title');                            // Sayfa başlığı (JSON) - Çok dilli
+            $table->json('slug');                             // URL slug (JSON) - Çok dilli
+            $table->json('body')->nullable();                 // Sayfa içeriği (JSON) - Çok dilli
+            $table->string('image')->nullable();              // Resim alanı
             $table->text('css')->nullable();                  // CSS alanı (text olarak)
             $table->text('js')->nullable();                   // JS alanı (text olarak)
-            $table->text('metakey')->nullable();              // Meta anahtar kelimeler (JSON)
-            $table->text('metadesc')->nullable();             // Meta açıklama (JSON)
+            $table->json('metakey')->nullable();              // Meta anahtar kelimeler (JSON) - Çok dilli
+            $table->json('metadesc')->nullable();             // Meta açıklama (JSON) - Çok dilli
+            $table->json('seo')->nullable();                  // SEO JSON column
             $table->string('client')->nullable();             // Müşteri adı
             $table->string('date')->nullable();               // Proje tarihi
             $table->string('url')->nullable();                // Proje URL'si

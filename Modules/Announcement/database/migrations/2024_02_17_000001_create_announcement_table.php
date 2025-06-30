@@ -10,11 +10,12 @@ return new class extends Migration
     {
         Schema::create('announcements', function (Blueprint $table) {
             $table->id('announcement_id');
-            $table->text('title');
-            $table->text('slug');
-            $table->longText('body')->nullable();
-            $table->text('metakey')->nullable();
-            $table->text('metadesc')->nullable();
+            $table->json('title'); // Çok dilli destek
+            $table->json('slug'); // Çok dilli destek
+            $table->json('body')->nullable(); // Çok dilli destek
+            $table->json('metakey')->nullable(); // Çok dilli destek
+            $table->json('metadesc')->nullable(); // Çok dilli destek
+            $table->json('seo')->nullable(); // SEO JSON column
             $table->boolean('is_active')->default(true)->index();
             $table->timestamps();
             $table->softDeletes();

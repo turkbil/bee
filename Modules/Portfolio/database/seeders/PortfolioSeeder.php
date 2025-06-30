@@ -271,6 +271,7 @@ class PortfolioSeeder extends Seeder
                 'title' => $portfolio['title'],
                 'slug' => $portfolio['slug'],
                 'body' => $portfolio['body'],
+                'image' => $portfolio['image'] ?? null,
                 'client' => $portfolio['client'] ?? null,
                 'date' => $portfolio['date'] ?? null,
                 'url' => $portfolio['url'] ?? null,
@@ -278,6 +279,7 @@ class PortfolioSeeder extends Seeder
                 'js' => null,
                 'metakey' => $portfolio['metakey'],
                 'metadesc' => $portfolio['metadesc'],
+                'seo' => $portfolio['seo'] ?? null,
                 'is_active' => true,
             ]);
         }

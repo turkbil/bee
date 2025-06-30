@@ -565,3 +565,148 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+// Tab State Management for Admin Forms
+const TabManager = {
+    storageKey: 'adminFormActiveTab',
+    
+    init(customKey = null) {
+        if (customKey) {
+            this.storageKey = customKey;
+        }
+        this.restoreActiveTab();
+        this.bindTabEvents();
+        this.bindLivewireEvents();
+    },
+    
+    getActiveTab() {
+        return localStorage.getItem(this.storageKey) || 'tabs-1';
+    },
+    
+    setActiveTab(tabId) {
+        localStorage.setItem(this.storageKey, tabId);
+    },
+    
+    restoreActiveTab() {
+        const activeTab = this.getActiveTab();
+        if (activeTab) {
+            // Bootstrap tab navigation'ı güncelle
+            $('.nav-link[data-bs-toggle="tab"]').removeClass('active');
+            $(`.nav-link[href="#${activeTab}"]`).addClass('active');
+            
+            // Tab content'leri güncelle
+            $('.tab-pane').removeClass('active show');
+            $(`#${activeTab}`).addClass('active show');
+        }
+    },
+    
+    bindTabEvents() {
+        const self = this;
+        $('.nav-link[data-bs-toggle="tab"]').on('shown.bs.tab', function(e) {
+            const activeTab = $(e.target).attr('href').substring(1);
+            self.setActiveTab(activeTab);
+        });
+    },
+    
+    bindLivewireEvents() {
+        const self = this;
+        window.addEventListener('livewire:updated', function () {
+            setTimeout(() => self.restoreActiveTab(), 50);
+        });
+    }
+};
+
+// Language Switcher for Multi-Language Forms
+const MultiLangFormSwitcher = {
+    init() {
+        this.bindLanguageSwitch();
+    },
+    
+    bindLanguageSwitch() {
+        $(document).on('click', '.language-switch-item', function(e) {
+            e.preventDefault();
+            
+            const $item = $(this);
+            const selectedLanguage = $item.data('language');
+            const selectedFlag = $item.data('flag');
+            const selectedName = $item.data('name');
+            
+            // UI güncelle
+            $('#currentLanguageFlag').text(selectedFlag);
+            $('#currentLanguageName').text(selectedName);
+            
+            // Dropdown active state
+            $('.language-switch-item').removeClass('active');
+            $('.language-switch-item .fa-check').remove();
+            $item.addClass('active');
+            $item.append('<i class="fas fa-check ms-auto text-success"></i>');
+            
+            // Tüm dil içeriklerini gizle ve seçili olanı göster
+            $('.language-content').hide();
+            $(`.language-content[data-language="${selectedLanguage}"]`).show();
+            
+            // Session'a kaydet
+            const currentPath = window.location.pathname;
+            const module = currentPath.split('/')[2]; // /admin/{module}/...
+            
+            $.post(`/admin/${module}/set-editing-language`, {
+                language: selectedLanguage,
+                _token: $('meta[name="csrf-token"]').attr('content')
+            });
+        });
+    },
+    
+    switchLanguage(selectedLanguage) {
+        // Tüm dil içeriklerini gizle ve seçili olanı göster
+        $('.language-content').hide();
+        $(`.language-content[data-language="${selectedLanguage}"]`).show();
+        
+        // Session'a kaydet
+        const currentPath = window.location.pathname;
+        const module = currentPath.split('/')[2]; // /admin/{module}/...
+        
+        $.post(`/admin/${module}/set-editing-language`, {
+            language: selectedLanguage,
+            _token: $('meta[name="csrf-token"]').attr('content')
+        });
+    }
+};
+
+// TinyMCE Config for Multi-Language Forms
+const TinyMCEMultiLang = {
+    configs: {},
+    
+    getConfig(selector, options = {}) {
+        const defaultConfig = {
+            selector: selector,
+            height: 400,
+            menubar: true,
+            plugins: [
+                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                'insertdatetime', 'media', 'table', 'help', 'wordcount'
+            ],
+            toolbar: 'undo redo | blocks | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+            content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif; font-size: 14px }',
+            setup: function(editor) {
+                editor.on('change', function() {
+                    editor.save();
+                });
+            }
+        };
+        
+        return {...defaultConfig, ...options};
+    },
+    
+    initAll(languages = ['tr', 'en', 'ar']) {
+        languages.forEach(lang => {
+            if (document.getElementById(`editor_${lang}`)) {
+                tinymce.init(this.getConfig(`#editor_${lang}`));
+            }
+        });
+    },
+    
+    destroy() {
+        tinymce.remove();
+    }
+};

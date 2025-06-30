@@ -4,6 +4,7 @@ namespace Modules\Page\App\Http\Livewire\Admin;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Modules\Page\App\Models\Page;
+use Modules\LanguageManagement\App\Models\TenantLanguage;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
 
@@ -14,32 +15,10 @@ class PageManageComponent extends Component
 
    public $pageId;
    public $currentLanguage = 'tr'; // Aktif dil sekmesi
-   public $availableLanguages = ['tr', 'en', 'ar']; // Mevcut diller
+   public $availableLanguages = []; // Site dillerinden dinamik olarak yüklenecek
    
-   // Çoklu dil inputs - her dil için ayrı
-   public $multiLangInputs = [
-       'tr' => [
-           'title' => '',
-           'body' => '',
-           'slug' => '',
-           'metakey' => '',
-           'metadesc' => '',
-       ],
-       'en' => [
-           'title' => '',
-           'body' => '',
-           'slug' => '',
-           'metakey' => '',
-           'metadesc' => '',
-       ],
-       'ar' => [
-           'title' => '',
-           'body' => '',
-           'slug' => '',
-           'metakey' => '',
-           'metadesc' => '',
-       ],
-   ];
+   // Çoklu dil inputs - dinamik olarak oluşturulacak
+   public $multiLangInputs = [];
    
    // Dil-neutral inputs
    public $inputs = [
@@ -53,6 +32,9 @@ class PageManageComponent extends Component
 
    public function mount($id = null)
    {
+       // Site dillerini dinamik olarak yükle
+       $this->loadAvailableLanguages();
+       
        if ($id) {
            $this->pageId = $id;
            $page = Page::findOrFail($id);
@@ -70,10 +52,48 @@ class PageManageComponent extends Component
                    'metadesc' => $page->getTranslated('metadesc', $lang) ?? '',
                ];
            }
+       } else {
+           // Yeni sayfa için boş inputs hazırla
+           $this->initializeEmptyInputs();
        }
        
        // Studio modülü aktif mi kontrol et
        $this->studioEnabled = class_exists('Modules\Studio\App\Http\Livewire\EditorComponent');
+   }
+
+   /**
+    * Site dillerini dinamik olarak yükle
+    */
+   protected function loadAvailableLanguages()
+   {
+       $this->availableLanguages = TenantLanguage::where('is_active', true)
+           ->orderBy('sort_order')
+           ->pluck('code')
+           ->toArray();
+           
+       // Eğer hiç dil yoksa default tr ekle
+       if (empty($this->availableLanguages)) {
+           $this->availableLanguages = ['tr'];
+       }
+       
+       // İlk dili current language yap
+       $this->currentLanguage = $this->availableLanguages[0] ?? 'tr';
+   }
+
+   /**
+    * Boş inputs hazırla
+    */
+   protected function initializeEmptyInputs()
+   {
+       foreach ($this->availableLanguages as $lang) {
+           $this->multiLangInputs[$lang] = [
+               'title' => '',
+               'body' => '',
+               'slug' => '',
+               'metakey' => '',
+               'metadesc' => '',
+           ];
+       }
    }
 
    protected function rules()

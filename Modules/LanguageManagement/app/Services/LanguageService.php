@@ -36,14 +36,23 @@ class LanguageService
     }
 
     /**
-     * Locale ayarla
+     * Locale ayarla - SADECE belirtilen context'i değiştirir
      */
     public function setLocale(string $languageCode, string $context = 'admin'): void
     {
-        // Laravel locale'ini ayarla
-        App::setLocale($languageCode);
+        \Log::info('🔧 LanguageService setLocale çağrıldı', [
+            'language_code' => $languageCode,
+            'context' => $context,
+            'before_admin_locale' => session('admin_locale'),
+            'before_site_locale' => session('site_locale')
+        ]);
         
-        // Session'a kaydet
+        // Laravel locale'ini ayarla (sadece admin context'te)
+        if ($context === 'admin') {
+            App::setLocale($languageCode);
+        }
+        
+        // Session'a kaydet - SADECE belirtilen context
         Session::put($context . '_locale', $languageCode);
         
         // Context'e göre service'i güncelle
@@ -52,6 +61,13 @@ class LanguageService
         } else {
             $this->tenantLanguageService->setCurrentLanguage($languageCode);
         }
+        
+        \Log::info('✅ LanguageService setLocale tamamlandı', [
+            'context' => $context,
+            'new_language' => $languageCode,
+            'after_admin_locale' => session('admin_locale'),
+            'after_site_locale' => session('site_locale')
+        ]);
     }
 
     /**

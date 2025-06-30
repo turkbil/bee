@@ -18,27 +18,54 @@
         </div>
     </a>
     
-    <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" style="min-width: 180px;">
-        <h6 class="dropdown-header">Admin Dili Seçin</h6>
-        <div class="dropdown-divider"></div>
+    <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" style="min-width: 220px;">
+        <!-- Admin Dili Bölümü -->
+        <h6 class="dropdown-header">{{ __('languagemanagement::admin.admin_language') }}</h6>
         
-        @forelse($systemLanguages as $language)
+        @forelse($adminLanguages as $language)
             <button type="button" 
-                    class="dropdown-item language-switch-link {{ $language->code === $currentLocale ? 'active' : '' }}"
+                    class="dropdown-item language-switch-link {{ $language->code === $currentAdminLocale ? 'active' : '' }}"
                     wire:click="switchLanguage('{{ $language->code }}')"
                     onclick="return handleLanguageSwitch(event, this)">
                 <span class="me-2" style="font-size: 16px;">
                     {{ $language->flag_icon ?? '🌐' }}
                 </span>
                 {{ $language->native_name }}
-                @if($language->code === $currentLocale)
+                <small class="text-muted ms-1">(Admin)</small>
+                @if($language->code === $currentAdminLocale)
                     <i class="fa-solid fa-check ms-auto text-success"></i>
                 @endif
             </button>
         @empty
             <div class="dropdown-item text-muted">
                 <i class="fa-solid fa-info-circle me-2"></i>
-                Dil bulunamadı
+                Admin dili bulunamadı
+            </div>
+        @endforelse
+        
+        <div class="dropdown-divider"></div>
+        
+        <!-- Veri Dili Bölümü -->
+        <h6 class="dropdown-header">{{ __('languagemanagement::admin.data_language') }}</h6>
+        
+        @forelse($siteLanguages as $language)
+            <button type="button" 
+                    class="dropdown-item language-switch-link {{ $language->code === $currentSiteLocale ? 'active' : '' }}"
+                    wire:click="switchSiteLanguage('{{ $language->code }}')"
+                    onclick="return handleLanguageSwitch(event, this)">
+                <span class="me-2" style="font-size: 16px;">
+                    {{ $language->flag_icon ?? '🌐' }}
+                </span>
+                {{ $language->native_name }}
+                <small class="text-muted ms-1">(Veri)</small>
+                @if($language->code === $currentSiteLocale)
+                    <i class="fa-solid fa-check ms-auto text-success"></i>
+                @endif
+            </button>
+        @empty
+            <div class="dropdown-item text-muted">
+                <i class="fa-solid fa-info-circle me-2"></i>
+                Veri dili bulunamadı
             </div>
         @endforelse
         
@@ -103,5 +130,17 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => loadingBar.remove(), 200);
         }, 100);
     }
+});
+
+// Livewire event listener - sayfa yenileme
+document.addEventListener('livewire:init', () => {
+    Livewire.on('reloadPage', (event) => {
+        console.log('🔄 Veri dili değişti, sayfa yenileniyor...');
+        
+        // Kısa bir delay ile sayfayı yenile (session save için)
+        setTimeout(() => {
+            window.location.reload();
+        }, 100);
+    });
 });
 </script>

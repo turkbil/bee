@@ -1,34 +1,74 @@
-{{-- Modules/Page/resources/views/admin/helper.blade.php --}}
-{{-- PreTitle --}}
-@push('pretitle')
-{{ __('page::admin.pages') }}
-@endpush
+{{-- Page Module Admin Helper - Scripts Only --}}
+@push('scripts')
+<script>
+$(document).ready(function() {
+    // Initialize tab manager with custom key for Page module
+    TabManager.init('pageEditActiveTab');
+    
+    // Initialize multi-language form switcher
+    MultiLangFormSwitcher.init();
+    
+    // Initialize TinyMCE for multi-language editors
+    if (typeof tinymce !== 'undefined') {
+        TinyMCEMultiLang.initAll();
+    }
+    
+    // Language switcher for underline style
+    $('.language-switch-btn').on('click', function(e) {
+        e.preventDefault();
+        const selectedLang = $(this).data('language');
+        
+        // Remove active from all siblings
+        $('.language-switch-btn').each(function() {
+            $(this).removeClass('text-primary').addClass('text-muted');
+            $(this).css('border-bottom', '2px solid transparent');
+        });
+        
+        // Add active to clicked button
+        $(this).removeClass('text-muted').addClass('text-primary');
+        
+        // Get primary color from theme builder variable
+        const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') ||
+                             getComputedStyle(document.documentElement).getPropertyValue('--tblr-primary') ||
+                             '#066fd1';
+        
+        $(this).css('border-bottom', `2px solid ${primaryColor}`);
+        
+        // Switch language content
+        MultiLangFormSwitcher.switchLanguage(selectedLang);
+    });
+});
 
-{{-- Başlık --}}
-@push('title')
-{{ __('page::admin.page_management') }}
-@endpush
-
-{{-- Modül Menüsü --}}
-@push('module-menu')
-
-<div class="dropdown d-grid d-md-flex module-menu">
-    <a href="#" class="btn dropdown-toggle d-inline-block d-lg-none" data-bs-toggle="dropdown">{{ __('page::admin.menu') }}</a>
-    <div class="dropdown-menu dropdown-module-menu">
-        <div class="module-menu-revert">
-            @hasmoduleaccess('page', 'view')
-            <a href="{{ route('admin.page.index') }}" class="dropdown-module-item btn btn-ghost-secondary">
-                {{ __('page::admin.pages') }}
-            </a>
-            @endhasmoduleaccess
-
-            @hasmoduleaccess('page', 'create')
-            <a href="{{ route('admin.page.manage') }}" class="dropdown-module-item btn btn-primary">
-                {{ __('page::admin.new_page') }}
-            </a>
-            @endhasmoduleaccess
-        </div>
-    </div>
-</div>
-
+// Re-initialize on Livewire updates
+document.addEventListener('livewire:updated', function() {
+    if (typeof tinymce !== 'undefined') {
+        TinyMCEMultiLang.initAll();
+    }
+    
+    // Re-bind language switcher events
+    $('.language-switch-btn').off('click').on('click', function(e) {
+        e.preventDefault();
+        const selectedLang = $(this).data('language');
+        
+        // Remove active from all siblings
+        $('.language-switch-btn').each(function() {
+            $(this).removeClass('text-primary').addClass('text-muted');
+            $(this).css('border-bottom', '2px solid transparent');
+        });
+        
+        // Add active to clicked button
+        $(this).removeClass('text-muted').addClass('text-primary');
+        
+        // Get primary color from theme builder variable
+        const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') ||
+                             getComputedStyle(document.documentElement).getPropertyValue('--tblr-primary') ||
+                             '#066fd1';
+        
+        $(this).css('border-bottom', `2px solid ${primaryColor}`);
+        
+        // Switch language content
+        MultiLangFormSwitcher.switchLanguage(selectedLang);
+    });
+});
+</script>
 @endpush

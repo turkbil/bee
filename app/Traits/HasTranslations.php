@@ -46,25 +46,87 @@ trait HasTranslations
     }
     
     /**
-     * Fallback çeviri sistemi
+     * Fallback çeviri sistemi - Tenant varsayılan dili öncelikli
      */
     private function getFallbackTranslation(array $translations, string $requestedLocale): ?string
     {
-        // 1. Varsayılan dil (tr) varsa döndür
-        if (isset($translations['tr']) && !empty($translations['tr'])) {
-            $value = $translations['tr'];
+        // 1. Tenant varsayılan dilini bul ve kullan
+        $defaultLocale = $this->getTenantDefaultLanguage();
+        if (isset($translations[$defaultLocale]) && !empty($translations[$defaultLocale])) {
+            $value = $translations[$defaultLocale];
+            
+            \Log::info('📝 Fallback translation kullanıldı', [
+                'requested_locale' => $requestedLocale,
+                'tenant_default_locale' => $defaultLocale,
+                'fallback_method' => 'tenant_default',
+                'has_content' => !empty($value)
+            ]);
+            
             return is_string($value) ? $value : (string) $value;
         }
         
-        // 2. İlk dolu dili bul
+        // 2. Sistem varsayılanı (tr) varsa döndür
+        if ($defaultLocale !== 'tr' && isset($translations['tr']) && !empty($translations['tr'])) {
+            $value = $translations['tr'];
+            
+            \Log::info('📝 Fallback translation kullanıldı', [
+                'requested_locale' => $requestedLocale,
+                'tenant_default_locale' => $defaultLocale,
+                'fallback_method' => 'system_default_tr',
+                'has_content' => !empty($value)
+            ]);
+            
+            return is_string($value) ? $value : (string) $value;
+        }
+        
+        // 3. İlk dolu dili bul
         foreach ($translations as $locale => $content) {
             if (!empty($content)) {
+                \Log::info('📝 Fallback translation kullanıldı', [
+                    'requested_locale' => $requestedLocale,
+                    'tenant_default_locale' => $defaultLocale,
+                    'fallback_method' => 'first_available',
+                    'found_locale' => $locale,
+                    'has_content' => !empty($content)
+                ]);
+                
                 return is_string($content) ? $content : (string) $content;
             }
         }
         
-        // 3. Hiçbiri yoksa null
+        // 4. Hiçbiri yoksa null
+        \Log::warning('⚠️ Fallback translation bulunamadı', [
+            'requested_locale' => $requestedLocale,
+            'tenant_default_locale' => $defaultLocale,
+            'available_translations' => array_keys($translations)
+        ]);
+        
         return null;
+    }
+    
+    /**
+     * Tenant varsayılan dilini al - Her tenant'ın kendi varsayılanı
+     */
+    private function getTenantDefaultLanguage(): string
+    {
+        try {
+            // Tenant'tan varsayılan dili al
+            if (function_exists('tenant') && tenant()) {
+                $currentTenant = tenant();
+                
+                // Tenant'ın tenant_default_locale alanı varsa onu kullan
+                if (isset($currentTenant->tenant_default_locale) && !empty($currentTenant->tenant_default_locale)) {
+                    return $currentTenant->tenant_default_locale;
+                }
+            }
+            
+            // Tenant yoksa veya tenant_default_locale yoksa sistem varsayılanı
+            return config('app.locale', 'tr');
+            
+        } catch (\Exception $e) {
+            // Hata durumunda sistem varsayılanı
+            return config('app.locale', 'tr');
+        }
     }
     
     /**

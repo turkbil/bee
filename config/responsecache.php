@@ -113,8 +113,20 @@ return [
         'language/*',
         'debug-lang/*',
         'debug/*',
+        'test/*',
         'livewire/*',
         'api/*',
-        'auth/*'
+        'auth/*',
+        'login',
+        'logout',
+        'register',
+        'password/*',
+        'forgot-password',
+        'reset-password',
+        'profile',
+        'profile/*',
+        'avatar/*',
+        'user/*',
+        'account/*'
     ],
 ];

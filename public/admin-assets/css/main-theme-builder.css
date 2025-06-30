@@ -979,22 +979,7 @@ a.link-primary:focus {
     color: var(--tblr-body-color) !important;
 }
 
-/* 11. Nav tabs düzeltmeleri */
-.nav-tabs {
-    border-color: var(--tblr-border-color) !important;
-}
-
-.nav-tabs .nav-link {
-    background-color: var(--tblr-bg-surface-secondary) !important;
-    border-color: var(--tblr-border-color) !important;
-    color: var(--tblr-body-color) !important;
-}
-
-.nav-tabs .nav-link.active {
-    background-color: var(--tblr-bg-surface) !important;
-    border-color: var(--tblr-border-color) var(--tblr-border-color) var(--tblr-bg-surface) !important;
-    color: var(--tblr-body-color) !important;
-}
+/* 11. Nav tabs düzeltmeleri - main.css'de tanımlı */
 
 /* 12. Offcanvas düzeltmeleri */
 .offcanvas {

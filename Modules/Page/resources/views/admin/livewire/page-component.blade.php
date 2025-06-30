@@ -116,9 +116,9 @@
                             </div>
                             @else
                             <div class="d-flex align-items-center">
-                                <span class="editable-title pr-4">{{ $page->getTranslated('title', app()->getLocale()) ?? $page->getTranslated('title', 'tr') }}</span>
+                                <span class="editable-title pr-4">{{ $page->getTranslated('title', $currentSiteLocale) ?? $page->getTranslated('title', 'tr') }}</span>
                                 <button class="btn btn-sm px-2 py-1 edit-icon ms-4"
-                                    wire:click="startEditingTitle({{ $page->page_id }}, '{{ addslashes($page->getTranslated('title', app()->getLocale()) ?? $page->getTranslated('title', 'tr')) }}')">
+                                    wire:click="startEditingTitle({{ $page->page_id }}, '{{ addslashes($page->getTranslated('title', $currentSiteLocale) ?? $page->getTranslated('title', 'tr')) }}')">
                                     <i class="fas fa-pen"></i>
                                 </button>
                             </div>

@@ -274,13 +274,32 @@ if (!function_exists('log_activity')) {
         string $event,
         ?array $degisenler = null
     ): void {
-        $baslik = $model->title ?? $model->name ?? 'Bilinmeyen';
+        // Multi-language JSON alanları için title extraction
+        $rawTitle = $model->title ?? $model->name ?? 'Bilinmeyen';
+        
+        // Eğer title array/object ise (JSON decode edilmiş), ilk değeri al
+        if (is_array($rawTitle) || is_object($rawTitle)) {
+            $titleArray = (array) $rawTitle;
+            if (!empty($titleArray)) {
+                // Önce varsayılan dili dene, sonra ilk değeri al
+                $defaultLang = session('site_default_language', 'tr');
+                $baslik = $titleArray[$defaultLang] ?? reset($titleArray);
+            } else {
+                $baslik = 'Bilinmeyen';
+            }
+        } else {
+            $baslik = $rawTitle;
+        }
+        
+        // Güvenlik için string'e çevir
+        $baslik = (string) $baslik;
+        
         $modelName = class_basename($model);
         $batchUuid = \Illuminate\Support\Str::uuid();
 
         activity()
             ->performedOn($model)
-            ->causedBy(auth()->user())
+            ->causedBy(auth()->check() ? auth()->user() : null)
             ->inLog($modelName)
             ->withProperties([
                 'baslik' => $baslik,

@@ -25,4 +25,12 @@ return [
     
     // Helper.blade.php'den eksik anahtar
     'menu' => 'Menü',
+    'menu_title' => 'Sayfa Yönetimi',
+    'edit_page' => 'Sayfa Düzenle',
+    'create_page' => 'Yeni Sayfa',
+    
+    // Hibrit sistem için yeni çeviriler
+    'title_validation_error' => 'Başlık geçersiz. Lütfen kontrol edin.',
+    'title_updated' => 'başlık güncellendi',
+    'title_updated_successfully' => 'Başlık başarıyla güncellendi.',
 ];

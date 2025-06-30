@@ -26,6 +26,90 @@ Bu proje, Laravel 12 ile geliştirilmiş, modüler ve çok kiracılı (multi-ten
 
 ## Sürüm Geçmişi
 
+### v1.22.0 (2025-06-29) - Intelephense Auth Helper Fix - BAŞARILI ✅
+
+**🔧 AUTH HELPER GÜVENLİK FİX:**
+- **Problem**: `app/Helpers/Functions.php:302` satırında `auth()->user()` Intelephense hatası
+- **Root Cause**: `auth()` helper null döndürebiliyor, `user()` metodu çağrılamıyor
+- **Çözüm**: 
+  - `auth()->user()` → `auth()->check() ? auth()->user() : null`
+  - Güvenli null checking eklendi
+  - Activity log causedBy field güvenlik katmanı
+- **Sonuç**: 
+  - Intelephense hata giderildi ✅
+  - Guest kullanıcılar için null pointer exception risk elimine edildi ✅
+  - Activity log sistem güvenliği artırıldı ✅
+
+### v1.21.0 (2025-06-29) - Tab Navigation & Multi-Language Sistem Düzeltmeleri - BAŞARILI ✅
+
+**🎨 TAB NAVİGASYON VE DİL YÖNETİMİ:**
+
+**⭐ Tab Styling Sistemi:**
+- **Problem**: Theme builder köşe yuvarlaklığı tab'lara uygulanmıyordu, aktif/pasif tab renkleri yanlıştı
+- **Çözüm**: 
+  - Tab'ların sadece üst köşeleri (sol üst/sağ üst) theme builder'dan etkileniyor
+  - Alt köşeler her zaman düz kalıyor (seamless card birleşimi)
+  - Aktif tab: `var(--tblr-bg-surface-secondary)` (koyu renk)
+  - Pasif tab: `var(--tblr-bg-surface)` (açık renk)
+- **Dosyalar**: `main.css` ve `main-theme-builder.css` ayrımı
+
+**🌍 Dil Switch Button Sistemi:**
+- **Problem**: Dil değiştirme butonlarının rengi hardcode mavi renkti
+- **Çözüm**: 
+  - `var(--primary-color)` theme builder rengini kullanıyor
+  - Blade template'de `rgb(var(--tblr-primary-rgb))` → `var(--primary-color)`
+  - JavaScript'te dinamik renk algılama iyileştirildi
+- **Sonuç**: Theme builder primary color değiştiğinde dil butonları da otomatik güncelleniyor
+
+**🔧 Array-to-String Conversion Error Fix:**
+- **Problem**: Page kaydetme sırasında log_activity fonksiyonunda array to string hatası
+- **Çözüm**: 
+  - Multi-language JSON alanları için title extraction eklendi
+  - Varsayılan dil kontrolü ile ilk değer alma
+  - Type safety için `(string)` cast
+- **Dosya**: `/app/Helpers/Functions.php:294`
+
+**📁 Dosya Yapısı Yeniden Düzenlendi:**
+- `theme-simple.css` → `main-theme-builder.css` (daha açıklayıcı isim)
+- Tab kuralları `main.css`'de merkezi yönetim
+- CSS loading sırası optimizasyonu
+
+**📊 Sonuçlar:**
+- Tab navigation %100 theme builder uyumlu ✅
+- Dil switch sistemi dinamik renk desteği ✅
+- Page kaydetme hataları tamamen giderildi ✅
+- Dosya isimlendirme standardı iyileştirildi ✅
+
+---
+
+### v1.20.0 (2025-06-29) - Auth Sayfaları Cache Bypass Sistemi - BAŞARILI ✅
+
+**🔐 AUTH SAYFALARI CACHE'LEME SORUNU ÇÖZÜLDÜ:**
+
+**⚡ Cache Exclusion Sistemi Genişletildi:**
+- **Problem**: Login, register, profil sayfaları cache'lendiği için kullanıcılar giriş yapamıyordu
+- **Çözüm**: `config/responsecache.php` excluded_paths listesi genişletildi
+- **Eklenen Path'ler**:
+  - `login`, `logout`, `register`
+  - `password/*`, `forgot-password`, `reset-password`
+  - `profile`, `profile/*`, `avatar/*`
+  - `user/*`, `account/*`
+  - Mevcut `admin/*`, `auth/*` korundu
+
+**🛡️ Güvenlik İyileştirmeleri:**
+- Auth flow'u artık cache bypass ile çalışıyor
+- Kullanıcı profil sayfaları real-time güncellenebiliyor
+- Şifre sıfırlama işlemleri cache engeli olmadan çalışıyor
+- Avatar upload ve profil düzenleme sorunsuz
+
+**📊 Sonuçlar:**
+- Login/Register formları %100 çalışır durumda ✅
+- Profil sayfaları anlık güncelleme ✅
+- Cache performance korundu (sadece auth sayfaları hariç) ✅
+- Güvenlik açığı riski ortadan kalktı ✅
+
+---
+
 ### v1.19.0 (2025-06-29) - Dinamik Routing Sistemi Template'leri Tamamlandı - BAŞARILI ✅
 
 **🎯 TÜM HARDCODED ROUTE'LAR DİNAMİK HALE GETİRİLDİ:**

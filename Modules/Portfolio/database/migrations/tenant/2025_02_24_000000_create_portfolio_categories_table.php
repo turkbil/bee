@@ -10,12 +10,13 @@ return new class extends Migration
     {
         Schema::create('portfolio_categories', function (Blueprint $table) {
             $table->id('portfolio_category_id');              // Özel primary key
-            $table->text('title');                            // Kategori başlığı (JSON)
-            $table->text('slug');                             // URL slug (JSON)
-            $table->text('body')->nullable();                 // Kategori açıklaması (JSON)
+            $table->json('title');                            // Kategori başlığı (JSON) - Çok dilli
+            $table->json('slug');                             // URL slug (JSON) - Çok dilli
+            $table->json('body')->nullable();                 // Kategori açıklaması (JSON) - Çok dilli
             $table->integer('order')->default(0);             // Sıralama (varsayılan: 0)
-            $table->text('metakey')->nullable();              // Meta anahtar kelimeler (JSON)
-            $table->text('metadesc')->nullable();             // Meta açıklama (JSON)
+            $table->json('metakey')->nullable();              // Meta anahtar kelimeler (JSON) - Çok dilli
+            $table->json('metadesc')->nullable();             // Meta açıklama (JSON) - Çok dilli
+            $table->json('seo')->nullable();                  // SEO JSON column
             $table->boolean('is_active')->default(true);      // Aktiflik durumu (varsayılan: true)
             $table->timestamps();                             // created_at ve updated_at
             $table->softDeletes();                            // deleted_at (yumuşak silme)

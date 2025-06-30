@@ -63,6 +63,23 @@ class PortfolioCategorySeeder extends Seeder
                     'tr' => 'Modern ve kullanıcı dostu web tasarım projelerimiz',
                     'en' => 'Our modern and user-friendly web design projects',
                     'ar' => 'مشاريع تصميم الويب الحديثة وسهلة الاستخدام'
+                ],
+                'seo' => [
+                    'tr' => [
+                        'title' => 'Web Tasarım Hizmetleri | Profesyonel Çözümler',
+                        'description' => 'Modern web tasarım anlayışı ile kullanıcı deneyimi odaklı, responsive ve SEO uyumlu web siteleri geliştiriyoruz.',
+                        'keywords' => 'web tasarım, responsive tasarım, modern web, ui ux, kullanıcı deneyimi'
+                    ],
+                    'en' => [
+                        'title' => 'Web Design Services | Professional Solutions',
+                        'description' => 'We develop user experience-focused, responsive and SEO-friendly websites with modern web design approach.',
+                        'keywords' => 'web design, responsive design, modern web, ui ux, user experience'
+                    ],
+                    'ar' => [
+                        'title' => 'خدمات تصميم الويب | حلول احترافية',
+                        'description' => 'نطور مواقع ويب تركز على تجربة المستخدم ومتجاوبة ومتوافقة مع SEO بنهج تصميم ويب حديث.',
+                        'keywords' => 'تصميم الويب، تصميم متجاوب، ويب حديث، تجربة المستخدم'
+                    ]
                 ]
             ],
             [
@@ -108,6 +125,23 @@ class PortfolioCategorySeeder extends Seeder
                     'tr' => 'iOS ve Android için mobil uygulama geliştirme hizmetleri',
                     'en' => 'Mobile application development services for iOS and Android',
                     'ar' => 'خدمات تطوير تطبيقات الهاتف المحمول لنظامي iOS و Android'
+                ],
+                'seo' => [
+                    'tr' => [
+                        'title' => 'Mobil Uygulama Geliştirme | iOS & Android',
+                        'description' => 'iOS ve Android platformları için native ve cross-platform mobil uygulamalar geliştiriyoruz. Swift, Kotlin, Flutter uzmanı ekip.',
+                        'keywords' => 'mobil uygulama, ios, android, flutter, swift, kotlin, react native'
+                    ],
+                    'en' => [
+                        'title' => 'Mobile App Development | iOS & Android',
+                        'description' => 'We develop native and cross-platform mobile applications for iOS and Android platforms. Expert team in Swift, Kotlin, Flutter.',
+                        'keywords' => 'mobile app, ios, android, flutter, swift, kotlin, react native'
+                    ],
+                    'ar' => [
+                        'title' => 'تطوير تطبيقات الهاتف المحمول | iOS & Android',
+                        'description' => 'نطور تطبيقات الهاتف المحمول الأصلية ومتعددة المنصات لمنصات iOS و Android. فريق خبير في Swift و Kotlin و Flutter.',
+                        'keywords' => 'تطبيق محمول، ios، android، flutter، swift، kotlin، react native'
+                    ]
                 ]
             ],
             [
@@ -156,6 +190,23 @@ class PortfolioCategorySeeder extends Seeder
                     'tr' => 'Profesyonel e-ticaret çözümleri ve online satış sistemleri',
                     'en' => 'Professional e-commerce solutions and online sales systems',
                     'ar' => 'حلول التجارة الإلكترونية المهنية وأنظمة البيع عبر الإنترنت'
+                ],
+                'seo' => [
+                    'tr' => [
+                        'title' => 'E-Ticaret Çözümleri | Online Satış Sistemleri',
+                        'description' => 'Güvenli ve kullanıcı dostu e-ticaret sistemleri kuruyoruz. Özel yazılım, ödeme entegrasyonları ve stok yönetimi.',
+                        'keywords' => 'e-ticaret, online satış, ödeme sistemleri, b2b, b2c, stok yönetimi'
+                    ],
+                    'en' => [
+                        'title' => 'E-Commerce Solutions | Online Sales Systems',
+                        'description' => 'We build secure and user-friendly e-commerce systems. Custom software, payment integrations and stock management.',
+                        'keywords' => 'e-commerce, online sales, payment systems, b2b, b2c, stock management'
+                    ],
+                    'ar' => [
+                        'title' => 'حلول التجارة الإلكترونية | أنظمة البيع عبر الإنترنت',
+                        'description' => 'نبني أنظمة تجارة إلكترونية آمنة وسهلة الاستخدام. برمجيات مخصصة وتكامل الدفع وإدارة المخزون.',
+                        'keywords' => 'التجارة الإلكترونية، المبيعات عبر الإنترنت، أنظمة الدفع، b2b، b2c، إدارة المخزون'
+                    ]
                 ]
             ]
         ];
@@ -168,6 +219,7 @@ class PortfolioCategorySeeder extends Seeder
                 'order' => $index,
                 'metakey' => $category['metakey'],
                 'metadesc' => $category['metadesc'],
+                'seo' => $category['seo'] ?? null,
                 'is_active' => true,
             ]);
         }

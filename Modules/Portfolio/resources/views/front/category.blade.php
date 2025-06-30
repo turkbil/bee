@@ -10,11 +10,11 @@
             $portfolioIndexUrl = '/' . $indexSlug;
         @endphp
         
-        <h1 class="text-3xl font-bold mb-4 text-gray-900 dark:text-white">{{ $category->title }} {{ __('portfolio::front.general.category') }}</h1>
+        <h1 class="text-3xl font-bold mb-4 text-gray-900 dark:text-white">{{ $category->getTranslated('title') }} {{ __('portfolio::front.general.category') }}</h1>
             
-            @if(isset($category->body) && trim(strip_tags($category->body)) !== '')
+            @if(isset($category->body) && trim(strip_tags($category->getTranslated('body'))) !== '')
             <div class="prose max-w-none dark:prose-invert prose-headings:text-gray-900 dark:prose-headings:text-white prose-p:text-gray-800 dark:prose-p:text-gray-200 prose-a:text-primary dark:prose-a:text-primary-400 mb-6">
-                {!! $category->body !!}
+                {!! $category->getTranslated('body') !!}
             </div>
             @endif
             

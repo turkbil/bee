@@ -69,6 +69,23 @@ class AnnouncementSeeder extends Seeder
                     'tr' => 'Yeni hizmetimiz hakkında önemli duyuru',
                     'en' => 'Important announcement about our new service',
                     'ar' => 'إعلان مهم حول خدمتنا الجديدة'
+                ],
+                'seo' => [
+                    'tr' => [
+                        'title' => 'Yeni Hizmetimiz Yayında! | Önemli Duyuru',
+                        'description' => 'Müşterilerimize müjde! Uzun süredir üzerinde çalıştığımız yeni hizmetimiz artık yayında. Daha hızlı işlem süreleri ve gelişmiş özellikler.',
+                        'keywords' => 'yeni hizmet, duyuru, müjde, güncelleme, hızlı işlem, mobil destek'
+                    ],
+                    'en' => [
+                        'title' => 'Our New Service is Live! | Important Announcement',
+                        'description' => 'Great news for our customers! Our new service that we have been working on for a long time is now live. Faster processing and advanced features.',
+                        'keywords' => 'new service, announcement, news, update, fast processing, mobile support'
+                    ],
+                    'ar' => [
+                        'title' => 'خدمتنا الجديدة مباشرة! | إعلان مهم',
+                        'description' => 'أخبار رائعة لعملائنا! خدمتنا الجديدة التي كنا نعمل عليها لفترة طويلة متاحة الآن. معالجة أسرع وميزات متقدمة.',
+                        'keywords' => 'خدمة جديدة، إعلان، أخبار، تحديث، معالجة سريعة، دعم محمول'
+                    ]
                 ]
             ],
             [
@@ -203,6 +220,7 @@ class AnnouncementSeeder extends Seeder
                 'body' => $announcement['body'],
                 'metakey' => $announcement['metakey'],
                 'metadesc' => $announcement['metadesc'],
+                'seo' => $announcement['seo'] ?? null,
                 'is_active' => true,
             ]);
         }

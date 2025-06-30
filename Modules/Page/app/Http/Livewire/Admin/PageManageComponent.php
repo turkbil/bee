@@ -48,8 +48,16 @@ class PageManageComponent extends Component
                    'title' => $page->getTranslated('title', $lang) ?? '',
                    'body' => $page->getTranslated('body', $lang) ?? '',
                    'slug' => $page->getTranslated('slug', $lang) ?? '',
-                   'metakey' => $page->getTranslated('metakey', $lang) ?? '',
-                   'metadesc' => $page->getTranslated('metadesc', $lang) ?? '',
+                   'seo' => [
+                       'meta_title' => $page->getSeoField($lang, 'meta_title', ''),
+                       'meta_description' => $page->getSeoField($lang, 'meta_description', ''),
+                       'keywords' => $page->getSeoField($lang, 'keywords', []),
+                       'og_title' => $page->getSeoField($lang, 'og_title', ''),
+                       'og_description' => $page->getSeoField($lang, 'og_description', ''),
+                       'og_image' => $page->getSeoField($lang, 'og_image', ''),
+                       'canonical_url' => $page->getSeoField($lang, 'canonical_url', ''),
+                       'robots' => $page->getSeoField($lang, 'robots', 'index,follow'),
+                   ]
                ];
            }
        } else {
@@ -76,8 +84,33 @@ class PageManageComponent extends Component
            $this->availableLanguages = ['tr'];
        }
        
-       // İlk dili current language yap
-       $this->currentLanguage = $this->availableLanguages[0] ?? 'tr';
+       // Site varsayılan dilini al - tenants tablosundan
+       $currentTenant = null;
+       if (app(\Stancl\Tenancy\Tenancy::class)->initialized) {
+           $currentTenant = tenant();
+       } else {
+           // Central context'teyse domain'den çözümle
+           $host = request()->getHost();
+           $domain = \Stancl\Tenancy\Database\Models\Domain::with('tenant')
+               ->where('domain', $host)
+               ->first();
+           $currentTenant = $domain?->tenant;
+       }
+       
+       $defaultLang = $currentTenant ? $currentTenant->tenant_default_locale : 'tr';
+       $this->currentLanguage = in_array($defaultLang, $this->availableLanguages) ? $defaultLang : $this->availableLanguages[0];
+       
+       // Debug log
+       \Log::info('PAGE Module - Language Settings', [
+           'available_languages' => $this->availableLanguages,
+           'tenant_default_locale' => $defaultLang,
+           'current_language' => $this->currentLanguage,
+           'session_site_default' => session('site_default_language'),
+           'app_locale' => app()->getLocale(),
+           'tenancy_initialized' => app(\Stancl\Tenancy\Tenancy::class)->initialized,
+           'request_host' => request()->getHost(),
+           'tenant_info' => $currentTenant ? ['id' => $currentTenant->id, 'tenant_default_locale' => $currentTenant->tenant_default_locale] : null
+       ]);
    }
 
    /**
@@ -90,8 +123,16 @@ class PageManageComponent extends Component
                'title' => '',
                'body' => '',
                'slug' => '',
-               'metakey' => '',
-               'metadesc' => '',
+               'seo' => [
+                   'meta_title' => '',
+                   'meta_description' => '',
+                   'keywords' => [],
+                   'og_title' => '',
+                   'og_description' => '',
+                   'og_image' => '',
+                   'canonical_url' => '',
+                   'robots' => 'index,follow',
+               ]
            ];
        }
    }
@@ -109,9 +150,15 @@ class PageManageComponent extends Component
        foreach ($this->availableLanguages as $lang) {
            $rules["multiLangInputs.{$lang}.title"] = $lang === 'tr' ? 'required|min:3|max:255' : 'nullable|min:3|max:255';
            $rules["multiLangInputs.{$lang}.slug"] = 'nullable|string|max:255';
-           $rules["multiLangInputs.{$lang}.metakey"] = 'nullable|string';
-           $rules["multiLangInputs.{$lang}.metadesc"] = 'nullable|string|max:255';
            $rules["multiLangInputs.{$lang}.body"] = 'nullable|string';
+           $rules["multiLangInputs.{$lang}.seo.meta_title"] = 'nullable|string|max:60';
+           $rules["multiLangInputs.{$lang}.seo.meta_description"] = 'nullable|string|max:160';
+           $rules["multiLangInputs.{$lang}.seo.keywords"] = 'nullable|array';
+           $rules["multiLangInputs.{$lang}.seo.og_title"] = 'nullable|string|max:60';
+           $rules["multiLangInputs.{$lang}.seo.og_description"] = 'nullable|string|max:160';
+           $rules["multiLangInputs.{$lang}.seo.og_image"] = 'nullable|string|max:255';
+           $rules["multiLangInputs.{$lang}.seo.canonical_url"] = 'nullable|url|max:255';
+           $rules["multiLangInputs.{$lang}.seo.robots"] = 'nullable|string|max:50';
        }
        
        return $rules;
@@ -149,7 +196,7 @@ class PageManageComponent extends Component
       
       // JSON formatında çoklu dil verilerini hazırla
       $multiLangData = [];
-      foreach (['title', 'slug', 'body', 'metakey', 'metadesc'] as $field) {
+      foreach (['title', 'slug', 'body'] as $field) {
           $multiLangData[$field] = [];
           foreach ($this->availableLanguages as $lang) {
               $value = $this->multiLangInputs[$lang][$field] ?? '';
@@ -159,15 +206,41 @@ class PageManageComponent extends Component
                   $value = Str::slug($this->multiLangInputs[$lang]['title']);
               }
               
-              // Boş metadesc için body'den oluştur  
-              if ($field === 'metadesc' && empty($value) && !empty($this->multiLangInputs[$lang]['body'])) {
-                  $value = Str::limit(strip_tags($this->multiLangInputs[$lang]['body']), 191, '');
-              }
-              
               if (!empty($value)) {
                   $multiLangData[$field][$lang] = $value;
               }
           }
+      }
+      
+      // SEO verilerini hazırla
+      $seoData = [];
+      foreach ($this->availableLanguages as $lang) {
+          if (isset($this->multiLangInputs[$lang]['seo'])) {
+              $langSeoData = $this->multiLangInputs[$lang]['seo'];
+              
+              // Boş meta_title için title'dan oluştur
+              if (empty($langSeoData['meta_title']) && !empty($this->multiLangInputs[$lang]['title'])) {
+                  $langSeoData['meta_title'] = $this->multiLangInputs[$lang]['title'];
+              }
+              
+              // Boş meta_description için body'den oluştur
+              if (empty($langSeoData['meta_description']) && !empty($this->multiLangInputs[$lang]['body'])) {
+                  $langSeoData['meta_description'] = Str::limit(strip_tags($this->multiLangInputs[$lang]['body']), 160, '');
+              }
+              
+              // Boş değerleri temizle
+              $langSeoData = array_filter($langSeoData, function($value) {
+                  return !is_null($value) && $value !== '' && $value !== [];
+              });
+              
+              if (!empty($langSeoData)) {
+                  $seoData[$lang] = $langSeoData;
+              }
+          }
+      }
+      
+      if (!empty($seoData)) {
+          $multiLangData['seo'] = $seoData;
       }
       
       $data = array_merge($this->inputs, $multiLangData);

@@ -5,7 +5,7 @@
     <article class="max-w-4xl mx-auto overflow-hidden">
         @if($item->getMedia('images')->isNotEmpty())
         <div class="relative">
-            <img src="{{ $item->getFirstMedia('images')->getUrl() }}" alt="{{ $item->title }}" class="w-full h-80 object-cover">
+            <img src="{{ $item->getFirstMedia('images')->getUrl() }}" alt="{{ $item->getTranslated('title') }}" class="w-full h-80 object-cover">
             
             @if(isset($item->category))
             <div class="absolute top-4 right-4">
@@ -23,7 +23,7 @@
                     $categoryUrl = '/' . $indexSlug . '/kategori/' . $categorySlug;
                 @endphp
                 <a href="{{ $categoryUrl }}" class="inline-flex items-center px-3 py-1.5 bg-primary bg-opacity-90 text-white text-sm font-medium rounded-full hover:bg-opacity-100 transition-colors">
-                    {{ $item->category->name ?? $item->category->title }}
+                    {{ $item->category->name ?? $item->category->getTranslated('title') }}
                 </a>
             </div>
             @endif

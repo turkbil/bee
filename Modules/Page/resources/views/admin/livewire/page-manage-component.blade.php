@@ -112,31 +112,112 @@
                             <div class="form-floating mb-3">
                                 <input type="text" wire:model="multiLangInputs.{{ $lang }}.slug" 
                                     class="form-control @error('multiLangInputs.' . $lang . '.slug') is-invalid @enderror"
-                                    placeholder="{{ __('page::admin.slug_field') }} ({{ strtoupper($lang) }})">
-                                <label>{{ __('page::admin.slug_field') }} ({{ $langName }})</label>
+                                    placeholder="Slug ({{ strtoupper($lang) }})">
+                                <label>Slug ({{ $langName }})</label>
                                 @error('multiLangInputs.' . $lang . '.slug')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                                 <small class="form-hint">Boş bırakılırsa başlıktan otomatik oluşturulur</small>
                             </div>
                             
-                            <!-- Meta Keywords -->
+                            <!-- Meta Title -->
                             <div class="form-floating mb-3">
-                                <input type="text" wire:model.defer="multiLangInputs.{{ $lang }}.metakey"
-                                    class="form-control"
-                                    placeholder="{{ __('page::admin.meta_keywords') }} ({{ strtoupper($lang) }})...">
-                                <label>{{ __('page::admin.meta_keywords') }} ({{ $langName }})</label>
-                                <small class="form-hint">Virgülle ayrılmış anahtar kelimeler</small>
+                                <input type="text" wire:model="multiLangInputs.{{ $lang }}.seo.meta_title"
+                                    class="form-control @error('multiLangInputs.' . $lang . '.seo.meta_title') is-invalid @enderror"
+                                    placeholder="Meta Başlık ({{ strtoupper($lang) }})"
+                                    maxlength="60">
+                                <label>Meta Başlık ({{ $langName }})</label>
+                                @error('multiLangInputs.' . $lang . '.seo.meta_title')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="form-hint">Boş bırakılırsa sayfa başlığı kullanılır (Max: 60 karakter)</small>
                             </div>
 
                             <!-- Meta Description -->
                             <div class="form-floating mb-3">
-                                <textarea wire:model="multiLangInputs.{{ $lang }}.metadesc" 
-                                          class="form-control" 
+                                <textarea wire:model="multiLangInputs.{{ $lang }}.seo.meta_description" 
+                                          class="form-control @error('multiLangInputs.' . $lang . '.seo.meta_description') is-invalid @enderror" 
                                           data-bs-toggle="autosize"
-                                          placeholder="{{ __('page::admin.meta_description') }} ({{ strtoupper($lang) }})"></textarea>
-                                <label>{{ __('page::admin.meta_description') }} ({{ $langName }})</label>
-                                <small class="form-hint">Boş bırakılırsa içerikten otomatik oluşturulur</small>
+                                          placeholder="Meta Açıklama ({{ strtoupper($lang) }})"
+                                          maxlength="160"></textarea>
+                                <label>Meta Açıklama ({{ $langName }})</label>
+                                @error('multiLangInputs.' . $lang . '.seo.meta_description')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="form-hint">Boş bırakılırsa içerikten otomatik oluşturulur (Max: 160 karakter)</small>
+                            </div>
+                            
+                            <!-- Keywords (Tags) -->
+                            <div class="mb-3">
+                                <label class="form-label">Anahtar Kelimeler ({{ $langName }})</label>
+                                <select multiple wire:model="multiLangInputs.{{ $lang }}.seo.keywords" 
+                                        class="form-control choices-tags @error('multiLangInputs.' . $lang . '.seo.keywords') is-invalid @enderror"
+                                        data-choices='{"removeItemButton": true, "duplicateItemsAllowed": false, "placeholder": true, "placeholderValue": "Anahtar kelime yazın ve Enter\'a basın"}'>
+                                    @if(isset($multiLangInputs[$lang]['seo']['keywords']) && is_array($multiLangInputs[$lang]['seo']['keywords']))
+                                        @foreach($multiLangInputs[$lang]['seo']['keywords'] as $keyword)
+                                            <option value="{{ $keyword }}" selected>{{ $keyword }}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                                @error('multiLangInputs.' . $lang . '.seo.keywords')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                                <small class="form-hint">Enter tuşu ile anahtar kelime ekleyebilirsiniz</small>
+                            </div>
+
+                            <!-- Open Graph Title -->
+                            <div class="form-floating mb-3">
+                                <input type="text" wire:model="multiLangInputs.{{ $lang }}.seo.og_title"
+                                    class="form-control @error('multiLangInputs.' . $lang . '.seo.og_title') is-invalid @enderror"
+                                    placeholder="OG Başlık ({{ strtoupper($lang) }})"
+                                    maxlength="60">
+                                <label>Open Graph Başlık ({{ $langName }})</label>
+                                @error('multiLangInputs.' . $lang . '.seo.og_title')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="form-hint">Sosyal medya paylaşımları için (Max: 60 karakter)</small>
+                            </div>
+
+                            <!-- Open Graph Description -->
+                            <div class="form-floating mb-3">
+                                <textarea wire:model="multiLangInputs.{{ $lang }}.seo.og_description" 
+                                          class="form-control @error('multiLangInputs.' . $lang . '.seo.og_description') is-invalid @enderror" 
+                                          data-bs-toggle="autosize"
+                                          placeholder="OG Açıklama ({{ strtoupper($lang) }})"
+                                          maxlength="160"></textarea>
+                                <label>Open Graph Açıklama ({{ $langName }})</label>
+                                @error('multiLangInputs.' . $lang . '.seo.og_description')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="form-hint">Sosyal medya paylaşımları için (Max: 160 karakter)</small>
+                            </div>
+
+                            <!-- Canonical URL -->
+                            <div class="form-floating mb-3">
+                                <input type="url" wire:model="multiLangInputs.{{ $lang }}.seo.canonical_url"
+                                    class="form-control @error('multiLangInputs.' . $lang . '.seo.canonical_url') is-invalid @enderror"
+                                    placeholder="https://example.com/canonical-url">
+                                <label>Canonical URL ({{ $langName }})</label>
+                                @error('multiLangInputs.' . $lang . '.seo.canonical_url')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="form-hint">Bu sayfa için asıl URL (SEO duplicate content önleme)</small>
+                            </div>
+
+                            <!-- Robots -->
+                            <div class="mb-3">
+                                <label class="form-label">Robot Direktifi ({{ $langName }})</label>
+                                <select wire:model="multiLangInputs.{{ $lang }}.seo.robots" 
+                                        class="form-select @error('multiLangInputs.' . $lang . '.seo.robots') is-invalid @enderror">
+                                    <option value="index,follow">Index, Follow (Varsayılan)</option>
+                                    <option value="noindex,follow">No Index, Follow</option>
+                                    <option value="index,nofollow">Index, No Follow</option>
+                                    <option value="noindex,nofollow">No Index, No Follow</option>
+                                </select>
+                                @error('multiLangInputs.' . $lang . '.seo.robots')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="form-hint">Arama motorları için yönergeler</small>
                             </div>
                         </div>
                         @endforeach

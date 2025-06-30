@@ -40,4 +40,11 @@ return [
     
     // Helper.blade.php'den eksik anahtar
     'title' => 'Dil Yönetimi',
+    
+    // TenantLanguageSwitcher için yeni çeviriler
+    'change_data_language' => 'Veri Dilini Değiştir',
+    'data_lang' => 'Veri',
+    'data_language' => 'Veri Dili',
+    'data_language_changed' => 'Veri dili başarıyla değiştirildi.',
+    'no_data_languages' => 'Henüz veri dili eklenmemiş',
 ];

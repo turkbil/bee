@@ -350,3 +350,107 @@ td:hover .edit-icon {
     color: inherit;
     border-color: var(--tblr-border-color);
 }
+
+/* Language Dropdown Styling for Admin Panel */
+.language-switch-item {
+    transition: background-color 0.15s ease;
+}
+
+.language-switch-item:hover {
+    background-color: var(--tblr-hover-bg);
+}
+
+.language-switch-item.active {
+    background-color: var(--tblr-primary-bg-subtle);
+}
+
+/* Tab Content Transitions */
+.language-content {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Form Hints Styling */
+.form-hint {
+    color: var(--tblr-secondary-color);
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* Studio Button Special Styling */
+.nav-link.bg-primary {
+    border-radius: var(--tblr-border-radius) !important;
+    padding: 0.5rem 1rem !important;
+    font-weight: 500;
+}
+
+/* Pretty Checkbox Customization */
+.pretty.p-toggle .state.p-on {
+    color: var(--tblr-success);
+}
+
+.pretty.p-toggle .state.p-off {
+    color: var(--tblr-danger);
+}
+
+/* Tab Navigation - Sadece Üst Köşeler Yuvarlanacak + Arka Plan Değişimi */
+.nav-tabs {
+    border-color: var(--tblr-border-color) !important;
+}
+
+.nav-tabs .nav-link {
+    background-color: var(--tblr-bg-surface) !important;
+    border-color: var(--tblr-border-color) !important;
+    color: var(--tblr-body-color) !important;
+    border-top-left-radius: var(--tblr-border-radius) !important;
+    border-top-right-radius: var(--tblr-border-radius) !important;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+
+.nav-tabs .nav-link.active {
+    background-color: var(--tblr-bg-surface-secondary) !important;
+    border-color: var(--tblr-border-color) var(--tblr-border-color) var(--tblr-bg-surface-secondary) !important;
+    color: var(--tblr-body-color) !important;
+    border-bottom: 1px solid transparent !important;
+    margin-bottom: -1px !important;
+    position: relative;
+    z-index: 1;
+    border-top-left-radius: var(--tblr-border-radius) !important;
+    border-top-right-radius: var(--tblr-border-radius) !important;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+
+/* Card header tabs için özel border yönetimi */
+.card-header-tabs {
+    margin-bottom: -1px !important;
+}
+
+/* Studio ve diğer özel nav-link'ler için */
+.nav-tabs .nav-item .nav-link.bg-primary,
+.nav-tabs .nav-item .nav-link.rounded {
+    border-top-left-radius: var(--tblr-border-radius) !important;
+    border-top-right-radius: var(--tblr-border-radius) !important;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+
+/* Language switch button'lar için - sadece üst yuvarlaklık */
+.nav-tabs .language-switch-btn {
+    border-top-left-radius: var(--tblr-border-radius) !important;
+    border-top-right-radius: var(--tblr-border-radius) !important;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+
+/* Language switch button active state - Primary color kullan */
+.nav-tabs .language-switch-btn.text-primary {
+    border-bottom-color: var(--primary-color) !important;
+    color: var(--primary-color) !important;
+}
+

@@ -49,7 +49,7 @@
     <link rel="stylesheet" href="/admin-assets/libs/choices/choices.min.css">
     <link rel="stylesheet" href="/admin-assets/css/choices-custom.css?v={{ time() }}">
     <link rel="stylesheet" href="/admin-assets/css/main.css?v={{ time() }}" />
-    <link rel="stylesheet" href="/admin-assets/css/theme-simple.css?v={{ time() }}" />
+    <link rel="stylesheet" href="/admin-assets/css/main-theme-builder.css?v={{ time() }}" />
     <link rel="stylesheet" href="/admin-assets/css/responsive.css?v={{ time() }}" />
     @stack('styles') @stack('css')
     <style>
@@ -200,7 +200,6 @@
 <script src="/admin-assets/libs/fslightbox/index.js" defer></script>
 <script src="/admin-assets/libs/choices/choices.min.js" defer></script>
 <script src="/admin-assets/js/main.js?v={{ time() }}"></script>
-<script src="/admin-assets/js/theme-simple.js?v={{ time() }}"></script>
 <script src="/admin-assets/js/toast.js?v={{ time() }}" defer></script>
 
 <!-- Global Loading Bar Script - Tabler Native -->

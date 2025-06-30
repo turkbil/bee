@@ -369,7 +369,10 @@ app()->setLocale($originalLocale);
                                 </div>
                                 <!-- Dil Seçimi (Mobil) - Livewire ile -->
                                 <div class="col-6">
-                                    @livewire('languagemanagement::admin-language-switcher')
+                                    <a href="#" class="d-flex flex-column text-center p-2 border rounded mobile-quick-action" onclick="document.querySelector('.navbar-nav .nav-item.dropdown a.nav-link').click()">
+                                        <i class="fa-solid fa-language mb-1 text-primary" style="font-size: 18px;"></i>
+                                        <small class="fw-bold">{{ __('admin.language_settings') }}</small>
+                                    </a>
                                 </div>
                             </div>
                         </div>

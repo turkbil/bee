@@ -26,6 +26,132 @@ Bu proje, Laravel 12 ile geliştirilmiş, modüler ve çok kiracılı (multi-ten
 
 ## Sürüm Geçmişi
 
+### v1.25.0 (2025-06-30) - Admin Panel Dinamik Varsayılan Dil Sekmesi - BAŞARILI ✅
+
+**🎯 ANA ÖZELLİK - Admin Panel Dinamik Varsayılan Dil Sekmesi:**
+- **Problem**: Admin panelinde dil sekmeleri hardcode "tr" ile başlıyordu, tenant'ın varsayılan dili kullanılmıyordu
+- **Çözüm**: Tüm Livewire manage component'lere tenant'ın `tenant_default_locale` ayarını okuyan sistem eklendi
+- **Sonuç**: Dil sekmeleri dinamik olarak tenant'ın varsayılan diliyle açılıyor
+
+**🔧 Teknik Implementation:**
+- **Tenant Resolution**: Admin context'te `app(\Stancl\Tenancy\Tenancy::class)->initialized` kontrolü
+- **Domain-Based Fallback**: Central context'te `request()->getHost()` ile domain'den tenant çözümleme
+- **Database Query**: `Stancl\Tenancy\Database\Models\Domain::with('tenant')` ile tenant bilgisine erişim
+- **Dynamic Tab Selection**: `tenant_default_locale` → `currentLanguage` property mapping
+
+**📊 Etkilenen Component'ler:**
+- **PageManageComponent**: Sayfa düzenleme dil sekmesi ✅
+- **PortfolioManageComponent**: Portfolio düzenleme dil sekmesi ✅
+- **PortfolioCategoryManageComponent**: Portfolio kategori dil sekmesi ✅
+- **AnnouncementManageComponent**: Duyuru düzenleme dil sekmesi ✅
+
+**🧪 Test Sonuçları:**
+- **Tenant "en" varsayılan**: Admin panelinde dil sekmeleri EN ile açılıyor ✅
+- **Tenant "tr" varsayılan**: Admin panelinde dil sekmeleri TR ile açılıyor ✅
+- **Tenant "ar" varsayılan**: Admin panelinde dil sekmeleri AR ile açılıyor ✅
+- **Debug Logging**: Her component'te tenant bilgileri debug edilebiliyor ✅
+
+**🎨 Kullanıcı Deneyimi İyileştirmeleri:**
+- Kullanıcı admin panelini açtığında varsayılan dil sekmesi zaten seçili
+- Tenant'ın dil tercihi otomatik olarak yansıtılıyor
+- Çok dilli içerik düzenleme akışı optimize edildi
+- Tutarlı dil deneyimi (site + admin panel aynı varsayılan dili kullanıyor)
+
+---
+
+### v1.24.0 (2025-06-30) - Central Tenant Varsayılan Dil Sistemi - BAŞARILI ✅
+
+**🎯 ANA ÖZELLİK - Central Tenant Varsayılan Dil Sistemi:**
+- **Problem**: Central tenant (laravel.test) `tenant_default_locale` ayarını görmezden geliyordu
+- **Çözüm**: SiteSetLocaleMiddleware'e central tenant override sistemi eklendi
+- **Sonuç**: Her tenant (normal + central) kendi `tenant_default_locale` ayarını kullanıyor
+
+**🔧 Teknik Implementation:**
+- **TenancyProvider**: Normal tenant'lar için `tenant_default_locale` ayarı (çalışıyordu ✅)
+- **SiteSetLocaleMiddleware**: Central tenant için özel kontrol eklendi
+- **UrlPrefixService Override**: Central tenant kontrolü ile locale override sistemi
+- **Tenant-Aware Detection**: `app(\Stancl\Tenancy\Tenancy::class)->initialized` kontrolü
+
+**🏗️ Middleware Çalışma Mantığı:**
+1. **UrlPrefixService** URL'den dil tespit eder (tr/en/ar)
+2. **Central Tenant Kontrolü**: Tenancy başlatılmamışsa central tenant'ın `tenant_default_locale`'ini kontrol eder
+3. **Override**: Central tenant varsayılanı farklıysa UrlPrefixService sonucunu override eder
+4. **Session Update**: Yeni locale'i session'a kaydeder ve Laravel'e set eder
+
+**🧪 Test Sonuçları:**
+- **laravel.test (Central)**: `tenant_default_locale: "en"` → Site EN açılıyor ✅
+- **a.test (Normal)**: `tenant_default_locale: "en"` → Site EN açılıyor ✅  
+- **b.test (Normal)**: `tenant_default_locale: "en"` → Site EN açılıyor ✅
+- **Dil Değiştirme**: Manuel dil değiştirme normal çalışıyor ✅
+
+**📝 Kod Değişiklikleri:**
+- `SiteSetLocaleMiddleware.php`: Central tenant override logic eklendi
+- `TenancyProvider.php`: Auth kontrolü kaldırıldı (her durumda çalışıyor)
+- Debug log'ları temizlendi (performance için)
+
+### v1.23.0 (2025-06-30) - Hibrit Dil Sistemi ve Tenant-Aware Fallback Sistemi - BAŞARILI ✅
+
+**🌍 HİBRİT DİL SİSTEMİ TAMAMEN TAMAMLANDI:**
+
+**⚡ Ana Özellik - İki Bağımsız Dil Sistemi:**
+- **Admin Arayüzü**: `admin_languages` tablosu + Bootstrap + Tabler.io
+- **Sayfa İçerikleri**: `tenant_languages` tablosu + JSON multi-language data
+- **Hibrit Çalışma**: Admin EN + Veri AR/TR/EN bağımsız olarak çalışıyor
+
+**🔧 Teknik Implementation:**
+- **AdminLanguageSwitcher**: Admin paneli dil değiştirme (system_languages)
+- **PageComponent**: Sayfa içeriklerini site_locale'ye göre gösterme
+- **Session Ayrımı**: `admin_locale` vs `site_locale` tamamen bağımsız
+- **URL Query System**: `data_lang_changed=locale` parametresi ile güvenilir dil geçişi
+- **Livewire Redirect Fix**: Session persistence için redirect URL temizleme sistemi
+
+**🎯 Smart Fallback Sistemi - Tenant-Aware:**
+- **HasTranslations Trait**: Tenant varsayılan dili öncelikli fallback
+- **Dynamic Default Language**: Her tenant kendi `tenant_default_locale` alanından
+- **Multi-Level Fallback**:
+  1. Tenant varsayılan dili (örn: tenant AR ise AR'daki içerik)
+  2. Sistem varsayılanı (tr)
+  3. İlk dolu dil (any available translation)
+  4. Null (hiçbiri yoksa)
+
+**🔄 LanguageService Session Isolation:**
+- **Context-Specific Updates**: Admin dil değişiminde sadece admin_locale değişir
+- **Site Locale Protected**: Admin dili değiştiğinde veri dili korunur
+- **Debug Logging**: Dil değişim sürecinin tam takibi
+
+**🛠️ URL Session Management:**
+- **Query String Priority**: URL'deki `data_lang_changed` parametresi session'ı override eder
+- **Session Sync**: Query'den gelen dil otomatik olarak session'a yazılır
+- **Cache Aggressive Clear**: Response cache + Laravel cache + Livewire cache temizleme
+- **Livewire Event System**: `refreshPageData` eventi ile component refresh
+
+**📊 Çözülen Kritik Sorunlar:**
+1. **Admin-Site Dil Karmaşası**: İki sistem tamamen ayrıldı ✅
+2. **Session Persistence Sorunu**: Query string fallback sistemi ✅
+3. **Livewire URL Mismatch**: Redirect URL cleaning ve referer logic ✅
+4. **Fallback System**: Tenant-aware dynamic fallback ✅
+5. **Cache Timing Issues**: Aggressive cache clear + session save ✅
+
+**🎮 Test Senaryoları - BAŞARILI:**
+- Admin TR + Veri AR: Admin menüleri Türkçe, sayfa başlıkları Arapça ✅
+- Admin EN + Veri TR: Admin menüleri İngilizce, sayfa başlıkları Türkçe ✅
+- Fallback Senaryosu: Sayfa sadece TR dolu → AR seçilince TR gösteriliyor ✅
+- Real-time Switching: Dil değişimi anında yansıyor ✅
+
+**📁 Ana Dosya Değişiklikleri:**
+- `/app/Traits/HasTranslations.php`: Tenant-aware fallback sistemi
+- `/Modules/LanguageManagement/app/Http/Livewire/AdminLanguageSwitcher.php`: URL cleaning + session management
+- `/Modules/Page/app/Http/Livewire/Admin/PageComponent.php`: Query string locale detection
+- `/Modules/LanguageManagement/app/Services/LanguageService.php`: Context-isolated session updates
+
+**🎯 SONUÇ:**
+- ✅ Hibrit dil sistemi %100 çalışıyor
+- ✅ Admin ve veri dilleri tamamen bağımsız
+- ✅ Tenant varsayılan dili respektive fallback
+- ✅ Session isolation mükemmel
+- ✅ Real-time dil değişimi aktif
+- ✅ Multi-tenant environment'da çakışma yok
+
 ### v1.22.0 (2025-06-29) - Intelephense Auth Helper Fix - BAŞARILI ✅
 
 **🔧 AUTH HELPER GÜVENLİK FİX:**

@@ -7,7 +7,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Modules\Page\App\Http\Livewire\Traits\InlineEditTitle;
 use Modules\Page\App\Http\Livewire\Traits\WithBulkActions;
-use Modules\Page\App\Models\Page;
+use Modules\Page\App\Services\PageService;
 use Modules\LanguageManagement\App\Models\TenantLanguage;
 
 #[Layout('admin.layout')]
@@ -33,10 +33,18 @@ class PageComponent extends Component
     // Event listeners
     protected $listeners = ['refreshPageData' => 'refreshPageData'];
     
+    public function __construct()
+    {
+        $this->pageService = app(PageService::class);
+    }
+    
+    protected PageService $pageService;
+    
     public function refreshPageData()
     {
         // Cache'leri temizle
         $this->availableSiteLanguages = null;
+        $this->pageService->clearCache();
         
         \Log::info('🔄 PageComponent refreshPageData çağrıldı', [
             'new_site_locale' => $this->getSiteLocale(),
@@ -49,7 +57,7 @@ class PageComponent extends Component
 
     protected function getModelClass()
     {
-        return Page::class;
+        return \Modules\Page\App\Models\Page::class;
     }
 
     /**
@@ -129,30 +137,19 @@ class PageComponent extends Component
 
     public function toggleActive($id)
     {
-        $page = Page::where('page_id', $id)->first();
-    
-        if ($page) {
-            // Eğer ana sayfa ise pasif yapılmasına izin verme
-            if ($page->is_homepage && $page->is_active) {
-                $this->dispatch('toast', [
-                    'title' => __('admin.warning'),
-                    'message' => __('page::messages.homepage_cannot_be_deactivated'),
-                    'type' => 'warning',
-                ]);
-                return;
-            }
-            $page->update(['is_active' => !$page->is_active]);
-            
+        $result = $this->pageService->togglePageStatus($id);
+        
+        $this->dispatch('toast', [
+            'title' => $result['success'] ? __('admin.success') : __('admin.' . $result['type']),
+            'message' => $result['message'],
+            'type' => $result['type'],
+        ]);
+        
+        if ($result['success']) {
             log_activity(
-                $page,
-                $page->is_active ? __('admin.activated') : __('admin.deactivated')
+                $this->pageService->getPage($id),
+                $result['new_status'] ? __('admin.activated') : __('admin.deactivated')
             );
-    
-            $this->dispatch('toast', [
-                'title' => __('admin.success'),
-                'message' => __($page->is_active ? 'page::messages.page_activated' : 'page::messages.page_deactivated', ['title' => $page->getTranslated('title', $this->getSiteLocale()) ?? $page->getTranslated('title', 'tr')]),
-                'type' => $page->is_active ? 'success' : 'warning',
-            ]);
         }
     }
 
@@ -170,25 +167,16 @@ class PageComponent extends Component
             'request_query_params' => request()->query()
         ]);
         
-        $query = Page::where(function ($query) use ($siteLanguages) {
-            if (!empty($this->search)) {
-                // Dinamik dil arama - site_languages tablosundan
-                $searchTerm = '%' . $this->search . '%';
-                foreach ($siteLanguages as $lang) {
-                    $query->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.{$lang}')) LIKE ?", [$searchTerm])
-                          ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(slug, '$.{$lang}')) LIKE ?", [$searchTerm]);
-                }
-            }
-        });
-    
-        // Sorting: JSON field'lar için özel sıralama - site dilini kullan
-        if ($this->sortField === 'title') {
-            $pages = $query->orderByRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.{$currentSiteLocale}')) {$this->sortDirection}")
-                ->paginate($this->perPage);
-        } else {
-            $pages = $query->orderBy($this->sortField, $this->sortDirection)
-                ->paginate($this->perPage);
-        }
+        // Service kullanarak paginated data al
+        $filters = [
+            'search' => $this->search,
+            'locales' => $siteLanguages,
+            'sortField' => $this->sortField,
+            'sortDirection' => $this->sortDirection,
+            'currentLocale' => $currentSiteLocale
+        ];
+        
+        $pages = $this->pageService->getPaginatedPages($filters, $this->perPage);
     
         return view('page::admin.livewire.page-component', [
             'pages' => $pages,

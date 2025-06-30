@@ -5,29 +5,113 @@ use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Illuminate\Support\Str;
 use Modules\Portfolio\App\Models\PortfolioCategory;
+use Modules\LanguageManagement\App\Models\TenantLanguage;
 
 #[Layout('admin.layout')]
 class PortfolioCategoryManageComponent extends Component
 {
    public $categoryId;
+   public $currentLanguage = 'tr'; // Aktif dil sekmesi
+   public $availableLanguages = []; // Site dillerinden dinamik olarak yüklenecek
+   
+   // Çoklu dil inputs - dinamik olarak oluşturulacak
+   public $multiLangInputs = [];
+   
+   // Dil-neutral inputs
    public $inputs = [
-       'title' => '',
-       'slug' => '',
-       'body' => '',
        'order' => 0,
-       'metakey' => '',
-       'metadesc' => '',
        'is_active' => true,
    ];
 
    public function mount($id = null)
    {
+       // Site dillerini dinamik olarak yükle
+       $this->loadAvailableLanguages();
+       
        if ($id) {
            $this->categoryId = $id;
            $category = PortfolioCategory::findOrFail($id);
-           $this->inputs = $category->only(array_keys($this->inputs));
+           
+           // Dil-neutral alanları doldur
+           $this->inputs = [
+               'order' => $category->order,
+               'is_active' => $category->is_active,
+           ];
+           
+           // Çoklu dil alanları doldur
+           foreach ($this->availableLanguages as $lang) {
+               $this->multiLangInputs[$lang] = [
+                   'title' => is_array($category->title) ? ($category->title[$lang] ?? '') : '',
+                   'body' => is_array($category->body) ? ($category->body[$lang] ?? '') : '',
+                   'slug' => is_array($category->slug) ? ($category->slug[$lang] ?? '') : '',
+                   'metakey' => is_array($category->metakey) ? ($category->metakey[$lang] ?? '') : '',
+                   'metadesc' => is_array($category->metadesc) ? ($category->metadesc[$lang] ?? '') : '',
+               ];
+           }
        } else {
+           // Yeni kategori için boş inputs hazırla
            $this->inputs['order'] = PortfolioCategory::max('order') + 1;
+           $this->initializeEmptyInputs();
+       }
+   }
+   
+   /**
+    * Site dillerini dinamik olarak yükle
+    */
+   protected function loadAvailableLanguages()
+   {
+       $this->availableLanguages = TenantLanguage::where('is_active', true)
+           ->orderBy('sort_order')
+           ->pluck('code')
+           ->toArray();
+           
+       // Eğer hiç dil yoksa default tr ekle
+       if (empty($this->availableLanguages)) {
+           $this->availableLanguages = ['tr'];
+       }
+       
+       // Site varsayılan dilini al - tenants tablosundan
+       $currentTenant = null;
+       if (app(\Stancl\Tenancy\Tenancy::class)->initialized) {
+           $currentTenant = tenant();
+       } else {
+           // Central context'teyse domain'den çözümle
+           $host = request()->getHost();
+           $domain = \Stancl\Tenancy\Database\Models\Domain::with('tenant')
+               ->where('domain', $host)
+               ->first();
+           $currentTenant = $domain?->tenant;
+       }
+       
+       $defaultLang = $currentTenant ? $currentTenant->tenant_default_locale : 'tr';
+       $this->currentLanguage = in_array($defaultLang, $this->availableLanguages) ? $defaultLang : $this->availableLanguages[0];
+       
+       // Debug log
+       \Log::info('PORTFOLIO CATEGORY Module - Language Settings', [
+           'available_languages' => $this->availableLanguages,
+           'tenant_default_locale' => $defaultLang,
+           'current_language' => $this->currentLanguage,
+           'session_site_default' => session('site_default_language'),
+           'app_locale' => app()->getLocale(),
+           'tenancy_initialized' => app(\Stancl\Tenancy\Tenancy::class)->initialized,
+           'request_host' => request()->getHost(),
+           'tenant_info' => $currentTenant ? ['id' => $currentTenant->id, 'tenant_default_locale' => $currentTenant->tenant_default_locale] : null
+       ]);
+   }
+
+   /**
+    * Boş inputs hazırla
+    */
+   protected function initializeEmptyInputs()
+   {
+       foreach ($this->availableLanguages as $lang) {
+           $this->multiLangInputs[$lang] = [
+               'title' => '',
+               'body' => '',
+               'slug' => '',
+               'metakey' => '',
+               'metadesc' => '',
+           ];
        }
    }
 

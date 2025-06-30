@@ -9,6 +9,80 @@
 {{ __('portfolio::admin.portfolio_management') }}
 @endpush
 
+{{-- Çok Dilli Tab Sistemi --}}
+@push('admin-js')
+<script>
+$(document).ready(function() {
+    // Aktif tab'ı kaydet
+    const routeName = '{{ request()->route()->getName() }}';
+    const tabKey = routeName.replace('.', '') + 'ActiveTab';
+    
+    // Tab Manager
+    const TabManager = {
+        init: function(storageKey) {
+            this.storageKey = storageKey;
+            this.restoreActiveTab();
+            this.bindTabEvents();
+        },
+        
+        restoreActiveTab: function() {
+            const activeTab = localStorage.getItem(this.storageKey);
+            if (activeTab) {
+                $('.nav-tabs .nav-link').removeClass('active');
+                $('.tab-content .tab-pane').removeClass('active show');
+                
+                const targetTab = $(`[href="${activeTab}"]`);
+                if (targetTab.length) {
+                    targetTab.addClass('active');
+                    $(activeTab).addClass('active show');
+                }
+            }
+        },
+        
+        bindTabEvents: function() {
+            const self = this;
+            $('.nav-tabs .nav-link').on('click', function() {
+                const href = $(this).attr('href');
+                localStorage.setItem(self.storageKey, href);
+            });
+        }
+    };
+    
+    // Çok Dilli Form Sistemi
+    const LanguageSwitcher = {
+        init: function() {
+            this.bindLanguageSwitch();
+        },
+        
+        bindLanguageSwitch: function() {
+            $('.language-switch-btn').on('click', function(e) {
+                e.preventDefault();
+                const targetLanguage = $(this).data('language');
+                
+                // Dil butonlarını güncelle
+                $('.language-switch-btn').removeClass('text-primary').addClass('text-muted');
+                $('.language-switch-btn').css('border-bottom', '2px solid transparent');
+                
+                $(this).removeClass('text-muted').addClass('text-primary');
+                $(this).css('border-bottom', '2px solid var(--primary-color)');
+                
+                // Form içeriklerini değiştir
+                $('.language-content').hide();
+                $(`.language-content[data-language="${targetLanguage}"]`).show();
+                
+                // currentLanguage değişkenini güncelle
+                window.currentLanguage = targetLanguage;
+            });
+        }
+    };
+    
+    // Initialize
+    TabManager.init(tabKey);
+    LanguageSwitcher.init();
+});
+</script>
+@endpush
+
 {{-- Modül Menüsü --}}
 @push('module-menu')
 <div class="dropdown d-grid d-md-flex module-menu">

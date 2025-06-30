@@ -5,6 +5,9 @@ use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Modules\Announcement\App\Http\Livewire\Admin\AnnouncementComponent;
 use Modules\Announcement\App\Http\Livewire\Admin\AnnouncementManageComponent;
+use Modules\Announcement\App\Contracts\AnnouncementRepositoryInterface;
+use Modules\Announcement\App\Repositories\AnnouncementRepository;
+use Modules\Announcement\App\Services\AnnouncementService;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -49,6 +52,14 @@ class AnnouncementServiceProvider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
+        
+        // Repository Pattern Bindings
+        $this->app->bind(AnnouncementRepositoryInterface::class, AnnouncementRepository::class);
+        
+        // Service Layer Bindings
+        $this->app->singleton(AnnouncementService::class, function ($app) {
+            return new AnnouncementService($app->make(AnnouncementRepositoryInterface::class));
+        });
     }
 
     /**

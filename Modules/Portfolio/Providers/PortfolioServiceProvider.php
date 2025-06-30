@@ -7,6 +7,9 @@ use Modules\Portfolio\App\Http\Livewire\Admin\PortfolioComponent;
 use Modules\Portfolio\App\Http\Livewire\Admin\PortfolioManageComponent;
 use Modules\Portfolio\App\Http\Livewire\Admin\PortfolioCategoryComponent;
 use Modules\Portfolio\App\Http\Livewire\Admin\PortfolioCategoryManageComponent;
+use Modules\Portfolio\App\Contracts\PortfolioRepositoryInterface;
+use Modules\Portfolio\App\Repositories\PortfolioRepository;
+use Modules\Portfolio\App\Services\PortfolioService;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -53,6 +56,14 @@ class PortfolioServiceProvider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
+        
+        // Repository Pattern Bindings
+        $this->app->bind(PortfolioRepositoryInterface::class, PortfolioRepository::class);
+        
+        // Service Layer Bindings
+        $this->app->singleton(PortfolioService::class, function ($app) {
+            return new PortfolioService($app->make(PortfolioRepositoryInterface::class));
+        });
     }
 
     /**

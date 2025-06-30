@@ -4,7 +4,7 @@
 <div class="py-6" x-data="announcementShow()" x-init="init()">
     <article class="max-w-4xl mx-auto" x-show="loaded" x-transition.duration.300ms>
         <div class="p-8">
-            <h1 class="text-3xl font-bold mb-4 text-gray-900 dark:text-white">{{ $item->getTranslated('title', app()->getLocale()) ?? $item->title }}</h1>
+            <h1 class="text-3xl font-bold mb-4 text-gray-900 dark:text-white">{{ $item->getTranslated('title', app()->getLocale()) }}</h1>
             
             <div class="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-6 pb-4 border-b border-gray-200 dark:border-gray-700">
                 <time class="flex items-center">

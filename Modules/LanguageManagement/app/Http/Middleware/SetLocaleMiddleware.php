@@ -111,6 +111,30 @@ class SetLocaleMiddleware
                 }
             }
         } else {
+            // 🎯 CENTRAL TENANT İÇİN ÖZEL KONTROL - Site context'te
+            if ($context === 'site' && !session()->has('site_locale')) {
+                // Central tenant kontrolü - Tenancy başlatılmamışsa central'dayız
+                if (!app(\Stancl\Tenancy\Tenancy::class)->initialized) {
+                    // Central tenant bilgisini al
+                    $centralTenant = \App\Helpers\TenantHelpers::central(function() {
+                        return \App\Models\Tenant::where('central', true)->first();
+                    });
+                    
+                    if ($centralTenant && $centralTenant->tenant_default_locale) {
+                        session(['site_locale' => $centralTenant->tenant_default_locale]);
+                        app()->setLocale($centralTenant->tenant_default_locale);
+                        
+                        \Log::info('🎯 Central tenant varsayılan dil ayarlandı', [
+                            'tenant_id' => $centralTenant->id,
+                            'tenant_default_locale' => $centralTenant->tenant_default_locale,
+                            'context' => $context
+                        ]);
+                        
+                        return $next($request);
+                    }
+                }
+            }
+            
             // URL'de dil yok, session/user tercihi/varsayılan sırasıyla kontrol et
             $currentLanguage = $this->languageService->getCurrentLocale($context);
             

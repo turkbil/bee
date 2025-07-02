@@ -4,60 +4,38 @@ namespace Modules\LanguageManagement\app\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Modules\LanguageManagement\app\Services\LanguageService;
+use Illuminate\Support\Facades\Cookie;
 use Modules\LanguageManagement\app\Services\UrlPrefixService;
 use Symfony\Component\HttpFoundation\Response;
 
 class SiteSetLocaleMiddleware
 {
-    protected $languageService;
-
-    public function __construct(LanguageService $languageService)
-    {
-        $this->languageService = $languageService;
-    }
-
     /**
-     * Handle an incoming request for SITE context only
-     * Uses tenant_languages table and site_locale session
+     * 3 Aşamalı Hibrit Tenant Dil Sistemi (ORJİNAL HALİNE DÖNDÜRÜLDİ)
+     * 1. ACTIVE CHOICE (Session - bu oturumda değiştirildi mi?)
+     * 2. STORED PREFERENCE (User DB / Cookie - kalıcı tercih)
+     * 3. SMART DEFAULT (Tenant varsayılan + fallback)
      */
     public function handle(Request $request, Closure $next): Response
     {
-
-        // URL prefix desteği - sadece site context için
+        
+        
+        // URL prefix desteği kontrol et (mevcut sistem korunuyor)
         if (class_exists('Modules\LanguageManagement\app\Services\UrlPrefixService')) {
-            $urlData = UrlPrefixService::parseUrl($request);
+            try {
+                $urlData = UrlPrefixService::parseUrl($request);
+            } catch (\Exception $e) {
+                \Log::error('🔍 UrlPrefixService hatası', ['error' => $e->getMessage()]);
+                $urlData = ['language' => null];
+            }
             
             if ($urlData['language']) {
-                // UrlPrefixService'ten gelen language object'inden locale'i çıkar
-                $locale = null;
-                if (is_object($urlData['language'])) {
-                    $locale = $urlData['language']->code ?? $urlData['language']->prefix ?? null;
-                } else {
-                    $locale = $urlData['language'];
-                }
+                $locale = $this->extractLocaleFromUrlData($urlData);
                 
-                if ($locale) {
-                    // 🎯 CENTRAL TENANT KONTROLÜ - UrlPrefixService locale'i override edebilir
-                    if (!app(\Stancl\Tenancy\Tenancy::class)->initialized) {
-                        // Central tenant'ın varsayılan dilini kontrol et
-                        $centralTenant = \App\Helpers\TenantHelpers::central(function() {
-                            return \App\Models\Tenant::where('central', true)->first();
-                        });
-                        
-                        if ($centralTenant && $centralTenant->tenant_default_locale && 
-                            $centralTenant->tenant_default_locale !== $locale) {
-                            $locale = $centralTenant->tenant_default_locale;
-                            
-                        }
-                    }
+                if ($locale && $this->isValidTenantLocale($locale)) {
+                    // URL'den gelen dil aktif seçim olarak işle
+                    $this->setActiveTenantLocale($locale);
                     
-                    // Laravel locale'i ayarla
-                    app()->setLocale($locale);
-                    
-                    // Session'a kaydet
-                    session(['site_locale' => $locale]);
-                
                     // Request'e temiz path'i yeniden ata
                     if ($urlData['has_prefix']) {
                         $request->merge(['clean_path' => $urlData['clean_path']]);
@@ -68,71 +46,152 @@ class SiteSetLocaleMiddleware
             }
         }
         
-        // Route parametresinden dil prefix'ini kontrol et
+        // Route parametresi kontrolü
         $langFromRoute = $request->route('locale') ?? $request->route('lang');
-        
-        if ($langFromRoute) {
-            // Route'dan gelen dil geçerli mi kontrol et
-            if ($this->languageService->isValidLanguageForContext($langFromRoute, 'site')) {
-                $this->languageService->setLocale($langFromRoute, 'site');
-                
-                // Eğer kullanıcı giriş yapmışsa tercihini kaydet
-                if (auth()->check()) {
-                    $this->languageService->setUserLanguagePreference($langFromRoute, 'site');
-                }
-                
-                
-                return $next($request);
-            }
+        if ($langFromRoute && $this->isValidTenantLocale($langFromRoute)) {
+            $this->setActiveTenantLocale($langFromRoute);
+            return $next($request);
         }
         
-        // URL'den dil parametresi var mı kontrol et (query parameter)
-        $languageFromUrl = $request->route('language') ?? $request->get('lang');
+        // Normal durum: 3 aşamalı sistem devreye girer
+        $locale = $this->resolveTenantLocale();
         
+        // Laravel app locale'i ayarla (admin locale ile karışmasın!)
+        app()->setLocale($locale);
         
-        if ($languageFromUrl) {
-            // URL'den gelen dil geçerli mi kontrol et
-            if ($this->languageService->isValidLanguageForContext($languageFromUrl, 'site')) {
-                $this->languageService->setLocale($languageFromUrl, 'site');
-                
-                // Eğer kullanıcı giriş yapmışsa tercihini kaydet
-                if (auth()->check()) {
-                    $this->languageService->setUserLanguagePreference($languageFromUrl, 'site');
-                }
-                
-            }
-        } else {
-            // 🎯 CENTRAL TENANT İÇİN ÖZEL KONTROL - Site context
-            // Central tenant kontrolü - Tenancy başlatılmamışsa central'dayız  
-            if (!app(\Stancl\Tenancy\Tenancy::class)->initialized) {
-                // Central tenant bilgisini al
-                $centralTenant = \App\Helpers\TenantHelpers::central(function() {
-                    return \App\Models\Tenant::where('central', true)->first();
-                });
-                
-                if ($centralTenant && $centralTenant->tenant_default_locale) {
-                    // Session'daki dil central tenant'ın varsayılanından farklıysa güncelle
-                    $sessionLocale = session('site_locale');
-                    if ($sessionLocale !== $centralTenant->tenant_default_locale) {
-                        session(['site_locale' => $centralTenant->tenant_default_locale]);
-                        app()->setLocale($centralTenant->tenant_default_locale);
-                        
-                        
-                        return $next($request);
-                    }
-                }
-            }
-            
-            // URL'de dil yok, site session/user tercihi/varsayılan sırasıyla kontrol et
-            $currentLanguage = $this->languageService->getCurrentLocale('site');
-            
-            // Sadece mevcut locale farklıysa güncelle
-            if (app()->getLocale() !== $currentLanguage) {
-                $this->languageService->setLocale($currentLanguage, 'site');
-            }
+        // Session'da da sakla (consistency için)
+        if (!session()->has('tenant_locale') || session('tenant_locale') !== $locale) {
+            session(['tenant_locale' => $locale]);
         }
-
 
         return $next($request);
+    }
+
+    /**
+     * URL prefix data'sından locale çıkar
+     */
+    private function extractLocaleFromUrlData(array $urlData): ?string
+    {
+        if (!$urlData['language']) {
+            return null;
+        }
+        
+        if (is_object($urlData['language'])) {
+            return $urlData['language']->code ?? $urlData['language']->prefix ?? null;
+        }
+        
+        return $urlData['language'];
+    }
+
+    /**
+     * Aktif tenant locale ayarla (URL'den geldiğinde)
+     */
+    private function setActiveTenantLocale(string $locale): void
+    {
+        app()->setLocale($locale);
+        session(['tenant_locale' => $locale]);
+        
+        // Kullanıcı tercihi olarak da kaydet
+        if (auth()->check()) {
+            auth()->user()->update(['tenant_locale' => $locale]);
+        }
+        
+        // Cookie'ye de kaydet
+        Cookie::queue('tenant_locale_preference', $locale, 525600);
+    }
+
+    /**
+     * 3 Aşamalı Tenant Dil Tespiti
+     */
+    private function resolveTenantLocale(): string
+    {
+        
+        // 1. ACTIVE CHOICE - Session'da bu oturum için ayarlanmış dil var mı?
+        if (session()->has('tenant_locale') && $this->isValidTenantLocale(session('tenant_locale'))) {
+            return session('tenant_locale');
+        }
+        
+        // 2. STORED PREFERENCE - Login kullanıcının kalıcı tercihi
+        if (auth()->check() && auth()->user()->tenant_locale && $this->isValidTenantLocale(auth()->user()->tenant_locale)) {
+            // Session'a da kaydet ki bir sonraki requestte 1. aşamadan gelsin
+            session(['tenant_locale' => auth()->user()->tenant_locale]);
+            
+            // Cookie'ye de kaydet (logout sonrası hatırlama için)
+            Cookie::queue('tenant_locale_preference', auth()->user()->tenant_locale, 525600);
+            
+            return auth()->user()->tenant_locale;
+        }
+        
+        // 2b. STORED PREFERENCE - Guest için cookie tercihi
+        if (!auth()->check()) {
+            $cookieLocale = Cookie::get('tenant_locale_preference');
+            if ($cookieLocale && $this->isValidTenantLocale($cookieLocale)) {
+                session(['tenant_locale' => $cookieLocale]);
+                return $cookieLocale;
+            }
+        }
+        
+        // 3. SMART DEFAULT - Tenant varsayılanı + fallback
+        // NOT: TenancyProvider zaten session'a tenant_default_locale yazmış olabilir
+        $defaultLocale = $this->getTenantDefaultLocale();
+        
+        if ($this->isValidTenantLocale($defaultLocale)) {
+            session(['tenant_locale' => $defaultLocale]);
+            Cookie::queue('tenant_locale_preference', $defaultLocale, 525600);
+            return $defaultLocale;
+        }
+        
+        // Final fallback
+        session(['tenant_locale' => 'tr']);
+        return 'tr';
+    }
+
+    /**
+     * Tenant varsayılan dilini al (central tenant için özel kontrol)
+     */
+    private function getTenantDefaultLocale(): string
+    {
+        try {
+            // Önce tenant() helper'ını dene
+            $tenant = tenant();
+            
+            if ($tenant && $tenant->tenant_default_locale) {
+                return $tenant->tenant_default_locale;
+            }
+            
+            // Central tenant için dinamik kontrol (central = 1)
+            $centralTenant = \App\Models\Tenant::where('central', 1)->first();
+            
+            if ($centralTenant && $centralTenant->tenant_default_locale) {
+                return $centralTenant->tenant_default_locale;
+            }
+            
+            return 'tr'; // Final fallback
+        } catch (\Exception $e) {
+            return 'tr';
+        }
+    }
+
+    /**
+     * Tenant için geçerli dil kontrolü (unified tenant system)
+     */
+    private function isValidTenantLocale(string $locale): bool
+    {
+        if (empty($locale) || strlen($locale) > 5) {
+            return false;
+        }
+        
+        try {
+            // Unified tenant DB kontrolü - tüm tenantlar aynı şekilde
+            $exists = \DB::table('tenant_languages')
+                ->where('code', $locale)
+                ->where('is_active', true)
+                ->exists();
+                
+            return $exists;
+        } catch (\Exception $e) {
+            // DB hatası durumunda basic locale kontrolü
+            return in_array($locale, ['tr', 'en']);
+        }
     }
 }

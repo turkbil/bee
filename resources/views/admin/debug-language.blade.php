@@ -37,9 +37,9 @@
                             </td>
                         </tr>
                         <tr>
-                            <td><strong>site_locale</strong></td>
+                            <td><strong>tenant_locale</strong></td>
                             <td>
-                                <span class="badge bg-success">{{ session('site_locale', 'YOK') }}</span>
+                                <span class="badge bg-success">{{ session('tenant_locale', 'YOK') }}</span>
                             </td>
                         </tr>
                         <tr>
@@ -78,9 +78,9 @@
                             </td>
                         </tr>
                         <tr>
-                            <td><strong>site_locale</strong></td>
+                            <td><strong>tenant_locale</strong></td>
                             <td>
-                                <span class="badge bg-success">{{ auth()->user()->site_locale ?? 'YOK' }}</span>
+                                <span class="badge bg-success">{{ auth()->user()->tenant_locale ?? 'YOK' }}</span>
                             </td>
                         </tr>
                         <tr>
@@ -195,7 +195,7 @@
                         </thead>
                         <tbody>
                             @foreach($siteLanguages as $lang)
-                            <tr class="{{ session('site_locale') === $lang->code ? 'table-success' : '' }}">
+                            <tr class="{{ session('tenant_locale') === $lang->code ? 'table-success' : '' }}">
                                 <td><strong>{{ $lang->code }}</strong></td>
                                 <td>{{ $lang->native_name }}</td>
                                 <td>{{ $lang->flag_icon }}</td>
@@ -247,7 +247,7 @@
                             <div class="btn-group w-100" role="group">
                                 @foreach($siteLanguages as $lang)
                                 <button type="button" 
-                                        class="btn {{ session('site_locale') === $lang->code ? 'btn-success' : 'btn-outline-success' }}"
+                                        class="btn {{ session('tenant_locale') === $lang->code ? 'btn-success' : 'btn-outline-success' }}"
                                         onclick="testSiteLanguage('{{ $lang->code }}')">
                                     {{ $lang->flag_icon }} {{ $lang->native_name }}
                                 </button>
@@ -295,13 +295,13 @@
                     <div style="background: #1a1a1a; color: #ffffff; padding: 20px; border-radius: 8px; font-size: 14px; font-family: 'Consolas', 'Monaco', 'Courier New', monospace; white-space: pre-wrap; word-break: break-word; line-height: 1.6; border: 1px solid #333;">
 <strong style="color: #ffff00;">=== SESSION DATA ===</strong>
 admin_locale: <span style="color: #00ffff; font-weight: bold;">{{ session('admin_locale', 'NULL') }}</span>
-site_locale: <span style="color: #00ff00; font-weight: bold;">{{ session('site_locale', 'NULL') }}</span>
+tenant_locale: <span style="color: #00ff00; font-weight: bold;">{{ session('tenant_locale', 'NULL') }}</span>
 
 <strong style="color: #ffff00;">=== USER DATA ===</strong>
 @if(auth()->check())
 user_id: <span style="color: #ff8800;">{{ auth()->id() }}</span>
 admin_locale: <span style="color: #00ffff;">{{ auth()->user()->admin_locale ?? 'NULL' }}</span>
-site_locale: <span style="color: #00ff00;">{{ auth()->user()->site_locale ?? 'NULL' }}</span>
+tenant_locale: <span style="color: #00ff00;">{{ auth()->user()->tenant_locale ?? 'NULL' }}</span>
 @else
 <span style="color: #ff4444;">NOT AUTHENTICATED</span>
 @endif
@@ -492,10 +492,10 @@ function clearSessions() {
 document.addEventListener('DOMContentLoaded', function() {
     console.log('=== 🐛 DİL SİSTEMİ DEBUG LOADED ===');
     console.log('Admin Locale (Session):', '{{ session("admin_locale", "NULL") }}');
-    console.log('Site Locale (Session):', '{{ session("site_locale", "NULL") }}');
+    console.log('Site Locale (Session):', '{{ session("tenant_locale", "NULL") }}');
     console.log('App Locale:', '{{ app()->getLocale() }}');
     console.log('User Admin Locale:', '{{ auth()->check() ? (auth()->user()->admin_locale ?? "NULL") : "NOT_LOGGED_IN" }}');
-    console.log('User Site Locale:', '{{ auth()->check() ? (auth()->user()->site_locale ?? "NULL") : "NOT_LOGGED_IN" }}');
+    console.log('User Site Locale:', '{{ auth()->check() ? (auth()->user()->tenant_locale ?? "NULL") : "NOT_LOGGED_IN" }}');
     console.log('===================================');
     
     // List all Livewire components

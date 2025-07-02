@@ -5,7 +5,7 @@ use Modules\ModuleManagement\App\Http\Livewire\ModuleComponent;
 use Modules\ModuleManagement\App\Http\Livewire\ModuleManageComponent;
 use Modules\ModuleManagement\App\Http\Livewire\ModuleSlugSettingsComponent;
 
-Route::middleware(['web', 'auth', 'tenant'])
+Route::middleware(['admin', 'tenant'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {

@@ -2,6 +2,412 @@
 
 Bu proje, Laravel 12 ile geliştirilmiş, modüler ve çok kiracılı (multi-tenancy) bir web uygulamasıdır.
 
+## 🚀 BAŞARI HIKAYELERI - 02.07.2025
+
+### ✅ Theme Builder Renk Sistemi ve Widget Management Çeviri Sistemi Tamamen Düzeltildi
+
+**Admin Panel Tema Renk Sistemi Komple Çözümü:**
+- Azure renk NaN hatası tamamen düzeltildi (JavaScript renk mapping sorunu)
+- Renk paletinde azure CSS class sorunu çözüldü (bg-azure yerine style="background-color")
+- Theme renk seçimi anında çalışır hale getirildi (0.2s animasyon kaldırıldı)
+- Renk paleti tonlarına göre yeniden organize edildi (soğuk-sıcak tonlar, açıktan koyuya)
+
+**Teknik Çözümler:**
+- `/public/admin-assets/js/theme.js`: Azure hex değeri `#1e7dcf` → `#4299e1` uyumluluğu
+- `/resources/views/admin/components/theme-builder.blade.php`: Azure renk görselleştirme
+- CSS animasyon sürelerinin kaldırılması (theme switch anında tepki)
+- Renk organizasyonu: İlk satır soğuk tonlar, ikinci satır sıcak tonlar (spektrum sırası)
+
+**WidgetManagement Kapsamlı Çeviri Sistemi:**
+- 30+ eksik çeviri anahtarı tespit edildi ve eklendi
+- Form Builder, Tooltip, Messages, Actions, Types namespace'leri eklendi
+- Livewire component desteği için namespace yapısı kuruldu
+- widgetmanagement::admin.widget.component, messages.widget_activated/deactivated çalışır
+
+**Eklenen Çeviri Kategorileri:**
+```php
+// Form Builder: form_builder_settings, view_file_selection, widget_form_loading
+// Tooltips: format_code_title, find_replace_title, fullscreen_title
+// Actions: actions.created, actions.activated, actions.deactivated
+// Types: types.static, types.dynamic, types.content
+// Messages: messages.widget_activated, messages.widget_deactivated
+```
+
+**Widget İşlemler Artık Türkçe/İngilizce Destekli:**
+- Widget aktifleştirme/deaktifleştirme mesajları
+- Form builder element çevirileri
+- Component management arayüz çevirileri
+- İşlem doğrulama ve hata mesajları
+
+### ✅ AI Modülü Critical Bug Fixes ve Sistem Stabilizasyonu
+**AI Token Management ve Livewire Component Sorunları Çözüldü:**
+- AI modülündeki 5 major Livewire component bulunamama hatası düzeltildi
+- AI token sayfalarında eksik subheader (helper.blade.php) include'ları eklendi
+- Duplicate page-header CSS class'ları temizlendi
+- AI settings-panel.blade.php'de foreach() type error hatası düzeltildi
+
+**Çözülen Component Hataları:**
+- `admin.ai-token-packages-component` → ServiceProvider'a kayıt eklendi
+- `admin.ai-token-purchases-component` → ServiceProvider'a kayıt eklendi  
+- `admin.ai-token-usage-stats-component` → ServiceProvider'a kayıt eklendi
+- `ai::admin.settings-panel` → AI ServiceProvider'a kayıt eklendi
+- `ai::admin.chat-panel` → AI ServiceProvider'a kayıt eklendi
+
+**Layout ve Template Düzeltmeleri:**
+- AI token sayfalarına subheader navigation eklendi
+- Wrapper view pattern uygulandı (packages.blade.php, purchases.blade.php, usage-stats.blade.php)
+- Duplicate page-header container'ları kaldırıldı
+- AI dil dosyalarında array/string type mismatch düzeltildi
+
+**Teknik İyileştirmeler:**
+- AppServiceProvider.php: AI token component registration
+- AI/Providers/AIServiceProvider.php: Modül component registration  
+- AI settings common_prompt_features_list string → array dönüştürüldü
+- Route wrapper'ları ile Livewire component'lar doğru namespace'lerde
+
+### ✅ WidgetManagement Dil Sistemi ve UI Standardizasyonu
+**Widget Çevirileri ve İkon Tutarlılığı:**
+- "Hızlı Başlangıç" → "Ayarlar", "Nasıl Kullanılır" → "İçerikler" dil güncellemeleri
+- 'settings' anahtarı TODO hatası düzeltildi (tr: "Ayarlar", en: "Settings")
+- Widget buton iconları Tabler Icons standardına geçirildi (ti ti-settings, ti ti-file-text, ti ti-eye)
+- Button group CSS kuralları eklendi: köşe yuvarlanma standardizasyonu
+
+**UI/UX İyileştirmeleri:**
+- WidgetManagement butonlar arası boşluk düzenlemesi (`d-flex gap-2` pattern)
+- CSS button-group radius rules: sadece başlangıç/bitiş köşeleri yuvarlanır
+- FontAwesome → Tabler Icons migration tamamlandı
+- 4 Livewire component dosyasında icon standardizasyonu
+
+### ✅ Admin Panel Hızlı İşlemler Loading Göstergesi Düzeltildi
+**Grid İkonunda Loading State Eklendi:**
+- Cache temizleme butonları (Sistem Cache, Cache Temizle) için grid ikonunda loading göstergesi
+- Dropdown tetikleyicisindeki fa-grid-2 ikonu işlem sırasında fa-spinner fa-spin olarak değişiyor
+- Çift loading göstergesi: hem buton içi hem grid ikonu
+- Tabler.io/Bootstrap uyumlu JavaScript implementasyonu
+- Kullanıcı deneyimi iyileştirmesi: işlem devam ettiğinin görsel geri bildirimi
+
+**Teknik Detaylar:**
+- `/public/admin-assets/js/main.js` dosyasında güncelleme
+- Grid ikonu selector: `[data-bs-toggle="dropdown"] .fa-grid-2`
+- AJAX işlemi sırasında loading state yönetimi
+- İşlem bitiminde otomatik orijinal duruma geri dönüş
+
+## 🚀 BAŞARI HIKAYELERI - 02.07.2025
+
+### ✅ AI Modülü Token Management Sistemi ve Filtreleme Tamamlandı
+**AI Token Yönetim Sistemi Geliştirildi:**
+- AI Token paket yönetimi (CRUD işlemleri)
+- Token satın alma geçmişi yönetimi
+- Token kullanım istatistikleri ve raporlama
+- UserActivity logs stilinde collapsible filter sistemi
+- Portfolio modülü tasarım standardına uygun arayüz
+
+**Token Package Management Özellikleri:**
+- Paket oluşturma/düzenleme (ad, token miktarı, fiyat, para birimi)
+- Feature management sistemi (özellik ekleme/çıkarma)
+- İnline status toggle (aktif/pasif)
+- Sortable headers (isim, token, fiyat, durum)
+- Portfolio stilinde form-floating inputs ve pretty checkbox
+
+**Purchase & Usage Management:**
+- Satın alma geçmişi tam raporlama
+- Kullanım analizi ve model bazında breakdown
+- Collapsible filter sistemi (durum, tarih aralığı, model)
+- Debounced search (300ms gecikme)
+- Real-time perPage pagination control
+
+### ✅ Kapsamlı Çeviri (Translation) Kontrol Sistemi Geliştirildi
+**Web Arayüzü Çeviri Checker:**
+- http://laravel.test/admin/languagemanagement/translation-checker
+- Tüm modülleri aynı anda tarama özelliği
+- Seçili modülleri özel tarama
+- Dashboard style istatistik kartları
+- Detaylı sonuç tablosu (TR/EN admin/front breakdown)
+- Otomatik eksik çeviri düzeltme sistemi
+
+**CLI Debug Sistemi:**
+```bash
+# Tüm modülleri tara
+php artisan translations:check
+
+# Tek modül tara  
+php artisan translations:check AI
+
+# Otomatik düzelt
+php artisan translations:check --fix
+```
+
+**Translation Analysis Özellikleri:**
+- Blade dosyalarında kullanılan tüm dil anahtarlarını otomatik tespit
+- TR ve EN dil dosyalarıyla karşılaştırma
+- Eksik çevirileri TODO placeholder ile otomatik ekleme
+- Nested array desteği ile comprehensive tarama
+- Module-based translation management
+
+### ✅ Tüm Helper.blade.php Dosyalarında Icon Temizleme
+**Consistent Design Pattern Uygulandı:**
+- AI modülünden 10 adet FontAwesome icon kaldırıldı
+- LanguageManagement modülünden search icon kaldırıldı
+- UserManagement referans modeli pattern'i tüm modüllere uygulandı
+- WidgetManagement çoklu buton yaklaşımı korundu
+
+**Icon-Free Minimal Design:**
+- 12 modülde tamamen tutarlı tasarım
+- Performance iyileştirmesi (FontAwesome dependency azaltıldı)
+- Text-based navigation ile better accessibility
+- Modern, minimal UI approach
+
+**Avatar Icon Özel Çözümü:**
+- AI modülünde `fa-coins` → ₺ (para sembolü)
+- AI modülünde `fa-chart-bar` → % (yüzde sembolü)
+- CSS-based colored avatars with symbols
+
+### 🔧 Teknik İyileştirmeler
+**AI Filter Sistemi:**
+- Portfolio pattern'i ile consistent table structure
+- Collapsible filter panel implementation
+- Debounced search optimization
+- PerPage property integration in pagination
+
+**Translation Management:**
+- CheckMissingTranslations artisan command
+- Automatic TODO placeholder generation
+- Comprehensive blade file scanning
+- Multi-language support validation
+
+**Helper Design Standardization:**
+- Icon dependency elimination
+- Consistent dropdown structures
+- Clean text-based navigation
+- Unified design language across modules
+
+---
+
+## 🔥 BAŞARI HIKAYELERI - 30.06.2025
+
+### ✅ Central Tenant Varsayılan Dil Sorunu Tamamen Çözüldü
+**Problem**: Central tenant (laravel.test) kendi `tenant_default_locale` değerini kullanamıyordu, hep 'tr' fallback'ini alıyordu.
+
+**Çözüm**: 
+- InitializeTenancy middleware'de central tenant için de tenancy başlatıldı
+- UrlPrefixService'e central tenant kontrolü eklendi (`where('central', 1)`)
+- Session tabanlı dil değiştirme sistemini tenant() helper'ı null olsa bile çalışacak şekilde düzeltildi
+
+**Sonuç**: 
+- Central tenant artık tenant_default_locale = 'ar' doğru kullanıyor ✅
+- Language switcher tüm tenant'larda (central dahil) çalışıyor ✅  
+- 3 aşamalı hibrit dil sistemi unified tenant architecture ile uyumlu ✅
+
+**Teknik Detaylar**: InitializeTenancy.php, UrlPrefixService.php, SiteSetLocaleMiddleware.php dosyalarında kritik düzeltmeler yapıldı.
+
+## 🌐 DİL YÖNETİMİ HİYERAŞİSİ VE FLOW
+
+### 📋 İKİ AYRI DİL SİSTEMİ
+
+Bu sistemde **2 tamamen farklı dil sistemi** vardır:
+
+#### 1️⃣ **ADMİN PANEL DİL SİSTEMİ** (Admin Languages)
+- **Amaç**: Sadece admin paneli arayüzünün dilini değiştirir
+- **Tablo**: `admin_languages` 
+- **Session Key**: `admin_locale`
+- **User Field**: `admin_locale`
+- **URL Alanı**: `/admin/*` rotaları
+- **Context**: Bootstrap + Tabler.io framework
+- **Component**: `AdminLanguageSwitcher`
+
+#### 2️⃣ **TENANT/ÖNYÜZ DİL SİSTEMİ** (Tenant Languages)
+- **Amaç**: Tenant site içeriğinin dilini değiştirir
+- **Tablo**: `tenant_languages`
+- **Session Key**: `tenant_locale`
+- **User Field**: `tenant_locale`
+- **URL Alanı**: Ana domain ve tenant rotaları
+- **Context**: Tailwind + Alpine.js framework
+- **Component**: `TenantLanguageSwitcher`
+
+---
+
+### 🔄 KULLANICI LOGIN/LOGOUT FLOW
+
+#### 🚀 **GUEST KULLANICI SENARYOSU**
+
+1. **İlk Ziyaret** (`/')
+   ```
+   Hiçbir session yok → Tenant varsayılan dili (tenant.tenant_default_locale)
+   Cookie kaydedilir → tenant_locale_preference=tr
+   ```
+
+2. **Dil Değiştirme** (Guest)
+   ```
+   TenantLanguageSwitcher → /change-tenant-language/en
+   Session güncellenir → session('tenant_locale', 'en')
+   Cookie güncellenir → tenant_locale_preference=en
+   Cache temizlenir → Guest cache bypass
+   Redirect → Seçilen dilde sayfa
+   ```
+
+#### 🔐 **AUTHENTİCATED KULLANICI SENARYOSU**
+
+1. **Login Anında**
+   ```php
+   // AuthenticatedSessionController
+   if ($user->tenant_locale) {
+       session(['tenant_locale' => $user->tenant_locale]);
+       Cookie::queue('tenant_locale_preference', $user->tenant_locale, 525600);
+   }
+   clearGuestCaches(); // Guest cache temizlenir
+   ```
+
+2. **Login Sonrası**
+   ```
+   User spesifik cache → auth_userID_response_cache
+   Kendi dil tercihi devreye girer → users.tenant_locale
+   Admin panelinde farklı dil → users.admin_locale
+   ```
+
+3. **Logout Anında**
+   ```php
+   // AuthenticatedSessionController
+   clearUserAuthCaches($user->id); // User cache temizlenir
+   session()->forget(['tenant_locale', 'admin_locale']);
+   // Cookie korunur → Guest mode'da devam eder
+   ```
+
+---
+
+### 🎯 DİL TESPİT HİYERAŞİSİ
+
+#### **TENANT DİL TESPİTİ** (Önyüz için)
+```php
+// SiteSetLocaleMiddleware priority sırası:
+1. session('tenant_locale')           // En yüksek öncelik
+2. auth()->user()->tenant_locale      // Login kullanıcı tercihi
+3. Cookie::get('tenant_locale_preference') // Cookie tercihi
+4. $tenant->tenant_default_locale     // Tenant varsayılanı
+5. 'tr'                              // Sistem fallback
+```
+
+#### **ADMİN DİL TESPİTİ** (Admin panel için)
+```php
+// AdminSetLocaleMiddleware priority sırası:
+1. session('admin_locale')           // En yüksek öncelik
+2. auth()->user()->admin_locale      // Login kullanıcı tercihi
+3. Cookie::get('admin_locale_preference') // Cookie tercihi
+4. config('app.admin_default_locale') // Admin varsayılanı
+5. 'tr'                             // Sistem fallback
+```
+
+---
+
+### 💾 CACHE STRATEJİSİ
+
+#### **Auth/Guest Cache Ayrımı**
+```php
+// AuthAwareHasher
+if (auth()->check()) {
+    $key = 'auth_' . auth()->id() . '_response_cache';
+} else {
+    $key = 'guest_response_cache';
+}
+```
+
+#### **Cache Temizleme Mekanizması**
+```php
+// Login'de
+clearGuestCaches(); // Tüm guest cache'ler silinir
+
+// Logout'ta
+clearUserAuthCaches($userId); // Sadece o user'ın cache'i silinir
+
+// Dil değiştirmede
+Cache::tags("tenant_{$tenantId}_response_cache")->flush();
+```
+
+---
+
+### 🍪 COOKİE YÖNETİMİ
+
+#### **Cookie Kaydetme**
+```php
+// Dil değiştirmede otomatik cookie
+Cookie::queue('tenant_locale_preference', $locale, 525600); // 1 yıl
+Cookie::queue('admin_locale_preference', $locale, 525600);  // 1 yıl
+```
+
+#### **Cookie Kullanımı**
+```php
+// Middleware'de fallback olarak
+$cookieLocale = Cookie::get('tenant_locale_preference');
+if ($cookieLocale && in_array($cookieLocale, $availableLocales)) {
+    app()->setLocale($cookieLocale);
+}
+```
+
+---
+
+### 🗂️ DATABASE YAPISI
+
+#### **Users Tablosu** (Central & Tenant)
+```sql
+users {
+    admin_locale VARCHAR(10) NULL,    -- Admin panel dil tercihi
+    tenant_locale VARCHAR(5) NULL     -- Tenant site dil tercihi
+}
+```
+
+#### **Tenants Tablosu** (Central)
+```sql
+tenants {
+    tenant_default_locale VARCHAR(5) DEFAULT 'tr'  -- Tenant varsayılan dili
+}
+```
+
+#### **Admin Languages Tablosu** (Central)
+```sql
+admin_languages {
+    code VARCHAR(10) PRIMARY KEY,     -- 'tr', 'en'
+    name VARCHAR(100),                -- 'Turkish', 'English'
+    native_name VARCHAR(100),         -- 'Türkçe', 'English'
+    is_active BOOLEAN DEFAULT true
+}
+```
+
+#### **Tenant Languages Tablosu** (Tenant)
+```sql
+tenant_languages {
+    code VARCHAR(5) PRIMARY KEY,      -- 'tr', 'en'
+    name VARCHAR(100),                -- 'Turkish', 'English'
+    native_name VARCHAR(100),         -- 'Türkçe', 'English'
+    is_active BOOLEAN DEFAULT true
+}
+```
+
+---
+
+### 🔧 TEKNİK DETAYLAR
+
+#### **Session Keys**
+- `admin_locale` → Admin panel dili
+- `tenant_locale` → Tenant site dili
+
+#### **Cookie Keys**
+- `admin_locale_preference` → Admin dil tercihi (1 yıl)
+- `tenant_locale_preference` → Tenant dil tercihi (1 yıl)
+
+#### **Cache Tags**
+- `tenant_{id}_response_cache` → Tenant spesifik cache
+- `auth_{userId}_response_cache` → User spesifik cache
+- `guest_response_cache` → Guest cache
+
+#### **Helper Functions**
+```php
+current_admin_language()           // Mevcut admin dili
+current_tenant_language()          // Mevcut tenant dili
+default_admin_language()           // Varsayılan admin dili
+default_tenant_language()          // Varsayılan tenant dili
+set_user_admin_language($locale)   // Admin dil tercihi kaydet
+set_user_tenant_language($locale)  // Tenant dil tercihi kaydet
+```
+
 ## Kullanışlı Komutlar
 
 - `compact` - Geçmiş konuşma özetini gösterir (ctrl+r ile tam özeti görüntüle)
@@ -25,6 +431,78 @@ Bu proje, Laravel 12 ile geliştirilmiş, modüler ve çok kiracılı (multi-ten
 ---
 
 ## Sürüm Geçmişi
+
+### v1.27.0 (2025-06-30) - Tema Builder Duplicate Toast Mesaj Düzeltme - BAŞARILI ✅
+
+**🎯 ANA ÖZELLİK - Tema Builder Toast Mesaj Optimizasyonu:**
+- **Problem**: Tema builder'da her ayar değişikliğinde 2 farklı toast mesajı çıkıyordu ("Ana renk güncellendi" + "Tema başarıyla güncellendi")
+- **Çözüm**: Duplicate prevention sistemi + unified messaging ile tek toast mesajına indirgedik
+- **Sonuç**: Tema değişikliklerinde sadece 1 unified toast mesajı: "Tema ayarları başarıyla güncellendi" ✅
+
+**🔧 Teknik Implementation:**
+- **Duplicate Prevention**: 1 saniye debounce sistemi - aynı mesaj 1 saniye içinde gelirse ignore ediliyor
+- **Unified Messaging**: Tema ile ilgili tüm mesajları tek mesaja birleştirme sistemi
+- **Session & Livewire Control**: Hem Livewire toast'ları hem session-based toast'ları kontrol altına alındı
+
+**📊 Düzeltilen Dosyalar:**
+- **`/public/admin-assets/js/toast.js`**: Duplicate prevention + unified messaging sistemi eklendi ✅
+- **`/resources/views/admin/layout.blade.php`**: Session toast duplicate control sistemi eklendi ✅
+
+**🚫 Duplicate Control Pattern:**
+```javascript
+// 1 saniye debounce ile duplicate toast prevention
+if (currentTime - lastToastTime < TOAST_DEBOUNCE_TIME && lastToastMessage === currentMessage) {
+    console.log('🚫 Duplicate toast prevented:', currentMessage);
+    return;
+}
+```
+
+**🎯 Unified Toast Pattern:**
+```javascript
+// Tema ile ilgili tüm mesajları birleştirme
+if (message.includes('Ana renk') || message.includes('Tema başarıyla')) {
+    unifiedTitle = 'Tema Ayarları';
+    unifiedMessage = 'Tema ayarları başarıyla güncellendi';
+}
+```
+
+---
+
+### v1.26.0 (2025-06-30) - LanguageManagement Tenant-Aware Sistem - BAŞARILI ✅
+
+**🎯 ANA ÖZELLİK - LanguageManagement Tenant-Aware is_default Sistemi:**
+- **Problem**: LanguageManagement modülü hala `tenant_languages.is_default` column'unu arıyordu
+- **Çözüm**: Tüm dil yönetimi component'leri tenant'ın `tenant_default_locale` ayarını kullanacak şekilde refactor edildi
+- **Sonuç**: Dil yönetimi sayfaları hatasız açılıyor ve tenant-aware çalışıyor
+
+**🔧 Teknik Implementation:**
+- **TenantLanguageComponent**: `is_default` column query'leri kaldırıldı, tenant-aware `is_default` property eklendi
+- **LanguageSettingsComponent**: `loadUrlPrefixSettings()` ve `saveUrlPrefixSettings()` tenant tablosunu kullanıyor
+- **Dynamic is_default Property**: Runtime'da her dil için `$language->code === $tenant->tenant_default_locale` kontrolü
+- **Unified Tenant Resolution**: Tüm component'lerde standardize edilmiş tenant çözümleme pattern'i
+
+**📊 Düzeltilen Component'ler:**
+- **TenantLanguageComponent**: delete(), toggleActive(), render() metodları ✅
+- **LanguageSettingsComponent**: loadUrlPrefixSettings(), saveUrlPrefixSettings(), loadStats() metodları ✅
+- **Blade Template Uyumluluk**: `$language->is_default` kullanımları korundu ✅
+
+**🌐 Eksik Çeviriler Eklendi:**
+- **TR**: `admin.default_language`, `admin.default_language_description` ✅
+- **EN**: `admin.default_language`, `admin.default_language_description` ✅
+
+**🧪 Test Sonuçları:**
+- **LanguageManagement Ana Sayfa**: Hatasız açılıyor ✅
+- **Site Languages Listeleme**: Tenant varsayılan dili doğru gösteriyor ✅
+- **Varsayılan Dil Değiştirme**: Tenants tablosunda `tenant_default_locale` güncelleniyor ✅
+- **Dil Silme/Aktifleştirme**: Tenant varsayılan dili korunuyor ✅
+
+**💡 Teknik Özellikler:**
+- Tenant context detection: `app(\Stancl\Tenancy\Tenancy::class)->initialized`
+- Central fallback: Domain-based tenant resolution
+- Runtime property injection: Collection'lara `is_default` property ekleme
+- Type safety: `tenant_default_locale ?? 'tr'` fallback sistemi
+
+---
 
 ### v1.25.0 (2025-06-30) - Admin Panel Dinamik Varsayılan Dil Sekmesi - BAŞARILI ✅
 

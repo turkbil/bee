@@ -25,7 +25,7 @@ DB::purge('tenant');
 // Admin fallback locale'i tenant'tan al (modül display_name'leri için)
 $adminFallbackLocale = 'tr'; // Sistem varsayılanı
 if (function_exists('tenant') && tenant() && isset(tenant()->admin_default_locale)) {
-    $adminFallbackLocale = tenant()->admin_default_locale;
+$adminFallbackLocale = tenant()->admin_default_locale;
 }
 
 // Dil seçim mantığı: 1. Session 2. User admin dili 3. Tenant admin dili 4. fallback
@@ -33,11 +33,11 @@ $currentLocale = $adminFallbackLocale; // Tenant'ın varsayılan admin dili
 
 // 1. Session'dan admin dili (en güncel)
 if (session('admin_locale')) {
-    $currentLocale = session('admin_locale');
+$currentLocale = session('admin_locale');
 }
 // 2. Kullanıcının kaydettiği admin dil tercihi
 elseif (auth()->check() && auth()->user()->admin_locale) {
-    $currentLocale = auth()->user()->admin_locale;
+$currentLocale = auth()->user()->admin_locale;
 }
 
 // Admin interface için her zaman fallback locale'i de ayarla (modül isimleri için)
@@ -47,9 +47,9 @@ app()->setLocale($adminFallbackLocale);
 // Sistem dillerini al
 $systemLanguages = collect();
 if (class_exists('Modules\LanguageManagement\App\Models\AdminLanguage')) {
-    $systemLanguages = \Modules\LanguageManagement\App\Models\AdminLanguage::where('is_active', true)
-        ->orderBy('id')
-        ->get();
+$systemLanguages = \Modules\LanguageManagement\App\Models\AdminLanguage::where('is_active', true)
+->orderBy('id')
+->get();
 }
 
 // Mevcut dil bilgisi
@@ -76,7 +76,8 @@ app()->setLocale($originalLocale);
 
 <header class="navbar navbar-expand-md d-print-none">
     <div class="container">
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu" aria-controls="navbar-menu" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu"
+            aria-controls="navbar-menu" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
@@ -97,18 +98,19 @@ app()->setLocale($originalLocale);
             <div class="d-none d-md-flex align-items-center">
                 <!-- Anasayfa Butonu -->
                 <div class="nav-item me-2">
-                    <a href="{{ url('/') }}" target="_blank" class="nav-link d-flex align-items-center justify-content-center" 
-                        data-bs-toggle="tooltip" data-bs-placement="bottom" 
-                        title="{{ __('admin.homepage') }}" 
+                    <a href="{{ url('/') }}" target="_blank"
+                        class="nav-link d-flex align-items-center justify-content-center" data-bs-toggle="tooltip"
+                        data-bs-placement="bottom" title="{{ __('admin.homepage') }}"
                         style="width: 40px; height: 40px; border-radius: 0.375rem;">
                         <i class="fa-solid fa-home" style="font-size: 18px;"></i>
                     </a>
                 </div>
 
                 <!-- Tema Ayarları Butonu -->
-                <div class="nav-item me-2" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('admin.theme_settings') }}">
-                    <a href="#" class="nav-link d-flex align-items-center justify-content-center" data-bs-toggle="offcanvas"
-                        data-bs-target="#offcanvasTheme" 
+                <div class="nav-item me-2" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                    title="{{ __('admin.theme_settings') }}">
+                    <a href="#" class="nav-link d-flex align-items-center justify-content-center"
+                        data-bs-toggle="offcanvas" data-bs-target="#offcanvasTheme"
                         style="width: 40px; height: 40px; border-radius: 0.375rem;">
                         <i class="fa-solid fa-brush" style="font-size: 18px;"></i>
                     </a>
@@ -116,7 +118,9 @@ app()->setLocale($originalLocale);
 
                 <!-- Gece/Gündüz Mod Switch'i -->
                 <div class="nav-item me-2">
-                    <div class="d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; border-radius: 0.375rem; margin-top: -2px;" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('admin.theme_mode') }}">
+                    <div class="d-flex align-items-center justify-content-center"
+                        style="width: 40px; height: 40px; border-radius: 0.375rem; margin-top: -2px;"
+                        data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('admin.theme_mode') }}">
                         <div class="theme-mode" data-theme="light">
                             <input type="checkbox" id="switch" class="dark-switch">
                             <div class="app">
@@ -135,15 +139,20 @@ app()->setLocale($originalLocale);
                         </div>
                     </div>
                 </div>
-                
+
+
                 <!-- Son Aktiviteler Dropdown -->
-                <div class="nav-item dropdown me-2" id="activities-dropdown" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('admin.recent_activities') }}">
-                    <a href="#" class="nav-link d-flex align-items-center justify-content-center" data-bs-toggle="dropdown" tabindex="-1" aria-expanded="false" style="width: 40px; height: 40px; border-radius: 0.375rem;">
+                <div class="nav-item dropdown me-2" id="activities-dropdown" data-bs-toggle="tooltip"
+                    data-bs-placement="bottom" title="{{ __('admin.recent_activities') }}">
+                    <a href="#" class="nav-link d-flex align-items-center justify-content-center"
+                        data-bs-toggle="dropdown" tabindex="-1" aria-expanded="false"
+                        style="width: 40px; height: 40px; border-radius: 0.375rem;">
                         <i class="fa-solid fa-bell" style="font-size: 18px;"></i>
                         @php
                         // Son aktiviteleri ve okunmamış sayısını hesapla
                         $lastReadTime = $_COOKIE['last_activity_read'] ?? 0;
-                        $unreadActivitiesCount = \Spatie\Activitylog\Models\Activity::where('created_at', '>', date('Y-m-d H:i:s', $lastReadTime))->count();
+                        $unreadActivitiesCount = \Spatie\Activitylog\Models\Activity::where('created_at', '>',
+                        date('Y-m-d H:i:s', $lastReadTime))->count();
                         @endphp
                         @if($unreadActivitiesCount > 0)
                         <span class="badge bg-red">{{ $unreadActivitiesCount }}</span>
@@ -153,22 +162,24 @@ app()->setLocale($originalLocale);
                         <div class="card">
                             <div class="card-header d-flex">
                                 <h3 class="card-title">{{ __('admin.recent_activities') }}</h3>
-                                <button type="button" class="btn-close ms-auto" data-bs-dismiss="dropdown" aria-label="Kapat"></button>
+                                <button type="button" class="btn-close ms-auto" data-bs-dismiss="dropdown"
+                                    aria-label="Kapat"></button>
                             </div>
                             <div class="list-group list-group-flush list-group-hoverable">
                                 @php
                                 // Son 6 aktiviteyi al
                                 $activities = \Spatie\Activitylog\Models\Activity::with('causer')
-                                    ->latest()
-                                    ->take(6)
-                                    ->get();
+                                ->latest()
+                                ->take(6)
+                                ->get();
                                 @endphp
                                 @forelse($activities as $activity)
                                 <div class="list-group-item py-3">
                                     <div class="row align-items-center">
                                         <div class="col-auto">
                                             <span class="avatar avatar-sm bg-primary text-white rounded-circle">
-                                                <i class="fa-solid fa-{{ $activity->created_at->diffInMinutes(now()) < 5 ? 'bolt' : 'user' }}" style="font-size: 12px;"></i>
+                                                <i class="fa-solid fa-{{ $activity->created_at->diffInMinutes(now()) < 5 ? 'bolt' : 'user' }}"
+                                                    style="font-size: 12px;"></i>
                                             </span>
                                         </div>
                                         <div class="col text-truncate">
@@ -176,11 +187,13 @@ app()->setLocale($originalLocale);
                                                 {{ ucfirst($activity->description) }}
                                             </div>
                                             <div class="d-block text-muted small">
-                                                {{ $activity->causer->name ?? 'Sistem' }} • {{ $activity->created_at->diffForHumans() }}
+                                                {{ $activity->causer->name ?? 'Sistem' }} • {{
+                                                $activity->created_at->diffForHumans() }}
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                            <a href="{{ route('admin.usermanagement.user.activity.logs', ['id' => $activity->causer_id ?? 0]) }}" class="btn btn-ghost-primary btn-sm">
+                                            <a href="{{ route('admin.usermanagement.user.activity.logs', ['id' => $activity->causer_id ?? 0]) }}"
+                                                class="btn btn-ghost-primary btn-sm">
                                                 <i class="fa-solid fa-arrow-right" style="font-size: 12px;"></i>
                                             </a>
                                         </div>
@@ -196,86 +209,104 @@ app()->setLocale($originalLocale);
                                 @endforelse
                             </div>
                             <div class="card-body">
-                                <a href="{{ route('admin.usermanagement.activity.logs') }}" class="btn btn-outline-primary w-100">
+                                <a href="{{ route('admin.usermanagement.activity.logs') }}"
+                                    class="btn btn-outline-primary w-100">
                                     {{ __('admin.view_all_activities') }}
                                 </a>
                             </div>
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Hızlı İşlemler Dropdown -->
-                <div class="nav-item dropdown me-3" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('admin.quick_actions') }}">
-                    <a href="#" class="nav-link d-flex align-items-center justify-content-center" data-bs-toggle="dropdown" tabindex="-1" aria-expanded="false" style="width: 40px; height: 40px; border-radius: 0.375rem;">
+                <div class="nav-item dropdown me-3" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                    title="{{ __('admin.quick_actions') }}">
+                    <a href="#" class="nav-link d-flex align-items-center justify-content-center"
+                        data-bs-toggle="dropdown" tabindex="-1" aria-expanded="false"
+                        style="width: 40px; height: 40px; border-radius: 0.375rem;">
                         <i class="fa-solid fa-grid-2" style="font-size: 18px;"></i>
                     </a>
                     <div class="dropdown-menu dropdown-menu-arrow dropdown-menu-end dropdown-menu-card">
                         <div class="card">
                             <div class="card-header d-flex">
                                 <h3 class="card-title">{{ __('admin.quick_actions') }}</h3>
-                                <button type="button" class="btn-close ms-auto" data-bs-dismiss="dropdown" aria-label="Kapat"></button>
+                                <button type="button" class="btn-close ms-auto" data-bs-dismiss="dropdown"
+                                    aria-label="Kapat"></button>
                             </div>
                             <div class="card-body p-3">
                                 <div class="row g-3">
                                     @if($isCentral)
                                     <div class="col-4">
-                                        <a href="#" class="d-flex flex-column text-center py-3 px-2 quick-action-item" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTheme">
+                                        <a href="#" class="d-flex flex-column text-center py-3 px-2 quick-action-item"
+                                            data-bs-toggle="offcanvas" data-bs-target="#offcanvasTheme">
                                             <i class="fa-solid fa-brush mb-2" style="font-size: 28px;"></i>
                                             <span class="nav-link-title">{{ __('admin.theme_settings') }}</span>
                                         </a>
                                     </div>
                                     <div class="col-4">
-                                        <a href="#" class="d-flex flex-column text-center py-3 px-2 quick-action-item cache-clear-btn" data-action="clear">
+                                        <a href="#"
+                                            class="d-flex flex-column text-center py-3 px-2 quick-action-item cache-clear-btn"
+                                            data-action="clear">
                                             <i class="fa-solid fa-broom mb-2" style="font-size: 28px;"></i>
                                             <span class="nav-link-title">{{ __('admin.clear_cache') }}</span>
                                         </a>
                                     </div>
                                     <div class="col-4">
-                                        <a href="#" class="d-flex flex-column text-center py-3 px-2 quick-action-item cache-clear-all-btn" data-action="clear-all">
+                                        <a href="#"
+                                            class="d-flex flex-column text-center py-3 px-2 quick-action-item cache-clear-all-btn"
+                                            data-action="clear-all">
                                             <i class="fa-solid fa-trash-can mb-2" style="font-size: 28px;"></i>
                                             <span class="nav-link-title">{{ __('admin.system_cache') }}</span>
                                         </a>
                                     </div>
                                     <div class="col-4">
-                                        <a href="{{ route('admin.modulemanagement.index') }}" class="d-flex flex-column text-center py-3 px-2 quick-action-item">
+                                        <a href="{{ route('admin.modulemanagement.index') }}"
+                                            class="d-flex flex-column text-center py-3 px-2 quick-action-item">
                                             <i class="fa-solid fa-puzzle-piece mb-2" style="font-size: 28px;"></i>
                                             <span class="nav-link-title">{{ __('admin.modules') }}</span>
                                         </a>
                                     </div>
                                     @else
                                     <div class="col-4">
-                                        <a href="#" class="d-flex flex-column text-center py-3 px-2 quick-action-item" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTheme">
+                                        <a href="#" class="d-flex flex-column text-center py-3 px-2 quick-action-item"
+                                            data-bs-toggle="offcanvas" data-bs-target="#offcanvasTheme">
                                             <i class="fa-solid fa-brush mb-2" style="font-size: 28px;"></i>
                                             <span class="nav-link-title">{{ __('admin.theme_settings') }}</span>
                                         </a>
                                     </div>
                                     <div class="col-4">
-                                        <a href="#" class="d-flex flex-column text-center py-3 px-2 quick-action-item cache-clear-btn" data-action="clear">
+                                        <a href="#"
+                                            class="d-flex flex-column text-center py-3 px-2 quick-action-item cache-clear-btn"
+                                            data-action="clear">
                                             <i class="fa-solid fa-broom mb-2" style="font-size: 28px;"></i>
                                             <span class="nav-link-title">{{ __('admin.clear_cache') }}</span>
                                         </a>
                                     </div>
                                     <div class="col-4">
-                                        <a href="{{ route('admin.modulemanagement.index') }}" class="d-flex flex-column text-center py-3 px-2 quick-action-item">
+                                        <a href="{{ route('admin.modulemanagement.index') }}"
+                                            class="d-flex flex-column text-center py-3 px-2 quick-action-item">
                                             <i class="fa-solid fa-puzzle-piece mb-2" style="font-size: 28px;"></i>
                                             <span class="nav-link-title">{{ __('admin.modules') }}</span>
                                         </a>
                                     </div>
                                     <div class="col-4">
-                                        <a href="{{ route('admin.usermanagement.index') }}" class="d-flex flex-column text-center py-3 px-2 quick-action-item">
+                                        <a href="{{ route('admin.usermanagement.index') }}"
+                                            class="d-flex flex-column text-center py-3 px-2 quick-action-item">
                                             <i class="fa-solid fa-users mb-2" style="font-size: 28px;"></i>
                                             <span class="nav-link-title">{{ __('admin.users') }}</span>
                                         </a>
                                     </div>
                                     @endif
                                     <div class="col-4">
-                                        <a href="{{ route('admin.studio.index') }}" class="d-flex flex-column text-center py-3 px-2 quick-action-item">
+                                        <a href="{{ route('admin.studio.index') }}"
+                                            class="d-flex flex-column text-center py-3 px-2 quick-action-item">
                                             <i class="fa-solid fa-palette mb-2" style="font-size: 28px;"></i>
                                             <span class="nav-link-title">Studio</span>
                                         </a>
                                     </div>
                                     <div class="col-4">
-                                        <a href="{{ route('admin.settingmanagement.index') }}" class="d-flex flex-column text-center py-3 px-2 quick-action-item">
+                                        <a href="{{ route('admin.settingmanagement.index') }}"
+                                            class="d-flex flex-column text-center py-3 px-2 quick-action-item">
                                             <i class="fa-solid fa-sliders mb-2" style="font-size: 28px;"></i>
                                             <span class="nav-link-title">{{ __('admin.settings') }}</span>
                                         </a>
@@ -289,7 +320,9 @@ app()->setLocale($originalLocale);
 
             <!-- Mobile: Tek buton -->
             <div class="d-md-none nav-item dropdown me-3">
-                <a href="#" class="nav-link d-flex flex-column align-items-center justify-content-center" data-bs-toggle="dropdown" tabindex="-1" data-bs-auto-close="outside" aria-expanded="false" style="width: 50px; height: 50px; border-radius: 0.375rem;">
+                <a href="#" class="nav-link d-flex flex-column align-items-center justify-content-center"
+                    data-bs-toggle="dropdown" tabindex="-1" data-bs-auto-close="outside" aria-expanded="false"
+                    style="width: 50px; height: 50px; border-radius: 0.375rem;">
                     <i class="fa-solid fa-ellipsis-v" style="font-size: 16px;"></i>
                     <small class="mt-1" style="font-size: 9px; line-height: 1;">{{ __('admin.menu') }}</small>
                 </a>
@@ -302,14 +335,17 @@ app()->setLocale($originalLocale);
                             <div class="row g-2">
                                 <!-- Anasayfa -->
                                 <div class="col-6">
-                                    <a href="{{ url('/') }}" target="_blank" class="d-flex flex-column text-center p-2 border rounded mobile-quick-action">
+                                    <a href="{{ url('/') }}" target="_blank"
+                                        class="d-flex flex-column text-center p-2 border rounded mobile-quick-action">
                                         <i class="fa-solid fa-home mb-1 text-primary" style="font-size: 18px;"></i>
                                         <small class="fw-bold">{{ __('admin.homepage') }}</small>
                                     </a>
                                 </div>
                                 <!-- Cache Temizle -->
                                 <div class="col-6">
-                                    <a href="#" class="d-flex flex-column text-center p-2 border rounded mobile-quick-action cache-clear-btn" data-action="clear">
+                                    <a href="#"
+                                        class="d-flex flex-column text-center p-2 border rounded mobile-quick-action cache-clear-btn"
+                                        data-action="clear">
                                         <i class="fa-solid fa-broom mb-1 text-primary" style="font-size: 18px;"></i>
                                         <small class="fw-bold">{{ __('admin.clear_cache') }}</small>
                                     </a>
@@ -317,7 +353,9 @@ app()->setLocale($originalLocale);
                                 @if($isCentral)
                                 <!-- Sistem Cache -->
                                 <div class="col-6">
-                                    <a href="#" class="d-flex flex-column text-center p-2 border rounded mobile-quick-action cache-clear-all-btn" data-action="clear-all">
+                                    <a href="#"
+                                        class="d-flex flex-column text-center p-2 border rounded mobile-quick-action cache-clear-all-btn"
+                                        data-action="clear-all">
                                         <i class="fa-solid fa-trash-can mb-1 text-danger" style="font-size: 18px;"></i>
                                         <small class="fw-bold">{{ __('admin.system_cache') }}</small>
                                     </a>
@@ -325,21 +363,25 @@ app()->setLocale($originalLocale);
                                 @endif
                                 <!-- Tema -->
                                 <div class="col-6">
-                                    <a href="#" class="d-flex flex-column text-center p-2 border rounded mobile-quick-action" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTheme">
+                                    <a href="#"
+                                        class="d-flex flex-column text-center p-2 border rounded mobile-quick-action"
+                                        data-bs-toggle="offcanvas" data-bs-target="#offcanvasTheme">
                                         <i class="fa-solid fa-brush mb-1 text-primary" style="font-size: 18px;"></i>
                                         <small class="fw-bold">{{ __('admin.theme_settings') }}</small>
                                     </a>
                                 </div>
                                 <!-- Aktiviteler -->
                                 <div class="col-6">
-                                    <a href="{{ route('admin.usermanagement.activity.logs') }}" class="d-flex flex-column text-center p-2 border rounded mobile-quick-action">
+                                    <a href="{{ route('admin.usermanagement.activity.logs') }}"
+                                        class="d-flex flex-column text-center p-2 border rounded mobile-quick-action">
                                         <i class="fa-solid fa-bell mb-1 text-info" style="font-size: 18px;"></i>
                                         <small class="fw-bold">{{ __('admin.recent_activities') }}</small>
                                     </a>
                                 </div>
                                 <!-- Modüller -->
                                 <div class="col-6">
-                                    <a href="{{ route('admin.modulemanagement.index') }}" class="d-flex flex-column text-center p-2 border rounded mobile-quick-action">
+                                    <a href="{{ route('admin.modulemanagement.index') }}"
+                                        class="d-flex flex-column text-center p-2 border rounded mobile-quick-action">
                                         <i class="fa-solid fa-puzzle-piece mb-1 text-info" style="font-size: 18px;"></i>
                                         <small class="fw-bold">{{ __('admin.module_management') }}</small>
                                     </a>
@@ -347,7 +389,8 @@ app()->setLocale($originalLocale);
                                 @if(!$isCentral)
                                 <!-- Kullanıcılar -->
                                 <div class="col-6">
-                                    <a href="{{ route('admin.usermanagement.index') }}" class="d-flex flex-column text-center p-2 border rounded mobile-quick-action">
+                                    <a href="{{ route('admin.usermanagement.index') }}"
+                                        class="d-flex flex-column text-center p-2 border rounded mobile-quick-action">
                                         <i class="fa-solid fa-users mb-1 text-success" style="font-size: 18px;"></i>
                                         <small class="fw-bold">{{ __('admin.user_management') }}</small>
                                     </a>
@@ -355,21 +398,25 @@ app()->setLocale($originalLocale);
                                 @endif
                                 <!-- Studio -->
                                 <div class="col-6">
-                                    <a href="{{ route('admin.studio.index') }}" class="d-flex flex-column text-center p-2 border rounded mobile-quick-action">
+                                    <a href="{{ route('admin.studio.index') }}"
+                                        class="d-flex flex-column text-center p-2 border rounded mobile-quick-action">
                                         <i class="fa-solid fa-palette mb-1 text-warning" style="font-size: 18px;"></i>
                                         <small class="fw-bold">{{ __('admin.studio_editor') }}</small>
                                     </a>
                                 </div>
                                 <!-- Ayarlar -->
                                 <div class="col-6">
-                                    <a href="{{ route('admin.settingmanagement.index') }}" class="d-flex flex-column text-center p-2 border rounded mobile-quick-action">
+                                    <a href="{{ route('admin.settingmanagement.index') }}"
+                                        class="d-flex flex-column text-center p-2 border rounded mobile-quick-action">
                                         <i class="fa-solid fa-sliders mb-1 text-secondary" style="font-size: 18px;"></i>
                                         <small class="fw-bold">{{ __('admin.system_settings') }}</small>
                                     </a>
                                 </div>
                                 <!-- Dil Seçimi (Mobil) - Livewire ile -->
                                 <div class="col-6">
-                                    <a href="#" class="d-flex flex-column text-center p-2 border rounded mobile-quick-action" onclick="document.querySelector('.navbar-nav .nav-item.dropdown a.nav-link').click()">
+                                    <a href="#"
+                                        class="d-flex flex-column text-center p-2 border rounded mobile-quick-action"
+                                        onclick="document.querySelector('.navbar-nav .nav-item.dropdown a.nav-link').click()">
                                         <i class="fa-solid fa-language mb-1 text-primary" style="font-size: 18px;"></i>
                                         <small class="fw-bold">{{ __('admin.language_settings') }}</small>
                                     </a>
@@ -379,13 +426,16 @@ app()->setLocale($originalLocale);
                     </div>
                 </div>
             </div>
-            
+
             <!-- Dil Değiştirme Dropdown (Livewire) - Admin Context -->
             @livewire('languagemanagement::admin-language-switcher')
-            
+
             <div class="nav-item dropdown">
-                <a href="#" class="nav-link d-flex lh-1 p-0 px-2 align-items-center" data-bs-toggle="dropdown" aria-label="Open user menu" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('admin.user_menu') }}">
-                    <span class="avatar avatar-sm d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; border-radius: 0.375rem;">
+                <a href="#" class="nav-link d-flex lh-1 p-0 px-2 align-items-center" data-bs-toggle="dropdown"
+                    aria-label="Open user menu" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                    title="{{ __('admin.user_menu') }}">
+                    <span class="avatar avatar-sm d-flex align-items-center justify-content-center"
+                        style="width: 40px; height: 40px; border-radius: 0.375rem;">
                         <i class="fa-solid fa-user" style="font-size: 18px;"></i>
                     </span>
                     <div class="d-none d-xl-block ps-2">
@@ -512,7 +562,7 @@ app()->setLocale($originalLocale);
 @include('admin.components.theme-builder')
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function() {
     // Aktiviteler dropdown'ına tıklayınca badge'i sıfırla
     const activitiesDropdown = document.getElementById('activities-dropdown');
     if (activitiesDropdown) {
@@ -530,4 +580,3 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
-

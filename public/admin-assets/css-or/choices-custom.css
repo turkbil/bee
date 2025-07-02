@@ -1,0 +1,230 @@
+/* Choices.js temel stil düzeltmeleri */
+
+.choices__inner {
+    padding: .4375rem .75rem;
+    font-size: .75rem !important;
+    font-weight: 400;
+    line-height: 1.4285714286;
+    color: var(--tblr-body-color);
+    background-color: var(--tblr-bg-forms);
+    background-clip: padding-box;
+    border: var(--tblr-border-width) solid var(--tblr-border-color);
+    border-radius: var(--tblr-border-radius);
+    box-shadow: var(--tblr-shadow-input);
+    box-sizing: border-box;
+    cursor: text;
+    display: block;
+    overflow: clip;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    width: 100%;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+
+.choices.is-focused .choices__inner,
+.choices.is-open .choices__inner {
+    border-color: var(--tblr-border-color) !important;
+    box-shadow: var(--tblr-shadow-input) !important;
+}
+
+.choices__list--dropdown {
+    background-color: var(--tblr-bg-forms) !important;
+    border: var(--tblr-border-width) solid var(--tblr-border-color) !important;
+    z-index: 9999 !important;
+}
+
+.choices__item--choice {
+    color: var(--tblr-body-color) !important;
+    background-color: var(--tblr-bg-forms) !important;
+}
+
+.choices__item--choice:hover,
+.choices__item--choice.is-highlighted {
+    background-color: var(--tblr-bg-surface) !important;
+}
+
+.choices__input--cloned {
+    background-color: var(--tblr-bg-forms) !important;
+    color: var(--tblr-body-color) !important;
+    border: none !important;
+}
+
+.choices__list--single {
+    padding: 0 !important;
+}
+
+.choices__list--multiple .choices__item {
+    background-color: var(--tblr-bg-surface) !important;
+    border: 1px solid var(--tblr-border-color) !important;
+    color: var(--tblr-body-color) !important;
+}
+
+/* Form-floating için özel choices.js düzenlemesi */
+.form-floating .choices__inner {
+    padding: 1.625rem .75rem .4375rem;
+    height: 58px;
+    min-height: 58px;
+}
+
+.form-floating .choices + label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 58px;
+    padding: 1rem .75rem;
+    overflow: hidden;
+    text-align: start;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    pointer-events: none;
+    border: var(--tblr-border-width) solid transparent;
+    transform-origin: 0 0;
+    transition: opacity .1s ease-in-out, transform .1s ease-in-out;
+    font-size: .875rem;
+    color: var(--tblr-form-floating-label-color);
+    background-color: transparent;
+}
+
+.form-floating .choices.is-focused + label,
+.form-floating .choices:not(:placeholder-shown) + label,
+.form-floating .choices .choices__item--selectable + label {
+    opacity: .65;
+    transform: scale(.85) translateY(-.5rem) translateX(.15rem);
+    font-size: .75rem;
+    color: var(--tblr-form-floating-label-focused-color);
+}
+
+/* Filter selectbox'ları için özel düzenlemeler */
+.choices[data-choices-filter="true"] {
+    position: relative;
+    width: 100% !important;
+}
+
+.choices__inner {
+    min-height: 33.14px !important;
+}
+
+.choices[data-choices-filter="true"] .choices__inner {
+    padding: .375rem .75rem !important;
+    height: 33.14px !important;
+    width: 100% !important;
+    white-space: nowrap !important;
+    font-size: .75rem !important;
+}
+
+.choices[data-choices-filter="true"] .choices__inner::after {
+    position: absolute !important;
+    right: 8px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    margin-top: 0 !important;
+}
+
+.choices[data-choices-filter="true"] .choices__item--choice {
+    white-space: nowrap !important;
+}
+
+.choices[data-choices-filter="true"] nobr {
+    white-space: nowrap !important;
+    display: inline-block !important;
+}
+
+.choices[data-choices-filter="true"][data-type*="select-one"]::after {
+    content: "" !important;
+    height: 0 !important;
+    width: 0 !important;
+    border-style: solid !important;
+    border-color: var(--tblr-body-color) transparent transparent !important;
+    border-width: 5px !important;
+    position: absolute !important;
+    right: 8px !important;
+    top: 50% !important;
+    margin-top: -2.5px !important;
+    transform: none !important;
+    pointer-events: none !important;
+    z-index: 10 !important;
+}
+
+/* SADECE LİSTELEME FİLTRELERİ İÇİN NORMAL SELECT STİLİ (Choices.js benzeri) */
+.listing-filter-select {
+    /* Choices.js ile TAM AYNI değerler - TÜM SELECTLERİÇİN */
+    padding: .375rem .75rem !important;
+    height: 33.14px !important;
+    min-height: 33.14px !important;
+    width: 100% !important;
+    font-size: .75rem !important;
+    font-weight: 400 !important;
+    line-height: 1.4285714286 !important;
+    color: var(--tblr-body-color) !important;
+    background-color: var(--tblr-bg-forms) !important;
+    background-clip: padding-box !important;
+    border: var(--tblr-border-width) solid var(--tblr-border-color) !important;
+    border-radius: var(--tblr-border-radius) !important;
+    box-shadow: var(--tblr-shadow-input) !important;
+    box-sizing: border-box !important;
+    cursor: pointer !important;
+    display: block !important;
+    overflow: clip !important;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out !important;
+    white-space: nowrap !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+    /* Custom dropdown arrow - Choices.js benzeri */
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right .75rem center !important;
+    background-size: 16px 12px !important;
+    padding-right: 2.25rem !important;
+    /* Text alignment ve overflow ayarları */
+    text-align: left !important;
+    text-overflow: ellipsis !important;
+    vertical-align: middle !important;
+}
+
+.listing-filter-select:focus {
+    border-color: var(--tblr-border-color) !important;
+    box-shadow: var(--tblr-shadow-input) !important;
+    outline: 0 !important;
+}
+
+.listing-filter-select:hover {
+    border-color: var(--tblr-border-color-darker, #dee2e6) !important;
+}
+
+/* ACTIVE durumu - SADECE LİSTELEME FİLTRELERİ */
+.listing-filter-select:active {
+    border-color: var(--tblr-primary) !important;
+    box-shadow: 0 0 0 0.25rem rgba(var(--tblr-primary-rgb), 0.25) !important;
+}
+
+/* SELECT OPTION'LARI - SADECE LİSTELEME FİLTRELERİ */
+.listing-filter-select option {
+    color: var(--tblr-body-color) !important;
+    background-color: var(--tblr-bg-forms) !important;
+    font-size: .75rem !important;
+    font-weight: 400 !important;
+    line-height: 1.4285714286 !important;
+    padding: .375rem .75rem !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+}
+
+/* OPTION HOVER/FOCUS - SADECE LİSTELEME FİLTRELERİ */
+.listing-filter-select option:hover,
+.listing-filter-select option:focus {
+    background-color: var(--tblr-bg-surface) !important;
+    color: var(--tblr-body-color) !important;
+}
+
+/* NOBR ETİKETLERİ - SADECE LİSTELEME FİLTRELERİ */
+.listing-filter-select nobr {
+    white-space: nowrap !important;
+    display: inline-block !important;
+    font-size: .75rem !important;
+    font-weight: 400 !important;
+    line-height: 1.4285714286 !important;
+}

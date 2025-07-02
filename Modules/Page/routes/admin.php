@@ -5,7 +5,7 @@ use Modules\Page\App\Http\Livewire\Admin\PageComponent;
 use Modules\Page\App\Http\Livewire\Admin\PageManageComponent;
 
 // Admin rotaları
-Route::middleware(['web', 'auth', 'tenant'])
+Route::middleware(['admin', 'tenant'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {

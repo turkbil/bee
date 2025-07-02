@@ -98,6 +98,10 @@ return [
     'converters' => 'Converters',
     'optimizers' => 'Optimizers',
     
+    // Language Management
+    'default_language' => 'Default Language',
+    'default_language_description' => 'Default language to be used for URL prefix settings and multilingual content',
+    
     // Status Messages
     'online' => 'Online',
     'offline' => 'Offline',
@@ -281,7 +285,7 @@ return [
     'save_and_new' => 'Save and New',
     
     // Language Management
-    'default_site_language' => 'Default Site Language',
+    'default_tenant_language' => 'Default Tenant Language',
     'code' => 'Code',
     'direction' => 'Direction',
     'ltr' => 'Left to Right',
@@ -291,18 +295,18 @@ return [
     'all_rights_reserved' => 'All rights reserved.',
     
     // Site Language Component
-    'search_site_language' => 'Search site language...',
+    'search_tenant_language' => 'Search tenant language...',
     'default' => 'Default',
     'confirm_status_change' => 'Are you sure you want to change its status?',
     'deactivate' => 'Deactivate',
     'activate' => 'Activate',
     'confirm_set_default' => 'Are you sure you want to set this language as default?',
     'set_default' => 'Set Default',
-    'confirm_delete_site_language' => 'Are you sure you want to delete this site language?',
-    'no_site_languages_found' => 'No site languages found',
+    'confirm_delete_tenant_language' => 'Are you sure you want to delete this tenant language?',
+    'no_tenant_languages_found' => 'No tenant languages found',
     'no_search_results' => 'No search results found',
-    'no_site_languages_yet' => 'No site languages added yet',
-    'add_first_site_language' => 'Add your first site language',
+    'no_tenant_languages_yet' => 'No tenant languages added yet',
+    'add_first_tenant_language' => 'Add your first tenant language',
 
     // =============================================
     // ERROR MESSAGES (ERRORS)
@@ -447,4 +451,8 @@ return [
     'drop_it' => 'Drop it!',
     'uploaded_photo' => 'Uploaded Photo',
     'current_photo' => 'Current Photo',
+    
+    // 3-Stage Hybrid Language System
+    'admin_language_changed' => 'Admin panel language changed successfully',
+    'tenant_language_changed' => 'Tenant language changed successfully',
 ];

@@ -13,11 +13,15 @@ Route::middleware(['web', 'auth'])
         Route::prefix('admin/ai')
             ->name('admin.ai.')
             ->group(function () {
-                Route::get('/', ChatPanel::class)
+                Route::get('/', function () {
+                    return view('ai::admin.index');
+                })
                     ->middleware('module.permission:ai,view')
                     ->name('index');
                 
-                Route::get('/settings', SettingsPanel::class)
+                Route::get('/settings', function () {
+                    return view('ai::admin.settings');  
+                })
                     ->middleware('module.permission:ai,update')
                     ->name('settings');
                 

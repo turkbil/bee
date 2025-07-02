@@ -1,6 +1,7 @@
 <?php
 return [
     App\Providers\AppServiceProvider::class,
+    \Nwidart\Modules\LaravelModulesServiceProvider::class,
     App\Providers\AuthServiceProvider::class,
     App\Providers\EventServiceProvider::class,
     App\Providers\ModulePermissionServiceProvider::class,

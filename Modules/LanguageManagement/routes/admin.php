@@ -7,9 +7,10 @@ use Modules\LanguageManagement\app\Http\Livewire\Admin\AdminLanguageManageCompon
 use Modules\LanguageManagement\app\Http\Livewire\Admin\TenantLanguageComponent;
 use Modules\LanguageManagement\app\Http\Livewire\Admin\TenantLanguageManageComponent;
 use Modules\LanguageManagement\app\Http\Livewire\Admin\TranslationManageComponent;
+use Modules\LanguageManagement\app\Http\Livewire\Admin\TranslationCheckerComponent;
 
 // Admin rotaları
-Route::middleware(['web', 'auth', 'tenant'])
+Route::middleware(['admin', 'tenant'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
@@ -53,5 +54,10 @@ Route::middleware(['web', 'auth', 'tenant'])
                 Route::get('/translations', TranslationManageComponent::class)
                     ->middleware('module.permission:languagemanagement,edit')
                     ->name('translations');
+
+                // Çeviri kontrol sistemi
+                Route::get('/translation-checker', TranslationCheckerComponent::class)
+                    ->middleware('module.permission:languagemanagement,view')
+                    ->name('translation-checker');
             });
     });

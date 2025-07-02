@@ -195,10 +195,12 @@
 </div>
 
 <script src="/admin-assets/js/plugins.js?v={{ time() }}"></script>
-<script src="/admin-assets/js/tabler.min.js" defer></script>
+<script src="/admin-assets/js/tabler.min.js"></script>
 <script src="/admin-assets/libs/litepicker/dist/litepicker.js" defer></script>
 <script src="/admin-assets/libs/fslightbox/index.js" defer></script>
 <script src="/admin-assets/libs/choices/choices.min.js" defer></script>
+<script src="/admin-assets/js/translations.js?v={{ time() }}"></script>
+<script src="/admin-assets/js/theme.js?v={{ time() }}"></script>
 <script src="/admin-assets/js/main.js?v={{ time() }}"></script>
 <script src="/admin-assets/js/toast.js?v={{ time() }}" defer></script>
 
@@ -263,8 +265,8 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
         
-        // Wire:click elementleri için de loading bar
-        const wireElements = document.querySelectorAll('[wire:click]');
+        // Wire:click elementleri için de loading bar (escape edilen selector)
+        const wireElements = document.querySelectorAll('[wire\\:click]');
         wireElements.forEach(element => {
             if (element.dataset.wireLoadingAttached) return;
             element.dataset.wireLoadingAttached = 'true';
@@ -328,6 +330,19 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('DOMContentLoaded', function() {
         const toastData = @json(session('toast'));
         if (toastData && toastData.title && toastData.message) {
+            // 🚫 SESSION TOAST DUPLICATE CONTROL
+            const currentTime = Date.now();
+            const currentMessage = toastData.title + toastData.message;
+            
+            // Global duplicate control değişkenlerini kontrol et
+            if (typeof lastToastTime !== 'undefined' && 
+                currentTime - lastToastTime < 1000 && 
+                typeof lastToastMessage !== 'undefined' && 
+                lastToastMessage === currentMessage) {
+                console.log('🚫 Session toast duplicate prevented:', currentMessage);
+                return;
+            }
+            
             showToast(toastData.title, toastData.message, toastData.type || 'success');
         }
     });

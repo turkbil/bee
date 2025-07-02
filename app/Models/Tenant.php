@@ -24,6 +24,12 @@ class Tenant extends BaseTenant implements TenantWithDatabase
         'central' => 'boolean',
         'data' => 'array',
         'theme_id' => 'integer',
+        'ai_tokens_balance' => 'integer',
+        'ai_tokens_used_this_month' => 'integer',
+        'ai_monthly_token_limit' => 'integer',
+        'ai_enabled' => 'boolean',
+        'ai_monthly_reset_at' => 'datetime',
+        'ai_last_used_at' => 'datetime',
     ];
     
     public function getActivitylogOptions(): LogOptions
@@ -93,5 +99,104 @@ class Tenant extends BaseTenant implements TenantWithDatabase
         // Basit fallback - data field'ından module ayarlarını döndür
         $data = $this->data ?? [];
         return (object) ($data['module_settings'] ?? []);
+    }
+
+    /**
+     * AI Token purchases relationship
+     */
+    public function aiTokenPurchases()
+    {
+        return $this->hasMany(\App\Models\AITokenPurchase::class);
+    }
+
+    /**
+     * AI Token usage relationship
+     */
+    public function aiTokenUsage()
+    {
+        return $this->hasMany(\App\Models\AITokenUsage::class);
+    }
+
+    /**
+     * Check if tenant has enough AI tokens
+     */
+    public function hasEnoughTokens(int $tokensNeeded): bool
+    {
+        return $this->ai_enabled && $this->ai_tokens_balance >= $tokensNeeded;
+    }
+
+    /**
+     * Use AI tokens
+     */
+    public function useTokens(int $tokensUsed, string $usageType = 'chat', ?string $description = null, ?string $referenceId = null): bool
+    {
+        if (!$this->hasEnoughTokens($tokensUsed)) {
+            return false;
+        }
+
+        // Update token balance
+        $this->decrement('ai_tokens_balance', $tokensUsed);
+        $this->increment('ai_tokens_used_this_month', $tokensUsed);
+        $this->update(['ai_last_used_at' => now()]);
+
+        // Log usage
+        \App\Models\AITokenUsage::create([
+            'tenant_id' => $this->id,
+            'tokens_used' => $tokensUsed,
+            'usage_type' => $usageType,
+            'description' => $description,
+            'reference_id' => $referenceId,
+            'used_at' => now()
+        ]);
+
+        return true;
+    }
+
+    /**
+     * Add AI tokens to balance
+     */
+    public function addTokens(int $tokensToAdd, ?string $reason = null): bool
+    {
+        $this->increment('ai_tokens_balance', $tokensToAdd);
+        
+        return true;
+    }
+
+    /**
+     * Reset monthly token usage
+     */
+    public function resetMonthlyTokenUsage(): bool
+    {
+        return $this->update([
+            'ai_tokens_used_this_month' => 0,
+            'ai_monthly_reset_at' => now()
+        ]);
+    }
+
+    /**
+     * Get remaining tokens for this month
+     */
+    public function getRemainingMonthlyTokensAttribute(): int
+    {
+        if ($this->ai_monthly_token_limit <= 0) {
+            return $this->ai_tokens_balance;
+        }
+
+        $usedThisMonth = $this->ai_tokens_used_this_month ?? 0;
+        $remaining = $this->ai_monthly_token_limit - $usedThisMonth;
+        
+        return max(0, min($remaining, $this->ai_tokens_balance));
+    }
+
+    /**
+     * Check if monthly limit is exceeded
+     */
+    public function isMonthlyLimitExceeded(): bool
+    {
+        if ($this->ai_monthly_token_limit <= 0) {
+            return false; // No limit set
+        }
+
+        return $this->ai_tokens_used_this_month >= $this->ai_monthly_token_limit;
     }
 }

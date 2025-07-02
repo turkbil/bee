@@ -15,7 +15,7 @@ use Modules\WidgetManagement\app\Http\Livewire\ModuleWidgetListComponent;
 use Modules\WidgetManagement\app\Http\Controllers\WidgetFormBuilderController;
 use Modules\WidgetManagement\App\Http\Livewire\WidgetFormBuilderComponent;
 
-Route::middleware(['web', 'auth', 'tenant'])
+Route::middleware(['admin', 'tenant'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {

@@ -15,19 +15,25 @@ class UrlPrefixService
     protected static $defaultLanguageObject = null;
     
     /**
-     * Get default language object (tek sorgu - optimize edilmiş)
+     * Get default language object (tenant_default_locale bazlı - düzeltilmiş)
      */
     protected static function getDefaultLanguageObject()
     {
         if (self::$defaultLanguageObject === null) {
             self::$defaultLanguageObject = Cache::remember('site_default_language_object', 3600, function () {
                 try {
-                    $defaultLang = TenantLanguage::where('is_default', true)->first();
+                    // Tenant'ın tenant_default_locale alanından varsayılan dili al
+                    $tenant = tenant();
+                    $defaultCode = $tenant ? ($tenant->tenant_default_locale ?? 'tr') : 'tr';
+                    
+                    // Bu kodla tenant_languages tablosundan dil objesini al
+                    $defaultLang = TenantLanguage::where('code', $defaultCode)->first();
+                    
                     return $defaultLang ? [
                         'code' => $defaultLang->code,
                         'url_prefix_mode' => $defaultLang->url_prefix_mode ?? 'except_default'
                     ] : [
-                        'code' => 'tr',
+                        'code' => $defaultCode, // Tenant'tan gelen kod
                         'url_prefix_mode' => 'except_default'
                     ];
                 } catch (\Exception $e) {
@@ -127,8 +133,7 @@ class UrlPrefixService
             
             // Bu prefix bu tenant'ta geçerli mi?
             if ($tenant) {
-                $language = $tenant->siteLanguages()
-                    ->where('prefix', $prefix)
+                $language = TenantLanguage::where('code', $prefix)
                     ->where('is_active', 1)
                     ->first();
                 
@@ -138,7 +143,7 @@ class UrlPrefixService
                         'prefix' => $prefix,
                         'clean_path' => $cleanPath,
                         'has_prefix' => true,
-                        'is_default' => $language->is_default ?? false
+                        'is_default' => $language->code === ($tenant->tenant_default_locale ?? 'tr')
                     ];
                 }
             } else {
@@ -157,7 +162,7 @@ class UrlPrefixService
         
         // Prefix yok - locale öncelik sırası: User Preference → Session → Default
         $domain = request()->getHost();
-        $sessionKey = 'site_locale_' . str_replace('.', '_', $domain);
+        $sessionKey = 'tenant_locale_' . str_replace('.', '_', $domain);
         
         // Hızlı user locale kontrolü
         $userLocale = null;
@@ -168,39 +173,20 @@ class UrlPrefixService
         }
         
         // Öncelik sırası: User preference → Session → Fallback
-        $sessionLocale = $userLocale ?: (session($sessionKey) ?: session('site_locale'));
+        $sessionLocale = $userLocale ?: (session($sessionKey) ?: session('tenant_locale'));
         $tenant = tenant();
         $isCentralTenant = $tenant ? $tenant->central : false;
         
         // Minimal processing - debug bilgileri kaldırıldı
         
-        // Session'da locale varsa onu kullan
+        // Session'da locale varsa onu kullan (tenant olsun olmasın)
         if ($sessionLocale) {
             $sessionLanguage = null;
             
-            if ($tenant) {
-                // Tenant var - central mi normal mi kontrol et (Tenant model'deki siteLanguages() metodu zaten bunu hallediyor)
-                // \Log::info('🔍 UrlPrefixService TENANT MODE', [
-                //     'tenant_id' => $tenant->id,
-                //     'is_central' => $tenant->central,
-                //     'session_locale' => $sessionLocale
-                // ]);
-                
-                $sessionLanguage = \Modules\LanguageManagement\app\Models\TenantLanguage::where('code', $sessionLocale)
-                    ->where('is_active', 1)
-                    ->first();
-            } else {
-                // Tenant yoksa fallback (teorik olarak olmamalı)
-                // \Log::info('🔍 UrlPrefixService NO TENANT FALLBACK', [
-                //     'session_locale' => $sessionLocale,
-                //     'domain' => request()->getHost()
-                // ]);
-                
-                $sessionLanguage = \Modules\LanguageManagement\app\Models\TenantLanguage::on('mysql')
-                    ->where('code', $sessionLocale)
-                    ->where('is_active', 1)
-                    ->first();
-            }
+            // Her durumda tenant_languages'ten kontrol et (central tenant için de geçerli)
+            $sessionLanguage = \Modules\LanguageManagement\app\Models\TenantLanguage::where('code', $sessionLocale)
+                ->where('is_active', 1)
+                ->first();
             
             // \Log::info('🔍 UrlPrefixService session language found', [
             //     'session_locale' => $sessionLocale,
@@ -214,18 +200,41 @@ class UrlPrefixService
                     'prefix' => null,
                     'clean_path' => $path,
                     'has_prefix' => false,
-                    'is_default' => $sessionLanguage->is_default ?? false
+                    'is_default' => $sessionLanguage->code === (tenant()?->tenant_default_locale ?? 'tr')
                         ];
             }
         }
         
-        // Session yoksa veya geçersizse varsayılan dil - CACHE'DEN AL
-        $defaultLanguageObj = self::getDefaultLanguageObject();
-        $defaultLanguage = (object) [
-            'code' => $defaultLanguageObj['code'],
-            'is_default' => true,
-            'url_prefix_mode' => $defaultLanguageObj['url_prefix_mode']
-        ];
+        // Session yoksa veya geçersizse tenant varsayılan dili kullan
+        $tenant = tenant();
+        $defaultCode = 'tr'; // Fallback
+        
+        if ($tenant && $tenant->tenant_default_locale) {
+            $defaultCode = $tenant->tenant_default_locale;
+        } else {
+            // tenant() helper null ise central tenant kontrol et
+            $centralTenant = \App\Models\Tenant::where('central', 1)->first();
+            if ($centralTenant && $centralTenant->tenant_default_locale) {
+                $defaultCode = $centralTenant->tenant_default_locale;
+            }
+        }
+        
+        // Bu varsayılan kod ile tenant_languages'ten dil objesi al
+        $defaultLanguage = null;
+        if ($tenant) {
+            $defaultLanguage = TenantLanguage::where('code', $defaultCode)
+                ->where('is_active', 1)
+                ->first();
+        }
+        
+        // Eğer tenant_languages'te bulunamazsa fallback objesi oluştur
+        if (!$defaultLanguage) {
+            $defaultLanguage = (object) [
+                'code' => $defaultCode,
+                'name' => ucfirst($defaultCode),
+                'url_prefix_mode' => 'except_default'
+            ];
+        }
             
         return [
             'language' => $defaultLanguage,
@@ -261,10 +270,7 @@ class UrlPrefixService
         // Varsayılan dil mi?
         $isDefault = false;
         if ($tenant) {
-            $isDefault = $tenant->siteLanguages()
-                ->where('prefix', $locale)
-                ->where('is_default', 1)
-                ->exists();
+            $isDefault = $locale === ($tenant->tenant_default_locale ?? 'tr');
         } else {
             $isDefault = $locale === self::getDefaultLanguage();
         }
@@ -342,10 +348,12 @@ class UrlPrefixService
         Cache::forget('site_default_language');
         Cache::forget('site_url_prefix_mode');
         Cache::forget('site_available_locales');
+        Cache::forget('site_default_language_object');
         
         self::$defaultLanguage = null;
         self::$urlPrefixMode = null;
         self::$availableLocales = null;
+        self::$defaultLanguageObject = null;
     }
     
     /**

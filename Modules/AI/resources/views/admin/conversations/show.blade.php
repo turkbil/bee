@@ -1,7 +1,8 @@
 @extends('admin.layout')
 
-@section('content')
 @include('ai::admin.helper')
+
+@section('content')
 
 <div class="card">
     <div class="card-header">

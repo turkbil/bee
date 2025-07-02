@@ -28,8 +28,21 @@ class TenantLanguageComponent extends Component
             return;
         }
         
+        // Varsayılan dil kontrolü (tenants tablosundan)
+        $currentTenant = null;
+        if (app(\Stancl\Tenancy\Tenancy::class)->initialized) {
+            $currentTenant = tenant();
+        } else {
+            // Central context'teyse domain'den çözümle
+            $host = request()->getHost();
+            $domain = \Stancl\Tenancy\Database\Models\Domain::with('tenant')
+                ->where('domain', $host)
+                ->first();
+            $currentTenant = $domain?->tenant;
+        }
+        
         // Varsayılan dil silinemez
-        if ($language->is_default) {
+        if ($currentTenant && $language->code === $currentTenant->tenant_default_locale) {
             session()->flash('error', 'Varsayılan site dili silinemez.');
             return;
         }
@@ -56,8 +69,21 @@ class TenantLanguageComponent extends Component
             return;
         }
         
+        // Varsayılan dil kontrolü (tenants tablosundan)
+        $currentTenant = null;
+        if (app(\Stancl\Tenancy\Tenancy::class)->initialized) {
+            $currentTenant = tenant();
+        } else {
+            // Central context'teyse domain'den çözümle
+            $host = request()->getHost();
+            $domain = \Stancl\Tenancy\Database\Models\Domain::with('tenant')
+                ->where('domain', $host)
+                ->first();
+            $currentTenant = $domain?->tenant;
+        }
+        
         // Varsayılan dil pasif yapılamaz
-        if ($language->is_default && $language->is_active) {
+        if ($currentTenant && $language->code === $currentTenant->tenant_default_locale && $language->is_active) {
             session()->flash('error', 'Varsayılan site dili pasif yapılamaz.');
             return;
         }
@@ -120,6 +146,21 @@ class TenantLanguageComponent extends Component
 
     public function render()
     {
+        // Tenant varsayılan dilini al
+        $currentTenant = null;
+        if (app(\Stancl\Tenancy\Tenancy::class)->initialized) {
+            $currentTenant = tenant();
+        } else {
+            // Central context'teyse domain'den çözümle
+            $host = request()->getHost();
+            $domain = \Stancl\Tenancy\Database\Models\Domain::with('tenant')
+                ->where('domain', $host)
+                ->first();
+            $currentTenant = $domain?->tenant;
+        }
+        
+        $defaultLanguageCode = $currentTenant ? $currentTenant->tenant_default_locale : 'tr';
+        
         $languages = TenantLanguage::query()
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
@@ -128,10 +169,14 @@ class TenantLanguageComponent extends Component
                       ->orWhere('code', 'like', '%' . $this->search . '%');
                 });
             })
-            ->orderBy('is_default', 'desc')
             ->orderBy('sort_order')
             ->orderBy('name')
             ->get(); // paginate yerine get kullan çünkü sortable
+
+        // Her dile is_default property'sini ekle
+        $languages->each(function ($language) use ($defaultLanguageCode) {
+            $language->is_default = $language->code === $defaultLanguageCode;
+        });
 
         return view('languagemanagement::admin.livewire.site-language-component', [
             'languages' => $languages

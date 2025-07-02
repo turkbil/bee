@@ -49,6 +49,26 @@ class LanguageSettingsComponent extends Component
             ->orderBy('created_at', 'desc')
             ->limit(3)
             ->get();
+        
+        // Tenant varsayılan dilini al
+        $currentTenant = null;
+        if (app(\Stancl\Tenancy\Tenancy::class)->initialized) {
+            $currentTenant = tenant();
+        } else {
+            // Central context'teyse domain'den çözümle
+            $host = request()->getHost();
+            $domain = \Stancl\Tenancy\Database\Models\Domain::with('tenant')
+                ->where('domain', $host)
+                ->first();
+            $currentTenant = $domain?->tenant;
+        }
+        
+        $defaultLanguageCode = $currentTenant ? $currentTenant->tenant_default_locale : 'tr';
+        
+        // Recent tenant languages'e is_default property'sini ekle
+        $this->recentTenantLanguages->each(function ($language) use ($defaultLanguageCode) {
+            $language->is_default = $language->code === $defaultLanguageCode;
+        });
             
         // URL Prefix ayarlarını yükle
         $this->loadUrlPrefixSettings();
@@ -62,11 +82,25 @@ class LanguageSettingsComponent extends Component
             ->get(['code', 'name', 'native_name'])
             ->toArray();
         
-        // Varsayılan dili al
-        $defaultLang = TenantLanguage::where('is_default', true)->first();
-        if ($defaultLang) {
-            $this->urlPrefixMode = $defaultLang->url_prefix_mode ?? 'except_default';
-            $this->defaultLanguageCode = $defaultLang->code;
+        // Varsayılan dili tenants tablosundan al
+        $currentTenant = null;
+        if (app(\Stancl\Tenancy\Tenancy::class)->initialized) {
+            $currentTenant = tenant();
+        } else {
+            // Central context'teyse domain'den çözümle
+            $host = request()->getHost();
+            $domain = \Stancl\Tenancy\Database\Models\Domain::with('tenant')
+                ->where('domain', $host)
+                ->first();
+            $currentTenant = $domain?->tenant;
+        }
+        
+        if ($currentTenant) {
+            $this->urlPrefixMode = 'except_default'; // Default value
+            $this->defaultLanguageCode = $currentTenant->tenant_default_locale ?? 'tr';
+        } else {
+            $this->urlPrefixMode = 'except_default';
+            $this->defaultLanguageCode = 'tr';
         }
     }
     
@@ -77,15 +111,24 @@ class LanguageSettingsComponent extends Component
             'defaultLanguageCode' => 'required|exists:tenant_languages,code'
         ]);
         
-        // Tüm site dillerini güncelle
-        TenantLanguage::query()->update(['url_prefix_mode' => $this->urlPrefixMode]);
+        // Varsayılan dili tenants tablosunda güncelle
+        $currentTenant = null;
+        if (app(\Stancl\Tenancy\Tenancy::class)->initialized) {
+            $currentTenant = tenant();
+        } else {
+            // Central context'teyse domain'den çözümle
+            $host = request()->getHost();
+            $domain = \Stancl\Tenancy\Database\Models\Domain::with('tenant')
+                ->where('domain', $host)
+                ->first();
+            $currentTenant = $domain?->tenant;
+        }
         
-        // Önce tüm is_default'ları false yap
-        TenantLanguage::query()->update(['is_default' => false]);
-        
-        // Sonra yeni varsayılanı belirle
-        TenantLanguage::where('code', $this->defaultLanguageCode)
-            ->update(['is_default' => true]);
+        if ($currentTenant) {
+            $currentTenant->update([
+                'tenant_default_locale' => $this->defaultLanguageCode
+            ]);
+        }
         
         // Cache temizle
         if (class_exists('Modules\LanguageManagement\app\Services\UrlPrefixService')) {

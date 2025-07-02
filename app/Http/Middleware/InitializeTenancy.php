@@ -69,12 +69,14 @@ class InitializeTenancy extends BaseMiddleware
                 }
             }
             
-            // Tenant central ise tenancy başlatma
+            // Tenant central ise de tenancy başlat (DB değiştirmez ama tenant() helper çalışır)
             if ($tenant->central) {
+                // Central tenant için özel başlatma - database'i değiştirmez
+                $this->tenancy->initialize($tenant);
                 return $next($request);
             }
             
-            // Tenant'ı başlat
+            // Normal tenant'ı başlat
             $this->tenancy->initialize($tenant);
             
             return $next($request);

@@ -28,6 +28,16 @@
     display: none;
 }
 
+/* Toggle base style for instant response */
+.app .toggle {
+    position: relative;
+    width: 20px;
+    height: 20px;
+    background-color: #f8f9fa;
+    border-radius: 50%;
+    transform: translateX(0);
+}
+
 .dark-switch:checked + .app .toggle {
     transform: translateX(100%);
     background-color: #34323d;
@@ -66,6 +76,8 @@
 
     cursor: pointer !important;
 }
+
+/* Eski kurallar temizlendi - yeni sistem kullanılıyor */
 
 /* Karanlık mod aktif olduğunda */
 .theme-mode .dark-switch:checked + .app .names p.dark {
@@ -166,6 +178,16 @@
 
 .table-mode .switch-content .toggle {
     display: none;
+}
+
+/* Table toggle base style for instant response */
+.table-mode .app .toggle {
+    position: relative;
+    width: 20px;
+    height: 20px;
+    background-color: #f8f9fa;
+    border-radius: 50%;
+    transform: translateX(0);
 }
 
 .table-switch:checked + .app .toggle {

@@ -1,5 +1,166 @@
 /* Orjinal Tema Sistemi - Basitleştirilmiş Versiyon */
 
+/* Tab Navigation Özel Radius Kuralları */
+
+/* Nav tabs container (ul elementi) için radius */
+.nav-tabs,
+.card-header-tabs,
+ul.nav-tabs,
+ul.card-header-tabs {
+    border-top-left-radius: var(--tblr-border-radius) !important;
+    border-top-right-radius: var(--tblr-border-radius) !important;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    overflow: hidden !important;
+}
+
+/* Nav tabs link'leri için radius */
+.nav-tabs .nav-link,
+.card-header-tabs .nav-link {
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+
+/* Language Switch Butonları için Özel Radius */
+.language-switch-btn {
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+
+/* Nav Pills normal radius kurallarını korur */
+.nav-pills .nav-link {
+    /* Tüm köşeler yuvarlanır - JavaScript'te ayarlanacak */
+}
+
+/* Studio edit butonu için özel durumlar */
+.nav-tabs .nav-link.bg-primary,
+.card-header-tabs .nav-link.bg-primary {
+    /* Studio butonu için tam radius */
+    border-radius: var(--tblr-border-radius) !important;
+    border-bottom-left-radius: var(--tblr-border-radius) !important;
+    border-bottom-right-radius: var(--tblr-border-radius) !important;
+}
+
+/* Card yapısı için özel radius kuralları */
+.card-header {
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+
+.card-footer {
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+}
+
+/* Card body için dinamik radius */
+.card-header + .card-body {
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+}
+
+.card-body + .card-footer {
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+
+/* Form elementleri için iç içe radius azaltma */
+.card-body .form-control,
+.card-body .form-select,
+.modal-body .form-control,
+.modal-body .form-select {
+    border-radius: calc(var(--tblr-border-radius) * 0.6) !important;
+}
+
+/* Floating label için özel radius */
+.form-floating .form-control {
+    border-radius: calc(var(--tblr-border-radius) * 0.6) !important;
+}
+
+/* Tab content için özel radius */
+.tab-content .tab-pane {
+    border-radius: 0 !important;
+}
+
+/* TinyMCE ve editör alanları için özel radius */
+.tox-tinymce,
+.tox .tox-edit-area__iframe,
+.tox-editor-container,
+.tox-editor-header,
+.card-body .tox-tinymce {
+    border-radius: calc(var(--tblr-border-radius) * 0.5) !important;
+    overflow: hidden;
+}
+
+/* Form floating container'ları için özel radius */
+.form-floating {
+    border-radius: calc(var(--tblr-border-radius) * 0.6) !important;
+    overflow: hidden;
+}
+
+/* Button Group Radius Rules - Sadece başlangıç ve bitiş köşeleri rounded */
+.btn-group .btn:not(:first-child):not(:last-child),
+.btn-group a.btn:not(:first-child):not(:last-child),
+[class*="btn-group"] .btn:not(:first-child):not(:last-child),
+[class*="btn-group"] a.btn:not(:first-child):not(:last-child) {
+    border-radius: 0 !important;
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+
+.btn-group .btn:first-child:not(:last-child),
+.btn-group a.btn:first-child:not(:last-child),
+[class*="btn-group"] .btn:first-child:not(:last-child),
+[class*="btn-group"] a.btn:first-child:not(:last-child) {
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+
+.btn-group .btn:last-child:not(:first-child),
+.btn-group a.btn:last-child:not(:first-child),
+[class*="btn-group"] .btn:last-child:not(:first-child),
+[class*="btn-group"] a.btn:last-child:not(:first-child) {
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+}
+
+/* Tab pane içindeki form container'ları */
+.tab-pane .form-floating,
+.tab-pane .form-control,
+.tab-pane .form-select {
+    border-radius: calc(var(--tblr-border-radius) * 0.6) !important;
+}
+
+/* Language content container'ları */
+.language-content {
+    border-radius: 0 !important;
+    overflow: hidden;
+}
+
+/* Language content içindeki specific form floating alanları */
+.language-content .form-floating,
+.language-content .form-floating.mb-3,
+.tab-pane .language-content .form-floating {
+    border-radius: calc(var(--tblr-border-radius) * 0.6) !important;
+    overflow: hidden;
+}
+
+/* Language content içindeki form control'ler */
+.language-content .form-control,
+.language-content .form-select,
+.language-content textarea.form-control {
+    border-radius: calc(var(--tblr-border-radius) * 0.6) !important;
+}
+
+/* Card body içindeki herhangi bir editör alanı */
+.card-body .mce-tinymce,
+.card-body .mce-container,
+.card-body .editor-container {
+    border-radius: calc(var(--tblr-border-radius) * 0.5) !important;
+    overflow: hidden;
+}
+
 /* Dark mode stillerinin yapısını koru ama sadece gerekli olanları ekle */
 :root {
     /* Border değişkenleri - açık mod için */

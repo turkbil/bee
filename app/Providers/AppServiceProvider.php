@@ -8,6 +8,7 @@ use App\Services\ModuleTenantPermissionService;
 use App\Services\SettingsService;
 use App\Services\TenantCacheManager;
 use Illuminate\Support\Facades\URL;
+use Livewire\Livewire;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -65,6 +66,12 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        // Manual module translations registration
+        $this->loadModuleTranslations();
+        
+        // Register Livewire Components
+        $this->registerLivewireComponents();
+        
         // HTTPS kullanıyorsanız bu ayarı aktif edin
         if(env('APP_ENV') !== 'local') {
             URL::forceScheme('https');
@@ -91,5 +98,36 @@ class AppServiceProvider extends ServiceProvider
                 require_once $file;
             }
         }
+    }
+    
+    protected function loadModuleTranslations(): void
+    {
+        $modulesPath = base_path('Modules');
+        if (is_dir($modulesPath)) {
+            $modules = array_diff(scandir($modulesPath), ['.', '..']);
+            foreach ($modules as $module) {
+                $moduleLangPath = $modulesPath . '/' . $module . '/lang';
+                if (is_dir($moduleLangPath)) {
+                    $moduleNameLower = strtolower($module);
+                    $this->loadTranslationsFrom($moduleLangPath, $moduleNameLower);
+                }
+            }
+        }
+    }
+    
+    protected function registerLivewireComponents(): void
+    {
+        // AI Token Management Components - admin prefix ile kayıt
+        Livewire::component('admin.ai-token-packages-component', \App\Http\Livewire\Admin\AITokenPackagesComponent::class);
+        Livewire::component('admin.ai-token-purchases-component', \App\Http\Livewire\Admin\AITokenPurchasesComponent::class);
+        Livewire::component('admin.ai-token-usage-stats-component', \App\Http\Livewire\Admin\AITokenUsageStatsComponent::class);
+        
+        // Eski kayıtlar da korunacak (backward compatibility)
+        Livewire::component('ai-token-packages', \App\Http\Livewire\Admin\AITokenPackagesComponent::class);
+        Livewire::component('ai-token-purchases', \App\Http\Livewire\Admin\AITokenPurchasesComponent::class);
+        Livewire::component('ai-token-usage-stats', \App\Http\Livewire\Admin\AITokenUsageStatsComponent::class);
+        Livewire::component('ai-token-package-management', \App\Http\Livewire\Admin\AITokenPackageManagementComponent::class);
+        Livewire::component('ai-token-purchase-management', \App\Http\Livewire\Admin\AITokenPurchaseManagementComponent::class);
+        Livewire::component('ai-token-usage-management', \App\Http\Livewire\Admin\AITokenUsageManagementComponent::class);
     }
 }

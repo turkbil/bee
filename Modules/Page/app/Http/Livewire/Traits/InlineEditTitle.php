@@ -43,7 +43,7 @@ trait InlineEditTitle
             // Site dilini al (hibrit sistem)
             $currentSiteLocale = method_exists($this, 'getSiteLocale') 
                 ? $this->getSiteLocale() 
-                : session('site_locale', 'tr');
+                : session('tenant_locale', 'tr');
 
             // Mevcut başlık değerini kontrol et
             $currentTitle = $model->getTranslated('title', $currentSiteLocale);

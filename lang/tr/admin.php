@@ -281,7 +281,9 @@ return [
     'homepage' => 'Anasayfa',
     
     // Dil Yönetimi
-    'default_site_language' => 'Varsayılan Site Dili',
+    'default_tenant_language' => 'Varsayılan Tenant Dili',
+    'default_language' => 'Varsayılan Dil',
+    'default_language_description' => 'URL prefix ayarları ve çok dilli içerik için kullanılacak varsayılan dil',
     'code' => 'Kod',
     'direction' => 'Yön',
     'ltr' => 'Soldan Sağa',
@@ -291,18 +293,18 @@ return [
     'all_rights_reserved' => 'Tüm hakları saklıdır.',
     
     // Site Language Component
-    'search_site_language' => 'Site dili ara...',
+    'search_tenant_language' => 'Tenant dili ara...',
     'default' => 'Varsayılan',
     'confirm_status_change' => 'Durumunu değiştirmek istediğinizden emin misiniz?',
     'deactivate' => 'Deaktif Et',
     'activate' => 'Aktif Et',
     'confirm_set_default' => 'Bu dili varsayılan olarak ayarlamak istediğinizden emin misiniz?',
     'set_default' => 'Varsayılan Yap',
-    'confirm_delete_site_language' => 'Bu site dilini silmek istediğinizden emin misiniz?',
-    'no_site_languages_found' => 'Site dili bulunamadı',
+    'confirm_delete_tenant_language' => 'Bu tenant dilini silmek istediğinizden emin misiniz?',
+    'no_tenant_languages_found' => 'Tenant dili bulunamadı',
     'no_search_results' => 'Arama sonucu bulunamadı',
-    'no_site_languages_yet' => 'Henüz site dili eklenmemiş',
-    'add_first_site_language' => 'İlk site dilinizi ekleyin',
+    'no_tenant_languages_yet' => 'Henüz tenant dili eklenmemiş',
+    'add_first_tenant_language' => 'İlk tenant dilinizi ekleyin',
     
     // =============================================
     // HATA MESAJLARI (ERRORS)
@@ -448,4 +450,8 @@ return [
     'drop_it' => 'Bırakın!',
     'uploaded_photo' => 'Yüklenen Fotoğraf',
     'current_photo' => 'Mevcut Fotoğraf',
+    
+    // 3 Aşamalı Hibrit Dil Sistemi
+    'admin_language_changed' => 'Admin panel dili başarıyla değiştirildi',
+    'tenant_language_changed' => 'Tenant dili başarıyla değiştirildi',
 ];

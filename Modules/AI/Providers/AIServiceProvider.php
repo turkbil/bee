@@ -43,7 +43,13 @@ class AIServiceProvider extends ServiceProvider
         $this->loadViewsFrom(module_path('AI', 'resources/views/front/themes'), 'ai-themes');
         $this->loadViewsFrom(module_path('AI', 'resources/views'), 'ai');
 
-        // Livewire bileşenlerini kaydet
+        // Livewire bileşenlerini kaydet - ai::admin namespace ile
+        Livewire::component('ai::admin.chat-panel', ChatPanel::class);
+        Livewire::component('ai::admin.settings-panel', SettingsPanel::class);
+        Livewire::component('ai::admin.modals.prompt-edit-modal', PromptEditModal::class);
+        Livewire::component('ai::admin.modals.prompt-delete-modal', PromptDeleteModal::class);
+        
+        // Eski kayıtlar da korunacak (backward compatibility)
         Livewire::component('chat-panel', ChatPanel::class);
         Livewire::component('settings-panel', SettingsPanel::class);
         Livewire::component('modals.prompt-edit-modal', PromptEditModal::class);

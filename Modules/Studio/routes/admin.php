@@ -6,7 +6,7 @@ use Modules\Studio\App\Http\Controllers\Admin\AssetController;
 use Modules\Studio\App\Http\Livewire\Admin\StudioIndexComponent;
 use Modules\Studio\App\Http\Livewire\EditorComponent;
 
-Route::middleware(['web', 'auth', 'tenant'])
+Route::middleware(['admin', 'tenant'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {

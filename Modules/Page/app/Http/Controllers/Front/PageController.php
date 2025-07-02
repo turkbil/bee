@@ -26,7 +26,7 @@ class PageController extends Controller
         
         \Log::info('🏠 HOMEPAGE CONTROLLER', [
             'app_locale' => app()->getLocale(),
-            'session_site_locale' => session('site_locale'),
+            'session_tenant_locale' => session('tenant_locale'),
             'is_authenticated' => $isAuthenticated,
             'user_id' => $userId
         ]);

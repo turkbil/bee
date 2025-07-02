@@ -19,6 +19,12 @@ window.jsTranslations = {
         'error': 'Hata',
         'cache_cleared': 'Cache başarıyla temizlendi',
         'cache_error': 'Cache temizleme sırasında bir hata oluştu',
+        'theme_updated': 'Tema başarıyla güncellendi',
+        'theme_reset': 'Tema ayarları sıfırlandı',
+        'saving': 'Kaydediliyor...',
+        'loading_themes': 'Temalar yükleniyor...',
+        'apply_theme': 'Temayı Uygula',
+        'preview_theme': 'Önizle',
         'months': [
             'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
             'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'
@@ -40,6 +46,12 @@ window.jsTranslations = {
         'error': 'Error',
         'cache_cleared': 'Cache cleared successfully',
         'cache_error': 'An error occurred while clearing cache',
+        'theme_updated': 'Theme updated successfully',
+        'theme_reset': 'Theme settings reset',
+        'saving': 'Saving...',
+        'loading_themes': 'Loading themes...',
+        'apply_theme': 'Apply Theme',
+        'preview_theme': 'Preview',
         'months': [
             'January', 'February', 'March', 'April', 'May', 'June',
             'July', 'August', 'September', 'October', 'November', 'December'

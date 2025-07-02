@@ -1,10 +1,38 @@
+// DUPLICATE TOAST PREVENTİON SİSTEMİ
+let lastToastTime = 0;
+let lastToastMessage = '';
+const TOAST_DEBOUNCE_TIME = 1000; // 1 saniye debounce
+
 // Livewire olaylarını dinle
 document.addEventListener('DOMContentLoaded', function() {
     if (typeof Livewire !== 'undefined') {
         Livewire.on('toast', function(data) {
             const toastData = Array.isArray(data) ? data[0] : data;
             if (toastData && toastData.title && toastData.message) {
-                showToast(toastData.title, toastData.message, toastData.type || 'success');
+                // 🚫 DUPLICATE CONTROL - Aynı mesaj 1 saniye içinde gelirse ignore et
+                const currentTime = Date.now();
+                const currentMessage = toastData.title + toastData.message;
+                
+                if (currentTime - lastToastTime < TOAST_DEBOUNCE_TIME && lastToastMessage === currentMessage) {
+                    console.log('🚫 Duplicate toast prevented:', currentMessage);
+                    return;
+                }
+                
+                lastToastTime = currentTime;
+                lastToastMessage = currentMessage;
+                
+                // 🎯 UNIFİED THEME TOAST - Tema ile ilgili tüm mesajları birleştir
+                let unifiedTitle = toastData.title;
+                let unifiedMessage = toastData.message;
+                
+                // Tema ile ilgili mesajları birleştir
+                if (toastData.message.includes('Ana renk') || toastData.message.includes('Tema başarıyla') || 
+                    toastData.message.includes('güncellendi') && (toastData.title === 'Tema Ayarları' || toastData.title === 'Başarılı!')) {
+                    unifiedTitle = 'Tema Ayarları';
+                    unifiedMessage = 'Tema ayarları başarıyla güncellendi';
+                }
+                
+                showToast(unifiedTitle, unifiedMessage, toastData.type || 'success');
             } else {
                 console.error('Invalid toast data structure:', data);
             }

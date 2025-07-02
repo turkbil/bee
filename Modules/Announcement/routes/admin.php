@@ -5,7 +5,7 @@ use Modules\Announcement\App\Http\Livewire\Admin\AnnouncementComponent;
 use Modules\Announcement\App\Http\Livewire\Admin\AnnouncementManageComponent;
 
 // Admin rotaları
-Route::middleware(['web', 'auth', 'tenant'])
+Route::middleware(['admin', 'tenant'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {

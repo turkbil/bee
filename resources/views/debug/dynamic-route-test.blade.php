@@ -45,7 +45,7 @@
             <div class="debug-title">🏠 Sistem Bilgileri</div>
             <div class="debug-content">
                 <strong>App Locale:</strong> {{ app()->getLocale() }}<br>
-                <strong>Session Site Locale:</strong> {{ session('site_locale', 'yok') }}<br>
+                <strong>Session Tenant Locale:</strong> {{ session('tenant_locale', 'yok') }}<br>
                 <strong>Tenant ID:</strong> {{ tenant() ? tenant()->id : 'Central' }}<br>
                 <strong>Current URL:</strong> {{ request()->fullUrl() }}<br>
                 <strong>Route Name:</strong> {{ request()->route() ? request()->route()->getName() : 'null' }}<br>

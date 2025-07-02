@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\ThemeManagement\App\Http\Livewire\ThemeManagementComponent;
 use Modules\ThemeManagement\App\Http\Livewire\ThemeManagementManageComponent;
 
-Route::middleware(['web', 'auth', 'tenant'])
+Route::middleware(['admin', 'tenant'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {

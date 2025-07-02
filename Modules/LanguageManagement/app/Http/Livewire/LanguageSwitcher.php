@@ -48,7 +48,7 @@ class LanguageSwitcher extends Component
             // Site dil öncelik sırası: 1. App locale (en güncel) 2. Session 3. User locale 4. Default
             $this->currentLanguage = app()->getLocale();
             if (!$this->currentLanguage) {
-                $this->currentLanguage = Session::get('site_locale') ?? Session::get('locale');
+                $this->currentLanguage = Session::get('tenant_locale') ?? Session::get('locale');
             }
             if (!$this->currentLanguage && auth()->check()) {
                 $this->currentLanguage = auth()->user()->tenant_locale;
@@ -111,7 +111,7 @@ class LanguageSwitcher extends Component
             // Site dil öncelik sırası: 1. App locale (en güncel) 2. Session 3. User locale 4. Default
             $this->currentLanguage = app()->getLocale();
             if (!$this->currentLanguage) {
-                $this->currentLanguage = Session::get('site_locale') ?? Session::get('locale');
+                $this->currentLanguage = Session::get('tenant_locale') ?? Session::get('locale');
             }
             if (!$this->currentLanguage && auth()->check()) {
                 $this->currentLanguage = auth()->user()->tenant_locale;

@@ -24,11 +24,8 @@ return Application::configure(basePath: dirname(__DIR__))
         // 1. TENANT - Domain belirleme (EN ÖNCELİKLİ)
         $middleware->prependToGroup('web', \App\Http\Middleware\InitializeTenancy::class);
         
-        // 2. SESSION - Tenant'tan HEMEN sonra
-        $middleware->appendToGroup('web', \Illuminate\Session\Middleware\StartSession::class);
-        
-        // 3. DİL - Session'dan sonra (Site için varsayılan)
-        $middleware->appendToGroup('web', \Modules\LanguageManagement\app\Http\Middleware\SiteSetLocaleMiddleware::class);
+        // 2. DİL - Tenant'tan HEMEN sonra (Session'dan ÖNCE çalışmalı) - admin hariç
+        // SiteSetLocaleMiddleware web grubundan kaldırıldı, sadece belirli route'larda kullanılacak
         
         // 4. TEMA - Dil'den sonra
         $middleware->appendToGroup('web', \App\Http\Middleware\CheckThemeStatus::class);
@@ -50,6 +47,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'module.permission' => \Modules\UserManagement\App\Http\Middleware\ModulePermissionMiddleware::class,
             'locale.admin' => \Modules\LanguageManagement\app\Http\Middleware\AdminSetLocaleMiddleware::class,
             'locale.site' => \Modules\LanguageManagement\app\Http\Middleware\SiteSetLocaleMiddleware::class,
+            'ai.tokens' => \App\Http\Middleware\CheckAITokensMiddleware::class,
         ]);
                 
         // Admin middleware grubu
@@ -57,6 +55,13 @@ return Application::configure(basePath: dirname(__DIR__))
             'web',
             'auth',
             'admin.access',
+            'locale.admin',
+        ]);
+        
+        // Site middleware grubu (admin olmayan rotalar için)
+        $middleware->group('site', [
+            'web',
+            'locale.site',
         ]);
                 
         // Module middleware grupları - her modül için yetki kontrolü
@@ -84,7 +89,7 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->create();
 
-// Helper dosyalarını doğru sırada yükle
+// Helper dosylarını doğru sırada yükle
 $helperFiles = [
     app_path('Helpers/Functions.php'),           // 1. Temel fonksiyonlar (Log, Settings dahil)
     app_path('Helpers/CacheHelper.php'),         // 2. Cache helper
@@ -93,6 +98,7 @@ $helperFiles = [
     app_path('Helpers/TranslationHelper.php'),   // 5. Translation helper
     app_path('Helpers/TenantHelpers.php'),       // 6. Tenant helper'ları
     app_path('Helpers/ModulePermissionHelper.php'), // 7. Permission helper
+    app_path('Helpers/AITokenHelper.php'),       // 8. AI Token helper
 ];
 
 foreach ($helperFiles as $file) {

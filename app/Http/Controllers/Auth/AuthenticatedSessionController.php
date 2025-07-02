@@ -67,9 +67,9 @@ class AuthenticatedSessionController extends Controller
             // Site context locale yükle (domain-specific)
             if ($user->tenant_locale) {
                 $domain = request()->getHost();
-                $sessionKey = 'site_locale_' . str_replace('.', '_', $domain);
+                $sessionKey = 'tenant_locale_' . str_replace('.', '_', $domain);
                 session([$sessionKey => $user->tenant_locale]);
-                session(['site_locale' => $user->tenant_locale]); // Legacy key
+                session(['tenant_locale' => $user->tenant_locale]);
                 \Log::info('🔄 LOGIN: Tenant locale loaded', [
                     'user_id' => $user->id,
                     'tenant_locale' => $user->tenant_locale,

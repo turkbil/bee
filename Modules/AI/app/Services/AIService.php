@@ -8,6 +8,7 @@ use Modules\AI\App\Services\LimitService;
 use Modules\AI\App\Services\PromptService;
 use Modules\AI\App\Models\Setting;
 use App\Helpers\TenantHelpers;
+use App\Services\AITokenService;
 use Illuminate\Support\Facades\Cache;
 
 class AIService
@@ -16,6 +17,7 @@ class AIService
     protected $conversationService;
     protected $limitService;
     protected $promptService;
+    protected $aiTokenService;
 
     /**
      * Constructor
@@ -29,7 +31,8 @@ class AIService
         ?DeepSeekService $deepSeekService = null,
         ?ConversationService $conversationService = null,
         ?LimitService $limitService = null,
-        ?PromptService $promptService = null
+        ?PromptService $promptService = null,
+        ?AITokenService $aiTokenService = null
     ) {
         // DeepSeek servisini yükle
         $this->deepSeekService = $deepSeekService ?? new DeepSeekService();
@@ -37,6 +40,7 @@ class AIService
         // Diğer servisleri oluştur
         $this->limitService = $limitService ?? new LimitService();
         $this->promptService = $promptService ?? new PromptService();
+        $this->aiTokenService = $aiTokenService ?? new AITokenService();
         
         // ConversationService en son oluşturulmalı çünkü diğer servislere bağımlı
         $this->conversationService = $conversationService ?? 
@@ -53,9 +57,19 @@ class AIService
      */
     public function ask(string $prompt, array $options = [], bool $stream = false)
     {
-        // Limit kontrolü yap
-        if (!$this->limitService->checkLimits()) {
-            return "Üzgünüm, kullanım limitinize ulaştınız.";
+        // Modern token sistemi kontrolü
+        $tenant = tenant();
+        if ($tenant) {
+            $tokensNeeded = $this->aiTokenService->estimateTokenCost('chat_message', ['message' => $prompt]);
+            
+            if (!$this->aiTokenService->canUseTokens($tenant, $tokensNeeded)) {
+                return "Üzgünüm, yetersiz AI token bakiyeniz var veya aylık limitinize ulaştınız.";
+            }
+        } else {
+            // Legacy limit kontrolü (fallback)
+            if (!$this->limitService->checkLimits()) {
+                return "Üzgünüm, kullanım limitinize ulaştınız.";
+            }
         }
 
         // Sistem promptunu ayarla
@@ -101,13 +115,29 @@ class AIService
         $response = $this->deepSeekService->ask($messages, $stream);
         
         if ($response && !$stream) {
-            // Token sayısını tahmin et ve kullanım limitini güncelle
-            $tokens = $this->deepSeekService->estimateTokens([
-                ['role' => 'user', 'content' => $prompt],
-                ['role' => 'assistant', 'content' => $response]
-            ]);
-            
-            $this->limitService->incrementUsage($tokens);
+            // Token kullanımını kaydet
+            if ($tenant) {
+                // Modern token sistemi
+                $actualTokens = $this->deepSeekService->estimateTokens([
+                    ['role' => 'user', 'content' => $prompt],
+                    ['role' => 'assistant', 'content' => $response]
+                ]);
+                
+                $this->aiTokenService->useTokens(
+                    $tenant, 
+                    $actualTokens, 
+                    'chat',
+                    'AI Chat: ' . substr($prompt, 0, 50) . '...'
+                );
+            } else {
+                // Legacy limit sistemi (fallback)
+                $tokens = $this->deepSeekService->estimateTokens([
+                    ['role' => 'user', 'content' => $prompt],
+                    ['role' => 'assistant', 'content' => $response]
+                ]);
+                
+                $this->limitService->incrementUsage($tokens);
+            }
         }
 
         return $response;

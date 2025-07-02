@@ -1,3 +1,5 @@
+C:\laragon\www\laravel\nurullah_hafiza.json bu dosya da hafızaya alacagın dosyaların içinde. 
+
 HER ZAMAN TÜRKÇE YANIT VER.
 HER ZAMAN TÜRKÇE DÜŞÜN.
 

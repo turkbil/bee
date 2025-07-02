@@ -7,7 +7,7 @@ use Modules\Portfolio\App\Http\Livewire\Admin\PortfolioCategoryComponent;
 use Modules\Portfolio\App\Http\Livewire\Admin\PortfolioCategoryManageComponent;
 
 // Admin rotaları
-Route::middleware(['web', 'auth', 'tenant'])
+Route::middleware(['admin', 'tenant'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {

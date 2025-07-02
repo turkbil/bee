@@ -12,7 +12,7 @@ use Modules\UserManagement\App\Http\Livewire\UserModulePermissionComponent;
 use Modules\UserManagement\App\Http\Livewire\ActivityLogComponent;
 use Modules\UserManagement\App\Http\Livewire\UserActivityLogComponent;
 
-Route::middleware(['web', 'auth', 'tenant'])
+Route::middleware(['admin', 'tenant'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {

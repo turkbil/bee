@@ -8,11 +8,11 @@
                 <div class="d-flex align-items-center gap-4">
                     <div class="text-center">
                         <div class="h3 mb-0 text-primary">{{ $systemLanguagesCount }}</div>
-                        <small class="text-muted">{{ __('languagemanagement::admin.system_language') }}</small>
+                        <small class="text-muted">{{ __('languagemanagement::admin.admin_language') }}</small>
                     </div>
                     <div class="text-center">
                         <div class="h3 mb-0 text-success">{{ $siteLanguagesCount }}</div>
-                        <small class="text-muted">{{ __('languagemanagement::admin.site_language') }}</small>
+                        <small class="text-muted">{{ __('languagemanagement::admin.tenant_language') }}</small>
                     </div>
                 </div>
             </div>
@@ -33,7 +33,7 @@
                         <code class="text-info">{{ strtoupper($currentAdminLanguage) }}</code>
                     </div>
                     <div class="text-center">
-                        <div class="text-muted small">{{ __('languagemanagement::admin.site_language') }}</div>
+                        <div class="text-muted small">{{ __('languagemanagement::admin.tenant_language') }}</div>
                         <code class="text-info">{{ strtoupper($currentTenantLanguage) }}</code>
                     </div>
                 </div>
@@ -45,7 +45,7 @@
             @php
             $languageTypes = [
                 'system' => [
-                    'title' => __('languagemanagement::admin.system_languages'),
+                    'title' => __('languagemanagement::admin.admin_languages'),
                     'description' => __('languagemanagement::admin.admin_panel_languages'),
                     'icon' => 'fas fa-cogs',
                     'color' => 'primary',
@@ -56,7 +56,7 @@
                     'addRoute' => 'admin.languagemanagement.system.manage'
                 ],
                 'site' => [
-                    'title' => __('languagemanagement::admin.site_languages'), 
+                    'title' => __('languagemanagement::admin.tenant_languages'), 
                     'description' => __('languagemanagement::admin.frontend_content_languages'),
                     'icon' => 'fas fa-globe',
                     'color' => 'success',

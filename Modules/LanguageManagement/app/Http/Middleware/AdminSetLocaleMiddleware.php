@@ -4,70 +4,127 @@ namespace Modules\LanguageManagement\app\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Modules\LanguageManagement\app\Services\LanguageService;
+use Illuminate\Support\Facades\Cookie;
 use Symfony\Component\HttpFoundation\Response;
 
 class AdminSetLocaleMiddleware
 {
-    protected $languageService;
-
-    public function __construct(LanguageService $languageService)
-    {
-        $this->languageService = $languageService;
-    }
-
     /**
-     * Handle an incoming request for ADMIN context only
-     * Uses admin_languages table and admin_locale session
+     * 3 Aşamalı Hibrit Admin Dil Sistemi
+     * 1. ACTIVE CHOICE (Session - bu oturumda değiştirildi mi?)
+     * 2. STORED PREFERENCE (User DB - kalıcı tercih)
+     * 3. SMART DEFAULT (Config varsayılan + fallback)
      */
     public function handle(Request $request, Closure $next): Response
     {
-        \Log::info('🔧 AdminSetLocaleMiddleware BAŞLADI', [
-            'url' => $request->fullUrl(),
-            'current_app_locale' => app()->getLocale(),
-            'session_admin_locale' => session('admin_locale'),
-            'user_admin_preference' => auth()->check() ? auth()->user()->admin_locale : null
+        \Log::info('🎯 AdminSetLocaleMiddleware BAŞLADI', [
+            'url' => $request->url(),
+            'path' => $request->path()
         ]);
-
-        // URL'den dil parametresi kontrol et (route parameter veya query string)
-        $languageFromUrl = $request->route('locale') ?? $request->get('lang');
         
-        if ($languageFromUrl) {
-            // Admin context için system_languages tablosundan geçerlilik kontrol et
-            if ($this->languageService->isValidLanguageForContext($languageFromUrl, 'admin')) {
-                $this->languageService->setLocale($languageFromUrl, 'admin');
-                
-                // Kullanıcı admin dil tercihini kaydet
-                if (auth()->check()) {
-                    $this->languageService->setUserLanguagePreference($languageFromUrl, 'admin');
-                }
-                
-                \Log::info('✅ Admin URL parametresinden dil ayarlandı', [
-                    'locale' => $languageFromUrl,
-                    'source' => 'url_parameter'
-                ]);
-            }
-        } else {
-            // URL'de dil yok, admin session/user tercihi/varsayılan sırasıyla kontrol et
-            $currentLanguage = $this->languageService->getCurrentLocale('admin');
-            
-            // Sadece mevcut locale farklıysa güncelle
-            if (app()->getLocale() !== $currentLanguage) {
-                $this->languageService->setLocale($currentLanguage, 'admin');
-                
-                \Log::info('🔄 Admin LanguageService ile locale güncellendi', [
-                    'from' => app()->getLocale(),
-                    'to' => $currentLanguage,
-                    'source' => 'session_or_preference'
-                ]);
-            }
+        $locale = $this->resolveAdminLocale();
+        
+        // Laravel app locale'i admin dili ile ayarla (admin çevirileri için)
+        app()->setLocale($locale);
+        
+        \Log::info('🔧 AdminSetLocaleMiddleware - Admin locale ayarlandı', [
+            'admin_locale' => $locale,
+            'session_admin_locale' => session('admin_locale'),
+            'app_locale' => app()->getLocale(),
+            'url' => $request->url()
+        ]);
+        
+        // Session'da da sakla (consistency için)
+        if (!session()->has('admin_locale') || session('admin_locale') !== $locale) {
+            session(['admin_locale' => $locale]);
         }
 
-        \Log::info('🎯 AdminSetLocaleMiddleware TAMAMLANDI', [
-            'final_app_locale' => app()->getLocale(),
-            'final_session_admin_locale' => session('admin_locale')
-        ]);
-
         return $next($request);
+    }
+
+    /**
+     * 3 Aşamalı Admin Dil Tespiti
+     */
+    private function resolveAdminLocale(): string
+    {
+        \Log::info('🔧 resolveAdminLocale BAŞLADI', [
+            'session_admin_locale' => session('admin_locale'),
+            'auth_check' => auth()->check(),
+            'user_admin_locale' => auth()->check() ? auth()->user()->admin_locale : 'NOT_AUTH'
+        ]);
+        
+        // 1. ACTIVE CHOICE - Session'da bu oturum için ayarlanmış dil var mı?
+        if (session()->has('admin_locale') && $this->isValidAdminLocale(session('admin_locale'))) {
+            \Log::info('🔧 resolveAdminLocale - Session değeri döndürülüyor', [
+                'admin_locale' => session('admin_locale')
+            ]);
+            return session('admin_locale');
+        }
+        
+        // 2. STORED PREFERENCE - Login kullanıcının kalıcı tercihi
+        if (auth()->check() && auth()->user()->admin_locale && $this->isValidAdminLocale(auth()->user()->admin_locale)) {
+            // Session'a da kaydet ki bir sonraki requestte 1. aşamadan gelsin
+            session(['admin_locale' => auth()->user()->admin_locale]);
+            
+            // Cookie'ye de kaydet (logout sonrası hatırlama için)
+            Cookie::queue('admin_locale_preference', auth()->user()->admin_locale, 525600);
+            
+            \Log::info('🔧 resolveAdminLocale - User DB değeri döndürülüyor', [
+                'user_admin_locale' => auth()->user()->admin_locale
+            ]);
+            
+            return auth()->user()->admin_locale;
+        }
+        
+        // 2b. STORED PREFERENCE - Guest için cookie tercihi
+        if (!auth()->check()) {
+            $cookieLocale = Cookie::get('admin_locale_preference');
+            if ($cookieLocale && $this->isValidAdminLocale($cookieLocale)) {
+                session(['admin_locale' => $cookieLocale]);
+                return $cookieLocale;
+            }
+        }
+        
+        // 3. SMART DEFAULT - Sistem varsayılanı + fallback
+        $defaultLocale = config('app.admin_default_locale', 'tr');
+        
+        \Log::info('🔧 resolveAdminLocale - Default değer kontrolü', [
+            'default_locale' => $defaultLocale,
+            'is_valid' => $this->isValidAdminLocale($defaultLocale)
+        ]);
+        
+        if ($this->isValidAdminLocale($defaultLocale)) {
+            session(['admin_locale' => $defaultLocale]);
+            return $defaultLocale;
+        }
+        
+        // Final fallback
+        session(['admin_locale' => 'tr']);
+        \Log::info('🔧 resolveAdminLocale - Final fallback: tr');
+        return 'tr';
+    }
+
+    /**
+     * Admin için geçerli dil kontrolü
+     * Not: admin_languages tablosu central DB'de, kontrol et
+     */
+    private function isValidAdminLocale(string $locale): bool
+    {
+        if (empty($locale) || strlen($locale) > 10) {
+            return false;
+        }
+        
+        try {
+            // admin_languages tablosundan kontrol et (central DB'de)
+            $exists = \DB::table('admin_languages')
+                ->where('code', $locale)
+                ->where('is_active', true)
+                ->exists();
+                
+            return $exists;
+        } catch (\Exception $e) {
+            // DB hatası durumunda basic locale kontrolü
+            return in_array($locale, ['tr', 'en']);
+        }
     }
 }

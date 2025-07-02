@@ -134,13 +134,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Livewire event listener - sayfa yenileme
 document.addEventListener('livewire:init', () => {
+    Livewire.on('refreshPage', (event) => {
+        console.log('🔄 Dil değişti, sayfa yenileniyor...');
+        
+        // Kısa bir delay ile sayfayı yenile (session save için)
+        setTimeout(() => {
+            window.location.reload();
+        }, 200);
+    });
+    
     Livewire.on('reloadPage', (event) => {
         console.log('🔄 Veri dili değişti, sayfa yenileniyor...');
         
         // Kısa bir delay ile sayfayı yenile (session save için)
         setTimeout(() => {
             window.location.reload();
-        }, 100);
+        }, 200);
     });
 });
 </script>

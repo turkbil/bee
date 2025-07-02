@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Cache;
 use App\Http\Middleware\InitializeTenancy;
 
 // Genel admin rotaları - sadece roller tablosunda kaydı olan kullanıcılar için  
-Route::middleware(['web', 'auth', 'tenant', 'locale.admin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['admin', 'tenant'])->prefix('admin')->name('admin.')->group(function () {
     
     // /admin rotası - dashboard'a yönlendir
     Route::get('/', function () {
@@ -70,7 +70,7 @@ Route::middleware(['web', 'auth', 'tenant', 'locale.admin'])->prefix('admin')->n
     })->name('debug.language');
     
     Route::post('/debug-clear-sessions', function() {
-        session()->forget(['admin_locale', 'site_locale']);
+        session()->forget(['admin_locale', 'tenant_locale']);
         return response()->json(['status' => 'success', 'message' => 'Sessions cleared']);
     })->name('debug.clear.sessions');
     
@@ -88,7 +88,7 @@ Route::middleware(['web', 'auth', 'tenant', 'locale.admin'])->prefix('admin')->n
         }
         
         // Site locale session'ını güncelle
-        session(['site_locale' => $locale]);
+        session(['tenant_locale' => $locale]);
         
         // Cache temizleme
         $tenantId = tenant('id');
@@ -102,12 +102,12 @@ Route::middleware(['web', 'auth', 'tenant', 'locale.admin'])->prefix('admin')->n
             'new_locale' => $locale,
             'session' => [
                 'admin_locale' => session('admin_locale'),
-                'site_locale' => session('site_locale')
+                'tenant_locale' => session('tenant_locale')
             ]
         ]);
     })->name('debug.site.language');
     
-    // Admin dil değiştirme - SADECE admin_locale değişir, site_locale değişmez
+    // Admin dil değiştirme - SADECE admin_locale değişir, tenant_locale değişmez
     Route::get('/language/{locale}', function ($locale) {
         // AdminLanguage tablosundan geçerli dilleri kontrol et
         $validAdminLanguages = [];
@@ -126,13 +126,13 @@ Route::middleware(['web', 'auth', 'tenant', 'locale.admin'])->prefix('admin')->n
             return redirect()->back();
         }
         
-        // SADECE admin_locale güncelle, site_locale'e dokunma
+        // SADECE admin_locale güncelle, tenant_locale'e dokunma
         auth()->user()->update(['admin_locale' => $locale]);
         session(['admin_locale' => $locale]);
         app()->setLocale($locale);
         
         // Site locale session'ını koru (değiştirme)
-        // $currentSiteLocale = session('site_locale'); - Bu otomatik korunur
+        // $currentSiteLocale = session('tenant_locale'); - Bu otomatik korunur
         
         // 🧹 TENANT-AWARE RESPONSE CACHE TEMİZLEME (sadece admin interface için)
         try {
@@ -162,7 +162,7 @@ Route::middleware(['web', 'auth', 'tenant', 'locale.admin'])->prefix('admin')->n
             'current_url' => request()->url(),
             'session_before' => [
                 'admin_locale' => session('admin_locale'),
-                'site_locale' => session('site_locale')
+                'tenant_locale' => session('tenant_locale')
             ]
         ]);
         
@@ -187,22 +187,22 @@ Route::middleware(['web', 'auth', 'tenant', 'locale.admin'])->prefix('admin')->n
             return redirect()->back();
         }
         
-        // SADECE admin_locale güncelle, site_locale'e dokunma
+        // SADECE admin_locale güncelle, tenant_locale'e dokunma
         auth()->user()->update(['admin_locale' => $locale]);
         session(['admin_locale' => $locale]);
         app()->setLocale($locale);
         
         \Log::info('✅ Admin locale güncellendi', [
             'new_admin_locale' => $locale,
-            'site_locale_unchanged' => session('site_locale'),
+            'tenant_locale_unchanged' => session('tenant_locale'),
             'session_after' => [
                 'admin_locale' => session('admin_locale'),
-                'site_locale' => session('site_locale')
+                'tenant_locale' => session('tenant_locale')
             ]
         ]);
         
         // Site locale session'ını koru (değiştirme)
-        // $currentSiteLocale = session('site_locale'); - Bu otomatik korunur
+        // $currentSiteLocale = session('tenant_locale'); - Bu otomatik korunur
         
         // 🧹 TENANT-AWARE RESPONSE CACHE TEMİZLEME (sadece admin interface için)
         try {
@@ -226,13 +226,43 @@ Route::middleware(['web', 'auth', 'tenant', 'locale.admin'])->prefix('admin')->n
         \Log::info('🎯 ADMİN DİL DEĞİŞİMİ TAMAMLANDI', [
             'final_sessions' => [
                 'admin_locale' => session('admin_locale'),
-                'site_locale' => session('site_locale')
+                'tenant_locale' => session('tenant_locale')
             ],
             'redirect_to' => 'back'
         ]);
         
         return redirect()->back();
     })->name('admin.language.switch');
+
+    // AI Token Management routes (Root admin only)
+    Route::middleware(['role:root'])->prefix('ai-tokens')->name('ai.tokens.')->group(function () {
+        Route::get('/', [\Modules\AI\App\Http\Controllers\Admin\TokenManagementController::class, 'index'])->name('index');
+        Route::get('/tenant/{tenant}', [\Modules\AI\App\Http\Controllers\Admin\TokenManagementController::class, 'show'])->name('tenant.show');
+        Route::put('/tenant/{tenant}', [\Modules\AI\App\Http\Controllers\Admin\TokenManagementController::class, 'updateTenantSettings'])->name('tenant.update');
+        Route::post('/tenant/{tenant}/toggle-ai', [\Modules\AI\App\Http\Controllers\Admin\TokenManagementController::class, 'toggleAI'])->name('tenant.toggle.ai');
+        
+        Route::get('/packages/admin', \App\Http\Livewire\Admin\AITokenPackageManagementComponent::class)->name('packages.admin');
+        Route::post('/packages', [\Modules\AI\App\Http\Controllers\Admin\TokenManagementController::class, 'storePackage'])->name('packages.store');
+        Route::put('/packages/{package}', [\Modules\AI\App\Http\Controllers\Admin\TokenManagementController::class, 'updatePackage'])->name('packages.update');
+        Route::delete('/packages/{package}', [\Modules\AI\App\Http\Controllers\Admin\TokenManagementController::class, 'destroyPackage'])->name('packages.destroy');
+        
+        Route::get('/purchases/all', \App\Http\Livewire\Admin\AITokenPurchaseManagementComponent::class)->name('purchases.all');
+        Route::get('/usage-stats/all', \App\Http\Livewire\Admin\AITokenUsageManagementComponent::class)->name('usage.stats.all');
+    });
+    
+    // AI Token User routes (All authenticated users)
+    Route::prefix('ai-tokens')->name('ai.tokens.')->group(function () {
+        Route::get('/packages', function () {
+            return view('admin.ai-tokens.packages');
+        })->name('packages');
+        Route::get('/purchases', function () {
+            return view('admin.ai-tokens.purchases');
+        })->name('purchases');
+        Route::get('/usage-stats', function () {
+            return view('admin.ai-tokens.usage-stats');
+        })->name('usage.stats');
+        Route::post('/purchase/{package}', [\Modules\AI\App\Http\Controllers\Admin\TokenController::class, 'purchasePackage'])->name('purchase');
+    });
 });
 
 // Diğer admin routes - spesifik modül erişimleri için admin.access middleware'i kullanabilirsiniz

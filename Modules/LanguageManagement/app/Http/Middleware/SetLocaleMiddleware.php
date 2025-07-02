@@ -29,7 +29,7 @@ class SetLocaleMiddleware
             'url' => $request->fullUrl(),
             'route_lang' => $request->route('lang'),
             'current_app_locale' => app()->getLocale(),
-            'session_site_locale' => session('site_locale'),
+            'session_tenant_locale' => session('tenant_locale'),
             'session_admin_locale' => session('admin_locale')
         ]);
         
@@ -58,7 +58,7 @@ class SetLocaleMiddleware
                         app()->setLocale($locale);
                         
                         // Session'a kaydet
-                        session(['site_locale' => $locale]);
+                        session(['tenant_locale' => $locale]);
                     
                         // Request'e temiz path'i yeniden ata (opsiyonel)
                         if ($urlData['has_prefix']) {
@@ -112,7 +112,7 @@ class SetLocaleMiddleware
             }
         } else {
             // 🎯 CENTRAL TENANT İÇİN ÖZEL KONTROL - Site context'te
-            if ($context === 'site' && !session()->has('site_locale')) {
+            if ($context === 'site' && !session()->has('tenant_locale')) {
                 // Central tenant kontrolü - Tenancy başlatılmamışsa central'dayız
                 if (!app(\Stancl\Tenancy\Tenancy::class)->initialized) {
                     // Central tenant bilgisini al
@@ -121,7 +121,7 @@ class SetLocaleMiddleware
                     });
                     
                     if ($centralTenant && $centralTenant->tenant_default_locale) {
-                        session(['site_locale' => $centralTenant->tenant_default_locale]);
+                        session(['tenant_locale' => $centralTenant->tenant_default_locale]);
                         app()->setLocale($centralTenant->tenant_default_locale);
                         
                         \Log::info('🎯 Central tenant varsayılan dil ayarlandı', [
@@ -152,7 +152,7 @@ class SetLocaleMiddleware
         \Log::info('🎯 NEW SetLocaleMiddleware TAMAMLANDI', [
             'context' => $context,
             'final_app_locale' => app()->getLocale(),
-            'final_session_site_locale' => session('site_locale'),
+            'final_session_tenant_locale' => session('tenant_locale'),
             'final_session_admin_locale' => session('admin_locale')
         ]);
 

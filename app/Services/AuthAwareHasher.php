@@ -48,9 +48,9 @@ class AuthAwareHasher extends DefaultHasher
     protected function getLocaleComponent(): string
     {
         $locale = app()->getLocale();
-        $siteLocale = session('site_locale', $locale);
+        $tenantLocale = session('tenant_locale', $locale);
         
-        return 'locale_' . $siteLocale;
+        return 'locale_' . $tenantLocale;
     }
     
     /**

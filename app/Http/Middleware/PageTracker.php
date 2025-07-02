@@ -26,8 +26,7 @@ class PageTracker
             'app_locale_before' => app()->getLocale(),
             'session_data' => [
                 'admin_locale' => session('admin_locale'),
-                'site_locale' => session('site_locale'),
-                'site_locale_laravel_test' => session('site_locale_laravel_test'),
+                'tenant_locale' => session('tenant_locale'),
             ],
             'request_headers' => [
                 'cache_control' => $request->header('cache-control'),

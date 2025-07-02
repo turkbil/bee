@@ -36,11 +36,11 @@ class TenancyProvider extends ServiceProvider
             session(['current_tenant' => $event->tenancy->tenant]);
             
             // 🎯 TENANT VARSAYILAN DİL AYARI - Site ilk açıldığında
-            if (!session()->has('site_locale')) {
+            if (!session()->has('tenant_locale')) {
                 $tenantDefaultLocale = $event->tenancy->tenant->tenant_default_locale ?? 'tr';
                 
                 // Tenant'ın varsayılan dilini session'a ata
-                session(['site_locale' => $tenantDefaultLocale]);
+                session(['tenant_locale' => $tenantDefaultLocale]);
                 
                 // Laravel locale'ini de set et
                 app()->setLocale($tenantDefaultLocale);
@@ -48,7 +48,7 @@ class TenancyProvider extends ServiceProvider
                 \Log::info('🎯 TenancyProvider: Tenant varsayılan dil ayarlandı', [
                     'tenant_id' => $event->tenancy->tenant->id,
                     'tenant_default_locale' => $tenantDefaultLocale,
-                    'session_site_locale' => session('site_locale'),
+                    'session_tenant_locale' => session('tenant_locale'),
                     'user_authenticated' => auth()->check()
                 ]);
             }

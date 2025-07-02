@@ -47,8 +47,8 @@ class PageComponent extends Component
         $this->pageService->clearCache();
         
         \Log::info('🔄 PageComponent refreshPageData çağrıldı', [
-            'new_site_locale' => $this->getSiteLocale(),
-            'session_site_locale' => session('site_locale')
+            'new_tenant_locale' => $this->getSiteLocale(),
+            'session_tenant_locale' => session('tenant_locale')
         ]);
         
         // Component'i yeniden render et
@@ -75,7 +75,7 @@ class PageComponent extends Component
     }
 
     /**
-     * Admin arayüzü için admin_locale, sayfa içerikleri için site_locale kullan
+     * Admin arayüzü için admin_locale, sayfa içerikleri için tenant_locale kullan
      */
     protected function getAdminLocale()
     {
@@ -90,25 +90,43 @@ class PageComponent extends Component
         // Eğer query string'de dil değişim parametresi varsa onu kullan
         if ($dataLangChanged && in_array($dataLangChanged, $this->getAvailableSiteLanguages())) {
             // Session'ı da güncelle (query'den gelen dili session'a yaz)
-            session(['site_locale' => $dataLangChanged]);
+            session(['tenant_locale' => $dataLangChanged]);
             session()->save();
             
             \Log::info('🎯 Site locale query string\'den güncellendi', [
                 'query_param' => $dataLangChanged,
-                'updated_session' => session('site_locale')
+                'updated_session' => session('tenant_locale')
             ]);
             
             return $dataLangChanged;
         }
         
-        $siteLocale = session('site_locale', 'tr');
+        // 1. Kullanıcının kendi tenant_locale tercihi (en yüksek öncelik)
+        if (auth()->check() && auth()->user()->tenant_locale) {
+            $userLocale = auth()->user()->tenant_locale;
+            
+            // Session'ı da güncelle
+            if (session('tenant_locale') !== $userLocale) {
+                session(['tenant_locale' => $userLocale]);
+            }
+            
+            \Log::info('🔍 getSiteLocale - User tenant_locale kullanıldı', [
+                'user_locale' => $userLocale,
+                'session_updated' => true
+            ]);
+            
+            return $userLocale;
+        }
+        
+        // 2. Session fallback
+        $siteLocale = session('tenant_locale', 'tr');
         
         \Log::info('🔍 PageComponent getSiteLocale debug', [
-            'session_site_locale' => session('site_locale'),
+            'session_tenant_locale' => session('tenant_locale'),
             'session_admin_locale' => session('admin_locale'),
             'query_data_lang_changed' => $dataLangChanged,
             'return_value' => $siteLocale,
-            'all_session_data' => session()->all()
+            'user_tenant_locale' => auth()->check() ? auth()->user()->tenant_locale : 'NOT_AUTH'
         ]);
         
         return $siteLocale;
@@ -160,10 +178,10 @@ class PageComponent extends Component
         
         // Debug log - veri dili kontrolü
         \Log::info('📊 PageComponent render çağrıldı', [
-            'current_site_locale' => $currentSiteLocale,
-            'session_site_locale' => session('site_locale'),
+            'current_tenant_locale' => $currentSiteLocale,
+            'session_tenant_locale' => session('tenant_locale'),
             'session_admin_locale' => session('admin_locale'),
-            'available_site_languages' => $siteLanguages,
+            'available_tenant_languages' => $siteLanguages,
             'request_query_params' => request()->query()
         ]);
         

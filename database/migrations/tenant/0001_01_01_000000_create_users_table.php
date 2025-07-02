@@ -19,16 +19,16 @@ return new class extends Migration
             $table->timestamp('last_login_at')->nullable()->index();
             $table->timestamp('email_verified_at')->nullable()->index();
             $table->string('password');
-            $table->string('admin_language_preference', 10)->nullable(); // System language preference
-            $table->string('site_language_preference', 10)->nullable(); // Site language preference
+            $table->string('admin_locale', 10)->nullable(); // Admin panel language preference
+            $table->string('tenant_locale', 5)->nullable(); // Tenant site language preference
             $table->rememberToken()->index();
             $table->timestamps();
             
             // Tarih alanları için indeks
             $table->index('created_at');
             $table->index('updated_at');
-            $table->index('admin_language_preference');
-            $table->index('site_language_preference');
+            $table->index('admin_locale');
+            $table->index('tenant_locale');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

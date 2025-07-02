@@ -1,4 +1,233 @@
 
+// Theme Builder CSS Specificity Fix
+document.addEventListener('DOMContentLoaded', function() {
+    // Bootstrap Offcanvas manual initialization for theme builder
+    const offcanvasElement = document.getElementById('offcanvasTheme');
+    if (offcanvasElement) {
+        // Bootstrap Offcanvas'ı manuel olarak başlat
+        if (typeof bootstrap !== 'undefined' && bootstrap.Offcanvas) {
+            const themeOffcanvas = new bootstrap.Offcanvas(offcanvasElement);
+            
+            // Theme builder açıldığında form update
+            offcanvasElement.addEventListener('shown.bs.offcanvas', function() {
+                // Form state güncelleme
+                if (typeof updateThemeBuilderForm === 'function') {
+                    updateThemeBuilderForm();
+                }
+                
+                // Real-time listener'ları attach et
+                if (typeof attachRealTimeListeners === 'function') {
+                    attachRealTimeListeners();
+                }
+                
+                // CSS değişkenlerini zorla güncelle
+                setTimeout(() => {
+                    forceUpdateThemeState();
+                }, 100);
+            });
+        }
+    }
+    
+    // Theme mode switch için fallback event handling
+    const themeSwitch = document.getElementById('switch');
+    if (themeSwitch) {
+        // Eğer tema sistemi yüklenmemişse fallback
+        setTimeout(() => {
+            if (typeof initThemeSwitch !== 'function') {
+                initFallbackThemeSwitch();
+            }
+        }, 1000);
+    }
+});
+
+// Fallback theme switch sistemi
+function initFallbackThemeSwitch() {
+    const themeSwitch = document.getElementById('switch');
+    if (!themeSwitch) return;
+    
+    themeSwitch.addEventListener('change', function() {
+        const currentTheme = getCookieValue('dark') || 'auto';
+        let newTheme = 'auto';
+        
+        if (currentTheme === '0') newTheme = '1';
+        else if (currentTheme === '1') newTheme = 'auto';
+        else newTheme = '0';
+        
+        document.cookie = `dark=${newTheme};path=/;max-age=31536000`;
+        
+        // Tema uygula
+        applyThemeModeFallback(newTheme);
+        
+        // Switch ve container state güncelle
+        updateThemeSwitchState(newTheme);
+    });
+}
+
+// Fallback tema modu uygulama
+function applyThemeModeFallback(themeMode) {
+    const body = document.body;
+    
+    if (themeMode === '1') {
+        body.setAttribute('data-bs-theme', 'dark');
+        body.classList.remove('light');
+        body.classList.add('dark');
+    } else if (themeMode === '0') {
+        body.setAttribute('data-bs-theme', 'light');
+        body.classList.remove('dark');
+        body.classList.add('light');
+    } else {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        body.setAttribute('data-bs-theme', prefersDark ? 'dark' : 'light');
+        body.classList.remove(prefersDark ? 'light' : 'dark');
+        body.classList.add(prefersDark ? 'dark' : 'light');
+    }
+}
+
+// Theme switch state güncelleme
+function updateThemeSwitchState(themeMode) {
+    const themeContainer = document.querySelector('.theme-mode');
+    const themeSwitch = document.getElementById('switch');
+    
+    if (themeContainer && themeSwitch) {
+        if (themeMode === 'auto') {
+            themeContainer.setAttribute('data-theme', 'auto');
+            themeSwitch.checked = false;
+        } else if (themeMode === '1') {
+            themeContainer.setAttribute('data-theme', 'dark');
+            themeSwitch.checked = true;
+        } else {
+            themeContainer.setAttribute('data-theme', 'light');
+            themeSwitch.checked = false;
+        }
+    }
+}
+
+// Theme state'i zorla güncelleme
+function forceUpdateThemeState() {
+    // CSS Custom Properties zorla yenile
+    const root = document.documentElement;
+    const currentTheme = getCookieValue('dark') || 'auto';
+    const currentColor = getCookieValue('siteColor') || '#066fd1';
+    
+    // Primary color CSS değişkenlerini zorla uygula
+    root.style.setProperty('--tblr-primary', currentColor, 'important');
+    root.style.setProperty('--tblr-primary-rgb', hexToRgbString(currentColor), 'important');
+    
+    // Body class'larını zorla güncelle
+    const body = document.body;
+    if (currentTheme === '1') {
+        body.classList.add('dark');
+        body.classList.remove('light');
+    } else if (currentTheme === '0') {
+        body.classList.add('light');
+        body.classList.remove('dark');
+    } else {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        body.classList.add(prefersDark ? 'dark' : 'light');
+        body.classList.remove(prefersDark ? 'light' : 'dark');
+    }
+    
+    // Theme container state güncelle
+    updateThemeSwitchState(currentTheme);
+}
+
+// Cookie okuma helper
+function getCookieValue(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+}
+
+// HEX to RGB string helper
+function hexToRgbString(hex) {
+    if (!hex || !hex.startsWith('#')) return '6, 111, 209'; // Fallback
+    
+    // Hex uzunluk kontrolü
+    if (hex.length !== 7) {
+        console.warn('Geçersiz hex uzunluğu:', hex, '- varsayılan değer kullanılıyor');
+        return '6, 111, 209'; // Fallback
+    }
+    
+    const r = parseInt(hex.substring(1, 3), 16);
+    const g = parseInt(hex.substring(3, 5), 16);
+    const b = parseInt(hex.substring(5, 7), 16);
+    
+    // NaN kontrolü
+    if (isNaN(r) || isNaN(g) || isNaN(b)) {
+        console.warn('RGB dönüşümünde NaN değeri main.js\'te:', {hex, r, g, b}, '- varsayılan değer kullanılıyor');
+        return '6, 111, 209'; // Fallback
+    }
+    
+    return `${r}, ${g}, ${b}`;
+}
+
+// Translation function
+function t(key, params = {}) {
+    if (typeof window.jsTranslations === 'undefined') {
+        console.warn('jsTranslations not loaded, using fallback');
+        return key;
+    }
+    
+    const locale = document.documentElement.lang || 'tr';
+    const translations = window.jsTranslations[locale] || window.jsTranslations['tr'] || {};
+    
+    let text = translations[key] || key;
+    
+    // Parameter replacement
+    if (params && Object.keys(params).length > 0) {
+        Object.keys(params).forEach(param => {
+            text = text.replace(`{${param}}`, params[param]);
+        });
+    }
+    
+    return text;
+}
+
+// Bootstrap kontrolü ve fallback
+function ensureBootstrap() {
+    // Tabler.min.js Bootstrap'ı içerir, ancak yüklenmesi biraz zaman alabilir
+    if (typeof bootstrap === 'undefined' && typeof window.bootstrap === 'undefined') {
+        // Bootstrap yüklenmemişse basit fallback
+        window.bootstrap = {
+            Offcanvas: function(element) {
+                return {
+                    show: function() { 
+                        element.classList.add('show'); 
+                        element.style.visibility = 'visible';
+                    },
+                    hide: function() { 
+                        element.classList.remove('show'); 
+                        element.style.visibility = 'hidden';
+                    },
+                    toggle: function() {
+                        if (element.classList.contains('show')) {
+                            this.hide();
+                        } else {
+                            this.show();
+                        }
+                    }
+                };
+            },
+            Modal: function(element) {
+                return {
+                    show: function() { element.style.display = 'block'; },
+                    hide: function() { element.style.display = 'none'; }
+                };
+            }
+        };
+        // Bootstrap fallback aktif
+    }
+}
+
+// Bootstrap'ı hemen kontrol et
+ensureBootstrap();
+
+// Sayfa yüklendikten sonra da kontrol et
+document.addEventListener('DOMContentLoaded', function() {
+    ensureBootstrap();
+});
+
 // Choices.js Sistemi
 function initializeChoices() {
     const choicesElements = document.querySelectorAll('[data-choices]');
@@ -520,7 +749,15 @@ document.addEventListener('DOMContentLoaded', function() {
             const action = this.dataset.action;
             const isAllClear = action === 'clear-all';
             
-            // Icon'u disable et ve loading state
+            // Dropdown menüdeki hızlı işlemler grid iconunu bul ve loading state yap
+            const quickActionsDropdown = document.querySelector('[data-bs-toggle="dropdown"] .fa-grid-2');
+            let originalGridIcon = '';
+            if (quickActionsDropdown) {
+                originalGridIcon = quickActionsDropdown.className;
+                quickActionsDropdown.className = 'fa-solid fa-spinner fa-spin';
+            }
+            
+            // Cache clear butonundaki icon'u da loading state yap
             const iconElement = this.querySelector('i');
             const originalIcon = iconElement.className;
             iconElement.className = 'fa-solid fa-spinner fa-spin';
@@ -558,7 +795,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             })
             .finally(() => {
-                // Icon'u tekrar normale döndür
+                // Grid icon'u tekrar normale döndür
+                if (quickActionsDropdown && originalGridIcon) {
+                    quickActionsDropdown.className = originalGridIcon;
+                }
+                
+                // Buton icon'u tekrar normale döndür
                 iconElement.className = originalIcon;
                 this.style.pointerEvents = 'auto';
             });
@@ -710,3 +952,236 @@ const TinyMCEMultiLang = {
         tinymce.remove();
     }
 };
+
+// Theme Builder Offcanvas Manuel Açma Fonksiyonu
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🏗️ Theme Builder DOMContentLoaded başladı');
+    
+    // Theme builder button'ları bul ve manuel event ekle
+    const themeBuilderButtons = document.querySelectorAll('[data-bs-target="#offcanvasTheme"]');
+    console.log('🏗️ Theme builder button sayısı:', themeBuilderButtons.length);
+    
+    themeBuilderButtons.forEach(function(button, index) {
+        console.log(`🏗️ Theme builder button ${index + 1} event listener ekleniyor`);
+        
+        button.addEventListener('click', function(e) {
+            console.log('🏗️ THEME BUILDER BUTTON TIKLANDI!');
+            e.preventDefault();
+            
+            // Offcanvas elementini bul
+            const offcanvasElement = document.getElementById('offcanvasTheme');
+            console.log('🏗️ OffcanvasTheme elementi:', offcanvasElement ? 'bulundu' : 'bulunamadı');
+            
+            if (offcanvasElement) {
+                // Bootstrap yüklenmişse Offcanvas instance'ını oluştur veya al
+                console.log('🏗️ Bootstrap kontrolü yapılıyor...');
+                console.log('🏗️ Bootstrap tanımlı mı:', typeof bootstrap !== 'undefined');
+                console.log('🏗️ Bootstrap.Offcanvas var mı:', typeof bootstrap !== 'undefined' && !!bootstrap.Offcanvas);
+                console.log('🏗️ getInstance fonksiyonu var mı:', typeof bootstrap !== 'undefined' && bootstrap.Offcanvas && typeof bootstrap.Offcanvas.getInstance === 'function');
+                
+                if (typeof bootstrap !== 'undefined' && bootstrap.Offcanvas && typeof bootstrap.Offcanvas.getInstance === 'function') {
+                    console.log('✅ Bootstrap Offcanvas kullanılıyor');
+                    
+                    let offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvasElement);
+                    console.log('🏗️ Mevcut instance:', offcanvasInstance ? 'var' : 'yok');
+                    
+                    if (!offcanvasInstance) {
+                        console.log('🏗️ Yeni Offcanvas instance oluşturuluyor...');
+                        offcanvasInstance = new bootstrap.Offcanvas(offcanvasElement);
+                    }
+                    
+                    // Offcanvas'ı aç
+                    console.log('🏗️ Offcanvas açılıyor...');
+                    offcanvasInstance.show();
+                    console.log('✅ Offcanvas açıldı!');
+                } else {
+                    console.warn('⚠️ Bootstrap Offcanvas bulunamadı, fallback kullanılıyor');
+                    // Fallback olarak direkt show/hide class'ları
+                    if (offcanvasElement.classList.contains('show')) {
+                        console.log('🏗️ Fallback: Offcanvas kapatılıyor');
+                        offcanvasElement.classList.remove('show');
+                    } else {
+                        console.log('🏗️ Fallback: Offcanvas açılıyor');
+                        offcanvasElement.classList.add('show');
+                        
+                        // Manuel olarak shown.bs.offcanvas eventini tetikle
+                        console.log('🏗️ Manuel shown.bs.offcanvas eventi tetikleniyor...');
+                        const shownEvent = new CustomEvent('shown.bs.offcanvas');
+                        offcanvasElement.dispatchEvent(shownEvent);
+                    }
+                    return;
+                }
+            } else {
+                console.error('❌ OffcanvasTheme elementi bulunamadı!');
+            }
+        });
+    });
+    
+    // Theme Builder açıldıkında mevcut ayarları yükle
+    const offcanvasTheme = document.getElementById('offcanvasTheme');
+    if (offcanvasTheme) {
+        offcanvasTheme.addEventListener('shown.bs.offcanvas', function() {
+            // Mevcut tema ayarlarını form'a yansıt
+            updateThemeBuilderForm();
+        });
+    }
+});
+
+// Theme Builder form güncellemesi
+function updateThemeBuilderForm() {
+    // Mevcut tema cookie'lerini oku ve form'u güncelle
+    const cookies = document.cookie.split(';').reduce((acc, cookie) => {
+        const [key, value] = cookie.split('=').map(c => c.trim());
+        acc[key] = value;
+        return acc;
+    }, {});
+    
+    // Dark mode radio'larını güncelle
+    const darkCookie = cookies.dark || 'auto';
+    const themeRadios = document.querySelectorAll('input[name="theme"]');
+    themeRadios.forEach(radio => {
+        if (darkCookie === '1' && radio.value === 'dark') {
+            radio.checked = true;
+        } else if (darkCookie === '0' && radio.value === 'light') {
+            radio.checked = true;
+        } else if (darkCookie === 'auto' && radio.value === 'auto') {
+            radio.checked = true;
+        }
+    });
+    
+    // Primary color'u güncelle
+    const primaryColor = cookies.siteColor || '#066fd1';
+    const colorRadios = document.querySelectorAll('input[name="theme-primary"]');
+    colorRadios.forEach(radio => {
+        if (radio.value === primaryColor) {
+            radio.checked = true;
+        }
+    });
+    
+    // Font seçimini güncelle
+    const themeFont = cookies.themeFont;
+    if (themeFont) {
+        const fontRadios = document.querySelectorAll('input[name="theme-font"]');
+        fontRadios.forEach(radio => {
+            if (decodeURIComponent(themeFont) === radio.value) {
+                radio.checked = true;
+            }
+        });
+    }
+    
+    // Font size güncelle
+    const fontSize = cookies.themeFontSize || 'small';
+    const fontSizeRadios = document.querySelectorAll('input[name="theme-font-size"]');
+    fontSizeRadios.forEach(radio => {
+        if (radio.value === fontSize) {
+            radio.checked = true;
+        }
+    });
+    
+    // Radius slider güncelle
+    const radiusValue = cookies.themeRadius || '0.375rem';
+    const radiusSlider = document.getElementById('radius-slider');
+    if (radiusSlider) {
+        const radiusMap = ['0', '0.25rem', '0.375rem', '0.5rem', '0.75rem', '1rem'];
+        const radiusIndex = radiusMap.indexOf(radiusValue);
+        if (radiusIndex !== -1) {
+            radiusSlider.value = radiusIndex;
+            
+            // Radius examples'ı güncelle
+            const radiusExamples = document.querySelectorAll('.radius-example');
+            radiusExamples.forEach((example, index) => {
+                if (index === radiusIndex) {
+                    example.classList.add('active');
+                } else {
+                    example.classList.remove('active');
+                }
+            });
+        }
+    }
+    
+    // Table compact güncelle
+    const tableCompact = cookies.tableCompact || '0';
+    const tableRadios = document.querySelectorAll('input[name="table-compact"]');
+    tableRadios.forEach(radio => {
+        if (radio.value === tableCompact) {
+            radio.checked = true;
+        }
+    });
+    
+    // Base theme güncelle
+    const themeBase = cookies.themeBase || 'neutral';
+    const baseRadios = document.querySelectorAll('input[name="theme-base"]');
+    baseRadios.forEach(radio => {
+        if (radio.value === themeBase) {
+            radio.checked = true;
+        }
+    });
+};
+
+// Bootstrap event entegrasyonu - Theme switcher için
+document.addEventListener('DOMContentLoaded', function() {
+    // Dark mode toggle için click event listener
+    const darkModeSwitch = document.getElementById('switch');
+    if (darkModeSwitch) {
+        // Theme switch'e manuel event ekle
+        darkModeSwitch.addEventListener('click', function(e) {
+            // Eğer tema sistemi yüklenmişse, onun change event'ini kullan
+            if (typeof initThemeSwitch === 'function') {
+                // Theme.js'deki change event'i tetiklenir
+                return;
+            }
+            
+            // Fallback: Basit toggle
+            const isChecked = this.checked;
+            const newTheme = isChecked ? '1' : '0';
+            document.cookie = `dark=${newTheme};path=/;max-age=31536000`;
+            
+            // Body theme'ini güncelle
+            if (isChecked) {
+                document.body.setAttribute('data-bs-theme', 'dark');
+                document.body.classList.add('dark');
+                document.body.classList.remove('light');
+            } else {
+                document.body.setAttribute('data-bs-theme', 'light');
+                document.body.classList.add('light');
+                document.body.classList.remove('dark');
+            }
+        });
+    }
+    
+    // Offcanvas events için theme builder entegrasyonu
+    const offcanvasTheme = document.getElementById('offcanvasTheme');
+    if (offcanvasTheme) {
+        // Offcanvas açıldığında
+        offcanvasTheme.addEventListener('shown.bs.offcanvas', function() {
+            // Form güncellemesini tetikle
+            if (typeof updateThemeBuilderForm === 'function') {
+                updateThemeBuilderForm();
+            }
+            
+            // Focus management
+            const firstInput = this.querySelector('input[type="radio"]:checked, input[type="radio"]');
+            if (firstInput) {
+                firstInput.focus();
+            }
+        });
+        
+        // Offcanvas kapandığında
+        offcanvasTheme.addEventListener('hidden.bs.offcanvas', function() {
+            // Theme değişikliklerini kaydet veya uygula
+            if (typeof forceUpdateThemeVariables === 'function') {
+                forceUpdateThemeVariables();
+            }
+        });
+    }
+    
+    // Theme değişikliklerini dinle ve toast mesajı göster
+    document.addEventListener('change', function(e) {
+        if (e.target.matches('input[name="theme"], input[name="theme-primary"], input[name="theme-font"], input[name="theme-font-size"], input[name="theme-base"], input[name="table-compact"]')) {
+            // Theme değişikliği tespit edildi
+            if (typeof showToast === 'function') {
+                showToast(t('success'), t('theme_updated'), 'success');
+            }
+        }
+    });
+});

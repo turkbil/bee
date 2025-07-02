@@ -28,7 +28,7 @@
                             @endif
                             <a href="{{ route('admin.widgetmanagement.preview.template', $widgetId) }}" 
                                class="btn btn-outline-info" target="_blank">
-                                <i class="fas fa-eye me-2"></i>
+                                <i class="ti ti-eye me-2"></i>
                                 {{ __('widgetmanagement::admin.preview') }}
                             </a>
                         </div>

@@ -87,7 +87,7 @@ Route::get('/debug-routes', function () {
 
 
 // Ana sayfa route'u  
-Route::middleware(['web', 'locale.site', 'page.tracker'])->get('/', [\Modules\Page\App\Http\Controllers\Front\PageController::class, 'homepage'])->name('home');
+Route::middleware(['site', 'page.tracker'])->get('/', [\Modules\Page\App\Http\Controllers\Front\PageController::class, 'homepage'])->name('home');
 
 // Sitemap route'u
 Route::middleware([InitializeTenancy::class])->get('/sitemap.xml', function() {
@@ -115,7 +115,7 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware(['web', 'auth', 'verified', 'locale.site'])->name('dashboard');
+})->middleware(['site', 'auth', 'verified'])->name('dashboard');
 
 
 // Auth route'ları
@@ -127,14 +127,19 @@ require __DIR__.'/test-schema.php';
 
 
 // Site dil değiştirme route'u - Tenant-aware cache temizleme ile
-Route::get('/language/{locale}', function($locale) {
+Route::middleware(['site'])->get('/language/{locale}', function($locale) {
     // Hızlı kontrol ve güncelleme
     if (in_array($locale, ['tr', 'en', 'ar'])) {
-        session(['site_locale' => $locale]);
+        session(['tenant_locale' => $locale]);
         app()->setLocale($locale);
         
         if (auth()->check()) {
             auth()->user()->update(['tenant_locale' => $locale]);
+        }
+        
+        // 🧹 URLPREFIXSERVICE CACHE TEMİZLEME (Critical!)
+        if (class_exists('\Modules\LanguageManagement\app\Services\UrlPrefixService')) {
+            \Modules\LanguageManagement\app\Services\UrlPrefixService::clearCache();
         }
         
         // 🧹 TENANT-AWARE RESPONSE CACHE TEMİZLEME
@@ -156,10 +161,10 @@ Route::get('/language/{locale}', function($locale) {
     }
     
     return redirect()->back();
-})->middleware(['web'])->name('language.switch');
+})->name('language.switch');
 
 // Dinamik modül route'ları - sadece frontend içerik için
-Route::middleware([InitializeTenancy::class, 'web', \Modules\LanguageManagement\app\Http\Middleware\SetLocaleMiddleware::class . ':site'])
+Route::middleware([InitializeTenancy::class, 'site'])
     ->group(function () {
         // Dil prefix'li route'lar - tenant bazlı aktif diller
         Route::get('/{lang}/{slug1}', function($lang, $slug1) {

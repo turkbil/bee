@@ -44,7 +44,7 @@ class LanguageService
             'language_code' => $languageCode,
             'context' => $context,
             'before_admin_locale' => session('admin_locale'),
-            'before_site_locale' => session('site_locale')
+            'before_tenant_locale' => session('tenant_locale')
         ]);
         
         // Laravel locale'ini ayarla (sadece admin context'te)
@@ -66,7 +66,7 @@ class LanguageService
             'context' => $context,
             'new_language' => $languageCode,
             'after_admin_locale' => session('admin_locale'),
-            'after_site_locale' => session('site_locale')
+            'after_tenant_locale' => session('tenant_locale')
         ]);
     }
 
@@ -115,14 +115,14 @@ class LanguageService
         if ($context === 'site') {
             // Site context için domain-specific key kontrol et
             $domain = request()->getHost();
-            $domainSessionKey = 'site_locale_' . str_replace('.', '_', $domain);
+            $domainSessionKey = 'tenant_locale_' . str_replace('.', '_', $domain);
             
             // Önce domain-specific key'i kontrol et
             if (Session::has($domainSessionKey)) {
                 $domainLocale = Session::get($domainSessionKey);
                 
                 // Generic key'i de güncelle (sync için)
-                Session::put('site_locale', $domainLocale);
+                Session::put('tenant_locale', $domainLocale);
                 
                 \Log::info('✅ LanguageService: Domain-specific locale bulundu', [
                     'domain' => $domain,
@@ -134,8 +134,8 @@ class LanguageService
             }
             
             // Fallback: Generic key kontrol et
-            if (Session::has('site_locale')) {
-                return Session::get('site_locale');
+            if (Session::has('tenant_locale')) {
+                return Session::get('tenant_locale');
             }
         } else {
             // Admin context için normal key

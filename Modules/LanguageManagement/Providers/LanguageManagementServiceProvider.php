@@ -14,6 +14,7 @@ use Modules\LanguageManagement\app\Http\Livewire\Admin\AdminLanguageManageCompon
 use Modules\LanguageManagement\app\Http\Livewire\Admin\TenantLanguageComponent;
 use Modules\LanguageManagement\app\Http\Livewire\Admin\TenantLanguageManageComponent;
 use Modules\LanguageManagement\app\Http\Livewire\Admin\TranslationManageComponent;
+use Modules\LanguageManagement\app\Http\Livewire\Admin\TranslationCheckerComponent;
 use Modules\LanguageManagement\app\Http\Livewire\LanguageSwitcher;
 use Modules\LanguageManagement\app\Http\Livewire\AdminLanguageSwitcher;
 use Modules\LanguageManagement\app\Http\Middleware\SetLocaleMiddleware;
@@ -147,6 +148,7 @@ class LanguageManagementServiceProvider extends ServiceProvider
         Livewire::component('languagemanagement::admin.site-language', TenantLanguageComponent::class);
         Livewire::component('languagemanagement::admin.site-language-manage', TenantLanguageManageComponent::class);
         Livewire::component('languagemanagement::admin.translation-manage', TranslationManageComponent::class);
+        Livewire::component('languagemanagement::admin.translation-checker', TranslationCheckerComponent::class);
         Livewire::component('languagemanagement::language-switcher', LanguageSwitcher::class);
         Livewire::component('languagemanagement::admin-language-switcher', AdminLanguageSwitcher::class);
     }

@@ -9,7 +9,7 @@ use Modules\SettingManagement\App\Http\Livewire\TenantSettingsComponent;
 use Modules\SettingManagement\App\Http\Livewire\FormBuilderComponent;
 use Modules\SettingManagement\App\Http\Controllers\FormBuilderController;
 
-Route::middleware(['web', 'auth', 'tenant'])
+Route::middleware(['admin', 'tenant'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {

@@ -12,7 +12,7 @@
                         <i class="fas fa-search"></i>
                     </span>
                     <input type="text" wire:model.live="search" class="form-control"
-                        placeholder="{{ __('admin.search_site_language') }}...">
+                        placeholder="{{ __('admin.search_tenant_language') }}...">
                 </div>
             </div>
             <!-- Loading -->
@@ -52,7 +52,7 @@
                         <div class="card h-100 {{ !$language->is_active ? 'opacity-50' : '' }} {{ $language->is_default ? 'border-primary' : '' }}" style="cursor: move;">
                             @if($language->is_default)
                                 <div class="card-header bg-primary text-white py-2">
-                                    <small><i class="fas fa-star me-1"></i> {{ __('admin.default_site_language') }}</small>
+                                    <small><i class="fas fa-star me-1"></i> {{ __('admin.default_tenant_language') }}</small>
                                 </div>
                             @endif
                             <div class="card-body d-flex flex-column">
@@ -118,7 +118,7 @@
                                         @endif
                                         
                                         <button wire:click="delete({{ $language->id }})" 
-                                                wire:confirm="{{ __('admin.confirm_delete_site_language') }}?"
+                                                wire:confirm="{{ __('admin.confirm_delete_tenant_language') }}?"
                                                 class="btn btn-outline-danger btn-sm {{ $language->is_default ? 'flex-fill' : '' }}">
                                             <i class="fas fa-trash me-1"></i>
                                             {{ $language->is_default ? __('admin.delete') : '' }}
@@ -133,16 +133,16 @@
         @else
             <div class="text-center py-5">
                 <i class="fas fa-globe fa-3x text-muted mb-3"></i>
-                <h5 class="text-muted">{{ __('admin.no_site_languages_found') }}</h5>
+                <h5 class="text-muted">{{ __('admin.no_tenant_languages_found') }}</h5>
                 <p class="text-muted">
                     @if($search)
                         {{ __('admin.no_search_results', ['search' => $search]) }}
                     @else
-                        {{ __('admin.no_site_languages_yet') }}
+                        {{ __('admin.no_tenant_languages_yet') }}
                     @endif
                 </p>
                 <a href="{{ route('admin.languagemanagement.site.manage') }}" class="btn btn-primary">
-                    <i class="fas fa-plus me-1"></i> {{ __('admin.add_first_site_language') }}
+                    <i class="fas fa-plus me-1"></i> {{ __('admin.add_first_tenant_language') }}
                 </a>
             </div>
         @endif

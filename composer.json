@@ -62,6 +62,7 @@
         "files": [
             "app/Helpers/Functions.php",
             "app/Helpers/TenantHelpers.php",
+            "app/Helpers/AIHelper.php",
             "app/Helpers/TranslationHelper.php"
         ]
     },

@@ -1,7 +1,7 @@
 <?php
 
 use App\Models\Tenant;
-use App\Models\AITokenPackage;
+use Modules\AI\App\Models\AITokenPackage;
 use App\Services\AITokenService;
 
 if (!function_exists('ai_token_balance')) {

@@ -9,74 +9,84 @@ use Illuminate\Support\Facades\Cache;
 
 class PromptDeleteModal extends Component
 {
+    public $prompt;
     public $showModal = false;
-    public $promptId = null;
-    public $promptName = '';
     
-    protected $listeners = [
-        'showPromptDeleteModal' => 'openModal',
-        'hidePromptDeleteModal' => 'closeModal',
-    ];
+    protected $listeners = ['openPromptDeleteModal' => 'openModal'];
     
-    public function openModal($data = [])
+    public function render()
     {
-        $this->promptId = $data['id'] ?? null;
-        $this->promptName = $data['name'] ?? '';
-        $this->showModal = true;
+        return view('ai::admin.livewire.modals.prompt-delete-modal');
+    }
+    
+    public function openModal($promptId)
+    {
+        try {
+            $this->prompt = Prompt::find($promptId);
+            
+            if (!$this->prompt) {
+                throw new \Exception('Prompt bulunamadı');
+            }
+            
+            $this->showModal = true;
+        } catch (\Exception $e) {
+            Log::error('Prompt silme modalı açılırken hata: ' . $e->getMessage());
+            $this->dispatch('toast', [
+                'title' => 'Hata!',
+                'message' => 'Prompt bulunamadı',
+                'type' => 'error'
+            ]);
+        }
     }
     
     public function closeModal()
     {
         $this->showModal = false;
+        $this->prompt = null;
     }
     
-    public function delete()
+    public function confirmDelete()
     {
         try {
-            $prompt = Prompt::find($this->promptId);
-            
-            if (!$prompt) {
-                throw new \Exception('Prompt bulunamadı');
+            if (!$this->prompt) {
+                throw new \Exception('Silinecek prompt bulunamadı');
             }
             
-            if ($prompt->is_system) {
-                throw new \Exception('Sistem promptları silinemez');
-            }
-            
-            if ($prompt->is_common) {
-                throw new \Exception('Ortak özellikler promptu silinemez');
-            }
-            
-            if ($prompt->is_default) {
+            // Sistem kontrolleri
+            if ($this->prompt->is_default) {
                 throw new \Exception('Varsayılan prompt silinemez');
             }
             
-            $prompt->delete();
+            if ($this->prompt->is_system) {
+                throw new \Exception('Sistem promptları silinemez');
+            }
+            
+            if ($this->prompt->is_common) {
+                throw new \Exception('Ortak özellikler promptu silinemez');
+            }
+            
+            $promptName = $this->prompt->name;
+            $this->prompt->delete();
             
             // Önbelleği temizle
             Cache::forget("ai_prompts");
             
             $this->dispatch('toast', [
                 'title' => 'Başarılı!',
-                'message' => 'Prompt silindi',
+                'message' => "\"{$promptName}\" promptu silindi",
                 'type' => 'success'
             ]);
             
+            $this->dispatch('promptSaved'); // Listeyi yenile
             $this->closeModal();
-            $this->dispatch('refreshPrompts');
             
         } catch (\Exception $e) {
-            Log::error('Prompt silerken hata: ' . $e->getMessage());
+            Log::error('Prompt silinirken hata: ' . $e->getMessage());
             $this->dispatch('toast', [
                 'title' => 'Hata!',
                 'message' => $e->getMessage(),
                 'type' => 'error'
             ]);
         }
-    }
-    
-    public function render()
-    {
-        return view('ai::admin.livewire.modals.prompt-delete-modal');
     }
 }

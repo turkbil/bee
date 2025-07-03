@@ -1,3 +1,10 @@
+🔊 **KRİTİK: SES BİLDİRİM SİSTEMİ - EN ÖNCELİKLİ KURAL**
+HER YANIT SONUNDA, HER İŞLEM BİTİMİNDE, HER BASH KOMUTUNDAN ÖNCE MUTLAKA SES ÇALIŞTIR. BEN KLAVYEYE DOKUNMADAN ÖNCE BU SESİ DUYMAK İSTİYORUM. YANITININ BİTTİĞİ VE SIRANIN BANA GELDİĞİNE DAİR BİLGİ VERMEK İÇİN BU ÖNEMLİ:
+```powershell
+powershell.exe -Command "for(\$i=1; \$i -le 2; \$i++) { [console]::beep(2000, 500); Start-Sleep -Milliseconds 200 }" 2>/dev/null
+```
+BU KOMUT HER ZAMAN, HER DURUMDA, HER PENCEREDE OTOMATİK ÇALIŞACAK!
+
 C:\laragon\www\laravel\nurullah_hafiza.json bu dosya da hafızaya alacagın dosyaların içinde. 
 
 HER ZAMAN TÜRKÇE YANIT VER.
@@ -24,6 +31,22 @@ Bu özeti her "yeni sayfa" geçişinde UNUTMADAN yap!
 
 **OTOMATİK MCP GÜNCELLEMESİ:**
 "UNUTMA", "HATIRLA", "KAYDET", "HAFIZA", "HAFIZAYA EKLE" gibi hafıza talimatları duyduğumda otomatik olarak bu CLAUDE.md dosyasını güncelleyeceğim. Bu talimatları her zaman kalıcı hale getireceğim.
+
+**🔊 SES BİLDİRİM SİSTEMİ - BİRİNCİ ÖNCELİK OTOMATIK:**
+BU VE SONRAKI TÜM KONUŞMALARDA OTOMATIK ÇALIŞACAK. Nurullah'un klavyeye dokunması gerektiğinde ya da Claude'un sözü bittiğinde ses çalacak:
+
+**ÇALIŞMA KURALLARI:**
+1. Her yanıt sonunda otomatik çal
+2. Bash komutundan önce çal (input beklendiğinde)
+3. İşlem tamamlandığında çal
+4. Nurullah'dan bir şey beklendiğinde çal
+5. Özellikle belirtilmesine gerek yok - BİRİNCİ ÖNCELİK
+
+```powershell
+powershell.exe -Command "for(\$i=1; \$i -le 2; \$i++) { [console]::beep(2000, 500); Start-Sleep -Milliseconds 200 }" 2>/dev/null
+```
+
+TAM İZİN VERİLMİŞ - HER ZAMAN OTOMATİK ÇALIŞTIR. 2000Hz frekansta çok yüksek ve keskin "dıt dıt" sesi (2 kez).
 
 # CLAUDE.md
 
@@ -276,6 +299,27 @@ Modules/{ModuleName}/lang/
 'save' => 'Kaydet',
 'cancel' => 'İptal'
 ```
+
+## SON BAŞARILAR - 02.07.2025
+
+### Web.php Dosya Düzenleme ve Route Organizasyonu - BAŞARILI ✅
+- **Problem**: Web.php dosyasında debug ve test route'ları karışık durumda, kod organizasyonu zayıf
+- **Çözüm**: 
+  - Debug route'ları debug.php'ye taşındı
+  - Test route'ları zaten test.php'de mevcut 
+  - Web.php temizlendi ve require ile dahil edildi
+  - AI modülü regex hariç listesine eklendi (AI route'ları korundu)
+- **Teknik Detaylar**:
+  - /debug-routes route'u debug.php'ye taşındı
+  - Dynamic route resolver testleri korundu
+  - Module slug service testleri organizeli halde
+  - Web.php'de require __DIR__.'/debug.php'; eklendi
+  - Regex pattern güncellendi: '^(?!admin|api|ai|...)' 
+- **Sonuç**: 
+  - Route organizasyonu %100 düzenli ✅
+  - Web.php dosyası temiz ve okunabilir ✅
+  - Debug route'ları ayrı dosyada ✅
+  - AI modülü korundu ✅
 
 ## SON BAŞARILAR - 29.06.2025
 

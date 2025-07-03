@@ -18,14 +18,14 @@
     data-t-generic-error="{{ __('ai::admin.js.generic_error') }}"
 >
     @include('ai::admin.helper')
-        @if ($error)
+        @if (session('error'))
         <div class="alert alert-warning mb-3">
             <div class="d-flex">
                 <div>
                     <i class="fas fa-exclamation-triangle me-2"></i>
                 </div>
                 <div>
-                    {{ $error }}
+                    {{ session('error') }}
                     <button type="button" class="btn btn-sm btn-warning ms-3" wire:click="retryLastMessage">
                         <i class="fas fa-redo-alt me-1"></i> {{ __('ai::admin.retry') }}
                     </button>
@@ -46,7 +46,7 @@
                                     <select id="prompt-selector" class="form-select"
                                         onchange="promptSelected(this.value)">
                                         @foreach($prompts as $prompt)
-                                        <option value="{{ $prompt->id }}" {{ $promptId==$prompt->id ? 'selected' : ''
+                                        <option value="{{ $prompt->id }}" {{ $selectedPromptId==$prompt->id ? 'selected' : ''
                                             }}>
                                             {{ $prompt->name }}
                                         </option>
@@ -236,7 +236,7 @@
             aiResponseContent = aiResponseElement.querySelector('.message-content p');
             
             // Yazıyor animasyonu ekle
-            const typingText = chatContainer.dataset.tTyping;
+            const typingText = chatContainer.dataset.tTyping || 'Yazıyor';
             aiResponseContent.innerHTML = `<span class="typing-animation">${typingText}<span>.</span><span>.</span><span>.</span></span>`;
             
             // Stream veri alındığında

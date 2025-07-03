@@ -8,83 +8,9 @@ use App\Http\Middleware\InitializeTenancy;
 use Modules\Page\App\Http\Controllers\Front\PageController;
 use App\Services\DynamicRouteService;
 
+
 // Admin routes
 require __DIR__.'/admin/web.php';
-
-// DEBUG ROUTES - EN ÜSTTE OLMALI!
-Route::get('/debug-routes', function () {
-    $resolver = app(\App\Contracts\DynamicRouteResolverInterface::class);
-    
-    // ModuleSlugService testleri - DİNAMİK ACTION'LAR
-    $moduleData = [];
-    foreach (['Page', 'Portfolio', 'Announcement'] as $module) {
-        // Her modülün config'inden gerçek action'larını al
-        $configPath = base_path("Modules/{$module}/config/config.php");
-        if (file_exists($configPath)) {
-            $config = include $configPath;
-            $actions = isset($config['routes']) ? array_keys($config['routes']) : ['index', 'show'];
-        } else {
-            $actions = ['index', 'show']; // fallback
-        }
-        
-        foreach ($actions as $action) {
-            try {
-                $slug = \App\Services\ModuleSlugService::getSlug($module, $action);
-                $moduleData[$module][$action] = $slug;
-            } catch (Exception $e) {
-                $moduleData[$module][$action] = 'ERROR: ' . $e->getMessage();
-            }
-        }
-    }
-    
-    // Resolver testleri
-    $testResults = [];
-    $testCases = [
-        ['sahife', null, null, 'Page Index'],
-        ['sahife', 'iletisim', null, 'Page Show - İletişim'],
-        ['sahife', 'hakkimizda', null, 'Page Show - Hakkımızda'],
-        ['sahife', 'cerez-politikasi', null, 'Page Show - Çerez Politikası'],
-        ['portfolios', null, null, 'Portfolio Index'],
-        ['portfolios', 'kurumsal-web-sitesi-abc-holding', null, 'Portfolio Show - Gerçek'],
-        ['duyurucuklar', null, null, 'Announcement Index'],
-        ['duyurucuklar', 'yeni-hizmetimiz-yayinda', null, 'Announcement Show - Gerçek']
-    ];
-    
-    foreach ($testCases as $test) {
-        [$slug1, $slug2, $slug3, $desc] = $test;
-        try {
-            $result = $resolver->resolve($slug1, $slug2, $slug3);
-            $testResults[] = [
-                'desc' => $desc,
-                'url' => '/' . $slug1 . ($slug2 ? '/' . $slug2 : ''),
-                'status' => $result ? 'ÇALIŞIR' : 'ÇALIŞMAZ',
-                'found' => $result !== null
-            ];
-        } catch (Exception $e) {
-            $testResults[] = [
-                'desc' => $desc,
-                'url' => '/' . $slug1 . ($slug2 ? '/' . $slug2 : ''),
-                'status' => 'HATA',
-                'found' => false
-            ];
-        }
-    }
-    
-    // Config vs Database
-    $configs = [];
-    foreach (['Page', 'Portfolio', 'Announcement'] as $module) {
-        $configPath = base_path("Modules/{$module}/config/config.php");
-        if (file_exists($configPath)) {
-            $config = include $configPath;
-            $configs[$module] = $config['slugs'] ?? [];
-        }
-    }
-    
-    $dbSettings = \App\Models\ModuleTenantSetting::all()->keyBy('module_name');
-    
-    return view('debug.routes-modern', compact('moduleData', 'testResults', 'configs', 'dbSettings'));
-});
-
 
 // Ana sayfa route'u  
 Route::middleware(['site', 'page.tracker'])->get('/', [\Modules\Page\App\Http\Controllers\Front\PageController::class, 'homepage'])->name('home');
@@ -124,6 +50,9 @@ require __DIR__.'/auth.php';
 // Test route'ları - dinamik route'lardan ÖNCE olmalı
 require __DIR__.'/test.php';
 require __DIR__.'/test-schema.php';
+
+// Debug route'ları
+require __DIR__.'/debug.php';
 
 
 // Site dil değiştirme route'u - Tenant-aware cache temizleme ile
@@ -170,18 +99,18 @@ Route::middleware([InitializeTenancy::class, 'site'])
         Route::get('/{lang}/{slug1}', function($lang, $slug1) {
             return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1);
         })->where('lang', getSupportedLanguageRegex())
-         ->where('slug1', '^(?!admin|api|login|logout|register|password|auth|storage|css|js|assets|profile|dashboard|debug)[^/]+$');
+         ->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|css|js|assets|profile|dashboard|debug)[^/]+$');
         
         Route::get('/{lang}/{slug1}/{slug2}', function($lang, $slug1, $slug2) {
             return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1, $slug2);
         })->where('lang', getSupportedLanguageRegex())
-         ->where('slug1', '^(?!admin|api|login|logout|register|password|auth|storage|css|js|assets|profile|dashboard|debug)[^/]+$')
+         ->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|css|js|assets|profile|dashboard|debug)[^/]+$')
          ->where('slug2', '[^/]+');
          
         Route::get('/{lang}/{slug1}/{slug2}/{slug3}', function($lang, $slug1, $slug2, $slug3) {
             return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1, $slug2, $slug3);
         })->where('lang', getSupportedLanguageRegex())
-         ->where('slug1', '^(?!admin|api|login|logout|register|password|auth|storage|css|js|assets|profile|dashboard|debug)[^/]+$')
+         ->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|css|js|assets|profile|dashboard|debug)[^/]+$')
          ->where('slug2', '[^/]+')
          ->where('slug3', '[^/]+');
          
@@ -189,16 +118,16 @@ Route::middleware([InitializeTenancy::class, 'site'])
         // Regex ile admin, api vb. system route'larını hariç tut
         Route::get('/{slug1}', function($slug1) {
             return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1);
-        })->where('slug1', '^(?!admin|api|login|logout|register|password|auth|storage|css|js|assets|profile|dashboard|debug)[^/]+$');
+        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|css|js|assets|profile|dashboard|debug)[^/]+$');
         
         Route::get('/{slug1}/{slug2}', function($slug1, $slug2) {
             return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1, $slug2);
-        })->where('slug1', '^(?!admin|api|login|logout|register|password|auth|storage|css|js|assets|profile|dashboard|debug)[^/]+$')
+        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|css|js|assets|profile|dashboard|debug)[^/]+$')
          ->where('slug2', '[^/]+');
          
         Route::get('/{slug1}/{slug2}/{slug3}', function($slug1, $slug2, $slug3) {
             return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1, $slug2, $slug3);
-        })->where('slug1', '^(?!admin|api|login|logout|register|password|auth|storage|css|js|assets|profile|dashboard|debug)[^/]+$')
+        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|css|js|assets|profile|dashboard|debug)[^/]+$')
          ->where('slug2', '[^/]+')
          ->where('slug3', '[^/]+');
     });

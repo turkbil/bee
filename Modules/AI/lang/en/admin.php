@@ -272,4 +272,91 @@ return [
     'no_packages' => 'No packages yet',
     'no_packages_description' => 'There are currently no token packages available for purchase.'
 ],
+
+// Settings Navigation
+'settings' => 'Settings',
+'api_settings' => 'API Settings',
+'limit_settings' => 'Limit Settings',
+'prompt_management' => 'Prompt Management',
+'general_settings' => 'General Settings',
+
+// API Settings
+'api_key_placeholder' => 'sk-...',
+'api_key_hint' => 'You can get your API key from DeepSeek dashboard',
+'model_placeholder' => 'Select model',
+'temperature_hint' => 'Controls randomness: 0 means focused, 1 means creative',
+'max_tokens_hint' => 'Maximum number of tokens to generate',
+'enabled' => 'Enabled',
+'enable_ai' => 'Enable AI',
+'enabled_description' => 'Enable or disable AI assistant functionality',
+
+// Limit Settings
+'question_limits' => 'Question Limits',
+'max_question_length' => 'Max Question Length',
+'max_question_length_help' => 'Maximum character limit per question',
+'max_daily_questions' => 'Max Daily Questions',
+'max_daily_questions_help' => 'Maximum questions a user can ask per day',
+'max_monthly_questions' => 'Max Monthly Questions',
+'max_monthly_questions_help' => 'Maximum questions a user can ask per month',
+
+'token_limits' => 'Token Limits',
+'question_token_limit' => 'Question Token Limit',
+'question_token_limit_help' => 'Maximum tokens per question',
+'free_question_tokens_daily' => 'Free Daily Tokens',
+'free_question_tokens_daily_help' => 'Free tokens given to users daily',
+'charge_question_tokens' => 'Charge for Question Tokens',
+'charge_question_tokens_help' => 'Bill users for tokens used in questions',
+
+// General Settings additions
+'language' => 'Language',
+'select_language' => 'Select language',
+'response_format' => 'Response Format',
+'select_response_format' => 'Select response format',
+'response_format_text' => 'Plain Text',
+'response_format_markdown' => 'Markdown',
+'response_format_html' => 'HTML',
+
+'hidden_prompt_settings' => 'Hidden Prompt Settings',
+'hidden_system_prompt' => 'Hidden System Prompt',
+'hidden_system_prompt_hint' => 'AI uses this prompt in every response but it is hidden from users',
+'secret_knowledge_base' => 'Secret Knowledge Base',
+'secret_knowledge_base_hint' => 'AI knows this information but doesn\'t mention it unless necessary',
+'conditional_responses' => 'Conditional Responses',
+'conditional_responses_hint' => 'AI only shares this information when specifically asked by users',
+'hidden_prompts_warning' => 'These fields are given to AI but hidden from users. Only manageable from admin panel.',
+
+'performance_settings' => 'Performance Settings',
+'stream_responses' => 'Stream Responses',
+'stream_responses_description' => 'Stream AI responses in real-time',
+'cache_responses' => 'Cache Responses',
+'cache_responses_description' => 'Cache frequently asked questions',
+'response_timeout' => 'Response Timeout (seconds)',
+'response_timeout_hint' => 'Maximum time to wait for AI response',
+
+'security_settings' => 'Security Settings',
+'content_filtering' => 'Content Filtering',
+'content_filtering_description' => 'Filter inappropriate content',
+'log_conversations' => 'Log Conversations',
+'log_conversations_description' => 'Save conversation history',
+'encrypt_api_key' => 'Encrypt API Key',
+'encrypt_api_key_description' => 'Store API key encrypted in database',
+
+// Messages
+'settings_updated' => 'Settings updated successfully',
+'api_settings_saved' => 'API settings saved successfully',
+'limit_settings_saved' => 'Limit settings saved successfully',
+'general_settings_saved' => 'General settings saved successfully',
+
+// Validation
+'validation' => [
+    'api_key_required' => 'API key is required',
+    'model_required' => 'Model is required',
+    'max_tokens_min' => 'Max tokens must be at least :min',
+    'temperature_between' => 'Temperature must be between :min and :max',
+    'question_length_min' => 'Question length must be at least :min characters',
+    'daily_questions_min' => 'Daily questions must be at least :min',
+    'monthly_questions_min' => 'Monthly questions must be at least :min',
+    'token_limit_min' => 'Token limit must be at least :min',
+    'free_tokens_min' => 'Free tokens must be at least :min',
+],
 ];

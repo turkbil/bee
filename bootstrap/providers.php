@@ -2,6 +2,8 @@
 return [
     App\Providers\AppServiceProvider::class,
     \Nwidart\Modules\LaravelModulesServiceProvider::class,
+    App\Providers\AIServiceProvider::class,
+    App\Providers\TokenServiceProvider::class,
     App\Providers\AuthServiceProvider::class,
     App\Providers\EventServiceProvider::class,
     App\Providers\ModulePermissionServiceProvider::class,

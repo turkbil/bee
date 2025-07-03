@@ -3,9 +3,7 @@
 namespace Modules\AI\App\Http\Livewire\Admin;
 
 use Livewire\Component;
-use Livewire\Attributes\Layout;
 use Modules\AI\App\Models\Setting;
-use Modules\AI\App\Models\Limit;
 use Modules\AI\App\Models\Prompt;
 use Modules\AI\App\Services\DeepSeekService;
 use Illuminate\Support\Facades\Validator;
@@ -13,7 +11,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use App\Helpers\TenantHelpers;
 
-#[Layout('admin.layout')]
 class SettingsPanel extends Component
 {
     public $settings = [
@@ -22,11 +19,6 @@ class SettingsPanel extends Component
         'max_tokens' => 4096,
         'temperature' => 0.7,
         'enabled' => true,
-    ];
-    
-    public $limits = [
-        'daily_limit' => 100,
-        'monthly_limit' => 3000,
     ];
     
     public $prompt = [
@@ -51,8 +43,6 @@ class SettingsPanel extends Component
         'settings.max_tokens' => 'required|integer|min:1|max:8000',
         'settings.temperature' => 'required|numeric|min:0|max:1',
         'settings.enabled' => 'boolean',
-        'limits.daily_limit' => 'required|integer|min:1',
-        'limits.monthly_limit' => 'required|integer|min:1',
         'prompt.name' => 'required|string|max:255',
         'prompt.content' => 'required|string',
         'prompt.is_default' => 'boolean',
@@ -70,9 +60,13 @@ class SettingsPanel extends Component
     public function mount()
     {
         $this->loadSettings();
-        $this->loadLimits();
         $this->loadPrompts();
         $this->loadCommonPrompt();
+    }
+    
+    public function render()
+    {
+        return view('ai::admin.livewire.settings-panel');
     }
     
     public function loadSettings()
@@ -86,18 +80,6 @@ class SettingsPanel extends Component
                 'max_tokens' => $settings->max_tokens,
                 'temperature' => $settings->temperature,
                 'enabled' => $settings->enabled,
-            ];
-        }
-    }
-    
-    public function loadLimits()
-    {
-        $limits = Limit::first();
-        
-        if ($limits) {
-            $this->limits = [
-                'daily_limit' => $limits->daily_limit,
-                'monthly_limit' => $limits->monthly_limit,
             ];
         }
     }
@@ -273,42 +255,6 @@ class SettingsPanel extends Component
             ]);
         }
     }
-    
-    public function saveLimits()
-    {
-        $this->validate([
-            'limits.daily_limit' => 'required|integer|min:1',
-            'limits.monthly_limit' => 'required|integer|min:1',
-        ]);
-        
-        try {
-            $limit = Limit::first();
-            
-            if (!$limit) {
-                $limit = new Limit();
-                $limit->reset_at = now();
-                $limit->used_today = 0;
-                $limit->used_month = 0;
-            }
-            
-            $limit->daily_limit = $this->limits['daily_limit'];
-            $limit->monthly_limit = $this->limits['monthly_limit'];
-            $limit->save();
-            
-            $this->dispatch('toast', [
-                'title' => 'Başarılı!',
-                'message' => 'Kullanım limitleri güncellendi',
-                'type' => 'success'
-            ]);
-        } catch (\Exception $e) {
-            Log::error('Limit kaydederken hata: ' . $e->getMessage());
-            $this->dispatch('toast', [
-                'title' => 'Hata!',
-                'message' => 'Limitler kaydedilirken bir sorun oluştu: ' . $e->getMessage(),
-                'type' => 'error'
-            ]);
-        }
-    }
 
     public function togglePromptActive($id)
     {
@@ -457,10 +403,5 @@ class SettingsPanel extends Component
                 'type' => 'error'
             ]);
         }
-    }
-    
-    public function render()
-    {
-        return view('ai::admin.livewire.settings-panel');
     }
 }

@@ -19,6 +19,17 @@ class AIDatabaseSeeder extends Seeder
         if (TenantHelpers::isCentral()) {
             $this->createPrompts();
             $this->createSettings();
+            
+            // Gizli özellikler seeder'ını çalıştır
+            $this->call(AIHiddenFeaturesSeeder::class);
+            
+            // Token sistemini oluştur - SIRALA: packages -> purchases -> setup -> usage
+            $this->call([
+                AITokenPackageSeeder::class,
+                AIPurchaseSeeder::class,
+                AITenantSetupSeeder::class,
+                AIUsageUpdateSeeder::class,
+            ]);
         } else {
             $this->command->info('Tenant contextinde çalışıyor, AI promptları central veritabanında saklanır.');
         }

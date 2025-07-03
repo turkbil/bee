@@ -13,8 +13,20 @@ class Conversation extends Model
 
     protected $fillable = [
         'title',
+        'type',
+        'feature_name',
+        'is_demo',
         'user_id',
+        'tenant_id',
         'prompt_id',
+        'total_tokens_used',
+        'metadata',
+        'status',
+    ];
+
+    protected $casts = [
+        'is_demo' => 'boolean',
+        'metadata' => 'array',
     ];
 
     /**
@@ -42,6 +54,14 @@ class Conversation extends Model
     }
 
     /**
+     * Konuşmaya ait tenant
+     */
+    public function tenant()
+    {
+        return $this->belongsTo(\App\Models\Tenant::class);
+    }
+
+    /**
      * Son mesajı getir
      *
      * @return \Modules\AI\App\Models\Message|null
@@ -59,5 +79,61 @@ class Conversation extends Model
     public function getTotalTokens()
     {
         return $this->messages()->sum('tokens');
+    }
+
+    /**
+     * Scope: Sadece aktif konuşmalar
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'active');
+    }
+
+    /**
+     * Scope: Type'a göre filtrele
+     */
+    public function scopeByType($query, $type)
+    {
+        return $query->where('type', $type);
+    }
+
+    /**
+     * Scope: Feature testleri
+     */
+    public function scopeFeatureTests($query)
+    {
+        return $query->where('type', 'feature_test');
+    }
+
+    /**
+     * Scope: Demo testler
+     */
+    public function scopeDemoTests($query)
+    {
+        return $query->where('is_demo', true);
+    }
+
+    /**
+     * Scope: Gerçek AI testleri
+     */
+    public function scopeRealTests($query)
+    {
+        return $query->where('is_demo', false);
+    }
+
+    /**
+     * İstatistikler için özet bilgi
+     */
+    public function getSummaryAttribute()
+    {
+        $lastMessage = $this->getLastMessage();
+        return [
+            'last_message_time' => $this->updated_at,
+            'message_count' => $this->messages()->count(),
+            'total_tokens' => $this->total_tokens_used,
+            'last_content' => $lastMessage ? \Str::limit($lastMessage->content, 100) : null,
+            'feature_name' => $this->feature_name,
+            'is_demo' => $this->is_demo,
+        ];
     }
 }

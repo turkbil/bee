@@ -3,9 +3,9 @@
 namespace App\Services;
 
 use App\Models\Tenant;
-use App\Models\AITokenPackage;
-use App\Models\AITokenPurchase;
-use App\Models\AITokenUsage;
+use Modules\AI\App\Models\AITokenPackage;
+use Modules\AI\App\Models\AITokenPurchase;
+use Modules\AI\App\Models\AITokenUsage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
@@ -184,7 +184,22 @@ class AITokenService
     }
 
     /**
-     * Get tenant token statistics
+     * Calculate real token balance for tenant
+     */
+    public function calculateRealBalance(Tenant $tenant): int
+    {
+        $totalPurchased = AITokenPurchase::where('tenant_id', $tenant->id)
+            ->where('status', 'completed')
+            ->sum('token_amount') ?? 0;
+
+        $totalUsed = AITokenUsage::where('tenant_id', $tenant->id)
+            ->sum('tokens_used') ?? 0;
+
+        return max(0, $totalPurchased - $totalUsed);
+    }
+
+    /**
+     * Get comprehensive tenant token statistics
      */
     public function getTenantStats(Tenant $tenant): array
     {
@@ -209,16 +224,23 @@ class AITokenService
             ->where('status', 'completed')
             ->sum('token_amount');
 
+        $totalUsed = AITokenUsage::where('tenant_id', $tenant->id)
+            ->sum('tokens_used');
+
         $totalSpent = AITokenPurchase::where('tenant_id', $tenant->id)
             ->where('status', 'completed')
             ->sum('price_paid');
 
+        $realBalance = $this->calculateRealBalance($tenant);
+
         return [
-            'current_balance' => $tenant->ai_tokens_balance,
+            'current_balance' => $tenant->ai_tokens_balance, // OLD METHOD - deprecate
+            'real_balance' => $realBalance, // NEW CORRECT METHOD
+            'total_purchased' => $totalPurchased,
+            'total_used' => $totalUsed,
             'used_this_month' => $tenant->ai_tokens_used_this_month,
             'monthly_limit' => $tenant->ai_monthly_token_limit,
             'remaining_monthly' => $tenant->remaining_monthly_tokens,
-            'total_purchased' => $totalPurchased,
             'total_spent' => $totalSpent,
             'monthly_usage' => $monthlyUsage,
             'usage_by_type' => $usageByType,

@@ -234,35 +234,7 @@ Route::middleware(['admin', 'tenant'])->prefix('admin')->name('admin.')->group(f
         return redirect()->back();
     })->name('admin.language.switch');
 
-    // AI Token Management routes (Root admin only)
-    Route::middleware(['role:root'])->prefix('ai-tokens')->name('ai.tokens.')->group(function () {
-        Route::get('/', [\Modules\AI\App\Http\Controllers\Admin\TokenManagementController::class, 'index'])->name('index');
-        Route::get('/tenant/{tenant}', [\Modules\AI\App\Http\Controllers\Admin\TokenManagementController::class, 'show'])->name('tenant.show');
-        Route::put('/tenant/{tenant}', [\Modules\AI\App\Http\Controllers\Admin\TokenManagementController::class, 'updateTenantSettings'])->name('tenant.update');
-        Route::post('/tenant/{tenant}/toggle-ai', [\Modules\AI\App\Http\Controllers\Admin\TokenManagementController::class, 'toggleAI'])->name('tenant.toggle.ai');
-        
-        Route::get('/packages/admin', \App\Http\Livewire\Admin\AITokenPackageManagementComponent::class)->name('packages.admin');
-        Route::post('/packages', [\Modules\AI\App\Http\Controllers\Admin\TokenManagementController::class, 'storePackage'])->name('packages.store');
-        Route::put('/packages/{package}', [\Modules\AI\App\Http\Controllers\Admin\TokenManagementController::class, 'updatePackage'])->name('packages.update');
-        Route::delete('/packages/{package}', [\Modules\AI\App\Http\Controllers\Admin\TokenManagementController::class, 'destroyPackage'])->name('packages.destroy');
-        
-        Route::get('/purchases/all', \App\Http\Livewire\Admin\AITokenPurchaseManagementComponent::class)->name('purchases.all');
-        Route::get('/usage-stats/all', \App\Http\Livewire\Admin\AITokenUsageManagementComponent::class)->name('usage.stats.all');
-    });
-    
-    // AI Token User routes (All authenticated users)
-    Route::prefix('ai-tokens')->name('ai.tokens.')->group(function () {
-        Route::get('/packages', function () {
-            return view('admin.ai-tokens.packages');
-        })->name('packages');
-        Route::get('/purchases', function () {
-            return view('admin.ai-tokens.purchases');
-        })->name('purchases');
-        Route::get('/usage-stats', function () {
-            return view('admin.ai-tokens.usage-stats');
-        })->name('usage.stats');
-        Route::post('/purchase/{package}', [\Modules\AI\App\Http\Controllers\Admin\TokenController::class, 'purchasePackage'])->name('purchase');
-    });
+    // AI Token Management routes kaldırıldı - AI modülündeki routes/admin.php kullanılıyor
 });
 
 // Diğer admin routes - spesifik modül erişimleri için admin.access middleware'i kullanabilirsiniz

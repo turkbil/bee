@@ -106,7 +106,9 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "WebFetch(domain:127.0.0.1)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(powershell.exe:*)",
+      "Bash(powershell.exe:*)"
     ],
     "deny": []
   },

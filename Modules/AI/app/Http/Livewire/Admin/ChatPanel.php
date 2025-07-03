@@ -1,551 +1,182 @@
 <?php
+
 namespace Modules\AI\App\Http\Livewire\Admin;
 
 use Livewire\Component;
-use Livewire\Attributes\Layout;
-use Livewire\WithPagination;
+use Modules\AI\App\Services\ConversationService;
 use Modules\AI\App\Services\AIService;
 use Modules\AI\App\Models\Conversation;
-use Modules\AI\App\Models\Message;
 use Modules\AI\App\Models\Prompt;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Exception;
+use Illuminate\Support\Facades\Cache;
 
-#[Layout('admin.layout')]
 class ChatPanel extends Component
 {
-    use WithPagination;
-    
-    public $conversationId = null;
     public $message = '';
+    public $conversation;
     public $messages = [];
     public $conversations = [];
-    public $loading = false;
-    public $title = '';
-    public $promptId = null;
     public $prompts = [];
-    public $currentMessageId = null;
+    public $selectedPromptId = null;
+    public $conversationTitle = '';
     public $isStreaming = false;
-    public $error = null;
+    public $streamContent = '';
+    
+    protected $conversationService;
+    protected $aiService;
     
     protected $listeners = [
-        'sendMessageAction',
-        'streamComplete',
-        'retryLastMessage',
-        'promptSelected'
+        'conversationCreated' => 'handleConversationCreated',
+        'conversationSelected' => 'loadConversation',
+        'promptSelected' => 'setPrompt'
     ];
-    
-    protected $rules = [
-        'message' => 'nullable|string', 
-        'title' => 'nullable|string|max:255',
-        'promptId' => 'nullable|exists:ai_prompts,id'
-    ];
-    
-    public function boot()
+
+    public function boot(ConversationService $conversationService, AIService $aiService)
     {
-        try {
-            Log::info('ChatPanel boot başladı');
-            $this->loadConversations();
-            $this->loadPrompts();
-            Log::info('ChatPanel boot tamamlandı');
-        } catch (Exception $e) {
-            Log::error('ChatPanel boot hatası: ' . $e->getMessage());
-        }
+        $this->conversationService = $conversationService;
+        $this->aiService = $aiService;
     }
-    
+
     public function mount()
     {
-        try {
-            Log::info('ChatPanel mount başladı');
-            
-            if (request()->has('conversation')) {
-                $this->conversationId = request()->get('conversation');
-                $this->loadMessages();
-            }
-            
-            Log::info('ChatPanel mount tamamlandı');
-        } catch (Exception $e) {
-            Log::error('ChatPanel mount hatası: ' . $e->getMessage());
+        $this->loadConversations();
+        $this->loadPrompts();
+        
+        // Default prompt seç
+        $defaultPrompt = Prompt::where('is_default', true)->first();
+        if ($defaultPrompt) {
+            $this->selectedPromptId = $defaultPrompt->id;
         }
     }
-    
+
+    public function render()
+    {
+        return view('ai::admin.livewire.chat-panel');
+    }
+
     public function loadConversations()
     {
         try {
-            Log::info('loadConversations başladı');
-            
-            $aiService = app(AIService::class);
-            $this->conversations = $aiService->conversations()->getConversations(20);
-            
-            Log::info('loadConversations tamamlandı, konuşma sayısı: ' . count($this->conversations));
-        } catch (Exception $e) {
-            $this->conversations = [];
+            $this->conversations = $this->conversationService->getConversations(10);
+        } catch (\Exception $e) {
             Log::error('Konuşmalar yüklenirken hata: ' . $e->getMessage());
+            $this->conversations = [];
         }
     }
-    
+
     public function loadPrompts()
     {
         try {
-            Log::info('loadPrompts başladı');
-            
-            // Sadece is_common olmayan promptları getir
-            $this->prompts = Prompt::where('is_common', false)
+            $this->prompts = Prompt::where('is_active', true)
                 ->orderBy('is_default', 'desc')
                 ->orderBy('name')
                 ->get();
-            
-            // Varsayılan promptu seç
-            $defaultPrompt = Prompt::where('is_default', true)->first();
-            if ($defaultPrompt) {
-                $this->promptId = $defaultPrompt->id;
-            }
-            
-            Log::info('loadPrompts tamamlandı, prompt sayısı: ' . count($this->prompts));
-        } catch (Exception $e) {
-            $this->prompts = [];
+        } catch (\Exception $e) {
             Log::error('Promptlar yüklenirken hata: ' . $e->getMessage());
+            $this->prompts = [];
         }
     }
-                
-    public function promptSelected($promptId)
+
+    public function createNewConversation()
     {
         try {
-            Log::info('promptSelected metodu çağrıldı', [
-                'selected_prompt_id' => $promptId,
-                'old_prompt_id' => $this->promptId,
-                'conversation_id' => $this->conversationId
-            ]);
-            
-            // Önceki ve yeni aynıysa işlem yapma, gereksiz sayfa güncellemesi önlenecek
-            if ($this->promptId == $promptId) {
-                Log::info('Aynı prompt zaten seçili, işlem yapılmadı');
-                return;
-            }
-            
-            $this->promptId = $promptId;
-            
-            // Promptu doğrula
-            $prompt = Prompt::find($promptId);
-            
-            if (!$prompt) {
-                Log::warning('Seçilen prompt bulunamadı', ['prompt_id' => $promptId]);
-                return;
-            }
-            
-            Log::info('Seçilen prompt bilgileri', [
-                'prompt_id' => $prompt->id,
-                'prompt_name' => $prompt->name,
-                'is_active' => $prompt->is_active,
-                'is_default' => $prompt->is_default,
-                'is_common' => $prompt->is_common,
-            ]);
-            
-            // Eğer mevcut bir konuşma varsa, prompt_id'yi güncelle
-            if ($this->conversationId) {
-                $conversation = Conversation::where('id', $this->conversationId)
-                    ->where('user_id', Auth::id())
-                    ->first();
-                    
-                if ($conversation) {
-                    $oldPromptId = $conversation->prompt_id;
-                    $conversation->prompt_id = $promptId;
-                    $saved = $conversation->save();
-                    
-                    // Konuşma prompt güncelleme log'u
-                    if (function_exists('log_activity')) {
-                        log_activity($conversation, 'güncellendi');
-                    }
-                    
-                    Log::info('Konuşma promptu güncellendi', [
-                        'conversation_id' => $conversation->id,
-                        'old_prompt_id' => $oldPromptId,
-                        'new_prompt_id' => $promptId,
-                        'save_successful' => $saved
-                    ]);
-                } else {
-                    Log::warning('Konuşma bulunamadı veya kullanıcıya ait değil', [
-                        'conversation_id' => $this->conversationId,
-                        'user_id' => Auth::id()
-                    ]);
-                }
-            } else {
-                Log::info('Konuşma ID olmadığı için prompt sadece $this->promptId olarak ayarlandı');
-            }
-            
-            // Sayfayı yenileme, sadece değişkenleri güncelle
-            $this->skipRender();
-        } catch (Exception $e) {
-            Log::error('Prompt seçimi güncellenirken hata oluştu', [
-                'exception' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-        }
-    }
-    
-    public function selectConversation($id)
-    {
-        try {
-            Log::info('selectConversation başladı, ID: ' . $id);
-            
-            $this->conversationId = $id;
-            $this->loadMessages();
-            
-            Log::info('selectConversation tamamlandı');
-        } catch (Exception $e) {
-            Log::error('Konuşma seçilirken hata: ' . $e->getMessage());
-        }
-    }
-    
-    public function loadMessages()
-    {
-        try {
-            Log::info('loadMessages başladı, conversation ID: ' . $this->conversationId);
-            
-            if (!$this->conversationId) {
-                $this->messages = [];
-                Log::info('Konuşma ID olmadığı için mesajlar yüklenmedi');
-                return;
-            }
-            
-            $conversation = Conversation::where('id', $this->conversationId)
-                ->where('user_id', Auth::id())
-                ->first();
-                
-            if (!$conversation) {
-                $this->messages = [];
-                Log::warning('Konuşma bulunamadı veya kullanıcıya ait değil, ID: ' . $this->conversationId);
-                return;
-            }
-            
-            $this->messages = $conversation->messages()->orderBy('created_at')->get()->toArray();
-            
-            Log::info('loadMessages tamamlandı, mesaj sayısı: ' . count($this->messages));
-        } catch (Exception $e) {
+            $title = $this->conversationTitle ?: 'Yeni Konuşma';
+            $this->conversation = $this->conversationService->createConversation($title, $this->selectedPromptId);
             $this->messages = [];
-            Log::error('Mesajlar yüklenirken hata: ' . $e->getMessage());
+            $this->conversationTitle = '';
+            $this->loadConversations();
+            
+            $this->dispatch('conversationCreated', $this->conversation->id);
+        } catch (\Exception $e) {
+            Log::error('Konuşma oluşturulurken hata: ' . $e->getMessage());
+            session()->flash('error', 'Konuşma oluşturulamadı: ' . $e->getMessage());
         }
     }
-    
-    public function createConversation()
+
+    public function loadConversation($conversationId)
     {
         try {
-            Log::info('createConversation başladı');
+            $this->conversation = Conversation::with('messages')->find($conversationId);
+            if ($this->conversation) {
+                $this->messages = $this->conversation->messages->toArray();
+                $this->selectedPromptId = $this->conversation->prompt_id;
+            }
+        } catch (\Exception $e) {
+            Log::error('Konuşma yüklenirken hata: ' . $e->getMessage());
+            session()->flash('error', 'Konuşma yüklenemedi.');
+        }
+    }
+
+    public function sendMessage()
+    {
+        if (empty(trim($this->message))) {
+            return;
+        }
+
+        if (!$this->conversation) {
+            $this->createNewConversation();
+        }
+
+        try {
+            $this->isStreaming = true;
+            $this->streamContent = '';
             
-            $this->validate([
-                'title' => 'required|string|max:255',
-            ]);
-            
-            $aiService = app(AIService::class);
-            $conversation = $aiService->conversations()->createConversation(
-                $this->title,
-                $this->promptId
+            // User mesajını ekle
+            $userMessage = $this->conversationService->addMessage(
+                $this->conversation, 
+                $this->message, 
+                'user'
             );
             
-            Log::info('Konuşma oluşturuldu, ID: ' . $conversation->id);
+            $this->messages[] = $userMessage->toArray();
+            $userMessageContent = $this->message;
+            $this->message = '';
+
+            // AI yanıtını al (streaming)
+            $aiMessage = $this->conversationService->getStreamingAIResponse(
+                $this->conversation,
+                $userMessageContent,
+                function($content) {
+                    $this->streamContent .= $content;
+                    $this->dispatch('contentStreamed', $this->streamContent);
+                }
+            );
+
+            $this->messages[] = $aiMessage->toArray();
+            $this->isStreaming = false;
+            $this->streamContent = '';
             
-            $this->conversationId = $conversation->id;
-            $this->loadConversations();
-            $this->loadMessages();
-            $this->title = '';
-            
-            $this->dispatch('notify', [
-                'type' => 'success',
-                'message' => 'Yeni konuşma başlatıldı'
-            ]);
-            
-            Log::info('createConversation tamamlandı');
-        } catch (Exception $e) {
-            Log::error('Konuşma oluşturulurken hata: ' . $e->getMessage());
+        } catch (\Exception $e) {
+            $this->isStreaming = false;
+            Log::error('Mesaj gönderilirken hata: ' . $e->getMessage());
+            session()->flash('error', 'Mesaj gönderilemedi: ' . $e->getMessage());
         }
     }
-    
-    public function deleteConversation($id)
+
+    public function setPrompt($promptId)
+    {
+        $this->selectedPromptId = $promptId;
+    }
+
+    public function deleteConversation($conversationId)
     {
         try {
-            Log::info('deleteConversation başladı, ID: ' . $id);
-            
-            $conversation = Conversation::where('id', $id)
-                ->where('user_id', Auth::id())
-                ->first();
-                
+            $conversation = Conversation::find($conversationId);
             if ($conversation) {
-                $aiService = app(AIService::class);
-                $aiService->conversations()->deleteConversation($conversation);
+                $this->conversationService->deleteConversation($conversation);
                 
-                Log::info('Konuşma silindi, ID: ' . $id);
-                
-                if ($this->conversationId == $id) {
-                    $this->conversationId = null;
+                if ($this->conversation && $this->conversation->id == $conversationId) {
+                    $this->conversation = null;
                     $this->messages = [];
                 }
                 
                 $this->loadConversations();
-                
-                $this->dispatch('notify', [
-                    'type' => 'success',
-                    'message' => 'Konuşma silindi'
-                ]);
-            } else {
-                Log::warning('Silinecek konuşma bulunamadı veya kullanıcıya ait değil, ID: ' . $id);
+                session()->flash('success', 'Konuşma silindi.');
             }
-            
-            Log::info('deleteConversation tamamlandı');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             Log::error('Konuşma silinirken hata: ' . $e->getMessage());
-        }
-    }
-    
-    public function sendMessageAction($message = null)
-    {
-        try {
-            Log::info('sendMessageAction başladı');
-            
-            if ($message) {
-                $this->message = $message;
-                Log::info('Mesaj parametresi: ' . $message);
-            }
-            
-            $this->sendMessage();
-            
-            Log::info('sendMessageAction tamamlandı');
-        } catch (Exception $e) {
-            Log::error('sendMessageAction hatası: ' . $e->getMessage());
-        }
-    }
-    
-    public function retryLastMessage()
-    {
-        try {
-            Log::info('retryLastMessage başladı');
-            
-            if (!$this->conversationId) {
-                Log::warning('Konuşma ID olmadığı için yeniden deneme yapılamıyor');
-                return;
-            }
-            
-            $lastUserMessage = Message::where('conversation_id', $this->conversationId)
-                ->where('role', 'user')
-                ->orderBy('id', 'desc')
-                ->first();
-                
-            if ($lastUserMessage) {
-                Log::info('Son kullanıcı mesajı bulundu, ID: ' . $lastUserMessage->id);
-                $this->sendMessageAction($lastUserMessage->content);
-            } else {
-                Log::warning('Son kullanıcı mesajı bulunamadı');
-            }
-            
-            Log::info('retryLastMessage tamamlandı');
-        } catch (Exception $e) {
-            Log::error('Son mesajı yeniden denerken hata: ' . $e->getMessage());
-        }
-    }
-    
-    public function streamComplete()
-    {
-        try {
-            Log::info('streamComplete başladı');
-            
-            $this->isStreaming = false;
-            $this->loading = false;
-            $this->loadMessages();
-            
-            Log::info('streamComplete tamamlandı');
-        } catch (Exception $e) {
-            Log::error('streamComplete hatası: ' . $e->getMessage());
-        }
-    }
-    
-    public function sendMessage()
-    {
-        try {
-            Log::info('sendMessage başladı');
-            
-            $userMessage = trim($this->message ?? '');
-            
-            if (empty($userMessage)) {
-                Log::warning('Boş mesaj gönderilmeye çalışıldı');
-                return;
-            }
-            
-            $this->message = '';
-            $this->loading = true;
-            $this->isStreaming = true;
-            $this->error = null;
-            
-            Log::info('Kullanıcı mesajı: ' . $userMessage);
-            
-            $aiService = app(AIService::class);
-            
-            // Eğer konuşma yoksa yeni oluştur
-            if (!$this->conversationId) {
-                $title = substr($userMessage, 0, 30) . '...';
-                $conversation = $aiService->conversations()->createConversation($title, $this->promptId);
-                $this->conversationId = $conversation->id;
-                Log::info('Yeni konuşma oluşturuldu, ID: ' . $conversation->id);
-                $this->loadConversations();
-            } else {
-                $conversation = Conversation::find($this->conversationId);
-                
-                if (!$conversation || $conversation->user_id != Auth::id()) {
-                    throw new Exception('Konuşma bulunamadı veya erişim izniniz yok.');
-                }
-                
-                Log::info('Mevcut konuşma kullanılıyor, ID: ' . $conversation->id);
-            }
-            
-            // Kullanıcı mesajını ekle
-            $userMessageModel = new Message([
-                'conversation_id' => $this->conversationId,
-                'role' => 'user',
-                'content' => $userMessage,
-                'tokens' => strlen($userMessage) / 4,
-            ]);
-            $userMessageModel->save();
-            
-            // Kullanıcı mesajı log'u
-            if (function_exists('log_activity')) {
-                log_activity($userMessageModel, 'oluşturuldu');
-            }
-            
-            Log::info('Kullanıcı mesajı kaydedildi, ID: ' . $userMessageModel->id);
-            
-            // Boş AI mesajı oluştur
-            $aiMessage = new Message([
-                'conversation_id' => $this->conversationId,
-                'role' => 'assistant',
-                'content' => '',
-                'tokens' => 0,
-            ]);
-            $aiMessage->save();
-            
-            // AI mesajı oluşturma log'u
-            if (function_exists('log_activity')) {
-                log_activity($aiMessage, 'oluşturuldu');
-            }
-            
-            $this->currentMessageId = $aiMessage->id;
-            Log::info('Boş AI mesajı oluşturuldu, ID: ' . $aiMessage->id);
-            
-            // Kullanıcı mesajını göstermek için mesajları yenile
-            $this->loadMessages();
-            
-            // Stream başlangıç sinyali gönder
-            $this->dispatch('streamStart', ['messageId' => $aiMessage->id]);
-            
-            // AI yanıtını al ve her yeni parçayı frontend'e ilet
-            $fullContent = '';
-            
-            try {
-                Log::info('AI yanıtı almaya başlanıyor...');
-                
-                // Bu metodu değiştiriyoruz - doğrudan yanıtı alıyoruz
-                $responseContent = $aiService->conversations()->getAIResponse($conversation, $userMessage, false);
-                
-                // Yanıtı aldıktan sonra, cümle cümle bölüp stream simülasyonu yapıyoruz
-                if ($responseContent) {
-                    Log::info('AI yanıtı alındı, toplam karakter: ' . strlen($responseContent));
-                    
-                    // Cümlelere ayırma
-                    $sentences = preg_split('/(?<=[.!?])\s+/', $responseContent, -1, PREG_SPLIT_NO_EMPTY);
-                    
-                    // Her bir cümleyi ekrana yaz
-                    foreach ($sentences as $sentence) {
-                        // Her cümleyi bir parça olarak gönder
-                        $this->dispatch('streamChunk', [
-                            'messageId' => $aiMessage->id,
-                            'content' => $sentence . ' '
-                        ]);
-                        
-                        $fullContent .= $sentence . ' ';
-                        
-                        // Database'i güncelle
-                        $aiMessage->content = $fullContent;
-                        $aiMessage->tokens = strlen($fullContent) / 4;
-                        $aiMessage->save();
-                        
-                        // Simüle edilmiş gecikme (50-150ms)
-                        usleep(rand(50000, 150000));
-                    }
-                    
-                    // Son güncellemeden emin ol
-                    $aiMessage->content = $fullContent;
-                    $aiMessage->tokens = strlen($fullContent) / 4;
-                    $aiMessage->save();
-                    
-                    // AI mesajı tamamlanma log'u
-                    if (function_exists('log_activity')) {
-                        log_activity($aiMessage, 'tamamlandı');
-                    }
-                } else {
-                    Log::warning('AI yanıtı boş döndü!');
-                    $this->error = 'AI yanıtı alınamadı. Lütfen tekrar deneyin.';
-                    
-                    // Boş yanıt durumunda özel mesaj ekle
-                    $aiMessage->content = 'Yanıt alınamadı. Lütfen tekrar deneyin.';
-                    $aiMessage->save();
-                    
-                    // Hata mesajı log'u
-                    if (function_exists('log_activity')) {
-                        log_activity($aiMessage, 'hata');
-                    }
-                }
-            } catch (Exception $e) {
-                Log::error('AI yanıtı alınırken hata: ' . $e->getMessage());
-                $this->error = 'AI yanıtı alınırken hata oluştu: ' . $e->getMessage();
-                
-                $aiMessage->content = 'Yanıt alınırken bir hata oluştu: ' . $e->getMessage();
-                $aiMessage->save();
-                
-                // Exception mesajı log'u
-                if (function_exists('log_activity')) {
-                    log_activity($aiMessage, 'hata');
-                }
-            }
-            
-            // Stream tamamlandı sinyali gönder
-            $this->dispatch('streamEnd', ['messageId' => $aiMessage->id]);
-            
-            // Yükleme durumunu kapat
-            $this->loading = false;
-            $this->isStreaming = false;
-            
-            Log::info('sendMessage tamamlandı');
-            
-        } catch (Exception $e) {
-            $this->loading = false;
-            $this->isStreaming = false;
-            $this->error = 'Mesaj gönderilirken bir hata oluştu: ' . $e->getMessage();
-            Log::error('Mesaj gönderilirken hata: ' . $e->getMessage());
-        }
-    }
-    
-    public function render()
-    {
-        try {
-            $remainingDaily = 0;
-            $remainingMonthly = 0;
-            
-            try {
-                $aiService = app(AIService::class);
-                $remainingDaily = $aiService->limits()->getRemainingDailyLimit();
-                $remainingMonthly = $aiService->limits()->getRemainingMonthlyLimit();
-            } catch (Exception $e) {
-                Log::error('Limit bilgileri alınırken hata: ' . $e->getMessage());
-            }
-            
-            return view('ai::admin.livewire.chat-panel', [
-                'remainingDaily' => $remainingDaily,
-                'remainingMonthly' => $remainingMonthly,
-            ]);
-        } catch (Exception $e) {
-            Log::error('render metodu hatası: ' . $e->getMessage());
-            return view('ai::admin.livewire.chat-panel', [
-                'remainingDaily' => 0,
-                'remainingMonthly' => 0,
-            ]);
+            session()->flash('error', 'Konuşma silinemedi.');
         }
     }
 }

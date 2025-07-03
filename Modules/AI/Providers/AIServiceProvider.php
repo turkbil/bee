@@ -8,6 +8,9 @@ use Modules\AI\App\Http\Livewire\Admin\ChatPanel;
 use Modules\AI\App\Http\Livewire\Admin\SettingsPanel;
 use Modules\AI\App\Http\Livewire\Admin\Modals\PromptEditModal;
 use Modules\AI\App\Http\Livewire\Admin\Modals\PromptDeleteModal;
+use Modules\AI\App\Http\Livewire\TokenManagement;
+use Modules\AI\App\Http\Livewire\Admin\TokenPackageManagement;
+use Modules\AI\App\Http\Livewire\Admin\AIFeaturesDashboard;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -34,7 +37,7 @@ class AIServiceProvider extends ServiceProvider
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
 
-        // Önce rotalar yüklenir
+        // Route'ları yükle
         $this->loadRoutesFrom(module_path('AI', 'routes/web.php'));
         $this->loadRoutesFrom(module_path('AI', 'routes/admin.php'));
         
@@ -48,12 +51,16 @@ class AIServiceProvider extends ServiceProvider
         Livewire::component('ai::admin.settings-panel', SettingsPanel::class);
         Livewire::component('ai::admin.modals.prompt-edit-modal', PromptEditModal::class);
         Livewire::component('ai::admin.modals.prompt-delete-modal', PromptDeleteModal::class);
+        Livewire::component('ai::admin.token-management', TokenManagement::class);
+        Livewire::component('ai::admin.token-package-management', TokenPackageManagement::class);
+        Livewire::component('ai::admin.a-i-features-dashboard', AIFeaturesDashboard::class);
         
         // Eski kayıtlar da korunacak (backward compatibility)
         Livewire::component('chat-panel', ChatPanel::class);
         Livewire::component('settings-panel', SettingsPanel::class);
         Livewire::component('modals.prompt-edit-modal', PromptEditModal::class);
         Livewire::component('modals.prompt-delete-modal', PromptDeleteModal::class);
+        Livewire::component('token-management', TokenManagement::class);
     }
 
     /**

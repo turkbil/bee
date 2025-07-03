@@ -2,83 +2,200 @@
 
 @include('ai::admin.helper')
 
-@section('content')
+@section('pretitle', 'AI Konuşma Detayı')
+@section('title', $conversation->feature_name ?: $conversation->title)
 
-<div class="card">
-    <div class="card-header">
-        <div class="d-flex justify-content-between align-items-center">
-            <h3 class="card-title">{{ $conversation->title }}</h3>
-            <div class="card-actions">
-                <a href="{{ route('admin.ai.conversations.index') }}" class="btn btn-outline-primary">
-                    <i class="fas fa-arrow-left me-2"></i> {{ __('ai::admin.all_conversations') }}
-                </a>
+@section('content')
+    <div class="container-xl">
+        <!-- Header Info -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="avatar avatar-lg" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                        @if($conversation->type == 'feature_test')
+                                            <i class="fas fa-flask text-white"></i>
+                                        @else
+                                            <i class="fas fa-comments text-white"></i>
+                                        @endif
+                                    </div>
+                                    <div>
+                                        <h2 class="mb-0">{{ $conversation->feature_name ?: $conversation->title }}</h2>
+                                        <div class="text-muted d-flex align-items-center gap-3 mt-1">
+                                            @if($conversation->type == 'feature_test')
+                                                <span class="badge badge-outline text-blue">
+                                                    <i class="fas fa-vial me-1"></i>AI Test
+                                                </span>
+                                                @if($conversation->is_demo)
+                                                    <span class="badge badge-blue">Demo</span>
+                                                @else
+                                                    <span class="badge badge-green">Gerçek AI</span>
+                                                @endif
+                                            @else
+                                                <span class="badge badge-outline text-green">
+                                                    <i class="fas fa-comment me-1"></i>Sohbet
+                                                </span>
+                                            @endif
+                                            <span>{{ $conversation->created_at->format('d.m.Y H:i') }}</span>
+                                            @if($conversation->tenant)
+                                                <span>{{ $conversation->tenant->title ?: 'Tenant #' . $conversation->tenant->id }}</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <a href="{{ route('admin.ai.conversations.index') }}" class="btn btn-outline-primary">
+                                    <i class="fas fa-arrow-left me-2"></i>Geri Dön
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="card-body p-0">
-        <div class="chat-container" id="chat-container">
-            <div class="chat-messages p-3" id="chat-messages">
-                @foreach($messages as $message)
-                <div class="message {{ $message->role == 'assistant' ? 'ai-message' : 'user-message' }}">
-                    <div class="message-content">
-                        <p>{!! nl2br(e($message->content)) !!}</p>
-                        <small class="text-muted d-block mt-1">
-                            {{ $message->created_at->format(__('ai::admin.date_format')) }} · {{ $message->tokens }} {{ __('ai::admin.token') }}
-                        </small>
+
+        <!-- Quick Stats -->
+        @if($conversation->type == 'feature_test')
+        <div class="row mb-4">
+            <div class="col-sm-3">
+                <div class="card border-0 bg-primary-lt text-center">
+                    <div class="card-body py-3">
+                        <div class="h3 mb-1">{{ $messageStats['total_messages'] }}</div>
+                        <div class="text-muted small">Toplam Mesaj</div>
                     </div>
-                    @if($message->role == 'assistant')
-                    <div class="message-actions">
-                        <button class="btn btn-sm btn-ghost-secondary copy-message" data-bs-toggle="tooltip"
-                            title="{{ __('ai::admin.copy_message') }}" onclick="copyToClipboard(this)">
-                            <i class="fa-thin fa-copy"></i>
-                        </button>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="card border-0 bg-success-lt text-center">
+                    <div class="card-body py-3">
+                        <div class="h3 mb-1">{{ number_format($messageStats['total_tokens']) }}</div>
+                        <div class="text-muted small">Token Kullanımı</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="card border-0 bg-info-lt text-center">
+                    <div class="card-body py-3">
+                        <div class="h3 mb-1">
+                            @if($messageStats['avg_processing_time'])
+                                {{ number_format($messageStats['avg_processing_time'] / 1000, 1) }} sn
+                            @else
+                                -
+                            @endif
+                        </div>
+                        <div class="text-muted small">Ortalama Süre</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="card border-0 bg-warning-lt text-center">
+                    <div class="card-body py-3">
+                        <div class="h3 mb-1">
+                            @if($conversation->is_demo)
+                                <i class="fas fa-wand-magic-sparkles text-blue"></i>
+                            @else
+                                <i class="fas fa-robot text-green"></i>
+                            @endif
+                        </div>
+                        <div class="text-muted small">
+                            {{ $conversation->is_demo ? 'Demo Modu' : 'Gerçek AI' }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
+
+        <!-- Messages -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-history me-2"></i>
+                            Konuşma Geçmişi
+                            <span class="badge badge-outline ms-2">{{ $messages->count() }} mesaj</span>
+                        </h3>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="chat-container" id="chat-container">
+                            <div class="chat-messages p-3">
+                                @foreach($messages as $message)
+                                    <div class="message {{ $message->role == 'assistant' ? 'ai-message' : 'user-message' }}">
+                                        <div class="message-content">
+                                            @if($message->role == 'assistant' && $message->has_markdown && $message->html_content)
+                                                {!! $message->html_content !!}
+                                            @elseif($message->role == 'assistant')
+                                                {!! nl2br(e($message->content)) !!}
+                                            @else
+                                                <p>{{ $message->content }}</p>
+                                            @endif
+                                        </div>
+                                        @if($message->role == 'assistant')
+                                            <div class="message-actions">
+                                                <button class="btn btn-sm btn-ghost-secondary copy-message" 
+                                                        data-bs-toggle="tooltip" 
+                                                        title="Mesajı Kopyala"
+                                                        onclick="copyToClipboard('{{ addslashes(strip_tags($message->content)) }}')">
+                                                    <i class="fa-thin fa-copy"></i>
+                                                </button>
+                                            </div>
+                                        @endif
+                                    </div>
+                                    
+                                    @if($message->meta_text)
+                                        <div class="message-meta text-muted small mb-3">
+                                            <i class="fas fa-info-circle me-1"></i>
+                                            {{ $message->meta_text }}
+                                        </div>
+                                    @endif
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                    
+                    @if($conversation->type == 'chat')
+                    <div class="card-footer bg-light border-0">
+                        <div class="text-center">
+                            <a href="{{ route('admin.ai.index') }}?conversation={{ $conversation->id }}" class="btn btn-primary">
+                                <i class="fas fa-reply me-2"></i>Konuşmaya Devam Et
+                            </a>
+                        </div>
                     </div>
                     @endif
                 </div>
-                @endforeach
             </div>
         </div>
-    </div>
-    <div class="card-footer">
-        <div class="d-flex justify-content-center">
-            <a href="{{ route('admin.ai.index') }}?conversation={{ $conversation->id }}" class="btn btn-primary">
-                <i class="fas fa-reply me-2"></i> {{ __('ai::admin.continue_conversation') }}
-            </a>
-        </div>
-    </div>
-</div>
 
-@push('scripts')
-<script>
-    function copyToClipboard(button) {
-        const content = button.closest('.message').querySelector('.message-content p').innerText;
-        navigator.clipboard.writeText(content).then(() => {
-            // Kopyalama başarılı olduğunda bildirim göster
-            const originalClass = button.querySelector('i').className;
-            button.querySelector('i').className = 'fas fa-check text-success';
-            
-            setTimeout(() => {
-                button.querySelector('i').className = originalClass;
-            }, 2000);
-        });
-    }
-    
-    document.addEventListener('DOMContentLoaded', function() {
-        // Sayfayı en alta kaydır
-        const chatContainer = document.getElementById('chat-container');
-        if (chatContainer) {
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-    });
-</script>
-@endpush
+        @if($conversation->type == 'feature_test' && !$conversation->is_demo)
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="alert alert-info border-0">
+                    <div class="d-flex align-items-center">
+                        <div class="alert-icon">
+                            <i class="fas fa-info-circle"></i>
+                        </div>
+                        <div>
+                            <h4 class="alert-title">Token Kullanımı</h4>
+                            Bu AI testi toplam <strong>{{ number_format($conversation->total_tokens_used) }} token</strong> tüketmiştir.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
+    </div>
+@endsection
 
 @push('styles')
 <style>
     .chat-container {
-        height: calc(100vh - 350px);
+        height: auto;
         min-height: 300px;
-        overflow-y: auto;
     }
 
     .chat-messages {
@@ -121,7 +238,6 @@
     .message-content p {
         margin-bottom: 0;
         word-wrap: break-word;
-        white-space: pre-wrap;
     }
 
     .message-actions {
@@ -135,7 +251,34 @@
         visibility: visible;
     }
 
-    /* Markdown stilleri */
+    .message-meta {
+        text-align: center;
+        padding: 0 1rem;
+    }
+
+    /* Avatar improvements */
+    .avatar {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.875rem;
+        font-weight: 600;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+
+    .avatar-sm {
+        height: 2rem;
+        width: 2rem;
+    }
+
+    .avatar-lg {
+        height: 3.5rem;
+        width: 3.5rem;
+        font-size: 1.25rem;
+    }
+
+    /* Markdown stilleri - Admin chat panel'den kopyalandı */
     .message-content h1 {
         font-size: 1.5rem;
         margin-top: 0.5rem;
@@ -226,6 +369,33 @@
     .dark .message-content table th {
         background-color: rgba(255, 255, 255, 0.1);
     }
+
+    @media (max-width: 768px) {
+        .message {
+            max-width: 90%;
+        }
+    }
 </style>
 @endpush
-@endsection
+
+@push('scripts')
+<script>
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            // Kopyalama başarılı
+            console.log('Mesaj kopyalandı');
+        }).catch(err => {
+            console.error('Kopyalama hatası:', err);
+        });
+    }
+
+    // Tooltip'leri etkinleştir
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof Tooltip !== 'undefined') {
+            document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(element) {
+                new Tooltip(element);
+            });
+        }
+    });
+</script>
+@endpush

@@ -133,7 +133,7 @@ class DeepSeekService
                 ];
             }
             
-            $response = Http::withHeaders([
+            $response = Http::timeout(300)->withHeaders([
                 'Authorization' => 'Bearer ' . $this->apiKey,
                 'Content-Type' => 'application/json',
             ])->post($this->baseUrl . '/chat/completions', [
@@ -188,11 +188,11 @@ class DeepSeekService
                 return;
             }
             
-            $response = Http::withHeaders([
+            $response = Http::timeout(300)->withHeaders([
                 'Authorization' => 'Bearer ' . $this->apiKey,
                 'Content-Type' => 'application/json',
                 'Accept' => 'text/event-stream',
-            ])->timeout(60)->send('POST', $this->baseUrl . '/chat/completions', [
+            ])->send('POST', $this->baseUrl . '/chat/completions', [
                 'json' => [
                     'model' => $this->model,
                     'messages' => $messages,
@@ -355,11 +355,11 @@ class DeepSeekService
                 return function (callable $callback) use ($messages) {
                     $formattedMessages = $this->formatMessagesForAPI($messages);
                     
-                    $response = Http::withHeaders([
+                    $response = Http::timeout(300)->withHeaders([
                         'Authorization' => 'Bearer ' . $this->apiKey,
                         'Content-Type' => 'application/json',
                         'Accept' => 'text/event-stream',
-                    ])->timeout(60)->send('POST', $this->baseUrl . '/chat/completions', [
+                    ])->send('POST', $this->baseUrl . '/chat/completions', [
                         'json' => [
                             'model' => $this->model,
                             'messages' => $formattedMessages,
@@ -408,7 +408,7 @@ class DeepSeekService
             } else {
                 $formattedMessages = $this->formatMessagesForAPI($messages);
                 
-                $response = Http::withHeaders([
+                $response = Http::timeout(300)->withHeaders([
                     'Authorization' => 'Bearer ' . $this->apiKey,
                     'Content-Type' => 'application/json',
                 ])->post($this->baseUrl . '/chat/completions', [

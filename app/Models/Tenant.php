@@ -106,7 +106,7 @@ class Tenant extends BaseTenant implements TenantWithDatabase
      */
     public function aiTokenPurchases()
     {
-        return $this->hasMany(\App\Models\AITokenPurchase::class);
+        return $this->hasMany(\Modules\AI\App\Models\AITokenPurchase::class);
     }
 
     /**
@@ -114,7 +114,7 @@ class Tenant extends BaseTenant implements TenantWithDatabase
      */
     public function aiTokenUsage()
     {
-        return $this->hasMany(\App\Models\AITokenUsage::class);
+        return $this->hasMany(\Modules\AI\App\Models\AITokenUsage::class);
     }
 
     /**
@@ -122,7 +122,7 @@ class Tenant extends BaseTenant implements TenantWithDatabase
      */
     public function hasEnoughTokens(int $tokensNeeded): bool
     {
-        return $this->ai_enabled && $this->ai_tokens_balance >= $tokensNeeded;
+        return $this->ai_enabled && $this->real_token_balance >= $tokensNeeded;
     }
 
     /**
@@ -140,7 +140,7 @@ class Tenant extends BaseTenant implements TenantWithDatabase
         $this->update(['ai_last_used_at' => now()]);
 
         // Log usage
-        \App\Models\AITokenUsage::create([
+        \Modules\AI\App\Models\AITokenUsage::create([
             'tenant_id' => $this->id,
             'tokens_used' => $tokensUsed,
             'usage_type' => $usageType,
@@ -174,18 +174,41 @@ class Tenant extends BaseTenant implements TenantWithDatabase
     }
 
     /**
+     * Get real token balance based on purchases minus usage
+     */
+    public function getRealTokenBalanceAttribute(): int
+    {
+        $totalPurchased = $this->aiTokenPurchases()
+            ->where('status', 'completed')
+            ->sum('token_amount') ?? 0;
+
+        $totalUsed = $this->aiTokenUsage()
+            ->sum('tokens_used') ?? 0;
+
+        return max(0, $totalPurchased - $totalUsed);
+    }
+
+    /**
+     * Calculate actual token balance from purchases and usage
+     */
+    public function calculateRealTokenBalance(): int
+    {
+        return $this->real_token_balance;
+    }
+
+    /**
      * Get remaining tokens for this month
      */
     public function getRemainingMonthlyTokensAttribute(): int
     {
         if ($this->ai_monthly_token_limit <= 0) {
-            return $this->ai_tokens_balance;
+            return $this->real_token_balance;
         }
 
         $usedThisMonth = $this->ai_tokens_used_this_month ?? 0;
         $remaining = $this->ai_monthly_token_limit - $usedThisMonth;
         
-        return max(0, min($remaining, $this->ai_tokens_balance));
+        return max(0, min($remaining, $this->real_token_balance));
     }
 
     /**

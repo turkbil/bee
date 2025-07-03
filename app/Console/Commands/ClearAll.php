@@ -59,21 +59,13 @@ class ClearAll extends Command
                     if (str_contains($file->getFilename(), '.log')) {
                         // Log dosyalarını güvenli şekilde temizle
                         try {
-                            // Dosyanın izinlerini kontrol et
+                            // Log dosyalarının içeriğini boşalt (sil değil)
                             if (is_writable($file->getPathname())) {
                                 // Dosya yazılabilir ise içeriğini boşalt
                                 file_put_contents($file->getPathname(), '', LOCK_EX);
-                                $this->info("{$file->getFilename()} dosyası temizlendi.");
+                                $this->info("{$file->getFilename()} dosyası içeriği temizlendi.");
                             } else {
-                                // Dosya yazılabilir değilse, silinmeye çalış
-                                if (File::delete($file->getPathname())) {
-                                    // Silinirse yeni boş dosya oluştur doğru izinlerle
-                                    touch($file->getPathname());
-                                    chmod($file->getPathname(), 0664);
-                                    $this->info("{$file->getFilename()} dosyası silindi ve yeniden oluşturuldu.");
-                                } else {
-                                    $this->warn("İzin hatası: {$file->getFilename()} dosyası temizlenemedi.");
-                                }
+                                $this->warn("İzin hatası: {$file->getFilename()} yazılabilir değil, atlanıyor.");
                             }
                         } catch (\Exception $e) {
                             $this->warn("Hata: {$file->getFilename()} - " . $e->getMessage());

@@ -4,7 +4,6 @@ namespace Modules\AI\App\Services;
 
 use Modules\AI\App\Services\DeepSeekService;
 use Modules\AI\App\Services\ConversationService;
-use Modules\AI\App\Services\LimitService;
 use Modules\AI\App\Services\PromptService;
 use Modules\AI\App\Models\Setting;
 use App\Helpers\TenantHelpers;
@@ -15,7 +14,6 @@ class AIService
 {
     protected $deepSeekService;
     protected $conversationService;
-    protected $limitService;
     protected $promptService;
     protected $aiTokenService;
 
@@ -24,13 +22,11 @@ class AIService
      *
      * @param DeepSeekService|null $deepSeekService
      * @param ConversationService|null $conversationService
-     * @param LimitService|null $limitService
      * @param PromptService|null $promptService
      */
     public function __construct(
         ?DeepSeekService $deepSeekService = null,
         ?ConversationService $conversationService = null,
-        ?LimitService $limitService = null,
         ?PromptService $promptService = null,
         ?AITokenService $aiTokenService = null
     ) {
@@ -38,13 +34,12 @@ class AIService
         $this->deepSeekService = $deepSeekService ?? new DeepSeekService();
         
         // Diğer servisleri oluştur
-        $this->limitService = $limitService ?? new LimitService();
         $this->promptService = $promptService ?? new PromptService();
         $this->aiTokenService = $aiTokenService ?? new AITokenService();
         
         // ConversationService en son oluşturulmalı çünkü diğer servislere bağımlı
         $this->conversationService = $conversationService ?? 
-            new ConversationService($this->deepSeekService, $this->limitService);
+            new ConversationService($this->deepSeekService, $this->aiTokenService);
     }
 
     /**
@@ -66,10 +61,9 @@ class AIService
                 return "Üzgünüm, yetersiz AI token bakiyeniz var veya aylık limitinize ulaştınız.";
             }
         } else {
-            // Legacy limit kontrolü (fallback)
-            if (!$this->limitService->checkLimits()) {
-                return "Üzgünüm, kullanım limitinize ulaştınız.";
-            }
+            // Central admin için basit kontrol (tenant yoksa)
+            // limitService yerine basit bir kontrol yap
+            \Log::warning('Tenant bulunmadı, AI isteği için basit token kontrolü yapılıyor');
         }
 
         // Sistem promptunu ayarla
@@ -130,13 +124,11 @@ class AIService
                     'AI Chat: ' . substr($prompt, 0, 50) . '...'
                 );
             } else {
-                // Legacy limit sistemi (fallback)
-                $tokens = $this->deepSeekService->estimateTokens([
-                    ['role' => 'user', 'content' => $prompt],
-                    ['role' => 'assistant', 'content' => $response]
+                // Legacy limit sistemi kaldırıldı - sadece log
+                \Log::info('AI yanıt başarılı (legacy mode)', [
+                    'response_length' => strlen($response),
+                    'tenant' => 'none'
                 ]);
-                
-                $this->limitService->incrementUsage($tokens);
             }
         }
 
@@ -213,11 +205,11 @@ class AIService
     }
 
     /**
-     * LimitService getter
+     * Token Service getter (limit service yerine)
      */
     public function limits()
     {
-        return $this->limitService;
+        return $this->aiTokenService;
     }
 
     /**
@@ -226,5 +218,41 @@ class AIService
     public function prompts()
     {
         return $this->promptService;
+    }
+    
+    /**
+     * Gizli promptları birleştirerek tam sistem promptunu oluşturur
+     *
+     * @param string $userPrompt Kullanıcının seçtiği prompt
+     * @return string Tam sistem promptu
+     */
+    public function buildFullSystemPrompt($userPrompt = '')
+    {
+        $systemPrompts = [];
+        
+        // 1. Gizli sistem promptu (her zaman önce)
+        $hiddenSystemPrompt = \Modules\AI\App\Models\Prompt::getHiddenSystem();
+        if ($hiddenSystemPrompt) {
+            $systemPrompts[] = $hiddenSystemPrompt->content;
+        }
+        
+        // 2. Kullanıcı tarafından seçilen prompt
+        if (!empty($userPrompt)) {
+            $systemPrompts[] = $userPrompt;
+        }
+        
+        // 3. Gizli bilgi tabanı (AI bilir ama bahsetmez)
+        $secretKnowledge = \Modules\AI\App\Models\Prompt::getSecretKnowledge();
+        if ($secretKnowledge) {
+            $systemPrompts[] = "GIZLI BILGI TABANI (Kendiliğinden bahsetme, sadece gerektiğinde kullan):\n" . $secretKnowledge->content;
+        }
+        
+        // 4. Şartlı yanıtlar (sadece sorulunca anlatılır)
+        $conditionalResponses = \Modules\AI\App\Models\Prompt::getConditional();
+        if ($conditionalResponses) {
+            $systemPrompts[] = "ŞARTLI BILGILER (Sadece kullanıcı sorduğunda anlatılır):\n" . $conditionalResponses->content;
+        }
+        
+        return implode("\n\n---\n\n", array_filter($systemPrompts));
     }
 }

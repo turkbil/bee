@@ -5,58 +5,41 @@ namespace Modules\AI\App\Http\Livewire\Admin\Modals;
 use Livewire\Component;
 use Modules\AI\App\Models\Prompt;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 
 class PromptEditModal extends Component
 {
     public $prompt = [
-        'id' => null,
         'name' => '',
         'content' => '',
         'is_default' => false,
-        'is_common' => false,
+        'is_active' => true,
     ];
     
+    public $editingPromptId = null;
     public $showModal = false;
-    public $isEditing = false;
-    
-    protected $listeners = [
-        'openPromptModal' => 'openModal',
-        'closePromptModal' => 'closeModal'
-    ];
     
     protected $rules = [
         'prompt.name' => 'required|string|max:255',
         'prompt.content' => 'required|string',
         'prompt.is_default' => 'boolean',
-        'prompt.is_common' => 'boolean',
+        'prompt.is_active' => 'boolean',
     ];
+    
+    protected $listeners = ['openPromptModal' => 'openModal'];
+    
+    public function render()
+    {
+        return view('ai::admin.livewire.modals.prompt-edit-modal');
+    }
     
     public function openModal($promptId = null)
     {
-        $this->resetValidation();
+        $this->editingPromptId = $promptId;
+        $this->resetForm();
         
         if ($promptId) {
-            $this->isEditing = true;
-            $promptModel = Prompt::find($promptId);
-            
-            if ($promptModel) {
-                $this->prompt = [
-                    'id' => $promptModel->id,
-                    'name' => $promptModel->name,
-                    'content' => $promptModel->content,
-                    'is_default' => $promptModel->is_default,
-                    'is_common' => $promptModel->is_common,
-                ];
-            }
-        } else {
-            $this->isEditing = false;
-            $this->prompt = [
-                'id' => null,
-                'name' => '',
-                'content' => '',
-                'is_default' => false,
-                'is_common' => false,
-            ];
+            $this->loadPrompt($promptId);
         }
         
         $this->showModal = true;
@@ -65,6 +48,42 @@ class PromptEditModal extends Component
     public function closeModal()
     {
         $this->showModal = false;
+        $this->resetForm();
+    }
+    
+    public function resetForm()
+    {
+        $this->prompt = [
+            'name' => '',
+            'content' => '',
+            'is_default' => false,
+            'is_active' => true,
+        ];
+        $this->editingPromptId = null;
+        $this->resetValidation();
+    }
+    
+    public function loadPrompt($promptId)
+    {
+        try {
+            $prompt = Prompt::find($promptId);
+            
+            if ($prompt) {
+                $this->prompt = [
+                    'name' => $prompt->name,
+                    'content' => $prompt->content,
+                    'is_default' => $prompt->is_default,
+                    'is_active' => $prompt->is_active,
+                ];
+            }
+        } catch (\Exception $e) {
+            Log::error('Prompt yüklenirken hata: ' . $e->getMessage());
+            $this->dispatch('toast', [
+                'title' => 'Hata!',
+                'message' => 'Prompt bilgileri yüklenemedi',
+                'type' => 'error'
+            ]);
+        }
     }
     
     public function save()
@@ -72,97 +91,57 @@ class PromptEditModal extends Component
         $this->validate();
         
         try {
-            if ($this->isEditing) {
-                $promptModel = Prompt::find($this->prompt['id']);
+            if ($this->editingPromptId) {
+                // Güncelleme
+                $prompt = Prompt::find($this->editingPromptId);
                 
-                if (!$promptModel) {
-                    $this->dispatch('toast', [
-                        'title' => 'Hata!',
-                        'message' => 'Düzenlenecek prompt bulunamadı.',
-                        'type' => 'error'
-                    ]);
-                    return;
+                if (!$prompt) {
+                    throw new \Exception('Güncellenecek prompt bulunamadı');
                 }
                 
-                // Sistem promptu kontrolü
-                if ($promptModel->is_system && !$promptModel->is_common) {
-                    $this->dispatch('toast', [
-                        'title' => 'Uyarı!',
-                        'message' => 'Sistem promptları düzenlenemez',
-                        'type' => 'warning'
-                    ]);
-                    return;
+                // Sistem promptlarını koruma
+                if ($prompt->is_system && !$prompt->is_common) {
+                    throw new \Exception('Sistem promptları düzenlenemez');
                 }
                 
-                // Eğer yeni prompt varsayılan olarak işaretlendiyse, diğer varsayılanları kaldır
-                if ($this->prompt['is_default'] && !$promptModel->is_default) {
-                    Prompt::where('is_default', true)
-                        ->update(['is_default' => false]);
-                }
-                
-                // Eğer yeni prompt ortak özellikler olarak işaretlendiyse, diğer ortak özellikleri kaldır
-                if ($this->prompt['is_common'] && !$promptModel->is_common) {
-                    Prompt::where('is_common', true)
-                        ->update(['is_common' => false]);
-                }
-                
-                $promptModel->name = $this->prompt['name'];
-                $promptModel->content = $this->prompt['content'];
-                $promptModel->is_default = $this->prompt['is_default'];
-                $promptModel->is_common = $this->prompt['is_common'];
-                $promptModel->save();
-                
-                $this->dispatch('toast', [
-                    'title' => 'Başarılı!',
-                    'message' => 'Prompt başarıyla güncellendi.',
-                    'type' => 'success'
-                ]);
             } else {
-                // Eğer yeni prompt varsayılan olarak işaretlendiyse, diğer varsayılanları kaldır
-                if ($this->prompt['is_default']) {
-                    Prompt::where('is_default', true)
-                        ->update(['is_default' => false]);
-                }
-                
-                // Eğer yeni prompt ortak özellikler olarak işaretlendiyse, diğer ortak özellikleri kaldır
-                if ($this->prompt['is_common']) {
-                    Prompt::where('is_common', true)
-                        ->update(['is_common' => false]);
-                }
-                
-                $promptModel = new Prompt();
-                $promptModel->name = $this->prompt['name'];
-                $promptModel->content = $this->prompt['content'];
-                $promptModel->is_default = $this->prompt['is_default'];
-                $promptModel->is_common = $this->prompt['is_common'];
-                $promptModel->is_system = false; // Yeni eklenen promptlar her zaman özel (sistem değil)
-                $promptModel->save();
-                
-                $this->dispatch('toast', [
-                    'title' => 'Başarılı!',
-                    'message' => 'Yeni prompt eklendi.',
-                    'type' => 'success'
-                ]);
+                // Yeni oluşturma
+                $prompt = new Prompt();
+                $prompt->is_system = false;
+                $prompt->is_common = false;
             }
             
-            // Önbelleği temizleme için event gönder
-            $this->dispatch('promptSaved');
+            // Eğer bu prompt varsayılan yapılacaksa, diğerlerini kaldır
+            if ($this->prompt['is_default']) {
+                Prompt::where('is_default', true)->update(['is_default' => false]);
+            }
             
-            // Modal'ı kapat
-            $this->closeModal();
-        } catch (\Exception $e) {
-            Log::error('Prompt kaydederken hata: ' . $e->getMessage());
+            $prompt->name = $this->prompt['name'];
+            $prompt->content = $this->prompt['content'];
+            $prompt->is_default = $this->prompt['is_default'];
+            $prompt->is_active = $this->prompt['is_active'];
+            $prompt->save();
+            
+            // Önbelleği temizle
+            Cache::forget("ai_prompts");
+            Cache::forget("ai_default_prompt");
             
             $this->dispatch('toast', [
+                'title' => 'Başarılı!',
+                'message' => $this->editingPromptId ? 'Prompt güncellendi' : 'Prompt oluşturuldu',
+                'type' => 'success'
+            ]);
+            
+            $this->dispatch('promptSaved');
+            $this->closeModal();
+            
+        } catch (\Exception $e) {
+            Log::error('Prompt kaydedilirken hata: ' . $e->getMessage());
+            $this->dispatch('toast', [
                 'title' => 'Hata!',
-                'message' => 'İşlem sırasında bir hata oluştu: ' . $e->getMessage(),
+                'message' => $e->getMessage(),
                 'type' => 'error'
             ]);
         }
-    }
-    
-    public function render()
-    {
-        return view('ai::admin.livewire.modals.prompt-edit-modal');
     }
 }

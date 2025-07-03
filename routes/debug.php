@@ -65,3 +65,77 @@ Route::get('/debug/test-resolve/{slug1}/{slug2?}/{slug3?}', function ($slug1, $s
         ], 500);
     }
 })->name('debug.test-resolve');
+
+// DEBUG ROUTES - WEB.PHP'DEN TAŞINDI
+Route::get('/debug-routes', function () {
+    $resolver = app(\App\Contracts\DynamicRouteResolverInterface::class);
+    
+    // ModuleSlugService testleri - DİNAMİK ACTION'LAR
+    $moduleData = [];
+    foreach (['Page', 'Portfolio', 'Announcement'] as $module) {
+        // Her modülün config'inden gerçek action'larını al
+        $configPath = base_path("Modules/{$module}/config/config.php");
+        if (file_exists($configPath)) {
+            $config = include $configPath;
+            $actions = isset($config['routes']) ? array_keys($config['routes']) : ['index', 'show'];
+        } else {
+            $actions = ['index', 'show']; // fallback
+        }
+        
+        foreach ($actions as $action) {
+            try {
+                $slug = \App\Services\ModuleSlugService::getSlug($module, $action);
+                $moduleData[$module][$action] = $slug;
+            } catch (Exception $e) {
+                $moduleData[$module][$action] = 'ERROR: ' . $e->getMessage();
+            }
+        }
+    }
+    
+    // Resolver testleri
+    $testResults = [];
+    $testCases = [
+        ['sahife', null, null, 'Page Index'],
+        ['sahife', 'iletisim', null, 'Page Show - İletişim'],
+        ['sahife', 'hakkimizda', null, 'Page Show - Hakkımızda'],
+        ['sahife', 'cerez-politikasi', null, 'Page Show - Çerez Politikası'],
+        ['portfolios', null, null, 'Portfolio Index'],
+        ['portfolios', 'kurumsal-web-sitesi-abc-holding', null, 'Portfolio Show - Gerçek'],
+        ['duyurucuklar', null, null, 'Announcement Index'],
+        ['duyurucuklar', 'yeni-hizmetimiz-yayinda', null, 'Announcement Show - Gerçek']
+    ];
+    
+    foreach ($testCases as $test) {
+        [$slug1, $slug2, $slug3, $desc] = $test;
+        try {
+            $result = $resolver->resolve($slug1, $slug2, $slug3);
+            $testResults[] = [
+                'desc' => $desc,
+                'url' => '/' . $slug1 . ($slug2 ? '/' . $slug2 : ''),
+                'status' => $result ? 'ÇALIŞIR' : 'ÇALIŞMAZ',
+                'found' => $result !== null
+            ];
+        } catch (Exception $e) {
+            $testResults[] = [
+                'desc' => $desc,
+                'url' => '/' . $slug1 . ($slug2 ? '/' . $slug2 : ''),
+                'status' => 'HATA',
+                'found' => false
+            ];
+        }
+    }
+    
+    // Config vs Database
+    $configs = [];
+    foreach (['Page', 'Portfolio', 'Announcement'] as $module) {
+        $configPath = base_path("Modules/{$module}/config/config.php");
+        if (file_exists($configPath)) {
+            $config = include $configPath;
+            $configs[$module] = $config['slugs'] ?? [];
+        }
+    }
+    
+    $dbSettings = \App\Models\ModuleTenantSetting::all()->keyBy('module_name');
+    
+    return view('debug.routes-modern', compact('moduleData', 'testResults', 'configs', 'dbSettings'));
+});

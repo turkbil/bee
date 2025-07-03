@@ -75,6 +75,16 @@ class ModuleSeeder extends Seeder
                         continue;
                     }
                     
+                    // AI modülü özel durumları - ana seeder'da zaten çağrıldı
+                    if ($moduleBaseName === 'AI' && in_array($className, [
+                        'AITokenPackageSeeder', 
+                        'AIPurchaseSeeder', 
+                        'AITenantSetupSeeder', 
+                        'AIUsageUpdateSeeder'
+                    ])) {
+                        continue;
+                    }
+                    
                     $fullClassName = "Modules\\" . $moduleBaseName . "\\Database\\Seeders\\" . $className;
                     
                     if (class_exists($fullClassName) && !in_array($fullClassName . '_central', $this->executedSeeders)) {

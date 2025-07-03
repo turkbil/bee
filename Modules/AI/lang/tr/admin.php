@@ -271,5 +271,92 @@ return [
     'connection_error_occurred' => 'Bağlantı hatası oluştu',
     'retry_action' => 'Yeniden Dene',
     'generic_error' => 'Bir hata oluştu'
-    ]
+    ],
+
+// Settings Navigation
+'settings' => 'Ayarlar',
+'api_settings' => 'API Ayarları',
+'limit_settings' => 'Limit Ayarları',
+'prompt_management' => 'Prompt Yönetimi',
+'general_settings' => 'Genel Ayarlar',
+
+// API Settings
+'api_key_placeholder' => 'sk-...',
+'api_key_hint' => 'DeepSeek panelinden API anahtarınızı alabilirsiniz',
+'model_placeholder' => 'Model seçin',
+'temperature_hint' => 'Rastlantısallığı kontrol eder: 0 odaklı, 1 yaratıcı',
+'max_tokens_hint' => 'Üretilecek maksimum token sayısı',
+'enabled' => 'Etkin',
+'enable_ai' => 'AI\'yı Etkinleştir',
+'enabled_description' => 'AI asistan işlevselliğini etkinleştir veya devre dışı bırak',
+
+// Limit Settings
+'question_limits' => 'Soru Limitleri',
+'max_question_length' => 'Maksimum Soru Uzunluğu',
+'max_question_length_help' => 'Soru başına maksimum karakter limiti',
+'max_daily_questions' => 'Günlük Maksimum Soru',
+'max_daily_questions_help' => 'Kullanıcının günde sorabileceği maksimum soru sayısı',
+'max_monthly_questions' => 'Aylık Maksimum Soru',
+'max_monthly_questions_help' => 'Kullanıcının ayda sorabileceği maksimum soru sayısı',
+
+'token_limits' => 'Token Limitleri',
+'question_token_limit' => 'Soru Token Limiti',
+'question_token_limit_help' => 'Soru başına maksimum token',
+'free_question_tokens_daily' => 'Günlük Ücretsiz Token',
+'free_question_tokens_daily_help' => 'Kullanıcılara günlük verilen ücretsiz token',
+'charge_question_tokens' => 'Soru Token\'ları İçin Ücret Al',
+'charge_question_tokens_help' => 'Sorularda kullanılan token\'lar için kullanıcılardan ücret al',
+
+// General Settings
+'language' => 'Dil',
+'select_language' => 'Dil seçin',
+'response_format' => 'Yanıt Formatı',
+'select_response_format' => 'Yanıt formatı seçin',
+'response_format_text' => 'Düz Metin',
+'response_format_markdown' => 'Markdown',
+'response_format_html' => 'HTML',
+
+'hidden_prompt_settings' => 'Gizli Prompt Ayarları',
+'hidden_system_prompt' => 'Gizli Sistem Promptu',
+'hidden_system_prompt_hint' => 'AI her yanıtta bu promptu kullanır ancak kullanıcılardan gizlenir',
+'secret_knowledge_base' => 'Gizli Bilgi Tabanı',
+'secret_knowledge_base_hint' => 'AI bu bilgileri bilir ancak kendiliğinden bahsetmez. Sadece gerektiğinde kullanır',
+'conditional_responses' => 'Şartlı Yanıtlar',
+'conditional_responses_hint' => 'AI bu bilgileri sadece kullanıcı sorduğunda anlatır. Kendiliğinden bahsetmez',
+'hidden_prompts_warning' => 'Bu alanlar AI\'ya verilir ancak kullanıcılardan gizlenir. Sadece admin panelinden yönetilebilir.',
+
+'performance_settings' => 'Performans Ayarları',
+'stream_responses' => 'Yanıtları Akışla',
+'stream_responses_description' => 'AI yanıtlarını gerçek zamanlı akışla',
+'cache_responses' => 'Yanıtları Önbellekle',
+'cache_responses_description' => 'Sık sorulan soruları önbellekle',
+'response_timeout' => 'Yanıt Zaman Aşımı (saniye)',
+'response_timeout_hint' => 'AI yanıtı için beklenecek maksimum süre',
+
+'security_settings' => 'Güvenlik Ayarları',
+'content_filtering' => 'İçerik Filtreleme',
+'content_filtering_description' => 'Uygunsuz içeriği filtrele',
+'log_conversations' => 'Konuşmaları Kaydet',
+'log_conversations_description' => 'Konuşma geçmişini kaydet',
+'encrypt_api_key' => 'API Anahtarını Şifrele',
+'encrypt_api_key_description' => 'API anahtarını veritabanında şifreli sakla',
+
+// Messages
+'settings_updated' => 'Ayarlar başarıyla güncellendi',
+'api_settings_saved' => 'API ayarları başarıyla kaydedildi',
+'limit_settings_saved' => 'Limit ayarları başarıyla kaydedildi',
+'general_settings_saved' => 'Genel ayarlar başarıyla kaydedildi',
+
+// Validation
+'validation' => [
+    'api_key_required' => 'API anahtarı gerekli',
+    'model_required' => 'Model gerekli',
+    'max_tokens_min' => 'Maksimum token en az :min olmalı',
+    'temperature_between' => 'Sıcaklık :min ve :max arasında olmalı',
+    'question_length_min' => 'Soru uzunluğu en az :min karakter olmalı',
+    'daily_questions_min' => 'Günlük sorular en az :min olmalı',
+    'monthly_questions_min' => 'Aylık sorular en az :min olmalı',
+    'token_limit_min' => 'Token limiti en az :min olmalı',
+    'free_tokens_min' => 'Ücretsiz token en az :min olmalı',
+],
 ];

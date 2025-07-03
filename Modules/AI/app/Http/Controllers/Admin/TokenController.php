@@ -3,12 +3,17 @@
 namespace Modules\AI\App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\AITokenPackage;
-use App\Models\AITokenPurchase;
+use Modules\AI\App\Models\AITokenPackage;
+use Modules\AI\App\Models\AITokenPurchase;
 use Illuminate\Http\Request;
 
 class TokenController extends Controller
 {
+    public function index()
+    {
+        return view('ai::admin.livewire.token-management');
+    }
+
     /**
      * Purchase a token package
      */

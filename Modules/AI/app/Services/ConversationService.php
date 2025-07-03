@@ -7,7 +7,7 @@ use Modules\AI\App\Models\Conversation;
 use Modules\AI\App\Models\Message;
 use Modules\AI\App\Models\Prompt;
 use Modules\AI\App\Services\DeepSeekService;
-use Modules\AI\App\Services\LimitService;
+use App\Services\AITokenService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -15,12 +15,12 @@ use Illuminate\Support\Facades\DB;
 class ConversationService
 {
     protected $deepSeekService;
-    protected $limitService;
+    protected $aiTokenService;
 
-    public function __construct(DeepSeekService $deepSeekService, LimitService $limitService)
+    public function __construct(DeepSeekService $deepSeekService, AITokenService $aiTokenService)
     {
         $this->deepSeekService = $deepSeekService;
-        $this->limitService = $limitService;
+        $this->aiTokenService = $aiTokenService;
     }
 
     public function createConversation(string $title, ?int $promptId = null): Conversation

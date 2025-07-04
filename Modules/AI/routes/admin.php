@@ -134,10 +134,52 @@ Route::middleware(['web', 'auth'])
                     ->middleware('module.permission:ai,view')
                     ->name('update-conversation-prompt');
                     
-                // AI Features sayfası  
-                Route::get('/features', [SettingsController::class, 'features'])
+                // AI Features Management System
+                Route::get('/features', [\Modules\AI\App\Http\Controllers\Admin\AIFeaturesController::class, 'index'])
                     ->middleware('module.permission:ai,view')
-                    ->name('features');
+                    ->name('admin.ai.features.index');
+                    
+                Route::get('/features/manage/{id?}', \Modules\AI\App\Http\Livewire\Admin\AIFeatureManageComponent::class)
+                    ->middleware('module.permission:ai,view')
+                    ->name('admin.ai.features.manage');
+                    
+                Route::get('/features/{feature}', [\Modules\AI\App\Http\Controllers\Admin\AIFeaturesController::class, 'show'])
+                    ->middleware('module.permission:ai,view')
+                    ->name('admin.ai.features.show');
+                
+                // AI Features ek route'lar
+                Route::post('/features/bulk-status', [\Modules\AI\App\Http\Controllers\Admin\AIFeaturesController::class, 'bulkStatusUpdate'])
+                    ->middleware('module.permission:ai,update')
+                    ->name('admin.ai.features.bulk-status');
+                Route::post('/features/update-order', [\Modules\AI\App\Http\Controllers\Admin\AIFeaturesController::class, 'updateOrder'])
+                    ->middleware('module.permission:ai,update')
+                    ->name('admin.ai.features.update-order');
+                Route::post('/features/{feature}/duplicate', [\Modules\AI\App\Http\Controllers\Admin\AIFeaturesController::class, 'duplicate'])
+                    ->middleware('module.permission:ai,create')
+                    ->name('admin.ai.features.duplicate');
+                    
+                // AI Kullanım Örnekleri Test Sayfası (Yazılımcılar için)
+                Route::get('/examples', function() {
+                    // Geçici olarak Livewire olmadan test
+                    $tokenStatus = [
+                        'remaining_tokens' => \App\Helpers\TokenHelper::remaining(),
+                        'daily_usage' => \App\Helpers\TokenHelper::todayUsage(),
+                        'monthly_usage' => \App\Helpers\TokenHelper::monthlyUsage(),
+                        'provider' => config('ai.default_provider', 'deepseek'),
+                        'provider_active' => !empty(config('ai.providers.deepseek.api_key'))
+                    ];
+                    
+                    return view('ai::admin.examples-simple', compact('tokenStatus'));
+                })
+                    ->middleware('module.permission:ai,view')
+                    ->name('examples');
+                    
+                // AI Test Sayfası (Adminler için)
+                Route::get('/test', function() {
+                    return view('ai::admin.test-livewire');
+                })
+                    ->middleware('module.permission:ai,view')
+                    ->name('test');
                 
                 // AI Features Test API
                 Route::post('/test-feature', function(\Illuminate\Http\Request $request) {
@@ -153,7 +195,7 @@ Route::middleware(['web', 'auth'])
                     ->name('tokens.')
                     ->middleware('role:root')
                     ->group(function () {
-                        Route::get('/', [TokenController::class, 'index'])
+                        Route::get('/', TokenManagement::class)
                             ->name('index');
                         
                         Route::get('/tenant/{tenant}', [TokenManagementController::class, 'show'])

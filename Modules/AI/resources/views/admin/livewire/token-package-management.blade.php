@@ -1,209 +1,513 @@
 <div>
-@include('ai::admin.helper')
-<div class="card">
-    <div class="card-body">
-        <!-- Header Bölümü -->
-        <div class="row mb-3">
-            <!-- Arama Kutusu -->
-            <div class="col">
-                <div class="input-icon">
-                    <span class="input-icon-addon">
-                        <i class="fas fa-search"></i>
-                    </span>
-                    <input type="text" wire:model.live="search" class="form-control"
-                        placeholder="Token paketi ara...">
-                </div>
-            </div>
-            <!-- Ortadaki Loading -->
-            <div class="col position-relative">
-                <div wire:loading
-                    wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, selectedItems, selectAll, bulkDelete, bulkToggleActive"
-                    class="position-absolute top-50 start-50 translate-middle text-center"
-                    style="width: 100%; max-width: 250px;">
-                    <div class="small text-muted mb-2">Güncelleniyor...</div>
-                    <div class="progress mb-1">
-                        <div class="progress-bar progress-bar-indeterminate"></div>
+    {{-- Tab Navigation --}}
+    <div class="card">
+        <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs">
+                <li class="nav-item">
+                    <a href="#packages-list" 
+                       class="nav-link @if($activeTab === 'list') active @endif"
+                       wire:click="setActiveTab('list')">
+                        <i class="fas fa-list me-2"></i>Paket Listesi
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#packages-manage" 
+                       class="nav-link @if($activeTab === 'manage') active @endif"
+                       wire:click="setActiveTab('manage')">
+                        <i class="fas fa-{{ $editMode ? 'edit' : 'plus' }} me-2"></i>
+                        {{ $editMode ? 'Paket Düzenle' : 'Yeni Paket' }}
+                    </a>
+                </li>
+                <li class="nav-item ms-auto">
+                    <div class="d-flex gap-2">
+                        @if($activeTab === 'list')
+                            <button wire:click="createPackage" class="btn btn-primary btn-sm">
+                                <i class="fas fa-plus me-2"></i>Yeni Paket
+                            </button>
+                        @endif
+                        @if($activeTab === 'manage')
+                            <button wire:click="setActiveTab('list')" class="btn btn-outline-secondary btn-sm">
+                                <i class="fas fa-arrow-left me-2"></i>Listeye Dön
+                            </button>
+                        @endif
                     </div>
-                </div>
-            </div>
-            <!-- Sağ Taraf (Switch ve Select) -->
-            <div class="col">
-                <div class="d-flex align-items-center justify-content-end gap-3">
-                    <!-- Online/Offline Toggle -->
-                    <label class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" wire:model.live="showOnlineOnly">
-                        <span class="form-check-label">
-                            <span class="form-check-description">Sadece aktif paketler</span>
-                        </span>
-                    </label>
-                    
-                    <!-- Per Page Select -->
-                    <div class="d-flex align-items-center gap-2">
-                        <span class="text-muted">Sayfa başına:</span>
-                        <select wire:model.live="perPage" class="form-select form-select-sm" style="width: auto;">
-                            <option value="10">10</option>
-                            <option value="25">25</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
+                </li>
+            </ul>
         </div>
 
-        @if($packages->count() > 0)
-        <!-- Pricing Cards Grid -->
-        <div class="row row-cards">
-            @foreach($packages as $package)
-            <div class="col-sm-6 col-lg-3" wire:key="package-{{ $package->id }}">
-                <div class="card card-md">
-                    @if($package->is_popular)
-                    <div class="ribbon ribbon-top ribbon-bookmark bg-green">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" 
-                             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" 
-                             stroke-linejoin="round" class="icon icon-3">
-                            <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" />
-                        </svg>
-                    </div>
-                    @endif
-                    
-                    <div class="card-body text-center">
-                        <div class="text-uppercase text-secondary font-weight-medium">{{ $package->name }}</div>
-                        <div class="display-5 fw-bold my-3">{{ number_format($package->price, 2) }} {{ $package->currency }}</div>
-                        
-                        <ul class="list-unstyled lh-lg">
-                            <li><strong>{{ \App\Helpers\TokenHelper::format($package->token_amount) }}</strong> Token</li>
-                            
-                            @if($package->features && count($package->features) > 0)
-                                @foreach($package->features as $feature)
-                                <li>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" 
-                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" 
-                                         stroke-linejoin="round" class="icon me-1 text-success icon-2">
-                                        <path d="M5 12l5 5l10 -10" />
-                                    </svg>
-                                    {{ $feature }}
-                                </li>
-                                @endforeach
+        <div class="card-body">
+            <div class="tab-content">
+                {{-- Paket Listesi Tab --}}
+                <div class="tab-pane @if($activeTab === 'list') active show @endif" id="packages-list">
+                    {{-- Arama ve Filtre --}}
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" 
+                                       wire:model.live="search" 
+                                       class="form-control" 
+                                       placeholder="Paket ara...">
+                                <label>Paket Ara</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            @if(count($selectedItems) > 0)
+                            <div class="d-flex gap-2">
+                                <button wire:click="bulkToggleActive(true)" class="btn btn-success btn-sm">
+                                    <i class="fas fa-check me-2"></i>Seçilenleri Aktif Yap
+                                </button>
+                                <button wire:click="bulkToggleActive(false)" class="btn btn-warning btn-sm">
+                                    <i class="fas fa-times me-2"></i>Seçilenleri Pasif Yap
+                                </button>
+                                <span class="badge bg-primary align-self-center">{{ count($selectedItems) }} seçili</span>
+                            </div>
                             @endif
-                        </ul>
-                        
-                        @if($package->description)
-                        <p class="text-muted small mt-3">{{ $package->description }}</p>
-                        @endif
-                        
-                        @php
-                            $dailyUsage = $package->token_amount / 20; // 20 günlük kullanım varsayalım
-                            $formattedDaily = \App\Helpers\TokenHelper::format($dailyUsage);
-                        @endphp
-                        <div class="small text-center mt-2">
-                            <span class="badge badge-outline text-blue">
-                                Günlük {{ $formattedDaily }} token • 20 gün kullanım
-                            </span>
                         </div>
                     </div>
-                    
-                    <div class="card-footer">
-                        <div class="row align-items-center">
-                            <div class="col">
-                                <div class="d-flex align-items-center">
-                                    <span class="badge badge-outline me-2">Sıra: {{ $package->sort_order }}</span>
-                                    <span class="badge {{ $package->is_active ? 'badge-outline text-green' : 'badge-outline text-red' }}">
-                                        {{ $package->is_active ? 'Aktif' : 'Pasif' }}
+
+                    {{-- Sürüklenebilir Paket Listesi --}}
+                    <div class="table-responsive">
+                        <table class="table table-vcenter card-table table-hover">
+                            <thead>
+                                <tr>
+                                    <th style="width: 40px">
+                                        <input type="checkbox" 
+                                               wire:model.live="selectAll"
+                                               wire:click="toggleSelectAll()"
+                                               class="form-check-input">
+                                    </th>
+                                    <th style="width: 80px; cursor: pointer" wire:click="sortBy('sort_order')">
+                                        <div class="d-flex align-items-center">
+                                            Sıra
+                                            @if($sortField === 'sort_order')
+                                                <i class="fas fa-chevron-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ms-1 text-muted"></i>
+                                            @endif
+                                        </div>
+                                    </th>
+                                    <th style="cursor: pointer" wire:click="sortBy('name')">
+                                        <div class="d-flex align-items-center">
+                                            Paket Bilgileri
+                                            @if($sortField === 'name')
+                                                <i class="fas fa-chevron-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ms-1 text-muted"></i>
+                                            @endif
+                                        </div>
+                                    </th>
+                                    <th style="cursor: pointer" wire:click="sortBy('token_amount')">
+                                        <div class="d-flex align-items-center">
+                                            Token Miktarı
+                                            @if($sortField === 'token_amount')
+                                                <i class="fas fa-chevron-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ms-1 text-muted"></i>
+                                            @endif
+                                        </div>
+                                    </th>
+                                    <th style="cursor: pointer" wire:click="sortBy('price')">
+                                        <div class="d-flex align-items-center">
+                                            Fiyat
+                                            @if($sortField === 'price')
+                                                <i class="fas fa-chevron-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ms-1 text-muted"></i>
+                                            @endif
+                                        </div>
+                                    </th>
+                                    <th class="text-center">Durum</th>
+                                    <th class="text-center">İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sortable-packages">
+                                @forelse($packages as $package)
+                                <tr wire:key="package-{{ $package->id }}" 
+                                    data-id="{{ $package->id }}" 
+                                    class="package-row" 
+                                    style="cursor: move;">
+                                    <td>
+                                        <input type="checkbox" 
+                                               wire:model.live="selectedItems" 
+                                               value="{{ $package->id }}"
+                                               class="form-check-input">
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-grip-vertical text-muted me-2"></i>
+                                            <span class="badge bg-primary">{{ $package->sort_order }}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div>
+                                                <div class="fw-bold">{{ $package->name }}</div>
+                                                @if($package->description)
+                                                    <div class="text-muted small">{{ Str::limit($package->description, 60) }}</div>
+                                                @endif
+                                                @if($package->features && is_array($package->features) && count($package->features) > 0)
+                                                    <div class="mt-1">
+                                                        @foreach(array_slice($package->features, 0, 2) as $feature)
+                                                            <span class="badge bg-light text-dark me-1">{{ $feature }}</span>
+                                                        @endforeach
+                                                        @if(is_array($package->features) && count($package->features) > 2)
+                                                            <span class="badge bg-secondary">+{{ (is_array($package->features) ? count($package->features) : 0) - 2 }} özellik</span>
+                                                        @endif
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="fw-bold">{{ number_format($package->token_amount) }}</div>
+                                        <div class="text-muted small">token</div>
+                                    </td>
+                                    <td>
+                                        <div class="fw-bold">{{ number_format($package->price, 2) }}</div>
+                                        <div class="text-muted small">{{ $package->currency }}</div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center gap-1">
+                                            <button wire:click="toggleActive({{ $package->id }})" 
+                                                    class="btn btn-icon btn-sm {{ $package->is_active ? 'text-success' : 'text-muted' }}"
+                                                    title="{{ $package->is_active ? 'Aktif' : 'Pasif' }}">
+                                                <i class="fas fa-{{ $package->is_active ? 'check-circle' : 'times-circle' }}"></i>
+                                            </button>
+                                            <button wire:click="togglePopular({{ $package->id }})" 
+                                                    class="btn btn-icon btn-sm {{ $package->is_popular ? 'text-warning' : 'text-muted' }}"
+                                                    title="{{ $package->is_popular ? 'Popüler' : 'Normal' }}">
+                                                <i class="fas fa-{{ $package->is_popular ? 'star' : 'star-o' }}"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center gap-1">
+                                            <button wire:click="editPackage({{ $package->id }})" 
+                                                    class="btn btn-icon btn-sm text-primary"
+                                                    title="Düzenle">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button wire:click="confirmDelete({{ $package->id }})" 
+                                                    class="btn btn-icon btn-sm text-danger"
+                                                    title="Sil">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="7" class="text-center py-4">
+                                        <div class="text-muted">
+                                            @if($search)
+                                                Arama kriterinize uygun paket bulunamadı.
+                                            @else
+                                                Henüz paket oluşturulmamış.
+                                                <button wire:click="createPackage" class="btn btn-primary btn-sm ms-2">
+                                                    <i class="fas fa-plus me-1"></i>İlk Paketi Oluştur
+                                                </button>
+                                            @endif
+                                        </div>
+                                    </td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {{-- Sayfalama --}}
+                    @if($packages->hasPages())
+                        <div class="mt-3">
+                            {{ $packages->links() }}
+                        </div>
+                    @endif
+                </div>
+
+                {{-- Paket Yönetimi Tab --}}
+                <div class="tab-pane @if($activeTab === 'manage') active show @endif" id="packages-manage">
+                    <form wire:submit="savePackage">
+                        <div class="row">
+                            {{-- Sol Kolon - Ana Bilgiler --}}
+                            <div class="col-md-8">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title">
+                                            {{ $editMode ? 'Paket Düzenle' : 'Yeni Paket Oluştur' }}
+                                        </h3>
+                                    </div>
+                                    <div class="card-body">
+                                        {{-- Paket Adı --}}
+                                        <div class="form-floating mb-3">
+                                            <input type="text" 
+                                                   wire:model="name" 
+                                                   class="form-control @error('name') is-invalid @enderror" 
+                                                   placeholder="Paket adı">
+                                            <label>Paket Adı *</label>
+                                            @error('name')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+
+                                        {{-- Token Miktarı ve Fiyat --}}
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-floating mb-3">
+                                                    <input type="number" 
+                                                           wire:model="token_amount" 
+                                                           class="form-control @error('token_amount') is-invalid @enderror" 
+                                                           min="1"
+                                                           placeholder="Token miktarı">
+                                                    <label>Token Miktarı *</label>
+                                                    @error('token_amount')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-floating mb-3">
+                                                    <input type="number" 
+                                                           wire:model="price" 
+                                                           class="form-control @error('price') is-invalid @enderror" 
+                                                           step="0.01"
+                                                           min="0"
+                                                           placeholder="Fiyat">
+                                                    <label>Fiyat *</label>
+                                                    @error('price')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-floating mb-3">
+                                                    <select wire:model="currency" 
+                                                            class="form-select @error('currency') is-invalid @enderror">
+                                                        <option value="TRY">TRY</option>
+                                                        <option value="USD">USD</option>
+                                                        <option value="EUR">EUR</option>
+                                                    </select>
+                                                    <label>Para Birimi</label>
+                                                    @error('currency')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {{-- Açıklama --}}
+                                        <div class="form-floating mb-3">
+                                            <textarea wire:model="description" 
+                                                      class="form-control @error('description') is-invalid @enderror" 
+                                                      style="height: 80px"
+                                                      placeholder="Paket açıklaması"></textarea>
+                                            <label>Açıklama</label>
+                                            @error('description')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+
+                                        {{-- Özellikler --}}
+                                        <div class="mb-3">
+                                            <label class="form-label">Paket Özellikleri</label>
+                                            
+                                            {{-- Yeni Özellik Ekleme --}}
+                                            <div class="input-group mb-2">
+                                                <div class="form-floating flex-fill">
+                                                    <input type="text" 
+                                                           wire:model="newFeature" 
+                                                           wire:keydown.enter.prevent="addFeature"
+                                                           class="form-control" 
+                                                           placeholder="Yeni özellik">
+                                                    <label>Yeni özellik ekle</label>
+                                                </div>
+                                                <button type="button" 
+                                                        wire:click="addFeature" 
+                                                        class="btn btn-primary"
+                                                        {{ (is_array($features) && count($features) >= 10) ? 'disabled' : '' }}>
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
+                                            </div>
+
+                                            {{-- Mevcut Özellikler --}}
+                                            @if(is_array($features) && count($features) > 0)
+                                                <div class="row g-2">
+                                                    @foreach($features as $index => $feature)
+                                                    <div class="col-md-6">
+                                                        <div class="d-flex align-items-center gap-2 p-2 bg-light rounded">
+                                                            <i class="fas fa-check-circle text-success"></i>
+                                                            <span class="flex-fill">{{ $feature }}</span>
+                                                            <button type="button" 
+                                                                    wire:click="removeFeature({{ $index }})"
+                                                                    class="btn btn-sm btn-outline-danger">
+                                                                <i class="fas fa-times"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    @endforeach
+                                                </div>
+                                                <small class="text-muted">{{ is_array($features) ? count($features) : 0 }}/10 özellik eklendi</small>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Sağ Kolon - Ayarlar --}}
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Paket Ayarları</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        {{-- Sıralama --}}
+                                        <div class="form-floating mb-3">
+                                            <input type="number" 
+                                                   wire:model="sort_order" 
+                                                   class="form-control @error('sort_order') is-invalid @enderror" 
+                                                   min="0"
+                                                   placeholder="Sıralama">
+                                            <label>Sıralama</label>
+                                            @error('sort_order')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+
+                                        {{-- Durum Ayarları --}}
+                                        <div class="form-check form-switch mb-3">
+                                            <input class="form-check-input" 
+                                                   type="checkbox" 
+                                                   wire:model="is_active" 
+                                                   id="is_active">
+                                            <label class="form-check-label" for="is_active">
+                                                Paket Aktif
+                                            </label>
+                                        </div>
+
+                                        <div class="form-check form-switch mb-3">
+                                            <input class="form-check-input" 
+                                                   type="checkbox" 
+                                                   wire:model="is_popular" 
+                                                   id="is_popular">
+                                            <label class="form-check-label" for="is_popular">
+                                                Popüler Paket
+                                            </label>
+                                        </div>
+
+                                        {{-- Önizleme --}}
+                                        @if($name || $token_amount || $price)
+                                        <div class="mt-4">
+                                            <h4 class="text-muted mb-3">Önizleme</h4>
+                                            <div class="card">
+                                                <div class="card-body text-center">
+                                                    @if($is_popular)
+                                                        <div class="ribbon bg-warning">Popüler</div>
+                                                    @endif
+                                                    <h3 class="card-title">{{ $name ?: 'Paket Adı' }}</h3>
+                                                    <div class="text-h1 text-primary">
+                                                        {{ $token_amount ? number_format($token_amount) : '0' }}
+                                                    </div>
+                                                    <div class="text-muted mb-2">Token</div>
+                                                    @if($price)
+                                                        <div class="text-h2">
+                                                            {{ number_format($price, 2) }} {{ $currency }}
+                                                        </div>
+                                                    @endif
+                                                    @if($description)
+                                                        <p class="text-muted small mt-2">{{ Str::limit($description, 60) }}</p>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Form Buttons --}}
+                        <div class="mt-4">
+                            <div class="d-flex justify-content-between">
+                                <button type="button" 
+                                        wire:click="setActiveTab('list')" 
+                                        class="btn btn-outline-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i>İptal
+                                </button>
+                                <button type="submit" 
+                                        class="btn btn-primary">
+                                    <span wire:loading.remove>
+                                        <i class="fas fa-{{ $editMode ? 'save' : 'plus' }} me-2"></i>
+                                        {{ $editMode ? 'Güncelle' : 'Oluştur' }}
                                     </span>
-                                </div>
-                            </div>
-                            <div class="col-auto">
-                                <div class="btn-list">
-                                    <button wire:click="toggleActive({{ $package->id }})" 
-                                            class="btn btn-sm btn-{{ $package->is_active ? 'success' : 'warning' }}"
-                                            title="{{ $package->is_active ? 'Pasif Yap' : 'Aktif Yap' }}">
-                                        <i class="fas fa-{{ $package->is_active ? 'toggle-on' : 'toggle-off' }}"></i>
-                                    </button>
-                                    
-                                    <button onclick="editPackage({{ $package->id }})" 
-                                            class="btn btn-sm btn-primary" title="Düzenle">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    
-                                    <button wire:click="togglePopular({{ $package->id }})" 
-                                            class="btn btn-sm btn-{{ $package->is_popular ? 'warning' : 'outline-warning' }}"
-                                            title="{{ $package->is_popular ? 'Popülerlikten Çıkar' : 'Popüler Yap' }}">
-                                        <i class="fas fa-star"></i>
-                                    </button>
-                                    
-                                    <button wire:click="confirmDelete({{ $package->id }})" 
-                                            class="btn btn-sm btn-outline-danger" title="Sil">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
+                                    <span wire:loading>
+                                        <span class="spinner-border spinner-border-sm me-2"></span>
+                                        {{ $editMode ? 'Güncelleniyor...' : 'Oluşturuluyor...' }}
+                                    </span>
+                                </button>
                             </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
-            @endforeach
         </div>
-        @else
-        <!-- Empty State -->
-        <div class="empty">
-            <div class="empty-img">
-                <i class="fas fa-box text-muted" style="font-size: 64px;"></i>
-            </div>
-            <p class="empty-title">Henüz paket tanımlanmamış</p>
-            <p class="empty-subtitle text-muted">
-                İlk token paketinizi oluşturmak için yeni paket oluşturun.
-            </p>
-            <div class="empty-action">
-                <button onclick="openCreateModal()" class="btn btn-primary">
-                    <i class="fas fa-plus me-2"></i>İlk Paketi Oluştur
-                </button>
+    </div>
+
+    {{-- Delete Modal --}}
+    @if($showDeleteModal)
+    <div class="modal modal-blur fade show" style="display: block;" tabindex="-1">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Paket Sil</h5>
+                    <button type="button" class="btn-close" wire:click="$set('showDeleteModal', false)"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Bu paketi silmek istediğinizden emin misiniz?</p>
+                    <p class="text-danger"><strong>Bu işlem geri alınamaz!</strong></p>
+                    
+                    <div class="form-floating">
+                        <input type="text" 
+                               wire:model="deleteConfirmText" 
+                               class="form-control @error('deleteConfirmText') is-invalid @enderror" 
+                               placeholder="SİL">
+                        <label>Silmek için "SİL" yazın</label>
+                        @error('deleteConfirmText')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" 
+                            wire:click="$set('showDeleteModal', false)" 
+                            class="btn btn-secondary">
+                        İptal
+                    </button>
+                    <button type="button" 
+                            wire:click="deletePackage" 
+                            class="btn btn-danger"
+                            {{ $deleteConfirmText !== 'SİL' ? 'disabled' : '' }}>
+                        <span wire:loading.remove>Sil</span>
+                        <span wire:loading>Siliniyor...</span>
+                    </button>
+                </div>
             </div>
         </div>
-        @endif
     </div>
-    
-    @if($packages->hasPages())
-    <!-- Pagination -->
-    <div class="card-footer">
-        {{ $packages->links() }}
-    </div>
+    <div class="modal-backdrop fade show"></div>
     @endif
 </div>
 
 @push('scripts')
-<!-- SortableJS for drag & drop -->
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    function initializeSortable() {
-        const tbody = document.querySelector('#sortable-table');
-        if (tbody) {
-            new Sortable(tbody, {
-                animation: 150,
-                handle: '.sort-id',
-                ghostClass: 'opacity-50',
-                onEnd: function(evt) {
-                    const items = Array.from(tbody.querySelectorAll('tr')).map((tr, index) => ({
-                        id: tr.dataset.packageId,
-                        order: index + 1
-                    }));
-                    
-                    // Livewire'a sıralama değişikliğini bildir
-                    Livewire.dispatch('update-package-order', { packages: items });
-                }
-            });
-        }
+    const sortablePackages = document.getElementById('sortable-packages');
+    if (sortablePackages) {
+        new Sortable(sortablePackages, {
+            animation: 250,
+            delay: 50,
+            ghostClass: "table-active",
+            chosenClass: "table-warning",
+            onEnd: function (evt) {
+                const items = Array.from(sortablePackages.children).map((row, index) => ({
+                    value: parseInt(row.dataset.id),
+                    order: index + 1
+                }));
+                
+                @this.call('updateOrder', items);
+            }
+        });
     }
-    
-    // İlk yükleme
-    initializeSortable();
-    
-    // Livewire güncellemeleri sonrası yeniden başlat
-    Livewire.hook('message.processed', () => {
-        initializeSortable();
-    });
 });
 </script>
 @endpush
-</div>

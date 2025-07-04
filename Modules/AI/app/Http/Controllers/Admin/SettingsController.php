@@ -303,4 +303,211 @@ class SettingsController extends Controller
     {
         return view('ai::admin.features.dashboard');
     }
+    
+    public function examples()
+    {
+        // Token durumu bilgileri
+        $tokenStatus = [
+            'remaining_tokens' => \App\Helpers\TokenHelper::remaining(),
+            'total_tokens' => \App\Helpers\TokenHelper::totalPurchased(),
+            'daily_usage' => \App\Helpers\TokenHelper::todayUsage(),
+            'monthly_usage' => \App\Helpers\TokenHelper::monthlyUsage(),
+            'provider' => config('ai.default_provider', 'deepseek'),
+            'provider_active' => !empty(config('ai.providers.deepseek.api_key'))
+        ];
+        
+        // AI özellikleri ve kategorileri
+        $features = [
+            'active' => [
+                'content_creation' => [
+                    [
+                        'name' => 'İçerik Oluşturma',
+                        'description' => 'Başlık veya konu vererek otomatik içerik oluşturma',
+                        'category' => 'İçerik Üretimi',
+                        'usage' => 'Blog yazıları, makaleler, ürün açıklamaları',
+                        'example' => 'ai_generate_content(\'page\', \'Laravel Nedir?\', \'blog_post\')'
+                    ],
+                    [
+                        'name' => 'Şablondan İçerik',
+                        'description' => 'Hazır şablonları kullanarak içerik üretme',
+                        'category' => 'İçerik Üretimi',
+                        'usage' => 'Ürün sayfaları, hizmet tanıtımları',
+                        'example' => 'AI::page()->generateFromTemplate()'
+                    ],
+                    [
+                        'name' => 'Başlık Alternatifleri',
+                        'description' => 'Bir konu için farklı başlık önerileri',
+                        'category' => 'İçerik Üretimi',
+                        'usage' => 'SEO optimizasyonu, A/B testleri'
+                    ],
+                    [
+                        'name' => 'İçerik Özeti',
+                        'description' => 'Uzun metinleri özetleme',
+                        'category' => 'İçerik Üretimi',
+                        'usage' => 'Makale özetleri, meta açıklamalar'
+                    ],
+                    [
+                        'name' => 'SSS Oluşturma',
+                        'description' => 'İçerikten sıkça sorulan sorular üretme',
+                        'category' => 'İçerik Üretimi',
+                        'usage' => 'Destek sayfaları, ürün SSS'
+                    ],
+                    [
+                        'name' => 'Eylem Çağrısı',
+                        'description' => 'Etkili CTA metinleri oluşturma',
+                        'category' => 'İçerik Üretimi',
+                        'usage' => 'Landing page, e-posta kampanyaları'
+                    ]
+                ],
+                'content_analysis' => [
+                    [
+                        'name' => 'SEO Analizi',
+                        'description' => 'İçeriğin SEO uyumluluğunu kontrol etme',
+                        'category' => 'İçerik Analizi',
+                        'usage' => 'On-page SEO optimizasyonu',
+                        'example' => 'ai_analyze_seo(\'page\', $content, \'hedef kelime\')'
+                    ],
+                    [
+                        'name' => 'Okunabilirlik Analizi',
+                        'description' => 'Metnin okunabilirlik skorunu hesaplama',
+                        'category' => 'İçerik Analizi',
+                        'usage' => 'İçerik kalitesi kontrolü'
+                    ],
+                    [
+                        'name' => 'Anahtar Kelime Çıkarma',
+                        'description' => 'Metinden önemli kelimeleri bulma',
+                        'category' => 'İçerik Analizi',
+                        'usage' => 'Tag oluşturma, kategorizasyon'
+                    ],
+                    [
+                        'name' => 'Ton Analizi',
+                        'description' => 'İçeriğin tonunu ve duygusunu analiz etme',
+                        'category' => 'İçerik Analizi',
+                        'usage' => 'Marka tutarlılığı kontrolü'
+                    ]
+                ],
+                'content_optimization' => [
+                    [
+                        'name' => 'Meta Etiket Oluşturma',
+                        'description' => 'SEO uyumlu meta title ve description',
+                        'category' => 'İçerik Optimizasyonu',
+                        'usage' => 'Arama motoru görünürlüğü',
+                        'example' => 'ai_generate_meta_tags(\'page\', $content, $title)'
+                    ],
+                    [
+                        'name' => 'İçerik Çevirisi',
+                        'description' => 'Çok dilli içerik desteği',
+                        'category' => 'İçerik Optimizasyonu',
+                        'usage' => 'Uluslararası siteler',
+                        'example' => 'ai_translate(\'page\', $content, \'en\')'
+                    ],
+                    [
+                        'name' => 'İçerik Yeniden Yazma',
+                        'description' => 'Mevcut içeriği farklı tonda yeniden yazma',
+                        'category' => 'İçerik Optimizasyonu',
+                        'usage' => 'İçerik güncelleme, ton değişimi'
+                    ],
+                    [
+                        'name' => 'Başlık Optimizasyonu',
+                        'description' => 'Başlıkları SEO ve tıklanma için optimize etme',
+                        'category' => 'İçerik Optimizasyonu',
+                        'usage' => 'CTR artırma, SEO iyileştirme'
+                    ],
+                    [
+                        'name' => 'İçerik Genişletme',
+                        'description' => 'Kısa içerikleri detaylandırma',
+                        'category' => 'İçerik Optimizasyonu',
+                        'usage' => 'İçerik zenginleştirme'
+                    ]
+                ]
+            ],
+            'potential' => [
+                'advanced_features' => [
+                    [
+                        'name' => 'İyileştirme Önerileri',
+                        'description' => 'İçerik için spesifik iyileştirme tavsiyeleri',
+                        'category' => 'Gelişmiş Özellikler',
+                        'usage' => 'İçerik kalitesi artırma'
+                    ],
+                    [
+                        'name' => 'İlgili Konu Önerileri',
+                        'description' => 'Benzer konular için içerik fikirleri',
+                        'category' => 'Gelişmiş Özellikler',
+                        'usage' => 'İçerik planlaması'
+                    ],
+                    [
+                        'name' => 'İçerik Ana Hatları',
+                        'description' => 'Detaylı içerik planı oluşturma',
+                        'category' => 'Gelişmiş Özellikler',
+                        'usage' => 'İçerik stratejisi'
+                    ],
+                    [
+                        'name' => 'Sosyal Medya Postları',
+                        'description' => 'İçerikten sosyal medya paylaşımları üretme',
+                        'category' => 'Gelişmiş Özellikler',
+                        'usage' => 'Sosyal medya yönetimi'
+                    ]
+                ]
+            ]
+        ];
+        
+        // Modül entegrasyonları
+        $integrations = [
+            'page' => [
+                'name' => 'Page Modülü',
+                'status' => 'active',
+                'actions' => [
+                    'generateContent' => 'İçerik oluşturma',
+                    'analyzeSEO' => 'SEO analizi',
+                    'translateContent' => 'Çeviri işlemleri',
+                    'generateMetaTags' => 'Meta etiket oluşturma'
+                ]
+            ],
+            'portfolio' => [
+                'name' => 'Portfolio Modülü',
+                'status' => 'potential',
+                'actions' => [
+                    'generateProjectDescription' => 'Proje açıklaması oluşturma',
+                    'generateTags' => 'Otomatik etiketleme'
+                ]
+            ],
+            'studio' => [
+                'name' => 'Studio Modülü',
+                'status' => 'potential',
+                'actions' => [
+                    'generateComponentContent' => 'Widget içerik önerileri',
+                    'optimizeLayout' => 'Sayfa düzeni önerileri'
+                ]
+            ]
+        ];
+        
+        return view('ai::admin.examples', compact('features', 'tokenStatus', 'integrations'));
+    }
+    
+    public function test()
+    {
+        // Token durumu bilgileri
+        $tokenStatus = [
+            'remaining_tokens' => \App\Helpers\TokenHelper::remaining(),
+            'total_tokens' => \App\Helpers\TokenHelper::totalPurchased(),
+            'daily_usage' => \App\Helpers\TokenHelper::todayUsage(),
+            'monthly_usage' => \App\Helpers\TokenHelper::monthlyUsage(),
+            'provider' => config('ai.default_provider', 'deepseek'),
+            'provider_active' => !empty(config('ai.providers.deepseek.api_key'))
+        ];
+        
+        // Basitleştirilmiş özellik listesi (adminler için)
+        $features = [
+            'İçerik Oluşturma' => 'Blog yazısı, makale veya ürün açıklaması oluşturma',
+            'Başlık Önerileri' => 'Bir konu için alternatif başlık önerileri',
+            'İçerik Özeti' => 'Uzun metinleri kısa ve anlaşılır hale getirme',
+            'SSS Oluşturma' => 'İçerikten sıkça sorulan sorular üretme',
+            'SEO Analizi' => 'İçeriğin arama motoru optimizasyonunu kontrol etme',
+            'İçerik Çevirisi' => 'Metinleri farklı dillere çevirme',
+            'İçerik İyileştirme' => 'Mevcut içeriği daha iyi hale getirme',
+            'Sosyal Medya Metni' => 'Sosyal medya için kısa paylaşım metinleri'
+        ];
+        
+        return view('ai::admin.test', compact('features', 'tokenStatus'));
+    }
 }

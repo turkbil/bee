@@ -12,6 +12,13 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('content');
+            $table->enum('prompt_type', [
+                'standard',        // Normal prompt
+                'common',          // Ortak özellikler (eski is_common)
+                'hidden_system',   // Gizli sistem promptu
+                'secret_knowledge', // Gizli bilgi tabanı
+                'conditional'      // Şartlı yanıtlar
+            ])->default('standard');
             $table->boolean('is_default')->default(false);
             $table->boolean('is_system')->default(false); // Sistem promptları değiştirilemez
             $table->boolean('is_common')->default(false); // Ortak özellikler promptu
@@ -19,6 +26,7 @@ return new class extends Migration
             $table->timestamps();
             
             $table->index('name');
+            $table->index('prompt_type');
             $table->index('is_default');
             $table->index('is_system');
             $table->index('is_common');

@@ -11,6 +11,8 @@ use Modules\AI\App\Http\Livewire\Admin\Modals\PromptDeleteModal;
 use Modules\AI\App\Http\Livewire\TokenManagement;
 use Modules\AI\App\Http\Livewire\Admin\TokenPackageManagement;
 use Modules\AI\App\Http\Livewire\Admin\AIFeaturesDashboard;
+use Modules\AI\App\Http\Livewire\Admin\AIExamples;
+use Modules\AI\App\Http\Livewire\Admin\AITestPanel;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -54,6 +56,8 @@ class AIServiceProvider extends ServiceProvider
         Livewire::component('ai::admin.token-management', TokenManagement::class);
         Livewire::component('ai::admin.token-package-management', TokenPackageManagement::class);
         Livewire::component('ai::admin.a-i-features-dashboard', AIFeaturesDashboard::class);
+        Livewire::component('ai::admin.a-i-examples', AIExamples::class);
+        Livewire::component('ai::admin.a-i-test-panel', AITestPanel::class);
         
         // Eski kayıtlar da korunacak (backward compatibility)
         Livewire::component('chat-panel', ChatPanel::class);

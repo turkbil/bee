@@ -52,7 +52,11 @@ class TokenManagement extends Component
             $tenant->total_used = \App\Helpers\TokenHelper::totalUsed($tenant);
         }
 
-        return view('ai::livewire.token-management', compact('tenants'));
+        return view('ai::admin.livewire.token-management', compact('tenants'))
+            ->layout('admin.layout', [
+                'pretitle' => 'AI Token Yönetimi',
+                'title' => 'Token Kullanımları'
+            ]);
     }
 
     public function sortBy($field)

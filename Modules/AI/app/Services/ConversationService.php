@@ -11,23 +11,119 @@ use App\Services\AITokenService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+// Removed Tenancy facade - using tenancy() helper instead
 
 class ConversationService
 {
     protected $deepSeekService;
     protected $aiTokenService;
 
-    public function __construct(DeepSeekService $deepSeekService, AITokenService $aiTokenService)
+    public function __construct(DeepSeekService $deepSeekService, AITokenService $aiTokenService = null)
     {
         $this->deepSeekService = $deepSeekService;
-        $this->aiTokenService = $aiTokenService;
+        $this->aiTokenService = $aiTokenService ?? app(AITokenService::class);
+    }
+
+    /**
+     * Tenant'ın mevcut token bakiyesini kontrol et
+     */
+    public function checkTenantTokenBalance(int $requiredTokens = 0): bool
+    {
+        // Helper function kullanarak token kontrolü yap
+        $tenantId = \App\Helpers\TenantHelpers::getCurrentTenantId() ?: 1;
+        
+        Log::info('Token kontrolü yapılıyor', [
+            'tenant_id' => $tenantId,
+            'required_tokens' => $requiredTokens,
+            'is_central' => \App\Helpers\TenantHelpers::isCentral()
+        ]);
+        
+        // AI token helper'ını kullan
+        $tenant = \App\Models\Tenant::find($tenantId);
+        if (!$tenant) {
+            Log::warning('Tenant bulunamadı', ['tenant_id' => $tenantId]);
+            return false;
+        }
+        
+        $canUse = can_use_ai_tokens($requiredTokens, $tenant);
+        Log::info('Token kontrolü sonucu', ['can_use' => $canUse, 'balance' => ai_token_balance($tenant)]);
+        
+        return $canUse;
+    }
+
+    /**
+     * Tenant'ın token bakiyesini getir
+     */
+    public function getTenantTokenBalance(?int $tenantId = null): int
+    {
+        $tenantId = $tenantId ?: tenancy()->tenant?->id;
+        
+        // Admin sayfalarında tenant_id null olabilir, 1 numaralı tenant'ı kullan
+        if (!$tenantId) {
+            $tenantId = 1; // Default tenant for admin pages
+        }
+
+        // Tenant'ın toplam satın aldığı tokenlar
+        $purchasedTokens = \Modules\AI\App\Models\AITokenPurchase::where('tenant_id', $tenantId)
+            ->where('status', 'completed')
+            ->sum('token_amount');
+
+        // Tenant'ın kullandığı tokenlar
+        $usedTokens = \Modules\AI\App\Models\AITokenUsage::where('tenant_id', $tenantId)
+            ->sum('tokens_used');
+
+        return max(0, $purchasedTokens - $usedTokens);
+    }
+
+    /**
+     * Token kullanımını kaydet
+     */
+    public function recordTokenUsage(Conversation $conversation, Message $message, int $promptTokens, int $completionTokens, string $model = null): void
+    {
+        $totalTokens = $promptTokens + $completionTokens;
+        
+        // Helper kullanarak token kullanımını kaydet
+        $tenant = \App\Models\Tenant::find($conversation->tenant_id);
+        if ($tenant) {
+            use_ai_tokens(
+                $totalTokens, 
+                'chat', 
+                'AI Chat: ' . \Str::limit($message->content, 50),
+                $conversation->id,
+                $tenant
+            );
+            
+            Log::info('Token kullanımı kaydedildi', [
+                'tenant_id' => $conversation->tenant_id,
+                'tokens_used' => $totalTokens,
+                'remaining_balance' => ai_token_balance($tenant)
+            ]);
+        }
+
+        // Ayrıca AI modülünün kendi tablosuna da kaydet
+        \Modules\AI\App\Models\AITokenUsage::create([
+            'tenant_id' => $conversation->tenant_id,
+            'user_id' => $conversation->user_id,
+            'conversation_id' => $conversation->id,
+            'message_id' => $message->id,
+            'tokens_used' => $totalTokens,
+            'prompt_tokens' => $promptTokens,
+            'completion_tokens' => $completionTokens,
+            'usage_type' => 'chat',
+            'model' => $model ?: 'deepseek-chat',
+            'purpose' => $conversation->type ?? 'chat',
+            'description' => 'AI Chat: ' . \Str::limit($message->content, 50),
+            'used_at' => now(),
+        ]);
     }
 
     public function createConversation(string $title, ?int $promptId = null): Conversation
     {
+        $tenantId = \App\Helpers\TenantHelpers::getCurrentTenantId() ?: 1; // Admin için default tenant
         $conversation = Conversation::create([
             'title' => $title,
             'user_id' => Auth::id(),
+            'tenant_id' => $tenantId,
             'prompt_id' => $promptId,
         ]);
         
@@ -61,11 +157,12 @@ class ConversationService
 
     public function getAIResponse(Conversation $conversation, string $userMessage, bool $stream = false)
     {
-        if (!$this->limitService->checkLimits()) {
-            return "Üzgünüm, kullanım limitinize ulaştınız.";
+        // Token kontrolü
+        if (!$this->checkTenantTokenBalance(1000)) {
+            return "Üzgünüm, tenant token bakiyeniz yetersiz. Lütfen token satın alınız.";
         }
     
-        $this->addMessage($conversation, $userMessage, 'user');
+        $userMsg = $this->addMessage($conversation, $userMessage, 'user');
     
         $messages = $this->deepSeekService->formatConversationMessages($conversation);
     
@@ -75,11 +172,17 @@ class ConversationService
             $aiResponse = $this->deepSeekService->ask($messages);
     
             if ($aiResponse) {
-                $tokens = $this->deepSeekService->estimateTokens([['role' => 'assistant', 'content' => $aiResponse]]);
+                $promptTokens = (int) (strlen($userMessage) / 4);
+                $completionTokens = (int) (strlen($aiResponse) / 4);
+                $totalTokens = $promptTokens + $completionTokens;
                 
-                $this->addMessage($conversation, $aiResponse, 'assistant', $tokens);
+                $aiMessage = $this->addMessage($conversation, $aiResponse, 'assistant', $totalTokens);
+                $aiMessage->prompt_tokens = $promptTokens;
+                $aiMessage->completion_tokens = $completionTokens;
+                $aiMessage->save();
                 
-                $this->limitService->incrementUsage($tokens);
+                // Token kullanımını kaydet
+                $this->recordTokenUsage($conversation, $aiMessage, $promptTokens, $completionTokens);
             }
     
             return $aiResponse;
@@ -88,18 +191,22 @@ class ConversationService
 
     public function getStreamingAIResponse(Conversation $conversation, string $userMessage, callable $callback): Message
     {
-        if (!$this->limitService->checkLimits()) {
-            $callback("Üzgünüm, kullanım limitinize ulaştınız.");
-            return $this->addMessage($conversation, "Üzgünüm, kullanım limitinize ulaştınız.", 'assistant');
+        // Token kontrolü - tahmini 1000 token
+        if (!$this->checkTenantTokenBalance(1000)) {
+            $errorMsg = "Üzgünüm, tenant token bakiyeniz yetersiz. Lütfen token satın alınız.";
+            $callback($errorMsg);
+            return $this->addMessage($conversation, $errorMsg, 'assistant');
         }
 
-        $this->addMessage($conversation, $userMessage, 'user');
+        $userMsg = $this->addMessage($conversation, $userMessage, 'user');
 
         $messages = $this->deepSeekService->formatConversationMessages($conversation);
 
         $aiMessage = $this->addMessage($conversation, "", 'assistant', 0);
         
         $fullContent = '';
+        $promptTokens = 0;
+        $completionTokens = 0;
         
         $streamFunction = $this->deepSeekService->ask($messages, true);
         
@@ -109,10 +216,8 @@ class ConversationService
                 $callback($content);
                 
                 $aiMessage->content = $fullContent;
-                $aiMessage->tokens = (int) (strlen($fullContent) / 4);
+                $aiMessage->completion_tokens = (int) (strlen($fullContent) / 4);
                 $aiMessage->save();
-                
-                // Stream mesaj güncelleme (çok sık olduğu için log eklemeyelim)
             });
         }
         
@@ -123,13 +228,22 @@ class ConversationService
             $aiMessage->content = $errorMsg;
             $aiMessage->save();
             
-            // Hata mesajı log'u
             if (function_exists('log_activity')) {
                 log_activity($aiMessage, 'hata');
             }
+        } else {
+            // Token kullanımını kaydet
+            $promptTokens = (int) (strlen($userMessage) / 4);
+            $completionTokens = (int) (strlen($fullContent) / 4);
+            
+            $aiMessage->prompt_tokens = $promptTokens;
+            $aiMessage->completion_tokens = $completionTokens;
+            $aiMessage->tokens = $promptTokens + $completionTokens;
+            $aiMessage->save();
+            
+            // Token usage kayıt
+            $this->recordTokenUsage($conversation, $aiMessage, $promptTokens, $completionTokens);
         }
-        
-        $this->limitService->incrementUsage($aiMessage->tokens);
         
         return $aiMessage;
     }
@@ -149,6 +263,7 @@ class ConversationService
     public function getConversations(?int $limit = null)
     {
         $query = Conversation::where('user_id', Auth::id())
+            ->where('tenant_id', tenancy()->tenant?->id)
             ->orderBy('updated_at', 'desc');
             
         if ($limit) {

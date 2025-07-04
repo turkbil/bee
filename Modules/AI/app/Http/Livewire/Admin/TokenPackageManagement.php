@@ -18,6 +18,25 @@ class TokenPackageManagement extends Component
     public $selectAll = false;
     public $perPage = 10;
     public $showOnlineOnly = false;
+    public $activeTab = 'list';
+    public $editMode = false;
+    public $editingPackage = null;
+    
+    // Package form fields
+    public $features = [];
+    public $name = '';
+    public $description = '';
+    public $token_amount = '';
+    public $price = '';
+    public $currency = 'TRY';
+    public $is_active = true;
+    public $is_popular = false;
+    public $sort_order = 0;
+    
+    // Modal properties
+    public $showDeleteModal = false;
+    public $deleteId = null;
+    public $deleteTitle = '';
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -88,18 +107,7 @@ class TokenPackageManagement extends Component
     public function confirmDelete($id)
     {
         $package = AITokenPackage::findOrFail($id);
-        
-        // Satın alma kontrolü
-        if ($package->purchases()->exists()) {
-            session()->flash('error', 'Bu paketten satın alma yapılmış, silinemez.');
-            return;
-        }
-
-        $this->dispatch('showDeleteModal', [
-            'module' => 'ai-package',
-            'id' => $id,
-            'title' => $package->name
-        ]);
+        $this->showDeleteModal($id, $package->name);
     }
 
     public function updatePackageOrder($event)
@@ -140,5 +148,63 @@ class TokenPackageManagement extends Component
 
         $this->selectedItems = [];
         $this->selectAll = false;
+    }
+
+    public function setActiveTab($tab)
+    {
+        $this->activeTab = $tab;
+        
+        if ($tab === 'manage') {
+            $this->editMode = false;
+            $this->editingPackage = null;
+        }
+    }
+
+    public function mount()
+    {
+        // URL'den edit parametresi kontrol et
+        if (session()->has('edit_package_id')) {
+            $packageId = session()->pull('edit_package_id');
+            $this->editingPackage = AITokenPackage::find($packageId);
+            if ($this->editingPackage) {
+                $this->activeTab = 'manage';
+                $this->editMode = true;
+            }
+        }
+    }
+
+    public function showDeleteModal($id, $title = '')
+    {
+        $this->deleteId = $id;
+        $this->deleteTitle = $title;
+        $this->showDeleteModal = true;
+    }
+
+    public function hideDeleteModal()
+    {
+        $this->showDeleteModal = false;
+        $this->deleteId = null;
+        $this->deleteTitle = '';
+    }
+
+    public function deletePackage()
+    {
+        if ($this->deleteId) {
+            $package = AITokenPackage::find($this->deleteId);
+            if ($package) {
+                // Satın alma kontrolü
+                if ($package->purchases()->exists()) {
+                    session()->flash('error', 'Bu paketten satın alma yapılmış, silinemez.');
+                    $this->hideDeleteModal();
+                    return;
+                }
+                
+                $package->delete();
+                session()->flash('success', 'Paket başarıyla silindi.');
+            }
+        }
+        
+        $this->hideDeleteModal();
+        $this->resetPage();
     }
 }

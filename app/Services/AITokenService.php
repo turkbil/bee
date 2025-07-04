@@ -55,6 +55,7 @@ class AITokenService
             // Log usage
             AITokenUsage::create([
                 'tenant_id' => $tenant->id,
+                'user_id' => \Illuminate\Support\Facades\Auth::id(),
                 'tokens_used' => $tokensUsed,
                 'usage_type' => $usageType,
                 'description' => $description,

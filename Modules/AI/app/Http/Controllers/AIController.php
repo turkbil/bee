@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Cache;
 use Modules\AI\App\Services\AIService;
 use Modules\AI\App\Services\DeepSeekService;
 use Modules\AI\App\Services\MarkdownService;
+use Modules\AI\App\Services\ConversationService;
 use Modules\AI\App\Models\Conversation;
 use Modules\AI\App\Models\Message;
 use Illuminate\Support\Facades\Auth;
@@ -19,11 +20,13 @@ class AIController extends Controller
     protected $deepSeekService;
     protected $markdownService;
     protected $aiService;
+    protected $conversationService;
 
-    public function __construct(DeepSeekService $deepSeekService, MarkdownService $markdownService, AIService $aiService = null)
+    public function __construct(DeepSeekService $deepSeekService, MarkdownService $markdownService, ConversationService $conversationService, AIService $aiService = null)
     {
         $this->deepSeekService = $deepSeekService;
         $this->markdownService = $markdownService;
+        $this->conversationService = $conversationService;
         $this->aiService = $aiService ?? app(AIService::class);
     }
 
@@ -51,6 +54,7 @@ class AIController extends Controller
                     $conversation = new Conversation();
                     $conversation->title = substr($message, 0, 30) . '...';
                     $conversation->user_id = Auth::id();
+                    $conversation->tenant_id = \App\Helpers\TenantHelpers::getCurrentTenantId() ?: 1;
                     $conversation->save();
                 }
             } else {
@@ -58,6 +62,7 @@ class AIController extends Controller
                 $conversation = new Conversation();
                 $conversation->title = substr($message, 0, 30) . '...';
                 $conversation->user_id = Auth::id();
+                $conversation->tenant_id = \App\Helpers\TenantHelpers::getCurrentTenantId() ?: 1;
                 $conversation->save();
             }
             
@@ -68,6 +73,10 @@ class AIController extends Controller
             $userMessage->content = $message;
             $userMessage->tokens = strlen($message) / 4;
             $userMessage->save();
+            
+            // Kullanıcı mesajı için token kullanımını kaydet
+            $userPromptTokens = (int) (strlen($message) / 4);
+            $this->conversationService->recordTokenUsage($conversation, $userMessage, $userPromptTokens, 0, 'deepseek-chat');
             
             // Konuşma geçmişini oluştur
             $conversationHistory = [];
@@ -102,6 +111,10 @@ class AIController extends Controller
             $aiMessage->content = $response['content'];
             $aiMessage->tokens = strlen($response['content']) / 4;
             $aiMessage->save();
+            
+            // AI yanıtı için token kullanımını kaydet
+            $aiCompletionTokens = (int) (strlen($response['content']) / 4);
+            $this->conversationService->recordTokenUsage($conversation, $aiMessage, 0, $aiCompletionTokens, 'deepseek-chat');
             
             // Geriye uyumluluk için Redis cache'ini de güncelle
             $this->updateRedisCache($conversation->id, $conversationHistory, $response['content']);
@@ -143,6 +156,8 @@ class AIController extends Controller
         
     public function streamResponse(Request $request)
     {
+        Log::info('StreamResponse metodu çağrıldı', ['request' => $request->all()]);
+        
         $request->validate([
             'message' => 'required|string',
             'conversation_id' => 'nullable|string',
@@ -150,22 +165,50 @@ class AIController extends Controller
         ]);
 
         return response()->stream(function () use ($request) {
+            Log::info('Stream function başlatılıyor');
             try {
                 $message = trim($request->message);
                 $conversationId = $request->conversation_id;
                 $promptId = $request->prompt_id;
                 
-                // Konuşma nesnesini bul veya oluştur
-                if ($conversationId && is_numeric($conversationId) && Conversation::find($conversationId)) {
-                    $conversation = Conversation::find($conversationId);
-                } else {
+                Log::info('Stream parametreleri', [
+                    'message' => $message,
+                    'conversationId' => $conversationId,
+                    'promptId' => $promptId,
+                    'tenant_id' => tenancy()->tenant?->id
+                ]);
+                
+                // Konuşma nesnesini bul veya oluştur (tenant-aware)
+                if ($conversationId && is_numeric($conversationId)) {
+                    $conversation = Conversation::where('tenant_id', tenancy()->tenant?->id)
+                        ->find($conversationId);
+                    Log::info('Mevcut konuşma aranıyor', ['found' => $conversation ? 'yes' : 'no']);
+                }
+                
+                if (!isset($conversation) || !$conversation) {
+                    Log::info('Yeni konuşma oluşturuluyor');
                     // Yeni konuşma oluştur
+                    $tenantId = \App\Helpers\TenantHelpers::getCurrentTenantId() ?: 1; // Admin için default tenant
                     $conversation = new Conversation();
                     $conversation->title = substr($message, 0, 30) . '...';
                     $conversation->user_id = Auth::id();
+                    $conversation->tenant_id = $tenantId;
                     $conversation->prompt_id = $promptId;
                     $conversation->save();
+                    Log::info('Yeni konuşma oluşturuldu', ['id' => $conversation->id, 'tenant_id' => $tenantId]);
                 }
+                
+                Log::info('Token kontrolü yapılıyor');
+                // Token kontrolü yap
+                if (!$this->conversationService->checkTenantTokenBalance(1000)) {
+                    Log::info('Token yetersiz');
+                    echo "event: error\n";
+                    echo "data: " . json_encode(['error' => 'Token bakiyeniz yetersiz. Lütfen token satın alınız.']) . "\n\n";
+                    ob_flush();
+                    flush();
+                    return;
+                }
+                Log::info('Token kontrolü geçti');
                 
                 Log::info('Stream API isteği başlatılıyor', [
                     'conversation_id' => $conversation->id,
@@ -181,6 +224,10 @@ class AIController extends Controller
                 $userMessage->content = $message;
                 $userMessage->tokens = strlen($message) / 4;
                 $userMessage->save();
+                
+                // Kullanıcı mesajı için token kullanımını kaydet
+                $userPromptTokens = (int) (strlen($message) / 4);
+                $this->conversationService->recordTokenUsage($conversation, $userMessage, $userPromptTokens, 0, 'deepseek-chat');
                 
                 // Konuşma geçmişini oluştur
                 $conversationHistory = [];
@@ -208,8 +255,15 @@ class AIController extends Controller
                 $aiMessage->conversation_id = $conversation->id;
                 $aiMessage->role = 'assistant';
                 $aiMessage->content = $fullResponse;
-                $aiMessage->tokens = strlen($fullResponse) / 4;
+                $promptTokens = (int) (strlen($message) / 4);
+                $completionTokens = (int) (strlen($fullResponse) / 4);
+                $aiMessage->prompt_tokens = $promptTokens;
+                $aiMessage->completion_tokens = $completionTokens;
+                $aiMessage->tokens = $promptTokens + $completionTokens;
                 $aiMessage->save();
+                
+                // Token kullanımını kaydet
+                $this->conversationService->recordTokenUsage($conversation, $aiMessage, $promptTokens, $completionTokens, 'deepseek-chat');
                 
                 // Geriye uyumluluk için Redis cache'ini de güncelle
                 $conversationHistory[] = [

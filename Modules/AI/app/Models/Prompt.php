@@ -104,4 +104,52 @@ class Prompt extends Model
     {
         return $this->hasMany(Conversation::class);
     }
+
+    /**
+     * Prompt'a bağlı AI feature'lar (many-to-many)
+     */
+    public function features()
+    {
+        return $this->belongsToMany(AIFeature::class, 'ai_feature_prompts', 'ai_prompt_id', 'ai_feature_id')
+            ->withPivot(['prompt_role', 'priority', 'is_required', 'is_active', 'conditions', 'parameters', 'notes'])
+            ->withTimestamps();
+    }
+
+    /**
+     * Feature prompt pivot kayıtları
+     */
+    public function featurePrompts()
+    {
+        return $this->hasMany(AIFeaturePrompt::class, 'ai_prompt_id');
+    }
+
+    /**
+     * Prompt silinebilir mi kontrol et
+     */
+    public function canBeDeleted(): bool
+    {
+        // Sistem promptları sadece düzenlenebilir, silinemez
+        if ($this->is_system || $this->is_common || $this->is_default) {
+            return false;
+        }
+        
+        // Herhangi bir feature'a bağlıysa silinemez
+        return $this->features()->count() === 0;
+    }
+
+    /**
+     * Prompt türünü Türkçe al
+     */
+    public function getTypeName(): string
+    {
+        $types = [
+            'standard' => 'Standart',
+            'common' => 'Ortak Özellikler',
+            'hidden_system' => 'Gizli Sistem',
+            'secret_knowledge' => 'Gizli Bilgi',
+            'conditional' => 'Şartlı Yanıt'
+        ];
+
+        return $types[$this->prompt_type] ?? 'Bilinmeyen';
+    }
 }

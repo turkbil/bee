@@ -4,17 +4,21 @@ namespace Modules\AI\App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 use Carbon\Carbon;
 use App\Models\Tenant;
 use App\Models\User;
 
 class AITokenUsage extends Model
 {
+    use BelongsToTenant;
     protected $table = 'ai_token_usage';
     
     protected $fillable = [
         'tenant_id',
         'user_id',
+        'conversation_id',
+        'message_id',
         'tokens_used',
         'prompt_tokens',
         'completion_tokens',
@@ -56,6 +60,22 @@ class AITokenUsage extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the conversation that this usage belongs to
+     */
+    public function conversation(): BelongsTo
+    {
+        return $this->belongsTo(\Modules\AI\App\Models\Conversation::class);
+    }
+
+    /**
+     * Get the message that this usage belongs to
+     */
+    public function message(): BelongsTo
+    {
+        return $this->belongsTo(\Modules\AI\App\Models\Message::class);
     }
 
     /**

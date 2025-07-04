@@ -48,7 +48,7 @@
     {{ __('ai::admin.conversation_detail') }}
 @elseif(request()->route()->getName() === 'admin.ai.examples')
     {{ __('ai::admin.usage_examples') }}
-@elseif(request()->route()->getName() === 'admin.ai.test')
+@elseif(request()->route()->getName() === 'admin.ai.prowess')
     {{ __('ai::admin.test_panel') }}
 @else
     {{ __('ai::admin.ai_assistant') }}
@@ -356,7 +356,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     @endhasmoduleaccess
                     
                     @hasmoduleaccess('ai', 'view')
-                    <a class="dropdown-item" href="{{ route('admin.ai.test') }}">
+                    <a class="dropdown-item" href="{{ route('admin.ai.prowess') }}">
                         {{ __('ai::admin.test_panel') }}
                     </a>
                     @endhasmoduleaccess

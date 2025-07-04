@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Stancl\Tenancy\Tenancy;
+use App\Helpers\TenantHelpers;
 
 class ModuleManagementSeeder extends Seeder
 {
@@ -15,18 +16,10 @@ class ModuleManagementSeeder extends Seeder
     {
         Model::unguard();
 
-        // Eğer tenant kontekstinde çalışıyorsa, seederi çalıştırma
-        if (app()->has('tenancy') && app(Tenancy::class)->initialized) {
-            try {
-                // Tenant veritabanında modules tablosu var mı kontrol et
-                if (!Schema::hasTable('modules')) {
-                    $this->command->info('Tenant veritabanında modules tablosu bulunamadı. Bu normal bir durumdur, modüller merkezi veritabanında yönetilir.');
-                    return;
-                }
-            } catch (\Exception $e) {
-                $this->command->info('Tenant veritabanı kontrol hatası: ' . $e->getMessage());
-                return;
-            }
+        // Bu seeder sadece central veritabanında çalışmalı
+        if (!TenantHelpers::isCentral()) {
+            $this->command->info('ModuleManagementSeeder sadece central veritabanında çalışır.');
+            return;
         }
 
         try {

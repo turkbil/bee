@@ -1,8 +1,8 @@
 @extends('admin.layout')
 
-@include('ai::admin.helper')
+@include('ai::admin.shared.helper')
 
-@section('pretitle', 'AI Konuşma Detayı')
+@section('pretitle', __('ai::admin.conversation_detail'))
 @section('title', $conversation->feature_name ?: $conversation->title)
 
 @section('content')
@@ -27,16 +27,16 @@
                                         <div class="text-muted d-flex align-items-center gap-3 mt-1">
                                             @if($conversation->type == 'feature_test')
                                                 <span class="badge badge-outline text-blue">
-                                                    <i class="fas fa-vial me-1"></i>AI Test
+                                                    <i class="fas fa-vial me-1"></i>{{ __('ai::admin.ai_test') }}
                                                 </span>
                                                 @if($conversation->is_demo)
                                                     <span class="badge badge-blue">Demo</span>
                                                 @else
-                                                    <span class="badge badge-green">Gerçek AI</span>
+                                                    <span class="badge badge-green">{{ __('ai::admin.real_ai') }}</span>
                                                 @endif
                                             @else
                                                 <span class="badge badge-outline text-green">
-                                                    <i class="fas fa-comment me-1"></i>Sohbet
+                                                    <i class="fas fa-comment me-1"></i>{{ __('ai::admin.chat') }}
                                                 </span>
                                             @endif
                                             <span>{{ $conversation->created_at->format('d.m.Y H:i') }}</span>
@@ -49,7 +49,7 @@
                             </div>
                             <div class="col-auto">
                                 <a href="{{ route('admin.ai.conversations.index') }}" class="btn btn-outline-primary">
-                                    <i class="fas fa-arrow-left me-2"></i>Geri Dön
+                                    <i class="fas fa-arrow-left me-2"></i>{{ __('ai::admin.go_back') }}
                                 </a>
                             </div>
                         </div>
@@ -65,7 +65,7 @@
                 <div class="card border-0 bg-primary-lt text-center">
                     <div class="card-body py-3">
                         <div class="h3 mb-1">{{ $messageStats['total_messages'] }}</div>
-                        <div class="text-muted small">Toplam Mesaj</div>
+                        <div class="text-muted small">{{ __('ai::admin.total_messages') }}</div>
                     </div>
                 </div>
             </div>
@@ -73,7 +73,7 @@
                 <div class="card border-0 bg-success-lt text-center">
                     <div class="card-body py-3">
                         <div class="h3 mb-1">{{ number_format($messageStats['total_tokens']) }}</div>
-                        <div class="text-muted small">Token Kullanımı</div>
+                        <div class="text-muted small">{{ __('ai::admin.token_usage') }}</div>
                     </div>
                 </div>
             </div>
@@ -87,7 +87,7 @@
                                 -
                             @endif
                         </div>
-                        <div class="text-muted small">Ortalama Süre</div>
+                        <div class="text-muted small">{{ __('ai::admin.average_time') }}</div>
                     </div>
                 </div>
             </div>
@@ -102,7 +102,7 @@
                             @endif
                         </div>
                         <div class="text-muted small">
-                            {{ $conversation->is_demo ? 'Demo Modu' : 'Gerçek AI' }}
+                            {{ $conversation->is_demo ? __('ai::admin.demo_mode') : __('ai::admin.real_ai') }}
                         </div>
                     </div>
                 </div>
@@ -117,8 +117,8 @@
                     <div class="card-header">
                         <h3 class="card-title">
                             <i class="fas fa-history me-2"></i>
-                            Konuşma Geçmişi
-                            <span class="badge badge-outline ms-2">{{ $messages->count() }} mesaj</span>
+                            {{ __('ai::admin.conversation_history') }}
+                            <span class="badge badge-outline ms-2">{{ $messages->count() }} {{ __('ai::admin.message') }}</span>
                         </h3>
                     </div>
                     <div class="card-body p-0">
@@ -139,7 +139,7 @@
                                             <div class="message-actions">
                                                 <button class="btn btn-sm btn-ghost-secondary copy-message" 
                                                         data-bs-toggle="tooltip" 
-                                                        title="Mesajı Kopyala"
+                                                        title="{{ __('ai::admin.copy_message') }}"
                                                         onclick="copyToClipboard('{{ addslashes(strip_tags($message->content)) }}')">
                                                     <i class="fa-thin fa-copy"></i>
                                                 </button>
@@ -162,7 +162,7 @@
                     <div class="card-footer bg-light border-0">
                         <div class="text-center">
                             <a href="{{ route('admin.ai.index') }}?conversation={{ $conversation->id }}" class="btn btn-primary">
-                                <i class="fas fa-reply me-2"></i>Konuşmaya Devam Et
+                                <i class="fas fa-reply me-2"></i>{{ __('ai::admin.continue_conversation') }}
                             </a>
                         </div>
                     </div>
@@ -180,8 +180,8 @@
                             <i class="fas fa-info-circle"></i>
                         </div>
                         <div>
-                            <h4 class="alert-title">Token Kullanımı</h4>
-                            Bu AI testi toplam <strong>{{ number_format($conversation->total_tokens_used) }} token</strong> tüketmiştir.
+                            <h4 class="alert-title">{{ __('ai::admin.token_usage') }}</h4>
+                            {{ __('ai::admin.token_consumption_info', ['tokens' => number_format($conversation->total_tokens_used)]) }}
                         </div>
                     </div>
                 </div>
@@ -382,10 +382,10 @@
 <script>
     function copyToClipboard(text) {
         navigator.clipboard.writeText(text).then(() => {
-            // Kopyalama başarılı
-            console.log('Mesaj kopyalandı');
+            // {{ __('ai::admin.success.message_copied') }}
+            console.log('{{ __('ai::admin.message_copied_to_clipboard') }}');
         }).catch(err => {
-            console.error('Kopyalama hatası:', err);
+            console.error('{{ __('ai::admin.copy_error') }}:', err);
         });
     }
 

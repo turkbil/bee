@@ -481,7 +481,7 @@ class SettingsController extends Controller
             ]
         ];
         
-        return view('ai::admin.examples', compact('features', 'tokenStatus', 'integrations'));
+        return view('ai::admin.examples.index', compact('features', 'tokenStatus', 'integrations'));
     }
     
     public function test()
@@ -508,6 +508,6 @@ class SettingsController extends Controller
             'Sosyal Medya Metni' => 'Sosyal medya için kısa paylaşım metinleri'
         ];
         
-        return view('ai::admin.test', compact('features', 'tokenStatus'));
+        return view('ai::admin.tests.test', compact('features', 'tokenStatus'));
     }
 }

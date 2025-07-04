@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@include('ai::admin.helper')
+@include('ai::admin.shared.helper')
 
 @section('pretitle', 'AI Ayarları')
 @section('title', 'Soru ve Token Limitleri')

@@ -10,6 +10,7 @@ use Modules\AI\App\Models\Prompt;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
+// Removed Tenancy facade - using tenancy() helper instead
 
 class ChatPanel extends Component
 {
@@ -97,7 +98,10 @@ class ChatPanel extends Component
     public function loadConversation($conversationId)
     {
         try {
-            $this->conversation = Conversation::with('messages')->find($conversationId);
+            // Tenant-aware conversation loading
+            $this->conversation = Conversation::with('messages')
+                ->where('tenant_id', tenancy()->tenant?->id)
+                ->find($conversationId);
             if ($this->conversation) {
                 $this->messages = $this->conversation->messages->toArray();
                 $this->selectedPromptId = $this->conversation->prompt_id;
@@ -162,7 +166,9 @@ class ChatPanel extends Component
     public function deleteConversation($conversationId)
     {
         try {
-            $conversation = Conversation::find($conversationId);
+            // Tenant-aware conversation deletion
+            $conversation = Conversation::where('tenant_id', tenancy()->tenant?->id)
+                ->find($conversationId);
             if ($conversation) {
                 $this->conversationService->deleteConversation($conversation);
                 

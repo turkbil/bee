@@ -30,30 +30,8 @@ class AIFeaturesController extends Controller
         // Tüm entegrasyonları al
         $integrations = $this->aiServiceManager->getRegisteredIntegrations();
         
-        // Mevcut tenant'ın token bilgilerini al
-        $tenant = tenant();
-        if (!$tenant) {
-            // Eğer tenant yoksa (admin panelde), ID 1 tenant'ı kullan
-            $tenant = \App\Models\Tenant::find(1);
-            if (!$tenant) {
-                // Hiç tenant yoksa fallback değerler
-                $tenant = (object)[
-                    'ai_tokens_balance' => 0,
-                    'ai_tokens_used_this_month' => 0,
-                    'ai_monthly_token_limit' => 0,
-                    'ai_last_used_at' => null
-                ];
-            }
-        }
-        
-        $tokenStatus = [
-            'remaining_tokens' => $tenant->ai_tokens_balance ?? 0,
-            'total_tokens' => $tenant->ai_tokens_balance ?? 0,
-            'daily_usage' => 0, // Günlük kullanım hesaplanabilir
-            'monthly_usage' => $tenant->ai_tokens_used_this_month ?? 0,
-            'provider' => 'deepseek',
-            'provider_active' => true
-        ];
+        // AI Widget Helper kullanarak token bilgilerini al
+        $tokenStatus = ai_widget_token_data();
         
         // Mevcut ve potansiyel özellikler
         $features = $this->getAIFeatures();
@@ -166,30 +144,8 @@ class AIFeaturesController extends Controller
         // Tüm entegrasyonları al
         $integrations = $this->aiServiceManager->getRegisteredIntegrations();
         
-        // Mevcut tenant'ın token bilgilerini al
-        $tenant = tenant();
-        if (!$tenant) {
-            // Eğer tenant yoksa (admin panelde), ID 1 tenant'ı kullan
-            $tenant = \App\Models\Tenant::find(1);
-            if (!$tenant) {
-                // Hiç tenant yoksa fallback değerler
-                $tenant = (object)[
-                    'ai_tokens_balance' => 0,
-                    'ai_tokens_used_this_month' => 0,
-                    'ai_monthly_token_limit' => 0,
-                    'ai_last_used_at' => null
-                ];
-            }
-        }
-        
-        $tokenStatus = [
-            'remaining_tokens' => $tenant->ai_tokens_balance ?? 0,
-            'total_tokens' => $tenant->ai_tokens_balance ?? 0,
-            'daily_usage' => 0, // Günlük kullanım hesaplanabilir
-            'monthly_usage' => $tenant->ai_tokens_used_this_month ?? 0,
-            'provider' => 'deepseek',
-            'provider_active' => true
-        ];
+        // AI Widget Helper kullanarak token bilgilerini al
+        $tokenStatus = ai_widget_token_data();
         
         // Mevcut ve potansiyel özellikler
         $features = $this->getAIFeatures();
@@ -251,14 +207,14 @@ class AIFeaturesController extends Controller
             $endTime = microtime(true);
             $processingTime = round(($endTime - $startTime) * 1000);
 
-            // Token bilgilerini al
-            $tenant = \App\Models\Tenant::find($tenantId);
+            // Güncel token bilgilerini al
+            $tokenStats = ai_get_token_stats();
             
             return response()->json([
                 'success' => $result['success'],
                 'ai_result' => $result['ai_result'],
                 'tokens_used' => $result['tokens_used'],
-                'remaining_tokens' => $tenant ? $tenant->ai_tokens_balance : 0,
+                'remaining_tokens' => $tokenStats['remaining'], // 'remaining_tokens' yerine 'remaining' kullan
                 'processing_time' => $processingTime,
                 'demo_mode' => $result['demo_mode'] ?? false,
                 'message' => $result['message'] ?? null
@@ -423,9 +379,8 @@ class AIFeaturesController extends Controller
                 'tokens_used' => $actualTokens
             ]);
 
-            // Cache temizle (header dropdown ve features sayfası için)
-            \Cache::forget("ai_settings_global");
-            \Cache::forget("tenant_{$tenantId}_token_stats");
+            // Cache temizle (AI Widget Helper cache'i)
+            ai_clear_token_cache();
 
             // AI yanıtını formatla
             $formattedResult = $this->formatAIResponseAsHTML($aiResponse, $featureName);
@@ -557,9 +512,8 @@ class AIFeaturesController extends Controller
             \Log::error('Demo test kayıt hatası: ' . $e->getMessage());
         }
 
-        // Cache temizle (token güncellemesi için)
-        \Cache::forget("ai_settings_global");
-        \Cache::forget("tenant_{$tenantId}_token_stats");
+        // Cache temizle (AI Widget Helper cache'i)
+        ai_clear_token_cache();
 
         return [
             'success' => true,
@@ -1183,16 +1137,8 @@ class AIFeaturesController extends Controller
                 'communication' => 'Communication Arts'
             ];
             
-            // Token status (sadece display için)
-            $tenant = tenant() ?: \App\Models\Tenant::find(1);
-            $tokenStatus = [
-                'remaining_tokens' => $tenant->ai_tokens_balance ?? 0,
-                'total_tokens' => $tenant->ai_tokens_balance ?? 0,
-                'daily_usage' => 0,
-                'monthly_usage' => $tenant->ai_tokens_used_this_month ?? 0,
-                'provider' => 'Advanced AI',
-                'provider_active' => true
-            ];
+            // AI Widget Helper kullanarak token bilgilerini al
+            $tokenStatus = ai_widget_token_data();
             
             return view('ai::admin.prowess.showcase', compact('features', 'categoryNames', 'tokenStatus'));
         } catch (\Exception $e) {
@@ -1231,30 +1177,8 @@ class AIFeaturesController extends Controller
             // Tüm entegrasyonları al
             $integrations = $this->aiServiceManager->getRegisteredIntegrations();
             
-            // Mevcut tenant'ın token bilgilerini al
-            $tenant = tenant();
-            if (!$tenant) {
-                // Eğer tenant yoksa (admin panelde), ID 1 tenant'ı kullan
-                $tenant = \App\Models\Tenant::find(1);
-                if (!$tenant) {
-                    // Hiç tenant yoksa fallback değerler
-                    $tenant = (object)[
-                        'ai_tokens_balance' => 0,
-                        'ai_tokens_used_this_month' => 0,
-                        'ai_monthly_token_limit' => 0,
-                        'ai_last_used_at' => null
-                    ];
-                }
-            }
-            
-            $tokenStatus = [
-                'remaining_tokens' => $tenant->ai_tokens_balance ?? 0,
-                'total_tokens' => $tenant->ai_tokens_balance ?? 0,
-                'daily_usage' => 0, // Günlük kullanım hesaplanabilir
-                'monthly_usage' => $tenant->ai_tokens_used_this_month ?? 0,
-                'provider' => 'deepseek',
-                'provider_active' => true
-            ];
+            // AI Widget Helper kullanarak token bilgilerini al
+            $tokenStatus = ai_widget_token_data();
             
             return view('ai::admin.examples.examples-dynamic', compact('integrations', 'tokenStatus', 'features', 'categoryNames'));
         } catch (\Exception $e) {

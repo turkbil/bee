@@ -432,6 +432,39 @@ return [
 'bulk_unarchive' => 'Arşivden Çıkar',
 'bulk_delete' => 'Sil',
 'bulk_clear_selection' => 'Seçimi Temizle',
-'bulk_unarchive_confirm' => 'konuşmayı arşivden çıkarmak istediğinizden emin misiniz?',
-'bulk_delete_confirm' => 'konuşmayı kalıcı olarak silmek istediğinizden emin misiniz? Bu işlem geri alınamaz!'
+    'bulk_unarchive_confirm' => 'konuşmayı arşivden çıkarmak istediğinizden emin misiniz?',
+    'bulk_delete_confirm' => 'konuşmayı kalıcı olarak silmek istediğinizden emin misiniz? Bu işlem geri alınamaz!',
+    
+    // Prowess & Showcase Translations
+    'prowess' => [
+        'title' => 'AI Prowess & Yetenekleri',
+        'subtitle' => 'Gelişmiş AI sistemimizin olağanüstü yeteneklerini keşfedin',
+        'manage_skills' => 'Becerileri Yönet',
+        'developer_tools' => 'Geliştirici Araçları',
+        'available_tokens' => 'Kullanılabilir Token',
+        'ai_skills' => 'AI Becerileri',
+        'categories' => 'Kategoriler',
+        'no_skills_title' => 'AI Becerileri Mevcut Değil',
+        'no_skills_subtitle' => 'AI becerilerini buradan sergilemek için yapılandırın.',
+        'configure_skills' => 'Becerileri Yapılandır',
+        'skills' => 'Beceri',
+        'skills_count' => ':count Beceri',
+        'level' => 'Seviye',
+        'try_examples' => 'Bu örnekleri deneyin:',
+        'enter_challenge' => 'AI\'nın çözmesi için zorluğunuzu girin...',
+        'experience_magic' => 'Yapay Zeka ile Üret',
+        'ai_working' => 'AI çalışıyor...',
+        'ai_result' => 'AI Sonucu',
+        'processing_complete' => 'İşlem tamamlandı',
+        'clear_result' => 'Sonucu Temizle',
+        'usage' => 'Kullanım',
+        'rating' => 'Değerlendirme',
+        'category' => 'Kategori',
+        'tokens_used' => ':count token kullanıldı',
+        'error_occurred' => 'Hata: :message',
+        'connection_error' => 'Bağlantı hatası: :message',
+        'enter_challenge_alert' => 'Lütfen AI\'nın çözmesi için bir zorluk girin.',
+        'no_result' => 'Sonuç alınamadı',
+        'no_result_available' => 'Mevcut sonuç yok'
+    ]
 ];

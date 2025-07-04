@@ -62,7 +62,7 @@ class AIServiceManager
                 'success' => true,
                 'data' => $response,
                 'tokens_used' => $actualTokens,
-                'remaining_tokens' => $this->tokenManager->getRemainingTokens($tenantId)
+                'remaining_tokens' => ai_get_token_balance($tenantId)
             ];
 
         } catch (Exception $e) {
@@ -189,7 +189,7 @@ class AIServiceManager
                 'success' => true,
                 'data' => $result,
                 'tokens_used' => $actualTokens,
-                'remaining_tokens' => $this->tokenManager->getRemainingTokens($tenantId)
+                'remaining_tokens' => ai_get_token_balance($tenantId)
             ];
 
         } catch (Exception $e) {
@@ -227,7 +227,7 @@ class AIServiceManager
     public function getTokenStatus(string $tenantId): array
     {
         return [
-            'remaining_tokens' => $this->tokenManager->getRemainingTokens($tenantId),
+            'remaining_tokens' => ai_get_token_balance($tenantId),
             'total_tokens' => $this->tokenManager->getMonthlyLimit($tenantId),
             'daily_usage' => $this->tokenManager->getDailyUsage($tenantId),
             'monthly_usage' => $this->tokenManager->getMonthlyUsage($tenantId),

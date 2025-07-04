@@ -17,7 +17,7 @@
     data-t-retry="{{ __('ai::admin.js.retry_action') }}"
     data-t-generic-error="{{ __('ai::admin.js.generic_error') }}"
 >
-    @include('ai::admin.helper')
+    @include('ai::admin.shared.helper')
         @if (session('error'))
         <div class="alert alert-warning mb-3">
             <div class="d-flex">

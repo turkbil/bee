@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@include('ai::admin.helper')
+@include('ai::admin.shared.helper')
 
 @push('css')
 <meta name="csrf-token" content="{{ csrf_token() }}">

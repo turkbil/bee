@@ -3,24 +3,24 @@
 use Illuminate\Support\Facades\Route;
 use Modules\AI\App\Http\Livewire\Admin\ChatPanel;
 use Modules\AI\App\Http\Livewire\Admin\SettingsPanel;
-use Modules\AI\App\Http\Controllers\Admin\AIController;
+use Modules\AI\App\Http\Controllers\Admin\AIChatController;
 use Modules\AI\App\Http\Controllers\Admin\SettingsController;
 use Modules\AI\App\Http\Controllers\Admin\ConversationController;
 use Modules\AI\App\Http\Controllers\Admin\TokenManagementController;
 use Modules\AI\App\Http\Controllers\Admin\TokenPackageController;
 use Modules\AI\App\Http\Controllers\Admin\TokenController;
-use Modules\AI\App\Http\Livewire\TokenManagement;
+use Modules\AI\App\Http\Livewire\Admin\TokenManagement;
 use Modules\AI\App\Http\Livewire\Admin\TokenPackageManagement;
 
 // Admin rotaları
-Route::middleware(['web', 'auth'])
+Route::middleware(['admin', 'tenant'])
+    ->prefix('admin')
+    ->name('admin.')
     ->group(function () {
-        Route::prefix('admin/ai')
-            ->name('admin.ai.')
+        Route::prefix('ai')
+            ->name('ai.')
             ->group(function () {
-                Route::get('/', function () {
-                    return view('ai::admin.index');
-                })
+                Route::get('/', [AIChatController::class, 'index'])
                     ->middleware('module.permission:ai,view')
                     ->name('index');
                 
@@ -79,7 +79,7 @@ Route::middleware(['web', 'auth'])
                     ->name('conversations.bulk-action');
                 
                 // API Endpoints
-                Route::post('/generate', [AIController::class, 'generate'])
+                Route::post('/generate', [AIChatController::class, 'sendMessage'])
                     ->middleware('module.permission:ai,view')
                     ->name('generate');
                 
@@ -130,61 +130,48 @@ Route::middleware(['web', 'auth'])
                     ->name('settings.test-connection');
                 
                 // Prompt güncelleme için özel API endpoint
-                Route::post('/update-conversation-prompt', [AIController::class, 'updateConversationPrompt'])
+                Route::post('/update-conversation-prompt', [AIChatController::class, 'updateConversationPrompt'])
                     ->middleware('module.permission:ai,view')
                     ->name('update-conversation-prompt');
                     
                 // AI Features Management System
                 Route::get('/features', [\Modules\AI\App\Http\Controllers\Admin\AIFeaturesController::class, 'index'])
                     ->middleware('module.permission:ai,view')
-                    ->name('admin.ai.features.index');
+                    ->name('features.index');
                     
                 Route::get('/features/manage/{id?}', \Modules\AI\App\Http\Livewire\Admin\AIFeatureManageComponent::class)
                     ->middleware('module.permission:ai,view')
-                    ->name('admin.ai.features.manage');
+                    ->name('features.manage');
                     
                 Route::get('/features/{feature}', [\Modules\AI\App\Http\Controllers\Admin\AIFeaturesController::class, 'show'])
                     ->middleware('module.permission:ai,view')
-                    ->name('admin.ai.features.show');
+                    ->name('features.show');
                 
                 // AI Features ek route'lar
                 Route::post('/features/bulk-status', [\Modules\AI\App\Http\Controllers\Admin\AIFeaturesController::class, 'bulkStatusUpdate'])
                     ->middleware('module.permission:ai,update')
-                    ->name('admin.ai.features.bulk-status');
+                    ->name('features.bulk-status');
                 Route::post('/features/update-order', [\Modules\AI\App\Http\Controllers\Admin\AIFeaturesController::class, 'updateOrder'])
                     ->middleware('module.permission:ai,update')
-                    ->name('admin.ai.features.update-order');
+                    ->name('features.update-order');
                 Route::post('/features/{feature}/duplicate', [\Modules\AI\App\Http\Controllers\Admin\AIFeaturesController::class, 'duplicate'])
                     ->middleware('module.permission:ai,create')
-                    ->name('admin.ai.features.duplicate');
+                    ->name('features.duplicate');
                     
                 // AI Kullanım Örnekleri Test Sayfası (Yazılımcılar için)
-                Route::get('/examples', function() {
-                    // Geçici olarak Livewire olmadan test
-                    $tokenStatus = [
-                        'remaining_tokens' => \App\Helpers\TokenHelper::remaining(),
-                        'daily_usage' => \App\Helpers\TokenHelper::todayUsage(),
-                        'monthly_usage' => \App\Helpers\TokenHelper::monthlyUsage(),
-                        'provider' => config('ai.default_provider', 'deepseek'),
-                        'provider_active' => !empty(config('ai.providers.deepseek.api_key'))
-                    ];
-                    
-                    return view('ai::admin.examples-simple', compact('tokenStatus'));
-                })
+                Route::get('/examples', [\Modules\AI\App\Http\Controllers\Admin\AIFeaturesController::class, 'examples'])
                     ->middleware('module.permission:ai,view')
                     ->name('examples');
                     
-                // AI Test Sayfası (Adminler için)
-                Route::get('/test', function() {
-                    return view('ai::admin.test-livewire');
-                })
+                // AI Skills Showcase (Adminler için)
+                Route::get('/prowess', [\Modules\AI\App\Http\Controllers\Admin\AIFeaturesController::class, 'prowess'])
                     ->middleware('module.permission:ai,view')
-                    ->name('test');
+                    ->name('prowess');
                 
                 // AI Features Test API
                 Route::post('/test-feature', function(\Illuminate\Http\Request $request) {
                     \Log::info('AI Feature Test API çağrıldı', $request->all());
-                    $controller = app()->make(\Modules\AI\App\Http\Controllers\Front\AIController::class);
+                    $controller = app()->make(\Modules\AI\App\Http\Controllers\Admin\AIFeaturesController::class);
                     return $controller->testFeature($request);
                 })
                     ->middleware('module.permission:ai,view')
@@ -225,6 +212,22 @@ Route::middleware(['web', 'auth'])
                         
                         Route::get('/tenant/{tenantId}/statistics', [TokenManagementController::class, 'tenantStatistics'])
                             ->name('tenant-statistics');
+                        
+                        // Package management routes
+                        Route::post('/packages', [TokenManagementController::class, 'storePackage'])
+                            ->name('packages.store');
+                        
+                        Route::get('/packages/{package}/edit', [TokenManagementController::class, 'editPackage'])
+                            ->name('packages.edit');
+                        
+                        Route::put('/packages/{package}', [TokenManagementController::class, 'updatePackage'])
+                            ->name('packages.update');
+                        
+                        Route::delete('/packages/{package}', [TokenManagementController::class, 'destroyPackage'])
+                            ->name('packages.destroy');
+                        
+                        Route::post('/packages/update-order', [TokenManagementController::class, 'updatePackageOrder'])
+                            ->name('packages.update-order');
                     });
             });
     });

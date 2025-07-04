@@ -4,6 +4,7 @@ namespace Modules\LanguageManagement\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\LanguageManagement\app\Models\AdminLanguage;
+use App\Helpers\TenantHelpers;
 
 class AdminLanguagesSeeder extends Seeder
 {
@@ -12,6 +13,11 @@ class AdminLanguagesSeeder extends Seeder
      */
     public function run(): void
     {
+        // Admin dilleri sadece central veritabanında olmalı
+        if (!TenantHelpers::isCentral()) {
+            $this->command->info('AdminLanguagesSeeder sadece central veritabanında çalışır.');
+            return;
+        }
         $languages = [
             [
                 'code' => 'tr',

@@ -19,11 +19,14 @@ class RolePermissionSeeder extends Seeder
     public function run(): void
     {
         try {
-            // Central domain için yetkilendirmeler
-            $this->seedCentralRoles();
-            
-            // Tenant'lar için yetkilendirmeler
-            $this->seedTenantRoles();
+            // Bu seeder hem central hem tenant'ta çalışmalı
+            if (\App\Helpers\TenantHelpers::isCentral()) {
+                $this->command->info('Central veritabanında roller oluşturuluyor...');
+                $this->seedCentralRoles();
+            } else {
+                $this->command->info('Tenant veritabanında roller oluşturuluyor...');
+                $this->seedCurrentTenantRoles();
+            }
         } catch (\Exception $e) {
             Log::error('RolePermissionSeeder hatası: ' . $e->getMessage());
             $this->command->error('RolePermissionSeeder hatası: ' . $e->getMessage());
@@ -109,117 +112,74 @@ class RolePermissionSeeder extends Seeder
     }
     
     /**
-     * Tenant'lar için rolleri oluştur
+     * Geçerli tenant için rolleri oluştur (tenant context'inde çalışırken)
      */
-    private function seedTenantRoles(): void
+    private function seedCurrentTenantRoles(): void
     {
-        $tenants = Tenant::where('central', false)->get();
+        // Role yapısı
+        $roles = [
+            [
+                'name' => 'root',
+                'role_type' => 'root',
+                'guard_name' => 'web',
+                'is_protected' => true,
+                'description' => 'Tam yetkili tenant yöneticisi'
+            ],
+            [
+                'name' => 'admin',
+                'role_type' => 'admin',
+                'guard_name' => 'web',
+                'is_protected' => true,
+                'description' => 'Tenant yöneticisi'
+            ],
+            [
+                'name' => 'editor',
+                'role_type' => 'editor',
+                'guard_name' => 'web',
+                'is_protected' => true,
+                'description' => 'Modül bazlı yetkilendirilebilir editör'
+            ]
+        ];
         
-        foreach ($tenants as $tenant) {
+        // Rol oluştur/güncelle
+        foreach ($roles as $roleData) {
+            $role = Role::where('name', $roleData['name'])->first();
+            
+            if (!$role) {
+                Role::create([
+                    'name' => $roleData['name'],
+                    'guard_name' => $roleData['guard_name'],
+                    'role_type' => $roleData['role_type'],
+                    'is_protected' => $roleData['is_protected'],
+                    'description' => $roleData['description']
+                ]);
+            } else {
+                $role->update([
+                    'role_type' => $roleData['role_type'],
+                    'is_protected' => $roleData['is_protected'],
+                    'description' => $roleData['description']
+                ]);
+            }
+        }
+        
+        // ROOT KULLANICILARI - Her tenant'a ekle
+        $rootEmails = ['nurullah@nurullah.net', 'info@turkbilisim.com.tr'];
+        foreach ($rootEmails as $email) {
             try {
-                $this->command->info("Tenant {$tenant->id} - {$tenant->title} için roller oluşturuluyor...");
+                $user = User::firstOrCreate(
+                    ['email' => $email],
+                    [
+                        'name' => $email == 'nurullah@nurullah.net' ? 'Nurullah Okatan' : 'Türk Bilişim',
+                        'password' => Hash::make($email == 'nurullah@nurullah.net' ? 'nurullah' : 'turkbilisim'),
+                        'email_verified_at' => now()
+                    ]
+                );
                 
-                $tenant->run(function () use ($tenant) {
-                    // Role yapısı
-                    $roles = [
-                        [
-                            'name' => 'root',
-                            'role_type' => 'root',
-                            'guard_name' => 'web',
-                            'is_protected' => true,
-                            'description' => 'Tam yetkili tenant yöneticisi'
-                        ],
-                        [
-                            'name' => 'admin',
-                            'role_type' => 'admin',
-                            'guard_name' => 'web',
-                            'is_protected' => true,
-                            'description' => 'Tenant yöneticisi'
-                        ],
-                        [
-                            'name' => 'editor',
-                            'role_type' => 'editor',
-                            'guard_name' => 'web',
-                            'is_protected' => true,
-                            'description' => 'Modül bazlı yetkilendirilebilir editör'
-                        ]
-                    ];
-                    
-                    // Rol oluştur/güncelle
-                    foreach ($roles as $roleData) {
-                        $role = Role::where('name', $roleData['name'])->first();
-                        
-                        if (!$role) {
-                            Role::create([
-                                'name' => $roleData['name'],
-                                'guard_name' => $roleData['guard_name'],
-                                'role_type' => $roleData['role_type'],
-                                'is_protected' => $roleData['is_protected'],
-                                'description' => $roleData['description']
-                            ]);
-                        } else {
-                            $role->update([
-                                'role_type' => $roleData['role_type'],
-                                'is_protected' => $roleData['is_protected'],
-                                'description' => $roleData['description']
-                            ]);
-                        }
-                    }
-                    
-                    // ROOT KULLANICILARI - Her tenant'a ekle
-                    $rootEmails = ['nurullah@nurullah.net', 'info@turkbilisim.com.tr'];
-                    foreach ($rootEmails as $email) {
-                        try {
-                            $user = User::firstOrCreate(
-                                ['email' => $email],
-                                [
-                                    'name' => $email == 'nurullah@nurullah.net' ? 'Nurullah Okatan' : 'Türk Bilişim',
-                                    'password' => Hash::make($email == 'nurullah@nurullah.net' ? 'nurullah' : 'turkbilisim'),
-                                    'email_verified_at' => now()
-                                ]
-                            );
-                            
-                            // Root rolünü ata - varsa ilişkiyi kaldır ve yeniden ekle
-                            $user->syncRoles(['root']);
-                            $this->command->info("Tenant {$tenant->id}: {$email} kullanıcısına root rolü atandı");
-                        } catch (\Exception $e) {
-                            Log::error("Tenant {$tenant->id} - root kullanıcı atama hatası: " . $e->getMessage());
-                            throw $e;
-                        }
-                    }
-                    
-                    // Tenant'a özel admin kullanıcısı ekle
-                    try {
-                        $tenantDomain = $tenant->domain ?? 'unknown.domain';
-                        $tenantPrefix = substr($tenantDomain, 0, 1); // a.test -> a, b.test -> b
-                        $adminEmail = "{$tenantPrefix}@test";
-                        
-                        // Her tenant sadece kendi domain'i ile uyumlu olan kullanıcıyı alsın
-                        if (($tenantDomain == "a.test" && $adminEmail == "a@test") ||
-                            ($tenantDomain == "b.test" && $adminEmail == "b@test") ||
-                            ($tenantDomain == "c.test" && $adminEmail == "c@test")) {
-                            
-                            // Kullanıcı oluştur veya güncelle
-                            $user = User::firstOrCreate(
-                                ['email' => $adminEmail],
-                                [
-                                    'name' => ucfirst($tenantPrefix) . ' Admin',
-                                    'password' => Hash::make('test'),
-                                    'email_verified_at' => now()
-                                ]
-                            );
-                            
-                            // Admin rolünü ata - varsa ilişkiyi kaldır ve yeniden ekle
-                            $user->syncRoles(['admin']);
-                            $this->command->info("Tenant {$tenant->id}: {$adminEmail} kullanıcısına admin rolü atandı");
-                        }
-                    } catch (\Exception $e) {
-                        Log::error("Tenant {$tenant->id} - admin kullanıcı atama hatası: " . $e->getMessage());
-                        throw $e;
-                    }
-                });
+                // Root rolünü ata - varsa ilişkiyi kaldır ve yeniden ekle
+                $user->syncRoles(['root']);
+                $this->command->info("Tenant: {$email} kullanıcısına root rolü atandı");
             } catch (\Exception $e) {
-                Log::error("Tenant {$tenant->id} - rol atama hatası: " . $e->getMessage());
+                Log::error("Tenant - root kullanıcı atama hatası: " . $e->getMessage());
                 throw $e;
             }
         }

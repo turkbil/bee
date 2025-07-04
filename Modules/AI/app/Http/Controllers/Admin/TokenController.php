@@ -11,6 +11,12 @@ class TokenController extends Controller
 {
     public function index()
     {
+        // Root admin check
+        if (!auth()->user()->hasRole('root')) {
+            abort(403, 'Bu sayfaya erişim yetkiniz bulunmamaktadır.');
+        }
+
+        // Redirect to Livewire component instead
         return view('ai::admin.livewire.token-management');
     }
 

@@ -108,7 +108,10 @@
       "WebFetch(domain:127.0.0.1)",
       "Bash(node:*)",
       "Bash(powershell.exe:*)",
-      "Bash(powershell.exe:*)"
+      "Bash(powershell.exe:*)",
+      "Bash(for key in \"ai_feature_detail\" \"edit_ai_feature\" \"new_ai_feature\" \"api_settings\" \"limit_settings\" \"prompt_settings\" \"archived_conversations\" \"usage_examples\" \"test_panel\" \"ai_operations\" \"general_statistics\" \"token_operations\" \"token_balance\" \"tokens\" \"unlimited\" \"buy_tokens\" \"ai_module\" \"new_feature\" \"ai_feature\" \"create_new_ai_feature\" \"system_feature\" \"copy_and_edit\")",
+      "Bash(if grep -q \"''$key''\" /mnt/c/laragon/www/laravel/Modules/AI/lang/tr/admin.php)",
+      "Bash(else)"
     ],
     "deny": []
   },

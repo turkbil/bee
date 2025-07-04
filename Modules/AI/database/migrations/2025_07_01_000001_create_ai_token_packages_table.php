@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('currency', 3)->default('TRY'); // Para birimi
             $table->text('description')->nullable(); // Paket açıklaması
             $table->boolean('is_active')->default(true);
+            $table->boolean('is_popular')->default(false);
             $table->json('features')->nullable(); // Özellikler JSON
             $table->integer('sort_order')->default(0); // Sıralama
             $table->timestamps();

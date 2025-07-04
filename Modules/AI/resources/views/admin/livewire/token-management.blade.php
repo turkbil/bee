@@ -1,3 +1,5 @@
+@include('ai::admin.shared.helper')
+
 <div>
     {{-- Flash Messages --}}
     @if (session()->has('message'))

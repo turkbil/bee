@@ -26,6 +26,15 @@ class CreateTenantsTable extends Migration
             $table->string('tenant_default_locale', 10)->default('tr'); // Tenant site varsayılan dili
             $table->foreign('theme_id')->references('theme_id')->on('themes');
             $table->json('data')->nullable();
+            
+            // AI Token Sistemi
+            $table->unsignedInteger('ai_tokens_balance')->default(0); // Mevcut token bakiyesi
+            $table->unsignedInteger('ai_tokens_used_this_month')->default(0); // Bu ay kullanılan tokenlar
+            $table->unsignedInteger('ai_monthly_token_limit')->default(0); // Aylık token limiti
+            $table->boolean('ai_enabled')->default(false); // AI kullanımı aktif mi?
+            $table->timestamp('ai_monthly_reset_at')->nullable(); // Son aylık sıfırlama tarihi
+            $table->timestamp('ai_last_used_at')->nullable(); // Son AI kullanım tarihi
+            
             $table->timestamps();
             
             // İlave indeksler eklendi
@@ -34,6 +43,9 @@ class CreateTenantsTable extends Migration
             $table->index('updated_at');
             $table->index('admin_default_locale');
             $table->index('tenant_default_locale');
+            $table->index(['ai_enabled']);
+            $table->index(['ai_monthly_reset_at']);
+            $table->index(['ai_last_used_at']);
             
             // Composite index'ler - Performans optimizasyonu
             $table->index(['is_active', 'central'], 'tenants_active_central_idx');

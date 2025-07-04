@@ -1,3 +1,5 @@
+@include('ai::admin.shared.helper')
+
 <div>
     {{-- Tab Navigation --}}
     <div class="card">

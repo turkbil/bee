@@ -465,10 +465,15 @@ VERİ GÖRSELLEŞTİRME:
                 'badge_color' => 'success',
                 'input_placeholder' => 'Hangi konu hakkında içerik üretmek istiyorsunuz?',
                 'example_inputs' => [
-                    ['text' => 'Yapay zeka teknolojilerinin iş dünyasına etkileri', 'label' => 'Teknoloji'],
+                    ['text' => 'Online alışverişte güvenlik ipuçları', 'label' => 'Teknoloji'],
                     ['text' => 'Sağlıklı beslenme alışkanlıkları', 'label' => 'Sağlık'],
                     ['text' => 'Ev alırken dikkat edilmesi gerekenler', 'label' => 'Emlak']
                 ],
+                'example_prompts' => json_encode([
+                    'Anneler günü için duygusal bir yazı hazırla',
+                    'Yaz tatili için gidilecek yerler hakkında içerik',
+                    'Evde yapılabilecek kolay yemek tarifleri'
+                ]),
                 'prompts' => [
                     ['name' => 'İçerik Üretim Uzmanı', 'role' => 'primary', 'priority' => 1]
                 ]
@@ -495,6 +500,11 @@ VERİ GÖRSELLEŞTİRME:
                     ['text' => 'Çocuklar için güvenli internet kullanımı', 'label' => 'Eğitim'],
                     ['text' => 'Küçük işletmeler için dijital pazarlama', 'label' => 'Pazarlama']
                 ],
+                'example_prompts' => json_encode([
+                    'Evden çalışırken verimli olmak için ipuçları',
+                    'Çocuğumla kaliteli vakit geçirme önerileri',
+                    'Küçük bir dükkan açmak istiyorum, nereden başlamalıyım?'
+                ]),
                 'prompts' => [
                     ['name' => 'Blog Yazısı Uzmanı', 'role' => 'primary', 'priority' => 1]
                 ]
@@ -521,6 +531,11 @@ VERİ GÖRSELLEŞTİRME:
                     ['text' => 'En iyi kahve makinesi 2024', 'label' => 'Ürün SEO'],
                     ['text' => 'Avukat hukuki danışmanlık', 'label' => 'Hizmet SEO']
                 ],
+                'example_prompts' => json_encode([
+                    'Restoran web sitesi için ana sayfa metni',
+                    'Online mağazam için ürün açıklaması yaz',
+                    'Google\'da üst sıralara çıkmak için blog yazısı'
+                ]),
                 'prompts' => [
                     ['name' => 'SEO İçerik Uzmanı', 'role' => 'primary', 'priority' => 1]
                 ]
@@ -547,6 +562,11 @@ VERİ GÖRSELLEŞTİRME:
                     ['text' => 'Tesla Model 3 sürüş deneyimi', 'label' => 'Otomotiv'],
                     ['text' => 'Airpods Pro 2 ses kalitesi', 'label' => 'Elektronik']
                 ],
+                'example_prompts' => json_encode([
+                    'Yeni aldığım telefonu incelemek istiyorum',
+                    'Süpürge makinem hakkında tavsiye yazısı',
+                    'Arabam için lastik inceleme yazısı hazırla'
+                ]),
                 'prompts' => [
                     ['name' => 'Ürün İnceleme Uzmanı', 'role' => 'primary', 'priority' => 1]
                 ]
@@ -574,6 +594,11 @@ VERİ GÖRSELLEŞTİRME:
                     ['text' => 'Aşk konulu romantik şiir', 'label' => 'Şiir'],
                     ['text' => 'Çocuklar için masalsı öykü', 'label' => 'Masal']
                 ],
+                'example_prompts' => json_encode([
+                    'Çocuklar için uyku masalı yaz',
+                    'Romantik bir aşk hikayesi oluştur',
+                    'Komik bir anımı hikaye haline getir'
+                ]),
                 'prompts' => [
                     ['name' => 'Yaratıcı Yazım Uzmanı', 'role' => 'primary', 'priority' => 1]
                 ]
@@ -601,6 +626,11 @@ VERİ GÖRSELLEŞTİRME:
                     ['text' => 'JavaScript ile form validasyonu', 'label' => 'JavaScript'],
                     ['text' => 'Python ile API endpoint yazma', 'label' => 'Python']
                 ],
+                'example_prompts' => json_encode([
+                    'Web sitem için iletişim formu kodu yaz',
+                    'Basit bir hesap makinesi uygulaması',
+                    'E-posta gönderen PHP kodu hazırla'
+                ]),
                 'prompts' => [
                     ['name' => 'Senior Yazılım Geliştirici', 'role' => 'primary', 'priority' => 1]
                 ]
@@ -628,6 +658,11 @@ VERİ GÖRSELLEŞTİRME:
                     ['text' => 'E-ticaret sitesi kullanım şartları', 'label' => 'Kullanım Şartları'],
                     ['text' => 'Freelance iş sözleşmesi taslağı', 'label' => 'İş Sözleşmesi']
                 ],
+                'example_prompts' => json_encode([
+                    'Web sitem için gizlilik sözleşmesi',
+                    'Online mağazam için iade koşulları',
+                    'Danışmanlık hizmeti sözleşme taslağı'
+                ]),
                 'prompts' => [
                     ['name' => 'Hukuki Döküman Uzmanı', 'role' => 'primary', 'priority' => 1]
                 ]
@@ -655,6 +690,11 @@ VERİ GÖRSELLEŞTİRME:
                     ['text' => 'Sürdürülebilir kalkınma amaçları', 'label' => 'Çevre'],
                     ['text' => 'Sosyal medyanın toplum üzerindeki etkisi', 'label' => 'Sosyoloji']
                 ],
+                'example_prompts' => json_encode([
+                    'Tez ödevim için giriş paragrafı yaz',
+                    'İklim değişikliği hakkında makale',
+                    'Teknolojinin gençler üzerindeki etkisi'
+                ]),
                 'prompts' => [
                     ['name' => 'Akademik Makale Yazarı', 'role' => 'primary', 'priority' => 1]
                 ]
@@ -682,6 +722,11 @@ VERİ GÖRSELLEŞTİRME:
                     ['text' => 'Pazartesi motivasyonu', 'label' => 'Motivasyon'],
                     ['text' => 'Şirket kültürü paylaşımı', 'label' => 'Kurumsal']
                 ],
+                'example_prompts' => json_encode([
+                    'Instagram için güzel bir paylaşım metni',
+                    'Doğum günü kutlama mesajı',
+                    'Yeni işim için LinkedIn paylaşımı'
+                ]),
                 'prompts' => [
                     ['name' => 'Sosyal Medya Uzmanı', 'role' => 'primary', 'priority' => 1]
                 ]
@@ -709,6 +754,11 @@ VERİ GÖRSELLEŞTİRME:
                     ['text' => 'Mobil uygulama pazarı analizi', 'label' => 'Teknoloji'],
                     ['text' => 'Gıda sektörü rekabet durumu', 'label' => 'Gıda']
                 ],
+                'example_prompts' => json_encode([
+                    'Cafe açmak istiyorum, pazar araştırması yap',
+                    'Online kurs satmak için talep analizi',
+                    'Mahallemdeki rakip işletmeleri analiz et'
+                ]),
                 'prompts' => [
                     ['name' => 'Pazar Araştırması Uzmanı', 'role' => 'primary', 'priority' => 1]
                 ]
@@ -736,6 +786,11 @@ VERİ GÖRSELLEŞTİRME:
                     ['text' => 'Müşteri takip emaili', 'label' => 'Müşteri İletişim'],
                     ['text' => 'İş teklifi sunumu', 'label' => 'İş Teklifi']
                 ],
+                'example_prompts' => json_encode([
+                    'Müşterime teşekkür maili',
+                    'İş başvurusu e-postası',
+                    'Randevu talep maili'
+                ]),
                 'prompts' => [
                     ['name' => 'Sosyal Medya Uzmanı', 'role' => 'primary', 'priority' => 1]
                 ]
@@ -762,6 +817,11 @@ VERİ GÖRSELLEŞTİRME:
                     ['text' => 'Pazarlama uzmanı kapak mektubu', 'label' => 'Pazarlama'],
                     ['text' => 'Proje yöneticisi özgeçmiş', 'label' => 'Yönetim']
                 ],
+                'example_prompts' => json_encode([
+                    'Satış elemanı için özgeçmiş hazırla',
+                    'Öğretmenlik başvurusu için CV',
+                    'Staj başvurusu için özgeçmiş'
+                ]),
                 'prompts' => [
                     ['name' => 'İçerik Üretim Uzmanı', 'role' => 'primary', 'priority' => 1]
                 ]
@@ -788,6 +848,11 @@ VERİ GÖRSELLEŞTİRME:
                     ['text' => 'Yeni ürün lansmanı tanıtımı', 'label' => 'Ürün Tanıtım'],
                     ['text' => 'Şirket stratejik planı', 'label' => 'Strateji']
                 ],
+                'example_prompts' => json_encode([
+                    'Proje sunumu için slayt metinleri',
+                    'Şirket tanıtım sunumu hazırla',
+                    'Ürün lansmanı sunum içeriği'
+                ]),
                 'prompts' => [
                     ['name' => 'İçerik Üretim Uzmanı', 'role' => 'primary', 'priority' => 1]
                 ]
@@ -815,6 +880,11 @@ VERİ GÖRSELLEŞTİRME:
                     ['text' => 'Lise tarih müfredat planı', 'label' => 'Lise'],
                     ['text' => 'Üniversite programlama dersi', 'label' => 'Üniversite']
                 ],
+                'example_prompts' => json_encode([
+                    'Çocuklara İngilizce öğretim planı',
+                    'Yetişkinler için bilgisayar kursu',
+                    'Matematik dersi etkinlik planı'
+                ]),
                 'prompts' => [
                     ['name' => 'Akademik Makale Yazarı', 'role' => 'primary', 'priority' => 1]
                 ]
@@ -841,6 +911,11 @@ VERİ GÖRSELLEŞTİRME:
                     ['text' => 'İklim değişikliği literatür taraması', 'label' => 'Çevre'],
                     ['text' => 'Tıbbi ilaç geliştirme süreci', 'label' => 'Tıp']
                 ],
+                'example_prompts' => json_encode([
+                    'Okuduğum kitapları özetler misin?',
+                    'Bu konudaki araştırmaların özetini yap',
+                    'Makalemi daha kısa bir şekilde yaz'
+                ]),
                 'prompts' => [
                     ['name' => 'Akademik Makale Yazarı', 'role' => 'primary', 'priority' => 1]
                 ]
@@ -868,6 +943,11 @@ VERİ GÖRSELLEŞTİRME:
                     ['text' => 'E-commerce ödeme sistemi API', 'label' => 'Payment API'],
                     ['text' => 'Real-time chat API dokümantasyonu', 'label' => 'Chat API']
                 ],
+                'example_prompts' => json_encode([
+                    'Web servisim için kullanım kılavuzu',
+                    'API fonksiyonlarını açıkla',
+                    'Programcılar için teknik dokümantasyon'
+                ]),
                 'prompts' => [
                     ['name' => 'Senior Yazılım Geliştirici', 'role' => 'primary', 'priority' => 1]
                 ]
@@ -894,6 +974,11 @@ VERİ GÖRSELLEŞTİRME:
                     ['text' => 'Öğrenci yönetim sistemi DB', 'label' => 'Eğitim'],
                     ['text' => 'CRM sistemi tablo yapısı', 'label' => 'CRM']
                 ],
+                'example_prompts' => json_encode([
+                    'Müşteri bilgileri için veritabanı yapısı',
+                    'Stok takip sistemi veritabanı',
+                    'Basit blog sitesi için tablo tasarımı'
+                ]),
                 'prompts' => [
                     ['name' => 'Senior Yazılım Geliştirici', 'role' => 'primary', 'priority' => 1]
                 ]
@@ -920,6 +1005,11 @@ VERİ GÖRSELLEŞTİRME:
                     ['text' => 'Email adresi validasyonu', 'label' => 'Email'],
                     ['text' => 'TC kimlik numarası kontrolü', 'label' => 'TC No']
                 ],
+                'example_prompts' => json_encode([
+                    'Telefon numarası doğrulama kodu',
+                    'Email formatı kontrol kodu',
+                    'Sadece harf ve rakam kontrolü'
+                ]),
                 'prompts' => [
                     ['name' => 'Senior Yazılım Geliştirici', 'role' => 'primary', 'priority' => 1]
                 ]
@@ -947,6 +1037,11 @@ VERİ GÖRSELLEŞTİRME:
                     ['text' => 'Restoran yemek siparişi', 'label' => 'Yemek'],
                     ['text' => 'E-ticaret indirim kampanyası', 'label' => 'İndirim']
                 ],
+                'example_prompts' => json_encode([
+                    'Dükkanım için çekici reklam metni',
+                    'Facebook reklamı için başlık',
+                    'İndirim kampanyası reklam yazısı'
+                ]),
                 'prompts' => [
                     ['name' => 'Sosyal Medya Uzmanı', 'role' => 'primary', 'priority' => 1]
                 ]
@@ -973,6 +1068,11 @@ VERİ GÖRSELLEŞTİRME:
                     ['text' => 'Aile işletmesi köken hikayesi', 'label' => 'Aile Şirketi'],
                     ['text' => 'Sürdürülebilir moda markası', 'label' => 'Moda']
                 ],
+                'example_prompts' => json_encode([
+                    'Şirketimin kuruluş hikayesini yaz',
+                    'Aile işletmemizin hikayesi',
+                    'Markamızın ne için var olduğunu anlat'
+                ]),
                 'prompts' => [
                     ['name' => 'Yaratıcı Yazım Uzmanı', 'role' => 'primary', 'priority' => 1]
                 ]
@@ -999,6 +1099,11 @@ VERİ GÖRSELLEŞTİRME:
                     ['text' => 'Yemek tarifi TikTok', 'label' => 'Yemek'],
                     ['text' => 'Teknoloji haberları Twitter', 'label' => 'Teknoloji']
                 ],
+                'example_prompts' => json_encode([
+                    'Instagram paylaşımım için etiketler',
+                    'TikTok videom için hashtag listesi',
+                    'Kedimle ilgili paylaşım etiketleri'
+                ]),
                 'prompts' => [
                     ['name' => 'Sosyal Medya Uzmanı', 'role' => 'primary', 'priority' => 1]
                 ]
@@ -1026,6 +1131,11 @@ VERİ GÖRSELLEŞTİRME:
                     ['text' => 'Girişimcilik hikayesi söyleşi', 'label' => 'Girişimcilik'],
                     ['text' => 'Sağlıklı yaşam ipuçları', 'label' => 'Sağlık']
                 ],
+                'example_prompts' => json_encode([
+                    'Podcast programım için giriş metni',
+                    'Konuğumla yapacağım röportaj soruları',
+                    'Podcast bölümü için senaryo'
+                ]),
                 'prompts' => [
                     ['name' => 'Yaratıcı Yazım Uzmanı', 'role' => 'primary', 'priority' => 1]
                 ]
@@ -1052,6 +1162,11 @@ VERİ GÖRSELLEŞTİRME:
                     ['text' => 'Eğitici YouTube içeriği', 'label' => 'Eğitim'],
                     ['text' => 'TikTok viral trend videosu', 'label' => 'Viral Content']
                 ],
+                'example_prompts' => json_encode([
+                    'YouTube videom için senaryo',
+                    'TikTok için komik video metni',
+                    'Ürün tanıtım videosu metni'
+                ]),
                 'prompts' => [
                     ['name' => 'Yaratıcı Yazım Uzmanı', 'role' => 'primary', 'priority' => 1]
                 ]
@@ -1078,6 +1193,11 @@ VERİ GÖRSELLEŞTİRME:
                     ['text' => 'Çevre dostu temizlik ürünü', 'label' => 'Temizlik'],
                     ['text' => 'Online eğitim platformu', 'label' => 'Eğitim']
                 ],
+                'example_prompts' => json_encode([
+                    'Dükkanım için akılda kalıcı slogan',
+                    'Restoran için güzel motto',
+                    'Kuaförlük salonumu için slogan'
+                ]),
                 'prompts' => [
                     ['name' => 'Yaratıcı Yazım Uzmanı', 'role' => 'primary', 'priority' => 1]
                 ]
@@ -1105,6 +1225,11 @@ VERİ GÖRSELLEŞTİRME:
                     ['text' => 'Restaurant zincirleme girişimi', 'label' => 'Restaurant'],
                     ['text' => 'E-ticaret pazarlama stratejisi', 'label' => 'E-ticaret']
                 ],
+                'example_prompts' => json_encode([
+                    'İşletmemin güçlü ve zayıf yönleri',
+                    'Yeni proje için fırsat ve tehdit analizi',
+                    'Dükkanımın SWOT analizi yap'
+                ]),
                 'prompts' => [
                     ['name' => 'Pazar Araştırması Uzmanı', 'role' => 'primary', 'priority' => 1]
                 ]
@@ -1131,6 +1256,11 @@ VERİ GÖRSELLEŞTİRME:
                     ['text' => 'Organik gıda e-ticaret', 'label' => 'Organik Gıda'],
                     ['text' => 'Dijital ajans kurulumu', 'label' => 'Ajans']
                 ],
+                'example_prompts' => json_encode([
+                    'Cafe açmak için iş planı',
+                    'Online mağaza kurmak için plan',
+                    'Danışmanlık şirketi iş planı'
+                ]),
                 'prompts' => [
                     ['name' => 'Pazar Araştırması Uzmanı', 'role' => 'primary', 'priority' => 1]
                 ]
@@ -1157,6 +1287,11 @@ VERİ GÖRSELLEŞTİRME:
                     ['text' => 'Türkçe pazarlama maili > İngilizce', 'label' => 'TR->EN'],
                     ['text' => 'Ürün açıklaması çoklu dil', 'label' => 'Çoklu Dil']
                 ],
+                'example_prompts' => json_encode([
+                    'Bu metni İngilizceye çevir',
+                    'Türkçe e-postamı İngilizceye çevirmen',
+                    'Web sitemi farklı dillere çevir'
+                ]),
                 'prompts' => [
                     ['name' => 'İçerik Üretim Uzmanı', 'role' => 'primary', 'priority' => 1]
                 ]
@@ -1183,6 +1318,11 @@ VERİ GÖRSELLEŞTİRME:
                     ['text' => 'Yerel etkinlik duyurusu', 'label' => 'Etkinlik'],
                     ['text' => 'Şirket başarı hikayesi', 'label' => 'Başarı']
                 ],
+                'example_prompts' => json_encode([
+                    'Şirketimizin başarısı hakkında haber yazısı',
+                    'Etkinliğimiz için basın açıklaması',
+                    'Yerel gazete için duyuru yazısı'
+                ]),
                 'prompts' => [
                     ['name' => 'Blog Yazısı Uzmanı', 'role' => 'primary', 'priority' => 1]
                 ]
@@ -1209,6 +1349,11 @@ VERİ GÖRSELLEŞTİRME:
                     ['text' => 'Yazılım ürünü teknik destek', 'label' => 'Yazılım'],
                     ['text' => 'Eğitim kursu katılımcı soruları', 'label' => 'Eğitim']
                 ],
+                'example_prompts' => json_encode([
+                    'El yapımı takılarım için açıklama',
+                    'Ev yapımı reçel tanıtım yazısı',
+                    'İkinci el araba satış ilanı'
+                ]),
                 'prompts' => [
                     ['name' => 'İçerik Üretim Uzmanı', 'role' => 'primary', 'priority' => 1]
                 ]
@@ -1235,6 +1380,11 @@ VERİ GÖRSELLEŞTİRME:
                     ['text' => 'Dijital pazarlama uzmanı', 'label' => 'Pazarlama'],
                     ['text' => 'Proje yöneticisi mülakatı', 'label' => 'Yönetim']
                 ],
+                'example_prompts' => json_encode([
+                    'İş mülakatına hazırlanmak istiyorum',
+                    'Mülakat sorularına nasıl cevap vermeliyim?',
+                    'Kendimi nasıl tanıtmam gerekiyor?'
+                ]),
                 'prompts' => [
                     ['name' => 'İçerik Üretim Uzmanı', 'role' => 'primary', 'priority' => 1]
                 ]

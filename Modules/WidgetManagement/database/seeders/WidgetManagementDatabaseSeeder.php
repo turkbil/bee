@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Cache;
 use Modules\WidgetManagement\app\Models\WidgetCategory;
+use App\Helpers\TenantHelpers;
 
 class WidgetManagementDatabaseSeeder extends Seeder
 {
@@ -26,8 +27,9 @@ class WidgetManagementDatabaseSeeder extends Seeder
         Model::unguard();
 
         try {
-            // Tenant kontrolü - eğer tenant veritabanındaysak ve widget_categories tablosu yoksa işlemi atla
-            if (function_exists('tenant') && tenant() && !Schema::hasTable('widget_categories')) {
+            // Bu seeder sadece central veritabanında çalışmalı
+            if (!TenantHelpers::isCentral()) {
+                $this->command->info('WidgetManagementDatabaseSeeder sadece central veritabanında çalışır.');
                 return;
             }
 
@@ -36,47 +38,40 @@ class WidgetManagementDatabaseSeeder extends Seeder
             if (Cache::has($cacheKey)) {
                 return;
             }
+            $moduleCategory = WidgetCategory::where('slug', 'moduller')
+                ->orWhere('title', 'Moduller')
+                ->first();
             
-            // Bağlantının merkezi veritabanına yönlendirildiğinden emin ol
-            $currentConnection = Config::get('database.default');
-            
-            if (!function_exists('tenant') || !tenant()) {
-                $moduleCategory = WidgetCategory::where('slug', 'moduller')
-                    ->orWhere('title', 'Moduller')
-                    ->first();
+            if (!$moduleCategory) {
                 
-                if (!$moduleCategory) {
+                try {
+                    // Önce tüm kategorileri temizleyelim
+                    $this->cleanupCategories();
                     
-                    try {
-                        // Önce tüm kategorileri temizleyelim
-                        $this->cleanupCategories();
-                        
-                        // Auto increment değerini sıfırla
-                        DB::statement('ALTER TABLE widget_categories AUTO_INCREMENT = 1;');
-                        
-                        // Doğrudan SQL ile ID'si 1 olacak şekilde oluştur
-                        DB::statement('INSERT INTO widget_categories (title, slug, description, icon, `order`, is_active, parent_id, has_subcategories, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())', [
-                            'Moduller',
-                            'moduller',
-                            'Sistem modüllerine ait bileşenler',
-                            'fa-cubes',
-                            1, // order
-                            1, // is_active
-                            null, // parent_id
-                            1 // has_subcategories
-                        ]);
-                        
-                        $moduleCategory = WidgetCategory::find(1);
-                        
-                        if (!$moduleCategory) {
-                            throw new \Exception("Moduller kategorisi ID 1 olarak oluşturulamadı");
-                        }
-                        
-                        Log::info("Moduller kategorisi oluşturuldu (ID: {$moduleCategory->widget_category_id})");
-                    } catch (\Exception $e) {
-                        Log::error("Moduller kategorisi oluşturulamadı. Hata: " . $e->getMessage());
+                    // Auto increment değerini sıfırla
+                    DB::statement('ALTER TABLE widget_categories AUTO_INCREMENT = 1;');
+                    
+                    // Doğrudan SQL ile ID'si 1 olacak şekilde oluştur
+                    DB::statement('INSERT INTO widget_categories (title, slug, description, icon, `order`, is_active, parent_id, has_subcategories, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())', [
+                        'Moduller',
+                        'moduller',
+                        'Sistem modüllerine ait bileşenler',
+                        'fa-cubes',
+                        1, // order
+                        1, // is_active
+                        null, // parent_id
+                        1 // has_subcategories
+                    ]);
+                    
+                    $moduleCategory = WidgetCategory::find(1);
+                    
+                    if (!$moduleCategory) {
+                        throw new \Exception("Moduller kategorisi ID 1 olarak oluşturulamadı");
                     }
-                } else {
+                    
+                    Log::info("Moduller kategorisi oluşturuldu (ID: {$moduleCategory->widget_category_id})");
+                } catch (\Exception $e) {
+                    Log::error("Moduller kategorisi oluşturulamadı. Hata: " . $e->getMessage());
                 }
             }
             

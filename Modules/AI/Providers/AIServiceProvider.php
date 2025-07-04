@@ -8,7 +8,7 @@ use Modules\AI\App\Http\Livewire\Admin\ChatPanel;
 use Modules\AI\App\Http\Livewire\Admin\SettingsPanel;
 use Modules\AI\App\Http\Livewire\Admin\Modals\PromptEditModal;
 use Modules\AI\App\Http\Livewire\Admin\Modals\PromptDeleteModal;
-use Modules\AI\App\Http\Livewire\TokenManagement;
+use Modules\AI\App\Http\Livewire\Admin\TokenManagement;
 use Modules\AI\App\Http\Livewire\Admin\TokenPackageManagement;
 use Modules\AI\App\Http\Livewire\Admin\AIFeaturesDashboard;
 use Modules\AI\App\Http\Livewire\Admin\AIExamples;
@@ -39,13 +39,10 @@ class AIServiceProvider extends ServiceProvider
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
 
-        // Route'ları yükle
-        $this->loadRoutesFrom(module_path('AI', 'routes/web.php'));
+        // Route'ları yükle (sadece admin routes)
         $this->loadRoutesFrom(module_path('AI', 'routes/admin.php'));
         
-        // Tema Klasörleri
-        $this->loadViewsFrom(resource_path('views/themes'), 'themes');
-        $this->loadViewsFrom(module_path('AI', 'resources/views/front/themes'), 'ai-themes');
+        // View'ları yükle (sadece admin)
         $this->loadViewsFrom(module_path('AI', 'resources/views'), 'ai');
 
         // Livewire bileşenlerini kaydet - ai::admin namespace ile
@@ -188,13 +185,7 @@ class AIServiceProvider extends ServiceProvider
             $sourcePath => $viewPath,
         ], ['views', 'ai-module-views']);
         
-        // Tema klasörlerinin yapılandırması
-        $themeSourcePath = module_path('AI', 'resources/views/front/themes');
-        $themeViewPath = resource_path('views/themes/modules/ai');
-        
-        $this->publishes([
-            $themeSourcePath => $themeViewPath,
-        ], ['views', 'ai-module-theme-views']);
+        // AI sadece admin modülü olduğu için tema klasörü yok
     
         $this->loadViewsFrom(array_merge($this->getPublishableViewPaths(), [$sourcePath]), 'ai');
     }

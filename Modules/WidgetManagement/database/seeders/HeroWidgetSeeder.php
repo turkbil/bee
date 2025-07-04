@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 use App\Models\Tenant;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+use App\Helpers\TenantHelpers;
 
 class HeroWidgetSeeder extends Seeder
 {
@@ -25,7 +26,8 @@ class HeroWidgetSeeder extends Seeder
             return;
         }
 
-        if (function_exists('tenant') && tenant()) {
+        // Context-aware çalışma
+        if (!TenantHelpers::isCentral()) {
             try {
                 $this->createTenantHero();
                 
@@ -69,7 +71,7 @@ class HeroWidgetSeeder extends Seeder
             
             if ($widget) {
                 $this->createCentralHeroExample($widget);
-                $this->createHeroForTenants($widget);
+                // Central'dan tenant'lara müdahale etme - her tenant kendi hero'sunu oluştursun
             }
             
             Cache::store(config('cache.default'))->put($cacheKey, true, 600);

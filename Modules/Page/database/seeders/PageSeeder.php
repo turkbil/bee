@@ -5,11 +5,18 @@ namespace Modules\Page\database\seeders;
 use Illuminate\Database\Seeder;
 use Modules\Page\App\Models\Page;
 use Faker\Factory as Faker;
+use App\Helpers\TenantHelpers;
 
 class PageSeeder extends Seeder
 {
     public function run(): void
     {
+        // Bu seeder hem central hem tenant'ta çalışabilir
+        if (TenantHelpers::isCentral()) {
+            $this->command->info('PageSeeder central veritabanında çalışıyor...');
+        } else {
+            $this->command->info('PageSeeder tenant veritabanında çalışıyor...');
+        }
         $faker = Faker::create('tr_TR');
 
         // JSON formatında çoklu dil verileri

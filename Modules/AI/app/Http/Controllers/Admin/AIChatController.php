@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\AI\App\Http\Controllers;
+namespace Modules\AI\App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -15,7 +15,7 @@ use Modules\AI\App\Models\Conversation;
 use Modules\AI\App\Models\Message;
 use Illuminate\Support\Facades\Auth;
 
-class AIController extends Controller
+class AIChatController extends Controller
 {
     protected $deepSeekService;
     protected $markdownService;
@@ -32,7 +32,7 @@ class AIController extends Controller
 
     public function index()
     {
-        return view('ai::ai.chat');
+        return view('ai::admin.chat.index');
     }
 
     public function sendMessage(Request $request)

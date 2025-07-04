@@ -5,11 +5,19 @@ namespace Modules\Announcement\database\seeders;
 use Illuminate\Database\Seeder;
 use Modules\Announcement\App\Models\Announcement;
 use Faker\Factory as Faker;
+use App\Helpers\TenantHelpers;
 
 class AnnouncementSeeder extends Seeder
 {
     public function run(): void
     {
+        // Bu seeder hem central hem tenant'ta çalışabilir
+        if (TenantHelpers::isCentral()) {
+            $this->command->info('AnnouncementSeeder central veritabanında çalışıyor...');
+        } else {
+            $this->command->info('AnnouncementSeeder tenant veritabanında çalışıyor...');
+        }
+        
         $faker = Faker::create('tr_TR');
 
         // JSON formatında çoklu dil verileri

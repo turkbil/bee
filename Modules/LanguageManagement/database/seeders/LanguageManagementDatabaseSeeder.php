@@ -5,6 +5,7 @@ namespace Modules\LanguageManagement\Database\Seeders;
 use Illuminate\Database\Seeder;
 use Modules\LanguageManagement\app\Models\AdminLanguage;
 use Modules\LanguageManagement\app\Models\TenantLanguage;
+use App\Helpers\TenantHelpers;
 
 class LanguageManagementDatabaseSeeder extends Seeder
 {
@@ -13,8 +14,14 @@ class LanguageManagementDatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->seedAdminLanguages();
-        $this->seedTenantLanguages();
+        // Context-aware çalışma
+        if (TenantHelpers::isCentral()) {
+            $this->command->info('Central context: Admin languages oluşturuluyor...');
+            $this->seedAdminLanguages();
+        } else {
+            $this->command->info('Tenant context: Tenant languages oluşturuluyor...');
+            $this->seedTenantLanguages();
+        }
     }
 
     private function seedAdminLanguages(): void

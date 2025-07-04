@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@include('ai::admin.helper')
+@include('ai::admin.shared.helper')
 
 @section('pretitle', 'AI Ayarları')
 @section('title', $prompt ? 'Prompt Düzenle' : 'Yeni Prompt Oluştur')

@@ -4,6 +4,7 @@ namespace Modules\LanguageManagement\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\LanguageManagement\app\Models\TenantLanguage;
+use App\Helpers\TenantHelpers;
 
 class TenantLanguagesSeeder extends Seeder
 {
@@ -12,6 +13,12 @@ class TenantLanguagesSeeder extends Seeder
      */
     public function run(): void
     {
+        // Bu seeder hem central hem tenant'ta çalışabilir
+        if (TenantHelpers::isCentral()) {
+            $this->command->info('TenantLanguagesSeeder central veritabanında çalışıyor...');
+        } else {
+            $this->command->info('TenantLanguagesSeeder tenant veritabanında çalışıyor...');
+        }
         // Temel desteklenen diller
         $languages = [
             [

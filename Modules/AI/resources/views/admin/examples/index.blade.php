@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@include('ai::admin.helper')
+@include('ai::admin.shared.helper')
 
 @section('pretitle', 'AI Yönetimi')
 @section('title', 'AI Kullanım Örnekleri Test Sayfası')

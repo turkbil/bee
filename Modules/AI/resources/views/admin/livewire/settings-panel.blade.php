@@ -1,5 +1,5 @@
 <div>
-    @include('ai::admin.helper')
+    @include('ai::admin.shared.helper')
 
     <div class="card">
         <div class="card-header">

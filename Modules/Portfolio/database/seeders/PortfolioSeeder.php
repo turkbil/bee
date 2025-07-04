@@ -6,11 +6,19 @@ use Modules\Portfolio\App\Models\Portfolio;
 use Modules\Portfolio\App\Models\PortfolioCategory;
 use Faker\Factory as Faker;
 use Illuminate\Support\Facades\Schema;
+use App\Helpers\TenantHelpers;
 
 class PortfolioSeeder extends Seeder
 {
     public function run(): void
     {
+        // Bu seeder hem central hem tenant'ta çalışabilir
+        if (TenantHelpers::isCentral()) {
+            $this->command->info('PortfolioSeeder central veritabanında çalışıyor...');
+        } else {
+            $this->command->info('PortfolioSeeder tenant veritabanında çalışıyor...');
+        }
+        
         // Tablo var mı kontrol et
         if (!Schema::hasTable('portfolio_categories') || !Schema::hasTable('portfolios')) {
             $this->command->info('Portfolio tabloları bulunamadı, işlem atlanıyor...');

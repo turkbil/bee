@@ -45,7 +45,7 @@
                 </a>
             </div>
             <div class="col-6">
-                <a href="{{ route('admin.ai.features') }}" class="btn btn-outline-success btn-sm w-100">
+                <a href="{{ route('admin.ai.features.index') }}" class="btn btn-outline-success btn-sm w-100">
                     <i class="fas fa-flask me-1"></i>
                     <small>Testler</small>
                 </a>

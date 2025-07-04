@@ -10,11 +10,17 @@ use Illuminate\Support\Facades\File;
 use Stancl\Tenancy\Database\Models\Domain;
 use Faker\Factory as Faker;
 use Illuminate\Support\Facades\Artisan;
+use App\Helpers\TenantHelpers;
 
 class TenantSeeder extends Seeder
 {
     public function run(): void
     {
+        // Bu seeder sadece central veritabanında çalışmalı
+        if (!TenantHelpers::isCentral()) {
+            $this->command->info('TenantSeeder sadece central veritabanında çalışır.');
+            return;
+        }
         // Eski tenant dizinlerini temizle
         $this->cleanupOldTenantDirectories();
 

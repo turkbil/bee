@@ -11,6 +11,7 @@ use Modules\ModuleManagement\App\Models\Module;
 use Spatie\Permission\Models\Permission;
 use Stancl\Tenancy\Tenancy;
 use Illuminate\Support\Str;
+use App\Helpers\TenantHelpers;
 
 class ModuleTenantsSeeder extends Seeder
 {
@@ -18,18 +19,10 @@ class ModuleTenantsSeeder extends Seeder
     {
         Model::unguard();
 
-        // Eğer tenant kontekstinde çalışıyorsa, seederi çalıştırma
-        if (app()->has('tenancy') && app(Tenancy::class)->initialized) {
-            try {
-                // Tenant veritabanında module_tenants tablosu var mı kontrol et
-                if (!Schema::hasTable('module_tenants')) {
-                    $this->command->info('Tenant veritabanında module_tenants tablosu bulunamadı. Bu normal bir durumdur, modül-tenant ilişkileri merkezi veritabanında yönetilir.');
-                    return;
-                }
-            } catch (\Exception $e) {
-                $this->command->info('Tenant veritabanı kontrol hatası: ' . $e->getMessage());
-                return;
-            }
+        // Bu seeder sadece central veritabanında çalışmalı
+        if (!TenantHelpers::isCentral()) {
+            $this->command->info('ModuleTenantsSeeder sadece central veritabanında çalışır.');
+            return;
         }
 
         try {

@@ -1,4 +1,4 @@
-@include('ai::admin.helper')
+@include('ai::admin.shared.helper')
 <div>
     @include('admin.partials.error_message')
     <form wire:submit.prevent="save">

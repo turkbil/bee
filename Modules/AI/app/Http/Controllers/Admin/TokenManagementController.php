@@ -39,7 +39,7 @@ class TokenManagementController extends Controller
             'total_tokens_used' => AITokenUsage::sum('tokens_used'),
         ];
 
-        return view('ai::admin.token-management.index', compact('tenants', 'systemStats'));
+        return view('ai::admin.tokens.index', compact('tenants', 'systemStats'));
     }
 
     /**
@@ -78,7 +78,7 @@ class TokenManagementController extends Controller
 
         $realTokenBalance = max(0, $totalPurchasedTokens - $totalUsedTokens);
 
-        return view('ai::admin.token-management.show', compact('tenant', 'recentUsage', 'monthlyUsage', 'totalPurchasedTokens', 'totalUsedTokens', 'realTokenBalance'));
+        return view('ai::admin.tokens.show', compact('tenant', 'recentUsage', 'monthlyUsage', 'totalPurchasedTokens', 'totalUsedTokens', 'realTokenBalance'));
     }
 
     /**
@@ -195,7 +195,7 @@ class TokenManagementController extends Controller
 
         $packages = AITokenPackage::ordered()->get();
         
-        return view('ai::admin.token-management.packages', compact('packages'));
+        return view('ai::admin.tokens.packages', compact('packages'));
     }
 
     /**
@@ -326,7 +326,7 @@ class TokenManagementController extends Controller
 
         $purchases = $baseQuery->latest()->paginate(50);
 
-        return view('ai::admin.token-management.purchases', compact('purchases', 'tenants', 'selectedTenant'));
+        return view('ai::admin.tokens.purchases', compact('purchases', 'tenants', 'selectedTenant'));
     }
 
     /**
@@ -391,7 +391,7 @@ class TokenManagementController extends Controller
             ->latest('used_at')
             ->paginate(50);
 
-        return view('ai::admin.token-management.usage-stats', compact('stats', 'usageRecords', 'tenants', 'selectedTenant'));
+        return view('ai::admin.tokens.usage-stats', compact('stats', 'usageRecords', 'tenants', 'selectedTenant'));
     }
 
     /**
@@ -461,7 +461,7 @@ class TokenManagementController extends Controller
         $previousWeekUsage = AITokenUsage::whereBetween('used_at', [now()->subWeek()->startOfWeek(), now()->subWeek()->endOfWeek()])->sum('tokens_used');
         $weeklyGrowth = $previousWeekUsage > 0 ? (($currentWeekUsage - $previousWeekUsage) / $previousWeekUsage * 100) : 0;
 
-        return view('ai::admin.token-management.statistics-overview', compact(
+        return view('ai::admin.tokens.statistics-overview', compact(
             'systemStats',
             'tenantActivity',
             'monthlyTrend',
@@ -529,7 +529,7 @@ class TokenManagementController extends Controller
             ->limit(20)
             ->get();
 
-        return view('ai::admin.token-management.tenant-statistics', compact(
+        return view('ai::admin.tokens.tenant-statistics', compact(
             'tenant',
             'stats',
             'modelUsage',

@@ -5,6 +5,7 @@ namespace Modules\SettingManagement\Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\TenantHelpers;
 
 class SettingManagementSeeder extends Seeder
 {
@@ -17,8 +18,9 @@ class SettingManagementSeeder extends Seeder
     {
         Model::unguard();
         
-        // Tenant veritabanında çalışırken hiçbir şey yapma
-        if (app()->bound('tenancy.tenant')) {
+        // Bu seeder sadece central veritabanında çalışmalı
+        if (!TenantHelpers::isCentral()) {
+            $this->command->info('SettingManagementSeeder sadece central veritabanında çalışır.');
             return;
         }
         

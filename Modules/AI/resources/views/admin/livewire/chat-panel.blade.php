@@ -614,11 +614,13 @@
 
         .message-content {
             flex: 1;
+            text-align: left;
         }
 
         .message-content p {
             margin-bottom: 0;
             word-wrap: break-word;
+            text-align: left;
         }
 
         .message-actions {

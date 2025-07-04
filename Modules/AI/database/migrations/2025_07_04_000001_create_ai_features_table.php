@@ -56,6 +56,7 @@ return new class extends Migration
             
             // Hızlı Örnekler ve Ayarlar
             $table->json('example_inputs')->nullable(); // [{"text": "örnek", "label": "Hızlı Test"}]
+            $table->json('example_prompts')->nullable(); // ["Örnek prompt 1", "Örnek prompt 2"]
             $table->json('ui_settings')->nullable(); // Grid boyutu, renk, vb.
             $table->json('api_settings')->nullable(); // Model özellikleri, token limiti
             $table->json('validation_rules')->nullable(); // Input validation kuralları

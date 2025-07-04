@@ -1,152 +1,167 @@
 @extends('admin.layout')
 
+@include('ai::admin.shared.helper')
+
+@php
+use Illuminate\Support\Str;
+@endphp
+
 @section('title', 'AI Prowess & Skills')
 
 @push('breadcrumb')
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="{{ route('admin.ai.index') }}">AI Module</a>
-            </li>
-            <li class="breadcrumb-item active">AI Prowess</li>
-        </ol>
-    </nav>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{{ route('admin.ai.index') }}">AI Module</a>
+        </li>
+        <li class="breadcrumb-item active">AI Prowess</li>
+    </ol>
+</nav>
 @endpush
 
 @push('page-header')
-    <div class="row g-2 align-items-center">
-        <div class="col">
-            <div class="page-pretitle">Artificial Intelligence</div>
-            <h2 class="page-title">
-                <span class="text-primary">🌟</span> AI Prowess & Capabilities
-            </h2>
-            <div class="page-subtitle text-muted">
-                Discover the extraordinary capabilities of our advanced AI system
-            </div>
-        </div>
-        <div class="col-auto">
-            <div class="btn-list">
-                <a href="{{ route('admin.ai.features.index') }}" class="btn btn-outline-primary">
-                    <i class="fas fa-cog me-2"></i>Manage Skills
-                </a>
-                <a href="{{ route('admin.ai.examples') }}" class="btn btn-outline-secondary">
-                    <i class="fas fa-code me-2"></i>Developer Tools
-                </a>
-            </div>
+<div class="row g-2 align-items-center">
+    <div class="col">
+        <div class="page-pretitle">Artificial Intelligence</div>
+        <h2 class="page-title">
+            <span class="text-primary">🌟</span> AI Prowess & Capabilities
+        </h2>
+        <div class="page-subtitle text-muted">
+            Discover the extraordinary capabilities of our advanced AI system
         </div>
     </div>
+    <div class="col-auto">
+        <div class="btn-list">
+            <a href="{{ route('admin.ai.features.index') }}" class="btn btn-outline-primary">
+                <i class="fas fa-cog me-2"></i>Manage Skills
+            </a>
+            <a href="{{ route('admin.ai.examples') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-code me-2"></i>Developer Tools
+            </a>
+        </div>
+    </div>
+</div>
 @endpush
 
 @push('css')
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <style>
-.prowess-card {
-    transition: all 0.3s ease;
-    border: 1px solid var(--tblr-border-color);
-    background: var(--tblr-card-bg);
-    overflow: hidden;
-    position: relative;
-}
+    .prowess-card {
+        transition: all 0.3s ease;
+        border: 1px solid var(--tblr-border-color);
+        background: var(--tblr-card-bg);
+        overflow: hidden;
+        position: relative;
+    }
 
-.prowess-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--tblr-box-shadow-lg);
-    border-color: var(--tblr-primary);
-}
+    .prowess-card:hover {
+        box-shadow: var(--tblr-box-shadow-lg);
+        border-color: var(--tblr-primary);
+    }
 
-.prowess-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, var(--tblr-primary), var(--tblr-success));
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
+    .prowess-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--tblr-primary), var(--tblr-success));
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
 
-.prowess-card:hover::before {
-    opacity: 1;
-}
+    .prowess-card:hover::before {
+        opacity: 1;
+    }
 
-.skill-icon {
-    font-size: 3rem;
-    line-height: 1;
-    margin-bottom: 1rem;
-}
+    .skill-icon {
+        font-size: 3rem;
+        line-height: 1;
+        margin-bottom: 1rem;
+    }
 
-.category-header {
-    background: linear-gradient(135deg, var(--tblr-primary), var(--tblr-blue));
-    color: white;
-    border-radius: 1rem;
-    padding: 1.5rem;
-    margin-bottom: 2rem;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-}
+    .category-header {
+        background: linear-gradient(135deg, var(--tblr-primary), var(--tblr-blue));
+        color: white;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
 
-.skill-badge {
-    background: var(--tblr-success);
-    color: white;
-    border: none;
-    font-weight: 600;
-    padding: 0.5rem 1rem;
-    border-radius: 2rem;
-}
+    .skill-badge {
+        background: var(--tblr-success);
+        color: white;
+        border: none;
+        font-weight: 600;
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+    }
 
-.test-btn {
-    background: linear-gradient(45deg, var(--tblr-primary), var(--tblr-purple));
-    border: none;
-    color: white;
-    font-weight: 600;
-    padding: 0.75rem 1.5rem;
-    border-radius: 2rem;
-    transition: all 0.3s ease;
-}
+    .test-btn {
+        background: linear-gradient(45deg, var(--tblr-primary), var(--tblr-purple));
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        border-radius: 2rem;
+        transition: all 0.3s ease;
+    }
 
-.test-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--tblr-box-shadow);
-    color: white;
-}
+    .test-btn:hover {
+        box-shadow: var(--tblr-box-shadow);
+        color: white;
+    }
 
-.result-showcase {
-    background: var(--tblr-card-bg);
-    border: 1px solid var(--tblr-border-color);
-    border-radius: 1rem;
-    margin-top: 1.5rem;
-    overflow: hidden;
-}
+    .result-showcase {
+        background: var(--tblr-card-bg);
+        border: 1px solid var(--tblr-border-color);
+        border-radius: 1rem;
+        margin-top: 1.5rem;
+        overflow: hidden;
+    }
 
-.result-header {
-    background: linear-gradient(90deg, var(--tblr-primary), var(--tblr-success));
-    color: white;
-    padding: 1rem 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
+    .result-header {
+        background: linear-gradient(90deg, var(--tblr-primary), var(--tblr-success));
+        color: white;
+        padding: 1rem 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
 
-.result-content {
-    padding: 1.5rem;
-    line-height: 1.7;
-    font-family: inherit;
-}
+    .result-content {
+        padding: 1.5rem;
+        line-height: 1.7;
+        font-family: inherit;
+    }
 
-.stats-showcase {
-    background: linear-gradient(135deg, var(--tblr-primary), var(--tblr-purple));
-    color: white;
-    border: none;
-    border-radius: 1rem;
-    overflow: hidden;
-}
+    .stats-showcase {
+        background: linear-gradient(135deg, var(--tblr-primary), var(--tblr-purple));
+        color: white;
+        border: none;
+        border-radius: 1rem;
+        overflow: hidden;
+    }
+
+    .btn-outline-primary {
+        transition: all 0.2s ease;
+    }
+
+    .btn-outline-primary:hover {
+        /* Sabit duracak */
+    }
+
+    .fs-2 {
+        font-size: 1.75rem !important;
+    }
 </style>
 @endpush
 
 @section('content')
-<div class="container-fluid">
     <!-- Performance Dashboard -->
     <div class="row mb-5">
         <div class="col-md-3">
@@ -184,128 +199,142 @@
     </div>
 
     @if(empty($features))
-        <!-- No Skills Available -->
-        <div class="card">
-            <div class="card-body text-center py-5">
-                <div class="empty">
-                    <div class="empty-img">
-                        <i class="fas fa-robot fa-4x text-muted"></i>
-                    </div>
-                    <p class="empty-title h3">No AI Skills Available</p>
-                    <p class="empty-subtitle text-muted">
-                        Configure AI skills to showcase their capabilities here.
-                    </p>
-                    <div class="empty-action">
-                        <a href="{{ route('admin.ai.features.index') }}" class="btn btn-primary btn-lg">
-                            <i class="fas fa-plus me-2"></i>Configure Skills
-                        </a>
-                    </div>
+    <!-- No Skills Available -->
+    <div class="card">
+        <div class="card-body text-center py-5">
+            <div class="empty">
+                <div class="empty-img">
+                    <i class="fas fa-robot fa-4x text-muted"></i>
+                </div>
+                <p class="empty-title h3">No AI Skills Available</p>
+                <p class="empty-subtitle text-muted">
+                    Configure AI skills to showcase their capabilities here.
+                </p>
+                <div class="empty-action">
+                    <a href="{{ route('admin.ai.features.index') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-plus me-2"></i>Configure Skills
+                    </a>
                 </div>
             </div>
         </div>
+    </div>
     @else
-        <!-- AI Skills Showcase -->
-        @foreach($features as $category => $categoryFeatures)
-        <div class="category-section mb-5">
-            <div class="category-header">
-                <h2 class="mb-0 position-relative">
-                    <i class="fas fa-magic me-3"></i>
-                    {{ $categoryNames[$category] ?? ucfirst($category) }}
-                    <span class="badge skill-badge ms-3">{{ count($categoryFeatures) }} Skills</span>
-                </h2>
-                <p class="mb-0 mt-2 opacity-75">Unleash the power of AI in {{ strtolower($categoryNames[$category] ?? $category) }}</p>
-            </div>
+    <!-- AI Skills Showcase -->
+    @foreach($features as $category => $categoryFeatures)
+    <div class="category-section mb-5">
+        <div class="category-header">
+            <h2 class="mb-0 position-relative">
+                <i class="fas fa-magic me-3"></i>
+                {{ $categoryNames[$category] ?? ucfirst($category) }}
+                <span class="badge skill-badge ms-3">{{ count($categoryFeatures) }} Skills</span>
+            </h2>
+            <p class="mb-0 mt-2 opacity-75">Unleash the power of AI in {{ strtolower($categoryNames[$category] ??
+                $category) }}</p>
+        </div>
 
-            <div class="row">
-                @foreach($categoryFeatures as $feature)
-                <div class="col-md-6 mb-4">
-                    <div class="card prowess-card h-100">
-                        <div class="card-body text-center">
-                            <!-- Skill Icon & Title -->
-                            <div class="skill-icon">{{ $feature->emoji ?? '🤖' }}</div>
-                            <h4 class="card-title fw-bold mb-3">{{ $feature->name }}</h4>
-                            
-                            <!-- Description -->
-                            <p class="text-muted mb-4 fs-5">{{ $feature->description }}</p>
+        <div class="row">
+            @foreach($categoryFeatures as $feature)
+            <div class="col-md-6 mb-4">
+                <div class="card prowess-card h-100">
+                    <div class="card-body text-center">
+                        <!-- Skill Icon & Title -->
+                        <div class="skill-icon">{{ $feature->emoji ?? '🤖' }}</div>
+                        <h3 class="card-title fw-bold mb-3 fs-2">{{ $feature->name }}</h3>
 
-                            <!-- Skill Level -->
-                            <div class="mb-4">
-                                <span class="badge bg-gradient text-white px-3 py-2">
-                                    {{ $feature->getComplexityName() }} Level
-                                </span>
-                            </div>
+                        <!-- Description -->
+                        <p class="text-muted mb-4 fs-5">{{ $feature->description }}</p>
 
-                            <!-- Test Input -->
-                            <div class="mb-4">
-                                <textarea 
-                                    id="input-{{ $feature->id }}" 
-                                    class="form-control form-control-lg" 
-                                    rows="3" 
-                                    placeholder="{{ $feature->input_placeholder ?? 'Enter your challenge for AI to solve...' }}"></textarea>
-                            </div>
-
-                            <!-- Test Button -->
-                            <button 
-                                class="test-btn w-100 mb-3" 
-                                onclick="testSkill({{ $feature->id }})"
-                                id="btn-{{ $feature->id }}">
-                                <span class="btn-text">
-                                    <i class="fas fa-magic me-2"></i>Experience the Magic
-                                </span>
-                                <span class="loading-spinner spinner-border spinner-border-sm ms-2" role="status" style="display: none;"></span>
-                            </button>
-
-                            <!-- Result Showcase -->
-                            <div class="result-showcase" id="result-{{ $feature->id }}" style="display: none;">
-                                <div class="result-header">
-                                    <div class="d-flex align-items-center">
-                                        <div class="me-3">
-                                            <i class="fas fa-sparkles"></i>
-                                        </div>
-                                        <div>
-                                            <div class="fw-bold">AI Result</div>
-                                            <small class="opacity-75" id="result-meta-{{ $feature->id }}">Processing complete</small>
-                                        </div>
-                                    </div>
-                                    <button class="btn btn-sm btn-light" onclick="clearResult({{ $feature->id }})" title="Clear Result">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                                <div class="result-content" id="result-content-{{ $feature->id }}"></div>
-                            </div>
+                        <!-- Skill Level -->
+                        <div class="mb-4">
+                            <span class="badge bg-gradient text-white px-3 py-2">
+                                {{ $feature->getComplexityName() }} Level
+                            </span>
                         </div>
 
-                        <!-- Card Footer Stats -->
-                        <div class="card-footer bg-light text-center">
-                            <div class="row">
-                                <div class="col-4">
-                                    <div class="text-muted small">Usage</div>
-                                    <div class="fw-bold">{{ number_format($feature->usage_count ?? 0) }}</div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="text-muted small">Rating</div>
-                                    <div class="fw-bold">
-                                        {{ ($feature->avg_rating ?? 0) > 0 ? number_format($feature->avg_rating, 1) : '-' }}
+                        <!-- Example Prompts -->
+                        @if($feature->example_prompts)
+                        <div class="mb-3">
+                            <div class="text-muted small mb-2">Try these examples:</div>
+                            <div class="d-flex flex-wrap gap-2 justify-content-center">
+                                @foreach(array_slice(json_decode($feature->example_prompts, true) ?? [], 0, 3) as
+                                $prompt)
+                                <button class="btn btn-sm btn-outline-muted"
+                                    onclick="setExamplePrompt({{ $feature->id }}, '{{ addslashes($prompt) }}')">
+                                    {{ Str::limit($prompt, 40) }}
+                                </button>
+                                @endforeach
+                            </div>
+                        </div>
+                        @endif
+
+                        <!-- Test Input -->
+                        <div class="mb-4">
+                            <textarea id="input-{{ $feature->id }}" class="form-control form-control-lg" rows="3"
+                                placeholder="{{ $feature->input_placeholder ?? 'Enter your challenge for AI to solve...' }}"></textarea>
+                        </div>
+
+                        <!-- Test Button -->
+                        <button class="test-btn w-100 mb-3" onclick="testSkill({{ $feature->id }})"
+                            id="btn-{{ $feature->id }}">
+                            <span class="btn-text">
+                                <i class="fas fa-magic me-2"></i>Experience the Magic
+                            </span>
+                            <span class="loading-spinner spinner-border spinner-border-sm ms-2" role="status"
+                                style="display: none;"></span>
+                        </button>
+
+                        <!-- Result Showcase -->
+                        <div class="result-showcase" id="result-{{ $feature->id }}" style="display: none;">
+                            <div class="result-header">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        <i class="fas fa-sparkles"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold">AI Result</div>
+                                        <small class="opacity-75" id="result-meta-{{ $feature->id }}">Processing
+                                            complete</small>
                                     </div>
                                 </div>
-                                <div class="col-4">
-                                    <div class="text-muted small">Category</div>
-                                    <div class="fw-bold">{{ $feature->getCategoryName() }}</div>
+                                <button class="btn btn-sm btn-light" onclick="clearResult({{ $feature->id }})"
+                                    title="Clear Result">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="result-content" id="result-content-{{ $feature->id }}"></div>
+                        </div>
+                    </div>
+
+                    <!-- Card Footer Stats -->
+                    <div class="card-footer bg-light text-center">
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="text-muted small">Usage</div>
+                                <div class="fw-bold">{{ number_format($feature->usage_count ?? 0) }}</div>
+                            </div>
+                            <div class="col-4">
+                                <div class="text-muted small">Rating</div>
+                                <div class="fw-bold">
+                                    {{ ($feature->avg_rating ?? 0) > 0 ? number_format($feature->avg_rating, 1) : '-' }}
                                 </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="text-muted small">Category</div>
+                                <div class="fw-bold">{{ $feature->getCategoryName() }}</div>
                             </div>
                         </div>
                     </div>
                 </div>
-                @endforeach
             </div>
+            @endforeach
         </div>
-        @endforeach
+    </div>
+    @endforeach
     @endif
-</div>
 
 @push('js')
 <script>
-const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
 // Test skill function
 async function testSkill(featureId) {
@@ -391,6 +420,15 @@ async function testSkill(featureId) {
 function clearResult(featureId) {
     const resultElement = document.getElementById(`result-${featureId}`);
     resultElement.style.display = 'none';
+}
+
+// Set example prompt
+function setExamplePrompt(featureId, prompt) {
+    const inputElement = document.getElementById(`input-${featureId}`);
+    if (inputElement) {
+        inputElement.value = prompt;
+        inputElement.focus();
+    }
 }
 
 // Format AI response for elegant display

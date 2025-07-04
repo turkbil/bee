@@ -52,6 +52,8 @@ return [
     
     // Sistem
     'system' => 'Sistem',
+    'artificial_intelligence' => 'Yapay Zeka',
+    'ai' => 'Yapay Zeka',
     'configuration' => 'Yapılandırma',
     'maintenance' => 'Bakım',
     'updates' => 'Güncellemeler',

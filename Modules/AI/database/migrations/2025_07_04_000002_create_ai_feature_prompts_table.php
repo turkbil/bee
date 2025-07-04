@@ -22,6 +22,7 @@ return new class extends Migration
             $table->enum('prompt_role', [
                 'primary',      // Ana prompt (zorunlu)
                 'secondary',    // İkincil prompt (destek)
+                'support',      // Destek prompt (yardımcı)
                 'hidden',       // Gizli sistem promptu
                 'conditional',  // Şartlı prompt
                 'formatting',   // Format düzenleme

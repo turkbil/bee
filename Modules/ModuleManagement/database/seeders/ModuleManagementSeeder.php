@@ -44,11 +44,11 @@ class ModuleManagementSeeder extends Seeder
                 ],
                 [
                     'name' => 'ai',
-                    'display_name' => 'AI - Yapay Zeka',
+                    'display_name' => 'Yapay Zeka',
                     'description' => 'Yapay Zeka modülü',
                     'version' => '1.0.0',
                     'settings' => null,
-                    'type' => 'system',
+                    'type' => 'ai',
                     'is_active' => true
                 ],
                 [

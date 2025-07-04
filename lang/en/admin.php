@@ -50,6 +50,8 @@ return [
     
     // System
     'system' => 'System',
+    'artificial_intelligence' => 'Artificial Intelligence',
+    'ai' => 'AI',
     'configuration' => 'Configuration',
     'maintenance' => 'Maintenance',
     'updates' => 'Updates',

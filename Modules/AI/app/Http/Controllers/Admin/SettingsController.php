@@ -306,12 +306,13 @@ class SettingsController extends Controller
     
     public function examples()
     {
-        // Token durumu bilgileri
+        // Token durumu bilgileri (YENİ SİSTEM)
+        $tokenStats = ai_get_token_stats();
         $tokenStatus = [
-            'remaining_tokens' => \App\Helpers\TokenHelper::remaining(),
-            'total_tokens' => \App\Helpers\TokenHelper::totalPurchased(),
-            'daily_usage' => \App\Helpers\TokenHelper::todayUsage(),
-            'monthly_usage' => \App\Helpers\TokenHelper::monthlyUsage(),
+            'remaining_tokens' => $tokenStats['remaining'],
+            'total_tokens' => $tokenStats['total_purchased'],
+            'daily_usage' => ai_get_total_used(), // Geçici - daha sonra daily hesaplama eklenecek
+            'monthly_usage' => $tokenStats['total_used'],
             'provider' => config('ai.default_provider', 'deepseek'),
             'provider_active' => !empty(config('ai.providers.deepseek.api_key'))
         ];
@@ -486,12 +487,13 @@ class SettingsController extends Controller
     
     public function test()
     {
-        // Token durumu bilgileri
+        // Token durumu bilgileri (YENİ SİSTEM)
+        $tokenStats = ai_get_token_stats();
         $tokenStatus = [
-            'remaining_tokens' => \App\Helpers\TokenHelper::remaining(),
-            'total_tokens' => \App\Helpers\TokenHelper::totalPurchased(),
-            'daily_usage' => \App\Helpers\TokenHelper::todayUsage(),
-            'monthly_usage' => \App\Helpers\TokenHelper::monthlyUsage(),
+            'remaining_tokens' => $tokenStats['remaining'],
+            'total_tokens' => $tokenStats['total_purchased'],
+            'daily_usage' => ai_get_total_used(), // Geçici - daha sonra daily hesaplama eklenecek
+            'monthly_usage' => $tokenStats['total_used'],
             'provider' => config('ai.default_provider', 'deepseek'),
             'provider_active' => !empty(config('ai.providers.deepseek.api_key'))
         ];

@@ -32,12 +32,13 @@ class AIExamples extends Component
     
     public function loadData()
     {
-        // Token durumu
+        // Token durumu (YENİ SİSTEM)
+        $tokenStats = ai_get_token_stats();
         $this->tokenStatus = [
-            'remaining_tokens' => TokenHelper::remaining(),
-            'total_tokens' => TokenHelper::totalPurchased(),
-            'daily_usage' => TokenHelper::todayUsage(),
-            'monthly_usage' => TokenHelper::monthlyUsage(),
+            'remaining_tokens' => $tokenStats['remaining'],
+            'total_tokens' => $tokenStats['total_purchased'],
+            'daily_usage' => ai_get_total_used(), // Geçici - daha sonra daily hesaplama eklenecek
+            'monthly_usage' => $tokenStats['total_used'],
             'provider' => config('ai.default_provider', 'deepseek'),
             'provider_active' => !empty(config('ai.providers.deepseek.api_key'))
         ];
@@ -286,8 +287,8 @@ class AIExamples extends Component
                 $this->tokensUsed = $response['tokens_used'] ?? 0;
                 $this->showResult = true;
                 
-                // Token bilgilerini güncelle
-                $this->tokenStatus['remaining_tokens'] = TokenHelper::remaining($tenant);
+                // Token bilgilerini güncelle (YENİ SİSTEM)
+                $this->tokenStatus['remaining_tokens'] = ai_get_token_balance();
                 
                 $this->emit('refreshComponent');
             } else {

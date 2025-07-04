@@ -180,46 +180,41 @@ if (!function_exists('ai_estimate_tokens')) {
 
 if (!function_exists('ai_check_tokens')) {
     /**
-     * Token durumu kontrolü
+     * Token durumu kontrolü (YENİ SİSTEME YÖNLENDİRİLDİ)
      * 
      * @param string|null $tenantId
      * @return array
      */
     function ai_check_tokens(?string $tenantId = null): array
     {
-        $tenantId = $tenantId ?: tenant('id') ?: 'default';
-        return ai()->getTokenStatus($tenantId);
+        return ai_get_token_stats($tenantId);
     }
 }
 
-if (!function_exists('ai_can_use_tokens')) {
+if (!function_exists('ai_can_use_tokens_old')) {
     /**
-     * Token kullanım kontrolü
+     * Token kullanım kontrolü (ESKİ SİSTEM - YENİ SİSTEM AITokenHelper'da)
      * 
      * @param int $tokensNeeded
      * @param string|null $tenantId
      * @return bool
      */
-    function ai_can_use_tokens(int $tokensNeeded, ?string $tenantId = null): bool
+    function ai_can_use_tokens_old(int $tokensNeeded, ?string $tenantId = null): bool
     {
-        $tenantId = $tenantId ?: tenant('id') ?: 'default';
-        $tokenManager = app(\App\Contracts\AI\TokenManagerInterface::class);
-        return $tokenManager->canUseTokens($tenantId, $tokensNeeded);
+        return ai_can_use_tokens($tokensNeeded, $tenantId);
     }
 }
 
 if (!function_exists('ai_get_remaining_tokens')) {
     /**
-     * Kalan token miktarını getir
+     * Kalan token miktarını getir (YENİ SİSTEME YÖNLENDİRİLDİ)
      * 
      * @param string|null $tenantId
      * @return int
      */
     function ai_get_remaining_tokens(?string $tenantId = null): int
     {
-        $tenantId = $tenantId ?: tenant('id') ?: 'default';
-        $tokenManager = app(\App\Contracts\AI\TokenManagerInterface::class);
-        return $tokenManager->getRemainingTokens($tenantId);
+        return ai_get_token_balance($tenantId);
     }
 }
 

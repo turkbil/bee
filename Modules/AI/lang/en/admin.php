@@ -408,6 +408,39 @@ return [
 'bulk_unarchive' => 'Unarchive',
 'bulk_delete' => 'Delete',
 'bulk_clear_selection' => 'Clear Selection',
-'bulk_unarchive_confirm' => 'conversations to unarchive?',
-'bulk_delete_confirm' => 'conversations to permanently delete? This action cannot be undone!'
+    'bulk_unarchive_confirm' => 'conversations to unarchive?',
+    'bulk_delete_confirm' => 'conversations to permanently delete? This action cannot be undone!',
+    
+    // Prowess & Showcase Translations
+    'prowess' => [
+        'title' => 'AI Prowess & Capabilities',
+        'subtitle' => 'Discover the extraordinary capabilities of our advanced AI system',
+        'manage_skills' => 'Manage Skills',
+        'developer_tools' => 'Developer Tools',
+        'available_tokens' => 'Available Tokens',
+        'ai_skills' => 'AI Skills',
+        'categories' => 'Categories',
+        'no_skills_title' => 'No AI Skills Available',
+        'no_skills_subtitle' => 'Configure AI skills to showcase their capabilities here.',
+        'configure_skills' => 'Configure Skills',
+        'skills' => 'Skills',
+        'skills_count' => ':count Skills',
+        'level' => 'Level',
+        'try_examples' => 'Try these examples:',
+        'enter_challenge' => 'Enter your challenge for AI to solve...',
+        'experience_magic' => 'Generate with AI',
+        'ai_working' => 'AI is working...',
+        'ai_result' => 'AI Result',
+        'processing_complete' => 'Processing complete',
+        'clear_result' => 'Clear Result',
+        'usage' => 'Usage',
+        'rating' => 'Rating',
+        'category' => 'Category',
+        'tokens_used' => ':count tokens used',
+        'error_occurred' => 'Error: :message',
+        'connection_error' => 'Connection error: :message',
+        'enter_challenge_alert' => 'Please enter your challenge for the AI to solve.',
+        'no_result' => 'No result received',
+        'no_result_available' => 'No result available'
+    ]
 ];

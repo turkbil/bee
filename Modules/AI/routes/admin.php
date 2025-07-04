@@ -176,6 +176,22 @@ Route::middleware(['admin', 'tenant'])
                 })
                     ->middleware('module.permission:ai,view')
                     ->name('test-feature');
+                    
+                // Token Stats API (Real-time güncellemeler için)
+                Route::get('/token-stats', function() {
+                    $tokenHelper = app(\Modules\AI\app\Helpers\AITokenHelper::class);
+                    $tokenStats = $tokenHelper->getUserTokenStats();
+                    
+                    // Add additional calculated fields for compatibility
+                    $tokenStats['total_tokens'] = $tokenStats['remaining_tokens'] + $tokenStats['used_tokens'];
+                    $tokenStats['usage_percentage'] = $tokenStats['monthly_limit'] > 0 
+                        ? min(100, ($tokenStats['monthly_usage'] / $tokenStats['monthly_limit']) * 100)
+                        : 0;
+                    
+                    return response()->json($tokenStats);
+                })
+                    ->middleware('module.permission:ai,view')
+                    ->name('token-stats');
                 
                 // Token Management Routes (Root Admin Only)
                 Route::prefix('tokens')

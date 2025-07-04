@@ -34,9 +34,9 @@
                         <div>
                             <div class="small text-muted text-uppercase fw-bold">Kullanılabilir</div>
                             @if($tokenStatus['remaining_tokens'] > 0)
-                                <div class="h3 mb-0 text-primary">{{ number_format($tokenStatus['remaining_tokens']) }}</div>
+                                <div class="h3 mb-0 text-primary" id="features-remaining-tokens">{{ number_format($tokenStatus['remaining_tokens']) }}</div>
                             @else
-                                <div class="h3 mb-0 text-danger">0</div>
+                                <div class="h3 mb-0 text-danger" id="features-remaining-tokens">0</div>
                             @endif
                         </div>
                     </div>
@@ -45,7 +45,7 @@
                             $percentage = $tokenStatus['total_tokens'] > 0 ? 
                                 ($tokenStatus['remaining_tokens'] / $tokenStatus['total_tokens']) * 100 : 0;
                         @endphp
-                        <div class="progress-bar bg-primary" role="progressbar" style="width: {{ $percentage }}%"></div>
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: {{ $percentage }}%" id="features-token-progress"></div>
                     </div>
                     <div class="small text-muted mt-2">
                         Toplam: {{ number_format($tokenStatus['total_tokens']) }} token

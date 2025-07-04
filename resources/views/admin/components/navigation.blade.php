@@ -494,6 +494,17 @@ app()->setLocale($originalLocale);
                     </li>
                     @endif
 
+                    @if($groupedModules->has('ai') && $groupedModules['ai']->count() > 0)
+                    <li class="nav-item {{ $activeType == 'ai' ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('admin.ai.index') }}">
+                            <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                <i class="fa-solid fa-stars" style="font-size: 18px;"></i>
+                            </span>
+                            <span class="nav-link-title">{{ __('admin.artificial_intelligence') }}</span>
+                        </a>
+                    </li>
+                    @endif
+
                     @if($groupedModules->has('widget') && $groupedModules['widget']->count() > 0)
                     <li class="nav-item {{ $activeType == 'widget' ? 'active' : '' }} dropdown">
                         <a class="nav-link dropdown-toggle" href="#navbar-widget" data-bs-toggle="dropdown"
@@ -553,6 +564,7 @@ app()->setLocale($originalLocale);
                         </div>
                     </li>
                     @endif
+
                 </ul>
             </div>
         </div>

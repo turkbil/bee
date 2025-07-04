@@ -166,7 +166,7 @@
         
         <div>
             <h6 class="text-muted">AI Yanıtı:</h6>
-            <div class="bg-white p-4 rounded border" style="white-space: pre-wrap; line-height: 1.6;">{{ $result }}</div>
+            <div class="bg-white p-4 rounded border" style="white-space: pre-wrap; line-height: 1.6; text-align: left;">{{ $result }}</div>
         </div>
         
         <div class="mt-3 text-end">

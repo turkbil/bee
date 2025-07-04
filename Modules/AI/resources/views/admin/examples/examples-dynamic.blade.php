@@ -92,6 +92,7 @@
     line-height: 1.6;
     font-family: inherit;
     box-shadow: var(--tblr-box-shadow-sm);
+    text-align: left;
 }
 
 .chat-message-content h1, .chat-message-content h2, .chat-message-content h3,
@@ -208,7 +209,7 @@
         <div class="col-md-3">
             <div class="card stats-card text-center">
                 <div class="card-body">
-                    <h2 class="mb-0 {{ $tokenStatus['remaining_tokens'] > 0 ? 'text-white' : 'text-warning' }}">
+                    <h2 class="mb-0 {{ $tokenStatus['remaining_tokens'] > 0 ? 'text-white' : 'text-warning' }}" id="remaining-token-display">
                         {{ number_format($tokenStatus['remaining_tokens']) }}
                     </h2>
                     <p class="text-white-50 mb-0">Kalan Token</p>
@@ -218,7 +219,7 @@
         <div class="col-md-3">
             <div class="card text-center">
                 <div class="card-body">
-                    <h2 class="mb-0 text-info">{{ number_format($tokenStatus['daily_usage']) }}</h2>
+                    <h2 class="mb-0 text-info" id="daily-usage-display">{{ number_format($tokenStatus['daily_usage']) }}</h2>
                     <p class="text-muted mb-0">Bugünkü Kullanım</p>
                 </div>
             </div>
@@ -226,7 +227,7 @@
         <div class="col-md-3">
             <div class="card text-center">
                 <div class="card-body">
-                    <h2 class="mb-0 text-warning">{{ number_format($tokenStatus['monthly_usage']) }}</h2>
+                    <h2 class="mb-0 text-warning" id="monthly-usage-display">{{ number_format($tokenStatus['monthly_usage']) }}</h2>
                     <p class="text-muted mb-0">Aylık Kullanım</p>
                 </div>
             </div>
@@ -464,6 +465,14 @@ async function testFeature(featureId) {
                 ${data.processing_time ? ` • ${data.processing_time}ms` : ''}
                 ${data.demo_mode ? ' • Demo Mode' : ' • Real AI'}
             `;
+            
+            // Token bilgilerini real-time güncelle
+            if (data.remaining_tokens !== undefined) {
+                const remainingDisplay = document.getElementById('remaining-token-display');
+                if (remainingDisplay) {
+                    remainingDisplay.textContent = new Intl.NumberFormat().format(data.remaining_tokens);
+                }
+            }
             
             // AI sonucunu markdown'dan HTML'e çevir ve göster
             resultContentElement.innerHTML = formatAIResponse(data.ai_result || 'Sonuç alınamadı');

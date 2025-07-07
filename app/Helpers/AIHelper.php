@@ -255,7 +255,7 @@ if (!function_exists('ai_brand_story_creator')) {
             ]);
 
             // Token kullanımını kaydet
-            ai_use_tokens($estimatedTokens, 'AI', 'brand-story-creator', $tenantId, $userInput);
+            ai_use_tokens($estimatedTokens, 'AI', 'brand-story-creator', $tenantId, ['brand_context' => $brandContext]);
 
             // Feature kullanım sayısını artır
             $feature->incrementUsage();
@@ -1420,28 +1420,6 @@ if (!function_exists('ai_api_documentation')) {
     }
 }
 
-if (!function_exists('ai_brand_story_creator')) {
-    /**
-     * Marka Hikayesi Yaratıcısı - Duygusal marka hikayeleri
-     */
-    function ai_brand_story_creator(string $brand_context, array $options = []): array
-    {
-        return ai_execute_feature('brand-story-creator', [
-            'content' => $brand_context,
-            'industry' => $options['industry'] ?? 'general',
-            'stage' => $options['stage'] ?? 'growth',
-            'mission' => $options['mission'] ?? '',
-            'values' => implode(', ', $options['values'] ?? []),
-            'audience' => $options['audience'] ?? 'customers',
-            'unique_factor' => $options['unique_factor'] ?? '',
-            'language' => $options['language'] ?? 'Turkish'
-        ], [
-            'content_type' => ['brand', 'storytelling'],
-            'narrative_elements' => ['origin', 'vision', 'values', 'mission'],
-            'emotional_impact' => ['inspiration', 'connection', 'trust']
-        ], $options);
-    }
-}
 
 if (!function_exists('ai_schema_markup_generator')) {
     /**

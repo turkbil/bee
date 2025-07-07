@@ -345,7 +345,8 @@ class AIService
             $settings = new Setting();
         }
         
-        if (isset($data['api_key'])) {
+        // API anahtarı sadece data'da varsa ve dolu ise güncelle
+        if (isset($data['api_key']) && !empty($data['api_key'])) {
             $settings->api_key = $data['api_key'];
         }
         

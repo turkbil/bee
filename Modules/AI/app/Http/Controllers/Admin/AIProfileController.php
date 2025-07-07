@@ -102,27 +102,62 @@ class AIProfileController extends Controller
     public function reset(Request $request)
     {
         try {
-            $profile = AITenantProfile::currentTenant();
+            // Tenant ID'yi resolve_tenant_id helper ile al (daha güvenilir)
+            $tenantId = resolve_tenant_id();
+            
+            \Log::info('🔧 AIProfileController - Reset başladı', [
+                'tenant_id' => $tenantId,
+                'tenant_function' => tenant('id'),
+                'session_tenant' => session('admin_selected_tenant_id')
+            ]);
+            
+            if (!$tenantId) {
+                \Log::error('❌ Reset - Tenant ID bulunamadı');
+                return redirect()->route('admin.ai.profile.show')
+                                ->with('error', 'Tenant ID bulunamadı. Lütfen tenant seçimini kontrol edin.');
+            }
+            
+            // Mevcut profili bul (varsa)
+            $profile = AITenantProfile::where('tenant_id', $tenantId)->first();
+            
+            \Log::info('🔍 Reset - Profil arama sonucu', [
+                'tenant_id' => $tenantId,
+                'profile_found' => !is_null($profile),
+                'profile_id' => $profile?->id,
+                'total_profiles' => AITenantProfile::count()
+            ]);
             
             if ($profile && $profile->exists) {
                 // Cache'i temizle
-                \Illuminate\Support\Facades\Cache::forget('ai_tenant_profile_' . tenant('id'));
+                \Illuminate\Support\Facades\Cache::forget('ai_tenant_profile_' . $tenantId);
                 
-                // Profili tamamen sil (ID dahil)
+                // Profili tamamen sil (ID dahil) - veritabanından kalıcı olarak sil
+                $profileId = $profile->id;
                 $profile->forceDelete();
                 
-                \Log::info('AIProfileController - Profile force deleted', [
-                    'tenant_id' => tenant('id'),
-                    'profile_id' => $profile->id
+                \Log::info('✅ AIProfileController - Profile force deleted', [
+                    'tenant_id' => $tenantId,
+                    'profile_id' => $profileId,
+                    'action' => 'complete_reset'
                 ]);
+                
+                return redirect()->route('admin.ai.profile.show')
+                                ->with('success', 'Yapay zeka profili tamamen sıfırlandı! Tüm veriler veritabanından silindi.');
+            } else {
+                \Log::info('ℹ️ Reset - Profil bulunamadı', [
+                    'tenant_id' => $tenantId,
+                    'total_profiles_in_db' => AITenantProfile::count()
+                ]);
+                
+                return redirect()->route('admin.ai.profile.show')
+                                ->with('info', 'Silinecek profil bulunamadı. Zaten temiz durumda.');
             }
             
-            return redirect()->route('admin.ai.profile.show')
-                             ->with('success', 'Yapay zeka profili tamamen sıfırlandı! Yeni profil oluşturabilirsiniz.');
         } catch (\Exception $e) {
-            \Log::error('AIProfileController - Reset error', [
+            \Log::error('❌ AIProfileController - Reset error', [
                 'error' => $e->getMessage(),
-                'tenant_id' => tenant('id')
+                'tenant_id' => tenant('id'),
+                'trace' => $e->getTraceAsString()
             ]);
             
             return redirect()->route('admin.ai.profile.show')

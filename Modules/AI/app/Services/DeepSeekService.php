@@ -51,7 +51,8 @@ class DeepSeekService
             }
             
             // 2. Veritabanı ayarları yoksa, .env'den yükle
-            $this->apiKey = config('deepseek.api_key');
+            $this->apiKey = env('DEEPSEEK_API_KEY');
+            $this->model = env('DEEPSEEK_MODEL', 'deepseek-chat');
             
             if (empty($this->apiKey)) {
                 Log::warning('API anahtarı bulunamadı. Lütfen .env dosyasına DEEPSEEK_API_KEY ekleyin veya veritabanı ayarlarını yapılandırın.');
@@ -59,8 +60,8 @@ class DeepSeekService
         } catch (\Exception $e) {
             // Hata durumunda varsayılan değerleri kullan
             Log::error('DeepSeekService ayarları yüklenirken hata: ' . $e->getMessage());
-            $this->apiKey = config('deepseek.api_key', '');
-            $this->model = config('deepseek.model', 'deepseek-chat');
+            $this->apiKey = env('DEEPSEEK_API_KEY', '');
+            $this->model = env('DEEPSEEK_MODEL', 'deepseek-chat');
         }
     }
 

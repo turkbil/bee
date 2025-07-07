@@ -41,11 +41,23 @@ class TokenService
     public function formatTokenAmount(int $amount): string
     {
         if ($amount >= 1000000) {
-            return number_format($amount / 1000000, 1) . 'M';
-        } elseif ($amount >= 1000) {
-            return number_format($amount / 1000, 0) . 'K';
+            $value = $amount / 1000000;
+            return ($value == intval($value)) ? intval($value) . 'M' : number_format($value, 1) . 'M';
+        } else {
+            // Tüm değerler K formatında gösterilecek
+            $value = $amount / 1000;
+            
+            // 100'den küçük değerler için minimum 0.1K göster
+            if ($amount < 100 && $amount > 0) {
+                return '0.1K';
+            }
+            
+            if ($value >= 1 && $value == intval($value)) {
+                return intval($value) . 'K';
+            } else {
+                return number_format($value, 1) . 'K';
+            }
         }
-        return number_format($amount);
     }
     
     /**

@@ -39,7 +39,7 @@
         </div>
         <div class="col-auto">
             <div class="btn-list">
-                <a href="{{ route('admin.ai.features.manage', $feature) }}" class="btn btn-primary">
+                <a href="{{ route('admin.ai.features.index', $feature) }}" class="btn btn-primary">
                     <i class="fas fa-edit me-2"></i>Düzenle
                 </a>
                 @if(!$feature->is_system)
@@ -218,7 +218,7 @@
                 <div class="card-body text-center py-4">
                     <i class="fas fa-comments fa-3x text-muted mb-3"></i>
                     <p class="text-muted">Bu özellik için henüz prompt bağlantısı yok</p>
-                    <a href="{{ route('admin.ai.features.manage', $feature) }}" class="btn btn-primary">
+                    <a href="{{ route('admin.ai.features.index', $feature) }}" class="btn btn-primary">
                         <i class="fas fa-plus me-2"></i>Prompt Ekle
                     </a>
                 </div>

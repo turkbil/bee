@@ -168,7 +168,7 @@
                                 <td>
                                     @if($activity->tenant)
                                         <span class="badge badge-outline text-green">
-                                            {{ \App\Helpers\TokenHelper::format($activity->tenant->ai_tokens_balance) }} Token
+                                            {{ \App\Helpers\TokenHelper::format($activity->tenant->real_balance) }} Token
                                         </span>
                                     @else
                                         <span class="text-muted">-</span>

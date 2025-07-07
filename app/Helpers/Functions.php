@@ -54,6 +54,59 @@ if (!function_exists('tenant_id')) {
     }
 }
 
+if (!function_exists('resolve_tenant_id')) {
+    /**
+     * Hızlı tenant ID çözümleme (admin paneli desteği ile)
+     * Öncelik: tenant() -> auth()->user()->tenant_id -> latest tenant
+     * 
+     * @param bool $fallbackToLatest En son tenant'a fallback yap (default: true)
+     * @return int|null
+     */
+    function resolve_tenant_id(bool $fallbackToLatest = true): ?int
+    {
+        return TenantHelpers::resolveCurrentTenantId($fallbackToLatest);
+    }
+}
+
+if (!function_exists('get_tenant_info')) {
+    /**
+     * Tenant bilgilerini hızlı al (cache'li)
+     * 
+     * @param int|null $tenantId
+     * @return \App\Models\Tenant|null
+     */
+    function get_tenant_info(?int $tenantId = null): ?\App\Models\Tenant
+    {
+        return TenantHelpers::getTenantById($tenantId);
+    }
+}
+
+if (!function_exists('get_tenant_domain')) {
+    /**
+     * Tenant domain'ini al
+     * 
+     * @param int|null $tenantId
+     * @return string|null
+     */
+    function get_tenant_domain(?int $tenantId = null): ?string
+    {
+        return TenantHelpers::getTenantDomain($tenantId);
+    }
+}
+
+if (!function_exists('tenant_db_type')) {
+    /**
+     * Tenant'ın database tipini al ('central' veya 'tenant')
+     * 
+     * @param int|null $tenantId
+     * @return string
+     */
+    function tenant_db_type(?int $tenantId = null): string
+    {
+        return TenantHelpers::getTenantDatabaseType($tenantId);
+    }
+}
+
 if (!function_exists('is_tenant')) {
     /**
      * İşlemin tenant veritabanında olup olmadığını kontrol eder

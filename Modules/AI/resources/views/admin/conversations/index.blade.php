@@ -340,7 +340,7 @@
                                 @endif
                             </td>
                             <td>
-                                <span class="badge bg-gray-lt">{{ number_format($conversation->total_tokens_used) }}</span>
+                                <span class="badge bg-gray-lt">{{ ai_format_token_count($conversation->total_tokens_used) }}</span>
                             </td>
                             <td>{{ $conversation->messages()->count() }}</td>
                             <td>

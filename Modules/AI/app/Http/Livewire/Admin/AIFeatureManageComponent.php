@@ -1,406 +1,594 @@
 <?php
+
 namespace Modules\AI\App\Http\Livewire\Admin;
 
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Modules\AI\App\Models\AIFeature;
-use Modules\AI\App\Models\Prompt;
 use Modules\AI\App\Models\AIFeaturePrompt;
+use Modules\AI\App\Models\Prompt;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 #[Layout('admin.layout')]
 class AIFeatureManageComponent extends Component
 {
     public $featureId;
     
-    // Temel inputs
+    // Temel Bilgiler
     public $inputs = [
         'name' => '',
         'slug' => '',
         'description' => '',
         'emoji' => '🤖',
         'icon' => 'fas fa-robot',
-        'category' => 'content',
-        'response_length' => 'medium',
-        'response_format' => 'markdown',
+        'category' => '',
         'complexity_level' => 'intermediate',
         'status' => 'active',
-        'badge_color' => 'success',
-        'sort_order' => 1,
-        'show_in_examples' => true,
-        'is_featured' => false,
-        'requires_pro' => false,
-        'requires_input' => true,
+        'sort_order' => 999,
+        'badge_color' => 'primary',
         'input_placeholder' => '',
-        'button_text' => 'Canlı Test Et',
-        'meta_title' => '',
-        'meta_description' => '',
-        'example_inputs' => []
+        'helper_function' => '',
+        'response_length' => 'medium',
+        'response_format' => 'text',
+        'button_text' => 'Generate',
+        'is_featured' => false,
+        'show_in_examples' => true,
+        'requires_input' => true,
+        'is_system' => false,
+        'hybrid_system_type' => 'simple',
+        'has_custom_prompt' => false,
+        'has_related_prompts' => false
     ];
-
-    // Prompt yönetimi
-    public $existingPrompts = [];
-    public $newPrompts = [];
-    public $deletedPrompts = [];
-
-    // Mevcut prompts ve statistics
+    
+    // JSON Alanları - Sortable ile yönetilebilir, seeder'dan gelen gerçek verilerle
+    public $jsonFields = [
+        'additional_config' => [
+            'max_tokens' => 1000,
+            'temperature' => 0.7,
+            'preprocessing' => true
+        ],
+        'usage_examples' => [
+            [
+                'input' => 'Basit metin girişi örneği',
+                'output' => 'Beklenen çıktı formatı',
+                'description' => 'Yeni başlayanlar için örnek'
+            ]
+        ],
+        'input_validation' => [
+            'required' => true,
+            'min_length' => 10,
+            'max_length' => 5000
+        ],
+        'settings' => [
+            'auto_save' => true,
+            'enable_history' => true,
+            'performance_mode' => 'balanced'
+        ],
+        'error_messages' => [
+            'insufficient_tokens' => 'Yeterli token bulunmamaktadır',
+            'invalid_input' => 'Geçersiz giriş formatı'
+        ],
+        'success_messages' => [
+            'content_generated' => 'İçerik başarıyla oluşturuldu',
+            'analysis_completed' => 'Analiz tamamlandı'
+        ],
+        'token_cost' => [
+            'base_cost' => 100,
+            'per_word_cost' => 2,
+            'estimated_range' => ['min' => 50, 'max' => 500]
+        ],
+        'example_inputs' => [
+            [
+                'text' => 'Ankara\'da faaliyet gösteren inşaat firmamız villa, apartman projeleri gerçekleştiriyor.',
+                'label' => 'İnşaat Firması'
+            ]
+        ],
+        'helper_examples' => [
+            'basic' => [
+                'code' => 'ai_feature_function("örnek parametre")',
+                'description' => 'Temel kullanım örneği',
+                'estimated_tokens' => 300
+            ]
+        ],
+        'helper_parameters' => [
+            'text' => 'Ana metin parametresi',
+            'options' => [
+                'tone' => 'Yazım tonu (professional, friendly)',
+                'length' => 'İçerik uzunluğu (short, medium, long)'
+            ]
+        ],
+        'helper_returns' => [
+            'success' => 'Başarılı işlem sonucu',
+            'content' => 'Üretilen içerik',
+            'metadata' => ['token_used' => 'Kullanılan token sayısı']
+        ],
+        'response_template' => [
+            'sections' => [
+                'BAŞLIK: Ana başlık formatı',
+                'İÇERİK: Ana içerik bölümü',
+                'SONUÇ: Özet ve sonuç'
+            ],
+            'format' => 'structured_text',
+            'scoring' => true
+        ]
+    ];
+    
+    // Prompt Alanları
+    public $customPrompt = '';
+    public $quickPrompt = '';
+    
+    // Helper Bilgileri
+    public $helperDescription = '';
+    
+    // Feature Prompt İlişkileri
+    public $featurePrompts = [];
     public $availablePrompts = [];
-    public $featureStats = [];
+    
+    // UI State
+    public $activeTab = 'basic';
+    public $expandedSections = [];
 
     public function mount($id = null)
     {
-        // Mevcut prompt'ları yükle
-        $this->availablePrompts = Prompt::where('is_system', true)
-            ->orderBy('name')
-            ->get();
-
+        $this->loadAvailablePrompts();
+        
+        // Varsayılan expanded sections
+        $this->expandedSections = [
+            'basic_info' => true,
+            'prompts' => false,
+            'json_fields' => false,
+            'helper_system' => false
+        ];
+        
         if ($id) {
             $this->featureId = $id;
-            $feature = AIFeature::with(['featurePrompts.prompt'])->find($id);
+            $this->loadFeature($id);
+        } else {
+            $this->initializeEmpty();
+        }
+    }
+
+
+    protected function loadAvailablePrompts()
+    {
+        $this->availablePrompts = Prompt::where('is_active', true)
+            ->orderBy('name')
+            ->get()
+            ->map(function ($prompt) {
+                return [
+                    'id' => $prompt->id,
+                    'name' => $prompt->name,
+                    'category' => $prompt->prompt_type ?? 'standard',
+                    'description' => Str::limit($prompt->content ?? '', 100),
+                    'prompt_type' => $prompt->prompt_type ?? 'standard'
+                ];
+            })->toArray();
+    }
+
+    protected function loadFeature($id)
+    {
+        $feature = AIFeature::with(['prompts', 'featurePrompts.aiPrompt'])->findOrFail($id);
+        
+        // Temel bilgileri doldur
+        $this->inputs = $feature->only([
+            'name', 'slug', 'description', 'emoji', 'icon', 'category',
+            'complexity_level', 'status', 'sort_order', 'badge_color',
+            'input_placeholder', 'helper_function', 'response_length',
+            'response_format', 'button_text', 'is_featured', 'show_in_examples',
+            'requires_input', 'is_system', 'hybrid_system_type',
+            'has_custom_prompt', 'has_related_prompts'
+        ]);
+        
+        // JSON alanları - RAW veritabanı değerlerini al (cast'ler olmadan)
+        $rawFeature = \DB::table('ai_features')->where('id', $feature->id)->first();
+        
+        $jsonFieldNames = [
+            'additional_config', 'usage_examples', 'input_validation', 'settings',
+            'error_messages', 'success_messages', 'token_cost', 'example_inputs',
+            'helper_examples', 'helper_parameters', 'helper_returns', 'response_template'
+        ];
+        
+        foreach ($jsonFieldNames as $field) {
+            $value = $rawFeature->$field ?? null;
+            \Log::info("Loading JSON field '{$field}'", [
+                'raw_value' => substr($value ?? 'null', 0, 100),
+                'type' => gettype($value),
+                'is_string' => is_string($value),
+                'is_array' => is_array($value),
+                'length' => is_string($value) ? strlen($value) : 'n/a'
+            ]);
             
-            if (!$feature) {
-                abort(404, 'AI Özelliği bulunamadı');
+            if (is_string($value) && !empty($value)) {
+                $decoded = json_decode($value, true);
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    $this->jsonFields[$field] = $decoded;
+                    \Log::info("Successfully decoded JSON for '{$field}'", [
+                        'decoded_type' => gettype($decoded),
+                        'decoded_count' => is_array($decoded) ? count($decoded) : 'n/a',
+                        'keys' => is_array($decoded) ? array_keys($decoded) : 'n/a'
+                    ]);
+                } else {
+                    \Log::warning("JSON decode failed for '{$field}'", [
+                        'error' => json_last_error_msg(),
+                        'sample' => substr($value, 0, 200)
+                    ]);
+                    // JSON parse hatası varsa raw string'i store et, blade'de tekrar deneriz
+                    $this->jsonFields[$field] = $value;
+                }
+            } else {
+                // Null/empty fields için empty array
+                $this->jsonFields[$field] = [];
+                \Log::info("Setting empty array for '{$field}' (null/empty value)");
+            }
+        }
+        
+        // Prompt alanları
+        $this->customPrompt = $feature->custom_prompt ?? '';
+        $this->quickPrompt = $feature->quick_prompt ?? '';
+        $this->helperDescription = $feature->helper_description ?? '';
+        
+        // Feature Prompt ilişkilerini yükle
+        $this->featurePrompts = $feature->featurePrompts->map(function ($fp) {
+            return [
+                'id' => $fp->id,
+                'prompt_id' => $fp->prompt_id,
+                'prompt_name' => $fp->aiPrompt->name ?? 'Unknown',
+                'role' => $fp->role,
+                'priority' => $fp->priority,
+                'is_active' => $fp->is_active,
+                'conditions' => is_array($fp->conditions) ? $fp->conditions : [],
+                'notes' => $fp->notes ?? ''
+            ];
+        })->sortBy('priority')->values()->toArray();
+    }
+
+    protected function initializeEmpty()
+    {
+        // Varsayılan JSON değerlerini temizle - yeni feature için boş başla
+        foreach ($this->jsonFields as $field => $defaultValue) {
+            $this->jsonFields[$field] = [];
+        }
+        
+        $this->featurePrompts = [];
+        
+        // Yeni feature için sort_order'ı hesapla
+        $this->inputs['sort_order'] = (AIFeature::max('sort_order') ?? 0) + 1;
+    }
+
+
+    public function toggleSection($section)
+    {
+        $this->expandedSections[$section] = !($this->expandedSections[$section] ?? false);
+    }
+
+    // JSON Field Management - Sortable destekli
+    public function addJsonItem($field, $key = null, $value = null)
+    {
+        if (!isset($this->jsonFields[$field])) {
+            $this->jsonFields[$field] = [];
+        }
+        
+        if ($key !== null) {
+            $this->jsonFields[$field][$key] = $value ?? '';
+        } else {
+            $this->jsonFields[$field][] = $value ?? '';
+        }
+    }
+
+    public function removeJsonItem($field, $key)
+    {
+        if (isset($this->jsonFields[$field][$key])) {
+            unset($this->jsonFields[$field][$key]);
+            $this->jsonFields[$field] = array_values($this->jsonFields[$field]);
+        }
+    }
+
+    public function updateJsonItem($field, $key, $value)
+    {
+        if (isset($this->jsonFields[$field])) {
+            $this->jsonFields[$field][$key] = $value;
+        }
+    }
+
+    public function sortJsonItems($field, $orderedIds)
+    {
+        if (!isset($this->jsonFields[$field])) return;
+        
+        $sortedItems = [];
+        foreach ($orderedIds as $index) {
+            if (isset($this->jsonFields[$field][$index])) {
+                $sortedItems[] = $this->jsonFields[$field][$index];
+            }
+        }
+        $this->jsonFields[$field] = $sortedItems;
+    }
+
+    // Feature Prompt Management - Priority ile sortable
+    public function addFeaturePrompt()
+    {
+        $this->featurePrompts[] = [
+            'id' => null,
+            'prompt_id' => '',
+            'prompt_name' => '',
+            'role' => 'primary',
+            'priority' => count($this->featurePrompts) + 1,
+            'is_active' => true,
+            'conditions' => [],
+            'notes' => ''
+        ];
+    }
+
+    public function removeFeaturePrompt($index)
+    {
+        if (isset($this->featurePrompts[$index])) {
+            // Eğer ID varsa, veritabanından da sil
+            if ($this->featurePrompts[$index]['id']) {
+                AIFeaturePrompt::find($this->featurePrompts[$index]['id'])?->delete();
             }
             
-            $this->loadFeatureData($feature);
-            $this->loadFeatureStats($feature);
-        } else {
-            $this->initializeEmptyData();
+            unset($this->featurePrompts[$index]);
+            $this->featurePrompts = array_values($this->featurePrompts);
+            
+            // Priority'leri yeniden düzenle
+            foreach ($this->featurePrompts as $idx => $prompt) {
+                $this->featurePrompts[$idx]['priority'] = $idx + 1;
+            }
         }
     }
 
-    protected function loadFeatureData($feature)
+    public function updatePromptName($index)
     {
-        $this->inputs = [
-            'name' => $feature->name,
-            'slug' => $feature->slug,
-            'description' => $feature->description,
-            'emoji' => $feature->emoji,
-            'icon' => $feature->icon,
-            'category' => $feature->category,
-            'response_length' => $feature->response_length,
-            'response_format' => $feature->response_format,
-            'complexity_level' => $feature->complexity_level,
-            'status' => $feature->status,
-            'badge_color' => $feature->badge_color,
-            'sort_order' => $feature->sort_order,
-            'show_in_examples' => $feature->show_in_examples,
-            'is_featured' => $feature->is_featured,
-            'requires_pro' => $feature->requires_pro,
-            'requires_input' => $feature->requires_input,
-            'input_placeholder' => $feature->input_placeholder,
-            'button_text' => $feature->button_text ?? 'Canlı Test Et',
-            'meta_title' => $feature->meta_title,
-            'meta_description' => $feature->meta_description,
-            'example_inputs' => $feature->example_inputs ?? []
-        ];
-
-        // Mevcut prompt bağlantılarını yükle
-        foreach ($feature->featurePrompts as $featurePrompt) {
-            $this->existingPrompts[$featurePrompt->id] = [
-                'prompt_id' => $featurePrompt->ai_prompt_id,
-                'role' => $featurePrompt->prompt_role,
-                'priority' => $featurePrompt->priority,
-                'is_required' => $featurePrompt->is_required,
-                'is_active' => $featurePrompt->is_active
-            ];
+        if (isset($this->featurePrompts[$index])) {
+            $promptId = $this->featurePrompts[$index]['prompt_id'];
+            $prompt = collect($this->availablePrompts)->firstWhere('id', $promptId);
+            
+            if ($prompt) {
+                $this->featurePrompts[$index]['prompt_name'] = $prompt['name'];
+            }
         }
     }
 
-    protected function loadFeatureStats($feature)
+    public function sortFeaturePrompts($orderedIds)
     {
-        $this->featureStats = [
-            'usage_count' => $feature->usage_count,
-            'avg_rating' => $feature->avg_rating,
-            'rating_count' => $feature->rating_count,
-            'total_tokens' => $feature->total_tokens,
-            'last_used_at' => $feature->last_used_at,
-            'is_system' => $feature->is_system,
-            'created_at' => $feature->created_at,
-            'updated_at' => $feature->updated_at,
-            'prompts_count' => $feature->prompts->count()
-        ];
-    }
-
-    protected function initializeEmptyData()
-    {
-        // Yeni özellik için varsayılan değerler zaten inputs'ta tanımlı
-        $this->inputs['sort_order'] = AIFeature::max('sort_order') + 1;
-    }
-
-    public function updatedInputsName()
-    {
-        if (empty($this->inputs['slug'])) {
-            $this->inputs['slug'] = Str::slug($this->inputs['name']);
+        $sortedPrompts = [];
+        foreach ($orderedIds as $priority => $index) {
+            if (isset($this->featurePrompts[$index])) {
+                $this->featurePrompts[$index]['priority'] = $priority + 1;
+                $sortedPrompts[] = $this->featurePrompts[$index];
+            }
         }
+        $this->featurePrompts = $sortedPrompts;
     }
 
-    public function addPrompt()
+    // Auto-generate slug from name
+    public function updatedInputsName($value)
     {
-        $index = count($this->newPrompts);
-        $this->newPrompts[$index] = [
-            'prompt_id' => '',
-            'role' => 'primary',
-            'priority' => 1,
-            'is_required' => true,
-            'is_active' => true
-        ];
-    }
-
-    public function removePrompt($index)
-    {
-        unset($this->newPrompts[$index]);
-        $this->newPrompts = array_values($this->newPrompts);
-    }
-
-    public function removeExistingPrompt($id)
-    {
-        if (isset($this->existingPrompts[$id])) {
-            $this->deletedPrompts[] = $id;
-            unset($this->existingPrompts[$id]);
+        if (!$this->inputs['is_system'] && empty($this->inputs['slug'])) {
+            $this->inputs['slug'] = Str::slug($value);
         }
-    }
-
-    public function addExample()
-    {
-        $this->inputs['example_inputs'][] = [
-            'label' => '',
-            'text' => ''
-        ];
-    }
-
-    public function removeExample($index)
-    {
-        unset($this->inputs['example_inputs'][$index]);
-        $this->inputs['example_inputs'] = array_values($this->inputs['example_inputs']);
     }
 
     protected function rules()
     {
-        $slugRule = 'required|unique:ai_features,slug';
-        if ($this->featureId) {
-            $slugRule .= ',' . $this->featureId;
-        }
-
-        return [
+        $rules = [
             'inputs.name' => 'required|string|min:3|max:255',
-            'inputs.slug' => $slugRule,
-            'inputs.description' => 'nullable|string|max:500',
-            'inputs.emoji' => 'nullable|string|max:10',
-            'inputs.icon' => 'nullable|string|max:100',
-            'inputs.category' => 'required|in:content,creative,business,technical,academic,legal,marketing,analysis,communication,other',
+            'inputs.slug' => 'required|string|max:255|unique:ai_features,slug,' . ($this->featureId ?? 'NULL'),
+            'inputs.description' => 'required|string|min:10',
+            'inputs.category' => 'required|string',
+            'inputs.complexity_level' => 'required|string',
+            'inputs.status' => 'required|in:active,inactive,beta,planned',
+            'inputs.sort_order' => 'nullable|integer|min:1',
             'inputs.response_length' => 'required|in:short,medium,long,variable',
             'inputs.response_format' => 'required|in:text,markdown,structured,code,list',
-            'inputs.complexity_level' => 'required|in:beginner,intermediate,advanced,expert',
-            'inputs.status' => 'required|in:active,inactive,planned,beta',
-            'inputs.badge_color' => 'required|in:success,primary,warning,info,danger,secondary',
-            'inputs.sort_order' => 'required|integer|min:1',
-            'inputs.show_in_examples' => 'boolean',
-            'inputs.is_featured' => 'boolean',
-            'inputs.requires_pro' => 'boolean',
-            'inputs.requires_input' => 'boolean',
-            'inputs.input_placeholder' => 'nullable|string|max:255',
-            'inputs.button_text' => 'nullable|string|max:100',
-            'inputs.meta_title' => 'nullable|string|max:255',
-            'inputs.meta_description' => 'nullable|string|max:500',
-            'inputs.example_inputs' => 'nullable|array',
-            'inputs.example_inputs.*.label' => 'nullable|string|max:100',
-            'inputs.example_inputs.*.text' => 'nullable|string|max:500',
-            'existingPrompts.*.prompt_id' => 'required|exists:ai_prompts,id',
-            'existingPrompts.*.role' => 'required|in:primary,secondary,hidden,conditional,formatting,validation',
-            'existingPrompts.*.priority' => 'required|integer|min:0',
-            'existingPrompts.*.is_required' => 'boolean',
-            'newPrompts.*.prompt_id' => 'required|exists:ai_prompts,id',
-            'newPrompts.*.role' => 'required|in:primary,secondary,hidden,conditional,formatting,validation',
-            'newPrompts.*.priority' => 'required|integer|min:0',
-            'newPrompts.*.is_required' => 'boolean'
+            'customPrompt' => 'nullable|string',
+            'quickPrompt' => 'nullable|string',
+            'helperDescription' => 'nullable|string'
+        ];
+
+        // JSON field validation
+        foreach ($this->jsonFields as $field => $value) {
+            $rules["jsonFields.{$field}"] = 'nullable|array';
+        }
+
+        return $rules;
+    }
+
+    protected function messages()
+    {
+        return [
+            'inputs.name.required' => __('ai::admin.feature_name_required'),
+            'inputs.name.min' => 'Feature adı en az 3 karakter olmalıdır',
+            'inputs.slug.required' => __('ai::admin.slug_required'),
+            'inputs.slug.unique' => 'Bu slug zaten kullanılmaktadır',
+            'inputs.description.required' => __('ai::admin.feature_description_required'),
+            'inputs.description.min' => 'Açıklama en az 10 karakter olmalıdır',
+            'inputs.category.required' => __('ai::admin.feature_category_required'),
         ];
     }
 
-    protected $messages = [
-        'inputs.name.required' => 'Özellik adı zorunludur',
-        'inputs.name.min' => 'Özellik adı en az 3 karakter olmalıdır',
-        'inputs.slug.required' => 'URL slug zorunludur',
-        'inputs.slug.unique' => 'Bu slug zaten kullanılmaktadır',
-        'inputs.category.required' => 'Kategori seçimi zorunludur',
-        'inputs.status.required' => 'Durum seçimi zorunludur',
-        'existingPrompts.*.prompt_id.required' => 'Prompt seçimi zorunludur',
-        'existingPrompts.*.prompt_id.exists' => 'Seçilen prompt bulunamadı',
-        'newPrompts.*.prompt_id.required' => 'Prompt seçimi zorunludur',
-        'newPrompts.*.prompt_id.exists' => 'Seçilen prompt bulunamadı'
-    ];
-
-    public function save($redirect = false)
+    public function save($formData = [], $redirect = false)
     {
-        $this->validate();
-
         try {
-            // Feature verilerini hazırla
-            $featureData = $this->inputs;
+            // Form data'dan basic fields al
+            $basicFields = collect($formData)->except([
+                'example_inputs', 'helper_examples', 'helper_parameters', 'helper_returns',
+                'response_template', 'settings', 'usage_examples', 'additional_config',
+                'input_validation', 'error_messages', 'success_messages', 'token_cost'
+            ])->toArray();
             
-            // Boolean değerleri kontrol et
-            $featureData['show_in_examples'] = (bool) $featureData['show_in_examples'];
-            $featureData['is_featured'] = (bool) $featureData['is_featured'];
-            $featureData['requires_pro'] = (bool) $featureData['requires_pro'];
-            $featureData['requires_input'] = (bool) $featureData['requires_input'];
-
-            if ($this->featureId) {
-                // Güncelleme işlemi
-                $feature = AIFeature::findOrFail($this->featureId);
-                $feature->update($featureData);
-                
-                $message = 'AI özelliği başarıyla güncellendi';
-            } else {
-                // Oluşturma işlemi
-                $featureData['is_system'] = false; // Yeni oluşturulan özellikler sistem özelliği değil
-                $feature = AIFeature::create($featureData);
-                $this->featureId = $feature->id;
-                
-                $message = 'AI özelliği başarıyla oluşturuldu';
-            }
-
-            // Prompt bağlantılarını güncelle
-            $this->updatePromptConnections($feature);
-
-            $toast = [
-                'title' => 'Başarılı',
-                'message' => $message,
-                'type' => 'success'
+            // JSON fields'ları al
+            $jsonData = [];
+            $jsonFieldNames = [
+                'example_inputs', 'helper_examples', 'helper_parameters', 'helper_returns',
+                'response_template', 'settings', 'usage_examples', 'additional_config',
+                'input_validation', 'error_messages', 'success_messages', 'token_cost'
             ];
-
+            
+            foreach ($jsonFieldNames as $field) {
+                if (isset($formData[$field])) {
+                    $jsonData[$field] = $formData[$field];
+                }
+            }
+            
+            $data = array_merge($basicFields, $jsonData);
+            
+            if ($this->featureId) {
+                $feature = AIFeature::findOrFail($this->featureId);
+                $feature->update($data);
+                $message = 'AI Feature başarıyla güncellendi!';
+            } else {
+                $feature = AIFeature::create($data);
+                $this->featureId = $feature->id;
+                $message = 'AI Feature başarıyla oluşturuldu!';
+            }
+            
+            session()->flash('success', $message);
+            
+            if ($redirect) {
+                return redirect()->route('admin.ai.features.index');
+            } else {
+                return redirect()->route('admin.ai.features.manage', $feature->id);
+            }
+            
         } catch (\Exception $e) {
-            \Log::error('AI Feature Save Error: ' . $e->getMessage(), [
-                'inputs' => $this->inputs,
+            Log::error('AI Feature save error: ' . $e->getMessage(), [
+                'form_data' => $formData,
                 'feature_id' => $this->featureId
             ]);
-
-            $toast = [
-                'title' => 'Hata',
-                'message' => 'İşlem sırasında bir hata oluştu: ' . $e->getMessage(),
-                'type' => 'error'
-            ];
-        }
-
-        if ($redirect) {
-            session()->flash('toast', $toast);
-            return redirect()->route('admin.ai.features.index');
-        }
-
-        $this->dispatch('toast', $toast);
-        
-        // İstatistikleri yeniden yükle
-        if ($this->featureId) {
-            $this->loadFeatureStats(AIFeature::find($this->featureId));
+            
+            session()->flash('error', 'Kaydetme sırasında hata oluştu: ' . $e->getMessage());
+            return back();
         }
     }
 
-    protected function updatePromptConnections($feature)
+    protected function saveFeaturePrompts($feature)
     {
-        // Silinecek prompt bağlantılarını kaldır
-        foreach ($this->deletedPrompts as $promptId) {
-            AIFeaturePrompt::where('id', $promptId)->delete();
-        }
-
-        // Mevcut prompt bağlantılarını güncelle
-        foreach ($this->existingPrompts as $id => $promptData) {
-            AIFeaturePrompt::where('id', $id)->update([
-                'ai_prompt_id' => $promptData['prompt_id'],
-                'prompt_role' => $promptData['role'],
-                'priority' => $promptData['priority'],
-                'is_required' => (bool) $promptData['is_required'],
-                'is_active' => (bool) ($promptData['is_active'] ?? true)
-            ]);
-        }
-
-        // Yeni prompt bağlantılarını oluştur
-        foreach ($this->newPrompts as $promptData) {
-            if (!empty($promptData['prompt_id'])) {
+        // Mevcut ilişkileri temizle
+        $feature->featurePrompts()->delete();
+        
+        // Yeni ilişkileri kaydet
+        foreach ($this->featurePrompts as $fp) {
+            if (!empty($fp['prompt_id'])) {
                 AIFeaturePrompt::create([
-                    'ai_feature_id' => $feature->id,
-                    'ai_prompt_id' => $promptData['prompt_id'],
-                    'prompt_role' => $promptData['role'],
-                    'priority' => $promptData['priority'],
-                    'is_required' => (bool) $promptData['is_required'],
-                    'is_active' => true
+                    'feature_id' => $feature->id,
+                    'prompt_id' => $fp['prompt_id'],
+                    'role' => $fp['role'],
+                    'priority' => $fp['priority'],
+                    'is_active' => $fp['is_active'],
+                    'conditions' => $fp['conditions'] ?? [],
+                    'notes' => $fp['notes']
                 ]);
             }
         }
-
-        // Component state'i temizle
-        $this->deletedPrompts = [];
-        $this->newPrompts = [];
     }
 
     public function delete()
     {
-        if (!$this->featureId) {
-            return;
-        }
-
+        if (!$this->featureId) return;
+        
         $feature = AIFeature::find($this->featureId);
         
         if (!$feature) {
             $this->dispatch('toast', [
                 'title' => 'Hata',
-                'message' => 'Silinecek özellik bulunamadı',
+                'message' => 'Feature bulunamadı',
                 'type' => 'error'
             ]);
             return;
         }
-
+        
         if ($feature->is_system) {
             $this->dispatch('toast', [
                 'title' => 'Hata',
-                'message' => 'Sistem özellikleri silinemez',
+                'message' => 'Sistem feature\'ları silinemez',
                 'type' => 'error'
             ]);
             return;
         }
-
+        
         try {
-            // İlişkili verileri temizle
             $feature->featurePrompts()->delete();
             $feature->delete();
-
+            
             session()->flash('toast', [
                 'title' => 'Başarılı',
-                'message' => 'AI özelliği başarıyla silindi',
+                'message' => 'Feature başarıyla silindi',
                 'type' => 'success'
             ]);
-
+            
             return redirect()->route('admin.ai.features.index');
-
+            
         } catch (\Exception $e) {
             $this->dispatch('toast', [
                 'title' => 'Hata',
-                'message' => 'Silme işlemi sırasında hata oluştu: ' . $e->getMessage(),
+                'message' => 'Silme işlemi başarısız: ' . $e->getMessage(),
                 'type' => 'error'
             ]);
         }
     }
 
+    public function getCategories()
+    {
+        return [
+            'content-creation' => 'İçerik Oluşturma',
+            'web-editor' => 'Web Editör',
+            'productivity' => 'Prodüktivite',
+            'communication' => 'İletişim',
+            'education' => 'Eğitim',
+            'analysis' => 'Analiz',
+            'translation' => 'Çeviri',
+            'seo-tools' => 'SEO Araçları',
+            'marketing' => 'Pazarlama',
+            'creative' => 'Yaratıcı',
+            'business' => 'İş Dünyası',
+            'technical' => 'Teknik',
+            'other' => 'Diğer'
+        ];
+    }
+
+    public function getComplexityLevels()
+    {
+        return [
+            'beginner' => 'Başlangıç',
+            'intermediate' => 'Orta',
+            'advanced' => 'İleri',
+            'expert' => 'Uzman'
+        ];
+    }
+
+    public function getPromptRoles()
+    {
+        return [
+            'primary' => 'Ana Prompt',
+            'secondary' => 'İkincil Prompt',
+            'hidden' => 'Gizli Sistem',
+            'conditional' => 'Şartlı Prompt',
+            'formatting' => 'Format Düzenleme',
+            'validation' => 'Doğrulama'
+        ];
+    }
+
+    public function getJsonFieldNames()
+    {
+        return [
+            'additional_config' => 'Ek Konfigürasyon',
+            'usage_examples' => 'Kullanım Örnekleri',
+            'input_validation' => 'Input Doğrulama',
+            'settings' => 'Ayarlar',
+            'error_messages' => 'Hata Mesajları',
+            'success_messages' => 'Başarı Mesajları',
+            'token_cost' => 'Token Maliyeti',
+            'example_inputs' => 'Örnek Girişler',
+            'helper_examples' => 'Helper Örnekleri',
+            'helper_parameters' => 'Helper Parametreleri',
+            'helper_returns' => 'Helper Dönüş Değerleri',
+            'response_template' => 'Yanıt Şablonu'
+        ];
+    }
+
     public function render()
     {
-        return view('ai::admin.livewire.ai-feature-manage-component', [
-            'feature' => $this->featureId ? AIFeature::find($this->featureId) : null,
-            'categories' => [
-                'content' => 'İçerik',
-                'creative' => 'Yaratıcı',
-                'business' => 'İş Dünyası',
-                'technical' => 'Teknik',
-                'academic' => 'Akademik',
-                'legal' => 'Hukuki',
-                'marketing' => 'Pazarlama',
-                'analysis' => 'Analiz',
-                'communication' => 'İletişim',
-                'other' => 'Diğer'
-            ],
-            'statuses' => [
-                'active' => 'Aktif',
-                'inactive' => 'Pasif',
-                'planned' => 'Planlanan',
-                'beta' => 'Beta'
-            ]
-        ]);
+        return view('ai::admin.livewire.ai-feature-manage-component');
     }
 }

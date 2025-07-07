@@ -68,7 +68,7 @@
                 <h2 class="mb-3">Token Bakiyeniz</h2>
                 @if($remainingTokens > 0)
                     <div style="font-size: 60px; font-weight: 700;">
-                        {{ number_format($remainingTokens) }}
+                        {{ ai_format_token_count($remainingTokens) }}
                     </div>
                     <p class="mb-0 mt-2">AI özelliklerini kullanmaya hazırsınız!</p>
                 @else

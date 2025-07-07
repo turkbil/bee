@@ -52,7 +52,7 @@
                             <div class="col-md-4 mb-3">
                                 <div class="card bg-primary text-white">
                                     <div class="card-body text-center">
-                                        <h3 class="mb-1">{{ number_format($realTokenBalance) }}</h3>
+                                        <h3 class="mb-1">{{ ai_format_token_count($realTokenBalance) }}</h3>
                                         <p class="mb-0">Gerçek Bakiye</p>
                                         <small class="opacity-75">(Satın alınan - Kullanılan)</small>
                                     </div>
@@ -61,7 +61,7 @@
                             <div class="col-md-4 mb-3">
                                 <div class="card bg-success text-white">
                                     <div class="card-body text-center">
-                                        <h3 class="mb-1">{{ number_format($totalPurchasedTokens) }}</h3>
+                                        <h3 class="mb-1">{{ ai_format_token_count($totalPurchasedTokens) }}</h3>
                                         <p class="mb-0">Satın Alınan Toplam</p>
                                     </div>
                                 </div>
@@ -69,7 +69,7 @@
                             <div class="col-md-4 mb-3">
                                 <div class="card bg-danger text-white">
                                     <div class="card-body text-center">
-                                        <h3 class="mb-1">{{ number_format($totalUsedTokens) }}</h3>
+                                        <h3 class="mb-1">{{ ai_format_token_count($totalUsedTokens) }}</h3>
                                         <p class="mb-0">Kullanılan Toplam</p>
                                     </div>
                                 </div>
@@ -77,7 +77,7 @@
                             <div class="col-md-6 mb-3">
                                 <div class="card bg-info text-white">
                                     <div class="card-body text-center">
-                                        <h3 class="mb-1">{{ number_format($tenant->ai_tokens_used_this_month) }}</h3>
+                                        <h3 class="mb-1">{{ ai_format_token_count($monthlyUsedTokens) }}</h3>
                                         <p class="mb-0">Bu Ay Kullanım</p>
                                     </div>
                                 </div>
@@ -87,7 +87,7 @@
                                     <div class="card-body text-center">
                                         <h3 class="mb-1">
                                             @if($tenant->ai_monthly_token_limit > 0)
-                                                {{ number_format($tenant->ai_monthly_token_limit) }}
+                                                {{ ai_format_token_count($tenant->ai_monthly_token_limit) }}
                                             @else
                                                 ∞
                                             @endif
@@ -124,7 +124,7 @@
                             </div>
                         </div>
                         <small class="text-muted">
-                            {{ number_format($tenant->ai_tokens_used_this_month) }} / {{ number_format($tenant->ai_monthly_token_limit) }} token kullanıldı
+                            {{ ai_format_token_count($tenant->ai_tokens_used_this_month) }} / {{ ai_format_token_count($tenant->ai_monthly_token_limit) }} token kullanıldı
                         </small>
                     </div>
                 </div>
@@ -167,8 +167,8 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Gerçek Bakiye</label>
-                        <div class="form-control-plaintext">{{ number_format($realTokenBalance) }} token</div>
-                        <small class="text-muted">Satın alınan ({{ number_format($totalPurchasedTokens) }}) - Kullanılan ({{ number_format($totalUsedTokens) }}) = {{ number_format($realTokenBalance) }}</small>
+                        <div class="form-control-plaintext">{{ ai_format_token_count($realTokenBalance) }} token</div>
+                        <small class="text-muted">Satın alınan ({{ ai_format_token_count($totalPurchasedTokens) }}) - Kullanılan ({{ ai_format_token_count($totalUsedTokens) }}) = {{ ai_format_token_count($realTokenBalance) }}</small>
                     </div>
                     
                     <div class="mb-3">

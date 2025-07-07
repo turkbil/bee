@@ -1,0 +1,703 @@
+{{-- AI Profile Wizard - Modern Digital Experience - Single Root Element --}}
+<div class="ai-profile-wizard-container">
+    {{-- Fluid Hero Section --}}
+    <div class="hero-section">
+        <div class="hero-background">
+            <div class="digital-grid"></div>
+            <div class="floating-elements"></div>
+            <div class="cyber-waves"></div>
+        </div>
+        
+        <div class="hero-content">
+            <div class="container">
+                {{-- Üst Bölüm: Yapay Zeka Profil Simulatörü Badge --}}
+                <div class="row mb-2">
+                    <div class="col-12 text-start">
+                        <div class="hero-main-badge-container">
+                            <span class="badge hero-main-badge">Yapay Zeka Profil Simulatörü</span>
+                        </div>
+                    </div>
+                </div>
+                
+                {{-- Ana İçerik Bölümü --}}
+                <div class="row align-items-center">
+                    {{-- Sol - Step Bilgileri --}}
+                    <div class="col-lg-8 col-md-7">
+                        <div class="hero-left-content">
+                            <div class="step-info-container">
+                                <div class="step-icon-hero">
+                                    @switch($currentStep)
+                                        @case(1) <i class="fas fa-industry"></i> @break
+                                        @case(2) <i class="fas fa-building"></i> @break
+                                        @case(3) <i class="fas fa-palette"></i> @break
+                                        @case(4) <i class="fas fa-user-tie"></i> @break
+                                        @case(5) <i class="fas fa-trophy"></i> @break
+                                        @case(6) <i class="fas fa-robot"></i> @break
+                                    @endswitch
+                                </div>
+                                <div class="step-text-content">
+                                    <h1 class="hero-title">
+                                        @switch($currentStep)
+                                            @case(1) Sektör Seçimi @break
+                                            @case(2) Temel Bilgiler @break
+                                            @case(3) Marka Detayları @break
+                                            @case(4) Kurucu Bilgileri @break
+                                            @case(5) Başarı Hikayeleri @break
+                                            @case(6) Yapay Zeka Davranış Ayarları @break
+                                        @endswitch
+                                    </h1>
+                                    <p class="hero-subtitle">
+                                        @switch($currentStep)
+                                            @case(1) Yapay zeka asistanınız için en uygun sektörü seçin @break
+                                            @case(2) İşletmenizin temel bilgilerini girin @break
+                                            @case(3) Markanızın kişiliğini tanımlayın @break
+                                            @case(4) Kurucu bilgilerini paylaşın (isteğe bağlı) @break
+                                            @case(5) Başarılarınızı ve deneyimlerinizi ekleyin @break
+                                            @case(6) Yapay zeka asistanınızın davranış tarzını belirleyin @break
+                                        @endswitch
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {{-- Sağ - Progress Circle --}}
+                    <div class="col-lg-4 col-md-5">
+                        <div class="hero-right-content">
+                            <div class="progress-section">
+                                <div class="progress-circle-container">
+                                    <div class="progress-circle progress-circle-large">
+                                        <svg class="progress-svg" viewBox="0 0 100 100">
+                                            <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="6"/>
+                                            <circle cx="50" cy="50" r="45" fill="none" stroke="url(#gradient)" stroke-width="6" 
+                                                    stroke-dasharray="282.74" stroke-dashoffset="{{ 282.74 - (282.74 * $realProgressPercentage / 100) }}"
+                                                    transform="rotate(-90 50 50)" stroke-linecap="round"/>
+                                            <defs>
+                                                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                                    <stop offset="0%" style="stop-color:#00d4ff"/>
+                                                    <stop offset="50%" style="stop-color:#9333ea"/>
+                                                    <stop offset="100%" style="stop-color:#f59e0b"/>
+                                                </linearGradient>
+                                            </defs>
+                                        </svg>
+                                        <div class="progress-text">
+                                            <span class="progress-percentage">{{ round($realProgressPercentage) }}%</span>
+                                            <small class="progress-label">Tamamlandı</small>
+                                            <div class="progress-details">
+                                                {{ $completedFields }}/{{ $totalFields }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            {{-- Steps Indicator --}}
+            <div class="container">
+                <div class="steps-indicator">
+                    @for($i = 1; $i <= $totalSteps; $i++)
+                        <a href="{{ route('admin.ai.profile.edit', ['step' => $i]) }}" 
+                           class="step-item {{ $i <= $currentStep ? 'active' : '' }} {{ $i < $currentStep ? 'completed' : '' }}"
+                           style="text-decoration: none; color: inherit;">
+                            <div class="step-circle">
+                                @if($i < $currentStep)
+                                    <i class="fas fa-check"></i>
+                                @else
+                                    {{ $i }}
+                                @endif
+                            </div>
+                            <span class="step-label">
+                                @switch($i)
+                                    @case(1) Sektör @break
+                                    @case(2) Bilgiler @break
+                                    @case(3) Marka @break
+                                    @case(4) Kurucu @break
+                                    @case(5) Başarı @break
+                                    @case(6) Yapay Zeka Davranış @break
+                                @endswitch
+                            </span>
+                        </a>
+                        @if($i < $totalSteps)
+                            <div class="step-connector {{ $i < $currentStep ? 'completed' : '' }}"></div>
+                        @endif
+                    @endfor
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Main Content Container --}}
+    <div class="container mt-3">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            
+            {{-- Wizard Card --}}
+            <div class="card wizard-card border-0 shadow-lg">
+                <div class="card-body p-5">
+                    
+                    
+                    {{-- Form Content --}}
+                    <form wire:submit.prevent="completeProfile">
+                        <div class="form-content">
+                            
+                            @foreach($questions as $question)
+                                @php
+                                    $fieldKey = match($currentStep) {
+                                        1 => $question->question_key,
+                                        2 => 'company_info.' . $question->question_key,
+                                        3 => 'sector_details.' . $question->question_key,
+                                        4 => 'company_info.' . $question->question_key,
+                                        5 => 'success_stories.' . $question->question_key,
+                                        6 => 'ai_behavior_rules.' . $question->question_key,
+                                        default => $question->question_key
+                                    };
+                                @endphp
+                                
+                                <div class="form-group mb-4">
+                                    
+                                    {{-- Question Label --}}
+                                    <label class="form-label fw-bold fs-5 mb-3">
+                                        {{ $question->question_text }}
+                                        @if($question->is_required)
+                                            <span class="text-danger ms-1">*</span>
+                                        @endif
+                                    </label>
+                                    
+                                    @if($question->help_text)
+                                        <div class="form-hint">{{ $question->help_text }}</div>
+                                    @endif
+                                    
+                                    {{-- Input Based on Type --}}
+                                    @switch($question->input_type)
+                                        
+                                        @case('select')
+                                            {{-- Special handling for sector selection with image grid --}}
+                                            @if($question->question_key === 'sector' && $currentStep === 1)
+                                                <div class="row g-3">
+                                                    @foreach($sectors as $sector)
+                                                        <div class="col-6 col-md-4 col-lg-3">
+                                                            <label class="form-imagecheck mb-2">
+                                                                <input name="formData.{{ $fieldKey }}" type="radio" value="{{ $sector->code }}" 
+                                                                       class="form-imagecheck-input profile-field-input" 
+                                                                       name="formData[{{ $fieldKey }}]"
+                                                                       data-field="{{ $fieldKey }}"
+                                                                       value="{{ $sector->code }}"
+                                                                       x-data="{ isChecked: '{{ $formData[$fieldKey] ?? '' }}' === '{{ $sector->code }}' }"
+                                                                       x-init="$el.checked = isChecked"
+                                                                       @if(isset($formData[$fieldKey]) && $formData[$fieldKey] == $sector->code) checked @endif
+                                                                       @if($question->is_required) required @endif>
+                                                                <span class="form-imagecheck-figure">
+                                                                    <div class="form-imagecheck-image sector-card">
+                                                                        <div class="sector-icon">
+                                                                            <i class="{{ $sector->icon }}"></i>
+                                                                        </div>
+                                                                        <div class="sector-name">{{ $sector->name }}</div>
+                                                                        <div class="sector-desc">{{ $sector->description }}</div>
+                                                                    </div>
+                                                                </span>
+                                                            </label>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            @else
+                                                {{-- Normal select dropdown for other fields --}}
+                                                <select class="form-select profile-field-input" 
+                                                        name="formData[{{ $fieldKey }}]"
+                                                        data-field="{{ $fieldKey }}"
+                                                        x-data="{ fieldValue: '{{ addslashes($formData[$fieldKey] ?? '') }}' }"
+                                                        x-init="$el.value = fieldValue"
+                                                        @if($question->is_required) required @endif>
+                                                    <option value="">Seçiniz...</option>
+                                                    @if($question->options)
+                                                        @foreach($question->options as $option)
+                                                            <option value="{{ $option['value'] }}" 
+                                                                    @if(isset($formData[$fieldKey]) && $formData[$fieldKey] == $option['value']) selected @endif>
+                                                                {{ $option['label'] }}
+                                                            </option>
+                                                        @endforeach
+                                                    @endif
+                                                </select>
+                                            @endif
+                                            @break
+                                            
+                                        @case('radio')
+                                            @php
+                                                // Tüm soru için en uzun metni bul
+                                                $maxLength = 0;
+                                                foreach($question->options as $opt) {
+                                                    $maxLength = max($maxLength, strlen($opt['label']));
+                                                }
+                                                
+                                                // Tüm soru için col class belirle
+                                                if ($maxLength > 40) {
+                                                    $questionColClass = 'col-12';
+                                                } elseif ($maxLength > 25) {
+                                                    $questionColClass = 'col-md-6 col-12';
+                                                } else {
+                                                    $questionColClass = 'col-md-4 col-6';
+                                                }
+                                            @endphp
+                                            <div class="row">
+                                                @if($question->options)
+                                                    @foreach($question->options as $option)
+                                                        <div class="{{ $questionColClass }} mb-2">
+                                                            <label class="form-selectgroup-item flex-fill">
+                                                                <input type="radio" name="{{ $fieldKey }}" value="{{ $option['value'] }}" 
+                                                                       class="form-selectgroup-input profile-field-input" 
+                                                                       name="formData[{{ $fieldKey }}]"
+                                                                       data-field="{{ $fieldKey }}"
+                                                                       value="{{ $option['value'] }}"
+                                                                       x-data="{ isChecked: '{{ $formData[$fieldKey] ?? '' }}' === '{{ $option['value'] }}' }"
+                                                                       x-init="$el.checked = isChecked"
+                                                                       @if(isset($formData[$fieldKey]) && $formData[$fieldKey] == $option['value']) checked @endif
+                                                                       @if($question->is_required) required @endif>
+                                                                <div class="form-selectgroup-label d-flex align-items-center p-3">
+                                                                    <div class="me-3">
+                                                                        <span class="form-selectgroup-check"></span>
+                                                                    </div>
+                                                                    <div class="form-selectgroup-label-content d-flex align-items-center">
+                                                                        @if(isset($option['icon']))
+                                                                            <i class="{{ $option['icon'] }} me-3 text-muted"></i>
+                                                                        @else
+                                                                            <i class="fas fa-dot-circle me-3 text-muted"></i>
+                                                                        @endif
+                                                                        <div>
+                                                                            <div class="font-weight-medium">{{ $option['label'] }}</div>
+                                                                            @if(isset($option['description']))
+                                                                                <div class="text-secondary small">{{ $option['description'] }}</div>
+                                                                            @endif
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </label>
+                                                        </div>
+                                                    @endforeach
+                                                @endif
+                                            </div>
+                                            @break
+                                            
+                                        @case('checkbox')
+                                            @php
+                                                // Tüm soru için en uzun metni bul
+                                                $maxLength = 0;
+                                                foreach($question->options as $opt) {
+                                                    $maxLength = max($maxLength, strlen($opt['label']));
+                                                }
+                                                
+                                                // Tüm soru için col class belirle
+                                                if ($maxLength > 40) {
+                                                    $questionColClass = 'col-12';
+                                                } elseif ($maxLength > 25) {
+                                                    $questionColClass = 'col-md-6 col-12';
+                                                } else {
+                                                    $questionColClass = 'col-md-4 col-6';
+                                                }
+                                            @endphp
+                                            <div class="row">
+                                                @if($question->options)
+                                                    @foreach($question->options as $option)
+                                                        <div class="{{ $questionColClass }} mb-2">
+                                                            <label class="form-selectgroup-item flex-fill">
+                                                                <input type="checkbox" value="{{ $option['value'] }}" 
+                                                                       class="form-selectgroup-input profile-field-checkbox" 
+                                                                       name="formData[{{ $fieldKey }}][]"
+                                                                       data-field="{{ $fieldKey }}"
+                                                                       value="{{ $option['value'] }}"
+                                                                       x-data="{ isChecked: Boolean({{ isset($formData["{$fieldKey}.{$option['value']}"]) && $formData["{$fieldKey}.{$option['value']}"] ? 'true' : 'false' }}) }"
+                                                                       x-init="$el.checked = isChecked"
+                                                                       @if(isset($formData["{$fieldKey}.{$option['value']}"]) && $formData["{$fieldKey}.{$option['value']}"]) checked @endif>
+                                                                <div class="form-selectgroup-label d-flex align-items-center p-3">
+                                                                    <div class="me-3">
+                                                                        <span class="form-selectgroup-check"></span>
+                                                                    </div>
+                                                                    <div class="form-selectgroup-label-content d-flex align-items-center">
+                                                                        @if(isset($option['icon']))
+                                                                            <i class="{{ $option['icon'] }} me-3 text-muted"></i>
+                                                                        @else
+                                                                            <i class="fas fa-check me-3 text-muted"></i>
+                                                                        @endif
+                                                                        <div>
+                                                                            <div class="font-weight-medium">{{ $option['label'] }}</div>
+                                                                            @if(isset($option['description']))
+                                                                                <div class="text-secondary small">{{ $option['description'] }}</div>
+                                                                            @endif
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </label>
+                                                        </div>
+                                                    @endforeach
+                                                @endif
+                                            </div>
+                                            @break
+                                            
+                                        @case('textarea')
+                                            <textarea class="form-control profile-field-input" rows="4" 
+                                                      name="formData[{{ $fieldKey }}]"
+                                                      data-field="{{ $fieldKey }}"
+                                                      x-data="{ fieldValue: '{{ addslashes($formData[$fieldKey] ?? '') }}' }"
+                                                      x-init="$el.value = fieldValue"
+                                                      placeholder="{{ $question->input_placeholder ?? '' }}"
+                                                      @if($question->is_required) required @endif>{{ $formData[$fieldKey] ?? '' }}</textarea>
+                                            @break
+                                            
+                                        @default
+                                            <input type="text" class="form-control profile-field-input" 
+                                                   name="formData[{{ $fieldKey }}]"
+                                                   data-field="{{ $fieldKey }}"
+                                                   x-data="{ fieldValue: '{{ addslashes($formData[$fieldKey] ?? '') }}' }"
+                                                   x-init="$el.value = fieldValue"
+                                                   placeholder="{{ $question->input_placeholder ?? '' }}"
+                                                   @if($question->is_required) required @endif>
+                                            @break
+                                            
+                                    @endswitch
+                                    
+                                    {{-- Error Messages --}}
+                                    @error("formData.{$fieldKey}")
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
+                                    
+                                    {{-- Custom validation errors --}}
+                                    @if(isset($customErrors[$fieldKey]))
+                                        <div class="invalid-feedback d-block">
+                                            @if(is_array($customErrors[$fieldKey]))
+                                                @foreach($customErrors[$fieldKey] as $error)
+                                                    <div>{{ $error }}</div>
+                                                @endforeach
+                                            @else
+                                                {{ $customErrors[$fieldKey] }}
+                                            @endif
+                                        </div>
+                                    @endif
+                                    
+                                </div>
+                                
+                            @endforeach
+                            
+                            {{-- Founder Questions (if enabled) --}}
+                            @if($currentStep === 4 && $showFounderQuestions)
+                                <div class="founder-section">
+                                    <h5 class="mb-3">Kurucu Bilgileri</h5>
+                                    @php
+                                        $founderQuestions = \Modules\AI\app\Models\AIProfileQuestion::getOptionalSectionQuestions('founder_info', $this->currentSectorCode);
+                                    @endphp
+                                    
+                                    @foreach($founderQuestions as $question)
+                                        <div class="form-group mb-4">
+                                            <label class="form-label">{{ $question->question_text }}</label>
+                                            @if($question->help_text)
+                                                <div class="form-hint">{{ $question->help_text }}</div>
+                                            @endif
+                                            
+                                            @if($question->input_type === 'textarea')
+                                                <textarea class="form-control profile-field-input" rows="3" 
+                                                          name="formData[founder_info.{{ $question->question_key }}]"
+                                                          data-field="founder_info.{{ $question->question_key }}"
+                                                          x-data="{ fieldValue: '{{ addslashes($formData["founder_info.{$question->question_key}"] ?? '') }}' }"
+                                                          x-init="$el.value = fieldValue"
+                                                          placeholder="{{ $question->input_placeholder ?? '' }}">{{ $formData["founder_info.{$question->question_key}"] ?? '' }}</textarea>
+                                            @else
+                                                <input type="text" class="form-control profile-field-input" 
+                                                       name="formData[founder_info.{{ $question->question_key }}]"
+                                                       data-field="founder_info.{{ $question->question_key }}"
+                                                       x-data="{ fieldValue: '{{ addslashes($formData["founder_info.{$question->question_key}"] ?? '') }}' }"
+                                                       x-init="$el.value = fieldValue"
+                                                       placeholder="{{ $question->input_placeholder ?? '' }}">
+                                            @endif
+                                            
+                                            {{-- Founder Error Messages --}}
+                                            @php $founderFieldKey = "founder_info.{$question->question_key}"; @endphp
+                                            @error("formData.{$founderFieldKey}")
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                            @enderror
+                                            
+                                            @if(isset($customErrors[$founderFieldKey]))
+                                                <div class="invalid-feedback d-block">
+                                                    @if(is_array($customErrors[$founderFieldKey]))
+                                                        @foreach($customErrors[$founderFieldKey] as $error)
+                                                            <div>{{ $error }}</div>
+                                                        @endforeach
+                                                    @else
+                                                        {{ $customErrors[$founderFieldKey] }}
+                                                    @endif
+                                                </div>
+                                            @endif
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endif
+                        </div>
+                        
+                        {{-- Navigation Buttons - jQuery Controlled --}}
+                        <div class="form-footer mt-5">
+                            <div class="d-flex justify-content-between">
+                                <div class="d-flex gap-2">
+                                    @if($currentStep > 1)
+                                        <button type="button" class="btn btn-ghost-primary btn-nav-previous"
+                                                data-current-step="{{ $currentStep }}"
+                                                data-target-step="{{ $currentStep - 1 }}">
+                                            <i class="fas fa-arrow-left me-2"></i>
+                                            Önceki Adım
+                                        </button>
+                                    @endif
+                                    
+                                    {{-- Reset Button - Livewire (güvenlik için) --}}
+                                    @if($profile && $profile->exists)
+                                        <button type="button" class="btn btn-outline-danger" 
+                                                wire:click="resetProfile"
+                                                wire:confirm="Profili sıfırlamak istediğinize emin misiniz? Bu işlem geri alınamaz!">
+                                            <i class="fas fa-trash-restore me-2"></i>
+                                            Profili Sıfırla
+                                        </button>
+                                    @endif
+                                </div>
+                                <div>
+                                    @if($currentStep < $totalSteps)
+                                        <button type="button" class="btn btn-primary btn-lg btn-nav-next" 
+                                                data-current-step="{{ $currentStep }}"
+                                                data-target-step="{{ $currentStep + 1 }}">
+                                            Sonraki Adım
+                                            <i class="fas fa-arrow-right ms-2"></i>
+                                        </button>
+                                    @else
+                                        <button type="button" class="btn btn-success btn-lg btn-complete-profile">
+                                            <i class="fas fa-magic me-2"></i>
+                                            Yapay Zeka Asistanını Aktifleştir
+                                        </button>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </form>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    </div>
+</div>
+
+@push('styles')
+<link rel="stylesheet" href="{{ asset('admin-assets/libs/choices/choices.min.css') }}">
+<link rel="stylesheet" href="{{ asset('admin-assets/css/ai-profile-wizard.css') }}">
+@endpush
+
+@push('scripts')
+<script src="{{ asset('admin-assets/libs/jquery@3.7.1/jquery.min.js') }}"></script>
+<script src="{{ asset('admin-assets/libs/choices/choices.min.js') }}"></script>
+<script src="{{ asset('admin-assets/js/ai-profile-wizard.js') }}"></script>
+
+
+<script>
+// Global auto-save function (Livewire olmasa bile çalışsın)
+window.autoSaveAndNavigate = window.autoSaveAndNavigate || function(nextUrl) {
+    // Fallback: direkt yönlendirme
+    window.location.href = nextUrl;
+};
+
+// Force reload form values after Livewire hydration
+document.addEventListener('livewire:load', function () {
+    console.log('Livewire loaded - reinitializing form fields');
+    initializeFormFields();
+});
+
+document.addEventListener('livewire:update', function () {
+    console.log('Livewire updated - reinitializing form fields');
+    setTimeout(initializeFormFields, 100); // Kısa delay ile
+});
+
+function initializeFormFields() {
+    // Find all elements with x-data for field initialization
+    document.querySelectorAll('[x-data*="fieldValue"]').forEach(function(element) {
+        if (element.type === 'checkbox' || element.type === 'radio') {
+            // For checkboxes and radios, use the x-data isChecked property
+            if (element.hasAttribute('x-data') && element.getAttribute('x-data').includes('isChecked')) {
+                try {
+                    // Extract the isChecked value from x-data
+                    const xDataAttr = element.getAttribute('x-data');
+                    const isCheckedMatch = xDataAttr.match(/isChecked:\s*(true|false|\w+)/);
+                    if (isCheckedMatch) {
+                        const shouldBeChecked = isCheckedMatch[1] === 'true';
+                        if (element.checked !== shouldBeChecked) {
+                            element.checked = shouldBeChecked;
+                            console.log('Fixed checkbox/radio:', element.name, shouldBeChecked);
+                        }
+                    }
+                } catch (e) {
+                    console.log('Error setting checkbox/radio:', e);
+                }
+            }
+        } else {
+            // For text inputs, selects, textareas
+            try {
+                const xDataAttr = element.getAttribute('x-data');
+                const fieldValueMatch = xDataAttr.match(/fieldValue:\s*'([^']*)'/);
+                if (fieldValueMatch) {
+                    const expectedValue = fieldValueMatch[1];
+                    if (element.value !== expectedValue) {
+                        element.value = expectedValue;
+                        console.log('Fixed input value:', element.name, expectedValue);
+                    }
+                }
+            } catch (e) {
+                console.log('Error setting input value:', e);
+            }
+        }
+    });
+}
+
+// Run immediately on load
+document.addEventListener('DOMContentLoaded', initializeFormFields);
+
+// ===== JQUERY AUTO-SAVE SİSTEMİ (LİVEWİRE'DAN BAĞIMSIZ) =====
+$(document).ready(function() {
+    let autoSaveTimeout;
+    
+    // Checkbox, radio ve input değişikliklerini yakala
+    $(document).on('change', '.profile-field-input, .profile-field-checkbox', function() {
+        const fieldName = $(this).data('field');
+        const fieldValue = getFieldValue($(this));
+        
+        console.log('Field changed:', fieldName, fieldValue);
+        
+        // Auto-save tetikle (debounce ile)
+        clearTimeout(autoSaveTimeout);
+        autoSaveTimeout = setTimeout(function() {
+            saveFieldData(fieldName, fieldValue);
+        }, 1000); // 1 saniye sonra kaydet
+    });
+    
+    // Textarea için de dinle (typing sırasında)
+    $(document).on('input', 'textarea.profile-field-input', function() {
+        const fieldName = $(this).data('field');
+        const fieldValue = $(this).val();
+        
+        // Auto-save tetikle (debounce ile)
+        clearTimeout(autoSaveTimeout);
+        autoSaveTimeout = setTimeout(function() {
+            saveFieldData(fieldName, fieldValue);
+        }, 2000); // 2 saniye sonra kaydet
+    });
+    
+    function getFieldValue($element) {
+        if ($element.is(':checkbox')) {
+            // Checkbox array değeri
+            const fieldName = $element.data('field');
+            const checkedValues = [];
+            $(`input[data-field="${fieldName}"]:checked`).each(function() {
+                checkedValues.push($(this).val());
+            });
+            return checkedValues;
+        } else if ($element.is(':radio')) {
+            // Radio tek değer
+            return $element.val();
+        } else {
+            // Text, select, textarea
+            return $element.val();
+        }
+    }
+    
+    function saveFieldData(fieldName, fieldValue) {
+        // AJAX ile Livewire component'ine gönder
+        $.ajax({
+            url: '{{ route("admin.ai.profile.save-field") }}',
+            method: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                field: fieldName,
+                value: fieldValue,
+                step: {{ $currentStep }}
+            },
+            success: function(response) {
+                console.log('✅ Field saved:', fieldName, fieldValue);
+                
+                // Başarı bildirimi (opsiyonel)
+                if (response.success) {
+                    // Küçük bir visual feedback
+                    $(`[data-field="${fieldName}"]`).addClass('field-saved');
+                    setTimeout(function() {
+                        $(`[data-field="${fieldName}"]`).removeClass('field-saved');
+                    }, 1000);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('❌ Field save error:', fieldName, error);
+            }
+        });
+    }
+});
+
+// CSS için field-saved class
+const style = document.createElement('style');
+style.textContent = `
+.field-saved {
+    box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.3) !important;
+    transition: box-shadow 0.3s ease;
+}
+`;
+document.head.appendChild(style);
+
+// ===== JQUERY NAVIGATION SİSTEMİ (LİVEWİRE OLMADAN) =====
+$(document).ready(function() {
+    
+    // Önceki adım buton handler
+    $(document).on('click', '.btn-nav-previous', function() {
+        const currentStep = $(this).data('current-step');
+        const targetStep = $(this).data('target-step');
+        
+        console.log('Navigation: Previous', currentStep, '->', targetStep);
+        
+        // URL routing ile step değiştir (validation yok, sadece navigation)
+        window.location.href = '{{ route("admin.ai.profile.edit", ["step" => ""]) }}' + targetStep;
+    });
+    
+    // Sonraki adım buton handler
+    $(document).on('click', '.btn-nav-next', function() {
+        const currentStep = $(this).data('current-step');
+        const targetStep = $(this).data('target-step');
+        
+        console.log('Navigation: Next', currentStep, '->', targetStep);
+        
+        // Loading state
+        $(this).prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Kontrol ediliyor...');
+        
+        // Livewire ile validation + save çağır
+        @this.call('saveAndNavigateNext').then(result => {
+            // Success ise URL routing ile yönlendir
+            console.log('Validation result:', result);
+        }).catch(error => {
+            console.error('Validation error:', error);
+            // Button'u eski haline getir
+            $(this).prop('disabled', false).html('Sonraki Adım <i class="fas fa-arrow-right ms-2"></i>');
+        });
+    });
+    
+    // Profil tamamlama buton handler (son adım)
+    $(document).on('click', '.btn-complete-profile', function() {
+        console.log('Completing profile...');
+        
+        // Loading state
+        $(this).prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Aktifleştiriliyor...');
+        
+        // Livewire ile complete profile çağır
+        @this.call('completeProfile').then(result => {
+            console.log('Profile completion result:', result);
+        }).catch(error => {
+            console.error('Profile completion error:', error);
+            // Button'u eski haline getir
+            $(this).prop('disabled', false).html('<i class="fas fa-magic me-2"></i>Yapay Zeka Asistanını Aktifleştir');
+        });
+    });
+});
+
+// Global navigation helper (diğer scriptlerden de çağrılabilir)
+window.navigateToStep = function(stepNumber) {
+    window.location.href = '{{ route("admin.ai.profile.edit", ["step" => ""]) }}' + stepNumber;
+};
+</script>
+@endpush

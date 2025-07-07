@@ -13,11 +13,11 @@
                                 </svg>
                             </div>
                             <div>
-                                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Giriş Yap</h2>
+                                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">{{ __('Login') }}</h2>
                                 <p class="text-sm text-gray-600 dark:text-gray-400">{{ request()->getHost() }}</p>
                             </div>
                         </div>
-                        <p class="text-gray-600 dark:text-gray-400">Hesabınıza giriş yaparak devam edin</p>
+                        <p class="text-gray-600 dark:text-gray-400">{{ __('Log in to your account to continue') }}</p>
                     </div>
 
                     <!-- Status Messages -->
@@ -38,12 +38,12 @@
                     @endif
 
                     <!-- Login Form -->
-                    <form method="POST" action="{{ route('login') }}" class="space-y-6">
+                    <form method="POST" action="{{ route('login') }}" class="space-y-6" novalidate @submit="if(!validateForm()) { $event.preventDefault(); isLoading = false; } else { isLoading = true; }">
                         @csrf
                         
                         <!-- Email Field -->
                         <div>
-                            <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email Adresi</label>
+                            <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ __('validation.attributes.email') }}</label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -55,25 +55,26 @@
                                     name="email" 
                                     id="email"
                                     value="{{ old('email') }}" 
-                                    required 
                                     autocomplete="email"
                                     placeholder="email@domain.com"
-                                    class="w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100 transition-colors @error('email') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror"
+                                    @input="clearError('email')"
+                                    @blur="validateField('email', $event.target.value)"
+                                    :class="errors.email ? 'w-full pl-10 pr-3 py-3 border border-red-500 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:text-gray-100 transition-colors' : 'w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100 transition-colors'"
                                 />
                             </div>
-                            @error('email')
-                                <p class="mt-2 text-sm text-red-600 dark:text-red-400 flex items-center">
+                            <div x-show="errors.email" x-transition class="mt-2">
+                                <p class="text-sm text-red-600 dark:text-red-400 flex items-center">
                                     <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
                                     </svg>
-                                    {{ $message }}
+                                    <span x-text="errors.email"></span>
                                 </p>
-                            @enderror
+                            </div>
                         </div>
 
                         <!-- Password Field -->
                         <div>
-                            <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Şifre</label>
+                            <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ __('validation.attributes.password') }}</label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -84,10 +85,11 @@
                                     x-bind:type="showPassword ? 'text' : 'password'"
                                     name="password" 
                                     id="password"
-                                    required 
                                     autocomplete="current-password"
-                                    placeholder="Şifrenizi girin"
-                                    class="w-full pl-10 pr-12 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100 transition-colors @error('password') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror"
+                                    placeholder="{{ __('Enter your password') }}"
+                                    @input="clearError('password')"
+                                    @blur="validateField('password', $event.target.value)"
+                                    :class="errors.password ? 'w-full pl-10 pr-12 py-3 border border-red-500 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:text-gray-100 transition-colors' : 'w-full pl-10 pr-12 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100 transition-colors'"
                                 />
                                 <button type="button" @click="showPassword = !showPassword" class="absolute inset-y-0 right-0 pr-3 flex items-center">
                                     <svg x-show="!showPassword" class="w-5 h-5 text-gray-400 hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -99,14 +101,14 @@
                                     </svg>
                                 </button>
                             </div>
-                            @error('password')
-                                <p class="mt-2 text-sm text-red-600 dark:text-red-400 flex items-center">
+                            <div x-show="errors.password" x-transition class="mt-2">
+                                <p class="text-sm text-red-600 dark:text-red-400 flex items-center">
                                     <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
                                     </svg>
-                                    {{ $message }}
+                                    <span x-text="errors.password"></span>
                                 </p>
-                            @enderror
+                            </div>
                         </div>
 
                         <!-- Options Row -->
@@ -122,12 +124,12 @@
                                         <div :class="rememberMe ? 'translate-x-6' : 'translate-x-1'" 
                                              class="absolute left-0 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-200 shadow-md"></div>
                                     </div>
-                                    <span class="ml-3 text-sm font-medium text-gray-700 dark:text-gray-300">Beni hatırla</span>
+                                    <span class="ml-3 text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('validation.attributes.remember') }}</span>
                                 </label>
                             </div>
                             <div>
                                 <a href="{{ route('password.request') }}" class="text-sm text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300 font-medium transition-colors">
-                                    Şifremi unuttum
+                                    {{ __('Forgot your password?') }}
                                 </a>
                             </div>
                         </div>
@@ -136,15 +138,14 @@
                         <button 
                             type="submit" 
                             :disabled="isLoading"
-                            @click="isLoading = true"
                             class="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                         >
                             <svg x-show="isLoading" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>
-                            <span x-show="!isLoading">Giriş Yap</span>
-                            <span x-show="isLoading">Giriş yapılıyor...</span>
+                            <span x-show="!isLoading">{{ __('Login') }}</span>
+                            <span x-show="isLoading">{{ __('Logging in...') }}</span>
                             <svg x-show="!isLoading" class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                             </svg>
@@ -153,9 +154,9 @@
                         <!-- Register Link -->
                         <div class="text-center">
                             <p class="text-sm text-gray-600 dark:text-gray-400">
-                                Hesabınız yok mu? 
+                                {{ __("Don't have an account?") }} 
                                 <a href="{{ route('register') }}" class="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300">
-                                    Kayıt ol
+                                    {{ __('Register') }}
                                 </a>
                             </p>
                         </div>
@@ -163,7 +164,7 @@
 
                     <!-- Quick Demo Login -->
                     <div class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
-                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-3 text-center">Hızlı Test Girişi:</p>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-3 text-center">{{ __('Quick Test Login:') }}</p>
                         <div class="grid grid-cols-3 gap-2">
                             @php $host = request()->getHost(); @endphp
                             
@@ -235,6 +236,55 @@
                 showPassword: false,
                 isLoading: false,
                 rememberMe: false,
+                errors: {
+                    email: @json($errors->first('email')),
+                    password: @json($errors->first('password'))
+                },
+                
+                init() {
+                    // Eğer validation error varsa isLoading'i false yap
+                    @if($errors->any())
+                        this.isLoading = false;
+                    @endif
+                },
+                
+                clearError(field) {
+                    this.errors[field] = null;
+                },
+                
+                validateField(field, value) {
+                    const messages = @json(__('validation'));
+                    const attributes = @json(__('validation.attributes'));
+                    
+                    switch(field) {
+                        case 'email':
+                            if (!value) {
+                                this.errors.email = messages.required.replace(':attribute', attributes.email);
+                            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+                                this.errors.email = messages.email.replace(':attribute', attributes.email);
+                            } else {
+                                this.errors.email = null;
+                            }
+                            break;
+                        case 'password':
+                            if (!value) {
+                                this.errors.password = messages.required.replace(':attribute', attributes.password);
+                            } else {
+                                this.errors.password = null;
+                            }
+                            break;
+                    }
+                },
+                
+                validateForm() {
+                    const email = document.querySelector('input[name="email"]').value;
+                    const password = document.querySelector('input[name="password"]').value;
+                    
+                    this.validateField('email', email);
+                    this.validateField('password', password);
+                    
+                    return !this.errors.email && !this.errors.password;
+                },
                 
                 autoLogin(userType) {
                     this.isLoading = true;

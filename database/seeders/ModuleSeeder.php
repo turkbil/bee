@@ -80,7 +80,13 @@ class ModuleSeeder extends Seeder
                         'AITokenPackageSeeder', 
                         'AIPurchaseSeeder', 
                         'AITenantSetupSeeder', 
-                        'AIUsageUpdateSeeder'
+                        'AIUsageUpdateSeeder',
+                        'AIFeatureSeeder_Complete',
+                        'AIFeatureSeeder_Master',
+                        'AIFeatureSeeder_Part1',
+                        'AIFeatureSeeder_Part1_Updated',
+                        'AIFeatureSeeder_Part2',
+                        'AIFeatureSeeder_Part3'
                     ])) {
                         continue;
                     }

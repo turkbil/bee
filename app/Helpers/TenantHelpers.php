@@ -180,4 +180,94 @@ class TenantHelpers
         
         return $diskConfig;
     }
+
+    /**
+     * Hızlı tenant ID alma (admin paneli desteği ile)
+     * Öncelik sırası: tenant() -> admin_selected_tenant -> auth()->user()->tenant_id -> default tenant 1
+     * 
+     * @param bool $fallbackToLatest En son tenant'a fallback yap (default: false)
+     * @return int|null
+     */
+    public static function resolveCurrentTenantId(bool $fallbackToLatest = false): ?int
+    {
+        // Önce mevcut tenant context'ini kontrol et
+        $tenantId = tenant('id');
+        if ($tenantId) {
+            return $tenantId;
+        }
+
+        // Admin panelinde session'da seçilen tenant'ı kontrol et (EN ÖNCELİKLİ)
+        $adminSelectedTenant = session('admin_selected_tenant_id');
+        if ($adminSelectedTenant) {
+            return (int) $adminSelectedTenant;
+        }
+
+        // Admin panelinde logged-in user'ın tenant'ını kontrol et (eğer varsa)
+        $user = auth()->user();
+        if ($user && isset($user->tenant_id)) {
+            return $user->tenant_id;
+        }
+
+        // Admin panelinde veya default durumda tenant 1 kullan (Nurullah'ın tenant'ı)
+        if (request()->is('admin/*') || request()->is('admin')) {
+            return 1;
+        }
+
+        // Manuel default: Nurullah tenant 1 kullanıyor
+        if (auth()->check()) {
+            return 1; // Nurullah'ın tenant'ı
+        }
+
+        // Default tenant 1 (artık latest tenant'a fallback yapmıyoruz)
+        return 1;
+    }
+
+    /**
+     * Tenant bilgilerini hızlı al (cache'li)
+     * 
+     * @param int|null $tenantId
+     * @return \App\Models\Tenant|null
+     */
+    public static function getTenantById(?int $tenantId = null): ?\App\Models\Tenant
+    {
+        if (!$tenantId) {
+            $tenantId = self::resolveCurrentTenantId();
+        }
+
+        if (!$tenantId) {
+            return null;
+        }
+
+        return Cache::remember("tenant_info_{$tenantId}", now()->addHour(), function () use ($tenantId) {
+            return \App\Models\Tenant::find($tenantId);
+        });
+    }
+
+    /**
+     * Mevcut tenant'ın domain'ini al
+     * 
+     * @param int|null $tenantId
+     * @return string|null
+     */
+    public static function getTenantDomain(?int $tenantId = null): ?string
+    {
+        $tenant = self::getTenantById($tenantId);
+        return $tenant?->domains()->first()?->domain;
+    }
+
+    /**
+     * Tenant'ın central database'de mi, tenant database'de mi olduğunu kontrol et
+     * 
+     * @param int|null $tenantId
+     * @return string 'central'|'tenant'
+     */
+    public static function getTenantDatabaseType(?int $tenantId = null): string
+    {
+        if (!$tenantId) {
+            $tenantId = self::resolveCurrentTenantId();
+        }
+
+        // Tenant ID 1 veya yoksa central
+        return (!$tenantId || $tenantId == 1) ? 'central' : 'tenant';
+    }
 }

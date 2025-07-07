@@ -142,10 +142,10 @@
                                                 @if($package->features && is_array($package->features) && count($package->features) > 0)
                                                     <div class="mt-1">
                                                         @foreach(array_slice($package->features, 0, 2) as $feature)
-                                                            <span class="badge bg-light text-dark me-1">{{ $feature }}</span>
+                                                            <span class="badge me-1">{{ $feature }}</span>
                                                         @endforeach
                                                         @if(is_array($package->features) && count($package->features) > 2)
-                                                            <span class="badge bg-secondary">+{{ (is_array($package->features) ? count($package->features) : 0) - 2 }} özellik</span>
+                                                            <span class="badge">+{{ (is_array($package->features) ? count($package->features) : 0) - 2 }} özellik</span>
                                                         @endif
                                                     </div>
                                                 @endif
@@ -153,7 +153,7 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <div class="fw-bold">{{ number_format($package->token_amount) }}</div>
+                                        <div class="fw-bold">{{ ai_format_token_count($package->token_amount) }}</div>
                                         <div class="text-muted small">token</div>
                                     </td>
                                     <td>
@@ -397,7 +397,7 @@
                                                     @endif
                                                     <h3 class="card-title">{{ $name ?: 'Paket Adı' }}</h3>
                                                     <div class="text-h1 text-primary">
-                                                        {{ $token_amount ? number_format($token_amount) : '0' }}
+                                                        {{ $token_amount ? ai_format_token_count($token_amount) : '0' }}
                                                     </div>
                                                     <div class="text-muted mb-2">Token</div>
                                                     @if($price)
@@ -502,11 +502,11 @@ document.addEventListener('DOMContentLoaded', function() {
             chosenClass: "table-warning",
             onEnd: function (evt) {
                 const items = Array.from(sortablePackages.children).map((row, index) => ({
-                    value: parseInt(row.dataset.id),
+                    id: parseInt(row.dataset.id),
                     order: index + 1
                 }));
                 
-                @this.call('updateOrder', items);
+                @this.call('updatePackageOrder', items);
             }
         });
     }

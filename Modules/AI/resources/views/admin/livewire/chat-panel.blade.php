@@ -217,7 +217,7 @@
         // AI yanıtını stream et
         function streamAIResponse(message, conversationId, promptId) {
             // URL'i oluştur ve prompt ID'sini ekle
-            let url = `/ai/stream?message=${encodeURIComponent(message)}&conversation_id=${conversationId}`;
+            let url = `/admin/ai/stream?message=${encodeURIComponent(message)}&conversation_id=${conversationId}`;
             if (promptId) {
                 url += `&prompt_id=${promptId}`;
             }

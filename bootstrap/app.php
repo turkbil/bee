@@ -48,6 +48,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'locale.admin' => \Modules\LanguageManagement\app\Http\Middleware\AdminSetLocaleMiddleware::class,
             'locale.site' => \Modules\LanguageManagement\app\Http\Middleware\SiteSetLocaleMiddleware::class,
             'ai.tokens' => \App\Http\Middleware\CheckAITokensMiddleware::class,
+            'admin.tenant.select' => \App\Http\Middleware\AdminTenantSelection::class,
         ]);
                 
         // Admin middleware grubu

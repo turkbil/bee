@@ -164,6 +164,12 @@ if (!function_exists('ai_widget_token_data')) {
             $stats['formatted_remaining'] = ai_format_token_count($stats['remaining']);
             $stats['formatted_total'] = ai_format_token_count($stats['total_purchased']);
             $stats['formatted_used'] = ai_format_token_count($stats['total_used']);
+            
+            // Monthly kullanım bilgileri - şimdilik total_used ile aynı
+            $stats['monthly_usage'] = $stats['total_used'];
+            $stats['monthly_limit'] = 0; // Limit yok - unlimited
+            $stats['daily_usage'] = $stats['total_used']; // Geçici - sonra günlük hesaplama eklenecek
+            
             $stats['formatted_daily'] = ai_format_token_count($stats['daily_usage']);
             $stats['formatted_monthly'] = ai_format_token_count($stats['monthly_usage']);
             
@@ -205,11 +211,22 @@ if (!function_exists('ai_format_token_count')) {
     function ai_format_token_count(int $tokenCount): string
     {
         if ($tokenCount >= 1000000) {
-            return number_format($tokenCount / 1000000, 1) . 'M';
-        } elseif ($tokenCount >= 1000) {
-            return number_format($tokenCount / 1000, 1) . 'K';
+            $value = $tokenCount / 1000000;
+            return ($value == intval($value)) ? intval($value) . 'M' : number_format($value, 1) . 'M';
         } else {
-            return number_format($tokenCount);
+            // Tüm değerler K formatında gösterilecek
+            $value = $tokenCount / 1000;
+            
+            // 100'den küçük değerler için minimum 0.1K göster
+            if ($tokenCount < 100 && $tokenCount > 0) {
+                return '0.1K';
+            }
+            
+            if ($value >= 1 && $value == intval($value)) {
+                return intval($value) . 'K';
+            } else {
+                return number_format($value, 1) . 'K';
+            }
         }
     }
 }
@@ -455,13 +472,15 @@ if (!function_exists('ai_use_tokens')) {
             return false;
         }
         
-        // Kullanım kaydı oluştur
-        $usageId = DB::table('ai_usage')->insertGetId([
+        // Kullanım kaydı oluştur (DOĞRU TABLO ADI ve ALANLAR)
+        $usageId = DB::table('ai_token_usage')->insertGetId([
             'tenant_id' => $tenantId,
-            'module' => $module,
-            'action' => $action,
+            'user_id' => auth()->id() ?: 1,
+            'usage_type' => $module,
+            'description' => $action,
             'tokens_used' => $tokensUsed,
             'metadata' => json_encode($metadata),
+            'used_at' => now(),
             'created_at' => now(),
             'updated_at' => now()
         ]);
@@ -488,7 +507,7 @@ if (!function_exists('ai_get_usage_history')) {
     {
         $tenantId = $tenantId ?: tenant('id') ?: 'default';
         
-        $usage = DB::table('ai_usage')
+        $usage = DB::table('ai_token_usage')
             ->where('tenant_id', $tenantId)
             ->orderBy('created_at', 'desc')
             ->limit($limit)
@@ -511,13 +530,13 @@ if (!function_exists('ai_get_purchase_history')) {
     {
         $tenantId = $tenantId ?: tenant('id') ?: 'default';
         
-        $purchases = DB::table('ai_purchases')
-            ->leftJoin('ai_token_packages', 'ai_purchases.package_id', '=', 'ai_token_packages.id')
-            ->where('ai_purchases.tenant_id', $tenantId)
-            ->orderBy('ai_purchases.created_at', 'desc')
+        $purchases = DB::table('ai_token_purchases')
+            ->leftJoin('ai_token_packages', 'ai_token_purchases.package_id', '=', 'ai_token_packages.id')
+            ->where('ai_token_purchases.tenant_id', $tenantId)
+            ->orderBy('ai_token_purchases.created_at', 'desc')
             ->limit($limit)
             ->select([
-                'ai_purchases.*',
+                'ai_token_purchases.*',
                 'ai_token_packages.name as package_name',
                 'ai_token_packages.description as package_description'
             ])
@@ -573,5 +592,42 @@ if (!function_exists('ai_token_widget_data_old')) {
             },
             'last_used_human' => $status['last_used'] ? $status['last_used']->diffForHumans() : 'Hiç kullanılmamış'
         ];
+    }
+}
+
+if (!function_exists('ai_get_monthly_usage')) {
+    /**
+     * Bu ayın toplam token kullanımını getir
+     * 
+     * @param string|null $tenantId
+     * @return int
+     */
+    function ai_get_monthly_usage(?string $tenantId = null): int
+    {
+        $tenantId = $tenantId ?: tenant('id') ?: 'default';
+        
+        return DB::table('ai_token_usage')
+            ->where('tenant_id', $tenantId)
+            ->whereYear('created_at', now()->year)
+            ->whereMonth('created_at', now()->month)
+            ->sum('tokens_used');
+    }
+}
+
+if (!function_exists('ai_get_daily_usage')) {
+    /**
+     * Bugünün toplam token kullanımını getir
+     * 
+     * @param string|null $tenantId
+     * @return int
+     */
+    function ai_get_daily_usage(?string $tenantId = null): int
+    {
+        $tenantId = $tenantId ?: tenant('id') ?: 'default';
+        
+        return DB::table('ai_token_usage')
+            ->where('tenant_id', $tenantId)
+            ->whereDate('created_at', now()->toDateString())
+            ->sum('tokens_used');
     }
 }

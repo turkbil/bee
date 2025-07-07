@@ -13,7 +13,7 @@ use Modules\AI\App\Http\Livewire\Admin\TokenManagement;
 use Modules\AI\App\Http\Livewire\Admin\TokenPackageManagement;
 
 // Admin rotaları
-Route::middleware(['admin', 'tenant'])
+Route::middleware(['admin', 'admin.tenant.select'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
@@ -23,6 +23,14 @@ Route::middleware(['admin', 'tenant'])
                 Route::get('/', [AIChatController::class, 'index'])
                     ->middleware('module.permission:ai,view')
                     ->name('index');
+                
+                Route::post('/send-message', [AIChatController::class, 'sendMessage'])
+                    ->middleware('module.permission:ai,view')
+                    ->name('send-message');
+                    
+                Route::get('/stream', [AIChatController::class, 'streamResponse'])
+                    ->middleware('module.permission:ai,view')
+                    ->name('stream');
                 
                 // Settings ana sayfası (API)
                 Route::get('/settings', [SettingsController::class, 'api'])
@@ -134,20 +142,28 @@ Route::middleware(['admin', 'tenant'])
                     ->middleware('module.permission:ai,view')
                     ->name('update-conversation-prompt');
                     
-                // AI Features Management System
-                Route::get('/features', [\Modules\AI\App\Http\Controllers\Admin\AIFeaturesController::class, 'index'])
+                // AI Features Management System - Page Pattern
+                Route::get('/features', \Modules\AI\App\Http\Livewire\Admin\AIFeaturesManagement::class)
                     ->middleware('module.permission:ai,view')
                     ->name('features.index');
                     
+                // Feature Manage Route'ları (Page pattern - create ve edit kaldırıldı)
                 Route::get('/features/manage/{id?}', \Modules\AI\App\Http\Livewire\Admin\AIFeatureManageComponent::class)
                     ->middleware('module.permission:ai,view')
                     ->name('features.manage');
-                    
-                Route::get('/features/{feature}', [\Modules\AI\App\Http\Controllers\Admin\AIFeaturesController::class, 'show'])
-                    ->middleware('module.permission:ai,view')
-                    ->name('features.show');
                 
-                // AI Features ek route'lar
+                // Sıralama güncelleme (AJAX)
+                Route::post('/features/update-sort', [\Modules\AI\App\Http\Controllers\Admin\AIFeaturesController::class, 'updateSort'])
+                    ->middleware('module.permission:ai,update')
+                    ->name('features.update-sort');
+                    
+                // Durum değiştirme (AJAX)
+                Route::post('/features/{id}/toggle-status', [\Modules\AI\App\Http\Controllers\Admin\AIFeaturesController::class, 'toggleStatus'])
+                    ->middleware('module.permission:ai,update')
+                    ->name('features.toggle-status');
+                    
+                
+                // AI Features ek route'lar (eski sistem uyumluluğu)
                 Route::post('/features/bulk-status', [\Modules\AI\App\Http\Controllers\Admin\AIFeaturesController::class, 'bulkStatusUpdate'])
                     ->middleware('module.permission:ai,update')
                     ->name('features.bulk-status');
@@ -158,10 +174,6 @@ Route::middleware(['admin', 'tenant'])
                     ->middleware('module.permission:ai,create')
                     ->name('features.duplicate');
                     
-                // AI Kullanım Örnekleri Test Sayfası (Yazılımcılar için)
-                Route::get('/examples', [\Modules\AI\App\Http\Controllers\Admin\AIFeaturesController::class, 'examples'])
-                    ->middleware('module.permission:ai,view')
-                    ->name('examples');
                     
                 // AI Skills Showcase (Adminler için)
                 Route::get('/prowess', [\Modules\AI\App\Http\Controllers\Admin\AIFeaturesController::class, 'prowess'])
@@ -179,14 +191,29 @@ Route::middleware(['admin', 'tenant'])
                     
                 // Token Stats API (Real-time güncellemeler için)
                 Route::get('/token-stats', function() {
-                    $tokenHelper = app(\Modules\AI\app\Helpers\AITokenHelper::class);
-                    $tokenStats = $tokenHelper->getUserTokenStats();
+                    $tenantId = tenant('id') ?: '1';
                     
-                    // Add additional calculated fields for compatibility
-                    $tokenStats['total_tokens'] = $tokenStats['remaining_tokens'] + $tokenStats['used_tokens'];
-                    $tokenStats['usage_percentage'] = $tokenStats['monthly_limit'] > 0 
-                        ? min(100, ($tokenStats['monthly_usage'] / $tokenStats['monthly_limit']) * 100)
-                        : 0;
+                    // Mevcut token verilerini al
+                    $remainingTokens = ai_get_token_balance($tenantId);
+                    $totalUsed = ai_get_total_used($tenantId);
+                    $totalPurchased = ai_get_total_purchased($tenantId);
+                    $monthlyUsage = ai_get_monthly_usage($tenantId);
+                    $dailyUsage = ai_get_daily_usage($tenantId);
+                    
+                    // Formatlanmış değerlerle birlikte döndür
+                    $tokenStats = [
+                        'remaining_tokens' => $remainingTokens,
+                        'remaining_tokens_formatted' => ai_format_token_count($remainingTokens),
+                        'used_tokens' => $totalUsed,
+                        'total_tokens' => $totalPurchased,
+                        'monthly_usage' => $monthlyUsage,
+                        'monthly_usage_formatted' => ai_format_token_count($monthlyUsage),
+                        'daily_usage' => $dailyUsage,
+                        'daily_usage_formatted' => ai_format_token_count($dailyUsage),
+                        'monthly_limit' => 0, // TODO: Limit sistemi eklenecek
+                        'monthly_limit_formatted' => '0',
+                        'usage_percentage' => 0
+                    ];
                     
                     return response()->json($tokenStats);
                 })
@@ -244,6 +271,32 @@ Route::middleware(['admin', 'tenant'])
                         
                         Route::post('/packages/update-order', [TokenManagementController::class, 'updatePackageOrder'])
                             ->name('packages.update-order');
+                    });
+                    
+                // AI Profile Management Routes
+                Route::prefix('profile')
+                    ->name('profile.')
+                    ->middleware('module.permission:ai,view')
+                    ->group(function () {
+                        Route::get('/', [\Modules\AI\App\Http\Controllers\Admin\AIProfileController::class, 'show'])
+                            ->name('show');
+                        
+                        // Step-based URL routing
+                        Route::get('/edit/{step?}', [\Modules\AI\App\Http\Controllers\Admin\AIProfileController::class, 'edit'])
+                            ->where('step', '[1-6]')
+                            ->name('edit');
+                        
+                        Route::post('/generate-story', [\Modules\AI\App\Http\Controllers\Admin\AIProfileController::class, 'generateStory'])
+                            ->middleware('module.permission:ai,create')
+                            ->name('generate-story');
+                        
+                        Route::post('/save-field', [\Modules\AI\App\Http\Controllers\Admin\AIProfileController::class, 'saveField'])
+                            ->middleware('module.permission:ai,update')
+                            ->name('save-field');
+                        
+                        Route::post('/reset', [\Modules\AI\App\Http\Controllers\Admin\AIProfileController::class, 'reset'])
+                            ->middleware('module.permission:ai,delete')
+                            ->name('reset');
                     });
             });
     });

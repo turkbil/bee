@@ -70,7 +70,16 @@ class SettingsController extends Controller
         ]);
         
         $settings = Setting::first() ?: new Setting();
-        $settings->fill($request->all());
+        
+        // API anahtarı sadece dolu ise güncelle
+        if ($request->filled('api_key')) {
+            $settings->api_key = $request->api_key;
+        }
+        
+        // Diğer alanları güncelle (api_key hariç)
+        $settings->model = $request->model;
+        $settings->max_tokens = $request->max_tokens;
+        $settings->temperature = $request->temperature;
         $settings->enabled = $request->boolean('enabled');
         $settings->save();
         
@@ -258,7 +267,13 @@ class SettingsController extends Controller
             'enabled' => 'boolean',
         ]);
         
-        $settings = $this->aiService->updateSettings($request->all());
+        // API anahtarı boş ise request'ten çıkar (mevcut değeri koru)
+        $data = $request->all();
+        if (!$request->filled('api_key')) {
+            unset($data['api_key']);
+        }
+        
+        $settings = $this->aiService->updateSettings($data);
         
         if (!$settings) {
             return response()->json([
@@ -307,11 +322,12 @@ class SettingsController extends Controller
     public function examples()
     {
         // Token durumu bilgileri (YENİ SİSTEM)
-        $tokenStats = ai_get_token_stats();
+        $tenantId = tenant('id') ?: '1';
+        $tokenStats = ai_get_token_stats($tenantId);
         $tokenStatus = [
             'remaining_tokens' => $tokenStats['remaining'],
             'total_tokens' => $tokenStats['total_purchased'],
-            'daily_usage' => ai_get_total_used(), // Geçici - daha sonra daily hesaplama eklenecek
+            'daily_usage' => ai_get_total_used($tenantId), // Geçici - daha sonra daily hesaplama eklenecek
             'monthly_usage' => $tokenStats['total_used'],
             'provider' => config('ai.default_provider', 'deepseek'),
             'provider_active' => !empty(config('ai.providers.deepseek.api_key'))
@@ -488,11 +504,12 @@ class SettingsController extends Controller
     public function test()
     {
         // Token durumu bilgileri (YENİ SİSTEM)
-        $tokenStats = ai_get_token_stats();
+        $tenantId = tenant('id') ?: '1';
+        $tokenStats = ai_get_token_stats($tenantId);
         $tokenStatus = [
             'remaining_tokens' => $tokenStats['remaining'],
             'total_tokens' => $tokenStats['total_purchased'],
-            'daily_usage' => ai_get_total_used(), // Geçici - daha sonra daily hesaplama eklenecek
+            'daily_usage' => ai_get_total_used($tenantId), // Geçici - daha sonra daily hesaplama eklenecek
             'monthly_usage' => $tokenStats['total_used'],
             'provider' => config('ai.default_provider', 'deepseek'),
             'provider_active' => !empty(config('ai.providers.deepseek.api_key'))

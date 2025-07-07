@@ -53,7 +53,7 @@
                 <div class="d-flex align-items-center">
                     <div class="subheader">Mevcut Bakiye</div>
                 </div>
-                <div class="h1 mb-3 text-green">{{ number_format($stats['current_balance']) }}</div>
+                <div class="h1 mb-3 text-green">{{ ai_format_token_count($stats['real_balance']) }}</div>
                 <div class="d-flex mb-2">
                     <div class="text-muted">Token</div>
                 </div>
@@ -67,7 +67,7 @@
                 <div class="d-flex align-items-center">
                     <div class="subheader">Toplam Kullanım</div>
                 </div>
-                <div class="h1 mb-3">{{ number_format($stats['total_usage']) }}</div>
+                <div class="h1 mb-3">{{ ai_format_token_count($stats['total_usage']) }}</div>
                 <div class="d-flex mb-2">
                     <div class="text-muted">Token</div>
                 </div>
@@ -81,7 +81,7 @@
                 <div class="d-flex align-items-center">
                     <div class="subheader">Satın Alınan</div>
                 </div>
-                <div class="h1 mb-3">{{ number_format($stats['total_purchases']) }}</div>
+                <div class="h1 mb-3">{{ ai_format_token_count($stats['total_purchases']) }}</div>
                 <div class="d-flex mb-2">
                     <div class="text-muted">Token</div>
                 </div>
@@ -95,7 +95,7 @@
                 <div class="d-flex align-items-center">
                     <div class="subheader">Bu Ay</div>
                 </div>
-                <div class="h1 mb-3">{{ number_format($stats['monthly_usage']) }}</div>
+                <div class="h1 mb-3">{{ ai_format_token_count($stats['monthly_usage']) }}</div>
                 <div class="d-flex mb-2">
                     <div class="text-muted">Token</div>
                 </div>
@@ -109,7 +109,7 @@
                 <div class="d-flex align-items-center">
                     <div class="subheader">Bu Hafta</div>
                 </div>
-                <div class="h1 mb-3">{{ number_format($stats['weekly_usage']) }}</div>
+                <div class="h1 mb-3">{{ ai_format_token_count($stats['weekly_usage']) }}</div>
                 <div class="d-flex mb-2">
                     <div class="text-muted">Token</div>
                 </div>
@@ -123,7 +123,7 @@
                 <div class="d-flex align-items-center">
                     <div class="subheader">Bugün</div>
                 </div>
-                <div class="h1 mb-3">{{ number_format($stats['today_usage']) }}</div>
+                <div class="h1 mb-3">{{ ai_format_token_count($stats['today_usage']) }}</div>
                 <div class="d-flex mb-2">
                     <div class="text-muted">Token</div>
                 </div>
@@ -164,7 +164,7 @@
                             </div>
                         </div>
                         <div class="col-auto">
-                            <span class="text-muted">{{ number_format($model->total) }}</span>
+                            <span class="text-muted">{{ ai_format_token_count($model->total) }}</span>
                         </div>
                     </div>
                     @endforeach
@@ -208,7 +208,7 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <span class="badge badge-outline">{{ number_format($usage->tokens_used) }}</span>
+                                    <span class="badge badge-outline">{{ ai_format_token_count($usage->tokens_used) }}</span>
                                 </td>
                                 <td>{{ $usage->model }}</td>
                                 <td>{{ ucfirst($usage->purpose) }}</td>

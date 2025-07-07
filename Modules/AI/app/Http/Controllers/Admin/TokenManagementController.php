@@ -77,8 +77,13 @@ class TokenManagementController extends Controller
             ->sum('tokens_used');
 
         $realTokenBalance = max(0, $totalPurchasedTokens - $totalUsedTokens);
+        
+        // Bu ay kullanımı hesapla
+        $monthlyUsedTokens = AITokenUsage::where('tenant_id', $tenant->id)
+            ->whereBetween('used_at', [now()->startOfMonth(), now()->endOfMonth()])
+            ->sum('tokens_used');
 
-        return view('ai::admin.tokens.show', compact('tenant', 'recentUsage', 'monthlyUsage', 'totalPurchasedTokens', 'totalUsedTokens', 'realTokenBalance'));
+        return view('ai::admin.tokens.show', compact('tenant', 'recentUsage', 'monthlyUsage', 'totalPurchasedTokens', 'totalUsedTokens', 'realTokenBalance', 'monthlyUsedTokens'));
     }
 
     /**
@@ -414,7 +419,6 @@ class TokenManagementController extends Controller
         
         // AI enabled kontrolü için farklı yöntem dene
         $activeAITenants = Tenant::where('ai_enabled', true)
-            ->orWhere('ai_tokens_balance', '>', 0)
             ->count();
         
         $totalUsed = AITokenUsage::sum('tokens_used') ?? 0;
@@ -427,7 +431,7 @@ class TokenManagementController extends Controller
             'total_purchases' => AITokenPurchase::count(),
             'total_revenue' => AITokenPurchase::where('status', 'completed')->sum('price_paid') ?? 0,
             'avg_tokens_per_tenant' => $activeAITenants > 0 ? (($purchasedTokens - $totalUsed) / $activeAITenants) : 0,
-            'most_active_tenant' => Tenant::orderBy('ai_tokens_used_this_month', 'desc')->first(),
+            'most_active_tenant' => null, // Geçici olarak null
         ];
 
         // Son 30 gün tenant aktivitesi
@@ -438,6 +442,18 @@ class TokenManagementController extends Controller
             ->orderByDesc('total_tokens')
             ->limit(10)
             ->get();
+
+        // Her tenant için gerçek bakiye hesaplaması
+        $tenantActivity->each(function ($activity) {
+            if ($activity->tenant) {
+                $totalPurchases = AITokenPurchase::where('tenant_id', $activity->tenant_id)
+                    ->where('status', 'completed')
+                    ->sum('token_amount');
+                $totalUsage = AITokenUsage::where('tenant_id', $activity->tenant_id)
+                    ->sum('tokens_used');
+                $activity->tenant->real_balance = max(0, $totalPurchases - $totalUsage);
+            }
+        });
 
         // Aylık kullanım trendi (son 12 ay)
         $monthlyTrend = [];

@@ -23,56 +23,43 @@ class DeepSeekService
         if (!$this->safeMode) {
             $this->loadApiSettings();
         } else {
-            // Safe Mode - .env'den varsayılan ayarları kullan
-            $this->apiKey = config('deepseek.api_key', '');
-            $this->model = config('deepseek.model', 'deepseek-chat');
+            // Safe Mode - varsayılan değerler
+            $this->apiKey = '';
+            $this->model = 'deepseek-chat';
         }
         
-        $this->baseUrl = config('deepseek.api_url', 'https://api.deepseek.com/v1');
+        $this->baseUrl = 'https://api.deepseek.com/v1';
     }
 
     protected function loadApiSettings()
     {
         try {
-            // Tablo var mı kontrol et
-            if (!Schema::hasTable('ai_settings')) {
-                // Tablo yoksa, .env'den varsayılan ayarları kullan
-                $this->apiKey = config('deepseek.api_key', '');
-                $this->model = config('deepseek.model', 'deepseek-chat');
-                return;
-            }
-            
-            // 1. Veritabanından ayarları yüklemeyi dene
+            // Sadece veritabanından ayarları yükle (basit tek kaynak sistemi)
             $settings = $this->getGlobalSettings();
             if ($settings && !empty($settings->api_key)) {
                 $this->apiKey = $settings->api_key;
-                $this->model = $settings->model;
+                $this->model = $settings->model ?: 'deepseek-chat';
                 return;
             }
             
-            // 2. Veritabanı ayarları yoksa, .env'den yükle
-            $this->apiKey = env('DEEPSEEK_API_KEY');
-            $this->model = env('DEEPSEEK_MODEL', 'deepseek-chat');
+            // Ayarlar bulunamadı
+            $this->apiKey = '';
+            $this->model = 'deepseek-chat';
             
             if (empty($this->apiKey)) {
-                Log::warning('API anahtarı bulunamadı. Lütfen .env dosyasına DEEPSEEK_API_KEY ekleyin veya veritabanı ayarlarını yapılandırın.');
+                Log::warning('API anahtarı bulunamadı. Lütfen admin panelden AI ayarlarını yapılandırın.');
             }
         } catch (\Exception $e) {
-            // Hata durumunda varsayılan değerleri kullan
+            // Hata durumunda boş değerler
             Log::error('DeepSeekService ayarları yüklenirken hata: ' . $e->getMessage());
-            $this->apiKey = env('DEEPSEEK_API_KEY', '');
-            $this->model = env('DEEPSEEK_MODEL', 'deepseek-chat');
+            $this->apiKey = '';
+            $this->model = 'deepseek-chat';
         }
     }
 
     protected function getGlobalSettings()
     {
         try {
-            // Tablo var mı kontrol et
-            if (!Schema::hasTable('ai_settings')) {
-                return null;
-            }
-            
             $cacheKey = "ai_settings_global";
             
             return Cache::remember($cacheKey, now()->addMinutes(30), function () {
@@ -134,14 +121,16 @@ class DeepSeekService
                 ];
             }
             
+            $settings = $this->getGlobalSettings();
+            
             $response = Http::timeout(300)->withHeaders([
                 'Authorization' => 'Bearer ' . $this->apiKey,
                 'Content-Type' => 'application/json',
             ])->post($this->baseUrl . '/chat/completions', [
                 'model' => $this->model,
                 'messages' => $messages,
-                'temperature' => config('deepseek.temperature', 0.7),
-                'max_tokens' => config('deepseek.max_tokens', 2000),
+                'temperature' => $settings ? $settings->temperature : 0.7,
+                'max_tokens' => $settings ? $settings->max_tokens : 2000,
                 'stream' => false,
             ]);
 
@@ -189,6 +178,8 @@ class DeepSeekService
                 return;
             }
             
+            $settings = $this->getGlobalSettings();
+            
             $response = Http::timeout(300)->withHeaders([
                 'Authorization' => 'Bearer ' . $this->apiKey,
                 'Content-Type' => 'application/json',
@@ -197,8 +188,8 @@ class DeepSeekService
                 'json' => [
                     'model' => $this->model,
                     'messages' => $messages,
-                    'temperature' => config('deepseek.temperature', 0.7),
-                    'max_tokens' => config('deepseek.max_tokens', 2000),
+                    'temperature' => $settings ? $settings->temperature : 0.7,
+                    'max_tokens' => $settings ? $settings->max_tokens : 2000,
                     'stream' => true,
                 ],
             ]);
@@ -268,7 +259,7 @@ class DeepSeekService
         
         // Ortak özellikler promptunu al (ZORUNLU)
         $commonPrompt = \Modules\AI\App\Models\Prompt::where('is_common', true)->where('is_active', true)->first();
-        $commonContent = $commonPrompt ? $commonPrompt->content : config('deepseek.system_message', 'Sen bir asistansın.');
+        $commonContent = $commonPrompt ? $commonPrompt->content : 'Sen bir asistansın.';
         
         Log::info('Ortak özellikler promptu', [
             'common_prompt_id' => $commonPrompt ? $commonPrompt->id : null,
@@ -356,6 +347,8 @@ class DeepSeekService
                 return function (callable $callback) use ($messages) {
                     $formattedMessages = $this->formatMessagesForAPI($messages);
                     
+                    $settings = $this->getGlobalSettings();
+                    
                     $response = Http::timeout(300)->withHeaders([
                         'Authorization' => 'Bearer ' . $this->apiKey,
                         'Content-Type' => 'application/json',
@@ -364,8 +357,8 @@ class DeepSeekService
                         'json' => [
                             'model' => $this->model,
                             'messages' => $formattedMessages,
-                            'temperature' => config('deepseek.temperature', 0.7),
-                            'max_tokens' => config('deepseek.max_tokens', 2000),
+                            'temperature' => $settings ? $settings->temperature : 0.7,
+                            'max_tokens' => $settings ? $settings->max_tokens : 2000,
                             'stream' => true,
                         ],
                     ]);
@@ -409,14 +402,16 @@ class DeepSeekService
             } else {
                 $formattedMessages = $this->formatMessagesForAPI($messages);
                 
+                $settings = $this->getGlobalSettings();
+                
                 $response = Http::timeout(300)->withHeaders([
                     'Authorization' => 'Bearer ' . $this->apiKey,
                     'Content-Type' => 'application/json',
                 ])->post($this->baseUrl . '/chat/completions', [
                     'model' => $this->model,
                     'messages' => $formattedMessages,
-                    'temperature' => config('deepseek.temperature', 0.7),
-                    'max_tokens' => config('deepseek.max_tokens', 2000),
+                    'temperature' => $settings ? $settings->temperature : 0.7,
+                    'max_tokens' => $settings ? $settings->max_tokens : 2000,
                     'stream' => false,
                 ]);
                 

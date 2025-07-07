@@ -65,9 +65,9 @@ class AIDatabaseSeeder extends Seeder
 
         // Ana tenant için API ayarlarını oluştur
         Setting::create([
-            'api_key' => 'sk-cee745529b534f048415cd999cedce84',
+            'api_key' => 'sk-2b5dd64c73b4429388c8de3055f0ba77',
             'model' => 'deepseek-chat',
-            'max_tokens' => 4096,
+            'max_tokens' => 8192,
             'temperature' => 0.7,
             'enabled' => true,
         ]);

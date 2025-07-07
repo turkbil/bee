@@ -142,67 +142,119 @@ class AITenantProfile extends Model
     {
         $summary = [];
         
-        // Firma temel bilgileri
+        // 🎯 ÖNCELİK 1: CORE FİRMA KİMLİĞİ (EN ÖNEMLİ)
         if ($this->company_info) {
-            $companySection = "## Firma Bilgileri\n";
+            $coreSection = "## 🎯 ANA FİRMA KİMLİĞİ (Birincil Odak)\n";
             
             if (isset($this->company_info['brand_name'])) {
-                $companySection .= "**Firma Adı:** {$this->company_info['brand_name']}\n";
-            }
-            
-            if (isset($this->company_info['city'])) {
-                $companySection .= "**Konum:** {$this->company_info['city']}\n";
+                $coreSection .= "**Firma Adı:** {$this->company_info['brand_name']}\n";
             }
             
             if (isset($this->company_info['main_service'])) {
-                $companySection .= "**Ana Hizmet:** {$this->company_info['main_service']}\n";
+                $coreSection .= "**Ana Uzmanlık:** {$this->company_info['main_service']}\n";
             }
             
+            // Firma yaşı ve deneyim (önemli)
             if (isset($this->company_info['founding_year'])) {
-                $companySection .= "**Kuruluş Yılı:** {$this->company_info['founding_year']}\n";
+                $coreSection .= "**Kuruluş:** {$this->company_info['founding_year']}\n";
             }
             
-            if (isset($this->company_info['employee_count'])) {
-                $companySection .= "**Çalışan Sayısı:** {$this->company_info['employee_count']}\n";
-            }
-            
-            $summary[] = $companySection;
+            $summary[] = $coreSection;
         }
         
-        // Sektör bilgileri
+        // 🏢 ÖNCELİK 2: İŞ DÜNYASI VE HEDEFLERİ
         if ($this->sector_details) {
-            $sectorSection = "## Sektör ve Faaliyet Alanı\n";
+            $businessSection = "## 🏢 İŞ STRATEJİSİ\n";
             
-            if (isset($this->sector_details['sector'])) {
-                $sector = \Modules\AI\app\Models\AIProfileSector::where('code', $this->sector_details['sector'])->first();
-                if ($sector) {
-                    $sectorSection .= "**Sektör:** {$sector->name}\n";
-                    $sectorSection .= "**Sektör Açıklaması:** {$sector->description}\n";
-                }
-            }
-            
-            // Marka kişiliği
-            if (isset($this->sector_details['brand_personality'])) {
-                $personalities = array_keys(array_filter($this->sector_details['brand_personality']));
-                if (!empty($personalities)) {
-                    $sectorSection .= "**Marka Kişiliği:** " . implode(', ', $personalities) . "\n";
-                }
-            }
-            
-            // Hedef kitle
             if (isset($this->sector_details['target_audience'])) {
-                $audiences = array_keys(array_filter($this->sector_details['target_audience']));
+                $audiences = [];
+                foreach ($this->sector_details['target_audience'] as $key => $value) {
+                    if ($value) $audiences[] = $key;
+                }
                 if (!empty($audiences)) {
-                    $sectorSection .= "**Hedef Kitle:** " . implode(', ', $audiences) . "\n";
+                    $businessSection .= "**Hedef Kitle:** " . implode(', ', $audiences) . "\n";
                 }
             }
             
-            $summary[] = $sectorSection;
+            if (isset($this->sector_details['market_position'])) {
+                $businessSection .= "**Pazar Pozisyonu:** {$this->sector_details['market_position']}\n";
+            }
+            
+            $summary[] = $businessSection;
         }
         
-        // Başarı hikayeleri
+        // 🎨 ÖNCELİK 2: MARKA DAVRANIŞI VE TONU (ÇOK ÖNEMLİ)
+        if ($this->ai_behavior_rules) {
+            $behaviorSection = "## 🎨 MARKA DAVRANIŞI VE TON (Ana Odak)\n";
+            
+            // Yazı tonu
+            if (isset($this->ai_behavior_rules['writing_tone'])) {
+                $tones = [];
+                foreach ($this->ai_behavior_rules['writing_tone'] as $key => $value) {
+                    if ($value) $tones[] = $key;
+                }
+                if (!empty($tones)) {
+                    $behaviorSection .= "**Yazı Tonu:** " . implode(', ', $tones) . "\n";
+                }
+            }
+            
+            // İletişim tarzı
+            if (isset($this->ai_behavior_rules['communication_style'])) {
+                $styles = [];
+                foreach ($this->ai_behavior_rules['communication_style'] as $key => $value) {
+                    if ($value) $styles[] = $key;
+                }
+                if (!empty($styles)) {
+                    $behaviorSection .= "**İletişim Tarzı:** " . implode(', ', $styles) . "\n";
+                }
+            }
+            
+            // İçerik yaklaşımı
+            if (isset($this->ai_behavior_rules['content_approach'])) {
+                $approaches = [];
+                foreach ($this->ai_behavior_rules['content_approach'] as $key => $value) {
+                    if ($value) $approaches[] = $key;
+                }
+                if (!empty($approaches)) {
+                    $behaviorSection .= "**İçerik Yaklaşımı:** " . implode(', ', $approaches) . "\n";
+                }
+            }
+            
+            // Vurgulanacak başarı göstergeleri
+            if (isset($this->ai_behavior_rules['success_indicators'])) {
+                $indicators = [];
+                foreach ($this->ai_behavior_rules['success_indicators'] as $key => $value) {
+                    if ($value) $indicators[] = $key;
+                }
+                if (!empty($indicators)) {
+                    $behaviorSection .= "**Başarı Vurguları:** " . implode(', ', $indicators) . "\n";
+                }
+            }
+            
+            // Rekabet avantajı
+            if (isset($this->ai_behavior_rules['competitive_advantage'])) {
+                $advantages = [];
+                foreach ($this->ai_behavior_rules['competitive_advantage'] as $key => $value) {
+                    if ($value) $advantages[] = $key;
+                }
+                if (!empty($advantages)) {
+                    $behaviorSection .= "**Rekabet Avantajı:** " . implode(', ', $advantages) . "\n";
+                }
+            }
+            
+            $summary[] = $behaviorSection;
+        }
+        
+        // 📍 ÖNCELİK 4: LOKASYON BİLGİSİ (En az öncelik - sadece gerektiğinde)
+        if ($this->company_info && isset($this->company_info['city'])) {
+            $locationSection = "## 📍 Lokasyon (Gerekmedikçe detaya girme)\n";
+            $locationSection .= "**Konum:** {$this->company_info['city']} - Firma ana odaklı içeriklerde şehir detaylarına girmeden sadece gerekli durumlarda belirt.\n";
+            $summary[] = $locationSection;
+        }
+        
+        // 💼 ÖNCELİK 3: BAŞARI HİKAYELERİ VE DENEYIM (Güven için önemli)
         if ($this->success_stories && !empty(array_filter($this->success_stories))) {
-            $successSection = "## Başarılar ve Deneyimler\n";
+            $successSection = "## 💼 BAŞARI HİKAYELERİ (Güven Unsuru)\n";
             
             foreach ($this->success_stories as $key => $story) {
                 if (!empty($story)) {
@@ -212,6 +264,75 @@ class AITenantProfile extends Model
             }
             
             $summary[] = $successSection;
+        }
+        
+        // 🎯 ÖNCELİK 4: SEKTÖR VE MARKA KİŞİLİĞİ
+        if ($this->sector_details) {
+            $sectorSection = "## 🎯 SEKTÖR VE MARKA KİŞİLİĞİ\n";
+            
+            if (isset($this->sector_details['sector'])) {
+                $sector = \Modules\AI\app\Models\AIProfileSector::where('code', $this->sector_details['sector'])->first();
+                if ($sector) {
+                    $sectorSection .= "**Sektör:** {$sector->name}\n";
+                }
+            }
+            
+            // Marka yaşı
+            if (isset($this->sector_details['brand_age'])) {
+                $sectorSection .= "**Marka Yaşı:** {$this->sector_details['brand_age']}\n";
+            }
+            
+            // Pazar pozisyonu
+            if (isset($this->sector_details['market_position'])) {
+                $sectorSection .= "**Pazar Pozisyonu:** {$this->sector_details['market_position']}\n";
+            }
+            
+            // Marka kişiliği
+            if (isset($this->sector_details['brand_personality'])) {
+                $personalities = [];
+                foreach ($this->sector_details['brand_personality'] as $key => $value) {
+                    if ($value) $personalities[] = $key;
+                }
+                if (!empty($personalities)) {
+                    $sectorSection .= "**Marka Kişiliği:** " . implode(', ', $personalities) . "\n";
+                }
+            }
+            
+            $summary[] = $sectorSection;
+        }
+        
+        // 👥 ÖNCELİK 5: DETAY BİLGİLER (Ek firma bilgileri)
+        if ($this->company_info) {
+            $detailSection = "## 👥 DETAY BİLGİLER\n";
+            
+            // Çalışan sayısı
+            if (isset($this->company_info['employee_count'])) {
+                $detailSection .= "**Çalışan Sayısı:** {$this->company_info['employee_count']}\n";
+            }
+            
+            // İletişim kanalları
+            if (isset($this->company_info['contact_info'])) {
+                $channels = [];
+                foreach ($this->company_info['contact_info'] as $key => $value) {
+                    if ($value) $channels[] = $key;
+                }
+                if (!empty($channels)) {
+                    $detailSection .= "**İletişim Kanalları:** " . implode(', ', $channels) . "\n";
+                }
+            }
+            
+            // Kurucu nitelikleri
+            if (isset($this->company_info['founder_qualities'])) {
+                $qualities = [];
+                foreach ($this->company_info['founder_qualities'] as $key => $value) {
+                    if ($value) $qualities[] = $key;
+                }
+                if (!empty($qualities)) {
+                    $detailSection .= "**Kurucu Nitelikleri:** " . implode(', ', $qualities) . "\n";
+                }
+            }
+            
+            $summary[] = $detailSection;
         }
         
         // Kurucu bilgileri (izin verilmişse)

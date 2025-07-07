@@ -107,7 +107,7 @@
             <div class="token-card">
                 <h3 class="mb-2">Token Bakiyeniz</h3>
                 @if($tokenStatus['remaining_tokens'] > 0)
-                    <div class="token-number">{{ number_format($tokenStatus['remaining_tokens']) }}</div>
+                    <div class="token-number">{{ ai_format_token_count($tokenStatus['remaining_tokens']) }}</div>
                     <p class="mb-0">AI özelliklerini kullanmaya hazırsınız!</p>
                 @else
                     <div class="token-number text-warning">0</div>
@@ -208,7 +208,7 @@ function testFeature(featureName) {
                 resultContent.innerHTML = `
                     <div class="alert alert-success mb-3">
                         <strong>✅ İşlem Başarılı!</strong> 
-                        ${data.tokens_used} token kullanıldı.
+                        ${data.tokens_used_formatted || (data.tokens_used + ' token kullanıldı')}.
                     </div>
                     
                     <div class="mb-3">
@@ -227,7 +227,7 @@ function testFeature(featureName) {
                     
                     <div class="mt-3 text-muted small">
                         <i class="ti ti-clock"></i> İşlem süresi: ${data.processing_time}ms | 
-                        <i class="ti ti-coins"></i> Kalan token: ${number_format(data.new_balance || data.remaining_tokens)}
+                        <i class="ti ti-coins"></i> Kalan token: ${data.new_balance_formatted || data.new_balance || data.remaining_tokens || 0}
                     </div>
                 `;
             } else {
@@ -265,8 +265,5 @@ function escapeHtml(text) {
     return text.replace(/[&<>"']/g, m => map[m]);
 }
 
-function number_format(number) {
-    return new Intl.NumberFormat('tr-TR').format(number);
-}
 </script>
 @endpush

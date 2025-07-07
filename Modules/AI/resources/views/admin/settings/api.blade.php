@@ -32,13 +32,21 @@
                                 <div class="form-floating">
                                     <input type="password" class="form-control @error('api_key') is-invalid @enderror" 
                                            name="api_key" id="api_key" placeholder="sk-..." 
-                                           value="{{ old('api_key') }}">
+                                           value="{{ old('api_key', $settings->api_key ?? '') }}">
                                     <label for="api_key">API Anahtarı</label>
                                     @error('api_key')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                <div class="form-hint">DeepSeek API anahtarınızı girin. Boş bırakırsanız mevcut anahtar korunur.</div>
+                                <div class="form-hint">
+                                    @if($settings->api_key ?? false)
+                                        <i class="fas fa-check-circle text-success me-1"></i>
+                                        API anahtarı kayıtlı. Değiştirmek için yeni bir anahtar girin.
+                                    @else
+                                        <i class="fas fa-exclamation-triangle text-warning me-1"></i>
+                                        DeepSeek API anahtarınızı girin.
+                                    @endif
+                                </div>
                             </div>
                             
                             <div class="col-md-6 mb-3">

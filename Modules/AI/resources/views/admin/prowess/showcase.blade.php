@@ -35,9 +35,6 @@ use Illuminate\Support\Str;
             <a href="{{ route('admin.ai.features.index') }}" class="btn btn-outline-primary">
                 <i class="fas fa-cog me-2"></i>{{ __('ai::admin.prowess.manage_skills') }}
             </a>
-            <a href="{{ route('admin.ai.examples') }}" class="btn btn-outline-secondary">
-                <i class="fas fa-code me-2"></i>{{ __('ai::admin.prowess.developer_tools') }}
-            </a>
         </div>
     </div>
 </div>
@@ -159,16 +156,84 @@ use Illuminate\Support\Str;
     .fs-2 {
         font-size: 1.75rem !important;
     }
+
+    /* Search & Navigation Styles */
+    .skill-card {
+        transition: all 0.3s ease;
+    }
+
+    .skill-card.hidden {
+        display: none !important;
+    }
+
+    .category-section.no-results {
+        opacity: 0.3;
+    }
+
+    .search-highlight {
+        background: linear-gradient(120deg, #ffd700 0%, #ffd700 100%);
+        background-size: 100% 0.2em;
+        background-repeat: no-repeat;
+        background-position: 0 88%;
+        font-weight: 600;
+    }
+
+    #category-nav .btn {
+        font-size: 0.85rem;
+        padding: 0.375rem 0.75rem;
+        margin-right: 0.25rem;
+        border-radius: 1.5rem;
+    }
+
+    .category-nav-active {
+        background: linear-gradient(45deg, var(--tblr-primary), var(--tblr-purple)) !important;
+        color: white !important;
+        border-color: var(--tblr-primary) !important;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
 </style>
 @endpush
 
 @section('content')
+    <!-- Search & Navigation Section -->
+    <div class="row mt-4 mb-4">
+        <div class="col-md-6">
+            <div class="input-group input-group-lg">
+                <span class="input-group-text bg-primary text-white">
+                    <i class="fas fa-search"></i>
+                </span>
+                <input type="text" class="form-control" id="skill-search" placeholder="AI yeteneklerinde ara... (Ad, açıklama, kategori)" />
+                <button class="btn btn-outline-secondary" type="button" onclick="clearSearch()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="text-muted small mt-1">
+                <span id="search-results-count"></span>
+            </div>
+        </div>
+        <div class="col-12 mt-3">
+            <div class="card">
+                <div class="card-body py-2">
+                    <div class="d-flex align-items-center">
+                        <strong class="me-3">Hızlı Erişim:</strong>
+                        <div class="btn-group" role="group" id="category-nav">
+                            <!-- JavaScript ile doldurulacak -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Performance Dashboard -->
     <div class="row mb-5">
         <div class="col-md-3">
             <div class="card stats-showcase text-center">
                 <div class="card-body">
-                    <div class="display-6 fw-bold" id="token-display">{{ number_format($tokenStatus['remaining_tokens']) }}</div>
+                    <div class="display-6 fw-bold" id="token-display">{{ ai_format_token_count($tokenStatus['remaining']) }}</div>
                     <p class="text-white-50 mb-0">{{ __('ai::admin.prowess.available_tokens') }}</p>
                 </div>
             </div>
@@ -222,7 +287,7 @@ use Illuminate\Support\Str;
     @else
     <!-- AI Skills Showcase -->
     @foreach($features as $category => $categoryFeatures)
-    <div class="category-section mb-5">
+    <div class="category-section mb-5" data-category="{{ $category }}" id="category-{{ Str::slug($category) }}">
         <div class="category-header">
             <h2 class="mb-0 position-relative">
                 <i class="fas fa-magic me-3"></i>
@@ -235,7 +300,10 @@ use Illuminate\Support\Str;
 
         <div class="row">
             @foreach($categoryFeatures as $feature)
-            <div class="col-md-6 mb-4">
+            <div class="col-md-6 mb-4 skill-card" 
+                 data-skill-name="{{ strtolower($feature->name) }}" 
+                 data-skill-description="{{ strtolower($feature->description) }}"
+                 data-skill-category="{{ strtolower($categoryNames[$category] ?? $category) }}">
                 <div class="card prowess-card h-100">
                     <div class="card-body text-center">
                         <!-- Skill Icon & Title -->
@@ -252,15 +320,20 @@ use Illuminate\Support\Str;
                             </span>
                         </div>
 
-                        <!-- Example Prompts -->
-                        @if($feature->example_prompts)
+                        <!-- Example Inputs -->
+                        @if($feature->example_inputs)
                         <div class="mb-3">
                             <div class="text-muted small mb-2">{{ __('ai::admin.prowess.try_examples') }}</div>
                             <div class="d-flex flex-wrap gap-2 justify-content-center">
-                                @foreach(array_slice(json_decode($feature->example_prompts, true) ?? [], 0, 3) as $prompt)
-                                <button class="btn btn-sm btn-outline-muted"
-                                    onclick="setExamplePrompt({{ $feature->id }}, '{{ addslashes($prompt) }}'); console.log('Example clicked: {{ addslashes($prompt) }}');">
-                                    {{ Str::limit($prompt, 40) }}
+                                @php
+                                    $exampleInputs = is_string($feature->example_inputs) 
+                                        ? json_decode($feature->example_inputs, true) ?? []
+                                        : (is_array($feature->example_inputs) ? $feature->example_inputs : []);
+                                @endphp
+                                @foreach(array_slice($exampleInputs, 0, 3) as $example)
+                                <button class="btn btn-sm btn-outline-primary"
+                                    onclick="setExamplePrompt({{ $feature->id }}, '{{ addslashes($example['text'] ?? '') }}'); console.log('Example clicked: {{ addslashes($example['text'] ?? '') }}');">
+                                    {{ $example['label'] ?? Str::limit($example['text'] ?? '', 20) }}
                                 </button>
                                 @endforeach
                             </div>
@@ -336,6 +409,241 @@ use Illuminate\Support\Str;
 <script>
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
+    // Search & Navigation System
+    let allSkillCards = [];
+    let allCategories = [];
+    let activeCategory = null;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeSearchAndNavigation();
+    });
+
+    function initializeSearchAndNavigation() {
+        // Collect all skill cards and categories
+        allSkillCards = document.querySelectorAll('.skill-card');
+        allCategories = Array.from(document.querySelectorAll('.category-section')).map(section => ({
+            id: section.id,
+            name: section.dataset.category,
+            displayName: section.querySelector('.category-header h2').textContent.trim(),
+            element: section
+        }));
+
+        // Setup search functionality
+        setupSearchFunctionality();
+        
+        // Setup category navigation
+        setupCategoryNavigation();
+        
+        // Update search count
+        updateSearchCount(allSkillCards.length, allSkillCards.length);
+    }
+
+    function setupSearchFunctionality() {
+        const searchInput = document.getElementById('skill-search');
+        if (!searchInput) return;
+
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            performSearch(searchTerm);
+        });
+
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const searchTerm = this.value.toLowerCase().trim();
+                if (searchTerm) {
+                    // İlk bulunan sonuca scroll
+                    const firstVisible = document.querySelector('.skill-card:not(.hidden)');
+                    if (firstVisible) {
+                        firstVisible.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }
+            }
+        });
+    }
+
+    function setupCategoryNavigation() {
+        const navContainer = document.getElementById('category-nav');
+        if (!navContainer || allCategories.length === 0) return;
+
+        // "Tümü" butonu
+        const allBtn = document.createElement('button');
+        allBtn.className = 'btn btn-outline-primary category-nav-active';
+        allBtn.textContent = 'Tümü';
+        allBtn.onclick = () => filterByCategory(null);
+        navContainer.appendChild(allBtn);
+
+        // Kategori butonları
+        allCategories.forEach(category => {
+            const btn = document.createElement('button');
+            btn.className = 'btn btn-outline-primary';
+            
+            // Kategori adını temizle ve sadece skill sayısını ekle
+            const cleanName = category.displayName.replace(/^\d+\s*/, '').replace(/\s*\d+.*$/, '');
+            const skillCount = category.element.querySelectorAll('.skill-card').length;
+            btn.textContent = `${cleanName} (${skillCount})`;
+            
+            btn.onclick = () => filterByCategory(category.id);
+            navContainer.appendChild(btn);
+        });
+    }
+
+    function performSearch(searchTerm) {
+        let visibleCount = 0;
+        let totalCount = allSkillCards.length;
+
+        if (!searchTerm) {
+            // Arama terimi yoksa tümünü göster
+            allSkillCards.forEach(card => {
+                card.classList.remove('hidden');
+                removeHighlights(card);
+                visibleCount++;
+            });
+            
+            allCategories.forEach(category => {
+                category.element.classList.remove('no-results');
+            });
+        } else {
+            // Arama yap
+            allSkillCards.forEach(card => {
+                const name = card.dataset.skillName;
+                const description = card.dataset.skillDescription;
+                const category = card.dataset.skillCategory;
+                
+                const searchableText = `${name} ${description} ${category}`;
+                
+                if (searchableText.includes(searchTerm)) {
+                    card.classList.remove('hidden');
+                    highlightSearchTerm(card, searchTerm);
+                    visibleCount++;
+                } else {
+                    card.classList.add('hidden');
+                    removeHighlights(card);
+                }
+            });
+
+            // Kategorileri kontrol et - hiç görünür skill yoksa kategoriyi gizle
+            allCategories.forEach(category => {
+                const visibleSkillsInCategory = category.element.querySelectorAll('.skill-card:not(.hidden)').length;
+                if (visibleSkillsInCategory === 0) {
+                    category.element.classList.add('no-results');
+                } else {
+                    category.element.classList.remove('no-results');
+                }
+            });
+        }
+
+        updateSearchCount(visibleCount, totalCount);
+    }
+
+    function filterByCategory(categoryId) {
+        activeCategory = categoryId;
+        
+        // Buton aktif durumlarını güncelle
+        document.querySelectorAll('#category-nav .btn').forEach(btn => {
+            btn.classList.remove('category-nav-active');
+            btn.classList.add('btn-outline-primary');
+        });
+
+        if (categoryId) {
+            // Belirli kategoriyi göster
+            allCategories.forEach(category => {
+                if (category.id === categoryId) {
+                    category.element.style.display = 'block';
+                    category.element.classList.remove('no-results');
+                    
+                    // Butonu aktif yap
+                    const btn = Array.from(document.querySelectorAll('#category-nav .btn')).find(b => 
+                        b.textContent.trim() === category.displayName.replace(/^\d+\s*/, '').replace(/\s*\d+$/, '')
+                    );
+                    if (btn) {
+                        btn.classList.add('category-nav-active');
+                        btn.classList.remove('btn-outline-primary');
+                    }
+                    
+                    // Kategoriye scroll
+                    setTimeout(() => {
+                        category.element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 100);
+                } else {
+                    category.element.style.display = 'none';
+                }
+            });
+        } else {
+            // Tümünü göster
+            allCategories.forEach(category => {
+                category.element.style.display = 'block';
+                category.element.classList.remove('no-results');
+            });
+            
+            // "Tümü" butonunu aktif yap
+            const allBtn = document.querySelector('#category-nav .btn');
+            if (allBtn) {
+                allBtn.classList.add('category-nav-active');
+                allBtn.classList.remove('btn-outline-primary');
+            }
+        }
+
+        // Arama sonuçlarını güncelle
+        const visibleCards = document.querySelectorAll('.skill-card:not(.hidden)');
+        updateSearchCount(visibleCards.length, allSkillCards.length);
+    }
+
+    function highlightSearchTerm(card, searchTerm) {
+        const title = card.querySelector('.card-title');
+        const description = card.querySelector('.text-muted');
+        
+        if (title) {
+            const titleText = title.textContent;
+            const highlightedTitle = titleText.replace(
+                new RegExp(`(${escapeRegExp(searchTerm)})`, 'gi'),
+                '<span class="search-highlight">$1</span>'
+            );
+            title.innerHTML = highlightedTitle;
+        }
+        
+        if (description) {
+            const descText = description.textContent;
+            const highlightedDesc = descText.replace(
+                new RegExp(`(${escapeRegExp(searchTerm)})`, 'gi'),
+                '<span class="search-highlight">$1</span>'
+            );
+            description.innerHTML = highlightedDesc;
+        }
+    }
+
+    function removeHighlights(card) {
+        const highlights = card.querySelectorAll('.search-highlight');
+        highlights.forEach(highlight => {
+            highlight.outerHTML = highlight.textContent;
+        });
+    }
+
+    function updateSearchCount(visible, total) {
+        const countElement = document.getElementById('search-results-count');
+        if (!countElement) return;
+
+        if (visible === total) {
+            countElement.textContent = `${total} AI yeteneği gösteriliyor`;
+        } else {
+            countElement.textContent = `${visible} / ${total} AI yeteneği gösteriliyor`;
+        }
+    }
+
+    function clearSearch() {
+        const searchInput = document.getElementById('skill-search');
+        if (searchInput) {
+            searchInput.value = '';
+            performSearch('');
+            searchInput.focus();
+        }
+    }
+
+    function escapeRegExp(string) {
+        return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+
 // Test skill function
 async function testSkill(featureId) {
     console.log('testSkill called for feature:', featureId);
@@ -379,8 +687,7 @@ async function testSkill(featureId) {
             },
             body: JSON.stringify({
                 feature_id: featureId,
-                input_text: inputText,
-                real_ai: true  // Always use real AI for prowess showcase
+                input_text: inputText
             })
         });
 
@@ -391,15 +698,15 @@ async function testSkill(featureId) {
             const metaElement = document.getElementById(`result-meta-${featureId}`);
             metaElement.innerHTML = `
                 <i class="fas fa-check-circle me-1"></i>
-${data.tokens_used || 0} token kullanıldı
+                ${data.tokens_used_formatted || (data.tokens_used + ' kullanıldı')}
                 ${data.processing_time ? ` • ${data.processing_time}ms` : ''}
             `;
             
             // Update token display real-time
-            if (data.remaining_tokens !== undefined) {
+            if (data.new_balance_formatted !== undefined) {
                 const tokenDisplay = document.getElementById('token-display');
                 if (tokenDisplay) {
-                    tokenDisplay.textContent = new Intl.NumberFormat().format(data.remaining_tokens);
+                    tokenDisplay.textContent = data.new_balance_formatted;
                 }
             }
             

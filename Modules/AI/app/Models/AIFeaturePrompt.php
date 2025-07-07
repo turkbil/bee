@@ -10,21 +10,17 @@ class AIFeaturePrompt extends Model
     protected $table = 'ai_feature_prompts';
 
     protected $fillable = [
-        'ai_feature_id',
-        'ai_prompt_id',
-        'prompt_role',
+        'feature_id',
+        'prompt_id',
+        'role',
         'priority',
-        'is_required',
         'is_active',
         'conditions',
-        'parameters',
         'notes'
     ];
 
     protected $casts = [
         'conditions' => 'array',
-        'parameters' => 'array',
-        'is_required' => 'boolean',
         'is_active' => 'boolean',
         'priority' => 'integer'
     ];
@@ -34,7 +30,7 @@ class AIFeaturePrompt extends Model
      */
     public function aiFeature(): BelongsTo
     {
-        return $this->belongsTo(AIFeature::class, 'ai_feature_id');
+        return $this->belongsTo(AIFeature::class, 'feature_id');
     }
 
     /**
@@ -42,7 +38,7 @@ class AIFeaturePrompt extends Model
      */
     public function aiPrompt(): BelongsTo
     {
-        return $this->belongsTo(Prompt::class, 'ai_prompt_id');
+        return $this->belongsTo(Prompt::class, 'prompt_id');
     }
 
     /**
@@ -59,7 +55,7 @@ class AIFeaturePrompt extends Model
             'validation' => 'Doğrulama'
         ];
 
-        return $roles[$this->prompt_role] ?? 'Bilinmeyen';
+        return $roles[$this->role] ?? 'Bilinmeyen';
     }
 
     /**

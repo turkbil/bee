@@ -7,48 +7,63 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * AI Feature Prompts Pivot Table - Çoktan Çoğa İlişki
+     * 
+     * Bu migration Feature → Expert Prompt çoktan çoğa ilişkisini sağlar:
+     * 
+     * KULLANIM AMACI:
+     * - Bir feature birden fazla expert prompt'a bağlanabilir
+     * - Priority sırası ile hangi prompt'ın önce kullanılacağı belirlenir
+     * - Role ile prompt'ın rolü tanımlanır (primary, secondary, supportive)
+     * 
+     * ÖRNEK KULLANIM:
+     * Çeviri Feature:
+     * 1. İçerik Üretim Uzmanı (primary, priority: 1)
+     * 2. Çeviri Uzmanı (primary, priority: 2) 
+     * 3. Yerel SEO Uzmanı (supportive, priority: 3)
      */
     public function up(): void
     {
         Schema::create('ai_feature_prompts', function (Blueprint $table) {
             $table->id();
             
-            // İlişkiler
-            $table->foreignId('ai_feature_id')->constrained('ai_features')->onDelete('cascade');
-            $table->foreignId('ai_prompt_id')->constrained('ai_prompts')->onDelete('cascade');
+            // Foreign Keys
+            $table->unsignedBigInteger('feature_id');
+            $table->unsignedBigInteger('prompt_id');
             
-            // Prompt Türü
-            $table->enum('prompt_role', [
-                'primary',      // Ana prompt (zorunlu)
-                'secondary',    // İkincil prompt (destek)
-                'support',      // Destek prompt (yardımcı)
-                'hidden',       // Gizli sistem promptu
-                'conditional',  // Şartlı prompt
-                'formatting',   // Format düzenleme
-                'validation'    // Doğrulama/kontrol
+            // İlişki Detayları
+            $table->integer('priority')->default(1); // Kullanım sırası (1 = en öncelikli)
+            $table->enum('role', [
+                'primary',      // Ana prompt (temel işlevi yerine getirir)
+                'secondary',    // İkincil prompt (ek bilgi sağlar)
+                'supportive'    // Destekleyici prompt (kalite artırır)
             ])->default('primary');
             
-            // Öncelik ve Sıralama
-            $table->integer('priority')->default(0); // Hangi sırada çalışacak
-            $table->boolean('is_required')->default(false); // Zorunlu mu
-            $table->boolean('is_active')->default(true); // Aktif mi
+            // Durum ve Ayarlar
+            $table->boolean('is_active')->default(true); // Bu ilişki aktif mi?
+            $table->json('conditions')->nullable(); // Hangi koşullarda kullanılsın
+            $table->text('notes')->nullable(); // İlişki hakkında notlar
             
-            // Şartlı Çalışma Kuralları
-            $table->json('conditions')->nullable(); // Hangi durumlarda çalışacak
-            $table->json('parameters')->nullable(); // Prompt parametreleri
-            $table->text('notes')->nullable(); // Admin notları
-            
-            // Timestamps
             $table->timestamps();
             
-            // Unique constraint - Aynı feature'da aynı role'den sadece bir tane
-            $table->unique(['ai_feature_id', 'ai_prompt_id', 'prompt_role'], 'unique_feature_prompt_role');
-            
             // İndexler
-            $table->index(['ai_feature_id', 'prompt_role', 'priority']);
-            $table->index(['ai_prompt_id', 'is_active']);
-            $table->index('priority');
+            $table->index(['feature_id', 'priority']); // Feature'ın prompt'larını priority ile getir
+            $table->index(['prompt_id', 'role']); // Prompt'ın kullanıldığı roller
+            $table->index(['is_active', 'priority']); // Aktif prompt'ları sırası ile
+            
+            // Unique Constraint - Aynı feature'da aynı prompt aynı priority'de olamaz
+            $table->unique(['feature_id', 'prompt_id', 'priority'], 'unique_feature_prompt_priority');
+            
+            // Foreign Key Constraints
+            $table->foreign('feature_id')
+                  ->references('id')
+                  ->on('ai_features')
+                  ->onDelete('cascade');
+                  
+            $table->foreign('prompt_id')
+                  ->references('id')
+                  ->on('ai_prompts')
+                  ->onDelete('cascade');
         });
     }
 

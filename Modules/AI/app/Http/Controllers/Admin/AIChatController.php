@@ -99,8 +99,10 @@ class AIChatController extends Controller
                 ]);
                 
                 return response()->json([
+                    'success' => false,
                     'status' => 'error',
                     'message' => 'AI yanıt üretemedi. Lütfen tekrar deneyin.',
+                    'response' => 'AI yanıt üretemedi.'
                 ], 500);
             }
             
@@ -119,6 +121,18 @@ class AIChatController extends Controller
             // Geriye uyumluluk için Redis cache'ini de güncelle
             $this->updateRedisCache($conversation->id, $conversationHistory, $response['content']);
             
+            // Token bilgileri hesapla
+            $totalTokensUsed = $userPromptTokens + $aiCompletionTokens;
+            
+            // Token kullanımını AIHelper sistemi ile kaydet
+            $tenantId = \App\Helpers\TenantHelpers::getCurrentTenantId() ?: 1;
+            ai_use_tokens($totalTokensUsed, 'chat', 'general_chat', $tenantId, [
+                'conversation_id' => $conversation->id,
+                'user_message_length' => strlen($message),
+                'ai_response_length' => strlen($response['content']),
+                'source' => 'admin_chat'
+            ]);
+            
             // İşlemi kaydet
             activity()
                 ->causedBy(Auth::user())
@@ -132,13 +146,21 @@ class AIChatController extends Controller
             // Markdown kontrolü ve dönüşüm
             $content = $response['content'];
             $hasMarkdown = $this->markdownService->hasMarkdown($content);
+            $tenantId = \App\Helpers\TenantHelpers::getCurrentTenantId() ?: 1;
+            $newBalance = ai_get_token_balance($tenantId);
             
             return response()->json([
+                'success' => true,
                 'status' => 'success',
+                'response' => $content,
                 'content' => $content,
                 'has_markdown' => $hasMarkdown,
                 'html_content' => $hasMarkdown ? $this->markdownService->convertToHtml($content) : null,
                 'conversation_id' => $conversation->id,
+                'tokens_used' => $totalTokensUsed,
+                'tokens_used_formatted' => ai_format_token_count($totalTokensUsed) . ' kullanıldı',
+                'new_balance' => $newBalance,
+                'new_balance_formatted' => ai_format_token_count($newBalance)
             ]);
         } catch (\Exception $e) {
             Log::error('AI mesaj gönderme hatası: ' . $e->getMessage(), [
@@ -148,8 +170,10 @@ class AIChatController extends Controller
             ]);
             
             return response()->json([
+                'success' => false,
                 'status' => 'error',
                 'message' => 'Bir hata oluştu: ' . $e->getMessage(),
+                'response' => 'Sistem hatası oluştu.'
             ], 500);
         }
     }

@@ -24,6 +24,7 @@ class TokenPackageManagement extends Component
     
     // Package form fields
     public $features = [];
+    public $newFeature = '';
     public $name = '';
     public $description = '';
     public $token_amount = '';
@@ -37,6 +38,7 @@ class TokenPackageManagement extends Component
     public $showDeleteModal = false;
     public $deleteId = null;
     public $deleteTitle = '';
+    public $deleteConfirmText = '';
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -44,7 +46,6 @@ class TokenPackageManagement extends Component
         'sortDirection' => ['except' => 'asc']
     ];
 
-    protected $listeners = ['update-package-order' => 'updatePackageOrder'];
 
     public function render()
     {
@@ -78,12 +79,19 @@ class TokenPackageManagement extends Component
 
     public function createPackage()
     {
-        return redirect()->route('admin.ai.tokens.packages.admin');
+        $this->activeTab = 'manage';
+        $this->editMode = false;
+        $this->editingPackage = null;
+        $this->resetForm();
     }
 
     public function editPackage($id)
     {
-        return redirect()->route('admin.ai.tokens.packages.admin')->with('edit_package_id', $id);
+        $package = AITokenPackage::findOrFail($id);
+        $this->activeTab = 'manage';
+        $this->editMode = true;
+        $this->editingPackage = $package;
+        $this->fillForm($package);
     }
 
     public function toggleActive($id)
@@ -110,10 +118,10 @@ class TokenPackageManagement extends Component
         $this->showDeleteModal($id, $package->name);
     }
 
-    public function updatePackageOrder($event)
+    public function updatePackageOrder($packages)
     {
-        if (isset($event['packages']) && is_array($event['packages'])) {
-            foreach ($event['packages'] as $package) {
+        if (is_array($packages)) {
+            foreach ($packages as $package) {
                 AITokenPackage::where('id', $package['id'])
                     ->update(['sort_order' => $package['order']]);
             }
@@ -185,6 +193,7 @@ class TokenPackageManagement extends Component
         $this->showDeleteModal = false;
         $this->deleteId = null;
         $this->deleteTitle = '';
+        $this->deleteConfirmText = '';
     }
 
     public function deletePackage()
@@ -206,5 +215,84 @@ class TokenPackageManagement extends Component
         
         $this->hideDeleteModal();
         $this->resetPage();
+    }
+
+    public function resetForm()
+    {
+        $this->name = '';
+        $this->description = '';
+        $this->token_amount = '';
+        $this->price = '';
+        $this->currency = 'TRY';
+        $this->is_active = true;
+        $this->is_popular = false;
+        $this->sort_order = 0;
+        $this->features = [];
+        $this->newFeature = '';
+    }
+
+    public function fillForm($package)
+    {
+        $this->name = $package->name;
+        $this->description = $package->description;
+        $this->token_amount = $package->token_amount;
+        $this->price = $package->price;
+        $this->currency = $package->currency;
+        $this->is_active = $package->is_active;
+        $this->is_popular = $package->is_popular;
+        $this->sort_order = $package->sort_order;
+        $this->features = $package->features ?: [];
+    }
+
+    public function addFeature()
+    {
+        if (!empty($this->newFeature) && count($this->features) < 10) {
+            $this->features[] = trim($this->newFeature);
+            $this->newFeature = '';
+        }
+    }
+
+    public function removeFeature($index)
+    {
+        if (isset($this->features[$index])) {
+            unset($this->features[$index]);
+            $this->features = array_values($this->features);
+        }
+    }
+
+    public function savePackage()
+    {
+        $this->validate([
+            'name' => 'required|max:255',
+            'token_amount' => 'required|integer|min:1',
+            'price' => 'required|numeric|min:0',
+            'currency' => 'required|in:TRY,USD,EUR',
+            'sort_order' => 'integer|min:0',
+        ]);
+
+        $data = [
+            'name' => $this->name,
+            'description' => $this->description,
+            'token_amount' => $this->token_amount,
+            'price' => $this->price,
+            'currency' => $this->currency,
+            'is_active' => $this->is_active,
+            'is_popular' => $this->is_popular,
+            'sort_order' => $this->sort_order,
+            'features' => $this->features,
+        ];
+
+        if ($this->editMode && $this->editingPackage) {
+            $this->editingPackage->update($data);
+            session()->flash('success', 'Paket başarıyla güncellendi.');
+        } else {
+            AITokenPackage::create($data);
+            session()->flash('success', 'Paket başarıyla oluşturuldu.');
+        }
+
+        $this->activeTab = 'list';
+        $this->editMode = false;
+        $this->editingPackage = null;
+        $this->resetForm();
     }
 }

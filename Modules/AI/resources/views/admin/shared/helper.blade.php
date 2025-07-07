@@ -26,8 +26,6 @@
 {{ __('ai::admin.ai_features') }}
 @elseif(request()->route()->getName() === 'admin.ai.features.show')
 {{ __('ai::admin.ai_feature_detail') }}
-@elseif(request()->route()->getName() === 'admin.ai.features.manage')
-{{ isset($featureId) && $featureId ? __('ai::admin.edit_ai_feature') : __('ai::admin.new_ai_feature') }}
 @elseif(request()->route()->getName() === 'admin.ai.settings')
 {{ __('ai::admin.ai_settings') }}
 @elseif(request()->route()->getName() === 'admin.ai.settings.api')
@@ -46,10 +44,12 @@
 {{ __('ai::admin.archived_conversations') }}
 @elseif(request()->route()->getName() === 'admin.ai.conversations.show')
 {{ __('ai::admin.conversation_detail') }}
-@elseif(request()->route()->getName() === 'admin.ai.examples')
-{{ __('ai::admin.usage_examples') }}
 @elseif(request()->route()->getName() === 'admin.ai.prowess')
 {{ __('ai::admin.test_panel') }}
+@elseif(request()->route()->getName() === 'admin.ai.profile.show')
+{{ __('ai::admin.ai_tenant_profile') }}
+@elseif(request()->route()->getName() === 'admin.ai.profile.edit')
+{{ __('ai::admin.edit_ai_profile') }}
 @else
 {{ __('ai::admin.ai_assistant') }}
 @endif
@@ -283,6 +283,8 @@
     }, 30000);
 });
 
+// Token formatlaması artık server-side yapılıyor - JavaScript formatTokenCount kaldırıldı
+
 // Real-time token güncelleme fonksiyonu
 function updateTokenDisplays() {
     // AI Widget Helper kullanarak güncel token verilerini al
@@ -291,18 +293,14 @@ function updateTokenDisplays() {
         method: 'GET',
         success: function(data) {
             // Header token balance güncelle
-            if ($('#header-token-balance').length) {
-                $('#header-token-balance').html(
-                    new Intl.NumberFormat().format(data.remaining_tokens) + ' {{ __('ai::admin.tokens') }}'
-                );
+            if ($('#header-token-balance').length && data.remaining_tokens_formatted) {
+                $('#header-token-balance').html(data.remaining_tokens_formatted + ' {{ __('ai::admin.tokens') }}');
             }
             
             // Header monthly usage güncelle
-            if ($('#header-monthly-usage').length) {
-                $('#header-monthly-usage').html(
-                    new Intl.NumberFormat().format(data.monthly_usage) + ' / ' + 
-                    (data.monthly_limit > 0 ? new Intl.NumberFormat().format(data.monthly_limit) : '{{ __('ai::admin.unlimited') }}')
-                );
+            if ($('#header-monthly-usage').length && data.monthly_usage_formatted) {
+                const limitText = data.monthly_limit_formatted || '{{ __('ai::admin.unlimited') }}';
+                $('#header-monthly-usage').html(data.monthly_usage_formatted + ' / ' + limitText);
             }
             
             // Progress bar güncelle
@@ -312,22 +310,22 @@ function updateTokenDisplays() {
             }
             
             // Sayfa token displaylerini güncelle
-            if ($('#token-display').length) {
-                $('#token-display').text(new Intl.NumberFormat().format(data.remaining_tokens));
+            if ($('#token-display').length && data.remaining_tokens_formatted) {
+                $('#token-display').text(data.remaining_tokens_formatted);
             }
-            if ($('#remaining-token-display').length) {
-                $('#remaining-token-display').text(new Intl.NumberFormat().format(data.remaining_tokens));
+            if ($('#remaining-token-display').length && data.remaining_tokens_formatted) {
+                $('#remaining-token-display').text(data.remaining_tokens_formatted);
             }
-            if ($('#daily-usage-display').length) {
-                $('#daily-usage-display').text(new Intl.NumberFormat().format(data.daily_usage));
+            if ($('#daily-usage-display').length && data.daily_usage_formatted) {
+                $('#daily-usage-display').text(data.daily_usage_formatted);
             }
-            if ($('#monthly-usage-display').length) {
-                $('#monthly-usage-display').text(new Intl.NumberFormat().format(data.monthly_usage));
+            if ($('#monthly-usage-display').length && data.monthly_usage_formatted) {
+                $('#monthly-usage-display').text(data.monthly_usage_formatted);
             }
             
             // Features sayfası token displaylerini güncelle
-            if ($('#features-remaining-tokens').length) {
-                $('#features-remaining-tokens').text(new Intl.NumberFormat().format(data.remaining_tokens));
+            if ($('#features-remaining-tokens').length && data.remaining_tokens_formatted) {
+                $('#features-remaining-tokens').text(data.remaining_tokens_formatted);
                 // Token renk durumu güncelle
                 if (data.remaining_tokens > 0) {
                     $('#features-remaining-tokens').removeClass('text-danger').addClass('text-primary');
@@ -423,20 +421,37 @@ document.addEventListener('DOMContentLoaded', function() {
                     @endhasmoduleaccess
 
                     @hasmoduleaccess('ai', 'update')
+                    <a class="dropdown-item" href="{{ route('admin.ai.features.index') }}">
+                        <i class="fas fa-cogs me-2"></i>
+                        {{ __('ai::admin.features_management') }}
+                    </a>
+                    @endhasmoduleaccess
+
+                    @hasmoduleaccess('ai', 'update')
                     <a class="dropdown-item" href="{{ route('admin.ai.settings') }}">
                         {{ __('ai::admin.ai_settings') }}
                     </a>
                     @endhasmoduleaccess
 
-                    @hasmoduleaccess('ai', 'view')
-                    <a class="dropdown-item" href="{{ route('admin.ai.examples') }}">
-                        {{ __('ai::admin.usage_examples') }}
-                    </a>
-                    @endhasmoduleaccess
 
                     @hasmoduleaccess('ai', 'view')
                     <a class="dropdown-item" href="{{ route('admin.ai.prowess') }}">
                         {{ __('ai::admin.test_panel') }}
+                    </a>
+                    @endhasmoduleaccess
+                    
+                    @hasmoduleaccess('ai', 'view')
+                    <div class="dropdown-divider"></div>
+                    <h6 class="dropdown-header">{{ __('ai::admin.tenant_profile') }}</h6>
+                    
+                    <a class="dropdown-item" href="{{ route('admin.ai.profile.show') }}">
+                        <i class="ti ti-user-circle me-2"></i>
+                        {{ __('ai::admin.view_profile') }}
+                    </a>
+                    
+                    <a class="dropdown-item" href="{{ route('admin.ai.profile.edit') }}">
+                        <i class="ti ti-user-edit me-2"></i>
+                        {{ __('ai::admin.edit_profile') }}
                     </a>
                     @endhasmoduleaccess
 
@@ -483,9 +498,10 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <div class="fw-bold">{{ __('ai::admin.token_balance') }}</div>
                                 <div class="text-muted small" id="header-token-balance">
                                     @php
-                                    $tokenStats = ai_widget_token_data();
+                                    $tenantId = tenant('id') ?: '1';
+                                    $tokenStats = ai_widget_token_data($tenantId);
                                     @endphp
-                                    {{ number_format($tokenStats['remaining'] ?? 0) }} {{ __('ai::admin.tokens') }}
+                                    {{ ai_format_token_count($tokenStats['remaining'] ?? 0) }} {{ __('ai::admin.tokens') }}
                                 </div>
                             </div>
                         </div>
@@ -500,9 +516,9 @@ document.addEventListener('DOMContentLoaded', function() {
                             <div>
                                 <div class="fw-bold">{{ __('ai::admin.monthly_usage') }}</div>
                                 <div class="text-muted small" id="header-monthly-usage">
-                                    {{ number_format($tokenStats['monthly_usage'] ?? 0) }} / {{
+                                    {{ ai_format_token_count($tokenStats['monthly_usage'] ?? 0) }} / {{
                                     ($tokenStats['monthly_limit'] ?? 0) > 0 ?
-                                    number_format($tokenStats['monthly_limit']) : __('ai::admin.unlimited') }}
+                                    ai_format_token_count($tokenStats['monthly_limit']) : __('ai::admin.unlimited') }}
                                 </div>
                                 @if(($tokenStats['monthly_limit'] ?? 0) > 0)
                                 <div class="progress progress-sm mt-1">

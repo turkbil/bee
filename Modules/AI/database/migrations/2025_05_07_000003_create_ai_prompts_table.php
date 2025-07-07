@@ -17,7 +17,8 @@ return new class extends Migration
                 'common',          // Ortak özellikler (eski is_common)
                 'hidden_system',   // Gizli sistem promptu
                 'secret_knowledge', // Gizli bilgi tabanı
-                'conditional'      // Şartlı yanıtlar
+                'conditional',     // Şartlı yanıtlar
+                'feature'          // Feature-specific prompt
             ])->default('standard');
             $table->boolean('is_default')->default(false);
             $table->boolean('is_system')->default(false); // Sistem promptları değiştirilemez

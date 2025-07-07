@@ -113,7 +113,16 @@
       "Bash(if grep -q \"''$key''\" /mnt/c/laragon/www/laravel/Modules/AI/lang/tr/admin.php)",
       "Bash(else)",
       "mcp__claude-code-server__TodoWrite",
-      "mcp__claude-code-server__Edit"
+      "mcp__claude-code-server__Edit",
+      "Bash(clear)",
+      "Bash(for:*)",
+      "Bash(do echo \"=== $file ===\")",
+      "Bash(perl:*)",
+      "WebFetch(domain:laravel.test)",
+      "Bash(xxd:*)",
+      "Bash(kill:*)",
+      "Bash(sudo rm:*)",
+      "WebFetch(domain:tenancyforlaravel.com)"
     ],
     "deny": []
   },

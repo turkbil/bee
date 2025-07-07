@@ -182,7 +182,7 @@ class ConversationController extends Controller
             
             // Token bilgisi
             if ($message->tokens > 0) {
-                $metaParts[] = number_format($message->tokens) . ' token';
+                $metaParts[] = ai_format_token_count($message->tokens) . ' token';
             }
             
             // İşlem süresi

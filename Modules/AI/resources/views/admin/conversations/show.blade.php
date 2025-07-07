@@ -72,7 +72,7 @@
             <div class="col-sm-3">
                 <div class="card border-0 bg-success-lt text-center">
                     <div class="card-body py-3">
-                        <div class="h3 mb-1">{{ number_format($messageStats['total_tokens']) }}</div>
+                        <div class="h3 mb-1">{{ ai_format_token_count($messageStats['total_tokens']) }}</div>
                         <div class="text-muted small">{{ __('ai::admin.token_usage') }}</div>
                     </div>
                 </div>
@@ -181,7 +181,7 @@
                         </div>
                         <div>
                             <h4 class="alert-title">{{ __('ai::admin.token_usage') }}</h4>
-                            {{ __('ai::admin.token_consumption_info', ['tokens' => number_format($conversation->total_tokens_used)]) }}
+                            {{ __('ai::admin.token_consumption_info', ['tokens' => ai_format_token_count($conversation->total_tokens_used)]) }}
                         </div>
                     </div>
                 </div>

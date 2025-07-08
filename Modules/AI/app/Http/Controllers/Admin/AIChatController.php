@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Modules\AI\App\Services\AIService;
+use Modules\AI\App\Services\AIResponseRepository;
 use Modules\AI\App\Services\DeepSeekService;
 use Modules\AI\App\Services\MarkdownService;
 use Modules\AI\App\Services\ConversationService;
@@ -20,14 +21,16 @@ class AIChatController extends Controller
     protected $deepSeekService;
     protected $markdownService;
     protected $aiService;
+    protected $aiResponseRepository;
     protected $conversationService;
 
-    public function __construct(DeepSeekService $deepSeekService, MarkdownService $markdownService, ConversationService $conversationService, AIService $aiService = null)
+    public function __construct(DeepSeekService $deepSeekService, MarkdownService $markdownService, ConversationService $conversationService, AIService $aiService = null, AIResponseRepository $aiResponseRepository = null)
     {
         $this->deepSeekService = $deepSeekService;
         $this->markdownService = $markdownService;
         $this->conversationService = $conversationService;
         $this->aiService = $aiService ?? app(AIService::class);
+        $this->aiResponseRepository = $aiResponseRepository ?? app(AIResponseRepository::class);
     }
 
     public function index()
@@ -239,6 +242,7 @@ class AIChatController extends Controller
                     'message_length' => strlen($message),
                     'has_api_key' => !empty($this->deepSeekService->getApiKey()),
                     'prompt_id' => $promptId,
+                    'timestamp' => now()->toIso8601String(),
                 ]);
                 
                 // Kullanıcı mesajını kaydet
@@ -436,6 +440,76 @@ class AIChatController extends Controller
             Cache::store('redis')->forget($cachePrefix . $conversationId);
         } catch (\Exception $e) {
             Log::error('Redis cache temizleme hatası: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Konuşma promptunu güncelle
+     */
+    public function updateConversationPrompt(Request $request)
+    {
+        $request->validate([
+            'conversation_id' => 'required|integer',
+            'prompt_id' => 'required|integer',
+        ]);
+
+        try {
+            $conversationId = $request->conversation_id;
+            $promptId = $request->prompt_id;
+            
+            // Konuşmayı bul
+            $conversation = Conversation::where('id', $conversationId)
+                ->where('user_id', Auth::id())
+                ->first();
+                
+            if (!$conversation) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Konuşma bulunamadı veya erişim izniniz yok.'
+                ], 404);
+            }
+            
+            // Prompt'u kontrol et
+            $prompt = \Modules\AI\App\Models\Prompt::where('id', $promptId)
+                ->where('is_active', true)
+                ->first();
+                
+            if (!$prompt) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Seçilen prompt bulunamadı veya aktif değil.'
+                ], 404);
+            }
+            
+            // Konuşmanın prompt_id'sini güncelle
+            $conversation->prompt_id = $promptId;
+            $conversation->save();
+            
+            Log::info('Konuşma promptu güncellendi', [
+                'conversation_id' => $conversationId,
+                'old_prompt_id' => $conversation->getOriginal('prompt_id'),
+                'new_prompt_id' => $promptId,
+                'prompt_name' => $prompt->name,
+                'user_id' => Auth::id()
+            ]);
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Konuşma promptu başarıyla güncellendi.',
+                'prompt_name' => $prompt->name
+            ]);
+            
+        } catch (\Exception $e) {
+            Log::error('Konuşma promptu güncelleme hatası: ' . $e->getMessage(), [
+                'exception' => $e,
+                'user_id' => Auth::id(),
+                'request' => $request->all()
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Bir hata oluştu: ' . $e->getMessage()
+            ], 500);
         }
     }
 }

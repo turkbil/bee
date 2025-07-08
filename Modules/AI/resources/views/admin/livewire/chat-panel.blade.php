@@ -121,7 +121,12 @@
     </div>
 
     @push('scripts')
+    <!-- Universal AI Word Buffer System -->
+    <script src="{{ asset('admin-assets/libs/ai-word-buffer/ai-word-buffer.js') }}"></script>
+    
     <script>
+        // 🚀 Chat Panel - Universal Word Buffer Implementation
+        
         function promptSelected(promptId) {
         // Mevcut seçili prompt ile yeni seçilen aynıysa, işlemi pas geç
         const currentPromptId = document.querySelector('#prompt-selector').value;
@@ -144,6 +149,115 @@
         const toastTitle = document.getElementById('toast-title');
         const toastMessage = document.getElementById('toast-message');
         const promptSelector = document.getElementById('prompt-selector');
+        
+        // 🎯 AKILLI SCROLL SİSTEMİ
+        let autoScrollEnabled = true;
+        let userScrolledUp = false;
+        let scrollCheckTimer = null;
+        
+        // Scroll event listener - Manuel scroll detection
+        chatContainer.addEventListener('scroll', function() {
+            const isAtBottom = Math.abs(chatContainer.scrollHeight - chatContainer.scrollTop - chatContainer.clientHeight) < 5;
+            
+            if (isAtBottom) {
+                // Kullanıcı en alta scroll yaptı - otomatik scroll'u aktifleştir
+                if (userScrolledUp) {
+                    console.log('🎯 User scrolled to bottom - Auto-scroll re-enabled');
+                    autoScrollEnabled = true;
+                    userScrolledUp = false;
+                }
+            } else {
+                // Kullanıcı yukarı scroll yaptı - otomatik scroll'u durdur
+                if (autoScrollEnabled && !userScrolledUp) {
+                    console.log('🛑 User scrolled up - Auto-scroll disabled');
+                    autoScrollEnabled = false;
+                    userScrolledUp = true;
+                    showScrollIndicator();
+                }
+            }
+        });
+        
+        // 🎯 SCROLL İNDİKATÖRÜ - Kullanıcı yukarı scroll yaptığında göster
+        function showScrollIndicator() {
+            // Scroll indicator'ı oluştur veya göster
+            let scrollIndicator = document.getElementById('scroll-to-bottom-indicator');
+            
+            if (!scrollIndicator) {
+                // İlk kez oluştur
+                scrollIndicator = document.createElement('div');
+                scrollIndicator.id = 'scroll-to-bottom-indicator';
+                scrollIndicator.className = 'scroll-indicator position-fixed';
+                scrollIndicator.innerHTML = `
+                    <button class="btn btn-primary btn-sm shadow-lg" onclick="scrollToBottomAndReEnable()">
+                        <i class="fa-thin fa-arrow-down me-1"></i>
+                        <span>En Alta İn</span>
+                        <span class="badge bg-white text-primary ms-1" id="new-messages-count">1</span>
+                    </button>
+                `;
+                
+                // Chat container'a ekle
+                chatContainer.parentElement.appendChild(scrollIndicator);
+                
+                // CSS stilleri dinamik olarak ekle
+                const style = document.createElement('style');
+                style.textContent = `
+                    .scroll-indicator {
+                        bottom: 80px;
+                        right: 20px;
+                        z-index: 1000;
+                        transition: all 0.3s ease;
+                        opacity: 0;
+                        transform: translateY(20px);
+                    }
+                    
+                    .scroll-indicator.show {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                    
+                    @media (max-width: 768px) {
+                        .scroll-indicator {
+                            bottom: 60px;
+                            right: 15px;
+                        }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            // Indicator'ı göster
+            scrollIndicator.classList.add('show');
+            
+            // Yeni mesaj sayısını güncelle (basit sayaç)
+            const countBadge = scrollIndicator.querySelector('#new-messages-count');
+            if (countBadge) {
+                let currentCount = parseInt(countBadge.textContent) || 0;
+                countBadge.textContent = currentCount + 1;
+            }
+        }
+        
+        // 🎯 SCROLL TO BOTTOM VE AUTO-SCROLL YENİDEN AKTİFLEŞTİRME
+        function scrollToBottomAndReEnable() {
+            // Auto-scroll'u yeniden aktifleştir
+            autoScrollEnabled = true;
+            userScrolledUp = false;
+            
+            // En alta scroll yap
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            
+            // Indicator'ı gizle
+            const scrollIndicator = document.getElementById('scroll-to-bottom-indicator');
+            if (scrollIndicator) {
+                scrollIndicator.classList.remove('show');
+                // Sayacı sıfırla
+                const countBadge = scrollIndicator.querySelector('#new-messages-count');
+                if (countBadge) {
+                    countBadge.textContent = '1';
+                }
+            }
+            
+            console.log('🎯 Manual scroll to bottom - Auto-scroll re-enabled');
+        }
         
         // Toast öğesini initialize et
         let toast;
@@ -200,6 +314,9 @@
             // Kullanıcı mesajını ekle
             addMessage(message, 'user');
             
+            // Yeni mesaj gönderildiğinde zorla scroll
+            forceScrollToBottom();
+            
             // Form alanını temizle
             userMessage.value = '';
             userMessage.style.height = 'auto';
@@ -233,30 +350,40 @@
             aiResponseElement = createMessageElement('', 'ai');
             chatMessages.appendChild(aiResponseElement);
             
+            // AI yanıtı başlayınca zorla scroll yap
+            forceScrollToBottom();
+            
             aiResponseContent = aiResponseElement.querySelector('.message-content p');
             
             // Yazıyor animasyonu ekle
             const typingText = chatContainer.dataset.tTyping || 'Yazıyor';
             aiResponseContent.innerHTML = `<span class="typing-animation">${typingText}<span>.</span><span>.</span><span>.</span></span>`;
             
+            // 🚀 UNIVERSAL WORD-BASED BUFFER SYSTEM - SLOW MOTION SMOOTH
+            const wordBuffer = createAIWordBuffer(aiResponseContent, {
+                typewriterSpeed: 150,  // Daktilo base hızı (smooth için biraz yavaş)
+                minWordLength: 2,      // Minimum 2 karakter olan kelimeler
+                showTypingWhileBuffering: true, // Buffer dolarken "yazıyor" göster
+                scrollCallback: scrollToBottom,  // Her kelime sonrası scroll
+                punctuationDelay: 100, // Noktalama işaretlerinde ek gecikme (smooth için)
+                enableMarkdown: true,  // Markdown desteği
+                fadeEffect: true,      // SLOW MOTION slide-in efekti
+                initialDelay: 80       // İlk kelime için kısa bekleme
+            });
+            
             // Stream veri alındığında
             eventSource.onmessage = function(event) {
                 const data = JSON.parse(event.data);
                 
                 if (data.content) {
-                    // Yazıyor animasyonunu kaldır
+                    // Yazıyor animasyonunu kaldır (sadece ilk veri geldiğinde)
                     if (fullResponse === '') {
-                        aiResponseContent.innerHTML = '';
+                        wordBuffer.start(); // Buffer sistemini başlat
                     }
                     
-                    // AI yanıtını ekle
+                    // AI yanıtını buffer'a ekle
                     fullResponse += data.content;
-                    
-                    // HTML güvenliği için
-                    aiResponseContent.innerText = fullResponse;
-                    
-                    // Otomatik kaydırma
-                    scrollToBottom();
+                    wordBuffer.addContent(data.content);
                 }
             };
                         
@@ -264,10 +391,15 @@
             eventSource.addEventListener('complete', function(event) {
                 const data = JSON.parse(event.data);
                 
+                // Buffer'ı sonlandır ve kalan tüm kelimeleri hızlıca yazdır
+                wordBuffer.flush();
+                
                 // Markdown kontrolü
                 if (data.has_markdown && data.html_content) {
-                    // HTML içeriği markdown olarak işaretlenmiş, doğrudan göster
-                    aiResponseContent.innerHTML = data.html_content;
+                    // Buffer tamamlandıktan sonra markdown'ı uygula
+                    setTimeout(() => {
+                        aiResponseContent.innerHTML = data.html_content;
+                    }, 500); // Buffer'ın bitmesini bekle
                 }
                 
                 // Butonları etkinleştir
@@ -455,8 +587,18 @@
             });
         }
         
-        // En alta kaydır
+        // En alta kaydır - Akıllı scroll sistemi
         function scrollToBottom() {
+            // Sadece otomatik scroll aktifse scroll yap
+            if (autoScrollEnabled) {
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+        }
+        
+        // Zorla scroll (yeni mesaj başlangıcında)
+        function forceScrollToBottom() {
+            autoScrollEnabled = true;
+            userScrolledUp = false;
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
         
@@ -711,34 +853,50 @@
         }
 
         .typing-animation span {
+            display: inline-block;
             opacity: 0;
-            animation: typing-dot 1.4s infinite;
+            transform: translateY(0px) scale(1);
+            animation: typing-dot-smooth 2.0s infinite;
             animation-fill-mode: forwards;
-        }
-
-        .typing-animation span:nth-child(1) {
-            animation-delay: 0s;
+            will-change: transform, opacity;
         }
 
         .typing-animation span:nth-child(2) {
-            animation-delay: 0.2s;
+            animation-delay: 0.3s;
         }
 
         .typing-animation span:nth-child(3) {
-            animation-delay: 0.4s;
+            animation-delay: 0.6s;
         }
 
-        @keyframes typing-dot {
+        .typing-animation span:nth-child(4) {
+            animation-delay: 0.9s;
+        }
+
+        @keyframes typing-dot-smooth {
             0% {
                 opacity: 0;
+                transform: translateY(2px) scale(0.8);
+            }
+
+            25% {
+                opacity: 0.7;
+                transform: translateY(-3px) scale(1.1);
             }
 
             50% {
                 opacity: 1;
+                transform: translateY(0px) scale(1);
+            }
+
+            75% {
+                opacity: 0.7;
+                transform: translateY(1px) scale(0.9);
             }
 
             100% {
                 opacity: 0;
+                transform: translateY(2px) scale(0.8);
             }
         }
 

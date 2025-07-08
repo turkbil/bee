@@ -4,6 +4,7 @@ namespace Modules\AI\App\Http\Controllers\Admin;
 use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
 use Modules\AI\App\Services\AIService;
+use Modules\AI\App\Services\AIResponseRepository;
 use Modules\AI\App\Models\Conversation;
 use App\Services\ThemeService;
 use App\Services\AI\AIServiceManager;
@@ -13,12 +14,14 @@ use Illuminate\Support\Str;
 class AIFeaturesController extends Controller
 {
     protected $aiService;
+    protected $aiResponseRepository;
     protected $themeService;
     protected $aiServiceManager;
 
-    public function __construct(AIService $aiService, ThemeService $themeService, AIServiceManager $aiServiceManager)
+    public function __construct(AIService $aiService, AIResponseRepository $aiResponseRepository, ThemeService $themeService, AIServiceManager $aiServiceManager)
     {
         $this->aiService = $aiService;
+        $this->aiResponseRepository = $aiResponseRepository;
         $this->themeService = $themeService;
         $this->aiServiceManager = $aiServiceManager;
     }
@@ -405,24 +408,49 @@ class AIFeaturesController extends Controller
         $message = $request->message;
         $conversationId = $request->conversation_id;
         
+        // YENİ MERKEZI REPOSITORY SİSTEMİ
+        $result = $this->aiResponseRepository->executeRequest('admin_chat', [
+            'message' => $message,
+            'conversation_id' => $conversationId,
+            'custom_prompt' => $request->custom_prompt ?? ''
+        ]);
+        
+        if (!$result['success']) {
+            return response()->json([
+                'success' => false,
+                'error' => $result['error']
+            ], 400);
+        }
+        
+        // Conversation handling için legacy code korundu
         if ($conversationId) {
             $conversation = Conversation::where('id', $conversationId)
                 ->where('user_id', Auth::id())
                 ->firstOrFail();
-            
-            $response = $this->aiService->conversations()->getAIResponse($conversation, $message);
         } else {
             // Yeni konuşma oluştur
             $title = substr($message, 0, 30) . '...';
             $conversation = $this->aiService->conversations()->createConversation($title);
-            
-            $response = $this->aiService->conversations()->getAIResponse($conversation, $message);
         }
         
+        // Word buffer için format oluştur
+        $wordBufferResponse = $this->aiResponseRepository->formatWithWordBuffer(
+            $result['response'], 
+            'admin_chat', 
+            [
+                'conversation_id' => $conversation->id,
+                'conversation_title' => $conversation->title
+            ]
+        );
+
         return response()->json([
             'conversation_id' => $conversation->id,
-            'response' => $response,
-            'title' => $conversation->title
+            'response' => $result['response'],
+            'formatted_response' => $result['formatted_response'],
+            'title' => $conversation->title,
+            'success' => true,
+            'word_buffer_enabled' => $wordBufferResponse['word_buffer_enabled'],
+            'word_buffer_config' => $wordBufferResponse['word_buffer_config']
         ]);
     }
 
@@ -510,10 +538,46 @@ class AIFeaturesController extends Controller
         }
 
         try {
-            // Her zaman gerçek AI kullan (prowess sayfası için)
-            $result = $this->processRealAIFeature($feature, $inputText, $tenantId);
+            // YENİ MERKEZI REPOSITORY SİSTEMİ - Prowess için
+            $result = $this->aiResponseRepository->executeRequest('prowess_test', [
+                'feature_id' => $featureId,
+                'input_text' => $inputText,
+                'tenant_id' => $tenantId
+            ]);
 
-            return response()->json($result);
+            if (!$result['success']) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $result['error']
+                ], 400);
+            }
+
+            // Token kullanımını kaydet
+            ai_use_tokens($estimatedTokens, 'ai', 'prowess_test', $tenantId, [
+                'feature_id' => $featureId,
+                'feature_name' => $feature->name
+            ]);
+
+            // Word buffer için format oluştur
+            $wordBufferResponse = $this->aiResponseRepository->formatWithWordBuffer(
+                $result['response'], 
+                'prowess_test', 
+                [
+                    'feature_name' => $feature->name,
+                    'feature_id' => $featureId,
+                    'showcase_mode' => true
+                ]
+            );
+
+            return response()->json([
+                'success' => true,
+                'response' => $result['response'],
+                'formatted_response' => $result['formatted_response'],
+                'feature' => $result['feature'],
+                'tokens_used' => $estimatedTokens,
+                'word_buffer_enabled' => $wordBufferResponse['word_buffer_enabled'],
+                'word_buffer_config' => $wordBufferResponse['word_buffer_config']
+            ]);
 
         } catch (\Exception $e) {
             \Log::error('AI Feature Test Error: ' . $e->getMessage(), [
@@ -574,7 +638,7 @@ class AIFeaturesController extends Controller
             $tokensUsed = max(10, (int)((strlen($inputText) + strlen($aiResponse)) / 4));
             
             // Controller'dan token kullanımını kaydet
-            ai_use_tokens($tokensUsed, 'prowess_test', $feature->slug, $tenantId, [
+            ai_use_tokens($tokensUsed, 'ai', 'prowess_test', $tenantId, [
                 'feature_id' => $feature->id,
                 'feature_name' => $feature->name,
                 'input_text_length' => strlen($inputText),

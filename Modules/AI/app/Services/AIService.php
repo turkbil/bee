@@ -5,6 +5,7 @@ namespace Modules\AI\App\Services;
 use Modules\AI\App\Services\DeepSeekService;
 use Modules\AI\App\Services\ConversationService;
 use Modules\AI\App\Services\PromptService;
+use Modules\AI\App\Services\AIPriorityEngine;
 use Modules\AI\App\Models\Setting;
 use App\Helpers\TenantHelpers;
 use App\Services\AITokenService;
@@ -66,29 +67,21 @@ class AIService
             \Log::warning('Tenant bulunmadı, AI isteği için basit token kontrolü yapılıyor');
         }
 
-        // Sistem promptunu ayarla
-        $context = $options['context'] ?? null;
-        $systemPrompt = null;
-        
+        // YENİ PRIORITY ENGINE SİSTEMİ - Tenant context ile
+        $customPrompt = '';
         if (isset($options['prompt_id'])) {
             $prompt = \Modules\AI\App\Models\Prompt::find($options['prompt_id']);
-            
             if ($prompt) {
-                $systemPrompt = $prompt->content;
+                $customPrompt = $prompt->content;
             }
-        } elseif ($context) {
-            $defaultPrompt = $this->promptService->getDefaultPrompt();
-            if ($defaultPrompt) {
-                $systemPrompt = $defaultPrompt->content . "\n\nKONTEKST:\n" . $context;
-            } else {
-                $systemPrompt = "Aşağıdaki konteksti kullanarak yanıtla:\n\n" . $context;
-            }
-        } else {
-            $defaultPrompt = $this->promptService->getDefaultPrompt();
-            if ($defaultPrompt) {
-                $systemPrompt = $defaultPrompt->content;
-            }
+        } elseif (isset($options['custom_prompt'])) {
+            $customPrompt = $options['custom_prompt'];
+        } elseif (isset($options['context'])) {
+            $customPrompt = $options['context'];
         }
+
+        // Build full system prompt with TENANT CONTEXT
+        $systemPrompt = $this->buildFullSystemPrompt($customPrompt, $options);
 
         // Mesajları formatla
         $messages = [];
@@ -215,65 +208,16 @@ class AIService
     }
 
     /**
-     * Feature için sistem promptu oluştur - MARKA-AWARE
+     * Feature için sistem promptu oluştur - YENİ PRIORITY ENGINE
      */
     private function buildFeatureSystemPrompt($feature, array $options = []): string
     {
-        $systemPrompts = [];
+        // Feature bilgilerini options'a ekle
+        $options['feature'] = $feature;
+        $options['feature_name'] = $feature->slug ?? $feature->name ?? '';
         
-        // 1. Gizli sistem promptu (güvenlik, dil kuralları)
-        $hiddenSystemPrompt = \Modules\AI\App\Models\Prompt::getHiddenSystem();
-        if ($hiddenSystemPrompt) {
-            $systemPrompts[] = $hiddenSystemPrompt->content;
-        }
-        
-        // 2. Tenant Profile Context (genel şirket profili)
-        $tenantProfileContext = $this->getTenantProfileContext();
-        if ($tenantProfileContext) {
-            $systemPrompts[] = $tenantProfileContext;
-        }
-        
-        // 3. MARKA TANIMA CONTEXT - YENİ OPTIMIZE SİSTEM
-        $brandContext = $this->getOptimizedTenantContext($options);
-        if ($brandContext) {
-            $systemPrompts[] = $brandContext;
-        }
-        
-        // 4. Quick Prompt (Feature'ın NE yapacağı)
-        if ($feature->hasQuickPrompt()) {
-            $systemPrompts[] = "=== GÖREV TANIMI ===\n" . $feature->quick_prompt;
-        }
-        
-        // 5. Expert Prompt'lar (NASIL yapacağı - priority sırasına göre)
-        $expertPrompts = $feature->prompts()
-            ->wherePivot('is_active', true)
-            ->where('prompt_type', 'feature')
-            ->orderBy('ai_feature_prompts.priority', 'asc')
-            ->get();
-            
-        foreach ($expertPrompts as $prompt) {
-            $role = $prompt->pivot->role ?? 'primary';
-            $systemPrompts[] = "=== UZMAN BİLGİSİ ({$role}) ===\n" . $prompt->content;
-        }
-        
-        // 6. Response Template (NASIL görünecek)
-        if ($feature->hasResponseTemplate()) {
-            $systemPrompts[] = "=== YANIT FORMATI ===\n" . $feature->getFormattedTemplate();
-        }
-        
-        // 7. Gizli bilgi tabanı (AI bilir ama bahsetmez)
-        $secretKnowledge = \Modules\AI\App\Models\Prompt::getSecretKnowledge();
-        if ($secretKnowledge) {
-            $systemPrompts[] = "GIZLI BILGI TABANI (Kendiliğinden bahsetme, sadece gerektiğinde kullan):\n" . $secretKnowledge->content;
-        }
-        
-        // 8. Şartlı yanıtlar (sadece sorulunca anlatılır)
-        $conditionalResponses = \Modules\AI\App\Models\Prompt::getConditional();
-        if ($conditionalResponses) {
-            $systemPrompts[] = "ŞARTLI BILGILER (Sadece kullanıcı sorduğunda anlatılır):\n" . $conditionalResponses->content;
-        }
-        
-        return implode("\n\n---\n\n", array_filter($systemPrompts));
+        // AIPriorityEngine ile complete prompt oluştur
+        return AIPriorityEngine::buildCompletePrompt($options);
     }
 
     /**
@@ -404,51 +348,29 @@ class AIService
     }
     
     /**
-     * Gizli promptları birleştirerek tam sistem promptunu oluşturur
+     * Gizli promptları birleştirerek tam sistem promptunu oluşturur - YENİ PRIORITY ENGINE
      *
      * @param string $userPrompt Kullanıcının seçtiği prompt
+     * @param array $options Context options
      * @return string Tam sistem promptu
      */
-    public function buildFullSystemPrompt($userPrompt = '')
+    public function buildFullSystemPrompt($userPrompt = '', array $options = [])
     {
-        $systemPrompts = [];
-        
-        // 1. Gizli sistem promptu (her zaman önce)
-        $hiddenSystemPrompt = \Modules\AI\App\Models\Prompt::getHiddenSystem();
-        if ($hiddenSystemPrompt) {
-            $systemPrompts[] = $hiddenSystemPrompt->content;
-        }
-        
-        // 2. Tenant Profile Context (genel şirket profili)
-        $tenantProfileContext = $this->getTenantProfileContext();
-        if ($tenantProfileContext) {
-            $systemPrompts[] = $tenantProfileContext;
-        }
-        
-        // 3. MARKA TANIMA CONTEXT - YENİ OPTIMIZE SİSTEM
-        $brandContext = $this->getOptimizedTenantContext($options);
-        if ($brandContext) {
-            $systemPrompts[] = $brandContext;
-        }
-        
-        // 4. Kullanıcı tarafından seçilen prompt
+        // Custom user prompt varsa component olarak ekle
+        $customComponents = [];
         if (!empty($userPrompt)) {
-            $systemPrompts[] = $userPrompt;
+            $customComponents[] = [
+                'category' => 'feature_definition',
+                'priority' => 1,
+                'content' => $userPrompt,
+                'name' => 'User Custom Prompt'
+            ];
         }
         
-        // 5. Gizli bilgi tabanı (AI bilir ama bahsetmez)
-        $secretKnowledge = \Modules\AI\App\Models\Prompt::getSecretKnowledge();
-        if ($secretKnowledge) {
-            $systemPrompts[] = "GIZLI BILGI TABANI (Kendiliğinden bahsetme, sadece gerektiğinde kullan):\n" . $secretKnowledge->content;
-        }
+        $options['custom_components'] = $customComponents;
         
-        // 6. Şartlı yanıtlar (sadece sorulunca anlatılır)
-        $conditionalResponses = \Modules\AI\App\Models\Prompt::getConditional();
-        if ($conditionalResponses) {
-            $systemPrompts[] = "ŞARTLI BILGILER (Sadece kullanıcı sorduğunda anlatılır):\n" . $conditionalResponses->content;
-        }
-        
-        return implode("\n\n---\n\n", array_filter($systemPrompts));
+        // AIPriorityEngine ile complete prompt oluştur
+        return AIPriorityEngine::buildCompletePrompt($options);
     }
     
     /**

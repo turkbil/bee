@@ -406,6 +406,9 @@ use Illuminate\Support\Str;
     @endif
 
 @push('js')
+<!-- Universal AI Word Buffer System -->
+<script src="{{ asset('admin-assets/libs/ai-word-buffer/ai-word-buffer.js') }}"></script>
+
 <script>
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
@@ -710,9 +713,50 @@ async function testSkill(featureId) {
                 }
             }
             
-            // Show AI result with elegant formatting
-            resultContentElement.innerHTML = formatAIResponse(data.ai_result || 'No result received');
+            // 🚀 WORD BUFFER SYSTEM ENTEGRASYONU
             resultElement.style.display = 'block';
+            
+            // Word buffer config kontrolü
+            if (data.word_buffer_enabled && data.word_buffer_config && window.AIWordBuffer) {
+                console.log('🎯 Using word buffer system for prowess result');
+                
+                // Word buffer ile display
+                const buffer = new window.AIWordBuffer(resultContentElement, {
+                    wordDelay: data.word_buffer_config.delay_between_words || 200,
+                    fadeEffect: true,
+                    enableMarkdown: true,
+                    scrollCallback: () => {
+                        // Smooth scroll to result
+                        resultElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                });
+                
+                // Buffer'ı başlat
+                buffer.start();
+                
+                // Content'i ekle (formatlanmış AI yanıtı)
+                const formattedResponse = formatAIResponse(data.response || data.ai_result || 'No result received');
+                buffer.addContent(formattedResponse);
+                
+                // Showcase mode efektleri
+                setTimeout(() => {
+                    buffer.flush();
+                    
+                    // Prowess showcase için özel glow efekti
+                    if (data.word_buffer_config.showcase_mode) {
+                        resultElement.style.transition = 'all 0.3s ease';
+                        resultElement.style.boxShadow = '0 4px 12px rgba(0,123,255,0.3)';
+                        setTimeout(() => {
+                            resultElement.style.boxShadow = '';
+                        }, 2000);
+                    }
+                }, 100);
+                
+            } else {
+                // Normal display (fallback)
+                console.log('💭 Using normal display for prowess result');
+                resultContentElement.innerHTML = formatAIResponse(data.response || data.ai_result || 'No result received');
+            }
         } else {
             // Error state
             resultContentElement.innerHTML = `
@@ -765,9 +809,30 @@ function setExamplePrompt(featureId, prompt) {
 function formatAIResponse(aiResult) {
     if (!aiResult) return 'Mevcut sonuç yok';
     
-    // Already HTML formatted - return as is
+    // If HTML formatted, convert to clean formatted text
     if (aiResult.includes('<')) {
-        return aiResult;
+        // HTML'i temizle ama yapıyı koru
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = aiResult;
+        
+        // Paragrafları ve satır sonlarını koru
+        const paragraphs = tempDiv.querySelectorAll('p');
+        let cleanText = '';
+        
+        paragraphs.forEach(p => {
+            const text = p.textContent || p.innerText || '';
+            if (text.trim()) {
+                cleanText += text.trim() + '\n\n';
+            }
+        });
+        
+        // Eğer paragraf bulunamadıysa normal strip yap
+        if (!cleanText.trim()) {
+            cleanText = tempDiv.textContent || tempDiv.innerText || aiResult;
+        }
+        
+        aiResult = cleanText.trim();
+        // Şimdi normal formatlamaya devam et
     }
     
     // Clean up markdown and convert to elegant HTML

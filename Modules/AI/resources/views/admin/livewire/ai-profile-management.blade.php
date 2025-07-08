@@ -190,12 +190,12 @@
                                                                        @if(isset($formData[$fieldKey]) && $formData[$fieldKey] == $sector->code) checked @endif
                                                                        @if($question->is_required) required @endif>
                                                                 <span class="form-imagecheck-figure">
-                                                                    <div class="form-imagecheck-image sector-card">
+                                                                    <div class="form-imagecheck-image sector-card d-flex flex-column" style="min-height: 120px;">
                                                                         <div class="sector-icon">
                                                                             <i class="{{ $sector->icon }}"></i>
                                                                         </div>
                                                                         <div class="sector-name">{{ $sector->name }}</div>
-                                                                        <div class="sector-desc">{{ $sector->description }}</div>
+                                                                        <div class="sector-desc flex-grow-1">{{ $sector->description }}</div>
                                                                     </div>
                                                                 </span>
                                                             </label>
@@ -237,7 +237,7 @@
                                                 } elseif ($maxLength > 25) {
                                                     $questionColClass = 'col-md-6 col-12';
                                                 } else {
-                                                    $questionColClass = 'col-md-4 col-6';
+                                                    $questionColClass = 'col-md-6 col-12';
                                                 }
                                             @endphp
                                             <div class="row">
@@ -246,9 +246,10 @@
                                                         <div class="{{ $questionColClass }} mb-2">
                                                             <label class="form-selectgroup-item flex-fill">
                                                                 <input type="radio" name="{{ $fieldKey }}" value="{{ $option['value'] }}" 
-                                                                       class="form-selectgroup-input profile-field-input" 
+                                                                       class="form-selectgroup-input profile-field-input @if(isset($option['has_custom_input'])) custom-radio-trigger @endif" 
                                                                        name="formData[{{ $fieldKey }}]"
                                                                        data-field="{{ $fieldKey }}"
+                                                                       @if(isset($option['has_custom_input'])) data-custom-field="{{ $fieldKey }}_custom" @endif
                                                                        value="{{ $option['value'] }}"
                                                                        x-data="{ isChecked: '{{ $formData[$fieldKey] ?? '' }}' === '{{ $option['value'] }}' }"
                                                                        x-init="$el.checked = isChecked"
@@ -275,6 +276,24 @@
                                                             </label>
                                                         </div>
                                                     @endforeach
+                                                    
+                                                    {{-- Custom Input Field (Hidden by default) --}}
+                                                    @foreach($question->options as $option)
+                                                        @if(isset($option['has_custom_input']))
+                                                            <div class="col-12 mt-3" id="{{ $fieldKey }}_custom_container" 
+                                                                 style="display: none;">
+                                                                <input type="text" 
+                                                                       class="form-control profile-field-input" 
+                                                                       name="formData[{{ $fieldKey }}_custom]"
+                                                                       data-field="{{ $fieldKey }}_custom"
+                                                                       placeholder="{{ $option['custom_placeholder'] ?? 'Özel bilginizi giriniz...' }}"
+                                                                       value="{{ $formData[$fieldKey . '_custom'] ?? '' }}"
+                                                                       x-data="{ fieldValue: '{{ addslashes($formData[$fieldKey . '_custom'] ?? '') }}' }"
+                                                                       x-init="$el.value = fieldValue">
+                                                            </div>
+                                                            @break
+                                                        @endif
+                                                    @endforeach
                                                 @endif
                                             </div>
                                             @break
@@ -293,7 +312,7 @@
                                                 } elseif ($maxLength > 25) {
                                                     $questionColClass = 'col-md-6 col-12';
                                                 } else {
-                                                    $questionColClass = 'col-md-4 col-6';
+                                                    $questionColClass = 'col-md-6 col-12';
                                                 }
                                             @endphp
                                             <div class="row">
@@ -302,9 +321,10 @@
                                                         <div class="{{ $questionColClass }} mb-2">
                                                             <label class="form-selectgroup-item flex-fill">
                                                                 <input type="checkbox" value="{{ $option['value'] }}" 
-                                                                       class="form-selectgroup-input profile-field-checkbox" 
+                                                                       class="form-selectgroup-input profile-field-checkbox @if(isset($option['has_custom_input'])) custom-checkbox-trigger @endif" 
                                                                        name="formData[{{ $fieldKey }}][]"
                                                                        data-field="{{ $fieldKey }}"
+                                                                       @if(isset($option['has_custom_input'])) data-custom-field="{{ $fieldKey }}_custom" @endif
                                                                        value="{{ $option['value'] }}"
                                                                        x-data="{ isChecked: Boolean({{ isset($formData["{$fieldKey}.{$option['value']}"]) && $formData["{$fieldKey}.{$option['value']}"] ? 'true' : 'false' }}) }"
                                                                        x-init="$el.checked = isChecked"
@@ -329,6 +349,24 @@
                                                                 </div>
                                                             </label>
                                                         </div>
+                                                    @endforeach
+                                                    
+                                                    {{-- Custom Input Field for Checkbox (Hidden by default) --}}
+                                                    @foreach($question->options as $option)
+                                                        @if(isset($option['has_custom_input']))
+                                                            <div class="col-12 mt-3" id="{{ $fieldKey }}_custom_container" 
+                                                                 style="display: none;">
+                                                                <input type="text" 
+                                                                       class="form-control profile-field-input" 
+                                                                       name="formData[{{ $fieldKey }}_custom]"
+                                                                       data-field="{{ $fieldKey }}_custom"
+                                                                       placeholder="{{ $option['custom_placeholder'] ?? 'Özel bilginizi giriniz...' }}"
+                                                                       value="{{ $formData[$fieldKey . '_custom'] ?? '' }}"
+                                                                       x-data="{ fieldValue: '{{ addslashes($formData[$fieldKey . '_custom'] ?? '') }}' }"
+                                                                       x-init="$el.value = fieldValue">
+                                                            </div>
+                                                            @break
+                                                        @endif
                                                     @endforeach
                                                 @endif
                                             </div>
@@ -383,7 +421,7 @@
                                 <div class="founder-section">
                                     <h5 class="mb-3">Kurucu Bilgileri</h5>
                                     @php
-                                        $founderQuestions = \Modules\AI\app\Models\AIProfileQuestion::getOptionalSectionQuestions('founder_info', $this->currentSectorCode);
+                                        $founderQuestions = \Modules\AI\app\Models\AIProfileQuestion::getOptionalSectionQuestions('founder_info', $this->currentSectorCode, 4);
                                     @endphp
                                     
                                     @foreach($founderQuestions as $question)
@@ -699,5 +737,98 @@ $(document).ready(function() {
 window.navigateToStep = function(stepNumber) {
     window.location.href = '{{ route("admin.ai.profile.edit", ["step" => ""]) }}' + stepNumber;
 };
+
+// Custom input field toggle functionality
+$(document).on('change', 'input[type="radio"].custom-radio-trigger', function() {
+    const customField = $(this).data('custom-field');
+    const fieldKey = $(this).data('field');
+    const value = $(this).val();
+    
+    if (customField && value === 'custom') {
+        // Show custom input (escape dots in CSS selector)
+        const containerSelector = '#' + fieldKey.replace(/\./g, '\\.') + '_custom_container';
+        $(containerSelector).show();
+        $(containerSelector + ' input').focus();
+    } else if (customField) {
+        // Hide custom input when other option selected (escape dots in CSS selector)
+        const containerSelector = '#' + fieldKey.replace(/\./g, '\\.') + '_custom_container';
+        $(containerSelector).hide();
+        $(containerSelector + ' input').val('');
+    }
+});
+
+// Hide custom inputs when other radio options are selected (for same field)
+$(document).on('change', 'input[type="radio"].profile-field-input', function() {
+    const fieldKey = $(this).data('field');
+    const value = $(this).val();
+    
+    // If this is not a custom option, hide any custom container for this field
+    if (value !== 'custom') {
+        const containerSelector = '#' + fieldKey.replace(/\./g, '\\.') + '_custom_container';
+        $(containerSelector).hide();
+        $(containerSelector + ' input').val('');
+    }
+});
+
+// Custom checkbox toggle functionality
+$(document).on('change', 'input[type="checkbox"].custom-checkbox-trigger', function() {
+    const customField = $(this).data('custom-field');
+    const fieldKey = $(this).data('field');
+    const value = $(this).val();
+    const isChecked = $(this).is(':checked');
+    
+    if (customField && value === 'custom' && isChecked) {
+        // Show custom input when "Diğer" checkbox is checked
+        const containerSelector = '#' + fieldKey.replace(/\./g, '\\.') + '_custom_container';
+        $(containerSelector).show();
+        $(containerSelector + ' input').focus();
+    } else if (customField && value === 'custom' && !isChecked) {
+        // Hide custom input when "Diğer" checkbox is unchecked
+        const containerSelector = '#' + fieldKey.replace(/\./g, '\\.') + '_custom_container';
+        $(containerSelector).hide();
+        $(containerSelector + ' input').val('');
+    }
+});
+
+// Auto-select "Diğer" when user types in custom input (for radio fields)
+$(document).on('input', 'input.profile-field-input[type="text"]', function() {
+    const fieldValue = $(this).val().trim();
+    const container = $(this).closest('[id$="_custom_container"]');
+    
+    if (container.length) {
+        // Extract field name from container ID
+        const fieldName = container.attr('id').replace('_custom_container', '');
+        const customRadio = $('input[data-field="' + fieldName + '"][value="custom"]');
+        
+        if (fieldValue.length > 0) {
+            // Auto-select "Diğer" when user types
+            customRadio.prop('checked', true);
+            container.show();
+        } else {
+            // Unselect "Diğer" when input is empty
+            customRadio.prop('checked', false);
+            container.hide();
+        }
+    }
+});
+
+// Initialize custom containers on page load
+$(document).ready(function() {
+    // Check for existing custom values and show containers
+    $('input[value="custom"]').each(function() {
+        const fieldKey = $(this).data('field');
+        const isChecked = $(this).is(':checked');
+        const containerSelector = '#' + fieldKey.replace(/\./g, '\\.') + '_custom_container';
+        const customContainer = $(containerSelector);
+        const customInput = customContainer.find('input[type="text"]');
+        
+        if (isChecked || (customInput.length && customInput.val().trim().length > 0)) {
+            customContainer.show();
+            if (customInput.val().trim().length > 0) {
+                $(this).prop('checked', true);
+            }
+        }
+    });
+});
 </script>
 @endpush

@@ -4,21 +4,32 @@ use App\Facades\AI;
 use Modules\AI\App\Models\AIFeature;
 
 /**
- * Hybrid AI Helper Functions - YENI NESIL AI SİSTEMİ
+ * AI Helper Functions - MERKEZİ REPOSITORY SİSTEMİ
  * 
- * Bu dosya hybrid prompt sistemi ile çalışır:
- * - Her feature'ın custom_prompt'ı (basit ve hızlı)
- * - Gelişmiş AI features'lar ilişkili prompts'larla (detaylı ve akıllı)
- * - buildFinalPrompt() metodu ile prompt chaining
- * - Priority ve conditional prompt execution
+ * TÜM AI YANITLARI AIResponseRepository ÜZERİNDEN YÖNETİLİR:
+ * - Tek dosyada tüm yanıt formatları
+ * - Tutarlı error handling
+ * - Merkezi caching sistemi
+ * - Unified token management
+ * - Kolay maintenance
  * 
  * Bu dosya composer.json autoload files bölümüne eklenerek
  * tüm projede global fonksiyonlar olarak kullanılabilir.
  */
 
 // ============================================================================
-// CORE AI HELPER FUNCTIONS
+// CORE AI HELPER FUNCTIONS - REPOSITORY PATTERN
 // ============================================================================
+
+if (!function_exists('ai_get_repository')) {
+    /**
+     * Merkezi AI Response Repository'yi döndürür
+     */
+    function ai_get_repository(): \Modules\AI\App\Services\AIResponseRepository
+    {
+        return app(\Modules\AI\App\Services\AIResponseRepository::class);
+    }
+}
 
 if (!function_exists('ai')) {
     /**
@@ -209,13 +220,33 @@ if (!function_exists('ai_schema_markup_generator')) {
 if (!function_exists('ai_brand_story_creator')) {
     function ai_brand_story_creator(string $brandContext, array $options = []): array
     {
-        // Direkt feature ID 120 kullanarak marka hikayesi oluştur
+        // Marka hikayesi feature'ını slug ile dinamik olarak bul
         try {
-            $feature = \Modules\AI\App\Models\AIFeature::where('id', 120)->where('status', 'active')->first();
+            // Önce slug ile dene
+            $feature = \Modules\AI\App\Models\AIFeature::where('slug', 'brand-story-creator')
+                ->where('status', 'active')
+                ->first();
+                
+            // Eğer slug ile bulunamazsa, name ile dene
+            if (!$feature) {
+                $feature = \Modules\AI\App\Models\AIFeature::where('name', 'LIKE', '%brand%story%')
+                    ->orWhere('name', 'LIKE', '%marka%hikaye%')
+                    ->where('status', 'active')
+                    ->first();
+            }
+            
+            // Eğer hala bulunamazsa, category ile dene
+            if (!$feature) {
+                $feature = \Modules\AI\App\Models\AIFeature::where('category', 'content-creation')
+                    ->where('name', 'LIKE', '%story%')
+                    ->where('status', 'active')
+                    ->first();
+            }
+            
             if (!$feature) {
                 return [
                     'success' => false,
-                    'error' => 'Marka hikayesi özelliği bulunamadı (ID: 120)',
+                    'error' => 'Marka hikayesi özelliği bulunamadı. Lütfen feature\'ı aktif hale getirin.',
                     'tokens_used' => 0
                 ];
             }
@@ -369,7 +400,7 @@ if (!function_exists('ai_press_release_expert')) {
 
 if (!function_exists('ai_execute_feature')) {
     /**
-     * HYBRID SYSTEM - Feature'ı hybrid prompt ile çalıştır (Legacy)
+     * YENİ MERKEZI REPOSITORY SİSTEMİ - Feature'ı repository ile çalıştır
      * 
      * @param string $featureSlug Feature slug'ı
      * @param array $userInput Kullanıcı girdileri
@@ -380,6 +411,7 @@ if (!function_exists('ai_execute_feature')) {
     function ai_execute_feature(string $featureSlug, array $userInput = [], array $conditions = [], array $options = []): array
     {
         try {
+            // Token kontrolü için feature'ı önceden alalım
             $feature = AIFeature::where('slug', $featureSlug)->where('status', 'active')->first();
             if (!$feature) {
                 return [
@@ -414,42 +446,53 @@ if (!function_exists('ai_execute_feature')) {
                 }
             }
 
-            // ✅ HYBRID PROMPT SYSTEM - Ana güç burada!
-            $finalPrompt = $feature->buildFinalPrompt($conditions, $userInput);
+            // ✅ YENİ MERKEZI REPOSITORY SİSTEMİ - Ana güç burada!
+            $repository = ai_get_repository();
+            $result = $repository->executeRequest('helper_function', [
+                'helper_name' => 'ai_execute_feature',
+                'feature_slug' => $featureSlug,
+                'user_input' => $userInput,
+                'conditions' => $conditions,
+                'options' => $options
+            ]);
 
-            // AI service ile çalıştır
-            $aiService = app(\Modules\AI\App\Services\AIService::class);
-            
-            // Marka hikayesi için özel marka-aware askFeature kullan
-            if ($featureSlug === 'brand-story-creator') {
-                // userInput içindeki brand_context'i string olarak al
-                $brandContext = $userInput['brand_context'] ?? $userInput['content'] ?? 'brand story';
-                $result = $aiService->askFeature($feature, $brandContext, [
-                    'context' => $featureSlug,
-                    'options' => $options
-                ]);
-            } else {
-                $result = $aiService->ask($finalPrompt, [
-                    'feature_id' => $feature->id,
-                    'context' => $featureSlug,
-                    'options' => $options
-                ]);
+            if (!$result['success']) {
+                return [
+                    'success' => false,
+                    'error' => $result['error'],
+                    'tokens_used' => 0
+                ];
             }
 
             // Token kullanımını kaydet
-            ai_use_tokens($estimatedTokens, 'AI', $featureSlug, $tenantId, $userInput);
+            ai_use_tokens($estimatedTokens, $tenantId, [
+                'source' => 'ai_helper',
+                'helper_name' => 'ai_execute_feature',
+                'feature_slug' => $featureSlug
+            ]);
 
             // Feature kullanım sayısını artır
             $feature->incrementUsage();
 
+            // Word buffer yapılandırması ekle
+            $wordBufferConfig = [
+                'enabled' => true,
+                'delay_between_words' => 170,
+                'animation_duration' => 4300,
+                'container_selector' => '.ai-helper-response',
+                'helper_name' => 'ai_execute_feature',
+                'feature_name' => $feature->name
+            ];
+
             return [
                 'success' => true,
-                'content' => $result,
+                'response' => $result['response'],
+                'formatted_response' => $result['formatted_response'],
+                'feature' => $result['feature'],
                 'tokens_used' => $estimatedTokens,
-                'feature' => $feature->name,
-                'message' => $feature->success_messages['default'] ?? 'İşlem başarıyla tamamlandı',
-                'prompt_power' => $feature->getPromptPowerScore(),
-                'has_advanced_prompts' => $feature->hasAdvancedPromptSystem()
+                'helper_name' => $result['helper_name'],
+                'word_buffer_enabled' => true,
+                'word_buffer_config' => $wordBufferConfig
             ];
 
         } catch (\Exception $e) {

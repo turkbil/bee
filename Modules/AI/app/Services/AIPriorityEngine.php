@@ -1,0 +1,560 @@
+<?php
+
+namespace Modules\AI\App\Services;
+
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
+
+/**
+ * AI PRIORITY ENGINE - Merkezi Prompt Sıralama Sistemi
+ * 
+ * Bu engine tüm AI çağrılarında kullanılır:
+ * - AIService (Feature prompts)
+ * - AI Helpers (Helper functions) 
+ * - Prowess (Content generation)
+ * - Conversations (Chat system)
+ * 
+ * WEIGHT-BASED SCORING SYSTEM:
+ * Final Score = Base Category Weight × Priority Multiplier + Position Bonus
+ */
+class AIPriorityEngine
+{
+    /**
+     * Base category weights - Kategori temel ağırlıkları (OPTIMIZE EDİLMİŞ)
+     */
+    const BASE_WEIGHTS = [
+        'system_common'      => 10000,  // Ortak özellikler (markdown yasağı, türkçe vb)
+        'system_hidden'      => 9000,   // Gizli sistem (güvenlik, sınırlar)
+        'feature_definition' => 8000,   // Quick prompt (feature ne yapacak) ⬆️ YUKARI
+        'expert_knowledge'   => 7000,   // Expert prompts (nasıl yapacak) ⬆️ YUKARI
+        'tenant_identity'    => 6000,   // Tenant profili (şirket kimliği) ⬇️ AŞAĞI
+        'secret_knowledge'   => 5000,   // Gizli bilgi tabanı (pasif) ⬆️ YUKARI
+        'brand_context'      => 4500,   // Marka detayları (feature-aware) ⬇️ AŞAĞI
+        'response_format'    => 4000,   // Response template (nasıl görünecek)
+        'conditional_info'   => 2000,   // Şartlı yanıtlar (on-demand)
+    ];
+
+    /**
+     * Priority multipliers - İçerik öncelik çarpanları
+     */
+    const PRIORITY_MULTIPLIERS = [
+        1 => 1.5,   // Critical: %50 boost
+        2 => 1.2,   // Important: %20 boost  
+        3 => 1.0,   // Normal: No change
+        4 => 0.6,   // Optional: %40 penalty
+        5 => 0.3,   // Rarely used: %70 penalty
+    ];
+
+    /**
+     * Context type thresholds - Hangi context type'da hangi weight'ler dahil (GÜNCEL)
+     */
+    const CONTEXT_THRESHOLDS = [
+        'minimal'   => 8000,   // Sadece system + feature definition
+        'essential' => 6000,   // + expert knowledge + tenant identity  
+        'normal'    => 4000,   // + secret knowledge + brand context + templates
+        'detailed'  => 2000,   // Her şey dahil
+        'complete'  => 0,      // Hiçbir şeyi filtreleme
+    ];
+
+    /**
+     * 🎯 MAIN METHOD: Build complete AI system prompt
+     * 
+     * @param array $components - Prompt components with priorities
+     * @param array $options - Context options (type, feature_name, etc.)
+     * @return string - Final ordered system prompt
+     */
+    public static function buildSystemPrompt(array $components, array $options = []): string
+    {
+        // Context type belirle
+        $contextType = $options['context_type'] ?? 'normal';
+        $threshold = self::CONTEXT_THRESHOLDS[$contextType] ?? self::CONTEXT_THRESHOLDS['normal'];
+        
+        // Feature-based threshold adjustment
+        $threshold = self::adjustThresholdByFeature($threshold, $options);
+        
+        // Component'leri score'la ve sırala
+        $scoredComponents = self::scoreComponents($components);
+        
+        // Threshold'a göre filtrele
+        $filteredComponents = array_filter($scoredComponents, function($component) use ($threshold) {
+            return $component['final_score'] >= $threshold;
+        });
+        
+        // Score'a göre sırala (yüksekten düşüğe)
+        usort($filteredComponents, function($a, $b) {
+            return $b['final_score'] <=> $a['final_score'];
+        });
+        
+        // Final prompt'u birleştir
+        $promptParts = [];
+        foreach ($filteredComponents as $component) {
+            if (!empty($component['content'])) {
+                $promptParts[] = $component['content'];
+            }
+        }
+        
+        // Cache ve log
+        self::logPromptBuild($filteredComponents, $options);
+        
+        return implode("\n\n---\n\n", $promptParts);
+    }
+
+    /**
+     * Component'leri score'la
+     */
+    private static function scoreComponents(array $components): array
+    {
+        $scoredComponents = [];
+        
+        foreach ($components as $component) {
+            $category = $component['category'] ?? 'conditional_info';
+            $priority = $component['priority'] ?? 3;
+            $content = $component['content'] ?? '';
+            $position = $component['position'] ?? 0;
+            
+            // Base weight al
+            $baseWeight = self::BASE_WEIGHTS[$category] ?? 1000;
+            
+            // Priority multiplier uygula
+            $multiplier = self::PRIORITY_MULTIPLIERS[$priority] ?? 1.0;
+            
+            // Position bonus (expert prompts için)
+            $positionBonus = 0;
+            if ($category === 'expert_knowledge' && $position > 0) {
+                $positionBonus = 100 - ($position * 5); // 1=95, 2=90, 3=85...
+            }
+            
+            // Final score hesapla
+            $finalScore = intval($baseWeight * $multiplier) + $positionBonus;
+            
+            $scoredComponents[] = [
+                'category' => $category,
+                'priority' => $priority,
+                'position' => $position,
+                'content' => $content,
+                'base_weight' => $baseWeight,
+                'multiplier' => $multiplier,
+                'position_bonus' => $positionBonus,
+                'final_score' => $finalScore,
+                'name' => $component['name'] ?? $category,
+            ];
+        }
+        
+        return $scoredComponents;
+    }
+
+    /**
+     * Feature'a göre threshold ayarla
+     */
+    private static function adjustThresholdByFeature(int $threshold, array $options): int
+    {
+        $featureName = $options['feature_name'] ?? '';
+        
+        // Lokasyon önemli olan feature'lar için detailed context
+        if (str_contains($featureName, 'local') || 
+            str_contains($featureName, 'maps') || 
+            str_contains($featureName, 'address') ||
+            str_contains($featureName, 'location')) {
+            return self::CONTEXT_THRESHOLDS['detailed'];
+        }
+        
+        // Hızlı content için minimal context
+        if (str_contains($featureName, 'quick') || 
+            str_contains($featureName, 'instant') || 
+            str_contains($featureName, 'fast') ||
+            str_contains($featureName, 'brief')) {
+            return self::CONTEXT_THRESHOLDS['minimal'];
+        }
+        
+        // SEO ve uzman işler için essential context
+        if (str_contains($featureName, 'seo') || 
+            str_contains($featureName, 'expert') || 
+            str_contains($featureName, 'professional') ||
+            str_contains($featureName, 'analysis')) {
+            return self::CONTEXT_THRESHOLDS['essential'];
+        }
+        
+        return $threshold;
+    }
+
+    /**
+     * Prompt build process'ini logla
+     */
+    private static function logPromptBuild(array $components, array $options): void
+    {
+        $componentSummary = [];
+        foreach ($components as $comp) {
+            $componentSummary[] = [
+                'name' => $comp['name'],
+                'score' => $comp['final_score'],
+                'category' => $comp['category'],
+                'priority' => $comp['priority']
+            ];
+        }
+        
+        Log::info('AIPriorityEngine: System prompt built', [
+            'context_type' => $options['context_type'] ?? 'normal',
+            'feature_name' => $options['feature_name'] ?? null,
+            'components_used' => count($components),
+            'total_length' => array_sum(array_map(fn($c) => strlen($c['content']), $components)),
+            'component_scores' => $componentSummary
+        ]);
+    }
+
+    /**
+     * 🔧 HELPER: Standard AI components oluştur
+     * AIService, AIHelper, Prowess için ortak component'ler
+     */
+    public static function getStandardComponents(): array
+    {
+        $components = [];
+        
+        // 1. Ortak özellikler (System Common)
+        $commonPrompt = \Modules\AI\App\Models\Prompt::getCommon();
+        if ($commonPrompt) {
+            $components[] = [
+                'category' => 'system_common',
+                'priority' => 1,
+                'content' => $commonPrompt->content,
+                'name' => 'Ortak Özellikler'
+            ];
+        }
+        
+        // 2. Gizli sistem (System Hidden)
+        $hiddenSystemPrompt = \Modules\AI\App\Models\Prompt::getHiddenSystem();
+        if ($hiddenSystemPrompt) {
+            $components[] = [
+                'category' => 'system_hidden',
+                'priority' => 1,
+                'content' => $hiddenSystemPrompt->content,
+                'name' => 'Gizli Sistem'
+            ];
+        }
+        
+        // 3. Tenant Identity
+        $tenantContext = self::getTenantIdentityContext();
+        if ($tenantContext) {
+            $components[] = [
+                'category' => 'tenant_identity',
+                'priority' => 1,
+                'content' => $tenantContext,
+                'name' => 'Tenant Kimliği'
+            ];
+        }
+        
+        // 4. Secret Knowledge
+        $secretKnowledge = \Modules\AI\App\Models\Prompt::getSecretKnowledge();
+        if ($secretKnowledge) {
+            $components[] = [
+                'category' => 'secret_knowledge',
+                'priority' => 3,
+                'content' => $secretKnowledge->content,
+                'name' => 'Gizli Bilgi Tabanı'
+            ];
+        }
+        
+        // 5. Conditional Responses
+        $conditionalResponses = \Modules\AI\App\Models\Prompt::getConditional();
+        if ($conditionalResponses) {
+            $components[] = [
+                'category' => 'conditional_info',
+                'priority' => 4,
+                'content' => $conditionalResponses->content,
+                'name' => 'Şartlı Yanıtlar'
+            ];
+        }
+        
+        return $components;
+    }
+
+    /**
+     * 🎯 HELPER: Brand context components oluştur
+     */
+    public static function getBrandComponents(array $options = []): array
+    {
+        $components = [];
+        
+        try {
+            $tenantId = resolve_tenant_id(false);
+            \Log::info('🔍 AIPriorityEngine.getBrandComponents Debug', [
+                'tenant_id' => $tenantId,
+                'has_tenant' => !empty($tenantId)
+            ]);
+            
+            if (!$tenantId) {
+                \Log::warning('❌ getBrandComponents: No tenant ID');
+                return $components;
+            }
+            
+            $profile = \Modules\AI\App\Models\AITenantProfile::where('tenant_id', $tenantId)->first();
+            \Log::info('🔍 Profile Check', [
+                'profile_exists' => !empty($profile),
+                'has_business_name' => !empty($profile?->business_name),
+                'has_industry' => !empty($profile?->industry),
+                'profile_completed_at' => $profile?->profile_completed_at ?? 'not_set'
+            ]);
+            
+            if (!$profile) {
+                \Log::warning('❌ getBrandComponents: Profile not found');
+                return $components;
+            }
+            
+            // AI Tenant Profile JSON yapısında minimum brand bilgileri kontrolü
+            $companyInfo = $profile->company_info ?? [];
+            $sectorDetails = $profile->sector_details ?? [];
+            
+            $hasBrandInfo = !empty($companyInfo['brand_name']) || 
+                           !empty($companyInfo['main_service']) || 
+                           !empty($sectorDetails);
+                           
+            if (!$hasBrandInfo) {
+                \Log::warning('❌ getBrandComponents: Profile exists but has no brand info', [
+                    'company_info_keys' => array_keys($companyInfo),
+                    'sector_details_keys' => is_array($sectorDetails) ? array_keys($sectorDetails) : 'not_array',
+                    'profile_completed' => $profile->is_completed ?? false
+                ]);
+                return $components;
+            }
+            
+            // Context type'a göre priority level belirle
+            $contextType = $options['context_type'] ?? 'normal';
+            $maxPriority = match($contextType) {
+                'minimal' => 1,
+                'essential' => 2,
+                'normal' => 3,
+                'detailed' => 4,
+                'complete' => 4,
+                default => 3
+            };
+            
+            // Eski tablo yapısı için brand context oluştur
+            $brandContext = self::buildLegacyBrandContext($profile, $maxPriority);
+            if ($brandContext) {
+                $components[] = [
+                    'category' => 'brand_context',
+                    'priority' => 1,
+                    'content' => "## 🎯 MARKA KİMLİĞİ\n" . $brandContext,
+                    'name' => 'Marka Kimliği'
+                ];
+            }
+            
+        } catch (\Exception $e) {
+            Log::warning('Brand components build failed', ['error' => $e->getMessage()]);
+        }
+        
+        return $components;
+    }
+
+    /**
+     * 🔧 HELPER: Feature-specific components oluştur
+     */
+    public static function getFeatureComponents($feature): array
+    {
+        $components = [];
+        
+        // Quick Prompt
+        if ($feature->hasQuickPrompt()) {
+            $components[] = [
+                'category' => 'feature_definition',
+                'priority' => 1,
+                'content' => "=== GÖREV TANIMI ===\n" . $feature->quick_prompt,
+                'name' => 'Quick Prompt'
+            ];
+        }
+        
+        // Expert Prompts (priority sırasına göre)
+        $expertPrompts = $feature->prompts()
+            ->wherePivot('is_active', true)
+            ->where('prompt_type', 'feature')
+            ->orderBy('ai_feature_prompts.priority', 'asc')
+            ->get();
+            
+        foreach ($expertPrompts as $index => $prompt) {
+            $role = $prompt->pivot->role ?? 'primary';
+            $expertPriority = $prompt->pivot->priority ?? ($index + 1);
+            
+            $components[] = [
+                'category' => 'expert_knowledge',
+                'priority' => min($expertPriority, 4), // Max 4 priority
+                'position' => $expertPriority,
+                'content' => "=== UZMAN BİLGİSİ ({$role}) ===\n" . $prompt->content,
+                'name' => "Expert Prompt #{$expertPriority}"
+            ];
+        }
+        
+        // Response Template
+        if ($feature->hasResponseTemplate()) {
+            $components[] = [
+                'category' => 'response_format',
+                'priority' => 2,
+                'content' => "=== YANIT FORMATI ===\n" . $feature->getFormattedTemplate(),
+                'name' => 'Response Template'
+            ];
+        }
+        
+        return $components;
+    }
+
+    /**
+     * Helper: Basic tenant identity context
+     */
+    private static function getTenantIdentityContext(): ?string
+    {
+        try {
+            $tenant = tenant();
+            if (!$tenant) {
+                return null;
+            }
+            
+            return "TENANT CONTEXT: {$tenant->name} (ID: {$tenant->id})";
+            
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    /**
+     * AI Tenant Profile için brand context builder - YENİ JSON yapısı
+     */
+    private static function buildLegacyBrandContext($profile, int $maxPriority): ?string
+    {
+        $context = [];
+        $companyInfo = $profile->company_info ?? [];
+        $sectorDetails = $profile->sector_details ?? [];
+        $founderInfo = $profile->founder_info ?? [];
+        
+        // Temel marka bilgileri (Priority 1)
+        if (!empty($companyInfo['brand_name'])) {
+            $context[] = "**Marka Adı**: {$companyInfo['brand_name']}";
+        }
+        
+        if (!empty($companyInfo['main_service'])) {
+            $context[] = "**Ana Hizmetler**: {$companyInfo['main_service']}";
+        }
+        
+        if (!empty($companyInfo['city'])) {
+            $context[] = "**Şehir**: {$companyInfo['city']}";
+        }
+        
+        if (!empty($companyInfo['founder_name'])) {
+            $context[] = "**Kurucu**: {$companyInfo['founder_name']}";
+        }
+        
+        // Sektör bilgileri (Priority 2+)
+        if ($maxPriority >= 2 && !empty($sectorDetails)) {
+            if (isset($sectorDetails['industry'])) {
+                $industryMap = [
+                    'construction' => 'İnşaat ve Yapı',
+                    'law' => 'Hukuk ve Danışmanlık',
+                    'restaurant' => 'Restoran ve Yemek',
+                    'ecommerce' => 'E-ticaret',
+                    'health' => 'Sağlık ve Tıp',
+                    'education' => 'Eğitim',
+                    'technology' => 'Teknoloji',
+                    'finance' => 'Finans',
+                    'real_estate' => 'Emlak',
+                    'automotive' => 'Otomotiv',
+                    'beauty' => 'Güzellik ve Bakım',
+                    'consulting' => 'Danışmanlık',
+                    'manufacturing' => 'Üretim',
+                    'retail' => 'Perakende',
+                    'other' => 'Diğer'
+                ];
+                $industryName = $industryMap[$sectorDetails['industry']] ?? $sectorDetails['industry'];
+                $context[] = "**Sektör**: {$industryName}";
+            }
+            
+            if (isset($sectorDetails['target_audience'])) {
+                // Array ise selected key'leri al, string ise direkt kullan
+                if (is_array($sectorDetails['target_audience'])) {
+                    $selectedAudiences = array_keys(array_filter($sectorDetails['target_audience']));
+                    if (!empty($selectedAudiences)) {
+                        $context[] = "**Hedef Kitle**: " . implode(', ', $selectedAudiences);
+                    }
+                } else {
+                    $context[] = "**Hedef Kitle**: {$sectorDetails['target_audience']}";
+                }
+            }
+            
+            if (isset($sectorDetails['business_size'])) {
+                $sizeMap = [
+                    'individual' => 'Bireysel',
+                    'small' => 'Küçük işletme',
+                    'medium' => 'Orta ölçekli',
+                    'large' => 'Büyük şirket',
+                    'enterprise' => 'Kurumsal'
+                ];
+                $sizeName = $sizeMap[$sectorDetails['business_size']] ?? $sectorDetails['business_size'];
+                $context[] = "**İşletme Boyutu**: {$sizeName}";
+            }
+        }
+        
+        // Detay bilgiler (Priority 3+)
+        if ($maxPriority >= 3) {
+            if (isset($sectorDetails['business_description'])) {
+                $context[] = "**İş Tanımı**: {$sectorDetails['business_description']}";
+            }
+            
+            if (isset($sectorDetails['brand_voice'])) {
+                $voiceMap = [
+                    'authoritative' => 'Otoriter ve güvenilir',
+                    'friendly' => 'Samimi ve dostane',
+                    'playful' => 'Eğlenceli ve yaratıcı',
+                    'sophisticated' => 'Sofistike ve elit',
+                    'trustworthy' => 'Güvenilir ve samimi'
+                ];
+                
+                // Array ise selected key'leri al, string ise direkt kullan
+                if (is_array($sectorDetails['brand_voice'])) {
+                    $selectedVoices = array_keys(array_filter($sectorDetails['brand_voice']));
+                    if (!empty($selectedVoices)) {
+                        $voiceNames = array_map(fn($voice) => $voiceMap[$voice] ?? $voice, $selectedVoices);
+                        $context[] = "**Marka Sesi**: " . implode(', ', $voiceNames);
+                    }
+                } else {
+                    $voiceName = $voiceMap[$sectorDetails['brand_voice']] ?? $sectorDetails['brand_voice'];
+                    $context[] = "**Marka Sesi**: {$voiceName}";
+                }
+            }
+            
+            if (!empty($companyInfo['founder_title'])) {
+                $context[] = "**Kurucu Pozisyonu**: {$companyInfo['founder_title']}";
+            }
+        }
+        
+        if (empty($context)) {
+            return null;
+        }
+        
+        $finalContext = implode("\n", $context);
+        $finalContext .= "\n\n*Bu marka bilgilerine uygun, tutarlı ve kişiselleştirilmiş yanıtlar üret.*";
+        
+        return $finalContext;
+    }
+
+    /**
+     * 🎯 QUICK ACCESS: Tüm AI çağrıları için tek entry point
+     */
+    public static function buildCompletePrompt(array $options = []): string
+    {
+        $components = [];
+        
+        // Standard components ekle
+        $components = array_merge($components, self::getStandardComponents());
+        
+        // Brand components ekle
+        $components = array_merge($components, self::getBrandComponents($options));
+        
+        // Feature varsa feature components ekle
+        if (isset($options['feature'])) {
+            $components = array_merge($components, self::getFeatureComponents($options['feature']));
+        }
+        
+        // Custom components varsa ekle
+        if (isset($options['custom_components'])) {
+            $components = array_merge($components, $options['custom_components']);
+        }
+        
+        return self::buildSystemPrompt($components, $options);
+    }
+}

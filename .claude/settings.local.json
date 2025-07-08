@@ -122,7 +122,9 @@
       "Bash(xxd:*)",
       "Bash(kill:*)",
       "Bash(sudo rm:*)",
-      "WebFetch(domain:tenancyforlaravel.com)"
+      "WebFetch(domain:tenancyforlaravel.com)",
+      "Bash(truncate:*)",
+      "Bash(printf:*)"
     ],
     "deny": []
   },

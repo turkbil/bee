@@ -181,6 +181,15 @@ class DeepSeekService
         
     public function streamCompletion($message, $conversationHistory = [], ?callable $callback = null, $promptId = null)
     {
+        $apiStartTime = microtime(true);
+        Log::info('🚀 DeepSeek API çağrısı başlatılıyor', [
+            'timestamp' => now()->toIso8601String(),
+            'message_length' => strlen($message),
+            'api_url' => $this->baseUrl . '/chat/completions',
+            'model' => $this->model,
+            'has_api_key' => !empty($this->apiKey)
+        ]);
+        
         $messages = $this->formatMessages($conversationHistory, $promptId); // Prompt ID'yi formatMessages metoduna gönder
         $this->lastFullResponse = '';
 
@@ -210,8 +219,14 @@ class DeepSeekService
             ]);
             
             if ($response->successful()) {
+                Log::info('📡 DeepSeek API bağlantısı kuruldu', [
+                    'connection_time_ms' => round((microtime(true) - $apiStartTime) * 1000, 2),
+                    'status' => $response->status()
+                ]);
+                
                 $buffer = '';
                 $responseBody = $response->getBody();
+                $firstChunkReceived = false;
                 
                 while (!$responseBody->eof()) {
                     $line = $this->readLine($responseBody);
@@ -230,6 +245,15 @@ class DeepSeekService
                                 if (isset($data['choices'][0]['delta']['content'])) {
                                     $content = $data['choices'][0]['delta']['content'];
                                     $this->lastFullResponse .= $content;
+                                    
+                                    // İlk chunk timing'i
+                                    if (!$firstChunkReceived) {
+                                        Log::info('⚡ İlk AI chunk alındı', [
+                                            'first_chunk_time_ms' => round((microtime(true) - $apiStartTime) * 1000, 2),
+                                            'content_length' => strlen($content)
+                                        ]);
+                                        $firstChunkReceived = true;
+                                    }
                                     
                                     if ($callback) {
                                         $callback($content);
@@ -272,44 +296,36 @@ class DeepSeekService
             'prompt_id' => $promptId
         ]);
         
-        // Ortak özellikler promptunu al (ZORUNLU)
-        $commonPrompt = \Modules\AI\App\Models\Prompt::where('is_common', true)->where('is_active', true)->first();
-        $commonContent = $commonPrompt ? $commonPrompt->content : 'Sen bir asistansın.';
+        // 🚀 YENİ PRIORITY ENGINE SİSTEMİ - TENANT CONTEXT İLE
+        $aiService = app(\Modules\AI\App\Services\AIService::class);
         
-        Log::info('Ortak özellikler promptu', [
-            'common_prompt_id' => $commonPrompt ? $commonPrompt->id : null,
-            'common_prompt_name' => $commonPrompt ? $commonPrompt->name : 'Bulunamadı'
-        ]);
-        
-        // Prompt ID verilmişse, ilgili promptu al
-        $selectedPrompt = null;
+        // Custom prompt varsa (legacy prompt ID'den)
+        $customPrompt = '';
         if ($promptId) {
             $selectedPrompt = \Modules\AI\App\Models\Prompt::where('id', $promptId)
                 ->where('is_active', true)
                 ->first();
             
-            Log::info('Seçilen prompt bilgileri', [
-                'prompt_id' => $promptId,
-                'prompt_found' => $selectedPrompt ? true : false,
-                'prompt_name' => $selectedPrompt ? $selectedPrompt->name : 'Bulunamadı'
-            ]);
-        } else {
-            // Varsayılan promptu al
-            $selectedPrompt = \Modules\AI\App\Models\Prompt::where('is_default', true)
-                ->where('is_active', true)
-                ->first();
-            
-            Log::info('Varsayılan prompt kullanılıyor', [
-                'default_prompt_found' => $selectedPrompt ? true : false,
-                'default_prompt_name' => $selectedPrompt ? $selectedPrompt->name : 'Bulunamadı'
-            ]);
+            if ($selectedPrompt) {
+                $customPrompt = $selectedPrompt->content;
+                Log::info('Seçilen prompt bilgileri', [
+                    'prompt_id' => $promptId,
+                    'prompt_name' => $selectedPrompt->name
+                ]);
+            }
         }
         
-        // Promptları birleştir
-        $systemContent = $commonContent;
-        if ($selectedPrompt) {
-            $systemContent .= "\n\n" . $selectedPrompt->content;
-        }
+        // YENİ SİSTEM: buildFullSystemPrompt ile tenant context + priority engine
+        $systemContent = $aiService->buildFullSystemPrompt($customPrompt, [
+            'context_type' => 'admin_chat',
+            'source' => 'stream_api',
+            'prompt_id' => $promptId
+        ]);
+        
+        Log::info('🎯 YENİ Priority Engine sistemi kullanıldı', [
+            'system_content_length' => strlen($systemContent),
+            'has_tenant_context' => strpos($systemContent, 'Turkbil') !== false
+        ]);
         
         $messages[] = [
             'role' => 'system',
@@ -317,8 +333,8 @@ class DeepSeekService
         ];
         
         Log::info('Final sistem mesajı oluşturuldu', [
-            'has_common_content' => !empty($commonContent),
-            'has_selected_prompt' => $selectedPrompt ? true : false,
+            'has_priority_engine' => true,
+            'has_tenant_context' => strpos($systemContent, 'Turkbil') !== false,
             'final_message_length' => strlen($systemContent)
         ]);
         

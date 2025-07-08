@@ -43,6 +43,10 @@ return new class extends Migration
             // Ek bilgiler (gelecekte eklenebilecek alanlar için)
             $table->json('additional_info')->nullable();
             
+            // Marka hikayesi alanları
+            $table->text('brand_story')->nullable();
+            $table->timestamp('brand_story_created_at')->nullable();
+            
             $table->boolean('is_active')->default(true);
             $table->boolean('is_completed')->default(false); // Profil tamamlandı mı?
             

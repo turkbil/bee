@@ -590,7 +590,7 @@ class AITenantProfile extends Model
     /**
      * Priority 1: Marka Kimliği - EN ÖNEMLİ
      */
-    private function buildBrandIdentityContext(): string
+    public function buildBrandIdentityContext(): string
     {
         $parts = [];
         
@@ -626,7 +626,7 @@ class AITenantProfile extends Model
     /**
      * Priority 2: İş Stratejisi ve Davranışı - ÖNEMLİ
      */
-    private function buildBusinessStrategyContext(): string
+    public function buildBusinessStrategyContext(): string
     {
         $parts = [];
         
@@ -676,7 +676,7 @@ class AITenantProfile extends Model
     /**
      * Priority 3: Detay Bilgiler - NORMAL
      */
-    private function buildDetailContext(): string
+    public function buildDetailContext(): string
     {
         $parts = [];
         
@@ -704,7 +704,7 @@ class AITenantProfile extends Model
     /**
      * Priority 4: Ek Bilgiler - OPSİYONEL (sadece gerektiğinde)
      */
-    private function buildAdditionalContext(): string
+    public function buildAdditionalContext(): string
     {
         $parts = [];
         

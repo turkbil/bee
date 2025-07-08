@@ -1,133 +1,69 @@
-{{-- Profile Completed - Modern Cards --}}
+{{-- Status Card - Simple --}}
 <div class="col-12">
-    <div class="card" style="
-        background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(34, 197, 94, 0.05));
-        border: 2px solid rgba(16, 185, 129, 0.2);
-        border-radius: 20px;
-        margin-bottom: 2rem;
-    ">
-        <div class="card-body p-4">
+    <div class="card mb-4">
+        <div class="card-body">
             <div class="d-flex align-items-center justify-content-between">
                 <div class="d-flex align-items-center">
-                    <div class="me-3" style="
-                        width: 60px;
-                        height: 60px;
-                        background: linear-gradient(135deg, #10b981, #059669);
-                        border-radius: 15px;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
-                    ">
-                        <i class="fas fa-check" style="font-size: 1.5rem; color: white;"></i>
+                    <div class="me-3">
+                        <i class="fas fa-check-circle text-success" style="font-size: 1.5rem;"></i>
                     </div>
                     <div>
-                        <h3 class="mb-1" style="color: #10b981; font-weight: 700;">AI Profiliniz Aktif!</h3>
+                        <h3 class="mb-1 text-success">AI Profiliniz Aktif!</h3>
                         <p class="text-muted mb-0">Yapay zeka asistanınız markanıza özel içerik üretmeye hazır</p>
                     </div>
                 </div>
                 <div class="text-end">
-                    <div class="btn-list">
-                        <a href="{{ route('admin.ai.profile.edit') }}" class="btn btn-primary">
-                            <i class="fas fa-edit me-2"></i>
-                            Düzenle
-                        </a>
-                        <form action="{{ route('admin.ai.profile.reset') }}" method="POST" class="d-inline" 
-                              onsubmit="return confirm('⚠️ UYARI: Profili sıfırlamak istediğinize emin misiniz?\n\nBu işlem:\n• Tüm profil bilgilerini silecek\n• Database kaydını tamamen kaldıracak\n• Geri alınamaz bir işlemdir\n\nDevam etmek istiyor musunuz?')">
-                            @csrf
-                            <button type="submit" class="btn btn-outline-danger">
-                                <i class="fas fa-trash-restore me-2"></i>
-                                Sıfırla
-                            </button>
-                        </form>
-                    </div>
+                    <form action="{{ route('admin.ai.profile.reset') }}" method="POST" class="d-inline" 
+                          onsubmit="return confirm('⚠️ UYARI: Profili sıfırlamak istediğinize emin misiniz?')">
+                        @csrf
+                        <button type="submit" class="btn btn-outline-muted btn-sm">
+                            <i class="fas fa-trash-restore me-2"></i>Sıfırla
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-{{-- Brand Story Section - MOVED TO TOP --}}
-<div class="row g-4 mb-4">
-    <div class="col-12">
-        <div class="card" style="
-            border-radius: 20px; 
-            border: 2px solid rgba(147, 51, 234, 0.3);
-            background: linear-gradient(135deg, rgba(147, 51, 234, 0.1), rgba(147, 51, 234, 0.05));
-            box-shadow: 0 10px 30px rgba(147, 51, 234, 0.1);
-        ">
-            <div class="card-header" style="
-                background: linear-gradient(135deg, rgba(147, 51, 234, 0.15), rgba(147, 51, 234, 0.1)); 
-                border-radius: 18px 18px 0 0;
-                border-bottom: 2px solid rgba(147, 51, 234, 0.2);
-                padding: 1.5rem;
-            ">
-                <h3 class="card-title d-flex align-items-center mb-0" style="font-size: 1.5rem; font-weight: 700;">
-                    <div class="me-3" style="
-                        width: 50px;
-                        height: 50px;
-                        background: linear-gradient(135deg, #9333ea, #7c3aed);
-                        border-radius: 15px;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        box-shadow: 0 8px 16px rgba(147, 51, 234, 0.3);
-                    ">
-                        <i class="fas fa-book-open" style="color: white; font-size: 1.5rem;"></i>
-                    </div>
-                    <div>
-                        <div style="color: #9333ea;">Marka Hikayeniz</div>
-                        <small class="text-muted fw-normal">AI tarafından özel olarak hazırlandı</small>
-                    </div>
-                </h3>
+{{-- Brand Story Section --}}
+<div class="col-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex align-items-center">
+                <i class="fas fa-book-open text-primary me-3" style="font-size: 1.5rem;"></i>
+                <div>
+                    <h3 class="card-title mb-0">Marka Hikayeniz</h3>
+                    <small class="text-muted">AI tarafından özel olarak hazırlandı</small>
+                </div>
             </div>
-            <div class="card-body" style="padding: 2rem;">
-                @if($profile->hasBrandStory())
-                    {{-- Hikaye mevcut --}}
-                    <div class="brand-story-content">
-                        <div class="brand-story-text" style="
-                            font-size: 1.15rem;
-                            line-height: 1.8;
-                            color: #374151;
-                            text-align: justify;
-                            padding: 2rem;
-                            background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(147, 51, 234, 0.05));
-                            border-radius: 15px;
-                            border: 1px solid rgba(147, 51, 234, 0.1);
-                            box-shadow: 0 5px 15px rgba(147, 51, 234, 0.08);
-                        ">
-                            {!! nl2br(e($profile->brand_story)) !!}
-                        </div>
-                        
-                        @if($profile->brand_story_created_at)
-                            <div class="mt-3 text-muted d-flex align-items-center">
-                                <i class="fas fa-clock me-2"></i>
-                                <span>{{ $profile->brand_story_created_at->format('d.m.Y H:i') }} tarihinde oluşturuldu</span>
-                            </div>
-                        @endif
-                        
-                        <div class="mt-4 d-flex gap-2 flex-wrap">
-                            <button class="btn btn-primary" onclick="regenerateBrandStory()" style="
-                                background: linear-gradient(135deg, #9333ea, #7c3aed);
-                                border: none;
-                                border-radius: 10px;
-                                padding: 0.75rem 1.5rem;
-                                font-weight: 600;
-                                box-shadow: 0 4px 12px rgba(147, 51, 234, 0.3);
-                            ">
-                                <i class="fas fa-sync-alt me-2"></i>
-                                Hikayeyi Yeniden Oluştur
-                            </button>
-                            <button class="btn btn-outline-secondary" onclick="copyBrandStory()" style="
-                                border-radius: 10px;
-                                padding: 0.75rem 1.5rem;
-                                font-weight: 600;
-                            ">
-                                <i class="fas fa-copy me-2"></i>
-                                Kopyala
-                            </button>
-                        </div>
+        </div>
+        <div class="card-body">
+            @if($profile->hasBrandStory())
+                {{-- Hikaye mevcut --}}
+                <div class="brand-story-content">
+                    <div class="brand-story-text p-4" style="font-size: 1.1rem; line-height: 1.7; background-color: var(--tblr-bg-surface);">
+                        {!! nl2br(e($profile->brand_story)) !!}
                     </div>
+                        
+                    @if($profile->brand_story_created_at)
+                        <div class="mt-3 text-muted d-flex align-items-center">
+                            <i class="fas fa-clock me-2"></i>
+                            <span>{{ $profile->brand_story_created_at->format('d.m.Y H:i') }} tarihinde oluşturuldu</span>
+                        </div>
+                    @endif
+                        
+                    <div class="mt-4 d-flex gap-2 flex-wrap">
+                        <button class="btn btn-secondary" onclick="regenerateBrandStory()">
+                            <i class="fas fa-sync-alt me-2"></i>
+                            Hikayeyi Yeniden Oluştur
+                        </button>
+                        <button class="btn btn-outline-secondary" onclick="copyBrandStory()">
+                            <i class="fas fa-copy me-2"></i>
+                            Kopyala
+                        </button>
+                    </div>
+                </div>
                 @elseif(isset($brandStoryGenerating) && $brandStoryGenerating)
                     {{-- Modern Loading State --}}
                     <div class="text-center py-5" id="brand-story-loading">
@@ -201,12 +137,10 @@
                             </div>
                         </div>
                         
-                        <button class="btn btn-outline-primary" onclick="location.reload()" style="
+                        <button class="btn btn-outline-muted" onclick="location.reload()" style="
                             border-radius: 10px;
                             padding: 0.75rem 2rem;
                             font-weight: 600;
-                            border-color: #9333ea;
-                            color: #9333ea;
                         ">
                             <i class="fas fa-refresh me-2"></i>
                             Sayfayı Yenile
@@ -268,7 +202,7 @@
 </div>
 
 {{-- Profile Summary Cards --}}
-<div class="row g-4">
+<div class="row g-4 mt-4">
     {{-- Company Info --}}
     <div class="col-lg-6">
         <div class="card h-100" style="border-radius: 15px; border: 1px solid rgba(0, 212, 255, 0.2);">
@@ -314,7 +248,7 @@
                             <div class="mt-2">
                                 @foreach($profile->company_info['contact_info'] as $channel => $value)
                                     @if($value && $value !== false)
-                                        <span class="badge bg-success me-1 mb-1">
+                                        <span class="badge bg-muted me-1 mb-1">
                                             <i class="fas fa-check me-1"></i>
                                             {{ ucfirst(str_replace('_', ' ', $channel)) }}
                                         </span>
@@ -369,7 +303,7 @@
                                         <div class="mt-1">
                                             @foreach($value as $subkey => $subvalue)
                                                 @if($subvalue && $subvalue !== false)
-                                                    <span class="badge bg-purple me-1 mb-1">
+                                                    <span class="badge bg-muted me-1 mb-1">
                                                         @if(is_string($subkey))
                                                             {{ ucfirst(str_replace('-', ' ', $subkey)) }}
                                                         @else
@@ -415,11 +349,11 @@
                                 @if(is_array($profile->ai_behavior_rules['writing_tone']))
                                     @foreach($profile->ai_behavior_rules['writing_tone'] as $tone_key => $tone_value)
                                         @if($tone_value && $tone_value !== false)
-                                            <span class="badge bg-primary me-1 mb-1">{{ ucfirst(str_replace('_', ' ', $tone_key)) }}</span>
+                                            <span class="badge bg-muted me-1 mb-1">{{ ucfirst(str_replace('_', ' ', $tone_key)) }}</span>
                                         @endif
                                     @endforeach
                                 @else
-                                    <span class="badge bg-primary fs-6">
+                                    <span class="badge bg-muted fs-6">
                                         {{ is_string($profile->ai_behavior_rules['writing_tone']) ? ucfirst($profile->ai_behavior_rules['writing_tone']) : $profile->ai_behavior_rules['writing_tone'] }}
                                     </span>
                                 @endif
@@ -433,7 +367,7 @@
                             <div class="mt-1">
                                 @foreach($profile->ai_behavior_rules['emphasis_points'] as $key => $value)
                                     @if($value)
-                                        <span class="badge bg-success me-1 mb-1">{{ ucfirst(str_replace(['-', '_'], ' ', $key)) }}</span>
+                                        <span class="badge bg-muted me-1 mb-1">{{ ucfirst(str_replace(['-', '_'], ' ', $key)) }}</span>
                                     @endif
                                 @endforeach
                             </div>
@@ -446,7 +380,7 @@
                             <div class="mt-1">
                                 @foreach($profile->ai_behavior_rules['avoid_topics'] as $key => $value)
                                     @if($value)
-                                        <span class="badge bg-danger me-1 mb-1">{{ ucfirst(str_replace(['-', '_'], ' ', $key)) }}</span>
+                                        <span class="badge bg-muted me-1 mb-1">{{ ucfirst(str_replace(['-', '_'], ' ', $key)) }}</span>
                                     @endif
                                 @endforeach
                             </div>
@@ -522,7 +456,7 @@
                                         @if(is_array($value))
                                             @foreach($value as $subkey => $subvalue)
                                                 @if($subvalue && $subvalue !== false)
-                                                    <span class="badge bg-indigo me-1 mb-1">
+                                                    <span class="badge bg-muted me-1 mb-1">
                                                         {{ is_string($subkey) ? ucfirst(str_replace('-', ' ', $subkey)) : $subvalue }}
                                                     </span>
                                                 @endif
@@ -604,51 +538,62 @@
     }
 }
 
-/* Card Hover Effects */
+/* NO ANIMATIONS - STATIC DESIGN */
 .card {
-    transition: all 0.3s ease;
+    transition: none !important;
 }
 
 .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    transform: none !important;
+    box-shadow: none !important;
 }
 
-/* Button Pulse Effect */
-@keyframes btn-pulse {
-    0%, 100% { 
-        transform: scale(1);
-        box-shadow: 0 4px 12px rgba(147, 51, 234, 0.3);
-    }
-    50% { 
-        transform: scale(1.02);
-        box-shadow: 0 6px 18px rgba(147, 51, 234, 0.4);
-    }
+.btn {
+    transition: none !important;
+    animation: none !important;
 }
 
-.btn-primary {
-    animation: btn-pulse 3s ease-in-out infinite;
+.btn:hover {
+    transform: none !important;
 }
 
-/* Loading States */
-#brand-story-loading, #brand-story-auto-loading {
-    animation: float-digital 4s ease-in-out infinite;
+.brand-story-text {
+    transition: none !important;
+    transform: none !important;
 }
 
-/* Text Shimmer Effect */
-.text-shimmer {
-    background: linear-gradient(45deg, #9333ea, #7c3aed, #9333ea);
-    background-size: 200% 200%;
-    animation: gradient-shift 3s ease-in-out infinite;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+.brand-story-text:hover {
+    transform: none !important;
+    box-shadow: none !important;
 }
 </style>
+
+<!-- Word Buffer JavaScript Import -->
+<script src="{{ asset('admin-assets/libs/ai-word-buffer/ai-word-buffer.js') }}"></script>
 
 <script>
 function regenerateBrandStory() {
     if (confirm('Mevcut hikayeniz silinip yeni bir hikaye oluşturulacak. Devam etmek istiyor musunuz?')) {
+        
+        // Loading state'i göster
+        const storyContainer = document.querySelector('.brand-story-text');
+        const originalContent = storyContainer.innerHTML;
+        
+        // Modern loading animation
+        storyContainer.innerHTML = `
+            <div class="d-flex align-items-center justify-content-center p-4">
+                <div class="me-3">
+                    <div class="spinner-border text-primary" role="status" style="animation-duration: 0.8s;">
+                        <span class="visually-hidden">Hikaye oluşturuluyor...</span>
+                    </div>
+                </div>
+                <div>
+                    <div class="fw-bold text-primary">AI marka hikayenizi oluşturuyor...</div>
+                    <small class="text-muted">Bu işlem birkaç saniye sürebilir</small>
+                </div>
+            </div>
+        `;
+        
         // AJAX request to regenerate brand story
         fetch('{{ route("admin.ai.profile.generate-story") }}', {
             method: 'POST',
@@ -659,36 +604,115 @@ function regenerateBrandStory() {
         })
         .then(response => response.json())
         .then(data => {
-            if (data.success) {
-                location.reload();
+            if (data.success && data.story) {
+                // 🚀 WORD BUFFER SİSTEMİ İLE HIKAYEYİ GÖSTER
+                
+                // Word buffer ile hikayeyi animated olarak göster
+                if (window.AIWordBuffer) {
+                    const buffer = new window.AIWordBuffer(storyContainer, {
+                        wordDelay: 120,           // Hikaye için biraz yavaş
+                        fadeEffect: true,
+                        enableMarkdown: false,    // HTML değil düz metin
+                        typewriterSpeed: 100,
+                        punctuationDelay: 200     // Noktalama işaretlerinde dur
+                    });
+                    
+                    // Buffer'ı başlat
+                    buffer.start();
+                    
+                    // Hikayeyi ekle
+                    buffer.addContent(data.story);
+                    
+                    // 1 saniye sonra flush et
+                    setTimeout(() => {
+                        buffer.flush();
+                        
+                        // 3 saniye sonra glow efekti ekle
+                        setTimeout(() => {
+                            storyContainer.style.transition = 'all 0.5s ease';
+                            storyContainer.style.boxShadow = '0 0 20px rgba(147, 51, 234, 0.4)';
+                            setTimeout(() => {
+                                storyContainer.style.boxShadow = '';
+                            }, 2000);
+                        }, 3000);
+                    }, 1000);
+                    
+                } else {
+                    // Fallback: Normal metin gösterimi
+                    storyContainer.innerHTML = data.story.replace(/\n/g, '<br>');
+                }
+                
             } else {
+                // Hata durumunda eski içeriği geri yükle
+                storyContainer.innerHTML = originalContent;
                 alert('Hikaye oluşturulurken hata: ' + (data.message || 'Bilinmeyen hata'));
             }
         })
         .catch(error => {
             console.error('Error:', error);
+            storyContainer.innerHTML = originalContent;
             alert('Hikaye oluşturulurken hata oluştu');
         });
     }
 }
 
 function copyBrandStory() {
-    const storyText = document.querySelector('.brand-story-text').innerText;
-    navigator.clipboard.writeText(storyText).then(() => {
-        // Toast veya alert göster
-        const btn = event.target;
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="fas fa-check me-2"></i>Kopyalandı!';
-        btn.classList.add('btn-success');
-        btn.classList.remove('btn-outline-secondary');
-        
-        setTimeout(() => {
-            btn.innerHTML = originalText;
-            btn.classList.remove('btn-success');
-            btn.classList.add('btn-outline-secondary');
-        }, 2000);
-    }).catch(err => {
-        alert('Kopyalama başarısız');
-    });
+    const storyElement = document.querySelector('.brand-story-text');
+    if (!storyElement) {
+        alert('Hikaye bulunamadı');
+        return;
+    }
+    
+    const storyText = storyElement.innerText || storyElement.textContent;
+    const btn = event.target.closest('button');
+    
+    // Modern clipboard API deneme
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(storyText).then(() => {
+            showCopySuccess(btn);
+        }).catch(err => {
+            console.warn('Modern clipboard failed, trying fallback:', err);
+            fallbackCopy(storyText, btn);
+        });
+    } else {
+        // Fallback copy method
+        fallbackCopy(storyText, btn);
+    }
+}
+
+function fallbackCopy(text, btn) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.opacity = '0';
+    document.body.appendChild(textArea);
+    textArea.select();
+    
+    try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+            showCopySuccess(btn);
+        } else {
+            alert('Kopyalama başarısız oldu');
+        }
+    } catch (err) {
+        console.error('Fallback copy failed:', err);
+        alert('Kopyalama desteklenmiyor');
+    } finally {
+        document.body.removeChild(textArea);
+    }
+}
+
+function showCopySuccess(btn) {
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-check me-2"></i>Kopyalandı!';
+    btn.classList.add('btn-success');
+    btn.classList.remove('btn-outline-secondary');
+    
+    setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.classList.remove('btn-success');
+        btn.classList.add('btn-outline-secondary');
+    }, 2000);
 }
 </script>

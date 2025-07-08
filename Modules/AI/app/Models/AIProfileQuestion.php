@@ -67,10 +67,14 @@ class AIProfileQuestion extends Model
     /**
      * Checkbox ile aktif edilen bölüm soruları
      */
-    public static function getOptionalSectionQuestions(string $section, ?string $sectorCode = null)
+    public static function getOptionalSectionQuestions(string $section, ?string $sectorCode = null, ?int $step = null)
     {
         $query = static::where('is_active', true)
                        ->where('section', $section);
+        
+        if ($step) {
+            $query->where('step', $step);
+        }
         
         if ($sectorCode) {
             $query->where(function($q) use ($sectorCode) {

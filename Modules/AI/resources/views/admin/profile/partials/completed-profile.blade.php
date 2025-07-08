@@ -47,6 +47,226 @@
     </div>
 </div>
 
+{{-- Brand Story Section - MOVED TO TOP --}}
+<div class="row g-4 mb-4">
+    <div class="col-12">
+        <div class="card" style="
+            border-radius: 20px; 
+            border: 2px solid rgba(147, 51, 234, 0.3);
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.1), rgba(147, 51, 234, 0.05));
+            box-shadow: 0 10px 30px rgba(147, 51, 234, 0.1);
+        ">
+            <div class="card-header" style="
+                background: linear-gradient(135deg, rgba(147, 51, 234, 0.15), rgba(147, 51, 234, 0.1)); 
+                border-radius: 18px 18px 0 0;
+                border-bottom: 2px solid rgba(147, 51, 234, 0.2);
+                padding: 1.5rem;
+            ">
+                <h3 class="card-title d-flex align-items-center mb-0" style="font-size: 1.5rem; font-weight: 700;">
+                    <div class="me-3" style="
+                        width: 50px;
+                        height: 50px;
+                        background: linear-gradient(135deg, #9333ea, #7c3aed);
+                        border-radius: 15px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        box-shadow: 0 8px 16px rgba(147, 51, 234, 0.3);
+                    ">
+                        <i class="fas fa-book-open" style="color: white; font-size: 1.5rem;"></i>
+                    </div>
+                    <div>
+                        <div style="color: #9333ea;">Marka Hikayeniz</div>
+                        <small class="text-muted fw-normal">AI tarafından özel olarak hazırlandı</small>
+                    </div>
+                </h3>
+            </div>
+            <div class="card-body" style="padding: 2rem;">
+                @if($profile->hasBrandStory())
+                    {{-- Hikaye mevcut --}}
+                    <div class="brand-story-content">
+                        <div class="brand-story-text" style="
+                            font-size: 1.15rem;
+                            line-height: 1.8;
+                            color: #374151;
+                            text-align: justify;
+                            padding: 2rem;
+                            background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(147, 51, 234, 0.05));
+                            border-radius: 15px;
+                            border: 1px solid rgba(147, 51, 234, 0.1);
+                            box-shadow: 0 5px 15px rgba(147, 51, 234, 0.08);
+                        ">
+                            {!! nl2br(e($profile->brand_story)) !!}
+                        </div>
+                        
+                        @if($profile->brand_story_created_at)
+                            <div class="mt-3 text-muted d-flex align-items-center">
+                                <i class="fas fa-clock me-2"></i>
+                                <span>{{ $profile->brand_story_created_at->format('d.m.Y H:i') }} tarihinde oluşturuldu</span>
+                            </div>
+                        @endif
+                        
+                        <div class="mt-4 d-flex gap-2 flex-wrap">
+                            <button class="btn btn-primary" onclick="regenerateBrandStory()" style="
+                                background: linear-gradient(135deg, #9333ea, #7c3aed);
+                                border: none;
+                                border-radius: 10px;
+                                padding: 0.75rem 1.5rem;
+                                font-weight: 600;
+                                box-shadow: 0 4px 12px rgba(147, 51, 234, 0.3);
+                            ">
+                                <i class="fas fa-sync-alt me-2"></i>
+                                Hikayeyi Yeniden Oluştur
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="copyBrandStory()" style="
+                                border-radius: 10px;
+                                padding: 0.75rem 1.5rem;
+                                font-weight: 600;
+                            ">
+                                <i class="fas fa-copy me-2"></i>
+                                Kopyala
+                            </button>
+                        </div>
+                    </div>
+                @elseif(isset($brandStoryGenerating) && $brandStoryGenerating)
+                    {{-- Modern Loading State --}}
+                    <div class="text-center py-5" id="brand-story-loading">
+                        <div style="
+                            width: 120px;
+                            height: 120px;
+                            margin: 0 auto 2rem;
+                            position: relative;
+                        ">
+                            {{-- Digital Loading Animation --}}
+                            <div style="
+                                width: 120px;
+                                height: 120px;
+                                border: 4px solid rgba(147, 51, 234, 0.1);
+                                border-radius: 50%;
+                                position: relative;
+                                animation: pulse-ring 2s ease-in-out infinite;
+                            ">
+                                <div style="
+                                    width: 100px;
+                                    height: 100px;
+                                    border: 3px solid transparent;
+                                    border-top: 3px solid #9333ea;
+                                    border-radius: 50%;
+                                    position: absolute;
+                                    top: 50%;
+                                    left: 50%;
+                                    transform: translate(-50%, -50%);
+                                    animation: spin 1s linear infinite;
+                                "></div>
+                                <div style="
+                                    position: absolute;
+                                    top: 50%;
+                                    left: 50%;
+                                    transform: translate(-50%, -50%);
+                                    background: linear-gradient(135deg, #9333ea, #7c3aed);
+                                    width: 40px;
+                                    height: 40px;
+                                    border-radius: 50%;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                ">
+                                    <i class="fas fa-magic" style="color: white; font-size: 1.2rem;"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h4 style="
+                            background: linear-gradient(45deg, #9333ea, #7c3aed);
+                            -webkit-background-clip: text;
+                            -webkit-text-fill-color: transparent;
+                            background-clip: text;
+                            font-weight: 700;
+                            margin-bottom: 1rem;
+                        ">Hikayeniz Oluşturuluyor, Lütfen Bekleyiniz...</h4>
+                        
+                        <div class="mb-4">
+                            <p class="text-muted mb-2">Yapay zeka asistanınız profil bilgilerinize göre özel bir hikaye hazırlıyor.</p>
+                            <div style="
+                                background: rgba(147, 51, 234, 0.1);
+                                border: 1px solid rgba(147, 51, 234, 0.2);
+                                border-radius: 10px;
+                                padding: 1rem;
+                                margin: 1rem 0;
+                            ">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-brain me-2" style="color: #9333ea;"></i>
+                                    <small class="text-muted">AI, markanızın değerlerini ve kimliğini analiz ediyor...</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-outline-primary" onclick="location.reload()" style="
+                            border-radius: 10px;
+                            padding: 0.75rem 2rem;
+                            font-weight: 600;
+                            border-color: #9333ea;
+                            color: #9333ea;
+                        ">
+                            <i class="fas fa-refresh me-2"></i>
+                            Sayfayı Yenile
+                        </button>
+                    </div>
+                @else
+                    {{-- Hikaye yok - Auto Loading --}}
+                    <div class="text-center py-5" id="brand-story-auto-loading">
+                        <div style="
+                            width: 100px;
+                            height: 100px;
+                            margin: 0 auto 2rem;
+                            position: relative;
+                        ">
+                            <div style="
+                                width: 100px;
+                                height: 100px;
+                                border: 3px solid rgba(147, 51, 234, 0.2);
+                                border-radius: 50%;
+                                position: relative;
+                            ">
+                                <div style="
+                                    width: 80px;
+                                    height: 80px;
+                                    border: 2px solid transparent;
+                                    border-top: 2px solid #9333ea;
+                                    border-radius: 50%;
+                                    position: absolute;
+                                    top: 50%;
+                                    left: 50%;
+                                    transform: translate(-50%, -50%);
+                                    animation: spin 1.5s linear infinite;
+                                "></div>
+                                <div style="
+                                    position: absolute;
+                                    top: 50%;
+                                    left: 50%;
+                                    transform: translate(-50%, -50%);
+                                    background: #9333ea;
+                                    width: 30px;
+                                    height: 30px;
+                                    border-radius: 50%;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                ">
+                                    <i class="fas fa-book-open" style="color: white; font-size: 0.9rem;"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h5 class="mb-2" style="color: #9333ea; font-weight: 600;">Marka Hikayeniz Hazırlanıyor</h5>
+                        <p class="text-muted mb-3">Profil bilgilerinize göre otomatik olarak bir marka hikayesi oluşturuluyor...</p>
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
+
 {{-- Profile Summary Cards --}}
 <div class="row g-4">
     {{-- Company Info --}}
@@ -338,78 +558,93 @@
         </div>
     </div>
     
-    {{-- Brand Story Section --}}
-    <div class="col-12 mt-4">
-        <div class="card" style="border-radius: 15px; border: 1px solid rgba(147, 51, 234, 0.2);">
-            <div class="card-header" style="background: linear-gradient(135deg, rgba(147, 51, 234, 0.1), rgba(147, 51, 234, 0.05)); border-radius: 15px 15px 0 0;">
-                <h3 class="card-title d-flex align-items-center">
-                    <i class="fas fa-book-open me-2" style="color: #9333ea;"></i>
-                    Marka Hikayeniz
-                </h3>
-            </div>
-            <div class="card-body">
-                @if($profile->hasBrandStory())
-                    {{-- Hikaye mevcut --}}
-                    <div class="brand-story-content">
-                        <div class="brand-story-text" style="
-                            font-size: 1.1rem;
-                            line-height: 1.8;
-                            color: #374151;
-                            text-align: justify;
-                            padding: 1.5rem;
-                            background: rgba(147, 51, 234, 0.05);
-                            border-radius: 10px;
-                            border-left: 4px solid #9333ea;
-                        ">
-                            {!! nl2br(e($profile->brand_story)) !!}
-                        </div>
-                        
-                        @if($profile->brand_story_created_at)
-                            <div class="mt-3 text-muted small">
-                                <i class="fas fa-clock me-1"></i>
-                                {{ $profile->brand_story_created_at->format('d.m.Y H:i') }} tarihinde oluşturuldu
-                            </div>
-                        @endif
-                        
-                        <div class="mt-3">
-                            <button class="btn btn-outline-primary" onclick="regenerateBrandStory()">
-                                <i class="fas fa-sync-alt me-2"></i>
-                                Hikayeyi Yeniden Oluştur
-                            </button>
-                            <button class="btn btn-outline-secondary ms-2" onclick="copyBrandStory()">
-                                <i class="fas fa-copy me-2"></i>
-                                Kopyala
-                            </button>
-                        </div>
-                    </div>
-                @elseif(isset($brandStoryGenerating) && $brandStoryGenerating)
-                    {{-- Hikaye oluşturuluyor --}}
-                    <div class="text-center py-4">
-                        <div class="spinner-border text-primary mb-3" role="status">
-                            <span class="visually-hidden">Yükleniyor...</span>
-                        </div>
-                        <h5 class="mb-2">Marka Hikayeniz Oluşturuluyor...</h5>
-                        <p class="text-muted">Yapay zeka asistanınız profil bilgilerinize göre özel bir hikaye hazırlıyor. Bu işlem 2-3 dakika sürebilir.</p>
-                        <button class="btn btn-primary" onclick="location.reload()" disabled>
-                            <i class="fas fa-hourglass-half me-2"></i>
-                            İşlem devam ediyor...
-                        </button>
-                    </div>
-                @else
-                    {{-- Hikaye yok --}}
-                    <div class="text-center py-4">
-                        <i class="fas fa-book-open mb-3" style="font-size: 3rem; color: #e9ecef;"></i>
-                        <h5 class="mb-2">Marka Hikayeniz Oluşturuluyor</h5>
-                        <p class="text-muted mb-3">Profil bilgilerinize göre otomatik olarak bir marka hikayesi hazırlanacak.</p>
-                        <div class="spinner-border text-muted" role="status">
-                            <span class="visually-hidden">Yükleniyor...</span>
-                        </div>
-                    </div>
-                @endif
-            </div>
-        </div>
-    </div>
 </div>
+
+<style>
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse-ring {
+    0%, 100% { 
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(147, 51, 234, 0.4);
+    }
+    50% { 
+        transform: scale(1.05);
+        box-shadow: 0 0 0 20px rgba(147, 51, 234, 0.1);
+    }
+}
+
+.brand-story-text {
+    transition: all 0.3s ease;
+}
+
+.brand-story-text:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(147, 51, 234, 0.15) !important;
+}
+
+/* Gradient Text Animation */
+@keyframes gradient-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+/* Digital Grid Effect */
+@keyframes float-digital {
+    0%, 100% { 
+        transform: translate(0, 0) scale(1);
+        opacity: 0.8;
+    }
+    50% { 
+        transform: translate(5px, -5px) scale(1.02);
+        opacity: 1;
+    }
+}
+
+/* Card Hover Effects */
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+/* Button Pulse Effect */
+@keyframes btn-pulse {
+    0%, 100% { 
+        transform: scale(1);
+        box-shadow: 0 4px 12px rgba(147, 51, 234, 0.3);
+    }
+    50% { 
+        transform: scale(1.02);
+        box-shadow: 0 6px 18px rgba(147, 51, 234, 0.4);
+    }
+}
+
+.btn-primary {
+    animation: btn-pulse 3s ease-in-out infinite;
+}
+
+/* Loading States */
+#brand-story-loading, #brand-story-auto-loading {
+    animation: float-digital 4s ease-in-out infinite;
+}
+
+/* Text Shimmer Effect */
+.text-shimmer {
+    background: linear-gradient(45deg, #9333ea, #7c3aed, #9333ea);
+    background-size: 200% 200%;
+    animation: gradient-shift 3s ease-in-out infinite;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+</style>
 
 <script>
 function regenerateBrandStory() {

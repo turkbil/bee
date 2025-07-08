@@ -233,8 +233,8 @@ class AIService
             $systemPrompts[] = $tenantProfileContext;
         }
         
-        // 3. MARKA TANIMA CONTEXT (brand_story hariç tüm profil) - YENİ
-        $brandContext = $this->getTenantBrandContext();
+        // 3. MARKA TANIMA CONTEXT - YENİ OPTIMIZE SİSTEM
+        $brandContext = $this->getOptimizedTenantContext($options);
         if ($brandContext) {
             $systemPrompts[] = $brandContext;
         }
@@ -425,8 +425,8 @@ class AIService
             $systemPrompts[] = $tenantProfileContext;
         }
         
-        // 3. MARKA TANIMA CONTEXT (brand_story hariç tüm profil) - YENİ
-        $brandContext = $this->getTenantBrandContext();
+        // 3. MARKA TANIMA CONTEXT - YENİ OPTIMIZE SİSTEM
+        $brandContext = $this->getOptimizedTenantContext($options);
         if ($brandContext) {
             $systemPrompts[] = $brandContext;
         }
@@ -488,6 +488,60 @@ class AIService
     /**
      * Marka tanıma context'ini al (brand_story HARİÇ tüm profil alanları)
      */
+    /**
+     * 🚀 YENİ OPTIMIZE TENANT CONTEXT - Priority sistemi ile
+     */
+    private function getOptimizedTenantContext(array $options = []): ?string
+    {
+        try {
+            $tenantId = resolve_tenant_id();
+            if (!$tenantId) {
+                return null;
+            }
+            
+            $profile = \Modules\AI\App\Models\AITenantProfile::where('tenant_id', $tenantId)->first();
+            if (!$profile || !$profile->is_completed) {
+                return null;
+            }
+            
+            // Priority seviyesi belirle
+            $contextType = $options['context_type'] ?? 'normal';
+            $maxPriority = match($contextType) {
+                'minimal' => 1,      // Sadece marka kimliği
+                'essential' => 2,    // Marka kimliği + iş stratejisi  
+                'normal' => 3,       // Standart (çoğu durum)
+                'detailed' => 4,     // Tüm detaylar (sadece özel durumlar)
+                default => 3
+            };
+            
+            // Feature bazlı priority ayarlaması
+            if (isset($options['feature_name'])) {
+                $feature = $options['feature_name'];
+                
+                // Lokasyon önemli olan feature'lar
+                if (str_contains($feature, 'local') || str_contains($feature, 'maps') || str_contains($feature, 'address')) {
+                    $maxPriority = 4; // Lokasyon bilgisi için detaylı context
+                }
+                
+                // Hızlı content için minimal
+                if (str_contains($feature, 'quick') || str_contains($feature, 'instant') || str_contains($feature, 'fast')) {
+                    $maxPriority = 2; // Hızlı content için temel bilgiler
+                }
+            }
+            
+            return $profile->getOptimizedAIContext($maxPriority);
+            
+        } catch (\Exception $e) {
+            \Log::error('Optimize tenant context error', [
+                'error' => $e->getMessage(),
+                'options' => $options
+            ]);
+            
+            // Fallback: Eski sistem
+            return $this->getTenantBrandContext();
+        }
+    }
+
     public function getTenantBrandContext(): ?string
     {
         try {

@@ -62,12 +62,27 @@ class DeepSeekService
         try {
             $cacheKey = "ai_settings_global";
             
-            return Cache::remember($cacheKey, now()->addMinutes(30), function () {
-                return Setting::first();
-            });
+            // Önce cache'i kontrol et, yoksa direkt veritabanından al
+            $settings = Cache::get($cacheKey);
+            
+            if (!$settings) {
+                // Cache'de yoksa veritabanından al ve cache'e kaydet
+                $settings = Setting::first();
+                if ($settings) {
+                    Cache::put($cacheKey, $settings, now()->addMinutes(30));
+                }
+            }
+            
+            return $settings;
         } catch (\Exception $e) {
             Log::error('Ayarlar alınırken hata: ' . $e->getMessage());
-            return null;
+            // Hata durumunda direkt veritabanından tekrar dene
+            try {
+                return Setting::first();
+            } catch (\Exception $e2) {
+                Log::error('Veritabanından ayar alınırken hata: ' . $e2->getMessage());
+                return null;
+            }
         }
     }
 

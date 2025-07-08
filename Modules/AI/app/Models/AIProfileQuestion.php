@@ -50,6 +50,14 @@ class AIProfileQuestion extends Model
         $query = static::where('is_active', true)
                        ->where('step', $step);
         
+        // Step 4 için sadece company_info section sorularını getir (founder_info hariç)
+        if ($step === 4) {
+            $query->where(function($q) {
+                $q->where('section', 'company_info')
+                  ->orWhereNull('section');
+            });
+        }
+        
         if ($sectorCode) {
             // Hem genel hem de sektöre özel soruları getir
             $query->where(function($q) use ($sectorCode) {

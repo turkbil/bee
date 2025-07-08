@@ -1,90 +1,160 @@
 {{-- AI Profile Wizard - Modern Digital Experience - Single Root Element --}}
 <div class="ai-profile-wizard-container">
-    {{-- Fluid Hero Section --}}
-    <div class="hero-section">
-        <div class="hero-background">
-            <div class="digital-grid"></div>
-            <div class="floating-elements"></div>
-            <div class="cyber-waves"></div>
-        </div>
-        
-        <div class="hero-content">
-            <div class="container">
-                {{-- Üst Bölüm: Yapay Zeka Profil Simulatörü Badge --}}
-                <div class="row mb-2">
-                    <div class="col-12 text-start">
-                        <div class="hero-main-badge-container">
-                            <span class="badge hero-main-badge">Yapay Zeka Profil Simulatörü</span>
-                        </div>
-                    </div>
-                </div>
-                
-                {{-- Ana İçerik Bölümü --}}
-                <div class="row align-items-center">
-                    {{-- Sol - Step Bilgileri --}}
-                    <div class="col-lg-8 col-md-7">
-                        <div class="hero-left-content">
-                            <div class="step-info-container">
-                                <div class="step-icon-hero">
-                                    @switch($currentStep)
-                                        @case(1) <i class="fas fa-industry"></i> @break
-                                        @case(2) <i class="fas fa-building"></i> @break
-                                        @case(3) <i class="fas fa-palette"></i> @break
-                                        @case(4) <i class="fas fa-user-tie"></i> @break
-                                        @case(5) <i class="fas fa-trophy"></i> @break
-                                        @case(6) <i class="fas fa-robot"></i> @break
-                                    @endswitch
-                                </div>
-                                <div class="step-text-content">
-                                    <h1 class="hero-title">
-                                        @switch($currentStep)
-                                            @case(1) Sektör Seçimi @break
-                                            @case(2) Temel Bilgiler @break
-                                            @case(3) Marka Detayları @break
-                                            @case(4) Kurucu Bilgileri @break
-                                            @case(5) Başarı Hikayeleri @break
-                                            @case(6) Yapay Zeka Davranış Ayarları @break
-                                        @endswitch
-                                    </h1>
-                                    <p class="hero-subtitle">
-                                        @switch($currentStep)
-                                            @case(1) Yapay zeka asistanınız için en uygun sektörü seçin @break
-                                            @case(2) İşletmenizin temel bilgilerini girin @break
-                                            @case(3) Markanızın kişiliğini tanımlayın @break
-                                            @case(4) Kurucu bilgilerini paylaşın (isteğe bağlı) @break
-                                            @case(5) Başarılarınızı ve deneyimlerinizi ekleyin @break
-                                            @case(6) Yapay zeka asistanınızın davranış tarzını belirleyin @break
-                                        @endswitch
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
+
+    {{-- Main Content Container --}}
+    <div class="container mt-3">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            
+            {{-- Step Hero Section --}}
+            <div class="step-hero-section mb-4">
+                <div class="hero-section">
+                    <div class="hero-background">
+                        <div class="digital-grid"></div>
+                        <div class="floating-elements"></div>
+                        <div class="cyber-waves"></div>
                     </div>
                     
-                    {{-- Sağ - Progress Circle --}}
-                    <div class="col-lg-4 col-md-5">
-                        <div class="hero-right-content">
-                            <div class="progress-section">
-                                <div class="progress-circle-container">
-                                    <div class="progress-circle progress-circle-large">
-                                        <svg class="progress-svg" viewBox="0 0 100 100">
-                                            <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="6"/>
-                                            <circle cx="50" cy="50" r="45" fill="none" stroke="url(#gradient)" stroke-width="6" 
-                                                    stroke-dasharray="282.74" stroke-dashoffset="{{ 282.74 - (282.74 * $realProgressPercentage / 100) }}"
-                                                    transform="rotate(-90 50 50)" stroke-linecap="round"/>
-                                            <defs>
-                                                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                                    <stop offset="0%" style="stop-color:#00d4ff"/>
-                                                    <stop offset="50%" style="stop-color:#9333ea"/>
-                                                    <stop offset="100%" style="stop-color:#f59e0b"/>
-                                                </linearGradient>
-                                            </defs>
-                                        </svg>
-                                        <div class="progress-text">
-                                            <span class="progress-percentage">{{ round($realProgressPercentage) }}%</span>
-                                            <small class="progress-label">Tamamlandı</small>
-                                            <div class="progress-details">
-                                                {{ $completedFields }}/{{ $totalFields }}
+                    <div class="hero-content">
+                        <div class="container">
+                            {{-- Step Badge --}}
+                            <div class="row mb-2">
+                                <div class="col-12 text-start">
+                                    <div class="hero-main-badge-container">
+                                        <span class="badge hero-main-badge">
+                                            Adım {{ $currentStep }}/{{ $totalSteps }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {{-- Step Content --}}
+                            <div class="row align-items-center">
+                                {{-- Sol - Step Bilgileri --}}
+                                <div class="col-lg-8 col-md-7">
+                                    <div class="hero-left-content">
+                                        <div class="step-info-container">
+                                            <div class="ai-hologram" style="
+                                                width: 80px;
+                                                height: 80px;
+                                                background: conic-gradient(from 0deg, #00d4ff, #9333ea, #f59e0b, #10b981, #00d4ff);
+                                                border-radius: 50%;
+                                                animation: hologram-pulse 4s ease-in-out infinite;
+                                                filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.6));
+                                                display: flex;
+                                                align-items: center;
+                                                justify-content: center;
+                                                position: relative;
+                                            ">
+                                                <div style="
+                                                    width: 68px;
+                                                    height: 68px;
+                                                    background: linear-gradient(135deg, #0f0f23, #1a1a2e);
+                                                    border-radius: 50%;
+                                                    display: flex;
+                                                    align-items: center;
+                                                    justify-content: center;
+                                                ">
+                                                    @switch($currentStep)
+                                                        @case(1) 
+                                                            <i class="fas fa-industry" style="
+                                                                font-size: 2rem;
+                                                                color: #00d4ff;
+                                                                filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.8));
+                                                                animation: float-icon 3s ease-in-out infinite;
+                                                            "></i> 
+                                                            @break
+                                                        @case(2) 
+                                                            <i class="fas fa-building" style="
+                                                                font-size: 2rem;
+                                                                color: #00d4ff;
+                                                                filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.8));
+                                                                animation: float-icon 3s ease-in-out infinite;
+                                                            "></i> 
+                                                            @break
+                                                        @case(3) 
+                                                            <i class="fas fa-palette" style="
+                                                                font-size: 2rem;
+                                                                color: #00d4ff;
+                                                                filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.8));
+                                                                animation: float-icon 3s ease-in-out infinite;
+                                                            "></i> 
+                                                            @break
+                                                        @case(4) 
+                                                            <i class="fas fa-user-tie" style="
+                                                                font-size: 2rem;
+                                                                color: #00d4ff;
+                                                                filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.8));
+                                                                animation: float-icon 3s ease-in-out infinite;
+                                                            "></i> 
+                                                            @break
+                                                        @case(5) 
+                                                            <i class="fas fa-trophy" style="
+                                                                font-size: 2rem;
+                                                                color: #00d4ff;
+                                                                filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.8));
+                                                                animation: float-icon 3s ease-in-out infinite;
+                                                            "></i> 
+                                                            @break
+                                                        @case(6) 
+                                                            <i class="fas fa-robot" style="
+                                                                font-size: 2rem;
+                                                                color: #00d4ff;
+                                                                filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.8));
+                                                                animation: float-icon 3s ease-in-out infinite;
+                                                            "></i> 
+                                                            @break
+                                                    @endswitch
+                                                </div>
+                                            </div>
+                                            <div class="step-text-content">
+                                                <h1 class="hero-title">
+                                                    @switch($currentStep)
+                                                        @case(1) Sektör Seçimi @break
+                                                        @case(2) Temel Bilgiler @break
+                                                        @case(3) Marka Detayları @break
+                                                        @case(4) Kurucu Bilgileri @break
+                                                        @case(5) Yapay Zeka Davranış Ayarları @break
+                                                    @endswitch
+                                                </h1>
+                                                <p class="hero-subtitle">
+                                                    @switch($currentStep)
+                                                        @case(1) Yapay zeka asistanınız için en uygun sektörü seçin @break
+                                                        @case(2) İşletmenizin temel bilgilerini girin @break
+                                                        @case(3) Markanızın kişiliğini tanımlayın @break
+                                                        @case(4) Kurucu bilgilerini paylaşın (isteğe bağlı) @break
+                                                        @case(5) Yapay zeka asistanınızın davranış tarzını belirleyin @break
+                                                    @endswitch
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                {{-- Sağ - Progress Circle --}}
+                                <div class="col-lg-4 col-md-5">
+                                    <div class="hero-right-content">
+                                        <div class="progress-section">
+                                            <div class="progress-circle-container">
+                                                <div class="progress-circle progress-circle-large">
+                                                    <svg class="progress-svg" viewBox="0 0 100 100">
+                                                        <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="6"/>
+                                                        <circle cx="50" cy="50" r="45" fill="none" stroke="url(#stepGradient)" stroke-width="6" 
+                                                                stroke-dasharray="282.74" stroke-dashoffset="{{ 282.74 - (282.74 * $realProgressPercentage / 100) }}"
+                                                                transform="rotate(-90 50 50)" stroke-linecap="round"/>
+                                                        <defs>
+                                                            <linearGradient id="stepGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                                                <stop offset="0%" style="stop-color:#00d4ff"/>
+                                                                <stop offset="50%" style="stop-color:#9333ea"/>
+                                                                <stop offset="100%" style="stop-color:#f59e0b"/>
+                                                            </linearGradient>
+                                                        </defs>
+                                                    </svg>
+                                                    <div class="progress-text">
+                                                        <span class="progress-percentage">{{ round($realProgressPercentage) }}%</span>
+                                                        <small class="progress-label">Tamamlandı</small>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -92,53 +162,43 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            
-            {{-- Steps Indicator --}}
-            <div class="container">
-                <div class="steps-indicator">
-                    @for($i = 1; $i <= $totalSteps; $i++)
-                        <a href="{{ route('admin.ai.profile.edit', ['step' => $i]) }}" 
-                           class="step-item {{ $i <= $currentStep ? 'active' : '' }} {{ $i < $currentStep ? 'completed' : '' }}"
-                           style="text-decoration: none; color: inherit;">
-                            <div class="step-circle">
-                                @if($i < $currentStep)
-                                    <i class="fas fa-check"></i>
-                                @else
-                                    {{ $i }}
+                    
+                    {{-- Steps Indicator --}}
+                    <div class="container">
+                        <div class="steps-indicator">
+                            @for($i = 1; $i <= $totalSteps; $i++)
+                                <a href="{{ route('admin.ai.profile.edit', ['step' => $i]) }}" 
+                                   class="step-item {{ $i <= $currentStep ? 'active' : '' }} {{ $i < $currentStep ? 'completed' : '' }}"
+                                   style="text-decoration: none; color: inherit;">
+                                    <div class="step-circle">
+                                        @if($i < $currentStep)
+                                            <i class="fas fa-check"></i>
+                                        @else
+                                            {{ $i }}
+                                        @endif
+                                    </div>
+                                    <span class="step-label">
+                                        @switch($i)
+                                            @case(1) Sektör @break
+                                            @case(2) Bilgiler @break
+                                            @case(3) Marka @break
+                                            @case(4) Kurucu @break
+                                            @case(5) Yapay Zeka @break
+                                        @endswitch
+                                    </span>
+                                </a>
+                                @if($i < $totalSteps)
+                                    <div class="step-connector {{ $i < $currentStep ? 'completed' : '' }}"></div>
                                 @endif
-                            </div>
-                            <span class="step-label">
-                                @switch($i)
-                                    @case(1) Sektör @break
-                                    @case(2) Bilgiler @break
-                                    @case(3) Marka @break
-                                    @case(4) Kurucu @break
-                                    @case(5) Başarı @break
-                                    @case(6) Yapay Zeka Davranış @break
-                                @endswitch
-                            </span>
-                        </a>
-                        @if($i < $totalSteps)
-                            <div class="step-connector {{ $i < $currentStep ? 'completed' : '' }}"></div>
-                        @endif
-                    @endfor
+                            @endfor
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    {{-- Main Content Container --}}
-    <div class="container mt-3">
-    <div class="row justify-content-center">
-        <div class="col-12">
-            
             {{-- Wizard Card --}}
             <div class="card wizard-card border-0 shadow-lg">
                 <div class="card-body p-5">
-                    
-                    
                     {{-- Form Content --}}
                     <form wire:submit.prevent="completeProfile">
                         <div class="form-content">
@@ -180,11 +240,9 @@
                                                     @foreach($sectors as $sector)
                                                         <div class="col-6 col-md-4 col-lg-3">
                                                             <label class="form-imagecheck mb-2">
-                                                                <input name="formData.{{ $fieldKey }}" type="radio" value="{{ $sector->code }}" 
+                                                                <input type="radio" name="formData[{{ $fieldKey }}]" value="{{ $sector->code }}" 
                                                                        class="form-imagecheck-input profile-field-input" 
-                                                                       name="formData[{{ $fieldKey }}]"
                                                                        data-field="{{ $fieldKey }}"
-                                                                       value="{{ $sector->code }}"
                                                                        x-data="{ isChecked: '{{ $formData[$fieldKey] ?? '' }}' === '{{ $sector->code }}' }"
                                                                        x-init="$el.checked = isChecked"
                                                                        @if(isset($formData[$fieldKey]) && $formData[$fieldKey] == $sector->code) checked @endif
@@ -245,12 +303,10 @@
                                                     @foreach($question->options as $option)
                                                         <div class="{{ $questionColClass }} mb-2">
                                                             <label class="form-selectgroup-item flex-fill">
-                                                                <input type="radio" name="{{ $fieldKey }}" value="{{ $option['value'] }}" 
+                                                                <input type="radio" name="formData[{{ $fieldKey }}]" value="{{ $option['value'] }}" 
                                                                        class="form-selectgroup-input profile-field-input @if(isset($option['has_custom_input'])) custom-radio-trigger @endif" 
-                                                                       name="formData[{{ $fieldKey }}]"
                                                                        data-field="{{ $fieldKey }}"
                                                                        @if(isset($option['has_custom_input'])) data-custom-field="{{ $fieldKey }}_custom" @endif
-                                                                       value="{{ $option['value'] }}"
                                                                        x-data="{ isChecked: '{{ $formData[$fieldKey] ?? '' }}' === '{{ $option['value'] }}' }"
                                                                        x-init="$el.checked = isChecked"
                                                                        @if(isset($formData[$fieldKey]) && $formData[$fieldKey] == $option['value']) checked @endif
@@ -325,7 +381,6 @@
                                                                        name="formData[{{ $fieldKey }}][]"
                                                                        data-field="{{ $fieldKey }}"
                                                                        @if(isset($option['has_custom_input'])) data-custom-field="{{ $fieldKey }}_custom" @endif
-                                                                       value="{{ $option['value'] }}"
                                                                        x-data="{ isChecked: Boolean({{ isset($formData["{$fieldKey}.{$option['value']}"]) && $formData["{$fieldKey}.{$option['value']}"] ? 'true' : 'false' }}) }"
                                                                        x-init="$el.checked = isChecked"
                                                                        @if(isset($formData["{$fieldKey}.{$option['value']}"]) && $formData["{$fieldKey}.{$option['value']}"]) checked @endif>
@@ -425,27 +480,183 @@
                                     @endphp
                                     
                                     @foreach($founderQuestions as $question)
+                                        @php
+                                            $fieldKey = 'founder_info.' . $question->question_key;
+                                        @endphp
+                                        
                                         <div class="form-group mb-4">
                                             <label class="form-label">{{ $question->question_text }}</label>
                                             @if($question->help_text)
                                                 <div class="form-hint">{{ $question->help_text }}</div>
                                             @endif
                                             
-                                            @if($question->input_type === 'textarea')
-                                                <textarea class="form-control profile-field-input" rows="3" 
-                                                          name="formData[founder_info.{{ $question->question_key }}]"
-                                                          data-field="founder_info.{{ $question->question_key }}"
-                                                          x-data="{ fieldValue: '{{ addslashes($formData["founder_info.{$question->question_key}"] ?? '') }}' }"
-                                                          x-init="$el.value = fieldValue"
-                                                          placeholder="{{ $question->input_placeholder ?? '' }}">{{ $formData["founder_info.{$question->question_key}"] ?? '' }}</textarea>
-                                            @else
-                                                <input type="text" class="form-control profile-field-input" 
-                                                       name="formData[founder_info.{{ $question->question_key }}]"
-                                                       data-field="founder_info.{{ $question->question_key }}"
-                                                       x-data="{ fieldValue: '{{ addslashes($formData["founder_info.{$question->question_key}"] ?? '') }}' }"
-                                                       x-init="$el.value = fieldValue"
-                                                       placeholder="{{ $question->input_placeholder ?? '' }}">
-                                            @endif
+                                            {{-- Input Based on Type --}}
+                                            @switch($question->input_type)
+                                                
+                                                @case('radio')
+                                                    @php
+                                                        // Tüm soru için en uzun metni bul
+                                                        $maxLength = 0;
+                                                        foreach($question->options as $opt) {
+                                                            $maxLength = max($maxLength, strlen($opt['label']));
+                                                        }
+                                                        
+                                                        // Tüm soru için col class belirle
+                                                        if ($maxLength > 40) {
+                                                            $questionColClass = 'col-12';
+                                                        } elseif ($maxLength > 25) {
+                                                            $questionColClass = 'col-md-6 col-12';
+                                                        } else {
+                                                            $questionColClass = 'col-md-6 col-12';
+                                                        }
+                                                    @endphp
+                                                    <div class="row">
+                                                        @if($question->options)
+                                                            @foreach($question->options as $option)
+                                                                <div class="{{ $questionColClass }} mb-2">
+                                                                    <label class="form-selectgroup-item flex-fill">
+                                                                        <input type="radio" name="formData[{{ $fieldKey }}]" value="{{ $option['value'] }}" 
+                                                                               class="form-selectgroup-input profile-field-input @if(isset($option['has_custom_input'])) custom-radio-trigger @endif" 
+                                                                               data-field="{{ $fieldKey }}"
+                                                                               @if(isset($option['has_custom_input'])) data-custom-field="{{ $fieldKey }}_custom" @endif
+                                                                               x-data="{ isChecked: '{{ $formData[$fieldKey] ?? '' }}' === '{{ $option['value'] }}' }"
+                                                                               x-init="$el.checked = isChecked"
+                                                                               @if(isset($formData[$fieldKey]) && $formData[$fieldKey] == $option['value']) checked @endif>
+                                                                        <div class="form-selectgroup-label d-flex align-items-center p-3">
+                                                                            <div class="me-3">
+                                                                                <span class="form-selectgroup-check"></span>
+                                                                            </div>
+                                                                            <div class="form-selectgroup-label-content d-flex align-items-center">
+                                                                                @if(isset($option['icon']))
+                                                                                    <i class="{{ $option['icon'] }} me-3 text-muted"></i>
+                                                                                @else
+                                                                                    <i class="fas fa-dot-circle me-3 text-muted"></i>
+                                                                                @endif
+                                                                                <div>
+                                                                                    <div class="font-weight-medium">{{ $option['label'] }}</div>
+                                                                                    @if(isset($option['description']))
+                                                                                        <div class="text-secondary small">{{ $option['description'] }}</div>
+                                                                                    @endif
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </label>
+                                                                </div>
+                                                            @endforeach
+                                                            
+                                                            {{-- Custom Input Field for Radio (Hidden by default) --}}
+                                                            @foreach($question->options as $option)
+                                                                @if(isset($option['has_custom_input']))
+                                                                    <div class="col-12 mt-3" id="{{ $fieldKey }}_custom_container" 
+                                                                         style="display: none;">
+                                                                        <input type="text" 
+                                                                               class="form-control profile-field-input" 
+                                                                               name="formData[{{ $fieldKey }}_custom]"
+                                                                               data-field="{{ $fieldKey }}_custom"
+                                                                               placeholder="{{ $option['custom_placeholder'] ?? 'Özel bilginizi giriniz...' }}"
+                                                                               value="{{ $formData[$fieldKey . '_custom'] ?? '' }}"
+                                                                               x-data="{ fieldValue: '{{ addslashes($formData[$fieldKey . '_custom'] ?? '') }}' }"
+                                                                               x-init="$el.value = fieldValue">
+                                                                    </div>
+                                                                    @break
+                                                                @endif
+                                                            @endforeach
+                                                        @endif
+                                                    </div>
+                                                    @break
+                                                    
+                                                @case('checkbox')
+                                                    @php
+                                                        // Tüm soru için en uzun metni bul
+                                                        $maxLength = 0;
+                                                        foreach($question->options as $opt) {
+                                                            $maxLength = max($maxLength, strlen($opt['label']));
+                                                        }
+                                                        
+                                                        // Tüm soru için col class belirle
+                                                        if ($maxLength > 40) {
+                                                            $questionColClass = 'col-12';
+                                                        } elseif ($maxLength > 25) {
+                                                            $questionColClass = 'col-md-6 col-12';
+                                                        } else {
+                                                            $questionColClass = 'col-md-6 col-12';
+                                                        }
+                                                    @endphp
+                                                    <div class="row">
+                                                        @if($question->options)
+                                                            @foreach($question->options as $option)
+                                                                <div class="{{ $questionColClass }} mb-2">
+                                                                    <label class="form-selectgroup-item flex-fill">
+                                                                        <input type="checkbox" value="{{ $option['value'] }}" 
+                                                                               class="form-selectgroup-input profile-field-checkbox @if(isset($option['has_custom_input'])) custom-checkbox-trigger @endif" 
+                                                                               name="formData[{{ $fieldKey }}][]"
+                                                                               data-field="{{ $fieldKey }}"
+                                                                               @if(isset($option['has_custom_input'])) data-custom-field="{{ $fieldKey }}_custom" @endif
+                                                                               x-data="{ isChecked: Boolean({{ isset($formData["{$fieldKey}.{$option['value']}"]) && $formData["{$fieldKey}.{$option['value']}"] ? 'true' : 'false' }}) }"
+                                                                               x-init="$el.checked = isChecked"
+                                                                               @if(isset($formData["{$fieldKey}.{$option['value']}"]) && $formData["{$fieldKey}.{$option['value']}"]) checked @endif>
+                                                                        <div class="form-selectgroup-label d-flex align-items-center p-3">
+                                                                            <div class="me-3">
+                                                                                <span class="form-selectgroup-check"></span>
+                                                                            </div>
+                                                                            <div class="form-selectgroup-label-content d-flex align-items-center">
+                                                                                @if(isset($option['icon']))
+                                                                                    <i class="{{ $option['icon'] }} me-3 text-muted"></i>
+                                                                                @else
+                                                                                    <i class="fas fa-check me-3 text-muted"></i>
+                                                                                @endif
+                                                                                <div>
+                                                                                    <div class="font-weight-medium">{{ $option['label'] }}</div>
+                                                                                    @if(isset($option['description']))
+                                                                                        <div class="text-secondary small">{{ $option['description'] }}</div>
+                                                                                    @endif
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </label>
+                                                                </div>
+                                                            @endforeach
+                                                            
+                                                            {{-- Custom Input Field for Checkbox (Hidden by default) --}}
+                                                            @foreach($question->options as $option)
+                                                                @if(isset($option['has_custom_input']))
+                                                                    <div class="col-12 mt-3" id="{{ $fieldKey }}_custom_container" 
+                                                                         style="display: none;">
+                                                                        <input type="text" 
+                                                                               class="form-control profile-field-input" 
+                                                                               name="formData[{{ $fieldKey }}_custom]"
+                                                                               data-field="{{ $fieldKey }}_custom"
+                                                                               placeholder="{{ $option['custom_placeholder'] ?? 'Özel bilginizi giriniz...' }}"
+                                                                               value="{{ $formData[$fieldKey . '_custom'] ?? '' }}"
+                                                                               x-data="{ fieldValue: '{{ addslashes($formData[$fieldKey . '_custom'] ?? '') }}' }"
+                                                                               x-init="$el.value = fieldValue">
+                                                                    </div>
+                                                                    @break
+                                                                @endif
+                                                            @endforeach
+                                                        @endif
+                                                    </div>
+                                                    @break
+                                                    
+                                                @case('textarea')
+                                                    <textarea class="form-control profile-field-input" rows="3" 
+                                                              name="formData[{{ $fieldKey }}]"
+                                                              data-field="{{ $fieldKey }}"
+                                                              x-data="{ fieldValue: '{{ addslashes($formData[$fieldKey] ?? '') }}' }"
+                                                              x-init="$el.value = fieldValue"
+                                                              placeholder="{{ $question->input_placeholder ?? '' }}">{{ $formData[$fieldKey] ?? '' }}</textarea>
+                                                    @break
+                                                    
+                                                @default
+                                                    <input type="text" class="form-control profile-field-input" 
+                                                           name="formData[{{ $fieldKey }}]"
+                                                           data-field="{{ $fieldKey }}"
+                                                           x-data="{ fieldValue: '{{ addslashes($formData[$fieldKey] ?? '') }}' }"
+                                                           x-init="$el.value = fieldValue"
+                                                           placeholder="{{ $question->input_placeholder ?? '' }}">
+                                                    @break
+                                                    
+                                            @endswitch
                                             
                                             {{-- Founder Error Messages --}}
                                             @php $founderFieldKey = "founder_info.{$question->question_key}"; @endphp
@@ -483,15 +694,6 @@
                                         </button>
                                     @endif
                                     
-                                    {{-- Reset Button - Livewire (güvenlik için) --}}
-                                    @if($profile && $profile->exists)
-                                        <button type="button" class="btn btn-outline-danger" 
-                                                wire:click="resetProfile"
-                                                wire:confirm="Profili sıfırlamak istediğinize emin misiniz? Bu işlem geri alınamaz!">
-                                            <i class="fas fa-trash-restore me-2"></i>
-                                            Profili Sıfırla
-                                        </button>
-                                    @endif
                                 </div>
                                 <div>
                                     @if($currentStep < $totalSteps)
@@ -596,12 +798,30 @@ document.addEventListener('DOMContentLoaded', initializeFormFields);
 $(document).ready(function() {
     let autoSaveTimeout;
     
-    // Checkbox, radio ve input değişikliklerini yakala
-    $(document).on('change', '.profile-field-input, .profile-field-checkbox', function() {
+    // Debug: Sayfa yüklendiğinde tüm checkbox'ları tespit et
+    console.log('🔍 Page loaded - Detecting all checkboxes...');
+    $('input[type="checkbox"][data-field]').each(function() {
+        console.log('📋 Found checkbox:', 'Data-field:', $(this).data('field'), 'Name:', $(this).attr('name'), 'Value:', $(this).val(), 'Checked:', $(this).is(':checked'));
+    });
+    
+    // Debug: Tüm profile field'larını tespit et
+    $('.profile-field-checkbox').each(function() {
+        console.log('📋 Profile field checkbox:', 'Data-field:', $(this).data('field'), 'Classes:', $(this).attr('class'));
+    });
+    
+    // Checkbox, radio ve input değişikliklerini yakala - Her tür form field'ı dinle
+    $(document).on('change', '.profile-field-input, .profile-field-checkbox, input[data-field], select[data-field], textarea[data-field]', function() {
         const fieldName = $(this).data('field');
+        
+        // Field name yoksa skip et
+        if (!fieldName) {
+            console.log('⚠️ Field name bulunamadı, skipping auto-save', 'Element:', $(this).get(0));
+            return;
+        }
+        
         const fieldValue = getFieldValue($(this));
         
-        console.log('Field changed:', fieldName, fieldValue);
+        console.log('🔍 Field changed:', fieldName, fieldValue, 'Element type:', $(this).attr('type'), 'Element classes:', $(this).attr('class'), 'Name attr:', $(this).attr('name'), 'Data-field attr:', $(this).attr('data-field'));
         
         // Auto-save tetikle (debounce ile)
         clearTimeout(autoSaveTimeout);
@@ -622,25 +842,55 @@ $(document).ready(function() {
         }, 2000); // 2 saniye sonra kaydet
     });
     
+    // Özel checkbox auto-save listener (backup plan)
+    $(document).on('change', 'input[type="checkbox"][data-field]', function() {
+        console.log('📋 Checkbox specific listener triggered!', 'Name:', $(this).attr('name'), 'Value:', $(this).val(), 'Checked:', $(this).is(':checked'), 'Element:', $(this).get(0));
+        const fieldName = $(this).data('field');
+        
+        if (fieldName) {
+            const fieldValue = getFieldValue($(this));
+            console.log('📋 Checkbox field:', fieldName, 'Values:', fieldValue);
+            
+            clearTimeout(autoSaveTimeout);
+            autoSaveTimeout = setTimeout(function() {
+                saveFieldData(fieldName, fieldValue);
+            }, 500); // Checkbox için daha hızlı response
+        } else {
+            console.log('⚠️ Checkbox data-field bulunamadı:', $(this).attr('class'), $(this).attr('name'), 'Element:', $(this).get(0));
+        }
+    });
+    
     function getFieldValue($element) {
         if ($element.is(':checkbox')) {
             // Checkbox array değeri
             const fieldName = $element.data('field');
             const checkedValues = [];
-            $(`input[data-field="${fieldName}"]:checked`).each(function() {
+            const allCheckboxes = $(`input[data-field="${fieldName}"]`);
+            const checkedCheckboxes = $(`input[data-field="${fieldName}"]:checked`);
+            
+            console.log('🔍 Checkbox debug:', 'Field:', fieldName, 'All checkboxes:', allCheckboxes.length, 'Checked:', checkedCheckboxes.length);
+            
+            checkedCheckboxes.each(function() {
                 checkedValues.push($(this).val());
+                console.log('🔍 Checked checkbox:', $(this).val(), 'Element:', $(this).get(0));
             });
+            
+            console.log('🔍 Checkbox values for', fieldName, ':', checkedValues);
             return checkedValues;
         } else if ($element.is(':radio')) {
             // Radio tek değer
+            console.log('🔍 Radio value:', $element.val());
             return $element.val();
         } else {
             // Text, select, textarea
+            console.log('🔍 Input value:', $element.val());
             return $element.val();
         }
     }
     
     function saveFieldData(fieldName, fieldValue) {
+        console.log('💾 Saving field:', fieldName, 'Value:', fieldValue, 'Type:', typeof fieldValue);
+        
         // AJAX ile Livewire component'ine gönder
         $.ajax({
             url: '{{ route("admin.ai.profile.save-field") }}',
@@ -670,12 +920,44 @@ $(document).ready(function() {
     }
 });
 
-// CSS için field-saved class
+// CSS için field-saved class ve animasyonlar
 const style = document.createElement('style');
 style.textContent = `
 .field-saved {
     box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.3) !important;
     transition: box-shadow 0.3s ease;
+}
+
+@keyframes float-icon {
+    0%, 100% { 
+        transform: scale(1); 
+    }
+    50% { 
+        transform: scale(1.2); 
+    }
+}
+
+@keyframes hologram-pulse {
+    0% { 
+        transform: scale(1); 
+        filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.6));
+    }
+    25% { 
+        transform: scale(1.05);
+        filter: drop-shadow(0 0 25px rgba(147, 51, 234, 0.6));
+    }
+    50% { 
+        transform: scale(1.1);
+        filter: drop-shadow(0 0 30px rgba(245, 158, 11, 0.6));
+    }
+    75% { 
+        transform: scale(1.05);
+        filter: drop-shadow(0 0 25px rgba(16, 185, 129, 0.6));
+    }
+    100% { 
+        transform: scale(1); 
+        filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.6));
+    }
 }
 `;
 document.head.appendChild(style);
@@ -691,7 +973,7 @@ $(document).ready(function() {
         console.log('Navigation: Previous', currentStep, '->', targetStep);
         
         // URL routing ile step değiştir (validation yok, sadece navigation)
-        window.location.href = '{{ route("admin.ai.profile.edit", ["step" => ""]) }}' + targetStep;
+        window.location.href = '{{ route("admin.ai.profile.edit", ["step" => 1]) }}'.replace('/1', '/' + targetStep);
     });
     
     // Sonraki adım buton handler
@@ -735,7 +1017,7 @@ $(document).ready(function() {
 
 // Global navigation helper (diğer scriptlerden de çağrılabilir)
 window.navigateToStep = function(stepNumber) {
-    window.location.href = '{{ route("admin.ai.profile.edit", ["step" => ""]) }}' + stepNumber;
+    window.location.href = '{{ route("admin.ai.profile.edit", ["step" => 1]) }}'.replace('/1', '/' + stepNumber);
 };
 
 // Custom input field toggle functionality

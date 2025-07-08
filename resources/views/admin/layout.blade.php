@@ -113,6 +113,7 @@
     @include('admin.components.navigation')
     
     <div class="page-wrapper">
+        @hasSection('pretitle')
         <div class="page-header d-print-none">
             <div class="container">
                 <div class="row g-2 align-items-center">
@@ -132,6 +133,7 @@
               </div>
             </div>
         </div>
+        @endif
 
         <div class="page-body">
             <div class="container">

@@ -89,16 +89,14 @@
                                     border-top: 3px solid #9333ea;
                                     border-radius: 50%;
                                     position: absolute;
-                                    top: 50%;
-                                    left: 50%;
-                                    transform: translate(-50%, -50%);
+                                    top: 6px;
+                                    left: 6px;
                                     animation: spin 1s linear infinite;
                                 "></div>
                                 <div style="
                                     position: absolute;
-                                    top: 50%;
-                                    left: 50%;
-                                    transform: translate(-50%, -50%);
+                                    top: 6px;
+                                    left: 6px;
                                     background: linear-gradient(135deg, #9333ea, #7c3aed);
                                     width: 40px;
                                     height: 40px;
@@ -169,16 +167,14 @@
                                     border-top: 2px solid #9333ea;
                                     border-radius: 50%;
                                     position: absolute;
-                                    top: 50%;
-                                    left: 50%;
-                                    transform: translate(-50%, -50%);
+                                    top: 6px;
+                                    left: 6px;
                                     animation: spin 1.5s linear infinite;
                                 "></div>
                                 <div style="
                                     position: absolute;
-                                    top: 50%;
-                                    left: 50%;
-                                    transform: translate(-50%, -50%);
+                                    top: 6px;
+                                    left: 6px;
                                     background: #9333ea;
                                     width: 30px;
                                     height: 30px;
@@ -248,7 +244,7 @@
                             <div class="mt-2">
                                 @foreach($profile->company_info['contact_info'] as $channel => $value)
                                     @if($value && $value !== false)
-                                        <span class="badge bg-muted me-1 mb-1">
+                                        <span class="badge bg-muted me-1 mb-1" style="border-radius: 0.25rem !important; color: var(--tblr-body-color) !important; background-color: var(--tblr-bg-surface) !important; border: 1px solid var(--tblr-border-color) !important;">
                                             <i class="fas fa-check me-1"></i>
                                             {{ ucfirst(str_replace('_', ' ', $channel)) }}
                                         </span>
@@ -303,7 +299,7 @@
                                         <div class="mt-1">
                                             @foreach($value as $subkey => $subvalue)
                                                 @if($subvalue && $subvalue !== false)
-                                                    <span class="badge bg-muted me-1 mb-1">
+                                                    <span class="badge bg-muted me-1 mb-1" style="border-radius: 0.25rem !important; color: var(--tblr-body-color) !important; background-color: var(--tblr-bg-surface) !important; border: 1px solid var(--tblr-border-color) !important;">
                                                         @if(is_string($subkey))
                                                             {{ ucfirst(str_replace('-', ' ', $subkey)) }}
                                                         @else
@@ -349,11 +345,11 @@
                                 @if(is_array($profile->ai_behavior_rules['writing_tone']))
                                     @foreach($profile->ai_behavior_rules['writing_tone'] as $tone_key => $tone_value)
                                         @if($tone_value && $tone_value !== false)
-                                            <span class="badge bg-muted me-1 mb-1">{{ ucfirst(str_replace('_', ' ', $tone_key)) }}</span>
+                                            <span class="badge bg-muted me-1 mb-1" style="border-radius: 0.25rem !important; color: var(--tblr-body-color) !important; background-color: var(--tblr-bg-surface) !important; border: 1px solid var(--tblr-border-color) !important;">{{ ucfirst(str_replace('_', ' ', $tone_key)) }}</span>
                                         @endif
                                     @endforeach
                                 @else
-                                    <span class="badge bg-muted fs-6">
+                                    <span class="badge bg-muted fs-6" style="border-radius: 0.25rem !important; color: var(--tblr-body-color) !important; background-color: var(--tblr-bg-surface) !important; border: 1px solid var(--tblr-border-color) !important;">
                                         {{ is_string($profile->ai_behavior_rules['writing_tone']) ? ucfirst($profile->ai_behavior_rules['writing_tone']) : $profile->ai_behavior_rules['writing_tone'] }}
                                     </span>
                                 @endif
@@ -367,7 +363,7 @@
                             <div class="mt-1">
                                 @foreach($profile->ai_behavior_rules['emphasis_points'] as $key => $value)
                                     @if($value)
-                                        <span class="badge bg-muted me-1 mb-1">{{ ucfirst(str_replace(['-', '_'], ' ', $key)) }}</span>
+                                        <span class="badge bg-muted me-1 mb-1" style="border-radius: 0.25rem !important; color: var(--tblr-body-color) !important; background-color: var(--tblr-bg-surface) !important; border: 1px solid var(--tblr-border-color) !important;">{{ ucfirst(str_replace(['-', '_'], ' ', $key)) }}</span>
                                     @endif
                                 @endforeach
                             </div>
@@ -380,7 +376,7 @@
                             <div class="mt-1">
                                 @foreach($profile->ai_behavior_rules['avoid_topics'] as $key => $value)
                                     @if($value)
-                                        <span class="badge bg-muted me-1 mb-1">{{ ucfirst(str_replace(['-', '_'], ' ', $key)) }}</span>
+                                        <span class="badge bg-muted me-1 mb-1" style="border-radius: 0.25rem !important; color: var(--tblr-body-color) !important; background-color: var(--tblr-bg-surface) !important; border: 1px solid var(--tblr-border-color) !important;">{{ ucfirst(str_replace(['-', '_'], ' ', $key)) }}</span>
                                     @endif
                                 @endforeach
                             </div>
@@ -456,7 +452,7 @@
                                         @if(is_array($value))
                                             @foreach($value as $subkey => $subvalue)
                                                 @if($subvalue && $subvalue !== false)
-                                                    <span class="badge bg-muted me-1 mb-1">
+                                                    <span class="badge bg-muted me-1 mb-1" style="border-radius: 0.25rem !important; color: var(--tblr-body-color) !important; background-color: var(--tblr-bg-surface) !important; border: 1px solid var(--tblr-border-color) !important;">
                                                         {{ is_string($subkey) ? ucfirst(str_replace('-', ' ', $subkey)) : $subvalue }}
                                                     </span>
                                                 @endif

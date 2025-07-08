@@ -36,6 +36,14 @@ return new class extends Migration
             $table->boolean('is_required')->default(false);
             $table->boolean('is_active')->default(true);
             $table->integer('sort_order')->default(0);
+            
+            // AI Priority Sistemi Alanları - EKLENEN
+            $table->integer('ai_priority')->default(3)
+                  ->comment('AI context priority: 1=critical, 2=important, 3=normal, 4=optional, 5=rarely_used');
+            $table->boolean('always_include')->default(false)
+                  ->comment('Bu alan her AI context\'inde yer alsın mı?');
+            $table->string('context_category')->nullable()
+                  ->comment('Context kategori: brand_identity, business_info, behavior_rules');
             $table->timestamps();
             
             $table->index('sector_code');

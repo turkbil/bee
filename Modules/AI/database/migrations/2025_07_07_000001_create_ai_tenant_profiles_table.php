@@ -47,6 +47,12 @@ return new class extends Migration
             $table->text('brand_story')->nullable();
             $table->timestamp('brand_story_created_at')->nullable();
             
+            // AI Context Optimizasyon Alanları - EKLENEN
+            $table->text('ai_context')->nullable()
+                  ->comment('AI için optimize edilmiş context - öncelikli bilgiler');
+            $table->json('context_priority')->nullable()
+                  ->comment('Context bilgilerinin priority sıralaması');
+            
             $table->boolean('is_active')->default(true);
             $table->boolean('is_completed')->default(false); // Profil tamamlandı mı?
             

@@ -29,7 +29,6 @@ class AIProfileQuestionsSeeder extends Seeder
         
         // ADIM 4: Kurucu Bilgileri (İzin sistemi ile)
         $this->createFounderPermissionQuestion();
-        $this->createFounderQuestions();
         
         // ADIM 5: Başarı Hikayeleri (Tüm sektörler için ortak)
         $this->createSuccessStoryQuestions();
@@ -49,7 +48,7 @@ class AIProfileQuestionsSeeder extends Seeder
                 'step' => 2,
                 'question_key' => 'brand_name',
                 'question_text' => 'Marka/Firma Adı',
-                'help_text' => 'Markanızın ya da firmanızın adını yazın',
+                'help_text' => 'Markanızın ya da firmanızın adını yazın (özel belirtiniz)',
                 'input_type' => 'text',
                 'is_required' => true,
                 'sort_order' => 1
@@ -58,7 +57,7 @@ class AIProfileQuestionsSeeder extends Seeder
                 'step' => 2,
                 'question_key' => 'city',
                 'question_text' => 'Şehir',
-                'help_text' => 'Hangi şehirde faaliyet gösteriyorsunuz?',
+                'help_text' => 'Hangi şehirde faaliyet gösteriyorsunuz? (özel belirtiniz)',
                 'input_type' => 'text',
                 'is_required' => true,
                 'sort_order' => 2
@@ -67,29 +66,11 @@ class AIProfileQuestionsSeeder extends Seeder
                 'step' => 2,
                 'question_key' => 'main_service',
                 'question_text' => 'Ana Hizmet/Ürün',
-                'help_text' => 'Ana olarak ne satıyorsunuz veya hangi hizmeti veriyorsunuz?',
+                'help_text' => 'Ana olarak ne satıyorsunuz veya hangi hizmeti veriyorsunuz? (özel belirtiniz)',
                 'input_type' => 'text',
                 'is_required' => true,
                 'sort_order' => 3
             ],
-            [
-                'step' => 2,
-                'question_key' => 'contact_info',
-                'question_text' => 'İletişim Tercihi',
-                'help_text' => 'Müşteriler size nasıl ulaşsın?',
-                'input_type' => 'checkbox',
-                'options' => [
-                    ['value' => 'phone', 'label' => 'Telefon', 'icon' => 'fas fa-phone'],
-                    ['value' => 'whatsapp', 'label' => 'WhatsApp', 'icon' => 'fab fa-whatsapp'],
-                    ['value' => 'email', 'label' => 'E-mail', 'icon' => 'fas fa-envelope'],
-                    ['value' => 'website', 'label' => 'Website', 'icon' => 'fas fa-globe'],
-                    ['value' => 'instagram', 'label' => 'Instagram', 'icon' => 'fab fa-instagram'],
-                    ['value' => 'facebook', 'label' => 'Facebook', 'icon' => 'fab fa-facebook'],
-                    ['value' => 'linkedin', 'label' => 'LinkedIn', 'icon' => 'fab fa-linkedin']
-                ],
-                'is_required' => true,
-                'sort_order' => 4
-            ]
         ];
         
         foreach ($questions as $question) {
@@ -99,30 +80,14 @@ class AIProfileQuestionsSeeder extends Seeder
     
     private function createBrandDetailsQuestions(): void
     {
-        // ADIM 3: Marka Detayları - Şubeleşme, büyüklük, vb
+        // ADIM 3: Marka Detayları - Önce somut veriler, sonra soyut olanlar
         $questions = [
-            [
-                'step' => 3,
-                'question_key' => 'brand_personality',
-                'question_text' => 'Marka Kişiliği',
-                'help_text' => 'Markanızın kişilik özelliklerini seçin (birden fazla seçebilirsiniz)',
-                'input_type' => 'checkbox',
-                'options' => [
-                    ['value' => 'modern', 'label' => 'Modern/Yenilikçi', 'icon' => 'fas fa-rocket'],
-                    ['value' => 'trustworthy', 'label' => 'Güvenilir/Kurumsal', 'icon' => 'fas fa-university'],
-                    ['value' => 'friendly', 'label' => 'Samimi/Yakın', 'icon' => 'fas fa-smile'],
-                    ['value' => 'creative', 'label' => 'Yaratıcı/Özgün', 'icon' => 'fas fa-palette'],
-                    ['value' => 'luxury', 'label' => 'Premium/Kaliteli', 'icon' => 'fas fa-gem'],
-                    ['value' => 'conservative', 'label' => 'Klasik/Muhafazakar', 'icon' => 'fas fa-landmark']
-                ],
-                'is_required' => true,
-                'sort_order' => 1
-            ],
+            // SOMUT VERİLER ÖNCE (Tarih, çalışan sayısı, şube)
             [
                 'step' => 3,
                 'question_key' => 'brand_age',
-                'question_text' => 'Marka Yaşı',
-                'help_text' => 'Markanız ne kadar süredir faaliyet gösteriyor?',
+                'question_text' => 'Kuruluş Tarihi / Marka Yaşı',
+                'help_text' => 'Markanız ne kadar süredir faaliyet gösteriyor? (özel belirtiniz)',
                 'input_type' => 'radio',
                 'options' => [
                     ['value' => 'new', 'label' => 'Yeni (0-2 yıl) - Fresh ve güncel', 'icon' => 'fas fa-seedling'],
@@ -132,13 +97,13 @@ class AIProfileQuestionsSeeder extends Seeder
                     ['value' => 'custom', 'label' => 'Diğer (özel belirtiniz)', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: 1987\'den beri, 25 yıllık deneyim']
                 ],
                 'is_required' => true,
-                'sort_order' => 2
+                'sort_order' => 1
             ],
             [
                 'step' => 3,
                 'question_key' => 'company_size',
-                'question_text' => 'Şirket Büyüklüğü',
-                'help_text' => 'Çalışan sayınız ve firma ölçeğiniz',
+                'question_text' => 'Çalışan Sayısı / Şirket Büyüklüğü',
+                'help_text' => 'Çalışan sayınız ve firma ölçeğiniz (özel belirtiniz)',
                 'input_type' => 'radio',
                 'options' => [
                     ['value' => 'solo', 'label' => 'Bireysel/Serbest meslek', 'icon' => 'fas fa-user'],
@@ -149,13 +114,13 @@ class AIProfileQuestionsSeeder extends Seeder
                     ['value' => 'custom', 'label' => 'Diğer (özel belirtiniz)', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: 500 kişi, 1200 çalışan']
                 ],
                 'is_required' => true,
-                'sort_order' => 3
+                'sort_order' => 2
             ],
             [
                 'step' => 3,
                 'question_key' => 'branches',
-                'question_text' => 'Şube Durumu',
-                'help_text' => 'Kaç farklı lokasyonda hizmet veriyorsunuz?',
+                'question_text' => 'Şube Durumu / Lokasyon Sayısı',
+                'help_text' => 'Kaç farklı lokasyonda hizmet veriyorsunuz? (özel belirtiniz)',
                 'input_type' => 'radio',
                 'options' => [
                     ['value' => 'single', 'label' => 'Tek lokasyon', 'icon' => 'fas fa-map-marker-alt'],
@@ -166,13 +131,14 @@ class AIProfileQuestionsSeeder extends Seeder
                     ['value' => 'custom', 'label' => 'Diğer (özel belirtiniz)', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: 12 ilde 45 şube, 8 şehirde faaliyet']
                 ],
                 'is_required' => true,
-                'sort_order' => 4
+                'sort_order' => 3
             ],
+            // SOYUT VERİLER SONRA (Düşünceler, konumlandırma, kişilik)
             [
                 'step' => 3,
                 'question_key' => 'target_audience',
                 'question_text' => 'Hedef Kitle',
-                'help_text' => 'Kimler sizin müşterileriniz? (birden fazla seçebilirsiniz)',
+                'help_text' => 'Kimler sizin müşterileriniz? (birden fazla seçebilirsiniz) (özel belirtiniz)',
                 'input_type' => 'checkbox',
                 'options' => [
                     ['value' => 'b2b-small', 'label' => 'Küçük işletmeler', 'icon' => 'fas fa-store'],
@@ -186,13 +152,13 @@ class AIProfileQuestionsSeeder extends Seeder
                     ['value' => 'custom', 'label' => 'Diğer müşteri grubu', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: Freelancer\'lar, Start-up\'lar, Özel sektör']
                 ],
                 'is_required' => true,
-                'sort_order' => 5
+                'sort_order' => 4
             ],
             [
                 'step' => 3,
                 'question_key' => 'market_position',
                 'question_text' => 'Pazar Konumu',
-                'help_text' => 'Pazarda nasıl konumlanmak istiyorsunuz?',
+                'help_text' => 'Pazarda nasıl konumlanmak istiyorsunuz? (özel belirtiniz)',
                 'input_type' => 'radio',
                 'options' => [
                     ['value' => 'budget', 'label' => 'Ekonomik/Uygun fiyat', 'icon' => 'fas fa-dollar-sign'],
@@ -202,6 +168,23 @@ class AIProfileQuestionsSeeder extends Seeder
                     ['value' => 'innovative', 'label' => 'Yenilikçi/Teknoloji odaklı', 'icon' => 'fas fa-rocket'],
                     ['value' => 'specialist', 'label' => 'Uzman/Niş alan', 'icon' => 'fas fa-bullseye'],
                     ['value' => 'custom', 'label' => 'Diğer (özel belirtiniz)', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: Sosyal sorumluluk odaklı, Çevre dostu']
+                ],
+                'is_required' => true,
+                'sort_order' => 5
+            ],
+            [
+                'step' => 3,
+                'question_key' => 'brand_personality',
+                'question_text' => 'Marka Kişiliği',
+                'help_text' => 'Markanızın kişilik özelliklerini seçin (birden fazla seçebilirsiniz) (özel belirtiniz)',
+                'input_type' => 'checkbox',
+                'options' => [
+                    ['value' => 'modern', 'label' => 'Modern/Yenilikçi', 'icon' => 'fas fa-rocket'],
+                    ['value' => 'trustworthy', 'label' => 'Güvenilir/Kurumsal', 'icon' => 'fas fa-university'],
+                    ['value' => 'friendly', 'label' => 'Samimi/Yakın', 'icon' => 'fas fa-smile'],
+                    ['value' => 'creative', 'label' => 'Yaratıcı/Özgün', 'icon' => 'fas fa-palette'],
+                    ['value' => 'luxury', 'label' => 'Premium/Kaliteli', 'icon' => 'fas fa-gem'],
+                    ['value' => 'conservative', 'label' => 'Klasik/Muhafazakar', 'icon' => 'fas fa-landmark']
                 ],
                 'is_required' => true,
                 'sort_order' => 6
@@ -221,7 +204,7 @@ class AIProfileQuestionsSeeder extends Seeder
             'section' => 'company_info',
             'question_key' => 'founder_permission',
             'question_text' => 'Kurucu/Sahibi Bilgilerini Sisteme Eklemek İster misiniz?',
-            'help_text' => 'Yapay Zeka kurucu/sahibi bilgilerini içeriklerde kullanabilir mi? Bu bilgiler markanızı kişiselleştirir ve daha samimi hale getirir.',
+            'help_text' => 'Yapay Zeka kurucu/sahibi bilgilerini içeriklerde kullanabilir mi? Bu bilgiler markanızı kişiselleştirir ve daha samimi hale getirir. (özel belirtiniz)',
             'input_type' => 'radio',
             'options' => [
                 ['value' => 'yes_full', 'label' => 'Evet, detaylı kurucu bilgileri ekle', 'icon' => 'fas fa-check-circle'],
@@ -241,7 +224,7 @@ class AIProfileQuestionsSeeder extends Seeder
             'step' => 1,
             'question_key' => 'sector',
             'question_text' => 'Sektörünüz',
-            'help_text' => 'Faaliyet gösterdiğiniz ana sektörü seçin',
+            'help_text' => 'Faaliyet gösterdiğiniz ana sektörü seçin (özel belirtiniz)',
             'input_type' => 'select',
             'options' => [], // Dinamik olarak AIProfileSector'den gelecek
             'is_required' => true,
@@ -266,7 +249,28 @@ class AIProfileQuestionsSeeder extends Seeder
         // Teknoloji Soruları
         $this->createTechnologyQuestions();
         
-        // Diğer sektörler için de benzer şekilde eklenebilir...
+        // Yeni Sektör Soruları
+        $this->createAdvertisingQuestions();
+        $this->createArtsCraftsQuestions();
+        $this->createAutomotiveQuestions();
+        $this->createBeautyQuestions();
+        $this->createBooksPublishingQuestions();
+        $this->createConstructionQuestions();
+        $this->createEventsQuestions();
+        $this->createFinanceQuestions();
+        $this->createRealEstateQuestions();
+        $this->createHomeGardenQuestions();
+        $this->createJewelryQuestions();
+        $this->createMusicQuestions();
+        $this->createNonprofitQuestions();
+        $this->createPetsQuestions();
+        $this->createPhotographyQuestions();
+        $this->createSecurityQuestions();
+        $this->createSportsQuestions();
+        $this->createTextileQuestions();
+        $this->createTourismQuestions();
+        $this->createTransportationQuestions();
+        $this->createWeddingQuestions();
     }
     
     private function createEcommerceQuestions(): void
@@ -590,7 +594,7 @@ class AIProfileQuestionsSeeder extends Seeder
     {
         $questions = [
             [
-                'step' => 6,
+                'step' => 5,
                 'question_key' => 'company_age_advantage',
                 'question_text' => 'Deneyim Avantajınız',
                 'help_text' => 'Firmanızın deneyimini nasıl vurgulayalım?',
@@ -606,7 +610,7 @@ class AIProfileQuestionsSeeder extends Seeder
                 'sort_order' => 1
             ],
             [
-                'step' => 6,
+                'step' => 5,
                 'question_key' => 'client_types',
                 'question_text' => 'Müşteri Türleriniz',
                 'help_text' => 'Hangi tür müşterilerle çalışıyorsunuz?',
@@ -624,7 +628,7 @@ class AIProfileQuestionsSeeder extends Seeder
                 'sort_order' => 2
             ],
             [
-                'step' => 6,
+                'step' => 5,
                 'question_key' => 'success_indicators',
                 'question_text' => 'Başarı Göstergeleriniz',
                 'help_text' => 'Hangi başarılarınızı öne çıkaralım?',
@@ -643,7 +647,7 @@ class AIProfileQuestionsSeeder extends Seeder
                 'sort_order' => 3
             ],
             [
-                'step' => 6,
+                'step' => 5,
                 'question_key' => 'competitive_advantage',
                 'question_text' => 'Rekabet Avantajınız',
                 'help_text' => 'Sizi rakiplerden ayıran özellikler neler?',
@@ -663,7 +667,7 @@ class AIProfileQuestionsSeeder extends Seeder
                 'sort_order' => 4
             ],
             [
-                'step' => 6,
+                'step' => 5,
                 'question_key' => 'work_approach',
                 'question_text' => 'Çalışma Yaklaşımınız',
                 'help_text' => 'Müşterilerle nasıl çalıştığınızı tanımlar',
@@ -689,30 +693,32 @@ class AIProfileQuestionsSeeder extends Seeder
     
     private function createAIBehaviorQuestions(): void
     {
+        // ADIM 6: Yapay Zeka Davranış Kuralları - Priority sırası (önemli olanlar önce)
         $questions = [
+            // EN ÖNEMLİ: Yazı tonu (Priority 1)
             [
                 'step' => 6,
                 'question_key' => 'writing_tone',
                 'question_text' => 'Yazı Tonu',
-                'help_text' => 'Yapay Zeka hangi tonda içerik üretsin? (birden fazla seçebilirsiniz)',
+                'help_text' => 'Yapay Zeka hangi tonda içerik üretsin? (birden fazla seçebilirsiniz) (özel belirtiniz)',
                 'input_type' => 'checkbox',
                 'options' => [
                     ['value' => 'professional', 'label' => 'Profesyonel', 'icon' => 'fas fa-briefcase'],
                     ['value' => 'friendly', 'label' => 'Samimi', 'icon' => 'fas fa-smile'],
                     ['value' => 'formal', 'label' => 'Resmi', 'icon' => 'fas fa-university'],
                     ['value' => 'casual', 'label' => 'Günlük', 'icon' => 'far fa-smile'],
-                    ['value' => 'enthusiastic', 'label' => 'Coşkulu', 'icon' => 'fas fa-fire'],
                     ['value' => 'informative', 'label' => 'Bilgilendirici', 'icon' => 'fas fa-info-circle'],
                     ['value' => 'custom', 'label' => 'Diğer ton', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: Eğlenceli, Mizahi, Duygusal, Lider ton']
                 ],
                 'is_required' => true,
                 'sort_order' => 1
             ],
+            // ÖNEMLİ: Vurgu noktaları (Priority 2)
             [
                 'step' => 6,
                 'question_key' => 'emphasis_points',
                 'question_text' => 'Vurgu Noktaları',
-                'help_text' => 'İçeriklerde öne çıkarılmasını istediğiniz özellikler',
+                'help_text' => 'İçeriklerde öne çıkarılmasını istediğiniz özellikler (özel belirtiniz)',
                 'input_type' => 'checkbox',
                 'options' => [
                     ['value' => 'quality', 'label' => 'Kalite', 'icon' => 'fas fa-star'],
@@ -722,17 +728,17 @@ class AIProfileQuestionsSeeder extends Seeder
                     ['value' => 'innovation', 'label' => 'Yenilikçilik', 'icon' => 'fas fa-lightbulb'],
                     ['value' => 'trust', 'label' => 'Güvenilirlik', 'icon' => 'fas fa-shield-alt'],
                     ['value' => 'customer-focus', 'label' => 'Müşteri Odaklılık', 'icon' => 'fas fa-heart'],
-                    ['value' => 'technology', 'label' => 'Teknoloji', 'icon' => 'fas fa-microchip'],
                     ['value' => 'custom', 'label' => 'Diğer vurgu', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: Sosyal sorumluluk, Çevre bilinci, Yerellik']
                 ],
                 'is_required' => false,
                 'sort_order' => 2
             ],
+            // ORTA: Kaçınılacak konular (Priority 3)
             [
                 'step' => 6,
                 'question_key' => 'avoid_topics',
                 'question_text' => 'Kaçınılacak Konular',
-                'help_text' => 'Yapay Zeka\'nın içeriklerde bahsetmemesi gereken konular',
+                'help_text' => 'Yapay Zeka\'nın içeriklerde bahsetmemesi gereken konular (özel belirtiniz)',
                 'input_type' => 'checkbox',
                 'options' => [
                     ['value' => 'politics', 'label' => 'Siyaset', 'icon' => 'fas fa-ban'],
@@ -743,39 +749,6 @@ class AIProfileQuestionsSeeder extends Seeder
                 ],
                 'is_required' => false,
                 'sort_order' => 3
-            ],
-            [
-                'step' => 6,
-                'question_key' => 'communication_style',
-                'question_text' => 'İletişim Tarzı',
-                'help_text' => 'Müşterilerle nasıl iletişim kurmak istiyorsunuz?',
-                'input_type' => 'checkbox',
-                'options' => [
-                    ['value' => 'personal', 'label' => 'Kişisel ve samimi'],
-                    ['value' => 'professional', 'label' => 'Profesyonel ve ciddi'],
-                    ['value' => 'helpful', 'label' => 'Yardımsever ve çözüm odaklı'],
-                    ['value' => 'educational', 'label' => 'Öğretici ve bilgilendirici'],
-                    ['value' => 'inspiring', 'label' => 'İlham verici ve motive edici']
-                ],
-                'is_required' => false,
-                'sort_order' => 4
-            ],
-            [
-                'step' => 6,
-                'question_key' => 'content_approach',
-                'question_text' => 'İçerik Yaklaşımı',
-                'help_text' => 'Yapay Zeka hangi tarzda içerik üretsin?',
-                'input_type' => 'checkbox',
-                'options' => [
-                    ['value' => 'story-telling', 'label' => 'Hikaye anlatıcı'],
-                    ['value' => 'data-driven', 'label' => 'Veri odaklı'],
-                    ['value' => 'emotional', 'label' => 'Duygusal bağ kuran'],
-                    ['value' => 'logical', 'label' => 'Mantıklı ve analitik'],
-                    ['value' => 'creative', 'label' => 'Yaratıcı ve özgün'],
-                    ['value' => 'simple', 'label' => 'Sade ve anlaşılır']
-                ],
-                'is_required' => false,
-                'sort_order' => 5
             ]
         ];
         
@@ -784,77 +757,634 @@ class AIProfileQuestionsSeeder extends Seeder
         }
     }
     
-    private function createFounderQuestions(): void
+    
+    private function createAdvertisingQuestions(): void
     {
         $questions = [
             [
-                'step' => 4,
-                'section' => 'founder_info',
-                'depends_on' => 'founder_permission',
-                'question_key' => 'founder_name',
-                'question_text' => 'Kurucu Adı Soyadı',
-                'help_text' => 'Kurucunun tam adı',
-                'input_type' => 'text',
-                'is_required' => false,
+                'sector_code' => 'advertising',
+                'step' => 3,
+                'question_key' => 'advertising_services',
+                'question_text' => 'Reklamcılık Hizmetleriniz',
+                'help_text' => 'Sunduğunuz reklam ve pazarlama hizmetleri',
+                'input_type' => 'checkbox',
+                'options' => [
+                    ['value' => 'dijital-reklam', 'label' => 'Dijital Reklam', 'icon' => 'fas fa-laptop'],
+                    ['value' => 'sosyal-medya', 'label' => 'Sosyal Medya Yönetimi', 'icon' => 'fab fa-facebook'],
+                    ['value' => 'marka-kimlik', 'label' => 'Marka Kimliği', 'icon' => 'fas fa-palette'],
+                    ['value' => 'web-tasarim', 'label' => 'Web Tasarım', 'icon' => 'fas fa-code'],
+                    ['value' => 'seo', 'label' => 'SEO Hizmetleri', 'icon' => 'fas fa-search'],
+                    ['value' => 'video-produksiyon', 'label' => 'Video Prodüksiyon', 'icon' => 'fas fa-video'],
+                    ['value' => 'fotograf', 'label' => 'Fotoğraf Çekimi', 'icon' => 'fas fa-camera'],
+                    ['value' => 'matbaa', 'label' => 'Matbaa ve Tasarım', 'icon' => 'fas fa-print'],
+                    ['value' => 'etkinlik-yonetimi', 'label' => 'Etkinlik Yönetimi', 'icon' => 'fas fa-calendar-alt'],
+                    ['value' => 'custom', 'label' => 'Diğer hizmet', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: Radyo reklamları, Outdoor reklam, Influencer pazarlama']
+                ],
+                'is_required' => true,
                 'sort_order' => 1
             ],
             [
-                'step' => 4,
-                'section' => 'founder_info',
-                'depends_on' => 'founder_permission',
-                'question_key' => 'founder_title',
-                'question_text' => 'Kurucu Unvanı',
-                'help_text' => 'Kurucunun firma içindeki pozisyonu',
-                'input_type' => 'radio',
+                'sector_code' => 'advertising',
+                'step' => 3,
+                'question_key' => 'target_sectors',
+                'question_text' => 'Hedef Sektörler',
+                'help_text' => 'Hangi sektörlere hizmet veriyorsunuz?',
+                'input_type' => 'checkbox',
                 'options' => [
-                    ['value' => 'ceo', 'label' => 'CEO (Genel Müdür)', 'icon' => 'fas fa-crown'],
-                    ['value' => 'founder-partner', 'label' => 'Kurucu Ortak', 'icon' => 'fas fa-handshake'],
-                    ['value' => 'chairman', 'label' => 'Yönetim Kurulu Başkanı', 'icon' => 'fas fa-chair'],
-                    ['value' => 'managing-director', 'label' => 'Yönetici Müdürü', 'icon' => 'fas fa-user-tie'],
-                    ['value' => 'owner', 'label' => 'İşletme Sahibi', 'icon' => 'fas fa-key'],
-                    ['value' => 'president', 'label' => 'Başkan', 'icon' => 'fas fa-medal']
+                    ['value' => 'e-ticaret', 'label' => 'E-Ticaret', 'icon' => 'fas fa-shopping-cart'],
+                    ['value' => 'saglik', 'label' => 'Sağlık', 'icon' => 'fas fa-heartbeat'],
+                    ['value' => 'egitim', 'label' => 'Eğitim', 'icon' => 'fas fa-graduation-cap'],
+                    ['value' => 'teknoloji', 'label' => 'Teknoloji', 'icon' => 'fas fa-microchip'],
+                    ['value' => 'turizm', 'label' => 'Turizm', 'icon' => 'fas fa-plane'],
+                    ['value' => 'gida', 'label' => 'Gıda & İçecek', 'icon' => 'fas fa-utensils'],
+                    ['value' => 'custom', 'label' => 'Diğer sektör', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: Tarım, Otomotiv, Finans']
                 ],
                 'is_required' => false,
                 'sort_order' => 2
-            ],
+            ]
+        ];
+        
+        foreach ($questions as $question) {
+            AIProfileQuestion::create($question);
+        }
+    }
+    
+    private function createArtsCraftsQuestions(): void
+    {
+        $questions = [
             [
-                'step' => 4,
-                'section' => 'founder_info',
-                'depends_on' => 'founder_permission',
-                'question_key' => 'founder_background',
-                'question_text' => 'Kurucu Geçmişi',
-                'help_text' => 'Kurucunun hangi alanda deneyimli?',
+                'sector_code' => 'arts-crafts',
+                'step' => 3,
+                'question_key' => 'art_categories',
+                'question_text' => 'Sanat Kategorileriniz',
+                'help_text' => 'Hangi sanat dallarında faaliyet gösteriyorsunuz?',
                 'input_type' => 'checkbox',
                 'options' => [
-                    ['value' => 'industry-expert', 'label' => 'Sektör uzmanı', 'icon' => 'fas fa-user-cog'],
-                    ['value' => 'entrepreneur', 'label' => 'Seri girişimci', 'icon' => 'fas fa-lightbulb'],
-                    ['value' => 'academic', 'label' => 'Akademik geçmiş', 'icon' => 'fas fa-graduation-cap'],
-                    ['value' => 'corporate', 'label' => 'Kurumsal deneyim', 'icon' => 'fas fa-building'],
-                    ['value' => 'technical', 'label' => 'Teknik uzmanlık', 'icon' => 'fas fa-cogs'],
-                    ['value' => 'international', 'label' => 'Uluslararası deneyim', 'icon' => 'fas fa-globe-americas']
+                    ['value' => 'resim', 'label' => 'Resim', 'icon' => 'fas fa-palette'],
+                    ['value' => 'heykel', 'label' => 'Heykel', 'icon' => 'fas fa-monument'],
+                    ['value' => 'seramik', 'label' => 'Seramik', 'icon' => 'fas fa-fire'],
+                    ['value' => 'el-sanatlari', 'label' => 'El Sanatları', 'icon' => 'fas fa-hand-paper'],
+                    ['value' => 'takı', 'label' => 'Takı Tasarımı', 'icon' => 'fas fa-gem'],
+                    ['value' => 'dokuma', 'label' => 'Dokuma', 'icon' => 'fas fa-tshirt'],
+                    ['value' => 'ahsap', 'label' => 'Ahşap İşleri', 'icon' => 'fas fa-tree'],
+                    ['value' => 'custom', 'label' => 'Diğer sanat dalı', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: Cam sanatı, Metal işleri, Deri işleri']
                 ],
-                'is_required' => false,
-                'sort_order' => 3
-            ],
+                'is_required' => true,
+                'sort_order' => 1
+            ]
+        ];
+        
+        foreach ($questions as $question) {
+            AIProfileQuestion::create($question);
+        }
+    }
+    
+    private function createAutomotiveQuestions(): void
+    {
+        $questions = [
             [
-                'step' => 4,
-                'section' => 'founder_info',
-                'depends_on' => 'founder_permission',
-                'question_key' => 'founder_qualities',
-                'question_text' => 'Kurucu Özellikleri',
-                'help_text' => 'Kurucunun öne çıkan kişilik özellikleri',
+                'sector_code' => 'automotive',
+                'step' => 3,
+                'question_key' => 'automotive_services',
+                'question_text' => 'Otomotiv Hizmetleriniz',
+                'help_text' => 'Sunduğunuz otomotiv hizmetleri',
                 'input_type' => 'checkbox',
                 'options' => [
-                    ['value' => 'visionary', 'label' => 'Vizyoner', 'icon' => 'far fa-eye'],
-                    ['value' => 'innovative', 'label' => 'Yenilikçi', 'icon' => 'fas fa-rocket'],
-                    ['value' => 'experienced', 'label' => 'Deneyimli', 'icon' => 'fas fa-user-clock'],
-                    ['value' => 'customer-focused', 'label' => 'Müşteri odaklı', 'icon' => 'fas fa-heart'],
-                    ['value' => 'detail-oriented', 'label' => 'Detay odaklı', 'icon' => 'fas fa-search'],
-                    ['value' => 'team-leader', 'label' => 'Takım lideri', 'icon' => 'fas fa-users-cog'],
-                    ['value' => 'strategic', 'label' => 'Stratejik düşünen', 'icon' => 'fas fa-chess']
+                    ['value' => 'satis', 'label' => 'Araç Satış', 'icon' => 'fas fa-car'],
+                    ['value' => 'servis', 'label' => 'Servis & Bakım', 'icon' => 'fas fa-wrench'],
+                    ['value' => 'yedek-parca', 'label' => 'Yedek Parça', 'icon' => 'fas fa-cogs'],
+                    ['value' => 'ekspertiz', 'label' => 'Ekspertiz', 'icon' => 'fas fa-search'],
+                    ['value' => 'kaporta', 'label' => 'Kaporta', 'icon' => 'fas fa-hammer'],
+                    ['value' => 'boya', 'label' => 'Boya', 'icon' => 'fas fa-paint-brush'],
+                    ['value' => 'lastik', 'label' => 'Lastik', 'icon' => 'fas fa-circle'],
+                    ['value' => 'custom', 'label' => 'Diğer hizmet', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: Cam değişimi, Klima bakımı, Alarm sistemi']
                 ],
-                'is_required' => false,
-                'sort_order' => 4
+                'is_required' => true,
+                'sort_order' => 1
+            ]
+        ];
+        
+        foreach ($questions as $question) {
+            AIProfileQuestion::create($question);
+        }
+    }
+    
+    private function createBeautyQuestions(): void
+    {
+        $questions = [
+            [
+                'sector_code' => 'beauty-personal-care',
+                'step' => 3,
+                'question_key' => 'beauty_services',
+                'question_text' => 'Güzellik Hizmetleriniz',
+                'help_text' => 'Sunduğunuz güzellik ve kişisel bakım hizmetleri',
+                'input_type' => 'checkbox',
+                'options' => [
+                    ['value' => 'sac-kesim', 'label' => 'Saç Kesim & Şekillendirme', 'icon' => 'fas fa-cut'],
+                    ['value' => 'sac-boyama', 'label' => 'Saç Boyama', 'icon' => 'fas fa-palette'],
+                    ['value' => 'makyaj', 'label' => 'Makyaj', 'icon' => 'fas fa-magic'],
+                    ['value' => 'nail-art', 'label' => 'Nail Art', 'icon' => 'fas fa-hand-paper'],
+                    ['value' => 'cilt-bakimi', 'label' => 'Cilt Bakımı', 'icon' => 'fas fa-spa'],
+                    ['value' => 'epilasyon', 'label' => 'Epilasyon', 'icon' => 'fas fa-female'],
+                    ['value' => 'masaj', 'label' => 'Masaj', 'icon' => 'fas fa-hand-holding-heart'],
+                    ['value' => 'custom', 'label' => 'Diğer hizmet', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: Solaryum, Mikropigmentasyon, Saç uzatma']
+                ],
+                'is_required' => true,
+                'sort_order' => 1
+            ]
+        ];
+        
+        foreach ($questions as $question) {
+            AIProfileQuestion::create($question);
+        }
+    }
+    
+    private function createBooksPublishingQuestions(): void
+    {
+        $questions = [
+            [
+                'sector_code' => 'books-publishing',
+                'step' => 3,
+                'question_key' => 'publishing_services',
+                'question_text' => 'Yayıncılık Hizmetleriniz',
+                'help_text' => 'Sunduğunuz yayıncılık ve kitap hizmetleri',
+                'input_type' => 'checkbox',
+                'options' => [
+                    ['value' => 'kitap-yayinlama', 'label' => 'Kitap Yayınlama', 'icon' => 'fas fa-book'],
+                    ['value' => 'dergi', 'label' => 'Dergi', 'icon' => 'fas fa-newspaper'],
+                    ['value' => 'editörlük', 'label' => 'Editörlük', 'icon' => 'fas fa-edit'],
+                    ['value' => 'ceviri', 'label' => 'Çeviri', 'icon' => 'fas fa-language'],
+                    ['value' => 'tasarim', 'label' => 'Grafik Tasarım', 'icon' => 'fas fa-palette'],
+                    ['value' => 'baski', 'label' => 'Baskı', 'icon' => 'fas fa-print'],
+                    ['value' => 'dagitim', 'label' => 'Dağıtım', 'icon' => 'fas fa-truck'],
+                    ['value' => 'custom', 'label' => 'Diğer hizmet', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: E-kitap, Sesli kitap, Özel baskı']
+                ],
+                'is_required' => true,
+                'sort_order' => 1
+            ]
+        ];
+        
+        foreach ($questions as $question) {
+            AIProfileQuestion::create($question);
+        }
+    }
+    
+    private function createConstructionQuestions(): void
+    {
+        $questions = [
+            [
+                'sector_code' => 'construction',
+                'step' => 3,
+                'question_key' => 'construction_services',
+                'question_text' => 'İnşaat Hizmetleriniz',
+                'help_text' => 'Sunduğunuz inşaat ve yapı hizmetleri',
+                'input_type' => 'checkbox',
+                'options' => [
+                    ['value' => 'konut', 'label' => 'Konut İnşaatı', 'icon' => 'fas fa-home'],
+                    ['value' => 'ticari', 'label' => 'Ticari Yapı', 'icon' => 'fas fa-building'],
+                    ['value' => 'renovasyon', 'label' => 'Renovasyon', 'icon' => 'fas fa-hammer'],
+                    ['value' => 'peyzaj', 'label' => 'Peyzaj', 'icon' => 'fas fa-tree'],
+                    ['value' => 'yapi-malzeme', 'label' => 'Yapı Malzemesi', 'icon' => 'fas fa-cubes'],
+                    ['value' => 'proje-tasarim', 'label' => 'Proje Tasarım', 'icon' => 'fas fa-drafting-compass'],
+                    ['value' => 'custom', 'label' => 'Diğer hizmet', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: Hafriyat, Kaba inşaat, Ince işler']
+                ],
+                'is_required' => true,
+                'sort_order' => 1
+            ]
+        ];
+        
+        foreach ($questions as $question) {
+            AIProfileQuestion::create($question);
+        }
+    }
+    
+    private function createEventsQuestions(): void
+    {
+        $questions = [
+            [
+                'sector_code' => 'events',
+                'step' => 3,
+                'question_key' => 'event_types',
+                'question_text' => 'Etkinlik Türleriniz',
+                'help_text' => 'Organize ettiğiniz etkinlik türleri',
+                'input_type' => 'checkbox',
+                'options' => [
+                    ['value' => 'dugun', 'label' => 'Düğün', 'icon' => 'fas fa-ring'],
+                    ['value' => 'konferans', 'label' => 'Konferans', 'icon' => 'fas fa-microphone'],
+                    ['value' => 'seminer', 'label' => 'Seminer', 'icon' => 'fas fa-chalkboard-teacher'],
+                    ['value' => 'dogumgunu', 'label' => 'Doğum Günü', 'icon' => 'fas fa-birthday-cake'],
+                    ['value' => 'kurumsal', 'label' => 'Kurumsal Etkinlik', 'icon' => 'fas fa-building'],
+                    ['value' => 'lansman', 'label' => 'Ürün Lansmanı', 'icon' => 'fas fa-rocket'],
+                    ['value' => 'custom', 'label' => 'Diğer etkinlik', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: Fashion show, Konser, Fuar']
+                ],
+                'is_required' => true,
+                'sort_order' => 1
+            ]
+        ];
+        
+        foreach ($questions as $question) {
+            AIProfileQuestion::create($question);
+        }
+    }
+    
+    private function createFinanceQuestions(): void
+    {
+        $questions = [
+            [
+                'sector_code' => 'finance',
+                'step' => 3,
+                'question_key' => 'finance_services',
+                'question_text' => 'Finans Hizmetleriniz',
+                'help_text' => 'Sunduğunuz finans ve bankacılık hizmetleri',
+                'input_type' => 'checkbox',
+                'options' => [
+                    ['value' => 'kredi', 'label' => 'Kredi', 'icon' => 'fas fa-credit-card'],
+                    ['value' => 'sigorta', 'label' => 'Sigorta', 'icon' => 'fas fa-shield-alt'],
+                    ['value' => 'yatirim', 'label' => 'Yatırım Danışmanlığı', 'icon' => 'fas fa-chart-line'],
+                    ['value' => 'emeklilik', 'label' => 'Emeklilik', 'icon' => 'fas fa-user-clock'],
+                    ['value' => 'muhasebe', 'label' => 'Muhasebe', 'icon' => 'fas fa-calculator'],
+                    ['value' => 'vergi', 'label' => 'Vergi Danışmanlığı', 'icon' => 'fas fa-file-invoice-dollar'],
+                    ['value' => 'custom', 'label' => 'Diğer hizmet', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: Forex, Kripto para, Finansal planlama']
+                ],
+                'is_required' => true,
+                'sort_order' => 1
+            ]
+        ];
+        
+        foreach ($questions as $question) {
+            AIProfileQuestion::create($question);
+        }
+    }
+    
+    private function createRealEstateQuestions(): void
+    {
+        $questions = [
+            [
+                'sector_code' => 'real-estate',
+                'step' => 3,
+                'question_key' => 'realestate_services',
+                'question_text' => 'Gayrimenkul Hizmetleriniz',
+                'help_text' => 'Sunduğunuz gayrimenkul hizmetleri',
+                'input_type' => 'checkbox',
+                'options' => [
+                    ['value' => 'satis', 'label' => 'Satış', 'icon' => 'fas fa-home'],
+                    ['value' => 'kiralama', 'label' => 'Kiralama', 'icon' => 'fas fa-key'],
+                    ['value' => 'degerleme', 'label' => 'Değerleme', 'icon' => 'fas fa-calculator'],
+                    ['value' => 'yatirim', 'label' => 'Yatırım Danışmanlığı', 'icon' => 'fas fa-chart-line'],
+                    ['value' => 'proje', 'label' => 'Proje Pazarlama', 'icon' => 'fas fa-building'],
+                    ['value' => 'yonetim', 'label' => 'Emlak Yönetimi', 'icon' => 'fas fa-tasks'],
+                    ['value' => 'custom', 'label' => 'Diğer hizmet', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: Arsa değerleme, Ticari emlak, Turizm emlak']
+                ],
+                'is_required' => true,
+                'sort_order' => 1
+            ]
+        ];
+        
+        foreach ($questions as $question) {
+            AIProfileQuestion::create($question);
+        }
+    }
+    
+    private function createHomeGardenQuestions(): void
+    {
+        $questions = [
+            [
+                'sector_code' => 'home-garden',
+                'step' => 3,
+                'question_key' => 'home_services',
+                'question_text' => 'Ev & Bahçe Hizmetleriniz',
+                'help_text' => 'Sunduğunuz ev ve bahçe hizmetleri',
+                'input_type' => 'checkbox',
+                'options' => [
+                    ['value' => 'dekorasyon', 'label' => 'İç Dekorasyon', 'icon' => 'fas fa-couch'],
+                    ['value' => 'bahce-duzenle', 'label' => 'Bahçe Düzenleme', 'icon' => 'fas fa-seedling'],
+                    ['value' => 'temizlik', 'label' => 'Temizlik', 'icon' => 'fas fa-broom'],
+                    ['value' => 'tadilat', 'label' => 'Tadilat', 'icon' => 'fas fa-hammer'],
+                    ['value' => 'boyama', 'label' => 'Boyama', 'icon' => 'fas fa-paint-brush'],
+                    ['value' => 'mobilya', 'label' => 'Mobilya', 'icon' => 'fas fa-chair'],
+                    ['value' => 'custom', 'label' => 'Diğer hizmet', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: Elektrik, Tesisatçı, Cam balkon']
+                ],
+                'is_required' => true,
+                'sort_order' => 1
+            ]
+        ];
+        
+        foreach ($questions as $question) {
+            AIProfileQuestion::create($question);
+        }
+    }
+    
+    private function createJewelryQuestions(): void
+    {
+        $questions = [
+            [
+                'sector_code' => 'jewelry',
+                'step' => 3,
+                'question_key' => 'jewelry_products',
+                'question_text' => 'Mücevher Ürünleriniz',
+                'help_text' => 'Sattığınız mücevher ve aksesuar türleri',
+                'input_type' => 'checkbox',
+                'options' => [
+                    ['value' => 'altin', 'label' => 'Altın', 'icon' => 'fas fa-coins'],
+                    ['value' => 'gumus', 'label' => 'Gümüş', 'icon' => 'fas fa-circle'],
+                    ['value' => 'pırlanta', 'label' => 'Pırlanta', 'icon' => 'fas fa-gem'],
+                    ['value' => 'saat', 'label' => 'Saat', 'icon' => 'fas fa-clock'],
+                    ['value' => 'yuzuk', 'label' => 'Yüzük', 'icon' => 'fas fa-ring'],
+                    ['value' => 'kolye', 'label' => 'Kolye', 'icon' => 'fas fa-necklace'],
+                    ['value' => 'custom', 'label' => 'Diğer ürün', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: Küpe, Bilezik, Broş']
+                ],
+                'is_required' => true,
+                'sort_order' => 1
+            ]
+        ];
+        
+        foreach ($questions as $question) {
+            AIProfileQuestion::create($question);
+        }
+    }
+    
+    private function createMusicQuestions(): void
+    {
+        $questions = [
+            [
+                'sector_code' => 'music',
+                'step' => 3,
+                'question_key' => 'music_services',
+                'question_text' => 'Müzik Hizmetleriniz',
+                'help_text' => 'Sunduğunuz müzik ve ses hizmetleri',
+                'input_type' => 'checkbox',
+                'options' => [
+                    ['value' => 'produksiyon', 'label' => 'Müzik Prodüksiyonu', 'icon' => 'fas fa-music'],
+                    ['value' => 'egitim', 'label' => 'Müzik Eğitimi', 'icon' => 'fas fa-graduation-cap'],
+                    ['value' => 'kayit', 'label' => 'Kayıt Stüdyosu', 'icon' => 'fas fa-microphone'],
+                    ['value' => 'miksleme', 'label' => 'Miksleme & Mastering', 'icon' => 'fas fa-sliders-h'],
+                    ['value' => 'canli-performans', 'label' => 'Canlı Performans', 'icon' => 'fas fa-guitar'],
+                    ['value' => 'enstruman', 'label' => 'Enstrüman Satış', 'icon' => 'fas fa-drum'],
+                    ['value' => 'custom', 'label' => 'Diğer hizmet', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: Ses düzenleme, Podcast, Jingle']
+                ],
+                'is_required' => true,
+                'sort_order' => 1
+            ]
+        ];
+        
+        foreach ($questions as $question) {
+            AIProfileQuestion::create($question);
+        }
+    }
+    
+    private function createNonprofitQuestions(): void
+    {
+        $questions = [
+            [
+                'sector_code' => 'nonprofit',
+                'step' => 3,
+                'question_key' => 'nonprofit_focus',
+                'question_text' => 'Faaliyet Alanınız',
+                'help_text' => 'Kar amacı gütmeyen organizasyonunuzun faaliyet alanları',
+                'input_type' => 'checkbox',
+                'options' => [
+                    ['value' => 'egitim', 'label' => 'Eğitim', 'icon' => 'fas fa-graduation-cap'],
+                    ['value' => 'saglik', 'label' => 'Sağlık', 'icon' => 'fas fa-heartbeat'],
+                    ['value' => 'cevre', 'label' => 'Çevre', 'icon' => 'fas fa-leaf'],
+                    ['value' => 'hayvan', 'label' => 'Hayvan Hakları', 'icon' => 'fas fa-paw'],
+                    ['value' => 'sosyal', 'label' => 'Sosyal Yardım', 'icon' => 'fas fa-hands-helping'],
+                    ['value' => 'kultur', 'label' => 'Kültür & Sanat', 'icon' => 'fas fa-palette'],
+                    ['value' => 'custom', 'label' => 'Diğer alan', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: Kadın hakları, Engelli hakları, Çocuk hakları']
+                ],
+                'is_required' => true,
+                'sort_order' => 1
+            ]
+        ];
+        
+        foreach ($questions as $question) {
+            AIProfileQuestion::create($question);
+        }
+    }
+    
+    private function createPetsQuestions(): void
+    {
+        $questions = [
+            [
+                'sector_code' => 'pets',
+                'step' => 3,
+                'question_key' => 'pet_services',
+                'question_text' => 'Evcil Hayvan Hizmetleriniz',
+                'help_text' => 'Sunduğunuz evcil hayvan hizmetleri',
+                'input_type' => 'checkbox',
+                'options' => [
+                    ['value' => 'veteriner', 'label' => 'Veteriner', 'icon' => 'fas fa-stethoscope'],
+                    ['value' => 'pet-shop', 'label' => 'Pet Shop', 'icon' => 'fas fa-store'],
+                    ['value' => 'bakim', 'label' => 'Bakım & Tımar', 'icon' => 'fas fa-cut'],
+                    ['value' => 'egitim', 'label' => 'Eğitim', 'icon' => 'fas fa-graduation-cap'],
+                    ['value' => 'pansiyon', 'label' => 'Pansiyon', 'icon' => 'fas fa-bed'],
+                    ['value' => 'beslenme', 'label' => 'Beslenme & Vitamin', 'icon' => 'fas fa-pills'],
+                    ['value' => 'custom', 'label' => 'Diğer hizmet', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: Pet taksi, Fotoğrafçılık, Oyuncak']
+                ],
+                'is_required' => true,
+                'sort_order' => 1
+            ]
+        ];
+        
+        foreach ($questions as $question) {
+            AIProfileQuestion::create($question);
+        }
+    }
+    
+    private function createPhotographyQuestions(): void
+    {
+        $questions = [
+            [
+                'sector_code' => 'photography',
+                'step' => 3,
+                'question_key' => 'photography_types',
+                'question_text' => 'Fotoğrafçılık Türleriniz',
+                'help_text' => 'Sunduğunuz fotoğrafçılık hizmetleri',
+                'input_type' => 'checkbox',
+                'options' => [
+                    ['value' => 'dugun', 'label' => 'Düğün', 'icon' => 'fas fa-ring'],
+                    ['value' => 'portrait', 'label' => 'Portre', 'icon' => 'fas fa-user'],
+                    ['value' => 'ticari', 'label' => 'Ticari', 'icon' => 'fas fa-briefcase'],
+                    ['value' => 'etkinlik', 'label' => 'Etkinlik', 'icon' => 'fas fa-calendar-alt'],
+                    ['value' => 'urun', 'label' => 'Ürün', 'icon' => 'fas fa-box'],
+                    ['value' => 'video', 'label' => 'Video Çekimi', 'icon' => 'fas fa-video'],
+                    ['value' => 'custom', 'label' => 'Diğer tür', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: Moda, Mimari, Doğa']
+                ],
+                'is_required' => true,
+                'sort_order' => 1
+            ]
+        ];
+        
+        foreach ($questions as $question) {
+            AIProfileQuestion::create($question);
+        }
+    }
+    
+    private function createSecurityQuestions(): void
+    {
+        $questions = [
+            [
+                'sector_code' => 'security',
+                'step' => 3,
+                'question_key' => 'security_services',
+                'question_text' => 'Güvenlik Hizmetleriniz',
+                'help_text' => 'Sunduğunuz güvenlik hizmetleri',
+                'input_type' => 'checkbox',
+                'options' => [
+                    ['value' => 'fiziksel', 'label' => 'Fiziksel Güvenlik', 'icon' => 'fas fa-shield-alt'],
+                    ['value' => 'kamera', 'label' => 'Kamera Sistemi', 'icon' => 'fas fa-video'],
+                    ['value' => 'alarm', 'label' => 'Alarm Sistemi', 'icon' => 'fas fa-bell'],
+                    ['value' => 'siber', 'label' => 'Siber Güvenlik', 'icon' => 'fas fa-laptop'],
+                    ['value' => 'erisim', 'label' => 'Erişim Kontrolü', 'icon' => 'fas fa-key'],
+                    ['value' => 'yangin', 'label' => 'Yangın Güvenliği', 'icon' => 'fas fa-fire-extinguisher'],
+                    ['value' => 'custom', 'label' => 'Diğer hizmet', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: VIP koruma, Etkinlik güvenliği']
+                ],
+                'is_required' => true,
+                'sort_order' => 1
+            ]
+        ];
+        
+        foreach ($questions as $question) {
+            AIProfileQuestion::create($question);
+        }
+    }
+    
+    private function createSportsQuestions(): void
+    {
+        $questions = [
+            [
+                'sector_code' => 'sports-fitness',
+                'step' => 3,
+                'question_key' => 'sports_services',
+                'question_text' => 'Spor & Fitness Hizmetleriniz',
+                'help_text' => 'Sunduğunuz spor ve fitness hizmetleri',
+                'input_type' => 'checkbox',
+                'options' => [
+                    ['value' => 'fitness', 'label' => 'Fitness', 'icon' => 'fas fa-dumbbell'],
+                    ['value' => 'personal-training', 'label' => 'Personal Training', 'icon' => 'fas fa-user-plus'],
+                    ['value' => 'grup-dersleri', 'label' => 'Grup Dersleri', 'icon' => 'fas fa-users'],
+                    ['value' => 'pilates', 'label' => 'Pilates', 'icon' => 'fas fa-leaf'],
+                    ['value' => 'yoga', 'label' => 'Yoga', 'icon' => 'fas fa-meditation'],
+                    ['value' => 'beslenme', 'label' => 'Beslenme Koçluğu', 'icon' => 'fas fa-apple-alt'],
+                    ['value' => 'custom', 'label' => 'Diğer hizmet', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: Crossfit, Martial arts, Swim']
+                ],
+                'is_required' => true,
+                'sort_order' => 1
+            ]
+        ];
+        
+        foreach ($questions as $question) {
+            AIProfileQuestion::create($question);
+        }
+    }
+    
+    private function createTextileQuestions(): void
+    {
+        $questions = [
+            [
+                'sector_code' => 'textile-fashion',
+                'step' => 3,
+                'question_key' => 'textile_products',
+                'question_text' => 'Tekstil Ürünleriniz',
+                'help_text' => 'Ürettiğiniz veya sattığınız tekstil ürünleri',
+                'input_type' => 'checkbox',
+                'options' => [
+                    ['value' => 'giyim', 'label' => 'Giyim', 'icon' => 'fas fa-tshirt'],
+                    ['value' => 'ayakkabi', 'label' => 'Ayakkabı', 'icon' => 'fas fa-shoe-prints'],
+                    ['value' => 'canta', 'label' => 'Çanta', 'icon' => 'fas fa-shopping-bag'],
+                    ['value' => 'aksesuar', 'label' => 'Aksesuar', 'icon' => 'fas fa-glasses'],
+                    ['value' => 'ev-tekstil', 'label' => 'Ev Tekstili', 'icon' => 'fas fa-bed'],
+                    ['value' => 'bebek', 'label' => 'Bebek Giyim', 'icon' => 'fas fa-baby'],
+                    ['value' => 'custom', 'label' => 'Diğer ürün', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: Iş kıyafeti, Spor giyim, Özel tasarım']
+                ],
+                'is_required' => true,
+                'sort_order' => 1
+            ]
+        ];
+        
+        foreach ($questions as $question) {
+            AIProfileQuestion::create($question);
+        }
+    }
+    
+    private function createTourismQuestions(): void
+    {
+        $questions = [
+            [
+                'sector_code' => 'tourism',
+                'step' => 3,
+                'question_key' => 'tourism_services',
+                'question_text' => 'Turizm Hizmetleriniz',
+                'help_text' => 'Sunduğunuz turizm ve seyahat hizmetleri',
+                'input_type' => 'checkbox',
+                'options' => [
+                    ['value' => 'otel', 'label' => 'Otel', 'icon' => 'fas fa-bed'],
+                    ['value' => 'tur', 'label' => 'Tur Organizasyonu', 'icon' => 'fas fa-route'],
+                    ['value' => 'ucak', 'label' => 'Uçak Bileti', 'icon' => 'fas fa-plane'],
+                    ['value' => 'transfer', 'label' => 'Transfer', 'icon' => 'fas fa-bus'],
+                    ['value' => 'kiralama', 'label' => 'Araç Kiralama', 'icon' => 'fas fa-car'],
+                    ['value' => 'rehberlik', 'label' => 'Rehberlik', 'icon' => 'fas fa-map-signs'],
+                    ['value' => 'custom', 'label' => 'Diğer hizmet', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: Yacht kiralama, Kamp, Macera turları']
+                ],
+                'is_required' => true,
+                'sort_order' => 1
+            ]
+        ];
+        
+        foreach ($questions as $question) {
+            AIProfileQuestion::create($question);
+        }
+    }
+    
+    private function createTransportationQuestions(): void
+    {
+        $questions = [
+            [
+                'sector_code' => 'transportation',
+                'step' => 3,
+                'question_key' => 'transport_services',
+                'question_text' => 'Ulaştırma Hizmetleriniz',
+                'help_text' => 'Sunduğunuz ulaştırma ve taşımacılık hizmetleri',
+                'input_type' => 'checkbox',
+                'options' => [
+                    ['value' => 'otobus', 'label' => 'Otobüs', 'icon' => 'fas fa-bus'],
+                    ['value' => 'taksi', 'label' => 'Taksi', 'icon' => 'fas fa-taxi'],
+                    ['value' => 'minibus', 'label' => 'Minibüs', 'icon' => 'fas fa-shuttle-van'],
+                    ['value' => 'kargo', 'label' => 'Kargo', 'icon' => 'fas fa-box'],
+                    ['value' => 'nakliye', 'label' => 'Nakliye', 'icon' => 'fas fa-truck'],
+                    ['value' => 'vip-transfer', 'label' => 'VIP Transfer', 'icon' => 'fas fa-crown'],
+                    ['value' => 'custom', 'label' => 'Diğer hizmet', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: Ambulans, Okul servisi, Yük taşıma']
+                ],
+                'is_required' => true,
+                'sort_order' => 1
+            ]
+        ];
+        
+        foreach ($questions as $question) {
+            AIProfileQuestion::create($question);
+        }
+    }
+    
+    private function createWeddingQuestions(): void
+    {
+        $questions = [
+            [
+                'sector_code' => 'wedding',
+                'step' => 3,
+                'question_key' => 'wedding_services',
+                'question_text' => 'Düğün Hizmetleriniz',
+                'help_text' => 'Sunduğunuz düğün ve nikah hizmetleri',
+                'input_type' => 'checkbox',
+                'options' => [
+                    ['value' => 'organizasyon', 'label' => 'Düğün Organizasyonu', 'icon' => 'fas fa-ring'],
+                    ['value' => 'fotograf', 'label' => 'Düğün Fotoğrafçısı', 'icon' => 'fas fa-camera'],
+                    ['value' => 'video', 'label' => 'Video Çekimi', 'icon' => 'fas fa-video'],
+                    ['value' => 'musik', 'label' => 'Müzik & DJ', 'icon' => 'fas fa-music'],
+                    ['value' => 'catering', 'label' => 'Catering', 'icon' => 'fas fa-utensils'],
+                    ['value' => 'dekorasyon', 'label' => 'Dekorasyon', 'icon' => 'fas fa-palette'],
+                    ['value' => 'custom', 'label' => 'Diğer hizmet', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: Çiçek, Düğün arabası, Animasyon']
+                ],
+                'is_required' => true,
+                'sort_order' => 1
             ]
         ];
         

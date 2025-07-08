@@ -36,15 +36,38 @@ class AIProfileController extends Controller
                         \Log::info('Brand story generation başlatılıyor - async');
                         $brandStoryGenerating = true; // Loading state göster
                         
-                        // Eğer session'da generation flag'i yoksa başlat
-                        if (!session('brand_story_generating')) {
-                            session(['brand_story_generating' => true]);
-                            // Burada queue job ile arka planda oluşturabilirsiniz
-                            // Şimdilik direkt oluşturacağız
-                            $profile->generateBrandStory();
-                            session()->forget('brand_story_generating');
-                            session()->flash('brand_story_generated', 'Marka hikayeniz başarıyla oluşturuldu!');
-                            $brandStoryGenerating = false;
+                        // Hikaye oluşturma deneme sayısını kontrol et
+                        $attemptKey = 'brand_story_attempt_' . $profile->id;
+                        $attempts = session($attemptKey, 0);
+                        
+                        if ($attempts < 3) { // Maximum 3 deneme
+                            session([$attemptKey => $attempts + 1]);
+                            
+                            try {
+                                \Log::info('Brand story oluşturuluyor', [
+                                    'profile_id' => $profile->id,
+                                    'attempt' => $attempts + 1
+                                ]);
+                                
+                                $profile->generateBrandStory();
+                                session()->forget($attemptKey);
+                                session()->flash('brand_story_generated', 'Marka hikayeniz başarıyla oluşturuldu!');
+                                $brandStoryGenerating = false;
+                                
+                            } catch (\Exception $e) {
+                                \Log::error('Brand story generation attempt failed', [
+                                    'profile_id' => $profile->id,
+                                    'attempt' => $attempts + 1,
+                                    'error' => $e->getMessage()
+                                ]);
+                                throw $e; // Re-throw to be caught by outer try-catch
+                            }
+                        } else {
+                            \Log::warning('Brand story generation max attempts reached', [
+                                'profile_id' => $profile->id,
+                                'attempts' => $attempts
+                            ]);
+                            session()->flash('brand_story_error', 'Hikaye oluşturma denemesi başarısız. Lütfen "Hikayeyi Yeniden Oluştur" butonunu kullanın.');
                         }
                     }
                 } catch (\Exception $e) {

@@ -511,7 +511,7 @@ class AIProfileManagement extends Component
         
         // Kurucu bilgileri için özel validation
         if ($this->currentStep === 4 && $this->showFounderQuestions) {
-            $founderQuestions = AIProfileQuestion::getOptionalSectionQuestions('founder_info', $this->currentSectorCode);
+            $founderQuestions = AIProfileQuestion::getOptionalSectionQuestions('founder_info', $this->currentSectorCode, 4);
             foreach ($founderQuestions as $question) {
                 $fieldKey = $this->getFieldKey($question);
                 if ($question->validation_rules || $question->is_required) {

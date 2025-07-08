@@ -108,14 +108,12 @@ class AIProfileQuestionsSeeder extends Seeder
                 'help_text' => 'Markanızın kişilik özelliklerini seçin (birden fazla seçebilirsiniz)',
                 'input_type' => 'checkbox',
                 'options' => [
-                    ['value' => 'modern', 'label' => 'Modern ve Yenilikçi', 'icon' => 'fas fa-rocket'],
-                    ['value' => 'trustworthy', 'label' => 'Güvenilir ve Kurumsal', 'icon' => 'fas fa-university'],
-                    ['value' => 'friendly', 'label' => 'Samimi ve Yakın', 'icon' => 'fas fa-smile'],
-                    ['value' => 'professional', 'label' => 'Profesyonel ve Ciddi', 'icon' => 'fas fa-briefcase'],
-                    ['value' => 'creative', 'label' => 'Yaratıcı ve Özgün', 'icon' => 'fas fa-palette'],
-                    ['value' => 'luxury', 'label' => 'Premium ve Kaliteli', 'icon' => 'fas fa-gem'],
-                    ['value' => 'energetic', 'label' => 'Dinamik ve Enerjik', 'icon' => 'fas fa-bolt'],
-                    ['value' => 'conservative', 'label' => 'Klasik ve Muhafazakar', 'icon' => 'fas fa-landmark']
+                    ['value' => 'modern', 'label' => 'Modern/Yenilikçi', 'icon' => 'fas fa-rocket'],
+                    ['value' => 'trustworthy', 'label' => 'Güvenilir/Kurumsal', 'icon' => 'fas fa-university'],
+                    ['value' => 'friendly', 'label' => 'Samimi/Yakın', 'icon' => 'fas fa-smile'],
+                    ['value' => 'creative', 'label' => 'Yaratıcı/Özgün', 'icon' => 'fas fa-palette'],
+                    ['value' => 'luxury', 'label' => 'Premium/Kaliteli', 'icon' => 'fas fa-gem'],
+                    ['value' => 'conservative', 'label' => 'Klasik/Muhafazakar', 'icon' => 'fas fa-landmark']
                 ],
                 'is_required' => true,
                 'sort_order' => 1
@@ -130,7 +128,8 @@ class AIProfileQuestionsSeeder extends Seeder
                     ['value' => 'new', 'label' => 'Yeni (0-2 yıl) - Fresh ve güncel', 'icon' => 'fas fa-seedling'],
                     ['value' => 'growing', 'label' => 'Gelişen (3-7 yıl) - Deneyim kazanan', 'icon' => 'fas fa-leaf'],
                     ['value' => 'established', 'label' => 'Yerleşik (8-15 yıl) - Deneyimli', 'icon' => 'fas fa-tree'],
-                    ['value' => 'mature', 'label' => 'Köklü (15+ yıl) - Sektör lideri', 'icon' => 'fas fa-university']
+                    ['value' => 'mature', 'label' => 'Köklü (15+ yıl) - Sektör lideri', 'icon' => 'fas fa-university'],
+                    ['value' => 'custom', 'label' => 'Diğer (özel belirtiniz)', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: 1987\'den beri, 25 yıllık deneyim']
                 ],
                 'is_required' => true,
                 'sort_order' => 2
@@ -146,7 +145,8 @@ class AIProfileQuestionsSeeder extends Seeder
                     ['value' => 'micro', 'label' => '2-5 kişi (Mikro işletme)', 'icon' => 'fas fa-users'],
                     ['value' => 'small', 'label' => '6-25 kişi (Küçük işletme)', 'icon' => 'fas fa-user-friends'],
                     ['value' => 'medium', 'label' => '26-100 kişi (Orta ölçekli)', 'icon' => 'fas fa-building'],
-                    ['value' => 'large', 'label' => '100+ kişi (Büyük şirket)', 'icon' => 'fas fa-city']
+                    ['value' => 'large', 'label' => '100+ kişi (Büyük şirket)', 'icon' => 'fas fa-city'],
+                    ['value' => 'custom', 'label' => 'Diğer (özel belirtiniz)', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: 500 kişi, 1200 çalışan']
                 ],
                 'is_required' => true,
                 'sort_order' => 3
@@ -162,7 +162,8 @@ class AIProfileQuestionsSeeder extends Seeder
                     ['value' => 'multi-city', 'label' => 'Birden fazla şehir', 'icon' => 'fal fa-city'],
                     ['value' => 'multi-branch', 'label' => 'Aynı şehirde birden fazla şube', 'icon' => 'fas fa-store'],
                     ['value' => 'online-only', 'label' => 'Sadece online', 'icon' => 'fas fa-laptop'],
-                    ['value' => 'hybrid', 'label' => 'Fiziksel + Online', 'icon' => 'fas fa-sync-alt']
+                    ['value' => 'hybrid', 'label' => 'Fiziksel + Online', 'icon' => 'fas fa-sync-alt'],
+                    ['value' => 'custom', 'label' => 'Diğer (özel belirtiniz)', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: 12 ilde 45 şube, 8 şehirde faaliyet']
                 ],
                 'is_required' => true,
                 'sort_order' => 4
@@ -181,7 +182,8 @@ class AIProfileQuestionsSeeder extends Seeder
                     ['value' => 'b2c-family', 'label' => 'Aileler (35-55)', 'icon' => 'fas fa-home'],
                     ['value' => 'b2c-senior', 'label' => 'Deneyimli yaş grubu (55+)', 'icon' => 'far fa-user-clock'],
                     ['value' => 'government', 'label' => 'Kamu kurumları', 'icon' => 'fas fa-university'],
-                    ['value' => 'ngo', 'label' => 'STK/Dernekler', 'icon' => 'fas fa-handshake']
+                    ['value' => 'ngo', 'label' => 'STK/Dernekler', 'icon' => 'fas fa-handshake'],
+                    ['value' => 'custom', 'label' => 'Diğer müşteri grubu', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: Freelancer\'lar, Start-up\'lar, Özel sektör']
                 ],
                 'is_required' => true,
                 'sort_order' => 5
@@ -198,7 +200,8 @@ class AIProfileQuestionsSeeder extends Seeder
                     ['value' => 'premium', 'label' => 'Premium/Kaliteli', 'icon' => 'fas fa-star'],
                     ['value' => 'luxury', 'label' => 'Lüks/Özel', 'icon' => 'fas fa-gem'],
                     ['value' => 'innovative', 'label' => 'Yenilikçi/Teknoloji odaklı', 'icon' => 'fas fa-rocket'],
-                    ['value' => 'specialist', 'label' => 'Uzman/Niş alan', 'icon' => 'fas fa-bullseye']
+                    ['value' => 'specialist', 'label' => 'Uzman/Niş alan', 'icon' => 'fas fa-bullseye'],
+                    ['value' => 'custom', 'label' => 'Diğer (özel belirtiniz)', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: Sosyal sorumluluk odaklı, Çevre dostu']
                 ],
                 'is_required' => true,
                 'sort_order' => 6
@@ -215,6 +218,7 @@ class AIProfileQuestionsSeeder extends Seeder
         // ADIM 4: Kurucu İzin Sorusu
         $question = [
             'step' => 4,
+            'section' => 'company_info',
             'question_key' => 'founder_permission',
             'question_text' => 'Kurucu/Sahibi Bilgilerini Sisteme Eklemek İster misiniz?',
             'help_text' => 'Yapay Zeka kurucu/sahibi bilgilerini içeriklerde kullanabilir mi? Bu bilgiler markanızı kişiselleştirir ve daha samimi hale getirir.',
@@ -595,7 +599,8 @@ class AIProfileQuestionsSeeder extends Seeder
                     ['value' => 'innovation', 'label' => 'Yenilikçi ve güncel yaklaşımlar'],
                     ['value' => 'experience', 'label' => 'Yıllarca biriken deneyim'],
                     ['value' => 'stability', 'label' => 'Güvenilir ve istikrarlı hizmet'],
-                    ['value' => 'flexibility', 'label' => 'Esnek ve çeviklik']
+                    ['value' => 'flexibility', 'label' => 'Esnek ve çeviklik'],
+                    ['value' => 'custom', 'label' => 'Diğer avantaj', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: Sosyal sorumluluk, Çevre bilinci, Şeffaflık']
                 ],
                 'is_required' => false,
                 'sort_order' => 1
@@ -612,7 +617,8 @@ class AIProfileQuestionsSeeder extends Seeder
                     ['value' => 'buyuk-kurumlar', 'label' => 'Büyük Kurumlar'],
                     ['value' => 'kamu', 'label' => 'Kamu Kurumları'],
                     ['value' => 'bireysel', 'label' => 'Bireysel Müşteriler'],
-                    ['value' => 'uluslararasi', 'label' => 'Uluslararası Firmalar']
+                    ['value' => 'uluslararasi', 'label' => 'Uluslararası Firmalar'],
+                    ['value' => 'custom', 'label' => 'Diğer müşteri tipi', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: Kooperatifler, Sendikalar, Sosyal işletmeler']
                 ],
                 'is_required' => false,
                 'sort_order' => 2
@@ -630,7 +636,8 @@ class AIProfileQuestionsSeeder extends Seeder
                     ['value' => 'industry-recognition', 'label' => 'Sektörel tanınırlık'],
                     ['value' => 'innovation-awards', 'label' => 'Yenilik ödülleri'],
                     ['value' => 'fast-growth', 'label' => 'Hızlı büyüme'],
-                    ['value' => 'quality-certificates', 'label' => 'Kalite sertifikaları']
+                    ['value' => 'quality-certificates', 'label' => 'Kalite sertifikaları'],
+                    ['value' => 'custom', 'label' => 'Diğer başarı', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: Sosyal etki, Çevre dostu projeler, Toplumsal katkı']
                 ],
                 'is_required' => false,
                 'sort_order' => 3
@@ -649,7 +656,8 @@ class AIProfileQuestionsSeeder extends Seeder
                     ['value' => 'customer-service', 'label' => 'Mükemmel müşteri hizmeti'],
                     ['value' => 'technology', 'label' => 'Gelişmiş teknoloji'],
                     ['value' => 'expertise', 'label' => 'Uzmanlık ve bilgi birikimi'],
-                    ['value' => 'innovation', 'label' => 'Sürekli yenilik']
+                    ['value' => 'innovation', 'label' => 'Sürekli yenilik'],
+                    ['value' => 'custom', 'label' => 'Diğer avantaj', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: Yerel ağ, Kültürel yakınlık, Esnek ödeme']
                 ],
                 'is_required' => false,
                 'sort_order' => 4
@@ -666,7 +674,8 @@ class AIProfileQuestionsSeeder extends Seeder
                     ['value' => 'agile', 'label' => 'Çevik proje yönetimi'],
                     ['value' => 'transparent', 'label' => 'Şeffaf süreç yönetimi'],
                     ['value' => 'result-oriented', 'label' => 'Sonuç odaklı'],
-                    ['value' => 'customer-centric', 'label' => 'Müşteri merkezli']
+                    ['value' => 'customer-centric', 'label' => 'Müşteri merkezli'],
+                    ['value' => 'custom', 'label' => 'Diğer yaklaşım', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: Mentoring yaklaşımı, Eğitim odaklı, Sürdürülebilirlik']
                 ],
                 'is_required' => false,
                 'sort_order' => 5
@@ -693,7 +702,8 @@ class AIProfileQuestionsSeeder extends Seeder
                     ['value' => 'formal', 'label' => 'Resmi', 'icon' => 'fas fa-university'],
                     ['value' => 'casual', 'label' => 'Günlük', 'icon' => 'far fa-smile'],
                     ['value' => 'enthusiastic', 'label' => 'Coşkulu', 'icon' => 'fas fa-fire'],
-                    ['value' => 'informative', 'label' => 'Bilgilendirici', 'icon' => 'fas fa-info-circle']
+                    ['value' => 'informative', 'label' => 'Bilgilendirici', 'icon' => 'fas fa-info-circle'],
+                    ['value' => 'custom', 'label' => 'Diğer ton', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: Eğlenceli, Mizahi, Duygusal, Lider ton']
                 ],
                 'is_required' => true,
                 'sort_order' => 1
@@ -712,7 +722,8 @@ class AIProfileQuestionsSeeder extends Seeder
                     ['value' => 'innovation', 'label' => 'Yenilikçilik', 'icon' => 'fas fa-lightbulb'],
                     ['value' => 'trust', 'label' => 'Güvenilirlik', 'icon' => 'fas fa-shield-alt'],
                     ['value' => 'customer-focus', 'label' => 'Müşteri Odaklılık', 'icon' => 'fas fa-heart'],
-                    ['value' => 'technology', 'label' => 'Teknoloji', 'icon' => 'fas fa-microchip']
+                    ['value' => 'technology', 'label' => 'Teknoloji', 'icon' => 'fas fa-microchip'],
+                    ['value' => 'custom', 'label' => 'Diğer vurgu', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: Sosyal sorumluluk, Çevre bilinci, Yerellik']
                 ],
                 'is_required' => false,
                 'sort_order' => 2
@@ -777,7 +788,6 @@ class AIProfileQuestionsSeeder extends Seeder
     {
         $questions = [
             [
-                'step' => 4,
                 'step' => 4,
                 'section' => 'founder_info',
                 'depends_on' => 'founder_permission',

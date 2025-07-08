@@ -31,6 +31,7 @@ class AITenantProfile extends Model
         'ai_behavior_rules' => 'array',
         'founder_info' => 'array',
         'additional_info' => 'array',
+        'context_priority' => 'array',
         'brand_story_created_at' => 'datetime',
         'is_active' => 'boolean',
         'is_completed' => 'boolean'
@@ -530,6 +531,230 @@ class AITenantProfile extends Model
     }
 
     /**
+     * 🎯 YENİ OPTIMIZE CONTEXT - Öncelikli ve hızlı AI context
+     * Priority sistemi ile sadece gerekli bilgiler
+     */
+    public function getOptimizedAIContext(int $maxPriority = 3): string
+    {
+        // Cache'den kontrol et
+        $cacheKey = "ai_context_optimized_{$this->tenant_id}_{$maxPriority}";
+        $context = \Cache::get($cacheKey);
+        
+        if ($context) {
+            return $context;
+        }
+        
+        // Context'i priority sırasına göre oluştur
+        $contextParts = [];
+        
+        // 🔥 PRİORİTY 1 - MARKA KİMLİĞİ (Her zaman dahil)
+        if ($maxPriority >= 1) {
+            $brandIdentity = $this->buildBrandIdentityContext();
+            if ($brandIdentity) {
+                $contextParts[] = "## 🎯 MARKA KİMLİĞİ (Birincil Odak)\n" . $brandIdentity;
+            }
+        }
+        
+        // ⚡ PRİORİTY 2 - İŞ STRATEJİSİ VE DAVRANIŞI (Önemli)
+        if ($maxPriority >= 2) {
+            $businessStrategy = $this->buildBusinessStrategyContext();
+            if ($businessStrategy) {
+                $contextParts[] = "## ⚡ İŞ STRATEJİSİ VE DAVRANIŞI\n" . $businessStrategy;
+            }
+        }
+        
+        // 📊 PRİORİTY 3 - DETAY BİLGİLER (Normal)
+        if ($maxPriority >= 3) {
+            $details = $this->buildDetailContext();
+            if ($details) {
+                $contextParts[] = "## 📊 DETAY BİLGİLER\n" . $details;
+            }
+        }
+        
+        // 📍 PRİORİTY 4 - EK BİLGİLER (Opsiyonel - sadece gerektiğinde)
+        if ($maxPriority >= 4) {
+            $additionalInfo = $this->buildAdditionalContext();
+            if ($additionalInfo) {
+                $contextParts[] = "## 📍 EK BİLGİLER (Gerekmedikçe kullanma)\n" . $additionalInfo;
+            }
+        }
+        
+        $finalContext = implode("\n\n", $contextParts);
+        
+        // 30 dakika cache'le
+        \Cache::put($cacheKey, $finalContext, now()->addMinutes(30));
+        
+        return $finalContext;
+    }
+    
+    /**
+     * Priority 1: Marka Kimliği - EN ÖNEMLİ
+     */
+    private function buildBrandIdentityContext(): string
+    {
+        $parts = [];
+        
+        // Firma adı (olmazsa olmaz)
+        if (isset($this->company_info['brand_name'])) {
+            $parts[] = "**Firma:** {$this->company_info['brand_name']}";
+        }
+        
+        // Ana hizmet (olmazsa olmaz)
+        if (isset($this->company_info['main_service'])) {
+            $parts[] = "**Ana Uzmanlık:** {$this->company_info['main_service']}";
+        }
+        
+        // Marka kişiliği (çok önemli - yazı tonunu belirler)
+        if (isset($this->sector_details['brand_personality'])) {
+            $personalities = array_keys(array_filter($this->sector_details['brand_personality']));
+            if (!empty($personalities)) {
+                $parts[] = "**Marka Kişiliği:** " . implode(', ', $personalities);
+            }
+        }
+        
+        // Yazı tonu (çok önemli - nasıl yazacağını belirler)
+        if (isset($this->ai_behavior_rules['writing_tone'])) {
+            $tones = array_keys(array_filter($this->ai_behavior_rules['writing_tone']));
+            if (!empty($tones)) {
+                $parts[] = "**Yazı Tonu:** " . implode(', ', $tones);
+            }
+        }
+        
+        return implode("\n", $parts);
+    }
+    
+    /**
+     * Priority 2: İş Stratejisi ve Davranışı - ÖNEMLİ
+     */
+    private function buildBusinessStrategyContext(): string
+    {
+        $parts = [];
+        
+        // Hedef kitle (önemli - kime hitap edeceğini belirler)
+        if (isset($this->sector_details['target_audience'])) {
+            $audiences = array_keys(array_filter($this->sector_details['target_audience']));
+            if (!empty($audiences)) {
+                $parts[] = "**Hedef Kitle:** " . implode(', ', $audiences);
+            }
+        }
+        
+        // Vurgu noktaları (önemli - neyi öne çıkaracağını belirler)
+        if (isset($this->ai_behavior_rules['emphasis_points'])) {
+            $emphasis = array_keys(array_filter($this->ai_behavior_rules['emphasis_points']));
+            if (!empty($emphasis)) {
+                $parts[] = "**Vurgu Noktaları:** " . implode(', ', $emphasis);
+            }
+        }
+        
+        // Rekabet avantajı (önemli)
+        if (isset($this->ai_behavior_rules['competitive_advantage'])) {
+            $advantages = array_keys(array_filter($this->ai_behavior_rules['competitive_advantage']));
+            if (!empty($advantages)) {
+                $parts[] = "**Rekabet Avantajı:** " . implode(', ', $advantages);
+            }
+        }
+        
+        // İletişim tarzı
+        if (isset($this->ai_behavior_rules['communication_style'])) {
+            $styles = array_keys(array_filter($this->ai_behavior_rules['communication_style']));
+            if (!empty($styles)) {
+                $parts[] = "**İletişim Tarzı:** " . implode(', ', $styles);
+            }
+        }
+        
+        // Kaçınılacak konular (önemli - ne yazmaması gerektiğini belirler)
+        if (isset($this->ai_behavior_rules['avoid_topics'])) {
+            $avoid = array_keys(array_filter($this->ai_behavior_rules['avoid_topics']));
+            if (!empty($avoid)) {
+                $parts[] = "**Kaçınılacak Konular:** " . implode(', ', $avoid);
+            }
+        }
+        
+        return implode("\n", $parts);
+    }
+    
+    /**
+     * Priority 3: Detay Bilgiler - NORMAL
+     */
+    private function buildDetailContext(): string
+    {
+        $parts = [];
+        
+        // Şirket büyüklüğü
+        if (isset($this->sector_details['company_size'])) {
+            $parts[] = "**Şirket Büyüklüğü:** {$this->sector_details['company_size']}";
+        }
+        
+        // Marka yaşı avantajı
+        if (isset($this->ai_behavior_rules['company_age_advantage'])) {
+            $parts[] = "**Deneyim Avantajı:** {$this->ai_behavior_rules['company_age_advantage']}";
+        }
+        
+        // Başarı göstergeleri
+        if (isset($this->ai_behavior_rules['success_indicators'])) {
+            $indicators = array_keys(array_filter($this->ai_behavior_rules['success_indicators']));
+            if (!empty($indicators)) {
+                $parts[] = "**Başarı Göstergeleri:** " . implode(', ', $indicators);
+            }
+        }
+        
+        return implode("\n", $parts);
+    }
+    
+    /**
+     * Priority 4: Ek Bilgiler - OPSİYONEL (sadece gerektiğinde)
+     */
+    private function buildAdditionalContext(): string
+    {
+        $parts = [];
+        
+        // Şehir bilgisi (sadece gerektiğinde - content'te lokasyon önemli ise)
+        if (isset($this->company_info['city'])) {
+            $parts[] = "**Lokasyon:** {$this->company_info['city']} (Sadece lokasyon önemli ise belirt)";
+        }
+        
+        // Şube durumu
+        if (isset($this->sector_details['branches'])) {
+            $parts[] = "**Şube Durumu:** {$this->sector_details['branches']}";
+        }
+        
+        // İletişim kanalları
+        if (isset($this->company_info['contact_info'])) {
+            $channels = array_keys(array_filter($this->company_info['contact_info']));
+            if (!empty($channels)) {
+                $parts[] = "**İletişim Kanalları:** " . implode(', ', $channels);
+            }
+        }
+        
+        return implode("\n", $parts);
+    }
+    
+    /**
+     * Context cache'ini temizle (profil güncellendiğinde)
+     */
+    public function clearContextCache(): void
+    {
+        $patterns = [
+            "ai_context_optimized_{$this->tenant_id}_*",
+            "ai_context_legacy_{$this->tenant_id}",
+            "ai_tenant_profile_{$this->tenant_id}"
+        ];
+        
+        foreach ($patterns as $pattern) {
+            \Cache::forget($pattern);
+            // Pattern ile cache temizleme
+            try {
+                $keys = \Cache::getRedis()->keys($pattern);
+                if (!empty($keys)) {
+                    \Cache::getRedis()->del($keys);
+                }
+            } catch (\Exception $e) {
+                \Log::warning('Context cache pattern clear failed', ['pattern' => $pattern]);
+            }
+        }
+    }
+
+    /**
      * Belirli bir bölümü güncelle
      */
     public function updateSection(string $section, array $data): bool
@@ -582,10 +807,15 @@ class AITenantProfile extends Model
         // Save işlemi
         try {
             $result = $this->save();
+            
+            // Cache temizle (önemli - profil güncellendiğinde)
+            $this->clearContextCache();
+            
             \Log::info("Save operation result", [
                 'success' => $result,
                 'section' => $section,
-                'final_value' => $this->fresh()->$section
+                'final_value' => $this->fresh()->$section,
+                'cache_cleared' => true
             ]);
             return $result;
         } catch (\Exception $e) {

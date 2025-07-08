@@ -26,11 +26,31 @@ class AIProfileController extends Controller
             $brandStoryGenerating = false;
             if ($profile->is_completed && !$profile->hasBrandStory()) {
                 try {
-                    $profile->generateBrandStory();
-                    session()->flash('brand_story_generated', 'Marka hikayeniz başarıyla oluşturuldu!');
+                    // API anahtarı kontrolü ÖNCE yap
+                    $aiSettings = \Modules\AI\App\Models\Setting::first();
+                    if (!$aiSettings || empty($aiSettings->api_key)) {
+                        \Log::error('API anahtarı bulunamadı - marka hikayesi oluşturulamadı');
+                        $brandStoryGenerating = true; // Loading state göster
+                    } else {
+                        // Async olarak hikaye oluştur (arka planda)
+                        \Log::info('Brand story generation başlatılıyor - async');
+                        $brandStoryGenerating = true; // Loading state göster
+                        
+                        // Eğer session'da generation flag'i yoksa başlat
+                        if (!session('brand_story_generating')) {
+                            session(['brand_story_generating' => true]);
+                            // Burada queue job ile arka planda oluşturabilirsiniz
+                            // Şimdilik direkt oluşturacağız
+                            $profile->generateBrandStory();
+                            session()->forget('brand_story_generating');
+                            session()->flash('brand_story_generated', 'Marka hikayeniz başarıyla oluşturuldu!');
+                            $brandStoryGenerating = false;
+                        }
+                    }
                 } catch (\Exception $e) {
                     \Log::error('Brand story generation failed in show', ['error' => $e->getMessage()]);
                     $brandStoryGenerating = true; // Loading state göster
+                    session()->flash('brand_story_error', 'Marka hikayesi oluşturulurken hata: ' . $e->getMessage());
                 }
             }
             
@@ -212,10 +232,41 @@ class AIProfileController extends Controller
                 ]
             );
 
-            // Field'ı parse et (section.key format'ında)
+            // Field'ı parse et (section.key format'ında VEYA tek alan)
             $fieldParts = explode('.', $field, 2);
-            $section = $fieldParts[0];
-            $key = $fieldParts[1] ?? null;
+            
+            // Tek alan ise (örn: "sector"), hangi section'a ait olduğunu belirle
+            if (count($fieldParts) === 1) {
+                $fieldName = $fieldParts[0];
+                
+                // Field mapping - hangi alan hangi section'a ait
+                $fieldToSectionMap = [
+                    'sector' => 'sector_details',
+                    'brand_name' => 'company_info',
+                    'city' => 'company_info',
+                    'main_service' => 'company_info',
+                    'contact_info' => 'company_info',
+                    'writing_tone' => 'ai_behavior_rules',
+                    // Diğer field'ları buraya ekle
+                ];
+                
+                if (isset($fieldToSectionMap[$fieldName])) {
+                    $section = $fieldToSectionMap[$fieldName];
+                    $key = $fieldName;
+                } else {
+                    throw new \Exception("Unknown field: {$fieldName}. Field mapping gerekli.");
+                }
+            } else {
+                $section = $fieldParts[0];
+                $key = $fieldParts[1];
+            }
+            
+            \Log::info('🔧 saveField - Field parsed', [
+                'original_field' => $field,
+                'section' => $section,
+                'key' => $key,
+                'value' => $value
+            ]);
 
             // Mevcut section data'sını al
             $sectionData = $profile->$section ?? [];

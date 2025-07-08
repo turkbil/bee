@@ -37,28 +37,8 @@ return new class extends Migration
             $table->string('emoji', 10)->nullable(); // 📝, 💻, ✍️
             $table->string('icon', 50)->nullable(); // FontAwesome class: "fas fa-edit"
             
-            // Kategoriler ve Sınıflandırma - TÜM KATEGORİLER
-            $table->enum('category', [
-                'content-creation',  // İçerik Oluşturma
-                'seo-tools',        // SEO Araçları
-                'translation',      // Çeviri
-                'web-editor',       // Web Editörü Araçları
-                'content-analysis', // İçerik Analizi
-                'marketing',        // Pazarlama
-                'creative',         // Yaratıcı Yazım
-                'business',         // İş Dünyası
-                'technical',        // Teknik
-                'education',        // Eğitim
-                'health',           // Sağlık
-                'legal',            // Hukuk
-                'finance',          // Finans
-                'travel',           // Seyahat
-                'food',             // Yemek
-                'sports',           // Spor
-                'technology',       // Teknoloji
-                'entertainment',    // Eğlence
-                'other'             // Diğer
-            ])->default('other');
+            // Kategoriler ve Sınıflandırma - STRING OLARAK DEĞİŞTİRİLDİ (enum değil)
+            $table->string('category', 50)->default('other');
             
             // Helper function name ve detayları
             $table->string('helper_function')->nullable();
@@ -100,6 +80,7 @@ return new class extends Migration
             
             // UI Özellikleri
             $table->integer('sort_order')->default(0); // Sıralama
+            $table->integer('order')->default(0); // EKLENEN YENİ ALAN - sıralama için
             $table->string('badge_color', 20)->default('success'); // Bootstrap color
             $table->boolean('requires_input')->default(true); // Input alanı gerekir mi
             $table->string('input_placeholder', 500)->nullable(); // Input placeholder
@@ -107,7 +88,7 @@ return new class extends Migration
             
             // Hızlı Örnekler
             $table->json('example_inputs')->nullable(); // [{"text": "örnek", "label": "Hızlı Test"}]
-            $table->json('example_prompts')->nullable(); // ["Örnek prompt 1", "Örnek prompt 2"]
+            // example_prompts KALDIRILDI - hiçbir yerde kullanılmıyor
             
             // İstatistikler
             $table->unsignedBigInteger('usage_count')->default(0); // Kullanım sayısı

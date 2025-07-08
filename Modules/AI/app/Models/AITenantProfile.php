@@ -755,6 +755,201 @@ class AITenantProfile extends Model
     }
 
     /**
+     * Merkezi completion percentage hesaplama fonksiyonu
+     * Show ve Edit sayfalarında tutarlı hesaplama için
+     */
+    public function getCompletionPercentage(): array
+    {
+        $totalFields = 0;
+        $completedFields = 0;
+        $sections = [];
+        
+        // Step 1: Sektör seçimi (1 alan)
+        $sectorCompleted = !empty($this->sector_details['sector']);
+        $sections['sector'] = ['completed' => $sectorCompleted, 'total' => 1];
+        $totalFields += 1;
+        if ($sectorCompleted) $completedFields += 1;
+        
+        // Step 2: Temel bilgiler (4 ana alan)
+        $companyFields = ['brand_name', 'city', 'main_service'];
+        $companyCompleted = 0;
+        $companyTotal = count($companyFields);
+        
+        foreach ($companyFields as $field) {
+            if (!empty($this->company_info[$field])) {
+                $companyCompleted++;
+            }
+        }
+        
+        // İletişim bilgileri (en az bir kanal seçilmişse)
+        $contactCompleted = false;
+        if (isset($this->company_info['contact_info']) && is_array($this->company_info['contact_info'])) {
+            foreach ($this->company_info['contact_info'] as $contact => $value) {
+                if ($value) {
+                    $contactCompleted = true;
+                    break;
+                }
+            }
+        }
+        if ($contactCompleted) $companyCompleted++;
+        $companyTotal++;
+        
+        $sections['company'] = ['completed' => $companyCompleted, 'total' => $companyTotal];
+        $totalFields += $companyTotal;
+        $completedFields += $companyCompleted;
+        
+        // Step 3: Marka detayları (6 ana alan + sektöre özel)
+        $brandFields = ['brand_personality', 'brand_age', 'company_size', 'branches', 'target_audience', 'market_position'];
+        $brandCompleted = 0;
+        $brandTotal = count($brandFields);
+        
+        foreach ($brandFields as $field) {
+            if (isset($this->sector_details[$field])) {
+                if (is_array($this->sector_details[$field])) {
+                    // Array alanları için en az bir seçim yapılmış mı?
+                    $hasSelection = false;
+                    foreach ($this->sector_details[$field] as $value) {
+                        if ($value) {
+                            $hasSelection = true;
+                            break;
+                        }
+                    }
+                    if ($hasSelection) $brandCompleted++;
+                } else {
+                    // String alanları için boş mu?
+                    if (!empty($this->sector_details[$field])) {
+                        $brandCompleted++;
+                    }
+                }
+            }
+        }
+        
+        // Sektöre özel sorular
+        $currentSector = $this->sector_details['sector'] ?? null;
+        if ($currentSector) {
+            $sectorQuestions = \Modules\AI\app\Models\AIProfileQuestion::where('step', 3)
+                ->where('sector_code', $currentSector)
+                ->get();
+            
+            $sectorSpecificCompleted = 0;
+            $sectorSpecificTotal = $sectorQuestions->count();
+            
+            foreach ($sectorQuestions as $question) {
+                $fieldKey = $question->question_key;
+                if (isset($this->sector_details[$fieldKey]) && !empty($this->sector_details[$fieldKey])) {
+                    $sectorSpecificCompleted++;
+                }
+            }
+            
+            $brandCompleted += $sectorSpecificCompleted;
+            $brandTotal += $sectorSpecificTotal;
+        }
+        
+        $sections['brand'] = ['completed' => $brandCompleted, 'total' => $brandTotal];
+        $totalFields += $brandTotal;
+        $completedFields += $brandCompleted;
+        
+        // Step 4: Kurucu bilgileri (1 zorunlu + isteğe bağlı)
+        $founderCompleted = 0;
+        $founderTotal = 1; // founder_permission
+        
+        $founderPermission = $this->company_info['founder_permission'] ?? 'no';
+        if (!empty($founderPermission)) {
+            $founderCompleted++;
+            
+            // Eğer kurucu bilgileri aktifse ek alanlar
+            if (in_array($founderPermission, ['yes_full', 'yes_limited'])) {
+                $founderFields = ['founder_name', 'founder_title', 'founder_background', 'founder_qualities'];
+                $founderFieldsCompleted = 0;
+                $founderFieldsTotal = count($founderFields);
+                
+                foreach ($founderFields as $field) {
+                    if (isset($this->founder_info[$field])) {
+                        if (is_array($this->founder_info[$field])) {
+                            // Array alanları için en az bir seçim
+                            foreach ($this->founder_info[$field] as $value) {
+                                if ($value) {
+                                    $founderFieldsCompleted++;
+                                    break;
+                                }
+                            }
+                        } else {
+                            // String alanları için boş mu?
+                            if (!empty($this->founder_info[$field])) {
+                                $founderFieldsCompleted++;
+                            }
+                        }
+                    }
+                }
+                
+                $founderCompleted += $founderFieldsCompleted;
+                $founderTotal += $founderFieldsTotal;
+            }
+        }
+        
+        $sections['founder'] = ['completed' => $founderCompleted, 'total' => $founderTotal];
+        $totalFields += $founderTotal;
+        $completedFields += $founderCompleted;
+        
+        // Step 5: Başarı hikayeleri (3 alan - isteğe bağlı)
+        $successFields = ['major_projects', 'client_references', 'success_metrics'];
+        $successCompleted = 0;
+        $successTotal = count($successFields);
+        
+        foreach ($successFields as $field) {
+            if (isset($this->success_stories[$field]) && !empty($this->success_stories[$field])) {
+                $successCompleted++;
+            }
+        }
+        
+        $sections['success'] = ['completed' => $successCompleted, 'total' => $successTotal];
+        $totalFields += $successTotal;
+        $completedFields += $successCompleted;
+        
+        // Step 6: AI davranış kuralları (dinamik soru sayısı)
+        $aiQuestions = \Modules\AI\app\Models\AIProfileQuestion::where('step', 6)->get();
+        $aiCompleted = 0;
+        $aiTotal = $aiQuestions->count();
+        
+        foreach ($aiQuestions as $question) {
+            $fieldKey = $question->question_key;
+            
+            if ($question->input_type === 'checkbox') {
+                // Checkbox için en az bir seçim
+                $hasSelection = false;
+                if (isset($this->ai_behavior_rules[$fieldKey]) && is_array($this->ai_behavior_rules[$fieldKey])) {
+                    foreach ($this->ai_behavior_rules[$fieldKey] as $value) {
+                        if ($value) {
+                            $hasSelection = true;
+                            break;
+                        }
+                    }
+                }
+                if ($hasSelection) $aiCompleted++;
+            } else {
+                // Normal alanlar için
+                if (isset($this->ai_behavior_rules[$fieldKey]) && !empty($this->ai_behavior_rules[$fieldKey])) {
+                    $aiCompleted++;
+                }
+            }
+        }
+        
+        $sections['ai_behavior'] = ['completed' => $aiCompleted, 'total' => $aiTotal];
+        $totalFields += $aiTotal;
+        $completedFields += $aiCompleted;
+        
+        // Genel percentage hesaplama
+        $percentage = $totalFields > 0 ? round(($completedFields / $totalFields) * 100) : 0;
+        
+        return [
+            'percentage' => $percentage,
+            'completed' => $completedFields,
+            'total' => $totalFields,
+            'sections' => $sections
+        ];
+    }
+
+    /**
      * Belirli bir bölümü güncelle
      */
     public function updateSection(string $section, array $data): bool

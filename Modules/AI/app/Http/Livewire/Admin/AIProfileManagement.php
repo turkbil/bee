@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Cache;
 class AIProfileManagement extends Component
 {
     public $currentStep = 1;
-    public $totalSteps = 6;
+    public $totalSteps = 5;
     public $formData = [];
     public $sectors = [];
     public $currentSectorCode = null;
@@ -236,40 +236,7 @@ class AIProfileManagement extends Component
                 break;
                 
             case 5:
-                // Başarı hikayeleri - MANUAL QUESTIONS (veritabanında yok)
-                $this->questions = collect([
-                    (object) [
-                        'question_key' => 'major_projects',
-                        'question_text' => 'Önemli Projeleriniz',
-                        'input_type' => 'textarea',
-                        'help_text' => 'Gerçekleştirdiğiniz büyük projeleri kısaca anlatın',
-                        'is_required' => false,
-                        'validation_rules' => null,
-                        'section' => 'success_stories'
-                    ],
-                    (object) [
-                        'question_key' => 'client_references',
-                        'question_text' => 'Müşteri Referansları',
-                        'input_type' => 'textarea',
-                        'help_text' => 'Memnun müşterilerinizden örnekler',
-                        'is_required' => false,
-                        'validation_rules' => null,
-                        'section' => 'success_stories'
-                    ],
-                    (object) [
-                        'question_key' => 'success_metrics',
-                        'question_text' => 'Başarı Metrikleri',
-                        'input_type' => 'textarea',
-                        'help_text' => 'Ölçülebilir başarı göstergeleriniz (sayısal veriler)',
-                        'is_required' => false,
-                        'validation_rules' => null,
-                        'section' => 'success_stories'
-                    ]
-                ]);
-                break;
-                
-            case 6:
-                // AI davranış kuralları
+                // AI davranış kuralları (eski step 6)
                 $this->questions = AIProfileQuestion::getByStep(6);
                 break;
         }
@@ -333,6 +300,9 @@ class AIProfileManagement extends Component
                 'currentStep' => $this->currentStep
             ]);
             
+            // CRITICAL FIX: jQuery auto-save'den sonra güncel veritabanı verilerini al
+            $this->refreshData();
+            
             // Verileri kaydet
             $this->saveStepData();
             
@@ -358,6 +328,15 @@ class AIProfileManagement extends Component
                 'formData' => $this->formData
             ]);
             
+            // CRITICAL FIX: jQuery auto-save'den sonra güncel veritabanı verilerini al
+            // Bu sayede form verilerinin üzerine yazmayız
+            $this->refreshData();
+            
+            \Log::info('AIProfileManagement - saveCurrentStep after refreshData', [
+                'currentStep' => $this->currentStep,
+                'formData' => $this->formData
+            ]);
+            
             // Mevcut step'in verilerini profile'e kaydet
             $this->saveStepData();
             
@@ -377,6 +356,9 @@ class AIProfileManagement extends Component
     
     public function saveAndNavigateNext()
     {
+        // CRITICAL FIX: jQuery auto-save'den sonra güncel veritabanı verilerini al
+        $this->refreshData();
+        
         // Mevcut step'i kaydet
         $saved = $this->saveCurrentStep();
         
@@ -547,20 +529,20 @@ class AIProfileManagement extends Component
     
     private function getFieldKey($question)
     {
-        // Adıma göre field prefix belirle
-        $prefix = match($this->currentStep) {
-            1 => '', // Sektör seçimi - prefix yok
-            2 => 'company_info', // Temel bilgiler
-            3 => 'sector_details', // Marka detayları / sektör bilgileri
-            4 => 'company_info', // Kurucu izin + bilgileri
-            5 => 'success_stories', // Başarı hikayeleri
-            6 => 'ai_behavior_rules', // AI davranış
-            default => ''
-        };
-        
-        // Section varsa onu kullan
+        // Section varsa onu kullan önce
         if ($question->section) {
             $prefix = $question->section;
+        } else {
+            // Adıma göre field prefix belirle
+            $prefix = match($this->currentStep) {
+                1 => '', // Sektör seçimi - prefix yok
+                2 => 'company_info', // Temel bilgiler
+                3 => 'sector_details', // Marka detayları / sektör bilgileri
+                4 => 'company_info', // Kurucu izin sorusu (sadece founder_permission)
+                5 => 'success_stories', // Başarı hikayeleri
+                6 => 'ai_behavior_rules', // AI davranış
+                default => ''
+            };
         }
         
         return $prefix ? "{$prefix}.{$question->question_key}" : $question->question_key;
@@ -672,38 +654,20 @@ class AIProfileManagement extends Component
                 break;
                 
             case 5:
-                // Başarı hikayeleri
-                \Log::info('AIProfileManagement - Step 5: Saving success stories');
-                
-                $sectionData = $normalizedData['success_stories'] ?? [];
-                
-                \Log::info('AIProfileManagement - Step 5: Success data to save', [
-                    'sectionData' => $sectionData
-                ]);
-                
-                if (!empty($sectionData)) {
-                    $this->profile->updateSection('success_stories', $sectionData);
-                    \Log::info('AIProfileManagement - Step 5: Success stories saved successfully');
-                } else {
-                    \Log::warning('AIProfileManagement - Step 5: No success stories data to save');
-                }
-                break;
-                
-            case 6:
-                // AI davranış kuralları
-                \Log::info('AIProfileManagement - Step 6: Saving AI behavior rules');
+                // Yapay zeka davranış kuralları (eski step 6)
+                \Log::info('AIProfileManagement - Step 5: Saving Yapay Zeka behavior rules');
                 
                 $sectionData = $normalizedData['ai_behavior_rules'] ?? [];
                 
-                \Log::info('AIProfileManagement - Step 6: AI behavior data to save', [
+                \Log::info('AIProfileManagement - Step 5: AI behavior data to save', [
                     'sectionData' => $sectionData
                 ]);
                 
                 if (!empty($sectionData)) {
                     $this->profile->updateSection('ai_behavior_rules', $sectionData);
-                    \Log::info('AIProfileManagement - Step 6: AI behavior rules saved successfully');
+                    \Log::info('AIProfileManagement - Step 5: AI behavior rules saved successfully');
                 } else {
-                    \Log::warning('AIProfileManagement - Step 6: No AI behavior rules data to save');
+                    \Log::warning('AIProfileManagement - Step 5: No AI behavior rules data to save');
                 }
                 break;
         }

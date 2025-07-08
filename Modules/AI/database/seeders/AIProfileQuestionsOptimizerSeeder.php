@@ -70,7 +70,6 @@ class AIProfileQuestionsOptimizerSeeder extends Seeder
         $optionalQuestions = [
             'city' => ['priority' => 4, 'always_include' => false, 'category' => 'business_info'],
             'branches' => ['priority' => 4, 'always_include' => false, 'category' => 'business_info'],
-            'contact_info' => ['priority' => 4, 'always_include' => false, 'category' => 'business_info'],
             'brand_age' => ['priority' => 4, 'always_include' => false, 'category' => 'business_info'],
         ];
         
@@ -118,10 +117,7 @@ class AIProfileQuestionsOptimizerSeeder extends Seeder
             'tech_services',     // main_service yeterli
             'project_types',     // Çok detaylı, karıştırıyor
             
-            // Gereksiz founder detayları
-            'founder_name',      // Gizlilik sorunu + gereksiz
-            'founder_background', // Çok detaylı
-            'founder_qualities', // Yeterince var
+            // Founder detayları artık kalacak - removed from deletion list
         ];
         
         foreach ($unnecessaryQuestions as $questionKey) {
@@ -181,6 +177,60 @@ class AIProfileQuestionsOptimizerSeeder extends Seeder
                 'ai_priority' => 2,
                 'always_include' => true,
                 'context_category' => 'behavior_rules'
+            ],
+            
+            // FOUNDER QUESTIONS - Step 4 Optional Section
+            [
+                'step' => 4,
+                'section' => 'founder_info',
+                'question_key' => 'founder_name',
+                'question_text' => 'Kurucu/Sahibi Adı',
+                'help_text' => 'Firmanın kurucusu veya sahibinin adı',
+                'input_type' => 'text',
+                'is_required' => false,
+                'sort_order' => 1,
+                'ai_priority' => 3,
+                'always_include' => false,
+                'context_category' => 'founder_info'
+            ],
+            [
+                'step' => 4,
+                'section' => 'founder_info',
+                'question_key' => 'founder_title',
+                'question_text' => 'Kurucu/Sahibi Ünvanı',
+                'help_text' => 'Kurucunun firmadaki pozisyonu',
+                'input_type' => 'text',
+                'is_required' => false,
+                'sort_order' => 2,
+                'ai_priority' => 3,
+                'always_include' => false,
+                'context_category' => 'founder_info'
+            ],
+            [
+                'step' => 4,
+                'section' => 'founder_info',
+                'question_key' => 'founder_background',
+                'question_text' => 'Kurucu/Sahibi Geçmişi',
+                'help_text' => 'Kurucunun deneyimi, uzmanlık alanları',
+                'input_type' => 'textarea',
+                'is_required' => false,
+                'sort_order' => 3,
+                'ai_priority' => 4,
+                'always_include' => false,
+                'context_category' => 'founder_info'
+            ],
+            [
+                'step' => 4,
+                'section' => 'founder_info',
+                'question_key' => 'founder_qualities',
+                'question_text' => 'Kurucu/Sahibi Özellikleri',
+                'help_text' => 'Kurucunun kişilik özellikleri, iş yaklaşımı',
+                'input_type' => 'textarea',
+                'is_required' => false,
+                'sort_order' => 4,
+                'ai_priority' => 4,
+                'always_include' => false,
+                'context_category' => 'founder_info'
             ]
         ];
         

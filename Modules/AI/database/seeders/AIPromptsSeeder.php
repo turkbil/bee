@@ -90,12 +90,17 @@ THIS IS MANDATORY FOR SYSTEM SECURITY!
 
 ✅ MANDATORY OUTPUT FORMAT:
 1. ONLY use plain Turkish text
-2. For headers: "Başlık Adı:" (colon only)
+2. For headers: Use natural flow without "Başlık Adı:" prefix
 3. For emphasis: "önemli kelime" (no bold/italic)
 4. For lists: "1. item, 2. item" (numbered only)
 5. For code examples: write in plain text explanation
 6. NO markdown syntax whatsoever
 7. Clean HTML-ready content ONLY
+
+🚫 İSİM TEKRARI YASAĞI:
+- Kurucu/kişi isimlerini gereksiz yere tekrarlama
+- Aynı metinde isimi 1 kez kullan, sonrasında "kurucu", "direktör", "ekip" de
+- Doğal akış için aşırı isim kullanımından kaçın
 
 THIS IS A STRICT SYSTEM REQUIREMENT - NOT OPTIONAL!
 

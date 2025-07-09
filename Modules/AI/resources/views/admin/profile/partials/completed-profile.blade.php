@@ -95,8 +95,9 @@
                                 "></div>
                                 <div style="
                                     position: absolute;
-                                    top: 6px;
-                                    left: 6px;
+                                    top: 50%;
+                                    left: 50%;
+                                    transform: translate(-50%, -50%);
                                     background: linear-gradient(135deg, #9333ea, #7c3aed);
                                     width: 40px;
                                     height: 40px;
@@ -173,8 +174,9 @@
                                 "></div>
                                 <div style="
                                     position: absolute;
-                                    top: 6px;
-                                    left: 6px;
+                                    top: 50%;
+                                    left: 50%;
+                                    transform: translate(-50%, -50%);
                                     background: #9333ea;
                                     width: 30px;
                                     height: 30px;
@@ -338,30 +340,52 @@
             </div>
             <div class="card-body">
                 <div class="row">
-                    @if(isset($profile->ai_behavior_rules['writing_tone']))
+                    @if(isset($profile->success_stories['writing_tone']))
                         <div class="col-md-3 mb-3">
                             <strong class="text-muted">Yazı Tonu:</strong>
                             <div class="mt-1">
-                                @if(is_array($profile->ai_behavior_rules['writing_tone']))
-                                    @foreach($profile->ai_behavior_rules['writing_tone'] as $tone_key => $tone_value)
+                                @if(is_array($profile->success_stories['writing_tone']))
+                                    @foreach($profile->success_stories['writing_tone'] as $tone_key => $tone_value)
                                         @if($tone_value && $tone_value !== false)
                                             <span class="badge bg-muted me-1 mb-1" style="border-radius: 0.25rem !important; color: var(--tblr-body-color) !important; background-color: var(--tblr-bg-surface) !important; border: 1px solid var(--tblr-border-color) !important;">{{ ucfirst(str_replace('_', ' ', $tone_key)) }}</span>
                                         @endif
                                     @endforeach
                                 @else
                                     <span class="badge bg-muted fs-6" style="border-radius: 0.25rem !important; color: var(--tblr-body-color) !important; background-color: var(--tblr-bg-surface) !important; border: 1px solid var(--tblr-border-color) !important;">
-                                        {{ is_string($profile->ai_behavior_rules['writing_tone']) ? ucfirst($profile->ai_behavior_rules['writing_tone']) : $profile->ai_behavior_rules['writing_tone'] }}
+                                        {{ is_string($profile->success_stories['writing_tone']) ? ucfirst($profile->success_stories['writing_tone']) : $profile->success_stories['writing_tone'] }}
                                     </span>
                                 @endif
                             </div>
                         </div>
                     @endif
                     
-                    @if(isset($profile->ai_behavior_rules['emphasis_points']) && is_array($profile->ai_behavior_rules['emphasis_points']))
+                    @if(isset($profile->success_stories['brand_voice']))
+                        <div class="col-md-3 mb-3">
+                            <strong class="text-muted">Marka Sesi:</strong>
+                            <div class="mt-1">
+                                <span class="badge bg-muted fs-6" style="border-radius: 0.25rem !important; color: var(--tblr-body-color) !important; background-color: var(--tblr-bg-surface) !important; border: 1px solid var(--tblr-border-color) !important;">
+                                    {{ ucfirst(str_replace('_', ' ', $profile->success_stories['brand_voice'])) }}
+                                </span>
+                            </div>
+                        </div>
+                    @endif
+                    
+                    @if(isset($profile->success_stories['content_focus']))
+                        <div class="col-md-3 mb-3">
+                            <strong class="text-muted">İçerik Odağı:</strong>
+                            <div class="mt-1">
+                                <span class="badge bg-muted fs-6" style="border-radius: 0.25rem !important; color: var(--tblr-body-color) !important; background-color: var(--tblr-bg-surface) !important; border: 1px solid var(--tblr-border-color) !important;">
+                                    {{ ucfirst(str_replace('_', ' ', $profile->success_stories['content_focus'])) }}
+                                </span>
+                            </div>
+                        </div>
+                    @endif
+                    
+                    @if(isset($profile->success_stories['emphasis_points']) && is_array($profile->success_stories['emphasis_points']))
                         <div class="col-md-3 mb-3">
                             <strong class="text-muted">Vurgu Noktaları:</strong>
                             <div class="mt-1">
-                                @foreach($profile->ai_behavior_rules['emphasis_points'] as $key => $value)
+                                @foreach($profile->success_stories['emphasis_points'] as $key => $value)
                                     @if($value)
                                         <span class="badge bg-muted me-1 mb-1" style="border-radius: 0.25rem !important; color: var(--tblr-body-color) !important; background-color: var(--tblr-bg-surface) !important; border: 1px solid var(--tblr-border-color) !important;">{{ ucfirst(str_replace(['-', '_'], ' ', $key)) }}</span>
                                     @endif
@@ -370,23 +394,16 @@
                         </div>
                     @endif
                     
-                    @if(isset($profile->ai_behavior_rules['avoid_topics']) && is_array($profile->ai_behavior_rules['avoid_topics']))
+                    @if(isset($profile->success_stories['avoid_topics']) && is_array($profile->success_stories['avoid_topics']))
                         <div class="col-md-3 mb-3">
                             <strong class="text-muted">Kaçınılacak Konular:</strong>
                             <div class="mt-1">
-                                @foreach($profile->ai_behavior_rules['avoid_topics'] as $key => $value)
+                                @foreach($profile->success_stories['avoid_topics'] as $key => $value)
                                     @if($value)
                                         <span class="badge bg-muted me-1 mb-1" style="border-radius: 0.25rem !important; color: var(--tblr-body-color) !important; background-color: var(--tblr-bg-surface) !important; border: 1px solid var(--tblr-border-color) !important;">{{ ucfirst(str_replace(['-', '_'], ' ', $key)) }}</span>
                                     @endif
                                 @endforeach
                             </div>
-                        </div>
-                    @endif
-                    
-                    @if(isset($profile->ai_behavior_rules['special_terminology']))
-                        <div class="col-md-3 mb-3">
-                            <strong class="text-muted">Özel Terminoloji:</strong>
-                            <div class="mt-1 text-muted">{{ $profile->ai_behavior_rules['special_terminology'] }}</div>
                         </div>
                     @endif
                 </div>
@@ -394,43 +411,6 @@
         </div>
     </div>
     
-    {{-- Success Stories --}}
-    @if($profile->success_stories && !empty(array_filter($profile->success_stories)))
-        <div class="col-12">
-            <div class="card" style="border-radius: 15px; border: 1px solid rgba(16, 185, 129, 0.2);">
-                <div class="card-header" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05)); border-radius: 15px 15px 0 0;">
-                    <h3 class="card-title d-flex align-items-center">
-                        <i class="fas fa-trophy me-2" style="color: #10b981;"></i>
-                        Başarı Hikayeleri
-                    </h3>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        @if(isset($profile->success_stories['major_projects']))
-                            <div class="col-md-6 mb-3">
-                                <strong class="text-muted">Önemli Projeler:</strong>
-                                <div class="mt-1">{{ $profile->success_stories['major_projects'] }}</div>
-                            </div>
-                        @endif
-                        
-                        @if(isset($profile->success_stories['client_references']))
-                            <div class="col-md-6 mb-3">
-                                <strong class="text-muted">Müşteri Referansları:</strong>
-                                <div class="mt-1">{{ $profile->success_stories['client_references'] }}</div>
-                            </div>
-                        @endif
-                        
-                        @if(isset($profile->success_stories['success_metrics']))
-                            <div class="col-md-6 mb-3">
-                                <strong class="text-muted">Başarı Metrikleri:</strong>
-                                <div class="mt-1">{{ $profile->success_stories['success_metrics'] }}</div>
-                            </div>
-                        @endif
-                    </div>
-                </div>
-            </div>
-        </div>
-    @endif
     
     {{-- Founder Info --}}
     @if($profile->founder_info && !empty(array_filter($profile->founder_info)))
@@ -645,7 +625,6 @@ function regenerateBrandStory() {
             }
         })
         .catch(error => {
-            console.error('Error:', error);
             storyContainer.innerHTML = originalContent;
             alert('Hikaye oluşturulurken hata oluştu');
         });
@@ -667,7 +646,6 @@ function copyBrandStory() {
         navigator.clipboard.writeText(storyText).then(() => {
             showCopySuccess(btn);
         }).catch(err => {
-            console.warn('Modern clipboard failed, trying fallback:', err);
             fallbackCopy(storyText, btn);
         });
     } else {
@@ -692,7 +670,6 @@ function fallbackCopy(text, btn) {
             alert('Kopyalama başarısız oldu');
         }
     } catch (err) {
-        console.error('Fallback copy failed:', err);
         alert('Kopyalama desteklenmiyor');
     } finally {
         document.body.removeChild(textArea);

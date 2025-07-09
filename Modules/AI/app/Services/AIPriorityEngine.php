@@ -432,12 +432,41 @@ class AIPriorityEngine
             $context[] = "**Ana Hizmetler**: {$companyInfo['main_service']}";
         }
         
-        if (!empty($companyInfo['city'])) {
-            $context[] = "**Şehir**: {$companyInfo['city']}";
+        // Kurucu bilgisi (Priority 1) - founder_info'dan al
+        if (!empty($founderInfo['founder_name'])) {
+            $founderText = $founderInfo['founder_name'];
+            if (!empty($founderInfo['founder_role'])) {
+                $roleMap = [
+                    'director' => 'Direktör',
+                    'ceo' => 'CEO',
+                    'founder' => 'Kurucu',
+                    'manager' => 'Yönetici'
+                ];
+                $roleName = $roleMap[$founderInfo['founder_role']] ?? $founderInfo['founder_role'];
+                $founderText .= " ({$roleName})";
+            }
+            $context[] = "**Kurucu**: {$founderText} (Sadece gerekli durumlarda 1 kez bahset)";
         }
         
-        if (!empty($companyInfo['founder_name'])) {
-            $context[] = "**Kurucu**: {$companyInfo['founder_name']}";
+        // Kuruluş tarihi (Priority 1) - brand_age_custom'dan al
+        if (!empty($sectorDetails['brand_age_custom'])) {
+            $context[] = "**Kuruluş**: {$sectorDetails['brand_age_custom']}";
+        }
+        
+        // Pazar pozisyonu (Priority 1)
+        if (!empty($sectorDetails['market_position'])) {
+            $positionMap = [
+                'budget' => 'Ekonomik',
+                'standard' => 'Standart',
+                'premium' => 'Premium',
+                'luxury' => 'Lüks'
+            ];
+            $positionName = $positionMap[$sectorDetails['market_position']] ?? $sectorDetails['market_position'];
+            $context[] = "**Pazar Pozisyonu**: {$positionName}";
+        }
+        
+        if (!empty($companyInfo['city'])) {
+            $context[] = "**Şehir**: {$companyInfo['city']}";
         }
         
         // Sektör bilgileri (Priority 2+)
@@ -489,32 +518,130 @@ class AIPriorityEngine
             }
         }
         
+        // AI Behavior Rules - EN ÖNEMLİ (Priority 1)
+        $behaviorRules = $profile->ai_behavior_rules ?? [];
+        
+        // Yazı tonu - EN ÖNEMLİ
+        if (isset($behaviorRules['writing_tone'])) {
+            $toneMap = [
+                'professional' => 'Profesyonel',
+                'friendly' => 'Samimi', 
+                'formal' => 'Resmi',
+                'casual' => 'Günlük',
+                'informative' => 'Bilgilendirici',
+                'authoritative' => 'Otoriter',
+                'conversational' => 'Sohbet Tarzı'
+            ];
+            
+            if (is_array($behaviorRules['writing_tone'])) {
+                $selectedTones = array_keys(array_filter($behaviorRules['writing_tone']));
+                if (!empty($selectedTones)) {
+                    $toneNames = array_map(fn($tone) => $toneMap[$tone] ?? $tone, $selectedTones);
+                    $context[] = "**YAZMA TONU**: " . implode(', ', $toneNames) . " (Bu ton tarzında yanıt ver)";
+                }
+            }
+        }
+        
+        // İletişim tarzı - EN ÖNEMLİ
+        if (isset($behaviorRules['communication_style'])) {
+            $styleMap = [
+                'direct' => 'Direkt ve Net',
+                'consultative' => 'Danışmanlık Odaklı',
+                'educational' => 'Eğitici',
+                'supportive' => 'Destekleyici',
+                'inspiring' => 'İlham Verici',
+                'solution-focused' => 'Çözüm Odaklı'
+            ];
+            
+            if (is_array($behaviorRules['communication_style'])) {
+                $selectedStyles = array_keys(array_filter($behaviorRules['communication_style']));
+                if (!empty($selectedStyles)) {
+                    $styleNames = array_map(fn($style) => $styleMap[$style] ?? $style, $selectedStyles);
+                    $context[] = "**İLETİŞİM TARZI**: " . implode(', ', $styleNames) . " (Bu tarzda iletişim kur)";
+                }
+            }
+        }
+        
+        // Marka sesi - EN ÖNEMLİ
+        if (isset($behaviorRules['brand_voice'])) {
+            $voiceMap = [
+                'authoritative' => 'Otoriter ve güvenilir',
+                'friendly' => 'Samimi ve dostane',
+                'playful' => 'Eğlenceli ve yaratıcı',
+                'sophisticated' => 'Sofistike ve elit',
+                'trustworthy' => 'Güvenilir ve samimi',
+                'innovative' => 'Yenilikçi ve modern'
+            ];
+            
+            $voiceName = $voiceMap[$behaviorRules['brand_voice']] ?? $behaviorRules['brand_voice'];
+            $context[] = "**MARKA SESİ**: {$voiceName} (Bu ses tonunu benimse)";
+        }
+        
+        // İçerik yaklaşımı - ÖNEMLİ
+        if (isset($behaviorRules['content_approach'])) {
+            $approachMap = [
+                'storytelling' => 'Hikaye Anlatımı',
+                'data-driven' => 'Veri Odaklı',
+                'benefit-focused' => 'Fayda Odaklı',
+                'problem-solving' => 'Problem Çözme',
+                'emotional' => 'Duygusal Bağlantı',
+                'technical' => 'Teknik Detay',
+                'practical' => 'Pratik Çözümler'
+            ];
+            
+            if (is_array($behaviorRules['content_approach'])) {
+                $selectedApproaches = array_keys(array_filter($behaviorRules['content_approach']));
+                if (!empty($selectedApproaches)) {
+                    $approachNames = array_map(fn($approach) => $approachMap[$approach] ?? $approach, $selectedApproaches);
+                    $context[] = "**İÇERİK YAKLAŞIMI**: " . implode(', ', $approachNames) . " (Bu yaklaşımları kullan)";
+                }
+            }
+        }
+        
+        // Vurgu noktaları - ÖNEMLİ
+        if (isset($behaviorRules['emphasis_points'])) {
+            $emphasisMap = [
+                'quality' => 'Kalite',
+                'price' => 'Uygun Fiyat',
+                'speed' => 'Hız',
+                'experience' => 'Deneyim',
+                'innovation' => 'Yenilikçilik',
+                'trust' => 'Güvenilirlik',
+                'customer-focus' => 'Müşteri Odaklılık'
+            ];
+            
+            if (is_array($behaviorRules['emphasis_points'])) {
+                $selectedEmphasis = array_keys(array_filter($behaviorRules['emphasis_points']));
+                if (!empty($selectedEmphasis)) {
+                    $emphasisNames = array_map(fn($emphasis) => $emphasisMap[$emphasis] ?? $emphasis, $selectedEmphasis);
+                    $context[] = "**VURGU NOKTALARI**: " . implode(', ', $emphasisNames) . " (Bu özellikler öne çıkar)";
+                }
+            }
+        }
+        
+        // Kaçınılacak konular - ÖNEMLİ
+        if (isset($behaviorRules['avoid_topics'])) {
+            $avoidMap = [
+                'politics' => 'Siyaset',
+                'religion' => 'Din',
+                'competitors' => 'Rakipler',
+                'negative-news' => 'Olumsuz Haberler',
+                'controversy' => 'Tartışmalı Konular'
+            ];
+            
+            if (is_array($behaviorRules['avoid_topics'])) {
+                $selectedAvoid = array_keys(array_filter($behaviorRules['avoid_topics']));
+                if (!empty($selectedAvoid)) {
+                    $avoidNames = array_map(fn($avoid) => $avoidMap[$avoid] ?? $avoid, $selectedAvoid);
+                    $context[] = "**KAÇINILACAK KONULAR**: " . implode(', ', $avoidNames) . " (Bu konulara değinme)";
+                }
+            }
+        }
+        
         // Detay bilgiler (Priority 3+)
         if ($maxPriority >= 3) {
             if (isset($sectorDetails['business_description'])) {
                 $context[] = "**İş Tanımı**: {$sectorDetails['business_description']}";
-            }
-            
-            if (isset($sectorDetails['brand_voice'])) {
-                $voiceMap = [
-                    'authoritative' => 'Otoriter ve güvenilir',
-                    'friendly' => 'Samimi ve dostane',
-                    'playful' => 'Eğlenceli ve yaratıcı',
-                    'sophisticated' => 'Sofistike ve elit',
-                    'trustworthy' => 'Güvenilir ve samimi'
-                ];
-                
-                // Array ise selected key'leri al, string ise direkt kullan
-                if (is_array($sectorDetails['brand_voice'])) {
-                    $selectedVoices = array_keys(array_filter($sectorDetails['brand_voice']));
-                    if (!empty($selectedVoices)) {
-                        $voiceNames = array_map(fn($voice) => $voiceMap[$voice] ?? $voice, $selectedVoices);
-                        $context[] = "**Marka Sesi**: " . implode(', ', $voiceNames);
-                    }
-                } else {
-                    $voiceName = $voiceMap[$sectorDetails['brand_voice']] ?? $sectorDetails['brand_voice'];
-                    $context[] = "**Marka Sesi**: {$voiceName}";
-                }
             }
             
             if (!empty($companyInfo['founder_title'])) {

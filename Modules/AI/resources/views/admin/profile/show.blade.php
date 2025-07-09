@@ -114,7 +114,7 @@
                                     
                                     <div class="progress-circle progress-circle-large">
                                         <svg class="progress-svg" viewBox="0 0 100 100">
-                                            <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="6"/>
+                                            <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(var(--tblr-muted-rgb, 255,255,255),0.1)" stroke-width="6"/>
                                             <circle cx="50" cy="50" r="45" fill="none" stroke="url(#gradient)" stroke-width="6" 
                                                     stroke-dasharray="282.74" stroke-dashoffset="{{ 282.74 - (282.74 * $completionPercentage / 100) }}"
                                                     transform="rotate(-90 50 50)" stroke-linecap="round"/>

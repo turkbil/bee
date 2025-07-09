@@ -708,10 +708,70 @@ class AIProfileQuestionsSeeder extends Seeder
                     ['value' => 'formal', 'label' => 'Resmi', 'icon' => 'fas fa-university'],
                     ['value' => 'casual', 'label' => 'Günlük', 'icon' => 'far fa-smile'],
                     ['value' => 'informative', 'label' => 'Bilgilendirici', 'icon' => 'fas fa-info-circle'],
+                    ['value' => 'authoritative', 'label' => 'Otoriter', 'icon' => 'fas fa-crown'],
+                    ['value' => 'conversational', 'label' => 'Sohbet Tarzı', 'icon' => 'fas fa-comments'],
                     ['value' => 'custom', 'label' => 'Diğer ton', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: Eğlenceli, Mizahi, Duygusal, Lider ton']
                 ],
                 'is_required' => true,
                 'sort_order' => 1
+            ],
+            // EN ÖNEMLİ: İletişim tarzı (Priority 1)
+            [
+                'step' => 6,
+                'question_key' => 'communication_style',
+                'question_text' => 'İletişim Tarzı',
+                'help_text' => 'Yapay Zeka nasıl bir iletişim tarzı benimsesin? (birden fazla seçebilirsiniz)',
+                'input_type' => 'checkbox',
+                'options' => [
+                    ['value' => 'direct', 'label' => 'Direkt ve Net', 'icon' => 'fas fa-arrow-right'],
+                    ['value' => 'consultative', 'label' => 'Danışmanlık Odaklı', 'icon' => 'fas fa-user-tie'],
+                    ['value' => 'educational', 'label' => 'Eğitici', 'icon' => 'fas fa-graduation-cap'],
+                    ['value' => 'supportive', 'label' => 'Destekleyici', 'icon' => 'fas fa-hands-helping'],
+                    ['value' => 'inspiring', 'label' => 'İlham Verici', 'icon' => 'fas fa-lightbulb'],
+                    ['value' => 'solution-focused', 'label' => 'Çözüm Odaklı', 'icon' => 'fas fa-tools'],
+                    ['value' => 'custom', 'label' => 'Diğer tarz', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: Mentoring, Arkadaşça, Liderlik']
+                ],
+                'is_required' => true,
+                'sort_order' => 2
+            ],
+            // EN ÖNEMLİ: Marka sesi (Priority 1)
+            [
+                'step' => 6,
+                'question_key' => 'brand_voice',
+                'question_text' => 'Marka Sesi',
+                'help_text' => 'Markanızın genel ses tonu nasıl olsun? (tek seçim)',
+                'input_type' => 'radio',
+                'options' => [
+                    ['value' => 'authoritative', 'label' => 'Otoriter ve Güvenilir', 'icon' => 'fas fa-shield-alt'],
+                    ['value' => 'friendly', 'label' => 'Samimi ve Dostane', 'icon' => 'fas fa-heart'],
+                    ['value' => 'playful', 'label' => 'Eğlenceli ve Yaratıcı', 'icon' => 'fas fa-smile-beam'],
+                    ['value' => 'sophisticated', 'label' => 'Sofistike ve Elit', 'icon' => 'fas fa-gem'],
+                    ['value' => 'trustworthy', 'label' => 'Güvenilir ve Samimi', 'icon' => 'fas fa-handshake'],
+                    ['value' => 'innovative', 'label' => 'Yenilikçi ve Modern', 'icon' => 'fas fa-rocket'],
+                    ['value' => 'custom', 'label' => 'Diğer ses tonu', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: Geleneksel, Yerel, Enerjik']
+                ],
+                'is_required' => true,
+                'sort_order' => 3
+            ],
+            // ÖNEMLİ: İçerik yaklaşımı (Priority 2)
+            [
+                'step' => 6,
+                'question_key' => 'content_approach',
+                'question_text' => 'İçerik Yaklaşımı',
+                'help_text' => 'İçerik üretiminde hangi yaklaşımı benimser? (birden fazla seçebilirsiniz)',
+                'input_type' => 'checkbox',
+                'options' => [
+                    ['value' => 'storytelling', 'label' => 'Hikaye Anlatımı', 'icon' => 'fas fa-book'],
+                    ['value' => 'data-driven', 'label' => 'Veri Odaklı', 'icon' => 'fas fa-chart-bar'],
+                    ['value' => 'benefit-focused', 'label' => 'Fayda Odaklı', 'icon' => 'fas fa-bullseye'],
+                    ['value' => 'problem-solving', 'label' => 'Problem Çözme', 'icon' => 'fas fa-puzzle-piece'],
+                    ['value' => 'emotional', 'label' => 'Duygusal Bağlantı', 'icon' => 'fas fa-heart'],
+                    ['value' => 'technical', 'label' => 'Teknik Detay', 'icon' => 'fas fa-cogs'],
+                    ['value' => 'practical', 'label' => 'Pratik Çözümler', 'icon' => 'fas fa-hammer'],
+                    ['value' => 'custom', 'label' => 'Diğer yaklaşım', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: Karşılaştırmalı, Öğretici, Motivasyonel']
+                ],
+                'is_required' => false,
+                'sort_order' => 4
             ],
             // ÖNEMLİ: Vurgu noktaları (Priority 2)
             [
@@ -731,7 +791,7 @@ class AIProfileQuestionsSeeder extends Seeder
                     ['value' => 'custom', 'label' => 'Diğer vurgu', 'icon' => 'fas fa-edit', 'has_custom_input' => true, 'custom_placeholder' => 'Örn: Sosyal sorumluluk, Çevre bilinci, Yerellik']
                 ],
                 'is_required' => false,
-                'sort_order' => 2
+                'sort_order' => 5
             ],
             // ORTA: Kaçınılacak konular (Priority 3)
             [
@@ -748,7 +808,7 @@ class AIProfileQuestionsSeeder extends Seeder
                     ['value' => 'controversy', 'label' => 'Tartışmalı Konular', 'icon' => 'fas fa-minus-circle']
                 ],
                 'is_required' => false,
-                'sort_order' => 3
+                'sort_order' => 6
             ]
         ];
         

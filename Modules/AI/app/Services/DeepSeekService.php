@@ -34,17 +34,9 @@ class DeepSeekService
     protected function loadApiSettings()
     {
         try {
-            // Sadece veritabanından ayarları yükle (basit tek kaynak sistemi)
-            $settings = $this->getGlobalSettings();
-            if ($settings && !empty($settings->api_key)) {
-                $this->apiKey = $settings->api_key;
-                $this->model = $settings->model ?: 'deepseek-chat';
-                return;
-            }
-            
-            // Ayarlar bulunamadı
-            $this->apiKey = '';
-            $this->model = 'deepseek-chat';
+            // Merkezi AI helper'ı kullan
+            $this->apiKey = ai_get_api_key();
+            $this->model = ai_get_model();
             
             if (empty($this->apiKey)) {
                 Log::warning('API anahtarı bulunamadı. Lütfen admin panelden AI ayarlarını yapılandırın.');
@@ -59,31 +51,8 @@ class DeepSeekService
 
     protected function getGlobalSettings()
     {
-        try {
-            $cacheKey = "ai_settings_global";
-            
-            // Önce cache'i kontrol et, yoksa direkt veritabanından al
-            $settings = Cache::get($cacheKey);
-            
-            if (!$settings) {
-                // Cache'de yoksa veritabanından al ve cache'e kaydet
-                $settings = Setting::first();
-                if ($settings) {
-                    Cache::put($cacheKey, $settings, now()->addMinutes(30));
-                }
-            }
-            
-            return $settings;
-        } catch (\Exception $e) {
-            Log::error('Ayarlar alınırken hata: ' . $e->getMessage());
-            // Hata durumunda direkt veritabanından tekrar dene
-            try {
-                return Setting::first();
-            } catch (\Exception $e2) {
-                Log::error('Veritabanından ayar alınırken hata: ' . $e2->getMessage());
-                return null;
-            }
-        }
+        // Merkezi AI helper'ı kullan
+        return ai_get_settings();
     }
 
     public static function forTenant(?int $tenantId = null): self
@@ -128,17 +97,22 @@ class DeepSeekService
         $messages = $this->formatMessages($conversationHistory);
 
         try {
-            if (empty($this->apiKey)) {
-                Log::error('API anahtarı bulunamadı');
+            // Merkezi helper ile API anahtarını kontrol et
+            $apiKey = ai_get_api_key();
+            if (empty($apiKey)) {
+                Log::error('API anahtarı bulunamadı - ai_get_api_key() in generateCompletion');
                 return [
                     'content' => 'API anahtarı bulunamadı. Lütfen yöneticinizle iletişime geçin.',
                     'error' => 'API anahtarı bulunamadı',
                 ];
             }
             
+            // Local api key'i güncelle
+            $this->apiKey = $apiKey;
+            
             $settings = $this->getGlobalSettings();
             
-            $response = Http::timeout(300)->withHeaders([
+            $response = Http::timeout(600)->withHeaders([
                 'Authorization' => 'Bearer ' . $this->apiKey,
                 'Content-Type' => 'application/json',
             ])->post($this->baseUrl . '/chat/completions', [
@@ -194,17 +168,22 @@ class DeepSeekService
         $this->lastFullResponse = '';
 
         try {
-            if (empty($this->apiKey)) {
-                Log::error('API anahtarı bulunamadı');
+            // Merkezi helper ile API anahtarını kontrol et
+            $apiKey = ai_get_api_key();
+            if (empty($apiKey)) {
+                Log::error('API anahtarı bulunamadı - ai_get_api_key() in streamCompletion');
                 if ($callback) {
                     $callback('API anahtarı bulunamadı. Lütfen yöneticinizle iletişime geçin.');
                 }
                 return;
             }
             
+            // Local api key'i güncelle
+            $this->apiKey = $apiKey;
+            
             $settings = $this->getGlobalSettings();
             
-            $response = Http::timeout(300)->withHeaders([
+            $response = Http::timeout(600)->withHeaders([
                 'Authorization' => 'Bearer ' . $this->apiKey,
                 'Content-Type' => 'application/json',
                 'Accept' => 'text/event-stream',
@@ -369,10 +348,15 @@ class DeepSeekService
     public function ask(array $messages, bool $stream = false)
     {
         try {
-            if (empty($this->apiKey)) {
-                Log::error('API anahtarı bulunamadı');
+            // Merkezi helper ile API anahtarını kontrol et
+            $apiKey = ai_get_api_key();
+            if (empty($apiKey)) {
+                Log::error('API anahtarı bulunamadı - ai_get_api_key()');
                 return 'API anahtarı bulunamadı. Lütfen yöneticinizle iletişime geçin.';
             }
+            
+            // Local api key'i güncelle
+            $this->apiKey = $apiKey;
             
             if ($stream) {
                 return function (callable $callback) use ($messages) {
@@ -380,7 +364,7 @@ class DeepSeekService
                     
                     $settings = $this->getGlobalSettings();
                     
-                    $response = Http::timeout(300)->withHeaders([
+                    $response = Http::timeout(600)->withHeaders([
                         'Authorization' => 'Bearer ' . $this->apiKey,
                         'Content-Type' => 'application/json',
                         'Accept' => 'text/event-stream',
@@ -435,7 +419,7 @@ class DeepSeekService
                 
                 $settings = $this->getGlobalSettings();
                 
-                $response = Http::timeout(300)->withHeaders([
+                $response = Http::timeout(600)->withHeaders([
                     'Authorization' => 'Bearer ' . $this->apiKey,
                     'Content-Type' => 'application/json',
                 ])->post($this->baseUrl . '/chat/completions', [

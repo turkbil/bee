@@ -22,6 +22,134 @@ body {
     overflow-x: hidden;
 }
 
+/* Light Mode Hero Section */
+:where(:not(.theme-dark):not([data-bs-theme="dark"])) .hero-section {
+    background: linear-gradient(135deg, 
+        rgba(240, 248, 255, 0.95) 0%,   /* Light blue */
+        rgba(248, 250, 252, 0.95) 25%,  /* Light gray */
+        rgba(236, 254, 255, 0.95) 50%,  /* Cyan tint */
+        rgba(239, 246, 255, 0.95) 75%,  /* Blue tint */
+        rgba(250, 245, 255, 0.95) 100%  /* Purple tint */
+    );
+}
+
+/* Light Mode Text Colors */
+:where(:not(.theme-dark):not([data-bs-theme="dark"])) .hero-content {
+    color: #1f2937;
+}
+
+:where(:not(.theme-dark):not([data-bs-theme="dark"])) .hero-title {
+    background: linear-gradient(45deg, #0ea5e9, #7c3aed, #ea580c);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+:where(:not(.theme-dark):not([data-bs-theme="dark"])) .hero-subtitle {
+    color: rgba(31, 41, 55, 0.8);
+}
+
+:where(:not(.theme-dark):not([data-bs-theme="dark"])) .hero-main-badge {
+    background: linear-gradient(45deg, rgba(14, 165, 233, 0.15), rgba(124, 58, 237, 0.15)) !important;
+    border: 1px solid rgba(14, 165, 233, 0.3) !important;
+    color: #1f2937 !important;
+    box-shadow: 0 8px 25px rgba(14, 165, 233, 0.2) !important;
+}
+
+:where(:not(.theme-dark):not([data-bs-theme="dark"])) .progress-text small {
+    color: rgba(31, 41, 55, 0.7);
+}
+
+:where(:not(.theme-dark):not([data-bs-theme="dark"])) .progress-label {
+    color: rgba(31, 41, 55, 0.7);
+}
+
+:where(:not(.theme-dark):not([data-bs-theme="dark"])) .current-step-info {
+    background: rgba(31, 41, 55, 0.1);
+    border: 1px solid rgba(31, 41, 55, 0.2);
+    color: rgba(31, 41, 55, 0.9);
+}
+
+:where(:not(.theme-dark):not([data-bs-theme="dark"])) .step-label {
+    color: rgba(31, 41, 55, 0.7);
+}
+
+:where(:not(.theme-dark):not([data-bs-theme="dark"])) .step-item.active .step-label,
+:where(:not(.theme-dark):not([data-bs-theme="dark"])) .step-item.completed .step-label {
+    color: #1f2937;
+    font-weight: 600;
+}
+
+/* Light Mode Button Fixes */
+:where(:not(.theme-dark):not([data-bs-theme="dark"])) .btn-outline-light {
+    color: #1f2937 !important;
+    border-color: #d1d5db !important;
+    background-color: rgba(255, 255, 255, 0.9) !important;
+}
+
+:where(:not(.theme-dark):not([data-bs-theme="dark"])) .btn-outline-light:hover {
+    color: #ffffff !important;
+    border-color: #6b7280 !important;
+    background-color: #6b7280 !important;
+}
+
+:where(:not(.theme-dark):not([data-bs-theme="dark"])) .btn-primary {
+    color: #ffffff !important;
+    background: linear-gradient(135deg, #0ea5e9, #7c3aed) !important;
+    border: none !important;
+}
+
+:where(:not(.theme-dark):not([data-bs-theme="dark"])) .btn-primary:hover {
+    background: linear-gradient(135deg, #0284c7, #6d28d9) !important;
+}
+
+/* Light Mode Additional Text Fixes */
+:where(:not(.theme-dark):not([data-bs-theme="dark"])) .alert-warning {
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(245, 158, 11, 0.05)) !important;
+    border: 2px solid rgba(245, 158, 11, 0.2) !important;
+    color: #92400e !important;
+}
+
+:where(:not(.theme-dark):not([data-bs-theme="dark"])) .alert-warning h4 {
+    color: #92400e !important;
+}
+
+:where(:not(.theme-dark):not([data-bs-theme="dark"])) .alert-warning p {
+    color: #a16207 !important;
+}
+
+:where(:not(.theme-dark):not([data-bs-theme="dark"])) .alert-warning small {
+    color: #a16207 !important;
+}
+
+/* Card Hover Effect Override - Subtle Shadow Only */
+.card {
+    transition: box-shadow 0.15s ease-in-out !important;
+}
+
+.card:hover {
+    box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.08) !important;
+    transform: none !important;
+}
+
+/* Light Mode Card Hover */
+:where(:not(.theme-dark):not([data-bs-theme="dark"])) .card:hover {
+    box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Dark Mode Card Hover */
+:where(.theme-dark, [data-bs-theme="dark"]) .card:hover {
+    box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Light Mode Progress Text Fixes */
+:where(:not(.theme-dark):not([data-bs-theme="dark"])) .progress-percentage {
+    background: linear-gradient(45deg, #0ea5e9, #7c3aed) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+}
+
 /* Hero Content Container - Centered Content */
 .hero-section .container {
     max-width: 1200px;
@@ -53,6 +181,13 @@ body {
     will-change: transform;
 }
 
+/* Light Mode Digital Grid */
+:where(:not(.theme-dark):not([data-bs-theme="dark"])) .digital-grid {
+    background-image: 
+        linear-gradient(rgba(14, 165, 233, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(14, 165, 233, 0.08) 1px, transparent 1px);
+}
+
 @keyframes grid-move {
     0% { transform: translate(0, 0); }
     100% { transform: translate(50px, 50px); }
@@ -71,6 +206,14 @@ body {
         radial-gradient(circle at 40% 60%, rgba(245, 158, 11, 0.2) 0%, transparent 50%);
     animation: float-elements 15s ease-in-out infinite;
     will-change: transform;
+}
+
+/* Light Mode Floating Elements */
+:where(:not(.theme-dark):not([data-bs-theme="dark"])) .floating-elements {
+    background-image:
+        radial-gradient(circle at 20% 20%, rgba(14, 165, 233, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(124, 58, 237, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 40% 60%, rgba(234, 88, 12, 0.1) 0%, transparent 50%);
 }
 
 @keyframes float-elements {
@@ -93,6 +236,16 @@ body {
     );
     animation: cyber-wave 8s ease-in-out infinite;
     will-change: transform;
+}
+
+/* Light Mode Cyber Waves */
+:where(:not(.theme-dark):not([data-bs-theme="dark"])) .cyber-waves {
+    background: linear-gradient(
+        45deg,
+        transparent 30%,
+        rgba(14, 165, 233, 0.03) 50%,
+        transparent 70%
+    );
 }
 
 @keyframes cyber-wave {
@@ -195,6 +348,11 @@ body {
     line-height: 1.4;
 }
 
+/* Light Mode Hero Subtitle Fix */
+:where(:not(.theme-dark):not([data-bs-theme="dark"])) .hero-subtitle {
+    color: rgba(31, 41, 55, 0.8) !important;
+}
+
 .hero-badge {
     margin-bottom: 2rem;
 }
@@ -286,6 +444,11 @@ body {
     display: block;
     color: rgba(255, 255, 255, 0.7);
     font-size: 0.75rem;
+}
+
+/* Light Mode Progress Label Fix */
+:where(:not(.theme-dark):not([data-bs-theme="dark"])) .progress-label {
+    color: rgba(31, 41, 55, 0.7) !important;
 }
 
 /* Progress Info */

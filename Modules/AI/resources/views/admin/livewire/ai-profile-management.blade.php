@@ -138,7 +138,7 @@
                                             <div class="progress-circle-container">
                                                 <div class="progress-circle progress-circle-large">
                                                     <svg class="progress-svg" viewBox="0 0 100 100">
-                                                        <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="6"/>
+                                                        <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(var(--tblr-muted-rgb, 255,255,255),0.1)" stroke-width="6"/>
                                                         <circle cx="50" cy="50" r="45" fill="none" stroke="url(#stepGradient)" stroke-width="6" 
                                                                 stroke-dasharray="282.74" stroke-dashoffset="{{ 282.74 - (282.74 * $realProgressPercentage / 100) }}"
                                                                 transform="rotate(-90 50 50)" stroke-linecap="round"/>
@@ -381,9 +381,9 @@
                                                                        name="formData[{{ $fieldKey }}][]"
                                                                        data-field="{{ $fieldKey }}"
                                                                        @if(isset($option['has_custom_input'])) data-custom-field="{{ $fieldKey }}_custom" @endif
-                                                                       x-data="{ isChecked: Boolean({{ isset($formData["{$fieldKey}.{$option['value']}"]) && $formData["{$fieldKey}.{$option['value']}"] ? 'true' : 'false' }}) }"
+                                                                       x-data="{ isChecked: Boolean({{ isset($formData[$fieldKey][$option['value']]) && $formData[$fieldKey][$option['value']] ? 'true' : 'false' }}) }"
                                                                        x-init="$el.checked = isChecked"
-                                                                       @if(isset($formData["{$fieldKey}.{$option['value']}"]) && $formData["{$fieldKey}.{$option['value']}"]) checked @endif>
+                                                                       @if(isset($formData[$fieldKey][$option['value']]) && $formData[$fieldKey][$option['value']]) checked @endif>
                                                                 <div class="form-selectgroup-label d-flex align-items-center p-3">
                                                                     <div class="me-3">
                                                                         <span class="form-selectgroup-check"></span>
@@ -592,9 +592,9 @@
                                                                                name="formData[{{ $fieldKey }}][]"
                                                                                data-field="{{ $fieldKey }}"
                                                                                @if(isset($option['has_custom_input'])) data-custom-field="{{ $fieldKey }}_custom" @endif
-                                                                               x-data="{ isChecked: Boolean({{ isset($formData["{$fieldKey}.{$option['value']}"]) && $formData["{$fieldKey}.{$option['value']}"] ? 'true' : 'false' }}) }"
+                                                                               x-data="{ isChecked: Boolean({{ isset($formData[$fieldKey][$option['value']]) && $formData[$fieldKey][$option['value']] ? 'true' : 'false' }}) }"
                                                                                x-init="$el.checked = isChecked"
-                                                                               @if(isset($formData["{$fieldKey}.{$option['value']}"]) && $formData["{$fieldKey}.{$option['value']}"]) checked @endif>
+                                                                               @if(isset($formData[$fieldKey][$option['value']]) && $formData[$fieldKey][$option['value']]) checked @endif>
                                                                         <div class="form-selectgroup-label d-flex align-items-center p-3">
                                                                             <div class="me-3">
                                                                                 <span class="form-selectgroup-check"></span>
@@ -742,12 +742,10 @@ window.autoSaveAndNavigate = window.autoSaveAndNavigate || function(nextUrl) {
 
 // Force reload form values after Livewire hydration
 document.addEventListener('livewire:load', function () {
-    console.log('Livewire loaded - reinitializing form fields');
     initializeFormFields();
 });
 
 document.addEventListener('livewire:update', function () {
-    console.log('Livewire updated - reinitializing form fields');
     setTimeout(initializeFormFields, 100); // Kısa delay ile
 });
 
@@ -765,11 +763,10 @@ function initializeFormFields() {
                         const shouldBeChecked = isCheckedMatch[1] === 'true';
                         if (element.checked !== shouldBeChecked) {
                             element.checked = shouldBeChecked;
-                            console.log('Fixed checkbox/radio:', element.name, shouldBeChecked);
                         }
                     }
                 } catch (e) {
-                    console.log('Error setting checkbox/radio:', e);
+                    // Checkbox/radio initialization error
                 }
             }
         } else {
@@ -781,11 +778,10 @@ function initializeFormFields() {
                     const expectedValue = fieldValueMatch[1];
                     if (element.value !== expectedValue) {
                         element.value = expectedValue;
-                        console.log('Fixed input value:', element.name, expectedValue);
                     }
                 }
             } catch (e) {
-                console.log('Error setting input value:', e);
+                // Input value initialization error
             }
         }
     });
@@ -798,40 +794,64 @@ document.addEventListener('DOMContentLoaded', initializeFormFields);
 $(document).ready(function() {
     let autoSaveTimeout;
     
-    // Debug: Sayfa yüklendiğinde tüm checkbox'ları tespit et
-    console.log('🔍 Page loaded - Detecting all checkboxes...');
-    $('input[type="checkbox"][data-field]').each(function() {
-        console.log('📋 Found checkbox:', 'Data-field:', $(this).data('field'), 'Name:', $(this).attr('name'), 'Value:', $(this).val(), 'Checked:', $(this).is(':checked'));
-    });
+    // Auto-save system initialization
     
-    // Debug: Tüm profile field'larını tespit et
-    $('.profile-field-checkbox').each(function() {
-        console.log('📋 Profile field checkbox:', 'Data-field:', $(this).data('field'), 'Classes:', $(this).attr('class'));
-    });
+    // Checkbox functionality initialization
+    setTimeout(() => {
+        // Initialize checkbox handlers
+    }, 1000);
     
-    // Checkbox, radio ve input değişikliklerini yakala - Her tür form field'ı dinle
-    $(document).on('change', '.profile-field-input, .profile-field-checkbox, input[data-field], select[data-field], textarea[data-field]', function() {
-        const fieldName = $(this).data('field');
+    // Initialize step 3 and 5 checkboxes
+    setTimeout(() => {
+        // Checkbox initialization for steps 3 and 5
+    }, 1000);
+    
+    // STEP 3 & 5 CHECKBOX'LAR İÇİN UNIFIED HANDLER
+    $(document).on('change', 'input[data-field*="sector_details"]:checkbox, input[data-field*="success_stories"]:checkbox', function(e) {
+        const $cb = $(this);
+        const field = $cb.data('field');
+        const fieldValue = [];
         
-        // Field name yoksa skip et
-        if (!fieldName) {
-            console.log('⚠️ Field name bulunamadı, skipping auto-save', 'Element:', $(this).get(0));
-            return;
-        }
+        // EXACT FIELD MATCH İLE VALUE COLLECTION
+        $(`input[data-field="${field}"]`).each(function() {
+            const $checkbox = $(this);
+            if ($checkbox.is(':checked')) {
+                fieldValue.push($checkbox.val());
+            }
+        });
+        
+        // INSTANT SAVE
+        saveFieldData(field, fieldValue);
+    });
+    
+    // STEP 4 (FOUNDER) KORUNAN NORMAL HANDLER
+    $(document).on('change', 'input[data-field*="founder_info"]', function(event) {
+        const fieldName = $(this).data('field');
+        if (!fieldName) return;
         
         const fieldValue = getFieldValue($(this));
         
-        console.log('🔍 Field changed:', fieldName, fieldValue, 'Element type:', $(this).attr('type'), 'Element classes:', $(this).attr('class'), 'Name attr:', $(this).attr('name'), 'Data-field attr:', $(this).attr('data-field'));
-        
-        // Auto-save tetikle (debounce ile)
         clearTimeout(autoSaveTimeout);
         autoSaveTimeout = setTimeout(function() {
             saveFieldData(fieldName, fieldValue);
-        }, 1000); // 1 saniye sonra kaydet
+        }, 500);
     });
     
-    // Textarea için de dinle (typing sırasında)
-    $(document).on('input', 'textarea.profile-field-input', function() {
+    // DİĞER ALANLAR İÇİN GENERIC HANDLER (TEXT, TEXTAREA ETC)
+    $(document).on('change', 'input[data-field]:not([data-field*="sector_details"]):not([data-field*="success_stories"]):not([data-field*="founder_info"]), select[data-field], textarea[data-field]', function(event) {
+        const fieldName = $(this).data('field');
+        if (!fieldName) return;
+        
+        const fieldValue = getFieldValue($(this));
+        
+        clearTimeout(autoSaveTimeout);
+        autoSaveTimeout = setTimeout(function() {
+            saveFieldData(fieldName, fieldValue);
+        }, 500);
+    });
+    
+    // Textarea için typing sırasında (input event)
+    $(document).on('input', 'textarea[data-field]', function() {
         const fieldName = $(this).data('field');
         const fieldValue = $(this).val();
         
@@ -842,70 +862,53 @@ $(document).ready(function() {
         }, 2000); // 2 saniye sonra kaydet
     });
     
-    // Özel checkbox auto-save listener (backup plan)
-    $(document).on('change', 'input[type="checkbox"][data-field]', function() {
-        console.log('📋 Checkbox specific listener triggered!', 'Name:', $(this).attr('name'), 'Value:', $(this).val(), 'Checked:', $(this).is(':checked'), 'Element:', $(this).get(0));
-        const fieldName = $(this).data('field');
-        
-        if (fieldName) {
-            const fieldValue = getFieldValue($(this));
-            console.log('📋 Checkbox field:', fieldName, 'Values:', fieldValue);
-            
-            clearTimeout(autoSaveTimeout);
-            autoSaveTimeout = setTimeout(function() {
-                saveFieldData(fieldName, fieldValue);
-            }, 500); // Checkbox için daha hızlı response
-        } else {
-            console.log('⚠️ Checkbox data-field bulunamadı:', $(this).attr('class'), $(this).attr('name'), 'Element:', $(this).get(0));
-        }
-    });
-    
     function getFieldValue($element) {
         if ($element.is(':checkbox')) {
-            // Checkbox array değeri
+            // Checkbox array değeri - Step 4 founder pattern'i ile aynı
             const fieldName = $element.data('field');
             const checkedValues = [];
-            const allCheckboxes = $(`input[data-field="${fieldName}"]`);
-            const checkedCheckboxes = $(`input[data-field="${fieldName}"]:checked`);
             
-            console.log('🔍 Checkbox debug:', 'Field:', fieldName, 'All checkboxes:', allCheckboxes.length, 'Checked:', checkedCheckboxes.length);
+            // Aynı field name'e sahip tüm checkbox'ları bul
+            const selector = `input[data-field="${fieldName}"]`;
+            const checkedCheckboxes = $(selector + ':checked');
             
-            checkedCheckboxes.each(function() {
-                checkedValues.push($(this).val());
-                console.log('🔍 Checked checkbox:', $(this).val(), 'Element:', $(this).get(0));
+            // Seçili checkbox'ları topla
+            checkedCheckboxes.each(function(index) {
+                const value = $(this).val();
+                checkedValues.push(value);
             });
             
-            console.log('🔍 Checkbox values for', fieldName, ':', checkedValues);
             return checkedValues;
+            
         } else if ($element.is(':radio')) {
-            // Radio tek değer
-            console.log('🔍 Radio value:', $element.val());
-            return $element.val();
+            // Radio tek değer - Step 4 founder pattern'i ile aynı
+            const value = $element.val();
+            return value;
+            
         } else {
-            // Text, select, textarea
-            console.log('🔍 Input value:', $element.val());
-            return $element.val();
+            // Text, select, textarea - Step 4 founder pattern'i ile aynı
+            const value = $element.val();
+            return value;
         }
     }
     
     function saveFieldData(fieldName, fieldValue) {
-        console.log('💾 Saving field:', fieldName, 'Value:', fieldValue, 'Type:', typeof fieldValue);
+        // AJAX data hazırla
+        const ajaxData = {
+            _token: '{{ csrf_token() }}',
+            field: fieldName,
+            value: fieldValue,
+            step: {{ $currentStep }}
+        };
         
-        // AJAX ile Livewire component'ine gönder
+        // AJAX ile Livewire component'ine gönder - Step 4 founder pattern'i ile aynı
         $.ajax({
             url: '{{ route("admin.ai.profile.save-field") }}',
             method: 'POST',
-            data: {
-                _token: '{{ csrf_token() }}',
-                field: fieldName,
-                value: fieldValue,
-                step: {{ $currentStep }}
-            },
-            success: function(response) {
-                console.log('✅ Field saved:', fieldName, fieldValue);
-                
-                // Başarı bildirimi (opsiyonel)
-                if (response.success) {
+            data: ajaxData,
+            success: function(response, textStatus, xhr) {
+                // Başarı bildirimi (opsiyonel) - Step 4 founder pattern'i ile aynı
+                if (response && response.success) {
                     // Küçük bir visual feedback
                     $(`[data-field="${fieldName}"]`).addClass('field-saved');
                     setTimeout(function() {
@@ -914,7 +917,7 @@ $(document).ready(function() {
                 }
             },
             error: function(xhr, status, error) {
-                console.error('❌ Field save error:', fieldName, error);
+                // Error handling without verbose logging
             }
         });
     }
@@ -970,8 +973,6 @@ $(document).ready(function() {
         const currentStep = $(this).data('current-step');
         const targetStep = $(this).data('target-step');
         
-        console.log('Navigation: Previous', currentStep, '->', targetStep);
-        
         // URL routing ile step değiştir (validation yok, sadece navigation)
         window.location.href = '{{ route("admin.ai.profile.edit", ["step" => 1]) }}'.replace('/1', '/' + targetStep);
     });
@@ -981,17 +982,13 @@ $(document).ready(function() {
         const currentStep = $(this).data('current-step');
         const targetStep = $(this).data('target-step');
         
-        console.log('Navigation: Next', currentStep, '->', targetStep);
-        
         // Loading state
         $(this).prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Kontrol ediliyor...');
         
         // Livewire ile validation + save çağır
         @this.call('saveAndNavigateNext').then(result => {
             // Success ise URL routing ile yönlendir
-            console.log('Validation result:', result);
         }).catch(error => {
-            console.error('Validation error:', error);
             // Button'u eski haline getir
             $(this).prop('disabled', false).html('Sonraki Adım <i class="fas fa-arrow-right ms-2"></i>');
         });
@@ -999,16 +996,14 @@ $(document).ready(function() {
     
     // Profil tamamlama buton handler (son adım)
     $(document).on('click', '.btn-complete-profile', function() {
-        console.log('Completing profile...');
         
         // Loading state
         $(this).prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Aktifleştiriliyor...');
         
         // Livewire ile complete profile çağır
         @this.call('completeProfile').then(result => {
-            console.log('Profile completion result:', result);
+            // Profile completion success
         }).catch(error => {
-            console.error('Profile completion error:', error);
             // Button'u eski haline getir
             $(this).prop('disabled', false).html('<i class="fas fa-magic me-2"></i>Yapay Zeka Asistanını Aktifleştir');
         });

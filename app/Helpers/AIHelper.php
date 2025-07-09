@@ -21,6 +21,73 @@ use Modules\AI\App\Models\AIFeature;
 // CORE AI HELPER FUNCTIONS - REPOSITORY PATTERN
 // ============================================================================
 
+if (!function_exists('ai_get_settings')) {
+    /**
+     * Merkezi AI ayarlarını döndürür (global cache'li)
+     * Tüm helper'lar ve servisler bu fonksiyonu kullanmalı
+     */
+    function ai_get_settings(): ?\Modules\AI\App\Models\Setting
+    {
+        static $settings = null;
+        
+        if ($settings === null) {
+            try {
+                $settings = \Cache::remember('ai_global_settings', 3600, function () {
+                    return \Modules\AI\App\Models\Setting::first();
+                });
+            } catch (\Exception $e) {
+                // Fallback - direkt database
+                try {
+                    $settings = \Modules\AI\App\Models\Setting::first();
+                } catch (\Exception $e2) {
+                    $settings = false; // Cache false değer (tekrar denemeyi önler)
+                }
+            }
+        }
+        
+        return $settings === false ? null : $settings;
+    }
+}
+
+if (!function_exists('ai_get_api_key')) {
+    /**
+     * Merkezi API anahtarı döndürür
+     * Tüm AI servisleri bu fonksiyonu kullanmalı
+     */
+    function ai_get_api_key(): ?string
+    {
+        $settings = ai_get_settings();
+        
+        if (!$settings || empty($settings->api_key)) {
+            return null;
+        }
+        
+        return $settings->api_key;
+    }
+}
+
+if (!function_exists('ai_get_model')) {
+    /**
+     * Merkezi AI model döndürür
+     */
+    function ai_get_model(): string
+    {
+        $settings = ai_get_settings();
+        return $settings?->model ?? 'deepseek-chat';
+    }
+}
+
+if (!function_exists('ai_is_enabled')) {
+    /**
+     * AI sisteminin aktif olup olmadığını kontrol eder
+     */
+    function ai_is_enabled(): bool
+    {
+        $settings = ai_get_settings();
+        return $settings?->enabled ?? false;
+    }
+}
+
 if (!function_exists('ai_get_repository')) {
     /**
      * Merkezi AI Response Repository'yi döndürür
@@ -94,23 +161,12 @@ if (!function_exists('ai_execute_feature_template')) {
             // Token kullanımını kaydet (AIService zaten kaydediyor ama helper tarafında da log)
             if ($result && is_string($result) && !str_contains($result, 'Yetersiz AI Token')) {
                 $actualTokens = max(10, (int)((strlen($userMessage) + strlen($result)) / 4));
-                \Log::info('🎯 Helper Token Kullanımı', [
-                    'feature_slug' => $featureSlug,
-                    'tenant_id' => $tenantId,
-                    'tokens_used' => $actualTokens,
-                    'method' => 'ai_execute_feature_template'
-                ]);
+                // Token usage tracked
             }
             
             return $result;
             
         } catch (\Exception $e) {
-            \Log::error('AI Feature Template Execution Error', [
-                'feature_slug' => $featureSlug,
-                'error' => $e->getMessage(),
-                'user_message' => $userMessage
-            ]);
-            
             return "AI özelliği çalıştırılırken bir hata oluştu. Lütfen tekrar deneyin.";
         }
     }

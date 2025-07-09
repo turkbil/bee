@@ -58,12 +58,7 @@ class AITenantProfile extends Model
             throw new \Exception('Tenant ID bulunamadı. Lütfen tenant context\'ini kontrol edin.');
         }
         
-        \Log::info('AITenantProfile tenant ID resolved', [
-            'tenant_id' => $tenantId,
-            'source' => tenant('id') ? 'tenant_context' : (auth()->user()?->tenant_id ? 'user_tenant' : 'latest_tenant'),
-            'user_tenant_id' => auth()->user()?->tenant_id,
-            'latest_tenant_used' => !tenant('id') && !auth()->user()?->tenant_id
-        ]);
+        // Tenant ID resolved successfully
         
         return static::firstOrCreate(
             ['tenant_id' => $tenantId],
@@ -437,19 +432,11 @@ class AITenantProfile extends Model
             $this->brand_story_created_at = now();
             $this->save();
             
-            \Log::info('Brand story generated successfully', [
-                'tenant_id' => $this->tenant_id,
-                'story_length' => strlen($response),
-                'helper_used' => 'ai_brand_story_creator'
-            ]);
+            // Brand story generated successfully
             
             return $response;
         } catch (\Exception $e) {
-            \Log::error('Brand story generation failed', [
-                'tenant_id' => $this->tenant_id,
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
+            // Brand story generation failed
             
             throw new \Exception('Marka hikayesi oluşturulurken hata: ' . $e->getMessage());
         }
@@ -473,9 +460,10 @@ class AITenantProfile extends Model
             $prompt .= "Sektör: " . $sectorName . "\n";
         }
         
-        // Şehir bilgisi
+        // Şehir bilgisi - sadece gerektiğinde kullanılacak (İSTEĞE BAĞLI)
+        // NOT: Şehir bilgisi hikayede ön plana çıkarılmamalı
         if (isset($this->company_info['city'])) {
-            $prompt .= "Konum: " . $this->company_info['city'] . "\n";
+            $prompt .= "Konum (sadece alakalı ise bahset): " . $this->company_info['city'] . "\n";
         }
         
         // Ana hizmet
@@ -496,7 +484,11 @@ class AITenantProfile extends Model
             $prompt .= "\nBaşarı Hikayeleri:\n";
             foreach ($this->success_stories as $key => $story) {
                 if (!empty($story)) {
-                    $prompt .= "- " . ucfirst(str_replace('_', ' ', $key)) . ": " . $story . "\n";
+                    // Array değerleri string'e çevir
+                    $storyText = is_array($story) ? implode(', ', array_filter($story)) : $story;
+                    if (!empty($storyText)) {
+                        $prompt .= "- " . ucfirst(str_replace('_', ' ', $key)) . ": " . $storyText . "\n";
+                    }
                 }
             }
         }
@@ -521,11 +513,12 @@ class AITenantProfile extends Model
         }
         
         $prompt .= "\nLütfen bu bilgilere dayanarak:\n";
-        $prompt .= "1. Etkileyici ve duygusal bir marka hikayesi oluştur\n";
+        $prompt .= "1. Doğal akışkan bir marka hikayesi oluştur\n";
         $prompt .= "2. Hikaye 3-4 paragraf olsun\n";
-        $prompt .= "3. Markanın değerlerini ve misyonunu vurgula\n";
-        $prompt .= "4. Müşterilere neden bu markayı seçmeleri gerektiğini anlat\n";
-        $prompt .= "5. Pozitif ve ilham verici bir ton kullan\n\n";
+        $prompt .= "3. Markanın yolculuğunu ve değerlerini hikaye formatında anlat\n";
+        $prompt .= "4. Satış odaklı olmaktan kaçın, hikaye odaklı ol\n";
+        $prompt .= "5. Şehir bilgisini öne çıkarma, sadece bağlam gerektiriyorsa bahset\n";
+        $prompt .= "6. Pozitif, samimi ve ilham verici bir ton kullan\n\n";
         
         return $prompt;
     }
@@ -749,7 +742,7 @@ class AITenantProfile extends Model
                     \Cache::getRedis()->del($keys);
                 }
             } catch (\Exception $e) {
-                \Log::warning('Context cache pattern clear failed', ['pattern' => $pattern]);
+                // Context cache pattern clear failed
             }
         }
     }
@@ -954,50 +947,22 @@ class AITenantProfile extends Model
      */
     public function updateSection(string $section, array $data): bool
     {
-        \Log::info("AITenantProfile::updateSection called", [
-            'section' => $section,
-            'data' => $data,
-            'tenant_id' => $this->tenant_id,
-            'model_id' => $this->id
-        ]);
+        // Section update called
         
         // Mevcut section verisini kontrol et
         $currentValue = $this->$section;
-        \Log::info("Current section value", [
-            'section' => $section,
-            'current_value' => $currentValue,
-            'is_array' => is_array($currentValue),
-            'is_null' => is_null($currentValue)
-        ]);
+        // Current section value retrieved
         
         // Array merge işlemi
         $mergedData = array_merge($currentValue ?? [], $data);
-        \Log::info("After array merge", [
-            'section' => $section,
-            'merged_data' => $mergedData,
-            'data_count' => count($mergedData)
-        ]);
+        // Data merged successfully
         
         // Değeri set et
         $this->$section = $mergedData;
-        \Log::info("After setting section", [
-            'section' => $section,
-            'new_value' => $this->$section,
-            'is_dirty' => $this->isDirty($section)
-        ]);
+        // Section value set
         
         // Model durumunu logla
-        \Log::info("Model state before save", [
-            'section' => $section,
-            'data_being_saved' => $data,
-            'merged_data' => $mergedData,
-            'dirty_attributes' => $this->getDirty(),
-            'is_dirty' => $this->isDirty(),
-            'current_timestamps' => [
-                'created_at' => $this->created_at,
-                'updated_at' => $this->updated_at
-            ]
-        ]);
+        // Model ready for save
         
         // Save işlemi
         try {
@@ -1006,20 +971,10 @@ class AITenantProfile extends Model
             // Cache temizle (önemli - profil güncellendiğinde)
             $this->clearContextCache();
             
-            \Log::info("Save operation result", [
-                'success' => $result,
-                'section' => $section,
-                'final_value' => $this->fresh()->$section,
-                'cache_cleared' => true
-            ]);
+            // Save operation completed
             return $result;
         } catch (\Exception $e) {
-            \Log::error("Save operation failed", [
-                'error' => $e->getMessage(),
-                'section' => $section,
-                'data' => $data,
-                'trace' => $e->getTraceAsString()
-            ]);
+            // Save operation failed
             throw $e;
         }
     }

@@ -1,5 +1,9 @@
 {{-- Modules/Portfolio/resources/views/admin/helper.blade.php --}}
 {{-- PreTitle --}}
+@section('pretitle')
+{{ __('portfolio::admin.portfolios') }}
+@endsection
+
 @push('pretitle')
 {{ __('portfolio::admin.portfolios') }}
 @endpush
@@ -97,13 +101,13 @@ $(document).ready(function() {
                 <div class="dropdown-menu">
                     @hasmoduleaccess('portfolio', 'view')
                     <a class="dropdown-item" href="{{ route('admin.portfolio.index') }}">
-                        {{ __('portfolio::admin.portfolios') }}
+                        <i class="icon-menu fas fa-briefcase"></i>{{ __('portfolio::admin.portfolios') }}
                     </a>
                     @endhasmoduleaccess
                     
                     @hasmoduleaccess('portfolio', 'create')
                     <a class="dropdown-item" href="{{ route('admin.portfolio.manage') }}">
-                        {{ __('portfolio::admin.add_new_portfolio') }}
+                        <i class="icon-menu fas fa-plus"></i>{{ __('portfolio::admin.add_new_portfolio') }}
                     </a>
                     @endhasmoduleaccess
                     
@@ -114,13 +118,13 @@ $(document).ready(function() {
                     
                     @hasmoduleaccess('portfolio', 'view')
                     <a class="dropdown-item" href="{{ route('admin.portfolio.category.index') }}">
-                        {{ __('portfolio::admin.categories') }}
+                        <i class="icon-menu fas fa-tags"></i>{{ __('portfolio::admin.categories') }}
                     </a>
                     @endhasmoduleaccess
                     
                     @hasmoduleaccess('portfolio', 'create')
                     <a class="dropdown-item" href="{{ route('admin.portfolio.category.manage') }}">
-                        {{ __('portfolio::admin.add_category') }}
+                        <i class="icon-menu fas fa-tag"></i>{{ __('portfolio::admin.add_category') }}
                     </a>
                     @endhasmoduleaccess
                     @endif
@@ -128,7 +132,7 @@ $(document).ready(function() {
             </div>
             @hasmoduleaccess('portfolio', 'create')
             <a href="{{ route('admin.portfolio.manage') }}" class="btn btn-primary">
-                {{ __('portfolio::admin.new_portfolio') }}
+                <i class="icon-menu fas fa-plus"></i>{{ __('portfolio::admin.new_portfolio') }}
             </a>
             @endhasmoduleaccess
         </div>

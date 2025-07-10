@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@include('ai::admin.shared.helper')
+@include('ai::helper')
 
 @section('pretitle', __('ai::admin.conversation_archive'))
 @section('title', __('ai::admin.archived_conversations'))

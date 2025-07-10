@@ -1,5 +1,7 @@
 @extends('admin.layout')
 
+@include('ai::helper')
+
 @section('content')
 {{-- AI Profile Show - Modern Digital Experience --}}
 <div class="ai-profile-show-container">

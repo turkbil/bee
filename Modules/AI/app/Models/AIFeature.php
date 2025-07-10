@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
@@ -22,6 +23,7 @@ class AIFeature extends Model
         'emoji',
         'icon',
         'category',
+        'ai_feature_category_id',
         'helper_function',
         'helper_examples',
         'helper_parameters',
@@ -821,5 +823,13 @@ class AIFeature extends Model
         }
 
         return $formatted;
+    }
+
+    /**
+     * Feature'ın kategori ilişkisi
+     */
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(AIFeatureCategory::class, 'ai_feature_category_id', 'ai_feature_category_id');
     }
 }

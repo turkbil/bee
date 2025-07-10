@@ -116,13 +116,14 @@ app()->setLocale($originalLocale);
                     </a>
                 </div>
 
-                <!-- Gece/Gündüz Mod Switch'i -->
+                <!-- NAVBAR TEMA SWITCH - KALDIRMA! Theme Builder'daki sistem modu ile aynı işlevi görüyor -->
+                {{-- 
                 <div class="nav-item me-2">
                     <div class="d-flex align-items-center justify-content-center"
                         style="width: 40px; height: 40px; border-radius: 0.375rem; margin-top: -2px;"
                         data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('admin.theme_mode') }}">
-                        <div class="theme-mode" data-theme="light">
-                            <input type="checkbox" id="switch" class="dark-switch">
+                        <div class="theme-mode" data-theme="{{ isset($_COOKIE['dark']) && $_COOKIE['dark'] == '1' ? 'dark' : 'light' }}">
+                            <input type="checkbox" id="switch" class="dark-switch" {{ isset($_COOKIE['dark']) && $_COOKIE['dark'] == '1' ? 'checked' : '' }}>
                             <div class="app">
                                 <div class="switch-content">
                                     <div class="switch-label"></div>
@@ -131,7 +132,6 @@ app()->setLocale($originalLocale);
                                         <div class="names">
                                             <p class="light"><i class="fa-solid fa-moon"></i></p>
                                             <p class="dark"><i class="fa-solid fa-sun"></i></p>
-                                            <p class="auto"><i class="fa-solid fa-circle-half-stroke"></i></p>
                                         </div>
                                     </label>
                                 </div>
@@ -139,6 +139,7 @@ app()->setLocale($originalLocale);
                         </div>
                     </div>
                 </div>
+                --}}
 
 
                 <!-- Son Aktiviteler Dropdown -->

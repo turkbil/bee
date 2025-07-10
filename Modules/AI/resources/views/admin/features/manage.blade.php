@@ -2,7 +2,7 @@
 
 @section('title', 'AI Features Yönetimi')
 
-@include('ai::admin.shared.helper')
+@include('ai::helper')
 
 @section('content')
 <div class="card">

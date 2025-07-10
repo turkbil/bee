@@ -1,5 +1,9 @@
 {{-- Modules/Page/resources/views/admin/helper.blade.php --}}
 {{-- PreTitle --}}
+@section('pretitle')
+{{ __('page::admin.pages') }}
+@endsection
+
 @push('pretitle')
 {{ __('page::admin.pages') }}
 @endpush
@@ -113,13 +117,13 @@ $(document).ready(function() {
         <div class="module-menu-revert">
             @hasmoduleaccess('page', 'view')
             <a href="{{ route('admin.page.index') }}" class="dropdown-module-item btn btn-ghost-secondary">
-                {{ __('page::admin.pages') }}
+                <i class="icon-menu fas fa-file-alt"></i>{{ __('page::admin.pages') }}
             </a>
             @endhasmoduleaccess
 
             @hasmoduleaccess('page', 'create')
             <a href="{{ route('admin.page.manage') }}" class="dropdown-module-item btn btn-primary">
-                {{ __('page::admin.new_page') }}
+                <i class="icon-menu fas fa-plus"></i>{{ __('page::admin.new_page') }}
             </a>
             @endhasmoduleaccess
         </div>

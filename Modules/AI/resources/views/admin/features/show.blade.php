@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@include('ai::admin.shared.helper')
+@include('ai::helper')
 
 @section('title', $feature->name . ' - AI Özelliği')
 
@@ -16,43 +16,6 @@
             <li class="breadcrumb-item active">{{ $feature->name }}</li>
         </ol>
     </nav>
-@endpush
-
-@push('page-header')
-    <div class="row g-2 align-items-center">
-        <div class="col">
-            <div class="page-pretitle">AI Modülü</div>
-            <h2 class="page-title">
-                <span class="me-2">{{ $feature->emoji ?: '🤖' }}</span>
-                {{ $feature->name }}
-            </h2>
-            <div class="page-subtitle text-muted">
-                <span class="{{ $feature->getBadgeClass() }}">{{ ucfirst($feature->status) }}</span>
-                <span class="badge bg-azure-lt ms-2">{{ $feature->getCategoryName() }}</span>
-                @if($feature->is_system)
-                    <span class="badge bg-info-lt ms-2">Sistem Özelliği</span>
-                @endif
-                @if($feature->is_featured)
-                    <span class="badge bg-warning-lt ms-2">Öne Çıkan</span>
-                @endif
-            </div>
-        </div>
-        <div class="col-auto">
-            <div class="btn-list">
-                <a href="{{ route('admin.ai.features.index', $feature) }}" class="btn btn-primary">
-                    <i class="fas fa-edit me-2"></i>Düzenle
-                </a>
-                @if(!$feature->is_system)
-                    <button type="button" class="btn btn-outline-info" onclick="duplicateFeature({{ $feature->id }})">
-                        <i class="fas fa-copy me-2"></i>Kopyala
-                    </button>
-                @endif
-                <a href="{{ route('admin.ai.features.index') }}" class="btn btn-outline-secondary">
-                    <i class="fas fa-arrow-left me-2"></i>Geri Dön
-                </a>
-            </div>
-        </div>
-    </div>
 @endpush
 
 @section('content')

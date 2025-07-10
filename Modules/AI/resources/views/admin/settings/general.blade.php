@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@include('ai::admin.shared.helper')
+@include('ai::helper')
 
 @section('pretitle', 'AI Ayarları')
 @section('title', 'Genel Ayarlar')

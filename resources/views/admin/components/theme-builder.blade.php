@@ -15,6 +15,11 @@
                 </div>
                 <div class="theme-section-body pt-4">
                     <div class="appearance-options mb-2">
+                        <label class="appearance-option" for="theme-auto">
+                            <input type="radio" id="theme-auto" name="theme" value="auto" {{ (!isset($_COOKIE['dark']) || $_COOKIE['dark'] == 'auto') ? 'checked' : '' }}>
+                            <div class="appearance-preview auto-preview"></div>
+                            <span>Sistem</span>
+                        </label>
                         <label class="appearance-option" for="theme-light">
                             <input type="radio" id="theme-light" name="theme" value="light" {{ isset($_COOKIE['dark']) && $_COOKIE['dark'] == '0' ? 'checked' : '' }}>
                             <div class="appearance-preview light-preview"></div>
@@ -24,11 +29,6 @@
                             <input type="radio" id="theme-dark" name="theme" value="dark" {{ isset($_COOKIE['dark']) && $_COOKIE['dark'] == '1' ? 'checked' : '' }}>
                             <div class="appearance-preview dark-preview"></div>
                             <span>Koyu</span>
-                        </label>
-                        <label class="appearance-option" for="theme-auto">
-                            <input type="radio" id="theme-auto" name="theme" value="auto" {{ !isset($_COOKIE['dark']) || $_COOKIE['dark'] == 'auto' ? 'checked' : '' }}>
-                            <div class="appearance-preview auto-preview"></div>
-                            <span>Sistem</span>
                         </label>
                     </div>
                 </div>

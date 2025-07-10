@@ -29,7 +29,7 @@ class AIDatabaseSeeder extends Seeder
             // Gizli özellikler seeder'ını çalıştır
             $this->call(AIHiddenFeaturesSeeder::class);
             
-            // AI Features seeder'ını çalıştır (artık sadece feature'lar için)
+            // AI Features seeder'ını çalıştır (kategoriler otomatik kontrol edilir)
             $this->call(AIFeatureSeeder::class);
             
             // Token sistemini oluştur - SIRALA: packages -> purchases -> setup -> usage
@@ -42,8 +42,9 @@ class AIDatabaseSeeder extends Seeder
             
             // AI Profil sistemi seeder'larını çalıştır
             $this->call([
-                AIProfileSectorsSeeder::class,
-                AIProfileQuestionsSeeder::class,
+                AIProfileSectorsCompleteSeeder::class,
+                AIProfileQuestionsBaseSeeder::class,
+                AIProfileQuestionsSectorSeeder::class,
             ]);
             
             // Seeder tamamlandıktan sonra da cache'leri temizle

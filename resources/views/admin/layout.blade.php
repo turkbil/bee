@@ -52,7 +52,37 @@
     <link rel="stylesheet" href="/admin-assets/css/main-theme-builder.css?v={{ time() }}" />
     <link rel="stylesheet" href="/admin-assets/css/responsive.css?v={{ time() }}" />
     @stack('styles') @stack('css')
+    
+    {{-- Module Menu Icon Symmetry CSS --}}
     <style>
+        .icon-menu {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            margin-right: 8px;
+            font-size: 14px;
+            line-height: 20px;
+            vertical-align: middle;
+        }
+        
+        .dropdown-item .icon-menu,
+        .dropdown-module-item .icon-menu,
+        .btn .icon-menu {
+            flex-shrink: 0;
+        }
+        
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+        }
+        
+        .dropdown-module-item {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        
         :root {
             --primary-color: <?php echo isset($_COOKIE['siteColor']) ? $_COOKIE['siteColor']: '#066fd1';
             ?>;
@@ -119,10 +149,10 @@
                 <div class="row g-2 align-items-center">
                     <div class="col">
                         <div class="page-pretitle">
-                  @stack('pretitle')
+                  @yield('pretitle')
                 </div>
                 <h2 class="page-title">
-                  @stack('title')
+                  @yield('title')
                 </h2>
               </div>
               <!-- Page title actions -->

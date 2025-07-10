@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@include('ai::admin.shared.helper')
+@include('ai::helper')
 
 @section('pretitle', 'AI Yönetimi')
 @section('title', 'Gerçek Zamanlı Token Dashboard')
@@ -62,7 +62,7 @@
 @endpush
 
 @section('content')
-    @livewire('ai::admin.a-i-features-dashboard')
+    @livewire('ai::admin.ai-features-dashboard')
 @endsection
 
 @push('scripts')

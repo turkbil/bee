@@ -46,12 +46,8 @@ function initFallbackThemeSwitch() {
     if (!themeSwitch) return;
     
     themeSwitch.addEventListener('change', function() {
-        const currentTheme = getCookieValue('dark') || 'auto';
-        let newTheme = 'auto';
-        
-        if (currentTheme === '0') newTheme = '1';
-        else if (currentTheme === '1') newTheme = 'auto';
-        else newTheme = '0';
+        const isChecked = this.checked;
+        const newTheme = isChecked ? '1' : '0';
         
         document.cookie = `dark=${newTheme};path=/;max-age=31536000`;
         
@@ -71,16 +67,44 @@ function applyThemeModeFallback(themeMode) {
         body.setAttribute('data-bs-theme', 'dark');
         body.classList.remove('light');
         body.classList.add('dark');
-    } else if (themeMode === '0') {
+        // AI Profile Wizard için özel force sınıfı
+        forceAIProfileWizardTheme('dark');
+    } else {
         body.setAttribute('data-bs-theme', 'light');
         body.classList.remove('dark');
         body.classList.add('light');
-    } else {
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        body.setAttribute('data-bs-theme', prefersDark ? 'dark' : 'light');
-        body.classList.remove(prefersDark ? 'light' : 'dark');
-        body.classList.add(prefersDark ? 'dark' : 'light');
+        // AI Profile Wizard için özel force sınıfı
+        forceAIProfileWizardTheme('light');
     }
+}
+
+// AI Profile Wizard tema zorla güncelleme
+function forceAIProfileWizardTheme(mode) {
+    const wizardContainer = document.querySelector('.ai-profile-wizard-container');
+    if (!wizardContainer) return;
+    
+    // Önce mevcut force sınıflarını temizle
+    wizardContainer.classList.remove('force-light-mode', 'force-dark-mode');
+    
+    // Yeni force sınıfını ekle
+    if (mode === 'dark') {
+        wizardContainer.classList.add('force-dark-mode');
+    } else {
+        wizardContainer.classList.add('force-light-mode');
+    }
+    
+    // Reflow tetikle - form elemanlarını zorla güncelle
+    const formElements = wizardContainer.querySelectorAll('.form-selectgroup-label');
+    formElements.forEach(element => {
+        element.style.display = 'none';
+        element.offsetHeight; // reflow trigger
+        element.style.display = '';
+    });
+    
+    // Smooth transition sonrası force sınıflarını kaldır
+    setTimeout(() => {
+        wizardContainer.classList.remove('force-light-mode', 'force-dark-mode');
+    }, 500);
 }
 
 // Theme switch state güncelleme
@@ -89,10 +113,7 @@ function updateThemeSwitchState(themeMode) {
     const themeSwitch = document.getElementById('switch');
     
     if (themeContainer && themeSwitch) {
-        if (themeMode === 'auto') {
-            themeContainer.setAttribute('data-theme', 'auto');
-            themeSwitch.checked = false;
-        } else if (themeMode === '1') {
+        if (themeMode === '1') {
             themeContainer.setAttribute('data-theme', 'dark');
             themeSwitch.checked = true;
         } else {

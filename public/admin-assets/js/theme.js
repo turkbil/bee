@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const themeRadios = document.querySelectorAll('input[name="theme"]');
     themeRadios.forEach(radio => {
         radio.addEventListener('change', function() {
-            const themeMode = this.value; // light, dark veya auto
+            const themeMode = this.value; // light, dark, auto
             document.cookie = `dark=${themeMode === 'dark' ? '1' : (themeMode === 'auto' ? 'auto' : '0')};path=/;max-age=31536000`;
             
             // Sayfa yenilemeden temayı değiştir
@@ -14,6 +14,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 body.setAttribute('data-bs-theme', 'dark');
                 body.classList.remove('light');
                 body.classList.add('dark');
+                // AI Profile Wizard için özel force sınıfı
+                forceAIProfileWizardThemeUpdate('dark');
                 // Navbar tema düğmesini güncelle
                 const themeContainer = document.querySelector('.theme-mode');
                 if (themeContainer) {
@@ -27,6 +29,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 body.setAttribute('data-bs-theme', 'light');
                 body.classList.remove('dark');
                 body.classList.add('light');
+                // AI Profile Wizard için özel force sınıfı
+                forceAIProfileWizardThemeUpdate('light');
                 const themeContainer = document.querySelector('.theme-mode');
                 if (themeContainer) {
                     themeContainer.setAttribute('data-theme', 'light');
@@ -36,18 +40,24 @@ document.addEventListener('DOMContentLoaded', function() {
                     themeSwitch.checked = false;
                 }
             } else if (themeMode === 'auto') {
-                // Sistem ayarını kontrol et
-                const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                body.setAttribute('data-bs-theme', prefersDarkMode ? 'dark' : 'light');
-                body.classList.remove(prefersDarkMode ? 'light' : 'dark');
-                body.classList.add(prefersDarkMode ? 'dark' : 'light');
+                // Sistem ayarına göre belirleme
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const autoTheme = prefersDark ? 'dark' : 'light';
+                
+                body.setAttribute('data-bs-theme', autoTheme);
+                body.classList.remove(autoTheme === 'dark' ? 'light' : 'dark');
+                body.classList.add(autoTheme);
+                
+                // AI Profile Wizard için özel force sınıfı
+                forceAIProfileWizardThemeUpdate(autoTheme);
+                
                 const themeContainer = document.querySelector('.theme-mode');
                 if (themeContainer) {
                     themeContainer.setAttribute('data-theme', 'auto');
                 }
                 const themeSwitch = document.getElementById('switch');
                 if (themeSwitch) {
-                    themeSwitch.checked = prefersDarkMode;
+                    themeSwitch.checked = prefersDark;
                 }
             }
             
@@ -223,7 +233,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (resetButton) {
         resetButton.addEventListener('click', function() {
             // Varsayılan değerleri ayarla
-            document.cookie = 'dark=auto;path=/;max-age=31536000';
+            document.cookie = 'dark=0;path=/;max-age=31536000';
             document.cookie = 'siteColor=#066fd1;path=/;max-age=31536000';
             document.cookie = 'themeBase=neutral;path=/;max-age=31536000';
             document.cookie = 'themeFont=Inter, system-ui, -apple-system, \'Segoe UI\', Roboto, \'Helvetica Neue\', Arial, \'Noto Sans\', sans-serif;path=/;max-age=31536000';
@@ -268,9 +278,9 @@ document.addEventListener('DOMContentLoaded', function() {
         let currentTheme = getCookie('dark');
         console.log('🍪 Cookie\'den alınan tema:', currentTheme);
         
-        // Eğer tema ayarı yoksa, varsayılan olarak sistem teması kullan
-        if (!currentTheme || (currentTheme !== '0' && currentTheme !== '1' && currentTheme !== 'auto')) {
-            currentTheme = 'auto'; // Sistem teması
+        // Eğer tema ayarı yoksa, varsayılan olarak light mode kullan
+        if (!currentTheme || (currentTheme !== '0' && currentTheme !== '1')) {
+            currentTheme = '0'; // Light mode
             console.log('🔄 Varsayılan tema ayarlandı:', currentTheme);
         }
         
@@ -292,17 +302,7 @@ document.addEventListener('DOMContentLoaded', function() {
             themeContainer.removeAttribute('data-theme');
             
             // Mevcut temaya göre data-theme özniteliğini ayarla
-            if (currentTheme === 'auto') {
-                // Sistem teması için
-                console.log('🔮 AUTO tema modu ayarlanıyor...');
-                themeContainer.setAttribute('data-theme', 'auto');
-                
-                // Sistem teması için, sistem ayarına göre switch'i ayarla
-                const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                console.log('🖥️ Sistem dark mode tercihi:', prefersDarkMode);
-                themeSwitch.checked = prefersDarkMode;
-                console.log('✅ AUTO - checkbox checked:', prefersDarkMode, 'data-theme: auto');
-            } else if (currentTheme === '1') {
+            if (currentTheme === '1') {
                 // Karanlık mod
                 console.log('🌙 DARK tema modu ayarlanıyor...');
                 themeContainer.setAttribute('data-theme', 'dark');
@@ -384,7 +384,7 @@ document.addEventListener('DOMContentLoaded', function() {
             debounceTimer = setTimeout(() => {
                 console.log('⚡ Debounce: Click işleniyor...');
             
-            // Sırayla geçiş: Açık -> Karanlık -> Sistem -> Açık ...
+            // Basit geçiş: Açık -> Karanlık -> Açık ...
             const oldTheme = currentTheme;
             console.log('🎯 Tema değişim mantığı başlıyor, mevcut tema:', oldTheme);
             
@@ -392,21 +392,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Açık moddan karanlık moda geç
                 console.log('☀️ → 🌙 Light → Dark geçiş');
                 currentTheme = '1';
-            } else if (currentTheme === '1') {
-                // Karanlık moddan sistem moduna geç
-                console.log('🌙 → 🔮 Dark → Auto geçiş');
-                currentTheme = 'auto';
             } else {
-                // Sistem modundan açık moda geç
-                console.log('🔮 → ☀️ Auto → Light geçiş');
+                // Karanlık moddan açık moda geç
+                console.log('🌙 → ☀️ Dark → Light geçiş');
                 currentTheme = '0';
             }
             
             console.log('🔄 Tema değişimi tamamlandı:', {
                 from: oldTheme,
                 to: currentTheme,
-                sequence: oldTheme === '0' ? 'Light→Dark' : 
-                         oldTheme === '1' ? 'Dark→Auto' : 'Auto→Light'
+                sequence: oldTheme === '0' ? 'Light→Dark' : 'Dark→Light'
             });
             
             // Cookie'yi ayarla
@@ -429,18 +424,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 body.setAttribute('data-bs-theme', 'dark');
                 body.classList.remove('light');
                 body.classList.add('dark');
-            } else if (currentTheme === '0') {
+            } else {
                 console.log('☀️ Body LIGHT tema uygulanıyor...');
                 body.setAttribute('data-bs-theme', 'light');
                 body.classList.remove('dark');
                 body.classList.add('light');
-            } else if (currentTheme === 'auto') {
-                console.log('🔮 Body AUTO tema uygulanıyor...');
-                const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                console.log('🖥️ Sistem dark mode tercihi:', prefersDarkMode);
-                body.setAttribute('data-bs-theme', prefersDarkMode ? 'dark' : 'light');
-                body.classList.remove(prefersDarkMode ? 'light' : 'dark');
-                body.classList.add(prefersDarkMode ? 'dark' : 'light');
             }
             
             console.log('📄 Body - yeni durumu:', {
@@ -1682,6 +1670,35 @@ document.addEventListener('DOMContentLoaded', function() {
             // Fallback için hafif bir bildirim (DOM'da kalmasın)
             console.log('Tema değişti:', message);
         }
+    }
+    
+    // AI Profile Wizard tema zorla güncelleme
+    function forceAIProfileWizardThemeUpdate(mode) {
+        const wizardContainer = document.querySelector('.ai-profile-wizard-container');
+        if (!wizardContainer) return;
+        
+        // Önce mevcut force sınıflarını temizle
+        wizardContainer.classList.remove('force-light-mode', 'force-dark-mode');
+        
+        // Yeni force sınıfını ekle
+        if (mode === 'dark') {
+            wizardContainer.classList.add('force-dark-mode');
+        } else {
+            wizardContainer.classList.add('force-light-mode');
+        }
+        
+        // Reflow tetikle - form elemanlarını zorla güncelle
+        const formElements = wizardContainer.querySelectorAll('.form-selectgroup-label');
+        formElements.forEach(element => {
+            element.style.display = 'none';
+            element.offsetHeight; // reflow trigger
+            element.style.display = '';
+        });
+        
+        // Smooth transition sonrası force sınıflarını kaldır
+        setTimeout(() => {
+            wizardContainer.classList.remove('force-light-mode', 'force-dark-mode');
+        }, 500);
     }
     
     // Tema değişkenlerini zorla güncelleme fonksiyonu

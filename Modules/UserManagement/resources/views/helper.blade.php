@@ -1,4 +1,8 @@
 {{-- PreTitle --}}
+@section('pretitle')
+{{ __('usermanagement::admin.users') }}
+@endsection
+
 @push('pretitle')
 {{ __('usermanagement::admin.users') }}
 @endpush
@@ -23,13 +27,13 @@
                 <div class="dropdown-menu">
                     @hasmoduleaccess('usermanagement', 'view')
                     <a class="dropdown-item" href="{{ route('admin.usermanagement.index') }}">
-                        {{ __('usermanagement::admin.users') }}
+                        <i class="icon-menu fas fa-users"></i>{{ __('usermanagement::admin.users') }}
                     </a>
                     @endhasmoduleaccess
                     
                     @hasmoduleaccess('usermanagement', 'create')
                     <a class="dropdown-item" href="{{ route('admin.usermanagement.manage') }}">
-                        {{ __('usermanagement::admin.add_user') }}
+                        <i class="icon-menu fas fa-user-plus"></i>{{ __('usermanagement::admin.add_user') }}
                     </a>
                     @endhasmoduleaccess
                     
@@ -39,7 +43,7 @@
                     
                     @hasmoduleaccess('usermanagement', 'view')
                     <a class="dropdown-item" href="{{ route('admin.usermanagement.activity.logs') }}">
-                        {{ __('usermanagement::admin.activity_logs') }}
+                        <i class="icon-menu fas fa-history"></i>{{ __('usermanagement::admin.activity_logs') }}
                     </a>
                     @endhasmoduleaccess
                     
@@ -50,13 +54,13 @@
                     
                     @hasmoduleaccess('usermanagement', 'view')
                     <a class="dropdown-item" href="{{ route('admin.usermanagement.role.index') }}">
-                        {{ __('usermanagement::admin.roles') }}
+                        <i class="icon-menu fas fa-user-tag"></i>{{ __('usermanagement::admin.roles') }}
                     </a>
                     @endhasmoduleaccess
                     
                     @hasmoduleaccess('usermanagement', 'create')
                     <a class="dropdown-item" href="{{ route('admin.usermanagement.role.manage') }}">
-                        {{ __('usermanagement::admin.add_role') }}
+                        <i class="icon-menu fas fa-plus-circle"></i>{{ __('usermanagement::admin.add_role') }}
                     </a>
                     @endhasmoduleaccess
                     
@@ -66,13 +70,13 @@
                     
                     @hasmoduleaccess('usermanagement', 'view')
                     <a class="dropdown-item" href="{{ route('admin.usermanagement.permission.index') }}">
-                        {{ __('usermanagement::admin.permissions') }}
+                        <i class="icon-menu fas fa-key"></i>{{ __('usermanagement::admin.permissions') }}
                     </a>
                     @endhasmoduleaccess
                     
                     @hasmoduleaccess('usermanagement', 'create')
                     <a class="dropdown-item" href="{{ route('admin.usermanagement.permission.manage') }}">
-                        {{ __('usermanagement::admin.add_permission') }}
+                        <i class="icon-menu fas fa-plus-square"></i>{{ __('usermanagement::admin.add_permission') }}
                     </a>
                     @endhasmoduleaccess
                     
@@ -82,7 +86,7 @@
                     
                     @hasmoduleaccess('usermanagement', 'update')
                     <a class="dropdown-item" href="{{ route('admin.usermanagement.module.permissions') }}">
-                        {{ __('usermanagement::admin.module_permissions') }}
+                        <i class="icon-menu fas fa-cogs"></i>{{ __('usermanagement::admin.module_permissions') }}
                     </a>
                     @endhasmoduleaccess
                     @endif
@@ -90,7 +94,7 @@
             </div>
             @hasmoduleaccess('usermanagement', 'create')
             <a href="{{ route('admin.usermanagement.manage') }}" class="dropdown-module-item btn btn-primary">
-                {{ __('usermanagement::admin.new_user') }}
+                <i class="icon-menu fas fa-user-plus"></i>{{ __('usermanagement::admin.new_user') }}
             </a>
             @endhasmoduleaccess
         </div>

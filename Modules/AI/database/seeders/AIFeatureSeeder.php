@@ -27,6 +27,24 @@ class AIFeatureSeeder extends Seeder
             DB::table('ai_features')->delete();
             $this->command->info('✅ Mevcut veriler temizlendi!');
             
+            // Kategorilerin var olduğunu kontrol et, yoksa oluştur
+            $categoryCount = DB::table('ai_feature_categories')->count();
+            if ($categoryCount === 0) {
+                $this->command->info('⚠️ Kategoriler yok, oluşturuluyor...');
+                $this->call(AIFeatureCategorySeeder::class);
+                $categoryCount = DB::table('ai_feature_categories')->count();
+                $this->command->info("✅ {$categoryCount} kategori oluşturuldu!");
+            } else {
+                $this->command->info("✅ {$categoryCount} kategori mevcut, devam ediliyor...");
+            }
+            
+            // Kategori mapping'ini debug için yazdır
+            $categories = DB::table('ai_feature_categories')->select('ai_feature_category_id', 'title')->get();
+            $this->command->info("📊 Kategori ID'leri:");
+            foreach ($categories as $category) {
+                $this->command->info("  - {$category->title}: ID={$category->ai_feature_category_id}");
+            }
+            
             // Önce feature-specific prompt'ları oluştur
             $this->createFeaturePrompts();
             
@@ -938,6 +956,45 @@ CONVERSION CONTENT:
      */
     private function createAIFeatures(): void
     {
+        // Gerçek kategori ID'lerini veritabanından al
+        $categories = DB::table('ai_feature_categories')->select('ai_feature_category_id', 'title')->get();
+        $categoryMapping = [];
+        
+        foreach ($categories as $category) {
+            switch ($category->title) {
+                case 'İçerik Üretimi':
+                    $categoryMapping[1] = $category->ai_feature_category_id;
+                    break;
+                case 'Pazarlama':
+                    $categoryMapping[2] = $category->ai_feature_category_id;
+                    break;
+                case 'SEO & Analiz':
+                    $categoryMapping[3] = $category->ai_feature_category_id;
+                    break;
+                case 'Çeviri & Dil':
+                    $categoryMapping[4] = $category->ai_feature_category_id;
+                    break;
+                case 'İş & Finans':
+                    $categoryMapping[5] = $category->ai_feature_category_id;
+                    break;
+                case 'Eğitim & Öğretim':
+                    $categoryMapping[6] = $category->ai_feature_category_id;
+                    break;
+                case 'Yaratıcılık & Sanat':
+                    $categoryMapping[7] = $category->ai_feature_category_id;
+                    break;
+                case 'Kod & Teknoloji':
+                    $categoryMapping[8] = $category->ai_feature_category_id;
+                    break;
+                case 'Araştırma & Analiz':
+                    $categoryMapping[9] = $category->ai_feature_category_id;
+                    break;
+                case 'Diğer':
+                    $categoryMapping[10] = $category->ai_feature_category_id;
+                    break;
+            }
+        }
+
         $features = [
             // SEO & İçerik Üretimi
             [
@@ -946,7 +1003,7 @@ CONVERSION CONTENT:
                 'description' => 'Google\'da 1. sayfada yer alacak, SEO optimizeli içerikler üretir.',
                 'emoji' => '🚀',
                 'icon' => 'fas fa-rocket',
-                'category' => 'content-creation',
+                'ai_feature_category_id' => 3,
                 'response_length' => 'long',
                 'response_format' => 'markdown',
                 'complexity_level' => 'advanced',
@@ -1030,7 +1087,7 @@ CONVERSION CONTENT:
                 'description' => 'Okuyucuların paylaşmak isteyeceği, Google\'ın seveceği blog yazıları.',
                 'emoji' => '📝',
                 'icon' => 'fas fa-blog',
-                'category' => 'content-creation',
+                'ai_feature_category_id' => 1,
                 'response_length' => 'long',
                 'response_format' => 'markdown',
                 'complexity_level' => 'intermediate',
@@ -1106,7 +1163,7 @@ CONVERSION CONTENT:
                 'description' => 'RT\'lenecek, beğenilecek, takipçi kazandıracak tweet\'ler.',
                 'emoji' => '🐦',
                 'icon' => 'fab fa-twitter',
-                'category' => 'marketing',
+                'ai_feature_category_id' => 2,
                 'response_length' => 'short',
                 'response_format' => 'text',
                 'complexity_level' => 'intermediate',
@@ -1187,7 +1244,7 @@ CONVERSION CONTENT:
                 'description' => 'Beğeni, yorum ve takipçi kazandıran Instagram içerikleri.',
                 'emoji' => '📸',
                 'icon' => 'fab fa-instagram',
-                'category' => 'marketing',
+                'ai_feature_category_id' => 2,
                 'response_length' => 'medium',
                 'response_format' => 'structured',
                 'complexity_level' => 'intermediate',
@@ -1277,7 +1334,7 @@ CONVERSION CONTENT:
                 'description' => 'Satış yapan, ikna eden, sepete ekleten ürün açıklamaları.',
                 'emoji' => '🛍️',
                 'icon' => 'fas fa-shopping-cart',
-                'category' => 'content-creation',
+                'ai_feature_category_id' => 1,
                 'response_length' => 'medium',
                 'response_format' => 'structured',
                 'complexity_level' => 'intermediate',
@@ -1363,7 +1420,7 @@ CONVERSION CONTENT:
                 'description' => 'İzlenme patlaması yapacak YouTube başlıkları ve açıklamaları.',
                 'emoji' => '🎬',
                 'icon' => 'fab fa-youtube',
-                'category' => 'content-creation',
+                'ai_feature_category_id' => 3,
                 'response_length' => 'long',
                 'response_format' => 'structured',
                 'complexity_level' => 'advanced',
@@ -1460,7 +1517,7 @@ CONVERSION CONTENT:
                 'description' => 'Açılma ve tıklama oranlarını patlatan email kampanyaları.',
                 'emoji' => '📧',
                 'icon' => 'fas fa-envelope-open-text',
-                'category' => 'marketing',
+                'ai_feature_category_id' => 2,
                 'response_length' => 'medium',
                 'response_format' => 'structured',
                 'complexity_level' => 'intermediate',
@@ -1558,7 +1615,7 @@ CONVERSION CONTENT:
                 'description' => 'Google Haritalar ve yerel aramalarda 1. sıra garantisi.',
                 'emoji' => '📍',
                 'icon' => 'fas fa-map-marked-alt',
-                'category' => 'marketing',
+                'ai_feature_category_id' => 3,
                 'response_length' => 'long',
                 'response_format' => 'structured',
                 'complexity_level' => 'advanced',
@@ -1659,7 +1716,7 @@ CONVERSION CONTENT:
                 'description' => 'Ziyaretçileri müşteriye dönüştüren satış sayfaları.',
                 'emoji' => '💰',
                 'icon' => 'fas fa-dollar-sign',
-                'category' => 'marketing',
+                'ai_feature_category_id' => 2,
                 'response_length' => 'long',
                 'response_format' => 'structured',
                 'complexity_level' => 'expert',
@@ -1772,7 +1829,7 @@ CONVERSION CONTENT:
                 'description' => 'Yasal uyumlu gizlilik politikaları ve kullanım şartları.',
                 'emoji' => '⚖️',
                 'icon' => 'fas fa-balance-scale',
-                'category' => 'legal',
+                'ai_feature_category_id' => 10,
                 'response_length' => 'long',
                 'response_format' => 'structured',
                 'complexity_level' => 'expert',
@@ -1872,7 +1929,7 @@ CONVERSION CONTENT:
                 'description' => 'Geliştiricilerin seveceği net ve anlaşılır API dökümanları.',
                 'emoji' => '🔌',
                 'icon' => 'fas fa-code',
-                'category' => 'technical',
+                'ai_feature_category_id' => 8,
                 'response_length' => 'long',
                 'response_format' => 'structured',
                 'complexity_level' => 'expert',
@@ -1981,7 +2038,7 @@ CONVERSION CONTENT:
                 'description' => 'Duygusal bağ kuran, unutulmaz marka hikayeleri.',
                 'emoji' => '🏆',
                 'icon' => 'fas fa-award',
-                'category' => 'creative',
+                'ai_feature_category_id' => 7,
                 'response_length' => 'long',
                 'response_format' => 'markdown',
                 'complexity_level' => 'advanced',
@@ -2082,7 +2139,7 @@ CONVERSION CONTENT:
                 'description' => 'Google\'ın anlayacağı zengin sonuçlar için schema markup kodları.',
                 'emoji' => '🔧',
                 'icon' => 'fas fa-code-branch',
-                'category' => 'technical',
+                'ai_feature_category_id' => 3,
                 'response_length' => 'medium',
                 'response_format' => 'code',
                 'complexity_level' => 'expert',
@@ -2175,7 +2232,7 @@ CONVERSION CONTENT:
                 'description' => 'CTR\'yi artıran mükemmel meta title ve description\'lar.',
                 'emoji' => '🏷️',
                 'icon' => 'fas fa-tags',
-                'category' => 'marketing',
+                'ai_feature_category_id' => 3,
                 'response_length' => 'short',
                 'response_format' => 'structured',
                 'complexity_level' => 'intermediate',
@@ -2273,7 +2330,7 @@ CONVERSION CONTENT:
                 'description' => 'Müşteri sorularını önleyen kapsamlı SSS sayfaları.',
                 'emoji' => '❓',
                 'icon' => 'fas fa-question-circle',
-                'category' => 'content-creation',
+                'ai_feature_category_id' => 1,
                 'response_length' => 'long',
                 'response_format' => 'structured',
                 'complexity_level' => 'intermediate',
@@ -2371,7 +2428,7 @@ CONVERSION CONTENT:
                 'description' => 'WhatsApp Business için otomatik mesajlar ve kampanyalar.',
                 'emoji' => '💬',
                 'icon' => 'fab fa-whatsapp',
-                'category' => 'marketing',
+                'ai_feature_category_id' => 2,
                 'response_length' => 'short',
                 'response_format' => 'text',
                 'complexity_level' => 'beginner',
@@ -2464,7 +2521,7 @@ CONVERSION CONTENT:
                 'description' => 'LinkedIn\'de sektör lideri olmanızı sağlayan içerikler.',
                 'emoji' => '💼',
                 'icon' => 'fab fa-linkedin',
-                'category' => 'marketing',
+                'ai_feature_category_id' => 2,
                 'response_length' => 'medium',
                 'response_format' => 'markdown',
                 'complexity_level' => 'advanced',
@@ -2563,7 +2620,7 @@ CONVERSION CONTENT:
                 'description' => 'Memnuniyet garantili müşteri iletişimi ve sorun çözümleri.',
                 'emoji' => '🎭',
                 'icon' => 'fas fa-headset',
-                'category' => 'communication',
+                'ai_feature_category_id' => 2,
                 'response_length' => 'medium',
                 'response_format' => 'structured',
                 'complexity_level' => 'intermediate',
@@ -2656,7 +2713,7 @@ CONVERSION CONTENT:
                 'description' => 'En iyi adayları çeken, profesyonel iş ilanları.',
                 'emoji' => '💼',
                 'icon' => 'fas fa-briefcase',
-                'category' => 'business',
+                'ai_feature_category_id' => 5,
                 'response_length' => 'long',
                 'response_format' => 'structured',
                 'complexity_level' => 'intermediate',
@@ -2757,7 +2814,7 @@ CONVERSION CONTENT:
                 'description' => 'LinkedIn\'de sektör lideri olmanızı sağlayan içerikler.',
                 'emoji' => '💼',
                 'icon' => 'fab fa-linkedin',
-                'category' => 'marketing',
+                'ai_feature_category_id' => 2,
                 'response_length' => 'medium',
                 'response_format' => 'markdown',
                 'complexity_level' => 'advanced',
@@ -2866,7 +2923,7 @@ CONVERSION CONTENT:
                 'description' => 'Milyonlarca izlenme alacak TikTok içerikleri.',
                 'emoji' => '🎵',
                 'icon' => 'fab fa-tiktok',
-                'category' => 'marketing',
+                'ai_feature_category_id' => 2,
                 'response_length' => 'short',
                 'response_format' => 'structured',
                 'complexity_level' => 'intermediate',
@@ -2969,7 +3026,7 @@ CONVERSION CONTENT:
                 'description' => 'Medyanın ilgisini çekecek profesyonel basın bültenleri.',
                 'emoji' => '📰',
                 'icon' => 'fas fa-newspaper',
-                'category' => 'marketing',
+                'ai_feature_category_id' => 2,
                 'response_length' => 'long',
                 'response_format' => 'structured',
                 'complexity_level' => 'advanced',
@@ -3070,7 +3127,7 @@ CONVERSION CONTENT:
                 'description' => 'Satışları artıran ikna edici başarı hikayeleri.',
                 'emoji' => '📊',
                 'icon' => 'fas fa-chart-line',
-                'category' => 'content-creation',
+                'ai_feature_category_id' => 1,
                 'response_length' => 'long',
                 'response_format' => 'structured',
                 'complexity_level' => 'advanced',
@@ -3170,7 +3227,7 @@ CONVERSION CONTENT:
                 'description' => 'Dinleyicileri ekrana kilitleyen podcast senaryoları.',
                 'emoji' => '🎙️',
                 'icon' => 'fas fa-microphone-alt',
-                'category' => 'creative',
+                'ai_feature_category_id' => 7,
                 'response_length' => 'long',
                 'response_format' => 'structured',
                 'complexity_level' => 'intermediate',
@@ -3275,7 +3332,7 @@ CONVERSION CONTENT:
                 'description' => 'Yüksek dönüşümlü landing page metinleri ve yapısı.',
                 'emoji' => '🎯',
                 'icon' => 'fas fa-bullseye',
-                'category' => 'marketing',
+                'ai_feature_category_id' => 2,
                 'response_length' => 'long',
                 'response_format' => 'structured',
                 'complexity_level' => 'expert',
@@ -3381,7 +3438,7 @@ CONVERSION CONTENT:
                 'description' => 'Açılıp okunmayı garantileyen newsletter içerikleri.',
                 'emoji' => '📮',
                 'icon' => 'fas fa-mail-bulk',
-                'category' => 'marketing',
+                'ai_feature_category_id' => 2,
                 'response_length' => 'long',
                 'response_format' => 'structured',
                 'complexity_level' => 'intermediate',
@@ -3484,7 +3541,7 @@ CONVERSION CONTENT:
                 'description' => 'Medyanın ilgisini çekecek profesyonel basın bültenleri.',
                 'emoji' => '📰',
                 'icon' => 'fas fa-newspaper',
-                'category' => 'marketing',
+                'ai_feature_category_id' => 2,
                 'response_length' => 'long',
                 'response_format' => 'structured',
                 'complexity_level' => 'advanced',
@@ -3559,6 +3616,10 @@ CONVERSION CONTENT:
         ];
 
         foreach ($features as $featureData) {
+            // Kategori ID'sini mapping ile dönüştür
+            $oldCategoryId = $featureData['ai_feature_category_id'];
+            $newCategoryId = $categoryMapping[$oldCategoryId] ?? $categoryMapping[10]; // Default: Diğer
+            
             // Feature oluştur
             $feature = AIFeature::create([
                 'name' => $featureData['name'],
@@ -3566,7 +3627,7 @@ CONVERSION CONTENT:
                 'description' => $featureData['description'],
                 'emoji' => $featureData['emoji'],
                 'icon' => $featureData['icon'],
-                'category' => $featureData['category'],
+                'ai_feature_category_id' => $newCategoryId,
                 'response_length' => $featureData['response_length'],
                 'response_format' => $featureData['response_format'],
                 'complexity_level' => $featureData['complexity_level'],

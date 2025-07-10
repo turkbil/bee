@@ -1,16 +1,15 @@
 <?php
 // Modules/AI/routes/admin.php
 use Illuminate\Support\Facades\Route;
-use Modules\AI\App\Http\Livewire\Admin\ChatPanel;
-use Modules\AI\App\Http\Livewire\Admin\SettingsPanel;
-use Modules\AI\App\Http\Controllers\Admin\AIChatController;
-use Modules\AI\App\Http\Controllers\Admin\SettingsController;
-use Modules\AI\App\Http\Controllers\Admin\ConversationController;
-use Modules\AI\App\Http\Controllers\Admin\TokenManagementController;
-use Modules\AI\App\Http\Controllers\Admin\TokenPackageController;
-use Modules\AI\App\Http\Controllers\Admin\TokenController;
-use Modules\AI\App\Http\Livewire\Admin\TokenManagement;
-use Modules\AI\App\Http\Livewire\Admin\TokenPackageManagement;
+use Modules\AI\App\Http\Livewire\Admin\Chat\ChatPanel;
+use Modules\AI\App\Http\Livewire\Admin\Settings\SettingsPanel;
+use Modules\AI\App\Http\Controllers\Admin\Chat\AIChatController;
+use Modules\AI\App\Http\Controllers\Admin\Settings\SettingsController;
+use Modules\AI\App\Http\Controllers\Admin\Conversations\ConversationController;
+use Modules\AI\App\Http\Controllers\Admin\Tokens\TokenManagementController;
+use Modules\AI\App\Http\Controllers\Admin\Tokens\TokenController;
+use Modules\AI\App\Http\Livewire\Admin\Tokens\TokenManagement;
+use Modules\AI\App\Http\Livewire\Admin\Tokens\TokenPackageManagement;
 
 // Admin rotaları
 Route::middleware(['admin', 'admin.tenant.select'])
@@ -20,7 +19,7 @@ Route::middleware(['admin', 'admin.tenant.select'])
         Route::prefix('ai')
             ->name('ai.')
             ->group(function () {
-                Route::get('/', [AIChatController::class, 'index'])
+                Route::get('/', ChatPanel::class)
                     ->middleware('module.permission:ai,view')
                     ->name('index');
                 
@@ -143,47 +142,57 @@ Route::middleware(['admin', 'admin.tenant.select'])
                     ->name('update-conversation-prompt');
                     
                 // AI Features Management System - Page Pattern
-                Route::get('/features', \Modules\AI\App\Http\Livewire\Admin\AIFeaturesManagement::class)
+                Route::get('/features', \Modules\AI\App\Http\Livewire\Admin\Features\AIFeaturesManagement::class)
                     ->middleware('module.permission:ai,view')
                     ->name('features.index');
                     
+                // AI Features Dashboard Route
+                Route::get('/features/dashboard', [\Modules\AI\App\Http\Controllers\Admin\Settings\SettingsController::class, 'features'])
+                    ->middleware('module.permission:ai,view')
+                    ->name('features.dashboard');
+                    
+                // AI Feature Categories Management
+                Route::get('/features/categories', \Modules\AI\App\Http\Livewire\Admin\Features\AIFeatureCategoryComponent::class)
+                    ->middleware('module.permission:ai,view')
+                    ->name('features.categories');
+                    
                 // Feature Manage Route'ları (Page pattern - create ve edit kaldırıldı)
-                Route::get('/features/manage/{id?}', \Modules\AI\App\Http\Livewire\Admin\AIFeatureManageComponent::class)
+                Route::get('/features/manage/{id?}', \Modules\AI\App\Http\Livewire\Admin\Features\AIFeatureManageComponent::class)
                     ->middleware('module.permission:ai,view')
                     ->name('features.manage');
                 
                 // Sıralama güncelleme (AJAX)
-                Route::post('/features/update-sort', [\Modules\AI\App\Http\Controllers\Admin\AIFeaturesController::class, 'updateSort'])
+                Route::post('/features/update-sort', [\Modules\AI\App\Http\Controllers\Admin\Features\AIFeaturesController::class, 'updateSort'])
                     ->middleware('module.permission:ai,update')
                     ->name('features.update-sort');
                     
                 // Durum değiştirme (AJAX)
-                Route::post('/features/{id}/toggle-status', [\Modules\AI\App\Http\Controllers\Admin\AIFeaturesController::class, 'toggleStatus'])
+                Route::post('/features/{id}/toggle-status', [\Modules\AI\App\Http\Controllers\Admin\Features\AIFeaturesController::class, 'toggleStatus'])
                     ->middleware('module.permission:ai,update')
                     ->name('features.toggle-status');
                     
                 
                 // AI Features ek route'lar (eski sistem uyumluluğu)
-                Route::post('/features/bulk-status', [\Modules\AI\App\Http\Controllers\Admin\AIFeaturesController::class, 'bulkStatusUpdate'])
+                Route::post('/features/bulk-status', [\Modules\AI\App\Http\Controllers\Admin\Features\AIFeaturesController::class, 'bulkStatusUpdate'])
                     ->middleware('module.permission:ai,update')
                     ->name('features.bulk-status');
-                Route::post('/features/update-order', [\Modules\AI\App\Http\Controllers\Admin\AIFeaturesController::class, 'updateOrder'])
+                Route::post('/features/update-order', [\Modules\AI\App\Http\Controllers\Admin\Features\AIFeaturesController::class, 'updateOrder'])
                     ->middleware('module.permission:ai,update')
                     ->name('features.update-order');
-                Route::post('/features/{feature}/duplicate', [\Modules\AI\App\Http\Controllers\Admin\AIFeaturesController::class, 'duplicate'])
+                Route::post('/features/{feature}/duplicate', [\Modules\AI\App\Http\Controllers\Admin\Features\AIFeaturesController::class, 'duplicate'])
                     ->middleware('module.permission:ai,create')
                     ->name('features.duplicate');
                     
                     
                 // AI Skills Showcase (Adminler için)
-                Route::get('/prowess', [\Modules\AI\App\Http\Controllers\Admin\AIFeaturesController::class, 'prowess'])
+                Route::get('/prowess', [\Modules\AI\App\Http\Controllers\Admin\Features\AIFeaturesController::class, 'prowess'])
                     ->middleware('module.permission:ai,view')
                     ->name('prowess');
                 
                 // AI Features Test API
                 Route::post('/test-feature', function(\Illuminate\Http\Request $request) {
                     \Log::info('AI Feature Test API çağrıldı', $request->all());
-                    $controller = app()->make(\Modules\AI\App\Http\Controllers\Admin\AIFeaturesController::class);
+                    $controller = app()->make(\Modules\AI\App\Http\Controllers\Admin\Features\AIFeaturesController::class);
                     return $controller->testFeature($request);
                 })
                     ->middleware('module.permission:ai,view')
@@ -278,23 +287,23 @@ Route::middleware(['admin', 'admin.tenant.select'])
                     ->name('profile.')
                     ->middleware('module.permission:ai,view')
                     ->group(function () {
-                        Route::get('/', [\Modules\AI\App\Http\Controllers\Admin\AIProfileController::class, 'show'])
+                        Route::get('/', [\Modules\AI\App\Http\Controllers\Admin\Profile\AIProfileController::class, 'show'])
                             ->name('show');
                         
                         // Step-based URL routing
-                        Route::get('/edit/{step?}', [\Modules\AI\App\Http\Controllers\Admin\AIProfileController::class, 'edit'])
+                        Route::get('/edit/{step?}', [\Modules\AI\App\Http\Controllers\Admin\Profile\AIProfileController::class, 'edit'])
                             ->where('step', '[1-6]')
                             ->name('edit');
                         
-                        Route::post('/generate-story', [\Modules\AI\App\Http\Controllers\Admin\AIProfileController::class, 'generateStory'])
+                        Route::post('/generate-story', [\Modules\AI\App\Http\Controllers\Admin\Profile\AIProfileController::class, 'generateStory'])
                             ->middleware('module.permission:ai,create')
                             ->name('generate-story');
                         
-                        Route::post('/save-field', [\Modules\AI\App\Http\Controllers\Admin\AIProfileController::class, 'saveField'])
+                        Route::post('/save-field', [\Modules\AI\App\Http\Controllers\Admin\Profile\AIProfileController::class, 'saveField'])
                             ->middleware('module.permission:ai,update')
                             ->name('save-field');
                         
-                        Route::post('/reset', [\Modules\AI\App\Http\Controllers\Admin\AIProfileController::class, 'reset'])
+                        Route::post('/reset', [\Modules\AI\App\Http\Controllers\Admin\Profile\AIProfileController::class, 'reset'])
                             ->middleware('module.permission:ai,delete')
                             ->name('reset');
                     });

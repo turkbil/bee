@@ -11,7 +11,7 @@ return new class extends Migration
      * AI Tenant Profil Sistemi - SADECE CENTRAL VERITABANI
      * 
      * Bu tablo her tenant için AI davranışlarını yönlendirecek profil bilgilerini tutar.
-     * Firma bilgileri, sektör detayları, başarı hikayeleri ve AI kuralları JSON formatında saklanır.
+     * Firma bilgileri, sektör detayları, AI davranış kuralları ve kurucu bilgileri JSON formatında saklanır.
      * Bu sayede AI, her tenant için kişiselleştirilmiş içerik üretebilir.
      */
     public function up(): void
@@ -31,7 +31,7 @@ return new class extends Migration
             // Sektöre özel detaylar (e-ticaret için ürün kategorileri, sağlık için branşlar vb.)
             $table->json('sector_details')->nullable();
             
-            // Başarı hikayeleri (projeler, referanslar, ödüller vb.)
+            // Başarı hikayeleri ve rekabet avantajları
             $table->json('success_stories')->nullable();
             
             // AI davranış kuralları (ton, vurgular, kaçınılacak konular vb.)

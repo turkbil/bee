@@ -4,17 +4,17 @@ namespace Modules\AI\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
-use Modules\AI\App\Http\Livewire\Admin\ChatPanel;
-use Modules\AI\App\Http\Livewire\Admin\SettingsPanel;
-use Modules\AI\App\Http\Livewire\Admin\Modals\PromptEditModal;
-use Modules\AI\App\Http\Livewire\Admin\Modals\PromptDeleteModal;
-use Modules\AI\App\Http\Livewire\Admin\TokenManagement;
-use Modules\AI\App\Http\Livewire\Admin\TokenPackageManagement;
-use Modules\AI\App\Http\Livewire\Admin\AIFeaturesDashboard;
-use Modules\AI\App\Http\Livewire\Admin\AIExamples;
-use Modules\AI\App\Http\Livewire\Admin\AITestPanel;
-use Modules\AI\App\Http\Livewire\Admin\AIFeaturesManagement;
-use Modules\AI\App\Http\Livewire\Admin\AIFeatureManageComponent;
+use Modules\AI\App\Http\Livewire\Admin\Chat\ChatPanel;
+use Modules\AI\App\Http\Livewire\Admin\Settings\SettingsPanel;
+use Modules\AI\App\Http\Livewire\Admin\Settings\Modals\PromptEditModal;
+use Modules\AI\App\Http\Livewire\Admin\Settings\Modals\PromptDeleteModal;
+use Modules\AI\App\Http\Livewire\Admin\Tokens\TokenManagement;
+use Modules\AI\App\Http\Livewire\Admin\Tokens\TokenPackageManagement;
+use Modules\AI\App\Http\Livewire\Admin\Features\AIFeaturesDashboard;
+use Modules\AI\App\Http\Livewire\Admin\Features\AIExamples;
+use Modules\AI\App\Http\Livewire\Admin\Features\AITestPanel;
+use Modules\AI\App\Http\Livewire\Admin\Features\AIFeaturesManagement;
+use Modules\AI\App\Http\Livewire\Admin\Features\AIFeatureManageComponent;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -59,7 +59,7 @@ class AIServiceProvider extends ServiceProvider
         Livewire::component('ai::admin.ai-test-panel', AITestPanel::class);
         Livewire::component('ai::admin.ai-features-management', AIFeaturesManagement::class);
         Livewire::component('ai::admin.ai-feature-manage-component', AIFeatureManageComponent::class);
-        Livewire::component('ai::admin.ai-profile-management', \Modules\AI\App\Http\Livewire\Admin\AIProfileManagement::class);
+        Livewire::component('ai::admin.ai-profile-management', \Modules\AI\App\Http\Livewire\Admin\Profile\AIProfileManagement::class);
         
         // Eski kayıtlar da korunacak (backward compatibility)
         Livewire::component('chat-panel', ChatPanel::class);

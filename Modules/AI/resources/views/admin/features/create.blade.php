@@ -2,7 +2,7 @@
 
 @section('title', 'Yeni AI Feature Oluştur')
 
-@include('ai::admin.shared.helper')
+@include('ai::helper')
 
 @section('content')
 <div class="page-header d-print-none">

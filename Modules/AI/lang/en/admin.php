@@ -21,6 +21,18 @@ return [
 'menu' => 'Menu',
 'artificial_intelligence' => 'Artificial Intelligence',
 'ai_assistant' => 'AI Assistant',
+'ai_management' => 'AI Management',
+'ai_prowess' => 'AI Prowess',
+'ai_profile' => 'AI Profile',
+'conversations' => 'Conversations',
+'settings' => 'Settings',
+'dashboard' => 'Dashboard',
+
+// Menu Categories
+'main_operations' => 'Main Operations',
+'profile_settings' => 'Profile & Settings',
+'quick_actions' => 'Quick Actions',
+
 'open_ai_assistant' => 'Open AI Assistant',
 'typing' => 'typing...',
 'retry' => 'Retry',

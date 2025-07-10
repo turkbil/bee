@@ -5,6 +5,7 @@ namespace Modules\AI\Database\Seeders;
 use Illuminate\Database\Seeder;
 use Modules\AI\App\Models\AITenantProfile;
 use Carbon\Carbon;
+use App\Helpers\TenantHelpers;
 
 class AITenantProfileTestSeeder extends Seeder
 {
@@ -13,6 +14,10 @@ class AITenantProfileTestSeeder extends Seeder
      */
     public function run(): void
     {
+        if (!TenantHelpers::isCentral()) {
+            return;
+        }
+        
         $this->command->info('🎯 Test AI Tenant Profile oluşturuluyor...');
 
         // Mevcut profil varsa güncelle, yoksa oluştur

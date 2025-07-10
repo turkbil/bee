@@ -4,6 +4,7 @@ namespace Modules\AI\app\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AIProfileSector extends Model
 {
@@ -11,9 +12,13 @@ class AIProfileSector extends Model
 
     protected $fillable = [
         'code',
+        'category_id',
         'name',
         'icon',
+        'emoji',
+        'color',
         'description',
+        'keywords',
         'is_active',
         'sort_order'
     ];
@@ -34,7 +39,51 @@ class AIProfileSector extends Model
     }
 
     /**
-     * Aktif sektörleri getir - Sort order'a göre sıralama
+     * Ana kategori (parent) ilişkisi
+     */
+    public function parentCategory(): BelongsTo
+    {
+        return $this->belongsTo(AIProfileSector::class, 'category_id');
+    }
+
+    /**
+     * Alt kategoriler (children) ilişkisi
+     */
+    public function subCategories(): HasMany
+    {
+        return $this->hasMany(AIProfileSector::class, 'category_id')
+                    ->where('is_active', true)
+                    ->orderBy('sort_order')
+                    ->orderBy('name');
+    }
+
+    /**
+     * Ana kategorileri getir (category_id null olanlar)
+     */
+    public static function getMainCategories()
+    {
+        return static::whereNull('category_id')
+                     ->where('is_active', true)
+                     ->orderBy('sort_order')
+                     ->orderBy('name')
+                     ->get();
+    }
+
+    /**
+     * Kategorize edilmiş sektörleri getir (ana kategoriler + alt kategorileri)
+     */
+    public static function getCategorizedSectors()
+    {
+        return static::with('subCategories')
+                     ->whereNull('category_id')
+                     ->where('is_active', true)
+                     ->orderBy('sort_order')
+                     ->orderBy('name')
+                     ->get();
+    }
+
+    /**
+     * Aktif sektörleri getir - Sort order'a göre sıralama (backward compatibility)
      */
     public static function getActive()
     {

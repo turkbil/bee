@@ -79,42 +79,18 @@
 
 /* Eski kurallar temizlendi - yeni sistem kullanılıyor */
 
-/* Karanlık mod aktif olduğunda */
+/* Varsayılan olarak tüm ikonları gizle */
+.theme-mode .names p {
+    display: none;
+}
+
+/* Light mode: Moon icon (dark mode'a geçmek için) */
+.theme-mode .dark-switch:not(:checked) + .app .names p.light {
+    display: block;
+}
+
+/* Dark mode: Sun icon (light mode'a geçmek için) */
 .theme-mode .dark-switch:checked + .app .names p.dark {
-    display: none;
-}
-
-.theme-mode .dark-switch:checked + .app .names p.light {
-    display: none;
-}
-
-.theme-mode .dark-switch:checked + .app .names p.auto {
-    display: none;
-}
-
-/* Açık mod aktif olduğunda */
-.theme-mode .dark-switch + .app .names p.light {
-    display: none;
-}
-
-.theme-mode .dark-switch + .app .names p.dark {
-    display: none;
-}
-
-.theme-mode .dark-switch + .app .names p.auto {
-    display: none;
-}
-
-/* Tema durumuna göre gösterilecek ikonlar */
-.theme-mode[data-theme="light"] .dark-switch + .app .names p.light {
-    display: block;
-}
-
-.theme-mode[data-theme="dark"] .dark-switch:checked + .app .names p.dark {
-    display: block;
-}
-
-.theme-mode[data-theme="auto"] .dark-switch + .app .names p.auto {
     display: block;
 }
 

@@ -544,7 +544,7 @@ class AIProfileQuestionsSeeder extends Seeder
             [
                 'sector_code' => 'technology',
                 'step' => 3,
-                'question_key' => 'tech_services',
+                'question_key' => 'tech_services_main',
                 'question_text' => 'Teknoloji Hizmetleriniz',
                 'help_text' => 'Sunduğunuz teknoloji hizmetlerini seçin',
                 'input_type' => 'checkbox',

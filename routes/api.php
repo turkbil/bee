@@ -31,6 +31,21 @@ Route::middleware('auth:sanctum')->get('/protected-test', function () {
 // API v1 routes
 Route::prefix('v1')->group(function () {
     
+    // API v1 base endpoint
+    Route::get('/', function () {
+        return response()->json([
+            'message' => 'API v1 is running',
+            'version' => '1.0.0',
+            'timestamp' => now()->toISOString(),
+            'endpoints' => [
+                'auth' => '/api/v1/auth/*',
+                'profile' => '/api/v1/profile',
+                'tokens' => '/api/v1/tokens',
+                'tenant' => '/api/v1/tenant'
+            ]
+        ]);
+    });
+    
     // Auth routes (public)
     Route::post('/auth/login', [App\Http\Controllers\Api\AuthController::class, 'login']);
     Route::post('/auth/register', [App\Http\Controllers\Api\AuthController::class, 'register']);

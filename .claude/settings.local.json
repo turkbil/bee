@@ -130,7 +130,7 @@
   },
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
-    "memory"
+    "claude-code-server"
   ],
   "mcpServers": {
     "memory": {

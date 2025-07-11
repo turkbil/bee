@@ -9,6 +9,7 @@ use App\Services\SettingsService;
 use App\Services\TenantCacheManager;
 use Illuminate\Support\Facades\URL;
 use Livewire\Livewire;
+use Illuminate\Support\Facades\Blade;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -72,6 +73,9 @@ class AppServiceProvider extends ServiceProvider
         // Register Livewire Components
         $this->registerLivewireComponents();
         
+        // Register Blade Components
+        $this->registerBladeComponents();
+        
         // HTTPS kullanıyorsanız bu ayarı aktif edin
         if(env('APP_ENV') !== 'local') {
             URL::forceScheme('https');
@@ -129,5 +133,11 @@ class AppServiceProvider extends ServiceProvider
         Livewire::component('ai-token-package-management', \App\Http\Livewire\Admin\AITokenPackageManagementComponent::class);
         Livewire::component('ai-token-purchase-management', \App\Http\Livewire\Admin\AITokenPurchaseManagementComponent::class);
         Livewire::component('ai-token-usage-management', \App\Http\Livewire\Admin\AITokenUsageManagementComponent::class);
+    }
+    
+    protected function registerBladeComponents(): void
+    {
+        // Register Progress Circle Component
+        Blade::component('progress-circle', \App\View\Components\ProgressCircle::class);
     }
 }

@@ -565,7 +565,7 @@ function regenerateBrandStory() {
                 </div>
                 <div>
                     <div class="fw-bold text-primary">AI marka hikayenizi oluşturuyor...</div>
-                    <small class="text-muted">Bu işlem birkaç saniye sürebilir</small>
+                    <small class="text-muted">Bu işlem birkaç dakika sürebilir, lütfen bekleyin</small>
                 </div>
             </div>
         `;

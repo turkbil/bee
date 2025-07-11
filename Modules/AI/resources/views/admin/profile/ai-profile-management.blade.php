@@ -33,7 +33,7 @@
                                 {{-- Sol - Step Bilgileri --}}
                                 <div class="col-lg-8 col-md-7">
                                     <div class="hero-left-content">
-                                        <div class="step-info-container">
+                                        <div class="step-info-container d-flex align-items-center gap-3">
                                             <div class="ai-hologram" style="
                                                 width: 80px;
                                                 height: 80px;
@@ -45,6 +45,7 @@
                                                 align-items: center;
                                                 justify-content: center;
                                                 position: relative;
+                                                flex-shrink: 0;
                                             ">
                                                 <div style="
                                                     width: 68px;
@@ -135,27 +136,10 @@
                                 <div class="col-lg-4 col-md-5">
                                     <div class="hero-right-content">
                                         <div class="progress-section">
-                                            <div class="progress-circle-container">
-                                                <div class="progress-circle progress-circle-large">
-                                                    <svg class="progress-svg" viewBox="0 0 100 100">
-                                                        <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(var(--tblr-muted-rgb, 255,255,255),0.1)" stroke-width="6"/>
-                                                        <circle cx="50" cy="50" r="45" fill="none" stroke="url(#stepGradient)" stroke-width="6" 
-                                                                stroke-dasharray="282.74" stroke-dashoffset="{{ 282.74 - (282.74 * $realProgressPercentage / 100) }}"
-                                                                transform="rotate(-90 50 50)" stroke-linecap="round"/>
-                                                        <defs>
-                                                            <linearGradient id="stepGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                                                <stop offset="0%" style="stop-color:#00d4ff"/>
-                                                                <stop offset="50%" style="stop-color:#9333ea"/>
-                                                                <stop offset="100%" style="stop-color:#f59e0b"/>
-                                                            </linearGradient>
-                                                        </defs>
-                                                    </svg>
-                                                    <div class="progress-text">
-                                                        <span class="progress-percentage">{{ round($realProgressPercentage) }}%</span>
-                                                        <small class="progress-label">Tamamlandı</small>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <x-progress-circle 
+                                                :total-questions="$totalFields" 
+                                                :answered-questions="$completedFields" 
+                                                size="large" />
                                         </div>
                                     </div>
                                 </div>
@@ -210,7 +194,7 @@
                                         2 => 'company_info.' . $question->question_key,
                                         3 => 'sector_details.' . $question->question_key,
                                         4 => 'company_info.' . $question->question_key,
-                                        5 => 'success_stories.' . $question->question_key,
+                                        5 => $question->question_key == 'response_style' ? 'ai_behavior_rules.' . $question->question_key : 'success_stories.' . $question->question_key,
                                         6 => 'ai_behavior_rules.' . $question->question_key,
                                         default => $question->question_key
                                     };
@@ -233,9 +217,30 @@
                                     {{-- Input Based on Type --}}
                                     @switch($question->input_type)
                                         
-                                        @case('select')
+                                        @case('sector_select')
                                             {{-- Special handling for sector selection with categorized grid --}}
-                                            @if($question->question_key === 'sector' && $currentStep === 1)
+                                            @if($question->question_key === 'sector_selection' && $currentStep === 1)
+                                                {{-- Sektör Arama Kutusu --}}
+                                                <div class="col-12 mb-4">
+                                                    <div class="position-relative">
+                                                        <input type="text" 
+                                                               class="form-control form-control-lg" 
+                                                               placeholder="Sektör ara... (örn: web tasarım, e-ticaret, muhasebe)" 
+                                                               id="sectorSearch"
+                                                               x-data="{ searchTerm: '' }"
+                                                               x-model="searchTerm"
+                                                               @input="filterSectors($event.target.value)"
+                                                               style="padding-left: 50px; font-size: 16px; height: 60px; border-radius: 12px; border: 2px solid #e2e8f0; transition: all 0.3s ease;">
+                                                        <div class="position-absolute" style="left: 18px; top: 50%; transform: translateY(-50%); color: #64748b;">
+                                                            <i class="fas fa-search fs-4"></i>
+                                                        </div>
+                                                    </div>
+                                                    <small class="text-muted mt-2 d-block">
+                                                        <i class="fas fa-info-circle me-1"></i>
+                                                        Sektörünüzü hızlıca bulmak için arama yapabilirsiniz
+                                                    </small>
+                                                </div>
+                                                
                                                 @foreach($sectors as $mainCategory)
                                                     {{-- Ana Kategori Başlığı (Tıklanamaz Bant) --}}
                                                     <div class="col-12 mb-3">
@@ -263,8 +268,8 @@
                                                     {{-- Alt Kategoriler (Sektörler) --}}
                                                     <div class="row g-3 mb-4">
                                                         @foreach($mainCategory->subCategories as $sector)
-                                                            <div class="col-6 col-md-4 col-lg-3">
-                                                                <label class="form-imagecheck mb-2">
+                                                            <div class="col-6 col-md-4 col-lg-3" style="display: flex;">
+                                                                <label class="form-imagecheck mb-2" style="width: 100%; display: flex;">
                                                                     <input type="radio" name="formData[{{ $fieldKey }}]" value="{{ $sector->code }}" 
                                                                            class="form-imagecheck-input profile-field-input" 
                                                                            data-field="{{ $fieldKey }}"
@@ -272,19 +277,23 @@
                                                                            x-init="$el.checked = isChecked"
                                                                            @if(isset($formData[$fieldKey]) && $formData[$fieldKey] == $sector->code) checked @endif
                                                                            @if($question->is_required) required @endif>
-                                                                    <span class="form-imagecheck-figure">
-                                                                        <div class="form-imagecheck-image sector-card d-flex flex-column" style="min-height: 120px;">
-                                                                            <div class="sector-icon">
+                                                                    <span class="form-imagecheck-figure" style="width: 100%; display: flex;">
+                                                                        <div class="form-imagecheck-image sector-card d-flex flex-column" style="min-height: 140px; height: 140px; width: 100%; flex: 1;">
+                                                                            <div class="sector-icon mb-2" style="min-height: 40px; display: flex; align-items: center; justify-content: center;">
                                                                                 @if($sector->emoji)
-                                                                                    <span class="sector-emoji">{{ $sector->emoji }}</span>
+                                                                                    <span class="sector-emoji" style="font-size: 24px;">{{ $sector->emoji }}</span>
                                                                                 @elseif($sector->icon)
-                                                                                    <i class="{{ $sector->icon }}"></i>
+                                                                                    <i class="{{ $sector->icon }}" style="font-size: 24px;"></i>
                                                                                 @else
-                                                                                    <i class="fas fa-briefcase"></i>
+                                                                                    <i class="fas fa-briefcase" style="font-size: 24px;"></i>
                                                                                 @endif
                                                                             </div>
-                                                                            <div class="sector-name">{{ $sector->name }}</div>
-                                                                            <div class="sector-desc flex-grow-1">{{ $sector->description }}</div>
+                                                                            <div class="sector-name text-center fw-bold mb-2" style="font-size: 13px; line-height: 1.2; min-height: 32px; display: flex; align-items: center; justify-content: center;">
+                                                                                {{ $sector->name }}
+                                                                            </div>
+                                                                            <div class="sector-desc text-center text-muted flex-grow-1" style="font-size: 11px; line-height: 1.3; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
+                                                                                {{ $sector->description }}
+                                                                            </div>
                                                                         </div>
                                                                     </span>
                                                                 </label>
@@ -292,33 +301,50 @@
                                                         @endforeach
                                                     </div>
                                                 @endforeach
-                                            @else
-                                                {{-- Normal select dropdown for other fields --}}
-                                                <select class="form-select profile-field-input" 
-                                                        name="formData[{{ $fieldKey }}]"
-                                                        data-field="{{ $fieldKey }}"
-                                                        x-data="{ fieldValue: '{{ addslashes($formData[$fieldKey] ?? '') }}' }"
-                                                        x-init="$el.value = fieldValue"
-                                                        @if($question->is_required) required @endif>
-                                                    <option value="">Seçiniz...</option>
-                                                    @if($question->options)
-                                                        @foreach($question->options as $option)
-                                                            <option value="{{ $option['value'] }}" 
-                                                                    @if(isset($formData[$fieldKey]) && $formData[$fieldKey] == $option['value']) selected @endif>
-                                                                {{ $option['label'] }}
-                                                            </option>
-                                                        @endforeach
-                                                    @endif
-                                                </select>
                                             @endif
+                                            @break
+                                            
+                                        @case('select')
+                                            {{-- Normal select dropdown for other fields --}}
+                                            <select class="form-select profile-field-input" 
+                                                    name="formData[{{ $fieldKey }}]"
+                                                    data-field="{{ $fieldKey }}"
+                                                    x-data="{ fieldValue: '{{ addslashes($formData[$fieldKey] ?? '') }}' }"
+                                                    x-init="$el.value = fieldValue"
+                                                    @if($question->is_required) required @endif>
+                                                <option value="">Seçiniz...</option>
+                                                @if($question->options)
+                                                    @foreach(is_array($question->options) ? $question->options : (json_decode($question->options, true) ?? []) as $option)
+                                                        @php
+                                                            $optionValue = is_array($option) ? ($option['value'] ?? $option) : $option;
+                                                            $optionLabel = is_array($option) ? ($option['label'] ?? $option) : $option;
+                                                        @endphp
+                                                        <option value="{{ $optionValue }}" 
+                                                                @if(isset($formData[$fieldKey]) && $formData[$fieldKey] == $optionValue) selected @endif>
+                                                            {{ $optionLabel }}
+                                                        </option>
+                                                    @endforeach
+                                                @endif
+                                            </select>
+                                            @break
+                                            
+                                        @case('select_with_custom')
+                                            <input type="text" 
+                                                   class="form-control profile-field-input" 
+                                                   name="formData[{{ $fieldKey }}]"
+                                                   data-field="{{ $fieldKey }}"
+                                                   x-data="{ fieldValue: '{{ addslashes($formData[$fieldKey] ?? '') }}' }"
+                                                   x-init="$el.value = fieldValue"
+                                                   placeholder="{{ $question->input_placeholder ?? 'Örn: 2020 yılından beri, 15+ yıllık deneyim, aile işi vb.' }}"
+                                                   @if($question->is_required) required @endif>
                                             @break
                                             
                                         @case('radio')
                                             @php
                                                 // Tüm soru için en uzun metni bul
                                                 $maxLength = 0;
-                                                foreach($question->options as $opt) {
-                                                    $maxLength = max($maxLength, strlen($opt['label']));
+                                                foreach(is_array($question->options) ? $question->options : (json_decode($question->options, true) ?? []) as $opt) {
+                                                    $maxLength = max($maxLength, strlen($opt['label'] ?? ''));
                                                 }
                                                 
                                                 // Tüm soru için col class belirle
@@ -332,31 +358,39 @@
                                             @endphp
                                             <div class="row">
                                                 @if($question->options)
-                                                    @foreach($question->options as $option)
+                                                    @foreach(is_array($question->options) ? $question->options : (json_decode($question->options, true) ?? []) as $option)
+                                                        @php
+                                                            $optionValue = is_array($option) ? ($option['value'] ?? $option) : $option;
+                                                            $optionLabel = is_array($option) ? ($option['label'] ?? $option) : $option;
+                                                            $optionIcon = is_array($option) ? ($option['icon'] ?? '') : '';
+                                                            $optionDescription = is_array($option) ? ($option['description'] ?? '') : '';
+                                                            $hasCustomInput = is_array($option) && !empty($option['has_custom_input']);
+                                                            $isChecked = isset($formData[$fieldKey]) && $formData[$fieldKey] == $optionValue;
+                                                        @endphp
                                                         <div class="{{ $questionColClass }} mb-2">
                                                             <label class="form-selectgroup-item flex-fill">
-                                                                <input type="radio" name="formData[{{ $fieldKey }}]" value="{{ $option['value'] }}" 
-                                                                       class="form-selectgroup-input profile-field-input @if(isset($option['has_custom_input'])) custom-radio-trigger @endif" 
+                                                                <input type="radio" name="formData[{{ $fieldKey }}]" value="{{ $optionValue }}" 
+                                                                       class="form-selectgroup-input profile-field-input @if($hasCustomInput) custom-radio-trigger @endif" 
                                                                        data-field="{{ $fieldKey }}"
-                                                                       @if(isset($option['has_custom_input'])) data-custom-field="{{ $fieldKey }}_custom" @endif
-                                                                       x-data="{ isChecked: '{{ $formData[$fieldKey] ?? '' }}' === '{{ $option['value'] }}' }"
+                                                                       @if($hasCustomInput) data-custom-field="{{ $fieldKey }}_custom" @endif
+                                                                       x-data="{ isChecked: '{{ $formData[$fieldKey] ?? '' }}' === '{{ $optionValue }}' }"
                                                                        x-init="$el.checked = isChecked"
-                                                                       @if(isset($formData[$fieldKey]) && $formData[$fieldKey] == $option['value']) checked @endif
+                                                                       @if($isChecked) checked @endif
                                                                        @if($question->is_required) required @endif>
                                                                 <div class="form-selectgroup-label d-flex align-items-center p-3">
                                                                     <div class="me-3">
                                                                         <span class="form-selectgroup-check"></span>
                                                                     </div>
                                                                     <div class="form-selectgroup-label-content d-flex align-items-center">
-                                                                        @if(isset($option['icon']))
-                                                                            <i class="{{ $option['icon'] }} me-3 text-muted"></i>
+                                                                        @if($optionIcon)
+                                                                            <i class="{{ $optionIcon }} me-3 text-muted"></i>
                                                                         @else
                                                                             <i class="fas fa-dot-circle me-3 text-muted"></i>
                                                                         @endif
                                                                         <div>
-                                                                            <div class="font-weight-medium">{{ $option['label'] }}</div>
-                                                                            @if(isset($option['description']))
-                                                                                <div class="text-secondary small">{{ $option['description'] }}</div>
+                                                                            <div class="font-weight-medium">{{ $optionLabel }}</div>
+                                                                            @if($optionDescription)
+                                                                                <div class="text-secondary small">{{ $optionDescription }}</div>
                                                                             @endif
                                                                         </div>
                                                                     </div>
@@ -366,15 +400,15 @@
                                                     @endforeach
                                                     
                                                     {{-- Custom Input Field (Hidden by default) --}}
-                                                    @foreach($question->options as $option)
-                                                        @if(isset($option['has_custom_input']))
+                                                    @foreach(is_array($question->options) ? $question->options : (json_decode($question->options, true) ?? []) as $option)
+                                                        @if(is_array($option) && !empty($option['has_custom_input']))
                                                             <div class="col-12 mt-3" id="{{ $fieldKey }}_custom_container" 
                                                                  style="display: none;">
                                                                 <input type="text" 
                                                                        class="form-control profile-field-input" 
                                                                        name="formData[{{ $fieldKey }}_custom]"
                                                                        data-field="{{ $fieldKey }}_custom"
-                                                                       placeholder="{{ $option['custom_placeholder'] ?? 'Özel bilginizi giriniz...' }}"
+                                                                       placeholder="{{ ($option['custom_placeholder'] ?? '') ?? 'Özel bilginizi giriniz...' }}"
                                                                        value="{{ $formData[$fieldKey . '_custom'] ?? '' }}"
                                                                        x-data="{ fieldValue: '{{ addslashes($formData[$fieldKey . '_custom'] ?? '') }}' }"
                                                                        x-init="$el.value = fieldValue">
@@ -390,8 +424,8 @@
                                             @php
                                                 // Tüm soru için en uzun metni bul
                                                 $maxLength = 0;
-                                                foreach($question->options as $opt) {
-                                                    $maxLength = max($maxLength, strlen($opt['label']));
+                                                foreach(is_array($question->options) ? $question->options : (json_decode($question->options, true) ?? []) as $opt) {
+                                                    $maxLength = max($maxLength, strlen($opt['label'] ?? ''));
                                                 }
                                                 
                                                 // Tüm soru için col class belirle
@@ -405,18 +439,23 @@
                                             @endphp
                                             <div class="row">
                                                 @if($question->options)
-                                                    @foreach($question->options as $option)
+                                                    @foreach(is_array($question->options) ? $question->options : (json_decode($question->options, true) ?? []) as $option)
+                                                        @php
+                                                            $optionValue = is_array($option) ? ($option['value'] ?? $option) : $option;
+                                                            $optionLabel = is_array($option) ? ($option['label'] ?? $option) : $option;
+                                                            $optionIcon = is_array($option) ? ($option['icon'] ?? '') : '';
+                                                            $optionDescription = is_array($option) ? ($option['description'] ?? '') : '';
+                                                            $hasCustomInput = is_array($option) && !empty($option['has_custom_input']);
+                                                            $nestedFieldKey = $fieldKey . '.' . $optionValue;
+                                                            $isChecked = isset($formData[$nestedFieldKey]) && $formData[$nestedFieldKey];
+                                                        @endphp
                                                         <div class="{{ $questionColClass }} mb-2">
                                                             <label class="form-selectgroup-item flex-fill">
-                                                                <input type="checkbox" value="{{ $option['value'] }}" 
-                                                                       class="form-selectgroup-input profile-field-checkbox @if(isset($option['has_custom_input'])) custom-checkbox-trigger @endif" 
+                                                                <input type="checkbox" value="{{ $optionValue }}" 
+                                                                       class="form-selectgroup-input profile-field-checkbox @if($hasCustomInput) custom-checkbox-trigger @endif" 
                                                                        name="formData[{{ $fieldKey }}][]"
                                                                        data-field="{{ $fieldKey }}"
-                                                                       @if(isset($option['has_custom_input'])) data-custom-field="{{ $fieldKey }}_custom" @endif
-                                                                       @php
-                                                                           $nestedFieldKey = $fieldKey . '.' . $option['value'];
-                                                                           $isChecked = isset($formData[$nestedFieldKey]) && $formData[$nestedFieldKey];
-                                                                       @endphp
+                                                                       @if($hasCustomInput) data-custom-field="{{ $fieldKey }}_custom" @endif
                                                                        x-data="{ isChecked: Boolean({{ $isChecked ? 'true' : 'false' }}) }"
                                                                        x-init="$el.checked = isChecked"
                                                                        @if($isChecked) checked @endif>
@@ -425,15 +464,15 @@
                                                                         <span class="form-selectgroup-check"></span>
                                                                     </div>
                                                                     <div class="form-selectgroup-label-content d-flex align-items-center">
-                                                                        @if(isset($option['icon']))
-                                                                            <i class="{{ $option['icon'] }} me-3 text-muted"></i>
+                                                                        @if($optionIcon)
+                                                                            <i class="{{ $optionIcon }} me-3 text-muted"></i>
                                                                         @else
                                                                             <i class="fas fa-check me-3 text-muted"></i>
                                                                         @endif
                                                                         <div>
-                                                                            <div class="font-weight-medium">{{ $option['label'] }}</div>
-                                                                            @if(isset($option['description']))
-                                                                                <div class="text-secondary small">{{ $option['description'] }}</div>
+                                                                            <div class="font-weight-medium">{{ $optionLabel }}</div>
+                                                                            @if($optionDescription)
+                                                                                <div class="text-secondary small">{{ $optionDescription }}</div>
                                                                             @endif
                                                                         </div>
                                                                     </div>
@@ -443,15 +482,15 @@
                                                     @endforeach
                                                     
                                                     {{-- Custom Input Field for Checkbox (Hidden by default) --}}
-                                                    @foreach($question->options as $option)
-                                                        @if(isset($option['has_custom_input']))
+                                                    @foreach(is_array($question->options) ? $question->options : (json_decode($question->options, true) ?? []) as $option)
+                                                        @if(is_array($option) && !empty($option['has_custom_input']))
                                                             <div class="col-12 mt-3" id="{{ $fieldKey }}_custom_container" 
                                                                  style="display: none;">
                                                                 <input type="text" 
                                                                        class="form-control profile-field-input" 
                                                                        name="formData[{{ $fieldKey }}_custom]"
                                                                        data-field="{{ $fieldKey }}_custom"
-                                                                       placeholder="{{ $option['custom_placeholder'] ?? 'Özel bilginizi giriniz...' }}"
+                                                                       placeholder="{{ ($option['custom_placeholder'] ?? '') ?? 'Özel bilginizi giriniz...' }}"
                                                                        value="{{ $formData[$fieldKey . '_custom'] ?? '' }}"
                                                                        x-data="{ fieldValue: '{{ addslashes($formData[$fieldKey . '_custom'] ?? '') }}' }"
                                                                        x-init="$el.value = fieldValue">
@@ -533,8 +572,8 @@
                                                     @php
                                                         // Tüm soru için en uzun metni bul
                                                         $maxLength = 0;
-                                                        foreach($question->options as $opt) {
-                                                            $maxLength = max($maxLength, strlen($opt['label']));
+                                                        foreach(is_array($question->options) ? $question->options : (json_decode($question->options, true) ?? []) as $opt) {
+                                                            $maxLength = max($maxLength, strlen($opt['label'] ?? ''));
                                                         }
                                                         
                                                         // Tüm soru için col class belirle
@@ -548,30 +587,37 @@
                                                     @endphp
                                                     <div class="row">
                                                         @if($question->options)
-                                                            @foreach($question->options as $option)
+                                                            @foreach(is_array($question->options) ? $question->options : (json_decode($question->options, true) ?? []) as $option)
+                                                                @php
+                                                                    $optionValue = is_array($option) ? ($option['value'] ?? $option) : $option;
+                                                                    $optionLabel = is_array($option) ? ($option['label'] ?? $option) : $option;
+                                                                    $optionIcon = is_array($option) ? ($option['icon'] ?? '') : '';
+                                                                    $optionDescription = is_array($option) ? ($option['description'] ?? '') : '';
+                                                                    $hasCustomInput = is_array($option) && !empty($option['has_custom_input']);
+                                                                @endphp
                                                                 <div class="{{ $questionColClass }} mb-2">
                                                                     <label class="form-selectgroup-item flex-fill">
-                                                                        <input type="radio" name="formData[{{ $fieldKey }}]" value="{{ $option['value'] }}" 
-                                                                               class="form-selectgroup-input profile-field-input @if(isset($option['has_custom_input'])) custom-radio-trigger @endif" 
+                                                                        <input type="radio" name="formData[{{ $fieldKey }}]" value="{{ $optionValue }}" 
+                                                                               class="form-selectgroup-input profile-field-input @if($hasCustomInput) custom-radio-trigger @endif" 
                                                                                data-field="{{ $fieldKey }}"
-                                                                               @if(isset($option['has_custom_input'])) data-custom-field="{{ $fieldKey }}_custom" @endif
-                                                                               x-data="{ isChecked: '{{ $formData[$fieldKey] ?? '' }}' === '{{ $option['value'] }}' }"
+                                                                               @if($hasCustomInput) data-custom-field="{{ $fieldKey }}_custom" @endif
+                                                                               x-data="{ isChecked: '{{ $formData[$fieldKey] ?? '' }}' === '{{ $optionValue }}' }"
                                                                                x-init="$el.checked = isChecked"
-                                                                               @if(isset($formData[$fieldKey]) && $formData[$fieldKey] == $option['value']) checked @endif>
+                                                                               @if(isset($formData[$fieldKey]) && $formData[$fieldKey] == $optionValue) checked @endif>
                                                                         <div class="form-selectgroup-label d-flex align-items-center p-3">
                                                                             <div class="me-3">
                                                                                 <span class="form-selectgroup-check"></span>
                                                                             </div>
                                                                             <div class="form-selectgroup-label-content d-flex align-items-center">
-                                                                                @if(isset($option['icon']))
-                                                                                    <i class="{{ $option['icon'] }} me-3 text-muted"></i>
+                                                                                @if($optionIcon)
+                                                                                    <i class="{{ $optionIcon }} me-3 text-muted"></i>
                                                                                 @else
                                                                                     <i class="fas fa-dot-circle me-3 text-muted"></i>
                                                                                 @endif
                                                                                 <div>
-                                                                                    <div class="font-weight-medium">{{ $option['label'] }}</div>
-                                                                                    @if(isset($option['description']))
-                                                                                        <div class="text-secondary small">{{ $option['description'] }}</div>
+                                                                                    <div class="font-weight-medium">{{ $optionLabel }}</div>
+                                                                                    @if($optionDescription)
+                                                                                        <div class="text-secondary small">{{ $optionDescription }}</div>
                                                                                     @endif
                                                                                 </div>
                                                                             </div>
@@ -581,15 +627,15 @@
                                                             @endforeach
                                                             
                                                             {{-- Custom Input Field for Radio (Hidden by default) --}}
-                                                            @foreach($question->options as $option)
-                                                                @if(isset($option['has_custom_input']))
+                                                            @foreach(is_array($question->options) ? $question->options : (json_decode($question->options, true) ?? []) as $option)
+                                                                @if(is_array($option) && !empty($option['has_custom_input']))
                                                                     <div class="col-12 mt-3" id="{{ $fieldKey }}_custom_container" 
                                                                          style="display: none;">
                                                                         <input type="text" 
                                                                                class="form-control profile-field-input" 
                                                                                name="formData[{{ $fieldKey }}_custom]"
                                                                                data-field="{{ $fieldKey }}_custom"
-                                                                               placeholder="{{ $option['custom_placeholder'] ?? 'Özel bilginizi giriniz...' }}"
+                                                                               placeholder="{{ ($option['custom_placeholder'] ?? '') ?? 'Özel bilginizi giriniz...' }}"
                                                                                value="{{ $formData[$fieldKey . '_custom'] ?? '' }}"
                                                                                x-data="{ fieldValue: '{{ addslashes($formData[$fieldKey . '_custom'] ?? '') }}' }"
                                                                                x-init="$el.value = fieldValue">
@@ -605,8 +651,8 @@
                                                     @php
                                                         // Tüm soru için en uzun metni bul
                                                         $maxLength = 0;
-                                                        foreach($question->options as $opt) {
-                                                            $maxLength = max($maxLength, strlen($opt['label']));
+                                                        foreach(is_array($question->options) ? $question->options : (json_decode($question->options, true) ?? []) as $opt) {
+                                                            $maxLength = max($maxLength, strlen($opt['label'] ?? ''));
                                                         }
                                                         
                                                         // Tüm soru için col class belirle
@@ -620,18 +666,23 @@
                                                     @endphp
                                                     <div class="row">
                                                         @if($question->options)
-                                                            @foreach($question->options as $option)
+                                                            @foreach(is_array($question->options) ? $question->options : (json_decode($question->options, true) ?? []) as $option)
+                                                                @php
+                                                                    $optionValue = is_array($option) ? ($option['value'] ?? $option) : $option;
+                                                                    $optionLabel = is_array($option) ? ($option['label'] ?? $option) : $option;
+                                                                    $optionIcon = is_array($option) ? ($option['icon'] ?? '') : '';
+                                                                    $optionDescription = is_array($option) ? ($option['description'] ?? '') : '';
+                                                                    $hasCustomInput = is_array($option) && !empty($option['has_custom_input']);
+                                                                    $nestedFieldKey = $fieldKey . '.' . $optionValue;
+                                                                    $isChecked = isset($formData[$nestedFieldKey]) && $formData[$nestedFieldKey];
+                                                                @endphp
                                                                 <div class="{{ $questionColClass }} mb-2">
                                                                     <label class="form-selectgroup-item flex-fill">
-                                                                        <input type="checkbox" value="{{ $option['value'] }}" 
-                                                                               class="form-selectgroup-input profile-field-checkbox @if(isset($option['has_custom_input'])) custom-checkbox-trigger @endif" 
+                                                                        <input type="checkbox" value="{{ $optionValue }}" 
+                                                                               class="form-selectgroup-input profile-field-checkbox @if($hasCustomInput) custom-checkbox-trigger @endif" 
                                                                                name="formData[{{ $fieldKey }}][]"
                                                                                data-field="{{ $fieldKey }}"
-                                                                               @if(isset($option['has_custom_input'])) data-custom-field="{{ $fieldKey }}_custom" @endif
-                                                                               @php
-                                                                                   $nestedFieldKey = $fieldKey . '.' . $option['value'];
-                                                                                   $isChecked = isset($formData[$nestedFieldKey]) && $formData[$nestedFieldKey];
-                                                                               @endphp
+                                                                               @if($hasCustomInput) data-custom-field="{{ $fieldKey }}_custom" @endif
                                                                                x-data="{ isChecked: Boolean({{ $isChecked ? 'true' : 'false' }}) }"
                                                                                x-init="$el.checked = isChecked"
                                                                                @if($isChecked) checked @endif>
@@ -640,15 +691,15 @@
                                                                                 <span class="form-selectgroup-check"></span>
                                                                             </div>
                                                                             <div class="form-selectgroup-label-content d-flex align-items-center">
-                                                                                @if(isset($option['icon']))
-                                                                                    <i class="{{ $option['icon'] }} me-3 text-muted"></i>
+                                                                                @if($optionIcon)
+                                                                                    <i class="{{ $optionIcon }} me-3 text-muted"></i>
                                                                                 @else
                                                                                     <i class="fas fa-check me-3 text-muted"></i>
                                                                                 @endif
                                                                                 <div>
-                                                                                    <div class="font-weight-medium">{{ $option['label'] }}</div>
-                                                                                    @if(isset($option['description']))
-                                                                                        <div class="text-secondary small">{{ $option['description'] }}</div>
+                                                                                    <div class="font-weight-medium">{{ $optionLabel }}</div>
+                                                                                    @if($optionDescription)
+                                                                                        <div class="text-secondary small">{{ $optionDescription }}</div>
                                                                                     @endif
                                                                                 </div>
                                                                             </div>
@@ -658,15 +709,15 @@
                                                             @endforeach
                                                             
                                                             {{-- Custom Input Field for Checkbox (Hidden by default) --}}
-                                                            @foreach($question->options as $option)
-                                                                @if(isset($option['has_custom_input']))
+                                                            @foreach(is_array($question->options) ? $question->options : (json_decode($question->options, true) ?? []) as $option)
+                                                                @if(is_array($option) && !empty($option['has_custom_input']))
                                                                     <div class="col-12 mt-3" id="{{ $fieldKey }}_custom_container" 
                                                                          style="display: none;">
                                                                         <input type="text" 
                                                                                class="form-control profile-field-input" 
                                                                                name="formData[{{ $fieldKey }}_custom]"
                                                                                data-field="{{ $fieldKey }}_custom"
-                                                                               placeholder="{{ $option['custom_placeholder'] ?? 'Özel bilginizi giriniz...' }}"
+                                                                               placeholder="{{ ($option['custom_placeholder'] ?? '') ?? 'Özel bilginizi giriniz...' }}"
                                                                                value="{{ $formData[$fieldKey . '_custom'] ?? '' }}"
                                                                                x-data="{ fieldValue: '{{ addslashes($formData[$fieldKey . '_custom'] ?? '') }}' }"
                                                                                x-init="$el.value = fieldValue">
@@ -830,6 +881,55 @@ function initializeFormFields() {
 // Run immediately on load
 document.addEventListener('DOMContentLoaded', initializeFormFields);
 
+// ===== SEKTÖR ARAMA FONKSİYONU =====
+function filterSectors(searchTerm) {
+    const term = searchTerm.toLowerCase().trim();
+    const sectorCards = document.querySelectorAll('.sector-card');
+    const categoryBands = document.querySelectorAll('.category-header-band');
+    
+    if (term === '') {
+        // Arama boşsa tüm kartları göster
+        sectorCards.forEach(card => {
+            card.closest('.col-6, .col-md-4, .col-lg-3').style.display = 'block';
+        });
+        categoryBands.forEach(band => {
+            band.closest('.col-12').style.display = 'block';
+        });
+        return;
+    }
+    
+    let visibleCategoriesCount = {};
+    
+    // Sektör kartlarını filtrele
+    sectorCards.forEach(card => {
+        const sectorName = card.querySelector('.sector-name').textContent.toLowerCase();
+        const sectorDesc = card.querySelector('.sector-desc').textContent.toLowerCase();
+        const cardContainer = card.closest('.col-6, .col-md-4, .col-lg-3');
+        const categoryContainer = cardContainer.closest('.row').previousElementSibling;
+        const categoryTitle = categoryContainer.querySelector('h5').textContent;
+        
+        // Arama terimi sektör adında veya açıklamasında var mı?
+        if (sectorName.includes(term) || sectorDesc.includes(term)) {
+            cardContainer.style.display = 'block';
+            visibleCategoriesCount[categoryTitle] = (visibleCategoriesCount[categoryTitle] || 0) + 1;
+        } else {
+            cardContainer.style.display = 'none';
+        }
+    });
+    
+    // Kategorileri gizle/göster (görünür sektörü olmayan kategoriler gizlenir)
+    categoryBands.forEach(band => {
+        const categoryTitle = band.querySelector('h5').textContent;
+        const categoryContainer = band.closest('.col-12');
+        
+        if (visibleCategoriesCount[categoryTitle] > 0) {
+            categoryContainer.style.display = 'block';
+        } else {
+            categoryContainer.style.display = 'none';
+        }
+    });
+}
+
 // ===== JQUERY AUTO-SAVE SİSTEMİ (LİVEWİRE'DAN BAĞIMSIZ) =====
 $(document).ready(function() {
     let autoSaveTimeout;
@@ -877,8 +977,19 @@ $(document).ready(function() {
         }, 500);
     });
     
+    // STEP 5 (AI BEHAVIOR) ÖZEL HANDLER - RADIO + CHECKBOX
+    $(document).on('change', 'input[data-field*="ai_behavior_rules"], input[data-field="success_stories.ai_response_style"], input[data-field="ai_behavior_rules.response_style"]', function(event) {
+        const fieldName = $(this).data('field');
+        if (!fieldName) return;
+        
+        const fieldValue = getFieldValue($(this));
+        
+        // AI davranış ayarları için instant save
+        saveFieldData(fieldName, fieldValue);
+    });
+    
     // DİĞER ALANLAR İÇİN GENERIC HANDLER (TEXT, TEXTAREA ETC)
-    $(document).on('change', 'input[data-field]:not([data-field*="sector_details"]):not([data-field*="success_stories"]):not([data-field*="founder_info"]), select[data-field], textarea[data-field]', function(event) {
+    $(document).on('change', 'input[data-field]:not([data-field*="sector_details"]):not([data-field*="success_stories"]):not([data-field*="founder_info"]):not([data-field*="ai_behavior_rules"]):not([data-field="success_stories.ai_response_style"]), select[data-field], textarea[data-field]', function(event) {
         const fieldName = $(this).data('field');
         if (!fieldName) return;
         
@@ -970,6 +1081,15 @@ style.textContent = `
     box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.3) !important;
     transition: box-shadow 0.3s ease;
 }
+
+.disabled-select {
+    opacity: 0.5 !important;
+    pointer-events: none !important;
+    background-color: #f8f9fa !important;
+    cursor: not-allowed !important;
+}
+
+/* Experience years field styling - simple text input */
 
 @keyframes float-icon {
     0%, 100% { 
@@ -1134,7 +1254,7 @@ $(document).on('change', 'input[data-field="company_info.founder_permission"]', 
     const value = $(this).val();
     const founderSection = $('#founder-questions-section');
     
-    if (value === 'yes_full' || value === 'yes_limited') {
+    if (value === 'Evet, bilgilerimi paylaşmak istiyorum') {
         founderSection.show();
     } else {
         founderSection.hide();
@@ -1150,7 +1270,7 @@ $(document).ready(function() {
         const value = checkedFounderPermission.val();
         const founderSection = $('#founder-questions-section');
         
-        if (value === 'yes_full' || value === 'yes_limited') {
+        if (value === 'Evet, bilgilerimi paylaşmak istiyorum') {
             founderSection.show();
         } else {
             founderSection.hide();
@@ -1173,6 +1293,9 @@ $(document).ready(function() {
         }
     });
 });
+
+// ===== EXPERIENCE YEARS FIELD - SIMPLE TEXT INPUT =====
+// Artık sadece text input olduğu için Choices.js kod bloğu kaldırıldı
 
 // ===== AI PROFILE WIZARD TEMA FIX =====
 // Sayfa yüklendiğinde mevcut temayı uygula

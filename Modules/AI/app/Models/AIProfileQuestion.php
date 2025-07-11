@@ -27,7 +27,6 @@ class AIProfileQuestion extends Model
     ];
 
     protected $casts = [
-        'options' => 'array',
         'validation_rules' => 'array',
         'show_if' => 'array',
         'is_required' => 'boolean',
@@ -111,17 +110,52 @@ class AIProfileQuestion extends Model
         return implode('|', $rules);
     }
 
+
+    /**
+     * Options attribute accessor - JSON decode edilmiş array döndürür
+     */
+    public function getOptionsAttribute($value)
+    {
+        if (!$value) {
+            return [];
+        }
+        
+        // If already an array, return as is
+        if (is_array($value)) {
+            return $value;
+        }
+        
+        // First JSON decode - escaped string'i decode et
+        $firstDecode = json_decode($value, true);
+        
+        // If first decode returns string, try second decode
+        if (is_string($firstDecode)) {
+            $secondDecode = json_decode($firstDecode, true);
+            if (is_array($secondDecode)) {
+                return $secondDecode;
+            }
+        }
+        
+        // If first decode returns array, return it
+        if (is_array($firstDecode)) {
+            return $firstDecode;
+        }
+        
+        return [];
+    }
+
     /**
      * Select/checkbox seçeneklerini formatla
      */
     public function getFormattedOptions(): array
     {
-        if (!$this->options || !is_array($this->options)) {
+        $options = $this->options;
+        if (!is_array($options)) {
             return [];
         }
         
         $formatted = [];
-        foreach ($this->options as $option) {
+        foreach ($options as $option) {
             if (is_string($option)) {
                 $formatted[$option] = $option;
             } elseif (is_array($option) && isset($option['value'], $option['label'])) {

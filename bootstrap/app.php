@@ -8,6 +8,7 @@ use App\Exceptions\Handler;
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
+        api: __DIR__.'/../routes/api.php',
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
@@ -21,7 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Legacy module route loading removed - now event-driven via ModuleEnabled events
     })
     ->withMiddleware(function (Middleware $middleware) {
-        // 1. TENANT - Domain belirleme (EN ÖNCELİKLİ)
+        // 1. TENANT - Domain belirleme (EN ÖNCELİKLİ) - Sadece web
         $middleware->prependToGroup('web', \App\Http\Middleware\InitializeTenancy::class);
         
         // 2. DİL - Tenant'tan HEMEN sonra (Session'dan ÖNCE çalışmalı) - admin hariç
@@ -57,6 +58,12 @@ return Application::configure(basePath: dirname(__DIR__))
             'auth',
             'admin.access',
             'locale.admin',
+        ]);
+        
+        // API middleware grubu
+        $middleware->group('api', [
+            'throttle:api',
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ]);
         
         // Site middleware grubu (admin olmayan rotalar için)

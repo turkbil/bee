@@ -32,12 +32,27 @@ if (!function_exists('ai_get_settings')) {
         
         if ($settings === null) {
             try {
+                // AI ayarları sadece central domain'de - tenancy bypass
+                $previousTenantId = tenancy()->tenant?->id ?? null;
+                
+                // Tenancy'yi bypass et
+                tenancy()->end();
+                
                 $settings = \Cache::remember('ai_global_settings', 3600, function () {
                     return \Modules\AI\App\Models\Setting::first();
                 });
+                
+                // Eski tenant context'i geri yükle
+                if ($previousTenantId && class_exists('\App\Models\Tenant')) {
+                    $tenant = \App\Models\Tenant::find($previousTenantId);
+                    if ($tenant) {
+                        tenancy()->initialize($tenant);
+                    }
+                }
             } catch (\Exception $e) {
-                // Fallback - direkt database
+                // Fallback - direkt database (tenancy bypass)
                 try {
+                    tenancy()->end();
                     $settings = \Modules\AI\App\Models\Setting::first();
                 } catch (\Exception $e2) {
                     $settings = false; // Cache false değer (tekrar denemeyi önler)

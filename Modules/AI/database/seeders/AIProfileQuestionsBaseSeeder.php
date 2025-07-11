@@ -38,8 +38,8 @@ class AIProfileQuestionsBaseSeeder extends Seeder
         // ADIM 4: Kurucu Bilgileri (İzin sistemi ile)
         $this->createFounderPermissionQuestion();
         
-        // ADIM 5: Başarı Hikayeleri (Tüm sektörler için ortak)
-        $this->createSuccessStoryQuestions();
+        // ADIM 5: Yapay Zeka Yanıt Tarzı (Tüm sektörler için ortak)
+        $this->createAIResponseStyleQuestions();
         
         // ADIM 6: Yapay Zeka Davranış Kuralları (Tüm sektörler için ortak)
         $this->createAIBehaviorQuestions();
@@ -96,28 +96,13 @@ class AIProfileQuestionsBaseSeeder extends Seeder
             [
                 'id' => 103,
                 'step' => 2,
-                'question_key' => 'main_service',
-                'question_text' => 'Ana hizmetiniz/ürününüz nedir?',
-                'help_text' => 'Temel olarak ne yapıyorsunuz? (örn: Web tasarımı, Diş tedavisi, Online satış)',
-                'input_type' => 'textarea',
+                'question_key' => 'experience_years',
+                'question_text' => 'Hangi yıldan beri bu işi yapıyorsunuz?',
+                'help_text' => 'İşe başladığınız yılı yazın veya deneyim sürenizi belirtin (Örn: 2020, 2015 yılından beri, 10+ yıllık deneyim, aile işi vb.)',
+                'input_type' => 'select_with_custom',
+                'options' => json_encode([]),
                 'is_required' => true,
                 'sort_order' => 30
-            ],
-            [
-                'id' => 104,
-                'step' => 2,
-                'question_key' => 'experience_years',
-                'question_text' => 'Kaç yıldır bu işi yapıyorsunuz?',
-                'help_text' => 'Sektördeki deneyim sürenizi belirtin',
-                'input_type' => 'select',
-                'options' => json_encode([
-                    '1-3 yıl',
-                    '4-7 yıl', 
-                    '8-15 yıl',
-                    '15+ yıl'
-                ]),
-                'is_required' => true,
-                'sort_order' => 40
             ]
         ];
         
@@ -138,57 +123,26 @@ class AIProfileQuestionsBaseSeeder extends Seeder
             [
                 'id' => 201,
                 'step' => 3,
-                'question_key' => 'business_size',
-                'question_text' => 'İşletme büyüklüğünüz?',
-                'help_text' => 'Çalışan sayısına göre işletme büyüklüğünüzü belirtin',
-                'input_type' => 'select',
-                'options' => json_encode([
-                    'Sadece ben (tek kişi)',
-                    '2-5 kişi (küçük ekip)',
-                    '6-20 kişi (orta işletme)',
-                    '21-50 kişi (büyük işletme)',
-                    '50+ kişi (kurumsal)'
-                ]),
-                'is_required' => true,
-                'sort_order' => 10
-            ],
-            [
-                'id' => 202,
-                'step' => 3,
                 'question_key' => 'target_audience',
                 'question_text' => 'Ana müşteri kitleniz kimler?',
                 'help_text' => 'Öncelikli hedef müşterilerinizi seçin (çoklu seçim)',
                 'input_type' => 'checkbox',
                 'options' => json_encode([
-                    'Bireysel müşteriler (B2C)',
+                    'Bireysel müşteriler',
                     'Küçük işletmeler',
-                    'Orta ölçekli şirketler',
-                    'Büyük korporasyonlar',
-                    'Kamu kurumları',
-                    'Yabancı müşteriler'
-                ]),
+                    'Büyük şirketler',
+                    [
+                        'value' => 'custom',
+                        'label' => 'Diğer (belirtiniz)',
+                        'has_custom_input' => true,
+                        'custom_placeholder' => 'Hedef müşteri kitlenizi belirtiniz'
+                    ]
+                ], JSON_UNESCAPED_UNICODE),
                 'is_required' => true,
-                'sort_order' => 20
+                'sort_order' => 10
             ],
             [
-                'id' => 203,
-                'step' => 3,
-                'question_key' => 'service_area',
-                'question_text' => 'Hizmet alanınız?',
-                'help_text' => 'Hangi coğrafi alanda hizmet veriyorsunuz?',
-                'input_type' => 'select',
-                'options' => json_encode([
-                    'Sadece kendi şehrim',
-                    'Birkaç şehir (bölgesel)',
-                    'Türkiye geneli',
-                    'Uluslararası',
-                    'Online (lokasyon bağımsız)'
-                ]),
-                'is_required' => true,
-                'sort_order' => 30
-            ],
-            [
-                'id' => 204,
+                'id' => 202,
                 'step' => 3,
                 'question_key' => 'brand_voice',
                 'question_text' => 'Marka kişiliğiniz nasıl olmalı?',
@@ -200,10 +154,16 @@ class AIProfileQuestionsBaseSeeder extends Seeder
                     'Profesyonel ve ciddi',
                     'Yenilikçi ve modern',
                     'Prestijli ve lüks',
-                    'Hızlı ve dinamik'
-                ]),
+                    'Hızlı ve dinamik',
+                    [
+                        'value' => 'custom',
+                        'label' => 'Diğer (belirtiniz)',
+                        'has_custom_input' => true,
+                        'custom_placeholder' => 'Marka kişiliğinizi belirtiniz'
+                    ]
+                ], JSON_UNESCAPED_UNICODE),
                 'is_required' => true,
-                'sort_order' => 40
+                'sort_order' => 20
             ]
         ];
         
@@ -212,111 +172,148 @@ class AIProfileQuestionsBaseSeeder extends Seeder
             AIProfileQuestion::create($question);
         }
         
-        echo "✅ Marka detayları soruları eklendi (4 soru)\n";
+        echo "✅ Marka detayları soruları eklendi (2 soru)\n";
     }
     
     /**
-     * ADIM 4: Kurucu Bilgileri İzin Sorusu
+     * ADIM 4: Kurucu Bilgileri Soruları
      */
     private function createFounderPermissionQuestion(): void
     {
-        AIProfileQuestion::create([
-            'id' => 301,
-            'step' => 4,
-            'question_key' => 'founder_permission',
-            'question_text' => 'Kurucu hikayenizi AI ile paylaşmak ister misiniz?',
-            'help_text' => 'Kişisel hikayeniz marka güvenilirliğini artırır. Paylaşmak tamamen isteğe bağlıdır.',
-            'input_type' => 'radio',
-            'options' => json_encode([
-                'Evet, hikayemi paylaşmak istiyorum',
-                'Hayır, sadece işletme bilgileri yeterli'
-            ]),
-            'is_required' => true,
-            'sort_order' => 10,
-            'is_active' => true
-        ]);
-        
-        // Eğer izin verilirse açılacak sorular (conditional)
-        $founderQuestions = [
+        $questions = [
+            // İzin sorusu
+            [
+                'id' => 301,
+                'step' => 4,
+                'section' => 'company_info',
+                'question_key' => 'founder_permission',
+                'question_text' => 'Kurucu hakkında bilgi paylaşmak ister misiniz?',
+                'help_text' => 'Kişisel hikayeniz marka güvenilirliğini artırır. Paylaşmak tamamen isteğe bağlıdır.',
+                'input_type' => 'radio',
+                'options' => json_encode([
+                    'Evet, bilgilerimi paylaşmak istiyorum',
+                    'Hayır, sadece işletme bilgileri yeterli'
+                ], JSON_UNESCAPED_UNICODE),
+                'is_required' => true,
+                'sort_order' => 10
+            ],
+            
+            // Conditional sorular (izin verilirse açılacak)
             [
                 'id' => 302,
                 'step' => 4,
-                'question_key' => 'founder_story',
-                'question_text' => 'Nasıl başladınız? Kuruluş hikayeniz',
-                'help_text' => 'Bu işe nasıl başladığınızı, motivasyonunuzu kısaca anlatın',
-                'input_type' => 'textarea',
+                'section' => 'founder_info',
+                'question_key' => 'founder_name',
+                'question_text' => 'Kurucunun adı soyadı',
+                'help_text' => 'Müşterilerle paylaşılacak kurucu isim bilgisi',
+                'input_type' => 'text',
                 'is_required' => false,
                 'sort_order' => 20,
                 'depends_on' => 'founder_permission',
-                'show_if' => json_encode(['Evet, hikayemi paylaşmak istiyorum'])
+                'show_if' => json_encode(['Evet, bilgilerimi paylaşmak istiyorum'], JSON_UNESCAPED_UNICODE)
             ],
+            
             [
                 'id' => 303,
                 'step' => 4,
-                'question_key' => 'biggest_challenge',
-                'question_text' => 'En büyük zorluğunuz neydi ve nasıl aştınız?',
-                'help_text' => 'İşinizde karşılaştığınız önemli bir zorluğu ve çözümünüzü paylaşın',
-                'input_type' => 'textarea',
+                'section' => 'founder_info',
+                'question_key' => 'founder_position',
+                'question_text' => 'Pozisyonunuz',
+                'help_text' => 'Şirketteki pozisyonunuzu seçin',
+                'input_type' => 'radio',
+                'options' => json_encode([
+                    'Kurucu & Sahip',
+                    'Genel Müdür',
+                    [
+                        'value' => 'custom',
+                        'label' => 'Diğer (belirtiniz)',
+                        'has_custom_input' => true,
+                        'custom_placeholder' => 'Pozisyonunuzu belirtiniz'
+                    ]
+                ], JSON_UNESCAPED_UNICODE),
                 'is_required' => false,
                 'sort_order' => 30,
                 'depends_on' => 'founder_permission',
-                'show_if' => json_encode(['Evet, hikayemi paylaşmak istiyorum'])
+                'show_if' => json_encode(['Evet, bilgilerimi paylaşmak istiyorum'], JSON_UNESCAPED_UNICODE)
+            ],
+            
+            [
+                'id' => 304,
+                'step' => 4,
+                'section' => 'founder_info',
+                'question_key' => 'founder_qualities',
+                'question_text' => 'Kurucuyu tanıtan özellikler',
+                'help_text' => 'Kendinizi en iyi hangi özellikler tanımlıyor? (çoklu seçim)',
+                'input_type' => 'checkbox',
+                'options' => json_encode([
+                    'Liderlik',
+                    'Vizyonerlik',
+                    'Yaratıcılık',
+                    'Güvenilirlik',
+                    'Kararlılık',
+                    [
+                        'value' => 'custom',
+                        'label' => 'Diğer (belirtiniz)',
+                        'has_custom_input' => true,
+                        'custom_placeholder' => 'Diğer özelliklerinizi belirtiniz'
+                    ]
+                ], JSON_UNESCAPED_UNICODE),
+                'is_required' => false,
+                'sort_order' => 40,
+                'depends_on' => 'founder_permission',
+                'show_if' => json_encode(['Evet, bilgilerimi paylaşmak istiyorum'], JSON_UNESCAPED_UNICODE)
+            ],
+            
+            [
+                'id' => 305,
+                'step' => 4,
+                'section' => 'founder_info',
+                'question_key' => 'founder_story',
+                'question_text' => 'Kendiniz hakkında ne paylaşmak istersiniz?',
+                'help_text' => 'Hikayeniz, deneyimleriniz, eğitiminiz, başarılarınız, vizyonunuz... İstediğiniz her şeyi yazabilirsiniz. Ne kadar detaylandırırsanız AI o kadar kişisel yanıtlar verebilir.',
+                'input_type' => 'textarea',
+                'is_required' => false,
+                'sort_order' => 50,
+                'depends_on' => 'founder_permission',
+                'show_if' => json_encode(['Evet, bilgilerimi paylaşmak istiyorum'], JSON_UNESCAPED_UNICODE)
             ]
         ];
         
-        foreach ($founderQuestions as $question) {
+        foreach ($questions as $question) {
             $question['is_active'] = true;
             AIProfileQuestion::create($question);
         }
         
-        echo "✅ Kurucu bilgileri soruları eklendi (3 soru)\n";
+        echo "✅ Kurucu bilgileri soruları eklendi (5 soru)\n";
     }
     
     /**
-     * ADIM 5: Başarı Hikayeleri
+     * ADIM 5: Yapay Zeka Yanıt Tarzı
      */
-    private function createSuccessStoryQuestions(): void
+    private function createAIResponseStyleQuestions(): void
     {
         $questions = [
             [
                 'id' => 401,
                 'step' => 5,
-                'question_key' => 'success_story',
-                'question_text' => 'En gurur duyduğunuz başarı hikayen',
-                'help_text' => 'Bir müşteri ile yaşadığınız pozitif deneyimi paylaşın',
-                'input_type' => 'textarea',
-                'is_required' => false,
-                'sort_order' => 10
-            ],
-            [
-                'id' => 402,
-                'step' => 5,
-                'question_key' => 'customer_testimonial',
-                'question_text' => 'Bir müşteri görüşü (varsa)',
-                'help_text' => 'Size yapılan olumlu bir yorum veya referans',
-                'input_type' => 'textarea',
-                'is_required' => false,
-                'sort_order' => 20
-            ],
-            [
-                'id' => 403,
-                'step' => 5,
-                'question_key' => 'competitive_advantage',
-                'question_text' => 'Rakiplerinizden farkınız nedir?',
-                'help_text' => 'Sizi özel kılan, müşterilerin sizi tercih etme sebebi',
-                'input_type' => 'checkbox',
+                'question_key' => 'ai_response_style',
+                'question_text' => 'AI asistanınız nasıl yanıt versin?',
+                'help_text' => 'AI asistanınızın yanıt verme karakterini seçin',
+                'input_type' => 'radio',
                 'options' => json_encode([
-                    'En uygun fiyat',
-                    'Üstün kalite',
-                    'Hız ve verimlilik',
-                    'Kişiselleştirilmiş hizmet',
-                    'Uzmanlık ve deneyim',
-                    'Güvenilirlik',
-                    '24/7 destek',
-                    'Yaratıcı çözümler'
-                ]),
+                    'Profesyonel ve ciddi',
+                    'Samimi ve dostane',
+                    'Komik ve eğlenceli',
+                    'Hızlı ve pratik',
+                    [
+                        'value' => 'custom',
+                        'label' => 'Diğer (belirtiniz)',
+                        'has_custom_input' => true,
+                        'custom_placeholder' => 'AI yanıt tarzını belirtiniz'
+                    ]
+                ], JSON_UNESCAPED_UNICODE),
                 'is_required' => true,
-                'sort_order' => 30
+                'sort_order' => 10
             ]
         ];
         
@@ -325,7 +322,7 @@ class AIProfileQuestionsBaseSeeder extends Seeder
             AIProfileQuestion::create($question);
         }
         
-        echo "✅ Başarı hikayeleri soruları eklendi (3 soru)\n";
+        echo "✅ AI yanıt tarzı soruları eklendi (1 soru)\n";
     }
     
     /**
@@ -335,56 +332,20 @@ class AIProfileQuestionsBaseSeeder extends Seeder
     {
         $questions = [
             [
-                'id' => 501,
-                'step' => 6,
-                'question_key' => 'communication_style',
-                'question_text' => 'Müşterilerle nasıl iletişim kurmalı?',
-                'help_text' => 'AI asistanınızın iletişim tarzını belirleyin',
-                'input_type' => 'radio',
-                'options' => json_encode([
-                    'Sen diye hitap et (samimi)',
-                    'Siz diye hitap et (saygılı)',
-                    'Profesyonel ama sıcak',
-                    'Çok resmi ve ciddi'
-                ]),
-                'is_required' => true,
-                'sort_order' => 10
-            ],
-            [
-                'id' => 502,
+                'id' => 601,
                 'step' => 6,
                 'question_key' => 'response_style',
                 'question_text' => 'Yanıtlar nasıl olmalı?',
                 'help_text' => 'AI asistanınızın yanıt verme şeklini seçin',
                 'input_type' => 'checkbox',
                 'options' => json_encode([
-                    'Kısa ve öz',
+                    'Uzun ve kapsamlı',
                     'Detaylı açıklamalar',
                     'Örneklerle destekli',
-                    'Sorular sorarak anlayışlı',
-                    'Harekete geçirici',
-                    'Sabırlı ve anlayışlı'
-                ]),
+                    'Harekete geçirici'
+                ], JSON_UNESCAPED_UNICODE),
                 'is_required' => true,
-                'sort_order' => 20
-            ],
-            [
-                'id' => 503,
-                'step' => 6,
-                'question_key' => 'forbidden_topics',
-                'question_text' => 'Hangi konularda konuşmamalı?',
-                'help_text' => 'AI asistanınızın değinmemesini istediğiniz konular',
-                'input_type' => 'checkbox',
-                'options' => json_encode([
-                    'Rakip firmaları övme',
-                    'Fiyat indirimi teklif etme',
-                    'Garanti veremeyeceği sözler',
-                    'Kişisel bilgi talep etme',
-                    'Politik konular',
-                    'Sektör dışı tavsiyelerde bulunma'
-                ]),
-                'is_required' => false,
-                'sort_order' => 30
+                'sort_order' => 10
             ]
         ];
         
@@ -393,6 +354,6 @@ class AIProfileQuestionsBaseSeeder extends Seeder
             AIProfileQuestion::create($question);
         }
         
-        echo "✅ AI davranış kuralları soruları eklendi (3 soru)\n";
+        echo "✅ AI davranış kuralları soruları eklendi (1 soru)\n";
     }
 }

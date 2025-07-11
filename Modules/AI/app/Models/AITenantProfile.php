@@ -404,21 +404,25 @@ class AITenantProfile extends Model
      */
     public function generateBrandStory(): string
     {
-        // AI Helper kullanarak marka hikayesi oluştur
-        $context = $this->getAIContext();
-        
-        $prompt = $this->buildBrandStoryPrompt($context);
-        
         try {
-            // Direkt ai_brand_story_creator helper fonksiyonunu kullan
-            $result = ai_brand_story_creator($prompt, [
-                'industry' => $context['sector'] ?? 'general',
+            // Mevcut AI context'i kullan
+            $context = $this->getAIContext();
+            
+            // Detaylı brand story prompt'unu oluştur
+            $brandContext = $this->buildBrandStoryPrompt($context);
+            
+            // Marka hikayesi için özel parametreler
+            $options = [
+                'industry' => $this->sector_details['sector'] ?? 'general',
                 'stage' => 'growth',
                 'mission' => 'customer_focused',
-                'values' => implode(', ', $context['emphasis'] ?? ['quality']),
-                'audience' => $context['target_audience'] ?? 'general',
+                'values' => 'quality, excellence',
+                'audience' => 'general',
                 'unique_factor' => 'innovation'
-            ]);
+            ];
+            
+            // ai_brand_story_creator helper'ini kullan
+            $result = ai_brand_story_creator($brandContext, $options);
             
             // Result format: ['success' => bool, 'response' => string, 'tokens_used' => int]
             if (!$result['success']) {
@@ -432,11 +436,19 @@ class AITenantProfile extends Model
             $this->brand_story_created_at = now();
             $this->save();
             
-            // Brand story generated successfully
+            \Log::info('Brand story generated successfully', [
+                'tenant_id' => tenant('id'),
+                'story_length' => strlen($response),
+                'tokens_used' => $result['tokens_used'] ?? 0
+            ]);
             
             return $response;
         } catch (\Exception $e) {
-            // Brand story generation failed
+            \Log::error('Brand story generation failed', [
+                'tenant_id' => tenant('id'),
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
             
             throw new \Exception('Marka hikayesi oluşturulurken hata: ' . $e->getMessage());
         }
@@ -977,5 +989,298 @@ class AITenantProfile extends Model
             // Save operation failed
             throw $e;
         }
+    }
+    
+    /**
+     * AI için normalize edilmiş profil verilerini getir
+     */
+    public function getAIFriendlyData(): array
+    {
+        $data = [
+            'basic_info' => [],
+            'sector_info' => [],
+            'business_details' => [],
+            'founder_info' => [],
+            'success_stories' => [],
+            'ai_behavior' => []
+        ];
+        
+        // Temel bilgiler (company_info) - priority ile
+        if ($this->company_info) {
+            foreach ($this->company_info as $key => $value) {
+                if (is_string($value) && !empty($value)) {
+                    $data['basic_info'][$key] = [
+                        'value' => $value,
+                        'label' => $this->getFieldLabel($key, $value),
+                        'question' => $this->getFieldQuestion($key),
+                        'priority' => $this->getFieldPriority($key)
+                    ];
+                }
+            }
+        }
+        
+        // Sektör bilgileri (sector_details) - priority ile
+        if ($this->sector_details) {
+            foreach ($this->sector_details as $key => $value) {
+                if (is_string($value) && !empty($value)) {
+                    $data['sector_info'][$key] = [
+                        'value' => $value,
+                        'label' => $this->getFieldLabel($key, $value),
+                        'question' => $this->getFieldQuestion($key),
+                        'priority' => $this->getFieldPriority($key)
+                    ];
+                } elseif (is_array($value) && !empty($value)) {
+                    $data['sector_info'][$key] = [
+                        'values' => $value,
+                        'labels' => $this->getFieldLabels($key, $value),
+                        'question' => $this->getFieldQuestion($key),
+                        'priority' => $this->getFieldPriority($key)
+                    ];
+                }
+            }
+        }
+        
+        // Başarı hikayeleri
+        if ($this->success_stories) {
+            foreach ($this->success_stories as $key => $value) {
+                if (is_string($value) && !empty($value)) {
+                    $data['success_stories'][$key] = [
+                        'value' => $value,
+                        'question' => $this->getFieldQuestion($key),
+                        'priority' => $this->getFieldPriority($key)
+                    ];
+                } elseif (is_array($value) && !empty($value)) {
+                    $data['success_stories'][$key] = [
+                        'values' => $value,
+                        'labels' => $this->getFieldLabels($key, $value),
+                        'question' => $this->getFieldQuestion($key),
+                        'priority' => $this->getFieldPriority($key)
+                    ];
+                }
+            }
+        }
+        
+        // AI davranış kuralları
+        if ($this->ai_behavior_rules) {
+            foreach ($this->ai_behavior_rules as $key => $value) {
+                if (is_string($value) && !empty($value)) {
+                    $data['ai_behavior'][$key] = [
+                        'value' => $value,
+                        'label' => $this->getFieldLabel($key, $value),
+                        'question' => $this->getFieldQuestion($key),
+                        'priority' => $this->getFieldPriority($key)
+                    ];
+                } elseif (is_array($value) && !empty($value)) {
+                    $data['ai_behavior'][$key] = [
+                        'values' => $value,
+                        'labels' => $this->getFieldLabels($key, $value),
+                        'question' => $this->getFieldQuestion($key),
+                        'priority' => $this->getFieldPriority($key)
+                    ];
+                }
+            }
+        }
+        
+        // Kurucu bilgileri
+        if ($this->founder_info) {
+            foreach ($this->founder_info as $key => $value) {
+                if (is_string($value) && !empty($value)) {
+                    $data['founder_info'][$key] = [
+                        'value' => $value,
+                        'question' => $this->getFieldQuestion($key),
+                        'priority' => $this->getFieldPriority($key)
+                    ];
+                }
+            }
+        }
+        
+        return $data;
+    }
+    
+    /**
+     * Alan için soru metnini getir
+     */
+    private function getFieldQuestion(string $fieldKey): ?string
+    {
+        $question = \Modules\AI\app\Models\AIProfileQuestion::where('question_key', $fieldKey)->first();
+        return $question ? $question->question_text : null;
+    }
+    
+    /**
+     * Alan için label getir (select/radio)
+     */
+    private function getFieldLabel(string $fieldKey, string $value): ?string
+    {
+        $question = \Modules\AI\app\Models\AIProfileQuestion::where('question_key', $fieldKey)->first();
+        
+        if (!$question || !$question->options) {
+            return null;
+        }
+        
+        $options = is_array($question->options) 
+            ? $question->options 
+            : json_decode($question->options, true);
+            
+        if (!is_array($options)) {
+            return null;
+        }
+        
+        foreach ($options as $option) {
+            $optionValue = is_array($option) ? ($option['value'] ?? $option) : $option;
+            $optionLabel = is_array($option) ? ($option['label'] ?? $option) : $option;
+            
+            if ($optionValue === $value) {
+                return $optionLabel;
+            }
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Alan için label'ları getir (checkbox)
+     */
+    private function getFieldLabels(string $fieldKey, array $values): array
+    {
+        $question = \Modules\AI\app\Models\AIProfileQuestion::where('question_key', $fieldKey)->first();
+        
+        if (!$question || !$question->options) {
+            return [];
+        }
+        
+        $options = is_array($question->options) 
+            ? $question->options 
+            : json_decode($question->options, true);
+            
+        if (!is_array($options)) {
+            return [];
+        }
+        
+        $labels = [];
+        foreach ($values as $value) {
+            foreach ($options as $option) {
+                $optionValue = is_array($option) ? ($option['value'] ?? $option) : $option;
+                $optionLabel = is_array($option) ? ($option['label'] ?? $option) : $option;
+                
+                if ($optionValue === $value) {
+                    $labels[] = $optionLabel;
+                    break;
+                }
+            }
+        }
+        
+        return $labels;
+    }
+    
+    /**
+     * Alan için priority değerini getir (AIPriorityEngine uyumlu)
+     */
+    private function getFieldPriority(string $fieldKey): int
+    {
+        // Priority mapping - AIPriorityEngine ile uyumlu (1-5 arası)
+        $priorityMap = [
+            // Priority 1 (Critical): 1.5x multiplier - Marka kimliği ve temel işletme bilgisi
+            'brand_name' => 1,
+            'sector_selection' => 1,
+            'main_service' => 1,
+            'communication_style' => 1,
+            'response_style' => 1,
+            
+            // Priority 2 (Important): 1.2x multiplier - Önemli iş stratejisi
+            'target_audience' => 2,
+            'business_size' => 2,
+            'brand_voice' => 2,
+            'competitive_advantage' => 2,
+            'experience_years' => 2,
+            'tech_specialization' => 2,
+            'medical_specialties' => 2,
+            'education_levels' => 2,
+            'cuisine_type' => 2,
+            'product_categories' => 2,
+            'construction_types' => 2,
+            'finance_services' => 2,
+            'production_type' => 2,
+            
+            // Priority 3 (Normal): 1.0x multiplier - Standart detaylar
+            'service_area' => 3,
+            'success_story' => 3,
+            'customer_testimonial' => 3,
+            'forbidden_topics' => 3,
+            'project_duration' => 3,
+            'appointment_system' => 3,
+            'education_format' => 3,
+            'service_style' => 3,
+            'sales_channels' => 3,
+            'project_scale' => 3,
+            'client_segments' => 3,
+            'production_capacity' => 3,
+            
+            // Priority 4 (Optional): 0.6x multiplier - Opsiyonel bilgiler
+            'city' => 4,
+            'founder_story' => 4,
+            'biggest_challenge' => 4,
+            'support_model' => 4,
+            'insurance_acceptance' => 4,
+            'success_tracking' => 4,
+            'special_features' => 4,
+            'shipping_payment' => 4,
+            'services_included' => 4,
+            'digital_tools' => 4,
+            'quality_certifications' => 4,
+        ];
+        
+        return $priorityMap[$fieldKey] ?? 3; // Varsayılan normal öncelik
+    }
+    
+    /**
+     * Priority'ye göre multiplier getir (AIPriorityEngine uyumlu)
+     */
+    private function getPriorityMultiplier(int $priority): float
+    {
+        // AIPriorityEngine ile aynı multiplier sistemi
+        $multipliers = [
+            1 => 1.5,   // Critical: %50 boost
+            2 => 1.2,   // Important: %20 boost
+            3 => 1.0,   // Normal: No change
+            4 => 0.6,   // Optional: %40 penalty
+            5 => 0.3,   // Rarely used: %70 penalty
+        ];
+        
+        return $multipliers[$priority] ?? 1.0;
+    }
+    
+    /**
+     * Priority'ye göre sıralanmış profil verilerini getir
+     */
+    public function getAIFriendlyDataSorted(int $maxPriority = 3): array
+    {
+        $data = $this->getAIFriendlyData();
+        $sortedData = [];
+        
+        // Tüm alanları priority'ye göre düzle ve sırala
+        foreach ($data as $sectionName => $fields) {
+            foreach ($fields as $fieldKey => $fieldData) {
+                $priority = $fieldData['priority'] ?? 3;
+                $multiplier = $this->getPriorityMultiplier($priority);
+                
+                // Priority threshold kontrolü
+                if ($priority <= $maxPriority) {
+                    $sortedData[] = [
+                        'section' => $sectionName,
+                        'key' => $fieldKey,
+                        'priority' => $priority,
+                        'multiplier' => $multiplier,
+                        'data' => $fieldData
+                    ];
+                }
+            }
+        }
+        
+        // Priority'ye göre sırala (düşük priority = yüksek önem)
+        usort($sortedData, function($a, $b) {
+            return $a['priority'] <=> $b['priority'];
+        });
+        
+        return $sortedData;
     }
 }

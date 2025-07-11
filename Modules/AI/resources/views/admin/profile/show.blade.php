@@ -42,7 +42,7 @@
                     {{-- Sol - Profil Bilgileri --}}
                     <div class="col-lg-8 col-md-7">
                         <div class="hero-left-content">
-                            <div class="step-info-container">
+                            <div class="step-info-container d-flex align-items-center gap-3">
                                 <div class="ai-hologram" style="
                                     width: 80px;
                                     height: 80px;
@@ -54,6 +54,7 @@
                                     align-items: center;
                                     justify-content: center;
                                     position: relative;
+                                    flex-shrink: 0;
                                 ">
                                     <div style="
                                         width: 68px;
@@ -108,37 +109,20 @@
                             <div class="progress-section">
                                 <div class="progress-circle-container">
                                     @php
-                                        $completionData = $profile ? $profile->getCompletionPercentage() : ['percentage' => 0, 'completed' => 0, 'total' => 0];
-                                        $completionPercentage = $completionData['percentage'];
-                                        $completedFields = $completionData['completed'];
-                                        $totalFields = $completionData['total'];
+                                        // Livewire component ile aynı progress hesaplama yöntemini kullan
+                                        $livewireComponent = new \Modules\AI\App\Http\Livewire\Admin\Profile\AIProfileManagement();
+                                        $livewireComponent->mount(1); // Step 1'den başlat
+                                        $progressData = $livewireComponent->calculateRealProgress();
+                                        
+                                        $completionPercentage = $progressData['percentage'];
+                                        $completedFields = $progressData['completed'];
+                                        $totalFields = $progressData['total'];
                                     @endphp
                                     
-                                    <div class="progress-circle progress-circle-large">
-                                        <svg class="progress-svg" viewBox="0 0 100 100">
-                                            <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(var(--tblr-muted-rgb, 255,255,255),0.1)" stroke-width="6"/>
-                                            <circle cx="50" cy="50" r="45" fill="none" stroke="url(#gradient)" stroke-width="6" 
-                                                    stroke-dasharray="282.74" stroke-dashoffset="{{ 282.74 - (282.74 * $completionPercentage / 100) }}"
-                                                    transform="rotate(-90 50 50)" stroke-linecap="round"/>
-                                            <defs>
-                                                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                                    <stop offset="0%" style="stop-color:#00d4ff"/>
-                                                    <stop offset="50%" style="stop-color:#9333ea"/>
-                                                    <stop offset="100%" style="stop-color:#f59e0b"/>
-                                                </linearGradient>
-                                            </defs>
-                                        </svg>
-                                        <div class="progress-text">
-                                            <span class="progress-percentage">{{ $completionPercentage }}%</span>
-                                            <small class="progress-label">
-                                                @if($profile && $profile->is_completed)
-                                                    Tamamlandı
-                                                @else
-                                                    Tamamlanma
-                                                @endif
-                                            </small>
-                                        </div>
-                                    </div>
+                                    <x-progress-circle 
+                                        :total-questions="$totalFields" 
+                                        :answered-questions="$completedFields" 
+                                        size="large" />
                                 </div>
                             </div>
                         </div>
@@ -148,7 +132,7 @@
                 {{-- Status Information --}}
                 <div class="row mt-4">
                     <div class="col-12">
-                        @if(!$profile || !$profile->is_completed)
+                        @if((!$profile || !$profile->is_completed) && round($completionPercentage) < 70)
                             <div class="alert alert-warning" style="
                                 background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(251, 191, 36, 0.1));
                                 border: 2px solid rgba(245, 158, 11, 0.3);
@@ -164,11 +148,11 @@
                                         <p class="text-white-50 mb-2">Asistanınızı kişiselleştirmek için birkaç adım daha kaldı</p>
                                         <div class="progress" style="height: 6px; background: rgba(255,255,255,0.1);">
                                             <div class="progress-bar" style="
-                                                width: {{ $completionPercentage }}%;
+                                                width: {{ round($completionPercentage) }}%;
                                                 background: linear-gradient(135deg, #00d4ff, #9333ea);
                                             "></div>
                                         </div>
-                                        <small class="text-white-50">Tamamlanma: {{ $completionPercentage }}%</small>
+                                        <small class="text-white-50">Tamamlanma: {{ round($completionPercentage) }}%</small>
                                     </div>
                                 </div>
                             </div>
@@ -306,11 +290,11 @@
                                                 <svg width="24" height="24" viewBox="0 0 24 24">
                                                     <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" opacity="0.3"/>
                                                     <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" 
-                                                            stroke-dasharray="63" stroke-dashoffset="{{ 63 - (63 * $completionPercentage / 100) }}" 
+                                                            stroke-dasharray="63" stroke-dashoffset="{{ 63 - (63 * round($completionPercentage) / 100) }}" 
                                                             stroke-linecap="round" transform="rotate(-90 12 12)"/>
                                                 </svg>
                                             </div>
-                                            <span class="text-muted">{{ $completionPercentage }}% Tamamlandı</span>
+                                            <span class="text-muted">{{ round($completionPercentage) }}% Tamamlandı</span>
                                         </div>
                                     </div>
                                     <a href="{{ route('admin.ai.profile.edit') }}" class="btn btn-primary btn-lg px-4 py-2">

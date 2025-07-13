@@ -35,14 +35,32 @@ class EditorComponent extends Component
             $editorService = app(EditorService::class);
             $data = $editorService->loadContent($this->module, $this->moduleId);
             
-            $this->content = $data['content'] ?? '';
-            $this->css = $data['css'] ?? '';
-            $this->js = $data['js'] ?? '';
-            $this->pageTitle = $data['title'] ?? 'Studio Editör';
+            // Array değerleri safe string'e dönüştür
+            $this->content = $this->safeStringCast($data['content'] ?? '');
+            $this->css = $this->safeStringCast($data['css'] ?? '');
+            $this->js = $this->safeStringCast($data['js'] ?? '');
+            $this->pageTitle = $this->safeStringCast($data['title'] ?? 'Studio Editör');
         } catch (\Exception $e) {
             Log::error('İçerik yüklenirken hata: ' . $e->getMessage());
             session()->flash('error', 'İçerik yüklenirken hata oluştu: ' . $e->getMessage());
         }
+    }
+    
+    /**
+     * Array değerleri safe string'e dönüştür
+     *
+     * @param mixed $value
+     * @return string
+     */
+    protected function safeStringCast($value): string
+    {
+        if (is_array($value)) {
+            // Eğer translatable array ise, mevcut locale'yi al
+            $locale = app()->getLocale();
+            return $value[$locale] ?? $value['tr'] ?? $value['en'] ?? (string) reset($value);
+        }
+        
+        return (string) $value;
     }
     
     protected function loadWidgets()

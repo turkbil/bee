@@ -307,5 +307,48 @@ Route::middleware(['admin', 'admin.tenant.select'])
                             ->middleware('module.permission:ai,delete')
                             ->name('reset');
                     });
+
+                // AI Debug Dashboard Routes
+                Route::prefix('debug')
+                    ->name('debug.')
+                    ->middleware('role:root') // Sadece root admin erişebilir
+                    ->group(function () {
+                        
+                        // Debug Dashboard Ana Sayfa
+                        Route::get('/dashboard', [\Modules\AI\App\Http\Controllers\Admin\DebugDashboardController::class, 'index'])
+                            ->name('dashboard');
+                        
+                        // Real-time Prompt Tester
+                        Route::post('/test-prompt', [\Modules\AI\App\Http\Controllers\Admin\DebugDashboardController::class, 'testPrompt'])
+                            ->name('test-prompt');
+                        
+                        // Prompt Details Modal
+                        Route::post('/prompt-details', [\Modules\AI\App\Http\Controllers\Admin\DebugDashboardController::class, 'getPromptDetails'])
+                            ->name('prompt-details');
+                        
+                        // Live Log Stream (AJAX)
+                        Route::get('/live-stream', [\Modules\AI\App\Http\Controllers\Admin\DebugDashboardController::class, 'liveLogStream'])
+                            ->name('live-stream');
+                        
+                        // Tenant Analytics
+                        Route::get('/tenant/{tenantId}', [\Modules\AI\App\Http\Controllers\Admin\DebugDashboardController::class, 'tenantAnalytics'])
+                            ->name('tenant-analytics');
+                        
+                        // Export/Download Routes
+                        Route::get('/export/{type}', [\Modules\AI\App\Http\Controllers\Admin\DebugDashboardController::class, 'exportData'])
+                            ->name('export');
+                            
+                        // Performance Analytics
+                        Route::get('/performance', [\Modules\AI\App\Http\Controllers\Admin\DebugDashboardController::class, 'performanceAnalytics'])
+                            ->name('performance');
+                            
+                        // Prompt Usage Heatmap
+                        Route::get('/heatmap', [\Modules\AI\App\Http\Controllers\Admin\DebugDashboardController::class, 'promptHeatmap'])
+                            ->name('heatmap');
+                            
+                        // Error Analysis
+                        Route::get('/errors', [\Modules\AI\App\Http\Controllers\Admin\DebugDashboardController::class, 'errorAnalysis'])
+                            ->name('errors');
+                    });
             });
     });

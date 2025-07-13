@@ -21,6 +21,12 @@ class StorageController extends Controller
         // Dosya yolu güvenlik kontrolü
         $path = str_replace(['../', '..\\'], '', $path);
         
+        // Path işleme - storage/ öneki varsa temizle
+        $path = ltrim($path, '/');
+        if (strpos($path, 'storage/') === 0) {
+            $path = substr($path, 8); // "storage/" kısmını çıkar
+        }
+        
         // Güvenlik için başka bir tenant prefix'i var mı kontrol et
         if (preg_match('/^tenant(\d+)\/(.*)$/', $path, $matches)) {
             // Path zaten bir tenant prefix'i içeriyor, ancak bu doğru tenant ID mi?

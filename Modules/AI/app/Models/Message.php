@@ -4,13 +4,20 @@ namespace Modules\AI\App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class Message extends Model
 {
-    use HasFactory, BelongsToTenant;
+    use HasFactory;
 
     protected $table = 'ai_messages';
+    
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+        
+        // AI tabloları her zaman central database'de
+        $this->setConnection('mysql');
+    }
 
     protected $fillable = [
         'conversation_id',

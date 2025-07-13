@@ -81,26 +81,46 @@ class EditorService
         if ($module === 'page') {
             try {
                 $page = Page::findOrFail($id);
-                $result['content'] = $page->body ?? '';
-                $result['css'] = $page->css ?? '';
-                $result['js'] = $page->js ?? '';
-                $result['title'] = $page->title ?? 'Sayfa Düzenleyici';
+                $result['content'] = $this->safeTranslatableGet($page->body);
+                $result['css'] = $this->safeTranslatableGet($page->css);
+                $result['js'] = $this->safeTranslatableGet($page->js);
+                $result['title'] = $this->safeTranslatableGet($page->title, 'Sayfa Düzenleyici');
             } catch (\Exception $e) {
                 Log::error('Sayfa yüklenirken hata: ' . $e->getMessage());
             }
         } elseif ($module === 'portfolio') {
             try {
                 $portfolio = Portfolio::findOrFail($id);
-                $result['content'] = $portfolio->body ?? '';
-                $result['css'] = $portfolio->css ?? '';
-                $result['js'] = $portfolio->js ?? '';
-                $result['title'] = $portfolio->title ?? 'Portfolio Düzenleyici';
+                $result['content'] = $this->safeTranslatableGet($portfolio->body);
+                $result['css'] = $this->safeTranslatableGet($portfolio->css);
+                $result['js'] = $this->safeTranslatableGet($portfolio->js);
+                $result['title'] = $this->safeTranslatableGet($portfolio->title, 'Portfolio Düzenleyici');
             } catch (\Exception $e) {
                 Log::error('Portfolio yüklenirken hata: ' . $e->getMessage());
             }
         }
         
         return $result;
+    }
+    
+    /**
+     * Translatable array field'ını safe string'e dönüştür
+     *
+     * @param mixed $value
+     * @param string $default
+     * @return string
+     */
+    protected function safeTranslatableGet($value, string $default = ''): string
+    {
+        if (is_array($value)) {
+            // Mevcut locale'yi al
+            $locale = app()->getLocale();
+            
+            // Locale bazlı değer al, yoksa fallback'leri dene
+            return $value[$locale] ?? $value['tr'] ?? $value['en'] ?? (string) reset($value) ?: $default;
+        }
+        
+        return (string) ($value ?? $default);
     }
     
     /**

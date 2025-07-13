@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name')->index();
             $table->string('email')->unique();
+            $table->string('phone')->nullable();
+            $table->text('bio')->nullable();
             $table->boolean('is_active')->default(true)->index();
             $table->timestamp('last_login_at')->nullable()->index();
             $table->timestamp('email_verified_at')->nullable();

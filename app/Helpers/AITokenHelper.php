@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Cache;
 use App\Helpers\TenantHelpers;
 use App\Models\Tenant;
 use Modules\AI\App\Models\AITokenPackage;
+use Modules\AI\App\Models\AITokenPurchase;
+use Modules\AI\App\Models\AITokenUsage;
 use App\Services\AITokenService;
 
 /**
@@ -36,15 +38,13 @@ if (!function_exists('ai_get_token_balance')) {
         $cacheKey = "ai_token_balance_{$tenantId}";
         
         return Cache::remember($cacheKey, 300, function () use ($tenantId) {
-            // Toplam satın alınan token miktarı
-            $totalPurchased = DB::table('ai_token_purchases')
-                ->where('tenant_id', $tenantId)
+            // Toplam satın alınan token miktarı (Eloquent model kullan)
+            $totalPurchased = AITokenPurchase::where('tenant_id', $tenantId)
                 ->where('status', 'completed')
                 ->sum('token_amount');
             
-            // Harcanan token miktarı
-            $totalUsed = DB::table('ai_token_usage')
-                ->where('tenant_id', $tenantId)
+            // Harcanan token miktarı (Eloquent model kullan)
+            $totalUsed = AITokenUsage::where('tenant_id', $tenantId)
                 ->sum('tokens_used');
             
             return max(0, $totalPurchased - $totalUsed);
@@ -66,8 +66,7 @@ if (!function_exists('ai_get_total_purchased')) {
         $cacheKey = "ai_total_purchased_{$tenantId}";
         
         return Cache::remember($cacheKey, 300, function () use ($tenantId) {
-            return DB::table('ai_token_purchases')
-                ->where('tenant_id', $tenantId)
+            return AITokenPurchase::where('tenant_id', $tenantId)
                 ->where('status', 'completed')
                 ->sum('token_amount');
         });
@@ -88,8 +87,7 @@ if (!function_exists('ai_get_total_used')) {
         $cacheKey = "ai_total_used_{$tenantId}";
         
         return Cache::remember($cacheKey, 300, function () use ($tenantId) {
-            return DB::table('ai_token_usage')
-                ->where('tenant_id', $tenantId)
+            return AITokenUsage::where('tenant_id', $tenantId)
                 ->sum('tokens_used');
         });
     }
@@ -114,14 +112,12 @@ if (!function_exists('ai_get_token_stats')) {
             $remaining = max(0, $totalPurchased - $totalUsed);
             
             // Daily usage (bugünkü kullanım)
-            $dailyUsage = DB::table('ai_token_usage')
-                ->where('tenant_id', $tenantId)
+            $dailyUsage = AITokenUsage::where('tenant_id', $tenantId)
                 ->whereDate('created_at', today())
                 ->sum('tokens_used');
             
             // Monthly usage (bu ayki kullanım)
-            $monthlyUsage = DB::table('ai_token_usage')
-                ->where('tenant_id', $tenantId)
+            $monthlyUsage = AITokenUsage::where('tenant_id', $tenantId)
                 ->whereYear('created_at', now()->year)
                 ->whereMonth('created_at', now()->month)
                 ->sum('tokens_used');
@@ -472,20 +468,18 @@ if (!function_exists('ai_use_tokens')) {
             return false;
         }
         
-        // Kullanım kaydı oluştur (DOĞRU TABLO ADI ve ALANLAR)
-        $usageId = DB::table('ai_token_usage')->insertGetId([
+        // Kullanım kaydı oluştur (Eloquent model kullan)
+        $usage = AITokenUsage::create([
             'tenant_id' => $tenantId,
             'user_id' => auth()->id() ?: 1,
             'usage_type' => $module,
             'description' => $action,
             'tokens_used' => $tokensUsed,
-            'metadata' => json_encode($metadata),
-            'used_at' => now(),
-            'created_at' => now(),
-            'updated_at' => now()
+            'metadata' => $metadata,
+            'used_at' => now()
         ]);
         
-        if ($usageId) {
+        if ($usage && $usage->id) {
             // Cache'i temizle
             ai_clear_token_cache($tenantId);
             return true;
@@ -507,8 +501,7 @@ if (!function_exists('ai_get_usage_history')) {
     {
         $tenantId = $tenantId ?: tenant('id') ?: 'default';
         
-        $usage = DB::table('ai_token_usage')
-            ->where('tenant_id', $tenantId)
+        $usage = AITokenUsage::where('tenant_id', $tenantId)
             ->orderBy('created_at', 'desc')
             ->limit($limit)
             ->get()
@@ -530,16 +523,10 @@ if (!function_exists('ai_get_purchase_history')) {
     {
         $tenantId = $tenantId ?: tenant('id') ?: 'default';
         
-        $purchases = DB::table('ai_token_purchases')
-            ->leftJoin('ai_token_packages', 'ai_token_purchases.package_id', '=', 'ai_token_packages.id')
-            ->where('ai_token_purchases.tenant_id', $tenantId)
-            ->orderBy('ai_token_purchases.created_at', 'desc')
+        $purchases = AITokenPurchase::with('package')
+            ->where('tenant_id', $tenantId)
+            ->orderBy('created_at', 'desc')
             ->limit($limit)
-            ->select([
-                'ai_token_purchases.*',
-                'ai_token_packages.name as package_name',
-                'ai_token_packages.description as package_description'
-            ])
             ->get()
             ->toArray();
             
@@ -606,8 +593,7 @@ if (!function_exists('ai_get_monthly_usage')) {
     {
         $tenantId = $tenantId ?: tenant('id') ?: 'default';
         
-        return DB::table('ai_token_usage')
-            ->where('tenant_id', $tenantId)
+        return AITokenUsage::where('tenant_id', $tenantId)
             ->whereYear('created_at', now()->year)
             ->whereMonth('created_at', now()->month)
             ->sum('tokens_used');
@@ -625,8 +611,7 @@ if (!function_exists('ai_get_daily_usage')) {
     {
         $tenantId = $tenantId ?: tenant('id') ?: 'default';
         
-        return DB::table('ai_token_usage')
-            ->where('tenant_id', $tenantId)
+        return AITokenUsage::where('tenant_id', $tenantId)
             ->whereDate('created_at', now()->toDateString())
             ->sum('tokens_used');
     }

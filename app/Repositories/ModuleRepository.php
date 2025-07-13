@@ -142,7 +142,7 @@ class ModuleRepository implements ModuleRepositoryInterface
     protected function fetchModulesForTenant(?string $tenantId): Collection
     {
         return TenantHelpers::central(function () use ($tenantId) {
-            $query = Module::where('is_active', true);
+            $query = Module::where('modules.is_active', true);
             
             if ($tenantId) {
                 // Tenant'a atanmış modülleri getir
@@ -156,7 +156,7 @@ class ModuleRepository implements ModuleRepositoryInterface
                       ]);
             }
             
-            return $query->orderBy('display_name')->get();
+            return $query->orderBy('modules.display_name')->get();
         });
     }
     

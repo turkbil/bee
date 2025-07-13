@@ -8,6 +8,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class AIProfileQuestion extends Model
 {
     protected $table = 'ai_profile_questions';
+    
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+        
+        // AI tabloları her zaman central database'de
+        $this->setConnection('mysql');
+    }
 
     protected $fillable = [
         'sector_code',
@@ -23,14 +31,19 @@ class AIProfileQuestion extends Model
         'show_if',
         'is_required',
         'is_active',
-        'sort_order'
+        'sort_order',
+        'priority',
+        'ai_weight',
+        'category'
     ];
 
     protected $casts = [
         'validation_rules' => 'array',
         'show_if' => 'array',
         'is_required' => 'boolean',
-        'is_active' => 'boolean'
+        'is_active' => 'boolean',
+        'priority' => 'integer',
+        'ai_weight' => 'integer'
     ];
 
     /**
@@ -164,5 +177,100 @@ class AIProfileQuestion extends Model
         }
         
         return $formatted;
+    }
+
+    /**
+     * PRIORITY MULTIPLIERS (AIPriorityEngine uyumlu)
+     */
+    const PRIORITY_MULTIPLIERS = [
+        1 => 1.5,   // Critical: %50 boost
+        2 => 1.2,   // Important: %20 boost  
+        3 => 1.0,   // Normal: No change
+        4 => 0.6,   // Optional: %40 penalty
+        5 => 0.3,   // Rarely used: %70 penalty
+    ];
+
+    /**
+     * CATEGORY LABELS
+     */
+    const CATEGORY_LABELS = [
+        'company' => 'Firma Bilgileri',
+        'sector' => 'Sektör Bilgileri', 
+        'ai' => 'AI Davranış Kuralları',
+        'founder' => 'Kurucu Bilgileri'
+    ];
+
+    /**
+     * Get final AI weight (weight × multiplier)
+     */
+    public function getFinalAIWeight(): float
+    {
+        $multiplier = self::PRIORITY_MULTIPLIERS[$this->priority] ?? 1.0;
+        return $this->ai_weight * $multiplier;
+    }
+
+    /**
+     * Get category label in Turkish
+     */
+    public function getCategoryLabel(): string
+    {
+        return self::CATEGORY_LABELS[$this->category] ?? $this->category;
+    }
+
+    /**
+     * Get priority label
+     */
+    public function getPriorityLabel(): string
+    {
+        $labels = [
+            1 => 'Kritik',
+            2 => 'Önemli', 
+            3 => 'Normal',
+            4 => 'Opsiyonel',
+            5 => 'Nadir'
+        ];
+        
+        return $labels[$this->priority] ?? "Priority {$this->priority}";
+    }
+
+    /**
+     * Scope: By priority level
+     */
+    public function scopeByPriority($query, int $maxPriority)
+    {
+        return $query->where('priority', '<=', $maxPriority);
+    }
+
+    /**
+     * Scope: By category
+     */
+    public function scopeByCategory($query, string $category)
+    {
+        return $query->where('category', $category);
+    }
+
+    /**
+     * Scope: Ordered by AI weight (for context generation)
+     */
+    public function scopeByAIWeight($query)
+    {
+        return $query->orderByRaw('(ai_weight * CASE 
+            WHEN priority = 1 THEN 1.5
+            WHEN priority = 2 THEN 1.2
+            WHEN priority = 3 THEN 1.0
+            WHEN priority = 4 THEN 0.6
+            WHEN priority = 5 THEN 0.3
+            ELSE 1.0 END) DESC');
+    }
+
+    /**
+     * Static: Get fields for AI context generation
+     */
+    public static function getForAIContext(int $maxPriority = 3): \Illuminate\Database\Eloquent\Collection
+    {
+        return self::where('is_active', true)
+                  ->byPriority($maxPriority)
+                  ->byAIWeight()
+                  ->get();
     }
 }

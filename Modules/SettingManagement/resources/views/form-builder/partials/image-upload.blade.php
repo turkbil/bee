@@ -55,6 +55,9 @@ x-on:drop="handleDrop($event)">
                     </button>
                     <img src="{{ $temporaryImages[$imageKey]->temporaryUrl() }}"
                         class="img-fluid rounded h-100 w-100 object-fit-cover" alt="{{ __('admin.uploaded_photo') }}">
+                    <div class="position-absolute bottom-0 start-0 end-0 bg-warning text-dark text-center py-1 rounded-bottom">
+                        <small><i class="fa-solid fa-clock me-1"></i>Kaydetmeyi bekliyor</small>
+                    </div>
                 </div>
                 @elseif (!empty($values[$imageKey]))
                 <div class="position-relative" style="height: 156px;">

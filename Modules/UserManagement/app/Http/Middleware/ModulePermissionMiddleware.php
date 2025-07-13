@@ -29,7 +29,7 @@ class ModulePermissionMiddleware
         
         // Özel durum: widgetmanagement için, manage route'u sadece root tarafından erişilebilir
         if ($moduleName === 'widgetmanagement' && $request->routeIs('admin.widgetmanagement.manage')) {
-            if (!$user->hasRole('root')) {
+            if (!$user->hasCachedRole('root')) {
                 return redirect()->route('errors.403');
             }
             // Root kullanıcısı ise, diğer izin kontrollerini atla ve devam et
@@ -73,7 +73,12 @@ class ModulePermissionMiddleware
         
         // İzin adını oluştur (örn. view user-management)
         $permissionName = "{$moduleName}.{$permissionType}";
-        $permissionExists = Permission::where('name', $permissionName)->where('guard_name', 'web')->exists();
+        
+        // PERFORMANCE: Cache permission existence check for 1 hour
+        $cacheKey = "permission_exists_{$permissionName}_web";
+        $permissionExists = cache()->remember($cacheKey, 3600, function() use ($permissionName) {
+            return Permission::where('name', $permissionName)->where('guard_name', 'web')->exists();
+        });
         
         if (!$permissionExists) {
             Log::error("Permission not found: {$permissionName}");
@@ -83,12 +88,12 @@ class ModulePermissionMiddleware
         // Log kaldırıldı
         
         // Root yetkisine sahip kullanıcı için hiçbir kısıtlama yok - AMA TENANT'A ATANMAMIŞ MODÜL KONTROLÜ VAR
-        if ($user->hasRole('root')) {
+        if ($user->hasCachedRole('root')) {
             return $next($request);
         }
         
         // Admin ise belirli kısıtlamalar uygula
-        if ($user->hasRole('admin')) {
+        if ($user->hasCachedRole('admin')) {
             // Admin için ilave kısıtlama - tenant'ta modülün atanmış olması gerekir
             if (app(\Stancl\Tenancy\Tenancy::class)->initialized) {
                 // Zaten yukarıda kontrol edildi

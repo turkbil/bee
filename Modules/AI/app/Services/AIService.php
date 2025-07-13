@@ -138,6 +138,9 @@ class AIService
      */
     public function askFeature($feature, string $userInput, array $options = [])
     {
+        $startTime = microtime(true);
+        $tenantId = tenant('id') ?? 'default';
+        
         // Modern token sistemi kontrolü
         $tenant = tenant();
         if ($tenant) {
@@ -154,9 +157,15 @@ class AIService
         // Yeni template sistemi: Quick + Expert + Response Template
         if ($feature->hasQuickPrompt() || $feature->hasResponseTemplate()) {
             $systemPrompt = $this->buildFeatureSystemPrompt($feature, $options);
+            
+            // Debug: Prompt analizi için hangi prompt'ların kullanıldığını kaydet
+            $promptAnalysis = $this->analyzeUsedPrompts($feature, $options);
         } else {
             // Legacy sistem: Basit custom prompt
             $systemPrompt = $feature->custom_prompt ?: "Sen yardımcı bir AI asistanısın.";
+            $promptAnalysis = [
+                ['prompt_name' => 'Custom Prompt', 'prompt_type' => 'legacy', 'priority' => 3]
+            ];
         }
 
         // Mesajları formatla
@@ -202,6 +211,24 @@ class AIService
                 'feature_name' => $feature->name,
                 'source' => 'feature_test'
             ]);
+            
+            // Debug Dashboard Logging
+            $executionTime = round((microtime(true) - $startTime) * 1000, 2);
+            $this->logDebugInfo([
+                'tenant_id' => $tenantId,
+                'feature_slug' => $feature->slug ?? 'unknown',
+                'request_type' => 'feature_request',
+                'context_type' => $options['context_type'] ?? 'normal',
+                'input_preview' => substr($userInput, 0, 200),
+                'execution_time_ms' => $executionTime,
+                'has_error' => false,
+                'error_message' => null,
+                'actually_used_prompts' => count($promptAnalysis ?? []),
+                'total_available_prompts' => count($promptAnalysis ?? []),
+                'prompts_analysis' => $promptAnalysis ?? [],
+                'response_preview' => substr($response, 0, 300),
+                'tokens_estimated' => $actualTokens ?? 0
+            ]);
         }
 
         return $response;
@@ -218,6 +245,135 @@ class AIService
         
         // AIPriorityEngine ile complete prompt oluştur
         return AIPriorityEngine::buildCompletePrompt($options);
+    }
+
+    /**
+     * Kullanılan prompt'ları analiz et
+     */
+    private function analyzeUsedPrompts($feature, array $options = []): array
+    {
+        try {
+            // Feature için options'ı hazırla
+            $options['feature'] = $feature;
+            $options['feature_name'] = $feature->slug ?? $feature->name ?? '';
+            
+            // AIPriorityEngine'den tüm bileşenleri al
+            $components = [];
+            
+            // Standard components
+            $components = array_merge($components, AIPriorityEngine::getStandardComponents());
+            
+            // Brand components
+            $components = array_merge($components, AIPriorityEngine::getBrandComponents($options));
+            
+            // Feature components
+            $components = array_merge($components, AIPriorityEngine::getFeatureComponents($feature));
+            
+            // Component'leri score'la
+            $scoredComponents = [];
+            foreach ($components as $component) {
+                $category = $component['category'] ?? 'conditional_info';
+                $priority = $component['priority'] ?? 3;
+                $baseWeight = AIPriorityEngine::BASE_WEIGHTS[$category] ?? 1000;
+                $multiplier = AIPriorityEngine::PRIORITY_MULTIPLIERS[$priority] ?? 1.0;
+                $finalScore = intval($baseWeight * $multiplier);
+                
+                $scoredComponents[] = [
+                    'prompt_name' => $component['name'] ?? 'Unknown',
+                    'prompt_type' => $category,
+                    'priority' => $priority,
+                    'score' => $finalScore,
+                    'base_weight' => $baseWeight,
+                    'multiplier' => $multiplier
+                ];
+            }
+            
+            return $scoredComponents;
+        } catch (\Exception $e) {
+            // Fallback: basit analiz
+            return [
+                [
+                    'prompt_name' => $feature->name ?? 'Feature',
+                    'prompt_type' => 'feature',
+                    'priority' => 2,
+                    'score' => 100,
+                    'base_weight' => 8000,
+                    'multiplier' => 1.2
+                ]
+            ];
+        }
+    }
+
+    /**
+     * Debug dashboard için log bilgisi kaydet
+     */
+    private function logDebugInfo(array $data): void
+    {
+        try {
+            // Migration schema ile uyumlu data hazırla
+            $insertData = [
+                'tenant_id' => $data['tenant_id'] ?? 'default',
+                'user_id' => auth()->id(),
+                'session_id' => session()->getId(),
+                'feature_slug' => $data['feature_slug'] ?? 'unknown',
+                'request_type' => $data['request_type'] ?? 'feature_request',
+                'context_type' => $data['context_type'] ?? 'normal',
+                'threshold_used' => 4000, // Default normal threshold
+                'total_available_prompts' => $data['total_available_prompts'] ?? 0,
+                'actually_used_prompts' => $data['actually_used_prompts'] ?? 0,
+                'filtered_prompts' => max(0, ($data['total_available_prompts'] ?? 0) - ($data['actually_used_prompts'] ?? 0)),
+                'highest_score' => 0, // Will be calculated from prompts_analysis
+                'lowest_used_score' => 0, // Will be calculated from prompts_analysis
+                'execution_time_ms' => intval($data['execution_time_ms'] ?? 0),
+                'response_length' => isset($data['response_preview']) ? strlen($data['response_preview']) : null,
+                'token_usage' => $data['tokens_estimated'] ?? 0,
+                'input_preview' => $data['input_preview'] ?? null,
+                'response_preview' => $data['response_preview'] ?? null,
+                'prompts_analysis' => json_encode($data['prompts_analysis'] ?? []),
+                'scoring_summary' => json_encode($this->calculateScoringSummary($data['prompts_analysis'] ?? [])),
+                'ai_model' => 'deepseek-chat',
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'has_error' => $data['has_error'] ?? false,
+                'error_message' => $data['error_message'],
+                'created_at' => now(),
+                'updated_at' => now()
+            ];
+            
+            // Score'ları hesapla
+            if (!empty($data['prompts_analysis'])) {
+                $scores = array_column($data['prompts_analysis'], 'score');
+                $insertData['highest_score'] = !empty($scores) ? max($scores) : 0;
+                $insertData['lowest_used_score'] = !empty($scores) ? min($scores) : 0;
+            }
+            
+            // ai_tenant_debug_logs tablosuna kaydet
+            \DB::table('ai_tenant_debug_logs')->insert($insertData);
+        } catch (\Exception $e) {
+            // Debug logging hatası varsa log'a yaz ama işlemi durdurmma
+            \Log::warning('Debug logging failed', [
+                'error' => $e->getMessage(),
+                'data' => $data
+            ]);
+        }
+    }
+    
+    /**
+     * Scoring summary hesapla
+     */
+    private function calculateScoringSummary(array $promptsAnalysis): array
+    {
+        if (empty($promptsAnalysis)) {
+            return ['highest_score' => 0, 'lowest_used_score' => 0, 'average_score' => 0, 'total_content_length' => 0];
+        }
+        
+        $scores = array_column($promptsAnalysis, 'score');
+        return [
+            'highest_score' => !empty($scores) ? max($scores) : 0,
+            'lowest_used_score' => !empty($scores) ? min($scores) : 0,
+            'average_score' => !empty($scores) ? round(array_sum($scores) / count($scores)) : 0,
+            'total_content_length' => 0 // Content length calculation if needed
+        ];
     }
 
     /**

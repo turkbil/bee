@@ -107,6 +107,7 @@ class AdminSetLocaleMiddleware
     /**
      * Admin için geçerli dil kontrolü
      * Not: admin_languages tablosu central DB'de, kontrol et
+     * Cache'li version - duplicate query'leri önler
      */
     private function isValidAdminLocale(string $locale): bool
     {
@@ -115,13 +116,15 @@ class AdminSetLocaleMiddleware
         }
         
         try {
-            // admin_languages tablosundan kontrol et (central DB'de)
-            $exists = \DB::table('admin_languages')
-                ->where('code', $locale)
-                ->where('is_active', true)
-                ->exists();
-                
-            return $exists;
+            // Cache'li admin locale kodları al (10 dakika cache)
+            $activeLanguages = cache()->remember('admin_languages_codes', 600, function() {
+                return \DB::table('admin_languages')
+                    ->where('is_active', true)
+                    ->pluck('code')
+                    ->toArray();
+            });
+            
+            return in_array($locale, $activeLanguages);
         } catch (\Exception $e) {
             // DB hatası durumunda basic locale kontrolü
             return in_array($locale, ['tr', 'en']);

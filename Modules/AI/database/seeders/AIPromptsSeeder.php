@@ -161,6 +161,13 @@ INTERACTION GUIDELINES:
 - Offer multiple options when applicable
 - Proactively suggest improvements and optimizations
 
+CURRENT CONTEXT INFORMATION:
+- Today\'s Date: ' . date('d.m.Y') . ' (Bugünün tarihi: ' . date('d F Y', strtotime('now')) . ')
+- Current Year: 2025 (Güncel yıl: 2025)
+- Market Context: Post-pandemic digital transformation era
+- Technology Focus: AI integration, mobile-first, sustainability
+- Regional Focus: Turkish market with global best practices
+
 Remember: Your goal is to empower users to create content that not only ranks well but also genuinely serves their audience and drives business results.',
             'is_default' => false,
             'is_system' => true,

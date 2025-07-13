@@ -22,7 +22,7 @@ class AIPriorityEngine
     /**
      * Base category weights - Kategori temel ağırlıkları (OPTIMIZE EDİLMİŞ)
      */
-    const BASE_WEIGHTS = [
+    public const BASE_WEIGHTS = [
         'system_common'      => 10000,  // Ortak özellikler (markdown yasağı, türkçe vb)
         'system_hidden'      => 9000,   // Gizli sistem (güvenlik, sınırlar)
         'feature_definition' => 8000,   // Quick prompt (feature ne yapacak) ⬆️ YUKARI
@@ -37,7 +37,7 @@ class AIPriorityEngine
     /**
      * Priority multipliers - İçerik öncelik çarpanları
      */
-    const PRIORITY_MULTIPLIERS = [
+    public const PRIORITY_MULTIPLIERS = [
         1 => 1.5,   // Critical: %50 boost
         2 => 1.2,   // Important: %20 boost  
         3 => 1.0,   // Normal: No change
@@ -178,27 +178,101 @@ class AIPriorityEngine
     }
 
     /**
-     * Prompt build process'ini logla
+     * Prompt build process'ini logla + gerçek tenant analytics'e kaydet
      */
     private static function logPromptBuild(array $components, array $options): void
     {
-        $componentSummary = [];
-        foreach ($components as $comp) {
-            $componentSummary[] = [
-                'name' => $comp['name'],
-                'score' => $comp['final_score'],
-                'category' => $comp['category'],
-                'priority' => $comp['priority']
+        try {
+            $startTime = $options['start_time'] ?? microtime(true);
+            $executionTime = round((microtime(true) - $startTime) * 1000, 2);
+            
+            // Component analysis hazırla
+            $usedPrompts = [];
+            $filteredPrompts = [];
+            $threshold = $options['threshold'] ?? 4000;
+            
+            foreach ($components as $comp) {
+                $promptData = [
+                    'name' => $comp['name'],
+                    'category' => $comp['category'],
+                    'priority' => $comp['priority'],
+                    'base_weight' => $comp['base_weight'],
+                    'final_score' => $comp['final_score'],
+                    'content_length' => strlen($comp['content']),
+                    'multiplier' => $comp['multiplier']
+                ];
+                
+                if ($comp['final_score'] >= $threshold) {
+                    $usedPrompts[] = $promptData;
+                } else {
+                    $filteredPrompts[] = array_merge($promptData, [
+                        'filter_reason' => 'below_threshold',
+                        'threshold' => $threshold
+                    ]);
+                }
+            }
+            
+            // Scoring summary
+            $scores = array_column($usedPrompts, 'final_score');
+            $scoringSummary = [
+                'highest_score' => !empty($scores) ? max($scores) : 0,
+                'lowest_used_score' => !empty($scores) ? min($scores) : 0,
+                'average_score' => !empty($scores) ? round(array_sum($scores) / count($scores)) : 0,
+                'total_content_length' => array_sum(array_column($usedPrompts, 'content_length'))
             ];
+            
+            // Analytics data hazırla (migration schema ile uyumlu)
+            $analyticsData = [
+                'tenant_id' => tenant('id') ?? 'default',
+                'user_id' => auth()->id(),
+                'session_id' => session()->getId(),
+                'feature_slug' => $options['feature_name'] ?? 'unknown',
+                'request_type' => $options['request_type'] ?? 'chat',
+                'context_type' => $options['context_type'] ?? 'normal',
+                'threshold_used' => $threshold,
+                'total_available_prompts' => count($components),
+                'actually_used_prompts' => count($usedPrompts),
+                'filtered_prompts' => count($filteredPrompts),
+                'highest_score' => $scoringSummary['highest_score'],
+                'lowest_used_score' => $scoringSummary['lowest_used_score'],
+                'execution_time_ms' => intval($executionTime),
+                'response_length' => null, // Will be filled by caller
+                'token_usage' => null, // Will be filled by caller
+                'input_preview' => $options['input_preview'] ?? null,
+                'response_preview' => $options['response_preview'] ?? null,
+                'prompts_analysis' => [
+                    'used_prompts' => $usedPrompts,
+                    'filtered_prompts' => $filteredPrompts,
+                    'scoring_summary' => $scoringSummary
+                ],
+                'scoring_summary' => $scoringSummary,
+                'ai_model' => config('ai.default_model', 'deepseek-chat'),
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'has_error' => false,
+                'error_message' => null,
+                'created_at' => now()
+            ];
+            
+            // Database'e async kaydet (queue ile)
+            if (config('ai.debug_logging_enabled', true)) {
+                dispatch(new \Modules\AI\App\Jobs\LogAIDebugData($analyticsData));
+            }
+            
+            // Log için summary
+            Log::info('🎯 AIPriorityEngine: System prompt built', [
+                'tenant_id' => $analyticsData['tenant_id'],
+                'feature' => $analyticsData['feature_slug'],
+                'context_type' => $analyticsData['context_type'],
+                'used_prompts' => $analyticsData['actually_used_prompts'],
+                'total_prompts' => $analyticsData['total_available_prompts'],
+                'execution_time_ms' => $analyticsData['execution_time_ms'],
+                'highest_score' => $analyticsData['highest_score']
+            ]);
+            
+        } catch (\Exception $e) {
+            Log::warning('AIPriorityEngine logging failed: ' . $e->getMessage());
         }
-        
-        Log::info('AIPriorityEngine: System prompt built', [
-            'context_type' => $options['context_type'] ?? 'normal',
-            'feature_name' => $options['feature_name'] ?? null,
-            'components_used' => count($components),
-            'total_length' => array_sum(array_map(fn($c) => strlen($c['content']), $components)),
-            'component_scores' => $componentSummary
-        ]);
     }
 
     /**
@@ -440,13 +514,32 @@ class AIPriorityEngine
                 
                 if (isset($fieldData['value'])) {
                     // Tek değer (string)
-                    $displayValue = $fieldData['label'] ?? $fieldData['value'];
-                    $context[] = "**{$fieldName}**: {$displayValue}";
+                    $value = $fieldData['value'];
+                    $displayValue = $fieldData['label'] ?? $value;
+                    
+                    // Array değeri string'e çevir
+                    if (is_array($value)) {
+                        $displayValue = implode(', ', array_filter($value));
+                    } elseif (is_array($displayValue)) {
+                        $displayValue = implode(', ', array_filter($displayValue));
+                    }
+                    
+                    if (!empty($displayValue)) {
+                        $context[] = "**{$fieldName}**: {$displayValue}";
+                    }
                 } elseif (isset($fieldData['values'])) {
                     // Çoklu değer (array)
-                    $displayValues = $fieldData['labels'] ?? $fieldData['values'];
+                    $values = $fieldData['values'];
+                    $displayValues = $fieldData['labels'] ?? $values;
+                    
+                    // Array handling
                     if (is_array($displayValues)) {
-                        $context[] = "**{$fieldName}**: " . implode(', ', $displayValues);
+                        $cleanValues = array_filter($displayValues);
+                        if (!empty($cleanValues)) {
+                            $context[] = "**{$fieldName}**: " . implode(', ', $cleanValues);
+                        }
+                    } elseif (!empty($displayValues)) {
+                        $context[] = "**{$fieldName}**: {$displayValues}";
                     }
                 }
             }

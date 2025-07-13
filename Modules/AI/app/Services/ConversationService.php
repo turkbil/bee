@@ -56,7 +56,7 @@ class ConversationService
      */
     public function getTenantTokenBalance(?int $tenantId = null): int
     {
-        $tenantId = $tenantId ?: tenancy()->tenant?->id;
+        $tenantId = $tenantId ?: \App\Helpers\TenantHelpers::getCurrentTenantId();
         
         // Admin sayfalarında tenant_id null olabilir, 1 numaralı tenant'ı kullan
         if (!$tenantId) {
@@ -262,8 +262,10 @@ class ConversationService
     
     public function getConversations(?int $limit = null)
     {
+        $tenantId = \App\Helpers\TenantHelpers::getCurrentTenantId() ?: 1;
+        
         $query = Conversation::where('user_id', Auth::id())
-            ->where('tenant_id', tenancy()->tenant?->id)
+            ->where('tenant_id', $tenantId)
             ->orderBy('updated_at', 'desc');
             
         if ($limit) {

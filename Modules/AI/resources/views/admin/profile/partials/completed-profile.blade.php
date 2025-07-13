@@ -293,26 +293,51 @@
                     @endif
                     
                     @if($profile->sector_details)
+                        @php
+                            // Türkçe alan adları mapping
+                            $fieldLabels = [
+                                'sector_name' => 'Sektör Adı',
+                                'sector_selection' => 'Sektör Seçimi', 
+                                'target_customers' => 'Hedef Müşteri Kitlesi',
+                                'brand_personality' => 'Marka Kişiliği',
+                                'sector_description' => 'Sektör Açıklaması',
+                                'main_business_activities' => 'Ana İş Kolları',
+                                'main_business_activities_question' => 'Ana İş Kolları Sorusu'
+                            ];
+                            
+                            // Değer çevirileri
+                            $valueTranslations = [
+                                'bireysel_musteriler' => 'Bireysel Müşteriler',
+                                'kucuk_isletmeler' => 'Küçük İşletmeler', 
+                                'buyuk_sirketler' => 'Büyük Şirketler',
+                                'hizli_dinamik' => 'Hızlı ve Dinamik',
+                                'uzman_guvenilir' => 'Uzman ve Güvenilir',
+                                'yenilikci_modern' => 'Yenilikçi ve Modern',
+                                'profesyonel_ciddi' => 'Profesyonel ve Ciddi',
+                                'web' => 'Web Teknolojileri'
+                            ];
+                        @endphp
+                        
                         @foreach($profile->sector_details as $key => $value)
                             @if($key !== 'sector' && !empty($value) && $value !== false)
                                 <div class="mb-2">
-                                    <strong class="text-muted">{{ ucfirst(str_replace('_', ' ', $key)) }}:</strong>
+                                    <strong class="text-muted">{{ $fieldLabels[$key] ?? ucfirst(str_replace('_', ' ', $key)) }}:</strong>
                                     @if(is_array($value))
                                         <div class="mt-1">
                                             @foreach($value as $subkey => $subvalue)
                                                 @if($subvalue && $subvalue !== false)
                                                     <span class="badge bg-muted me-1 mb-1" style="border-radius: 0.25rem !important; color: var(--tblr-body-color) !important; background-color: var(--tblr-bg-surface) !important; border: 1px solid var(--tblr-border-color) !important;">
                                                         @if(is_string($subkey))
-                                                            {{ ucfirst(str_replace('-', ' ', $subkey)) }}
+                                                            {{ $valueTranslations[$subkey] ?? ucfirst(str_replace(['_', '-'], ' ', $subkey)) }}
                                                         @else
-                                                            {{ $subvalue }}
+                                                            {{ $valueTranslations[$subvalue] ?? $subvalue }}
                                                         @endif
                                                     </span>
                                                 @endif
                                             @endforeach
                                         </div>
                                     @else
-                                        <div>{{ is_string($value) ? ucfirst(str_replace('_', ' ', $value)) : $value }}</div>
+                                        <div>{{ $valueTranslations[$value] ?? (is_string($value) ? ucfirst(str_replace('_', ' ', $value)) : $value) }}</div>
                                     @endif
                                 </div>
                             @endif
@@ -339,68 +364,96 @@
                 </h3>
             </div>
             <div class="card-body">
+                @php
+                    // AI davranış kuralları için Türkçe çeviriler
+                    $aiTranslations = [
+                        // Brand Character
+                        'samimi_dostane' => 'Samimi ve Dostane',
+                        'ciddi_kurumsal' => 'Ciddi ve Kurumsal', 
+                        'enerjik_heyecanli' => 'Enerjik ve Heyecanlı',
+                        'sakin_temkinli' => 'Sakin ve Temkinli',
+                        'yenilikci_cesur' => 'Yenilikçi ve Cesur',
+                        'geleneksel_koklu' => 'Geleneksel ve Köklü',
+                        'eglenceli_yaratici' => 'Eğlenceli ve Yaratıcı',
+                        'pratik_cozum_odakli' => 'Pratik ve Çözüm Odaklı',
+                        
+                        // Writing Style  
+                        'kisa_net' => 'Kısa ve Net',
+                        'detayli_kapsamli' => 'Detaylı ve Kapsamlı',
+                        'teknik_bilimsel' => 'Teknik ve Bilimsel',
+                        'sade_anlasilir' => 'Sade ve Anlaşılır',
+                        'duygusal_etkileyici' => 'Duygusal ve Etkileyici',
+                        'gunluk_konusma' => 'Günlük Konuşma Tarzı',
+                        'formal_profesyonel' => 'Formal ve Profesyonel',
+                        
+                        // Sales Approach
+                        'guven_kurma' => 'Güven Kurma',
+                        'hizli_karar' => 'Hızlı Karar Verme',
+                        'detayli_analiz' => 'Detaylı Analiz',
+                        'duygusal_baglanti' => 'Duygusal Bağlantı',
+                        
+                        // AI Response Style
+                        'kisa_ozet' => 'Kısa Özet',
+                        'uzun_kapsamli' => 'Uzun ve Kapsamlı',
+                        'orta_dengeli' => 'Orta ve Dengeli'
+                    ];
+                @endphp
+                
                 <div class="row">
-                    @if(isset($profile->success_stories['writing_tone']))
-                        <div class="col-md-3 mb-3">
-                            <strong class="text-muted">Yazı Tonu:</strong>
+                    @if(isset($profile->success_stories['brand_character']) && is_array($profile->success_stories['brand_character']))
+                        <div class="col-md-6 mb-3">
+                            <strong class="text-muted">Marka Karakteri:</strong>
                             <div class="mt-1">
-                                @if(is_array($profile->success_stories['writing_tone']))
-                                    @foreach($profile->success_stories['writing_tone'] as $tone_key => $tone_value)
-                                        @if($tone_value && $tone_value !== false)
-                                            <span class="badge bg-muted me-1 mb-1" style="border-radius: 0.25rem !important; color: var(--tblr-body-color) !important; background-color: var(--tblr-bg-surface) !important; border: 1px solid var(--tblr-border-color) !important;">{{ ucfirst(str_replace('_', ' ', $tone_key)) }}</span>
-                                        @endif
-                                    @endforeach
-                                @else
-                                    <span class="badge bg-muted fs-6" style="border-radius: 0.25rem !important; color: var(--tblr-body-color) !important; background-color: var(--tblr-bg-surface) !important; border: 1px solid var(--tblr-border-color) !important;">
-                                        {{ is_string($profile->success_stories['writing_tone']) ? ucfirst($profile->success_stories['writing_tone']) : $profile->success_stories['writing_tone'] }}
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-                    @endif
-                    
-                    @if(isset($profile->success_stories['brand_voice']))
-                        <div class="col-md-3 mb-3">
-                            <strong class="text-muted">Marka Sesi:</strong>
-                            <div class="mt-1">
-                                <span class="badge bg-muted fs-6" style="border-radius: 0.25rem !important; color: var(--tblr-body-color) !important; background-color: var(--tblr-bg-surface) !important; border: 1px solid var(--tblr-border-color) !important;">
-                                    {{ ucfirst(str_replace('_', ' ', $profile->success_stories['brand_voice'])) }}
-                                </span>
-                            </div>
-                        </div>
-                    @endif
-                    
-                    @if(isset($profile->success_stories['content_focus']))
-                        <div class="col-md-3 mb-3">
-                            <strong class="text-muted">İçerik Odağı:</strong>
-                            <div class="mt-1">
-                                <span class="badge bg-muted fs-6" style="border-radius: 0.25rem !important; color: var(--tblr-body-color) !important; background-color: var(--tblr-bg-surface) !important; border: 1px solid var(--tblr-border-color) !important;">
-                                    {{ ucfirst(str_replace('_', ' ', $profile->success_stories['content_focus'])) }}
-                                </span>
-                            </div>
-                        </div>
-                    @endif
-                    
-                    @if(isset($profile->success_stories['emphasis_points']) && is_array($profile->success_stories['emphasis_points']))
-                        <div class="col-md-3 mb-3">
-                            <strong class="text-muted">Vurgu Noktaları:</strong>
-                            <div class="mt-1">
-                                @foreach($profile->success_stories['emphasis_points'] as $key => $value)
-                                    @if($value)
-                                        <span class="badge bg-muted me-1 mb-1" style="border-radius: 0.25rem !important; color: var(--tblr-body-color) !important; background-color: var(--tblr-bg-surface) !important; border: 1px solid var(--tblr-border-color) !important;">{{ ucfirst(str_replace(['-', '_'], ' ', $key)) }}</span>
+                                @foreach($profile->success_stories['brand_character'] as $key => $value)
+                                    @if($value && $value !== false)
+                                        <span class="badge bg-muted me-1 mb-1" style="border-radius: 0.25rem !important; color: var(--tblr-body-color) !important; background-color: var(--tblr-bg-surface) !important; border: 1px solid var(--tblr-border-color) !important;">
+                                            {{ $aiTranslations[$key] ?? ucfirst(str_replace('_', ' ', $key)) }}
+                                        </span>
                                     @endif
                                 @endforeach
                             </div>
                         </div>
                     @endif
                     
-                    @if(isset($profile->success_stories['avoid_topics']) && is_array($profile->success_stories['avoid_topics']))
-                        <div class="col-md-3 mb-3">
-                            <strong class="text-muted">Kaçınılacak Konular:</strong>
+                    @if(isset($profile->success_stories['writing_style']) && is_array($profile->success_stories['writing_style']))
+                        <div class="col-md-6 mb-3">
+                            <strong class="text-muted">Yazım Tarzı:</strong>
                             <div class="mt-1">
-                                @foreach($profile->success_stories['avoid_topics'] as $key => $value)
-                                    @if($value)
-                                        <span class="badge bg-muted me-1 mb-1" style="border-radius: 0.25rem !important; color: var(--tblr-body-color) !important; background-color: var(--tblr-bg-surface) !important; border: 1px solid var(--tblr-border-color) !important;">{{ ucfirst(str_replace(['-', '_'], ' ', $key)) }}</span>
+                                @foreach($profile->success_stories['writing_style'] as $key => $value)
+                                    @if($value && $value !== false)
+                                        <span class="badge bg-muted me-1 mb-1" style="border-radius: 0.25rem !important; color: var(--tblr-body-color) !important; background-color: var(--tblr-bg-surface) !important; border: 1px solid var(--tblr-border-color) !important;">
+                                            {{ $aiTranslations[$key] ?? ucfirst(str_replace('_', ' ', $key)) }}
+                                        </span>
+                                    @endif
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+                    
+                    @if(isset($profile->success_stories['sales_approach']) && is_array($profile->success_stories['sales_approach']))
+                        <div class="col-md-6 mb-3">
+                            <strong class="text-muted">Satış Yaklaşımı:</strong>
+                            <div class="mt-1">
+                                @foreach($profile->success_stories['sales_approach'] as $key => $value)
+                                    @if($value && $value !== false)
+                                        <span class="badge bg-muted me-1 mb-1" style="border-radius: 0.25rem !important; color: var(--tblr-body-color) !important; background-color: var(--tblr-bg-surface) !important; border: 1px solid var(--tblr-border-color) !important;">
+                                            {{ $aiTranslations[$key] ?? ucfirst(str_replace('_', ' ', $key)) }}
+                                        </span>
+                                    @endif
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+                    
+                    @if(isset($profile->ai_behavior_rules['ai_response_style']) && is_array($profile->ai_behavior_rules['ai_response_style']))
+                        <div class="col-md-6 mb-3">
+                            <strong class="text-muted">AI Yanıt Stili:</strong>
+                            <div class="mt-1">
+                                @foreach($profile->ai_behavior_rules['ai_response_style'] as $key => $value)
+                                    @if($value && $value !== false)
+                                        <span class="badge bg-muted me-1 mb-1" style="border-radius: 0.25rem !important; color: var(--tblr-body-color) !important; background-color: var(--tblr-bg-surface) !important; border: 1px solid var(--tblr-border-color) !important;">
+                                            {{ $aiTranslations[$key] ?? ucfirst(str_replace('_', ' ', $key)) }}
+                                        </span>
                                     @endif
                                 @endforeach
                             </div>
@@ -424,16 +477,28 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
+                        @php
+                            // Kurucu bilgileri için Türkçe çeviriler
+                            $founderLabels = [
+                                'founder_name' => 'Kurucu Adı',
+                                'founder_story' => 'Kurucu Hikayesi',
+                                'founder_name_question' => 'Kurucu Adı Sorusu',
+                                'founder_story_question' => 'Kurucu Hikayesi Sorusu',
+                                'founder_position' => 'Pozisyon',
+                                'founder_qualities' => 'Özellikler'
+                            ];
+                        @endphp
+                        
                         @foreach($profile->founder_info as $key => $value)
-                            @if(!empty($value) && $value !== false)
+                            @if(!empty($value) && $value !== false && !str_ends_with($key, '_question'))
                                 <div class="col-md-6 mb-3">
-                                    <strong class="text-muted">{{ ucfirst(str_replace('_', ' ', $key)) }}:</strong>
+                                    <strong class="text-muted">{{ $founderLabels[$key] ?? ucfirst(str_replace('_', ' ', $key)) }}:</strong>
                                     <div class="mt-1">
                                         @if(is_array($value))
                                             @foreach($value as $subkey => $subvalue)
                                                 @if($subvalue && $subvalue !== false)
                                                     <span class="badge bg-muted me-1 mb-1" style="border-radius: 0.25rem !important; color: var(--tblr-body-color) !important; background-color: var(--tblr-bg-surface) !important; border: 1px solid var(--tblr-border-color) !important;">
-                                                        {{ is_string($subkey) ? ucfirst(str_replace('-', ' ', $subkey)) : $subvalue }}
+                                                        {{ is_string($subkey) ? ucfirst(str_replace(['_', '-'], ' ', $subkey)) : $subvalue }}
                                                     </span>
                                                 @endif
                                             @endforeach
@@ -688,4 +753,97 @@ function showCopySuccess(btn) {
         btn.classList.add('btn-outline-secondary');
     }, 2000);
 }
+
+{{-- LIVE BRAND STORY GENERATION --}}
+@if(!$profile->hasBrandStory() && $profile->is_completed)
+// Auto-start brand story generation when profile is completed but no story exists
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🔥 Profile completed but no brand story - starting auto generation');
+    
+    const loadingElement = document.getElementById('brand-story-auto-loading');
+    if (loadingElement) {
+        startLiveBrandStoryGeneration();
+    }
+});
+
+function startLiveBrandStoryGeneration() {
+    console.log('🚀 Starting live brand story generation...');
+    
+    // Update loading state with more dynamic text
+    updateLoadingProgress();
+    
+    // Start the AJAX request for story generation
+    fetch('{{ route("admin.ai.profile.generate-story") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({})
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('✅ Brand story generation response:', data);
+        
+        if (data.success) {
+            // Story generated successfully - reload page to show it
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+        } else {
+            // Show error
+            showStoryGenerationError(data.message || 'Hikaye oluşturulurken bir hata oluştu');
+        }
+    })
+    .catch(error => {
+        console.error('❌ Brand story generation error:', error);
+        showStoryGenerationError('Bağlantı hatası: ' + error.message);
+    });
+}
+
+function updateLoadingProgress() {
+    const loadingElement = document.getElementById('brand-story-auto-loading');
+    if (!loadingElement) return;
+    
+    const messages = [
+        'Profil bilgileriniz analiz ediliyor...',
+        'Marka değerleriniz belirleniyor...',
+        'Sektörel özellikler değerlendiriliyor...',
+        'Yaratıcı hikaye yazılıyor...',
+        'Son dokunuşlar yapılıyor...'
+    ];
+    
+    let currentIndex = 0;
+    const messageElement = loadingElement.querySelector('p');
+    
+    const interval = setInterval(() => {
+        if (currentIndex < messages.length) {
+            messageElement.textContent = messages[currentIndex];
+            currentIndex++;
+        } else {
+            messageElement.textContent = 'Hikayeniz neredeyse hazır...';
+            clearInterval(interval);
+        }
+    }, 3000); // Change message every 3 seconds
+}
+
+function showStoryGenerationError(message) {
+    const loadingElement = document.getElementById('brand-story-auto-loading');
+    if (!loadingElement) return;
+    
+    loadingElement.innerHTML = `
+        <div class="text-center py-4">
+            <div class="mb-3">
+                <i class="fas fa-exclamation-triangle text-warning" style="font-size: 3rem;"></i>
+            </div>
+            <h5 class="text-warning mb-2">Hikaye Oluşturulamadı</h5>
+            <p class="text-muted mb-3">${message}</p>
+            <button class="btn btn-primary" onclick="startLiveBrandStoryGeneration()">
+                <i class="fas fa-retry me-2"></i>Tekrar Dene
+            </button>
+        </div>
+    `;
+}
+@endif
 </script>

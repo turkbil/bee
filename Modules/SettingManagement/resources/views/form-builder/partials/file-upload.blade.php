@@ -48,36 +48,61 @@ x-on:drop="handleDrop($event)">
         <div class="card">
             <div class="card-body p-3">
                 @if (isset($temporaryImages[$fileKey]))
-                <div class="position-relative" style="height: 100px;">
+                <div class="position-relative" style="height: 156px;">
                     <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2"
                         wire:click="removeImage('{{ $fileKey }}')" wire:loading.attr="disabled">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
-                    <div class="d-flex align-items-center justify-content-center h-100">
-                        <div class="text-center">
-                            <i class="fa-solid fa-file fa-3x text-muted"></i>
-                            <p class="mb-0 mt-2">{{ $temporaryImages[$fileKey]->getClientOriginalName() }}</p>
+                    @php
+                        $fileName = $temporaryImages[$fileKey]->getClientOriginalName();
+                        $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+                        $isImage = in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif', 'webp']);
+                    @endphp
+                    
+                    @if ($isImage)
+                        <img src="{{ $temporaryImages[$fileKey]->temporaryUrl() }}"
+                            class="img-fluid rounded h-100 w-100 object-fit-cover" alt="{{ $fileName }}">
+                    @else
+                        <div class="d-flex align-items-center justify-content-center h-100">
+                            <div class="text-center">
+                                <i class="fa-solid fa-file fa-3x text-muted"></i>
+                                <p class="mb-0 mt-2 small">{{ $fileName }}</p>
+                            </div>
                         </div>
+                    @endif
+                    <div class="position-absolute bottom-0 start-0 end-0 bg-warning text-dark text-center py-1 rounded-bottom">
+                        <small><i class="fa-solid fa-clock me-1"></i>Kaydetmeyi bekliyor</small>
                     </div>
                 </div>
                 @elseif (!empty($values[$fileKey]))
-                <div class="position-relative" style="height: 100px;">
+                <div class="position-relative" style="height: 156px;">
                     <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2"
                         wire:click="deleteMedia({{ $fileKey }})" wire:loading.attr="disabled">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
-                    <div class="d-flex align-items-center justify-content-center h-100">
-                        <div class="text-center">
-                            <i class="fa-solid fa-file fa-3x text-muted"></i>
-                            <p class="mb-0 mt-2">{{ basename($values[$fileKey]) }}</p>
-                            <a href="{{ cdn($values[$fileKey]) }}" target="_blank" class="btn btn-sm btn-outline-primary mt-2">
-                                <i class="fas fa-eye me-1"></i> Görüntüle
-                            </a>
+                    @php
+                        $fileName = basename($values[$fileKey]);
+                        $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+                        $isImage = in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif', 'webp']);
+                    @endphp
+                    
+                    @if ($isImage)
+                        <img src="{{ cdn($values[$fileKey]) }}"
+                            class="img-fluid rounded h-100 w-100 object-fit-cover" alt="{{ $fileName }}">
+                    @else
+                        <div class="d-flex align-items-center justify-content-center h-100">
+                            <div class="text-center">
+                                <i class="fa-solid fa-file fa-3x text-muted"></i>
+                                <p class="mb-0 mt-2 small">{{ $fileName }}</p>
+                                <a href="{{ cdn($values[$fileKey]) }}" target="_blank" class="btn btn-sm btn-outline-primary mt-2">
+                                    <i class="fas fa-eye me-1"></i> Görüntüle
+                                </a>
+                            </div>
                         </div>
-                    </div>
+                    @endif
                 </div>
                 @else
-                <div class="d-flex align-items-center justify-content-center text-muted" style="height: 100px;">
+                <div class="d-flex align-items-center justify-content-center text-muted" style="height: 156px;">
                     <i class="fa-solid fa-file-circle-xmark fa-2x"></i>
                 </div>
                 @endif

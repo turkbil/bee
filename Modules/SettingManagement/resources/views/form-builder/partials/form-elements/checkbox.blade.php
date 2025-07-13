@@ -47,7 +47,7 @@
             <input class="form-check-input" 
                 type="checkbox" 
                 id="{{ $fieldName }}" 
-                wire:model="values.{{ $fieldName }}"
+                wire:model.live="values.{{ $fieldName }}"
                 value="1"
                 @if($isRequired) required @endif
                 @if($defaultValue) checked @endif>

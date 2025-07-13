@@ -61,4 +61,21 @@ class User extends Authenticatable implements HasMedia
              ->singleFile()
              ->useDisk('public');
     }
+    
+    /**
+     * PERFORMANCE: Cached role check to reduce DB queries
+     */
+    public function hasCachedRole($role): bool
+    {
+        static $roleCache = [];
+        $cacheKey = "user_{$this->id}_role_{$role}";
+        
+        if (!isset($roleCache[$cacheKey])) {
+            $roleCache[$cacheKey] = cache()->remember("user_role_{$this->id}_{$role}", 300, function() use ($role) {
+                return $this->hasRole($role);
+            });
+        }
+        
+        return $roleCache[$cacheKey];
+    }
 }

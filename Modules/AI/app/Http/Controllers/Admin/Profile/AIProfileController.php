@@ -293,11 +293,11 @@ class AIProfileController extends Controller
                     'success_story' => 'success_stories',
                     'customer_testimonial' => 'success_stories',
                     'competitive_advantage' => 'success_stories',
-                    'ai_response_style' => 'success_stories',  // Step 5 - radio
                     
                     // AI behavior rules (Step 5)
+                    'ai_response_style' => 'ai_behavior_rules',  // Step 5 - yanıt stili
+                    'sales_approach' => 'ai_behavior_rules',     // Step 5 - satış yaklaşımı
                     'response_style' => 'ai_behavior_rules',   // Step 5 - checkbox
-                    'communication_style' => 'ai_behavior_rules',
                     'forbidden_topics' => 'ai_behavior_rules',
                     'writing_tone' => 'ai_behavior_rules',
                     'brand_voice' => 'ai_behavior_rules',
@@ -395,8 +395,8 @@ class AIProfileController extends Controller
             $profile->$section = $sectionData;
             
             // Founder permission özel işlemi - hayır seçilirse kurucu bilgilerini temizle
-            if ($key === 'founder_permission' && $section === 'company_info') {
-                $shouldShowFounderQuestions = in_array($value, ['Evet, bilgilerimi paylaşmak istiyorum', 'yes_full', 'yes_limited']);
+            if (($key === 'founder_permission' || $key === 'share_founder_info') && $section === 'company_info') {
+                $shouldShowFounderQuestions = in_array($value, ['Evet, bilgilerimi paylaşmak istiyorum', 'yes_full', 'yes_limited', 'evet']);
                 
                 if (!$shouldShowFounderQuestions) {
                     // Kurucu bilgilerini veritabanından temizle
@@ -404,7 +404,8 @@ class AIProfileController extends Controller
                     
                     \Log::info('✅ jQuery Auto-Save - Founder info cleared due to permission change', [
                         'tenant_id' => $tenantId,
-                        'founder_permission' => $value,
+                        'field' => $key,
+                        'permission_value' => $value,
                         'founder_info_cleared' => true
                     ]);
                 }

@@ -77,19 +77,20 @@ class AIServiceProvider extends ServiceProvider
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
         
+        // PERFORMANCE: Single AI module active check for both services
+        $aiModuleActive = $this->isAIModuleActive();
+        
         // AI Service singleton kaydı - Lazy yükleme yaklaşımı
-        $this->app->singleton(AIService::class, function ($app) {
+        $this->app->singleton(AIService::class, function ($app) use ($aiModuleActive) {
             // Servisi talep üzerine başlat (lazy loading)
-            $tableExists = $this->isAIModuleActive();
             $deepSeekService = $app->make(DeepSeekService::class);
             return new AIService($deepSeekService);
         });
         
         // DeepSeek Service singleton kaydı - Lazy yükleme yaklaşımı
-        $this->app->singleton(DeepSeekService::class, function ($app) {
+        $this->app->singleton(DeepSeekService::class, function ($app) use ($aiModuleActive) {
             // Servisi talep üzerine başlat (lazy loading)
-            $tableExists = $this->isAIModuleActive();
-            return new DeepSeekService(!$tableExists); // !$tableExists = safe mode
+            return new DeepSeekService(!$aiModuleActive); // !$aiModuleActive = safe mode
         });
     }
     
@@ -99,6 +100,12 @@ class AIServiceProvider extends ServiceProvider
      */
     private function isAIModuleActive(): bool
     {
+        // PERFORMANCE: Static cache to prevent multiple calls per request
+        static $cachedResult = null;
+        if ($cachedResult !== null) {
+            return $cachedResult;
+        }
+        
         // Eğer bir AI rotasındaysak veya AI modülü sayfasına erişiliyorsa
         $currentRoute = request()->route()?->getName() ?? '';
         $currentPath = request()->path();
@@ -109,11 +116,16 @@ class AIServiceProvider extends ServiceProvider
             strpos($currentPath, 'ai') === 0 ||
             strpos($currentPath, 'admin/ai') === 0) {
                 
-            return Schema::hasTable('ai_settings');
+            // PERFORMANCE: Cache table existence check for 1 hour
+            $cachedResult = cache()->remember('ai_settings_table_exists', 3600, function() {
+                return Schema::hasTable('ai_settings');
+            });
+            return $cachedResult;
         }
         
         // Diğer tüm durumlar için güvenli modu kullan
-        return false;
+        $cachedResult = false;
+        return $cachedResult;
     }
 
     /**

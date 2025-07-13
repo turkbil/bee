@@ -18,7 +18,7 @@ class ModuleComponent extends Component
     public $search = '';
 
     #[Url]
-    public $perPage = 10;
+    public $perPage = 100;
 
     #[Url]
     public $sortField = 'module_id';

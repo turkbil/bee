@@ -50,7 +50,7 @@
         <div class="form-floating">
             <input type="number" 
                 id="{{ $fieldName }}"
-                wire:model="values.{{ $fieldName }}" 
+                wire:model.live="values.{{ $fieldName }}" 
                 class="form-control @error('values.' . $fieldName) is-invalid @enderror" 
                 placeholder="{{ $placeholder ?: $fieldLabel }}"
                 @if($min !== null) min="{{ $min }}" @endif

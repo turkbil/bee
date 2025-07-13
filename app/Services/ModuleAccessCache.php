@@ -13,13 +13,30 @@ class ModuleAccessCache
     protected const CACHE_TTL = 10; // 10 dakika
     
     /**
+     * PERFORMANCE: Static memory cache to prevent duplicate Redis calls
+     */
+    protected static array $memoryCache = [];
+    
+    /**
      * Modül erişim cache'ini getirir
      */
     public function getAccessCache(string $userId, string $moduleName, string $permissionType): ?bool
     {
         $cacheKey = $this->generateCacheKey($userId, $moduleName, $permissionType);
         
-        return Cache::tags($this->getCacheTags())->get($cacheKey);
+        // PERFORMANCE: Check static memory cache first
+        if (isset(self::$memoryCache[$cacheKey])) {
+            return self::$memoryCache[$cacheKey];
+        }
+        
+        $result = Cache::tags($this->getCacheTags())->get($cacheKey);
+        
+        // Store in memory cache if found
+        if ($result !== null) {
+            self::$memoryCache[$cacheKey] = $result;
+        }
+        
+        return $result;
     }
     
     /**
@@ -29,7 +46,9 @@ class ModuleAccessCache
     {
         $cacheKey = $this->generateCacheKey($userId, $moduleName, $permissionType);
         
+        // PERFORMANCE: Store in both Redis and memory cache
         Cache::tags($this->getCacheTags())->put($cacheKey, $hasAccess, now()->addMinutes(self::CACHE_TTL));
+        self::$memoryCache[$cacheKey] = $hasAccess;
         
         if (app()->environment(['local', 'staging'])) {
             Log::debug("Modül erişim cache'i kaydedildi", [
@@ -69,6 +88,13 @@ class ModuleAccessCache
     {
         $pattern = $this->getUserCachePattern($userId);
         
+        // PERFORMANCE: Clear memory cache for this user
+        foreach (array_keys(self::$memoryCache) as $key) {
+            if (strpos($key, "user_{$userId}") !== false) {
+                unset(self::$memoryCache[$key]);
+            }
+        }
+        
         if (app()->environment(['local', 'staging'])) {
             Log::debug("Kullanıcı modül erişim cache'i temizleniyor", [
                 'user_id' => $userId,
@@ -85,6 +111,9 @@ class ModuleAccessCache
      */
     public function clearAllCache(): void
     {
+        // PERFORMANCE: Clear memory cache
+        self::$memoryCache = [];
+        
         Cache::tags($this->getCacheTags())->flush();
         
         if (app()->environment(['local', 'staging'])) {

@@ -45,7 +45,7 @@
                                 name="radio_{{ $element['properties']['name'] }}" 
                                 value="{{ $option['value'] }}" 
                                 class="form-selectgroup-input" 
-                                wire:model="formData.{{ $element['properties']['name'] }}"
+                                wire:model.live="formData.{{ $element['properties']['name'] }}"
                                 @if($isRequired) required @endif
                                 @if($defaultValue === $option['value'] || (isset($option['is_default']) && $option['is_default'])) checked @endif
                             >

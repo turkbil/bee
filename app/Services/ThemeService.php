@@ -29,19 +29,18 @@ class ThemeService
     }
     
     /**
-     * Aktif temayı yükle (basit implementasyon)
+     * Aktif temayı yükle - ThemeRepository ile uyumlu cache keys
      */
     protected function loadActiveTheme(): ?object
     {
         try {
-            $cacheKey = 'theme_service_active_theme';
-            
-            // Tenant varsa cache key'e tenant id ekle
+            // Repository ile aynı cache key'leri kullan (duplication önleme)
             if (function_exists('tenant') && $t = tenant()) {
-                $cacheKey .= '_tenant_' . $t->id;
+                // Tenant tema cache - Repository ile uyumlu
+                $cacheKey = "theme:tenant_{$t->id}";
+                $cacheTags = ["tenant_{$t->id}:theme"];
                 
-                // Tenant-specific tema
-                $theme = Cache::remember($cacheKey, now()->addHours(24), function() use ($t) {
+                $theme = Cache::tags($cacheTags)->remember($cacheKey, now()->addHours(1), function() use ($t) {
                     return Theme::on('mysql')->where('name', $t->theme)
                                   ->where('is_active', true)
                                   ->first();
@@ -52,9 +51,11 @@ class ThemeService
                 }
             }
             
-            // Default tema
-            $defaultCacheKey = 'theme_service_default_theme_v3';
-            return Cache::remember($defaultCacheKey, now()->addDays(7), function() {
+            // Default tema cache - Repository ile uyumlu
+            $cacheKey = 'theme:default';
+            $cacheTags = ['central:theme'];
+            
+            return Cache::tags($cacheTags)->remember($cacheKey, now()->addHours(24), function() {
                 // Default tema ara
                 $theme = Theme::on('mysql')
                     ->where('is_default', true)
@@ -157,23 +158,27 @@ class ThemeService
     }
     
     /**
-     * Tema cache'ini temizler
+     * Tema cache'ini temizler - Repository ile uyumlu
      */
     public function clearThemeCache(?string $tenantId = null): void
     {
         $this->activeTheme = null; // Instance cache'i temizle
         
-        $cacheKeys = [
-            'theme_service_active_theme',
-            'theme_service_default_theme_v3'
-        ];
-        
         if ($tenantId) {
-            $cacheKeys[] = "theme_service_active_theme_tenant_{$tenantId}";
-        }
-        
-        foreach ($cacheKeys as $key) {
-            Cache::forget($key);
+            // Belirli tenant'ın tema cache'ini temizle
+            Cache::tags(["tenant_{$tenantId}:theme"])->flush();
+        } else {
+            // Tüm tema cache'lerini temizle
+            Cache::tags(['central:theme'])->flush();
+            
+            // Tüm tenant tema cache'lerini de temizle
+            $redis = Cache::getRedis();
+            $pattern = '*:theme:*';
+            $keys = $redis->keys($pattern);
+            
+            if (!empty($keys)) {
+                $redis->del($keys);
+            }
         }
     }
     

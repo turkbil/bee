@@ -32,7 +32,12 @@ class SettingsService
             
             // Her durumda önce settings_values tablosuna bak
             try {
-                if (Schema::hasTable('settings_values')) {
+                // PERFORMANCE: Cache table existence check for 1 hour
+                $tableExists = cache()->remember('settings_values_table_exists', 3600, function() {
+                    return Schema::hasTable('settings_values');
+                });
+                
+                if ($tableExists) {
                     // Önce settings_values tablosunu sorgula
                     $customValue = DB::table('settings_values')
                         ->where('setting_id', $setting->id)
@@ -75,7 +80,12 @@ class SettingsService
             
             // Her durumda önce settings_values tablosuna bak
             try {
-                if (Schema::hasTable('settings_values')) {
+                // PERFORMANCE: Cache table existence check for 1 hour
+                $tableExists = cache()->remember('settings_values_table_exists', 3600, function() {
+                    return Schema::hasTable('settings_values');
+                });
+                
+                if ($tableExists) {
                     // Önce settings_values tablosunu sorgula
                     $customValue = DB::table('settings_values')
                         ->where('setting_id', $id)

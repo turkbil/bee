@@ -30,6 +30,9 @@ return new class extends Migration
         Schema::create('ai_features', function (Blueprint $table) {
             $table->id();
             
+            // Feature Category ilişkisi (add_category_id_to_ai_features_table.php entegrasyonu)
+            $table->unsignedBigInteger('ai_feature_category_id')->nullable();
+            
             // Temel Bilgiler
             $table->string('name'); // "İçerik Üretimi", "Code Generation"
             $table->string('slug')->unique(); // "content-generation", "code-generation"
@@ -100,6 +103,7 @@ return new class extends Migration
             $table->timestamps();
             
             // İndexler - Performans için
+            $table->index(['ai_feature_category_id']);
             $table->index(['status', 'show_in_examples', 'sort_order']);
             $table->index(['category', 'status']);
             $table->index(['is_featured', 'status']);

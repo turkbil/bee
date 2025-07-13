@@ -1,9 +1,19 @@
 @php
-// Tenant ID'yi al
+// PERFORMANCE OPTIMIZATION - Cache variables to avoid repeated queries
+static $cachedUser = null;
+static $cachedTenantData = null;
+static $cachedSystemLanguages = null;
+
+// Single user fetch (instead of multiple auth() calls)
+if ($cachedUser === null) {
+$cachedUser = auth()->user();
+}
+
+// Tenant data caching
+if ($cachedTenantData === null) {
 $tenantId = null;
 $isCentral = false;
 
-// Helper fonksiyonları kontrol et ve kullan
 if (function_exists('tenant_id')) {
 $tenantId = tenant_id();
 } elseif (app()->has('tenancy') && app('tenancy')->initialized) {
@@ -15,6 +25,11 @@ $isCentral = is_central();
 } elseif (app()->has('tenancy')) {
 $isCentral = !app('tenancy')->initialized;
 }
+
+$cachedTenantData = compact('tenantId', 'isCentral');
+}
+
+extract($cachedTenantData);
 
 // Tenant domainde mysql bağlantısı kullanması için
 if (!$isCentral && app()->has('tenancy') && app('tenancy')->initialized) {
@@ -35,22 +50,25 @@ $currentLocale = $adminFallbackLocale; // Tenant'ın varsayılan admin dili
 if (session('admin_locale')) {
 $currentLocale = session('admin_locale');
 }
-// 2. Kullanıcının kaydettiği admin dil tercihi
-elseif (auth()->check() && auth()->user()->admin_locale) {
-$currentLocale = auth()->user()->admin_locale;
+// 2. Kullanıcının kaydettiği admin dil tercihi (cached user)
+elseif ($cachedUser && $cachedUser->admin_locale) {
+$currentLocale = $cachedUser->admin_locale;
 }
 
 // Admin interface için her zaman fallback locale'i de ayarla (modül isimleri için)
 $originalLocale = app()->getLocale();
 app()->setLocale($adminFallbackLocale);
 
-// Sistem dillerini al
-$systemLanguages = collect();
+// Sistem dillerini al (cached)
+if ($cachedSystemLanguages === null) {
+$cachedSystemLanguages = collect();
 if (class_exists('Modules\LanguageManagement\App\Models\AdminLanguage')) {
-$systemLanguages = \Modules\LanguageManagement\App\Models\AdminLanguage::where('is_active', true)
+$cachedSystemLanguages = \Modules\LanguageManagement\App\Models\AdminLanguage::where('is_active', true)
 ->orderBy('id')
 ->get();
 }
+}
+$systemLanguages = $cachedSystemLanguages;
 
 // Mevcut dil bilgisi
 $currentLanguage = $systemLanguages->firstWhere('code', $currentLocale);
@@ -117,13 +135,15 @@ app()->setLocale($originalLocale);
                 </div>
 
                 <!-- NAVBAR TEMA SWITCH - KALDIRMA! Theme Builder'daki sistem modu ile aynı işlevi görüyor -->
-                {{-- 
+                {{--
                 <div class="nav-item me-2">
                     <div class="d-flex align-items-center justify-content-center"
                         style="width: 40px; height: 40px; border-radius: 0.375rem; margin-top: -2px;"
                         data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('admin.theme_mode') }}">
-                        <div class="theme-mode" data-theme="{{ isset($_COOKIE['dark']) && $_COOKIE['dark'] == '1' ? 'dark' : 'light' }}">
-                            <input type="checkbox" id="switch" class="dark-switch" {{ isset($_COOKIE['dark']) && $_COOKIE['dark'] == '1' ? 'checked' : '' }}>
+                        <div class="theme-mode"
+                            data-theme="{{ isset($_COOKIE['dark']) && $_COOKIE['dark'] == '1' ? 'dark' : 'light' }}">
+                            <input type="checkbox" id="switch" class="dark-switch" {{ isset($_COOKIE['dark']) &&
+                                $_COOKIE['dark']=='1' ? 'checked' : '' }}>
                             <div class="app">
                                 <div class="switch-content">
                                     <div class="switch-label"></div>
@@ -144,16 +164,21 @@ app()->setLocale($originalLocale);
 
                 <!-- Son Aktiviteler Dropdown -->
                 <div class="nav-item dropdown me-2" id="activities-dropdown" data-bs-toggle="tooltip"
-                    data-bs-placement="bottom" title="{{ __('admin.recent_activities') }}">
+                    data-bs-placement="bottom">
                     <a href="#" class="nav-link d-flex align-items-center justify-content-center"
                         data-bs-toggle="dropdown" tabindex="-1" aria-expanded="false"
                         style="width: 40px; height: 40px; border-radius: 0.375rem;">
                         <i class="fa-solid fa-bell" style="font-size: 18px;"></i>
                         @php
-                        // Son aktiviteleri ve okunmamış sayısını hesapla
+                        // PERFORMANCE: Cache activity count to avoid expensive queries
+                        static $cachedActivityData = null;
+                        if ($cachedActivityData === null) {
                         $lastReadTime = $_COOKIE['last_activity_read'] ?? 0;
                         $unreadActivitiesCount = \Spatie\Activitylog\Models\Activity::where('created_at', '>',
                         date('Y-m-d H:i:s', $lastReadTime))->count();
+                        $cachedActivityData = compact('lastReadTime', 'unreadActivitiesCount');
+                        }
+                        extract($cachedActivityData);
                         @endphp
                         @if($unreadActivitiesCount > 0)
                         <span class="badge bg-red">{{ $unreadActivitiesCount }}</span>
@@ -168,11 +193,18 @@ app()->setLocale($originalLocale);
                             </div>
                             <div class="list-group list-group-flush list-group-hoverable">
                                 @php
-                                // Son 6 aktiviteyi al
-                                $activities = \Spatie\Activitylog\Models\Activity::with('causer')
+                                // PERFORMANCE: Cache activities with Redis (5 dakika) + Static cache
+                                static $cachedActivities = null;
+                                if ($cachedActivities === null) {
+                                $cacheKey = 'admin_nav_activities_' . ($cachedUser ? $cachedUser->id : 'guest');
+                                $cachedActivities = cache()->remember($cacheKey, 300, function () {
+                                return \Spatie\Activitylog\Models\Activity::with('causer')
                                 ->latest()
                                 ->take(6)
                                 ->get();
+                                });
+                                }
+                                $activities = $cachedActivities;
                                 @endphp
                                 @forelse($activities as $activity)
                                 <div class="list-group-item py-3">
@@ -221,7 +253,7 @@ app()->setLocale($originalLocale);
 
                 <!-- Hızlı İşlemler Dropdown -->
                 <div class="nav-item dropdown me-3" data-bs-toggle="tooltip" data-bs-placement="bottom"
-                    title="{{ __('admin.quick_actions') }}">
+                    id="quick-actions-dropdown">
                     <a href="#" class="nav-link d-flex align-items-center justify-content-center"
                         data-bs-toggle="dropdown" tabindex="-1" aria-expanded="false"
                         style="width: 40px; height: 40px; border-radius: 0.375rem;">
@@ -245,19 +277,17 @@ app()->setLocale($originalLocale);
                                         </a>
                                     </div>
                                     <div class="col-4">
-                                        <a href="#"
-                                            class="d-flex flex-column text-center py-3 px-2 quick-action-item cache-clear-btn"
-                                            data-action="clear">
+                                        <a href="#" class="d-flex flex-column text-center py-3 px-2 quick-action-item"
+                                            onclick="clearCache(this); return false;">
                                             <i class="fa-solid fa-broom mb-2" style="font-size: 28px;"></i>
-                                            <span class="nav-link-title">{{ __('admin.clear_cache') }}</span>
+                                            <span class="nav-link-title">Cache Temizle</span>
                                         </a>
                                     </div>
                                     <div class="col-4">
-                                        <a href="#"
-                                            class="d-flex flex-column text-center py-3 px-2 quick-action-item cache-clear-all-btn"
-                                            data-action="clear-all">
+                                        <a href="#" class="d-flex flex-column text-center py-3 px-2 quick-action-item"
+                                            onclick="clearSystemCache(this); return false;">
                                             <i class="fa-solid fa-trash-can mb-2" style="font-size: 28px;"></i>
-                                            <span class="nav-link-title">{{ __('admin.system_cache') }}</span>
+                                            <span class="nav-link-title">Sistem Cache</span>
                                         </a>
                                     </div>
                                     <div class="col-4">
@@ -276,12 +306,7 @@ app()->setLocale($originalLocale);
                                         </a>
                                     </div>
                                     <div class="col-4">
-                                        <a href="#"
-                                            class="d-flex flex-column text-center py-3 px-2 quick-action-item cache-clear-btn"
-                                            data-action="clear">
-                                            <i class="fa-solid fa-broom mb-2" style="font-size: 28px;"></i>
-                                            <span class="nav-link-title">{{ __('admin.clear_cache') }}</span>
-                                        </a>
+                                        @livewire('admin.cache-clear-buttons')
                                     </div>
                                     <div class="col-4">
                                         <a href="{{ route('admin.modulemanagement.index') }}"
@@ -345,20 +370,20 @@ app()->setLocale($originalLocale);
                                 <!-- Cache Temizle -->
                                 <div class="col-6">
                                     <a href="#"
-                                        class="d-flex flex-column text-center p-2 border rounded mobile-quick-action cache-clear-btn"
-                                        data-action="clear">
+                                        class="d-flex flex-column text-center p-2 border rounded mobile-quick-action"
+                                        onclick="clearCache(this); return false;">
                                         <i class="fa-solid fa-broom mb-1 text-primary" style="font-size: 18px;"></i>
-                                        <small class="fw-bold">{{ __('admin.clear_cache') }}</small>
+                                        <small class="fw-bold">Cache Temizle</small>
                                     </a>
                                 </div>
                                 @if($isCentral)
                                 <!-- Sistem Cache -->
                                 <div class="col-6">
                                     <a href="#"
-                                        class="d-flex flex-column text-center p-2 border rounded mobile-quick-action cache-clear-all-btn"
-                                        data-action="clear-all">
+                                        class="d-flex flex-column text-center p-2 border rounded mobile-quick-action"
+                                        onclick="clearSystemCache(this); return false;">
                                         <i class="fa-solid fa-trash-can mb-1 text-danger" style="font-size: 18px;"></i>
-                                        <small class="fw-bold">{{ __('admin.system_cache') }}</small>
+                                        <small class="fw-bold">Sistem Cache</small>
                                     </a>
                                 </div>
                                 @endif
@@ -440,17 +465,17 @@ app()->setLocale($originalLocale);
                         <i class="fa-solid fa-user" style="font-size: 18px;"></i>
                     </span>
                     <div class="d-none d-xl-block ps-2">
-                        <div>{{ Auth::user()->name }}</div>
+                        <div>{{ $cachedUser->name }}</div>
                         <div class="mt-1 small text-secondary">
                             @php
-                            $user = Auth::user();
+                            // PERFORMANCE: Use cached user instead of Auth::user()
                             $roleName = 'Kullanıcı';
 
-                            if ($user->hasRole('root')) {
+                            if ($cachedUser->hasCachedRole('root')) {
                             $roleName = 'Root';
-                            } elseif ($user->hasRole('admin')) {
+                            } elseif ($cachedUser->hasCachedRole('admin')) {
                             $roleName = 'Admin';
-                            } elseif ($user->hasRole('editor')) {
+                            } elseif ($cachedUser->hasCachedRole('editor')) {
                             $roleName = 'Editör';
                             }
                             @endphp
@@ -459,9 +484,9 @@ app()->setLocale($originalLocale);
                     </div>
                 </a>
                 <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <a href="{{ route('admin.usermanagement.user.activity.logs', ['id' => auth()->id()]) }}"
+                    <a href="{{ route('admin.usermanagement.user.activity.logs', ['id' => $cachedUser->id]) }}"
                         class="dropdown-item">{{ __('admin.my_activities') }}</a>
-                    <a href="{{ route('admin.usermanagement.manage', ['id' => auth()->id()]) }}"
+                    <a href="{{ route('admin.usermanagement.manage', ['id' => $cachedUser->id]) }}"
                         class="dropdown-item">{{ __('admin.my_profile') }}</a>
                     <div class="dropdown-divider"></div>
                     <form method="POST" action="{{ route('logout') }}">
@@ -592,4 +617,111 @@ app()->setLocale($originalLocale);
         });
     }
 });
+
+// Cache Clear Functions
+function clearCache(button) {
+    const icon = button.querySelector('i');
+    const originalIcon = icon.className;
+    
+    // Show loading state
+    icon.className = 'fa-solid fa-spinner fa-spin mb-2';
+    button.style.pointerEvents = 'none';
+    
+    // Change quick actions dropdown icon
+    const quickActionsIcon = document.querySelector('.fa-grid-2');
+    if (quickActionsIcon) {
+        quickActionsIcon.className = 'fa-solid fa-spinner fa-spin';
+    }
+    
+    // Make AJAX request
+    fetch('/admin/cache/clear', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Restore original state
+        icon.className = originalIcon;
+        button.style.pointerEvents = 'auto';
+        
+        // Restore quick actions icon
+        if (quickActionsIcon) {
+            quickActionsIcon.className = 'fa-solid fa-grid-2';
+        }
+        
+        // Show toast notification
+        if (typeof window.showToast === 'function') {
+            window.showToast('Başarılı', 'Cache temizlendi', 'success');
+        }
+    })
+    .catch(error => {
+        // Restore original state on error
+        icon.className = originalIcon;
+        button.style.pointerEvents = 'auto';
+        
+        if (quickActionsIcon) {
+            quickActionsIcon.className = 'fa-solid fa-grid-2';
+        }
+        
+        if (typeof window.showToast === 'function') {
+            window.showToast('Hata', 'Cache temizleme başarısız', 'error');
+        }
+    });
+}
+
+function clearSystemCache(button) {
+    const icon = button.querySelector('i');
+    const originalIcon = icon.className;
+    
+    // Show loading state
+    icon.className = 'fa-solid fa-spinner fa-spin mb-2';
+    button.style.pointerEvents = 'none';
+    
+    // Change quick actions dropdown icon
+    const quickActionsIcon = document.querySelector('.fa-grid-2');
+    if (quickActionsIcon) {
+        quickActionsIcon.className = 'fa-solid fa-spinner fa-spin';
+    }
+    
+    // Make AJAX request
+    fetch('/admin/cache/clear-all', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Restore original state
+        icon.className = originalIcon;
+        button.style.pointerEvents = 'auto';
+        
+        // Restore quick actions icon
+        if (quickActionsIcon) {
+            quickActionsIcon.className = 'fa-solid fa-grid-2';
+        }
+        
+        // Show toast notification
+        if (typeof window.showToast === 'function') {
+            window.showToast('Başarılı', 'Sistem cache temizlendi', 'success');
+        }
+    })
+    .catch(error => {
+        // Restore original state on error
+        icon.className = originalIcon;
+        button.style.pointerEvents = 'auto';
+        
+        if (quickActionsIcon) {
+            quickActionsIcon.className = 'fa-solid fa-grid-2';
+        }
+        
+        if (typeof window.showToast === 'function') {
+            window.showToast('Hata', 'Cache temizleme başarısız', 'error');
+        }
+    });
+}
 </script>

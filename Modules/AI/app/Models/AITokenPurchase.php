@@ -4,14 +4,20 @@ namespace Modules\AI\App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 use App\Models\Tenant;
 use App\Models\User;
 
 class AITokenPurchase extends Model
 {
-    use BelongsToTenant;
     protected $table = 'ai_token_purchases';
+    
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+        
+        // AI tabloları her zaman central database'de
+        $this->setConnection('mysql');
+    }
     
     protected $fillable = [
         'tenant_id',

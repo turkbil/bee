@@ -353,7 +353,9 @@ if (!function_exists('ai_brand_story_creator')) {
             $aiService = app(\Modules\AI\App\Services\AIService::class);
             $result = $aiService->askFeature($feature, $brandContext, [
                 'context' => 'brand-story-creator',
-                'options' => $options
+                'options' => $options,
+                'request_type' => 'brand_story_generation',
+                'context_type' => 'detailed' // Brand story için detailed context kullan
             ]);
 
             // Token kullanımını kaydet

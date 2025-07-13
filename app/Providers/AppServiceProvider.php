@@ -126,6 +126,9 @@ class AppServiceProvider extends ServiceProvider
         Livewire::component('admin.ai-token-purchases-component', \App\Http\Livewire\Admin\AITokenPurchasesComponent::class);
         Livewire::component('admin.ai-token-usage-stats-component', \App\Http\Livewire\Admin\AITokenUsageStatsComponent::class);
         
+        // Cache Clear Button Component
+        Livewire::component('admin.cache-clear-buttons', \App\Http\Livewire\Admin\CacheClearButtons::class);
+        
         // Eski kayıtlar da korunacak (backward compatibility)
         Livewire::component('ai-token-packages', \App\Http\Livewire\Admin\AITokenPackagesComponent::class);
         Livewire::component('ai-token-purchases', \App\Http\Livewire\Admin\AITokenPurchasesComponent::class);

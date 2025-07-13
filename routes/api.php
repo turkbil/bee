@@ -18,15 +18,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// Simple test endpoint
-Route::get('/test', function () {
-    return response()->json(['message' => 'API is working!']);
-});
-
-// Protected test endpoint
-Route::middleware('auth:sanctum')->get('/protected-test', function () {
-    return response()->json(['message' => 'Protected API is working!', 'user' => auth()->user()]);
-});
 
 // API v1 routes
 Route::prefix('v1')->group(function () {

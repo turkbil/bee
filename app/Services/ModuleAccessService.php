@@ -109,6 +109,7 @@ class ModuleAccessService implements ModuleAccessServiceInterface
     
     /**
      * Modül adına göre modül modelini getirir
+     * Cache'li version - duplicate query'leri önler
      */
     public function getModuleByName(string $moduleName): ?object
     {
@@ -118,7 +119,14 @@ class ModuleAccessService implements ModuleAccessServiceInterface
             return $moduleCache[$moduleName];
         }
         
-        $module = Module::where('name', $moduleName)->first();
+        // Redis cache'i de kullan (15 dakika)
+        $cacheKey = "module_by_name:{$moduleName}";
+        $module = cache()->remember($cacheKey, 900, function () use ($moduleName) {
+            return TenantHelpers::central(function () use ($moduleName) {
+                return Module::where('name', $moduleName)->first();
+            });
+        });
+        
         $moduleCache[$moduleName] = $module;
         
         return $module;

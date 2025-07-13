@@ -46,10 +46,10 @@ class ChatPanel extends Component
         $this->loadConversations();
         $this->loadPrompts();
         
-        // Default prompt seç
-        $defaultPrompt = Prompt::where('is_default', true)->first();
+        // PERFORMANCE: Find default prompt from cached collection instead of new query
+        $defaultPrompt = collect($this->prompts)->firstWhere('is_default', true);
         if ($defaultPrompt) {
-            $this->selectedPromptId = $defaultPrompt->id;
+            $this->selectedPromptId = $defaultPrompt['id'];
         }
     }
 
@@ -63,7 +63,14 @@ class ChatPanel extends Component
     public function loadConversations()
     {
         try {
-            $this->conversations = $this->conversationService->getConversations(10);
+            // PERFORMANCE: Cache conversations for 2 minutes
+            $userId = Auth::id();
+            $tenantId = tenancy()->tenant?->id ?? 1;
+            $cacheKey = "ai_conversations_user_{$userId}_tenant_{$tenantId}";
+            
+            $this->conversations = Cache::remember($cacheKey, 120, function() {
+                return $this->conversationService->getConversations(10);
+            });
         } catch (\Exception $e) {
             Log::error('Konuşmalar yüklenirken hata: ' . $e->getMessage());
             $this->conversations = [];
@@ -73,10 +80,15 @@ class ChatPanel extends Component
     public function loadPrompts()
     {
         try {
-            $this->prompts = Prompt::where('is_active', true)
-                ->orderBy('is_default', 'desc')
-                ->orderBy('name')
-                ->get();
+            // PERFORMANCE: Cache prompts with Redis for 5 minutes
+            $cacheKey = 'ai_prompts_active_' . (tenancy()->tenant?->id ?? 'central');
+            $this->prompts = Cache::remember($cacheKey, 300, function() {
+                return Prompt::where('is_active', true)
+                    ->select('id', 'name', 'content', 'is_default', 'prompt_type') // Correct field names
+                    ->orderBy('is_default', 'desc')
+                    ->orderBy('name')
+                    ->get();
+            });
         } catch (\Exception $e) {
             Log::error('Promptlar yüklenirken hata: ' . $e->getMessage());
             $this->prompts = [];

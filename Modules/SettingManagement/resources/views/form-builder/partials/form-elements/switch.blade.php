@@ -64,7 +64,7 @@
             <input type="checkbox" 
                 id="switch-{{ $elementName }}" 
                 name="{{ $elementName }}" 
-                wire:model="values.{{ $elementName }}"
+                wire:model.live="values.{{ $elementName }}"
                 value="1"
                 @if($isRequired) required @endif
                 @if($defaultValue) checked @endif

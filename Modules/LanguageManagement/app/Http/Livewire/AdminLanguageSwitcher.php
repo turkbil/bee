@@ -12,18 +12,26 @@ class AdminLanguageSwitcher extends Component
     public $currentLanguage;
     public $currentSiteLanguage;
     public $isLoading = false;
+    public $loadingLanguageCode = null;
+    public $loadingLanguageFlag = null;
     
     protected $listeners = ['languageChanged' => 'refreshComponent'];
 
     public function mount()
     {
+        // PERFORMANCE: Cache user data to avoid repeated auth() queries
+        static $cachedUser = null;
+        if ($cachedUser === null) {
+            $cachedUser = auth()->user();
+        }
+        
         // İlk yüklemede kullanıcının DB tercihlerini session'a yükle
-        if (auth()->check()) {
-            if (auth()->user()->admin_locale && !session()->has('admin_locale')) {
-                session(['admin_locale' => auth()->user()->admin_locale]);
+        if ($cachedUser) {
+            if ($cachedUser->admin_locale && !session()->has('admin_locale')) {
+                session(['admin_locale' => $cachedUser->admin_locale]);
             }
-            if (auth()->user()->tenant_locale && !session()->has('tenant_locale')) {
-                session(['tenant_locale' => auth()->user()->tenant_locale]);
+            if ($cachedUser->tenant_locale && !session()->has('tenant_locale')) {
+                session(['tenant_locale' => $cachedUser->tenant_locale]);
             }
         }
         
@@ -38,6 +46,19 @@ class AdminLanguageSwitcher extends Component
             return;
         }
         
+        // Loading başladığında event dispatch
+        $this->dispatch('languageStarted');
+        
+        // Loading state için dil bilgisini ayarla
+        $this->loadingLanguageCode = $languageCode;
+        $adminLanguages = cache()->remember('admin_languages_switcher', 600, function() {
+            return \Modules\LanguageManagement\App\Models\AdminLanguage::where('is_active', true)
+                ->orderBy('sort_order')
+                ->get();
+        });
+        $targetLanguage = $adminLanguages->firstWhere('code', $languageCode);
+        $this->loadingLanguageFlag = $targetLanguage ? $targetLanguage->flag_icon : '🌐';
+        
         \Log::info('🎯 AdminLanguageSwitcher - switchLanguage çağrıldı', [
             'new_locale' => $languageCode,
             'current_locale' => $this->currentLanguage,
@@ -47,7 +68,6 @@ class AdminLanguageSwitcher extends Component
         
         // 3 Aşamalı Hibrit Sistem ile admin dil değiştir
         if (set_user_admin_language($languageCode)) {
-            $this->isLoading = true;
             $this->currentLanguage = $languageCode;
             
             \Log::info('🎯 AdminLanguageSwitcher - set_user_admin_language başarılı', [
@@ -58,14 +78,24 @@ class AdminLanguageSwitcher extends Component
             
             // Toast mesajı
             $this->dispatch('toast', [
-                'title' => __('admin.success'),
-                'message' => __('admin.admin_language_changed'),
+                'title' => 'Başarılı',
+                'message' => 'Admin dili değiştirildi',
                 'type' => 'success'
             ]);
+            
+            // Kısa delay ekle loading göstermek için
+            usleep(300000); // 0.3 saniye
             
             // Admin panelinde kalarak sayfa yenileme
             $this->dispatch('refreshPage');
         }
+        
+        // Loading bittiğinde event dispatch
+        $this->dispatch('languageFinished');
+        
+        // Loading state'i temizle
+        $this->loadingLanguageCode = null;
+        $this->loadingLanguageFlag = null;
     }
 
     public function switchSiteLanguage($languageCode)
@@ -74,6 +104,20 @@ class AdminLanguageSwitcher extends Component
         if ($this->currentSiteLanguage === $languageCode) {
             return;
         }
+        
+        // Loading başladığında event dispatch
+        $this->dispatch('languageStarted');
+        
+        // Loading state için dil bilgisini ayarla
+        $this->loadingLanguageCode = $languageCode;
+        $siteLanguages = cache()->remember('tenant_languages_switcher', 600, function() {
+            return \DB::table('tenant_languages')
+                ->where('is_active', true)
+                ->orderBy('sort_order')
+                ->get();
+        });
+        $targetLanguage = collect($siteLanguages)->firstWhere('code', $languageCode);
+        $this->loadingLanguageFlag = $targetLanguage ? $targetLanguage->flag_icon : '🌐';
         
         \Log::info('🎯 AdminLanguageSwitcher - switchSiteLanguage çağrıldı', [
             'new_locale' => $languageCode,
@@ -100,17 +144,27 @@ class AdminLanguageSwitcher extends Component
             
             // Toast mesajı
             $this->dispatch('toast', [
-                'title' => __('admin.success'),
-                'message' => __('languagemanagement::admin.data_language_changed'),
+                'title' => 'Başarılı',
+                'message' => 'Veri dili değiştirildi',
                 'type' => 'success'
             ]);
             
             // Page component'lerini refresh et
             $this->dispatch('refreshPageData');
             
+            // Kısa delay ekle loading göstermek için
+            usleep(300000); // 0.3 saniye
+            
             // Admin panelinde kalarak sayfa yenileme
             $this->dispatch('refreshPage');
         }
+        
+        // Loading bittiğinde event dispatch
+        $this->dispatch('languageFinished');
+        
+        // Loading state'i temizle
+        $this->loadingLanguageCode = null;
+        $this->loadingLanguageFlag = null;
     }
 
 
@@ -125,22 +179,23 @@ class AdminLanguageSwitcher extends Component
 
     public function render()
     {
-        // Admin admin_languages tablosundan aktif dilleri çek
-        $adminLanguages = AdminLanguage::where('is_active', true)
-            ->orderBy('sort_order')
-            ->get();
+        // PERFORMANCE: Cache all language queries for 10 minutes
+        $adminLanguages = cache()->remember('admin_languages_switcher', 600, function() {
+            return AdminLanguage::where('is_active', true)
+                ->orderBy('sort_order')
+                ->get();
+        });
         
-        // Site tenant_languages tablosundan aktif dilleri çek
-        $siteLanguages = DB::table('tenant_languages')
-            ->where('is_active', true)
-            ->orderBy('sort_order')
-            ->get();
+        $siteLanguages = cache()->remember('tenant_languages_switcher', 600, function() {
+            return DB::table('tenant_languages')
+                ->where('is_active', true)
+                ->orderBy('sort_order')
+                ->get();
+        });
         
-        // Mevcut admin dilini admin_languages tablosundan al
-        $currentAdminLanguageData = AdminLanguage::where('code', $this->currentLanguage)->first();
-        
-        // Mevcut site dilini tenant_languages tablosundan al
-        $currentSiteLanguageData = DB::table('tenant_languages')->where('code', $this->currentSiteLanguage)->first();
+        // Find current languages from cached collections
+        $currentAdminLanguageData = $adminLanguages->firstWhere('code', $this->currentLanguage);
+        $currentSiteLanguageData = collect($siteLanguages)->firstWhere('code', $this->currentSiteLanguage);
         
         // Başlangıçta admin dilini göster (admin flag icon'u)
         $currentLanguageObject = $currentAdminLanguageData;

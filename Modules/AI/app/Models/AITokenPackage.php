@@ -9,6 +9,14 @@ class AITokenPackage extends Model
 {
     protected $table = 'ai_token_packages';
     
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+        
+        // AI tabloları her zaman central database'de
+        $this->setConnection('mysql');
+    }
+    
     protected $fillable = [
         'name',
         'token_amount',

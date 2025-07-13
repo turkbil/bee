@@ -355,6 +355,10 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 @livewireScripts
+
+<!-- Navigation Loading States -->
+<script src="{{ asset('admin-assets/js/navigation-loading.js') }}"></script>
+
 @stack('scripts') @stack('js')
 
 @if(session('toast'))

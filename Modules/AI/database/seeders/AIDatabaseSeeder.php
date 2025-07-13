@@ -7,6 +7,9 @@ use Modules\AI\App\Models\Setting;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use App\Helpers\TenantHelpers;
+use Modules\AI\Database\Seeders\AIProfileSectorsCompleteSeeder;
+use Modules\AI\Database\Seeders\AIProfileQuestionsSeeder;
+use Modules\AI\Database\Seeders\AISectorSpecificQuestionsSeeder;
 
 class AIDatabaseSeeder extends Seeder
 {
@@ -40,11 +43,11 @@ class AIDatabaseSeeder extends Seeder
                 AIUsageUpdateSeeder::class,
             ]);
             
-            // AI Profil sistemi seeder'larını çalıştır
+            // AI Profil sistemi seeder'larını çalıştır - Sadece mevcut olanlar
             $this->call([
                 AIProfileSectorsCompleteSeeder::class,
-                AIProfileQuestionsBaseSeeder::class,
-                AIProfileQuestionsSectorSeeder::class,
+                AIProfileQuestionsSeeder::class,
+                AISectorSpecificQuestionsSeeder::class,
             ]);
             
             // Seeder tamamlandıktan sonra da cache'leri temizle

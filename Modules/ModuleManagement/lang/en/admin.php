@@ -5,6 +5,7 @@ return [
     'about_to_delete' => 'About to delete',
     'active' => 'Active',
     'add_new_module_info' => 'Add new module',
+    'ai_modules' => 'AI Modules',
     'all_modules_added' => 'All modules added',
     'all_types' => 'All Types',
     'assigned_domains' => 'Assigned Domains',
@@ -76,4 +77,5 @@ return [
     'version' => 'Version',
     'version_placeholder' => 'Enter version...',
     'view_detail' => 'View Detail',
+    'widget_modules' => 'Widget Modules',
 ];

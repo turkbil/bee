@@ -11,6 +11,14 @@ class Setting extends Model
     use HasFactory;
 
     protected $table = 'ai_settings';
+    
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+        
+        // AI tabloları her zaman central database'de
+        $this->setConnection('mysql');
+    }
 
     protected $fillable = [
         'api_key',

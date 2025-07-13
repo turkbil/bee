@@ -83,6 +83,17 @@ return [
 'system' => 'System',
 'passive' => 'Passive',
 'token_management' => 'Token Management',
+'token_packages' => 'Token Packages',
+'token_purchases' => 'Token Purchases',
+'usage_statistics' => 'Usage Statistics',
+
+// Debug & Analytics
+'debug_dashboard' => 'Debug Dashboard',
+'priority_debug_dashboard' => 'Priority Debug Dashboard',
+'performance_analytics' => 'Performance Analytics',
+'prompt_usage_heatmap' => 'Prompt Usage Heatmap',
+'error_analysis' => 'Error Analysis',
+'debug_analytics' => 'Debug & Analytics',
 'general' => [
     'you' => 'You',
     'ai' => 'AI'

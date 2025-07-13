@@ -115,17 +115,69 @@ class CreateModuleTenantPermissions implements ShouldQueue
      */
     protected function createOrUpdatePermission(string $permissionName): void
     {
+        $description = $this->generatePermissionDescription($permissionName);
+        
         $permission = \Spatie\Permission\Models\Permission::firstOrCreate(
             ['name' => $permissionName],
-            ['guard_name' => 'web']
+            [
+                'guard_name' => 'web',
+                'description' => $description
+            ]
         );
+        
+        // Eğer permission zaten varsa ama description NULL ise güncelle
+        if ($permission->description === null && $description !== null) {
+            $permission->update(['description' => $description]);
+        }
         
         if (app()->environment(['local', 'staging'])) {
             Log::debug('Permission created/updated', [
                 'permission' => $permissionName,
+                'description' => $description,
                 'tenant_id' => $this->tenantId
             ]);
         }
+    }
+    
+    /**
+     * Permission description'ını otomatik oluştur
+     */
+    protected function generatePermissionDescription(string $permissionName): string
+    {
+        $parts = explode('.', $permissionName);
+        $moduleName = $parts[0] ?? '';
+        $action = $parts[1] ?? '';
+        
+        // Modül adını Türkçe'ye çevir
+        $moduleDisplayNames = [
+            'ai' => 'AI',
+            'widgetmanagement' => 'Widgetmanagement',
+            'modulemanagement' => 'Modulemanagement',
+            'tenantmanagement' => 'Tenantmanagement',
+            'usermanagement' => 'Usermanagement',
+            'settingmanagement' => 'Settingmanagement',
+            'thememanagement' => 'Thememanagement',
+            'studio' => 'Studio',
+            'announcement' => 'Announcement',
+            'page' => 'Page',
+            'portfolio' => 'Portfolio',
+            'languagemanagement' => 'Languagemanagement'
+        ];
+        
+        // Action'ı Türkçe'ye çevir
+        $actionDisplayNames = [
+            'view' => 'Görüntüleme',
+            'create' => 'Oluşturma',
+            'edit' => 'Güncelleme',
+            'delete' => 'Silme',
+            'manage' => 'Yönetme',
+            'update' => 'Güncelleme'
+        ];
+        
+        $moduleDisplay = $moduleDisplayNames[$moduleName] ?? ucfirst($moduleName);
+        $actionDisplay = $actionDisplayNames[$action] ?? ucfirst($action);
+        
+        return "{$moduleDisplay} - {$actionDisplay}";
     }
     
     /**

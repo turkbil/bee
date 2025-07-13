@@ -5,6 +5,7 @@ return [
     'about_to_delete' => 'Silmek üzeresiniz',
     'active' => 'Aktif',
     'add_new_module_info' => 'Yeni modül ekle',
+    'ai_modules' => 'Yapay Zeka Modülleri',
     'all_modules_added' => 'Tüm modüller eklendi',
     'all_types' => 'Tüm Tipler',
     'assigned_domains' => 'Atanmış Domainler',
@@ -76,4 +77,5 @@ return [
     'version' => 'Versiyon',
     'version_placeholder' => 'Versiyon girin...',
     'view_detail' => 'Detayı Görüntüle',
+    'widget_modules' => 'Bileşen Modülleri',
 ];

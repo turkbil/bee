@@ -94,6 +94,41 @@
                     <a class="dropdown-item" href="{{ route('admin.ai.tokens.index') }}">
                         <i class="icon-menu fas fa-coins"></i>{{ __('ai::admin.token_management') }}
                     </a>
+
+                    <a class="dropdown-item" href="{{ route('admin.ai.tokens.packages') }}">
+                        <i class="icon-menu fas fa-box"></i>{{ __('ai::admin.token_packages') }}
+                    </a>
+
+                    <a class="dropdown-item" href="{{ route('admin.ai.tokens.purchases') }}">
+                        <i class="icon-menu fas fa-shopping-cart"></i>{{ __('ai::admin.token_purchases') }}
+                    </a>
+
+                    <a class="dropdown-item" href="{{ route('admin.ai.tokens.usage-stats') }}">
+                        <i class="icon-menu fas fa-chart-bar"></i>{{ __('ai::admin.usage_statistics') }}
+                    </a>
+                    @endrole
+
+                    {{-- Debug & Analytics --}}
+                    @role('root')
+                    <h6 class="dropdown-menu-header card-header-light">
+                        <span class="dropdown-header">🔍 Debug & Analytics</span>
+                    </h6>
+                    
+                    <a class="dropdown-item" href="{{ route('admin.ai.debug.dashboard') }}">
+                        <i class="icon-menu fas fa-bug"></i>🎯 Priority Debug Dashboard
+                    </a>
+
+                    <a class="dropdown-item" href="{{ route('admin.ai.debug.performance') }}">
+                        <i class="icon-menu fas fa-tachometer-alt"></i>📊 Performance Analytics
+                    </a>
+
+                    <a class="dropdown-item" href="{{ route('admin.ai.debug.heatmap') }}">
+                        <i class="icon-menu fas fa-fire"></i>🔥 Prompt Usage Heatmap
+                    </a>
+
+                    <a class="dropdown-item" href="{{ route('admin.ai.debug.errors') }}">
+                        <i class="icon-menu fas fa-exclamation-triangle"></i>⚠️ Error Analysis
+                    </a>
                     @endrole
                 </div>
             </div>

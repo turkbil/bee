@@ -33,6 +33,23 @@
                                 {{-- Sol - Step Bilgileri --}}
                                 <div class="col-lg-8 col-md-7">
                                     <div class="hero-left-content">
+                                        {{-- Debug Info (sadece geliştirme için) --}}
+                                        @if(config('app.debug'))
+                                        <div class="alert alert-warning mb-3" style="font-size: 12px;">
+                                            <strong>🔍 Debug Info:</strong><br>
+                                            Profile ID: {{ $profile?->id ?? 'null' }}<br>
+                                            Current Step: {{ $currentStep }}<br>
+                                            Form Data Keys: {{ count($formData) }}<br>
+                                            @if(isset($formData['brand_name']))
+                                                Brand Name: "{{ $formData['brand_name'] }}"<br>
+                                            @endif
+                                            @if(isset($formData['city']))
+                                                City: "{{ $formData['city'] }}"<br>
+                                            @endif
+                                            Sector: "{{ $formData['sector'] ?? 'null' }}"<br>
+                                        </div>
+                                        @endif
+                                        
                                         <div class="step-info-container d-flex align-items-center gap-3">
                                             <div class="ai-hologram" style="
                                                 width: 80px;
@@ -115,7 +132,7 @@
                                                         @case(2) Temel Bilgiler @break
                                                         @case(3) Marka Detayları @break
                                                         @case(4) Kurucu Bilgileri @break
-                                                        @case(5) Yapay Zeka Davranış Ayarları @break
+                                                        @case(5) AI Davranış ve İletişim Ayarları @break
                                                     @endswitch
                                                 </h1>
                                                 <p class="hero-subtitle">
@@ -124,7 +141,7 @@
                                                         @case(2) İşletmenizin temel bilgilerini girin @break
                                                         @case(3) Markanızın kişiliğini tanımlayın @break
                                                         @case(4) Kurucu bilgilerini paylaşın (isteğe bağlı) @break
-                                                        @case(5) Yapay zeka asistanınızın davranış tarzını belirleyin @break
+                                                        @case(5) AI asistanınızın iletişim tarzı ve davranış şeklini ayarlayın @break
                                                     @endswitch
                                                 </p>
                                             </div>
@@ -198,8 +215,15 @@
                                         6 => 'ai_behavior_rules.' . $question->question_key,
                                         default => $question->question_key
                                     };
+                                    
+                                    // Step 4'te founder sorularını ana loop'ta gizle (share_founder_info hariç)
+                                    $skipQuestion = false;
+                                    if ($currentStep === 4 && $question->question_key !== 'share_founder_info' && str_contains($question->question_key, 'founder_')) {
+                                        $skipQuestion = true;
+                                    }
                                 @endphp
                                 
+                                @if(!$skipQuestion)
                                 <div class="form-group mb-4">
                                     
                                     {{-- Question Label --}}
@@ -217,9 +241,9 @@
                                     {{-- Input Based on Type --}}
                                     @switch($question->input_type)
                                         
-                                        @case('sector_select')
+                                        @case('select')
                                             {{-- Special handling for sector selection with categorized grid --}}
-                                            @if($question->question_key === 'sector_selection' && $currentStep === 1)
+                                            @if(in_array($question->question_key, ['sector_selection', 'sector']) && $currentStep === 1)
                                                 {{-- Sektör Arama Kutusu --}}
                                                 <div class="col-12 mb-4">
                                                     <div class="position-relative">
@@ -241,6 +265,7 @@
                                                     </small>
                                                 </div>
                                                 
+                                                {{-- DEBUG: Sectors count = {{ $sectors->count() ?? 'NULL' }} --}}
                                                 @foreach($sectors as $mainCategory)
                                                     {{-- Ana Kategori Başlığı (Tıklanamaz Bant) --}}
                                                     <div class="col-12 mb-3">
@@ -292,7 +317,7 @@
                                                                                 {{ $sector->name }}
                                                                             </div>
                                                                             <div class="sector-desc text-center text-muted flex-grow-1" style="font-size: 11px; line-height: 1.3; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
-                                                                                {{ $sector->description }}
+                                                                                {{ $sector->description ?? '' }}
                                                                             </div>
                                                                         </div>
                                                                     </span>
@@ -301,11 +326,8 @@
                                                         @endforeach
                                                     </div>
                                                 @endforeach
-                                            @endif
-                                            @break
-                                            
-                                        @case('select')
-                                            {{-- Normal select dropdown for other fields --}}
+                                            @else
+                                                {{-- Normal select dropdown for other fields --}}
                                             <select class="form-select profile-field-input" 
                                                     name="formData[{{ $fieldKey }}]"
                                                     data-field="{{ $fieldKey }}"
@@ -326,6 +348,7 @@
                                                     @endforeach
                                                 @endif
                                             </select>
+                                            @endif
                                             @break
                                             
                                         @case('select_with_custom')
@@ -341,39 +364,62 @@
                                             
                                         @case('radio')
                                             @php
-                                                // Tüm soru için en uzun metni bul
-                                                $maxLength = 0;
-                                                foreach(is_array($question->options) ? $question->options : (json_decode($question->options, true) ?? []) as $opt) {
-                                                    $maxLength = max($maxLength, strlen($opt['label'] ?? ''));
-                                                }
-                                                
-                                                // Tüm soru için col class belirle
-                                                if ($maxLength > 40) {
-                                                    $questionColClass = 'col-12';
-                                                } elseif ($maxLength > 25) {
-                                                    $questionColClass = 'col-md-6 col-12';
+                                                // Özel durumlar için farklı col class'lar
+                                                if ($question->question_key === 'share_founder_info') {
+                                                    // Kurucu paylaşım sorusu için col-6 (Evet/Hayır)
+                                                    $questionColClass = 'col-6';
                                                 } else {
-                                                    $questionColClass = 'col-md-6 col-12';
+                                                    // Diğer radio sorular için mevcut logic
+                                                    $maxLength = 0;
+                                                    foreach(is_array($question->options) ? $question->options : (json_decode($question->options, true) ?? []) as $opt) {
+                                                        $maxLength = max($maxLength, strlen($opt['label'] ?? ''));
+                                                    }
+                                                    
+                                                    if ($maxLength > 40) {
+                                                        $questionColClass = 'col-12';
+                                                    } elseif ($maxLength > 25) {
+                                                        $questionColClass = 'col-md-6 col-12';
+                                                    } else {
+                                                        $questionColClass = 'col-md-6 col-12';
+                                                    }
                                                 }
                                             @endphp
                                             <div class="row">
                                                 @if($question->options)
-                                                    @foreach(is_array($question->options) ? $question->options : (json_decode($question->options, true) ?? []) as $option)
+                                                    @php
+                                                        $options = is_array($question->options) ? $question->options : (json_decode($question->options, true) ?? []);
+                                                        // "diger" key'ini en sona koy
+                                                        if (isset($options['diger'])) {
+                                                            $digerOption = $options['diger'];
+                                                            unset($options['diger']);
+                                                            $options['diger'] = $digerOption;
+                                                        }
+                                                    @endphp
+                                                    @foreach($options as $optionKey => $option)
                                                         @php
                                                             $optionValue = is_array($option) ? ($option['value'] ?? $option) : $option;
                                                             $optionLabel = is_array($option) ? ($option['label'] ?? $option) : $option;
                                                             $optionIcon = is_array($option) ? ($option['icon'] ?? '') : '';
                                                             $optionDescription = is_array($option) ? ($option['description'] ?? '') : '';
-                                                            $hasCustomInput = is_array($option) && !empty($option['has_custom_input']);
-                                                            $isChecked = isset($formData[$fieldKey]) && $formData[$fieldKey] == $optionValue;
+                                                            $hasCustomInput = (is_array($option) && !empty($option['has_custom_input'])) || 
+                                                                            (strpos($optionLabel, 'Diğer') !== false || strpos($optionValue, 'diger') !== false);
+                                                            
+                                                            // Default value logic - share_founder_info için "hayir" default
+                                                            if ($question->question_key === 'share_founder_info') {
+                                                                $isChecked = isset($formData[$fieldKey]) ? 
+                                                                    ($formData[$fieldKey] == $optionValue) : 
+                                                                    ($optionValue === 'hayir'); // Default "hayir"
+                                                            } else {
+                                                                $isChecked = isset($formData[$fieldKey]) && $formData[$fieldKey] == $optionValue;
+                                                            }
                                                         @endphp
                                                         <div class="{{ $questionColClass }} mb-2">
                                                             <label class="form-selectgroup-item flex-fill">
                                                                 <input type="radio" name="formData[{{ $fieldKey }}]" value="{{ $optionValue }}" 
-                                                                       class="form-selectgroup-input profile-field-input @if($hasCustomInput) custom-radio-trigger @endif" 
+                                                                       class="form-selectgroup-input profile-field-input @if($hasCustomInput) custom-radio-trigger @endif @if($question->question_key === 'share_founder_info') founder-radio @endif" 
                                                                        data-field="{{ $fieldKey }}"
                                                                        @if($hasCustomInput) data-custom-field="{{ $fieldKey }}_custom" @endif
-                                                                       x-data="{ isChecked: '{{ $formData[$fieldKey] ?? '' }}' === '{{ $optionValue }}' }"
+                                                                       x-data="{ isChecked: {{ $isChecked ? 'true' : 'false' }} }"
                                                                        x-init="$el.checked = isChecked"
                                                                        @if($isChecked) checked @endif
                                                                        @if($question->is_required) required @endif>
@@ -387,7 +433,7 @@
                                                                         @else
                                                                             <i class="fas fa-dot-circle me-3 text-muted"></i>
                                                                         @endif
-                                                                        <div>
+                                                                        <div style="text-align: left; width: 100%;">
                                                                             <div class="font-weight-medium">{{ $optionLabel }}</div>
                                                                             @if($optionDescription)
                                                                                 <div class="text-secondary small">{{ $optionDescription }}</div>
@@ -422,30 +468,47 @@
                                             
                                         @case('checkbox')
                                             @php
-                                                // Tüm soru için en uzun metni bul
-                                                $maxLength = 0;
-                                                foreach(is_array($question->options) ? $question->options : (json_decode($question->options, true) ?? []) as $opt) {
-                                                    $maxLength = max($maxLength, strlen($opt['label'] ?? ''));
-                                                }
+                                                // Step 5 checkbox alanları için özel col ayarı
+                                                $step5CheckboxFields = ['brand_personality', 'ai_response_style', 'sales_approach', 'brand_character', 'writing_style'];
                                                 
-                                                // Tüm soru için col class belirle
-                                                if ($maxLength > 40) {
-                                                    $questionColClass = 'col-12';
-                                                } elseif ($maxLength > 25) {
-                                                    $questionColClass = 'col-md-6 col-12';
+                                                if ($currentStep === 5 && in_array($question->question_key, $step5CheckboxFields)) {
+                                                    // Step 5 AI davranış sorularında col-6 kullan
+                                                    $questionColClass = 'col-6';
                                                 } else {
-                                                    $questionColClass = 'col-md-6 col-12';
+                                                    // Diğer checkbox'larda mevcut logic
+                                                    $maxLength = 0;
+                                                    foreach(is_array($question->options) ? $question->options : (json_decode($question->options, true) ?? []) as $opt) {
+                                                        $maxLength = max($maxLength, strlen($opt['label'] ?? ''));
+                                                    }
+                                                    
+                                                    if ($maxLength > 40) {
+                                                        $questionColClass = 'col-12';
+                                                    } elseif ($maxLength > 25) {
+                                                        $questionColClass = 'col-md-6 col-12';
+                                                    } else {
+                                                        $questionColClass = 'col-md-6 col-12';
+                                                    }
                                                 }
                                             @endphp
                                             <div class="row">
                                                 @if($question->options)
-                                                    @foreach(is_array($question->options) ? $question->options : (json_decode($question->options, true) ?? []) as $option)
+                                                    @php
+                                                        $options = is_array($question->options) ? $question->options : (json_decode($question->options, true) ?? []);
+                                                        // "diger" key'ini en sona koy
+                                                        if (isset($options['diger'])) {
+                                                            $digerOption = $options['diger'];
+                                                            unset($options['diger']);
+                                                            $options['diger'] = $digerOption;
+                                                        }
+                                                    @endphp
+                                                    @foreach($options as $optionKey => $option)
                                                         @php
                                                             $optionValue = is_array($option) ? ($option['value'] ?? $option) : $option;
                                                             $optionLabel = is_array($option) ? ($option['label'] ?? $option) : $option;
                                                             $optionIcon = is_array($option) ? ($option['icon'] ?? '') : '';
                                                             $optionDescription = is_array($option) ? ($option['description'] ?? '') : '';
-                                                            $hasCustomInput = is_array($option) && !empty($option['has_custom_input']);
+                                                            $hasCustomInput = (is_array($option) && !empty($option['has_custom_input'])) || 
+                                                                            (strpos($optionLabel, 'Diğer') !== false || strpos($optionValue, 'diger') !== false);
                                                             $nestedFieldKey = $fieldKey . '.' . $optionValue;
                                                             $isChecked = isset($formData[$nestedFieldKey]) && $formData[$nestedFieldKey];
                                                         @endphp
@@ -456,7 +519,7 @@
                                                                        name="formData[{{ $fieldKey }}][]"
                                                                        data-field="{{ $fieldKey }}"
                                                                        @if($hasCustomInput) data-custom-field="{{ $fieldKey }}_custom" @endif
-                                                                       x-data="{ isChecked: Boolean({{ $isChecked ? 'true' : 'false' }}) }"
+                                                                       x-data="{ isChecked: {{ $isChecked ? 'true' : 'false' }} }"
                                                                        x-init="$el.checked = isChecked"
                                                                        @if($isChecked) checked @endif>
                                                                 <div class="form-selectgroup-label d-flex align-items-center p-3">
@@ -469,7 +532,7 @@
                                                                         @else
                                                                             <i class="fas fa-check me-3 text-muted"></i>
                                                                         @endif
-                                                                        <div>
+                                                                        <div style="text-align: left; width: 100%;">
                                                                             <div class="font-weight-medium">{{ $optionLabel }}</div>
                                                                             @if($optionDescription)
                                                                                 <div class="text-secondary small">{{ $optionDescription }}</div>
@@ -543,15 +606,19 @@
                                     @endif
                                     
                                 </div>
+                                @endif
                                 
                             @endforeach
                             
-                            {{-- Founder Questions (if enabled) --}}
+                            {{-- Founder Questions (always rendered, visibility controlled) --}}
                             @if($currentStep === 4)
-                                <div class="founder-section" id="founder-questions-section" style="display: none;">
+                                <div class="founder-section" id="founder-questions-section" style="display: {{ $showFounderQuestions ? 'block' : 'none' }}; transition: opacity 0.2s ease;">
                                     <h5 class="mb-3">Kurucu Bilgileri</h5>
                                     @php
-                                        $founderQuestions = \Modules\AI\app\Models\AIProfileQuestion::getOptionalSectionQuestions('founder_info', $this->currentSectorCode, 4);
+                                        // Component'in zaten yüklediği sorulardan founder sorularını filtrele (share_founder_info hariç)
+                                        $founderQuestions = $questions->filter(function($question) {
+                                            return $question->question_key !== 'share_founder_info' && str_contains($question->question_key, 'founder_');
+                                        });
                                     @endphp
                                     
                                     @foreach($founderQuestions as $question)
@@ -570,24 +637,39 @@
                                                 
                                                 @case('radio')
                                                     @php
-                                                        // Tüm soru için en uzun metni bul
-                                                        $maxLength = 0;
-                                                        foreach(is_array($question->options) ? $question->options : (json_decode($question->options, true) ?? []) as $opt) {
-                                                            $maxLength = max($maxLength, strlen($opt['label'] ?? ''));
-                                                        }
+                                                        // Founder section'da da "Diğer" hariç radyo sorular için col-6 kullan
+                                                        $options = is_array($question->options) ? $question->options : (json_decode($question->options, true) ?? []);
+                                                        $optionCount = count($options);
                                                         
-                                                        // Tüm soru için col class belirle
-                                                        if ($maxLength > 40) {
-                                                            $questionColClass = 'col-12';
-                                                        } elseif ($maxLength > 25) {
-                                                            $questionColClass = 'col-md-6 col-12';
+                                                        // "Kurucu & Sahip", "Genel Müdür" gibi kısa seçenekler varsa col-6
+                                                        if ($optionCount <= 3) {
+                                                            $questionColClass = 'col-6';
                                                         } else {
-                                                            $questionColClass = 'col-md-6 col-12';
+                                                            // Diğer durumlar için mevcut logic
+                                                            $maxLength = 0;
+                                                            foreach($options as $opt) {
+                                                                $maxLength = max($maxLength, strlen($opt['label'] ?? ''));
+                                                            }
+                                                            
+                                                            if ($maxLength > 40) {
+                                                                $questionColClass = 'col-12';
+                                                            } else {
+                                                                $questionColClass = 'col-md-6 col-12';
+                                                            }
                                                         }
                                                     @endphp
                                                     <div class="row">
                                                         @if($question->options)
-                                                            @foreach(is_array($question->options) ? $question->options : (json_decode($question->options, true) ?? []) as $option)
+                                                            @php
+                                                                // Options array'ini al ve "diger" key'ini en sona taşı
+                                                                $options = is_array($question->options) ? $question->options : (json_decode($question->options, true) ?? []);
+                                                                if (isset($options['diger'])) {
+                                                                    $digerOption = $options['diger'];
+                                                                    unset($options['diger']);
+                                                                    $options['diger'] = $digerOption;
+                                                                }
+                                                            @endphp
+                                                            @foreach($options as $option)
                                                                 @php
                                                                     $optionValue = is_array($option) ? ($option['value'] ?? $option) : $option;
                                                                     $optionLabel = is_array($option) ? ($option['label'] ?? $option) : $option;
@@ -649,24 +731,40 @@
                                                     
                                                 @case('checkbox')
                                                     @php
-                                                        // Tüm soru için en uzun metni bul
-                                                        $maxLength = 0;
-                                                        foreach(is_array($question->options) ? $question->options : (json_decode($question->options, true) ?? []) as $opt) {
-                                                            $maxLength = max($maxLength, strlen($opt['label'] ?? ''));
-                                                        }
+                                                        // Step 5 checkbox alanları için özel col ayarı
+                                                        $step5CheckboxFields = ['brand_personality', 'ai_response_style', 'sales_approach', 'brand_character', 'writing_style'];
                                                         
-                                                        // Tüm soru için col class belirle
-                                                        if ($maxLength > 40) {
-                                                            $questionColClass = 'col-12';
-                                                        } elseif ($maxLength > 25) {
-                                                            $questionColClass = 'col-md-6 col-12';
+                                                        if ($currentStep === 5 && in_array($question->question_key, $step5CheckboxFields)) {
+                                                            // Step 5 AI davranış sorularında col-6 kullan
+                                                            $questionColClass = 'col-6';
                                                         } else {
-                                                            $questionColClass = 'col-md-6 col-12';
+                                                            // Diğer checkbox'larda mevcut logic
+                                                            $maxLength = 0;
+                                                            foreach(is_array($question->options) ? $question->options : (json_decode($question->options, true) ?? []) as $opt) {
+                                                                $maxLength = max($maxLength, strlen($opt['label'] ?? ''));
+                                                            }
+                                                            
+                                                            if ($maxLength > 40) {
+                                                                $questionColClass = 'col-12';
+                                                            } elseif ($maxLength > 25) {
+                                                                $questionColClass = 'col-md-6 col-12';
+                                                            } else {
+                                                                $questionColClass = 'col-md-6 col-12';
+                                                            }
                                                         }
                                                     @endphp
                                                     <div class="row">
                                                         @if($question->options)
-                                                            @foreach(is_array($question->options) ? $question->options : (json_decode($question->options, true) ?? []) as $option)
+                                                            @php
+                                                                // Options array'ini al ve "diger" key'ini en sona taşı
+                                                                $options = is_array($question->options) ? $question->options : (json_decode($question->options, true) ?? []);
+                                                                if (isset($options['diger'])) {
+                                                                    $digerOption = $options['diger'];
+                                                                    unset($options['diger']);
+                                                                    $options['diger'] = $digerOption;
+                                                                }
+                                                            @endphp
+                                                            @foreach($options as $option)
                                                                 @php
                                                                     $optionValue = is_array($option) ? ($option['value'] ?? $option) : $option;
                                                                     $optionLabel = is_array($option) ? ($option['label'] ?? $option) : $option;
@@ -683,7 +781,7 @@
                                                                                name="formData[{{ $fieldKey }}][]"
                                                                                data-field="{{ $fieldKey }}"
                                                                                @if($hasCustomInput) data-custom-field="{{ $fieldKey }}_custom" @endif
-                                                                               x-data="{ isChecked: Boolean({{ $isChecked ? 'true' : 'false' }}) }"
+                                                                               x-data="{ isChecked: {{ $isChecked ? 'true' : 'false' }} }"
                                                                                x-init="$el.checked = isChecked"
                                                                                @if($isChecked) checked @endif>
                                                                         <div class="form-selectgroup-label d-flex align-items-center p-3">
@@ -742,6 +840,7 @@
                                                     <input type="text" class="form-control profile-field-input" 
                                                            name="formData[{{ $fieldKey }}]"
                                                            data-field="{{ $fieldKey }}"
+                                                           value="{{ $formData[$fieldKey] ?? '' }}"
                                                            x-data="{ fieldValue: '{{ addslashes($formData[$fieldKey] ?? '') }}' }"
                                                            x-init="$el.value = fieldValue"
                                                            placeholder="{{ $question->input_placeholder ?? '' }}">
@@ -831,13 +930,22 @@ window.autoSaveAndNavigate = window.autoSaveAndNavigate || function(nextUrl) {
     window.location.href = nextUrl;
 };
 
+// Initialize founder questions visibility (not needed anymore - handled by Livewire)
+function initializeFounderQuestions() {
+    // No longer needed - Livewire handles visibility
+}
+
 // Force reload form values after Livewire hydration
 document.addEventListener('livewire:load', function () {
     initializeFormFields();
+    initializeFounderQuestions();
 });
 
 document.addEventListener('livewire:update', function () {
-    setTimeout(initializeFormFields, 100); // Kısa delay ile
+    setTimeout(function() {
+        initializeFormFields();
+        initializeFounderQuestions();
+    }, 100); // Kısa delay ile
 });
 
 function initializeFormFields() {
@@ -879,7 +987,10 @@ function initializeFormFields() {
 }
 
 // Run immediately on load
-document.addEventListener('DOMContentLoaded', initializeFormFields);
+document.addEventListener('DOMContentLoaded', function() {
+    initializeFormFields();
+    initializeFounderQuestions();
+});
 
 // ===== SEKTÖR ARAMA FONKSİYONU =====
 function filterSectors(searchTerm) {
@@ -933,6 +1044,8 @@ function filterSectors(searchTerm) {
 // ===== JQUERY AUTO-SAVE SİSTEMİ (LİVEWİRE'DAN BAĞIMSIZ) =====
 $(document).ready(function() {
     let autoSaveTimeout;
+    let isRequestInProgress = false;
+    let pendingRequests = new Map(); // field -> timeout mapping
     
     // Auto-save system initialization
     
@@ -986,6 +1099,45 @@ $(document).ready(function() {
         
         // AI davranış ayarları için instant save
         saveFieldData(fieldName, fieldValue);
+    });
+    
+    // FOUNDER QUESTIONS VISIBILITY HANDLER
+    $(document).on('change', 'input[data-field="company_info.share_founder_info"]', function(event) {
+        const fieldName = $(this).data('field');
+        const fieldValue = $(this).val();
+        
+        // INSTANT CSS display toggle (no layout space when hidden)
+        const founderSection = $('#founder-questions-section');
+        if (fieldValue === 'evet') {
+            founderSection.css('display', 'block');
+        } else {
+            founderSection.css('display', 'none');
+            
+            // Kurucu bilgileri formlarını temizle (client-side immediate clear)
+            founderSection.find('input, textarea, select').each(function() {
+                const $field = $(this);
+                if ($field.is(':checkbox') || $field.is(':radio')) {
+                    $field.prop('checked', false);
+                } else {
+                    $field.val('');
+                }
+                
+                // Custom container'ları da gizle
+                const fieldKey = $field.data('field');
+                if (fieldKey) {
+                    const containerSelector = '#' + fieldKey.replace(/\./g, '\\.') + '_custom_container';
+                    $(containerSelector).hide();
+                }
+            });
+        }
+        
+        // Auto-save field first
+        saveFieldData(fieldName, fieldValue);
+        
+        // Call Livewire method to toggle founder questions (background sync)
+        if (window.Livewire) {
+            Livewire.dispatch('toggleFounderQuestions', { value: fieldValue });
+        }
     });
     
     // DİĞER ALANLAR İÇİN GENERIC HANDLER (TEXT, TEXTAREA ETC)
@@ -1044,33 +1196,56 @@ $(document).ready(function() {
     }
     
     function saveFieldData(fieldName, fieldValue) {
-        // AJAX data hazırla
-        const ajaxData = {
-            _token: '{{ csrf_token() }}',
-            field: fieldName,
-            value: fieldValue,
-            step: {{ $currentStep }}
-        };
+        // Cancel any pending request for this field
+        if (pendingRequests.has(fieldName)) {
+            clearTimeout(pendingRequests.get(fieldName));
+        }
         
-        // AJAX ile Livewire component'ine gönder - Step 4 founder pattern'i ile aynı
-        $.ajax({
-            url: '{{ route("admin.ai.profile.save-field") }}',
-            method: 'POST',
-            data: ajaxData,
-            success: function(response, textStatus, xhr) {
-                // Başarı bildirimi (opsiyonel) - Step 4 founder pattern'i ile aynı
-                if (response && response.success) {
-                    // Küçük bir visual feedback
-                    $(`[data-field="${fieldName}"]`).addClass('field-saved');
-                    setTimeout(function() {
-                        $(`[data-field="${fieldName}"]`).removeClass('field-saved');
-                    }, 1000);
-                }
-            },
-            error: function(xhr, status, error) {
-                // Error handling without verbose logging
+        // Debounce: wait 300ms before sending request
+        const timeoutId = setTimeout(() => {
+            pendingRequests.delete(fieldName);
+            
+            // Skip if another request is in progress
+            if (isRequestInProgress) {
+                console.log('🚫 Request skipped - another in progress');
+                return;
             }
-        });
+            
+            isRequestInProgress = true;
+            
+            // AJAX data hazırla
+            const ajaxData = {
+                _token: '{{ csrf_token() }}',
+                field: fieldName,
+                value: fieldValue,
+                step: {{ $currentStep }}
+            };
+            
+            // AJAX ile Livewire component'ine gönder - Step 4 founder pattern'i ile aynı
+            $.ajax({
+                url: '{{ route("admin.ai.profile.save-field") }}',
+                method: 'POST',
+                data: ajaxData,
+                success: function(response, textStatus, xhr) {
+                    // Başarı bildirimi (opsiyonel) - Step 4 founder pattern'i ile aynı
+                    if (response && response.success) {
+                        // Küçük bir visual feedback
+                        $(`[data-field="${fieldName}"]`).addClass('field-saved');
+                        setTimeout(function() {
+                            $(`[data-field="${fieldName}"]`).removeClass('field-saved');
+                        }, 1000);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log('❌ AJAX Error:', status, error);
+                },
+                complete: function() {
+                    isRequestInProgress = false;
+                }
+            });
+        }, 300);
+        
+        pendingRequests.set(fieldName, timeoutId);
     }
 });
 
@@ -1147,10 +1322,17 @@ $(document).ready(function() {
         
         // Livewire ile validation + save çağır
         @this.call('saveAndNavigateNext').then(result => {
-            // Success ise URL routing ile yönlendir
+            // Success - redirect already handled by Livewire method
+            console.log('Navigation successful:', result);
         }).catch(error => {
+            console.error('Navigation error:', error);
             // Button'u eski haline getir
             $(this).prop('disabled', false).html('Sonraki Adım <i class="fas fa-arrow-right ms-2"></i>');
+            
+            // Hata mesajını göster
+            if (error && error.message) {
+                alert('Geçiş sırasında hata: ' + error.message);
+            }
         });
     });
     
@@ -1162,10 +1344,17 @@ $(document).ready(function() {
         
         // Livewire ile complete profile çağır
         @this.call('completeProfile').then(result => {
-            // Profile completion success
+            // Profile completion success - redirect handled by Livewire
+            console.log('Profile completion successful:', result);
         }).catch(error => {
+            console.error('Profile completion error:', error);
             // Button'u eski haline getir
             $(this).prop('disabled', false).html('<i class="fas fa-magic me-2"></i>Yapay Zeka Asistanını Aktifleştir');
+            
+            // Hata mesajını göster
+            if (error && error.message) {
+                alert('Profil aktifleştirme sırasında hata: ' + error.message);
+            }
         });
     });
 });
@@ -1181,7 +1370,10 @@ $(document).on('change', 'input[type="radio"].custom-radio-trigger', function() 
     const fieldKey = $(this).data('field');
     const value = $(this).val();
     
-    if (customField && value === 'custom') {
+    // Check if this is a "Diğer" option
+    const isDigerOption = value.includes('Diğer') || value.includes('diger') || value === 'custom' || value === 'diger';
+    
+    if (customField && isDigerOption) {
         // Show custom input (escape dots in CSS selector)
         const containerSelector = '#' + fieldKey.replace(/\./g, '\\.') + '_custom_container';
         $(containerSelector).show();
@@ -1199,8 +1391,11 @@ $(document).on('change', 'input[type="radio"].profile-field-input', function() {
     const fieldKey = $(this).data('field');
     const value = $(this).val();
     
+    // Check if this is a "Diğer" option
+    const isDigerOption = value.includes('Diğer') || value.includes('diger') || value === 'custom' || value === 'diger';
+    
     // If this is not a custom option, hide any custom container for this field
-    if (value !== 'custom') {
+    if (!isDigerOption) {
         const containerSelector = '#' + fieldKey.replace(/\./g, '\\.') + '_custom_container';
         $(containerSelector).hide();
         $(containerSelector + ' input').val('');
@@ -1214,12 +1409,15 @@ $(document).on('change', 'input[type="checkbox"].custom-checkbox-trigger', funct
     const value = $(this).val();
     const isChecked = $(this).is(':checked');
     
-    if (customField && value === 'custom' && isChecked) {
+    // Check if this is a "Diğer" option
+    const isDigerOption = value.includes('Diğer') || value.includes('diger') || value === 'custom' || value === 'diger';
+    
+    if (customField && isDigerOption && isChecked) {
         // Show custom input when "Diğer" checkbox is checked
         const containerSelector = '#' + fieldKey.replace(/\./g, '\\.') + '_custom_container';
         $(containerSelector).show();
         $(containerSelector + ' input').focus();
-    } else if (customField && value === 'custom' && !isChecked) {
+    } else if (customField && isDigerOption && !isChecked) {
         // Hide custom input when "Diğer" checkbox is unchecked
         const containerSelector = '#' + fieldKey.replace(/\./g, '\\.') + '_custom_container';
         $(containerSelector).hide();
@@ -1263,22 +1461,25 @@ $(document).on('change', 'input[data-field="company_info.founder_permission"]', 
 
 // Initialize founder questions visibility on page load
 $(document).ready(function() {
-    // Check founder permission value and show/hide founder section
-    const checkedFounderPermission = $('input[data-field="company_info.founder_permission"]:checked');
+    // Check share_founder_info value and show/hide founder section
+    const checkedFounderInfo = $('input[data-field="company_info.share_founder_info"]:checked');
     
-    if (checkedFounderPermission.length) {
-        const value = checkedFounderPermission.val();
+    if (checkedFounderInfo.length) {
+        const value = checkedFounderInfo.val();
         const founderSection = $('#founder-questions-section');
         
-        if (value === 'Evet, bilgilerimi paylaşmak istiyorum') {
-            founderSection.show();
+        if (value === 'evet') {
+            founderSection.css('display', 'block');
         } else {
-            founderSection.hide();
+            founderSection.css('display', 'none');
         }
+    } else {
+        // No selection yet, hide by default
+        $('#founder-questions-section').css('display', 'none');
     }
     
     // Check for existing custom values and show containers
-    $('input[value="custom"]').each(function() {
+    $('input[value="diger"], input[value="custom"]').each(function() {
         const fieldKey = $(this).data('field');
         const isChecked = $(this).is(':checked');
         const containerSelector = '#' + fieldKey.replace(/\./g, '\\.') + '_custom_container';

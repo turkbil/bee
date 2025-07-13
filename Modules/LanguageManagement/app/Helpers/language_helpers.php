@@ -98,15 +98,18 @@ if (!function_exists('is_valid_admin_locale')) {
             return false;
         }
         
-        try {
-            $exists = \DB::table('admin_languages')
-                ->where('code', $locale)
-                ->where('is_active', true)
-                ->exists();
-            return $exists;
-        } catch (\Exception $e) {
-            return in_array($locale, ['tr', 'en']);
+        // PERFORMANCE: Extract codes from cached admin languages to prevent duplicate queries
+        static $cachedValidLocales = null;
+        if ($cachedValidLocales === null) {
+            try {
+                $adminLanguages = available_admin_languages();
+                $cachedValidLocales = array_column($adminLanguages, 'code');
+            } catch (\Exception $e) {
+                $cachedValidLocales = ['tr', 'en'];
+            }
         }
+        
+        return in_array($locale, $cachedValidLocales);
     }
 }
 
@@ -120,16 +123,18 @@ if (!function_exists('is_valid_tenant_locale')) {
             return false;
         }
         
-        try {
-            // Unified tenant DB kontrolü - tüm tenantlar aynı şekilde
-            $exists = \DB::table('tenant_languages')
-                ->where('code', $locale)
-                ->where('is_active', true)
-                ->exists();
-            return $exists;
-        } catch (\Exception $e) {
-            return in_array($locale, ['tr', 'en']);
+        // PERFORMANCE: Extract codes from cached tenant languages to prevent duplicate queries
+        static $cachedValidTenantLocales = null;
+        if ($cachedValidTenantLocales === null) {
+            try {
+                $tenantLanguages = available_tenant_languages();
+                $cachedValidTenantLocales = array_column($tenantLanguages, 'code');
+            } catch (\Exception $e) {
+                $cachedValidTenantLocales = ['tr', 'en'];
+            }
         }
+        
+        return in_array($locale, $cachedValidTenantLocales);
     }
 }
 
@@ -155,18 +160,22 @@ if (!function_exists('available_admin_languages')) {
      */
     function available_admin_languages(): array
     {
-        try {
-            return \DB::table('admin_languages')
-                ->where('is_active', true)
-                ->orderBy('name')
-                ->get()
-                ->toArray();
-        } catch (\Exception $e) {
-            return [
-                ['code' => 'tr', 'name' => 'Türkçe', 'native_name' => 'Türkçe'],
-                ['code' => 'en', 'name' => 'English', 'native_name' => 'English']
-            ];
-        }
+        // PERFORMANCE: Use same cache key as AdminLanguageSwitcher to prevent duplicates
+        $cached = \Cache::remember('admin_languages_switcher', 600, function() {
+            try {
+                return \Modules\LanguageManagement\App\Models\AdminLanguage::where('is_active', true)
+                    ->orderBy('sort_order')
+                    ->get();
+            } catch (\Exception $e) {
+                return collect([
+                    ['code' => 'tr', 'name' => 'Türkçe', 'native_name' => 'Türkçe'],
+                    ['code' => 'en', 'name' => 'English', 'native_name' => 'English']
+                ]);
+            }
+        });
+        
+        // Convert to array if it's a Collection
+        return is_array($cached) ? $cached : $cached->toArray();
     }
 }
 
@@ -176,19 +185,24 @@ if (!function_exists('available_tenant_languages')) {
      */
     function available_tenant_languages(): array
     {
-        try {
-            // Unified tenant DB kontrolü - tüm tenantlar aynı şekilde
-            return \DB::table('tenant_languages')
-                ->where('is_active', true)
-                ->orderBy('name')
-                ->get()
-                ->toArray();
-        } catch (\Exception $e) {
-            return [
-                ['code' => 'tr', 'name' => 'Türkçe', 'native_name' => 'Türkçe'],
-                ['code' => 'en', 'name' => 'English', 'native_name' => 'English']
-            ];
-        }
+        // PERFORMANCE: Use same cache key as AdminLanguageSwitcher to prevent duplicates
+        $cached = \Cache::remember('tenant_languages_switcher', 600, function() {
+            try {
+                // Unified tenant DB kontrolü - tüm tenantlar aynı şekilde
+                return \DB::table('tenant_languages')
+                    ->where('is_active', true)
+                    ->orderBy('sort_order')
+                    ->get();
+            } catch (\Exception $e) {
+                return collect([
+                    ['code' => 'tr', 'name' => 'Türkçe', 'native_name' => 'Türkçe'],
+                    ['code' => 'en', 'name' => 'English', 'native_name' => 'English']
+                ]);
+            }
+        });
+        
+        // Convert to array if it's a Collection
+        return is_array($cached) ? $cached : $cached->toArray();
     }
 }
 

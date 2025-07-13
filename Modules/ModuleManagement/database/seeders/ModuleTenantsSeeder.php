@@ -53,6 +53,7 @@ class ModuleTenantsSeeder extends Seeder
                 'widgetmanagement',
                 'thememanagement',
                 'studio',
+                'ai',
             ];
             // Rastgele atanacak modüller
             $rastgeleModuller = [

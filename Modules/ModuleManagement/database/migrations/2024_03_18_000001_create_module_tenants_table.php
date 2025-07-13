@@ -23,6 +23,7 @@ return new class extends Migration
             $table->unsignedBigInteger('tenant_id');
             $table->unsignedBigInteger('module_id');
             $table->boolean('is_active')->default(true)->index();
+            $table->timestamp('assigned_at')->nullable();
             $table->timestamps();
 
             $table->primary(['tenant_id', 'module_id']);

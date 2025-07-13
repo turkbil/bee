@@ -23,7 +23,7 @@ class AIProfileManagement extends Component
     // Validation mesajları için (custom messages)
     public $customErrors = [];
     
-    protected $listeners = ['refreshComponent' => '$refresh', 'refreshData' => 'refreshData'];
+    protected $listeners = ['refreshComponent' => '$refresh', 'refreshData' => 'refreshData', 'toggleFounderQuestions' => 'toggleFounderQuestions'];
     
     /**
      * Progress Circle için toplam ve yanıtlanan soru sayısını hesapla
@@ -121,8 +121,20 @@ class AIProfileManagement extends Component
         // Profil verilerini forma yükle
         $this->loadProfileData();
         
+        // Varsayılan değerleri set et
+        if (!isset($this->formData['company_info.share_founder_info'])) {
+            $this->formData['company_info.share_founder_info'] = 'hayir';
+            $this->showFounderQuestions = false;
+        }
+        
         // Kategorize edilmiş sektörleri yükle
         $this->sectors = AIProfileSector::getCategorizedSectors();
+        
+        \Log::info('AIProfileManagement - Sectors loaded', [
+            'sector_count' => $this->sectors->count(),
+            'first_sector' => $this->sectors->first()?->name ?? 'NO_SECTORS',
+            'all_sectors' => $this->sectors->pluck('name')->toArray()
+        ]);
         
         // Mevcut adım sorularını yükle
         $this->loadQuestionsForStep();
@@ -183,8 +195,23 @@ class AIProfileManagement extends Component
                 }
                 
                 foreach ($this->profile->sector_details as $key => $value) {
-                    // Checkbox alanları için özel mapping (target_audience, brand_voice, digital_services, digital_technologies gibi)
-                    if (is_array($value) && in_array($key, ['target_audience', 'brand_voice', 'digital_services', 'digital_project_types', 'tech_client_sectors', 'tech_daily_work', 'tech_project_size', 'tech_specialization', 'tech_work_style', 'tech_challenges', 'tech_pricing_model', 'health_daily_services', 'health_patient_age', 'health_specialization', 'health_facility_type', 'health_common_problems', 'health_appointment_type', 'health_pricing_system', 'education_daily_activities', 'education_subjects', 'education_student_level', 'education_teaching_method', 'education_class_size', 'education_challenges', 'education_goals', 'food_daily_operations', 'food_atmosphere', 'food_cuisine_type', 'food_service_type', 'food_customer_type', 'food_meal_times', 'food_challenges', 'retail_daily_tasks', 'retail_price_range', 'retail_product_category', 'retail_sales_channel', 'retail_customer_support', 'retail_inventory_size', 'retail_challenges', 'construction_daily_work', 'construction_scale', 'finance_daily_tasks', 'finance_client_type', 'law_daily_activities', 'law_service_type', 'beauty_daily_services', 'beauty_client_profile'])) {
+                    // Checkbox alanları için özel mapping (genel checkbox alanları + yeni sektör özel checkbox alanları)
+                    if (is_array($value) && in_array($key, [
+                        // Genel checkbox alanları
+                        'target_customers', 'brand_personality', 'target_audience', 'brand_voice', 'digital_services', 'digital_project_types',
+                        // Yeni sektör özel checkbox alanları
+                        'technology_specific_services', 'health_specific_services', 'education_specific_services', 'food_specific_services', 
+                        'retail_specific_services', 'construction_specific_services', 'finance_specific_services', 'web_design_specific_services', 
+                        'law_specific_services', 'beauty_specific_services',
+                        // Eski checkbox alanları (backward compatibility)
+                        'tech_client_sectors', 'tech_daily_work', 'tech_project_size', 'tech_specialization', 'tech_work_style', 'tech_challenges', 'tech_pricing_model', 
+                        'health_daily_services', 'health_patient_age', 'health_specialization', 'health_facility_type', 'health_common_problems', 'health_appointment_type', 'health_pricing_system', 
+                        'education_daily_activities', 'education_subjects', 'education_student_level', 'education_teaching_method', 'education_class_size', 'education_challenges', 'education_goals', 
+                        'food_daily_operations', 'food_atmosphere', 'food_cuisine_type', 'food_service_type', 'food_customer_type', 'food_meal_times', 'food_challenges', 
+                        'retail_daily_tasks', 'retail_price_range', 'retail_product_category', 'retail_sales_channel', 'retail_customer_support', 'retail_inventory_size', 'retail_challenges', 
+                        'construction_daily_work', 'construction_scale', 'finance_daily_tasks', 'finance_client_type', 'law_daily_activities', 'law_service_type', 
+                        'beauty_daily_services', 'beauty_client_profile'
+                    ])) {
                         foreach ($value as $subKey => $subValue) {
                             $this->formData["sector_details.{$key}.{$subKey}"] = $subValue;
                             \Log::debug("Loaded sector_details.{$key}.{$subKey}", ['value' => $subValue]);
@@ -207,24 +234,46 @@ class AIProfileManagement extends Component
             // Success stories
             if ($this->profile->success_stories && is_array($this->profile->success_stories)) {
                 foreach ($this->profile->success_stories as $key => $value) {
-                    $this->formData["success_stories.{$key}"] = $value;
-                    \Log::debug("Loaded success_stories.{$key}", ['value' => $value]);
+                    // CRITICAL FIX: ai_response_style belongs to ai_behavior_rules now
+                    if ($key === 'ai_response_style') {
+                        // Skip it here, will be handled in ai_behavior_rules section
+                        continue;
+                    }
                     
-                    // Tüm alanları blade template'in arayacağı formatta da yükle
-                    $this->formData[$key] = $value;
-                    \Log::debug("Loaded {$key} (direct)", ['value' => $value]);
+                    // Checkbox alanları için özel mapping (Step 5 AI behavior checkbox'ları)
+                    if (is_array($value) && in_array($key, ['sales_approach', 'brand_character', 'writing_style'])) {
+                        foreach ($value as $subKey => $subValue) {
+                            $this->formData["success_stories.{$key}.{$subKey}"] = $subValue;
+                            \Log::debug("Loaded success_stories.{$key}.{$subKey}", ['value' => $subValue]);
+                        }
+                        
+                        // Tüm alanları blade template'in arayacağı formatta da yükle
+                        $this->formData[$key] = $value;
+                        \Log::debug("Loaded {$key} (direct)", ['value' => $value]);
+                    } else {
+                        $this->formData["success_stories.{$key}"] = $value;
+                        \Log::debug("Loaded success_stories.{$key}", ['value' => $value]);
+                        
+                        // Tüm alanları blade template'in arayacağı formatta da yükle
+                        $this->formData[$key] = $value;
+                        \Log::debug("Loaded {$key} (direct)", ['value' => $value]);
+                    }
                 }
             }
             
             // AI behavior rules
             if ($this->profile->ai_behavior_rules && is_array($this->profile->ai_behavior_rules)) {
                 foreach ($this->profile->ai_behavior_rules as $key => $value) {
-                    // Nested checkbox alanları için özel mapping
-                    if (is_array($value)) {
+                    // Checkbox alanları için özel mapping (Step 5 AI behavior checkbox'ları)
+                    if (is_array($value) && in_array($key, ['ai_response_style', 'sales_approach', 'brand_character', 'writing_style'])) {
                         foreach ($value as $subKey => $subValue) {
                             $this->formData["ai_behavior_rules.{$key}.{$subKey}"] = $subValue;
                             \Log::debug("Loaded ai_behavior_rules.{$key}.{$subKey}", ['value' => $subValue]);
                         }
+                        
+                        // Tüm alanları blade template'in arayacağı formatta da yükle
+                        $this->formData[$key] = $value;
+                        \Log::debug("Loaded {$key} (direct)", ['value' => $value]);
                     } else {
                         $this->formData["ai_behavior_rules.{$key}"] = $value;
                         \Log::debug("Loaded ai_behavior_rules.{$key}", ['value' => $value]);
@@ -236,11 +285,47 @@ class AIProfileManagement extends Component
                 }
             }
             
-            // Founder permission durumu kontrol et
-            if (isset($this->formData['company_info.founder_permission'])) {
-                $this->showFounderQuestions = in_array($this->formData['company_info.founder_permission'], ['Evet, bilgilerimi paylaşmak istiyorum']);
+            // CRITICAL FIX: Migrate ai_response_style from success_stories to ai_behavior_rules
+            if ($this->profile->success_stories && 
+                isset($this->profile->success_stories['ai_response_style']) && 
+                !isset($this->profile->ai_behavior_rules['ai_response_style'])) {
+                
+                $aiResponseStyleData = $this->profile->success_stories['ai_response_style'];
+                \Log::info("Migrating ai_response_style from success_stories to ai_behavior_rules", [
+                    'data' => $aiResponseStyleData
+                ]);
+                
+                // Load ai_response_style data into ai_behavior_rules format
+                if (is_array($aiResponseStyleData)) {
+                    foreach ($aiResponseStyleData as $subKey => $subValue) {
+                        $this->formData["ai_behavior_rules.ai_response_style.{$subKey}"] = $subValue;
+                        \Log::debug("Migrated ai_behavior_rules.ai_response_style.{$subKey}", ['value' => $subValue]);
+                    }
+                    
+                    // Also load into direct format for blade template
+                    $this->formData['ai_response_style'] = $aiResponseStyleData;
+                    \Log::debug("Migrated ai_response_style (direct)", ['value' => $aiResponseStyleData]);
+                }
+                
+                // Move the data in database from success_stories to ai_behavior_rules
+                $this->profile->updateSection('ai_behavior_rules', [
+                    'ai_response_style' => $aiResponseStyleData,
+                    ...($this->profile->ai_behavior_rules ?? [])
+                ]);
+                
+                // Remove from success_stories
+                $successStories = $this->profile->success_stories ?? [];
+                unset($successStories['ai_response_style']);
+                $this->profile->updateSection('success_stories', $successStories);
+                
+                \Log::info("Successfully migrated ai_response_style data");
+            }
+            
+            // Share founder info durumu kontrol et
+            if (isset($this->formData['company_info.share_founder_info'])) {
+                $this->showFounderQuestions = ($this->formData['company_info.share_founder_info'] === 'evet');
                 \Log::debug('Founder questions visibility', [
-                    'permission' => $this->formData['company_info.founder_permission'],
+                    'share_founder_info' => $this->formData['company_info.share_founder_info'],
                     'show' => $this->showFounderQuestions
                 ]);
             }
@@ -280,7 +365,9 @@ class AIProfileManagement extends Component
     {
         \Log::info('AIProfileManagement - loadQuestionsForStep called', [
             'currentStep' => $this->currentStep,
-            'currentSectorCode' => $this->currentSectorCode
+            'currentSectorCode' => $this->currentSectorCode,
+            'has_profile' => $this->profile ? true : false,
+            'sector_from_profile' => $this->profile ? ($this->profile->sector_details['sector'] ?? 'not_set') : 'no_profile'
         ]);
         
         $this->questions = [];
@@ -299,10 +386,16 @@ class AIProfileManagement extends Component
             case 3:
                 // Marka detayları + sektöre özel sorular
                 $this->questions = AIProfileQuestion::getByStep(3, $this->currentSectorCode);
+                \Log::info('AIProfileManagement - Step 3 questions loaded', [
+                    'sector_code' => $this->currentSectorCode,
+                    'total_questions' => $this->questions->count(),
+                    'general_questions' => $this->questions->whereNull('sector_code')->count(),
+                    'sector_questions' => $this->questions->where('sector_code', $this->currentSectorCode)->count()
+                ]);
                 break;
                 
             case 4:
-                // Kurucu izin sorusu + kurucu bilgileri
+                // Tüm Step 4 sorularını yükle - conditional rendering blade template'de yapılacak
                 $this->questions = AIProfileQuestion::getByStep(4);
                 break;
                 
@@ -322,6 +415,44 @@ class AIProfileManagement extends Component
         ]);
     }
     
+    public function toggleFounderQuestions($value = null)
+    {
+        // Modern Livewire dispatch ile gelen parameter
+        if (is_array($value) && isset($value['value'])) {
+            $value = $value['value'];
+        }
+        
+        $this->showFounderQuestions = ($value === 'evet');
+        
+        \Log::info('AIProfileManagement - toggleFounderQuestions called', [
+            'value' => $value,
+            'showFounderQuestions' => $this->showFounderQuestions
+        ]);
+        
+        if (!$this->showFounderQuestions) {
+            // Kurucu bilgilerini temizle - hem formData hem de database
+            $founderKeys = [];
+            foreach ($this->formData as $k => $v) {
+                if (str_starts_with($k, 'founder_info.') || in_array($k, ['founder_name', 'founder_position', 'founder_qualities', 'founder_story'])) {
+                    unset($this->formData[$k]);
+                    $founderKeys[] = $k;
+                }
+            }
+            
+            // Veritabanından da kurucu bilgilerini temizle
+            if ($this->profile && $this->profile->exists) {
+                $this->profile->founder_info = [];
+                $this->profile->save();
+                
+                \Log::info('AIProfileManagement - Founder info cleared from database via toggle', [
+                    'profile_id' => $this->profile->id,
+                    'founder_permission' => $value,
+                    'cleared_keys' => $founderKeys
+                ]);
+            }
+        }
+    }
+    
     public function updatedFormData($value, $key)
     {
         \Log::info('AIProfileManagement - formData updated', [
@@ -330,9 +461,14 @@ class AIProfileManagement extends Component
             'currentStep' => $this->currentStep
         ]);
         
-        // founder_permission değiştiğinde kurucu sorularını göster/gizle
-        if ($key === 'company_info.founder_permission') {
-            $this->showFounderQuestions = in_array($value, ['yes_full', 'yes_limited']);
+        // share_founder_info değiştiğinde kurucu sorularını göster/gizle
+        if ($key === 'company_info.share_founder_info') {
+            $this->showFounderQuestions = ($value === 'evet');
+            
+            \Log::info('AIProfileManagement - showFounderQuestions updated', [
+                'value' => $value,
+                'showFounderQuestions' => $this->showFounderQuestions
+            ]);
             
             if (!$this->showFounderQuestions) {
                 // Kurucu bilgilerini temizle - hem formData hem de database
@@ -353,6 +489,9 @@ class AIProfileManagement extends Component
                     ]);
                 }
             }
+            
+            // Component'i refresh et
+            $this->emit('refreshComponent');
         }
         
         // Sektör değiştiğinde
@@ -628,15 +767,26 @@ class AIProfileManagement extends Component
                     2 => 'company_info', // Temel bilgiler
                     3 => 'sector_details', // Marka detayları / sektör bilgileri
                     4 => 'company_info', // Kurucu izin sorusu (sadece founder_permission)
-                    5 => 'success_stories', // Başarı hikayeleri ve rekabet avantajları
+                    5 => 'ai_behavior_rules', // AI davranış ve iletişim ayarları
                     default => ''
                 };
             }
         }
         
-        // Step 5 için özel field mapping - response_style ai_behavior_rules'a gitmeli
-        if ($this->currentStep == 5 && $question->question_key == 'response_style') {
-            $prefix = 'ai_behavior_rules';
+        // Step 5 için özel field mapping - AI Response Style questions
+        if ($this->currentStep == 5) {
+            // ai_response_style questions go to ai_behavior_rules section
+            if ($question->question_key == 'ai_response_style' || $question->question_key == 'response_style') {
+                $prefix = 'ai_behavior_rules';
+            }
+            // brand_character ve writing_style success_stories section'ında
+            elseif (in_array($question->question_key, ['brand_character', 'writing_style'])) {
+                $prefix = 'success_stories';
+            }
+            // sales_approach questions stay in success_stories section
+            elseif ($question->question_key == 'sales_approach') {
+                $prefix = 'success_stories';
+            }
         }
         
         return $prefix ? "{$prefix}.{$question->question_key}" : $question->question_key;
@@ -969,11 +1119,22 @@ class AIProfileManagement extends Component
     {
         $progressData = $this->calculateRealProgress();
         
+        \Log::info('AIProfileManagement - render called', [
+            'sectors_count' => $this->sectors->count(),
+            'questions_count' => $this->questions->count(),
+            'currentStep' => $this->currentStep
+        ]);
+        
         return view('ai::admin.profile.ai-profile-management', [
             'progressPercentage' => ($this->currentStep / $this->totalSteps) * 100,
             'realProgressPercentage' => $progressData['percentage'],
             'completedFields' => $progressData['completed'],
-            'totalFields' => $progressData['total']
+            'totalFields' => $progressData['total'],
+            'sectors' => $this->sectors,
+            'questions' => $this->questions,
+            'formData' => $this->formData,
+            'currentSectorCode' => $this->currentSectorCode,
+            'showFounderQuestions' => $this->showFounderQuestions
         ]);
     }
     
@@ -1030,8 +1191,8 @@ class AIProfileManagement extends Component
         }
         
         // Step 4: Kurucu bilgileri (1 zorunlu + isteğe bağlı)
-        $totalFields += 1; // founder_permission
-        if (!empty($this->formData['company_info.founder_permission'])) {
+        $totalFields += 1; // share_founder_info
+        if (!empty($this->formData['company_info.share_founder_info'])) {
             $completedFields += 1;
             
             // Kurucu bilgileri aktifse ek alanlar

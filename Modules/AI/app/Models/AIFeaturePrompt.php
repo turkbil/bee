@@ -8,6 +8,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class AIFeaturePrompt extends Model
 {
     protected $table = 'ai_feature_prompts';
+    
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+        
+        // AI tabloları her zaman central database'de
+        $this->setConnection('mysql');
+    }
 
     protected $fillable = [
         'feature_id',

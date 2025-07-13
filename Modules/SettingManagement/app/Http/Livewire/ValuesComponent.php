@@ -26,9 +26,33 @@ class ValuesComponent extends Component
     public $temporaryImages = [];
     public $temporaryMultipleImages = [];
     public $multipleImagesArrays = [];
+    public $pendingImages = []; // Yüklenen dosyaları saklar
     
     public $tempPhoto;
     public $photoField; // Hangi alan için yüklüyoruz
+
+    public function updatedValues($value, $key)
+    {
+        // String key ise numeric ID'ye çevir ve sync et
+        if (!is_numeric($key)) {
+            $setting = Setting::where('key', $key)->first();
+            if ($setting) {
+                $numericKey = $setting->id;
+                $this->values[$numericKey] = $value;
+                $this->values[$key] = $value; // String key'i de güncelle
+            }
+        } else {
+            // Numeric key ise string key'i de güncelle
+            $setting = Setting::find($key);
+            if ($setting) {
+                $this->values[$setting->key] = $value;
+            }
+        }
+        
+        if ($key !== 'temp') {
+            $this->checkChanges();
+        }
+    }
 
     public function mount($group)
     {
@@ -41,8 +65,14 @@ class ValuesComponent extends Component
             $value = SettingValue::where('setting_id', $setting->id)->first();
             
             // Normal değerler için
-            $this->values[$setting->id] = $value ? $value->value : $setting->default_value;
-            $this->originalValues[$setting->id] = $this->values[$setting->id];
+            $finalValue = $value ? $value->value : $setting->default_value;
+            
+            // Hem numeric ID hem string key ile kaydet (layout sistem için)
+            $this->values[$setting->id] = $finalValue;
+            $this->values[$setting->key] = $finalValue;
+            $this->originalValues[$setting->id] = $finalValue;
+            $this->originalValues[$setting->key] = $finalValue;
+            
             
             // Çoklu resim için JSON'ı diziye çevir
             if ($setting->type === 'image_multiple') {
@@ -57,6 +87,10 @@ class ValuesComponent extends Component
                 }
             }
         }
+        
+        
+        // Livewire için values'u hydrate et
+        $this->dispatch('valuesLoaded', $this->values);
     }
 
     public function resetToDefault($settingId)
@@ -80,10 +114,6 @@ class ValuesComponent extends Component
         $this->checkChanges();
     }
 
-    public function updatedValues()
-    {
-        $this->checkChanges();
-    }
 
     public function updatedTemporaryImages($value, $key)
     {
@@ -94,6 +124,9 @@ class ValuesComponent extends Component
             $setting = Setting::find($settingId);
             
             if ($setting) {
+                // Dosyayı pendingImages array'ine kaydet
+                $this->pendingImages[$settingId] = $this->temporaryImages[$settingId];
+                
                 $this->values[$settingId] = 'temp'; // Geçici değer, dosya yüklendiğinde gerçek path ile değiştirilecek
                 $this->checkChanges();
             }
@@ -188,7 +221,8 @@ class ValuesComponent extends Component
     {
         $this->changes = [];
         foreach ($this->values as $id => $value) {
-            if ($value == 'temp' || $value != $this->originalValues[$id]) {
+            $originalValue = $this->originalValues[$id] ?? null;
+            if ($value == 'temp' || $value != $originalValue) {
                 $this->changes[$id] = $value;
             }
         }
@@ -219,13 +253,25 @@ class ValuesComponent extends Component
         }
         
         return $path;
-    }    
-
+    }
+    
     public function save($redirect = false)
     {
+        
         foreach ($this->values as $settingId => $value) {
+            // String key'leri filtrele (sadece numeric ID'leri işle)
+            if (!is_numeric($settingId)) {
+                continue;
+            }
+            
             $setting = Setting::find($settingId);
-            $oldValue = $this->originalValues[$settingId];
+            
+            // Setting bulunamazsa bir sonraki iterasyona geç
+            if (!$setting) {
+                continue;
+            }
+            
+            $oldValue = $this->originalValues[$settingId] ?? null;
             
             // File/Image dosya yüklemelerini işle
             if (isset($this->temporaryImages[$settingId])) {
@@ -316,33 +362,35 @@ class ValuesComponent extends Component
                 }
             }
             
-            if ($value === $setting->default_value) {
-                // Eğer dosya varsa sil
-                if ($oldValue && ($setting->type === 'file' || $setting->type === 'image')) {
-                    \Modules\SettingManagement\App\Helpers\TenantStorageHelper::deleteFile($oldValue);
-                }
-                
-                SettingValue::where('setting_id', $settingId)->delete();
-                
-                if ($oldValue !== $value) {
+            // Önce değişiklik kontrolü yap
+            if ($oldValue !== $value) {
+                // Eğer yeni değer default değere eşitse, setting value'yu sil
+                if ($value === $setting->default_value) {
+                    // Eğer dosya varsa sil
+                    if ($oldValue && ($setting->type === 'file' || $setting->type === 'image')) {
+                        \Modules\SettingManagement\App\Helpers\TenantStorageHelper::deleteFile($oldValue);
+                    }
+                    
+                    SettingValue::where('setting_id', $settingId)->delete();
+                    
                     log_activity(
                         $setting,
                         __('settingmanagement.actions.reset_to_default'),
                         ['old' => $oldValue, 'new' => $value]
                     );
+                } else {
+                    // Değer değişti ve default değil, kaydet
+                    $settingValue = SettingValue::updateOrCreate(
+                        ['setting_id' => $settingId],
+                        ['value' => $value]
+                    );
+                    
+                    log_activity(
+                        $setting,
+                        __('settingmanagement.actions.value_updated'),
+                        ['old' => $oldValue, 'new' => $value]
+                    );
                 }
-            } 
-            else if ($oldValue !== $value) {
-                $settingValue = SettingValue::updateOrCreate(
-                    ['setting_id' => $settingId],
-                    ['value' => $value]
-                );
-                
-                log_activity(
-                    $setting,
-                    __('settingmanagement.actions.value_updated'),
-                    ['old' => $oldValue, 'new' => $value]
-                );
             }
         }
     
@@ -352,7 +400,7 @@ class ValuesComponent extends Component
         $this->temporaryMultipleImages = [];
     
         if ($redirect) {
-            return redirect()->route('admin.settingmanagement.tenant.settings');
+            return redirect()->route('admin.settingmanagement.index');
         }
     
         $this->dispatch('toast', [

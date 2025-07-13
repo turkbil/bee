@@ -25,13 +25,34 @@ class AdminTenantSelection
                 'source' => $request->get('tenant_id') ? 'request_param' : 'session'
             ]);
         } else {
-            // Manuel tenant seçimi - Sen tenant 1 kullan
-            $defaultTenantId = 1; // Nurullah'ın tenant'ı
-            Session::put('admin_selected_tenant_id', $defaultTenantId);
+            // Auto-detect tenant by domain
+            $host = $request->getHost();
+            $tenantId = null;
             
-            \Log::info('AdminTenantSelection: Default tenant selected', [
-                'tenant_id' => $defaultTenantId,
-                'source' => 'manual_default'
+            // Domain'e göre tenant_id tespit et
+            if ($host === 'laravel.test') {
+                $tenantId = 1; // Central/main tenant
+            } elseif ($host === 'a.test') {
+                $tenantId = 2;
+            } elseif ($host === 'b.test') {
+                $tenantId = 3;
+            } elseif ($host === 'c.test') {
+                $tenantId = 4;
+            } else {
+                // Fallback: database'den domain ara
+                $tenant = \App\Models\Tenant::whereHas('domains', function($query) use ($host) {
+                    $query->where('domain', $host);
+                })->first();
+                
+                $tenantId = $tenant ? $tenant->id : 1; // Default tenant 1
+            }
+            
+            Session::put('admin_selected_tenant_id', $tenantId);
+            
+            \Log::info('AdminTenantSelection: Tenant auto-detected', [
+                'tenant_id' => $tenantId,
+                'host' => $host,
+                'source' => 'domain_detection'
             ]);
         }
         

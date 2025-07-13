@@ -7,8 +7,14 @@
        title="Admin Dili Değiştir" 
        style="width: 40px; height: 40px; border-radius: 0.375rem;">
        
-        <div class="position-relative">
-            <div style="transition: opacity 0.3s ease;">
+        <div class="position-relative lang-icon-container">
+            <!-- Loading state: Spinner dönüyor -->
+            <div wire:loading wire:target="switchLanguage,switchSiteLanguage">
+                <i class="fa-solid fa-spinner fa-spin" style="font-size: 18px;"></i>
+            </div>
+            
+            <!-- Normal state: Flag gösterimi -->
+            <div wire:loading.remove wire:target="switchLanguage,switchSiteLanguage">
                 @if($currentLanguageObject && $currentLanguageObject->flag_icon)
                     <span style="font-size: 20px;">{{ $currentLanguageObject->flag_icon }}</span>
                 @else
@@ -26,7 +32,7 @@
             <button type="button" 
                     class="dropdown-item language-switch-link {{ $language->code === $currentAdminLocale ? 'active' : '' }}"
                     wire:click="switchLanguage('{{ $language->code }}')"
-                    onclick="return handleLanguageSwitch(event, this)">
+                    wire:loading.attr="disabled">
                 <span class="me-2" style="font-size: 16px;">
                     {{ $language->flag_icon ?? '🌐' }}
                 </span>
@@ -52,7 +58,7 @@
             <button type="button" 
                     class="dropdown-item language-switch-link {{ $language->code === $currentSiteLocale ? 'active' : '' }}"
                     wire:click="switchSiteLanguage('{{ $language->code }}')"
-                    onclick="return handleLanguageSwitch(event, this)">
+                    wire:loading.attr="disabled">
                 <span class="me-2" style="font-size: 16px;">
                     {{ $language->flag_icon ?? '🌐' }}
                 </span>
@@ -69,69 +75,11 @@
             </div>
         @endforelse
         
-        @if($isLoading)
-            <div class="dropdown-item text-center">
-                <div class="spinner-border spinner-border-sm" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-            </div>
-        @endif
     </div>
+    
 </div>
 
 <script>
-function handleLanguageSwitch(event, element) {
-    // Aktif dil seçiliyse hiçbir şey yapma (sadece dropdown'lar için)
-    if (element.classList.contains('active') && element.closest('.dropdown')) {
-        event.preventDefault();
-        return false;
-    }
-    
-    // Dropdown kapat (sadece bootstrap varsa)
-    if (typeof bootstrap !== 'undefined') {
-        const dropdownElement = element.closest('.dropdown');
-        if (dropdownElement) {
-            const dropdownToggle = dropdownElement.querySelector('.dropdown-toggle');
-            if (dropdownToggle) {
-                const dropdown = bootstrap.Dropdown.getInstance(dropdownToggle);
-                if (dropdown) {
-                    dropdown.hide();
-                }
-            }
-        }
-    }
-    
-    // Hızlı top loading bar - Tabler Native
-    const loadingBar = document.createElement('div');
-    loadingBar.id = 'language-loading-bar';
-    loadingBar.className = 'progress progress-sm';
-    loadingBar.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 3px;
-        z-index: 99999;
-        opacity: 1;
-    `;
-    loadingBar.innerHTML = '<div class="progress-bar progress-bar-indeterminate"></div>';
-    document.body.appendChild(loadingBar);
-    
-    // Livewire click olayını çalıştır
-    return true;
-}
-
-// Sayfa yüklendiğinde loading bar'ı kaldır
-document.addEventListener('DOMContentLoaded', function() {
-    const loadingBar = document.getElementById('language-loading-bar');
-    if (loadingBar) {
-        setTimeout(() => {
-            loadingBar.style.opacity = '0';
-            setTimeout(() => loadingBar.remove(), 200);
-        }, 100);
-    }
-});
-
 // Livewire event listener - sayfa yenileme
 document.addEventListener('livewire:init', () => {
     Livewire.on('refreshPage', (event) => {

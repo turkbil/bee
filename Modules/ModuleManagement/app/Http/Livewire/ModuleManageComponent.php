@@ -182,6 +182,9 @@ class ModuleManageComponent extends Component
                 $module,
                 'oluşturuldu'
             );
+            
+            // Yeni modülü otomatik olarak tüm tenant'lara ata
+            $this->autoAssignModuleToAllTenants($module);
         }
         
         // Tenant relationships güncelleme ve izin işlemleri
@@ -255,5 +258,41 @@ class ModuleManageComponent extends Component
         return view('modulemanagement::livewire.module-manage-component', [
             'types' => $types
         ]);
+    }
+    
+    /**
+     * Yeni modülü otomatik olarak tüm tenant'lara ata ve permission'ları oluştur
+     */
+    private function autoAssignModuleToAllTenants(Module $module)
+    {
+        try {
+            // Tüm tenant'ları al
+            $tenants = DB::table('tenants')->get();
+            
+            // Permission service
+            $permissionService = app(\App\Services\ModuleTenantPermissionService::class);
+            
+            foreach ($tenants as $tenant) {
+                // Modülü tenant'a ata
+                $module->tenants()->attach($tenant->id, ['is_active' => true]);
+                
+                // Permission'ları oluştur
+                $permissionService->handleModuleAddedToTenant($module->module_id, $tenant->id);
+            }
+            
+            // Başarı mesajı
+            $this->dispatch('toast', [
+                'title' => 'Bilgi',
+                'message' => 'Yeni modül tüm tenant\'lara otomatik olarak atandı ve izinleri oluşturuldu.',
+                'type' => 'info',
+            ]);
+            
+        } catch (\Exception $e) {
+            // Hata durumunda log'a yazdır
+            \Log::error('Auto-assign module to tenants failed', [
+                'module_id' => $module->module_id,
+                'error' => $e->getMessage()
+            ]);
+        }
     }
 }

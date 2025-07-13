@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Artisan;
 use App\Http\Middleware\InitializeTenancy;
 
 // Genel admin rotaları - sadece roller tablosunda kaydı olan kullanıcılar için  
@@ -233,6 +234,30 @@ Route::middleware(['admin', 'tenant'])->prefix('admin')->name('admin.')->group(f
         
         return redirect()->back();
     })->name('admin.language.switch');
+
+    // Cache Clear Routes
+    Route::post('/cache/clear', function () {
+        try {
+            Cache::flush();
+            return response()->json(['success' => true, 'message' => 'Cache temizlendi']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Cache temizleme başarısız'], 500);
+        }
+    })->name('cache.clear');
+
+    Route::post('/cache/clear-all', function () {
+        try {
+            Artisan::call('cache:clear');
+            Artisan::call('config:clear');
+            Artisan::call('route:clear');
+            Artisan::call('view:clear');
+            
+            return response()->json(['success' => true, 'message' => 'Sistem cache temizlendi']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Sistem cache temizleme başarısız'], 500);
+        }
+    })->name('cache.clear.all');
+
 
     // AI Token Management routes kaldırıldı - AI modülündeki routes/admin.php kullanılıyor
 });

@@ -9,6 +9,14 @@ use App\Models\Tenant;
 class AITenantProfile extends Model
 {
     protected $table = 'ai_tenant_profiles';
+    
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+        
+        // AI tabloları her zaman central database'de
+        $this->setConnection('mysql');
+    }
 
     protected $fillable = [
         'tenant_id',

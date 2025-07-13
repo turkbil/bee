@@ -32,9 +32,9 @@
                     <div style="width: 150px">
                         <select wire:model.live="typeFilter" class="form-select listing-filter-select">
                             <option value="">{{ __('modulemanagement::admin.all_types') }}</option>
-                            <option value="content">{{ __('modulemanagement::admin.content') }}</option>
-                            <option value="management">{{ __('modulemanagement::admin.management') }}</option>
-                            <option value="system">{{ __('modulemanagement::admin.system') }}</option>
+                            @foreach($types as $type)
+                                <option value="{{ $type }}">{{ ucfirst($type) }}</option>
+                            @endforeach
                         </select>
                     </div>
                     <!-- Domain Gösterim -->
@@ -45,8 +45,6 @@
                     <!-- Sayfa Adeti Seçimi -->
                     <div style="min-width: 60px">
                         <select wire:model.live="perPage" class="form-select listing-filter-select">
-                            <option value="10">10</option>
-                            <option value="50">50</option>
                             <option value="100">100</option>
                             <option value="500">500</option>
                             <option value="1000">1000</option>
@@ -59,7 +57,7 @@
         <div class="row row-cards">
             @php
             $groupedModules = $modules->groupBy('type');
-            $typeOrder = ['content', 'management', 'system'];
+            $typeOrder = ['content', 'ai', 'widget', 'management', 'system'];
             @endphp
 
             @forelse($typeOrder as $type)
@@ -78,6 +76,14 @@
                     @case('content')
                     <i class="fas fa-file-alt me-2 text-muted"></i>
                     <h3 class="mb-0 h4">{{ __('modulemanagement::admin.content_modules') }}</h3>
+                    @break
+                    @case('ai')
+                    <i class="fas fa-stars me-2 text-muted"></i>
+                    <h3 class="mb-0 h4">{{ __('modulemanagement::admin.ai_modules') }}</h3>
+                    @break
+                    @case('widget')
+                    <i class="fas fa-puzzle-piece me-2 text-muted"></i>
+                    <h3 class="mb-0 h4">{{ __('modulemanagement::admin.widget_modules') }}</h3>
                     @break
                     @endswitch
                     <div class="ms-auto">

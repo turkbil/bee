@@ -98,6 +98,15 @@ return [
 'token_balance' => 'Token Bakiyesi',
 'monthly_usage' => 'Aylık Kullanım',
 'buy_tokens' => 'Token Satın Al',
+
+// Debug & Analytics
+'debug_dashboard' => 'Debug Dashboard',
+'priority_debug_dashboard' => 'Priority Debug Dashboard', 
+'performance_analytics' => 'Performans Analizi',
+'prompt_usage_heatmap' => 'Prompt Kullanım Haritası',
+'error_analysis' => 'Hata Analizi',
+'debug_analytics' => 'Debug ve Analiz',
+
 'menu' => 'Menü',
 'test_connection' => 'Bağlantı Testi',
 'model' => 'Model',
@@ -109,6 +118,17 @@ return [
 'inactive' => 'Pasif',
 'inactive_info' => 'Modül durumu',
 'token_management' => 'Token Yönetimi',
+'token_packages' => 'Token Paketleri',
+'token_purchases' => 'Token Satın Alımları',
+'usage_statistics' => 'Kullanım İstatistikleri',
+
+// Debug & Analytics
+'debug_dashboard' => 'Debug Dashboard',
+'priority_debug_dashboard' => 'Priority Debug Dashboard',
+'performance_analytics' => 'Performance Analytics',
+'prompt_usage_heatmap' => 'Prompt Usage Heatmap',
+'error_analysis' => 'Error Analysis',
+'debug_analytics' => 'Debug & Analytics',
 'token_packages' => 'Token Paketleri',
 'purchase_history' => 'Satın Alma Geçmişi',
 'usage_statistics' => 'Kullanım İstatistikleri',

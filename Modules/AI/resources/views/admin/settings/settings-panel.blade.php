@@ -126,10 +126,14 @@
                 <div class="tab-pane" id="tabs-common-prompt">
                     <div class="d-flex align-items-center mb-4">
                         <div class="me-3">
-                            <i class="fas fa-cog fa-2x text-muted"></i>
+                            <div class="bg-blue-lt p-3 rounded-circle">
+                                <i class="fas fa-share-alt text-blue"></i>
+                            </div>
                         </div>
                         <div>
-                            <h3 class="card-title mb-0">{{ __('ai::admin.common_features_prompt') }}</h3>
+                            <h3 class="card-title mb-1 h4">
+                                <i class="fas fa-star text-warning me-2"></i>{{ __('ai::admin.common_features_prompt') }}
+                            </h3>
                             <p class="text-muted mb-0">{{ __('ai::admin.info.common_prompt_description') }}</p>
                         </div>
                     </div>
@@ -232,10 +236,14 @@
                                         <h3 class="card-title mb-0">{{ $promptItem->name }}</h3>
                                         <div>
                                             @if($promptItem->is_default)
-                                            <span class="badge bg-secondary">{{ __('ai::admin.default') }}</span>
+                                            <span class="text-muted small">
+                                                <i class="fas fa-star text-warning me-1"></i>{{ __('ai::admin.default') }}
+                                            </span>
                                             @endif
                                             @if($promptItem->is_system && !$promptItem->is_common)
-                                            <span class="badge bg-secondary">{{ __('ai::admin.system') }}</span>
+                                            <span class="text-muted small ms-2">
+                                                <i class="fas fa-cog text-info me-1"></i>{{ __('ai::admin.system') }}
+                                            </span>
                                             @endif
                                         </div>
                                     </div>

@@ -33,22 +33,6 @@
                                 {{-- Sol - Step Bilgileri --}}
                                 <div class="col-lg-8 col-md-7">
                                     <div class="hero-left-content">
-                                        {{-- Debug Info (sadece geliştirme için) --}}
-                                        @if(config('app.debug'))
-                                        <div class="alert alert-warning mb-3" style="font-size: 12px;">
-                                            <strong>🔍 Debug Info:</strong><br>
-                                            Profile ID: {{ $profile?->id ?? 'null' }}<br>
-                                            Current Step: {{ $currentStep }}<br>
-                                            Form Data Keys: {{ count($formData) }}<br>
-                                            @if(isset($formData['brand_name']))
-                                                Brand Name: "{{ $formData['brand_name'] }}"<br>
-                                            @endif
-                                            @if(isset($formData['city']))
-                                                City: "{{ $formData['city'] }}"<br>
-                                            @endif
-                                            Sector: "{{ $formData['sector'] ?? 'null' }}"<br>
-                                        </div>
-                                        @endif
                                         
                                         <div class="step-info-container d-flex align-items-center gap-3">
                                             <div class="ai-hologram" style="
@@ -201,7 +185,7 @@
             <div class="card wizard-card border-0 shadow-lg">
                 <div class="card-body p-5">
                     {{-- Form Content --}}
-                    <form wire:submit.prevent="completeProfile">
+                    <form id="ai-profile-form" method="POST">
                         <div class="form-content">
                             
                             @foreach($questions as $question)
@@ -227,15 +211,34 @@
                                 <div class="form-group mb-4">
                                     
                                     {{-- Question Label --}}
-                                    <label class="form-label fw-bold fs-5 mb-3">
-                                        {{ $question->question_text }}
-                                        @if($question->is_required)
-                                            <span class="text-danger ms-1">*</span>
-                                        @endif
-                                    </label>
+                                    @if($currentStep === 1)
+                                        {{-- Step 1 için ortalanmış başlık --}}
+                                        <div class="text-center mb-2">
+                                            <label class="form-label fw-bold fs-5 mb-1 d-block">
+                                                {{ $question->question_text }}
+                                                @if($question->is_required)
+                                                    <span class="text-danger ms-1">*</span>
+                                                @endif
+                                            </label>
+                                        </div>
+                                    @else
+                                        {{-- Diğer step'ler için normal başlık --}}
+                                        <label class="form-label fw-bold fs-5 mb-3 d-block">
+                                            {{ $question->question_text }}
+                                            @if($question->is_required)
+                                                <span class="text-danger ms-1">*</span>
+                                            @endif
+                                        </label>
+                                    @endif
                                     
                                     @if($question->help_text)
-                                        <div class="form-hint">{{ $question->help_text }}</div>
+                                        @if($currentStep === 1)
+                                            <div class="text-center mb-3">
+                                                <div class="form-hint">{{ $question->help_text }}</div>
+                                            </div>
+                                        @else
+                                            <div class="form-hint">{{ $question->help_text }}</div>
+                                        @endif
                                     @endif
                                     
                                     {{-- Input Based on Type --}}
@@ -244,26 +247,113 @@
                                         @case('select')
                                             {{-- Special handling for sector selection with categorized grid --}}
                                             @if(in_array($question->question_key, ['sector_selection', 'sector']) && $currentStep === 1)
-                                                {{-- Sektör Arama Kutusu --}}
-                                                <div class="col-12 mb-4">
-                                                    <div class="position-relative">
-                                                        <input type="text" 
-                                                               class="form-control form-control-lg" 
-                                                               placeholder="Sektör ara... (örn: web tasarım, e-ticaret, muhasebe)" 
-                                                               id="sectorSearch"
-                                                               x-data="{ searchTerm: '' }"
-                                                               x-model="searchTerm"
-                                                               @input="filterSectors($event.target.value)"
-                                                               style="padding-left: 50px; font-size: 16px; height: 60px; border-radius: 12px; border: 2px solid #e2e8f0; transition: all 0.3s ease;">
-                                                        <div class="position-absolute" style="left: 18px; top: 50%; transform: translateY(-50%); color: #64748b;">
-                                                            <i class="fas fa-search fs-4"></i>
+                                                {{-- Premium Arama Interface - Daha Büyük ve Şık --}}
+                                                <div class="premium-search-container text-center mb-6" id="searchContainer">
+                                                    <div class="row justify-content-center">
+                                                        <div class="col-lg-10 col-xl-8">
+                                                            {{-- Premium Ana Arama Kutusu --}}
+                                                            <div class="position-relative premium-search-box">
+                                                                <input type="text" 
+                                                                       class="form-control" 
+                                                                       placeholder="Sektörünüzü arayın..." 
+                                                                       id="sectorSearch"
+                                                                       style="
+                                                                           height: clamp(68px, 10vw, 88px); 
+                                                                           font-size: clamp(20px, 3.5vw, 28px); 
+                                                                           padding: 0 clamp(120px, 18vw, 140px) 0 clamp(32px, 5vw, 40px); 
+                                                                           border: 3px solid var(--tblr-primary) !important; 
+                                                                           border-radius: clamp(34px, 6vw, 44px); 
+                                                                           box-shadow: 0 8px 32px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04); 
+                                                                           font-weight: 500; 
+                                                                           letter-spacing: 0.3px; 
+                                                                           transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                                                                       "
+                                                                       onfocus="this.style.fontSize='clamp(24px, 4.5vw, 34px)'; this.style.boxShadow='0 12px 40px rgba(var(--tblr-primary-rgb), 0.15), 0 6px 20px rgba(var(--tblr-primary-rgb), 0.08)'; this.style.transform='translateY(-2px)'"
+                                                                       onblur="this.style.fontSize='clamp(20px, 3.5vw, 28px)'; this.style.boxShadow='0 8px 32px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04)'; this.style.transform='translateY(0)'">
+                                                                       
+                                                                {{-- Arama İkonu --}}
+                                                                <div class="position-absolute" style="right: clamp(60px, 9vw, 75px); top: 50%; transform: translateY(-50%); color: var(--tblr-primary);">
+                                                                    <i class="fas fa-search" style="font-size: clamp(16px, 2vw, 20px);"></i>
+                                                                </div>
+                                                                
+                                                                {{-- Temizleme Butonu --}}
+                                                                <button type="button" 
+                                                                        class="btn position-absolute" 
+                                                                        id="clearSearchBtn"
+                                                                        style="
+                                                                            right: clamp(15px, 2vw, 20px); 
+                                                                            top: 50%; 
+                                                                            transform: translateY(-50%); 
+                                                                            border: none; 
+                                                                            background: none; 
+                                                                            color: var(--tblr-secondary); 
+                                                                            padding: clamp(8px, 1.5vw, 10px); 
+                                                                            border-radius: 50%; 
+                                                                            transition: all 0.3s ease;
+                                                                            width: clamp(32px, 4vw, 38px);
+                                                                            height: clamp(32px, 4vw, 38px);
+                                                                            display: flex;
+                                                                            align-items: center;
+                                                                            justify-content: center;
+                                                                        "
+                                                                        onmouseover="this.style.backgroundColor='var(--tblr-bg-surface-secondary)'; this.style.color='var(--tblr-body-color)'"
+                                                                        onmouseout="this.style.backgroundColor='transparent'; this.style.color='var(--tblr-secondary)'"
+                                                                        title="Temizle">
+                                                                    <i class="fas fa-times" style="font-size: clamp(14px, 1.8vw, 16px);"></i>
+                                                                </button>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                    <small class="text-muted mt-2 d-block">
-                                                        <i class="fas fa-info-circle me-1"></i>
-                                                        Sektörünüzü hızlıca bulmak için arama yapabilirsiniz
-                                                    </small>
                                                 </div>
+                                                
+                                                {{-- SEÇİLİ KATEGORİ BÖLÜMÜ (BAĞIMSIZ & SİMETRİK) --}}
+                                                <div class="selected-sector-section mb-5" id="selectedSectorSection" style="display: none;">
+                                                    <div class="row justify-content-center">
+                                                        <div class="col-lg-8 col-xl-6">
+                                                            <div class="card" style="background: var(--tblr-bg-surface); box-shadow: 0 8px 32px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04); border-radius: 16px; border: 3px solid var(--tblr-muted) !important;">
+                                                                <div class="card-body p-4">
+                                                                    <div class="d-flex align-items-center justify-content-between">
+                                                                        {{-- Sol: İkon + Bilgiler --}}
+                                                                        <div class="d-flex align-items-center">
+                                                                            <div class="me-4">
+                                                                                <div class="bg-muted text-white rounded-circle d-flex align-items-center justify-content-center position-relative" 
+                                                                                     style="width: 56px; height: 56px; box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);">
+                                                                                    <i class="fas fa-check-circle" style="font-size: 24px;"></i>
+                                                                                    {{-- Muted pulse animation --}}
+                                                                                    <div class="position-absolute" style="width: 56px; height: 56px; border: 2px solid rgba(108, 117, 125, 0.4); border-radius: 50%; animation: pulse-muted 3s infinite;"></div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="flex-grow-1">
+                                                                                <h6 class="mb-2 text-muted fw-bold" style="font-size: 15px; letter-spacing: 0.5px;">
+                                                                                    SEÇİLİ KATEGORİ
+                                                                                </h6>
+                                                                                <div class="d-flex align-items-center mb-1">
+                                                                                    <span id="selectedSectorName" class="fw-medium" style="font-size: 16px; color: var(--tblr-body-color);"></span>
+                                                                                </div>
+                                                                                <small id="selectedSectorDesc" class="d-block" style="line-height: 1.4; max-width: 300px; color: var(--tblr-body-color); opacity: 0.7;"></small>
+                                                                            </div>
+                                                                        </div>
+                                                                        
+                                                                        {{-- Sağ: Değiştir Butonu --}}
+                                                                        <div class="ms-3">
+                                                                            <button type="button" 
+                                                                                    class="btn btn-outline-muted px-4 py-2" 
+                                                                                    id="changeSectorBtn"
+                                                                                    style="border-radius: 25px; font-weight: 500; border-width: 2px; transition: all 0.3s ease;">
+                                                                                <i class="fas fa-edit me-2"></i>
+                                                                                <span class="d-none d-sm-inline">Değiştir</span>
+                                                                                <span class="d-sm-none">Değiştir</span>
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                {{-- Kategori Listesi (Arama Sonuçları) --}}
+                                                <div class="sectors-grid" id="sectorsGrid" style="display: none;">
                                                 
                                                 {{-- DEBUG: Sectors count = {{ $sectors->count() ?? 'NULL' }} --}}
                                                 @foreach($sectors as $mainCategory)
@@ -303,7 +393,13 @@
                                                                            @if(isset($formData[$fieldKey]) && $formData[$fieldKey] == $sector->code) checked @endif
                                                                            @if($question->is_required) required @endif>
                                                                     <span class="form-imagecheck-figure" style="width: 100%; display: flex;">
-                                                                        <div class="form-imagecheck-image sector-card d-flex flex-column" style="min-height: 140px; height: 140px; width: 100%; flex: 1;">
+                                                                        <div class="form-imagecheck-image sector-card d-flex flex-column" 
+                                                                             style="min-height: 140px; height: 140px; width: 100%; flex: 1;"
+                                                                             data-sector="{{ $sector->code }}"
+                                                                             data-sector-name="{{ $sector->name }}"
+                                                                             data-sector-desc="{{ $sector->description ?? '' }}"
+                                                                             data-sector-icon="@if($sector->emoji){{ $sector->emoji }}@elseif($sector->icon){{ $sector->icon }}@else fas fa-briefcase @endif"
+                                                                             data-sector-icon-type="@if($sector->emoji)emoji@elseif($sector->icon)icon@else icon @endif">
                                                                             <div class="sector-icon mb-2" style="min-height: 40px; display: flex; align-items: center; justify-content: center;">
                                                                                 @if($sector->emoji)
                                                                                     <span class="sector-emoji" style="font-size: 24px;">{{ $sector->emoji }}</span>
@@ -326,6 +422,7 @@
                                                         @endforeach
                                                     </div>
                                                 @endforeach
+                                                </div> {{-- sectors-grid kapatma tag'i --}}
                                             @else
                                                 {{-- Normal select dropdown for other fields --}}
                                             <select class="form-select profile-field-input" 
@@ -614,12 +711,14 @@
                             @if($currentStep === 4)
                                 <div class="founder-section" id="founder-questions-section" style="display: {{ $showFounderQuestions ? 'block' : 'none' }}; transition: opacity 0.2s ease;">
                                     <h5 class="mb-3">Kurucu Bilgileri</h5>
+                                    {{-- DEBUG INFO --}}
                                     @php
-                                        // Component'in zaten yüklediği sorulardan founder sorularını filtrele (share_founder_info hariç)
+                                        // Component'in zaten yüklediği sorulardan founder sorularını filtrele (section = 'founder_info')
                                         $founderQuestions = $questions->filter(function($question) {
-                                            return $question->question_key !== 'share_founder_info' && str_contains($question->question_key, 'founder_');
+                                            return $question->section === 'founder_info';
                                         });
                                     @endphp
+                                    
                                     
                                     @foreach($founderQuestions as $question)
                                         @php
@@ -871,34 +970,61 @@
                             @endif
                         </div>
                         
-                        {{-- Navigation Buttons - jQuery Controlled --}}
-                        <div class="form-footer mt-5">
-                            <div class="d-flex justify-content-between">
-                                <div class="d-flex gap-2">
-                                    @if($currentStep > 1)
-                                        <button type="button" class="btn btn-ghost-primary btn-nav-previous"
-                                                data-current-step="{{ $currentStep }}"
-                                                data-target-step="{{ $currentStep - 1 }}">
-                                            <i class="fas fa-arrow-left me-2"></i>
-                                            Önceki Adım
-                                        </button>
-                                    @endif
-                                    
+                        {{-- Navigation Buttons + Toggle Categories - SİMETRİK LAYOUT --}}
+                        <div class="form-footer mt-6 pt-4">
+                            <div class="row align-items-center g-3">
+                                {{-- Sol taraf: Kategorileri Göster + Önceki Adım --}}
+                                <div class="col-12 col-md-6 mb-3 mb-md-0">
+                                    <div class="d-flex gap-3 flex-wrap justify-content-md-start justify-content-center">
+                                        {{-- Kategorileri Göster Butonu (Sadece Adım 1'de) --}}
+                                        @if($currentStep === 1)
+                                            <button type="button" 
+                                                    class="btn btn-outline-primary px-4 py-2"
+                                                    id="toggleCategoriesBtn"
+                                                    style="border-radius: 25px; font-weight: 500; border-width: 2px; transition: all 0.3s ease; transform: none !important;">
+                                                <i class="fas fa-th-large me-2"></i>
+                                                <span id="toggleCategoriesText">Tüm Kategorileri Göster</span>
+                                            </button>
+                                        @endif
+                                        
+                                        {{-- Önceki Adım Butonu --}}
+                                        @if($currentStep > 1)
+                                            <button type="button" 
+                                                    class="btn btn-outline-secondary px-4 py-2 btn-nav-previous"
+                                                    data-current-step="{{ $currentStep }}"
+                                                    data-target-step="{{ $currentStep - 1 }}"
+                                                    style="border-radius: 25px; font-weight: 500; border-width: 2px; transition: all 0.3s ease;">
+                                                <i class="fas fa-arrow-left me-2"></i>
+                                                <span class="d-none d-sm-inline">Önceki Adım</span>
+                                                <span class="d-sm-none">Önceki</span>
+                                            </button>
+                                        @endif
+                                    </div>
                                 </div>
-                                <div>
-                                    @if($currentStep < $totalSteps)
-                                        <button type="button" class="btn btn-primary btn-lg btn-nav-next" 
-                                                data-current-step="{{ $currentStep }}"
-                                                data-target-step="{{ $currentStep + 1 }}">
-                                            Sonraki Adım
-                                            <i class="fas fa-arrow-right ms-2"></i>
-                                        </button>
-                                    @else
-                                        <button type="button" class="btn btn-success btn-lg btn-complete-profile">
-                                            <i class="fas fa-magic me-2"></i>
-                                            Yapay Zeka Asistanını Aktifleştir
-                                        </button>
-                                    @endif
+                                
+                                {{-- Sağ taraf: Sonraki Adım --}}
+                                <div class="col-12 col-md-6">
+                                    <div class="d-flex justify-content-md-end justify-content-center">
+                                        @if($currentStep < $totalSteps)
+                                            <button type="button" 
+                                                    class="btn btn-primary btn-lg px-5 py-3 btn-nav-next" 
+                                                    data-current-step="{{ $currentStep }}"
+                                                    data-target-step="{{ $currentStep + 1 }}"
+                                                    style="border-radius: 30px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 15px rgba(13, 110, 253, 0.25); transition: all 0.3s ease;">
+                                                <span class="d-none d-sm-inline">Sonraki Adım</span>
+                                                <span class="d-sm-none">Sonraki</span>
+                                                <i class="fas fa-arrow-right ms-2"></i>
+                                            </button>
+                                        @else
+                                            <button type="button" 
+                                                    class="btn btn-success btn-lg px-5 py-3 btn-complete-profile"
+                                                    style="border-radius: 30px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 15px rgba(25, 135, 84, 0.25); transition: all 0.3s ease;">
+                                                <i class="fas fa-magic me-2"></i>
+                                                <span class="d-none d-sm-inline">Yapay Zeka Asistanını Aktifleştir</span>
+                                                <span class="d-sm-none">AI'ı Aktifleştir</span>
+                                            </button>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -992,53 +1118,314 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeFounderQuestions();
 });
 
-// ===== SEKTÖR ARAMA FONKSİYONU =====
-function filterSectors(searchTerm) {
+// ===== BASIT VE NET ARAMA SİSTEMİ =====
+let isSearchMode = false; // Arama modu açık mı?
+let showAllMode = false; // Tümünü göster modu açık mı?
+
+function performSearch(searchTerm) {
     const term = searchTerm.toLowerCase().trim();
-    const sectorCards = document.querySelectorAll('.sector-card');
-    const categoryBands = document.querySelectorAll('.category-header-band');
+    const sectorCards = $('.sector-card');
+    const categoryBands = $('.category-header-band');
+    const sectorsGrid = $('#sectorsGrid');
+    const toggleBtn = $('#toggleCategoriesBtn');
+    const noResultsDiv = $('#noSearchResults');
+    const selectedSectorSection = $('#selectedSectorSection');
     
-    if (term === '') {
-        // Arama boşsa tüm kartları göster
-        sectorCards.forEach(card => {
-            card.closest('.col-6, .col-md-4, .col-lg-3').style.display = 'block';
+    if (term.length > 0) {
+        // ARAMA MODU AÇIK
+        isSearchMode = true;
+        toggleBtn.hide(); // "Tümünü Göster" butonunu gizle
+        selectedSectorSection.hide(); // Seçili sektör bölümünü gizle (arama sırasında)
+        sectorsGrid.show();
+        
+        let hasResults = false;
+        let visibleCategoriesCount = {};
+        
+        // Önce tüm kartları gizle
+        sectorCards.each(function() {
+            $(this).closest('.col-6, .col-md-4, .col-lg-3').hide();
         });
-        categoryBands.forEach(band => {
-            band.closest('.col-12').style.display = 'block';
+        categoryBands.each(function() {
+            $(this).closest('.col-12').hide();
         });
-        return;
+        
+        // Arama kriterine uyan kartları göster
+        sectorCards.each(function() {
+            const $card = $(this);
+            const sectorName = $card.find('.sector-name').text().toLowerCase();
+            const sectorDesc = $card.find('.sector-desc').text().toLowerCase();
+            const $cardContainer = $card.closest('.col-6, .col-md-4, .col-lg-3');
+            const $categoryContainer = $cardContainer.closest('.row').prev();
+            const categoryTitle = $categoryContainer.find('h5').text().toLowerCase();
+            
+            // Arama terimi sektör adında, açıklamasında VEYA ana kategori adında var mı?
+            const matchesSector = sectorName.includes(term) || sectorDesc.includes(term);
+            const matchesCategory = categoryTitle.includes(term);
+            
+            if (matchesSector || matchesCategory) {
+                $cardContainer.show();
+                $categoryContainer.show();
+                visibleCategoriesCount[categoryTitle] = (visibleCategoriesCount[categoryTitle] || 0) + 1;
+                hasResults = true;
+            }
+        });
+        
+        // Sonuç yoksa hata göster
+        if (!hasResults) {
+            showNoResults(term);
+        } else {
+            hideNoResults();
+        }
+        
+    } else {
+        // ARAMA KAPATILDI
+        isSearchMode = false;
+        toggleBtn.show(); // "Tümünü Göster" butonunu göster
+        selectedSectorSection.show(); // Seçili sektör bölümünü tekrar göster
+        sectorsGrid.hide(); // Grid'i gizle (normal duruma dön)
+        hideNoResults();
+    }
+}
+
+function showAllCategories() {
+    const sectorCards = $('.sector-card');
+    const categoryBands = $('.category-header-band');
+    const sectorsGrid = $('#sectorsGrid');
+    const selectedSectorCode = '{{ $formData["sector_selection"] ?? "" }}';
+    const toggleBtn = $('#toggleCategoriesBtn');
+    const selectedSectorSection = $('#selectedSectorSection');
+    
+    showAllMode = true;
+    selectedSectorSection.hide(); // Seçili sektör bölümünü gizle (tümü gösterilirken)
+    sectorsGrid.show();
+    
+    // TÜM kartları ve kategorileri göster
+    sectorCards.each(function() {
+        $(this).closest('.col-6, .col-md-4, .col-lg-3').show();
+    });
+    categoryBands.each(function() {
+        $(this).closest('.col-12').show();
+    });
+    
+    // Seçili sektörü vurgula
+    highlightSelectedSector(selectedSectorCode);
+    
+    // Buton metnini güncelle
+    $('#toggleCategoriesText').text('Kategorileri Gizle');
+}
+
+function hideCategories() {
+    showAllMode = false;
+    
+    // Seçili sektör bölümünü tekrar göster ve grid'i gizle
+    $('#selectedSectorSection').show();
+    $('#sectorsGrid').hide();
+    
+    // Buton metnini güncelle
+    $('#toggleCategoriesText').text('Tüm Kategorileri Göster');
+}
+
+function showSelectedSectorOnly() {
+    const selectedSectorCode = '{{ $formData["sector_selection"] ?? "" }}';
+    const sectorsGrid = $('#sectorsGrid');
+    
+    if (selectedSectorCode) {
+        sectorsGrid.show();
+        
+        const sectorCards = $('.sector-card');
+        const categoryBands = $('.category-header-band');
+        
+        // Önce tüm kartları gizle
+        sectorCards.each(function() {
+            $(this).closest('.col-6, .col-md-4, .col-lg-3').hide();
+        });
+        categoryBands.each(function() {
+            $(this).closest('.col-12').hide();
+        });
+        
+        let foundSelected = false;
+        
+        // Seçili sektörü bul ve göster
+        sectorCards.each(function() {
+            const $card = $(this);
+            const cardSectorCode = $card.find('input[type="radio"]').val();
+            
+            if (cardSectorCode === selectedSectorCode) {
+                const $cardContainer = $card.closest('.col-6, .col-md-4, .col-lg-3');
+                const $categoryContainer = $cardContainer.closest('.row').prev();
+                
+                // Seçili sektörü ve kategorisini göster
+                $cardContainer.show();
+                $categoryContainer.show();
+                
+                foundSelected = true;
+                
+                // Vurgula
+                highlightSelectedSector(selectedSectorCode);
+                return false; // Break loop
+            }
+        });
+        
+        if (!foundSelected) {
+            // Seçili sektör bulunamadıysa grid'i gizle
+            sectorsGrid.hide();
+        }
+    } else {
+        sectorsGrid.hide();
+    }
+}
+
+function highlightSelectedSector(selectedSectorCode) {
+    const sectorCards = $('.sector-card');
+    
+    sectorCards.each(function() {
+        const $card = $(this);
+        const cardSectorCode = $card.find('input[type="radio"]').val();
+        
+        if (cardSectorCode === selectedSectorCode) {
+            $card.addClass('selected-sector');
+            $card.css({
+                'border': '2px solid var(--tblr-secondary)',
+                'box-shadow': '0 0 10px rgba(108, 117, 125, 0.2)',
+                'background': 'var(--tblr-bg-surface)'
+            });
+        } else {
+            $card.removeClass('selected-sector');
+            $card.css({
+                'border': '',
+                'box-shadow': '',
+                'background': ''
+            });
+        }
+    });
+}
+
+function showNoResults(searchTerm) {
+    let noResultsDiv = $('#noSearchResults');
+    if (noResultsDiv.length === 0) {
+        $('#sectorsGrid').before(`
+            <div id="noSearchResults" class="text-center py-5">
+                <div class="empty">
+                    <div class="empty-icon">
+                        <i class="fas fa-search fa-3x text-muted"></i>
+                    </div>
+                    <p class="empty-title h3">Arama sonucu bulunamadı</p>
+                    <p class="empty-subtitle text-muted mb-3">
+                        "<strong id="searchTermDisplay"></strong>" için uygun sektör bulunamadı.
+                        <br>Farklı anahtar kelimeler deneyebilirsiniz.
+                    </p>
+                    <button type="button" 
+                            class="btn btn-primary" 
+                            id="showAllFromNoResults"
+                            style="border-radius: 20px;">
+                        <i class="fas fa-th-large me-2"></i>
+                        Tüm kategorileri görebilirsiniz
+                    </button>
+                </div>
+            </div>
+        `);
+        noResultsDiv = $('#noSearchResults');
+        
+        // Tüm kategorileri göster butonuna event ekle
+        $('#showAllFromNoResults').on('click', function() {
+            $('#sectorSearch').val(''); // Arama kutusunu temizle
+            isSearchMode = false;
+            showAllMode = true;
+            $('#toggleCategoriesBtn').show();
+            showAllCategories(); // Tüm kategorileri göster
+            hideNoResults(); // "Sonuç bulunamadı" mesajını gizle
+        });
     }
     
-    let visibleCategoriesCount = {};
+    $('#searchTermDisplay').text(searchTerm);
+    noResultsDiv.show();
+}
+
+function hideNoResults() {
+    $('#noSearchResults').hide();
+}
+
+function clearSearch() {
+    $('#sectorSearch').val('');
+    isSearchMode = false;
+    showAllMode = false;
+    $('#toggleCategoriesBtn').show();
+    $('#toggleCategoriesText').text('Tüm Kategorileri Göster');
+    $('#selectedSectorSection').show(); // Seçili sektör bölümünü tekrar göster
+    $('#sectorsGrid').hide(); // Grid'i gizle (geri normal duruma)
+    hideNoResults(); // Eğer "sonuç bulunamadı" varsa gizle
+}
+
+// ===== JQUERY EVENT HANDLERS =====
+$(document).ready(function() {
+    // Sayfa yüklendiğinde seçili sektörü göster
+    initializeSelectedSectorVisibility();
     
-    // Sektör kartlarını filtrele
-    sectorCards.forEach(card => {
-        const sectorName = card.querySelector('.sector-name').textContent.toLowerCase();
-        const sectorDesc = card.querySelector('.sector-desc').textContent.toLowerCase();
-        const cardContainer = card.closest('.col-6, .col-md-4, .col-lg-3');
-        const categoryContainer = cardContainer.closest('.row').previousElementSibling;
-        const categoryTitle = categoryContainer.querySelector('h5').textContent;
-        
-        // Arama terimi sektör adında veya açıklamasında var mı?
-        if (sectorName.includes(term) || sectorDesc.includes(term)) {
-            cardContainer.style.display = 'block';
-            visibleCategoriesCount[categoryTitle] = (visibleCategoriesCount[categoryTitle] || 0) + 1;
-        } else {
-            cardContainer.style.display = 'none';
+    // Arama input event handler
+    $('#sectorSearch').on('input', function() {
+        performSearch($(this).val());
+    });
+    
+    // Arama kutusu focus/blur events
+    $('#sectorSearch').on('focus', function() {
+        $(this).closest('.google-search-box').addClass('focused');
+    }).on('blur', function() {
+        $(this).closest('.google-search-box').removeClass('focused');
+    });
+    
+    // Toggle kategoriler butonu - sadece arama modunda değilken çalışır
+    $('#toggleCategoriesBtn').on('click', function() {
+        if (!isSearchMode) {
+            if (showAllMode) {
+                hideCategories();
+            } else {
+                showAllCategories();
+            }
         }
     });
     
-    // Kategorileri gizle/göster (görünür sektörü olmayan kategoriler gizlenir)
-    categoryBands.forEach(band => {
-        const categoryTitle = band.querySelector('h5').textContent;
-        const categoryContainer = band.closest('.col-12');
+    // Temizle butonu
+    $('#clearSearchBtn').on('click', function() {
+        clearSearch();
+    });
+    
+    // ===== KURUCU SORULARI GÖSTER/GİZLE (STEP 4) =====
+    $(document).on('change', 'input[name="formData[company_info.share_founder_info]"]', function() {
+        const value = $(this).val();
+        const founderSection = $('#founder-questions-section');
         
-        if (visibleCategoriesCount[categoryTitle] > 0) {
-            categoryContainer.style.display = 'block';
+        if (value === 'evet') {
+            // Kurucu sorularını göster
+            founderSection.fadeIn(300);
         } else {
-            categoryContainer.style.display = 'none';
+            // Kurucu sorularını gizle
+            founderSection.fadeOut(300);
+            
+            // Kurucu alanlarını temizle
+            $('input[name^="formData[founder_info"]').val('');
+            $('input[name^="formData[founder_info"]').prop('checked', false);
         }
     });
+});
+
+// Sayfa yüklendiğinde seçili sektörün görünür olmasını sağla
+function initializeSelectedSectorVisibility() {
+    const selectedSectorCode = '{{ $formData["sector_selection"] ?? "" }}';
+    
+    // DOM'un hazır olmasını bekle
+    setTimeout(function() {
+        if (selectedSectorCode) {
+            // Seçili sektör varsa, sadece seçili sektörü göster
+            showAllMode = false; // İlk açılışta sadece seçili sektör
+            $('#toggleCategoriesText').text('Tüm Kategorileri Göster');
+            showSelectedSectorOnly();
+        } else {
+            // Seçili sektör yoksa grid'i gizle
+            showAllMode = false;
+            $('#toggleCategoriesText').text('Tüm Kategorileri Göster');
+            $('#sectorsGrid').hide();
+        }
+    }, 500);
 }
 
 // ===== JQUERY AUTO-SAVE SİSTEMİ (LİVEWİRE'DAN BAĞIMSIZ) =====
@@ -1207,7 +1594,6 @@ $(document).ready(function() {
             
             // Skip if another request is in progress
             if (isRequestInProgress) {
-                console.log('🚫 Request skipped - another in progress');
                 return;
             }
             
@@ -1237,7 +1623,6 @@ $(document).ready(function() {
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.log('❌ AJAX Error:', status, error);
                 },
                 complete: function() {
                     isRequestInProgress = false;
@@ -1262,6 +1647,66 @@ style.textContent = `
     pointer-events: none !important;
     background-color: #f8f9fa !important;
     cursor: not-allowed !important;
+}
+
+/* ZıPLAMA EFEKTLERİNİ ENGELLE */
+#toggleCategoriesBtn {
+    transform: none !important;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease !important;
+}
+
+#toggleCategoriesBtn:hover {
+    background-color: #0d6efd !important;
+    color: white !important;
+    border-color: #0d6efd !important;
+    transform: none !important;
+}
+
+#toggleCategoriesBtn:active {
+    transform: none !important;
+}
+
+#toggleCategoriesBtn:focus {
+    transform: none !important;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25) !important;
+}
+
+/* ARAMA KUTUSU STİLLERİ - ZIPLAMASIZ */
+#sectorSearch {
+    transform: none !important;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+#sectorSearch:hover {
+    border-color: #b0b7c3 !important;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12) !important;
+    transform: none !important;
+}
+
+#sectorSearch:focus {
+    border-color: #4285f4 !important;
+    box-shadow: 0 6px 20px rgba(66, 133, 244, 0.15) !important;
+    outline: none !important;
+    transform: none !important;
+}
+
+.google-search-box {
+    transform: none !important;
+}
+
+.google-search-box.focused {
+    transform: none !important;
+}
+
+#clearSearchBtn {
+    transform: translateY(-50%) !important;
+    transition: color 0.2s ease, background-color 0.2s ease !important;
+}
+
+#clearSearchBtn:hover {
+    color: #5f6368 !important;
+    background-color: rgba(95, 99, 104, 0.1) !important;
+    transform: translateY(-50%) !important;
 }
 
 /* Experience years field styling - simple text input */
@@ -1303,37 +1748,36 @@ document.head.appendChild(style);
 // ===== JQUERY NAVIGATION SİSTEMİ (LİVEWİRE OLMADAN) =====
 $(document).ready(function() {
     
-    // Önceki adım buton handler
+    // Önceki adım buton handler - Loading State ile
     $(document).on('click', '.btn-nav-previous', function() {
         const currentStep = $(this).data('current-step');
         const targetStep = $(this).data('target-step');
         
-        // URL routing ile step değiştir (validation yok, sadece navigation)
-        window.location.href = '{{ route("admin.ai.profile.edit", ["step" => 1]) }}'.replace('/1', '/' + targetStep);
+        // Loading state aktif et
+        const $btn = $(this);
+        const originalText = $btn.html();
+        $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Yükleniyor...');
+        
+        // Kısa gecikme sonrası yönlendirme (loading görünümü için)
+        setTimeout(function() {
+            window.location.href = '{{ route("admin.ai.profile.edit", ["step" => 1]) }}'.replace('/1', '/' + targetStep);
+        }, 300);
     });
     
-    // Sonraki adım buton handler
+    // Sonraki adım buton handler - Loading State ile
     $(document).on('click', '.btn-nav-next', function() {
         const currentStep = $(this).data('current-step');
         const targetStep = $(this).data('target-step');
         
-        // Loading state
-        $(this).prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Kontrol ediliyor...');
+        // Loading state aktif et
+        const $btn = $(this);
+        const originalText = $btn.html();
+        $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Yükleniyor...');
         
-        // Livewire ile validation + save çağır
-        @this.call('saveAndNavigateNext').then(result => {
-            // Success - redirect already handled by Livewire method
-            console.log('Navigation successful:', result);
-        }).catch(error => {
-            console.error('Navigation error:', error);
-            // Button'u eski haline getir
-            $(this).prop('disabled', false).html('Sonraki Adım <i class="fas fa-arrow-right ms-2"></i>');
-            
-            // Hata mesajını göster
-            if (error && error.message) {
-                alert('Geçiş sırasında hata: ' + error.message);
-            }
-        });
+        // Kısa gecikme sonrası yönlendirme (loading görünümü için)
+        setTimeout(function() {
+            window.location.href = '{{ route("admin.ai.profile.edit", ["step" => 1]) }}'.replace('/1', '/' + targetStep);
+        }, 300);
     });
     
     // Profil tamamlama buton handler (son adım)
@@ -1345,7 +1789,6 @@ $(document).ready(function() {
         // Livewire ile complete profile çağır
         @this.call('completeProfile').then(result => {
             // Profile completion success - redirect handled by Livewire
-            console.log('Profile completion successful:', result);
         }).catch(error => {
             console.error('Profile completion error:', error);
             // Button'u eski haline getir
@@ -1353,7 +1796,6 @@ $(document).ready(function() {
             
             // Hata mesajını göster
             if (error && error.message) {
-                alert('Profil aktifleştirme sırasında hata: ' + error.message);
             }
         });
     });
@@ -1371,7 +1813,7 @@ $(document).on('change', 'input[type="radio"].custom-radio-trigger', function() 
     const value = $(this).val();
     
     // Check if this is a "Diğer" option
-    const isDigerOption = value.includes('Diğer') || value.includes('diger') || value === 'custom' || value === 'diger';
+    const isDigerOption = value.includes('Diğer') || value.includes('diger') || value === 'custom' || value === 'diger' || value === 'other';
     
     if (customField && isDigerOption) {
         // Show custom input (escape dots in CSS selector)
@@ -1461,6 +1903,14 @@ $(document).on('change', 'input[data-field="company_info.founder_permission"]', 
 
 // Initialize founder questions visibility on page load
 $(document).ready(function() {
+    // ===== SEÇİLİ SEKTÖR BAĞIMSIZ BÖLÜMÜ =====
+    updateSelectedSectorDisplay();
+    
+    // Sector seçildiğinde güncelle
+    $(document).on('change', 'input[name*="sector_selection"]', function() {
+        updateSelectedSectorDisplay();
+    });
+    
     // Check share_founder_info value and show/hide founder section
     const checkedFounderInfo = $('input[data-field="company_info.share_founder_info"]:checked');
     
@@ -1495,6 +1945,53 @@ $(document).ready(function() {
     });
 });
 
+// ===== SEÇİLİ SEKTÖR YÖNETİM FONKSİYONLARI =====
+function updateSelectedSectorDisplay() {
+    const selectedSector = $('input[name*="sector_selection"]:checked');
+    const selectedSection = $('#selectedSectorSection');
+    
+    if (selectedSector.length) {
+        const sectorValue = selectedSector.val();
+        
+        // Seçili sektörün kartını bul ve bilgilerini al
+        const selectedCard = $(`.sector-card[data-sector="${sectorValue}"]`);
+        if (selectedCard.length) {
+            const sectorName = selectedCard.data('sector-name');
+            const sectorDesc = selectedCard.data('sector-desc');
+            
+            // Seçili sektör bölümünü güncelle (ikon olmadan)
+            $('#selectedSectorName').text(sectorName);
+            $('#selectedSectorDesc').text(sectorDesc);
+            
+            // Seçili sektör bölümünü göster
+            selectedSection.show();
+            
+        }
+    } else {
+        // Seçili sektör yoksa bölümü gizle
+        selectedSection.hide();
+    }
+}
+
+// Değiştir butonu handler
+$(document).on('click', '#changeSectorBtn', function() {
+    // Grid'i göster, arama kutusunu temizle
+    $('#sectorsGrid').show();
+    $('#sectorSearch').val('').focus();
+    
+    // State'leri sıfırla
+    showAllMode = true;
+    isSearchMode = false;
+    
+    // Tüm kartları göster
+    $('.sector-card').closest('.col-6, .col-md-4, .col-lg-3').show();
+    $('.category-header-band').closest('.col-12').show();
+    
+    // Toggle butonu güncelle
+    updateToggleButton();
+    
+});
+
 // ===== EXPERIENCE YEARS FIELD - SIMPLE TEXT INPUT =====
 // Artık sadece text input olduğu için Choices.js kod bloğu kaldırıldı
 
@@ -1520,4 +2017,241 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+
+{{-- Google Benzeri Arama CSS --}}
+<style>
+/* Google Search Box Styling */
+.google-search-box .form-control:focus {
+    border-color: #4285f4 !important;
+    box-shadow: 0 4px 16px rgba(66, 133, 244, 0.2) !important;
+    outline: none;
+}
+
+.google-search-box.focused {
+    transform: translateY(-2px);
+    transition: transform 0.2s ease;
+}
+
+.google-search-container {
+    padding: 40px 0;
+}
+
+.categories-section {
+    border-top: 1px solid #e8eaed;
+    padding-top: 24px;
+    margin-top: 24px;
+}
+
+/* Kategori geçiş animasyonları */
+.sectors-grid {
+    transition: all 0.3s ease;
+}
+
+/* Hover effects */
+.google-search-box:hover .form-control {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Kategorileri göster butonu hover */
+.btn-outline-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.25);
+    transition: all 0.3s ease;
+}
+
+/* Search icon pulse animation */
+.google-search-box .fa-search {
+    transition: color 0.3s ease;
+}
+
+.google-search-box .form-control:focus + div .fa-search {
+    color: #4285f4;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Seçili Kategori Success Pulse Animation */
+@keyframes pulse-success {
+    0% { 
+        transform: scale(1); 
+        opacity: 1; 
+    }
+    50% { 
+        transform: scale(1.15); 
+        opacity: 0.7; 
+    }
+    100% { 
+        transform: scale(1); 
+        opacity: 1; 
+    }
+}
+
+/* Seçili Kategori Hover Effects */
+.selected-sector-section .btn-outline-success:hover {
+    transform: translateY(-2px);
+    background-color: var(--tblr-success);
+    color: white;
+    border-color: var(--tblr-success);
+    box-shadow: 0 6px 20px rgba(25, 135, 84, 0.25);
+}
+
+/* Navigation Buton Hover Effects */
+.form-footer .btn-nav-next:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(13, 110, 253, 0.4) !important;
+}
+
+.form-footer .btn-complete-profile:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(25, 135, 84, 0.4) !important;
+}
+
+.form-footer .btn-nav-previous:hover {
+    transform: translateY(-2px);
+    background-color: var(--tblr-secondary);
+    color: white;
+    border-color: var(--tblr-secondary);
+    box-shadow: 0 6px 20px rgba(108, 117, 125, 0.25);
+}
+
+.form-footer .btn-outline-primary:hover {
+    transform: translateY(-2px);
+    background-color: var(--tblr-primary);
+    color: white;
+    border-color: var(--tblr-primary);
+    box-shadow: 0 6px 20px rgba(13, 110, 253, 0.25);
+}
+
+/* Light/Dark Mode Uyumlu Renkler */
+.selected-sector-section .card {
+    background: var(--tblr-bg-surface) !important;
+    border-color: var(--tblr-success) !important;
+}
+
+.selected-sector-section #selectedSectorName {
+    color: var(--tblr-body-color) !important;
+}
+
+.selected-sector-section #selectedSectorDesc {
+    color: var(--tblr-body-color) !important;
+    opacity: 0.7;
+}
+
+/* Light/Dark Mode Uyumlu Renkler */
+.selected-sector-section .card {
+    background: var(--tblr-bg-surface) !important;
+    border-color: var(--tblr-primary) !important;
+}
+
+.selected-sector-section #selectedSectorName {
+    color: var(--tblr-body-color) !important;
+}
+
+.selected-sector-section #selectedSectorDesc {
+    color: var(--tblr-body-color) !important;
+    opacity: 0.7;
+}
+
+/* Form Labels ve Text Light/Dark Mode */
+.form-label, .question-label {
+    color: var(--tblr-body-color) !important;
+}
+
+.form-hint {
+    color: var(--tblr-body-color) !important;
+    opacity: 0.7;
+}
+
+/* Seçili Kategori Primary Pulse Animation */
+@keyframes pulse-primary {
+    0% { 
+        transform: scale(1); 
+        opacity: 1; 
+    }
+    50% { 
+        transform: scale(1.15); 
+        opacity: 0.7; 
+    }
+    100% { 
+        transform: scale(1); 
+        opacity: 1; 
+    }
+}
+
+/* Seçili Kategori Hover Effects */
+.selected-sector-section .btn-outline-primary:hover {
+    transform: translateY(-2px);
+    background-color: var(--tblr-primary);
+    color: white;
+    border-color: var(--tblr-primary);
+    box-shadow: 0 6px 20px rgba(13, 110, 253, 0.25);
+}
+
+/* Responsive Seçili Kategori Düzenlemeleri */
+@media (max-width: 576px) {
+    .selected-sector-section .card-body {
+        padding: 1.5rem !important;
+    }
+    
+    .selected-sector-section .bg-primary {
+        width: 48px !important;
+        height: 48px !important;
+    }
+    
+    .selected-sector-section .bg-primary i {
+        font-size: 20px !important;
+    }
+    
+    .selected-sector-section h6 {
+        font-size: 13px !important;
+    }
+    
+    .selected-sector-section #selectedSectorName {
+        font-size: 14px !important;
+    }
+}
+
+/* Anti-Jumping CSS - Butonlar ve elementler zıplamasın */
+.btn, .form-control, .google-search-box {
+    transform: none !important;
+    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn:hover {
+    transform: none !important;
+}
+
+/* Google search box özel hover (sadece box-shadow) */
+.google-search-box:hover .form-control {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transform: none !important;
+}
+
+/* Toggle categories button hover - sadece renk değişimi */
+.btn-outline-primary:hover {
+    transform: none !important;
+    background-color: var(--tblr-primary);
+    color: white;
+    border-color: var(--tblr-primary);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .google-search-container {
+        padding: 20px 0;
+    }
+    
+    .google-search-box .form-control {
+        height: clamp(56px, 8vw, 72px);
+        font-size: clamp(18px, 3vw, 24px);
+        max-width: min(800px, 95vw);
+    }
+}
+</style>
+
 @endpush

@@ -31,11 +31,7 @@ return new class extends Migration
             
             // Request Context
             $table->string('feature_slug', 100)->index();
-            $table->enum('request_type', [
-                'feature_test', 'chat', 'helper_function', 
-                'prowess_test', 'conversation', 'bulk_test',
-                'feature_request', 'brand_story_generation'
-            ])->index();
+            $table->string('request_type', 100)->index();
             $table->string('context_type', 50)->default('normal'); // minimal, normal, detailed
             
             // Prompt Analysis (Ana veri - JSON)

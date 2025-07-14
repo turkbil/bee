@@ -686,12 +686,10 @@ function regenerateBrandStory() {
             } else {
                 // Hata durumunda eski içeriği geri yükle
                 storyContainer.innerHTML = originalContent;
-                alert('Hikaye oluşturulurken hata: ' + (data.message || 'Bilinmeyen hata'));
             }
         })
         .catch(error => {
             storyContainer.innerHTML = originalContent;
-            alert('Hikaye oluşturulurken hata oluştu');
         });
     }
 }
@@ -699,7 +697,6 @@ function regenerateBrandStory() {
 function copyBrandStory() {
     const storyElement = document.querySelector('.brand-story-text');
     if (!storyElement) {
-        alert('Hikaye bulunamadı');
         return;
     }
     
@@ -732,10 +729,8 @@ function fallbackCopy(text, btn) {
         if (successful) {
             showCopySuccess(btn);
         } else {
-            alert('Kopyalama başarısız oldu');
         }
     } catch (err) {
-        alert('Kopyalama desteklenmiyor');
     } finally {
         document.body.removeChild(textArea);
     }
@@ -758,7 +753,6 @@ function showCopySuccess(btn) {
 @if(!$profile->hasBrandStory() && $profile->is_completed)
 // Auto-start brand story generation when profile is completed but no story exists
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🔥 Profile completed but no brand story - starting auto generation');
     
     const loadingElement = document.getElementById('brand-story-auto-loading');
     if (loadingElement) {
@@ -767,7 +761,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function startLiveBrandStoryGeneration() {
-    console.log('🚀 Starting live brand story generation...');
     
     // Update loading state with more dynamic text
     updateLoadingProgress();
@@ -784,7 +777,6 @@ function startLiveBrandStoryGeneration() {
     })
     .then(response => response.json())
     .then(data => {
-        console.log('✅ Brand story generation response:', data);
         
         if (data.success) {
             // Story generated successfully - reload page to show it

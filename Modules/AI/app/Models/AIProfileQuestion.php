@@ -62,10 +62,11 @@ class AIProfileQuestion extends Model
         $query = static::where('is_active', true)
                        ->where('step', $step);
         
-        // Step 4 için sadece company_info section sorularını getir (founder_info hariç)
+        // Step 4 için hem company_info hem founder_info section sorularını getir
         if ($step === 4) {
             $query->where(function($q) {
                 $q->where('section', 'company_info')
+                  ->orWhere('section', 'founder_info')
                   ->orWhereNull('section');
             });
         }
@@ -76,12 +77,16 @@ class AIProfileQuestion extends Model
                 $q->whereNull('sector_code')
                   ->orWhere('sector_code', $sectorCode);
             });
+            
+            // Sektöre özel sorular önce, sonra genel sorular (sort_order'a göre)
+            return $query->orderByRaw('CASE WHEN sector_code IS NOT NULL THEN 0 ELSE 1 END')
+                        ->orderBy('sort_order')
+                        ->get();
         } else {
             // Sadece genel soruları getir
             $query->whereNull('sector_code');
+            return $query->orderBy('sort_order')->get();
         }
-        
-        return $query->orderBy('sort_order')->get();
     }
 
     /**
@@ -115,7 +120,17 @@ class AIProfileQuestion extends Model
             return $this->is_required ? 'required' : 'nullable';
         }
         
+        // Validation rules array olmalı, eğer string ise JSON decode et
         $rules = $this->validation_rules;
+        if (is_string($rules)) {
+            $rules = json_decode($rules, true) ?? [];
+        }
+        
+        // Array olmadığı durumda güvenli fallback
+        if (!is_array($rules)) {
+            $rules = [];
+        }
+        
         if ($this->is_required && !in_array('required', $rules)) {
             array_unshift($rules, 'required');
         }

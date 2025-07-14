@@ -124,7 +124,8 @@
       "Bash(sudo rm:*)",
       "WebFetch(domain:tenancyforlaravel.com)",
       "Bash(truncate:*)",
-      "Bash(printf:*)"
+      "Bash(printf:*)",
+      "Bash(do echo \"Part $part ID''leri geri ekleniyor...\")"
     ],
     "deny": []
   },

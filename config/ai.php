@@ -191,4 +191,15 @@ return [
         'save_debug_logs' => (bool) env('AI_SAVE_DEBUG_LOGS', false),
         'test_mode' => (bool) env('AI_TEST_MODE', false),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Debug Dashboard
+    |--------------------------------------------------------------------------
+    |
+    | AI Debug Dashboard için özel ayarlar.
+    |
+    */
+    
+    'debug_logging_enabled' => (bool) env('AI_DEBUG_LOGGING_ENABLED', true),
 ];

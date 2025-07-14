@@ -29,7 +29,26 @@ class AITenantProfile extends Model
         'brand_story',
         'brand_story_created_at',
         'is_active',
-        'is_completed'
+        'is_completed',
+        
+        // SMART PROFILE SYSTEM FIELDS
+        'smart_field_scores',
+        'field_calculation_metadata',
+        'profile_completeness_score',
+        'profile_quality_grade',
+        'last_calculation_context',
+        'scores_calculated_at',
+        'context_performance',
+        'ai_recommendations',
+        'missing_critical_fields',
+        'field_quality_analysis',
+        'usage_analytics',
+        'ai_interactions_count',
+        'last_ai_interaction_at',
+        'avg_ai_response_quality',
+        'profile_version',
+        'version_history',
+        'auto_optimization_enabled'
     ];
 
     protected $casts = [
@@ -42,7 +61,21 @@ class AITenantProfile extends Model
         'context_priority' => 'array',
         'brand_story_created_at' => 'datetime',
         'is_active' => 'boolean',
-        'is_completed' => 'boolean'
+        'is_completed' => 'boolean',
+        
+        // SMART PROFILE SYSTEM CASTS
+        'smart_field_scores' => 'array',
+        'field_calculation_metadata' => 'array',
+        'profile_completeness_score' => 'decimal:2',
+        'scores_calculated_at' => 'datetime',
+        'context_performance' => 'array',
+        'ai_recommendations' => 'array',
+        'field_quality_analysis' => 'array',
+        'usage_analytics' => 'array',
+        'last_ai_interaction_at' => 'datetime',
+        'avg_ai_response_quality' => 'decimal:2',
+        'version_history' => 'array',
+        'auto_optimization_enabled' => 'boolean'
     ];
 
     /**
@@ -1290,5 +1323,406 @@ class AITenantProfile extends Model
         });
         
         return $sortedData;
+    }
+
+    // ===============================================
+    // SMART PROFILE SYSTEM - ADVANCED METHODS
+    // ===============================================
+
+    /**
+     * Recalculate smart scores for this profile
+     */
+    public function recalculateSmartScores(string $context = 'normal'): array
+    {
+        $smartBuilder = new \Modules\AI\App\Services\SmartProfileBuilder();
+        
+        // Extract current responses from profile data
+        $userResponses = $this->extractUserResponses();
+        
+        // Build smart profile
+        $smartProfile = $smartBuilder->buildSmartProfile($this->tenant_id, $userResponses, $context);
+        
+        // Update this model with smart data
+        $this->fill($smartProfile);
+        $this->save();
+        
+        return $smartProfile;
+    }
+
+    /**
+     * Extract user responses from current profile data
+     */
+    private function extractUserResponses(): array
+    {
+        $responses = [];
+        
+        // Extract from company_info
+        if ($this->company_info) {
+            foreach ($this->company_info as $key => $value) {
+                $responses[$key] = $value;
+            }
+        }
+        
+        // Extract from sector_details
+        if ($this->sector_details) {
+            foreach ($this->sector_details as $key => $value) {
+                $responses[$key] = $value;
+            }
+        }
+        
+        // Extract from founder_info
+        if ($this->founder_info) {
+            foreach ($this->founder_info as $key => $value) {
+                $responses["founder_{$key}"] = $value;
+            }
+        }
+        
+        // Extract from ai_behavior_rules
+        if ($this->ai_behavior_rules) {
+            foreach ($this->ai_behavior_rules as $key => $value) {
+                $responses[$key] = $value;
+            }
+        }
+        
+        return $responses;
+    }
+
+    /**
+     * Get smart field score for specific field
+     */
+    public function getSmartFieldScore(string $fieldKey): ?array
+    {
+        if (!$this->smart_field_scores) {
+            return null;
+        }
+        
+        return $this->smart_field_scores[$fieldKey] ?? null;
+    }
+
+    /**
+     * Get current recommendations
+     */
+    public function getCurrentRecommendations(): array
+    {
+        return $this->ai_recommendations ?? [];
+    }
+
+    /**
+     * Check if profile needs recalculation
+     */
+    public function needsRecalculation(): bool
+    {
+        if (!$this->scores_calculated_at) {
+            return true;
+        }
+        
+        // Recalculate if older than 24 hours
+        return $this->scores_calculated_at->diffInHours(now()) > 24;
+    }
+
+    /**
+     * Get context performance for specific context
+     */
+    public function getContextPerformance(string $context): ?array
+    {
+        if (!$this->context_performance) {
+            return null;
+        }
+        
+        return $this->context_performance[$context] ?? null;
+    }
+
+    /**
+     * Add context performance data
+     */
+    public function addContextPerformance(string $context, array $performanceData): void
+    {
+        $contextPerformance = $this->context_performance ?? [];
+        $contextPerformance[$context] = array_merge($performanceData, [
+            'calculated_at' => now()
+        ]);
+        
+        $this->context_performance = $contextPerformance;
+        $this->save();
+    }
+
+    /**
+     * Get field quality grade
+     */
+    public function getFieldQualityGrade(string $fieldKey): ?string
+    {
+        $fieldQuality = $this->field_quality_analysis ?? [];
+        
+        if (!isset($fieldQuality['field_grades'])) {
+            return null;
+        }
+        
+        return $fieldQuality['field_grades'][$fieldKey] ?? null;
+    }
+
+    /**
+     * Track AI interaction
+     */
+    public function trackAIInteraction(string $interactionType, array $metadata = []): void
+    {
+        $this->increment('ai_interactions_count');
+        $this->last_ai_interaction_at = now();
+        
+        // Update usage analytics
+        $analytics = $this->usage_analytics ?? [];
+        $analytics['interactions'][] = [
+            'type' => $interactionType,
+            'metadata' => $metadata,
+            'timestamp' => now()
+        ];
+        
+        // Keep only last 50 interactions
+        if (count($analytics['interactions']) > 50) {
+            $analytics['interactions'] = array_slice($analytics['interactions'], -50);
+        }
+        
+        $this->usage_analytics = $analytics;
+        $this->save();
+    }
+
+    /**
+     * Get smart profile summary for AI
+     */
+    public function getSmartAIContext(string $context = 'normal'): string
+    {
+        // If we have smart scores, use them for context building
+        if ($this->smart_field_scores && $this->last_calculation_context === $context) {
+            return $this->buildSmartContextFromScores($context);
+        }
+        
+        // Fallback to legacy context
+        return $this->getOptimizedAIContext(3);
+    }
+
+    /**
+     * Build context from smart field scores
+     */
+    private function buildSmartContextFromScores(string $context): string
+    {
+        $threshold = match($context) {
+            'minimal' => 8000,
+            'essential' => 6000,
+            'normal' => 4000,
+            'detailed' => 2000,
+            'complete' => 0,
+            default => 4000
+        };
+        
+        // Filter and sort fields by score
+        $relevantFields = array_filter($this->smart_field_scores, function($scoreData) use ($threshold) {
+            return ($scoreData['final_score'] ?? 0) >= $threshold;
+        });
+        
+        // Sort by score (highest first)
+        uasort($relevantFields, function($a, $b) {
+            return ($b['final_score'] ?? 0) <=> ($a['final_score'] ?? 0);
+        });
+        
+        // Build context string
+        $contextParts = [];
+        foreach ($relevantFields as $fieldKey => $scoreData) {
+            $value = $this->getFieldValueByKey($fieldKey);
+            if ($value) {
+                $contextParts[] = $this->formatSmartFieldForContext($fieldKey, $value, $scoreData);
+            }
+        }
+        
+        return implode("\n", $contextParts);
+    }
+
+    /**
+     * Get field value by key from any section
+     */
+    private function getFieldValueByKey(string $fieldKey): mixed
+    {
+        // Check company_info
+        if ($this->company_info && isset($this->company_info[$fieldKey])) {
+            return $this->company_info[$fieldKey];
+        }
+        
+        // Check sector_details
+        if ($this->sector_details && isset($this->sector_details[$fieldKey])) {
+            return $this->sector_details[$fieldKey];
+        }
+        
+        // Check ai_behavior_rules
+        if ($this->ai_behavior_rules && isset($this->ai_behavior_rules[$fieldKey])) {
+            return $this->ai_behavior_rules[$fieldKey];
+        }
+        
+        // Check founder_info
+        if ($this->founder_info && isset($this->founder_info[str_replace('founder_', '', $fieldKey)])) {
+            return $this->founder_info[str_replace('founder_', '', $fieldKey)];
+        }
+        
+        return null;
+    }
+
+    /**
+     * Format smart field for context with score info
+     */
+    private function formatSmartFieldForContext(string $fieldKey, $value, array $scoreData): string
+    {
+        $displayName = $this->getDisplayNameForField($fieldKey);
+        $displayValue = is_array($value) ? implode(', ', array_filter($value)) : (string) $value;
+        $score = $scoreData['final_score'] ?? 0;
+        
+        return "**{$displayName}**: {$displayValue} [Score: {$score}]";
+    }
+
+    /**
+     * Get display name for field
+     */
+    private function getDisplayNameForField(string $fieldKey): string
+    {
+        $displayNames = [
+            'brand_name' => 'Marka Adı',
+            'city' => 'Şehir',
+            'sector_selection' => 'Sektör',
+            'brand_character' => 'Marka Karakteri',
+            'writing_style' => 'Yazım Stili',
+            'founder_name' => 'Kurucu',
+            'main_service' => 'Ana Hizmet',
+            'target_customers' => 'Hedef Müşteriler',
+            'brand_personality' => 'Marka Kişiliği'
+        ];
+        
+        return $displayNames[$fieldKey] ?? ucfirst(str_replace('_', ' ', $fieldKey));
+    }
+
+    /**
+     * Auto-optimize profile based on AI recommendations
+     */
+    public function autoOptimize(): array
+    {
+        if (!$this->auto_optimization_enabled) {
+            return ['status' => 'disabled', 'message' => 'Auto-optimization is disabled'];
+        }
+        
+        $recommendations = $this->getCurrentRecommendations();
+        $appliedOptimizations = [];
+        
+        foreach ($recommendations as $recommendation) {
+            $applied = $this->applyRecommendation($recommendation);
+            if ($applied) {
+                $appliedOptimizations[] = $recommendation;
+            }
+        }
+        
+        if (!empty($appliedOptimizations)) {
+            // Increment profile version
+            $this->increment('profile_version');
+            
+            // Update version history
+            $history = $this->version_history ?? [];
+            $history[] = [
+                'version' => $this->profile_version,
+                'type' => 'auto_optimization',
+                'applied_recommendations' => $appliedOptimizations,
+                'timestamp' => now()
+            ];
+            $this->version_history = $history;
+            $this->save();
+        }
+        
+        return [
+            'status' => 'completed',
+            'applied_count' => count($appliedOptimizations),
+            'optimizations' => $appliedOptimizations
+        ];
+    }
+
+    /**
+     * Apply a specific recommendation
+     */
+    private function applyRecommendation(array $recommendation): bool
+    {
+        $action = $recommendation['action'] ?? null;
+        
+        switch ($action) {
+            case 'complete_critical_fields':
+                return $this->promptUserForCriticalFields();
+                
+            case 'improve_field_quality':
+                return $this->improveFieldQuality($recommendation['fields'] ?? []);
+                
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * Prompt user for critical fields completion
+     */
+    private function promptUserForCriticalFields(): bool
+    {
+        // This would typically trigger a notification or email
+        // For now, just log the recommendation
+        \Log::info('Critical fields completion recommended', [
+            'tenant_id' => $this->tenant_id,
+            'missing_fields' => $this->missing_critical_fields
+        ]);
+        
+        return true;
+    }
+
+    /**
+     * Improve field quality automatically where possible
+     */
+    private function improveFieldQuality(array $fields): bool
+    {
+        $improved = false;
+        
+        foreach ($fields as $fieldKey) {
+            // Apply field-specific improvements
+            $currentValue = $this->getFieldValueByKey($fieldKey);
+            $improvedValue = $this->improveFieldValue($fieldKey, $currentValue);
+            
+            if ($improvedValue !== $currentValue) {
+                $this->updateFieldValue($fieldKey, $improvedValue);
+                $improved = true;
+            }
+        }
+        
+        return $improved;
+    }
+
+    /**
+     * Improve specific field value
+     */
+    private function improveFieldValue(string $fieldKey, $currentValue): mixed
+    {
+        // Apply field-specific improvements
+        if (is_string($currentValue)) {
+            // Trim whitespace, fix common issues
+            $improved = trim($currentValue);
+            $improved = ucfirst($improved);
+            return $improved;
+        }
+        
+        return $currentValue;
+    }
+
+    /**
+     * Update field value in appropriate section
+     */
+    private function updateFieldValue(string $fieldKey, $newValue): void
+    {
+        // Update in appropriate section
+        if ($this->company_info && array_key_exists($fieldKey, $this->company_info)) {
+            $companyInfo = $this->company_info;
+            $companyInfo[$fieldKey] = $newValue;
+            $this->company_info = $companyInfo;
+        } elseif ($this->sector_details && array_key_exists($fieldKey, $this->sector_details)) {
+            $sectorDetails = $this->sector_details;
+            $sectorDetails[$fieldKey] = $newValue;
+            $this->sector_details = $sectorDetails;
+        }
+        // Add other sections as needed
     }
 }

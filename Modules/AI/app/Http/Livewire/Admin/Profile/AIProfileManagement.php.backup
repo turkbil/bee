@@ -65,10 +65,6 @@ class AIProfileManagement extends Component
      */
     public function refreshData()
     {
-        \Log::info('AIProfileManagement - refreshData called', [
-            'tenant_id' => tenant('id'),
-            'current_profile_id' => $this->profile?->id
-        ]);
         
         // Cache'i temizle
         Cache::forget('ai_tenant_profile_' . tenant('id'));
@@ -85,11 +81,6 @@ class AIProfileManagement extends Component
         // Component'i refresh et
         $this->fill(['formData' => $this->formData]);
         
-        \Log::info('AIProfileManagement - refreshData completed', [
-            'formData_count' => count($this->formData),
-            'profile_exists' => $this->profile?->exists,
-            'current_step' => $this->currentStep
-        ]);
     }
     
     public function hydrate()
@@ -101,10 +92,6 @@ class AIProfileManagement extends Component
         
         // Form verileri boşsa yeniden yükle
         if ($this->profile && $this->profile->exists && count($this->formData) < 10) {
-            \Log::info('AIProfileManagement - Hydrate: Reloading form data', [
-                'current_formData_count' => count($this->formData),
-                'profile_exists' => $this->profile->exists
-            ]);
             $this->loadProfileData();
             $this->fill(['formData' => $this->formData]);
         }
@@ -118,23 +105,18 @@ class AIProfileManagement extends Component
         // Mevcut profili yükle veya yeni oluştur
         $this->profile = AITenantProfile::currentOrCreate();
         
-        // Varsayılan değerleri set et (profil yüklenmeden önce)
+        // Profil verilerini forma yükle
+        $this->loadProfileData();
+        
+        // Varsayılan değerleri set et
         if (!isset($this->formData['company_info.share_founder_info'])) {
             $this->formData['company_info.share_founder_info'] = 'hayir';
             $this->showFounderQuestions = false;
         }
         
-        // Profil verilerini forma yükle (varsayılan değerleri ezer)
-        $this->loadProfileData();
-        
         // Kategorize edilmiş sektörleri yükle
         $this->sectors = AIProfileSector::getCategorizedSectors();
         
-        \Log::info('AIProfileManagement - Sectors loaded', [
-            'sector_count' => $this->sectors->count(),
-            'first_sector' => $this->sectors->first()?->name ?? 'NO_SECTORS',
-            'all_sectors' => $this->sectors->pluck('name')->toArray()
-        ]);
         
         // CRITICAL FIX: Mevcut adım sorularını yükle
         $this->loadQuestionsForStep();
@@ -145,21 +127,8 @@ class AIProfileManagement extends Component
     
     private function loadProfileData()
     {
-        \Log::info('AIProfileManagement - loadProfileData called', [
-            'profile_exists' => !!$this->profile,
-            'profile_id' => $this->profile?->id ?? 'N/A'
-        ]);
         
         if ($this->profile && $this->profile->exists) {
-            \Log::info('AIProfileManagement - Loading existing profile data', [
-                'profile_data' => [
-                    'company_info' => $this->profile->company_info ?? null,
-                    'sector_details' => $this->profile->sector_details ?? null,
-                    'success_stories' => $this->profile->success_stories ?? null,
-                    'ai_behavior_rules' => $this->profile->ai_behavior_rules ?? null,
-                    'founder_info' => $this->profile->founder_info ?? null,
-                ]
-            ]);
             
             // Company info
             if ($this->profile->company_info && is_array($this->profile->company_info)) {
@@ -168,15 +137,12 @@ class AIProfileManagement extends Component
                     if ($key === 'contact_info' && is_array($value)) {
                         foreach ($value as $contactKey => $contactValue) {
                             $this->formData["company_info.contact_info.{$contactKey}"] = $contactValue;
-                            \Log::debug("Loaded company_info.contact_info.{$contactKey}", ['value' => $contactValue]);
                         }
                     } else {
                         $this->formData["company_info.{$key}"] = $value;
-                        \Log::debug("Loaded company_info.{$key}", ['value' => $value]);
                         
                         // Tüm alanları blade template'in arayacağı formatta da yükle
                         $this->formData[$key] = $value;
-                        \Log::debug("Loaded {$key} (direct)", ['value' => $value]);
                     }
                 }
             }
@@ -187,11 +153,9 @@ class AIProfileManagement extends Component
                 if (isset($this->profile->sector_details['sector_selection'])) {
                     $this->currentSectorCode = $this->profile->sector_details['sector_selection'];
                     $this->formData['sector'] = $this->currentSectorCode;
-                    \Log::debug('Loaded sector from sector_selection', ['sector' => $this->currentSectorCode]);
                 } elseif (isset($this->profile->sector_details['sector'])) {
                     $this->currentSectorCode = $this->profile->sector_details['sector'];
                     $this->formData['sector'] = $this->currentSectorCode;
-                    \Log::debug('Loaded sector from sector', ['sector' => $this->currentSectorCode]);
                 }
                 
                 foreach ($this->profile->sector_details as $key => $value) {
@@ -214,19 +178,15 @@ class AIProfileManagement extends Component
                     ])) {
                         foreach ($value as $subKey => $subValue) {
                             $this->formData["sector_details.{$key}.{$subKey}"] = $subValue;
-                            \Log::debug("Loaded sector_details.{$key}.{$subKey}", ['value' => $subValue]);
                         }
                         
                         // Tüm alanları blade template'in arayacağı formatta da yükle
                         $this->formData[$key] = $value;
-                        \Log::debug("Loaded {$key} (direct)", ['value' => $value]);
                     } else {
                         $this->formData["sector_details.{$key}"] = $value;
-                        \Log::debug("Loaded sector_details.{$key}", ['value' => $value]);
                         
                         // Tüm alanları blade template'in arayacağı formatta da yükle
                         $this->formData[$key] = $value;
-                        \Log::debug("Loaded {$key} (direct)", ['value' => $value]);
                     }
                 }
             }
@@ -244,19 +204,15 @@ class AIProfileManagement extends Component
                     if (is_array($value) && in_array($key, ['sales_approach', 'brand_character', 'writing_style'])) {
                         foreach ($value as $subKey => $subValue) {
                             $this->formData["success_stories.{$key}.{$subKey}"] = $subValue;
-                            \Log::debug("Loaded success_stories.{$key}.{$subKey}", ['value' => $subValue]);
                         }
                         
                         // Tüm alanları blade template'in arayacağı formatta da yükle
                         $this->formData[$key] = $value;
-                        \Log::debug("Loaded {$key} (direct)", ['value' => $value]);
                     } else {
                         $this->formData["success_stories.{$key}"] = $value;
-                        \Log::debug("Loaded success_stories.{$key}", ['value' => $value]);
                         
                         // Tüm alanları blade template'in arayacağı formatta da yükle
                         $this->formData[$key] = $value;
-                        \Log::debug("Loaded {$key} (direct)", ['value' => $value]);
                     }
                 }
             }
@@ -268,19 +224,15 @@ class AIProfileManagement extends Component
                     if (is_array($value) && in_array($key, ['ai_response_style', 'sales_approach', 'brand_character', 'writing_style'])) {
                         foreach ($value as $subKey => $subValue) {
                             $this->formData["ai_behavior_rules.{$key}.{$subKey}"] = $subValue;
-                            \Log::debug("Loaded ai_behavior_rules.{$key}.{$subKey}", ['value' => $subValue]);
                         }
                         
                         // Tüm alanları blade template'in arayacağı formatta da yükle
                         $this->formData[$key] = $value;
-                        \Log::debug("Loaded {$key} (direct)", ['value' => $value]);
                     } else {
                         $this->formData["ai_behavior_rules.{$key}"] = $value;
-                        \Log::debug("Loaded ai_behavior_rules.{$key}", ['value' => $value]);
                         
                         // Tüm alanları blade template'in arayacağı formatta da yükle
                         $this->formData[$key] = $value;
-                        \Log::debug("Loaded {$key} (direct)", ['value' => $value]);
                     }
                 }
             }
@@ -291,20 +243,15 @@ class AIProfileManagement extends Component
                 !isset($this->profile->ai_behavior_rules['ai_response_style'])) {
                 
                 $aiResponseStyleData = $this->profile->success_stories['ai_response_style'];
-                \Log::info("Migrating ai_response_style from success_stories to ai_behavior_rules", [
-                    'data' => $aiResponseStyleData
-                ]);
                 
                 // Load ai_response_style data into ai_behavior_rules format
                 if (is_array($aiResponseStyleData)) {
                     foreach ($aiResponseStyleData as $subKey => $subValue) {
                         $this->formData["ai_behavior_rules.ai_response_style.{$subKey}"] = $subValue;
-                        \Log::debug("Migrated ai_behavior_rules.ai_response_style.{$subKey}", ['value' => $subValue]);
                     }
                     
                     // Also load into direct format for blade template
                     $this->formData['ai_response_style'] = $aiResponseStyleData;
-                    \Log::debug("Migrated ai_response_style (direct)", ['value' => $aiResponseStyleData]);
                 }
                 
                 // Move the data in database from success_stories to ai_behavior_rules
@@ -318,16 +265,11 @@ class AIProfileManagement extends Component
                 unset($successStories['ai_response_style']);
                 $this->profile->updateSection('success_stories', $successStories);
                 
-                \Log::info("Successfully migrated ai_response_style data");
             }
             
             // Share founder info durumu kontrol et
             if (isset($this->formData['company_info.share_founder_info'])) {
                 $this->showFounderQuestions = ($this->formData['company_info.share_founder_info'] === 'evet');
-                \Log::debug('Founder questions visibility', [
-                    'share_founder_info' => $this->formData['company_info.share_founder_info'],
-                    'show' => $this->showFounderQuestions
-                ]);
             }
             
             // Founder info
@@ -337,38 +279,23 @@ class AIProfileManagement extends Component
                     if (is_array($value)) {
                         foreach ($value as $subKey => $subValue) {
                             $this->formData["founder_info.{$key}.{$subKey}"] = $subValue;
-                            \Log::debug("Loaded founder_info.{$key}.{$subKey}", ['value' => $subValue]);
                         }
                     } else {
                         $this->formData["founder_info.{$key}"] = $value;
-                        \Log::debug("Loaded founder_info.{$key}", ['value' => $value]);
                         
                         // Tüm alanları blade template'in arayacağı formatta da yükle
                         $this->formData[$key] = $value;
-                        \Log::debug("Loaded {$key} (direct)", ['value' => $value]);
                     }
                 }
             }
             
-            \Log::info('AIProfileManagement - Profile data loaded successfully', [
-                'formData_keys' => array_keys($this->formData),
-                'currentSectorCode' => $this->currentSectorCode,
-                'showFounderQuestions' => $this->showFounderQuestions
-            ]);
         } else {
-            \Log::info('AIProfileManagement - No existing profile data to load');
         }
         
     }
     
     private function loadQuestionsForStep()
     {
-        \Log::info('AIProfileManagement - loadQuestionsForStep called', [
-            'currentStep' => $this->currentStep,
-            'currentSectorCode' => $this->currentSectorCode,
-            'has_profile' => $this->profile ? true : false,
-            'sector_from_profile' => $this->profile ? ($this->profile->sector_details['sector'] ?? 'not_set') : 'no_profile'
-        ]);
         
         $this->questions = [];
         
@@ -386,12 +313,6 @@ class AIProfileManagement extends Component
             case 3:
                 // Marka detayları + sektöre özel sorular
                 $this->questions = AIProfileQuestion::getByStep(3, $this->currentSectorCode);
-                \Log::info('AIProfileManagement - Step 3 questions loaded', [
-                    'sector_code' => $this->currentSectorCode,
-                    'total_questions' => $this->questions->count(),
-                    'general_questions' => $this->questions->whereNull('sector_code')->count(),
-                    'sector_questions' => $this->questions->where('sector_code', $this->currentSectorCode)->count()
-                ]);
                 break;
                 
             case 4:
@@ -408,7 +329,6 @@ class AIProfileManagement extends Component
                 break;
         }
         
-        \Log::info('AIProfileManagement - questions loaded', [
             'currentStep' => $this->currentStep,
             'questionCount' => $this->questions->count(),
             'questions' => $this->questions->pluck('question_key')->toArray()
@@ -424,7 +344,6 @@ class AIProfileManagement extends Component
         
         $this->showFounderQuestions = ($value === 'evet');
         
-        \Log::info('AIProfileManagement - toggleFounderQuestions called', [
             'value' => $value,
             'showFounderQuestions' => $this->showFounderQuestions
         ]);
@@ -444,7 +363,6 @@ class AIProfileManagement extends Component
                 $this->profile->founder_info = [];
                 $this->profile->save();
                 
-                \Log::info('AIProfileManagement - Founder info cleared from database via toggle', [
                     'profile_id' => $this->profile->id,
                     'founder_permission' => $value,
                     'cleared_keys' => $founderKeys
@@ -455,7 +373,6 @@ class AIProfileManagement extends Component
     
     public function updatedFormData($value, $key)
     {
-        \Log::info('AIProfileManagement - formData updated', [
             'key' => $key,
             'value' => $value,
             'currentStep' => $this->currentStep
@@ -465,7 +382,6 @@ class AIProfileManagement extends Component
         if ($key === 'company_info.share_founder_info') {
             $this->showFounderQuestions = ($value === 'evet');
             
-            \Log::info('AIProfileManagement - showFounderQuestions updated', [
                 'value' => $value,
                 'showFounderQuestions' => $this->showFounderQuestions
             ]);
@@ -483,7 +399,6 @@ class AIProfileManagement extends Component
                     $this->profile->founder_info = [];
                     $this->profile->save();
                     
-                    \Log::info('AIProfileManagement - Founder info cleared from database', [
                         'profile_id' => $this->profile->id,
                         'founder_permission' => $value
                     ]);
@@ -511,7 +426,6 @@ class AIProfileManagement extends Component
             if ($this->currentStep === 3) {
                 $this->loadQuestionsForStep();
                 
-                \Log::info('AIProfileManagement - Sector changed, questions reloaded', [
                     'new_sector' => $value,
                     'questions_count' => $this->questions->count(),
                     'sector_specific_questions' => $this->questions->where('sector_code', $value)->count()
@@ -523,7 +437,6 @@ class AIProfileManagement extends Component
     public function nextStep()
     {
         // Debug logging
-        \Log::info('AIProfileManagement - nextStep called', [
             'currentStep' => $this->currentStep,
             'formData' => $this->formData,
             'totalSteps' => $this->totalSteps
@@ -531,7 +444,6 @@ class AIProfileManagement extends Component
         
         // Mevcut adımı validate et
         if ($this->validateCurrentStep()) {
-            \Log::info('AIProfileManagement - validation passed', [
                 'currentStep' => $this->currentStep
             ]);
             
@@ -548,7 +460,6 @@ class AIProfileManagement extends Component
                 return redirect()->route('admin.ai.profile.edit', ['step' => $nextStep]);
             }
         } else {
-            \Log::warning('AIProfileManagement - validation failed', [
                 'currentStep' => $this->currentStep,
                 'customErrors' => $this->customErrors
             ]);
@@ -558,7 +469,6 @@ class AIProfileManagement extends Component
     public function saveCurrentStep()
     {
         try {
-            \Log::info('AIProfileManagement - saveCurrentStep called', [
                 'currentStep' => $this->currentStep,
                 'formData' => $this->formData
             ]);
@@ -567,7 +477,6 @@ class AIProfileManagement extends Component
             // Bu sayede form verilerinin üzerine yazmayız
             $this->refreshData();
             
-            \Log::info('AIProfileManagement - saveCurrentStep after refreshData', [
                 'currentStep' => $this->currentStep,
                 'formData' => $this->formData
             ]);
@@ -579,7 +488,6 @@ class AIProfileManagement extends Component
             
             return true;
         } catch (\Exception $e) {
-            \Log::error('AIProfileManagement - saveCurrentStep error', [
                 'error' => $e->getMessage(),
                 'currentStep' => $this->currentStep
             ]);
@@ -641,7 +549,6 @@ class AIProfileManagement extends Component
     public function resetProfile()
     {
         try {
-            \Log::info('AIProfileManagement - resetProfile called', [
                 'tenant_id' => tenant('id'),
                 'profile_id' => $this->profile?->id
             ]);
@@ -650,7 +557,6 @@ class AIProfileManagement extends Component
                 // Profil veritabanından tamamen sil
                 $this->profile->forceDelete(); // Hard delete - ID'yi de siler
                 
-                \Log::info('AIProfileManagement - Profile force deleted successfully', [
                     'tenant_id' => tenant('id')
                 ]);
             }
@@ -671,14 +577,12 @@ class AIProfileManagement extends Component
             $this->currentStep = 1;
             $this->loadQuestionsForStep();
             
-            \Log::info('AIProfileManagement - Reset completed successfully');
             
             // Profile sayfasına yönlendir (sıfırlanmış hali)
             return redirect()->route('admin.ai.profile.show')
                            ->with('success', 'Yapay zeka profili tamamen sıfırlandı! Yeni profil oluşturabilirsiniz.');
             
         } catch (\Exception $e) {
-            \Log::error('AIProfileManagement - Reset error', [
                 'error' => $e->getMessage(),
                 'tenant_id' => tenant('id'),
                 'trace' => $e->getTraceAsString()
@@ -704,7 +608,6 @@ class AIProfileManagement extends Component
         // FormData'yı normalize et validation için
         $normalizedData = $this->normalizeFormData($this->formData);
         
-        \Log::info('AIProfileManagement - validateCurrentStep called', [
             'currentStep' => $this->currentStep,
             'originalFormData' => $this->formData,
             'normalizedData' => $normalizedData
@@ -717,7 +620,6 @@ class AIProfileManagement extends Component
                 $rules[$fieldKey] = $question->getLaravelValidationRules();
                 $attributes[$fieldKey] = $question->question_text;
                 
-                \Log::info('AIProfileManagement - Adding validation rule', [
                     'fieldKey' => $fieldKey,
                     'rules' => $question->getLaravelValidationRules(),
                     'is_required' => $question->is_required,
@@ -738,7 +640,6 @@ class AIProfileManagement extends Component
             }
         }
         
-        \Log::info('AIProfileManagement - Final validation setup', [
             'rules' => $rules,
             'attributes' => $attributes,
             'dataToValidate' => $normalizedData
@@ -749,7 +650,6 @@ class AIProfileManagement extends Component
         
         if ($validator->fails()) {
             $this->customErrors = $validator->errors()->toArray();
-            \Log::warning('AIProfileManagement - Validation failed', [
                 'errors' => $this->customErrors,
                 'failed_rules' => $validator->failed()
             ]);
@@ -757,7 +657,6 @@ class AIProfileManagement extends Component
             return false;
         }
         
-        \Log::info('AIProfileManagement - Validation passed successfully');
         $this->customErrors = [];
         return true;
     }
@@ -805,7 +704,6 @@ class AIProfileManagement extends Component
     
     private function saveStepData()
     {
-        \Log::info('AIProfileManagement - saveStepData called', [
             'currentStep' => $this->currentStep,
             'formData' => $this->formData,
             'profile_id' => $this->profile?->id
@@ -814,7 +712,6 @@ class AIProfileManagement extends Component
         // FormData'yı normalize et - dot notation'ları nested object'e çevir
         $normalizedData = $this->normalizeFormData($this->formData);
         
-        \Log::info('AIProfileManagement - Normalized form data', [
             'original' => $this->formData,
             'normalized' => $normalizedData
         ]);
@@ -822,41 +719,33 @@ class AIProfileManagement extends Component
         switch ($this->currentStep) {
             case 1:
                 // Sektör seçimi
-                \Log::info('AIProfileManagement - Step 1: Saving sector', [
                     'sector_in_formData' => $normalizedData['sector'] ?? 'NOT_SET'
                 ]);
                 
                 if (isset($normalizedData['sector'])) {
                     $this->profile->updateSection('sector_details', ['sector' => $normalizedData['sector']]);
-                    \Log::info('AIProfileManagement - Sector saved successfully', [
                         'sector' => $normalizedData['sector']
                     ]);
                 } else {
-                    \Log::warning('AIProfileManagement - No sector found in formData');
                 }
                 break;
                 
             case 2:
                 // Temel bilgiler - Company info
-                \Log::info('AIProfileManagement - Step 2: Saving company info');
                 
                 $sectionData = $normalizedData['company_info'] ?? [];
                 
-                \Log::info('AIProfileManagement - Step 2: Company data to save', [
                     'sectionData' => $sectionData
                 ]);
                 
                 if (!empty($sectionData)) {
                     $this->profile->updateSection('company_info', $sectionData);
-                    \Log::info('AIProfileManagement - Step 2: Company info saved successfully');
                 } else {
-                    \Log::warning('AIProfileManagement - Step 2: No company info data to save');
                 }
                 break;
                 
             case 3:
                 // Marka detayları - Sektöre özel bilgiler
-                \Log::info('AIProfileManagement - Step 3: Saving sector details');
                 
                 $existingSector = $normalizedData['sector'] ?? null;
                 $sectorDetailsData = $normalizedData['sector_details'] ?? [];
@@ -866,25 +755,20 @@ class AIProfileManagement extends Component
                     $sectorDetailsData['sector'] = $existingSector;
                 }
                 
-                \Log::info('AIProfileManagement - Step 3: Sector data to save', [
                     'sectionData' => $sectorDetailsData
                 ]);
                 
                 if (!empty($sectorDetailsData)) {
                     $this->profile->updateSection('sector_details', $sectorDetailsData);
-                    \Log::info('AIProfileManagement - Step 3: Sector details saved successfully');
                 } else {
-                    \Log::warning('AIProfileManagement - Step 3: No sector details data to save');
                 }
                 break;
                 
             case 4:
                 // Kurucu bilgileri
-                \Log::info('AIProfileManagement - Step 4: Saving founder info');
                 
                 $companyData = $normalizedData['company_info'] ?? [];
                 
-                \Log::info('AIProfileManagement - Step 4: Company data to save', [
                     'companyData' => $companyData
                 ]);
                 
@@ -896,7 +780,6 @@ class AIProfileManagement extends Component
                 if ($this->showFounderQuestions) {
                     $founderData = $normalizedData['founder_info'] ?? [];
                     
-                    \Log::info('AIProfileManagement - Step 4: Founder data to save', [
                         'founderData' => $founderData
                     ]);
                     
@@ -905,25 +788,21 @@ class AIProfileManagement extends Component
                     }
                 }
                 
-                \Log::info('AIProfileManagement - Step 4: Founder info saved successfully');
                 break;
                 
             case 5:
                 // Başarı hikayeleri ve AI davranış kuralları
-                \Log::info('AIProfileManagement - Step 5: Saving success stories and AI behavior rules');
                 
                 // Başarı hikayeleri kaydet
                 $successStoriesData = $normalizedData['success_stories'] ?? [];
                 if (!empty($successStoriesData)) {
                     $this->profile->updateSection('success_stories', $successStoriesData);
-                    \Log::info('AIProfileManagement - Step 5: Success stories saved successfully');
                 }
                 
                 // AI davranış kuralları kaydet  
                 $aiBehaviorData = $normalizedData['ai_behavior_rules'] ?? [];
                 if (!empty($aiBehaviorData)) {
                     $this->profile->updateSection('ai_behavior_rules', $aiBehaviorData);
-                    \Log::info('AIProfileManagement - Step 5: AI behavior rules saved successfully');
                 }
                 
                 break;
@@ -997,7 +876,6 @@ class AIProfileManagement extends Component
             // Cache'i temizle
             Cache::forget('ai_tenant_profile_' . tenant('id'));
             
-            \Log::info('Profile completed successfully', [
                 'tenant_id' => tenant('id'),
                 'profile_id' => $this->profile->id,
                 'completion_percentage' => $this->calculateRealProgress()['percentage']
@@ -1130,7 +1008,6 @@ class AIProfileManagement extends Component
     {
         $progressData = $this->calculateRealProgress();
         
-        \Log::info('AIProfileManagement - render called', [
             'sectors_count' => $this->sectors->count(),
             'questions_count' => $this->questions->count(),
             'currentStep' => $this->currentStep

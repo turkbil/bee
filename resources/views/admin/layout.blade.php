@@ -231,6 +231,7 @@
 <script src="/admin-assets/libs/litepicker/dist/litepicker.js" defer></script>
 <script src="/admin-assets/libs/fslightbox/index.js" defer></script>
 <script src="/admin-assets/libs/choices/choices.min.js" defer></script>
+<script src="/admin-assets/libs/apexcharts/dist/apexcharts.min.js"></script>
 <script src="/admin-assets/js/translations.js?v={{ time() }}"></script>
 <script src="/admin-assets/js/theme.js?v={{ time() }}"></script>
 <script src="/admin-assets/js/main.js?v={{ time() }}"></script>

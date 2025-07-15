@@ -85,13 +85,13 @@ class CleanAIProfileQuestionsSeeder extends Seeder
                 'question_key' => 'target_customers', 'question_text' => 'Ana müşteri kitleniz kimler?',
                 'help_text' => 'Öncelikli hedef müşterilerinizi seçin (çoklu seçim)', 'input_type' => 'checkbox',
                 'options' => json_encode([
+                    'buyuk_sirketler' => ['label' => 'Büyük şirketler', 'value' => 'buyuk_sirketler'],
+                    'kucuk_isletmeler' => ['label' => 'Küçük işletmeler', 'value' => 'kucuk_isletmeler'],
+                    'bireysel_musteriler' => ['label' => 'Bireysel müşteriler', 'value' => 'bireysel_musteriler'],
                     'diger' => [
                         'label' => 'Diğer (belirtiniz)', 'value' => 'diger',
                         'has_custom_input' => true, 'custom_placeholder' => 'Özel müşteri kitlenizi belirtiniz...'
-                    ],
-                    'buyuk_sirketler' => ['label' => 'Büyük şirketler', 'value' => 'buyuk_sirketler'],
-                    'kucuk_isletmeler' => ['label' => 'Küçük işletmeler', 'value' => 'kucuk_isletmeler'],
-                    'bireysel_musteriler' => ['label' => 'Bireysel müşteriler', 'value' => 'bireysel_musteriler']
+                    ]
                 ]),
                 'validation_rules' => null, 'is_required' => true, 'sort_order' => 2, 'priority' => 3, 'ai_weight' => 50,
                 'category' => 'company', 'ai_priority' => 3, 'always_include' => false,
@@ -102,10 +102,6 @@ class CleanAIProfileQuestionsSeeder extends Seeder
                 'question_key' => 'brand_character', 'question_text' => 'Marka karakteriniz nasıl?',
                 'help_text' => 'Markanızın benzersiz kişilik özelliklerini seçin', 'input_type' => 'checkbox',
                 'options' => json_encode([
-                    'diger' => [
-                        'label' => 'Diğer (belirtiniz)', 'value' => 'diger',
-                        'has_custom_input' => true, 'custom_placeholder' => 'Özel marka karakterinizi belirtiniz...'
-                    ],
                     'ciddi_kurumsal' => ['label' => 'Ciddi ve kurumsal', 'value' => 'ciddi_kurumsal'],
                     'sakin_temkinli' => ['label' => 'Sakin ve temkinli', 'value' => 'sakin_temkinli'],
                     'samimi_dostane' => ['label' => 'Samimi ve dostane', 'value' => 'samimi_dostane'],
@@ -113,7 +109,11 @@ class CleanAIProfileQuestionsSeeder extends Seeder
                     'geleneksel_koklu' => ['label' => 'Geleneksel ve köklü', 'value' => 'geleneksel_koklu'],
                     'enerjik_heyecanli' => ['label' => 'Enerjik ve heyecanlı', 'value' => 'enerjik_heyecanli'],
                     'eglenceli_yaratici' => ['label' => 'Eğlenceli ve yaratıcı', 'value' => 'eglenceli_yaratici'],
-                    'pratik_cozum_odakli' => ['label' => 'Pratik ve çözüm odaklı', 'value' => 'pratik_cozum_odakli']
+                    'pratik_cozum_odakli' => ['label' => 'Pratik ve çözüm odaklı', 'value' => 'pratik_cozum_odakli'],
+                    'diger' => [
+                        'label' => 'Diğer (belirtiniz)', 'value' => 'diger',
+                        'has_custom_input' => true, 'custom_placeholder' => 'Özel marka karakterinizi belirtiniz...'
+                    ]
                 ]),
                 'validation_rules' => json_encode(['required', 'array', 'min:1']),
                 'is_required' => true, 'sort_order' => 1, 'priority' => 3, 'ai_weight' => 120,
@@ -126,17 +126,17 @@ class CleanAIProfileQuestionsSeeder extends Seeder
                 'help_text' => 'Web sitesi, blog, sosyal medya - her yerde kullanılacak genel dil tavrı',
                 'input_type' => 'checkbox',
                 'options' => json_encode([
-                    'diger' => [
-                        'label' => 'Diğer (belirtiniz)', 'value' => 'diger',
-                        'has_custom_input' => true, 'custom_placeholder' => 'Özel yazım tarzınızı belirtiniz...'
-                    ],
                     'kisa_net' => ['label' => 'Kısa ve net ifadeler', 'value' => 'kisa_net'],
                     'gunluk_konusma' => ['label' => 'Günlük konuşma tarzında', 'value' => 'gunluk_konusma'],
                     'sade_anlasilir' => ['label' => 'Sade ve anlaşılır dil', 'value' => 'sade_anlasilir'],
                     'teknik_bilimsel' => ['label' => 'Teknik ve bilimsel yaklaşım', 'value' => 'teknik_bilimsel'],
                     'detayli_kapsamli' => ['label' => 'Detaylı ve kapsamlı anlatım', 'value' => 'detayli_kapsamli'],
                     'formal_profesyonel' => ['label' => 'Formal ve profesyonel', 'value' => 'formal_profesyonel'],
-                    'duygusal_etkileyici' => ['label' => 'Duygusal ve etkileyici', 'value' => 'duygusal_etkileyici']
+                    'duygusal_etkileyici' => ['label' => 'Duygusal ve etkileyici', 'value' => 'duygusal_etkileyici'],
+                    'diger' => [
+                        'label' => 'Diğer (belirtiniz)', 'value' => 'diger',
+                        'has_custom_input' => true, 'custom_placeholder' => 'Özel yazım tarzınızı belirtiniz...'
+                    ]
                 ]),
                 'validation_rules' => json_encode(['required', 'array', 'min:1']),
                 'is_required' => true, 'sort_order' => 2, 'priority' => 3, 'ai_weight' => 110,
@@ -151,7 +151,8 @@ class CleanAIProfileQuestionsSeeder extends Seeder
                 'input_type' => 'radio',
                 'options' => json_encode([
                     ['label' => 'Evet, bilgilerimi paylaşmak istiyorum', 'value' => 'evet'],
-                    ['label' => 'Hayır, kurumsal kalmasını tercih ederim', 'value' => 'hayir']
+                    ['label' => 'Hayır, kurumsal kalmasını tercih ederim', 'value' => 'hayir'],
+                    ['label' => 'Diğer (belirtiniz)', 'value' => 'diger', 'has_custom_input' => true, 'custom_placeholder' => 'Özel durumunuzu belirtiniz...']
                 ]),
                 'validation_rules' => json_encode(['required']),
                 'is_required' => true, 'sort_order' => 1, 'priority' => 3, 'ai_weight' => 80,
@@ -175,7 +176,7 @@ class CleanAIProfileQuestionsSeeder extends Seeder
                     ['label' => 'Kurucu', 'value' => 'founder'],
                     ['label' => 'CEO/Genel Müdür', 'value' => 'ceo'],
                     ['label' => 'Ortak/Partner', 'value' => 'partner'],
-                    ['label' => 'Diğer', 'value' => 'other', 'has_custom_input' => true, 'custom_placeholder' => 'Ünvanınızı yazınız...']
+                    ['label' => 'Diğer (belirtiniz)', 'value' => 'diger', 'has_custom_input' => true, 'custom_placeholder' => 'Ünvanınızı yazınız...']
                 ]),
                 'validation_rules' => json_encode(['nullable', 'string']),
                 'is_required' => false, 'sort_order' => 20, 'priority' => 3, 'ai_weight' => 60,
@@ -211,7 +212,7 @@ class CleanAIProfileQuestionsSeeder extends Seeder
                     ['label' => 'SEO optimizasyonu', 'value' => 'seo'],
                     ['label' => 'Hosting/domain', 'value' => 'hosting'],
                     ['label' => 'Bakım/güncelleme', 'value' => 'bakim'],
-                    ['label' => 'Diğer', 'value' => 'custom', 'has_custom_input' => true, 'custom_placeholder' => 'Diğer hizmetinizi belirtiniz...']
+                    ['label' => 'Diğer (belirtiniz)', 'value' => 'diger', 'has_custom_input' => true, 'custom_placeholder' => 'Diğer hizmetinizi belirtiniz...']
                 ]),
                 'validation_rules' => null, 'is_required' => false, 'sort_order' => 5, 'priority' => 3, 'ai_weight' => 50,
                 'category' => 'company', 'ai_priority' => 3, 'always_include' => false,
@@ -232,7 +233,7 @@ class CleanAIProfileQuestionsSeeder extends Seeder
                     ['label' => 'Acil servis', 'value' => 'emergency'],
                     ['label' => 'Ameliyathane', 'value' => 'surgery'],
                     ['label' => 'Ebe/doğum', 'value' => 'midwifery'],
-                    ['label' => 'Diğer', 'value' => 'custom', 'has_custom_input' => true, 'custom_placeholder' => 'Diğer sağlık hizmetinizi belirtiniz...']
+                    ['label' => 'Diğer (belirtiniz)', 'value' => 'diger', 'has_custom_input' => true, 'custom_placeholder' => 'Diğer sağlık hizmetinizi belirtiniz...']
                 ]),
                 'validation_rules' => null, 'is_required' => false, 'sort_order' => 5, 'priority' => 3, 'ai_weight' => 60,
                 'category' => 'sector', 'ai_priority' => 3, 'always_include' => false,
@@ -253,7 +254,7 @@ class CleanAIProfileQuestionsSeeder extends Seeder
                     ['label' => 'Meslek kursu', 'value' => 'vocational'],
                     ['label' => 'Online eğitim', 'value' => 'online'],
                     ['label' => 'Özel ders', 'value' => 'tutoring'],
-                    ['label' => 'Diğer', 'value' => 'custom', 'has_custom_input' => true, 'custom_placeholder' => 'Diğer eğitim hizmetinizi belirtiniz...']
+                    ['label' => 'Diğer (belirtiniz)', 'value' => 'diger', 'has_custom_input' => true, 'custom_placeholder' => 'Diğer eğitim hizmetinizi belirtiniz...']
                 ]),
                 'validation_rules' => null, 'is_required' => false, 'sort_order' => 5, 'priority' => 3, 'ai_weight' => 60,
                 'category' => 'sector', 'ai_priority' => 3, 'always_include' => false,
@@ -274,7 +275,7 @@ class CleanAIProfileQuestionsSeeder extends Seeder
                     ['label' => 'Gıda üretimi', 'value' => 'food_production'],
                     ['label' => 'Healthy/vegan', 'value' => 'healthy_food'],
                     ['label' => 'Toplu yemek', 'value' => 'mass_catering'],
-                    ['label' => 'Diğer', 'value' => 'custom', 'has_custom_input' => true, 'custom_placeholder' => 'Diğer yiyecek-içecek hizmetinizi belirtiniz...']
+                    ['label' => 'Diğer (belirtiniz)', 'value' => 'diger', 'has_custom_input' => true, 'custom_placeholder' => 'Diğer yiyecek-içecek hizmetinizi belirtiniz...']
                 ]),
                 'validation_rules' => null, 'is_required' => false, 'sort_order' => 5, 'priority' => 3, 'ai_weight' => 60,
                 'category' => 'sector', 'ai_priority' => 3, 'always_include' => false,
@@ -295,7 +296,7 @@ class CleanAIProfileQuestionsSeeder extends Seeder
                     ['label' => 'Spor & outdoor', 'value' => 'sports'],
                     ['label' => 'Kitap & kırtasiye', 'value' => 'books'],
                     ['label' => 'Marketplace', 'value' => 'marketplace'],
-                    ['label' => 'Diğer', 'value' => 'custom', 'has_custom_input' => true, 'custom_placeholder' => 'Diğer perakende hizmetinizi belirtiniz...']
+                    ['label' => 'Diğer (belirtiniz)', 'value' => 'diger', 'has_custom_input' => true, 'custom_placeholder' => 'Diğer perakende hizmetinizi belirtiniz...']
                 ]),
                 'validation_rules' => null, 'is_required' => false, 'sort_order' => 5, 'priority' => 3, 'ai_weight' => 60,
                 'category' => 'sector', 'ai_priority' => 3, 'always_include' => false,
@@ -316,7 +317,7 @@ class CleanAIProfileQuestionsSeeder extends Seeder
                     ['label' => 'Gayrimenkul', 'value' => 'realestate'],
                     ['label' => 'Peyzaj & bahçe', 'value' => 'landscape'],
                     ['label' => 'Proje yönetimi', 'value' => 'project_management'],
-                    ['label' => 'Diğer', 'value' => 'custom', 'has_custom_input' => true, 'custom_placeholder' => 'Diğer inşaat hizmetinizi belirtiniz...']
+                    ['label' => 'Diğer (belirtiniz)', 'value' => 'diger', 'has_custom_input' => true, 'custom_placeholder' => 'Diğer inşaat hizmetinizi belirtiniz...']
                 ]),
                 'validation_rules' => null, 'is_required' => false, 'sort_order' => 5, 'priority' => 3, 'ai_weight' => 60,
                 'category' => 'sector', 'ai_priority' => 3, 'always_include' => false,
@@ -337,7 +338,7 @@ class CleanAIProfileQuestionsSeeder extends Seeder
                     ['label' => 'Kripto para', 'value' => 'crypto'],
                     ['label' => 'Forex & borsa', 'value' => 'forex'],
                     ['label' => 'Mali müşavirlik', 'value' => 'tax_consulting'],
-                    ['label' => 'Diğer', 'value' => 'custom', 'has_custom_input' => true, 'custom_placeholder' => 'Diğer finans hizmetinizi belirtiniz...']
+                    ['label' => 'Diğer (belirtiniz)', 'value' => 'diger', 'has_custom_input' => true, 'custom_placeholder' => 'Diğer finans hizmetinizi belirtiniz...']
                 ]),
                 'validation_rules' => null, 'is_required' => false, 'sort_order' => 5, 'priority' => 3, 'ai_weight' => 60,
                 'category' => 'sector', 'ai_priority' => 3, 'always_include' => false,
@@ -349,10 +350,15 @@ class CleanAIProfileQuestionsSeeder extends Seeder
                 'question_key' => 'technology_specific_services', 'question_text' => 'Hangi teknoloji hizmetlerini sunuyorsunuz?',
                 'help_text' => 'Yapay Zeka hizmet portföyünüze özel içerik üretsin', 'input_type' => 'checkbox',
                 'options' => json_encode([
-                    'Web sitesi geliştirme', 'Mobil uygulama', 'E-ticaret sistemi',
-                    'CRM/ERP yazılımı', 'Veri tabanı yönetimi', 'Siber güvenlik',
-                    'IT danışmanlığı', 'Yazılım bakım/destek',
-                    ['label' => 'Diğer (belirtiniz)', 'value' => 'custom', 'has_custom_input' => true, 'custom_placeholder' => 'Teknoloji hizmetinizi belirtiniz']
+                    ['label' => 'Web sitesi geliştirme', 'value' => 'web_development'],
+                    ['label' => 'Mobil uygulama', 'value' => 'mobile_app'],
+                    ['label' => 'E-ticaret sistemi', 'value' => 'ecommerce_system'],
+                    ['label' => 'CRM/ERP yazılımı', 'value' => 'crm_erp'],
+                    ['label' => 'Veri tabanı yönetimi', 'value' => 'database_management'],
+                    ['label' => 'Siber güvenlik', 'value' => 'cyber_security'],
+                    ['label' => 'IT danışmanlığı', 'value' => 'it_consulting'],
+                    ['label' => 'Yazılım bakım/destek', 'value' => 'software_support'],
+                    ['label' => 'Diğer (belirtiniz)', 'value' => 'diger', 'has_custom_input' => true, 'custom_placeholder' => 'Teknoloji hizmetinizi belirtiniz...']
                 ]),
                 'validation_rules' => null, 'is_required' => false, 'sort_order' => 5, 'priority' => 3, 'ai_weight' => 50,
                 'category' => 'company', 'ai_priority' => 3, 'always_include' => false,
@@ -382,7 +388,7 @@ class CleanAIProfileQuestionsSeeder extends Seeder
                     ['label' => 'El sanatları', 'value' => 'handcraft'],
                     ['label' => 'Sanat galerisi', 'value' => 'art_gallery'],
                     ['label' => 'Logo tasarım', 'value' => 'logo_design'],
-                    ['label' => 'Diğer', 'value' => 'custom', 'has_custom_input' => true, 'custom_placeholder' => 'Diğer sanat & tasarım hizmetinizi belirtiniz...']
+                    ['label' => 'Diğer (belirtiniz)', 'value' => 'diger', 'has_custom_input' => true, 'custom_placeholder' => 'Diğer sanat & tasarım hizmetinizi belirtiniz...']
                 ]),
                 'validation_rules' => null, 'is_required' => false, 'sort_order' => 5, 'priority' => 3, 'ai_weight' => 60,
                 'category' => 'sector', 'ai_priority' => 3, 'always_include' => false,
@@ -403,7 +409,7 @@ class CleanAIProfileQuestionsSeeder extends Seeder
                     ['label' => 'Outdoor & macera sporları', 'value' => 'outdoor_sports'],
                     ['label' => 'Dans & hareket', 'value' => 'dance'],
                     ['label' => 'Spor akademisi', 'value' => 'sports_academy'],
-                    ['label' => 'Diğer', 'value' => 'custom', 'has_custom_input' => true, 'custom_placeholder' => 'Diğer spor & fitness hizmetinizi belirtiniz...']
+                    ['label' => 'Diğer (belirtiniz)', 'value' => 'diger', 'has_custom_input' => true, 'custom_placeholder' => 'Diğer spor & fitness hizmetinizi belirtiniz...']
                 ]),
                 'validation_rules' => null, 'is_required' => false, 'sort_order' => 5, 'priority' => 3, 'ai_weight' => 60,
                 'category' => 'sector', 'ai_priority' => 3, 'always_include' => false,
@@ -424,7 +430,7 @@ class CleanAIProfileQuestionsSeeder extends Seeder
                     ['label' => 'Kurtarma & çekici', 'value' => 'car_rescue'],
                     ['label' => 'Sürücü kursu & ehliyet', 'value' => 'driving_school'],
                     ['label' => 'Oto ekspertiz', 'value' => 'auto_expertise'],
-                    ['label' => 'Diğer', 'value' => 'custom', 'has_custom_input' => true, 'custom_placeholder' => 'Diğer otomotiv hizmetinizi belirtiniz...']
+                    ['label' => 'Diğer (belirtiniz)', 'value' => 'diger', 'has_custom_input' => true, 'custom_placeholder' => 'Diğer otomotiv hizmetinizi belirtiniz...']
                 ]),
                 'validation_rules' => null, 'is_required' => false, 'sort_order' => 5, 'priority' => 3, 'ai_weight' => 60,
                 'category' => 'sector', 'ai_priority' => 3, 'always_include' => false,
@@ -445,7 +451,7 @@ class CleanAIProfileQuestionsSeeder extends Seeder
                     ['label' => 'Trafik hukuku & sigorta', 'value' => 'traffic_law'],
                     ['label' => 'İdare hukuku & kamu', 'value' => 'administrative_law'],
                     ['label' => 'Ceza hukuku', 'value' => 'criminal_law'],
-                    ['label' => 'Diğer', 'value' => 'custom', 'has_custom_input' => true, 'custom_placeholder' => 'Diğer hukuk & danışmanlık hizmetinizi belirtiniz...']
+                    ['label' => 'Diğer (belirtiniz)', 'value' => 'diger', 'has_custom_input' => true, 'custom_placeholder' => 'Diğer hukuk & danışmanlık hizmetinizi belirtiniz...']
                 ]),
                 'validation_rules' => null, 'is_required' => false, 'sort_order' => 5, 'priority' => 3, 'ai_weight' => 60,
                 'category' => 'sector', 'ai_priority' => 3, 'always_include' => false,

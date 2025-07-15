@@ -100,9 +100,109 @@ class AIProfileController extends Controller
     /**
      * jQuery-based basit profil düzenleme
      */
-    public function jqueryEdit()
+    public function jqueryEdit($step = 1)
     {
-        return view('ai::admin.profile.jquery-edit');
+        // Step validation
+        $step = max(1, min(5, (int) $step));
+        
+        // Profil verilerini yükle
+        $profile = AITenantProfile::currentOrCreate();
+        
+        // Profil verilerini flatten et (dot notation)
+        $profileData = [];
+        
+        if ($profile && $profile->exists) {
+            // Company info
+            if ($profile->company_info) {
+                foreach ($profile->company_info as $key => $value) {
+                    if (is_array($value)) {
+                        foreach ($value as $subKey => $subValue) {
+                            $profileData["company_info.{$key}.{$subKey}"] = $subValue;
+                        }
+                    } else {
+                        $profileData["company_info.{$key}"] = $value;
+                        $profileData[$key] = $value; // Direct access
+                    }
+                }
+            }
+            
+            // Sector details
+            if ($profile->sector_details) {
+                foreach ($profile->sector_details as $key => $value) {
+                    if (is_array($value)) {
+                        foreach ($value as $subKey => $subValue) {
+                            $profileData["sector_details.{$key}.{$subKey}"] = $subValue;
+                        }
+                    } else {
+                        $profileData["sector_details.{$key}"] = $value;
+                        $profileData[$key] = $value; // Direct access
+                    }
+                }
+            }
+            
+            // Success stories
+            if ($profile->success_stories) {
+                foreach ($profile->success_stories as $key => $value) {
+                    if (is_array($value)) {
+                        foreach ($value as $subKey => $subValue) {
+                            $profileData["success_stories.{$key}.{$subKey}"] = $subValue;
+                        }
+                    } else {
+                        $profileData["success_stories.{$key}"] = $value;
+                        $profileData[$key] = $value; // Direct access
+                    }
+                }
+            }
+            
+            // AI behavior rules
+            if ($profile->ai_behavior_rules) {
+                foreach ($profile->ai_behavior_rules as $key => $value) {
+                    if (is_array($value)) {
+                        foreach ($value as $subKey => $subValue) {
+                            $profileData["ai_behavior_rules.{$key}.{$subKey}"] = $subValue;
+                        }
+                    } else {
+                        $profileData["ai_behavior_rules.{$key}"] = $value;
+                        $profileData[$key] = $value; // Direct access
+                    }
+                }
+            }
+            
+            // Founder info
+            if ($profile->founder_info) {
+                foreach ($profile->founder_info as $key => $value) {
+                    if (is_array($value)) {
+                        foreach ($value as $subKey => $subValue) {
+                            $profileData["founder_info.{$key}.{$subKey}"] = $subValue;
+                        }
+                    } else {
+                        $profileData["founder_info.{$key}"] = $value;
+                        $profileData[$key] = $value; // Direct access
+                    }
+                }
+            }
+        }
+        
+        // Sektör bilgilerini al
+        $sectorCode = $profileData['sector'] ?? null;
+        
+        // Soruları step'e göre çek
+        $questions = \Modules\AI\app\Models\AIProfileQuestion::getByStep($step, $sectorCode);
+        
+        // Sektörler listesi (step 1 için)
+        $sectors = [];
+        if ($step == 1) {
+            $sectors = \Modules\AI\app\Models\AIProfileSector::getCategorizedSectors();
+        }
+        
+        return view('ai::admin.profile.jquery-edit', [
+            'initialStep' => $step,
+            'questions' => $questions,
+            'sectors' => $sectors,
+            'profileData' => $profileData,
+            'sectorCode' => $sectorCode,
+            'showFounderQuestions' => in_array($profileData['founder_permission'] ?? '', ['Evet, bilgilerimi paylaşmak istiyorum', 'yes_full', 'yes_limited', 'evet'])
+        ]);
     }
     
     /**
@@ -553,16 +653,30 @@ class AIProfileController extends Controller
      */
     public function getQuestions($step, Request $request)
     {
+        \Log::info('🔧 AIProfileController - getQuestions called', [
+            'step' => $step,
+            'sector_code' => $request->input('sector_code')
+        ]);
+        
         try {
             $sectorCode = $request->input('sector_code');
             
             // Soruları step'e göre çek
             $questions = \Modules\AI\app\Models\AIProfileQuestion::getByStep($step, $sectorCode);
             
+            \Log::info('✅ Questions loaded', [
+                'step' => $step,
+                'questions_count' => $questions->count(),
+                'sector_code' => $sectorCode
+            ]);
+            
             // Sektörler listesi (step 1 için)
             $sectors = [];
             if ($step == 1) {
                 $sectors = \Modules\AI\app\Models\AIProfileSector::getCategorizedSectors();
+                \Log::info('✅ Sectors loaded', [
+                    'sectors_count' => $sectors->count()
+                ]);
             }
             
             return response()->json([
@@ -573,9 +687,10 @@ class AIProfileController extends Controller
             ]);
             
         } catch (\Exception $e) {
-            \Log::error('AIProfileController - getQuestions error', [
+            \Log::error('❌ AIProfileController - getQuestions error', [
                 'error' => $e->getMessage(),
-                'step' => $step
+                'step' => $step,
+                'trace' => $e->getTraceAsString()
             ]);
             
             return response()->json([

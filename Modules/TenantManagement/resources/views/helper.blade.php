@@ -1,13 +1,13 @@
 {{-- Modules/TenantManagement/resources/views/helper.blade.php --}}
 {{-- PreTitle --}}
-@push('pretitle')
-{{ __('tenantmanagement::admin.tenants') }}
-@endpush
+@section('pretitle')
+{{ __('tenantmanagement::admin.tenant_management') }}
+@endsection
 
 {{-- Başlık --}}
-@push('title')
-{{ __('tenantmanagement::admin.tenant_management') }}
-@endpush
+@section('title')
+{{ __('tenantmanagement::admin.tenants') }}
+@endsection
 
 {{-- Modül Menüsü --}}
 @push('module-menu')

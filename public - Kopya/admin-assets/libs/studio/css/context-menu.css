@@ -1,0 +1,38 @@
+/* Context Menu */
+.studio-context-menu {
+    position: absolute;
+    background-color: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    padding: var(--spacing-xs) 0;
+    z-index: 1000;
+    min-width: 180px;
+}
+
+.studio-context-menu-item {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    display: flex;
+    align-items: center;
+    color: var(--secondary-color);
+    font-size: var(--font-md);
+    cursor: pointer;
+    transition: var(--transition-normal);
+}
+
+.studio-context-menu-item:hover {
+    background-color: var(--hover-bg);
+    color: var(--primary-color);
+}
+
+.studio-context-menu-item i {
+    margin-right: var(--spacing-sm);
+    width: 16px;
+    text-align: center;
+}
+
+.studio-context-menu-divider {
+    height: 1px;
+    background-color: var(--border-color);
+    margin: var(--spacing-xs) 0;
+}

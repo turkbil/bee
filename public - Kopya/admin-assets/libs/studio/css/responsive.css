@@ -1,0 +1,64 @@
+/* Responsive Ayarlamalar */
+@media (max-width: 1200px) {
+    .panel__left, .panel__right {
+        width: 260px;
+    }
+}
+
+@media (max-width: 992px) {
+    .panel__left {
+        width: 240px;
+    }
+    
+    .panel__right {
+        position: absolute;
+        right: 0;
+        height: 100%;
+        z-index: 100;
+    }
+    
+    .block-items {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .panel__left {
+        position: absolute;
+        left: 0;
+        height: 100%;
+        z-index: 100;
+    }
+    
+    .panel-tab .tab-text {
+        display: none;
+    }
+    
+    .tab-icon-container {
+        margin-bottom: 0;
+    }
+    
+    .studio-header {
+        padding: 0 var(--spacing-sm);
+    }
+    
+    .header-center {
+        display: none;
+    }
+    
+    .btn-tool span,
+    .btn-view span,
+    .btn-save span {
+        display: none;
+    }
+    
+    .gjs-toolbar {
+        transform: scale(0.9) !important;
+        transform-origin: top left !important;
+    }
+    
+    .gjs-badge {
+        font-size: 9px !important;
+        padding: 1px 4px !important;
+    }
+}

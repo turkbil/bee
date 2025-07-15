@@ -1,13 +1,13 @@
 {{-- Modules/ThemeManagement/resources/views/helper.blade.php --}}
 {{-- PreTitle --}}
-@push('pretitle')
+@section('pretitle')
 {{ __('thememanagement::admin.themes') }}
-@endpush
+@endsection
 
 {{-- Başlık --}}
-@push('title')
+@section('title')
 {{ __('thememanagement::admin.theme_management') }}
-@endpush
+@endsection
 
 {{-- Modül Menüsü --}}
 @push('module-menu')

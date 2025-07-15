@@ -295,6 +295,15 @@ Route::middleware(['admin', 'admin.tenant.select'])
                             ->where('step', '[1-6]')
                             ->name('edit');
                         
+                        // jQuery-based simple edit
+                        Route::get('/jquery-edit', [\Modules\AI\App\Http\Controllers\Admin\Profile\AIProfileController::class, 'jqueryEdit'])
+                            ->name('jquery-edit');
+                            
+                        Route::post('/edit/{step?}', [\Modules\AI\App\Http\Controllers\Admin\Profile\AIProfileController::class, 'update'])
+                            ->where('step', '[1-6]')
+                            ->middleware('module.permission:ai,update')
+                            ->name('edit.update');
+                        
                         Route::post('/generate-story', [\Modules\AI\App\Http\Controllers\Admin\Profile\AIProfileController::class, 'generateStory'])
                             ->middleware('module.permission:ai,create')
                             ->name('generate-story');
@@ -302,6 +311,14 @@ Route::middleware(['admin', 'admin.tenant.select'])
                         Route::post('/save-field', [\Modules\AI\App\Http\Controllers\Admin\Profile\AIProfileController::class, 'saveField'])
                             ->middleware('module.permission:ai,update')
                             ->name('save-field');
+                        
+                        Route::get('/questions/{step}', [\Modules\AI\App\Http\Controllers\Admin\Profile\AIProfileController::class, 'getQuestions'])
+                            ->middleware('module.permission:ai,view')
+                            ->name('get-questions');
+                        
+                        Route::get('/profile-data', [\Modules\AI\App\Http\Controllers\Admin\Profile\AIProfileController::class, 'getProfileData'])
+                            ->middleware('module.permission:ai,view')
+                            ->name('get-profile-data');
                         
                         Route::post('/reset', [\Modules\AI\App\Http\Controllers\Admin\Profile\AIProfileController::class, 'reset'])
                             ->middleware('module.permission:ai,delete')

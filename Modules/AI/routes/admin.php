@@ -296,7 +296,8 @@ Route::middleware(['admin', 'admin.tenant.select'])
                             ->name('edit');
                         
                         // jQuery-based simple edit
-                        Route::get('/jquery-edit', [\Modules\AI\App\Http\Controllers\Admin\Profile\AIProfileController::class, 'jqueryEdit'])
+                        Route::get('/jquery-edit/{step?}', [\Modules\AI\App\Http\Controllers\Admin\Profile\AIProfileController::class, 'jqueryEdit'])
+                            ->where('step', '[1-5]')
                             ->name('jquery-edit');
                             
                         Route::post('/edit/{step?}', [\Modules\AI\App\Http\Controllers\Admin\Profile\AIProfileController::class, 'update'])

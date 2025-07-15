@@ -1,12 +1,12 @@
 {{-- PreTitle --}}
-@push('pretitle')
+@section('pretitle')
 {{ __('modulemanagement::admin.modules') }}
-@endpush
+@endsection
 
 {{-- Başlık --}}
-@push('title')
+@section('title')
 {{ __('modulemanagement::admin.module_list') }}
-@endpush
+@endsection
 
 {{-- Modül Menüsü --}}
 @push('module-menu')

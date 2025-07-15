@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schema.org Test</title>
+    
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Schema.org Test Sayfası",
+        "description": "Bu sayfa Schema.org JSON-LD test için oluşturulmuştur.",
+        "url": "http://a.test/schema-test.html",
+        "dateModified": "2025-06-15"
+    }
+    </script>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .highlight {
+            background: #ffffcc;
+            padding: 10px;
+            border-left: 4px solid #ffd700;
+            margin: 20px 0;
+        }
+        .test-info {
+            background: #f0f8ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Schema.org Test Sayfası</h1>
+    
+    <div class="highlight">
+        <h2>✅ Schema.org JSON-LD Başarıyla Eklendi!</h2>
+        <p>Bu sayfanın HEAD bölümünde <code>&lt;script type="application/ld+json"&gt;</code> etiketi bulunmaktadır.</p>
+    </div>
+    
+    <div class="test-info">
+        <h3>Test Nasıl Yapılır:</h3>
+        <ol>
+            <li><strong>Kaynak Kodu:</strong> Sayfada sağ tık → "Kaynağı Görüntüle" → <code>application/ld+json</code> ara</li>
+            <li><strong>Tarayıcı Geliştirici Araçları:</strong> F12 → Elements → HEAD bölümünü incele</li>
+            <li><strong>Google Test:</strong> <a href="https://search.google.com/test/rich-results" target="_blank">Rich Results Test</a></li>
+            <li><strong>Schema.org Validator:</strong> <a href="https://validator.schema.org/" target="_blank">Schema.org Validator</a></li>
+        </ol>
+    </div>
+    
+    <div class="test-info">
+        <h3>Bu Sayfadaki JSON-LD İçeriği:</h3>
+        <pre><code>{
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Schema.org Test Sayfası",
+    "description": "Bu sayfa Schema.org JSON-LD test için oluşturulmuştur.",
+    "url": "http://localhost:8000/schema-test.html",
+    "dateModified": "2025-06-15"
+}</code></pre>
+    </div>
+    
+    <p><strong>Sonuç:</strong> Schema.org sistemi çalışıyor! 🎉</p>
+</body>
+</html>

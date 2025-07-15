@@ -1,13 +1,13 @@
 {{-- Modules/SettingManagement/resources/views/helper.blade.php --}}
 {{-- PreTitle --}}
-@push('pretitle')
+@section('pretitle')
 {{ __('settingmanagement::admin.settings') }}
-@endpush
+@endsection
 
 {{-- Başlık --}}
-@push('title')
+@section('title')
 {{ __('settingmanagement::admin.title') }}
-@endpush
+@endsection
 
 {{-- Modül Menüsü --}}
 @push('module-menu')

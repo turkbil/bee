@@ -1,13 +1,13 @@
 {{-- Modules/Studio/resources/views/admin/helper.blade.php --}}
 {{-- PreTitle --}}
-@push('pretitle')
+@section('pretitle')
 {{ __('studio::admin.studio') }}
-@endpush
+@endsection
 
 {{-- Başlık --}}
-@push('title')
+@section('title')
 {{ __('studio::admin.visual_editor') }}
-@endpush
+@endsection
 
 {{-- Modül Menüsü --}}
 @push('module-menu')

@@ -98,6 +98,14 @@ class AIProfileController extends Controller
     }
     
     /**
+     * jQuery-based basit profil düzenleme
+     */
+    public function jqueryEdit()
+    {
+        return view('ai::admin.profile.jquery-edit');
+    }
+    
+    /**
      * Marka hikayesi oluştur (AJAX)
      */
     public function generateStory(Request $request)
@@ -538,5 +546,159 @@ class AIProfileController extends Controller
         if (!isset($sectionData[$key . '_question'])) {
             $sectionData[$key . '_question'] = $question->question_text;
         }
+    }
+
+    /**
+     * jQuery için adım sorularını getir
+     */
+    public function getQuestions($step, Request $request)
+    {
+        try {
+            $sectorCode = $request->input('sector_code');
+            
+            // Soruları step'e göre çek
+            $questions = \Modules\AI\app\Models\AIProfileQuestion::getByStep($step, $sectorCode);
+            
+            // Sektörler listesi (step 1 için)
+            $sectors = [];
+            if ($step == 1) {
+                $sectors = \Modules\AI\app\Models\AIProfileSector::getCategorizedSectors();
+            }
+            
+            return response()->json([
+                'success' => true,
+                'questions' => $questions,
+                'sectors' => $sectors,
+                'step' => $step
+            ]);
+            
+        } catch (\Exception $e) {
+            \Log::error('AIProfileController - getQuestions error', [
+                'error' => $e->getMessage(),
+                'step' => $step
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Sorular yüklenirken hata: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+    
+    /**
+     * jQuery için mevcut profil verilerini getir
+     */
+    public function getProfileData(Request $request)
+    {
+        try {
+            $profile = AITenantProfile::currentOrCreate();
+            
+            // Profil verilerini flatten et (dot notation)
+            $profileData = [];
+            
+            if ($profile && $profile->exists) {
+                // Company info
+                if ($profile->company_info) {
+                    foreach ($profile->company_info as $key => $value) {
+                        if (is_array($value)) {
+                            foreach ($value as $subKey => $subValue) {
+                                $profileData["company_info.{$key}.{$subKey}"] = $subValue;
+                            }
+                        } else {
+                            $profileData["company_info.{$key}"] = $value;
+                            $profileData[$key] = $value; // Direct access
+                        }
+                    }
+                }
+                
+                // Sector details
+                if ($profile->sector_details) {
+                    foreach ($profile->sector_details as $key => $value) {
+                        if (is_array($value)) {
+                            foreach ($value as $subKey => $subValue) {
+                                $profileData["sector_details.{$key}.{$subKey}"] = $subValue;
+                            }
+                        } else {
+                            $profileData["sector_details.{$key}"] = $value;
+                            $profileData[$key] = $value; // Direct access
+                        }
+                    }
+                }
+                
+                // Success stories
+                if ($profile->success_stories) {
+                    foreach ($profile->success_stories as $key => $value) {
+                        if (is_array($value)) {
+                            foreach ($value as $subKey => $subValue) {
+                                $profileData["success_stories.{$key}.{$subKey}"] = $subValue;
+                            }
+                        } else {
+                            $profileData["success_stories.{$key}"] = $value;
+                            $profileData[$key] = $value; // Direct access
+                        }
+                    }
+                }
+                
+                // AI behavior rules
+                if ($profile->ai_behavior_rules) {
+                    foreach ($profile->ai_behavior_rules as $key => $value) {
+                        if (is_array($value)) {
+                            foreach ($value as $subKey => $subValue) {
+                                $profileData["ai_behavior_rules.{$key}.{$subKey}"] = $subValue;
+                            }
+                        } else {
+                            $profileData["ai_behavior_rules.{$key}"] = $value;
+                            $profileData[$key] = $value; // Direct access
+                        }
+                    }
+                }
+                
+                // Founder info
+                if ($profile->founder_info) {
+                    foreach ($profile->founder_info as $key => $value) {
+                        if (is_array($value)) {
+                            foreach ($value as $subKey => $subValue) {
+                                $profileData["founder_info.{$key}.{$subKey}"] = $subValue;
+                            }
+                        } else {
+                            $profileData["founder_info.{$key}"] = $value;
+                            $profileData[$key] = $value; // Direct access
+                        }
+                    }
+                }
+            }
+            
+            return response()->json([
+                'success' => true,
+                'profile_data' => $profileData,
+                'sector_code' => $profileData['sector'] ?? null,
+                'show_founder_questions' => in_array($profileData['founder_permission'] ?? '', ['Evet, bilgilerimi paylaşmak istiyorum', 'yes_full', 'yes_limited', 'evet'])
+            ]);
+            
+        } catch (\Exception $e) {
+            \Log::error('AIProfileController - getProfileData error', [
+                'error' => $e->getMessage()
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Profil verileri yüklenirken hata: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Form POST işlemi için update metodu
+     */
+    public function update(Request $request, $step = null)
+    {
+        \Log::info('🔧 AIProfileController - update called', [
+            'step' => $step,
+            'request_data' => $request->all()
+        ]);
+
+        // Livewire bileşeni ile aynı sayfaya redirect
+        return redirect()->route('admin.ai.profile.edit', ['step' => $step])
+                        ->with('success', 'Form gönderildi');
     }
 }

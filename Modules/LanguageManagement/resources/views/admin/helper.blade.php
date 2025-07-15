@@ -1,13 +1,13 @@
 {{-- Modules/LanguageManagement/resources/views/admin/helper.blade.php --}}
 {{-- PreTitle --}}
-@push('pretitle')
+@section('pretitle')
 {{ __('languagemanagement::admin.title') }}
-@endpush
+@endsection
 
 {{-- Başlık --}}
-@push('title')
+@section('title')
 {{ __('languagemanagement::admin.multilanguage_system') }}
-@endpush
+@endsection
 
 {{-- Modül Menüsü --}}
 @push('module-menu')

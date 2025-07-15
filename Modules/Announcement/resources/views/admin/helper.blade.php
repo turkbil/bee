@@ -1,13 +1,13 @@
 {{-- Modules/Announcement/resources/views/admin/helper.blade.php --}}
 {{-- PreTitle --}}
-@push('pretitle')
+@section('pretitle')
 {{ __('announcement::admin.announcements') }}
-@endpush
+@endsection
 
 {{-- Başlık --}}
-@push('title')
+@section('title')
 {{ __('announcement::admin.announcement_management') }}
-@endpush
+@endsection
 
 {{-- Çok Dilli Tab Sistemi --}}
 @push('admin-js')

@@ -160,48 +160,17 @@ class AIProfileManagement extends Component
                     \Log::error('Livewire - API anahtarı bulunamadı - marka hikayesi oluşturulamadı');
                     session()->flash('brand_story_error', 'API anahtarı bulunamadı. Marka hikayesi oluşturulamadı.');
                 } else {
-                    // Async olarak hikaye oluştur (arka planda)
-                    \Log::info('Livewire - Brand story generation başlatılıyor - async');
-                    
-                    // Hikaye oluşturma deneme sayısını kontrol et
-                    $attemptKey = 'brand_story_attempt_' . $this->profile->id;
-                    $attempts = session($attemptKey, 0);
-                    
-                    if ($attempts < 3) { // Maximum 3 deneme
-                        session([$attemptKey => $attempts + 1]);
-                        
-                        try {
-                            \Log::info('Livewire - Brand story oluşturuluyor', [
-                                'profile_id' => $this->profile->id,
-                                'attempt' => $attempts + 1
-                            ]);
-                            
-                            $this->profile->generateBrandStory();
-                            session()->forget($attemptKey);
-                            session()->flash('brand_story_generated', 'Marka hikayeniz başarıyla oluşturuldu!');
-                            
-                            // Profile'ı fresh'le
-                            $this->profile = $this->profile->fresh();
-                            
-                        } catch (\Exception $e) {
-                            \Log::error('Livewire - Brand story generation attempt failed', [
-                                'profile_id' => $this->profile->id,
-                                'attempt' => $attempts + 1,
-                                'error' => $e->getMessage()
-                            ]);
-                            throw $e; // Re-throw to be caught by outer try-catch
-                        }
-                    } else {
-                        \Log::warning('Livewire - Brand story generation max attempts reached', [
-                            'profile_id' => $this->profile->id,
-                            'attempts' => $attempts
-                        ]);
-                        session()->flash('brand_story_error', 'Hikaye oluşturma denemesi başarısız. Lütfen "Hikayeyi Yeniden Oluştur" butonunu kullanın.');
-                    }
+                    // Asenkron brand story generation
+                    \Log::info('Brand story generation başlatılıyor - async');
+                    \Modules\AI\App\Jobs\GenerateBrandStoryJob::dispatch($this->profile);
+                    session()->flash('brand_story_info', 'Marka hikayesi oluşturuluyor. Bu işlem arka planda devam ediyor.');
                 }
             } catch (\Exception $e) {
-                \Log::error('Livewire - Brand story generation failed', ['error' => $e->getMessage()]);
-                session()->flash('brand_story_error', 'Marka hikayesi oluşturulurken hata: ' . $e->getMessage());
+                \Log::error('Livewire - Brand story generation failed', [
+                    'profile_id' => $this->profile->id,
+                    'error' => $e->getMessage()
+                ]);
+                session()->flash('brand_story_error', 'Marka hikayesi oluşturulurken bir hata oluştu. Lütfen daha sonra tekrar deneyin.');
             }
         }
     }

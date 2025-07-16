@@ -9,7 +9,7 @@ use App\Helpers\TenantHelpers;
 class SectorSeeder_Part4 extends Seeder
 {
     /**
-     * SECTOR SEEDER PART 4 (ID 201+)
+     * SECTOR SEEDER PART 4 (ID 151-200)
      * Özel Türk esnaf sektörleri ve niş alanlar + özel sorular
      */
     public function run(): void
@@ -18,44 +18,44 @@ class SectorSeeder_Part4 extends Seeder
             return;
         }
         
-        echo "🎯 Sektörler Part 4 yükleniyor (ID 201+)...\n";
+        echo "🎯 Sektörler Part 4 yükleniyor (ID 151-200)...\n";
 
-        // Özel Türk esnaf ve niş sektörleri ekle (ID 201+)
+        // Özel Türk esnaf ve niş sektörleri ekle (ID 151-200)
         $this->addSpecialTurkishSectors();
         
         // Bu sektörlere özel sorular ekle
         $this->addSectorQuestions();
 
-        echo "✅ Part 4 tamamlandı! (Özel Türk Esnaf & Niş sektörler)\n";
+        echo "✅ Part 4 tamamlandı! (ID 151-170: Özel Türk Esnaf & Niş sektörler)\n";
     }
     
     private function addSpecialTurkishSectors(): void
     {
-        // Özel Türk esnaf ve niş sektörler (ID 201'den başlayarak)
+        // Özel Türk esnaf ve niş sektörler (ID 151'den başlayarak)
         $sectors = [
-            // ÖZEL TÜRK ESNAF SEKTÖRLERI (ID 201-215)
-            ['id' => 201, 'code' => 'wedding_dress', 'category_id' => 14, 'name' => 'Gelinlik & Abiye', 'emoji' => '👰', 'color' => 'rose', 'description' => 'Gelinlik, abiye, düğün kıyafetleri', 'keywords' => 'gelinlik, abiye, düğün, gelin'],
-            ['id' => 202, 'code' => 'flower_shop', 'category_id' => 14, 'name' => 'Çiçekçi & Bahçıvanlık', 'emoji' => '🌹', 'color' => 'green', 'description' => 'Çiçekçilik, peyzaj, bahçıvanlık', 'keywords' => 'çiçek, bahçe, peyzaj, orkide'],
-            ['id' => 203, 'code' => 'carpet_rug', 'category_id' => 14, 'name' => 'Halı & Kilim', 'emoji' => '🪺', 'color' => 'amber', 'description' => 'El dokuması halı, kilim, duvar halısı', 'keywords' => 'halı, kilim, dokuması, antika'],
-            ['id' => 204, 'code' => 'market_grocery', 'category_id' => 5, 'name' => 'Market & Bakkal', 'emoji' => '🏪', 'color' => 'green', 'description' => 'Mahalle marketi, bakkal, şarküteri', 'keywords' => 'market, bakkal, şarküteri, mahalle'],
-            ['id' => 205, 'code' => 'gas_station', 'category_id' => 10, 'name' => 'Benzinlik & Akaryakıt', 'emoji' => '⛽', 'color' => 'red', 'description' => 'Benzin istasyonu, LPG, oto yıkama', 'keywords' => 'benzin, akaryakıt, LPG, yakıt'],
-            ['id' => 206, 'code' => 'stationery_shop', 'category_id' => 5, 'name' => 'Kırtasiye & Okul', 'emoji' => '📚', 'color' => 'blue', 'description' => 'Kırtasiye, okul malzemeleri, fotokopi', 'keywords' => 'kırtasiye, okul, fotokopi, kalem'],
-            ['id' => 207, 'code' => 'toy_shop', 'category_id' => 5, 'name' => 'Oyuncak & Bebek', 'emoji' => '🧸', 'color' => 'pink', 'description' => 'Oyuncak, bebek, çocuk ürünleri', 'keywords' => 'oyuncak, bebek, çocuk, eğlence'],
-            ['id' => 208, 'code' => 'furniture_maker', 'category_id' => 18, 'name' => 'Marangoz & Mobilya', 'emoji' => '🪑', 'color' => 'brown', 'description' => 'Mobilya yapımı, marangozluk, ahşap', 'keywords' => 'marangoz, mobilya, ahşap, masa'],
-            ['id' => 209, 'code' => 'blacksmith_metal', 'category_id' => 17, 'name' => 'Demirci & Metal İşleri', 'emoji' => '🔨', 'color' => 'gray', 'description' => 'Demircilik, metal işleme, kaynak', 'keywords' => 'demirci, metal, kaynak, demir'],
-            ['id' => 210, 'code' => 'curtain_blind', 'category_id' => 14, 'name' => 'Perde & Jaluzici', 'emoji' => '🪟', 'color' => 'blue', 'description' => 'Perde, jaluzi, ev tekstili', 'keywords' => 'perde, jaluzi, ev tekstili, cam'],
+            // ÖZEL TÜRK ESNAF SEKTÖRLERI (ID 151-165) 
+            ['id' => 151, 'code' => 'wedding_dress', 'category_id' => 14, 'name' => 'Gelinlik & Abiye', 'emoji' => '👰', 'color' => 'rose', 'description' => 'Gelinlik, abiye, düğün kıyafetleri', 'keywords' => 'gelinlik, abiye, düğün, gelin'],
+            ['id' => 152, 'code' => 'flower_shop', 'category_id' => 6, 'name' => 'Çiçekçi & Bahçıvanlık', 'emoji' => '🌹', 'color' => 'green', 'description' => 'Çiçekçilik, peyzaj, bahçıvanlık', 'keywords' => 'çiçek, bahçe, peyzaj, orkide'],
+            ['id' => 153, 'code' => 'carpet_rug', 'category_id' => 8, 'name' => 'Halı & Kilim', 'emoji' => '🪺', 'color' => 'amber', 'description' => 'El dokuması halı, kilim, duvar halısı', 'keywords' => 'halı, kilim, dokuması, antika'],
+            ['id' => 154, 'code' => 'market_grocery', 'category_id' => 6, 'name' => 'Market & Bakkal', 'emoji' => '🏪', 'color' => 'green', 'description' => 'Mahalle marketi, bakkal, şarküteri', 'keywords' => 'market, bakkal, şarküteri, mahalle'],
+            ['id' => 155, 'code' => 'gas_station', 'category_id' => 17, 'name' => 'Benzinlik & Akaryakıt', 'emoji' => '⛽', 'color' => 'red', 'description' => 'Benzin istasyonu, LPG, oto yıkama', 'keywords' => 'benzin, akaryakıt, LPG, yakıt'],
+            ['id' => 156, 'code' => 'stationery_shop', 'category_id' => 6, 'name' => 'Kırtasiye & Okul', 'emoji' => '📚', 'color' => 'blue', 'description' => 'Kırtasiye, okul malzemeleri, fotokopi', 'keywords' => 'kırtasiye, okul, fotokopi, kalem'],
+            ['id' => 157, 'code' => 'toy_shop', 'category_id' => 6, 'name' => 'Oyuncak & Bebek', 'emoji' => '🧸', 'color' => 'pink', 'description' => 'Oyuncak, bebek, çocuk ürünleri', 'keywords' => 'oyuncak, bebek, çocuk, eğlence'],
+            ['id' => 158, 'code' => 'furniture_maker', 'category_id' => 17, 'name' => 'Marangoz & Mobilya', 'emoji' => '🪑', 'color' => 'brown', 'description' => 'Mobilya yapımı, marangozluk, ahşap', 'keywords' => 'marangoz, mobilya, ahşap, masa'],
+            ['id' => 159, 'code' => 'blacksmith_metal', 'category_id' => 17, 'name' => 'Demirci & Metal İşleri', 'emoji' => '🔨', 'color' => 'gray', 'description' => 'Demircilik, metal işleme, kaynak', 'keywords' => 'demirci, metal, kaynak, demir'],
+            ['id' => 160, 'code' => 'curtain_blind', 'category_id' => 14, 'name' => 'Perde & Jaluzici', 'emoji' => '🪟', 'color' => 'blue', 'description' => 'Perde, jaluzi, ev tekstili', 'keywords' => 'perde, jaluzi, ev tekstili, cam'],
             
-            // NİŞ VE ÖZEL ALANLAR (ID 211-220)
-            ['id' => 211, 'code' => 'traditional_crafts', 'category_id' => 8, 'name' => 'Geleneksel Sanatlar', 'emoji' => '🏺', 'color' => 'amber', 'description' => 'Çini, seramik, geleneksel el sanatları', 'keywords' => 'çini, seramik, geleneksel, sanat'],
-            ['id' => 212, 'code' => 'musical_instruments', 'category_id' => 8, 'name' => 'Müzik Aletleri', 'emoji' => '🎸', 'color' => 'purple', 'description' => 'Enstrüman satış, tamir, müzik', 'keywords' => 'enstrüman, müzik, gitar, piyano'],
-            ['id' => 213, 'code' => 'second_hand', 'category_id' => 5, 'name' => 'İkinci El & Antika', 'emoji' => '🕰️', 'color' => 'amber', 'description' => 'İkinci el eşya, antika, koleksiyon', 'keywords' => 'ikinci el, antika, eski, koleksiyon'],
-            ['id' => 214, 'code' => 'hobby_collection', 'category_id' => 5, 'name' => 'Hobi & Koleksiyon', 'emoji' => '🎯', 'color' => 'indigo', 'description' => 'Hobi malzemeleri, koleksiyon eşyaları', 'keywords' => 'hobi, koleksiyon, maket, oyun'],
-            ['id' => 215, 'code' => 'party_organization', 'category_id' => 18, 'name' => 'Parti & Organizasyon', 'emoji' => '🎉', 'color' => 'pink', 'description' => 'Doğum günü, parti, etkinlik organizasyonu', 'keywords' => 'parti, doğum günü, etkinlik, balon'],
-            ['id' => 216, 'code' => 'fishing_hunting', 'category_id' => 9, 'name' => 'Balık & Avcılık', 'emoji' => '🎣', 'color' => 'green', 'description' => 'Balık malzemeleri, avcılık, outdoor', 'keywords' => 'balık, avcılık, olta, doğa'],
-            ['id' => 217, 'code' => 'camping_outdoor', 'category_id' => 9, 'name' => 'Kamp & Doğa Sporları', 'emoji' => '🏕️', 'color' => 'green', 'description' => 'Kamp malzemeleri, doğa sporları', 'keywords' => 'kamp, çadır, doğa, outdoor'],
-            ['id' => 218, 'code' => 'religious_items', 'category_id' => 14, 'name' => 'Dini Eşya & Kitap', 'emoji' => '📿', 'color' => 'green', 'description' => 'Dini kitap, tesbih, hac-umre', 'keywords' => 'dini, kitap, tesbih, hac'],
-            ['id' => 219, 'code' => 'occult_spiritual', 'category_id' => 14, 'name' => 'Metafizik & Ruhani', 'emoji' => '🔮', 'color' => 'purple', 'description' => 'Tarot, kristal, ruhani danışmanlık', 'keywords' => 'tarot, kristal, ruhani, metafizik'],
-            ['id' => 220, 'code' => 'funeral_cemetery', 'category_id' => 18, 'name' => 'Cenaze & Mezarlık', 'emoji' => '⚱️', 'color' => 'gray', 'description' => 'Cenaze hizmetleri, mezar taşları', 'keywords' => 'cenaze, mezar, tabut, defin'],
+            // NİŞ VE ÖZEL ALANLAR (ID 161-170)
+            ['id' => 161, 'code' => 'traditional_crafts', 'category_id' => 8, 'name' => 'Geleneksel Sanatlar', 'emoji' => '🏺', 'color' => 'amber', 'description' => 'Çini, seramik, geleneksel el sanatları', 'keywords' => 'çini, seramik, geleneksel, sanat'],
+            ['id' => 162, 'code' => 'musical_instruments', 'category_id' => 8, 'name' => 'Müzik Aletleri', 'emoji' => '🎸', 'color' => 'purple', 'description' => 'Enstrüman satış, tamir, müzik', 'keywords' => 'enstrüman, müzik, gitar, piyano'],
+            ['id' => 163, 'code' => 'second_hand', 'category_id' => 6, 'name' => 'İkinci El & Antika', 'emoji' => '🕰️', 'color' => 'amber', 'description' => 'İkinci el eşya, antika, koleksiyon', 'keywords' => 'ikinci el, antika, eski, koleksiyon'],
+            ['id' => 164, 'code' => 'hobby_collection', 'category_id' => 6, 'name' => 'Hobi & Koleksiyon', 'emoji' => '🎯', 'color' => 'indigo', 'description' => 'Hobi malzemeleri, koleksiyon eşyaları', 'keywords' => 'hobi, koleksiyon, maket, oyun'],
+            ['id' => 165, 'code' => 'party_organization', 'category_id' => 9, 'name' => 'Parti & Organizasyon', 'emoji' => '🎉', 'color' => 'pink', 'description' => 'Doğum günü, parti, etkinlik organizasyonu', 'keywords' => 'parti, doğum günü, etkinlik, balon'],
+            ['id' => 166, 'code' => 'fishing_hunting', 'category_id' => 16, 'name' => 'Balık & Avcılık', 'emoji' => '🎣', 'color' => 'green', 'description' => 'Balık malzemeleri, avcılık, outdoor', 'keywords' => 'balık, avcılık, olta, doğa'],
+            ['id' => 167, 'code' => 'camping_outdoor', 'category_id' => 16, 'name' => 'Kamp & Doğa Sporları', 'emoji' => '🏕️', 'color' => 'green', 'description' => 'Kamp malzemeleri, doğa sporları', 'keywords' => 'kamp, çadır, doğa, outdoor'],
+            ['id' => 168, 'code' => 'religious_items', 'category_id' => 6, 'name' => 'Dini Eşya & Kitap', 'emoji' => '📿', 'color' => 'green', 'description' => 'Dini kitap, tesbih, hac-umre', 'keywords' => 'dini, kitap, tesbih, hac'],
+            ['id' => 169, 'code' => 'occult_spiritual', 'category_id' => 9, 'name' => 'Metafizik & Ruhani', 'emoji' => '🔮', 'color' => 'purple', 'description' => 'Tarot, kristal, ruhani danışmanlık', 'keywords' => 'tarot, kristal, ruhani, metafizik'],
+            ['id' => 170, 'code' => 'funeral_cemetery', 'category_id' => 9, 'name' => 'Cenaze & Mezarlık', 'emoji' => '⚱️', 'color' => 'gray', 'description' => 'Cenaze hizmetleri, mezar taşları', 'keywords' => 'cenaze, mezar, tabut, defin'],
         ];
 
         $addedCount = 0;

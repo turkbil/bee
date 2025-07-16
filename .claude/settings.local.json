@@ -129,7 +129,9 @@
       "Bash(unzip:*)",
       "Bash(export PATH=\"$PATH:$HOME/Development/flutter/bin\")",
       "Bash(~/Development/flutter/bin/flutter --version)",
-      "Bash(~/Development/flutter/bin/flutter doctor)"
+      "Bash(~/Development/flutter/bin/flutter doctor)",
+      "Bash(git remote set-url:*)",
+      "Bash(~/Development/flutter/bin/flutter doctor --android-licenses)"
     ],
     "deny": []
   },

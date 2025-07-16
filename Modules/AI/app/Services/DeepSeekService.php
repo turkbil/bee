@@ -112,7 +112,7 @@ class DeepSeekService
             
             $settings = $this->getGlobalSettings();
             
-            $response = Http::timeout(600)->withHeaders([
+            $response = Http::timeout(900)->withHeaders([
                 'Authorization' => 'Bearer ' . $this->apiKey,
                 'Content-Type' => 'application/json',
             ])->post($this->baseUrl . '/chat/completions', [
@@ -183,7 +183,7 @@ class DeepSeekService
             
             $settings = $this->getGlobalSettings();
             
-            $response = Http::timeout(600)->withHeaders([
+            $response = Http::timeout(900)->withHeaders([
                 'Authorization' => 'Bearer ' . $this->apiKey,
                 'Content-Type' => 'application/json',
                 'Accept' => 'text/event-stream',
@@ -364,7 +364,7 @@ class DeepSeekService
                     
                     $settings = $this->getGlobalSettings();
                     
-                    $response = Http::timeout(600)->withHeaders([
+                    $response = Http::timeout(900)->withHeaders([
                         'Authorization' => 'Bearer ' . $this->apiKey,
                         'Content-Type' => 'application/json',
                         'Accept' => 'text/event-stream',
@@ -419,7 +419,7 @@ class DeepSeekService
                 
                 $settings = $this->getGlobalSettings();
                 
-                $response = Http::timeout(600)->withHeaders([
+                $response = Http::timeout(900)->withHeaders([
                     'Authorization' => 'Bearer ' . $this->apiKey,
                     'Content-Type' => 'application/json',
                 ])->post($this->baseUrl . '/chat/completions', [

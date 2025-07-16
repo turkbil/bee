@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Ana renk değiştirme - Real-time system kullanıyor, bu fonksiyon devre dışı
     function initColorPickers() {
-        console.log('🎨 initColorPickers ATLANACAK - Real-time system aktif');
+        // initColorPickers skipped - real-time system active
         // Bu fonksiyon artık real-time system tarafından handle ediliyor
         // Duplicate event listener'ları önlemek için devre dışı bırakıldı
     }
@@ -248,11 +248,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Navbar'daki tema geçiş düğmesi - Basitleştirilmiş ve düzgün çalışan sistem
     function initThemeSwitch() {
-        console.log('🎨 initThemeSwitch BAŞLADI');
+        // initThemeSwitch started
         
         // Çoklu çağrı kontrolü
         if (window.themeSwitch_initialized) {
-            console.log('⚠️ initThemeSwitch zaten çalıştırılmış, atlanıyor...');
+            // initThemeSwitch already initialized
             return;
         }
         
@@ -260,11 +260,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const themeSwitch = document.getElementById('switch');
         
         if (!themeSwitch) {
-            console.log('❌ Theme switch bulunamadı!');
+            // Theme switch not found
             return;
         }
         
-        console.log('✅ Theme switch bulundu:', themeSwitch);
+        // Theme switch found
         
         // Cookie'den mevcut temayı al
         function getCookie(name) {
@@ -276,81 +276,84 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Mevcut tema ayarını al
         let currentTheme = getCookie('dark');
-        console.log('🍪 Cookie\'den alınan tema:', currentTheme);
+        // Cookie theme value retrieved
         
         // Eğer tema ayarı yoksa, varsayılan olarak light mode kullan
         if (!currentTheme || (currentTheme !== '0' && currentTheme !== '1')) {
             currentTheme = '0'; // Light mode
-            console.log('🔄 Varsayılan tema ayarlandı:', currentTheme);
+            // Default theme set
         }
         
         // Tema durumunu güncelle
         function updateThemeState() {
-            console.log('🔄 updateThemeState çağrıldı, currentTheme:', currentTheme);
+            // updateThemeState called
             
             const themeContainer = document.querySelector('.theme-mode');
             if (!themeContainer) {
-                console.log('❌ .theme-mode container bulunamadı!');
+                // Theme mode container not found
                 return;
             }
             
-            console.log('✅ Theme container bulundu:', themeContainer);
+            // Theme container found
             
             // Önce mevcut tema durumunu temizle
             const oldDataTheme = themeContainer.getAttribute('data-theme');
-            console.log('🗑️ Eski data-theme temizleniyor:', oldDataTheme);
+            // Old data-theme cleaning
             themeContainer.removeAttribute('data-theme');
             
             // Mevcut temaya göre data-theme özniteliğini ayarla
             if (currentTheme === '1') {
                 // Karanlık mod
-                console.log('🌙 DARK tema modu ayarlanıyor...');
+                // Dark theme mode setting
                 themeContainer.setAttribute('data-theme', 'dark');
                 themeSwitch.checked = true;
-                console.log('✅ DARK - checkbox checked: true, data-theme: dark');
+                // Dark theme applied
             } else {
                 // Açık mod
-                console.log('☀️ LIGHT tema modu ayarlanıyor...');
+                // Light theme mode setting
                 themeContainer.setAttribute('data-theme', 'light');
                 themeSwitch.checked = false;
-                console.log('✅ LIGHT - checkbox checked: false, data-theme: light');
+                // Light theme applied
             }
             
-            console.log('📋 Final updateThemeState sonucu:', {
+            // Final updateThemeState result
+            /*
+            {
                 currentTheme: currentTheme,
                 dataTheme: themeContainer.getAttribute('data-theme'),
                 checkboxChecked: themeSwitch.checked
-            });
+            }
+            */
         }
         
         // Sistem temasını kontrol et
         function checkSystemTheme() {
-            console.log('🔍 checkSystemTheme çağrıldı, currentTheme:', currentTheme);
+            // checkSystemTheme called
             
             if (currentTheme === 'auto') {
-                console.log('🔮 AUTO modunda sistem teması kontrol ediliyor...');
+                // Auto mode system theme check
                 const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                console.log('🖥️ Sistem dark mode:', prefersDarkMode);
+                // System dark mode detected
                 
                 const body = document.body;
                 const oldBodyTheme = body.getAttribute('data-bs-theme');
                 const oldBodyClasses = body.classList.toString();
                 
-                console.log('📄 Body - eski data-bs-theme:', oldBodyTheme);
-                console.log('📄 Body - eski classList:', oldBodyClasses);
+                // Body old data-bs-theme
+                // Body old classList
                 
                 body.setAttribute('data-bs-theme', prefersDarkMode ? 'dark' : 'light');
                 body.classList.remove(prefersDarkMode ? 'light' : 'dark');
                 body.classList.add(prefersDarkMode ? 'dark' : 'light');
                 
-                console.log('📄 Body - yeni data-bs-theme:', body.getAttribute('data-bs-theme'));
-                console.log('📄 Body - yeni classList:', body.classList.toString());
+                // Body new data-bs-theme
+                // Body new classList
                 
                 // Sistem teması değiştiğinde tema durumunu güncelle
-                console.log('🔄 AUTO modunda updateThemeState çağrılıyor...');
+                // Auto mode updateThemeState
                 updateThemeState();
             } else {
-                console.log('⏭️ AUTO mod değil, sistem teması kontrolü atlandı');
+                // Auto mode not enabled, system theme check skipped
             }
         }
         
@@ -366,78 +369,90 @@ document.addEventListener('DOMContentLoaded', function() {
             // Checkbox'ın otomatik değişimini engelle
             event.preventDefault();
             
-            console.log('🖱️ Theme switch click olayı!');
-            console.log('📊 Click event details:', {
+            // Theme switch click event
+            // Click event details
+            /*
+            {
                 currentTheme: currentTheme,
                 eventType: event.type,
                 isTrusted: event.isTrusted,
                 timeStamp: event.timeStamp,
                 checkbox_checked_before: this.checked
-            });
+            }
+            */
             
             // Debounce - 300ms içinde tekrar tetiklenirse öncekini iptal et
             if (debounceTimer) {
-                console.log('⏱️ Debounce: Önceki click iptal edildi');
+                // Debounce: Previous click cancelled
                 clearTimeout(debounceTimer);
             }
             
             debounceTimer = setTimeout(() => {
-                console.log('⚡ Debounce: Click işleniyor...');
+                // Debounce: Click processing
             
             // Basit geçiş: Açık -> Karanlık -> Açık ...
             const oldTheme = currentTheme;
-            console.log('🎯 Tema değişim mantığı başlıyor, mevcut tema:', oldTheme);
+            // Theme change logic starting
             
             if (currentTheme === '0') {
                 // Açık moddan karanlık moda geç
-                console.log('☀️ → 🌙 Light → Dark geçiş');
+                // Light to Dark transition
                 currentTheme = '1';
             } else {
                 // Karanlık moddan açık moda geç
-                console.log('🌙 → ☀️ Dark → Light geçiş');
+                // Dark to Light transition
                 currentTheme = '0';
             }
             
-            console.log('🔄 Tema değişimi tamamlandı:', {
+            // Theme change completed
+            /*
+            {
                 from: oldTheme,
                 to: currentTheme,
                 sequence: oldTheme === '0' ? 'Light→Dark' : 'Dark→Light'
-            });
+            }
+            */
             
             // Cookie'yi ayarla
             document.cookie = `dark=${currentTheme};path=/;max-age=31536000`;
-            console.log('🍪 Cookie ayarlandı:', `dark=${currentTheme}`);
+            // Cookie set
             
             // Tema sınıflarını güncelle
-            console.log('📄 Body tema sınıfları güncelleniyor...');
+            // Body theme classes updating
             const body = document.body;
             const oldBodyTheme = body.getAttribute('data-bs-theme');
             const oldBodyClasses = body.classList.toString();
             
-            console.log('📄 Body - önceki durumu:', {
+            // Body previous state
+            /*
+            {
                 dataTheme: oldBodyTheme,
                 classList: oldBodyClasses
-            });
+            }
+            */
             
             if (currentTheme === '1') {
-                console.log('🌙 Body DARK tema uygulanıyor...');
+                // Body DARK theme applying
                 body.setAttribute('data-bs-theme', 'dark');
                 body.classList.remove('light');
                 body.classList.add('dark');
             } else {
-                console.log('☀️ Body LIGHT tema uygulanıyor...');
+                // Body LIGHT theme applying
                 body.setAttribute('data-bs-theme', 'light');
                 body.classList.remove('dark');
                 body.classList.add('light');
             }
             
-            console.log('📄 Body - yeni durumu:', {
+            // Body new state
+            /*
+            {
                 dataTheme: body.getAttribute('data-bs-theme'),
                 classList: body.classList.toString()
-            });
+            }
+            */
             
             // Tema durumunu güncelle
-            console.log('🔄 Click sonrası updateThemeState çağrılıyor...');
+            // Post-click updateThemeState called
             updateThemeState();
             
             // Primary rengi koru
@@ -468,7 +483,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // İnitialize flag'i ayarla
         window.themeSwitch_initialized = true;
-        console.log('✅ initThemeSwitch tamamlandı ve flag ayarlandı');
+        // initThemeSwitch completed and flag set
     }
 
     // Yardımcı Fonksiyonlar
@@ -513,11 +528,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Primary renk paleti oluşturma - Tabler.io uyumlu
     function generatePrimaryPalette(primaryColor) {
-        console.log('🎨 generatePrimaryPalette - gelen renk:', primaryColor);
+        // generatePrimaryPalette - input color
         
         // Color name'i hex'e dönüştür
         const hexColor = colorNameToHex(primaryColor);
-        console.log('🎨 generatePrimaryPalette - dönüştürülen hex:', hexColor);
+        // generatePrimaryPalette - hex converted
         
         // Geçerli hex kontrolü
         if (!hexColor || !hexColor.startsWith('#') || hexColor.length !== 7) {
@@ -527,7 +542,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const r = parseInt(hex.substring(0, 2), 16);
             const g = parseInt(hex.substring(2, 4), 16);
             const b = parseInt(hex.substring(4, 6), 16);
-            console.log('🎨 generatePrimaryPalette - Fallback RGB:', {r, g, b});
+            // generatePrimaryPalette - fallback RGB
             const [h, s, l] = rgbToHsl(r, g, b);
             return generatePaletteFromHSL(h, s, l, fallbackColor);
         }
@@ -550,7 +565,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return generatePaletteFromHSL(h, s, l, fallbackColor);
         }
         
-        console.log('🎨 generatePrimaryPalette - RGB:', {r, g, b});
+        // generatePrimaryPalette - RGB values
         
         // HSL'e dönüştür
         const [h, s, l] = rgbToHsl(r, g, b);
@@ -575,7 +590,7 @@ document.addEventListener('DOMContentLoaded', function() {
             950: hslToHex(h, Math.min(s + 0.3, 1), Math.max(l - 0.45, 0.02))
         };
         
-        console.log('🎨 generatePrimaryPalette - final palette:', palette);
+        // generatePrimaryPalette - final palette
         return palette;
     }
     
@@ -1177,10 +1192,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Debug fonksiyonu - renk dönüşümü hatalarını yakala
     function debugColorConversion(colorName, step, data) {
-        console.group(`🔍 Debug: ${colorName} rengi - ${step}`);
-        console.log('Input:', colorName);
-        console.log('Data:', data);
-        console.groupEnd();
+        // Debug logs removed for production
     }
 
     // Başlangıç durumunu ayarla
@@ -1297,52 +1309,52 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Theme Builder için anında yansıma event'leri
     function initThemeBuilderEvents() {
-        console.log('🏗️ initThemeBuilderEvents BAŞLADI');
+        // initThemeBuilderEvents started
         
         // Theme builder açıldığında tüm form elementlerini dinle
         const offcanvasTheme = document.getElementById('offcanvasTheme');
-        console.log('🏗️ OffcanvasTheme elementi:', offcanvasTheme ? 'bulundu' : 'bulunamadı');
+        // OffcanvasTheme element check
         
         if (offcanvasTheme) {
-            console.log('🏗️ Offcanvas event listener ekleniyor...');
+            // Offcanvas event listener
             
             offcanvasTheme.addEventListener('shown.bs.offcanvas', function() {
-                console.log('🏗️ OFFCANVAS AÇILDI! Theme Builder aktif');
+                // Offcanvas opened, theme builder active
                 
                 // Offcanvas açıldığında tüm form elementlerini tekrar dinle
-                console.log('🏗️ Real-time listeners attach ediliyor...');
+                // Attaching real-time listeners
                 attachRealTimeListeners();
                 
                 // Mevcut değerleri form'a yansıt
-                console.log('🏗️ Theme Builder form güncelleniyor...');
+                // Updating theme builder form
                 updateThemeBuilderForm();
                 
-                console.log('✅ Theme Builder hazır!');
+                // Theme builder ready
             });
         } else {
-            console.warn('⚠️ OffcanvasTheme elementi bulunamadı!');
+            // OffcanvasTheme element not found
         }
         
-        console.log('✅ initThemeBuilderEvents tamamlandı');
+        // initThemeBuilderEvents completed
     }
     
     // Real-time listener'ları attach et
     function attachRealTimeListeners() {
-        console.log('🔗 attachRealTimeListeners BAŞLADI');
+        // attachRealTimeListeners started
         
         // Tüm tema değişikliklerini real-time dinle
         
         // Ana renk değişiklikleri
         const primaryInputs = document.querySelectorAll('input[name="theme-primary"]');
-        console.log('🔗 Primary color inputs bulundu:', primaryInputs.length);
+        // Primary color inputs found
         
         primaryInputs.forEach((input, index) => {
             if (!input.hasAttribute('data-realtime-attached')) {
-                console.log(`🔗 Real-time listener ekleniyor primary ${index + 1}:`, input.value);
+                // Real-time listener for primary color
                 input.setAttribute('data-realtime-attached', 'true');
                 
                 input.addEventListener('change', function() {
-                    console.log('🔗 REAL-TIME PRIMARY COLOR CHANGE!', this.value);
+                    // Real-time primary color change
                     
                     const color = this.value;
                     debugColorConversion(color, 'Real-time değişim', {
@@ -1353,10 +1365,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
                     
                     document.cookie = `siteColor=${color};path=/;max-age=31536000`;
-                    console.log('🍪 Real-time color cookie:', `siteColor=${color}`);
+                    // Real-time color cookie saved
                     
                     const primaryPalette = generatePrimaryPalette(color);
-                    console.log('🔗 Real-time palette generated:', primaryPalette);
+                    // Real-time palette generated
                     
                     applyPrimaryPalette(primaryPalette);
                     updateTextColor(color);
@@ -1364,10 +1376,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     // Toast bildirimi devre dışı - Livewire handle ediyor
                     // showThemeToast('Ana renk güncellendi');
-                    console.log('✅ Real-time primary color change tamamlandı');
+                    // Real-time primary color change completed
                 });
             } else {
-                console.log(`⏭️ Primary ${index + 1} zaten real-time listener'a sahip, atlanıyor`);
+                // Primary color already has real-time listener
             }
         });
         

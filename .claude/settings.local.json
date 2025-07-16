@@ -91,15 +91,6 @@
       "Bash(/mnt/c/laragon/www/laravel/Modules/Page/resources/views/admin/livewire/page-manage-component.blade.php )",
       "Bash(/mnt/c/laragon/www/laravel/Modules/Page/resources/views/admin/livewire/page-component.blade.php )",
       "Bash(/mnt/c/laragon/www/laravel/Modules/LanguageManagement/resources/views/admin/livewire/site-language-component.blade.php)",
-      "Bash(for file in /mnt/c/laragon/www/laravel/Modules/Portfolio/app/Http/Livewire/Admin/PortfolioManageComponent.php )",
-      "Bash(/mnt/c/laragon/www/laravel/Modules/Portfolio/app/Http/Livewire/Admin/PortfolioComponent.php )",
-      "Bash(/mnt/c/laragon/www/laravel/Modules/Portfolio/app/Http/Livewire/Admin/PortfolioCategoryComponent.php )",
-      "Bash(/mnt/c/laragon/www/laravel/Modules/Page/app/Http/Livewire/Admin/PageManageComponent.php )",
-      "Bash(/mnt/c/laragon/www/laravel/Modules/Page/app/Http/Livewire/Admin/PageComponent.php )",
-      "Bash(/mnt/c/laragon/www/laravel/Modules/Portfolio/resources/views/admin/livewire/portfolio-manage-component.blade.php )",
-      "Bash(/mnt/c/laragon/www/laravel/Modules/Portfolio/resources/views/admin/livewire/portfolio-category-component.blade.php )",
-      "Bash(/mnt/c/laragon/www/laravel/Modules/Page/resources/views/admin/livewire/page-manage-component.blade.php )",
-      "Bash(/mnt/c/laragon/www/laravel/Modules/Page/resources/views/admin/livewire/page-component.blade.php )",
       "Bash(for file in permission-manage-component.blade.php role-component.blade.php permission-component.blade.php user-manage-component.blade.php)",
       "Bash(# Announcement modülü\nmkdir -p /mnt/c/laragon/www/laravel/Modules/Announcement/resources/views/themes\nif [ -d \"/mnt/c/laragon/www/laravel/Modules/Announcement/resources/views/front/themes/blank\" ]; then\n    mv /mnt/c/laragon/www/laravel/Modules/Announcement/resources/views/front/themes/blank /mnt/c/laragon/www/laravel/Modules/Announcement/resources/views/themes/\n    rm -rf /mnt/c/laragon/www/laravel/Modules/Announcement/resources/views/front/themes\nfi\n\n# Portfolio modülü\nmkdir -p /mnt/c/laragon/www/laravel/Modules/Portfolio/resources/views/themes\nif [ -d \"/mnt/c/laragon/www/laravel/Modules/Portfolio/resources/views/front/themes/blank\" ]; then\n    mv /mnt/c/laragon/www/laravel/Modules/Portfolio/resources/views/front/themes/blank /mnt/c/laragon/www/laravel/Modules/Portfolio/resources/views/themes/\n    rm -rf /mnt/c/laragon/www/laravel/Modules/Portfolio/resources/views/front/themes\nfi\n\necho \"Dizin yapısı düzeltildi\")",
       "mcp__claude-code-server__Grep",
@@ -107,7 +98,6 @@
       "Bash(git commit:*)",
       "WebFetch(domain:127.0.0.1)",
       "Bash(node:*)",
-      "Bash(powershell.exe:*)",
       "Bash(powershell.exe:*)",
       "Bash(for key in \"ai_feature_detail\" \"edit_ai_feature\" \"new_ai_feature\" \"api_settings\" \"limit_settings\" \"prompt_settings\" \"archived_conversations\" \"usage_examples\" \"test_panel\" \"ai_operations\" \"general_statistics\" \"token_operations\" \"token_balance\" \"tokens\" \"unlimited\" \"buy_tokens\" \"ai_module\" \"new_feature\" \"ai_feature\" \"create_new_ai_feature\" \"system_feature\" \"copy_and_edit\")",
       "Bash(if grep -q \"''$key''\" /mnt/c/laragon/www/laravel/Modules/AI/lang/tr/admin.php)",
@@ -125,21 +115,23 @@
       "WebFetch(domain:tenancyforlaravel.com)",
       "Bash(truncate:*)",
       "Bash(printf:*)",
-      "Bash(do echo \"Part $part ID''leri geri ekleniyor...\")"
+      "Bash(do echo \"Part $part ID''leri geri ekleniyor...\")",
+      "Bash(claude doctor)",
+      "Bash(defaults write:*)",
+      "Bash(killall:*)",
+      "Bash(say:*)",
+      "Bash(git fetch:*)",
+      "Bash(git ls-tree:*)",
+      "Bash(brew install:*)",
+      "Bash(flutter:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(tar:*)",
+      "Bash(unzip:*)",
+      "Bash(export PATH=\"$PATH:$HOME/Development/flutter/bin\")",
+      "Bash(~/Development/flutter/bin/flutter --version)",
+      "Bash(~/Development/flutter/bin/flutter doctor)"
     ],
     "deny": []
   },
-  "enableAllProjectMcpServers": true,
-  "enabledMcpjsonServers": [
-    "claude-code-server"
-  ],
-  "mcpServers": {
-    "memory": {
-      "command": "python3",
-      "args": [
-        "mcp/cli/memory.py"
-      ],
-      "env": {}
-    }
-  }
+  "enableAllProjectMcpServers": true
 }

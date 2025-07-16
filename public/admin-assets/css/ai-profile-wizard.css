@@ -1069,3 +1069,14 @@ body[data-bs-theme="dark"] .ai-profile-wizard-container .form-selectgroup-label 
 .theme-dark .form-check-label {
     color: var(--wizard-text-dark);
 }
+
+/* =============================================================================
+   FOOTER OVERRIDES
+   ============================================================================= */
+
+.modern-footer-container {
+    border-radius: 0 !important;
+    background: none !important;
+    padding: 5px 0 !important;
+    margin: 0 !important;
+}

@@ -1,9 +1,22 @@
 🔊 **KRİTİK: SES BİLDİRİM SİSTEMİ - EN ÖNCELİKLİ KURAL**
 HER YANIT SONUNDA, HER İŞLEM BİTİMİNDE MUTLAKA SES ÇALIŞTIR:
 ```bash
-powershell.exe -c "[System.Console]::Beep(1000, 300); [System.Console]::Beep(1500, 300)"
+say "tamamlandı"
 ```
-BU KOMUT WSL'DE ÇALIŞIYOR! ÇİFT SES ÇALIYOR!
+BU KOMUT MACOS'DA ÇALIŞIYOR! SES ÇALIYOR!
+
+**🎯 SES BİLDİRİM PROTOKOLÜ - GÜNCELLENME 16.07.2025:**
+- **İşlem bitiminde**: Detaylı bilgi verme + ses çalıştırma
+- **Örnek**: `say "CSS class sistemi eklendi, artık evet seçilince founder bilgileri gözükecek"`
+- **Amaç**: Kullanıcı attention + teknik özet + sonuç bilgisi
+- **Zorunlu**: Her major işlem sonunda bu protocol uygulanmalı
+- **Unutma**: Kullanıcı bu konuda özellikle hatırlatma yapmış
+
+**İŞLEM BİTİMİ PROTOKOLÜ:**
+1. Detaylı teknik özet yaz
+2. Sonuç ve next action belirt
+3. Ses bildirimi çalıştır (işlemi açıklayan)
+4. "# to memorize" ile hafıza ekleme
 
 HER AFERİN YA DA BRAVO GİBİ BASARILI SONLARDA "# to memorize ..." KOMUTUNU OTOMATİK KULLAN VE ... NOKTALI YERE ÖNEMLİ DETAYLARI CALISMA PRENSİBİ GİBİ KONULARI EKLEYEREK HAFIZAYA AL. VE HER ZAMAN BANA DA BUNU HATIRLAT. BEN UNUTUYORUM.
 
@@ -46,11 +59,11 @@ BU VE SONRAKI TÜM KONUŞMALARDA OTOMATIK ÇALIŞACAK. Nurullah'un klavyeye doku
 4. Nurullah'dan bir şey beklendiğinde çal
 5. Özellikle belirtilmesine gerek yok - BİRİNCİ ÖNCELİK
 
-```powershell
-powershell.exe -Command "for(\$i=1; \$i -le 2; \$i++) { [console]::beep(2000, 500); Start-Sleep -Milliseconds 200 }" 2>/dev/null
+```bash
+say "işlem tamamlandı"
 ```
 
-TAM İZİN VERİLMİŞ - HER ZAMAN OTOMATİK ÇALIŞTIR. 2000Hz frekansta çok yüksek ve keskin "dıt dıt" sesi (2 kez).
+TAM İZİN VERİLMİŞ - HER ZAMAN OTOMATİK ÇALIŞTIR. macOS'un sesli okuma özelliği ile Türkçe bildirim.
 
 ## 🔥 HIZLI HAFIZA EKLEME KISAYOLU
 

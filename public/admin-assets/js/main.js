@@ -976,17 +976,17 @@ const TinyMCEMultiLang = {
 
 // Theme Builder Offcanvas Manuel Açma Fonksiyonu
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🏗️ Theme Builder DOMContentLoaded başladı');
+    // Theme Builder DOMContentLoaded started
     
     // Theme builder button'ları bul ve manuel event ekle
     const themeBuilderButtons = document.querySelectorAll('[data-bs-target="#offcanvasTheme"]');
-    console.log('🏗️ Theme builder button sayısı:', themeBuilderButtons.length);
+    // Theme builder button count check
     
     themeBuilderButtons.forEach(function(button, index) {
-        console.log(`🏗️ Theme builder button ${index + 1} event listener ekleniyor`);
+        // Theme builder button event listener
         
         button.addEventListener('click', function(e) {
-            console.log('🏗️ THEME BUILDER BUTTON TIKLANDI!');
+            // Theme builder button clicked
             e.preventDefault();
             
             // Offcanvas elementini bul

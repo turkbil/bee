@@ -164,7 +164,7 @@
                 <div class="row mt-4">
                     <div class="col-12 text-center">
                         @if($profile && $profile->is_completed)
-                            <a href="{{ route('admin.ai.profile.edit') }}" class="btn btn-outline-light btn-lg me-3">
+                            <a href="{{ route('admin.ai.profile.jquery-edit', ['step' => 1]) }}" class="btn btn-outline-light btn-lg me-3">
                                 <i class="fas fa-edit me-2"></i>
                                 Profili Düzenle
                             </a>
@@ -173,7 +173,7 @@
                                 AI Asistanı Kullan
                             </a>
                         @else
-                            <a href="{{ route('admin.ai.profile.edit') }}" class="btn btn-lg" style="
+                            <a href="{{ route('admin.ai.profile.jquery-edit', ['step' => 1]) }}" class="btn btn-lg" style="
                                 background: linear-gradient(135deg, #00d4ff, #9333ea);
                                 border: none;
                                 padding: 1rem 2.5rem;
@@ -297,7 +297,7 @@
                                             <span class="text-muted">{{ round($completionPercentage) }}% Tamamlandı</span>
                                         </div>
                                     </div>
-                                    <a href="{{ route('admin.ai.profile.edit') }}" class="btn btn-primary btn-lg px-4 py-2">
+                                    <a href="{{ route('admin.ai.profile.jquery-edit', ['step' => 1]) }}" class="btn btn-primary btn-lg px-4 py-2">
                                         <i class="fas fa-play me-2"></i>
                                         Kuruluma Başla
                                     </a>

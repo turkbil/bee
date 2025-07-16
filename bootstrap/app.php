@@ -13,6 +13,18 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->booted(function ($app) {
+        // PHP execution time ayarları
+        if (env('PHP_MAX_EXECUTION_TIME')) {
+            ini_set('max_execution_time', env('PHP_MAX_EXECUTION_TIME', 600));
+        }
+        if (env('PHP_MAX_INPUT_TIME')) {
+            ini_set('max_input_time', env('PHP_MAX_INPUT_TIME', 600));
+        }
+        if (env('PHP_MEMORY_LIMIT')) {
+            ini_set('memory_limit', env('PHP_MEMORY_LIMIT', '512M'));
+        }
+    })
+    ->booted(function ($app) {
         // Admin dilleri için namespace kaydet
         $adminLangPath = lang_path('admin');
         if (is_dir($adminLangPath)) {

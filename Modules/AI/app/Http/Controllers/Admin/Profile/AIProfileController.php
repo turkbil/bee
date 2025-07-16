@@ -102,6 +102,9 @@ class AIProfileController extends Controller
      */
     public function jqueryEdit($step = 1)
     {
+        // Debug: Controller method çalışıyor mu?
+        \Log::info('🔥 AIProfileController::jqueryEdit() called', ['step' => $step]);
+        
         // Step validation
         $step = max(1, min(5, (int) $step));
         
@@ -116,6 +119,8 @@ class AIProfileController extends Controller
             if ($profile->company_info) {
                 foreach ($profile->company_info as $key => $value) {
                     if (is_array($value)) {
+                        // Array'leri preserve et (checkbox/select options için)
+                        $profileData[$key] = $value;
                         foreach ($value as $subKey => $subValue) {
                             $profileData["company_info.{$key}.{$subKey}"] = $subValue;
                         }
@@ -130,6 +135,8 @@ class AIProfileController extends Controller
             if ($profile->sector_details) {
                 foreach ($profile->sector_details as $key => $value) {
                     if (is_array($value)) {
+                        // Array'leri preserve et (checkbox/select options için)
+                        $profileData[$key] = $value;
                         foreach ($value as $subKey => $subValue) {
                             $profileData["sector_details.{$key}.{$subKey}"] = $subValue;
                         }
@@ -144,6 +151,8 @@ class AIProfileController extends Controller
             if ($profile->success_stories) {
                 foreach ($profile->success_stories as $key => $value) {
                     if (is_array($value)) {
+                        // Array'leri preserve et (checkbox/select options için)
+                        $profileData[$key] = $value;
                         foreach ($value as $subKey => $subValue) {
                             $profileData["success_stories.{$key}.{$subKey}"] = $subValue;
                         }
@@ -158,6 +167,8 @@ class AIProfileController extends Controller
             if ($profile->ai_behavior_rules) {
                 foreach ($profile->ai_behavior_rules as $key => $value) {
                     if (is_array($value)) {
+                        // Array'leri preserve et (checkbox/select options için)
+                        $profileData[$key] = $value;
                         foreach ($value as $subKey => $subValue) {
                             $profileData["ai_behavior_rules.{$key}.{$subKey}"] = $subValue;
                         }
@@ -172,6 +183,8 @@ class AIProfileController extends Controller
             if ($profile->founder_info) {
                 foreach ($profile->founder_info as $key => $value) {
                     if (is_array($value)) {
+                        // Array'leri preserve et (checkbox/select options için)
+                        $profileData[$key] = $value;
                         foreach ($value as $subKey => $subValue) {
                             $profileData["founder_info.{$key}.{$subKey}"] = $subValue;
                         }
@@ -183,8 +196,12 @@ class AIProfileController extends Controller
             }
         }
         
-        // Sektör bilgilerini al
-        $sectorCode = $profileData['sector'] ?? null;
+        // Sektör bilgilerini al - hem sector hem sector_selection key'lerini kontrol et
+        $sectorCode = $profileData['sector_selection'] ?? $profileData['sector'] ?? null;
+        $selectedSector = null;
+        if ($sectorCode) {
+            $selectedSector = \Modules\AI\app\Models\AIProfileSector::where('code', $sectorCode)->first();
+        }
         
         // Soruları step'e göre çek
         $questions = \Modules\AI\app\Models\AIProfileQuestion::getByStep($step, $sectorCode);
@@ -197,11 +214,14 @@ class AIProfileController extends Controller
         
         return view('ai::admin.profile.jquery-edit', [
             'initialStep' => $step,
+            'totalSteps' => 5,
             'questions' => $questions,
             'sectors' => $sectors,
             'profileData' => $profileData,
             'sectorCode' => $sectorCode,
+            'selectedSector' => $selectedSector,
             'showFounderQuestions' => in_array($profileData['founder_permission'] ?? '', ['Evet, bilgilerimi paylaşmak istiyorum', 'yes_full', 'yes_limited', 'evet'])
+                || in_array($profileData['share_founder_info'] ?? '', ['Evet, bilgilerimi paylaşmak istiyorum', 'yes_full', 'yes_limited', 'evet'])
         ]);
     }
     
@@ -379,21 +399,43 @@ class AIProfileController extends Controller
                     'sector' => 'sector_details',
                     'sector_selection' => 'sector_details',
                     
-                    // Company info
+                    // Company info - Step 2 temel bilgiler
                     'brand_name' => 'company_info',
                     'city' => 'company_info',
+                    'business_start_year' => 'company_info',  // Step 2 - YENİ
                     'main_service' => 'company_info',
                     'experience_years' => 'company_info',
                     'contact_info' => 'company_info',
                     'founder_permission' => 'company_info',
+                    'share_founder_info' => 'company_info',  // Step 4 - kurucu izni - YENİ
                     
-                    // Sector details (Step 3)
+                    // Company info - Step 3 ana iş bilgileri
+                    'main_business_activities' => 'company_info',  // Step 3 - YENİ
+                    'target_customers' => 'company_info',  // Step 3 - YENİ
+                    'target_customers_custom_custom' => 'company_info',  // Step 3 - custom input
+                    'web_specific_services_diger_custom' => 'sector_details',  // Step 3 - web sektör custom
+                    'web_specific_services' => 'sector_details',  // Step 3 - web sektör checkbox
+                    
+                    // Sector details (Step 3) - Ortak sektörel sorular
+                    'service_areas' => 'sector_details',  // Section: hizmet_alanlari - YENİ
+                    'working_hours' => 'sector_details',  // Section: calisma_saatleri - YENİ
+                    'payment_options' => 'sector_details',  // Section: odeme_secenekleri - YENİ
+                    'special_services' => 'sector_details',  // Section: ozel_hizmetler - YENİ
+                    'customer_profile' => 'sector_details',  // Section: musteri_profili - YENİ
+                    'expertise_areas' => 'sector_details',  // Section: deneyim_uzmanlik - YENİ
+                    'business_capacity' => 'sector_details',  // Section: is_kapasitesi - YENİ
+                    'communication_channels' => 'sector_details',  // Section: iletisim_kanallari - YENİ
+                    
+                    // Sector details (Step 3) - Genel
                     'business_size' => 'sector_details',
                     'target_audience' => 'sector_details',
                     'service_area' => 'sector_details',
                     'brand_voice' => 'sector_details',
                     
-                    // Founder info
+                    // Founder info (Step 4)
+                    'founder_name' => 'founder_info',               // Step 4 - kurucu adı - YENİ
+                    'founder_role' => 'founder_info',               // Step 4 - kurucu rolü - YENİ
+                    'founder_additional_info' => 'founder_info',    // Step 4 - kurucu ek bilgi - YENİ
                     'founder_story' => 'founder_info',
                     'biggest_challenge' => 'founder_info',
                     
@@ -403,6 +445,8 @@ class AIProfileController extends Controller
                     'competitive_advantage' => 'success_stories',
                     
                     // AI behavior rules (Step 5)
+                    'brand_character' => 'ai_behavior_rules',   // Step 5 - marka karakteri - YENİ
+                    'writing_style' => 'ai_behavior_rules',     // Step 5 - yazım tavrı - YENİ
                     'ai_response_style' => 'ai_behavior_rules',  // Step 5 - yanıt stili
                     'sales_approach' => 'ai_behavior_rules',     // Step 5 - satış yaklaşımı
                     'response_style' => 'ai_behavior_rules',   // Step 5 - checkbox
@@ -413,42 +457,74 @@ class AIProfileController extends Controller
                     'emphasis_points' => 'ai_behavior_rules',
                     'avoid_topics' => 'ai_behavior_rules',
                     
-                    // Sektöre özel sorular (Step 7) - Teknoloji & Bilişim
+                    // Sektöre özel hizmet soruları (Step 3) - Ana kategoriler
+                    'technology_specific_services' => 'sector_details',     // Teknoloji
+                    'web_specific_services' => 'sector_details',            // Web Tasarım
+                    'health_specific_services' => 'sector_details',         // Sağlık
+                    'education_specific_services' => 'sector_details',      // Eğitim
+                    'food_specific_services' => 'sector_details',           // Yiyecek-İçecek
+                    'retail_specific_services' => 'sector_details',         // E-ticaret/Perakende
+                    'construction_specific_services' => 'sector_details',   // İnşaat/Emlak
+                    'finance_specific_services' => 'sector_details',        // Finans/Muhasebe
+                    'art_design_specific_services' => 'sector_details',     // Sanat/Tasarım
+                    'sports_specific_services' => 'sector_details',         // Spor/Fitness
+                    'automotive_specific_services' => 'sector_details',     // Otomotiv
+                    'legal_specific_services' => 'sector_details',          // Hukuk/Danışmanlık
+                    
+                    // Sektöre özel detaylı hizmet soruları (Step 3)
+                    'tech_specific_services' => 'sector_details',           // Teknoloji detay
+                    'web_project_types' => 'sector_details',                // Web proje türleri
+                    'mobile_platforms_detailed' => 'sector_details',        // Mobil platform detay
+                    'hospital_departments_detailed' => 'sector_details',    // Hastane bölümleri
+                    'dental_treatments_detailed' => 'sector_details',       // Diş tedavileri
+                    'education_programs' => 'sector_details',               // Eğitim programları
+                    'education_levels_detailed' => 'sector_details',        // Eğitim seviyesi detay
+                    'languages_offered_detailed' => 'sector_details',       // Dil kursları
+                    'software_specific_services' => 'sector_details',       // Yazılım hizmetleri
+                    'cybersecurity_specific_services' => 'sector_details',  // Siber güvenlik
+                    'digital_marketing_specific_services' => 'sector_details', // Dijital pazarlama
+                    'advertising_specific_services' => 'sector_details',    // Reklam hizmetleri
+                    'consulting_specific_services' => 'sector_details',     // Danışmanlık
+                    'accounting_specific_services' => 'sector_details',     // Muhasebe
+                    'ecommerce_specific_services' => 'sector_details',      // E-ticaret
+                    'fitness_specific_services' => 'sector_details',        // Fitness
+                    'beauty_specific_services' => 'sector_details',         // Güzellik
+                    'organic_food_certifications' => 'sector_details',      // Organik gıda
+                    'street_food_specialties' => 'sector_details',          // Sokak yemeği
+                    'restaurant_cuisine_types' => 'sector_details',         // Restoran mutfağı
+                    'cafe_services' => 'sector_details',                    // Kafe hizmetleri
+                    'beauty_product_categories' => 'sector_details',        // Güzellik ürünleri
+                    'baby_kids_categories' => 'sector_details',             // Bebek/çocuk
+                    'construction_project_types' => 'sector_details',       // İnşaat proje türleri
+                    'finance_client_segments' => 'sector_details',          // Finans müşteri segmenti
+                    'legal_service_types' => 'sector_details',              // Hukuk hizmet türleri
+                    'art_design_specialization' => 'sector_details',        // Sanat/tasarım uzmanlık
+                    'cleaning_service_types' => 'sector_details',           // Temizlik hizmetleri
+                    'wedding_dress_services' => 'sector_details',           // Gelinlik hizmetleri
+                    'technology_main_service_detailed' => 'sector_details', // Teknoloji ana hizmet
+                    
+                    // Legacy eski field'lar (geriye uyumluluk)
                     'tech_specialization' => 'sector_details',
                     'project_duration' => 'sector_details',
                     'support_model' => 'sector_details',
-                    
-                    // Sektöre özel sorular - Sağlık & Tıp
                     'medical_specialties' => 'sector_details',
                     'appointment_system' => 'sector_details',
                     'insurance_acceptance' => 'sector_details',
-                    
-                    // Sektöre özel sorular - Eğitim & Öğretim
                     'education_levels' => 'sector_details',
                     'education_format' => 'sector_details',
                     'success_tracking' => 'sector_details',
-                    
-                    // Sektöre özel sorular - Yiyecek & İçecek
                     'cuisine_type' => 'sector_details',
                     'service_style' => 'sector_details',
                     'special_features' => 'sector_details',
-                    
-                    // Sektöre özel sorular - E-ticaret & Perakende
                     'product_categories' => 'sector_details',
                     'sales_channels' => 'sector_details',
                     'shipping_payment' => 'sector_details',
-                    
-                    // Sektöre özel sorular - İnşaat & Emlak
                     'construction_types' => 'sector_details',
                     'project_scale' => 'sector_details',
                     'services_included' => 'sector_details',
-                    
-                    // Sektöre özel sorular - Finans & Muhasebe
                     'finance_services' => 'sector_details',
                     'client_segments' => 'sector_details',
                     'digital_tools' => 'sector_details',
-                    
-                    // Sektöre özel sorular - Sanayi & Üretim
                     'production_type' => 'sector_details',
                     'production_capacity' => 'sector_details',
                     'quality_certifications' => 'sector_details',
@@ -504,7 +580,12 @@ class AIProfileController extends Controller
             
             // Founder permission özel işlemi - hayır seçilirse kurucu bilgilerini temizle
             if (($key === 'founder_permission' || $key === 'share_founder_info') && $section === 'company_info') {
-                $shouldShowFounderQuestions = in_array($value, ['Evet, bilgilerimi paylaşmak istiyorum', 'yes_full', 'yes_limited', 'evet']);
+                $shouldShowFounderQuestions = in_array($value, [
+                    'Evet, bilgilerimi paylaşmak istiyorum', 
+                    'yes_full', 
+                    'yes_limited', 
+                    'evet'
+                ]);
                 
                 if (!$shouldShowFounderQuestions) {
                     // Kurucu bilgilerini veritabanından temizle
@@ -716,6 +797,8 @@ class AIProfileController extends Controller
                 if ($profile->company_info) {
                     foreach ($profile->company_info as $key => $value) {
                         if (is_array($value)) {
+                            // Array'leri preserve et (checkbox/select options için)
+                            $profileData[$key] = $value;
                             foreach ($value as $subKey => $subValue) {
                                 $profileData["company_info.{$key}.{$subKey}"] = $subValue;
                             }
@@ -730,6 +813,8 @@ class AIProfileController extends Controller
                 if ($profile->sector_details) {
                     foreach ($profile->sector_details as $key => $value) {
                         if (is_array($value)) {
+                            // Array'leri preserve et (checkbox/select options için)
+                            $profileData[$key] = $value;
                             foreach ($value as $subKey => $subValue) {
                                 $profileData["sector_details.{$key}.{$subKey}"] = $subValue;
                             }
@@ -744,6 +829,8 @@ class AIProfileController extends Controller
                 if ($profile->success_stories) {
                     foreach ($profile->success_stories as $key => $value) {
                         if (is_array($value)) {
+                            // Array'leri preserve et (checkbox/select options için)
+                            $profileData[$key] = $value;
                             foreach ($value as $subKey => $subValue) {
                                 $profileData["success_stories.{$key}.{$subKey}"] = $subValue;
                             }
@@ -758,6 +845,8 @@ class AIProfileController extends Controller
                 if ($profile->ai_behavior_rules) {
                     foreach ($profile->ai_behavior_rules as $key => $value) {
                         if (is_array($value)) {
+                            // Array'leri preserve et (checkbox/select options için)
+                            $profileData[$key] = $value;
                             foreach ($value as $subKey => $subValue) {
                                 $profileData["ai_behavior_rules.{$key}.{$subKey}"] = $subValue;
                             }
@@ -772,6 +861,8 @@ class AIProfileController extends Controller
                 if ($profile->founder_info) {
                     foreach ($profile->founder_info as $key => $value) {
                         if (is_array($value)) {
+                            // Array'leri preserve et (checkbox/select options için)
+                            $profileData[$key] = $value;
                             foreach ($value as $subKey => $subValue) {
                                 $profileData["founder_info.{$key}.{$subKey}"] = $subValue;
                             }
@@ -786,8 +877,9 @@ class AIProfileController extends Controller
             return response()->json([
                 'success' => true,
                 'profile_data' => $profileData,
-                'sector_code' => $profileData['sector'] ?? null,
-                'show_founder_questions' => in_array($profileData['founder_permission'] ?? '', ['Evet, bilgilerimi paylaşmak istiyorum', 'yes_full', 'yes_limited', 'evet'])
+                'sector_code' => $profileData['sector_selection'] ?? $profileData['sector'] ?? null,
+                'show_founder_questions' => in_array($profileData['founder_permission'] ?? '', ['Evet, bilgilerimi paylaşmak istiyorum', 'yes_full', 'yes_limited', 'evet']) 
+                    || in_array($profileData['share_founder_info'] ?? '', ['Evet, bilgilerimi paylaşmak istiyorum', 'yes_full', 'yes_limited', 'evet'])
             ]);
             
         } catch (\Exception $e) {

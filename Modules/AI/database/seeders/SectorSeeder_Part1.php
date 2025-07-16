@@ -10,7 +10,7 @@ class SectorSeeder_Part1 extends Seeder
 {
     /**
      * SECTOR SEEDER PART 1 (ID 1-50)
-     * Teknoloji, Sağlık, Eğitim sektörleri + özel sorular
+     * Ana kategoriler + temel sektörler + özel sorular
      */
     public function run(): void
     {
@@ -20,20 +20,20 @@ class SectorSeeder_Part1 extends Seeder
         
         echo "🎯 Sektörler Part 1 yükleniyor (ID 1-50)...\n";
 
-        // Mevcut sektörleri temizle (sadece Part 1'de)
-        DB::table('ai_profile_sectors')->truncate();
+        // Sadece Part 1 ID aralığındaki verileri temizle
+        DB::table('ai_profile_sectors')->whereBetween('id', [1, 50])->delete();
         DB::table('ai_profile_questions')->whereBetween('id', [6000, 6999])->delete();
 
-        // ÖNCE SQL dosyasından 162 detaylı sektörü yükle
-        $this->restoreFromSQL();
+        // Ana kategoriler ve temel sektörleri oluştur
+        $this->createBasicStructure();
         
         // Bu sektörlere özel sorular ekle
         $this->addSectorQuestions();
         
-        // SQL'den gelen 162 sektöre genel sorular ekle
-        $this->addSQLSectorQuestions();
+        // Kalan sektörlere genel sorular ekle
+        $this->addGeneralSectorQuestions();
 
-        echo "✅ Part 1 tamamlandı! (Teknoloji, Sağlık, Eğitim)\n";
+        echo "✅ Part 1 tamamlandı! (Ana kategoriler + temel sektörler)\n";
     }
     
     
@@ -42,7 +42,7 @@ class SectorSeeder_Part1 extends Seeder
         // ORGANIZE EDİLEN SEKTÖR SORULARI - HER SEKTÖR KENDI DOSYASINDA
         
         // ===========================================
-        // 1. TEKNOLOJİ VE WEB SEKTÖRLERI 🔧
+        // 1. TEKNOLOJİ VE WEB SEKTÖRLERİ 🔧
         // ===========================================
         
         // WEB TASARIM VE GELİŞTİRME
@@ -141,7 +141,7 @@ class SectorSeeder_Part1 extends Seeder
         ];
 
         // ===========================================
-        // 2. SAĞLIK SEKTÖRLERI 🏥
+        // 2. SAĞLIK SEKTÖRLERİ 🏥
         // ===========================================
         
         // SAĞLIK GENEL
@@ -229,7 +229,7 @@ class SectorSeeder_Part1 extends Seeder
         ];
 
         // ===========================================
-        // 3. EĞİTİM SEKTÖRLERI 🎓
+        // 3. EĞİTİM SEKTÖRLERİ 🎓
         // ===========================================
         
         // EĞİTİM GENEL
@@ -343,203 +343,239 @@ class SectorSeeder_Part1 extends Seeder
     }
     
     /**
-     * SQL dosyasından 162 sektörü restore et
+     * Temel ana kategoriler ve sektörleri oluştur
      */
-    private function restoreFromSQL(): void
+    private function createBasicStructure(): void
     {
-        echo "📥 SQL dosyasından 162 sektör yükleniyor...\n";
+        echo "📥 Temel ana kategoriler ve sektörler yükleniyor...\n";
         
-        $sqlBackupPath = '/mnt/c/Users/nurul/Downloads/ai_profile_sectors.sql';
+        // Önce ana kategorileri oluştur
+        $this->createMainCategories();
         
-        if (!file_exists($sqlBackupPath)) {
-            echo "⚠️ SQL dosyası bulunamadı\n";
-            return;
-        }
+        // Sonra temel sektörleri oluştur
+        $this->createBasicSectors();
         
-        try {
-            $sqlContent = file_get_contents($sqlBackupPath);
-            
-            // Daha güçlü regex pattern - tüm SQL INSERT değerlerini yakalar
-            $pattern = '/\((\d+),\s*\'([^\']+)\',\s*(NULL|\d+),\s*\'([^\']*(?:\'\'[^\']*)*)\',\s*(NULL|\'[^\']*\'?),\s*(NULL|\'[^\']*\'?),\s*(NULL|\'[^\']*\'?),\s*\'([^\']*(?:\'\'[^\']*)*)\',\s*(NULL|\'[^\']*(?:\'\'[^\']*)*\'?),\s*(\d+),\s*(\d+),\s*(\d+),\s*\'([^\']+)\',\s*\'([^\']+)\'\)/s';
-            
-            preg_match_all($pattern, $sqlContent, $matches, PREG_SET_ORDER);
-            
-            echo "🔍 Toplam " . count($matches) . " sektör bulundu\n";
-            
-            $addedCount = 0;
-            foreach ($matches as $match) {
-                // Null değerleri düzgün parse et
-                $categoryId = $match[3] === 'NULL' ? null : (int) $match[3];
-                $icon = $match[5] === 'NULL' ? null : trim($match[5], "'");
-                $emoji = $match[6] === 'NULL' ? null : trim($match[6], "'");
-                $color = $match[7] === 'NULL' ? null : trim($match[7], "'");
-                $keywords = $match[9] === 'NULL' ? null : trim($match[9], "'");
-                
-                $sectorData = [
-                    'id' => (int) $match[1],
-                    'code' => $match[2],
-                    'category_id' => $categoryId,
-                    'name' => $match[4],
-                    'icon' => $icon,
-                    'emoji' => $emoji,
-                    'color' => $color,
-                    'description' => $match[8],
-                    'keywords' => $keywords,
-                    'is_subcategory' => (int) $match[10],
-                    'is_active' => (int) $match[11],
-                    'sort_order' => (int) $match[12],
-                    'created_at' => now(),
-                    'updated_at' => now()
-                ];
-                
-                try {
-                    DB::table('ai_profile_sectors')->insert($sectorData);
-                    $addedCount++;
-                    
-                    if ($addedCount % 20 == 0) {
-                        echo "📊 {$addedCount} sektör eklendi...\n";
-                    }
-                } catch (\Exception $e) {
-                    // ID çakışması durumunda geç
-                    echo "⚠️ ID {$sectorData['id']} atlandı: " . $e->getMessage() . "\n";
-                    continue;
-                }
-            }
-            
-            echo "✅ SQL'den {$addedCount} sektör başarıyla yüklendi!\n";
-            
-            // Final check - toplam sektör sayısını göster
-            $totalSectors = DB::table('ai_profile_sectors')->count();
-            echo "📊 Veritabanında toplam {$totalSectors} sektör var\n";
-            
-        } catch (\Exception $e) {
-            echo "⚠️ SQL parse hatası: " . $e->getMessage() . "\n";
-        }
+        echo "✅ Temel sektörler başarıyla yüklendi!\n";
+        
+        // Final check - toplam sektör sayısını göster
+        $totalSectors = DB::table('ai_profile_sectors')->count();
+        echo "📊 Veritabanında toplam {$totalSectors} sektör var\n";
     }
     
     /**
-     * SQL'den gelen 162 sektöre somut hizmet soruları ekle
+     * Ana kategorileri oluştur
      */
-    private function addSQLSectorQuestions(): void
+    private function createMainCategories(): void
     {
-        echo "📋 SQL sektörlerine somut hizmet soruları ekleniyor...\n";
+        $mainCategories = [
+            ['id' => 1, 'code' => 'teknoloji', 'name' => 'Teknoloji', 'description' => 'Teknoloji ve bilişim sektörleri', 'emoji' => '💻', 'color' => 'primary', 'keywords' => 'teknoloji,bilişim,yazılım,web'],
+            ['id' => 2, 'code' => 'pazarlama', 'name' => 'Pazarlama', 'description' => 'Pazarlama ve reklam sektörleri', 'emoji' => '📈', 'color' => 'success', 'keywords' => 'pazarlama,reklam,marketing'],
+            ['id' => 3, 'code' => 'hizmet', 'name' => 'Hizmet', 'description' => 'Hizmet sektörleri', 'emoji' => '🤝', 'color' => 'warning', 'keywords' => 'hizmet,danışmanlık,service'],
+            ['id' => 4, 'code' => 'ticaret', 'name' => 'Ticaret', 'description' => 'Ticaret ve e-ticaret', 'emoji' => '🛒', 'color' => 'danger', 'keywords' => 'ticaret,satış,e-ticaret'],
+            ['id' => 5, 'code' => 'saglik', 'name' => 'Sağlık', 'description' => 'Sağlık ve tıp sektörleri', 'emoji' => '⚕️', 'color' => 'info', 'keywords' => 'sağlık,tıp,hastane'],
+            ['id' => 6, 'code' => 'egitim', 'name' => 'Eğitim', 'description' => 'Eğitim ve öğretim', 'emoji' => '🎓', 'color' => 'secondary', 'keywords' => 'eğitim,öğretim,school'],
+            ['id' => 7, 'code' => 'yemek_icecek', 'name' => 'Yemek & İçecek', 'description' => 'Yemek ve içecek sektörleri', 'emoji' => '🍽️', 'color' => 'orange', 'keywords' => 'yemek,içecek,restoran'],
+            ['id' => 8, 'code' => 'sanat_tasarim', 'name' => 'Sanat & Tasarım', 'description' => 'Sanat ve tasarım sektörleri', 'emoji' => '🎨', 'color' => 'purple', 'keywords' => 'sanat,tasarım,grafik'],
+            ['id' => 9, 'code' => 'spor_wellness', 'name' => 'Spor & Wellness', 'description' => 'Spor ve sağlık sektörleri', 'emoji' => '🏃', 'color' => 'green', 'keywords' => 'spor,fitness,wellness'],
+            ['id' => 10, 'code' => 'otomotiv', 'name' => 'Otomotiv', 'description' => 'Otomotiv ve ulaşım', 'emoji' => '🚗', 'color' => 'dark', 'keywords' => 'otomotiv,ulaşım,araba'],
+            ['id' => 11, 'code' => 'finans_sigorta', 'name' => 'Finans & Sigorta', 'description' => 'Finans ve sigorta sektörleri', 'emoji' => '💰', 'color' => 'yellow', 'keywords' => 'finans,sigorta,banka'],
+            ['id' => 12, 'code' => 'hukuk', 'name' => 'Hukuk', 'description' => 'Hukuk ve danışmanlık', 'emoji' => '⚖️', 'color' => 'indigo', 'keywords' => 'hukuk,avukat,legal'],
+            ['id' => 13, 'code' => 'emlak_insaat', 'name' => 'Emlak & İnşaat', 'description' => 'Emlak ve inşaat sektörleri', 'emoji' => '🏠', 'color' => 'blue', 'keywords' => 'emlak,inşaat,ev'],
+            ['id' => 14, 'code' => 'guzellik_bakim', 'name' => 'Güzellik & Bakım', 'description' => 'Güzellik ve bakım sektörleri', 'emoji' => '💄', 'color' => 'rose', 'keywords' => 'güzellik,bakım,kuaför'],
+            ['id' => 15, 'code' => 'turizm', 'name' => 'Turizm', 'description' => 'Turizm ve seyahat', 'emoji' => '✈️', 'color' => 'teal', 'keywords' => 'turizm,seyahat,otel'],
+            ['id' => 16, 'code' => 'tarim', 'name' => 'Tarım', 'description' => 'Tarım ve hayvancılık', 'emoji' => '🌾', 'color' => 'green', 'keywords' => 'tarım,hayvancılık,çiftlik'],
+            ['id' => 17, 'code' => 'sanayi', 'name' => 'Sanayi', 'description' => 'Sanayi ve üretim', 'emoji' => '🏭', 'color' => 'gray', 'keywords' => 'sanayi,üretim,fabrika'],
+            ['id' => 18, 'code' => 'diger_hizmetler', 'name' => 'Diğer Hizmetler', 'description' => 'Diğer hizmet sektörleri', 'emoji' => '🔧', 'color' => 'secondary', 'keywords' => 'diğer,hizmet,genel']
+        ];
         
-        // Her sektör için özel soru tanımları
+        foreach ($mainCategories as $category) {
+            try {
+                DB::table('ai_profile_sectors')->insert([
+                    'id' => $category['id'],
+                    'code' => $category['code'],
+                    'name' => $category['name'],
+                    'category_id' => null,
+                    'description' => $category['description'],
+                    'emoji' => $category['emoji'],
+                    'icon' => null,
+                    'color' => $category['color'],
+                    'keywords' => $category['keywords'],
+                    'is_subcategory' => 0,
+                    'is_active' => 1,
+                    'sort_order' => $category['id'],
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+            } catch (\Exception $e) {
+                echo "⚠️ Ana kategori ID {$category['id']} atlandı: " . $e->getMessage() . "\n";
+            }
+        }
+        
+        echo "✅ 18 ana kategori eklendi!\n";
+    }
+    
+    /**
+     * Temel sektörleri oluştur
+     */
+    private function createBasicSectors(): void
+    {
+        $basicSectors = [
+            // Teknoloji Alt Sektörleri
+            ['id' => 21, 'code' => 'web', 'name' => 'Web Tasarım', 'category_id' => 1, 'description' => 'Website tasarım, UI/UX', 'emoji' => '🌐', 'color' => 'primary', 'keywords' => 'web,tasarım,ui,ux,website'],
+            ['id' => 22, 'code' => 'software', 'name' => 'Yazılım Geliştirme', 'category_id' => 1, 'description' => 'Mobil ve web uygulamaları', 'emoji' => '⚡', 'color' => 'primary', 'keywords' => 'yazılım,geliştirme,kod,programming'],
+            ['id' => 23, 'code' => 'mobile', 'name' => 'Mobil Uygulama', 'category_id' => 1, 'description' => 'iOS ve Android uygulamaları', 'emoji' => '📱', 'color' => 'primary', 'keywords' => 'mobil,uygulama,ios,android,app'],
+            ['id' => 24, 'code' => 'graphic_design', 'name' => 'Grafik Tasarım', 'category_id' => 8, 'description' => 'Logo, kurumsal kimlik', 'emoji' => '🎨', 'color' => 'purple', 'keywords' => 'grafik,tasarım,logo,kimlik'],
+            ['id' => 25, 'code' => 'cybersecurity', 'name' => 'Siber Güvenlik', 'category_id' => 1, 'description' => 'Siber güvenlik hizmetleri', 'emoji' => '🔒', 'color' => 'primary', 'keywords' => 'güvenlik,siber,security,koruma'],
+            
+            // Pazarlama Alt Sektörleri
+            ['id' => 26, 'code' => 'digital_marketing', 'name' => 'Dijital Pazarlama', 'category_id' => 2, 'description' => 'SEO, SEM, sosyal medya', 'emoji' => '🚀', 'color' => 'success', 'keywords' => 'dijital,pazarlama,seo,sem,sosyal'],
+            ['id' => 27, 'code' => 'social_media', 'name' => 'Sosyal Medya', 'category_id' => 2, 'description' => 'Sosyal medya yönetimi', 'emoji' => '📲', 'color' => 'success', 'keywords' => 'sosyal,medya,instagram,facebook,twitter'],
+            ['id' => 28, 'code' => 'advertising', 'name' => 'Reklam Ajansı', 'category_id' => 2, 'description' => 'Reklam ve tanıtım', 'emoji' => '📢', 'color' => 'success', 'keywords' => 'reklam,ajans,tanıtım,advertising'],
+            
+            // Hizmet Alt Sektörleri
+            ['id' => 29, 'code' => 'consulting', 'name' => 'Danışmanlık', 'category_id' => 3, 'description' => 'İş danışmanlığı', 'emoji' => '💡', 'color' => 'warning', 'keywords' => 'danışmanlık,iş,consulting'],
+            ['id' => 30, 'code' => 'accounting', 'name' => 'Muhasebe', 'category_id' => 3, 'description' => 'Muhasebe ve finans', 'emoji' => '🧮', 'color' => 'warning', 'keywords' => 'muhasebe,finans,accounting'],
+            ['id' => 31, 'code' => 'cleaning_services', 'name' => 'Temizlik Hizmeti', 'category_id' => 3, 'description' => 'Temizlik hizmetleri', 'emoji' => '🧹', 'color' => 'warning', 'keywords' => 'temizlik,hijyen,cleaning'],
+            
+            // Ticaret Alt Sektörleri
+            ['id' => 32, 'code' => 'retail', 'name' => 'Perakende', 'category_id' => 4, 'description' => 'Perakende satış', 'emoji' => '🛍️', 'color' => 'danger', 'keywords' => 'perakende,mağaza,satış'],
+            ['id' => 33, 'code' => 'ecommerce', 'name' => 'E-ticaret', 'category_id' => 4, 'description' => 'Online satış', 'emoji' => '🛒', 'color' => 'danger', 'keywords' => 'e-ticaret,online,satış'],
+            
+            // Sağlık Alt Sektörleri
+            ['id' => 34, 'code' => 'health', 'name' => 'Sağlık', 'category_id' => 5, 'description' => 'Genel sağlık hizmetleri', 'emoji' => '⚕️', 'color' => 'info', 'keywords' => 'sağlık,tıp,doktor'],
+            ['id' => 35, 'code' => 'hospital', 'name' => 'Hastane', 'category_id' => 5, 'description' => 'Hastane hizmetleri', 'emoji' => '🏥', 'color' => 'info', 'keywords' => 'hastane,tıp,tedavi'],
+            ['id' => 36, 'code' => 'dental', 'name' => 'Diş Hekimliği', 'category_id' => 5, 'description' => 'Diş tedavisi', 'emoji' => '🦷', 'color' => 'info', 'keywords' => 'diş,hekimliği,dental'],
+            
+            // Eğitim Alt Sektörleri
+            ['id' => 37, 'code' => 'education', 'name' => 'Eğitim', 'category_id' => 6, 'description' => 'Genel eğitim', 'emoji' => '🎓', 'color' => 'secondary', 'keywords' => 'eğitim,öğretim,school'],
+            ['id' => 38, 'code' => 'school', 'name' => 'Okul', 'category_id' => 6, 'description' => 'Okul eğitimi', 'emoji' => '🏫', 'color' => 'secondary', 'keywords' => 'okul,eğitim,öğrenci'],
+            ['id' => 39, 'code' => 'language', 'name' => 'Dil Kursu', 'category_id' => 6, 'description' => 'Dil eğitimi', 'emoji' => '🗣️', 'color' => 'secondary', 'keywords' => 'dil,kurs,language'],
+            
+            // Yemek & İçecek Alt Sektörleri
+            ['id' => 40, 'code' => 'food', 'name' => 'Yemek & İçecek', 'category_id' => 7, 'description' => 'Restoran ve yemek', 'emoji' => '🍽️', 'color' => 'orange', 'keywords' => 'yemek,içecek,restoran'],
+            ['id' => 41, 'code' => 'restaurant', 'name' => 'Restoran', 'category_id' => 7, 'description' => 'Restoran hizmetleri', 'emoji' => '🍴', 'color' => 'orange', 'keywords' => 'restoran,yemek,meal'],
+            ['id' => 42, 'code' => 'cafe', 'name' => 'Kafe', 'category_id' => 7, 'description' => 'Kafe ve kahve', 'emoji' => '☕', 'color' => 'orange', 'keywords' => 'kafe,kahve,coffee'],
+            
+            // Spor Alt Sektörleri
+            ['id' => 43, 'code' => 'sports', 'name' => 'Spor', 'category_id' => 9, 'description' => 'Spor ve fitness', 'emoji' => '⚽', 'color' => 'green', 'keywords' => 'spor,fitness,antrenman'],
+            ['id' => 44, 'code' => 'fitness', 'name' => 'Fitness', 'category_id' => 9, 'description' => 'Fitness ve spor salonu', 'emoji' => '🏋️', 'color' => 'green', 'keywords' => 'fitness,spor,gym'],
+            
+            // Otomotiv Alt Sektörleri
+            ['id' => 45, 'code' => 'automotive', 'name' => 'Otomotiv', 'category_id' => 10, 'description' => 'Araç satış ve servis', 'emoji' => '🚗', 'color' => 'dark', 'keywords' => 'otomotiv,araç,car'],
+            
+            // Finans Alt Sektörleri
+            ['id' => 46, 'code' => 'finance', 'name' => 'Finans', 'category_id' => 11, 'description' => 'Finansal hizmetler', 'emoji' => '💰', 'color' => 'yellow', 'keywords' => 'finans,para,money'],
+            
+            // Hukuk Alt Sektörleri
+            ['id' => 47, 'code' => 'legal', 'name' => 'Hukuk', 'category_id' => 12, 'description' => 'Hukuki hizmetler', 'emoji' => '⚖️', 'color' => 'indigo', 'keywords' => 'hukuk,avukat,legal'],
+            
+            // İnşaat Alt Sektörleri
+            ['id' => 48, 'code' => 'construction', 'name' => 'İnşaat', 'category_id' => 13, 'description' => 'İnşaat hizmetleri', 'emoji' => '🏗️', 'color' => 'blue', 'keywords' => 'inşaat,yapı,construction'],
+            
+            // Sanat Alt Sektörleri
+            ['id' => 49, 'code' => 'art_design', 'name' => 'Sanat & Tasarım', 'category_id' => 8, 'description' => 'Sanat ve tasarım', 'emoji' => '🎨', 'color' => 'purple', 'keywords' => 'sanat,tasarım,art'],
+            
+            // Güzellik Alt Sektörleri
+            ['id' => 50, 'code' => 'beauty', 'name' => 'Güzellik', 'category_id' => 14, 'description' => 'Güzellik ve bakım', 'emoji' => '💄', 'color' => 'rose', 'keywords' => 'güzellik,bakım,beauty']
+        ];
+        
+        $addedCount = 0;
+        foreach ($basicSectors as $sector) {
+            try {
+                DB::table('ai_profile_sectors')->insert([
+                    'id' => $sector['id'],
+                    'code' => $sector['code'],
+                    'name' => $sector['name'],
+                    'category_id' => $sector['category_id'],
+                    'description' => $sector['description'],
+                    'emoji' => $sector['emoji'],
+                    'icon' => null,
+                    'color' => $sector['color'],
+                    'keywords' => $sector['keywords'],
+                    'is_subcategory' => 1,
+                    'is_active' => 1,
+                    'sort_order' => $sector['id'],
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+                $addedCount++;
+            } catch (\Exception $e) {
+                echo "⚠️ Sektör ID {$sector['id']} atlandı: " . $e->getMessage() . "\n";
+            }
+        }
+        
+        echo "✅ {$addedCount} temel sektör eklendi!\n";
+    }
+    
+    /**
+     * Kalan sektörlere genel sorular ekle
+     */
+    private function addGeneralSectorQuestions(): void
+    {
+        echo "📋 Temel sektörlere genel sorular ekleniyor...\n";
+        
+        // Her sektör için genel soru tanımları
         $sectorQuestions = [
-            // TEKNOLOJİ SEKTÖRLERI
+            // TEKNOLOJİ SEKTÖRLERİ
             'technology' => [
                 'question_text' => 'Hangi teknoloji hizmetlerini sunuyorsunuz?',
                 'options' => '["Yazılım geliştirme", "Web tasarım", "Mobil uygulama", "Sistem yönetimi", "Siber güvenlik", "Veri analizi", "Bulut çözümleri", "IT danışmanlığı", "Teknik destek", "E-ticaret çözümleri", {"label": "Diğer", "value": "custom", "has_custom_input": true}]'
-            ],
-            'web' => [
-                'question_text' => 'Hangi web tasarım ve geliştirme hizmetlerini veriyorsunuz?',
-                'options' => '["Kurumsal web sitesi", "E-ticaret sitesi", "Blog & portfolio", "Landing page", "WordPress", "Laravel", "React/Vue", "SEO optimizasyonu", "Hosting & domain", "Web bakım", {"label": "Diğer", "value": "custom", "has_custom_input": true}]'
-            ],
-            'mobile' => [
-                'question_text' => 'Hangi mobil uygulama platformlarında geliştirme yapıyorsunuz?',
-                'options' => '["iOS (Swift)", "Android (Java/Kotlin)", "React Native", "Flutter", "Ionic", "Progressive Web App", "Xamarin", "Unity oyun", "App Store yayınlama", "App bakım", {"label": "Diğer", "value": "custom", "has_custom_input": true}]'
             ],
             'software' => [
                 'question_text' => 'Hangi yazılım geliştirme alanlarında uzmanlaştınız?',
                 'options' => '["Web uygulamaları", "Masaüstü yazılım", "Mobil app", "API geliştirme", "Veritabanı tasarım", "ERP sistemi", "CRM sistemi", "E-ticaret platformu", "Blockchain", "AI/ML", {"label": "Diğer", "value": "custom", "has_custom_input": true}]'
             ],
-            'graphic_design' => [
-                'question_text' => 'Hangi grafik tasarım hizmetlerini sağlıyorsunuz?',
-                'options' => '["Logo tasarım", "Kurumsal kimlik", "Web tasarım", "UI/UX tasarım", "Baskı tasarımı", "Sosyal medya tasarımı", "Ambalaj tasarımı", "İllüstrasyon", "3D tasarım", "Video grafik", {"label": "Diğer", "value": "custom", "has_custom_input": true}]'
+            'cybersecurity' => [
+                'question_text' => 'Hangi siber güvenlik hizmetlerini veriyorsunuz?',
+                'options' => '["Penetrasyon testi", "Güvenlik denetimi", "Firewall kurulumu", "Antivirus çözümleri", "Veri şifreleme", "Güvenlik eğitimi", "SOC hizmetleri", "KVKK uyumluluk", "Incident response", "Güvenlik danışmanlığı", {"label": "Diğer", "value": "custom", "has_custom_input": true}]'
             ],
             'digital_marketing' => [
                 'question_text' => 'Hangi dijital pazarlama hizmetlerini sunuyorsunuz?',
                 'options' => '["Google Ads", "Facebook Ads", "Instagram Ads", "SEO", "SEM", "Social Media Management", "İçerik pazarlama", "Email pazarlama", "Influencer pazarlama", "Analytics & raporlama", {"label": "Diğer", "value": "custom", "has_custom_input": true}]'
             ],
-            'cybersecurity' => [
-                'question_text' => 'Hangi siber güvenlik hizmetlerini veriyorsunuz?',
-                'options' => '["Penetrasyon testi", "Güvenlik denetimi", "Firewall kurulumu", "Antivirus çözümleri", "Veri şifreleme", "Güvenlik eğitimi", "SOC hizmetleri", "KVKK uyumluluk", "Incident response", "Güvenlik danışmanlığı", {"label": "Diğer", "value": "custom", "has_custom_input": true}]'
+            'advertising' => [
+                'question_text' => 'Hangi reklam ve tanıtım hizmetlerini sağlıyorsunuz?',
+                'options' => '["Kreatif tasarım", "Marka yönetimi", "Medya planlama", "Outdoor reklam", "Dijital reklam", "TV/Radyo reklam", "Basın ilanları", "Etkinlik organizasyonu", "Sponsorluk", "PR hizmetleri", {"label": "Diğer", "value": "custom", "has_custom_input": true}]'
             ],
-            
-            // SAĞLIK SEKTÖRLERI
-            'health' => [
-                'question_text' => 'Hangi sağlık hizmetlerini sunuyorsunuz?',
-                'options' => '["Genel muayene", "Uzman doktor", "Ameliyat", "Laboratuvar", "Radyoloji", "Acil servis", "Yoğun bakım", "Fizik tedavi", "Psikiyatri", "Check-up", {"label": "Diğer", "value": "custom", "has_custom_input": true}]'
+            'consulting' => [
+                'question_text' => 'Hangi danışmanlık hizmetlerini sunuyorsunuz?',
+                'options' => '["Yönetim danışmanlığı", "Stratejik planlama", "İnsan kaynakları", "Finansal danışmanlık", "Pazarlama danışmanlığı", "Operasyonel iyileştirme", "Dijital dönüşüm", "Kalite yönetimi", "Risk yönetimi", "Proje yönetimi", {"label": "Diğer", "value": "custom", "has_custom_input": true}]'
             ],
-            'hospital' => [
-                'question_text' => 'Hastanenizde hangi tıbbi bölümler bulunuyor?',
-                'options' => '["Dahiliye", "Genel Cerrahi", "Kadın Doğum", "Çocuk Sağlığı", "Kardiyoloji", "Nöroloji", "Ortopedi", "KBB", "Göz", "Üroloji", "Dermatoloji", "Acil Servis", {"label": "Diğer", "value": "custom", "has_custom_input": true}]'
+            'accounting' => [
+                'question_text' => 'Hangi muhasebe ve finans hizmetlerini veriyorsunuz?',
+                'options' => '["Defter tutma", "Vergi beyannameleri", "SGK işlemleri", "Bordro hazırlama", "Mali müşavirlik", "Bağımsız denetim", "Finansal analiz", "Bütçe hazırlama", "Maliyet analizi", "Vergi optimizasyonu", {"label": "Diğer", "value": "custom", "has_custom_input": true}]'
             ],
-            'dental' => [
-                'question_text' => 'Hangi diş tedavilerini uyguluyorsunuz?',
-                'options' => '["Genel muayene", "Dolgu", "Kanal tedavisi", "Çekim", "İmplant", "Protez", "Ortodonti", "Beyazlatma", "Estetik diş", "Periodontal tedavi", "Çocuk diş", {"label": "Diğer", "value": "custom", "has_custom_input": true}]'
-            ],
-            'aesthetic' => [
-                'question_text' => 'Hangi estetik ve plastik cerrahi işlemlerini yapıyorsunuz?',
-                'options' => '["Botoks", "Dolgu", "Rinoplasti", "Liposuction", "Meme estetiği", "Karın germe", "Saç ekimi", "Lazer epilasyon", "Cilt yenileme", "Göz kapağı estetiği", {"label": "Diğer", "value": "custom", "has_custom_input": true}]'
-            ],
-            'pharmacy' => [
-                'question_text' => 'Eczanenizde hangi ürün ve hizmetleri sunuyorsunuz?',
-                'options' => '["Reçeteli ilaçlar", "Reçetesiz ilaçlar", "Vitamin & takviye", "Kozmetik ürünler", "Bebek ürünleri", "Tıbbi cihazlar", "İlaç danışmanlığı", "Tansiyon ölçümü", "Online sipariş", "Evde ilaç teslimatı", {"label": "Diğer", "value": "custom", "has_custom_input": true}]'
-            ],
-            
-            // EĞİTİM SEKTÖRLERI
-            'education' => [
-                'question_text' => 'Hangi eğitim hizmetlerini sunuyorsunuz?',
-                'options' => '["Okul öncesi", "İlkokul", "Ortaokul", "Lise", "Üniversite", "Yetişkin eğitimi", "Sertifika programları", "Online eğitim", "Özel ders", "Kurumsal eğitim", {"label": "Diğer", "value": "custom", "has_custom_input": true}]'
-            ],
-            'school' => [
-                'question_text' => 'Okulunuzda hangi eğitim seviyeleri bulunuyor?',
-                'options' => '["Anaokulu", "İlkokul", "Ortaokul", "Lise", "Fen lisesi", "Anadolu lisesi", "Meslek lisesi", "Özel eğitim", "Yetenek geliştirme", "Olimpiyat hazırlık", {"label": "Diğer", "value": "custom", "has_custom_input": true}]'
-            ],
-            'language' => [
-                'question_text' => 'Hangi dillerde eğitim veriyorsunuz?',
-                'options' => '["İngilizce", "Almanca", "Fransızca", "İtalyanca", "İspanyolca", "Rusça", "Arapça", "Çince", "Japonca", "IELTS/TOEFL hazırlık", "İş dili", {"label": "Diğer", "value": "custom", "has_custom_input": true}]'
-            ],
-            
-            // YEMEK & İÇECEK SEKTÖRLERI
-            'food' => [
-                'question_text' => 'Hangi yemek ve içecek hizmetlerini sunuyorsunuz?',
-                'options' => '["Restoran", "Cafe", "Fast food", "Catering", "Ev yemekleri", "Organik gıda", "Vegan menü", "Glutensiz menü", "Paket servis", "Online sipariş", {"label": "Diğer", "value": "custom", "has_custom_input": true}]'
-            ],
-            'restaurant' => [
-                'question_text' => 'Restoranınızın mutfak türü ve özellikleri nelerdir?',
-                'options' => '["Türk mutfağı", "İtalyan mutfağı", "Uzak Doğu", "Fast food", "Seafood", "Vejetaryen", "Vegan", "Organik", "Fine dining", "Aile restoranı", {"label": "Diğer", "value": "custom", "has_custom_input": true}]'
-            ],
-            'cafe' => [
-                'question_text' => 'Kafenizde hangi ürün ve hizmetleri sunuyorsunuz?',
-                'options' => '["Espresso kahveler", "Filtre kahve", "Soğuk kahveler", "Çay çeşitleri", "Tatlılar", "Sandviç & salata", "WiFi", "Çalışma alanı", "Etkinlik alanı", "Takeaway", {"label": "Diğer", "value": "custom", "has_custom_input": true}]'
-            ],
-            
-            // PERAKENDE & E-TİCARET
             'retail' => [
-                'question_text' => 'Hangi perakende ve e-ticaret hizmetlerini sunuyorsunuz?',
-                'options' => '["Online mağaza", "Fiziki mağaza", "Toptan satış", "Perakende satış", "Kargo & teslimat", "Müşteri hizmetleri", "İade & değişim", "Ödeme sistemleri", "Mobil uygulama", "Sadakat programı", {"label": "Diğer", "value": "custom", "has_custom_input": true}]'
+                'question_text' => 'Hangi perakende hizmetlerini sunuyorsunuz?',
+                'options' => '["Mağaza satışı", "Online satış", "Toptan satış", "Müşteri hizmetleri", "Kargo/teslimat", "İade/değişim", "Satış sonrası destek", "Ürün danışmanlığı", "Garanti hizmetleri", "Özel sipariş", {"label": "Diğer", "value": "custom", "has_custom_input": true}]'
             ],
-            
-            // İNŞAAT & EMLAK
-            'construction' => [
-                'question_text' => 'Hangi inşaat ve emlak hizmetlerini veriyorsunuz?',
-                'options' => '["Konut inşaatı", "Ticari inşaat", "Tadilat & renovasyon", "İç mimarlık", "Proje tasarımı", "Emlak danışmanlığı", "Emlak değerleme", "Kiralama", "Satış", "Yatırım danışmanlığı", {"label": "Diğer", "value": "custom", "has_custom_input": true}]'
+            'ecommerce' => [
+                'question_text' => 'Hangi e-ticaret hizmetlerini sağlıyorsunuz?',
+                'options' => '["Online mağaza", "Marketplace satış", "B2B e-ticaret", "Dropshipping", "Dijital pazarlama", "Lojistik yönetimi", "Ödeme sistemleri", "Müşteri destek", "Envanter yönetimi", "Analytics", {"label": "Diğer", "value": "custom", "has_custom_input": true}]'
             ],
-            
-            // FİNANS & MUHASEBE
+            'fitness' => [
+                'question_text' => 'Hangi fitness ve spor hizmetlerini sunuyorsunuz?',
+                'options' => '["Kişisel antrenörlük", "Grup dersleri", "Fitness programları", "Beslenme danışmanlığı", "Spor masajı", "Rehabilitasyon", "Yoga/Pilates", "Cardio eğitimi", "Güç antrenmanı", "Spor psikologu", {"label": "Diğer", "value": "custom", "has_custom_input": true}]'
+            ],
             'finance' => [
-                'question_text' => 'Hangi finans ve muhasebe hizmetlerini sağlıyorsunuz?',
-                'options' => '["Mali müşavirlik", "Defter tutma", "Vergi danışmanlığı", "SGK işlemleri", "Bordro hazırlama", "Finansal analiz", "Kredi danışmanlığı", "Yatırım danışmanlığı", "Sigorta", "Emeklilik planlaması", {"label": "Diğer", "value": "custom", "has_custom_input": true}]'
+                'question_text' => 'Hangi finans hizmetlerini sunuyorsunuz?',
+                'options' => '["Yatırım danışmanlığı", "Kredi danışmanlığı", "Sigorta aracılığı", "Emlak finansmanı", "Emeklilik planlaması", "Portföy yönetimi", "Finansal planlama", "Vergi danışmanlığı", "Borsa işlemleri", "Döviz işlemleri", {"label": "Diğer", "value": "custom", "has_custom_input": true}]'
             ],
-            
-            // SANAT & TASARIM
+            'legal' => [
+                'question_text' => 'Hangi hukuki hizmetleri sunuyorsunuz?',
+                'options' => '["Ticaret hukuku", "İş hukuku", "Aile hukuku", "Ceza hukuku", "Emlak hukuku", "Şirket kuruluşu", "Sözleşme hazırlama", "Dava takibi", "Arabuluculuk", "Hukuki danışmanlık", {"label": "Diğer", "value": "custom", "has_custom_input": true}]'
+            ],
+            'construction' => [
+                'question_text' => 'Hangi inşaat hizmetlerini sunuyorsunuz?',
+                'options' => '["Konut inşaatı", "Ticari yapı", "Endüstriyel yapı", "Tadilat/renovasyon", "İç mimarlık", "Peyzaj", "Proje yönetimi", "Mimari tasarım", "Müteahhitlik", "Ruhsat işlemleri", {"label": "Diğer", "value": "custom", "has_custom_input": true}]'
+            ],
             'art_design' => [
                 'question_text' => 'Hangi sanat ve tasarım hizmetlerini sunuyorsunuz?',
-                'options' => '["Grafik tasarım", "İç mimarlık", "Endüstriyel tasarım", "Moda tasarımı", "Resim & heykel", "Fotoğrafçılık", "Video prodüksiyon", "Müzik prodüksiyonu", "Sanat eğitimi", "Sanat danışmanlığı", {"label": "Diğer", "value": "custom", "has_custom_input": true}]'
+                'options' => '["Grafik tasarım", "Logo tasarımı", "Kurumsal kimlik", "Web tasarımı", "Ambalaj tasarımı", "İllüstrasyon", "Fotoğrafçılık", "Video editing", "Motion graphics", "Sanat eserleri", {"label": "Diğer", "value": "custom", "has_custom_input": true}]'
             ],
-            
-            // SPOR & FITNESS
-            'sports' => [
-                'question_text' => 'Hangi spor ve fitness hizmetlerini veriyorsunuz?',
-                'options' => '["Fitness antrenmanı", "Kişisel antrenör", "Grup dersleri", "Yoga", "Pilates", "Crossfit", "Yüzme", "Beslenme danışmanlığı", "Fizyoterapi", "Spor masajı", {"label": "Diğer", "value": "custom", "has_custom_input": true}]'
-            ],
-            
-            // OTOMOTİV
-            'automotive' => [
-                'question_text' => 'Hangi otomotiv hizmetlerini sağlıyorsunuz?',
-                'options' => '["Araç satışı", "İkinci el araç", "Servis & bakım", "Yedek parça", "Lastik değişimi", "Oto elektrik", "Kaporta & boya", "Araç ekspertizi", "Sigorta işlemleri", "Araç kiralama", {"label": "Diğer", "value": "custom", "has_custom_input": true}]'
+            'beauty' => [
+                'question_text' => 'Hangi güzellik ve bakım hizmetlerini sunuyorsunuz?',
+                'options' => '["Kuaförlük", "Makyaj", "Cilt bakımı", "Nail art", "Masaj", "Epilasyon", "Kaş tasarımı", "Saç bakımı", "Estetik uygulamalar", "Güzellik danışmanlığı", {"label": "Diğer", "value": "custom", "has_custom_input": true}]'
             ]
         ];
         
@@ -581,87 +617,14 @@ class SectorSeeder_Part1 extends Seeder
                 ]));
                 $addedCount++;
                 
-                if ($addedCount % 10 == 0) {
-                    echo "📊 {$addedCount} sektöre somut soru eklendi...\n";
+                if ($addedCount % 5 == 0) {
+                    echo "📊 {$addedCount} sektöre genel soru eklendi...\n";
                 }
             } else {
                 echo "⚠️ Question key '{$question['question_key']}' zaten var, atlandı\n";
             }
         }
         
-        echo "✅ SQL sektörlerine {$addedCount} somut hizmet sorusu eklendi!\n";
-        
-        // Kalan tüm SQL sektörlerine genel sorular ekle
-        $this->addRemainingSQLSectorQuestions();
-    }
-    
-    /**
-     * Kalan tüm SQL sektörlerine genel sorular ekle
-     */
-    private function addRemainingSQLSectorQuestions(): void
-    {
-        echo "📋 Kalan SQL sektörlerine genel sorular ekleniyor...\n";
-        
-        // Tüm SQL sektörlerini al
-        $allSqlSectors = DB::table('ai_profile_sectors')
-            ->whereBetween('id', [1, 162])
-            ->pluck('code', 'name')
-            ->toArray();
-            
-        // Zaten sorusu olan sektörleri al
-        $sectorsWithQuestions = DB::table('ai_profile_questions')
-            ->where('question_key', 'LIKE', '%_specific_services')
-            ->pluck('sector_code')
-            ->toArray();
-            
-        // Sorusu olmayan sektörleri bul
-        $sectorsWithoutQuestions = array_diff(array_keys($allSqlSectors), $sectorsWithQuestions);
-        
-        echo "📊 Sorusu olmayan " . count($sectorsWithoutQuestions) . " sektöre genel soru ekleniyor...\n";
-        
-        $addedCount = 0;
-        
-        foreach ($sectorsWithoutQuestions as $sectorCode) {
-            $sectorName = $allSqlSectors[$sectorCode];
-            
-            $question = [
-                'sector_code' => $sectorCode,
-                'step' => 3,
-                'section' => null,
-                'question_key' => $sectorCode . '_specific_services',
-                'question_text' => 'Bu sektörde hangi hizmet ve ürünleri sunuyorsunuz?',
-                'help_text' => $sectorName . ' alanında sunduğunuz spesifik hizmet ve ürün kategorileriniz',
-                'input_type' => 'checkbox',
-                'options' => '["Danışmanlık hizmeti", "Ürün satışı", "Hizmet sağlama", "Eğitim & kurs", "Bakım & onarım", "Tasarım & planlama", "Üretim", "Dağıtım & lojistik", "İthalat & ihracat", "Teknik destek", {"label": "Diğer", "value": "custom", "has_custom_input": true}]',
-                'validation_rules' => null,
-                'depends_on' => null,
-                'show_if' => null,
-                'is_required' => 0,
-                'is_active' => 1,
-                'sort_order' => 5,
-                'priority' => 3,
-                'ai_weight' => 70,
-                'category' => 'company',
-                'ai_priority' => 3,
-                'always_include' => 0,
-                'context_category' => 'service_portfolio'
-            ];
-            
-            try {
-                DB::table('ai_profile_questions')->insert(array_merge($question, [
-                    'created_at' => now(),
-                    'updated_at' => now()
-                ]));
-                $addedCount++;
-                
-                if ($addedCount % 20 == 0) {
-                    echo "📊 {$addedCount} sektöre genel soru eklendi...\n";
-                }
-            } catch (\Exception $e) {
-                echo "⚠️ {$sectorCode} sorusu eklenemedi: " . $e->getMessage() . "\n";
-            }
-        }
-        
-        echo "✅ Kalan SQL sektörlerine {$addedCount} genel soru eklendi!\n";
+        echo "✅ Temel sektörlere {$addedCount} genel soru eklendi!\n";
     }
 }

@@ -20,35 +20,57 @@ class SectorSeeder_Part2 extends Seeder
         
         echo "🎯 Sektörler Part 2 yükleniyor (ID 163+)...\n";
 
-        // Eksik özelleşmiş sektörleri ekle (ID 163+)
-        $this->addMissingSpecializedSectors();
+        // Ek sektörleri ekle (ID 51+)
+        $this->addAdditionalSectors();
         
         // Bu sektörlere özel sorular ekle
         $this->addSectorQuestions();
 
-        echo "✅ Part 2 tamamlandı! (Özelleşmiş E-ticaret & Yemek sektörleri)\n";
+        echo "✅ Part 2 tamamlandı! (Ek sektörler ID 51-65)\n";
     }
     
-    private function addMissingSpecializedSectors(): void
+    private function addAdditionalSectors(): void
     {
-        // SQL'de olmayan özelleşmiş sektörler (ID 163'ten başlayarak)
+        // Ek sektörler (ID 51'den başlayarak)
         $sectors = [
-            // ÖZELLEŞMİŞ YİYECEK SEKTÖRLERI (ID 163-170)
-            ['id' => 163, 'code' => 'organic_food', 'category_id' => 4, 'name' => 'Organik & Doğal Gıda', 'emoji' => '🌱', 'color' => 'green', 'description' => 'Organik gıda üretimi ve satışı', 'keywords' => 'organik, doğal, sağlıklı, gıda'],
-            ['id' => 164, 'code' => 'street_food', 'category_id' => 4, 'name' => 'Sokak Lezzetleri', 'emoji' => '🌮', 'color' => 'orange', 'description' => 'Döner, lahmacun, sokak yemekleri', 'keywords' => 'döner, lahmacun, sokak, fast'],
-            ['id' => 165, 'code' => 'dessert_shop', 'category_id' => 4, 'name' => 'Tatlı & Dondurma', 'emoji' => '🍦', 'color' => 'pink', 'description' => 'Tatlı evi, dondurma, şekerci', 'keywords' => 'tatlı, dondurma, şeker, dessert'],
-            ['id' => 166, 'code' => 'wine_shop', 'category_id' => 4, 'name' => 'Şarap & İçki', 'emoji' => '🍷', 'color' => 'red', 'description' => 'Şarap evi, içki satış, bar malzemeleri', 'keywords' => 'şarap, içki, alkol, wine'],
-            ['id' => 167, 'code' => 'spice_shop', 'category_id' => 4, 'name' => 'Baharat & Kuruyemiş', 'emoji' => '🌶️', 'color' => 'amber', 'description' => 'Baharat satış, kuruyemiş, aktariye', 'keywords' => 'baharat, kuruyemiş, aktariye, spice'],
+            // EK YİYECEK SEKTÖRLERI (ID 51-70)
+            ['id' => 51, 'code' => 'organic_food', 'category_id' => 7, 'name' => 'Organik & Doğal Gıda', 'emoji' => '🌱', 'color' => 'green', 'description' => 'Organik gıda üretimi ve satışı', 'keywords' => 'organik,doğal,sağlıklı,gıda'],
+            ['id' => 52, 'code' => 'street_food', 'category_id' => 7, 'name' => 'Sokak Lezzetleri', 'emoji' => '🌮', 'color' => 'orange', 'description' => 'Döner, lahmacun, sokak yemekleri', 'keywords' => 'döner,lahmacun,sokak,fast'],
+            ['id' => 53, 'code' => 'dessert_shop', 'category_id' => 7, 'name' => 'Tatlı & Dondurma', 'emoji' => '🍦', 'color' => 'pink', 'description' => 'Tatlı evi, dondurma, şekerci', 'keywords' => 'tatlı,dondurma,şeker,dessert'],
+            ['id' => 54, 'code' => 'wine_shop', 'category_id' => 7, 'name' => 'Şarap & İçki', 'emoji' => '🍷', 'color' => 'red', 'description' => 'Şarap evi, içki satış, bar malzemeleri', 'keywords' => 'şarap,içki,alkol,wine'],
+            ['id' => 55, 'code' => 'spice_shop', 'category_id' => 7, 'name' => 'Baharat & Kuruyemiş', 'emoji' => '🌶️', 'color' => 'amber', 'description' => 'Baharat satış, kuruyemiş, aktariye', 'keywords' => 'baharat,kuruyemiş,aktariye,spice'],
+            ['id' => 56, 'code' => 'bakery', 'category_id' => 7, 'name' => 'Fırın & Pastane', 'emoji' => '🥖', 'color' => 'amber', 'description' => 'Ekmek, pasta, börek fırını', 'keywords' => 'fırın,pastane,ekmek,pasta'],
+            ['id' => 57, 'code' => 'meat_shop', 'category_id' => 7, 'name' => 'Kasap & Et Ürünleri', 'emoji' => '🥩', 'color' => 'red', 'description' => 'Kasap, et satış, şarküteri', 'keywords' => 'kasap,et,şarküteri,meat'],
+            ['id' => 58, 'code' => 'fish_seafood', 'category_id' => 7, 'name' => 'Balık & Deniz Ürünleri', 'emoji' => '🐟', 'color' => 'blue', 'description' => 'Balık satış, deniz ürünleri', 'keywords' => 'balık,deniz,seafood,fish'],
+            ['id' => 59, 'code' => 'dairy_products', 'category_id' => 7, 'name' => 'Süt Ürünleri', 'emoji' => '🥛', 'color' => 'white', 'description' => 'Süt, peynir, yoğurt satışı', 'keywords' => 'süt,peynir,yoğurt,dairy'],
+            ['id' => 60, 'code' => 'catering', 'category_id' => 7, 'name' => 'Catering & Yemek Servisi', 'emoji' => '🍽️', 'color' => 'orange', 'description' => 'Catering, toplu yemek hizmeti', 'keywords' => 'catering,yemek,servis,toplu'],
+            ['id' => 61, 'code' => 'tea_coffee', 'category_id' => 7, 'name' => 'Çay & Kahve', 'emoji' => '☕', 'color' => 'brown', 'description' => 'Çay, kahve satış ve servisi', 'keywords' => 'çay,kahve,tea,coffee'],
+            ['id' => 62, 'code' => 'frozen_food', 'category_id' => 7, 'name' => 'Donmuş Gıda', 'emoji' => '🧊', 'color' => 'cyan', 'description' => 'Donmuş yemek, gıda ürünleri', 'keywords' => 'donmuş,frozen,gıda,food'],
+            ['id' => 63, 'code' => 'healthy_food', 'category_id' => 7, 'name' => 'Sağlıklı Beslenme', 'emoji' => '🥗', 'color' => 'green', 'description' => 'Diyet, sağlıklı beslenme ürünleri', 'keywords' => 'diyet,sağlıklı,beslenme,healthy'],
+            ['id' => 64, 'code' => 'international_food', 'category_id' => 7, 'name' => 'Uluslararası Mutfak', 'emoji' => '🌍', 'color' => 'purple', 'description' => 'Dünya mutfağı, etnik yemekler', 'keywords' => 'uluslararası,etnik,world,cuisine'],
+            ['id' => 65, 'code' => 'vegan_vegetarian', 'category_id' => 7, 'name' => 'Vegan & Vejetaryen', 'emoji' => '🌿', 'color' => 'green', 'description' => 'Vegan, vejetaryen ürünler', 'keywords' => 'vegan,vejetaryen,plant,based'],
+            ['id' => 66, 'code' => 'food_truck', 'category_id' => 7, 'name' => 'Food Truck & Mobil', 'emoji' => '🚚', 'color' => 'orange', 'description' => 'Mobil yemek servisi, food truck', 'keywords' => 'food truck,mobil,yemek,street'],
+            ['id' => 67, 'code' => 'honey_natural', 'category_id' => 7, 'name' => 'Bal & Doğal Ürünler', 'emoji' => '🍯', 'color' => 'amber', 'description' => 'Bal, doğal ürünler, arı ürünleri', 'keywords' => 'bal,doğal,arı,honey'],
+            ['id' => 68, 'code' => 'juice_smoothie', 'category_id' => 7, 'name' => 'Meyve Suyu & Smoothie', 'emoji' => '🥤', 'color' => 'orange', 'description' => 'Taze meyve suyu, smoothie', 'keywords' => 'meyve,suyu,smoothie,juice'],
+            ['id' => 69, 'code' => 'chocolate_candy', 'category_id' => 7, 'name' => 'Çikolata & Şekerleme', 'emoji' => '🍫', 'color' => 'brown', 'description' => 'Çikolata, şekerleme, candy', 'keywords' => 'çikolata,şekerleme,candy,chocolate'],
+            ['id' => 70, 'code' => 'nuts_dried_fruit', 'category_id' => 7, 'name' => 'Kuruyemiş & Kuru Meyve', 'emoji' => '🥜', 'color' => 'amber', 'description' => 'Kuruyemiş, kuru meyve satışı', 'keywords' => 'kuruyemiş,kuru meyve,nuts,dried'],
             
-            // ÖZELLEŞMİŞ E-TİCARET SEKTÖRLERI (ID 171-178)
-            ['id' => 171, 'code' => 'beauty_cosmetics', 'category_id' => 5, 'name' => 'Güzellik & Kozmetik', 'emoji' => '💄', 'color' => 'rose', 'description' => 'Kozmetik, parfüm, güzellik ürünleri', 'keywords' => 'kozmetik, güzellik, parfüm, makyaj'],
-            ['id' => 172, 'code' => 'baby_kids', 'category_id' => 5, 'name' => 'Bebek & Çocuk', 'emoji' => '👶', 'color' => 'blue', 'description' => 'Bebek ürünleri, çocuk giyim, oyuncak', 'keywords' => 'bebek, çocuk, oyuncak, giyim'],
-            ['id' => 173, 'code' => 'sports_outdoor', 'category_id' => 5, 'name' => 'Spor & Outdoor', 'emoji' => '⚽', 'color' => 'green', 'description' => 'Spor malzemeleri, outdoor equipment', 'keywords' => 'spor, outdoor, malzeme, ekipman'],
-            ['id' => 174, 'code' => 'pet_supplies', 'category_id' => 5, 'name' => 'Pet Shop & Hayvan', 'emoji' => '🐕', 'color' => 'amber', 'description' => 'Pet malzemeleri, hayvan bakım', 'keywords' => 'pet, hayvan, kedi, köpek'],
-            ['id' => 175, 'code' => 'books_media', 'category_id' => 5, 'name' => 'Kitap & Medya', 'emoji' => '📚', 'color' => 'blue', 'description' => 'Kitap satış, e-kitap, medya', 'keywords' => 'kitap, e-kitap, medya, yayın'],
-            ['id' => 176, 'code' => 'gift_souvenir', 'category_id' => 5, 'name' => 'Hediye & Hediyelik', 'emoji' => '🎁', 'color' => 'purple', 'description' => 'Hediye eşya, hediyelik, özel tasarım', 'keywords' => 'hediye, hediyelik, tasarım, özel'],
-            ['id' => 177, 'code' => 'handicrafts', 'category_id' => 5, 'name' => 'El Sanatları & Hobi', 'emoji' => '🎨', 'color' => 'pink', 'description' => 'El yapımı ürünler, hobi malzemeleri', 'keywords' => 'el sanatı, hobi, handmade, craft'],
-            ['id' => 178, 'code' => 'vintage_antique', 'category_id' => 5, 'name' => 'Vintage & Antika', 'emoji' => '🏺', 'color' => 'amber', 'description' => 'Antika eşya, vintage ürünler', 'keywords' => 'antika, vintage, eski, koleksiyon'],
+            // EK E-TİCARET SEKTÖRLERI (ID 71-85)
+            ['id' => 71, 'code' => 'beauty_cosmetics', 'category_id' => 14, 'name' => 'Güzellik & Kozmetik', 'emoji' => '💄', 'color' => 'rose', 'description' => 'Kozmetik, parfüm, güzellik ürünleri', 'keywords' => 'kozmetik,güzellik,parfüm,makyaj'],
+            ['id' => 72, 'code' => 'baby_kids', 'category_id' => 4, 'name' => 'Bebek & Çocuk', 'emoji' => '👶', 'color' => 'blue', 'description' => 'Bebek ürünleri, çocuk giyim, oyuncak', 'keywords' => 'bebek,çocuk,oyuncak,giyim'],
+            ['id' => 73, 'code' => 'sports_outdoor', 'category_id' => 9, 'name' => 'Spor & Outdoor', 'emoji' => '⚽', 'color' => 'green', 'description' => 'Spor malzemeleri, outdoor equipment', 'keywords' => 'spor,outdoor,malzeme,ekipman'],
+            ['id' => 74, 'code' => 'pet_supplies', 'category_id' => 4, 'name' => 'Pet Shop & Hayvan', 'emoji' => '🐕', 'color' => 'amber', 'description' => 'Pet malzemeleri, hayvan bakım', 'keywords' => 'pet,hayvan,kedi,köpek'],
+            ['id' => 75, 'code' => 'books_media', 'category_id' => 4, 'name' => 'Kitap & Medya', 'emoji' => '📚', 'color' => 'blue', 'description' => 'Kitap satış, e-kitap, medya', 'keywords' => 'kitap,e-kitap,medya,yayın'],
+            ['id' => 76, 'code' => 'gift_souvenir', 'category_id' => 4, 'name' => 'Hediye & Hediyelik', 'emoji' => '🎁', 'color' => 'purple', 'description' => 'Hediye eşya, hediyelik, özel tasarım', 'keywords' => 'hediye,hediyelik,tasarım,özel'],
+            ['id' => 77, 'code' => 'handicrafts', 'category_id' => 8, 'name' => 'El Sanatları & Hobi', 'emoji' => '🎨', 'color' => 'pink', 'description' => 'El yapımı ürünler, hobi malzemeleri', 'keywords' => 'el sanatı,hobi,handmade,craft'],
+            ['id' => 78, 'code' => 'vintage_antique', 'category_id' => 4, 'name' => 'Vintage & Antika', 'emoji' => '🏺', 'color' => 'amber', 'description' => 'Antika eşya, vintage ürünler', 'keywords' => 'antika,vintage,eski,koleksiyon'],
+            ['id' => 79, 'code' => 'pharmacy', 'category_id' => 5, 'name' => 'Eczane', 'emoji' => '💊', 'color' => 'green', 'description' => 'Eczane ve ilaç satışı', 'keywords' => 'eczane,ilaç,sağlık,pharmacy'],
+            ['id' => 80, 'code' => 'veterinary', 'category_id' => 5, 'name' => 'Veteriner', 'emoji' => '🐾', 'color' => 'blue', 'description' => 'Veteriner hizmetleri', 'keywords' => 'veteriner,hayvan,pet,sağlık'],
+            ['id' => 81, 'code' => 'electronics', 'category_id' => 4, 'name' => 'Elektronik & Teknoloji', 'emoji' => '📱', 'color' => 'blue', 'description' => 'Elektronik ürünler, telefon, tablet', 'keywords' => 'elektronik,telefon,tablet,technology'],
+            ['id' => 82, 'code' => 'home_garden', 'category_id' => 4, 'name' => 'Ev & Bahçe', 'emoji' => '🏠', 'color' => 'green', 'description' => 'Ev eşyaları, bahçe malzemeleri', 'keywords' => 'ev,bahçe,home,garden'],
+            ['id' => 83, 'code' => 'furniture_decor', 'category_id' => 4, 'name' => 'Mobilya & Dekorasyon', 'emoji' => '🛋️', 'color' => 'brown', 'description' => 'Mobilya, dekorasyon ürünleri', 'keywords' => 'mobilya,dekorasyon,furniture,decor'],
+            ['id' => 84, 'code' => 'auto_parts', 'category_id' => 10, 'name' => 'Oto Yedek Parça', 'emoji' => '🔧', 'color' => 'gray', 'description' => 'Otomobil yedek parçaları', 'keywords' => 'oto,yedek,parça,auto,parts'],
+            ['id' => 85, 'code' => 'musical_equipment', 'category_id' => 8, 'name' => 'Müzik & Enstrüman', 'emoji' => '🎵', 'color' => 'purple', 'description' => 'Müzik aletleri, ses sistemleri', 'keywords' => 'müzik,enstrüman,ses,music']
         ];
 
         $addedCount = 0;
@@ -59,7 +81,7 @@ class SectorSeeder_Part2 extends Seeder
                 if (!$existing) {
                     DB::table('ai_profile_sectors')->insert(array_merge($sector, [
                         'icon' => null,
-                        'is_subcategory' => 0,
+                        'is_subcategory' => 1,
                         'is_active' => 1,
                         'sort_order' => $sector['id'] * 10,
                         'created_at' => now(),
@@ -73,7 +95,7 @@ class SectorSeeder_Part2 extends Seeder
             }
         }
 
-        echo "📊 Part 2: {$addedCount} özelleşmiş sektör eklendi\n";
+        echo "📊 Part 2: {$addedCount} ek sektör eklendi\n";
     }
     
     private function addSectorQuestions(): void

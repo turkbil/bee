@@ -141,6 +141,69 @@ class AIProfileManagement extends Component
         
         // Livewire component'ini manuel olarak güncelle
         $this->fill(['formData' => $this->formData]);
+        
+        // Brand story generation kontrolü (profile show sayfası için)
+        $this->checkAndGenerateBrandStory();
+    }
+    
+    /**
+     * Brand story generation kontrolü ve otomatik oluşturma
+     */
+    private function checkAndGenerateBrandStory()
+    {
+        // Profil tamamlandıysa ve hikaye yoksa oluştur
+        if ($this->profile && $this->profile->is_completed && !$this->profile->hasBrandStory()) {
+            try {
+                // API anahtarı kontrolü ÖNCE yap
+                $aiSettings = \Modules\AI\App\Models\Setting::first();
+                if (!$aiSettings || empty($aiSettings->api_key)) {
+                    \Log::error('Livewire - API anahtarı bulunamadı - marka hikayesi oluşturulamadı');
+                    session()->flash('brand_story_error', 'API anahtarı bulunamadı. Marka hikayesi oluşturulamadı.');
+                } else {
+                    // Async olarak hikaye oluştur (arka planda)
+                    \Log::info('Livewire - Brand story generation başlatılıyor - async');
+                    
+                    // Hikaye oluşturma deneme sayısını kontrol et
+                    $attemptKey = 'brand_story_attempt_' . $this->profile->id;
+                    $attempts = session($attemptKey, 0);
+                    
+                    if ($attempts < 3) { // Maximum 3 deneme
+                        session([$attemptKey => $attempts + 1]);
+                        
+                        try {
+                            \Log::info('Livewire - Brand story oluşturuluyor', [
+                                'profile_id' => $this->profile->id,
+                                'attempt' => $attempts + 1
+                            ]);
+                            
+                            $this->profile->generateBrandStory();
+                            session()->forget($attemptKey);
+                            session()->flash('brand_story_generated', 'Marka hikayeniz başarıyla oluşturuldu!');
+                            
+                            // Profile'ı fresh'le
+                            $this->profile = $this->profile->fresh();
+                            
+                        } catch (\Exception $e) {
+                            \Log::error('Livewire - Brand story generation attempt failed', [
+                                'profile_id' => $this->profile->id,
+                                'attempt' => $attempts + 1,
+                                'error' => $e->getMessage()
+                            ]);
+                            throw $e; // Re-throw to be caught by outer try-catch
+                        }
+                    } else {
+                        \Log::warning('Livewire - Brand story generation max attempts reached', [
+                            'profile_id' => $this->profile->id,
+                            'attempts' => $attempts
+                        ]);
+                        session()->flash('brand_story_error', 'Hikaye oluşturma denemesi başarısız. Lütfen "Hikayeyi Yeniden Oluştur" butonunu kullanın.');
+                    }
+                }
+            } catch (\Exception $e) {
+                \Log::error('Livewire - Brand story generation failed', ['error' => $e->getMessage()]);
+                session()->flash('brand_story_error', 'Marka hikayesi oluşturulurken hata: ' . $e->getMessage());
+            }
+        }
     }
     
     private function loadProfileData()
@@ -187,10 +250,12 @@ class AIProfileManagement extends Component
                 if (isset($this->profile->sector_details['sector_selection'])) {
                     $this->currentSectorCode = $this->profile->sector_details['sector_selection'];
                     $this->formData['sector'] = $this->currentSectorCode;
+                    $this->formData['sector_selection'] = $this->currentSectorCode; // Blade template için
                     \Log::debug('Loaded sector from sector_selection', ['sector' => $this->currentSectorCode]);
                 } elseif (isset($this->profile->sector_details['sector'])) {
                     $this->currentSectorCode = $this->profile->sector_details['sector'];
                     $this->formData['sector'] = $this->currentSectorCode;
+                    $this->formData['sector_selection'] = $this->currentSectorCode; // Blade template için
                     \Log::debug('Loaded sector from sector', ['sector' => $this->currentSectorCode]);
                 }
                 
@@ -506,6 +571,7 @@ class AIProfileManagement extends Component
             }
             
             $this->formData['sector_details.sector'] = $value;
+            $this->formData['sector_selection'] = $value; // Blade template için
             
             // Sektör değiştiğinde Step 3 sorularını yeniden yükle
             if ($this->currentStep === 3) {
@@ -546,6 +612,9 @@ class AIProfileManagement extends Component
                 
                 // URL routing ile step değiştir
                 return redirect()->route('admin.ai.profile.edit', ['step' => $nextStep]);
+            } else {
+                // Son step'ten sonra profile'ı tamamla ve profile.show'a yönlendir
+                return $this->completeProfile();
             }
         } else {
             \Log::warning('AIProfileManagement - validation failed', [
@@ -600,6 +669,9 @@ class AIProfileManagement extends Component
         if ($saved && $this->currentStep < $this->totalSteps) {
             $nextStep = $this->currentStep + 1;
             return redirect()->route('admin.ai.profile.edit', ['step' => $nextStep]);
+        } elseif ($saved && $this->currentStep == $this->totalSteps) {
+            // Son step'ten sonra profile'ı tamamla ve profile.show'a yönlendir
+            return $this->completeProfile();
         }
         
         // Hata durumunda aynı step'te kal

@@ -34,12 +34,14 @@ return new class extends Migration
      */
     public function down(): void
     {
+        // İndeksleri önce sil (tablo var iken)
+        if (Schema::hasTable('cache')) {
+            Schema::table('cache', function (Blueprint $table) {
+                $table->dropIndex(['key', 'expiration']);
+            });
+        }
+        
         Schema::dropIfExists('cache');
         Schema::dropIfExists('cache_locks');
-
-        // İndeksleri geri almak için (opsiyonel)
-        Schema::table('cache', function (Blueprint $table) {
-            $table->dropIndex(['key', 'expiration']);
-        });
     }
 };

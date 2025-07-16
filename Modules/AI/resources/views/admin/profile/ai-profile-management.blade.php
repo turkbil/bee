@@ -183,7 +183,7 @@
 
             {{-- Wizard Card --}}
             <div class="card wizard-card border-0 shadow-lg">
-                <div class="card-body p-5">
+                <div class="card-body px-4 py-3">
                     {{-- Form Content --}}
                     <form id="ai-profile-form" method="POST">
                         <div class="form-content">
@@ -971,7 +971,7 @@
                         </div>
                         
                         {{-- Navigation Buttons + Toggle Categories - SİMETRİK LAYOUT --}}
-                        <div class="form-footer mt-6 pt-4">
+                        <div class="form-footer mt-2 pt-2">
                             <div class="row align-items-center g-3">
                                 {{-- Sol taraf: Kategorileri Göster + Önceki Adım --}}
                                 <div class="col-12 col-md-6 mb-3 mb-md-0">
@@ -979,9 +979,9 @@
                                         {{-- Kategorileri Göster Butonu (Sadece Adım 1'de) --}}
                                         @if($currentStep === 1)
                                             <button type="button" 
-                                                    class="btn btn-outline-primary px-4 py-2"
+                                                    class="btn btn-outline-primary px-5 py-3"
                                                     id="toggleCategoriesBtn"
-                                                    style="border-radius: 25px; font-weight: 500; border-width: 2px; transition: all 0.3s ease; transform: none !important;">
+                                                    style="font-weight: 500; transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, color 0.15s ease-in-out !important; transform: none !important;">
                                                 <i class="fas fa-th-large me-2"></i>
                                                 <span id="toggleCategoriesText">Tüm Kategorileri Göster</span>
                                             </button>
@@ -990,10 +990,10 @@
                                         {{-- Önceki Adım Butonu --}}
                                         @if($currentStep > 1)
                                             <button type="button" 
-                                                    class="btn btn-outline-secondary px-4 py-2 btn-nav-previous"
+                                                    class="btn btn-outline-secondary px-5 py-3 btn-nav-previous"
                                                     data-current-step="{{ $currentStep }}"
                                                     data-target-step="{{ $currentStep - 1 }}"
-                                                    style="border-radius: 25px; font-weight: 500; border-width: 2px; transition: all 0.3s ease;">
+                                                    style="font-weight: 500; transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, color 0.15s ease-in-out !important; transform: none !important;">
                                                 <i class="fas fa-arrow-left me-2"></i>
                                                 <span class="d-none d-sm-inline">Önceki Adım</span>
                                                 <span class="d-sm-none">Önceki</span>
@@ -1007,18 +1007,18 @@
                                     <div class="d-flex justify-content-md-end justify-content-center">
                                         @if($currentStep < $totalSteps)
                                             <button type="button" 
-                                                    class="btn btn-primary btn-lg px-5 py-3 btn-nav-next" 
+                                                    class="btn btn-primary btn-lg px-6 py-3 btn-nav-next" 
                                                     data-current-step="{{ $currentStep }}"
                                                     data-target-step="{{ $currentStep + 1 }}"
-                                                    style="border-radius: 30px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 15px rgba(13, 110, 253, 0.25); transition: all 0.3s ease;">
+                                                    style="font-weight: 600; font-size: 16px; box-shadow: 0 2px 8px rgba(13, 110, 253, 0.15); transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, color 0.15s ease-in-out !important; transform: none !important;">
                                                 <span class="d-none d-sm-inline">Sonraki Adım</span>
                                                 <span class="d-sm-none">Sonraki</span>
                                                 <i class="fas fa-arrow-right ms-2"></i>
                                             </button>
                                         @else
                                             <button type="button" 
-                                                    class="btn btn-success btn-lg px-5 py-3 btn-complete-profile"
-                                                    style="border-radius: 30px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 15px rgba(25, 135, 84, 0.25); transition: all 0.3s ease;">
+                                                    class="btn btn-success btn-lg px-6 py-3 btn-complete-profile"
+                                                    style="font-weight: 600; font-size: 16px; box-shadow: 0 2px 8px rgba(25, 135, 84, 0.15); transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, color 0.15s ease-in-out !important; transform: none !important;">
                                                 <i class="fas fa-magic me-2"></i>
                                                 <span class="d-none d-sm-inline">Yapay Zeka Asistanını Aktifleştir</span>
                                                 <span class="d-sm-none">AI'ı Aktifleştir</span>
@@ -2115,38 +2115,38 @@ document.addEventListener('DOMContentLoaded', function() {
 
 /* Seçili Kategori Hover Effects */
 .selected-sector-section .btn-outline-success:hover {
-    transform: translateY(-2px);
+    transform: none !important;
     background-color: var(--tblr-success);
     color: white;
     border-color: var(--tblr-success);
-    box-shadow: 0 6px 20px rgba(25, 135, 84, 0.25);
+    box-shadow: 0 2px 8px rgba(25, 135, 84, 0.15);
 }
 
 /* Navigation Buton Hover Effects */
 .form-footer .btn-nav-next:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(13, 110, 253, 0.4) !important;
+    transform: none !important;
+    box-shadow: 0 2px 8px rgba(13, 110, 253, 0.25) !important;
 }
 
 .form-footer .btn-complete-profile:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(25, 135, 84, 0.4) !important;
+    transform: none !important;
+    box-shadow: 0 2px 8px rgba(25, 135, 84, 0.25) !important;
 }
 
 .form-footer .btn-nav-previous:hover {
-    transform: translateY(-2px);
+    transform: none !important;
     background-color: var(--tblr-secondary);
     color: white;
     border-color: var(--tblr-secondary);
-    box-shadow: 0 6px 20px rgba(108, 117, 125, 0.25);
+    box-shadow: 0 2px 8px rgba(108, 117, 125, 0.15);
 }
 
 .form-footer .btn-outline-primary:hover {
-    transform: translateY(-2px);
+    transform: none !important;
     background-color: var(--tblr-primary);
     color: white;
     border-color: var(--tblr-primary);
-    box-shadow: 0 6px 20px rgba(13, 110, 253, 0.25);
+    box-shadow: 0 2px 8px rgba(13, 110, 253, 0.15);
 }
 
 /* Light/Dark Mode Uyumlu Renkler */

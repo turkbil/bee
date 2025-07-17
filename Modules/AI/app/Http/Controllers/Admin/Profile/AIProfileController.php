@@ -72,7 +72,7 @@ class AIProfileController extends Controller
     public function edit($step = 1)
     {
         // Step validation
-        $step = max(1, min(6, (int) $step));
+        $step = max(1, min(5, (int) $step));
         
         return view('ai::admin.profile.edit', [
             'initialStep' => $step
@@ -980,25 +980,33 @@ class AIProfileController extends Controller
                 ]);
             }
 
-            // AI Service'i kullanarak yanıt al
-            $aiService = app(\Modules\AI\app\Services\AIService::class);
+            // STANDART SİSTEM: DeepSeekService ile akıllı chat
+            $deepSeekService = app(\Modules\AI\app\Services\DeepSeekService::class);
             
-            // Marka bilgisini al
-            $profile = \Modules\AI\app\Models\AITenantProfile::currentOrCreate();
-            $brandName = $profile->company_info['business_name'] ?? 'Türk Bilişim';
+            // Dashboard chat için conversation history (basit)
+            $conversationHistory = [
+                [
+                    'role' => 'user',
+                    'content' => $message,
+                    'timestamp' => now()->toIso8601String()
+                ]
+            ];
             
-            // Dashboard chat için özel context
-            $systemPrompt = "Sen {$brandName} firmasının AI asistanısın. Kullanıcıların tüm sorularına yardımcı ol - teknik, iş, genel sorular dahil. Kısa ve net yanıtlar ver. Türkçe yanıt ver.";
+            // DeepSeekService'den yanıt al (akıllı feature detection dahil)
+            $response = $deepSeekService->generateCompletion($message, $conversationHistory);
             
-            $response = $aiService->ask($message, [
-                'system_prompt' => $systemPrompt,
-                'type' => 'dashboard_chat',
-                'max_tokens' => 150 // Kısa yanıtlar için
-            ]);
+            if (!$response || !isset($response['content'])) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'AI yanıt üretemedi'
+                ]);
+            }
 
             return response()->json([
                 'success' => true,
-                'response' => $response
+                'response' => $response['content'],
+                'feature_used' => $response['feature_used'] ?? null,
+                'confidence' => $response['confidence'] ?? null
             ]);
 
         } catch (\Exception $e) {

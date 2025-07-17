@@ -49,11 +49,11 @@ class AIPriorityEngine
      * Context type thresholds - Hangi context type'da hangi weight'ler dahil (GÜNCEL)
      */
     const CONTEXT_THRESHOLDS = [
-        'minimal'   => 8000,   // Sadece system + feature definition
-        'essential' => 6000,   // + expert knowledge + tenant identity  
-        'normal'    => 4000,   // + secret knowledge + brand context + templates
-        'detailed'  => 2000,   // Her şey dahil
-        'complete'  => 0,      // Hiçbir şeyi filtreleme
+        'minimal'       => 8000,   // Sadece system + feature definition
+        'essential'     => 6000,   // + expert knowledge + tenant identity  
+        'normal'        => 4000,   // + secret knowledge + brand context + templates
+        'detailed'      => 2000,   // Her şey dahil
+        'complete'      => 0,      // Hiçbir şeyi filtreleme
     ];
 
     /**
@@ -573,6 +573,7 @@ class AIPriorityEngine
             $components = array_merge($components, self::getFeatureComponents($options['feature']));
         }
         
+        
         // Custom components varsa ekle
         if (isset($options['custom_components'])) {
             $components = array_merge($components, $options['custom_components']);
@@ -580,4 +581,5 @@ class AIPriorityEngine
         
         return self::buildSystemPrompt($components, $options);
     }
+
 }
